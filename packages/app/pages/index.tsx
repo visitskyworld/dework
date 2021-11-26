@@ -14,42 +14,8 @@ import {
 } from "antd";
 import * as Icons from "@ant-design/icons";
 import { ethers } from "ethers";
+import { TaskCard } from "@dewo/app/components/TaskCard";
 import abi from "../abis/Transaction.json";
-
-interface TagItem {
-  label: string;
-  color: string;
-}
-
-interface TaskCardProps {
-  title: string;
-  subtitle: string;
-  tags: TagItem[];
-}
-
-const TaskCard: FC<TaskCardProps> = ({ title, subtitle, tags }) => (
-  <Link href="#">
-    <a>
-      <Card size="small">
-        <Space direction="vertical" size={4}>
-          <Row>
-            <Typography.Text strong>{title}</Typography.Text>
-          </Row>
-          <Row>
-            <Typography.Text type="secondary">{subtitle}</Typography.Text>
-          </Row>
-          <Row>
-            {tags.map(({ label, color }, index) => (
-              <Tag key={index} color={color}>
-                {label}
-              </Tag>
-            ))}
-          </Row>
-        </Space>
-      </Card>
-    </a>
-  </Link>
-);
 
 const Home: NextPage = () => {
   const [isActiveAddButton, setIsActiveAddButton] = useState(false);
