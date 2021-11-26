@@ -1,21 +1,31 @@
-import {FC} from 'react';
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link'
-import { Button, Tag, Breadcrumb, Card, Typography, Badge, Space, Row, Col } from 'antd';
-import * as Icons from '@ant-design/icons';
+import React, { FC } from "react";
+import { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import {
+  Button,
+  Tag,
+  Breadcrumb,
+  Card,
+  Typography,
+  Badge,
+  Space,
+  Row,
+} from "antd";
+import * as Icons from "@ant-design/icons";
 
 interface TagItem {
   label: string;
   color: string;
 }
+
 interface TaskCardProps {
   title: string;
   subtitle: string;
   tags: TagItem[];
 }
 
-const TaskCard: FC<TaskCardProps> = ({title, subtitle, tags}) => (
+const TaskCard: FC<TaskCardProps> = ({ title, subtitle, tags }) => (
   <Link href="#">
     <a>
       <Card size="small">
@@ -27,8 +37,10 @@ const TaskCard: FC<TaskCardProps> = ({title, subtitle, tags}) => (
             <Typography.Text type="secondary">{subtitle}</Typography.Text>
           </Row>
           <Row>
-            {tags.map(({label, color}, index) => (
-              <Tag key={index} color={color}>{label}</Tag>
+            {tags.map(({ label, color }, index) => (
+              <Tag key={index} color={color}>
+                {label}
+              </Tag>
             ))}
           </Row>
         </Space>
@@ -62,21 +74,29 @@ const Home: NextPage = () => {
           <Breadcrumb.Item>An Application</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Card size="small" title={
-          <Space>
-            <Badge count={25} />
-            <span>
-              TODO
-            </span>
-          </Space>
-        } extra={(
-          <Button type="text" icon={<Icons.PlusOutlined />} />
-        )} style={{ width: 300 }}>
-          <TaskCard title="Move to Dubai" subtitle="#123 created by fant.sol" tags={[{color: 'red', label: 'Lower Taxes'}, {color: 'yellow', label: 'Better Weather'}]} />
+        <Card
+          size="small"
+          title={
+            <Space>
+              <Badge count={25} />
+              <span>TODO</span>
+            </Space>
+          }
+          extra={<Button type="text" icon={<Icons.PlusOutlined />} />}
+          style={{ width: 300 }}
+        >
+          <TaskCard
+            title="Move to Dubai"
+            subtitle="#123 created by fant.sol"
+            tags={[
+              { color: "red", label: "Lower Taxes" },
+              { color: "yellow", label: "Better Weather" },
+            ]}
+          />
         </Card>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
