@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -13,6 +13,8 @@ import {
   Row,
 } from "antd";
 import * as Icons from "@ant-design/icons";
+import { ethers } from "ethers";
+import abi from "../abis/Transaction.json";
 
 interface TagItem {
   label: string;
@@ -50,6 +52,33 @@ const TaskCard: FC<TaskCardProps> = ({ title, subtitle, tags }) => (
 );
 
 const Home: NextPage = () => {
+  const [isActiveAddButton, setIsActiveAddButton] = useState(false);
+  let provider: ethers.providers.Web3Provider;
+  let signer: ethers.providers.JsonRpcSigner;
+  const BOUNTY_SIZE = ethers.utils.parseEther("0.006");
+
+  const init = async () => {
+    if (typeof window !== "undefined") {
+      // @ts-ignore
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+      console.log("Account:", await signer.getAddress());
+    }
+  };
+  init();
+
+  const pay = async () => {
+    const DAO_WALLET_ADDRESS = "0xD258Cb4EB328F2a3cb6A42d028e3bcCd4B1A7C41";
+    const marketContract = new ethers.Contract(DAO_WALLET_ADDRESS, abi, signer);
+
+    const balance = await marketContract.getBalance();
+    console.log("balance: ", balance.toString());
+
+    const RECEIVER = "0xfE3E74b51D55d89D16786AB87F0D97cdf6f37887";
+    const tx = await marketContract.transfer(RECEIVER, BOUNTY_SIZE);
+  };
+
   return (
     <div>
       <Head>
@@ -73,27 +102,52 @@ const Home: NextPage = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>An Application</Breadcrumb.Item>
         </Breadcrumb>
-
-        <Card
-          size="small"
-          title={
-            <Space>
-              <Badge count={25} />
-              <span>TODO</span>
-            </Space>
-          }
-          extra={<Button type="text" icon={<Icons.PlusOutlined />} />}
-          style={{ width: 300 }}
-        >
-          <TaskCard
-            title="Move to Dubai"
-            subtitle="#123 created by fant.sol"
-            tags={[
-              { color: "red", label: "Lower Taxes" },
-              { color: "yellow", label: "Better Weather" },
-            ]}
-          />
-        </Card>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <Card
+            size="small"
+            title={
+              <Space>
+                <Badge count={25} />
+                <span>TODO</span>
+              </Space>
+            }
+            extra={
+              <>
+                <Button
+                  type="text"
+                  icon={
+                    <Icons.PlusOutlined
+                      onClick={() => setIsActiveAddButton((prev) => !prev)}
+                    />
+                  }
+                />
+              </>
+            }
+            style={{ width: 300 }}
+          >
+            <TaskCard
+              title="Move to Dubai"
+              subtitle="#123 created by fant.sol"
+              tags={[
+                { color: "red", label: "Lower Taxes" },
+                { color: "yellow", label: "Better Weather" },
+                { color: "green", label: `${BOUNTY_SIZE.toNumber()} gwei` },
+              ]}
+            />
+          </Card>
+          {isActiveAddButton && (
+            <Tag
+              style={{ height: 25 }}
+              onClick={() => {
+                pay();
+                setIsActiveAddButton(false);
+              }}
+              color="blue"
+            >
+              Close task and pay
+            </Tag>
+          )}
+        </div>
       </main>
     </div>
   );
