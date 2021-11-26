@@ -18,4 +18,4 @@ yarn-error.log*
 # local env files
 .env.*
 
-tsconfig.tsbuildinfo
+*.tsbuildinfo
