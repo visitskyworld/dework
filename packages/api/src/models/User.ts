@@ -7,7 +7,7 @@ import { Threepid } from "./Threepid";
 @ObjectType()
 export class User extends Audit {
   @Column({ unique: true, nullable: true })
-  @Field()
+  @Field({ nullable: true })
   public username?: string;
 
   @Column({ nullable: true, length: 1024 })

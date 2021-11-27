@@ -92,6 +92,16 @@ describe("UserResolver", () => {
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
 
+      it("should fail if not authed", async () => {
+        const threepid = await fixtures.createThreepid();
+        const response = await client.request({
+          app,
+          body: UserRequests.connectToThreepid(threepid.id),
+        });
+
+        client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
+      });
+
       it("should fail if user already has connection from source", async () => {
         const user = await fixtures.createUser();
         const firstThreepidSource = (await user.threepids)[0].source;

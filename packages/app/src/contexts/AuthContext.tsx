@@ -1,22 +1,29 @@
 import React, { createContext, FC, useContext, useMemo, useState } from "react";
-import { User } from "../types/api";
+import { User } from "../graphql/types";
+import { useUser } from "../util/hooks";
 
 interface AuthContextValue {
   user: User | undefined;
-  onUpdate(user: User): void;
+  setAuthenticated(authenticated: boolean): void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: undefined,
-  onUpdate: () => {},
+  setAuthenticated: () => {},
 });
 
-interface AuthProviderProps {}
+interface AuthProviderProps {
+  authenticated: boolean;
+}
 
-export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User>();
+export const AuthProvider: FC<AuthProviderProps> = ({
+  children,
+  authenticated: initialAuthenticated,
+}) => {
+  const [authenticated, setAuthenticated] = useState(initialAuthenticated);
+  const user = useUser(!authenticated);
   return (
-    <AuthContext.Provider value={{ user, onUpdate: setUser }}>
+    <AuthContext.Provider value={{ user, setAuthenticated }}>
       {useMemo(() => children, [children])}
     </AuthContext.Provider>
   );

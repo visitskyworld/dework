@@ -37,12 +37,8 @@ export class Fixtures {
   }
 }
 
-@Injectable()
-export class DatabaseService {
-  constructor(@InjectConnection() public readonly connection: Connection) {}
-}
 @Module({
   imports: [ThreepidModule, UserModule],
-  providers: [Fixtures, DatabaseService],
+  providers: [Fixtures],
 })
 export class FixturesModule {}

@@ -5,6 +5,7 @@ import { GraphQLAuthGuard } from "../auth/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { ThreepidService } from "../threepid/threepid.service";
+import { AuthResponse } from "./dto/AuthResponse";
 
 @Injectable()
 export class UserResolver {
@@ -19,11 +20,12 @@ export class UserResolver {
     return user;
   }
 
-  @Mutation(() => User)
-  public createUser(
+  @Mutation(() => AuthResponse)
+  public async authWithThreepid(
     @Args("threepidId", { type: () => GraphQLUUID }) threepidId: string
-  ): Promise<User> {
-    return this.userService.createFromThreepid(threepidId);
+  ): Promise<AuthResponse> {
+    const user = await this.userService.authWithThreepid(threepidId);
+    return { user, authToken: this.userService.createAuthToken(user) };
   }
 
   @Mutation(() => User)

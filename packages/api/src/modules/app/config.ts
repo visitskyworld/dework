@@ -4,6 +4,7 @@ export interface ConfigType {
   PORT: number;
   GRAPHQL_PLAYGROUND: boolean;
   JWT_SECRET: string;
+  APP_URL: string;
 
   MYSQL_USER: string;
   MYSQL_PASSWORD: string;
@@ -25,6 +26,7 @@ export const configSchema = Joi.object<ConfigType>({
   PORT: Joi.number().min(0).max(MAX_PORT),
   GRAPHQL_PLAYGROUND: Joi.boolean(),
   JWT_SECRET: Joi.string().required(),
+  APP_URL: Joi.string().required(),
 
   MYSQL_USER: Joi.string().required(),
   MYSQL_PASSWORD: Joi.string().required(),

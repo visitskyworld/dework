@@ -49,10 +49,9 @@ export class ThreepidService {
   public getImageUrl(threepid: Threepid): string | undefined {
     switch (threepid.source) {
       case ThreepidSource.discord:
-        return (
-          (threepid as Threepid<ThreepidSource.discord>).config.profile
-            .avatar ?? undefined
-        );
+        const profile = (threepid as Threepid<ThreepidSource.discord>).config
+          .profile;
+        return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.jpg`;
       case ThreepidSource.github:
         return (threepid as Threepid<ThreepidSource.github>).config.profile
           .photos?.[0]?.value;

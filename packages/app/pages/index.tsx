@@ -7,7 +7,7 @@ import { Header } from "@dewo/app/components/Header";
 
 const Home: NextPage = () => {
   const [tasks, setTasks] = useState<Task[]>(
-    require("@dewo/demos/citydao.json").tasks
+    require("@dewo/demos/test.json").tasks
   );
 
   return (

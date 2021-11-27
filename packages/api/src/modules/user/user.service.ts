@@ -21,15 +21,17 @@ export class UserService {
     private readonly jwtService: JwtService
   ) {}
 
-  public async createFromThreepid(threepidId: string): Promise<User> {
+  public async authWithThreepid(threepidId: string): Promise<User> {
     const threepid = await this.threepidService.findById(threepidId);
     if (!threepid) throw new NotFoundException();
-    if (!!threepid.userId) throw new ForbiddenException();
+    if (!!threepid.userId) {
+      return this.userRepo.findOne(threepid.userId) as Promise<User>;
+    }
+
     const user = await this.userRepo.save({
       imageUrl: this.threepidService.getImageUrl(threepid),
       threepids: Promise.resolve([]),
     });
-
     await this.connectThreepidToUser(threepid, user);
     return user;
   }
