@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { configSchema } from "./config";
 import { mysqlConfig } from "./mysql.config";
 import { gqlConfig } from "./gql.config";
-import { AuthModule } from "../auth/auth.module";
+import { AuthModule, GlobalJwtModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
@@ -20,12 +20,13 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
     inject: [ConfigService],
     useFactory: mysqlConfig,
   }),
-  AuthModule,
+  GlobalJwtModule,
 ];
 
 export const AppModuleImports: ModuleMetadata["imports"] = [
   ...AppBootstrapModuleImports,
   UserModule,
+  AuthModule,
 ];
 
 @Module({

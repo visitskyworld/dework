@@ -12,7 +12,7 @@ import { GQLContext } from "../app/gql.config";
 import { User } from "@dewo/api/models/User";
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class GraphQLAuthGuard implements CanActivate {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
