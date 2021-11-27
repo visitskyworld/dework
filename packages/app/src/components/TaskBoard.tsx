@@ -100,7 +100,7 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Row style={{ width: columnWidth * columns.length }}>
+      <Row className="dewo-task-board">
         <Space size="middle" align="start">
           {columns.map((status, index) => (
             <div key={status} style={{ width: columnWidth }}>
