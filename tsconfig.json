@@ -22,7 +22,7 @@
     "paths": {
       "@dewo/app/*": ["./packages/app/src/*"],
       "@dewo/api/*": ["./packages/api/src/*"],
-      "@dewo/demos/*": ["./packages/demos/*"],
+      "@dewo/demos/*": ["./packages/demos/*"]
     }
   },
   "exclude": [

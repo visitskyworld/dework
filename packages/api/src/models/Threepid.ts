@@ -1,40 +1,54 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Profile as DiscordProfile } from "passport-discord";
+import { Profile as GithubProfile } from "passport-github";
 import { Audit } from "./Audit";
 import { User } from "./User";
 
-enum ThreepidSource {
+export enum ThreepidSource {
   github = "github",
+  discord = "discord",
 }
 
-interface GithubThreepidConfig {
+export interface GithubThreepidConfig {
+  accessToken: string;
+  refreshToken: undefined;
+  profile: GithubProfile;
+}
+
+export interface DiscordThreepidConfig {
   accessToken: string;
   refreshToken: string;
+  profile: DiscordProfile;
 }
 
 interface ThreepidConfigMap extends Record<ThreepidSource, any> {
   [ThreepidSource.github]: GithubThreepidConfig;
+  [ThreepidSource.discord]: DiscordThreepidConfig;
 }
 
 @Entity()
 @ObjectType()
-export class Threepid extends Audit {
+@Index("IDX_unique_threepid_source", ["threepid", "source"], { unique: true })
+export class Threepid<
+  TSource extends ThreepidSource = ThreepidSource
+> extends Audit {
   @Field()
-  @Column({ unique: true })
+  @Column()
   public threepid!: string;
 
   @Field()
   @Column("enum", { enum: ThreepidSource })
-  public source!: ThreepidSource;
+  public source!: TSource;
 
   @Column("json")
-  public config!: ThreepidConfigMap[ThreepidSource];
+  public config!: ThreepidConfigMap[TSource];
 
   @JoinColumn()
   @ManyToOne(() => User, { nullable: true })
   @Field(() => User, { nullable: true })
   public user!: Promise<User | undefined>;
-  @Column()
+  @Column({ nullable: true })
   @Field({ nullable: true })
   public userId?: string;
 }

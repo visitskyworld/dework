@@ -3,6 +3,12 @@ import { Profile, Strategy } from "passport-github";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
+import { StrategyResponse } from "./types";
+import {
+  GithubThreepidConfig,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
+import { ThreepidService } from "../threepid.service";
 
 const PassportGithubStrategy = PassportStrategy(Strategy) as new (
   ...args: any[]
@@ -10,7 +16,10 @@ const PassportGithubStrategy = PassportStrategy(Strategy) as new (
 
 @Injectable()
 export class GithubStrategy extends PassportGithubStrategy {
-  constructor(readonly configService: ConfigService<ConfigType>) {
+  constructor(
+    private readonly threepidService: ThreepidService,
+    readonly configService: ConfigService<ConfigType>
+  ) {
     super({
       clientID: configService.get<string>("GITHUB_OAUTH_CLIENT_ID"),
       clientSecret: configService.get<string>("GITHUB_OAUTH_CLIENT_SECRET"),
@@ -18,11 +27,25 @@ export class GithubStrategy extends PassportGithubStrategy {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    // Here a custom User object is returned. In the the repo I'm using a UsersService with repository pattern, learn more here: https://docs.nestjs.com/techniques/database
-    console.warn({ accessToken, refreshToken, profile });
+  async validate(
+    accessToken: string,
+    refreshToken: undefined,
+    profile: Profile
+  ): Promise<StrategyResponse> {
+    const config: GithubThreepidConfig = {
+      accessToken,
+      refreshToken,
+      profile,
+    };
+    const threepid = await this.threepidService.findOrCreate({
+      threepid: profile.id,
+      source: ThreepidSource.github,
+      config,
+    });
+
     return {
-      provider: "github",
+      threepidId: threepid.id,
+      userId: threepid.userId,
     };
   }
 }

@@ -2,7 +2,13 @@ import { PassportStrategy, AbstractStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-discord";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { ConfigType } from "../../app/config";
+import { ConfigType } from "@dewo/api/modules/app/config";
+import { ThreepidService } from "../threepid.service";
+import { StrategyResponse } from "./types";
+import {
+  DiscordThreepidConfig,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
 
 const PassportDiscordStrategy = PassportStrategy(Strategy) as new (
   ...args: any[]
@@ -10,7 +16,10 @@ const PassportDiscordStrategy = PassportStrategy(Strategy) as new (
 
 @Injectable()
 export class DiscordStrategy extends PassportDiscordStrategy {
-  constructor(readonly configService: ConfigService<ConfigType>) {
+  constructor(
+    private readonly threepidService: ThreepidService,
+    readonly configService: ConfigService<ConfigType>
+  ) {
     super({
       clientID: configService.get<string>("DISCORD_OAUTH_CLIENT_ID"),
       clientSecret: configService.get<string>("DISCORD_OAUTH_CLIENT_SECRET"),
@@ -19,11 +28,25 @@ export class DiscordStrategy extends PassportDiscordStrategy {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    // Here a custom User object is returned. In the the repo I'm using a UsersService with repository pattern, learn more here: https://docs.nestjs.com/techniques/database
-    console.warn({ accessToken, refreshToken, profile });
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile
+  ): Promise<StrategyResponse> {
+    const config: DiscordThreepidConfig = {
+      accessToken,
+      refreshToken,
+      profile,
+    };
+    const threepid = await this.threepidService.findOrCreate({
+      threepid: profile.id,
+      source: ThreepidSource.discord,
+      config,
+    });
+
     return {
-      provider: "discord",
+      threepidId: threepid.id,
+      userId: threepid.userId,
     };
   }
 }

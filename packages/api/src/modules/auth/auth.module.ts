@@ -7,6 +7,9 @@ import { GithubStrategy } from "./strategies/github.strategy";
 import { AuthController } from "./auth.controller";
 import { LoggerMiddleware } from "./logger";
 import { DiscordStrategy } from "./strategies/discord.strategy";
+import { ThreepidService } from "./threepid.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Threepid } from "@dewo/api/models/Threepid";
 
 @Global()
 @Module({
@@ -24,9 +27,13 @@ import { DiscordStrategy } from "./strategies/discord.strategy";
 export class GlobalJwtModule {}
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: "jwt" })],
-  providers: [GithubStrategy, DiscordStrategy],
+  imports: [
+    PassportModule.register({ defaultStrategy: "jwt" }),
+    TypeOrmModule.forFeature([Threepid]),
+  ],
+  providers: [GithubStrategy, DiscordStrategy, ThreepidService],
   controllers: [AuthController],
+  exports: [ThreepidService],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
