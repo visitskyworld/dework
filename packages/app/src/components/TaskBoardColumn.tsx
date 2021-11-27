@@ -48,7 +48,7 @@ export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
       style={{ width: 300 }}
     >
       <Droppable key={status} droppableId={status}>
-        {(provided, snapshot) => (
+        {(provided) => (
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
@@ -56,7 +56,7 @@ export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
           >
             {tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id} index={index}>
-                {(provided, snapshot) => (
+                {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}

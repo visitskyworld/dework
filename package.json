@@ -1,12 +1,16 @@
 {
   "workspaces": [
-    "packages/app"
+    "packages/app",
+    "packages/demos",
+    "packages/contracts",
+    "packages/api"
   ],
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-pattern='!.*' --quiet --fix",
-    "app": "yarn workspace @dewo/app"
+    "app": "yarn workspace @dewo/app",
+    "api": "yarn workspace @dewo/api"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.24.0",

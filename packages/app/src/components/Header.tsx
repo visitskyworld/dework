@@ -1,7 +1,6 @@
 import React, { FC, useCallback } from "react";
 import { Breadcrumb, PageHeader, Avatar, Button, Typography, Row } from "antd";
 import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
 import { useAuthContext } from "../contexts/AuthContext";
 
 interface HeaderProps {}

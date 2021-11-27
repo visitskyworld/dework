@@ -54,7 +54,7 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
   const groupedTasks = useGroupedTasks(tasks);
 
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
-    (result, provided) => {
+    (result) => {
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
@@ -109,7 +109,7 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <Row className="dewo-task-board">
         <Space size="middle" align="start">
-          {columns.map((status, index) => (
+          {columns.map((status) => (
             <div key={status} style={{ width: columnWidth }}>
               <TaskBoardColumn
                 status={status}

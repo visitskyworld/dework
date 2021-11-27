@@ -7,6 +7,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -16,10 +18,15 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@dewo/app/*": ["./src/*"],
-      "@dewo/demos/*": ["../demos/*"],
+      "@dewo/app/*": ["./packages/app/src/*"],
+      "@dewo/demos/*": ["./packages/demos/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "packages/app",
+    "packages/api"
+  ]
 }
