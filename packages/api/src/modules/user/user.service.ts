@@ -34,13 +34,17 @@ export class UserService {
     return user;
   }
 
-  private async connectThreepidToUser(
+  public async connectThreepidToUser(
     threepid: Threepid,
     user: User
   ): Promise<void> {
+    if (!!threepid.userId) throw new ForbiddenException();
+
     const threepids = await user.threepids;
     if (threepids.some((t) => t.source === threepid.source)) {
-      throw new ForbiddenException();
+      throw new ForbiddenException(
+        `You're already connected to "${threepid.source}"`
+      );
     }
     await this.threepidService.update({ ...threepid, userId: user.id });
     threepids.push(threepid);

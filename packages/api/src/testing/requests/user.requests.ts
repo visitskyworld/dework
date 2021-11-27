@@ -19,4 +19,23 @@ export class UserRequests {
       variables: { threepidId },
     };
   }
+
+  public static connectToThreepid(
+    threepidId: string
+  ): GraphQLTestClientRequestBody<{ threepidId: string }> {
+    return {
+      query: `
+        mutation ConnectUserToThreepid($threepidId: UUID!) {
+          user: connectUserToThreepid(threepidId: $threepidId) {
+            id
+            imageUrl
+            threepids {
+              id
+            }
+          }
+        }
+      `,
+      variables: { threepidId },
+    };
+  }
 }
