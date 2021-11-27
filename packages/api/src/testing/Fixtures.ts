@@ -1,11 +1,9 @@
 import { Injectable, Module } from "@nestjs/common";
-import { InjectConnection } from "@nestjs/typeorm";
 import { Threepid, ThreepidSource } from "../models/Threepid";
 import { User } from "../models/User";
 import { UserModule } from "../modules/user/user.module";
 import { UserService } from "../modules/user/user.service";
 import faker from "faker";
-import { Connection } from "typeorm";
 import { ThreepidService } from "../modules/threepid/threepid.service";
 import { ThreepidModule } from "../modules/threepid/threepid.module";
 
@@ -29,7 +27,7 @@ export class Fixtures {
 
   public async createUser(): Promise<User> {
     const threepid = await this.createThreepid();
-    return this.userService.createFromThreepid(threepid.id);
+    return this.userService.authWithThreepid(threepid.id);
   }
 
   public createAuthToken(user: User): string {

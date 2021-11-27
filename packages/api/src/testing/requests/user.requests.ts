@@ -6,12 +6,15 @@ export class UserRequests {
   ): GraphQLTestClientRequestBody<{ threepidId: string }> {
     return {
       query: `
-        mutation CreateUser($threepidId: UUID!) {
-          user: createUser(threepidId: $threepidId) {
-            id
-            imageUrl
-            threepids {
+        mutation AuthWithThreepid($threepidId: UUID!) {
+          authWithThreepid(threepidId: $threepidId) {
+            authToken
+            user {
               id
+              imageUrl
+              threepids {
+                id
+              }
             }
           }
         }
