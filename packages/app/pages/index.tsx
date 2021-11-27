@@ -16,6 +16,8 @@ import * as Icons from "@ant-design/icons";
 import { ethers } from "ethers";
 import { TaskCard } from "@dewo/app/components/TaskCard";
 import abi from "../abis/Transaction.json";
+import { TaskBoardColumn } from "@dewo/app/components/TaskBoardColumn";
+import { TaskBoard } from "@dewo/app/components/TaskBoard";
 
 const Home: NextPage = () => {
   const [isActiveAddButton, setIsActiveAddButton] = useState(false);
@@ -68,7 +70,10 @@ const Home: NextPage = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>An Application</Breadcrumb.Item>
         </Breadcrumb>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+
+        <TaskBoard />
+
+        {/* <div style={{ display: "flex", flexDirection: "row" }}>
           <Card
             size="small"
             title={
@@ -92,28 +97,18 @@ const Home: NextPage = () => {
             style={{ width: 300 }}
           >
             <TaskCard
-              title="Move to Dubai"
-              subtitle="#123 created by fant.sol"
-              tags={[
-                { color: "red", label: "Lower Taxes" },
-                { color: "yellow", label: "Better Weather" },
-                { color: "green", label: `${BOUNTY_SIZE.toNumber()} gwei` },
-              ]}
+              task={{
+                title: "Move to Dubai",
+                subtitle: "#123 created by fant.sol",
+                tags: [
+                  { color: "red", label: "Lower Taxes" },
+                  { color: "yellow", label: "Better Weather" },
+                  { color: "green", label: `${BOUNTY_SIZE.toNumber()} gwei` },
+                ],
+              }}
             />
           </Card>
-          {isActiveAddButton && (
-            <Tag
-              style={{ height: 25 }}
-              onClick={() => {
-                pay();
-                setIsActiveAddButton(false);
-              }}
-              color="blue"
-            >
-              Close task and pay
-            </Tag>
-          )}
-        </div>
+        </div> */}
       </main>
     </div>
   );

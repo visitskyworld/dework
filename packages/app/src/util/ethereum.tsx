@@ -5,10 +5,12 @@ import { Constants } from "./constants";
 export function useProvider(): ethers.providers.Web3Provider {
   return useMemo(
     () =>
-      new ethers.providers.Web3Provider(
-        // @ts-ignore
-        window.ethereum
-      ),
+      typeof window !== "undefined"
+        ? new ethers.providers.Web3Provider(
+            // @ts-ignore
+            window.ethereum
+          )
+        : (undefined! as ethers.providers.Web3Provider),
     []
   );
 }

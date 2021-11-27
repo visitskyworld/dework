@@ -14,19 +14,13 @@ import {
 } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useSignPayout } from "../util/ethereum";
-
-interface TaskTag {
-  label: string;
-  color: string;
-}
+import { Task } from "../types/Task";
 
 interface TaskCardProps {
-  title: string;
-  subtitle: string;
-  tags: TaskTag[];
+  task: Task;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ title, subtitle, tags }) => {
+export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   const signPayout = useSignPayout();
   return (
     <Link href="#">
@@ -59,13 +53,15 @@ export const TaskCard: FC<TaskCardProps> = ({ title, subtitle, tags }) => {
           </Dropdown>
           <Space direction="vertical" size={4}>
             <Row>
-              <Typography.Text strong>{title}</Typography.Text>
+              <Typography.Text strong>{task.title}</Typography.Text>
             </Row>
             <Row>
-              <Typography.Text type="secondary">{subtitle}</Typography.Text>
+              <Typography.Text type="secondary">
+                {task.subtitle}
+              </Typography.Text>
             </Row>
             <Row>
-              {tags.map(({ label, color }, index) => (
+              {task.tags.map(({ label, color }, index) => (
                 <Tag key={index} color={color}>
                   {label}
                 </Tag>
