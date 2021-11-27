@@ -53,7 +53,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
           </Dropdown>
           <Space direction="vertical" size={4}>
             <Row>
-              <Typography.Text strong>{task.title}</Typography.Text>
+              <Typography.Text strong>
+                {task.title} ({task.sortKey})
+              </Typography.Text>
             </Row>
             <Row>
               <Typography.Text type="secondary">

@@ -11,22 +11,37 @@ import {
   Row,
 } from "antd";
 import * as Icons from "@ant-design/icons";
+import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { Task } from "../types/Task";
+import { Task, TaskStatus } from "../types/Task";
+
+const titleByStatus: Record<TaskStatus, string> = {
+  [TaskStatus.TODO]: "To Do",
+  [TaskStatus.IN_PROGRESS]: "In Progress",
+  [TaskStatus.IN_REVIEW]: "In Review",
+  [TaskStatus.DONE]: "Done",
+};
 
 interface TaskBoardColumnProps {
-  index: number;
+  status: TaskStatus;
   tasks: Task[];
 }
 
-export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({ index, tasks }) => {
+export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
+  status,
+  tasks,
+}) => {
   return (
     <Card
       size="small"
       title={
         <Space>
-          <Badge count={25} />
-          <span>TODO</span>
+          <Badge
+            count={tasks.length}
+            style={{ backgroundColor: Colors.grey[6] }}
+            showZero
+          />
+          <span>{titleByStatus[status]}</span>
         </Space>
       }
       extra={
@@ -39,7 +54,7 @@ export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({ index, tasks }) => {
       }
       style={{ width: 300 }}
     >
-      <Droppable key={index} droppableId={String(index)}>
+      <Droppable key={status} droppableId={status}>
         {(provided, snapshot) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             {tasks.map((task, index) => (

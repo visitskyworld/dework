@@ -1,93 +1,117 @@
 import { Row, Space } from "antd";
-import React, { FC } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Task } from "../types/Task";
+import React, { FC, useMemo, useEffect, useCallback, useState } from "react";
+import _ from "lodash";
+import { inject } from "between";
+import {
+  DragDropContext,
+  DragDropContextProps,
+  resetServerContext,
+} from "react-beautiful-dnd";
+
+import { Task, TaskStatus } from "../types/Task";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 
-const columns = ["1", "2", "3"];
+const Between = inject("0123456789");
+
+const columns = [
+  TaskStatus.TODO,
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.IN_REVIEW,
+  TaskStatus.DONE,
+];
 const columnWidth = 300;
+const noTasks: Task[] = [];
+interface Props {
+  tasks: Task[];
+  onChange(tasks: Task[]): void;
+}
 
-const task: Task = {
-  id: "1",
-  title: "Move to Dubai",
-  subtitle: "#123 created by fant.sol",
-  tags: [
-    { color: "red", label: "Lower Taxes" },
-    { color: "yellow", label: "Better Weather" },
-    // { color: "green", label: `${BOUNTY_SIZE.toNumber()} gwei` },
-  ],
-};
+function useGroupedTasks(tasks: Task[]): Record<TaskStatus, Task[]> {
+  return useMemo(() => {
+    return _(tasks)
+      .groupBy((task) => task.status)
+      .mapValues((tasksWithStatus) =>
+        _.sortBy(tasksWithStatus, (task) => task.sortKey)
+      )
+      .value() as Record<TaskStatus, Task[]>;
+  }, [tasks]);
+}
 
-interface Props {}
+function orderBetweenTasks(
+  taskAbove: Task | undefined,
+  taskBelow: Task | undefined
+): string {
+  const [a, b] = [
+    taskBelow?.sortKey ?? String(Date.now()),
+    taskAbove?.sortKey ?? Between.lo,
+  ].sort(Between.strord);
 
-export const TaskBoard: FC<Props> = () => {
+  if (a === b) return a;
+  return Between.between(a, b);
+}
+
+export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
+  const groupedTasks = useGroupedTasks(tasks);
+
+  const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
+    (result, provided) => {
+      if (result.reason !== "DROP" || !result.destination) return;
+
+      const taskId = result.draggableId;
+      const status = result.destination.droppableId as TaskStatus;
+
+      const indexExcludingItself = (() => {
+        const newIndex = result.destination.index;
+        const oldIndex = result.source.index;
+        // To get the cards above and below the currently dropped card
+        // we need to offset the new index by 1 if the card was dragged
+        // from above in the same lane. The card we're dragging from
+        // above makes all other cards move up one step
+        if (
+          result.source.droppableId === result.destination.droppableId &&
+          oldIndex < newIndex
+        ) {
+          return newIndex + 1;
+        }
+
+        return newIndex;
+      })();
+
+      const taskAbove = groupedTasks[status]?.[indexExcludingItself - 1];
+      const taskBelow = groupedTasks[status]?.[indexExcludingItself];
+      const sortKey = orderBetweenTasks(taskAbove, taskBelow);
+
+      onChange(
+        tasks.map((t) => (t.id === taskId ? { ...t, status, sortKey } : t))
+      );
+    },
+    [tasks, groupedTasks, onChange]
+  );
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    resetServerContext();
+    setLoaded(true);
+  }, []);
+
+  resetServerContext();
+  if (!loaded) return null;
+
   return (
-    <DragDropContext onDragEnd={console.warn}>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <Row style={{ width: columnWidth * columns.length }}>
         <Space size="middle" align="start">
-          {columns.map((id, index) => (
-            <div style={{ width: columnWidth }}>
+          {columns.map((status, index) => (
+            <div key={status} style={{ width: columnWidth }}>
               <TaskBoardColumn
-                key={id}
-                index={index}
-                tasks={Array(Number(id))
-                  .fill(null)
-                  .map((_, taskIndex) => ({
-                    ...task,
-                    id: `${index}-${taskIndex}`,
-                  }))}
+                status={status}
+                tasks={groupedTasks[status] ?? noTasks}
               />
             </div>
           ))}
         </Space>
       </Row>
-      {/* {state.map((el, ind) => (
-        <Droppable key={ind} droppableId={`${ind}`}>
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
-              {...provided.droppableProps}
-            >
-              {el.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-around",
-                        }}
-                      >
-                        {item.content}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newState = [...state];
-                            newState[ind].splice(index, 1);
-                            setState(newState.filter((group) => group.length));
-                          }}
-                        >
-                          delete
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      ))} */}
     </DragDropContext>
   );
 };

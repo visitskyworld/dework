@@ -1,0 +1,43 @@
+{
+  "tasks": [{
+    "id": "1",
+    "title": "Sell apartment",
+    "subtitle": "#123 created by fant.sol",
+    "status": "TODO",
+    "sortKey": "01",
+    "tags": [
+      {"label": "Lower Taxes", "color": "green"},
+      {"label": "Better Weather", "color": "yellow"}
+    ]
+  }, {
+    "id": "2",
+    "title": "Move to Dubai",
+    "subtitle": "#123 created by fant.sol",
+    "status": "IN_PROGRESS",
+    "sortKey": "02",
+    "tags": [
+      {"label": "Lower Taxes", "color": "green"},
+      {"label": "Better Weather", "color": "yellow"}
+    ]
+  }, {
+    "id": "3",
+    "title": "Select Tax Lawyer",
+    "subtitle": "#123 created by fant.sol",
+    "status": "IN_REVIEW",
+    "sortKey": "03",
+    "tags": [
+      {"label": "Lower Taxes", "color": "green"},
+      {"label": "Better Weather", "color": "yellow"}
+    ]
+  }, {
+    "id": "4",
+    "title": "Make Decision",
+    "subtitle": "#123 created by fant.sol",
+    "status": "DONE",
+    "sortKey": "04",
+    "tags": [
+      {"label": "Lower Taxes", "color": "green"},
+      {"label": "Better Weather", "color": "yellow"}
+    ]
+  }]
+}

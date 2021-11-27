@@ -18,9 +18,13 @@ import { TaskCard } from "@dewo/app/components/TaskCard";
 import abi from "../abis/Transaction.json";
 import { TaskBoardColumn } from "@dewo/app/components/TaskBoardColumn";
 import { TaskBoard } from "@dewo/app/components/TaskBoard";
+import { Task } from "@dewo/app/types/Task";
 
 const Home: NextPage = () => {
-  const [isActiveAddButton, setIsActiveAddButton] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>(
+    require("../demos/citydao.json").tasks
+  );
+
   let provider: ethers.providers.Web3Provider;
   let signer: ethers.providers.JsonRpcSigner;
   const BOUNTY_SIZE = ethers.utils.parseEther("0.006");
@@ -71,7 +75,7 @@ const Home: NextPage = () => {
           <Breadcrumb.Item>An Application</Breadcrumb.Item>
         </Breadcrumb>
 
-        <TaskBoard />
+        <TaskBoard tasks={tasks} onChange={setTasks} />
 
         {/* <div style={{ display: "flex", flexDirection: "row" }}>
           <Card
