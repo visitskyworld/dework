@@ -1,13 +1,13 @@
 import { Injectable, Module } from "@nestjs/common";
-import { TypeOrmModule, InjectConnection } from "@nestjs/typeorm";
+import { InjectConnection } from "@nestjs/typeorm";
 import { Threepid, ThreepidSource } from "../models/Threepid";
 import { User } from "../models/User";
-import { AuthModule } from "../modules/auth/auth.module";
-import { ThreepidService } from "../modules/auth/threepid.service";
 import { UserModule } from "../modules/user/user.module";
 import { UserService } from "../modules/user/user.service";
 import faker from "faker";
 import { Connection } from "typeorm";
+import { ThreepidService } from "../modules/threepid/threepid.service";
+import { ThreepidModule } from "../modules/threepid/threepid.module";
 
 @Injectable()
 export class Fixtures {
@@ -22,9 +22,14 @@ export class Fixtures {
     return this.threepidService.create({
       source: ThreepidSource.discord,
       threepid: faker.datatype.uuid(),
-      config: {} as any,
+      config: { profile: { avatar: faker.internet.avatar() } } as any,
       ...partial,
     });
+  }
+
+  public async createUser(): Promise<User> {
+    const threepid = await this.createThreepid();
+    return this.userService.createFromThreepid(threepid.id);
   }
 
   public createAuthToken(user: User): string {
@@ -37,7 +42,7 @@ export class DatabaseService {
   constructor(@InjectConnection() public readonly connection: Connection) {}
 }
 @Module({
-  imports: [TypeOrmModule.forFeature([Threepid]), AuthModule, UserModule],
+  imports: [ThreepidModule, UserModule],
   providers: [Fixtures, DatabaseService],
 })
 export class FixturesModule {}

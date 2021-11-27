@@ -8,7 +8,7 @@ import {
   GithubThreepidConfig,
   ThreepidSource,
 } from "@dewo/api/models/Threepid";
-import { ThreepidService } from "../threepid.service";
+import { ThreepidService } from "../../threepid/threepid.service";
 
 const PassportGithubStrategy = PassportStrategy(Strategy) as new (
   ...args: any[]

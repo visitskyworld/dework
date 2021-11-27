@@ -26,14 +26,13 @@ export class GraphQLTestClient {
   }
 
   expectGqlError(response: Response, status: number): void {
-    expect(response.body.errors?.[0].extensions.exception.status).toEqual(
+    expect(response.body.errors?.[0].extensions.response.statusCode).toEqual(
       status
     );
   }
 
   expectGqlErrorMessage(response: Response, message: string): void {
-    const messages =
-      response.body.errors[0].extensions.exception.response.message;
+    const messages = response.body.errors[0].message;
     expect(messages).toContain(message);
   }
 }

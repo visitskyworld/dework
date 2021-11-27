@@ -9,6 +9,7 @@ export class UserRequests {
         mutation CreateUser($threepidId: UUID!) {
           user: createUser(threepidId: $threepidId) {
             id
+            imageUrl
             threepids {
               id
             }

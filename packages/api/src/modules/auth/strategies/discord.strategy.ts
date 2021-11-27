@@ -3,12 +3,12 @@ import { Profile, Strategy } from "passport-discord";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "@dewo/api/modules/app/config";
-import { ThreepidService } from "../threepid.service";
 import { StrategyResponse } from "./types";
 import {
   DiscordThreepidConfig,
   ThreepidSource,
 } from "@dewo/api/models/Threepid";
+import { ThreepidService } from "../../threepid/threepid.service";
 
 const PassportDiscordStrategy = PassportStrategy(Strategy) as new (
   ...args: any[]

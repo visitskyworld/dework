@@ -2,7 +2,7 @@ import _ from "lodash";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
-import { Threepid } from "@dewo/api/models/Threepid";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
 @Injectable()
@@ -26,6 +26,14 @@ export class ThreepidService {
     return this.threepidRepo.findOne(_.omit(partial, ["user"]));
   }
 
+  public findById(id: string): Promise<Threepid | undefined> {
+    return this.threepidRepo.findOne(id);
+  }
+
+  public update(partial: DeepPartial<Threepid>): Promise<Threepid> {
+    return this.threepidRepo.save(partial);
+  }
+
   public async findOrCreate(
     partial: AtLeast<Threepid, "source" | "threepid" | "config">
   ): Promise<Threepid> {
@@ -36,5 +44,18 @@ export class ThreepidService {
 
     if (!!found) return found;
     return this.create(partial);
+  }
+
+  public getImageUrl(threepid: Threepid): string | undefined {
+    switch (threepid.source) {
+      case ThreepidSource.discord:
+        return (
+          (threepid as Threepid<ThreepidSource.discord>).config.profile
+            .avatar ?? undefined
+        );
+      case ThreepidSource.github:
+        return (threepid as Threepid<ThreepidSource.github>).config.profile
+          .photos?.[0]?.value;
+    }
   }
 }
