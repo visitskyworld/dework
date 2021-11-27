@@ -1,3 +1,9 @@
+export interface User {
+  id: string;
+  name: string;
+  imageUrl?: string;
+}
+
 export interface TaskTag {
   label: string;
   color: string;
@@ -17,4 +23,5 @@ export interface Task {
   sortKey: string;
   tags: TaskTag[];
   status: TaskStatus;
+  assignee?: User;
 }

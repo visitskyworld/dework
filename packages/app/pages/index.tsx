@@ -1,8 +1,8 @@
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
 import { TaskBoard } from "@dewo/app/components/TaskBoard";
-import { Task } from "@dewo/app/types/Task";
+import { Task } from "@dewo/app/types/api";
 import { Header } from "@dewo/app/components/Header";
 
 const Home: NextPage = () => {

@@ -1,19 +1,10 @@
 import React, { FC } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import {
-  Button,
-  Tag,
-  Breadcrumb,
-  Card,
-  Typography,
-  Badge,
-  Space,
-  Row,
-} from "antd";
+import { Droppable, Draggable } from "react-beautiful-dnd";
+import { Button, Card, Badge, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { Task, TaskStatus } from "../types/Task";
+import { Task, TaskStatus } from "../types/api";
 
 const titleByStatus: Record<TaskStatus, string> = {
   [TaskStatus.TODO]: "To Do",
@@ -25,11 +16,13 @@ const titleByStatus: Record<TaskStatus, string> = {
 interface TaskBoardColumnProps {
   status: TaskStatus;
   tasks: Task[];
+  onChange(task: Task): void;
 }
 
 export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
   status,
   tasks,
+  onChange,
 }) => {
   return (
     <Card
@@ -56,7 +49,11 @@ export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
     >
       <Droppable key={status} droppableId={status}>
         {(provided, snapshot) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={{ ...provided.droppableProps, minHeight: 30 }}
+          >
             {tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id} index={index}>
                 {(provided, snapshot) => (
@@ -69,7 +66,7 @@ export const TaskBoardColumn: FC<TaskBoardColumnProps> = ({
                       marginTop: index === 0 ? 8 : 8,
                     }}
                   >
-                    <TaskCard task={task} />
+                    <TaskCard task={task} onChange={onChange} />
                   </div>
                 )}
               </Draggable>

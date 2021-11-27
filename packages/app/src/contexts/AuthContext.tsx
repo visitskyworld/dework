@@ -1,10 +1,5 @@
 import React, { createContext, FC, useContext, useMemo, useState } from "react";
-
-interface User {
-  id: string;
-  name: string;
-  imageUrl?: string;
-}
+import { User } from "../types/api";
 
 interface AuthContextValue {
   user: User | undefined;

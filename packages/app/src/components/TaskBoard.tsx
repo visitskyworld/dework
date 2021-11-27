@@ -8,7 +8,7 @@ import {
   resetServerContext,
 } from "react-beautiful-dnd";
 
-import { Task, TaskStatus } from "../types/Task";
+import { Task, TaskStatus } from "../types/api";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 
 const Between = inject("0123456789");
@@ -88,6 +88,13 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
     [tasks, groupedTasks, onChange]
   );
 
+  const handleUpdateCard = useCallback(
+    (updatedTask: Task) => {
+      onChange(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+    },
+    [tasks, onChange]
+  );
+
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -107,6 +114,7 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
               <TaskBoardColumn
                 status={status}
                 tasks={groupedTasks[status] ?? noTasks}
+                onChange={handleUpdateCard}
               />
             </div>
           ))}
