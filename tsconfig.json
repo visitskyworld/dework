@@ -6,6 +6,8 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -19,6 +21,7 @@
     "baseUrl": ".",
     "paths": {
       "@dewo/app/*": ["./packages/app/src/*"],
+      "@dewo/api/*": ["./packages/api/src/*"],
       "@dewo/demos/*": ["./packages/demos/*"],
     }
   },

@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mariadb:10.5
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: dewo
+      MYSQL_DATABASE: dewo
+      MYSQL_USER: dewo
+      MYSQL_PASSWORD: dewo
+    volumes:
+      - dewo-mysql-data:/var/lib/mysql
+
+  mysql-test:
+    image: mariadb:10.5
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: dewo-test
+      MYSQL_DATABASE: dewo-test
+      MYSQL_USER: dewo-test
+      MYSQL_PASSWORD: dewo-test
+
+# persistant volumes
+# https://docs.docker.com/storage/
+volumes:
+  dewo-mysql-data:

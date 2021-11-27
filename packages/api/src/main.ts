@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-import { AppModule } from "./modules/app/AppModule";
+import { AppModule } from "./modules/app/app.module";
 
 async function bootstrap() {
   const port = process.env.PORT || 8080;
