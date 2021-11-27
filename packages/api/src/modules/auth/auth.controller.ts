@@ -17,7 +17,7 @@ export class AuthController {
 
   @Get("github/callback")
   @UseGuards(AuthGuard("github"))
-  async githubCallback(@Req() req: RequestFromCallback) {
+  async githubCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
     // @ts-ignore
     res.redirect(
       `${this.configService.get("APP_URL")}/auth/3pid/${req.user.threepidId}`

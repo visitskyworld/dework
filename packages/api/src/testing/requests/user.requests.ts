@@ -1,7 +1,7 @@
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class UserRequests {
-  public static create(
+  public static authWithThreepid(
     threepidId: string
   ): GraphQLTestClientRequestBody<{ threepidId: string }> {
     return {
@@ -15,25 +15,6 @@ export class UserRequests {
               threepids {
                 id
               }
-            }
-          }
-        }
-      `,
-      variables: { threepidId },
-    };
-  }
-
-  public static connectToThreepid(
-    threepidId: string
-  ): GraphQLTestClientRequestBody<{ threepidId: string }> {
-    return {
-      query: `
-        mutation ConnectUserToThreepid($threepidId: UUID!) {
-          user: connectUserToThreepid(threepidId: $threepidId) {
-            id
-            imageUrl
-            threepids {
-              id
             }
           }
         }

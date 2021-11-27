@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
+import { Organization } from "./Organization";
 import { Threepid } from "./Threepid";
 
 @Entity()
@@ -18,4 +19,8 @@ export class User extends Audit {
   @OneToMany(() => Threepid, (t: Threepid) => t.user)
   @Field(() => [Threepid])
   public threepids!: Promise<Threepid[]>;
+
+  @ManyToMany(() => Organization, (o: Organization) => o.users)
+  @Field(() => [Organization])
+  public organizations!: Promise<Organization[]>;
 }

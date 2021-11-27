@@ -2,7 +2,6 @@ import React from "react";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { Constants } from "@dewo/app/util/constants";
@@ -11,7 +10,7 @@ const Auth: NextPage = () => {
   return (
     <Layout>
       <Layout.Content>
-        <Modal visible footer={[]}>
+        <Modal visible footer={null}>
           <Space direction="vertical" style={{ width: "100%" }}>
             <Typography.Title level={2} style={{ textAlign: "center" }}>
               Sign up

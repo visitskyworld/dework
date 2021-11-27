@@ -25,8 +25,8 @@ export class Fixtures {
     });
   }
 
-  public async createUser(): Promise<User> {
-    const threepid = await this.createThreepid();
+  public async createUser(partial: Partial<Threepid> = {}): Promise<User> {
+    const threepid = await this.createThreepid(partial);
     return this.userService.authWithThreepid(threepid.id);
   }
 

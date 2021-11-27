@@ -26,7 +26,7 @@ const Auth: NextPage = () => {
   return (
     <Layout>
       <Layout.Content>
-        <Modal visible footer={[]}>
+        <Modal visible footer={null}>
           <Space direction="vertical" style={{ width: "100%" }}>
             <Typography.Title level={2} style={{ textAlign: "center" }}>
               Connect account

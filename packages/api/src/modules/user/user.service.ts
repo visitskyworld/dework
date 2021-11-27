@@ -21,22 +21,36 @@ export class UserService {
     private readonly jwtService: JwtService
   ) {}
 
-  public async authWithThreepid(threepidId: string): Promise<User> {
+  public async authWithThreepid(
+    threepidId: string,
+    existingUser?: User | undefined
+  ): Promise<User> {
     const threepid = await this.threepidService.findById(threepidId);
     if (!threepid) throw new NotFoundException();
     if (!!threepid.userId) {
+      if (!!existingUser) {
+        if (threepid.userId !== existingUser.id) {
+          throw new ForbiddenException("Account already connected");
+        } else {
+          return existingUser;
+        }
+      }
+
       return this.userRepo.findOne(threepid.userId) as Promise<User>;
     }
 
     const user = await this.userRepo.save({
       imageUrl: this.threepidService.getImageUrl(threepid),
-      threepids: Promise.resolve([]),
+      threepids: existingUser?.threepids ?? Promise.resolve([]),
+      ...existingUser,
     });
+
+    console.warn({ existingUser, user });
     await this.connectThreepidToUser(threepid, user);
     return user;
   }
 
-  public async connectThreepidToUser(
+  private async connectThreepidToUser(
     threepid: Threepid,
     user: User
   ): Promise<void> {

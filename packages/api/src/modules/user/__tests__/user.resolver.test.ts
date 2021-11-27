@@ -21,109 +21,108 @@ describe("UserResolver", () => {
 
   describe("Mutations", () => {
     describe("authWithThreepid", () => {
-      it("should succeed if threepid is not connected", async () => {
-        const threepid = await fixtures.createThreepid();
-        const response = await client.request({
-          app,
-          body: UserRequests.create(threepid.id),
+      describe("unauthed", () => {
+        it("should succeed if threepid is not connected", async () => {
+          const threepid = await fixtures.createThreepid();
+          const response = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const user = response.body.data?.authWithThreepid.user;
+          expect(user).toBeDefined();
+          expect(user.imageUrl).toBeDefined();
+          expect(user.threepids).toHaveLength(1);
+          expect(user.threepids[0].id).toEqual(threepid.id);
         });
 
-        expect(response.status).toEqual(HttpStatus.OK);
-        const user = response.body.data?.authWithThreepid.user;
-        expect(user).toBeDefined();
-        expect(user.imageUrl).toBeDefined();
-        expect(user.threepids).toHaveLength(1);
-        expect(user.threepids[0].id).toEqual(threepid.id);
+        it("should succeed if threepid is connected", async () => {
+          const user = await fixtures.createUser();
+          const threepidId = (await user.threepids)[0].id;
+
+          const response = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(threepidId),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const updatedUser = response.body.data?.authWithThreepid.user;
+          expect(updatedUser.id).toEqual(user.id);
+          expect(updatedUser.threepids).toHaveLength(1);
+          expect(updatedUser.threepids[0].id).toEqual(threepidId);
+        });
+
+        it("should fail if invalid threepid id", async () => {
+          const response = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(faker.datatype.uuid()),
+          });
+
+          client.expectGqlError(response, HttpStatus.NOT_FOUND);
+        });
       });
 
-      it("should succeed if threepid is connected", async () => {
-        const originalUser = await fixtures.createUser();
-        const threepidId = (await originalUser.threepids)[0].id;
+      describe("authed", () => {
+        it("should succeed if has no previous connection to 3pid source", async () => {
+          const user = await fixtures.createUser({
+            source: ThreepidSource.discord,
+          });
+          const threepid = await fixtures.createThreepid({
+            source: ThreepidSource.github,
+          });
 
-        const response = await client.request({
-          app,
-          body: UserRequests.create(threepidId),
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const updatedUser = response.body.data?.authWithThreepid.user;
+          expect(updatedUser.threepids).toHaveLength(2);
+          expect(updatedUser.threepids[1].id).toEqual(threepid.id);
         });
 
-        expect(response.status).toEqual(HttpStatus.OK);
-        const user = response.body.data?.authWithThreepid.user;
-        expect(user.id).toEqual(originalUser.id);
-        expect(user.threepids).toHaveLength(1);
-        expect(user.threepids[0].id).toEqual(threepidId);
-      });
+        it("should fail if is already connected to 3pid source", async () => {
+          const user = await fixtures.createUser({
+            source: ThreepidSource.discord,
+          });
+          const threepid = await fixtures.createThreepid({
+            source: ThreepidSource.discord,
+          });
 
-      it("should fail if invalid threepid id", async () => {
-        const response = await client.request({
-          app,
-          body: UserRequests.create(faker.datatype.uuid()),
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          client.expectGqlError(response, HttpStatus.FORBIDDEN);
+          client.expectGqlErrorMessage(
+            response,
+            'You\'re already connected to "discord"'
+          );
         });
 
-        client.expectGqlError(response, HttpStatus.NOT_FOUND);
-      });
-    });
+        it("should fail if someone else is connected to 3pid", async () => {
+          const threepid = await fixtures.createThreepid({
+            source: ThreepidSource.discord,
+          });
+          await fixtures.createUser(threepid);
 
-    describe("connectUserToThreepid", () => {
-      it("should succeed if threepid is not connected to other user and user has no other connection", async () => {
-        const threepid = await fixtures.createThreepid({
-          source: ThreepidSource.github,
+          const user = await fixtures.createUser({
+            source: ThreepidSource.github,
+          });
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          client.expectGqlError(response, HttpStatus.FORBIDDEN);
+          client.expectGqlErrorMessage(response, "Account already connected");
         });
-        const user = await fixtures.createUser();
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.connectToThreepid(threepid.id),
-        });
-
-        expect(response.status).toEqual(HttpStatus.OK);
-        const u = response.body.data?.user;
-        expect(u).toBeDefined();
-        expect(u.imageUrl).toBeDefined();
-        expect(u.threepids).toHaveLength(2);
-        expect(u.threepids[1].id).toEqual(threepid.id);
-      });
-
-      it("should fail if threepid is already connected to other user", async () => {
-        const existingUser = await fixtures.createUser();
-        const threepidId = (await existingUser.threepids)[0].id;
-
-        const user = await fixtures.createUser();
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.connectToThreepid(threepidId),
-        });
-
-        client.expectGqlError(response, HttpStatus.FORBIDDEN);
-      });
-
-      it("should fail if not authed", async () => {
-        const threepid = await fixtures.createThreepid();
-        const response = await client.request({
-          app,
-          body: UserRequests.connectToThreepid(threepid.id),
-        });
-
-        client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
-      });
-
-      it("should fail if user already has connection from source", async () => {
-        const user = await fixtures.createUser();
-        const firstThreepidSource = (await user.threepids)[0].source;
-        const secondThreepid = await fixtures.createThreepid({
-          source: firstThreepidSource,
-        });
-
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.connectToThreepid(secondThreepid.id),
-        });
-
-        client.expectGqlError(response, HttpStatus.FORBIDDEN);
-        client.expectGqlErrorMessage(
-          response,
-          `You're already connected to "${firstThreepidSource}"`
-        );
       });
     });
   });

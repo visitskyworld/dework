@@ -12,7 +12,7 @@ import { GQLContext } from "../app/gql.config";
 import { User } from "@dewo/api/models/User";
 
 @Injectable()
-export class GraphQLAuthGuard implements CanActivate {
+export class RequireGraphQLAuthGuard implements CanActivate {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
@@ -45,5 +45,18 @@ export class GraphQLAuthGuard implements CanActivate {
     const authorization = gqlContext.req.headers.authorization;
     const match = authorization?.match(/^Bearer (.*)$/);
     return match?.[1];
+  }
+}
+
+@Injectable()
+export class GraphQLAuthGuard
+  extends RequireGraphQLAuthGuard
+  implements CanActivate
+{
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
+    try {
+      await super.canActivate(context);
+    } catch {}
+    return true;
   }
 }

@@ -1,14 +1,25 @@
-import React, { createContext, FC, useContext, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import React, {
+  createContext,
+  FC,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { User } from "../graphql/types";
+import { clearAuthToken } from "../util/authToken";
 import { useUser } from "../util/hooks";
 
 interface AuthContextValue {
   user: User | undefined;
+  logout(): void;
   setAuthenticated(authenticated: boolean): void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: undefined,
+  logout: () => {},
   setAuthenticated: () => {},
 });
 
@@ -22,8 +33,15 @@ export const AuthProvider: FC<AuthProviderProps> = ({
 }) => {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const user = useUser(!authenticated);
+
+  const router = useRouter();
+  const logout = useCallback(async () => {
+    clearAuthToken(undefined);
+    setAuthenticated(false);
+    router.push("/");
+  }, [router]);
   return (
-    <AuthContext.Provider value={{ user, setAuthenticated }}>
+    <AuthContext.Provider value={{ user, logout, setAuthenticated }}>
       {useMemo(() => children, [children])}
     </AuthContext.Provider>
   );
