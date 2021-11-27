@@ -16,7 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@dewo/app/*": ["./src/*"]
+      "@dewo/app/*": ["./src/*"],
+      "@dewo/demos/*": ["../demos/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
