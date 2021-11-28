@@ -9,12 +9,17 @@ import { ThreepidModule } from "../modules/threepid/threepid.module";
 import { Organization } from "../models/Organization";
 import { OrganizationModule } from "../modules/organization/organization.module";
 import { OrganizationService } from "../modules/organization/organization.service";
+import { ProjectModule } from "../modules/project/project.module";
+import { TaskModule } from "../modules/task/task.module";
+import { Project } from "../models/Project";
+import { ProjectService } from "../modules/project/project.service";
 
 @Injectable()
 export class Fixtures {
   constructor(
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
+    private readonly projectService: ProjectService,
     private readonly threepidService: ThreepidService
   ) {}
 
@@ -43,13 +48,27 @@ export class Fixtures {
     });
   }
 
+  public async createProject(partial: Partial<Project> = {}): Promise<Project> {
+    return this.projectService.create({
+      name: faker.company.companyName(),
+      organizationId: await this.createOrganization().then((o) => o.id),
+      ...partial,
+    });
+  }
+
   public createAuthToken(user: User): string {
     return this.userService.createAuthToken(user);
   }
 }
 
 @Module({
-  imports: [ThreepidModule, UserModule, OrganizationModule],
+  imports: [
+    ThreepidModule,
+    UserModule,
+    OrganizationModule,
+    ProjectModule,
+    TaskModule,
+  ],
   providers: [Fixtures],
 })
 export class FixturesModule {}

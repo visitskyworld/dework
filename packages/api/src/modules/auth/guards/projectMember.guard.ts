@@ -6,32 +6,38 @@ import {
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
-import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { GQLContext } from "../../app/gql.config";
-import { User } from "@dewo/api/models/User";
-import { Organization } from "@dewo/api/models/Organization";
+import { Project } from "@dewo/api/models/Project";
 
 @Injectable()
-export class OrganizationMemberGuard implements CanActivate {
+export class ProjectMemberGuard implements CanActivate {
+  constructor(
+    @InjectRepository(Project)
+    private readonly projectRepo: Repository<Project>
+  ) {}
+
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext =
       GqlExecutionContext.create(context).getContext<GQLContext>();
     if (!gqlContext.user) throw new UnauthorizedException();
 
-    const organizationId = [
-      gqlContext.req.body?.variables?.organizationId,
-      gqlContext.req.body?.variables?.input?.organizationId,
+    const projectId = [
+      gqlContext.req.body?.variables?.projectId,
+      gqlContext.req.body?.variables?.input?.projectId,
     ].find((id) => !!id);
 
-    if (!organizationId) {
-      throw new UnauthorizedException(
-        "Could not find organizationId in variables"
-      );
+    if (!projectId) {
+      throw new UnauthorizedException("Could not find projectId in variables");
+    }
+
+    const project = await this.projectRepo.findOne(projectId);
+    if (!project) {
+      throw new UnauthorizedException("Project not found");
     }
 
     const organizations = await gqlContext.user.organizations;
-    if (!organizations.some((o) => o.id === organizationId)) {
+    if (!organizations.some((o) => o.id === project.organizationId)) {
       throw new UnauthorizedException();
     }
 
