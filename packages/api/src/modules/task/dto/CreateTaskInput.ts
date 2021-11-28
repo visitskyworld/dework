@@ -13,7 +13,7 @@ export class CreateTaskInput {
   @Field(() => GraphQLUUID)
   public projectId!: string;
 
-  @Field(() => [GraphQLUUID])
+  @Field(() => [GraphQLUUID], { nullable: true })
   public tagIds?: string[];
 
   @Field(() => TaskStatusEnum)
