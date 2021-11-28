@@ -15,6 +15,7 @@ const Between = inject("0123456789");
 
 const columns = [
   TaskStatus.TODO,
+  TaskStatus.RESERVED,
   TaskStatus.IN_PROGRESS,
   TaskStatus.IN_REVIEW,
   TaskStatus.DONE,
@@ -94,6 +95,10 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
     },
     [tasks, onChange]
   );
+  const handleAddCard = useCallback(
+    (task: Task) => onChange([...tasks, task]),
+    [onChange, tasks]
+  );
 
   const [loaded, setLoaded] = useState(false);
 
@@ -115,6 +120,7 @@ export const TaskBoard: FC<Props> = ({ tasks, onChange }) => {
                 status={status}
                 tasks={groupedTasks[status] ?? noTasks}
                 onChange={handleUpdateCard}
+                onAdd={handleAddCard}
               />
             </div>
           ))}

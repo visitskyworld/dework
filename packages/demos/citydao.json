@@ -1,19 +1,19 @@
 {
   "tasks": [
     {
-        "id": 0,
+        "id": "0",
         "title": "Citybot",
         "subtitle": "Develop a bot that will integrate Discourse proposals with Discord reactions to determine which CIPs have gained sufficient momentum to reach a Snapshot vote.",
         "status": "IN_PROGRESS",
-        "sortKey": "00",
+        "sortKey": "001",
         "tags": [
             {
                 "label": "frontend",
-                "color": "ededed"
+                "color": "green"
             },
             {
                 "label": "X USDC/Citizen Tokens",
-                "color": "FBCA04"
+                "color": "yellow"
             }
         ],
         "assignees": [
@@ -26,7 +26,7 @@
         "url": "https://api.github.com/repos/citydaoproject/app/issues/84"
     },
     {
-        "id": 1,
+        "id": "1",
         "title": "Transparency Contract & Dashboard",
         "subtitle": "This project was initiated through CIP-13. The objective is to provide citizens of CityDAO transparency into the DAO's financial status and behaviors on a consistent basis. It will involve both on-chain registration of the DAO's wallets for accountability, and a frontend dashboard providing accessibility to this information.",
         "status": "IN_PROGRESS",
@@ -34,22 +34,22 @@
         "tags": [
             {
                 "label": "frontend",
-                "color": "ededed"
+                "color": "green"
             },
             {
                 "label": "smart contracts",
-                "color": "79DD07"
+                "color": "purple"
             },
             {
                 "label": "X USDC/Citizen Tokens",
-                "color": "FBCA04"
+                "color": "yellow"
             }
         ],
         "assignees": [],
         "url": "https://api.github.com/repos/citydaoproject/app/issues/83"
     },
     {
-        "id": 2,
+        "id": "2",
         "title": "Find and report bugs",
         "subtitle": "Finding and reporting critical bugs *might* result in retroactive airdrops at some point in the future. ",
         "status": "TODO",
@@ -57,18 +57,18 @@
         "tags": [
             {
                 "label": "good first issue",
-                "color": "7057ff"
+                "color": "pink"
             },
             {
                 "label": "help wanted",
-                "color": "008672"
+                "color": "blue"
             }
         ],
         "assignees": [],
         "url": "https://api.github.com/repos/citydaoproject/app/issues/82"
     },
     {
-        "id": 3,
+        "id": "3",
         "title": "Constitution Contract",
         "subtitle": "Put the DAO's constitution on the Ethereum blockchain such that it is immutable, amendable, and publicly readable.",
         "status": "IN_PROGRESS",
@@ -76,11 +76,11 @@
         "tags": [
             {
                 "label": "smart contracts",
-                "color": "79DD07"
+                "color": "purple"
             },
             {
                 "label": "X USDC/Citizen Tokens",
-                "color": "FBCA04"
+                "color": "yellow"
             }
         ],
         "assignees": [
@@ -98,7 +98,7 @@
         "url": "https://api.github.com/repos/citydaoproject/app/issues/81"
     },
     {
-        "id": 4,
+        "id": "4",
         "title": "Gas Optimizations",
         "subtitle": "This is a card for any and all gas optimizations made to the contract. Please reference this issue in your PR(s).",
         "status": "TODO",
@@ -108,7 +108,7 @@
         "url": "https://api.github.com/repos/citydaoproject/app/issues/79"
     },
     {
-        "id": 5,
+        "id": "5",
         "title": "Enable listing plots in batches to save on gas",
         "subtitle": "### Bounty",
         "status": "TODO",
@@ -118,7 +118,7 @@
         "url": "https://api.github.com/repos/citydaoproject/app/issues/75"
     },
     {
-        "id": 6,
+        "id": "6",
         "title": "Add images to NFTs",
         "subtitle": "Currently, we are just using placeholder images. Need to include parcel images in the metadata and load them in a performant way.",
         "status": "TODO",
@@ -126,19 +126,19 @@
         "tags": [
             {
                 "label": "good first issue",
-                "color": "7057ff"
+                "color": "pink"
             },
             {
                 "label": "help wanted",
-                "color": "008672"
+                "color": "blue"
             },
             {
                 "label": "frontend",
-                "color": "ededed"
+                "color": "green"
             },
             {
                 "label": "smart contracts",
-                "color": "79DD07"
+                "color": "purple"
             }
         ],
         "assignees": [

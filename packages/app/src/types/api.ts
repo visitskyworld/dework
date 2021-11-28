@@ -1,8 +1,4 @@
-export interface User {
-  id: string;
-  name: string;
-  imageUrl?: string;
-}
+import { User } from "../graphql/types";
 
 export interface TaskTag {
   label: string;
@@ -11,6 +7,7 @@ export interface TaskTag {
 
 export enum TaskStatus {
   TODO = "TODO",
+  RESERVED = "RESERVED",
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
   DONE = "DONE",

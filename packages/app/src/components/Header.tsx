@@ -100,6 +100,7 @@ export const Header: FC<HeaderProps> = () => {
       <Modal
         title="Create Organization"
         visible={showCreateOrganization}
+        onCancel={() => setShowCreateOrganization(false)}
         footer={null}
       >
         <Button

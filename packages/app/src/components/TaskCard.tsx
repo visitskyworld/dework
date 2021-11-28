@@ -26,13 +26,13 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onChange }) => {
   const { user } = useAuthContext();
   const signPayout = useSignPayout();
   const handlePayAndClose = useCallback(async () => {
-    await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1000);
+    await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
     onChange({ ...task, status: TaskStatus.DONE });
-  }, []);
+  }, [onChange]);
   const handleReserve = useCallback(() => {
     onChange({
       ...task,
-      status: TaskStatus.IN_PROGRESS,
+      status: TaskStatus.RESERVED,
       assignee: user,
       sortKey: Date.now().toString(),
     });
@@ -72,30 +72,33 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onChange }) => {
           </Dropdown>
           <Space direction="vertical" size={4}>
             <Row>
-              <Typography.Text strong>
-                {task.title} ({task.sortKey})
-              </Typography.Text>
+              <Typography.Text strong>{task.title}</Typography.Text>
             </Row>
             <Col>
-              <Typography.Text type="secondary">
-                {task.subtitle}
-              </Typography.Text>
+              <Row>
+                <Typography.Text type="secondary">
+                  {task.subtitle}
+                </Typography.Text>
+              </Row>
               {!!task.assignee && (
-                <Space>
-                  <Avatar
-                    src={task.assignee.imageUrl}
-                    size={16}
-                    icon={<Icons.UserOutlined />}
-                  />
-                  <Typography.Text type="secondary">
-                    Claimed by {task.assignee.name}
-                  </Typography.Text>
-                </Space>
+                <Row>
+                  <Space>
+                    <Avatar
+                      src={task.assignee.imageUrl}
+                      size={16}
+                      icon={<Icons.UserOutlined />}
+                    />
+                    <Typography.Text type="secondary">
+                      Claimed {/*task.assignee.name*/}
+                    </Typography.Text>
+                  </Space>
+                </Row>
               )}
             </Col>
             <Row>
               {task.tags.map(({ label, color }, index) => (
-                <Tag key={index} color={color}>
+                <Tag key={index} color={color} style={{ marginBottom: 4 }}>
+                  {/* <Tag key={index} color={`#${color}`} style={{ color: "black" }}> */}
                   {label}
                 </Tag>
               ))}
