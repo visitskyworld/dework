@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from "react";
-import { Dropdown, Menu, Typography, Avatar, Row } from "antd";
+import { Menu, Typography, Avatar, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { OrganizationCreateModal } from "../../organization/create/OrganizationCreateModal";

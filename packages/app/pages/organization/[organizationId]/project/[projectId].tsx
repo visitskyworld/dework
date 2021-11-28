@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
-import { TaskBoard } from "@dewo/app/components/TaskBoard";
-import { Task } from "@dewo/app/types/api";
 import { Header } from "@dewo/app/containers/navigation/header/Header";
 import { useRouter } from "next/router";
 import { ProjectBoard } from "@dewo/app/containers/project/board/ProjectBoard";

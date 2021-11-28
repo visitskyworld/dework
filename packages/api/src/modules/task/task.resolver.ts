@@ -1,10 +1,4 @@
-import {
-  Args,
-  Mutation,
-  Parent,
-  ResolveField,
-  Resolver,
-} from "@nestjs/graphql";
+import { Args, Mutation, ResolveField, Resolver } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
@@ -20,7 +14,7 @@ export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [TaskTag])
-  public async tags(@Parent() task: Task): Promise<TaskTag[]> {
+  public async tags(/*@Parent() task: Task*/): Promise<TaskTag[]> {
     return [];
   }
 

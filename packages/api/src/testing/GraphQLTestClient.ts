@@ -1,4 +1,4 @@
-import { HttpStatus, INestApplication, Injectable } from "@nestjs/common";
+import { INestApplication, Injectable } from "@nestjs/common";
 import supertest, { Response } from "supertest";
 
 export interface GraphQLTestClientRequestBody<Variables = unknown> {

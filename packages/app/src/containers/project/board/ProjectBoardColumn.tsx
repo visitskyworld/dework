@@ -1,7 +1,6 @@
-import React, { FC, useCallback, useState } from "react";
-import * as uuid from "uuid";
+import React, { FC } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Button, Card, Badge, Space, Modal, Input } from "antd";
+import { Button, Card, Badge, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";

@@ -1,5 +1,5 @@
 import { Task } from "@dewo/api/models/Task";
-import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
+import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";

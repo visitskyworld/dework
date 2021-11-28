@@ -5,7 +5,6 @@ import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
 import { CreateOrganizationInput } from "./dto/CreateOrganizationInput";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
-import { OrganizationMemberGuard } from "../auth/guards/organizationMember.guard";
 import GraphQLUUID from "graphql-type-uuid";
 
 @Injectable()

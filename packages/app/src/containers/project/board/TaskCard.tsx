@@ -1,20 +1,7 @@
-import React, { FC, useCallback } from "react";
+import React, { FC } from "react";
 import Link from "next/link";
-import {
-  Button,
-  Menu,
-  Dropdown,
-  Tag,
-  Card,
-  Typography,
-  Space,
-  Row,
-  Avatar,
-  Col,
-} from "antd";
-import * as Icons from "@ant-design/icons";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Tag, Card, Typography, Space, Row, Col } from "antd";
+import { Task } from "@dewo/app/graphql/types";
 // import { useSignPayout } from "../util/ethereum";
 
 interface TaskCardProps {
@@ -22,8 +9,8 @@ interface TaskCardProps {
   onChange(task: Partial<Task>): void;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ task, onChange }) => {
-  const { user } = useAuthContext();
+export const TaskCard: FC<TaskCardProps> = ({ task }) => {
+  // const { user } = useAuthContext();
   // const signPayout = useSignPayout();
   // const handlePayAndClose = useCallback(async () => {
   //   await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
