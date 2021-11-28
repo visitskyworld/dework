@@ -35,6 +35,7 @@ describe("TaskResolver", () => {
             name: faker.lorem.words(5),
             description: faker.lorem.paragraph(),
             projectId: project.id,
+            statusId: faker.datatype.uuid(),
           }),
         });
 
@@ -51,6 +52,9 @@ describe("TaskResolver", () => {
         const project = await fixtures.createProject({
           organizationId: organization.id,
         });
+        const status = await fixtures.createTaskStatus({
+          projectId: project.id,
+        });
 
         const response = await client.request({
           app,
@@ -59,6 +63,7 @@ describe("TaskResolver", () => {
             name,
             description,
             projectId: project.id,
+            statusId: status.id,
           }),
         });
 
@@ -89,8 +94,6 @@ describe("TaskResolver", () => {
       });
 
       it("should succeed if user is in project's org", async () => {
-        const expectedName = faker.lorem.words(5);
-
         const user = await fixtures.createUser();
         const organization = await fixtures.createOrganization();
         const project = await fixtures.createProject({
@@ -98,18 +101,37 @@ describe("TaskResolver", () => {
         });
         const task = await fixtures.createTask({ projectId: project.id });
 
+        const expectedName = faker.lorem.words(5);
+        const expectedTag = await fixtures.createTaskTag({
+          projectId: project.id,
+        });
+        const expectedStatus = await fixtures.createTaskStatus({
+          projectId: project.id,
+        });
+
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
           body: TaskRequests.update({
             id: task.id,
             name: expectedName,
+            tagIds: [expectedTag.id],
+            statusId: expectedStatus.id,
           }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
         const updatedTask = response.body.data?.task;
         expect(updatedTask.name).toEqual(expectedName);
+        expect(updatedTask.status.id).toEqual(expectedStatus.id);
+        expect(updatedTask.tags).toHaveLength(1);
+        expect(updatedTask.tags).toContainEqual(
+          expect.objectContaining({ id: expectedTag.id })
+        );
+      });
+
+      xit("should fail if adding task from other project", async () => {
+        throw new Error("Not implemented");
       });
 
       it("should not update name if not submitted", async () => {

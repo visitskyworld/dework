@@ -11,4 +11,10 @@ export class UpdateTaskInput {
 
   @Field({ nullable: true })
   public description?: string;
+
+  @Field(() => [String], { nullable: true })
+  public tagIds?: string[];
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public statusId?: string;
 }

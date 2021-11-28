@@ -24,6 +24,13 @@ export class TaskResolver {
   public async updateTask(
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
-    return this.taskService.update(input);
+    const task = await this.taskService.update({
+      ...input,
+      tags: !!input.tagIds
+        ? (input.tagIds.map((id) => ({ id })) as any)
+        : undefined,
+    });
+
+    return task;
   }
 }

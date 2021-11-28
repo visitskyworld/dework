@@ -18,9 +18,9 @@ export class GraphQLTestClient {
       .set("authorization", !!params.auth ? `Bearer ${params.auth}` : "")
       .send(params.body);
 
-    if (response.status !== HttpStatus.OK || !!response.body.errors) {
-      console.warn(response.status, JSON.stringify(response.body, null, 2));
-    }
+    // if (response.status !== HttpStatus.OK || !!response.body.errors) {
+    //   console.warn(response.status, JSON.stringify(response.body, null, 2));
+    // }
 
     return response;
   }

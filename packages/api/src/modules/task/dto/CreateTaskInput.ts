@@ -11,4 +11,7 @@ export class CreateTaskInput {
 
   @Field(() => GraphQLUUID)
   public projectId!: string;
+
+  @Field(() => GraphQLUUID)
+  public statusId!: string;
 }

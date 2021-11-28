@@ -15,6 +15,8 @@ import { Project } from "../models/Project";
 import { ProjectService } from "../modules/project/project.service";
 import { Task } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
+import { TaskTag } from "../models/TaskTag";
+import { TaskStatus } from "../models/TaskStatus";
 
 @Injectable()
 export class Fixtures {
@@ -60,8 +62,32 @@ export class Fixtures {
   }
 
   public async createTask(partial: Partial<Task> = {}): Promise<Task> {
+    const defaultProjectId = await this.createProject().then((p) => p.id);
     return this.taskService.create({
       name: faker.company.companyName(),
+      projectId: defaultProjectId,
+      statusId: await this.createTaskStatus({
+        projectId: defaultProjectId,
+      }).then((s) => s.id),
+      ...partial,
+    });
+  }
+
+  public async createTaskTag(partial: Partial<TaskTag> = {}): Promise<TaskTag> {
+    return this.projectService.createTag({
+      label: faker.company.companyName(),
+      color: "red",
+      projectId: await this.createProject().then((p) => p.id),
+      ...partial,
+    });
+  }
+
+  public async createTaskStatus(
+    partial: Partial<TaskStatus> = {}
+  ): Promise<TaskStatus> {
+    return this.projectService.createStatus({
+      label: faker.company.companyName(),
+      sortKey: String(Date.now()),
       projectId: await this.createProject().then((p) => p.id),
       ...partial,
     });
