@@ -2,7 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
-import { TaskStatus } from "./TaskStatus";
+import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
 
 @Entity()
@@ -20,11 +20,15 @@ export class Project extends Audit {
   @Field()
   public organizationId!: string;
 
+  @OneToMany(() => Task, (t: Task) => t.project)
+  @Field(() => [Task])
+  public tasks!: Promise<Task[]>;
+
   @OneToMany(() => TaskTag, (t: TaskTag) => t.project)
   @Field(() => [TaskTag])
   public taskTags!: Promise<TaskTag[]>;
 
-  @OneToMany(() => TaskStatus, (t: TaskStatus) => t.project)
-  @Field(() => [TaskStatus])
-  public taskStatuses!: Promise<TaskStatus[]>;
+  // @OneToMany(() => TaskStatus, (t: TaskStatus) => t.project)
+  // @Field(() => [TaskStatus])
+  // public taskStatuses!: Promise<TaskStatus[]>;
 }

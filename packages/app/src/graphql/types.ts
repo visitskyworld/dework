@@ -37,19 +37,11 @@ export interface AuthWithThreepidMutationVariables {
 // GraphQL mutation operation: CreateOrganizationMutation
 // ====================================================
 
-export interface CreateOrganizationMutation_organization_users {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
-}
-
 export interface CreateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: CreateOrganizationMutation_organization_users[];
 }
 
 export interface CreateOrganizationMutation {
@@ -69,10 +61,25 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
+export interface CreateProjectMutation_project_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface CreateProjectMutation_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  projects: CreateProjectMutation_project_organization_projects[];
+}
+
 export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organization: CreateProjectMutation_project_organization;
 }
 
 export interface CreateProjectMutation {
@@ -89,22 +96,86 @@ export interface CreateProjectMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: MeQuery
+// GraphQL mutation operation: CreateTaskMutation
 // ====================================================
 
-export interface MeQuery_me_organizations_users {
-  __typename: "User";
+export interface CreateTaskMutation_task_tags {
+  __typename: "TaskTag";
   id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
+  label: string;
+  color: string;
 }
+
+export interface CreateTaskMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: CreateTaskMutation_task_tags[];
+}
+
+export interface CreateTaskMutation {
+  task: CreateTaskMutation_task;
+}
+
+export interface CreateTaskMutationVariables {
+  input: CreateTaskInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTaskTagMutation
+// ====================================================
+
+export interface CreateTaskTagMutation_taskTag_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface CreateTaskTagMutation_taskTag_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskTags: CreateTaskTagMutation_taskTag_project_taskTags[];
+}
+
+export interface CreateTaskTagMutation_taskTag {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  project: CreateTaskTagMutation_taskTag_project;
+}
+
+export interface CreateTaskTagMutation {
+  taskTag: CreateTaskTagMutation_taskTag;
+}
+
+export interface CreateTaskTagMutationVariables {
+  input: CreateTaskTagInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: MeQuery
+// ====================================================
 
 export interface MeQuery_me_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: MeQuery_me_organizations_users[];
 }
 
 export interface MeQuery_me {
@@ -128,13 +199,6 @@ export interface MeQuery {
 // GraphQL query operation: GetOrganizationQuery
 // ====================================================
 
-export interface GetOrganizationQuery_organization_users {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
-}
-
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -146,7 +210,6 @@ export interface GetOrganizationQuery_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: GetOrganizationQuery_organization_users[];
   projects: GetOrganizationQuery_organization_projects[];
 }
 
@@ -156,6 +219,55 @@ export interface GetOrganizationQuery {
 
 export interface GetOrganizationQueryVariables {
   organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectQuery
+// ====================================================
+
+export interface GetProjectQuery_project_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetProjectQuery_project_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: GetProjectQuery_project_tasks_tags[];
+}
+
+export interface GetProjectQuery_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetProjectQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+  tasks: GetProjectQuery_project_tasks[];
+  taskTags: GetProjectQuery_project_taskTags[];
+}
+
+export interface GetProjectQuery {
+  project: GetProjectQuery_project;
+}
+
+export interface GetProjectQueryVariables {
+  projectId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -183,19 +295,11 @@ export interface User {
 // GraphQL fragment: Organization
 // ====================================================
 
-export interface Organization_users {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
-}
-
 export interface Organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: Organization_users[];
 }
 
 /* tslint:disable */
@@ -219,22 +323,56 @@ export interface Project {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserDetails
+// GraphQL fragment: TaskTag
 // ====================================================
 
-export interface UserDetails_organizations_users {
-  __typename: "User";
+export interface TaskTag {
+  __typename: "TaskTag";
   id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
+  label: string;
+  color: string;
 }
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Task
+// ====================================================
+
+export interface Task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface Task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: Task_tags[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: UserDetails
+// ====================================================
 
 export interface UserDetails_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: UserDetails_organizations_users[];
 }
 
 export interface UserDetails {
@@ -254,13 +392,6 @@ export interface UserDetails {
 // GraphQL fragment: OrganizationDetails
 // ====================================================
 
-export interface OrganizationDetails_users {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string | null;
-  imageUrl: string | null;
-}
-
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -272,8 +403,48 @@ export interface OrganizationDetails {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
-  users: OrganizationDetails_users[];
   projects: OrganizationDetails_projects[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: ProjectDetails
+// ====================================================
+
+export interface ProjectDetails_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface ProjectDetails_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: ProjectDetails_tasks_tags[];
+}
+
+export interface ProjectDetails_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface ProjectDetails {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+  tasks: ProjectDetails_tasks[];
+  taskTags: ProjectDetails_taskTags[];
 }
 
 /* tslint:disable */
@@ -285,6 +456,13 @@ export interface OrganizationDetails {
 // START Enums and Input Objects
 //==============================================================
 
+export enum TaskStatusEnum {
+  DONE = "DONE",
+  IN_PROGRESS = "IN_PROGRESS",
+  IN_REVIEW = "IN_REVIEW",
+  TODO = "TODO",
+}
+
 export interface CreateOrganizationInput {
   name: string;
   imageUrl?: string | null;
@@ -293,6 +471,19 @@ export interface CreateOrganizationInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
+}
+
+export interface CreateTaskInput {
+  name: string;
+  description: string;
+  projectId: Scalar.UUID;
+  status: TaskStatusEnum;
+}
+
+export interface CreateTaskTagInput {
+  label: string;
+  color: string;
+  projectId: Scalar.UUID;
 }
 
 //==============================================================

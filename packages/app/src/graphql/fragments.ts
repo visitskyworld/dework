@@ -13,12 +13,10 @@ export const organization = gql`
     id
     name
     imageUrl
-    users {
-      ...User
-    }
+    # users {
+    #   ...User
+    # }
   }
-
-  ${user}
 `;
 
 export const project = gql`
@@ -26,6 +24,29 @@ export const project = gql`
     id
     name
   }
+`;
+
+export const taskTag = gql`
+  fragment TaskTag on TaskTag {
+    id
+    label
+    color
+  }
+`;
+
+export const task = gql`
+  fragment Task on Task {
+    id
+    name
+    description
+    status
+    sortKey
+    tags {
+      ...TaskTag
+    }
+  }
+
+  ${taskTag}
 `;
 
 export const userDetails = gql`
@@ -50,4 +71,20 @@ export const organizationDetails = gql`
 
   ${organization}
   ${project}
+`;
+
+export const projectDetails = gql`
+  fragment ProjectDetails on Project {
+    ...Project
+    tasks {
+      ...Task
+    }
+    taskTags {
+      ...TaskTag
+    }
+  }
+
+  ${project}
+  ${task}
+  ${taskTag}
 `;

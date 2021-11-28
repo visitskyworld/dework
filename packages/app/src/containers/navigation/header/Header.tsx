@@ -26,9 +26,12 @@ export const Header: FC<HeaderProps> = () => {
           </Button>
         ),
         !!user && (
-          <Dropdown placement="bottomRight" overlay={<HeaderProfileDropdown />}>
+          <Dropdown
+            key="avatar"
+            placement="bottomRight"
+            overlay={<HeaderProfileDropdown />}
+          >
             <Avatar
-              key="avatar"
               src={user.imageUrl}
               className="pointer-cursor"
               icon={<Icons.UserOutlined />}

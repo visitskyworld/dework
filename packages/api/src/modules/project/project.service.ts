@@ -37,4 +37,8 @@ export class ProjectService {
     const created = await this.taskStatusRepo.save(partial);
     return this.taskStatusRepo.findOne(created.id) as Promise<TaskStatus>;
   }
+
+  public findById(id: string): Promise<Project | undefined> {
+    return this.projectRepo.findOne(id);
+  }
 }

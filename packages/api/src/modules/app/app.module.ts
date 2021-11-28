@@ -10,6 +10,7 @@ import { UserModule } from "../user/user.module";
 import { DatabaseModule } from "@dewo/api/testing/Database";
 import { OrganizationModule } from "../organization/organization.module";
 import { ProjectModule } from "../project/project.module";
+import { TaskModule } from "../task/task.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -33,6 +34,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   AuthModule,
   OrganizationModule,
   ProjectModule,
+  TaskModule,
 ];
 
 @Module({

@@ -1,4 +1,10 @@
-import { Args, Mutation } from "@nestjs/graphql";
+import {
+  Args,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
@@ -6,17 +12,24 @@ import { CreateTaskInput } from "./dto/CreateTaskInput";
 import { Task } from "@dewo/api/models/Task";
 import { ProjectMemberGuard } from "../auth/guards/projectMember.guard";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
+import { TaskTag } from "@dewo/api/models/TaskTag";
 
 @Injectable()
+@Resolver(() => Task)
 export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
+
+  @ResolveField(() => [TaskTag])
+  public async tags(@Parent() task: Task): Promise<TaskTag[]> {
+    return [];
+  }
 
   @Mutation(() => Task)
   @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
   public async createTask(
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
-    return this.taskService.create(input);
+    return this.taskService.create({ sortKey: String(Date.now()), ...input });
   }
 
   @Mutation(() => Task)

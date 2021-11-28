@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from "react";
 import { Form, Button, Input } from "antd";
-import { useCreateProject } from "./hooks";
+import { useCreateProject } from "../hooks";
 import { CreateProjectInput, Project } from "@dewo/app/graphql/types";
 
 interface ProjectCreateFormProps {

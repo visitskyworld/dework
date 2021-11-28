@@ -8,9 +8,7 @@ export class TaskRequests {
       id
       name
       description
-      status {
-        id
-      }
+      status
       tags {
         id
       }

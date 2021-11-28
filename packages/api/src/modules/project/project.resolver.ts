@@ -1,5 +1,5 @@
-import { Args, Mutation } from "@nestjs/graphql";
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Args, Mutation, Query } from "@nestjs/graphql";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
 import { CreateProjectInput } from "./dto/CreateProjectInput";
@@ -10,6 +10,7 @@ import { CreateTaskTagInput } from "./dto/CreateTaskTagInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { CreateTaskStatusInput } from "./dto/CreateTaskStatusInput";
+import GraphQLUUID from "graphql-type-uuid";
 
 @Injectable()
 export class ProjectResolver {
@@ -40,5 +41,14 @@ export class ProjectResolver {
       sortKey: String(Date.now()),
       ...input,
     });
+  }
+
+  @Query(() => Project)
+  public async getProject(
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<Project | undefined> {
+    const project = await this.projectService.findById(id);
+    if (!project) throw new NotFoundException();
+    return project;
   }
 }

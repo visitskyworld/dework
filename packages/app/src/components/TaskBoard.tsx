@@ -7,7 +7,6 @@ import {
   DragDropContextProps,
   resetServerContext,
 } from "react-beautiful-dnd";
-
 import { Task, TaskStatus } from "../types/api";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 

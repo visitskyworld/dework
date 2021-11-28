@@ -7,7 +7,6 @@ import { OrganizationOverview } from "@dewo/app/containers/organization/overview
 
 const Page: NextPage = () => {
   const organizationId = useRouter().query.organizationId as string;
-
   return (
     <Layout>
       <Header />

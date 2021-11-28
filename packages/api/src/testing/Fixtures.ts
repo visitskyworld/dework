@@ -13,7 +13,7 @@ import { ProjectModule } from "../modules/project/project.module";
 import { TaskModule } from "../modules/task/task.module";
 import { Project } from "../models/Project";
 import { ProjectService } from "../modules/project/project.service";
-import { Task } from "../models/Task";
+import { Task, TaskStatusEnum } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
 import { TaskTag } from "../models/TaskTag";
 import { TaskStatus } from "../models/TaskStatus";
@@ -66,9 +66,11 @@ export class Fixtures {
     return this.taskService.create({
       name: faker.company.companyName(),
       projectId: defaultProjectId,
-      statusId: await this.createTaskStatus({
-        projectId: defaultProjectId,
-      }).then((s) => s.id),
+      status: TaskStatusEnum.TODO,
+      sortKey: String(Date.now()),
+      // statusId: await this.createTaskStatus({
+      //   projectId: defaultProjectId,
+      // }).then((s) => s.id),
       ...partial,
     });
   }

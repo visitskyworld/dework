@@ -1,4 +1,4 @@
-import { User } from "@dewo/api/models/User";
+import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -35,7 +35,7 @@ describe("TaskResolver", () => {
             name: faker.lorem.words(5),
             description: faker.lorem.paragraph(),
             projectId: project.id,
-            statusId: faker.datatype.uuid(),
+            status: TaskStatusEnum.TODO,
           }),
         });
 
@@ -52,9 +52,9 @@ describe("TaskResolver", () => {
         const project = await fixtures.createProject({
           organizationId: organization.id,
         });
-        const status = await fixtures.createTaskStatus({
-          projectId: project.id,
-        });
+        // const status = await fixtures.createTaskStatus({
+        //   projectId: project.id,
+        // });
 
         const response = await client.request({
           app,
@@ -63,7 +63,7 @@ describe("TaskResolver", () => {
             name,
             description,
             projectId: project.id,
-            statusId: status.id,
+            status: TaskStatusEnum.TODO,
           }),
         });
 
@@ -105,9 +105,10 @@ describe("TaskResolver", () => {
         const expectedTag = await fixtures.createTaskTag({
           projectId: project.id,
         });
-        const expectedStatus = await fixtures.createTaskStatus({
-          projectId: project.id,
-        });
+        // const expectedStatus = await fixtures.createTaskStatus({
+        //   projectId: project.id,
+        // });
+        const expectedStatus = TaskStatusEnum.IN_REVIEW;
 
         const response = await client.request({
           app,
@@ -116,14 +117,14 @@ describe("TaskResolver", () => {
             id: task.id,
             name: expectedName,
             tagIds: [expectedTag.id],
-            statusId: expectedStatus.id,
+            status: expectedStatus,
           }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
         const updatedTask = response.body.data?.task;
         expect(updatedTask.name).toEqual(expectedName);
-        expect(updatedTask.status.id).toEqual(expectedStatus.id);
+        expect(updatedTask.status).toEqual(expectedStatus);
         expect(updatedTask.tags).toHaveLength(1);
         expect(updatedTask.tags).toContainEqual(
           expect.objectContaining({ id: expectedTag.id })

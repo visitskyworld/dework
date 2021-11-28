@@ -4,8 +4,8 @@ import { Button, Menu } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
 import Link from "next/link";
-import { ProjectCreateModal } from "../../project/ProjectCreateModal";
 import { useOrganization } from "../hooks";
+import { ProjectCreateModal } from "../../project/create/ProjectCreateModal";
 
 interface OrganizationOverviewProps {
   organizationId: string;

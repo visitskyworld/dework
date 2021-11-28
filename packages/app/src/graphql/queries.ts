@@ -20,3 +20,13 @@ export const organization = gql`
 
   ${Fragments.organizationDetails}
 `;
+
+export const project = gql`
+  query GetProjectQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      ...ProjectDetails
+    }
+  }
+
+  ${Fragments.projectDetails}
+`;

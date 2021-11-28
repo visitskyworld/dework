@@ -1,3 +1,4 @@
+import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -15,6 +16,6 @@ export class UpdateTaskInput {
   @Field(() => [String], { nullable: true })
   public tagIds?: string[];
 
-  @Field(() => GraphQLUUID, { nullable: true })
-  public statusId?: string;
+  @Field(() => TaskStatusEnum, { nullable: true })
+  public status?: TaskStatusEnum;
 }

@@ -37,3 +37,29 @@ export const createProject = gql`
   ${Fragments.project}
   ${Fragments.organizationDetails}
 `;
+
+export const createTask = gql`
+  mutation CreateTaskMutation($input: CreateTaskInput!) {
+    task: createTask(input: $input) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;
+
+export const createTaskTag = gql`
+  mutation CreateTaskTagMutation($input: CreateTaskTagInput!) {
+    taskTag: createTaskTag(input: $input) {
+      ...TaskTag
+      project {
+        id
+        taskTags {
+          ...TaskTag
+        }
+      }
+    }
+  }
+
+  ${Fragments.taskTag}
+`;
