@@ -10,7 +10,7 @@ import GraphQLUUID from "graphql-type-uuid";
 
 @ObjectType({ isAbstract: true })
 export abstract class Audit {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "uuid" })
   @Generated("uuid")
   @Field(() => GraphQLUUID)
   public id!: string;

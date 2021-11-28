@@ -6,11 +6,11 @@ export interface ConfigType {
   JWT_SECRET: string;
   APP_URL: string;
 
-  MYSQL_USER: string;
-  MYSQL_PASSWORD: string;
-  MYSQL_HOST: string;
-  MYSQL_PORT: number;
-  MYSQL_DATABASE: string;
+  POSTGRES_USER: string;
+  POSTGRES_PASSWORD: string;
+  POSTGRES_HOST: string;
+  POSTGRES_PORT: number;
+  POSTGRES_DATABASE: string;
 
   GITHUB_OAUTH_CLIENT_ID: string;
   GITHUB_OAUTH_CLIENT_SECRET: string;
@@ -28,11 +28,11 @@ export const configSchema = Joi.object<ConfigType>({
   JWT_SECRET: Joi.string().required(),
   APP_URL: Joi.string().required(),
 
-  MYSQL_USER: Joi.string().required(),
-  MYSQL_PASSWORD: Joi.string().required(),
-  MYSQL_HOST: Joi.string().required(),
-  MYSQL_PORT: Joi.number().min(0).max(MAX_PORT).required(),
-  MYSQL_DATABASE: Joi.string().required(),
+  POSTGRES_USER: Joi.string().required(),
+  POSTGRES_PASSWORD: Joi.string().required(),
+  POSTGRES_HOST: Joi.string().required(),
+  POSTGRES_PORT: Joi.number().min(0).max(MAX_PORT).required(),
+  POSTGRES_DATABASE: Joi.string().required(),
 
   GITHUB_OAUTH_CLIENT_ID: Joi.string().required(),
   GITHUB_OAUTH_CLIENT_SECRET: Joi.string().required(),

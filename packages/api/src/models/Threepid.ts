@@ -48,7 +48,7 @@ export class Threepid<
   @ManyToOne(() => User, { nullable: true })
   @Field(() => User, { nullable: true })
   public user!: Promise<User | undefined>;
-  @Column({ nullable: true })
+  @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public userId?: string;
 }

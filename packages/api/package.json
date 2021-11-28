@@ -24,10 +24,10 @@
     "graphql-type-uuid": "^0.2.0",
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
-    "mysql": "^2.18.1",
     "passport": "^0.5.0",
     "passport-discord": "^0.1.4",
     "passport-github": "^1.1.0",
+    "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
     "typeorm": "^0.2.41"

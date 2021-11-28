@@ -45,7 +45,6 @@ export class UserService {
       ...existingUser,
     });
 
-    console.warn({ existingUser, user });
     await this.connectThreepidToUser(threepid, user);
     return user;
   }

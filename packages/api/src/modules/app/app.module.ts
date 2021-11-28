@@ -3,7 +3,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { configSchema } from "./config";
-import { mysqlConfig } from "./mysql.config";
+import { postgresConfig } from "./postgres.config";
 import { gqlConfig } from "./gql.config";
 import { AuthModule, GlobalJwtModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
@@ -19,7 +19,7 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   TypeOrmModule.forRootAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
-    useFactory: mysqlConfig,
+    useFactory: postgresConfig,
   }),
   GlobalJwtModule,
   DatabaseModule,
