@@ -20,7 +20,7 @@ export class OrganizationResolver {
   ): Promise<Organization> {
     return this.organizationService.create({
       ...input,
-      users: Promise.resolve([user]),
+      users: [user],
     });
   }
 

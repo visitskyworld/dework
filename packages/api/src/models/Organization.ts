@@ -18,7 +18,7 @@ export class Organization extends Audit {
   @ManyToMany(() => User, (user: User) => user.organizations)
   @JoinTable({ name: "organization_users" })
   @Field(() => [User])
-  public users!: Promise<User[]>;
+  public users!: Promise<User[]> | User[];
 
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
