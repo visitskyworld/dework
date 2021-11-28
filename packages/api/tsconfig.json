@@ -3,6 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "isolatedModules": false
-  }
+    "noEmit": false,
+    "isolatedModules": false,
+    "outDir": "build"
+  },
+  "include": ["src"]
 }
