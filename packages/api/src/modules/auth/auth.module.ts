@@ -8,6 +8,8 @@ import { AuthController } from "./auth.controller";
 import { LoggerMiddleware } from "./logger";
 import { DiscordStrategy } from "./strategies/discord.strategy";
 import { ThreepidModule } from "../threepid/threepid.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "@dewo/api/models/User";
 
 @Global()
 @Module({
@@ -19,6 +21,7 @@ import { ThreepidModule } from "../threepid/threepid.module";
         secret: configService.get("JWT_SECRET"),
       }),
     }),
+    TypeOrmModule.forFeature([User]),
   ],
   exports: [JwtModule],
 })

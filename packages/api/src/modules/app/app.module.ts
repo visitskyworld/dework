@@ -8,6 +8,7 @@ import { gqlConfig } from "./gql.config";
 import { AuthModule, GlobalJwtModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
 import { DatabaseModule } from "@dewo/api/testing/Database";
+import { OrganizationModule } from "../organization/organization.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -29,6 +30,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   ...AppBootstrapModuleImports,
   UserModule,
   AuthModule,
+  OrganizationModule,
 ];
 
 @Module({
