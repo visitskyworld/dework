@@ -48,6 +48,16 @@ export const createTask = gql`
   ${Fragments.task}
 `;
 
+export const updateTask = gql`
+  mutation UpdateTaskMutation($input: UpdateTaskInput!) {
+    task: updateTask(input: $input) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;
+
 export const createTaskTag = gql`
   mutation CreateTaskTagMutation($input: CreateTaskTagInput!) {
     taskTag: createTaskTag(input: $input) {

@@ -13,6 +13,9 @@ export class UpdateTaskInput {
   @Field({ nullable: true })
   public description?: string;
 
+  @Field({ nullable: true })
+  public sortKey?: string;
+
   @Field(() => [String], { nullable: true })
   public tagIds?: string[];
 

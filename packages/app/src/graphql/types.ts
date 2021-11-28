@@ -130,6 +130,40 @@ export interface CreateTaskMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateTaskMutation
+// ====================================================
+
+export interface UpdateTaskMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface UpdateTaskMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: UpdateTaskMutation_task_tags[];
+}
+
+export interface UpdateTaskMutation {
+  task: UpdateTaskMutation_task;
+}
+
+export interface UpdateTaskMutationVariables {
+  input: UpdateTaskInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateTaskTagMutation
 // ====================================================
 
@@ -475,7 +509,7 @@ export interface CreateProjectInput {
 
 export interface CreateTaskInput {
   name: string;
-  description: string;
+  description?: string | null;
   projectId: Scalar.UUID;
   status: TaskStatusEnum;
 }
@@ -484,6 +518,15 @@ export interface CreateTaskTagInput {
   label: string;
   color: string;
   projectId: Scalar.UUID;
+}
+
+export interface UpdateTaskInput {
+  id: Scalar.UUID;
+  name?: string | null;
+  description?: string | null;
+  sortKey?: string | null;
+  tagIds?: string[] | null;
+  status?: TaskStatusEnum | null;
 }
 
 //==============================================================

@@ -1,6 +1,6 @@
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import { useProject } from "../hooks";
+import { useProject, useUpdateTask } from "../hooks";
 import React, { FC, useEffect, useCallback, useState } from "react";
 import _ from "lodash";
 import {
@@ -29,15 +29,16 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
   const project = useProject(projectId);
   const tasksByStatus = useGroupedTasks(project?.tasks ?? noTasks);
 
-  const updateTask = useCallback(async (update: any) => {
-    console.warn("update...", update);
-  }, []);
+  const updateTask = useUpdateTask();
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
     async (result) => {
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
       const status = result.destination.droppableId as TaskStatusEnum;
+
+      const task = project?.tasks.find((t) => t.id === taskId);
+      if (!task) return;
 
       const indexExcludingItself = (() => {
         const newIndex = result.destination.index;
@@ -60,9 +61,9 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
       const taskBelow = tasksByStatus[status]?.[indexExcludingItself];
       const sortKey = orderBetweenTasks(taskAbove, taskBelow);
 
-      await updateTask({ id: taskId, status, sortKey });
+      await updateTask({ id: taskId, status, sortKey }, task);
     },
-    [tasksByStatus, updateTask]
+    [project?.tasks, tasksByStatus, updateTask]
   );
 
   // const handleUpdateCard = useCallback(

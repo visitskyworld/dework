@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { CreateTaskTagInput } from "@dewo/api/modules/project/dto/CreateTaskTagInput";
+import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -17,6 +18,8 @@ import {
   ProjectDetails,
   Task,
   TaskTag,
+  UpdateTaskMutation,
+  UpdateTaskMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -50,13 +53,40 @@ export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
     async (input) => {
       const res = await createTask({
         variables: { input },
-        // refetchQueries: [{ query: Queries.me }],
+        // Temporary solution instead of updating Apollo cache directly
+        refetchQueries: [
+          { query: Queries.project, variables: { projectId: input.projectId } },
+        ],
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
     },
     [createTask]
+  );
+}
+
+export function useUpdateTask(): (
+  input: UpdateTaskInput,
+  task: Task
+) => Promise<Task> {
+  const [updateTask] = useMutation<
+    UpdateTaskMutation,
+    UpdateTaskMutationVariables
+  >(Mutations.updateTask);
+  return useCallback(
+    async (input, task) => {
+      const res = await updateTask({
+        variables: { input },
+        optimisticResponse: {
+          task: { ...task, ...input },
+        },
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.task;
+    },
+    [updateTask]
   );
 }
 
