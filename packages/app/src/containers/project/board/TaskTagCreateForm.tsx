@@ -37,6 +37,7 @@ export const TaskTagCreateForm: FC<TaskTagCreateFormProps> = ({
     }
   }, [createTaskTag, label, color, projectId, onCreated]);
 
+  const canSubmit = !!label;
   return (
     <Form<CreateTaskTagInput>>
       <Input.Group
@@ -45,7 +46,7 @@ export const TaskTagCreateForm: FC<TaskTagCreateFormProps> = ({
       >
         <Button
           style={{ paddingLeft: 8, paddingRight: 8 }}
-          disabled={!label}
+          disabled={!canSubmit}
           type="primary"
           loading={loading}
           onClick={handleSubmit}
@@ -55,7 +56,7 @@ export const TaskTagCreateForm: FC<TaskTagCreateFormProps> = ({
           name="label"
           placeholder="Create new tag"
           value={label}
-          onPressEnter={handleSubmit}
+          onPressEnter={canSubmit ? handleSubmit : undefined}
           onChange={(e) => setLabel(e.target.value)}
         />
         <Select value={color} onChange={setColor}>

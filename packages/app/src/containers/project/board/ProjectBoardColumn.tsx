@@ -9,7 +9,6 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { TaskCreateModal } from "./TaskCreateModal";
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { STATUS_LABEL } from "./util";
-import { project } from "@dewo/app/graphql/fragments";
 
 interface ProjectBoardColumnProps {
   status: TaskStatusEnum;

@@ -6,7 +6,6 @@ import {
   ProjectDetails,
   Task,
   TaskStatusEnum,
-  TaskTag,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "./util";
 import { TaskTagCreateForm } from "./TaskTagCreateForm";
