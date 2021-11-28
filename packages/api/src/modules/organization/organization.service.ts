@@ -15,4 +15,8 @@ export class OrganizationService {
   public create(partial: DeepPartial<Organization>): Promise<Organization> {
     return this.organizationRepo.save(partial);
   }
+
+  public findById(id: string): Promise<Organization | undefined> {
+    return this.organizationRepo.findOne(id);
+  }
 }

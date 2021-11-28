@@ -13,3 +13,27 @@ export const authWithThreepid = gql`
 
   ${Fragments.user}
 `;
+
+export const createOrganization = gql`
+  mutation CreateOrganizationMutation($input: CreateOrganizationInput!) {
+    organization: createOrganization(input: $input) {
+      ...Organization
+    }
+  }
+
+  ${Fragments.organization}
+`;
+
+export const createProject = gql`
+  mutation CreateProjectMutation($input: CreateProjectInput!) {
+    project: createProject(input: $input) {
+      ...Project
+      organization {
+        ...OrganizationDetails
+      }
+    }
+  }
+
+  ${Fragments.project}
+  ${Fragments.organizationDetails}
+`;

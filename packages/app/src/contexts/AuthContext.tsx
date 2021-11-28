@@ -7,12 +7,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { User } from "../graphql/types";
+import { UserDetails } from "../graphql/types";
 import { clearAuthToken } from "../util/authToken";
 import { useUser } from "../util/hooks";
 
 interface AuthContextValue {
-  user: User | undefined;
+  user: UserDetails | undefined;
   logout(): void;
   setAuthenticated(authenticated: boolean): void;
 }
