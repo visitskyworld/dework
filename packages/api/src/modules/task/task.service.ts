@@ -1,4 +1,5 @@
 import { Task } from "@dewo/api/models/Task";
+import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
@@ -15,5 +16,10 @@ export class TaskService {
   public async create(partial: DeepPartial<Task>): Promise<Task> {
     const created = await this.taskRepo.save(partial);
     return this.taskRepo.findOne(created.id) as Promise<Task>;
+  }
+
+  public async update(partial: AtLeast<Task, "id">): Promise<Task> {
+    const updated = await this.taskRepo.save(partial);
+    return this.taskRepo.findOne(updated.id) as Promise<Task>;
   }
 }

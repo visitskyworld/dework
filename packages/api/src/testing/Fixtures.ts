@@ -13,6 +13,8 @@ import { ProjectModule } from "../modules/project/project.module";
 import { TaskModule } from "../modules/task/task.module";
 import { Project } from "../models/Project";
 import { ProjectService } from "../modules/project/project.service";
+import { Task } from "../models/Task";
+import { TaskService } from "../modules/task/task.service";
 
 @Injectable()
 export class Fixtures {
@@ -20,6 +22,7 @@ export class Fixtures {
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
     private readonly projectService: ProjectService,
+    private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService
   ) {}
 
@@ -52,6 +55,14 @@ export class Fixtures {
     return this.projectService.create({
       name: faker.company.companyName(),
       organizationId: await this.createOrganization().then((o) => o.id),
+      ...partial,
+    });
+  }
+
+  public async createTask(partial: Partial<Task> = {}): Promise<Task> {
+    return this.taskService.create({
+      name: faker.company.companyName(),
+      projectId: await this.createProject().then((p) => p.id),
       ...partial,
     });
   }

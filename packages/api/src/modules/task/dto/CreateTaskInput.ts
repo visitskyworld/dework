@@ -6,6 +6,9 @@ export class CreateTaskInput {
   @Field()
   public name!: string;
 
+  @Field()
+  public description!: string;
+
   @Field(() => GraphQLUUID)
   public projectId!: string;
 }
