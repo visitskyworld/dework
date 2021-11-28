@@ -5,12 +5,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { InjectRepository } from "@nestjs/typeorm";
-import { JwtService } from "@nestjs/jwt";
-import { Repository } from "typeorm";
 import { GQLContext } from "../../app/gql.config";
-import { User } from "@dewo/api/models/User";
-import { Organization } from "@dewo/api/models/Organization";
 
 @Injectable()
 export class OrganizationMemberGuard implements CanActivate {

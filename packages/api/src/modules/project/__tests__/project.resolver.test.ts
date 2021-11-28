@@ -1,7 +1,6 @@
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
-import { OrganizationRequests } from "@dewo/api/testing/requests/organization.requests";
 import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
