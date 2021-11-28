@@ -1,8 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
-import { Task } from "./Task";
 
 @Entity()
 @ObjectType()
