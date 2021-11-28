@@ -4,6 +4,8 @@
     "module": "commonjs",
     "target": "es6",
     "noEmit": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "isolatedModules": false,
     "outDir": "build"
   },

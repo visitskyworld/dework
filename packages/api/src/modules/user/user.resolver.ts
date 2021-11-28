@@ -1,7 +1,10 @@
 import { Args, Context, Mutation, Query } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
-import { GraphQLAuthGuard, RequireGraphQLAuthGuard } from "../auth/auth.guard";
+import {
+  GraphQLAuthGuard,
+  RequireGraphQLAuthGuard,
+} from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";

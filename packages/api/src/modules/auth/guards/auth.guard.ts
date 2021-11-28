@@ -8,8 +8,8 @@ import { GqlExecutionContext } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
-import { GQLContext } from "../app/gql.config";
 import { User } from "@dewo/api/models/User";
+import { GQLContext } from "../../app/gql.config";
 
 @Injectable()
 export class RequireGraphQLAuthGuard implements CanActivate {

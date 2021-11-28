@@ -1,15 +1,13 @@
-import _ from "lodash";
-import { IncomingMessage } from "http";
 import { ApolloServerPlugin } from "apollo-server-plugin-base";
 import { GqlModuleOptions } from "@nestjs/graphql";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "./config";
-
-type User = unknown;
+import { Request } from "express";
+import { User } from "@dewo/api/models/User";
 
 export interface GQLContext {
-  req: IncomingMessage;
+  req: Request;
   user?: User;
 }
 
@@ -49,8 +47,6 @@ export function gqlConfig(config: ConfigService<ConfigType>): GqlModuleOptions {
       logger.error(error);
       return error;
     },
-    context: ({ req }: { req: IncomingMessage }): GQLContext => ({
-      req,
-    }),
+    context: ({ req }): GQLContext => ({ req }),
   };
 }

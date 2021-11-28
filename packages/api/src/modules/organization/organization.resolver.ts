@@ -1,10 +1,10 @@
 import { Args, Context, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { Organization } from "@dewo/api/models/Organization";
-import { RequireGraphQLAuthGuard } from "../auth/auth.guard";
 import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
 import { CreateOrganizationInput } from "./dto/CreateOrganizationInput";
+import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 
 @Injectable()
 export class OrganizationResolver {
@@ -18,7 +18,7 @@ export class OrganizationResolver {
   ): Promise<Organization> {
     return this.organizationService.create({
       ...input,
-      users: Promise.resolve([user]),
+      users: [user],
     });
   }
 }
