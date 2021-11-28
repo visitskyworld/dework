@@ -4,16 +4,17 @@ import { Button, Card, Badge, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { ProjectDetails, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { TaskCreateModal } from "./TaskCreateModal";
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { STATUS_LABEL } from "./util";
+import { project } from "@dewo/app/graphql/fragments";
 
 interface ProjectBoardColumnProps {
   status: TaskStatusEnum;
   tasks: Task[];
-  projectId: string;
+  project: ProjectDetails;
   onChange(task: Task): void;
   onAdd(input: CreateTaskInput): void;
 }
@@ -21,7 +22,7 @@ interface ProjectBoardColumnProps {
 export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
   status,
   tasks,
-  projectId,
+  project,
   onChange,
 }) => {
   const createCardToggle = useToggle();
@@ -49,7 +50,8 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
       style={{ width: 300 }}
     >
       <TaskCreateModal
-        initialValues={{ projectId, status }}
+        project={project}
+        initialValues={{ projectId: project.id, status }}
         visible={createCardToggle.value}
         onCancel={createCardToggle.onToggleOff}
         onCreated={createCardToggle.onToggleOff}

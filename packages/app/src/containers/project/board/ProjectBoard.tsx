@@ -86,7 +86,7 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
 
   resetServerContext();
   if (!loaded) return null;
-
+  if (!project) return null;
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Row className="dewo-task-board">
@@ -95,7 +95,7 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
             <div key={status} style={{ width: columnWidth }}>
               <ProjectBoardColumn
                 status={status}
-                projectId={projectId}
+                project={project}
                 tasks={tasksByStatus[status] ?? noTasks}
                 // onChange={handleUpdateCard}
                 // onAdd={handleAddCard}

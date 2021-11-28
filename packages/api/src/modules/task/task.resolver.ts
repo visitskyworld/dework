@@ -1,4 +1,10 @@
-import { Args, Mutation, ResolveField, Resolver } from "@nestjs/graphql";
+import {
+  Args,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
@@ -14,8 +20,10 @@ export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [TaskTag])
-  public async tags(/*@Parent() task: Task*/): Promise<TaskTag[]> {
-    return [];
+  public async tags(@Parent() task: Task): Promise<TaskTag[]> {
+    if (!!task.tags) return task.tags;
+    const refetched = await this.taskService.findById(task.id);
+    return refetched!.tags;
   }
 
   @Mutation(() => Task)
@@ -23,7 +31,13 @@ export class TaskResolver {
   public async createTask(
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
-    return this.taskService.create({ sortKey: String(Date.now()), ...input });
+    return this.taskService.create({
+      sortKey: String(Date.now()),
+      tags: !!input.tagIds
+        ? (input.tagIds.map((id) => ({ id })) as any)
+        : undefined,
+      ...input,
+    });
   }
 
   @Mutation(() => Task)

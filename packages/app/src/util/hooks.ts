@@ -18,3 +18,8 @@ export function useToggle(): {
   const onToggleOff = useCallback(() => setValue(false), []);
   return { value, onToggleOn, onToggleOff };
 }
+
+export function useRerender() {
+  const [, setRerender] = useState(0);
+  return useCallback(() => setRerender((r) => r + 1), []);
+}

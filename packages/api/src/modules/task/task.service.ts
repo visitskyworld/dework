@@ -22,4 +22,8 @@ export class TaskService {
     const updated = await this.taskRepo.save(partial);
     return this.taskRepo.findOne(updated.id) as Promise<Task>;
   }
+
+  public async findById(id: string): Promise<Task | undefined> {
+    return this.taskRepo.findOne(id);
+  }
 }

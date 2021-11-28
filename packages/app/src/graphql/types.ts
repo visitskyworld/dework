@@ -511,6 +511,7 @@ export interface CreateTaskInput {
   name: string;
   description?: string | null;
   projectId: Scalar.UUID;
+  tagIds: Scalar.UUID[];
   status: TaskStatusEnum;
 }
 

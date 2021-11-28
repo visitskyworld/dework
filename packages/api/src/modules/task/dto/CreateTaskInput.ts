@@ -13,6 +13,9 @@ export class CreateTaskInput {
   @Field(() => GraphQLUUID)
   public projectId!: string;
 
+  @Field(() => [GraphQLUUID])
+  public tagIds?: string[];
+
   @Field(() => TaskStatusEnum)
   public status!: TaskStatusEnum;
 }
