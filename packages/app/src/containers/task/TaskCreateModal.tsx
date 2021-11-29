@@ -1,5 +1,4 @@
-import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
-import { ProjectDetails, Task } from "@dewo/app/graphql/types";
+import { CreateTaskInput, ProjectDetails, Task } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback } from "react";
 import { useCreateTask } from "./hooks";
@@ -35,7 +34,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       onCancel={onCancel}
       footer={null}
     >
-      <TaskForm
+      <TaskForm<CreateTaskInput>
         project={project}
         initialValues={initialValues}
         buttonText="Create"

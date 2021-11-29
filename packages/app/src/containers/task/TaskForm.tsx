@@ -1,30 +1,24 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Tag, Form, Button, Input, Select, FormInstance } from "antd";
-import {
-  CreateTaskInput,
-  ProjectDetails,
-  TaskStatusEnum,
-} from "@dewo/app/graphql/types";
+import { ProjectDetails, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import { TaskTagCreateForm } from "./TaskTagCreateForm";
 import _ from "lodash";
 import { useRerender } from "@dewo/app/util/hooks";
-import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
-
-interface TaskFormProps {
+interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
   buttonText: string;
-  initialValues?: Partial<CreateTaskInput> & Partial<UpdateTaskInput>;
-  onSubmit(task: CreateTaskInput & UpdateTaskInput): unknown;
+  initialValues?: Partial<TFormValues>;
+  onSubmit(task: TFormValues): unknown;
 }
 
-export const TaskForm: FC<TaskFormProps> = ({
+export function TaskForm<TFormValues>({
   project,
   buttonText,
   initialValues,
   onSubmit,
-}) => {
-  const formRef = useRef<FormInstance<CreateTaskInput & UpdateTaskInput>>(null);
+}: TaskFormProps<TFormValues>) {
+  const formRef = useRef<FormInstance<TFormValues>>(null);
   const tagById = useMemo(
     () => _.keyBy(project.taskTags, "id"),
     [project.taskTags]
@@ -32,7 +26,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async (values: CreateTaskInput & UpdateTaskInput) => {
+    async (values: TFormValues) => {
       try {
         setLoading(true);
         await onSubmit(values);
@@ -93,15 +87,16 @@ export const TaskForm: FC<TaskFormProps> = ({
               {menu}
               <TaskTagCreateForm
                 projectId={project.id}
-                onCreated={(tag) => {
-                  formRef.current?.setFieldsValue({
-                    tagIds: [
-                      ...formRef.current?.getFieldValue("tagIds"),
-                      tag.id,
-                    ],
-                  });
-                  rerender();
-                }}
+                onCreated={rerender}
+                // onCreated={(tag) => {
+                //   formRef.current?.setFieldsValue({
+                //     tagIds: [
+                //       ...formRef.current?.getFieldValue("tagIds"),
+                //       tag.id,
+                //     ],
+                //   });
+                //   rerender();
+                // }}
               />
             </>
           )}
@@ -132,4 +127,4 @@ export const TaskForm: FC<TaskFormProps> = ({
       </Form.Item>
     </Form>
   );
-};
+}

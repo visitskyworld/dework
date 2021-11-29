@@ -1,11 +1,9 @@
 import _ from "lodash";
-import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
-import { useCreateTask, useTask, useUpdateTask } from "./hooks";
+import { useTask, useUpdateTask } from "./hooks";
 import { TaskForm } from "./TaskForm";
-import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 
 interface TaskCreateModalProps {
   taskId: string;
@@ -51,7 +49,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       onCancel={onCancel}
       footer={null}
     >
-      <TaskForm
+      <TaskForm<UpdateTaskInput>
         key={JSON.stringify(initialValues)}
         project={project}
         initialValues={initialValues}
