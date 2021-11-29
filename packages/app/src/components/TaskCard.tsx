@@ -28,7 +28,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, onChange }) => {
   const handlePayAndClose = useCallback(async () => {
     await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
     onChange({ ...task, status: TaskStatus.DONE });
-  }, [onChange]);
+  }, [onChange, signPayout, task]);
   const handleReserve = useCallback(() => {
     onChange({
       ...task,

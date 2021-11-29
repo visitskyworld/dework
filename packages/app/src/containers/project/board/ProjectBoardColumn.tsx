@@ -56,7 +56,7 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ ...provided.droppableProps, minHeight: 30 }}
+            style={{ ...provided.droppableProps, minHeight: 30, paddingTop: 4 }}
           >
             {tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id} index={index}>
@@ -67,7 +67,7 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
                     {...provided.dragHandleProps}
                     style={{
                       ...provided.draggableProps.style,
-                      marginTop: index === 0 ? 8 : 8,
+                      marginBottom: 8,
                     }}
                   >
                     <TaskCard task={task} />

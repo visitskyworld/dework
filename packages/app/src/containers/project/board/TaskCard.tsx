@@ -18,6 +18,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useSignPayout } from "@dewo/app/util/ethereum";
 import { useRouter } from "next/router";
 import { useUpdateTask } from "../../task/hooks";
+import { eatClick } from "@dewo/app/util/eatClick";
 // import { useSignPayout } from "../util/ethereum";
 
 interface TaskCardProps {
@@ -73,27 +74,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
               <Row>
                 <Typography.Text strong>{task.name}</Typography.Text>
               </Row>
-              <Col>
-                <Row>
-                  <Typography.Text type="secondary">
-                    {task.description}
-                  </Typography.Text>
-                </Row>
-                {/* {!!task.assignee && (
-                <Row>
-                  <Space>
-                    <Avatar
-                      src={task.assignee.imageUrl}
-                      size={16}
-                      icon={<Icons.UserOutlined />}
-                    />
-                    <Typography.Text type="secondary">
-                      Claimed
-                    </Typography.Text>
-                  </Space>
-                </Row>
-              )} */}
-              </Col>
               <Row>
                 {task.tags.map(({ label, color }, index) => (
                   <Tag key={index} color={color} style={{ marginBottom: 4 }}>
@@ -104,9 +84,10 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
               </Row>
             </Space>
             <Col
+              onClick={eatClick}
               style={{
-                marginBottom: -4,
                 marginRight: -4,
+                marginBottom: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-end",
