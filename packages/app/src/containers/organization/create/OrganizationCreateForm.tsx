@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import { Form, Button, Input } from "antd";
-import { CreateOrganizationInput } from "@dewo/api/modules/organization/dto/CreateOrganizationInput";
 import { useCreateOrganization } from "../hooks";
-import { Organization } from "@dewo/app/graphql/types";
+import { CreateOrganizationInput, Organization } from "@dewo/app/graphql/types";
 
 interface OrganizationCreateFormProps {
   onCreated(organization: Organization): unknown;

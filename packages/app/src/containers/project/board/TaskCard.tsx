@@ -119,7 +119,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                 <Button
                   type="text"
                   icon={<Icons.MoreOutlined />}
-                  style={{ marginRight: -8, marginTop: -12 }}
+                  style={{ marginRight: -8, marginTop: -8 }}
                 />
               </Dropdown>
               <div style={{ flex: 1 }} />

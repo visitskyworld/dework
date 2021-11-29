@@ -1,0 +1,35 @@
+###
+# Build stage
+###
+FROM node:14-alpine AS builder
+WORKDIR /builder
+
+COPY package.json yarn.lock ./
+COPY packages/app/package.json packages/app/
+RUN yarn app install --frozen-lockfile
+
+COPY tsconfig.json ./
+COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
+
+COPY packages/app/abis packages/app/abis
+COPY packages/app/public packages/app/public
+COPY packages/app/styles packages/app/styles
+COPY packages/app/pages packages/app/pages
+COPY packages/app/src packages/app/src
+
+RUN yarn app build && rm -rf packages/app/.next/cache
+
+###
+# Exec Stage
+###
+FROM node:14-alpine
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+COPY packages/app/package.json packages/app/
+RUN yarn app install --frozen-lockfile --production
+
+COPY --from=builder /builder/packages/app/.next ./packages/app/.next
+COPY --from=builder /builder/packages/app/next.config.js ./packages/app/
+
+CMD ["yarn", "app", "start"]

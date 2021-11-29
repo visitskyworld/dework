@@ -5,7 +5,7 @@ FROM node:14-alpine as builder
 WORKDIR /builder
 
 COPY package.json yarn.lock ./
-COPY packages/api/package.json packages/api/package.json
+COPY packages/api/package.json packages/api/
 
 # https://github.com/docker/getting-started/issues/124#issuecomment-779806159
 RUN apk --no-cache --virtual build-dependencies add \
@@ -16,7 +16,7 @@ RUN apk --no-cache --virtual build-dependencies add \
 && apk del build-dependencies
 
 COPY tsconfig.json .
-COPY packages/api/tsconfig.json packages/api/tsconfig.json
+COPY packages/api/tsconfig.json packages/api/
 COPY packages/api/src packages/api/src
 RUN yarn api build
 
@@ -27,7 +27,7 @@ FROM node:14-alpine
 WORKDIR /app
 
 COPY package.json yarn.lock ./
-COPY packages/api/package.json packages/api/package.json
+COPY packages/api/package.json packages/api/
 
 # https://github.com/docker/getting-started/issues/124#issuecomment-779806159
 RUN apk --no-cache --virtual build-dependencies add \

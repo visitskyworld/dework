@@ -1,7 +1,6 @@
 {
   "workspaces": [
     "packages/app",
-    "packages/demos",
     "packages/contracts",
     "packages/api"
   ],
@@ -11,7 +10,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-pattern='!.*' --quiet --fix",
     "app": "yarn workspace @dewo/app",
     "api": "yarn workspace @dewo/api",
-    "build:api": "docker build -f Dockerfile.api ."
+    "build:api": "docker build -f packages/api/Dockerfile .",
+    "build:app": "docker build -f packages/app/Dockerfile ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.24.0",

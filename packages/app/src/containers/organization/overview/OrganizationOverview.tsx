@@ -29,8 +29,6 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
     [router, createProject, organizationId]
   );
 
-  console.warn({ organization });
-
   return (
     <>
       Projects
