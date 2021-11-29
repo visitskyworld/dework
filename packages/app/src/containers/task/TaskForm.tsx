@@ -1,6 +1,19 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Tag, Form, Button, Input, Select, FormInstance } from "antd";
-import { ProjectDetails, TaskStatusEnum } from "@dewo/app/graphql/types";
+import {
+  Tag,
+  Form,
+  Button,
+  Input,
+  Select,
+  FormInstance,
+  Avatar,
+  Row,
+  Typography,
+  Space,
+  Col,
+} from "antd";
+import { ProjectDetails, TaskStatusEnum, User } from "@dewo/app/graphql/types";
+import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import _ from "lodash";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
@@ -8,11 +21,13 @@ interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
   buttonText: string;
   initialValues?: Partial<TFormValues>;
+  assignees?: User[];
   onSubmit(task: TFormValues): unknown;
 }
 
 export function TaskForm<TFormValues>({
   project,
+  assignees,
   buttonText,
   initialValues,
   onSubmit,
@@ -72,16 +87,11 @@ export function TaskForm<TFormValues>({
         setTagLoading(false);
       }
     },
-    [createTaskTag, tagLoading, tagById, project.id]
+    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, project.id]
   );
 
   return (
-    <Form
-      ref={formRef}
-      initialValues={initialValues}
-      onFinish={handleSubmit}
-      onFinishFailed={console.error}
-    >
+    <Form ref={formRef} initialValues={initialValues} onFinish={handleSubmit}>
       <Form.Item
         label="Task Name"
         name="name"
@@ -134,6 +144,42 @@ export function TaskForm<TFormValues>({
       <Form.Item name="id" hidden>
         <Input />
       </Form.Item>
+
+      {/* TODO: remove this hack and add proper UI */}
+      {!!assignees &&
+        assignees.length > 0 &&
+        (initialValues as any)?.status === TaskStatusEnum.TODO && (
+          <Space
+            direction="vertical"
+            style={{ width: "100%", paddingBottom: 24 }}
+          >
+            <Typography.Text strong>
+              Contributor Reservation Requests
+            </Typography.Text>
+            <Col>
+              {assignees.map((user) => (
+                <Space style={{ width: "100%", display: "flex" }}>
+                  <Avatar src={user.imageUrl} icon={<Icons.TeamOutlined />} />
+                  <Row style={{ width: 120 }}>{user.username}</Row>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      // @ts-ignore
+                      formRef.current?.setFieldsValue({
+                        assigneeIds: [user.id],
+                        status: TaskStatusEnum.IN_PROGRESS,
+                      });
+                      formRef.current?.submit();
+                    }}
+                  >
+                    Assign
+                  </Button>
+                </Space>
+              ))}
+            </Col>
+          </Space>
+        )}
+
       <Form.Item>
         <Button
           type="primary"

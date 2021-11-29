@@ -53,6 +53,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
         key={JSON.stringify(initialValues)}
         project={project}
         initialValues={initialValues}
+        assignees={task?.assignees}
         buttonText="Update"
         onSubmit={handleSubmit}
       />

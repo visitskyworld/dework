@@ -50,7 +50,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     await updateTask(
       {
         id: task.id,
-        status: TaskStatusEnum.IN_PROGRESS,
+        // status: TaskStatusEnum.IN_PROGRESS,
         assigneeIds: [user.id],
       },
       task
