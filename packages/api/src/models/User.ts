@@ -2,6 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
+import { Task } from "./Task";
 import { Threepid } from "./Threepid";
 
 @Entity()

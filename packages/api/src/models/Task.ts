@@ -10,6 +10,7 @@ import {
 import { Audit } from "./Audit";
 import { Project } from "./Project";
 import { TaskTag } from "./TaskTag";
+import { User } from "./User";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
@@ -46,6 +47,11 @@ export class Task extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public projectId!: string;
+
+  @ManyToMany(() => User, { eager: true })
+  @JoinTable({ name: "task_assignees" })
+  @Field(() => [User])
+  public assignees!: User[];
 
   // @JoinColumn()
   // @ManyToOne(() => TaskStatus)

@@ -117,6 +117,7 @@ describe("TaskResolver", () => {
             id: task.id,
             name: expectedName,
             tagIds: [expectedTag.id],
+            assigneeIds: [user.id],
             status: expectedStatus,
           }),
         });
@@ -128,6 +129,9 @@ describe("TaskResolver", () => {
         expect(updatedTask.tags).toHaveLength(1);
         expect(updatedTask.tags).toContainEqual(
           expect.objectContaining({ id: expectedTag.id })
+        );
+        expect(updatedTask.assignees).toContainEqual(
+          expect.objectContaining({ id: user.id })
         );
       });
 

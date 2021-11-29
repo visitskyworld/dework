@@ -33,9 +33,10 @@ export class TaskResolver {
   ): Promise<Task> {
     return this.taskService.create({
       sortKey: String(Date.now()),
-      tags: !!input.tagIds
-        ? (input.tagIds.map((id) => ({ id })) as any)
-        : undefined,
+      tags: !!input.tagIds ? (input.tagIds.map((id) => ({ id })) as any) : [],
+      assignees: !!input.assigneeIds
+        ? (input.assigneeIds.map((id) => ({ id })) as any)
+        : [],
       ...input,
     });
   }
@@ -49,6 +50,9 @@ export class TaskResolver {
       ...input,
       tags: !!input.tagIds
         ? (input.tagIds.map((id) => ({ id })) as any)
+        : undefined,
+      assignees: !!input.assigneeIds
+        ? (input.assigneeIds.map((id) => ({ id })) as any)
         : undefined,
     });
 

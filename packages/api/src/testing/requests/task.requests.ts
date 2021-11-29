@@ -15,6 +15,9 @@ export class TaskRequests {
       project {
         id
       }
+      assignees {
+        id
+      }
     }
   `;
 
