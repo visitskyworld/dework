@@ -66,19 +66,7 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
     [project?.tasks, tasksByStatus, updateTask]
   );
 
-  // const handleUpdateCard = useCallback(
-  //   (updatedTask: Task) => {
-  //     onChange(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
-  //   },
-  //   [tasks, onChange]
-  // );
-  // const handleAddCard = useCallback(
-  //   (task: Task) => onChange([...tasks, task]),
-  //   [onChange, tasks]
-  // );
-
   const [loaded, setLoaded] = useState(false);
-
   useEffect(() => {
     resetServerContext();
     setLoaded(true);
@@ -97,10 +85,6 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
                 status={status}
                 project={project}
                 tasks={tasksByStatus[status] ?? noTasks}
-                // onChange={handleUpdateCard}
-                // onAdd={handleAddCard}
-                onChange={console.log}
-                onAdd={console.log}
               />
             </div>
           ))}

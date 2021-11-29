@@ -20,7 +20,6 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface TaskCardProps {
   task: Task;
-  onChange(task: Partial<Task>): void;
 }
 
 export const TaskCard: FC<TaskCardProps> = ({ task }) => {
@@ -112,7 +111,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                         Pay and close
                       </Menu.Item>
                     )}
-                    {task.status === TaskStatusEnum.TODO && !!user && (
+                    {!!user && (
                       <Menu.Item
                         icon={<Icons.ClockCircleOutlined />}
                         onClick={claimTask}
