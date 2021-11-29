@@ -2,9 +2,8 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Tag, Form, Button, Input, Select, FormInstance } from "antd";
 import { ProjectDetails, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
-import { TaskTagCreateForm } from "./TaskTagCreateForm";
 import _ from "lodash";
-import { useRerender } from "@dewo/app/util/hooks";
+import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
   buttonText: string;
@@ -37,7 +36,44 @@ export function TaskForm<TFormValues>({
     [onSubmit]
   );
 
-  const rerender = useRerender();
+  const [tagLoading, setTagLoading] = useState(false);
+  const createTaskTag = useCreateTaskTag();
+  const generateRandomTaskTagColor = useGenerateRandomTaskTagColor(
+    project.taskTags
+  );
+  const handleTagsUpdated = useCallback(
+    async (labels: string[]) => {
+      const [existingTagIds, newTagLabels] = _.partition(
+        labels,
+        (existingIdOrNewLabel) => !!tagById[existingIdOrNewLabel]
+      );
+
+      if (tagLoading && !!newTagLabels.length) {
+        // @ts-ignore
+        formRef.current?.setFieldsValue({ tagIds: existingTagIds });
+        return;
+      }
+
+      try {
+        setTagLoading(true);
+        const tagPs = newTagLabels.map((label) =>
+          createTaskTag({
+            label,
+            projectId: project.id,
+            color: generateRandomTaskTagColor(),
+          })
+        );
+        const tags = await Promise.all(tagPs);
+        // @ts-ignore
+        formRef.current?.setFieldsValue({
+          tagIds: [...existingTagIds, ...tags.map((t) => t.id)],
+        });
+      } finally {
+        setTagLoading(false);
+      }
+    },
+    [createTaskTag, tagLoading, tagById, project.id]
+  );
 
   return (
     <Form
@@ -71,9 +107,11 @@ export function TaskForm<TFormValues>({
       </Form.Item>
       <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
         <Select
-          mode="multiple"
-          showSearch
+          mode="tags"
+          loading={tagLoading}
+          optionFilterProp="label"
           placeholder="Please select favourite colors"
+          onChange={handleTagsUpdated}
           optionLabelProp="label" // don't put children inside tagRender
           tagRender={(props) => (
             <Tag
@@ -81,24 +119,6 @@ export function TaskForm<TFormValues>({
               color={tagById[props.value as string]?.color}
               children={props.label}
             />
-          )}
-          dropdownRender={(menu) => (
-            <>
-              {menu}
-              <TaskTagCreateForm
-                projectId={project.id}
-                onCreated={rerender}
-                // onCreated={(tag) => {
-                //   formRef.current?.setFieldsValue({
-                //     tagIds: [
-                //       ...formRef.current?.getFieldValue("tagIds"),
-                //       tag.id,
-                //     ],
-                //   });
-                //   rerender();
-                // }}
-              />
-            </>
           )}
         >
           {project.taskTags.map((tag) => (

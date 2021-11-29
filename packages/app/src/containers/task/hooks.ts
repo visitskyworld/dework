@@ -81,6 +81,35 @@ export function useCreateTaskTag(): (
   );
 }
 
+export function useGenerateRandomTaskTagColor(
+  existingTags: TaskTag[]
+): () => string {
+  return useCallback(() => {
+    const colors = [
+      "red",
+      "green",
+      "gold",
+      "geekblue",
+
+      "volcano",
+      "cyan",
+      "yellow",
+      "purple",
+
+      "orange",
+      "blue",
+      "lime",
+      "magenta",
+    ];
+
+    const unusedColors = colors.filter(
+      (color) => !existingTags.some((tag) => tag.color === color)
+    );
+    if (!!unusedColors.length) return unusedColors[0];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }, [existingTags]);
+}
+
 export function useTask(taskId: string | undefined): Task | undefined {
   const { data } = useQuery<GetTaskQuery, GetTaskQueryVariables>(Queries.task, {
     variables: { taskId: taskId! },
