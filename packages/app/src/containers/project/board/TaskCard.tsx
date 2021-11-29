@@ -16,6 +16,7 @@ import * as Icons from "@ant-design/icons";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useUpdateTask } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { useSignPayout } from "@dewo/app/util/ethereum";
 // import { useSignPayout } from "../util/ethereum";
 
 interface TaskCardProps {
@@ -50,6 +51,12 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
       task
     );
   }, [task, user, updateTask]);
+
+  const signPayout = useSignPayout();
+  const handlePayAndClose = useCallback(async () => {
+    await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
+    updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
+  }, [signPayout, updateTask, task]);
 
   return (
     <Link href="#">
@@ -106,7 +113,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                     {task.status === TaskStatusEnum.IN_REVIEW && (
                       <Menu.Item
                         icon={<Icons.DollarOutlined />}
-                        onClick={console.warn}
+                        onClick={handlePayAndClose}
                       >
                         Pay and close
                       </Menu.Item>
