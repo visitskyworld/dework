@@ -7,22 +7,18 @@ import { TaskCard } from "./TaskCard";
 import { ProjectDetails, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { TaskCreateModal } from "./TaskCreateModal";
-import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { STATUS_LABEL } from "./util";
 
 interface ProjectBoardColumnProps {
   status: TaskStatusEnum;
   tasks: Task[];
   project: ProjectDetails;
-  onChange(task: Task): void;
-  onAdd(input: CreateTaskInput): void;
 }
 
 export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
   status,
   tasks,
   project,
-  onChange,
 }) => {
   const createCardToggle = useToggle();
   return (
@@ -74,7 +70,7 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
                       marginTop: index === 0 ? 8 : 8,
                     }}
                   >
-                    <TaskCard task={task} onChange={onChange} />
+                    <TaskCard task={task} />
                   </div>
                 )}
               </Draggable>

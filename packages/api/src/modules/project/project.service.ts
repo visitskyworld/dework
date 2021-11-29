@@ -41,4 +41,14 @@ export class ProjectService {
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
   }
+
+  public findWithTasks(id: string): Promise<Project | undefined> {
+    return this.projectRepo
+      .createQueryBuilder("project")
+      .where("project.id = :id", { id })
+      .leftJoinAndSelect("project.tasks", "task")
+      .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.tags", "taskTag")
+      .getOne();
+  }
 }

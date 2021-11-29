@@ -106,6 +106,13 @@ export interface CreateTaskMutation_task_tags {
   color: string;
 }
 
+export interface CreateTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -114,6 +121,7 @@ export interface CreateTaskMutation_task {
   status: TaskStatusEnum;
   sortKey: string;
   tags: CreateTaskMutation_task_tags[];
+  assignees: CreateTaskMutation_task_assignees[];
 }
 
 export interface CreateTaskMutation {
@@ -140,6 +148,13 @@ export interface UpdateTaskMutation_task_tags {
   color: string;
 }
 
+export interface UpdateTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -148,6 +163,7 @@ export interface UpdateTaskMutation_task {
   status: TaskStatusEnum;
   sortKey: string;
   tags: UpdateTaskMutation_task_tags[];
+  assignees: UpdateTaskMutation_task_assignees[];
 }
 
 export interface UpdateTaskMutation {
@@ -271,6 +287,13 @@ export interface GetProjectQuery_project_tasks_tags {
   color: string;
 }
 
+export interface GetProjectQuery_project_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface GetProjectQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -279,6 +302,7 @@ export interface GetProjectQuery_project_tasks {
   status: TaskStatusEnum;
   sortKey: string;
   tags: GetProjectQuery_project_tasks_tags[];
+  assignees: GetProjectQuery_project_tasks_assignees[];
 }
 
 export interface GetProjectQuery_project_taskTags {
@@ -383,6 +407,13 @@ export interface Task_tags {
   color: string;
 }
 
+export interface Task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -391,6 +422,7 @@ export interface Task {
   status: TaskStatusEnum;
   sortKey: string;
   tags: Task_tags[];
+  assignees: Task_assignees[];
 }
 
 /* tslint:disable */
@@ -456,6 +488,13 @@ export interface ProjectDetails_tasks_tags {
   color: string;
 }
 
+export interface ProjectDetails_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface ProjectDetails_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -464,6 +503,7 @@ export interface ProjectDetails_tasks {
   status: TaskStatusEnum;
   sortKey: string;
   tags: ProjectDetails_tasks_tags[];
+  assignees: ProjectDetails_tasks_assignees[];
 }
 
 export interface ProjectDetails_taskTags {
@@ -511,7 +551,8 @@ export interface CreateTaskInput {
   name: string;
   description?: string | null;
   projectId: Scalar.UUID;
-  tagIds: Scalar.UUID[];
+  tagIds?: Scalar.UUID[] | null;
+  assigneeIds?: Scalar.UUID[] | null;
   status: TaskStatusEnum;
 }
 
@@ -526,7 +567,8 @@ export interface UpdateTaskInput {
   name?: string | null;
   description?: string | null;
   sortKey?: string | null;
-  tagIds?: string[] | null;
+  tagIds?: Scalar.UUID[] | null;
+  assigneeIds?: Scalar.UUID[] | null;
   status?: TaskStatusEnum | null;
 }
 

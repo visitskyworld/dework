@@ -47,7 +47,7 @@ export class ProjectResolver {
   public async getProject(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Project | undefined> {
-    const project = await this.projectService.findById(id);
+    const project = await this.projectService.findWithTasks(id);
     if (!project) throw new NotFoundException();
     return project;
   }

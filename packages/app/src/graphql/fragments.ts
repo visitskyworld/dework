@@ -44,9 +44,13 @@ export const task = gql`
     tags {
       ...TaskTag
     }
+    assignees {
+      ...User
+    }
   }
 
   ${taskTag}
+  ${user}
 `;
 
 export const userDetails = gql`
