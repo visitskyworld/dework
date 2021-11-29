@@ -334,6 +334,48 @@ export interface GetProjectQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetTaskQuery
+// ====================================================
+
+export interface GetTaskQuery_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetTaskQuery_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  tags: GetTaskQuery_task_tags[];
+  assignees: GetTaskQuery_task_assignees[];
+}
+
+export interface GetTaskQuery {
+  task: GetTaskQuery_task;
+}
+
+export interface GetTaskQueryVariables {
+  taskId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: User
 // ====================================================
 

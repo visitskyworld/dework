@@ -30,3 +30,13 @@ export const project = gql`
 
   ${Fragments.projectDetails}
 `;
+
+export const task = gql`
+  query GetTaskQuery($taskId: UUID!) {
+    task: getTask(id: $taskId) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;

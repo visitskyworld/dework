@@ -1,31 +1,30 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Tag, Form, Button, Input, Select, FormInstance } from "antd";
-import { useCreateTask } from "../hooks";
 import {
   CreateTaskInput,
   ProjectDetails,
-  Task,
   TaskStatusEnum,
 } from "@dewo/app/graphql/types";
-import { STATUS_LABEL } from "./util";
+import { STATUS_LABEL } from "../project/board/util";
 import { TaskTagCreateForm } from "./TaskTagCreateForm";
 import _ from "lodash";
 import { useRerender } from "@dewo/app/util/hooks";
+import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 
-interface TaskCreateFormProps {
+interface TaskFormProps {
   project: ProjectDetails;
-  initialValues?: Partial<CreateTaskInput>;
-  onCreated(project: Task): unknown;
+  buttonText: string;
+  initialValues?: Partial<CreateTaskInput> & Partial<UpdateTaskInput>;
+  onSubmit(task: CreateTaskInput & UpdateTaskInput): unknown;
 }
 
-export const TaskCreateForm: FC<TaskCreateFormProps> = ({
+export const TaskForm: FC<TaskFormProps> = ({
   project,
+  buttonText,
   initialValues,
-  onCreated,
+  onSubmit,
 }) => {
-  const formRef = useRef<FormInstance<CreateTaskInput>>(null);
-  const createTask = useCreateTask();
-
+  const formRef = useRef<FormInstance<CreateTaskInput & UpdateTaskInput>>(null);
   const tagById = useMemo(
     () => _.keyBy(project.taskTags, "id"),
     [project.taskTags]
@@ -33,22 +32,26 @@ export const TaskCreateForm: FC<TaskCreateFormProps> = ({
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async (values: CreateTaskInput) => {
+    async (values: CreateTaskInput & UpdateTaskInput) => {
       try {
         setLoading(true);
-        const project = await createTask(values);
-        await onCreated(project);
+        await onSubmit(values);
       } finally {
         setLoading(false);
       }
     },
-    [createTask, onCreated]
+    [onSubmit]
   );
 
   const rerender = useRerender();
 
   return (
-    <Form ref={formRef} initialValues={initialValues} onFinish={handleSubmit}>
+    <Form
+      ref={formRef}
+      initialValues={initialValues}
+      onFinish={handleSubmit}
+      onFinishFailed={console.error}
+    >
       <Form.Item
         label="Task Name"
         name="name"
@@ -110,7 +113,10 @@ export const TaskCreateForm: FC<TaskCreateFormProps> = ({
           ))}
         </Select>
       </Form.Item>
-      <Form.Item name="projectId" hidden rules={[{ required: true }]}>
+      <Form.Item name="projectId" hidden>
+        <Input />
+      </Form.Item>
+      <Form.Item name="id" hidden>
         <Input />
       </Form.Item>
       <Form.Item>
@@ -121,7 +127,7 @@ export const TaskCreateForm: FC<TaskCreateFormProps> = ({
           block
           loading={loading}
         >
-          Create
+          {buttonText}
         </Button>
       </Form.Item>
     </Form>

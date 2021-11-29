@@ -6,8 +6,8 @@ import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
 import { ProjectDetails, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { TaskCreateModal } from "./TaskCreateModal";
 import { STATUS_LABEL } from "./util";
+import { TaskCreateModal } from "../../task/TaskCreateModal";
 
 interface ProjectBoardColumnProps {
   status: TaskStatusEnum;
@@ -49,7 +49,7 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
         initialValues={{ projectId: project.id, status }}
         visible={createCardToggle.value}
         onCancel={createCardToggle.onToggleOff}
-        onCreated={createCardToggle.onToggleOff}
+        onDone={createCardToggle.onToggleOff}
       />
       <Droppable key={status} droppableId={status}>
         {(provided) => (

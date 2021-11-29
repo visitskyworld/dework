@@ -1,15 +1,16 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { ProjectDetails, Task } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
-import React, { FC } from "react";
-import { TaskCreateForm } from "./TaskCreateForm";
+import React, { FC, useCallback } from "react";
+import { useCreateTask } from "./hooks";
+import { TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
   project: ProjectDetails;
   visible: boolean;
   initialValues: Partial<CreateTaskInput>;
   onCancel(): void;
-  onCreated(project: Task): unknown;
+  onDone(task: Task): unknown;
 }
 
 export const TaskCreateModal: FC<TaskCreateModalProps> = ({
@@ -17,8 +18,16 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   visible,
   initialValues,
   onCancel,
-  onCreated,
+  onDone,
 }) => {
+  const createTask = useCreateTask();
+  const handleSubmit = useCallback(
+    async (input: CreateTaskInput) => {
+      const task = await createTask(input);
+      await onDone(task);
+    },
+    [createTask, onDone]
+  );
   return (
     <Modal
       title="Create Task"
@@ -26,10 +35,11 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       onCancel={onCancel}
       footer={null}
     >
-      <TaskCreateForm
+      <TaskForm
         project={project}
         initialValues={initialValues}
-        onCreated={onCreated}
+        buttonText="Create"
+        onSubmit={handleSubmit}
       />
     </Modal>
   );

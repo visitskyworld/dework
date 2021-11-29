@@ -14,9 +14,10 @@ import {
 } from "antd";
 import * as Icons from "@ant-design/icons";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
-import { useUpdateTask } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useSignPayout } from "@dewo/app/util/ethereum";
+import { useRouter } from "next/router";
+import { useUpdateTask } from "../../task/hooks";
 // import { useSignPayout } from "../util/ethereum";
 
 interface TaskCardProps {
@@ -24,6 +25,9 @@ interface TaskCardProps {
 }
 
 export const TaskCard: FC<TaskCardProps> = ({ task }) => {
+  // TODO(fant): move this out of here
+  const { organizationId, projectId } = useRouter().query;
+
   // const { user } = useAuthContext();
   // const signPayout = useSignPayout();
   // const handlePayAndClose = useCallback(async () => {
@@ -59,7 +63,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   }, [signPayout, updateTask, task]);
 
   return (
-    <Link href="#">
+    <Link
+      href={`/organization/${organizationId}/project/${projectId}/task/${task.id}`}
+    >
       <a>
         <Card size="small">
           <Row>

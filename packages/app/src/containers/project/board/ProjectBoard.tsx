@@ -1,6 +1,6 @@
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import { useProject, useUpdateTask } from "../hooks";
+import { useProject } from "../hooks";
 import React, { FC, useEffect, useCallback, useState } from "react";
 import _ from "lodash";
 import {
@@ -10,6 +10,7 @@ import {
 } from "react-beautiful-dnd";
 import { orderBetweenTasks, useGroupedTasks } from "./util";
 import { ProjectBoardColumn } from "./ProjectBoardColumn";
+import { useUpdateTask } from "../../task/hooks";
 
 const statuses: TaskStatusEnum[] = [
   TaskStatusEnum.TODO,

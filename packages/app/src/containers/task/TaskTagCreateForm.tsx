@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from "react";
 import { Badge, Button, Form, Input, Select } from "antd";
 import * as Icons from "@ant-design/icons";
 import { CreateTaskTagInput, TaskTag } from "@dewo/app/graphql/types";
-import { useCreateTaskTag } from "../hooks";
+import { useCreateTaskTag } from "./hooks";
 
 interface TaskTagCreateFormProps {
   projectId: string;

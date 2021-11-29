@@ -2,10 +2,11 @@ import {
   Args,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
@@ -13,6 +14,7 @@ import { Task } from "@dewo/api/models/Task";
 import { ProjectMemberGuard } from "../auth/guards/projectMember.guard";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
+import GraphQLUUID from "graphql-type-uuid";
 
 @Injectable()
 @Resolver(() => Task)
@@ -56,6 +58,15 @@ export class TaskResolver {
         : undefined,
     });
 
+    return task;
+  }
+
+  @Query(() => Task)
+  public async getTask(
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<Task | undefined> {
+    const task = await this.taskService.findById(id);
+    if (!task) throw new NotFoundException();
     return task;
   }
 }
