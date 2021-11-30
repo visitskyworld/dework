@@ -108,7 +108,7 @@ export function TaskForm<
   );
 
   const handleChange = useCallback(
-    (_changed: Partial<TFormValues>, values: TFormValues) => {
+    (_changed: Partial<TFormValues>, values: Partial<TFormValues>) => {
       setValues(values);
     },
     []

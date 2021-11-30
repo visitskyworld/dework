@@ -1,4 +1,4 @@
-import _, { initial } from "lodash";
+import _ from "lodash";
 import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
@@ -52,7 +52,8 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       onCancel={onCancel}
       footer={null}
     >
-      <TaskForm<UpdateTaskInput>
+      {/* <TaskForm<UpdateTaskInput> */}
+      <TaskForm<any>
         key={JSON.stringify(initialValues)}
         project={project}
         initialValues={initialValues}
