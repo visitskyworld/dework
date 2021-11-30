@@ -1,10 +1,12 @@
 import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
+import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
 describe("TaskResolver", () => {
   let app: INestApplication;
@@ -52,9 +54,11 @@ describe("TaskResolver", () => {
         const project = await fixtures.createProject({
           organizationId: organization.id,
         });
-        // const status = await fixtures.createTaskStatus({
-        //   projectId: project.id,
-        // });
+        const reward: UpdateTaskRewardInput = {
+          amount: faker.datatype.number(),
+          currency: faker.random.word(),
+          trigger: TaskRewardTrigger.PULL_REQUEST_MERGED,
+        };
 
         const response = await client.request({
           app,
@@ -64,6 +68,7 @@ describe("TaskResolver", () => {
             description,
             projectId: project.id,
             status: TaskStatusEnum.TODO,
+            reward,
           }),
         });
 
@@ -73,6 +78,10 @@ describe("TaskResolver", () => {
         expect(task.name).toEqual(name);
         expect(task.description).toEqual(description);
         expect(task.project.id).toEqual(project.id);
+        expect(task.reward).toBeDefined();
+        expect(task.reward.amount).toEqual(reward.amount);
+        expect(task.reward.currency).toEqual(reward.currency);
+        expect(task.reward.trigger).toEqual(reward.trigger);
       });
     });
 

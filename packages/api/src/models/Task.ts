@@ -6,9 +6,11 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToOne,
 } from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
+import { TaskReward } from "./TaskReward";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
 
@@ -65,4 +67,12 @@ export class Task extends Audit {
   @JoinTable({ name: "task_tag_map" })
   @Field(() => [TaskTag])
   public tags!: TaskTag[];
+
+  @JoinColumn()
+  @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })
+  @Field(() => TaskReward, { nullable: true })
+  public reward?: TaskReward;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public rewardId?: string;
 }

@@ -18,6 +18,11 @@ export class TaskRequests {
       assignees {
         id
       }
+      reward {
+        amount
+        currency
+        trigger
+      }
     }
   `;
 
