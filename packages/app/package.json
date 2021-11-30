@@ -15,6 +15,7 @@
     "@apollo/react-ssr": "^4.0.0",
     "antd": "^4.17.1",
     "between": "^0.1.3",
+    "graphql": "15.7.2",
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "next": "12.0.4",

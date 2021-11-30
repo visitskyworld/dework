@@ -16,6 +16,7 @@ import {
 } from "antd";
 import {
   CreateTaskInput,
+  UpdateTaskInput,
   ProjectDetails,
   TaskRewardTrigger,
   TaskStatusEnum,
@@ -24,7 +25,6 @@ import {
 import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
-import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
   buttonText: string;
