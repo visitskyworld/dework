@@ -29,7 +29,7 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  // @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
   public async createTask(
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
@@ -44,7 +44,7 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(RequireGraphQLAuthGuard)
+  // @UseGuards(RequireGraphQLAuthGuard)
   public async updateTask(
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
