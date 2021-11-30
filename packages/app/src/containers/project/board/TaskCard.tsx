@@ -1,17 +1,6 @@
 import React, { FC, useCallback } from "react";
 import Link from "next/link";
-import {
-  Tag,
-  Card,
-  Avatar,
-  Typography,
-  Space,
-  Row,
-  Col,
-  Dropdown,
-  Menu,
-  Button,
-} from "antd";
+import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
