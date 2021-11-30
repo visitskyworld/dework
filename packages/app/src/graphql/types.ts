@@ -113,6 +113,13 @@ export interface CreateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface CreateTaskMutation_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -122,6 +129,7 @@ export interface CreateTaskMutation_task {
   sortKey: string;
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
+  reward: CreateTaskMutation_task_reward | null;
 }
 
 export interface CreateTaskMutation {
@@ -155,6 +163,13 @@ export interface UpdateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface UpdateTaskMutation_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -164,6 +179,7 @@ export interface UpdateTaskMutation_task {
   sortKey: string;
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
+  reward: UpdateTaskMutation_task_reward | null;
 }
 
 export interface UpdateTaskMutation {
@@ -294,6 +310,13 @@ export interface GetProjectQuery_project_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface GetProjectQuery_project_tasks_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface GetProjectQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -303,6 +326,7 @@ export interface GetProjectQuery_project_tasks {
   sortKey: string;
   tags: GetProjectQuery_project_tasks_tags[];
   assignees: GetProjectQuery_project_tasks_assignees[];
+  reward: GetProjectQuery_project_tasks_reward | null;
 }
 
 export interface GetProjectQuery_project_taskTags {
@@ -351,6 +375,13 @@ export interface GetTaskQuery_task_assignees {
   imageUrl: string | null;
 }
 
+export interface GetTaskQuery_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -360,6 +391,7 @@ export interface GetTaskQuery_task {
   sortKey: string;
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
+  reward: GetTaskQuery_task_reward | null;
 }
 
 export interface GetTaskQuery {
@@ -456,6 +488,13 @@ export interface Task_assignees {
   imageUrl: string | null;
 }
 
+export interface Task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -465,6 +504,7 @@ export interface Task {
   sortKey: string;
   tags: Task_tags[];
   assignees: Task_assignees[];
+  reward: Task_reward | null;
 }
 
 /* tslint:disable */
@@ -537,6 +577,13 @@ export interface ProjectDetails_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface ProjectDetails_tasks_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface ProjectDetails_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -546,6 +593,7 @@ export interface ProjectDetails_tasks {
   sortKey: string;
   tags: ProjectDetails_tasks_tags[];
   assignees: ProjectDetails_tasks_assignees[];
+  reward: ProjectDetails_tasks_reward | null;
 }
 
 export interface ProjectDetails_taskTags {
@@ -572,6 +620,11 @@ export interface ProjectDetails {
 // START Enums and Input Objects
 //==============================================================
 
+export enum TaskRewardTrigger {
+  CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
+  PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
+}
+
 export enum TaskStatusEnum {
   DONE = "DONE",
   IN_PROGRESS = "IN_PROGRESS",
@@ -596,6 +649,7 @@ export interface CreateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   status: TaskStatusEnum;
+  reward?: UpdateTaskRewardInput | null;
 }
 
 export interface CreateTaskTagInput {
@@ -612,6 +666,13 @@ export interface UpdateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   status?: TaskStatusEnum | null;
+  reward?: UpdateTaskRewardInput | null;
+}
+
+export interface UpdateTaskRewardInput {
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
 }
 
 //==============================================================

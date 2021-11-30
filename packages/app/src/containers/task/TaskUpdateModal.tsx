@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { initial } from "lodash";
 import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
@@ -38,6 +38,9 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       tagIds: task?.tags.map((t) => t.id),
       assigneeIds: task?.assignees.map((a) => a.id),
       status: task?.status,
+      reward: !!task?.reward
+        ? _.pick(task.reward, ["amount", "currency", "trigger"])
+        : undefined,
     }),
     [task, taskId]
   );

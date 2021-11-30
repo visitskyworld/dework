@@ -47,6 +47,11 @@ export const task = gql`
     assignees {
       ...User
     }
+    reward {
+      amount
+      currency
+      trigger
+    }
   }
 
   ${taskTag}

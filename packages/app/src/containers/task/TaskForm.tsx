@@ -14,10 +14,17 @@ import {
   Col,
   InputNumber,
 } from "antd";
-import { ProjectDetails, TaskStatusEnum, User } from "@dewo/app/graphql/types";
+import {
+  CreateTaskInput,
+  ProjectDetails,
+  TaskRewardTrigger,
+  TaskStatusEnum,
+  User,
+} from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
+import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
   buttonText: string;
@@ -26,7 +33,9 @@ interface TaskFormProps<TFormValues> {
   onSubmit(task: TFormValues): unknown;
 }
 
-export function TaskForm<TFormValues>({
+export function TaskForm<
+  TFormValues extends CreateTaskInput | UpdateTaskInput
+>({
   project,
   assignees,
   buttonText,
@@ -47,8 +56,11 @@ export function TaskForm<TFormValues>({
     async (values: TFormValues) => {
       try {
         setLoading(true);
-        // @ts-ignore
-        await onSubmit(_.omit(values, ["bountyCurrency", "bounty", "terms"]));
+        console.warn(values);
+        await onSubmit({
+          ...values,
+          reward: !!values.reward?.amount ? values.reward : undefined,
+        });
       } finally {
         setLoading(false);
       }
@@ -95,13 +107,20 @@ export function TaskForm<TFormValues>({
     [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, project.id]
   );
 
+  const handleChange = useCallback(
+    (_changed: Partial<TFormValues>, values: TFormValues) => {
+      setValues(values);
+    },
+    []
+  );
+
   return (
     <Form
       ref={formRef}
       layout="vertical"
-      initialValues={{ ...initialValues, bountyCurrency: "ETH" }}
+      initialValues={{ ...initialValues, reward: { currency: "ETH" } }}
       onFinish={handleSubmit}
-      onValuesChange={(_changed, all) => setValues(all)}
+      onValuesChange={handleChange}
     >
       <Form.Item
         name="name"
@@ -151,11 +170,12 @@ export function TaskForm<TFormValues>({
 
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item name="bounty" label="Bounty">
+          <Form.Item name={["reward", "amount"]} label="Bounty">
             <InputNumber
               placeholder="Enter amount"
+              value={values.reward?.amount}
               addonAfter={
-                <Form.Item name="bountyCurrency" noStyle>
+                <Form.Item name={["reward", "currency"]} noStyle>
                   <Select defaultValue="ETH">
                     <Select.Option value="ETH">ETH</Select.Option>
                     <Select.Option value="USDC">USDC</Select.Option>
@@ -167,25 +187,30 @@ export function TaskForm<TFormValues>({
         </Col>
         <Col span={12}>
           <Form.Item
-            name="terms"
-            label="Payout terms"
-            hidden={!(values as any).bounty}
+            name={["reward", "trigger"]}
+            label="Payout trigger"
+            rules={[
+              {
+                required: !!values.reward?.amount,
+                message: "Please enter a payout trigger",
+              },
+            ]}
+            hidden={!values.reward?.amount}
           >
             <Select
               loading={tagLoading}
               optionFilterProp="label"
-              placeholder="Select payout terms"
-              optionLabelProp="label" // don't put children inside tagRender
+              placeholder="Select payout trigger"
             >
               {[
                 {
                   label: "Core team approval",
-                  value: "2",
+                  value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
                   icon: Icons.TeamOutlined,
                 },
                 {
                   label: "PR merged",
-                  value: "1",
+                  value: TaskRewardTrigger.PULL_REQUEST_MERGED,
                   icon: Icons.GithubOutlined,
                 },
               ].map((tag) => (

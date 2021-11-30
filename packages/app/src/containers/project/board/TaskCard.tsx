@@ -63,6 +63,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
   }, [signPayout, updateTask, task]);
 
+  console.warn(task.name, task.reward);
   return (
     <Link
       href={`/organization/${organizationId}/project/${projectId}/task/${task.id}`}
@@ -75,6 +76,14 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                 <Typography.Text strong>{task.name}</Typography.Text>
               </Row>
               <Row>
+                {!!task.reward && (
+                  <Tag color="#e89a3c" style={{ marginBottom: 4 }}>
+                    <Icons.DollarOutlined />
+                    <span>
+                      {task.reward.amount} {task.reward.currency}
+                    </span>
+                  </Tag>
+                )}
                 {task.tags.map(({ label, color }, index) => (
                   <Tag key={index} color={color} style={{ marginBottom: 4 }}>
                     {/* <Tag key={index} color={`#${color}`} style={{ color: "black" }}> */}

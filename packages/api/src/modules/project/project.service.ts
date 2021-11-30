@@ -49,6 +49,7 @@ export class ProjectService {
       .leftJoinAndSelect("project.tasks", "task")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.tags", "taskTag")
+      .leftJoinAndSelect("task.reward", "reward")
       .getOne();
   }
 }
