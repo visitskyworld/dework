@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import _ from "lodash";
 import {
   Tag,
   Form,
@@ -16,7 +17,6 @@ import {
 import { ProjectDetails, TaskStatusEnum, User } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
-import _ from "lodash";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 interface TaskFormProps<TFormValues> {
   project: ProjectDetails;
@@ -47,7 +47,8 @@ export function TaskForm<TFormValues>({
     async (values: TFormValues) => {
       try {
         setLoading(true);
-        await onSubmit(values);
+        // @ts-ignore
+        await onSubmit(_.omit(values, ["bountyCurrency", "bounty", "terms"]));
       } finally {
         setLoading(false);
       }
