@@ -11,6 +11,7 @@ import {
   Typography,
   Space,
   Col,
+  InputNumber,
 } from "antd";
 import { ProjectDetails, TaskStatusEnum, User } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
@@ -33,6 +34,9 @@ export function TaskForm<TFormValues>({
   onSubmit,
 }: TaskFormProps<TFormValues>) {
   const formRef = useRef<FormInstance<TFormValues>>(null);
+  const [values, setValues] = useState<Partial<TFormValues>>(
+    initialValues ?? {}
+  );
   const tagById = useMemo(
     () => _.keyBy(project.taskTags, "id"),
     [project.taskTags]
@@ -91,23 +95,27 @@ export function TaskForm<TFormValues>({
   );
 
   return (
-    <Form ref={formRef} initialValues={initialValues} onFinish={handleSubmit}>
+    <Form
+      ref={formRef}
+      layout="vertical"
+      initialValues={{ ...initialValues, bountyCurrency: "ETH" }}
+      onFinish={handleSubmit}
+      onValuesChange={(_changed, all) => setValues(all)}
+    >
       <Form.Item
-        label="Task Name"
         name="name"
+        label="Task name"
         rules={[{ required: true, message: "Please enter a name" }]}
       >
-        <Input />
+        <Input size="large" />
       </Form.Item>
-      <Form.Item label="Task Description" name="description">
-        <Input.TextArea />
+
+      <Form.Item name="description" label="Description (optional)">
+        <Input.TextArea style={{ minHeight: 120 }} />
       </Form.Item>
+
       <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-        <Select
-          placeholder="Select a task status"
-          // onChange={() => formRef.current?.setFieldsValue({})}
-          allowClear
-        >
+        <Select placeholder="Select a task status">
           {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
             <Select.Option key={status} value={status}>
               {STATUS_LABEL[status]}
@@ -115,12 +123,13 @@ export function TaskForm<TFormValues>({
           ))}
         </Select>
       </Form.Item>
+
       <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
         <Select
           mode="tags"
           loading={tagLoading}
           optionFilterProp="label"
-          placeholder="Please select favourite colors"
+          placeholder="Select tags..."
           onChange={handleTagsUpdated}
           optionLabelProp="label" // don't put children inside tagRender
           tagRender={(props) => (
@@ -138,6 +147,59 @@ export function TaskForm<TFormValues>({
           ))}
         </Select>
       </Form.Item>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item name="bounty" label="Bounty">
+            <InputNumber
+              placeholder="Enter amount"
+              addonAfter={
+                <Form.Item name="bountyCurrency" noStyle>
+                  <Select defaultValue="ETH">
+                    <Select.Option value="ETH">ETH</Select.Option>
+                    <Select.Option value="USDC">USDC</Select.Option>
+                  </Select>
+                </Form.Item>
+              }
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="terms"
+            label="Payout terms"
+            hidden={!(values as any).bounty}
+          >
+            <Select
+              loading={tagLoading}
+              optionFilterProp="label"
+              placeholder="Select payout terms"
+              optionLabelProp="label" // don't put children inside tagRender
+            >
+              {[
+                {
+                  label: "Core team approval",
+                  value: "2",
+                  icon: Icons.TeamOutlined,
+                },
+                {
+                  label: "PR merged",
+                  value: "1",
+                  icon: Icons.GithubOutlined,
+                },
+              ].map((tag) => (
+                <Select.Option value={tag.value} label={tag.label}>
+                  <Space style={{ alignItems: "center" }}>
+                    <tag.icon />
+                    {tag.label}
+                  </Space>
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Form.Item name="projectId" hidden>
         <Input />
       </Form.Item>
@@ -153,9 +215,7 @@ export function TaskForm<TFormValues>({
             direction="vertical"
             style={{ width: "100%", paddingBottom: 24 }}
           >
-            <Typography.Text strong>
-              Contributor Reservation Requests
-            </Typography.Text>
+            <Typography.Text strong>Contributor Claim Requests</Typography.Text>
             <Col>
               {assignees.map((user) => (
                 <Space style={{ width: "100%", display: "flex" }}>
