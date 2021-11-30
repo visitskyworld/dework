@@ -31,23 +31,31 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
 
   const { user } = useAuthContext();
   const updateTask = useUpdateTask();
-  const claimTask = useCallback(async () => {
-    if (!user) return;
-    await updateTask(
-      {
-        id: task.id,
-        // status: TaskStatusEnum.IN_PROGRESS,
-        assigneeIds: [user.id],
-      },
-      task
-    );
-  }, [task, user, updateTask]);
+  const claimTask = useCallback(
+    async (event) => {
+      eatClick(event);
+      if (!user) return;
+      await updateTask(
+        {
+          id: task.id,
+          // status: TaskStatusEnum.IN_PROGRESS,
+          assigneeIds: [user.id],
+        },
+        task
+      );
+    },
+    [task, user, updateTask]
+  );
 
   const signPayout = useSignPayout();
-  const handlePayAndClose = useCallback(async () => {
-    await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
-    updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
-  }, [signPayout, updateTask, task]);
+  const handlePayAndClose = useCallback(
+    async (event) => {
+      eatClick(event);
+      await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
+      updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
+    },
+    [signPayout, updateTask, task]
+  );
 
   return (
     <Link
@@ -76,6 +84,24 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   </Tag>
                 ))}
               </Row>
+              {task.status === TaskStatusEnum.IN_REVIEW && (
+                <Button
+                  size="small"
+                  icon={<Icons.DollarOutlined />}
+                  onClick={handlePayAndClose}
+                >
+                  Pay and close
+                </Button>
+              )}
+              {!!user && task.status === TaskStatusEnum.TODO && (
+                <Button
+                  size="small"
+                  icon={<Icons.ClockCircleOutlined />}
+                  onClick={claimTask}
+                >
+                  Claim
+                </Button>
+              )}
             </Space>
             <Col
               onClick={eatClick}
@@ -87,7 +113,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                 alignItems: "flex-end",
               }}
             >
-              <Dropdown
+              {/* <Dropdown
                 placement="bottomRight"
                 overlay={
                   <Menu>
@@ -115,7 +141,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   icon={<Icons.MoreOutlined />}
                   style={{ marginRight: -8, marginTop: -8 }}
                 />
-              </Dropdown>
+              </Dropdown> */}
               <div style={{ flex: 1 }} />
               <Avatar.Group maxCount={3} size={16}>
                 {task.assignees.map((user) => (
