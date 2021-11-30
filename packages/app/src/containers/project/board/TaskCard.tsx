@@ -29,20 +29,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   // TODO(fant): move this out of here
   const { organizationId, projectId } = useRouter().query;
 
-  // const { user } = useAuthContext();
-  // const signPayout = useSignPayout();
-  // const handlePayAndClose = useCallback(async () => {
-  //   await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
-  //   onChange({ ...task, status: TaskStatus.DONE });
-  // }, [onChange]);
-  // const handleReserve = useCallback(() => {
-  //   onChange({
-  //     ...task,
-  //     assignee: user,
-  //     sortKey: Date.now().toString(),
-  //   });
-  // }, [user, task, onChange]);
-
   const { user } = useAuthContext();
   const updateTask = useUpdateTask();
   const claimTask = useCallback(async () => {
@@ -63,7 +49,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
   }, [signPayout, updateTask, task]);
 
-  console.warn(task.name, task.reward);
   return (
     <Link
       href={`/organization/${organizationId}/project/${projectId}/task/${task.id}`}

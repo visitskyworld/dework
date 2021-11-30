@@ -118,7 +118,7 @@ export function TaskForm<
     <Form
       ref={formRef}
       layout="vertical"
-      initialValues={{ ...initialValues, reward: { currency: "ETH" } }}
+      initialValues={{ reward: { currency: "ETH" }, ...initialValues }}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
