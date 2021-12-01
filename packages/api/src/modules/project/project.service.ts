@@ -1,4 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
+import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { AtLeast } from "@dewo/api/types/general";
@@ -13,6 +14,8 @@ export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+    @InjectRepository(ProjectIntegration)
+    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
     @InjectRepository(TaskTag)
     private readonly taskTagRepo: Repository<TaskTag>,
     @InjectRepository(TaskStatus)
@@ -22,6 +25,15 @@ export class ProjectService {
   public async create(partial: DeepPartial<Project>): Promise<Project> {
     const created = await this.projectRepo.save(partial);
     return this.projectRepo.findOne(created.id) as Promise<Project>;
+  }
+
+  public async createIntegration(
+    partial: DeepPartial<ProjectIntegration>
+  ): Promise<ProjectIntegration> {
+    const created = await this.projectIntegrationRepo.save(partial);
+    return this.projectIntegrationRepo.findOne(
+      created.id
+    ) as Promise<ProjectIntegration>;
   }
 
   public async createTag(

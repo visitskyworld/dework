@@ -1,4 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
+import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
@@ -10,7 +11,13 @@ import { ProjectService } from "./project.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, User, TaskTag, TaskStatus]),
+    TypeOrmModule.forFeature([
+      Project,
+      ProjectIntegration,
+      User,
+      TaskTag,
+      TaskStatus,
+    ]),
     TaskModule,
   ],
   providers: [ProjectResolver, ProjectService],

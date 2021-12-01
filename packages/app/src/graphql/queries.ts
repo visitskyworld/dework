@@ -40,3 +40,35 @@ export const task = gql`
 
   ${Fragments.task}
 `;
+
+export const discordListGuilds = gql`
+  query DiscordListGuildsQuery {
+    guilds: discordListGuilds {
+      id
+      name
+      icon
+    }
+  }
+`;
+
+export const discordListChannels = gql`
+  query DiscordListChannelsQuery($discordGuildId: String!) {
+    channels: discordListTextChannels(discordGuildId: $discordGuildId) {
+      id
+      name
+    }
+  }
+`;
+
+export const projectIntegrations = gql`
+  query GetProjectIntegrationsQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      id
+      integrations {
+        ...ProjectIntegration
+      }
+    }
+  }
+
+  ${Fragments.projectIntegration}
+`;

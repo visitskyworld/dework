@@ -1,5 +1,6 @@
 import {
   Args,
+  Context,
   Mutation,
   Parent,
   Query,
@@ -20,6 +21,9 @@ import { CreateTaskStatusInput } from "./dto/CreateTaskStatusInput";
 import GraphQLUUID from "graphql-type-uuid";
 import { Task } from "@dewo/api/models/Task";
 import { TaskService } from "../task/task.service";
+import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
+import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
+import { User } from "@dewo/api/models/User";
 
 @Resolver(() => Project)
 @Injectable()
@@ -40,6 +44,18 @@ export class ProjectResolver {
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
     return this.projectService.create(input);
+  }
+
+  @Mutation(() => ProjectIntegration)
+  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  public async createProjectIntegration(
+    @Args("input") input: CreateProjectIntegrationInput,
+    @Context("user") user: User
+  ): Promise<ProjectIntegration> {
+    return this.projectService.createIntegration({
+      ...input,
+      creatorId: user.id,
+    });
   }
 
   @Mutation(() => TaskTag)

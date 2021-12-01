@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Profile as DiscordProfile } from "passport-discord";
 import { Profile as GithubProfile } from "passport-github";
@@ -27,6 +27,8 @@ interface ThreepidConfigMap extends Record<ThreepidSource, any> {
   [ThreepidSource.discord]: DiscordThreepidConfig;
 }
 
+registerEnumType(ThreepidSource, { name: "ThreepidSource" });
+
 @Entity()
 @ObjectType()
 @Index("IDX_unique_threepid_source", ["threepid", "source"], { unique: true })
@@ -37,7 +39,7 @@ export class Threepid<
   @Column()
   public threepid!: string;
 
-  @Field()
+  @Field(() => ThreepidSource)
   @Column("enum", { enum: ThreepidSource })
   public source!: TSource;
 

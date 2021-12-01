@@ -82,3 +82,21 @@ export const createTaskTag = gql`
 
   ${Fragments.taskTag}
 `;
+
+export const createProjectIntegration = gql`
+  mutation CreateProjectIntegrationMutation(
+    $input: CreateProjectIntegrationInput!
+  ) {
+    integration: createProjectIntegration(input: $input) {
+      id
+      project {
+        id
+        integrations {
+          ...ProjectIntegration
+        }
+      }
+    }
+  }
+
+  ${Fragments.projectIntegration}
+`;

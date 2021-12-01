@@ -19,6 +19,14 @@ export const organization = gql`
   }
 `;
 
+export const projectIntegration = gql`
+  fragment ProjectIntegration on ProjectIntegration {
+    id
+    source
+    config
+  }
+`;
+
 export const project = gql`
   fragment Project on Project {
     id
@@ -64,6 +72,10 @@ export const userDetails = gql`
     ...User
     organizations {
       ...Organization
+    }
+    threepids {
+      id
+      source
     }
   }
 

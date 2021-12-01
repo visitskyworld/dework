@@ -1,7 +1,7 @@
 ###
 # Build stage
 ###
-FROM node:14-alpine as builder
+FROM node:16-alpine as builder
 WORKDIR /builder
 
 COPY package.json yarn.lock ./
@@ -23,7 +23,7 @@ RUN yarn api build
 ###
 # Exec Stage
 ###
-FROM node:14-alpine
+FROM node:16-alpine
 WORKDIR /app
 
 COPY package.json yarn.lock ./

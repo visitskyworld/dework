@@ -287,6 +287,35 @@ export interface CreateTaskTagMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateProjectIntegrationMutation
+// ====================================================
+
+export interface CreateProjectIntegrationMutation_integration_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface CreateProjectIntegrationMutation_integration {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  project: CreateProjectIntegrationMutation_integration_project;
+}
+
+export interface CreateProjectIntegrationMutation {
+  integration: CreateProjectIntegrationMutation_integration;
+}
+
+export interface CreateProjectIntegrationMutationVariables {
+  input: CreateProjectIntegrationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -297,12 +326,19 @@ export interface MeQuery_me_organizations {
   imageUrl: string | null;
 }
 
+export interface MeQuery_me_threepids {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+  source: ThreepidSource;
+}
+
 export interface MeQuery_me {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
   organizations: MeQuery_me_organizations[];
+  threepids: MeQuery_me_threepids[];
 }
 
 export interface MeQuery {
@@ -463,6 +499,79 @@ export interface GetTaskQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: DiscordListGuildsQuery
+// ====================================================
+
+export interface DiscordListGuildsQuery_guilds {
+  __typename: "DiscordGuild";
+  id: string;
+  name: string;
+  icon: string | null;
+}
+
+export interface DiscordListGuildsQuery {
+  guilds: DiscordListGuildsQuery_guilds[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: DiscordListChannelsQuery
+// ====================================================
+
+export interface DiscordListChannelsQuery_channels {
+  __typename: "DiscordChannel";
+  id: string;
+  name: string;
+}
+
+export interface DiscordListChannelsQuery {
+  channels: DiscordListChannelsQuery_channels[];
+}
+
+export interface DiscordListChannelsQueryVariables {
+  discordGuildId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectIntegrationsQuery
+// ====================================================
+
+export interface GetProjectIntegrationsQuery_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
+export interface GetProjectIntegrationsQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  integrations: GetProjectIntegrationsQuery_project_integrations[];
+}
+
+export interface GetProjectIntegrationsQuery {
+  project: GetProjectIntegrationsQuery_project;
+}
+
+export interface GetProjectIntegrationsQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: User
 // ====================================================
 
@@ -487,6 +596,22 @@ export interface Organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: ProjectIntegration
+// ====================================================
+
+export interface ProjectIntegration {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
 }
 
 /* tslint:disable */
@@ -579,12 +704,19 @@ export interface UserDetails_organizations {
   imageUrl: string | null;
 }
 
+export interface UserDetails_threepids {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+  source: ThreepidSource;
+}
+
 export interface UserDetails {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
   organizations: UserDetails_organizations[];
+  threepids: UserDetails_threepids[];
 }
 
 /* tslint:disable */
@@ -677,6 +809,10 @@ export interface ProjectDetails {
 // START Enums and Input Objects
 //==============================================================
 
+export enum ProjectIntegrationSource {
+  discord = "discord",
+}
+
 export enum TaskRewardTrigger {
   CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
   PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
@@ -689,6 +825,11 @@ export enum TaskStatusEnum {
   TODO = "TODO",
 }
 
+export enum ThreepidSource {
+  discord = "discord",
+  github = "github",
+}
+
 export interface CreateOrganizationInput {
   name: string;
   imageUrl?: string | null;
@@ -697,6 +838,12 @@ export interface CreateOrganizationInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
+}
+
+export interface CreateProjectIntegrationInput {
+  source: ProjectIntegrationSource;
+  config: Scalar.JSONObject;
+  projectId: Scalar.UUID;
 }
 
 export interface CreateTaskInput {

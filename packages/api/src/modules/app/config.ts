@@ -15,6 +15,8 @@ export interface ConfigType {
   DISCORD_OAUTH_CLIENT_ID: string;
   DISCORD_OAUTH_CLIENT_SECRET: string;
   DISCORD_OAUTH_REDIRECT_URI: string;
+
+  DISCORD_BOT_TOKEN: string;
 }
 
 const MAX_PORT = 65535;
@@ -33,4 +35,5 @@ export const configSchema = Joi.object<ConfigType>({
   DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
   DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
   DISCORD_OAUTH_REDIRECT_URI: Joi.string().required(),
+  DISCORD_BOT_TOKEN: Joi.string().required(),
 });
