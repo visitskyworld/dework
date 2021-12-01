@@ -1,5 +1,4 @@
 import { Project } from "@dewo/api/models/Project";
-import { Task } from "@dewo/api/models/Task";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { AtLeast } from "@dewo/api/types/general";

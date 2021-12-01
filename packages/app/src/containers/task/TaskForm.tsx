@@ -300,7 +300,7 @@ export function TaskForm<
             </Form.Item>
           </ConfigProvider>
 
-          {mode === "update" && (
+          {mode === "update" && !!task && (
             <>
               <Row>
                 <Typography.Text>Actions</Typography.Text>
