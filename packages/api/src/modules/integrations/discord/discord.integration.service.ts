@@ -90,10 +90,3 @@ export class DiscordIntegrationService
     channel.send(`New bounty up for grabs! ${event.entity.name}\n${permalink}`);
   }
 }
-
-// flow
-// project settings
-// post new tasks to Discord
-// if project isn't authorized with Discord bot, authorize it
-// show list of channels in Discord
-// create ProjectIntegration (projectId, source=DISCORD, config: {features: [{channelId, type: POST_CREATED_TASKS}], guildId)
