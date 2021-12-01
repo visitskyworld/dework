@@ -13,6 +13,8 @@ import {
   Space,
   Col,
   InputNumber,
+  ConfigProvider,
+  Empty,
 } from "antd";
 import {
   CreateTaskInput,
@@ -144,29 +146,35 @@ export function TaskForm<
         </Select>
       </Form.Item>
 
-      <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
-        <Select
-          mode="tags"
-          loading={tagLoading}
-          optionFilterProp="label"
-          placeholder="Select tags..."
-          onChange={handleTagsUpdated}
-          optionLabelProp="label" // don't put children inside tagRender
-          tagRender={(props) => (
-            <Tag
-              {...props}
-              color={tagById[props.value as string]?.color}
-              children={props.label}
-            />
-          )}
-        >
-          {project.taskTags.map((tag) => (
-            <Select.Option value={tag.id} label={tag.label}>
-              <Tag color={tag.color}>{tag.label}</Tag>
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+      <ConfigProvider
+        renderEmpty={() => (
+          <Empty description="Create your first tag by typing..." />
+        )}
+      >
+        <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
+          <Select
+            mode="tags"
+            loading={tagLoading}
+            optionFilterProp="label"
+            placeholder="Select tags..."
+            onChange={handleTagsUpdated}
+            optionLabelProp="label" // don't put children inside tagRender
+            tagRender={(props) => (
+              <Tag
+                {...props}
+                color={tagById[props.value as string]?.color}
+                children={props.label}
+              />
+            )}
+          >
+            {project.taskTags.map((tag) => (
+              <Select.Option value={tag.id} label={tag.label}>
+                <Tag color={tag.color}>{tag.label}</Tag>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </ConfigProvider>
 
       <Row gutter={16}>
         <Col span={12}>

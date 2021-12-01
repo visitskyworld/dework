@@ -1,4 +1,11 @@
-import { Args, Mutation, Query } from "@nestjs/graphql";
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
@@ -11,10 +18,21 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { CreateTaskStatusInput } from "./dto/CreateTaskStatusInput";
 import GraphQLUUID from "graphql-type-uuid";
+import { Task } from "@dewo/api/models/Task";
+import { TaskService } from "../task/task.service";
 
+@Resolver(() => Project)
 @Injectable()
 export class ProjectResolver {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly taskService: TaskService
+  ) {}
+
+  @ResolveField(() => [Task])
+  public async tasks(@Parent() project: Project): Promise<Task[]> {
+    return this.taskService.findWithRelations(project.id);
+  }
 
   @Mutation(() => Project)
   @UseGuards(RequireGraphQLAuthGuard, OrganizationMemberGuard)
@@ -47,7 +65,7 @@ export class ProjectResolver {
   public async getProject(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Project | undefined> {
-    const project = await this.projectService.findWithTasks(id);
+    const project = await this.projectService.findById(id);
     if (!project) throw new NotFoundException();
     return project;
   }

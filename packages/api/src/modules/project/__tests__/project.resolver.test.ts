@@ -60,4 +60,34 @@ describe("ProjectResolver", () => {
       });
     });
   });
+
+  describe("Queries", () => {
+    describe("getProject", () => {
+      it("should not return deleted tasks", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization();
+        const project = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          deletedAt: new Date(),
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.get(project.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        console.warn(response.body);
+        const fetchedProject = response.body.data?.project;
+        expect(fetchedProject).toBeDefined();
+        expect(fetchedProject.tasks).not.toContainEqual(
+          expect.objectContaining({ id: task.id })
+        );
+      });
+    });
+  });
 });

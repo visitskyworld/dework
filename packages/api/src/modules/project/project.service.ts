@@ -1,4 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
+import { Task } from "@dewo/api/models/Task";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { AtLeast } from "@dewo/api/types/general";
@@ -40,16 +41,5 @@ export class ProjectService {
 
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
-  }
-
-  public findWithTasks(id: string): Promise<Project | undefined> {
-    return this.projectRepo
-      .createQueryBuilder("project")
-      .where("project.id = :id", { id })
-      .leftJoinAndSelect("project.tasks", "task")
-      .leftJoinAndSelect("task.assignees", "assignee")
-      .leftJoinAndSelect("task.tags", "taskTag")
-      .leftJoinAndSelect("task.reward", "reward")
-      .getOne();
   }
 }

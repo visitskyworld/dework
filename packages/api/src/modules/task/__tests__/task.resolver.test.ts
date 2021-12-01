@@ -170,5 +170,26 @@ describe("TaskResolver", () => {
         expect(updatedTask.name).toEqual(task.name);
       });
     });
+
+    describe("deleteTask", () => {
+      it("should set task.deletedAt", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization();
+        const project = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+        const task = await fixtures.createTask({ projectId: project.id });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.delete(task.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const deletedTask = response.body.data?.task;
+        expect(deletedTask.deletedAt).not.toBe(null);
+      });
+    });
   });
 });

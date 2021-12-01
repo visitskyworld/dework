@@ -75,4 +75,8 @@ export class Task extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public rewardId?: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

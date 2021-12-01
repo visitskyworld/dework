@@ -9,6 +9,7 @@ export class TaskRequests {
       name
       description
       status
+      deletedAt
       tags {
         id
       }
@@ -57,6 +58,23 @@ export class TaskRequests {
         ${this.taskFragment}
       `,
       variables: { input },
+    };
+  }
+
+  public static delete(
+    taskId: string
+  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    return {
+      query: `
+        mutation DeleteTask($taskId: UUID!) {
+          task: deleteTask(id: $taskId) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { taskId },
     };
   }
 }

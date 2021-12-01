@@ -26,4 +26,15 @@ export class TaskService {
   public async findById(id: string): Promise<Task | undefined> {
     return this.taskRepo.findOne(id);
   }
+
+  public async findWithRelations(projectId: string): Promise<Task[]> {
+    return this.taskRepo
+      .createQueryBuilder("task")
+      .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.tags", "taskTag")
+      .leftJoinAndSelect("task.reward", "reward")
+      .where("task.projectId = :projectId", { projectId })
+      .andWhere("task.deletedAt IS NULL")
+      .getMany();
+  }
 }
