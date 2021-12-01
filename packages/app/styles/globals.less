@@ -20,6 +20,18 @@
   padding-bottom: 4px;
 }
 
+.ant-btn.ant-btn-ghost {
+  background: @btn-text-hover-bg;
+}
+
+.ant-btn.hover\:ant-btn-dangerous {
+  &:hover, &:active, &:focus {
+    background: unset;
+    color: @error-color;
+    border-color: @error-color;
+  }
+}
+
 .pointer-cursor {
   cursor: pointer;
 }

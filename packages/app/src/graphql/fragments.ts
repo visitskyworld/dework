@@ -41,6 +41,7 @@ export const task = gql`
     description
     status
     sortKey
+    deletedAt
     tags {
       ...TaskTag
     }

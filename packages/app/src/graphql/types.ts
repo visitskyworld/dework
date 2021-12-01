@@ -127,6 +127,7 @@ export interface CreateTaskMutation_task {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
@@ -177,6 +178,7 @@ export interface UpdateTaskMutation_task {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
@@ -188,6 +190,57 @@ export interface UpdateTaskMutation {
 
 export interface UpdateTaskMutationVariables {
   input: UpdateTaskInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: DeleteTaskMutation
+// ====================================================
+
+export interface DeleteTaskMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface DeleteTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskMutation_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
+export interface DeleteTaskMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  tags: DeleteTaskMutation_task_tags[];
+  assignees: DeleteTaskMutation_task_assignees[];
+  reward: DeleteTaskMutation_task_reward | null;
+}
+
+export interface DeleteTaskMutation {
+  task: DeleteTaskMutation_task;
+}
+
+export interface DeleteTaskMutationVariables {
+  taskId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -324,6 +377,7 @@ export interface GetProjectQuery_project_tasks {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: GetProjectQuery_project_tasks_tags[];
   assignees: GetProjectQuery_project_tasks_assignees[];
   reward: GetProjectQuery_project_tasks_reward | null;
@@ -389,6 +443,7 @@ export interface GetTaskQuery_task {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
@@ -502,6 +557,7 @@ export interface Task {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: Task_tags[];
   assignees: Task_assignees[];
   reward: Task_reward | null;
@@ -591,6 +647,7 @@ export interface ProjectDetails_tasks {
   description: string | null;
   status: TaskStatusEnum;
   sortKey: string;
+  deletedAt: Scalar.DateTime | null;
   tags: ProjectDetails_tasks_tags[];
   assignees: ProjectDetails_tasks_assignees[];
   reward: ProjectDetails_tasks_reward | null;

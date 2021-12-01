@@ -35,6 +35,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       footer={null}
     >
       <TaskForm<CreateTaskInput>
+        mode="create"
         project={project}
         initialValues={initialValues}
         buttonText="Create"

@@ -15,6 +15,7 @@ export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
 export function useGroupedTasks(tasks: Task[]): Record<TaskStatusEnum, Task[]> {
   return useMemo(() => {
     return _(tasks)
+      .filter((task) => !task.deletedAt)
       .groupBy((task) => task.status)
       .mapValues((tasksWithStatus) =>
         _.sortBy(tasksWithStatus, (task) => task.sortKey)

@@ -8,6 +8,8 @@ import {
   CreateTaskTagInput,
   CreateTaskTagMutation,
   CreateTaskTagMutationVariables,
+  DeleteTaskMutation,
+  DeleteTaskMutationVariables,
   GetTaskQuery,
   GetTaskQueryVariables,
   Task,
@@ -61,6 +63,27 @@ export function useUpdateTask(): (
       return res.data?.task;
     },
     [updateTask]
+  );
+}
+
+export function useDeleteTask(): (task: Task) => Promise<Task> {
+  const [deleteTask] = useMutation<
+    DeleteTaskMutation,
+    DeleteTaskMutationVariables
+  >(Mutations.deleteTask);
+  return useCallback(
+    async (task) => {
+      const res = await deleteTask({
+        variables: { taskId: task.id },
+        optimisticResponse: {
+          task: { ...task, deletedAt: new Date().toISOString() },
+        },
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.task;
+    },
+    [deleteTask]
   );
 }
 

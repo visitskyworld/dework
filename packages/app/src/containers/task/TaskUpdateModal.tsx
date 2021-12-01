@@ -55,6 +55,8 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       {/* <TaskForm<UpdateTaskInput> */}
       <TaskForm<any>
         key={JSON.stringify(initialValues)}
+        mode="update"
+        task={task}
         project={project}
         initialValues={initialValues}
         assignees={task?.assignees}

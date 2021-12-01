@@ -57,6 +57,15 @@ export const updateTask = gql`
 
   ${Fragments.task}
 `;
+export const deleteTask = gql`
+  mutation DeleteTaskMutation($taskId: UUID!) {
+    task: deleteTask(id: $taskId) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;
 
 export const createTaskTag = gql`
   mutation CreateTaskTagMutation($input: CreateTaskTagInput!) {
