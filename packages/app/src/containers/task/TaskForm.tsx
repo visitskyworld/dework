@@ -69,6 +69,7 @@ export function TaskForm<
           ...values,
           reward: !!values.reward?.amount ? values.reward : undefined,
         });
+        formRef.current?.resetFields();
       } finally {
         setLoading(false);
       }
