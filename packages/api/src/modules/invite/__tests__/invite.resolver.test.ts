@@ -1,6 +1,3 @@
-import { Organization } from "@dewo/api/models/Organization";
-import { Project } from "@dewo/api/models/Project";
-import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";

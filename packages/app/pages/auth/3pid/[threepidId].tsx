@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import { useAuthWithThreepid } from "@dewo/app/containers/auth/hooks";
+import { useAcceptInvite } from "@dewo/app/containers/invite/hooks";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -15,17 +16,20 @@ const Auth: NextPage = () => {
 
   const [loading, setLoading] = useState(false);
   const authWithThreepid = useAuthWithThreepid();
+  const acceptInvite = useAcceptInvite();
 
   const auth = useCallback(async () => {
     try {
       setLoading(true);
       await authWithThreepid(threepidId);
-      console.warn("DAMN", state);
+      if (!!state.inviteId) {
+        await acceptInvite(state.inviteId);
+      }
       await router.push("/");
     } finally {
       setLoading(false);
     }
-  }, [authWithThreepid, threepidId, router]);
+  }, [authWithThreepid, threepidId, router, state, acceptInvite]);
   useEffect(() => {
     auth();
   }, []);

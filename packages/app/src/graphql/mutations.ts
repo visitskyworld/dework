@@ -100,3 +100,19 @@ export const createProjectIntegration = gql`
 
   ${Fragments.projectIntegration}
 `;
+
+export const createInvite = gql`
+  mutation CreateInviteMutation($input: CreateInviteInput!) {
+    invite: createInvite(input: $input) {
+      id
+    }
+  }
+`;
+
+export const acceptInvite = gql`
+  mutation AcceptInviteMutation($inviteId: UUID!) {
+    invite: acceptInvite(id: $inviteId) {
+      id
+    }
+  }
+`;

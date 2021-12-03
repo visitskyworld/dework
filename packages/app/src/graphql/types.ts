@@ -290,10 +290,17 @@ export interface CreateTaskTagMutationVariables {
 // GraphQL mutation operation: CreateProjectIntegrationMutation
 // ====================================================
 
+export interface CreateProjectIntegrationMutation_integration_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface CreateProjectIntegrationMutation_integration_project {
   __typename: "Project";
   id: Scalar.UUID;
-  name: string;
+  integrations: CreateProjectIntegrationMutation_integration_project_integrations[];
 }
 
 export interface CreateProjectIntegrationMutation_integration {
@@ -308,6 +315,50 @@ export interface CreateProjectIntegrationMutation {
 
 export interface CreateProjectIntegrationMutationVariables {
   input: CreateProjectIntegrationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateInviteMutation
+// ====================================================
+
+export interface CreateInviteMutation_invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+}
+
+export interface CreateInviteMutation {
+  invite: CreateInviteMutation_invite;
+}
+
+export interface CreateInviteMutationVariables {
+  input: CreateInviteInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: AcceptInviteMutation
+// ====================================================
+
+export interface AcceptInviteMutation_invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+}
+
+export interface AcceptInviteMutation {
+  invite: AcceptInviteMutation_invite;
+}
+
+export interface AcceptInviteMutationVariables {
+  inviteId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -828,6 +879,10 @@ export enum TaskStatusEnum {
 export enum ThreepidSource {
   discord = "discord",
   github = "github",
+}
+
+export interface CreateInviteInput {
+  organizationId?: Scalar.UUID | null;
 }
 
 export interface CreateOrganizationInput {

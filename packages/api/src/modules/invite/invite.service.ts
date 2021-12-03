@@ -41,6 +41,7 @@ export class InviteService {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
 
+    console.warn(invite);
     if (!!invite.organizationId) {
       const organization = await invite.organization;
       const organizations = await user.organizations;

@@ -6,6 +6,7 @@ import React, { FC, useCallback } from "react";
 import Link from "next/link";
 import { useOrganization } from "../hooks";
 import { ProjectCreateModal } from "../../project/create/ProjectCreateModal";
+import { InviteButton } from "../../invite/InviteButton";
 
 interface OrganizationOverviewProps {
   organizationId: string;
@@ -43,7 +44,11 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
           </Menu.Item>
         ))}
       </Menu>
-      <Button onClick={createProject.onToggleOn}>Create Project</Button>
+      <Button type="ghost" onClick={createProject.onToggleOn}>
+        Create Project
+      </Button>
+      <br />
+      <InviteButton organizationId={organizationId} />
       <ProjectCreateModal
         visible={createProject.value}
         organizationId={organizationId}
