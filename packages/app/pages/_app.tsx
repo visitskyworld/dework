@@ -16,6 +16,9 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType } from "next";
+import { hotjar } from "react-hotjar";
+
+if (typeof window !== "undefined") hotjar.initialize(2731946, 6);
 
 interface AuthProps {
   authenticated: boolean;
