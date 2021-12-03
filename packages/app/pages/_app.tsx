@@ -18,7 +18,10 @@ import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
 
-if (typeof window !== "undefined") hotjar.initialize(2731946, 6);
+if (typeof window !== "undefined") {
+  const { ID, version } = Constants.hotjarConfig;
+  hotjar.initialize(ID, version);
+}
 
 interface AuthProps {
   authenticated: boolean;
