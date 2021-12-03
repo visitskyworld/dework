@@ -98,14 +98,12 @@ export class DiscordIntegrationService
     const msgEmbed = new MessageEmbed()
       .setColor("#0099ff")
       .setTitle(`Bounty updated! + ${task.name}`)
-      .setURL(
-        "https://dewo.fant.io/organization/ee130204-74ae-4a40-8d03-562e1d698e92/project/1c2a2001-92fe-4f62-9bc4-9efc70246717"
-      )
+      .setURL(`${permalink}`)
       .setAuthor(
         `${task.assignees[0].username}`,
         `${task.assignees[0].imageUrl}`
       )
-      .setDescription(`${task.description}}\n${permalink}`)
+      .setDescription(`${task.description}`)
       .setTimestamp()
       .setFooter("Dewo™");
 
