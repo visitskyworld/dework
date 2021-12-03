@@ -17,6 +17,7 @@ import {
 import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
+const { MessageEmbed } = require("discord.js");
 
 @Injectable()
 @EventSubscriber()
@@ -93,7 +94,22 @@ export class DiscordIntegrationService
     const permalink = `${this.config.get("APP_URL")}/organization/${
       project.organizationId
     }/project/${project.id}/task/${task.id}`;
-    channel.send(`Bounty updated! ${task.name}\n${permalink}`);
+
+    const msgEmbed = new MessageEmbed()
+      .setColor("#0099ff")
+      .setTitle(`Bounty updated! + ${task.name}`)
+      .setURL(
+        "https://dewo.fant.io/organization/ee130204-74ae-4a40-8d03-562e1d698e92/project/1c2a2001-92fe-4f62-9bc4-9efc70246717"
+      )
+      .setAuthor(
+        `${task.assignees[0].username}`,
+        `${task.assignees[0].imageUrl}`
+      )
+      .setDescription(`${task.description}}\n${permalink}`)
+      .setTimestamp()
+      .setFooter("Dewo™");
+
+    channel.send({ embeds: [msgEmbed] });
   }
 
   private async getDiscordIntegration(
