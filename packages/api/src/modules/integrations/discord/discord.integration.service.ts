@@ -17,7 +17,7 @@ import {
 import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
-const { MessageEmbed } = require("discord.js");
+import { MessageEmbed } from "discord.js";
 
 @Injectable()
 @EventSubscriber()
@@ -97,12 +97,9 @@ export class DiscordIntegrationService
 
     const msgEmbed = new MessageEmbed()
       .setColor("#0099ff")
-      .setTitle(`Bounty updated! + ${task.name}`)
+      .setTitle(`Bounty updated: ${task.name}`)
       .setURL(`${permalink}`)
-      .setAuthor(
-        `${task.assignees[0].username}`,
-        `${task.assignees[0].imageUrl}`
-      )
+      .setAuthor(task.assignees[0]?.username ?? "", task.assignees[0]?.imageUrl)
       .setDescription(`${task.description}`)
       .setTimestamp()
       .setFooter("Dewo™");
