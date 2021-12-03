@@ -28,28 +28,4 @@ export class InviteResolver {
   ): Promise<Invite> {
     return this.inviteService.accept(inviteId, user);
   }
-
-  /*
-  @Query(() => User)
-  @UseGuards(RequireGraphQLAuthGuard)
-  public me(@Context("user") user: User): User {
-    return user;
-  }
-
-  @Mutation(() => AuthResponse)
-  @UseGuards(GraphQLAuthGuard)
-  public async authWithThreepid(
-    @Context("user") user: User | undefined,
-    @Args("threepidId", { type: () => GraphQLUUID }) threepidId: string
-  ): Promise<AuthResponse> {
-    const updatedUser = await this.userService.authWithThreepid(
-      threepidId,
-      user
-    );
-    return {
-      user: updatedUser,
-      authToken: this.userService.createAuthToken(updatedUser),
-    };
-  }
-  */
 }
