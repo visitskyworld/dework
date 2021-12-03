@@ -1,12 +1,16 @@
 import React from "react";
+import _ from "lodash";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { Constants } from "@dewo/app/util/constants";
+import { useRouter } from "next/router";
 
 const Auth: NextPage = () => {
+  const router = useRouter();
+  const state = _.isEmpty(router.query) ? "" : JSON.stringify(router.query);
   return (
     <Layout>
       <Layout.Content>
@@ -20,7 +24,7 @@ const Auth: NextPage = () => {
               type="primary"
               block
               icon={<Icons.GithubOutlined />}
-              href={`${Constants.API_URL}/auth/github`}
+              href={`${Constants.API_URL}/auth/github?state=${state}`}
             >
               Github
             </Button>
@@ -29,7 +33,7 @@ const Auth: NextPage = () => {
               type="primary"
               block
               icon={<DiscordIcon />}
-              href={`${Constants.API_URL}/auth/discord`}
+              href={`${Constants.API_URL}/auth/discord?state=${state}`}
             >
               Discord
             </Button>

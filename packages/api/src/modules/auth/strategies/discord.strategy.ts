@@ -9,6 +9,7 @@ import {
   ThreepidSource,
 } from "@dewo/api/models/Threepid";
 import { ThreepidService } from "../../threepid/threepid.service";
+import { Request } from "express";
 
 const PassportDiscordStrategy = PassportStrategy(Strategy) as new (
   ...args: any[]
@@ -26,14 +27,22 @@ export class DiscordStrategy extends PassportDiscordStrategy {
       callbackURL: configService.get<string>("DISCORD_OAUTH_REDIRECT_URI"),
       // scope: ["identify", "guilds"],
       scope: ["identify", "bot", "guilds"],
+      passReqToCallback: true,
     });
   }
 
+  authenticate(req: Request, options: any): void {
+    options.state = req.query.state;
+    super.authenticate(req, options);
+  }
+
   async validate(
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: Profile
   ): Promise<StrategyResponse> {
+    console.warn(req);
     const config: DiscordThreepidConfig = {
       accessToken,
       refreshToken,
@@ -48,6 +57,7 @@ export class DiscordStrategy extends PassportDiscordStrategy {
     return {
       threepidId: threepid.id,
       userId: threepid.userId,
+      state: req.query.state,
     };
   }
 }

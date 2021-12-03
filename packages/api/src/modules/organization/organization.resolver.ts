@@ -1,4 +1,12 @@
-import { Args, Context, Mutation, Query } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "./organization.service";
@@ -7,9 +15,16 @@ import { CreateOrganizationInput } from "./dto/CreateOrganizationInput";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 
+@Resolver(() => Organization)
 @Injectable()
 export class OrganizationResolver {
   constructor(private readonly organizationService: OrganizationService) {}
+
+  @ResolveField(() => [User])
+  public async users(@Parent() organization: Organization): Promise<User[]> {
+    if (!!organization.users) return organization.users;
+    return this.organizationService.getUsers(organization.id);
+  }
 
   @Mutation(() => Organization)
   @UseGuards(RequireGraphQLAuthGuard)

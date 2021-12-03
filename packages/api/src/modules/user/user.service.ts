@@ -46,7 +46,7 @@ export class UserService {
     });
 
     await this.connectThreepidToUser(threepid, user);
-    return user;
+    return this.userRepo.findOne(user.id) as Promise<User>;
   }
 
   private async connectThreepidToUser(
@@ -67,5 +67,9 @@ export class UserService {
 
   public createAuthToken(user: User): string {
     return this.jwtService.sign({ userId: user.id });
+  }
+
+  public findById(id: string): Promise<User | undefined> {
+    return this.userRepo.findOne(id);
   }
 }

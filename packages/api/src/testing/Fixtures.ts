@@ -17,6 +17,9 @@ import { Task, TaskStatusEnum } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
 import { TaskTag } from "../models/TaskTag";
 import { TaskStatus } from "../models/TaskStatus";
+import { InviteService } from "../modules/invite/invite.service";
+import { InviteModule } from "../modules/invite/invite.module";
+import { Invite } from "../models/Invite";
 
 @Injectable()
 export class Fixtures {
@@ -25,7 +28,8 @@ export class Fixtures {
     private readonly organizationService: OrganizationService,
     private readonly projectService: ProjectService,
     private readonly taskService: TaskService,
-    private readonly threepidService: ThreepidService
+    private readonly threepidService: ThreepidService,
+    private readonly inviteService: InviteService
   ) {}
 
   public async createThreepid(
@@ -95,6 +99,16 @@ export class Fixtures {
     });
   }
 
+  public async createInvite(
+    partial: Partial<Invite> = {},
+    user?: User
+  ): Promise<Invite> {
+    return this.inviteService.create(
+      partial,
+      user ?? (await this.createUser())
+    );
+  }
+
   public createAuthToken(user: User): string {
     return this.userService.createAuthToken(user);
   }
@@ -107,6 +121,7 @@ export class Fixtures {
     OrganizationModule,
     ProjectModule,
     TaskModule,
+    InviteModule,
   ],
   providers: [Fixtures],
 })

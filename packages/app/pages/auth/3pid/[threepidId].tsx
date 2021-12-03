@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
@@ -7,6 +7,12 @@ import { useAuthWithThreepid } from "@dewo/app/containers/auth/hooks";
 const Auth: NextPage = () => {
   const router = useRouter();
   const threepidId = router.query.threepidId as string;
+  const stateString = router.query.state as string;
+  const state = useMemo(
+    () => (!!stateString ? JSON.parse(stateString) : {}),
+    [stateString]
+  );
+
   const [loading, setLoading] = useState(false);
   const authWithThreepid = useAuthWithThreepid();
 
@@ -14,6 +20,7 @@ const Auth: NextPage = () => {
     try {
       setLoading(true);
       await authWithThreepid(threepidId);
+      console.warn("DAMN", state);
       await router.push("/");
     } finally {
       setLoading(false);

@@ -20,7 +20,9 @@ export class AuthController {
   async githubCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
     // @ts-ignore
     res.redirect(
-      `${this.configService.get("APP_URL")}/auth/3pid/${req.user.threepidId}`
+      `${this.configService.get("APP_URL")}/auth/3pid/${
+        req.user.threepidId
+      }?state=${req.user.state}`
     );
     return req.user;
   }
@@ -34,7 +36,9 @@ export class AuthController {
   async discordCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
     // @ts-ignore
     res.redirect(
-      `${this.configService.get("APP_URL")}/auth/3pid/${req.user.threepidId}`
+      `${this.configService.get("APP_URL")}/auth/3pid/${
+        req.user.threepidId
+      }?state=${req.user.state}`
     );
     return req.user;
   }
