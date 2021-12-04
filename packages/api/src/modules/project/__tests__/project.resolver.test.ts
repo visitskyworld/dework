@@ -61,6 +61,48 @@ describe("ProjectResolver", () => {
     });
   });
 
+  describe("updateProject", () => {
+    it("should fail if user is not in org", async () => {
+      const user = await fixtures.createUser();
+      const project = await fixtures.createProject();
+
+      const response = await client.request({
+        app,
+        auth: fixtures.createAuthToken(user),
+        body: ProjectRequests.update({
+          id: project.id,
+          name: faker.company.companyName(),
+        }),
+      });
+
+      client.expectGqlError(response, HttpStatus.FORBIDDEN);
+    });
+
+    it("should succeed if user is in org", async () => {
+      const user = await fixtures.createUser();
+      const organization = await fixtures.createOrganization({
+        users: [user],
+      });
+      const project = await fixtures.createProject({
+        organizationId: organization.id,
+      });
+      const paymentMethod = await fixtures.createPaymentMethod();
+
+      const response = await client.request({
+        app,
+        auth: fixtures.createAuthToken(user),
+        body: ProjectRequests.update({
+          id: project.id,
+          paymentMethodId: paymentMethod.id,
+        }),
+      });
+
+      expect(response.status).toEqual(HttpStatus.OK);
+      const fetched = response.body.data?.project;
+      expect(fetched.paymentMethod.id).toEqual(paymentMethod.id);
+    });
+  });
+
   describe("Queries", () => {
     describe("getProject", () => {
       it("should not return deleted tasks", async () => {

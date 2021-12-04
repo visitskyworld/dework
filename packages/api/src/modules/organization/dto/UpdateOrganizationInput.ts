@@ -1,8 +1,9 @@
 import { Field, InputType } from "@nestjs/graphql";
+import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
 export class UpdateOrganizationInput {
-  @Field()
+  @Field(() => GraphQLUUID)
   public id!: string;
 
   @Field({ nullable: true })
@@ -10,7 +11,4 @@ export class UpdateOrganizationInput {
 
   @Field({ nullable: true })
   public imageUrl?: string;
-
-  @Field({ nullable: true })
-  public paymentMethodId?: string;
 }

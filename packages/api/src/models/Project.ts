@@ -2,6 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
+import { PaymentMethod } from "./PaymentMethod";
 import { ProjectIntegration } from "./ProjectIntegration";
 import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
@@ -32,6 +33,14 @@ export class Project extends Audit {
   @OneToMany(() => ProjectIntegration, (p: ProjectIntegration) => p.project)
   @Field(() => [ProjectIntegration])
   public integrations!: Promise<ProjectIntegration[]>;
+
+  @JoinColumn()
+  @ManyToOne(() => PaymentMethod, { nullable: true })
+  @Field(() => PaymentMethod, { nullable: true })
+  public paymentMethod?: Promise<PaymentMethod>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public paymentMethodId?: string;
 
   // @OneToMany(() => TaskStatus, (t: TaskStatus) => t.project)
   // @Field(() => [TaskStatus])

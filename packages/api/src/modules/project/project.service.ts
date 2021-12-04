@@ -2,7 +2,7 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatus } from "@dewo/api/models/TaskStatus";
 import { TaskTag } from "@dewo/api/models/TaskTag";
-import { AtLeast } from "@dewo/api/types/general";
+import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
@@ -25,6 +25,11 @@ export class ProjectService {
   public async create(partial: DeepPartial<Project>): Promise<Project> {
     const created = await this.projectRepo.save(partial);
     return this.projectRepo.findOne(created.id) as Promise<Project>;
+  }
+
+  public async update(partial: DeepAtLeast<Project, "id">): Promise<Project> {
+    const updated = await this.projectRepo.save(partial);
+    return this.projectRepo.findOne(updated.id) as Promise<Project>;
   }
 
   public async createIntegration(

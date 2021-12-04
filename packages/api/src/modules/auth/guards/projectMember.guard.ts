@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -24,21 +25,22 @@ export class ProjectMemberGuard implements CanActivate {
 
     const projectId = [
       gqlContext.req.body?.variables?.projectId,
+      gqlContext.req.body?.variables?.input?.id,
       gqlContext.req.body?.variables?.input?.projectId,
     ].find((id) => !!id);
 
     if (!projectId) {
-      throw new UnauthorizedException("Could not find projectId in variables");
+      throw new ForbiddenException("Could not find projectId in variables");
     }
 
     const project = await this.projectRepo.findOne(projectId);
     if (!project) {
-      throw new UnauthorizedException("Project not found");
+      throw new ForbiddenException("Project not found");
     }
 
     const organizations = await gqlContext.user.organizations;
     if (!organizations.some((o) => o.id === project.organizationId)) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return true;

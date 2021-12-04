@@ -32,12 +32,4 @@ export class Organization extends Audit {
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
-
-  @JoinColumn()
-  @ManyToOne(() => PaymentMethod, { nullable: true })
-  @Field(() => PaymentMethod, { nullable: true })
-  public paymentMethod?: Promise<PaymentMethod>;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public paymentMethodId?: string;
 }

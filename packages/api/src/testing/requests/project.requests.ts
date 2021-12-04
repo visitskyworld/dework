@@ -1,4 +1,5 @@
 import { CreateProjectInput } from "@dewo/api/modules/project/dto/CreateProjectInput";
+import { UpdateProjectInput } from "@dewo/api/modules/project/dto/UpdateProjectInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class ProjectRequests {
@@ -12,6 +13,9 @@ export class ProjectRequests {
       tasks {
         id
       }
+      paymentMethod {
+        id
+      }
     }
   `;
 
@@ -22,6 +26,23 @@ export class ProjectRequests {
       query: `
         mutation CreateProject($input: CreateProjectInput!) {
           project: createProject(input: $input) {
+            ...Project
+          }
+        }
+
+        ${this.projectFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static update(
+    input: UpdateProjectInput
+  ): GraphQLTestClientRequestBody<{ input: UpdateProjectInput }> {
+    return {
+      query: `
+        mutation UpdateProject($input: UpdateProjectInput!) {
+          project: updateProject(input: $input) {
             ...Project
           }
         }

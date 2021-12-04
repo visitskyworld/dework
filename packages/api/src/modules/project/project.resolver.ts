@@ -24,6 +24,7 @@ import { TaskService } from "../task/task.service";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
 import { User } from "@dewo/api/models/User";
+import { UpdateProjectInput } from "./dto/UpdateProjectInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -44,6 +45,14 @@ export class ProjectResolver {
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
     return this.projectService.create(input);
+  }
+
+  @Mutation(() => Project)
+  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  public async updateProject(
+    @Args("input") input: UpdateProjectInput
+  ): Promise<Project> {
+    return this.projectService.update(input);
   }
 
   @Mutation(() => ProjectIntegration)

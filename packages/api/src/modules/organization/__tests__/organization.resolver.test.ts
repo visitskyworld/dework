@@ -71,19 +71,20 @@ describe("OrganizationResolver", () => {
         const organization = await fixtures.createOrganization({
           users: [user],
         });
-        const paymentMethod = await fixtures.createPaymentMethod({}, user);
+
+        const expectedName = faker.company.companyName();
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
           body: OrganizationRequests.update({
             id: organization.id,
-            paymentMethodId: paymentMethod.id,
+            name: expectedName,
           }),
         });
         expect(response.status).toEqual(HttpStatus.OK);
         const updated = response.body.data?.organization;
-        expect(updated.paymentMethod.id).toEqual(paymentMethod.id);
+        expect(updated.name).toEqual(expectedName);
       });
     });
   });
