@@ -106,10 +106,6 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
 
           <Form.Item name="address" hidden rules={[{ required: true }]} />
         </Col>
-        {/* <Button
-          type="text"
-          icon={<Icons.CloseCircleOutlined onClick={() => alert("clear")} />}
-        /> */}
       </Row>
     </Form>
   );
