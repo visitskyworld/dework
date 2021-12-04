@@ -61,10 +61,25 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
+export interface CreateProjectMutation_project_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreateProjectMutation_project_organization_projects_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
 export interface CreateProjectMutation_project_organization {
@@ -79,6 +94,7 @@ export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: CreateProjectMutation_project_paymentMethod | null;
   organization: CreateProjectMutation_project_organization;
 }
 
@@ -88,6 +104,37 @@ export interface CreateProjectMutation {
 
 export interface CreateProjectMutationVariables {
   input: CreateProjectInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateProjectMutation
+// ====================================================
+
+export interface UpdateProjectMutation_project_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UpdateProjectMutation_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+  paymentMethod: UpdateProjectMutation_project_paymentMethod | null;
+}
+
+export interface UpdateProjectMutation {
+  project: UpdateProjectMutation_project;
+}
+
+export interface UpdateProjectMutationVariables {
+  input: UpdateProjectInput;
 }
 
 /* tslint:disable */
@@ -367,6 +414,30 @@ export interface AcceptInviteMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreatePaymentMethodMutation
+// ====================================================
+
+export interface CreatePaymentMethodMutation_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreatePaymentMethodMutation {
+  paymentMethod: CreatePaymentMethodMutation_paymentMethod;
+}
+
+export interface CreatePaymentMethodMutationVariables {
+  input: CreatePaymentMethodInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -405,10 +476,18 @@ export interface MeQuery {
 // GraphQL query operation: GetOrganizationQuery
 // ====================================================
 
+export interface GetOrganizationQuery_organization_projects_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
 export interface GetOrganizationQuery_organization {
@@ -435,6 +514,13 @@ export interface GetOrganizationQueryVariables {
 // ====================================================
 // GraphQL query operation: GetProjectQuery
 // ====================================================
+
+export interface GetProjectQuery_project_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
 
 export interface GetProjectQuery_project_tasks_tags {
   __typename: "TaskTag";
@@ -481,6 +567,7 @@ export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: GetProjectQuery_project_paymentMethod | null;
   tasks: GetProjectQuery_project_tasks[];
   taskTags: GetProjectQuery_project_taskTags[];
 }
@@ -639,6 +726,22 @@ export interface User {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: PaymentMethod
+// ====================================================
+
+export interface PaymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Organization
 // ====================================================
 
@@ -674,10 +777,18 @@ export interface ProjectIntegration {
 // GraphQL fragment: Project
 // ====================================================
 
+export interface Project_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface Project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: Project_paymentMethod | null;
 }
 
 /* tslint:disable */
@@ -779,10 +890,18 @@ export interface UserDetails {
 // GraphQL fragment: OrganizationDetails
 // ====================================================
 
+export interface OrganizationDetails_projects_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
 export interface OrganizationDetails {
@@ -801,6 +920,13 @@ export interface OrganizationDetails {
 // ====================================================
 // GraphQL fragment: ProjectDetails
 // ====================================================
+
+export interface ProjectDetails_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
 
 export interface ProjectDetails_tasks_tags {
   __typename: "TaskTag";
@@ -847,6 +973,7 @@ export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  paymentMethod: ProjectDetails_paymentMethod | null;
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];
 }
@@ -859,6 +986,11 @@ export interface ProjectDetails {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum PaymentMethodType {
+  GNOSIS_SAFE = "GNOSIS_SAFE",
+  METAMASK = "METAMASK",
+}
 
 export enum ProjectIntegrationSource {
   discord = "discord",
@@ -890,6 +1022,11 @@ export interface CreateOrganizationInput {
   imageUrl?: string | null;
 }
 
+export interface CreatePaymentMethodInput {
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
@@ -915,6 +1052,12 @@ export interface CreateTaskTagInput {
   label: string;
   color: string;
   projectId: Scalar.UUID;
+}
+
+export interface UpdateProjectInput {
+  id: Scalar.UUID;
+  name?: string | null;
+  paymentMethodId?: Scalar.UUID | null;
 }
 
 export interface UpdateTaskInput {

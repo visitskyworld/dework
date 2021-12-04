@@ -38,6 +38,16 @@ export const createProject = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const updateProject = gql`
+  mutation UpdateProjectMutation($input: UpdateProjectInput!) {
+    project: updateProject(input: $input) {
+      ...Project
+    }
+  }
+
+  ${Fragments.project}
+`;
+
 export const createTask = gql`
   mutation CreateTaskMutation($input: CreateTaskInput!) {
     task: createTask(input: $input) {
@@ -115,4 +125,14 @@ export const acceptInvite = gql`
       id
     }
   }
+`;
+
+export const createPaymentMethod = gql`
+  mutation CreatePaymentMethodMutation($input: CreatePaymentMethodInput!) {
+    paymentMethod: createPaymentMethod(input: $input) {
+      ...PaymentMethod
+    }
+  }
+
+  ${Fragments.paymentMethod}
 `;

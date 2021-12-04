@@ -38,7 +38,7 @@ const Page: NextPage = () => {
           footer={null}
           onCancel={navigateToProject}
         >
-          <ProjectSettings />
+          <ProjectSettings project={project} />
         </Modal>
         <ProjectBoard projectId={projectId} />
       </Layout.Content>

@@ -8,6 +8,14 @@ export const user = gql`
   }
 `;
 
+export const paymentMethod = gql`
+  fragment PaymentMethod on PaymentMethod {
+    id
+    type
+    address
+  }
+`;
+
 export const organization = gql`
   fragment Organization on Organization {
     id
@@ -31,7 +39,12 @@ export const project = gql`
   fragment Project on Project {
     id
     name
+    paymentMethod {
+      ...PaymentMethod
+    }
   }
+
+  ${paymentMethod}
 `;
 
 export const taskTag = gql`

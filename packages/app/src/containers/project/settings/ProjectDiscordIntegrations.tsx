@@ -81,9 +81,7 @@ const PostNewTasksToDiscordIntegration: FC = () => {
   if (!guilds) return null;
   return (
     <>
-      <Typography.Paragraph strong>
-        Post New Tasks to Discord
-      </Typography.Paragraph>
+      <Typography.Paragraph>Post New Tasks to Discord</Typography.Paragraph>
       <Row gutter={8}>
         <Col span={9}>
           <Select<string>
