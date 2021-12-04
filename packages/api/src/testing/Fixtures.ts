@@ -20,6 +20,9 @@ import { TaskStatus } from "../models/TaskStatus";
 import { InviteService } from "../modules/invite/invite.service";
 import { InviteModule } from "../modules/invite/invite.module";
 import { Invite } from "../models/Invite";
+import { PaymentModule } from "../modules/payment/payment.module";
+import { PaymentService } from "../modules/payment/payment.service";
+import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 
 @Injectable()
 export class Fixtures {
@@ -29,7 +32,8 @@ export class Fixtures {
     private readonly projectService: ProjectService,
     private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService,
-    private readonly inviteService: InviteService
+    private readonly inviteService: InviteService,
+    private readonly paymentService: PaymentService
   ) {}
 
   public async createThreepid(
@@ -109,6 +113,20 @@ export class Fixtures {
     );
   }
 
+  public async createPaymentMethod(
+    partial: Partial<PaymentMethod> = {},
+    user?: User
+  ): Promise<PaymentMethod> {
+    return this.paymentService.create(
+      {
+        type: PaymentMethodType.METAMASK,
+        address: "0x0000000000000000000000000000000000000000",
+        ...partial,
+      },
+      user ?? (await this.createUser())
+    );
+  }
+
   public createAuthToken(user: User): string {
     return this.userService.createAuthToken(user);
   }
@@ -122,6 +140,7 @@ export class Fixtures {
     ProjectModule,
     TaskModule,
     InviteModule,
+    PaymentModule,
   ],
   providers: [Fixtures],
 })

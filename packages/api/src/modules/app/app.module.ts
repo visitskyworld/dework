@@ -13,6 +13,7 @@ import { ProjectModule } from "../project/project.module";
 import { TaskModule } from "../task/task.module";
 import { DiscordIntegrationModule } from "../integrations/discord/discord.integration.module";
 import { InviteModule } from "../invite/invite.module";
+import { PaymentModule } from "../payment/payment.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -39,6 +40,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   TaskModule,
   InviteModule,
   DiscordIntegrationModule,
+  PaymentModule,
 ];
 
 @Module({

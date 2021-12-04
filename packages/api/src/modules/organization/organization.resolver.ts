@@ -14,6 +14,8 @@ import { User } from "@dewo/api/models/User";
 import { CreateOrganizationInput } from "./dto/CreateOrganizationInput";
 import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
+import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
+import { OrganizationMemberGuard } from "../auth/guards/organizationMember.guard";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -36,6 +38,14 @@ export class OrganizationResolver {
       ...input,
       users: [user],
     });
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(RequireGraphQLAuthGuard, OrganizationMemberGuard)
+  public async updateOrganization(
+    @Args("input") input: UpdateOrganizationInput
+  ): Promise<Organization> {
+    return this.organizationService.update(input);
   }
 
   @Query(() => Organization)

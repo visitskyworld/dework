@@ -49,5 +49,42 @@ describe("OrganizationResolver", () => {
         expect(organization.users[0].id).toEqual(user.id);
       });
     });
+
+    describe("updateOrganization", () => {
+      it("should fail if has no access", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: OrganizationRequests.update({
+            id: organization.id,
+            name: "Not part of the org",
+          }),
+        });
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("should succeed if has access", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization({
+          users: [user],
+        });
+        const paymentMethod = await fixtures.createPaymentMethod({}, user);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: OrganizationRequests.update({
+            id: organization.id,
+            paymentMethodId: paymentMethod.id,
+          }),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const updated = response.body.data?.organization;
+        expect(updated.paymentMethod.id).toEqual(paymentMethod.id);
+      });
+    });
   });
 });

@@ -1,6 +1,15 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { Audit } from "./Audit";
+import { PaymentMethod } from "./PaymentMethod";
 import { Project } from "./Project";
 import { User } from "./User";
 
@@ -23,4 +32,12 @@ export class Organization extends Audit {
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
+
+  @JoinColumn()
+  @ManyToOne(() => PaymentMethod, { nullable: true })
+  @Field(() => PaymentMethod, { nullable: true })
+  public paymentMethod?: Promise<PaymentMethod>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public paymentMethodId?: string;
 }

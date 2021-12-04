@@ -33,7 +33,7 @@ describe("ProjectResolver", () => {
           }),
         });
 
-        client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
 
       it("should succeed if user is in org", async () => {
@@ -81,7 +81,6 @@ describe("ProjectResolver", () => {
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
-        console.warn(response.body);
         const fetchedProject = response.body.data?.project;
         expect(fetchedProject).toBeDefined();
         expect(fetchedProject.tasks).not.toContainEqual(

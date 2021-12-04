@@ -42,7 +42,6 @@ export class DiscordStrategy extends PassportDiscordStrategy {
     refreshToken: string,
     profile: Profile
   ): Promise<StrategyResponse> {
-    console.warn(req);
     const config: DiscordThreepidConfig = {
       accessToken,
       refreshToken,

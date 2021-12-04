@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -16,18 +17,19 @@ export class OrganizationMemberGuard implements CanActivate {
 
     const organizationId = [
       gqlContext.req.body?.variables?.organizationId,
+      gqlContext.req.body?.variables?.input?.id,
       gqlContext.req.body?.variables?.input?.organizationId,
     ].find((id) => !!id);
 
     if (!organizationId) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "Could not find organizationId in variables"
       );
     }
 
     const organizations = await gqlContext.user.organizations;
     if (!organizations.some((o) => o.id === organizationId)) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return true;

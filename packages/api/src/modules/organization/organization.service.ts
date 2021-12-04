@@ -1,5 +1,6 @@
 import { Organization } from "@dewo/api/models/Organization";
 import { User } from "@dewo/api/models/User";
+import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
@@ -13,8 +14,18 @@ export class OrganizationService {
     private readonly organizationRepo: Repository<Organization>
   ) {}
 
-  public create(partial: DeepPartial<Organization>): Promise<Organization> {
-    return this.organizationRepo.save(partial);
+  public async create(
+    partial: DeepPartial<Organization>
+  ): Promise<Organization> {
+    const created = await this.organizationRepo.save(partial);
+    return this.findById(created.id) as Promise<Organization>;
+  }
+
+  public async update(
+    partial: DeepAtLeast<Organization, "id">
+  ): Promise<Organization> {
+    const updated = await this.organizationRepo.save(partial);
+    return this.findById(updated.id) as Promise<Organization>;
   }
 
   public findById(id: string): Promise<Organization | undefined> {
