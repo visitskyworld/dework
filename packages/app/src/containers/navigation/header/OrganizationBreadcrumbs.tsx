@@ -1,4 +1,4 @@
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Menu } from "antd";
 import React, { FC, useMemo } from "react";
 import Link from "next/link";
 import { useOrganization } from "../../organization/hooks";
@@ -29,7 +29,19 @@ export const OrganizationBreadcrumbs: FC<OrganizationBreadcrumbProps> = ({
         </Link>
       </Breadcrumb.Item>
       {!!project && (
-        <Breadcrumb.Item>
+        <Breadcrumb.Item
+          overlay={
+            <Menu>
+              <Menu.Item>
+                <Link
+                  href={`/organization/${organization.id}/project/${project.id}/settings`}
+                >
+                  <a>Settings</a>
+                </Link>
+              </Menu.Item>
+            </Menu>
+          }
+        >
           <Link href={`/organization/${organization.id}/project/${project.id}`}>
             <a>{project.name}</a>
           </Link>

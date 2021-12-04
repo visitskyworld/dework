@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
-import { Layout } from "antd";
+import { Layout, Modal } from "antd";
 import { Header } from "@dewo/app/containers/navigation/header/Header";
 import { useRouter } from "next/router";
 import { ProjectBoard } from "@dewo/app/containers/project/board/ProjectBoard";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { TaskUpdateModal } from "@dewo/app/containers/task/TaskUpdateModal";
+import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -32,6 +33,13 @@ const Page: NextPage = () => {
             onDone={navigateToProject}
           />
         )}
+        <Modal
+          visible={router.route.endsWith("/settings")}
+          footer={null}
+          onCancel={navigateToProject}
+        >
+          <ProjectSettings />
+        </Modal>
         <ProjectBoard projectId={projectId} />
       </Layout.Content>
     </Layout>
