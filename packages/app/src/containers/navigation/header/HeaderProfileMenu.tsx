@@ -1,17 +1,19 @@
 import React, { FC, useCallback } from "react";
-import { Menu, Typography, Avatar, Row } from "antd";
+import { Menu, Typography, Avatar, Row, Modal } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { OrganizationCreateModal } from "../../organization/create/OrganizationCreateModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useRouter } from "next/router";
 import { Organization } from "@dewo/app/graphql/types";
+import { UserSettings } from "../../user/UserSettings";
 
 interface HeaderProfileDropdownProps {}
 
 export const HeaderProfileDropdown: FC<HeaderProfileDropdownProps> = ({}) => {
   const { user, logout } = useAuthContext();
   const createOrganization = useToggle();
+  const userSettings = useToggle();
 
   const router = useRouter();
   const navigateToOrganization = useCallback(
@@ -34,6 +36,12 @@ export const HeaderProfileDropdown: FC<HeaderProfileDropdownProps> = ({}) => {
   return (
     <>
       <Menu>
+        <Menu.Item
+          icon={<Icons.SettingOutlined />}
+          onClick={userSettings.onToggleOn}
+        >
+          Settings
+        </Menu.Item>
         <Menu.Item icon={<Icons.LogoutOutlined />} onClick={logout}>
           Log out
         </Menu.Item>
@@ -67,6 +75,14 @@ export const HeaderProfileDropdown: FC<HeaderProfileDropdownProps> = ({}) => {
         onCancel={createOrganization.onToggleOff}
         onCreated={handleOrganizationCreated}
       />
+      <Modal
+        visible={userSettings.value}
+        title="Settings"
+        footer={null}
+        onCancel={userSettings.onToggleOff}
+      >
+        <UserSettings />
+      </Modal>
     </>
   );
 };

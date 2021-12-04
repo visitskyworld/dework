@@ -8,6 +8,8 @@ import {
 import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
+import { UpdateUserInput } from "./dto/UpdateUserInput";
+import { id } from "ethers/lib/utils";
 
 @Injectable()
 export class UserResolver {
@@ -33,5 +35,14 @@ export class UserResolver {
       user: updatedUser,
       authToken: this.userService.createAuthToken(updatedUser),
     };
+  }
+
+  @Mutation(() => User)
+  @UseGuards(RequireGraphQLAuthGuard)
+  public async updateUser(
+    @Context("user") user: User,
+    @Args("input") input: UpdateUserInput
+  ): Promise<User> {
+    return this.userService.update({ id: user.id, ...input });
   }
 }

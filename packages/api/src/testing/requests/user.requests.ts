@@ -1,6 +1,21 @@
+import { UpdateUserInput } from "@dewo/api/modules/user/dto/UpdateUserInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class UserRequests {
+  private static userFragment = `
+    fragment User on User {
+      id
+      username
+      imageUrl
+      threepids {
+        id
+      }
+      paymentMethod {
+        id
+      }
+    }
+  `;
+
   public static authWithThreepid(
     threepidId: string
   ): GraphQLTestClientRequestBody<{ threepidId: string }> {
@@ -10,16 +25,31 @@ export class UserRequests {
           authWithThreepid(threepidId: $threepidId) {
             authToken
             user {
-              id
-              imageUrl
-              threepids {
-                id
-              }
+              ...User
             }
           }
         }
+
+        ${this.userFragment}
       `,
       variables: { threepidId },
+    };
+  }
+
+  public static update(
+    input: UpdateUserInput
+  ): GraphQLTestClientRequestBody<{ input: UpdateUserInput }> {
+    return {
+      query: `
+        mutation UpdateUser($input: UpdateUserInput!) {
+          user: updateUser(input: $input) {
+            ...User
+          }
+        }
+
+        ${this.userFragment}
+      `,
+      variables: { input },
     };
   }
 }

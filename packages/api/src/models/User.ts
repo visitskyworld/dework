@@ -1,7 +1,15 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, ManyToMany, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
+import { PaymentMethod } from "./PaymentMethod";
 import { Threepid } from "./Threepid";
 
 @Entity()
@@ -22,4 +30,12 @@ export class User extends Audit {
   @ManyToMany(() => Organization, (o: Organization) => o.users)
   @Field(() => [Organization])
   public organizations!: Promise<Organization[]>;
+
+  @JoinColumn()
+  @ManyToOne(() => PaymentMethod, { nullable: true })
+  @Field(() => PaymentMethod, { nullable: true })
+  public paymentMethod?: Promise<PaymentMethod>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public paymentMethodId?: string;
 }

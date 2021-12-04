@@ -1,12 +1,10 @@
-import { Project } from "@dewo/app/graphql/types";
-import { Alert, Col, Space, Typography } from "antd";
+import { PaymentMethod, Project } from "@dewo/app/graphql/types";
+import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { shortenedAddress, useUpdateProject } from "../hooks";
+import { useUpdateProject } from "../hooks";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
-import {
-  paymentMethodTypeToString,
-  ProjectPaymentMethodForm,
-} from "./ProjectPaymentMethodForm";
+import { PaymentMethodForm } from "../../payment/PaymentMethodForm";
+import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 
 interface Props {
   project: Project;
@@ -14,16 +12,22 @@ interface Props {
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
   const updateProject = useUpdateProject();
+
+  const handlePaymentMethodCreated = useCallback(
+    async (paymentMethod: PaymentMethod) => {
+      await updateProject({
+        id: project.id,
+        paymentMethodId: paymentMethod.id,
+      });
+    },
+    [updateProject, project.id]
+  );
   const removePaymentMethod = useCallback(
     () => updateProject({ id: project.id, paymentMethodId: null }),
     [updateProject, project.id]
   );
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
-      <Typography.Title level={2} style={{ textAlign: "center" }}>
-        Project Settings
-      </Typography.Title>
-
       <Col>
         <Typography.Title level={5}>Discord Integrations</Typography.Title>
         <ProjectDiscordIntegrations />
@@ -32,24 +36,12 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       <Col>
         <Typography.Title level={5}>Reward Payment Method</Typography.Title>
         {!!project.paymentMethod ? (
-          <Alert
-            message={
-              <Typography.Text>
-                {paymentMethodTypeToString[project.paymentMethod.type]}{" "}
-                connected
-                <Typography.Text type="secondary">
-                  {" "}
-                  ({shortenedAddress(project.paymentMethod.address)})
-                </Typography.Text>
-              </Typography.Text>
-            }
-            type="success"
-            showIcon
-            closable
+          <PaymentMethodSummary
+            paymentMethod={project.paymentMethod}
             onClose={removePaymentMethod}
           />
         ) : (
-          <ProjectPaymentMethodForm projectId={project.id} />
+          <PaymentMethodForm onDone={handlePaymentMethodCreated} />
         )}
       </Col>
     </Space>

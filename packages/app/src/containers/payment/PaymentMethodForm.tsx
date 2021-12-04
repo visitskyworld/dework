@@ -1,12 +1,13 @@
 import React, { FC, useCallback, useRef, useState } from "react";
 import {
   CreatePaymentMethodInput,
+  PaymentMethod,
   PaymentMethodType,
 } from "@dewo/app/graphql/types";
 import { Button, Col, Form, FormInstance, Row, Select } from "antd";
 import { useRequestAddress as useRequestMetamaskAddress } from "@dewo/app/util/ethereum";
 import { useRequestAddress as useRequestGnosisAddress } from "@dewo/app/util/gnosis";
-import { useCreatePaymentMethod, useUpdateProject } from "../hooks";
+import { useCreatePaymentMethod } from "./hooks";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
@@ -14,7 +15,7 @@ export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
 };
 
 interface Props {
-  projectId: string;
+  onDone(paymentMethod: PaymentMethod): void;
 }
 
 const paymentMethodTypes: PaymentMethodType[] = [
@@ -22,7 +23,7 @@ const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.GNOSIS_SAFE,
 ];
 
-export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
+export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
   const formRef = useRef<FormInstance<CreatePaymentMethodInput>>(null);
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
 
@@ -59,21 +60,17 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
 
   const [loading, setLoading] = useState(false);
   const createPaymentMethod = useCreatePaymentMethod();
-  const updateProject = useUpdateProject();
   const submitForm = useCallback(
     async (values: CreatePaymentMethodInput) => {
       try {
         setLoading(true);
         const paymentMethod = await createPaymentMethod(values);
-        await updateProject({
-          id: projectId,
-          paymentMethodId: paymentMethod.id,
-        });
+        onDone(paymentMethod);
       } finally {
         setLoading(false);
       }
     },
-    [createPaymentMethod, updateProject, projectId]
+    [createPaymentMethod, onDone]
   );
 
   return (

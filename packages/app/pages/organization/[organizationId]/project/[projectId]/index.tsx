@@ -35,10 +35,11 @@ const Page: NextPage = () => {
         )}
         <Modal
           visible={router.route.endsWith("/settings")}
+          title="Project Settings"
           footer={null}
           onCancel={navigateToProject}
         >
-          <ProjectSettings project={project} />
+          {!!project && <ProjectSettings project={project} />}
         </Modal>
         <ProjectBoard projectId={projectId} />
       </Layout.Content>

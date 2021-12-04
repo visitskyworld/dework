@@ -1,5 +1,6 @@
 import { Threepid } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
+import { DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
   Injectable,
@@ -67,6 +68,11 @@ export class UserService {
 
   public createAuthToken(user: User): string {
     return this.jwtService.sign({ userId: user.id });
+  }
+
+  public async update(partial: DeepAtLeast<User, "id">): Promise<User> {
+    const updated = await this.userRepo.save(partial);
+    return this.userRepo.findOne(updated.id) as Promise<User>;
   }
 
   public findById(id: string): Promise<User | undefined> {
