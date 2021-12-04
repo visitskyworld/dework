@@ -4,7 +4,8 @@ import {
   PaymentMethodType,
 } from "@dewo/app/graphql/types";
 import { Button, Col, Form, FormInstance, Row, Select } from "antd";
-import { useRequestAddress } from "@dewo/app/util/ethereum";
+import { useRequestAddress as useRequestMetamaskAddress } from "@dewo/app/util/ethereum";
+import { useRequestAddress as useRequestGnosisAddress } from "@dewo/app/util/gnosis";
 import { useCreatePaymentMethod, useUpdateProject } from "../hooks";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
@@ -35,19 +36,26 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
     []
   );
 
-  const requestMetamaskAddress = useRequestAddress();
+  const requestMetamaskAddress = useRequestMetamaskAddress();
+  const requestGnosisAddress = useRequestGnosisAddress();
   const connect = useCallback(async () => {
     switch (values.type) {
-      case PaymentMethodType.METAMASK:
+      case PaymentMethodType.METAMASK: {
         const address = await requestMetamaskAddress();
         formRef.current?.setFieldsValue({ address });
         break;
+      }
+      case PaymentMethodType.GNOSIS_SAFE: {
+        const address = await requestGnosisAddress();
+        formRef.current?.setFieldsValue({ address });
+        break;
+      }
       default:
         throw new Error(`Unknown payment method type: ${values.type}`);
     }
 
     await formRef.current?.submit();
-  }, [requestMetamaskAddress, values.type]);
+  }, [requestMetamaskAddress, requestGnosisAddress, values.type]);
 
   const [loading, setLoading] = useState(false);
   const createPaymentMethod = useCreatePaymentMethod();
