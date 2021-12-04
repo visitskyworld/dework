@@ -34,6 +34,53 @@ export interface AuthWithThreepidMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateUserMutation
+// ====================================================
+
+export interface UpdateUserMutation_user_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateUserMutation_user_threepids {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+  source: ThreepidSource;
+}
+
+export interface UpdateUserMutation_user_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UpdateUserMutation_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+  organizations: UpdateUserMutation_user_organizations[];
+  threepids: UpdateUserMutation_user_threepids[];
+  paymentMethod: UpdateUserMutation_user_paymentMethod | null;
+}
+
+export interface UpdateUserMutation {
+  user: UpdateUserMutation_user;
+}
+
+export interface UpdateUserMutationVariables {
+  input: UpdateUserInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateOrganizationMutation
 // ====================================================
 
@@ -454,6 +501,13 @@ export interface MeQuery_me_threepids {
   source: ThreepidSource;
 }
 
+export interface MeQuery_me_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface MeQuery_me {
   __typename: "User";
   id: Scalar.UUID;
@@ -461,10 +515,41 @@ export interface MeQuery_me {
   imageUrl: string | null;
   organizations: MeQuery_me_organizations[];
   threepids: MeQuery_me_threepids[];
+  paymentMethod: MeQuery_me_paymentMethod | null;
 }
 
 export interface MeQuery {
   me: MeQuery_me;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: UserPaymentMethodQuery
+// ====================================================
+
+export interface UserPaymentMethodQuery_user_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UserPaymentMethodQuery_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  paymentMethod: UserPaymentMethodQuery_user_paymentMethod | null;
+}
+
+export interface UserPaymentMethodQuery {
+  user: UserPaymentMethodQuery_user;
+}
+
+export interface UserPaymentMethodQueryVariables {
+  id: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -813,6 +898,22 @@ export interface TaskTag {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskReward
+// ====================================================
+
+export interface TaskReward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Task
 // ====================================================
 
@@ -872,6 +973,13 @@ export interface UserDetails_threepids {
   source: ThreepidSource;
 }
 
+export interface UserDetails_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface UserDetails {
   __typename: "User";
   id: Scalar.UUID;
@@ -879,6 +987,7 @@ export interface UserDetails {
   imageUrl: string | null;
   organizations: UserDetails_organizations[];
   threepids: UserDetails_threepids[];
+  paymentMethod: UserDetails_paymentMethod | null;
 }
 
 /* tslint:disable */
@@ -1075,6 +1184,12 @@ export interface UpdateTaskRewardInput {
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+}
+
+export interface UpdateUserInput {
+  username?: string | null;
+  imageUrl?: string | null;
+  paymentMethodId?: Scalar.UUID | null;
 }
 
 //==============================================================

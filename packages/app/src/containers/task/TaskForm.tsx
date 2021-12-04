@@ -39,6 +39,10 @@ interface TaskFormProps<TFormValues> {
   onSubmit(task: TFormValues): unknown;
 }
 
+export const currencyMultiplier: Record<string, number> = {
+  ETH: 10e9,
+};
+
 export function TaskForm<
   TFormValues extends CreateTaskInput | UpdateTaskInput
 >({
@@ -67,7 +71,15 @@ export function TaskForm<
         console.warn(values);
         await onSubmit({
           ...values,
-          reward: !!values.reward?.amount ? values.reward : undefined,
+          reward: !!values.reward?.amount
+            ? {
+                amount:
+                  values.reward.amount *
+                  (currencyMultiplier[values.reward.currency] ?? 0),
+                currency: values.reward.currency,
+                trigger: values.reward.trigger,
+              }
+            : undefined,
         });
         formRef.current?.resetFields();
       } finally {
@@ -153,7 +165,7 @@ export function TaskForm<
                   value={values.reward?.amount}
                   addonAfter={
                     <Form.Item name={["reward", "currency"]} noStyle>
-                      <Select defaultValue="ETH">
+                      <Select>
                         <Select.Option value="ETH">ETH</Select.Option>
                         <Select.Option value="USDC">USDC</Select.Option>
                       </Select>

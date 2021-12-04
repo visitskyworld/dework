@@ -89,7 +89,7 @@ export class ProjectResolver {
   @Query(() => Project)
   public async getProject(
     @Args("id", { type: () => GraphQLUUID }) id: string
-  ): Promise<Project | undefined> {
+  ): Promise<Project> {
     const project = await this.projectService.findById(id);
     if (!project) throw new NotFoundException();
     return project;

@@ -8,6 +8,9 @@ import { useSignPayout } from "@dewo/app/util/ethereum";
 import { useRouter } from "next/router";
 import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
+import { currencyMultiplier } from "../../task/TaskForm";
+import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
+import { usePay } from "../../payment/hooks";
 // import { useSignPayout } from "../util/ethereum";
 
 interface TaskCardProps {
@@ -36,14 +39,16 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     [task, user, updateTask]
   );
 
-  const signPayout = useSignPayout();
+  const project = useProjectContext();
+  const handlePay = usePay(project?.paymentMethod ?? undefined);
   const handlePayAndClose = useCallback(
     async (event) => {
       eatClick(event);
-      await signPayout("0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6", 1);
-      updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
+      const receiver = task.assignees[0];
+      await handlePay(receiver.id, task.reward!);
+      await updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
     },
-    [signPayout, updateTask, task]
+    [updateTask, handlePay, task]
   );
 
   return (
@@ -62,7 +67,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   <Tag color="#e89a3c" style={{ marginBottom: 4 }}>
                     <Icons.DollarOutlined />
                     <span>
-                      {task.reward.amount} {task.reward.currency}
+                      {task.reward.amount /
+                        (currencyMultiplier[task.reward.currency] ?? 1)}{" "}
+                      {task.reward.currency}
                     </span>
                   </Tag>
                 )}
@@ -73,15 +80,16 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   </Tag>
                 ))}
               </Row>
-              {task.status === TaskStatusEnum.IN_REVIEW && (
-                <Button
-                  size="small"
-                  icon={<Icons.DollarOutlined />}
-                  onClick={handlePayAndClose}
-                >
-                  Pay and close
-                </Button>
-              )}
+              {task.status === TaskStatusEnum.IN_REVIEW &&
+                !!task.assignees.length && (
+                  <Button
+                    size="small"
+                    icon={<Icons.DollarOutlined />}
+                    onClick={handlePayAndClose}
+                  >
+                    Pay and close
+                  </Button>
+                )}
               {!!user && task.status === TaskStatusEnum.TODO && (
                 <Button
                   size="small"

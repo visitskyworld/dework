@@ -4,13 +4,14 @@ import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import { PaymentMethodForm } from "../payment/PaymentMethodForm";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
+import { useUpdateUser } from "./hooks";
 
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
   const user = useUser();
 
-  const updateUser = useCallback(async () => {}, []);
+  const updateUser = useUpdateUser();
   const handlePaymentMethodCreated = useCallback(
     async (paymentMethod: PaymentMethod) => {
       await updateUser({ paymentMethodId: paymentMethod.id });
@@ -24,7 +25,7 @@ export const UserSettings: FC<Props> = () => {
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Col>
         <Typography.Title level={5}>Reward Payment Method</Typography.Title>
-        {!!user.paymentMethod ? (
+        {!!user?.paymentMethod ? (
           <PaymentMethodSummary
             paymentMethod={user.paymentMethod}
             onClose={removePaymentMethod}

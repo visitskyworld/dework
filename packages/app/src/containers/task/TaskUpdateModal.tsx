@@ -3,7 +3,7 @@ import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useTask, useUpdateTask } from "./hooks";
-import { TaskForm } from "./TaskForm";
+import { currencyMultiplier, TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
   taskId: string;
@@ -39,7 +39,13 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       assigneeIds: task?.assignees.map((a) => a.id),
       status: task?.status,
       reward: !!task?.reward
-        ? _.pick(task.reward, ["amount", "currency", "trigger"])
+        ? {
+            amount:
+              task.reward.amount /
+              (currencyMultiplier[task.reward.currency] ?? 1),
+            currency: task.reward.currency,
+            trigger: task.reward.trigger,
+          }
         : undefined,
     }),
     [task, taskId]

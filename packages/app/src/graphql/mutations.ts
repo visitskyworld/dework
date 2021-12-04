@@ -14,6 +14,16 @@ export const authWithThreepid = gql`
   ${Fragments.user}
 `;
 
+export const updateUser = gql`
+  mutation UpdateUserMutation($input: UpdateUserInput!) {
+    user: updateUser(input: $input) {
+      ...UserDetails
+    }
+  }
+
+  ${Fragments.userDetails}
+`;
+
 export const createOrganization = gql`
   mutation CreateOrganizationMutation($input: CreateOrganizationInput!) {
     organization: createOrganization(input: $input) {
@@ -67,6 +77,7 @@ export const updateTask = gql`
 
   ${Fragments.task}
 `;
+
 export const deleteTask = gql`
   mutation DeleteTaskMutation($taskId: UUID!) {
     task: deleteTask(id: $taskId) {

@@ -55,6 +55,14 @@ export const taskTag = gql`
   }
 `;
 
+export const taskReward = gql`
+  fragment TaskReward on TaskReward {
+    amount
+    currency
+    trigger
+  }
+`;
+
 export const task = gql`
   fragment Task on Task {
     id
@@ -70,13 +78,12 @@ export const task = gql`
       ...User
     }
     reward {
-      amount
-      currency
-      trigger
+      ...TaskReward
     }
   }
 
   ${taskTag}
+  ${taskReward}
   ${user}
 `;
 
@@ -90,10 +97,14 @@ export const userDetails = gql`
       id
       source
     }
+    paymentMethod {
+      ...PaymentMethod
+    }
   }
 
   ${user}
   ${organization}
+  ${paymentMethod}
 `;
 
 export const organizationDetails = gql`

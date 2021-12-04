@@ -32,23 +32,18 @@ export function useRequestAddress(): () => Promise<string> {
 }
 
 export function useSignPayout(): (
-  receiverAddress: string,
+  toAddress: string,
   amount: number
 ) => Promise<ethers.Transaction> {
   const requestSigner = useRequestSigner();
   return useCallback(
-    async (receiverAddress, amount) => {
+    async (toAddress, amount) => {
       const signer = await requestSigner();
-      const treasury = new ethers.Contract(
-        Constants.TREASURY_CONTRACT_ADDRESS,
-        Constants.TREASURY_CONTRACT_ABI,
-        signer
-      );
-
-      const balance = await treasury.getBalance();
-      console.log("Balance before: ", balance.toString());
-
-      return await treasury.transfer(receiverAddress, amount);
+      return signer.sendTransaction({
+        to: toAddress,
+        from: signer.getAddress(),
+        value: ethers.utils.parseEther(String(amount / 10e9)),
+      });
     },
     [requestSigner]
   );

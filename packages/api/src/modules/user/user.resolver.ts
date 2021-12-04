@@ -1,5 +1,5 @@
 import { Args, Context, Mutation, Query } from "@nestjs/graphql";
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import {
   GraphQLAuthGuard,
@@ -9,7 +9,6 @@ import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
-import { id } from "ethers/lib/utils";
 
 @Injectable()
 export class UserResolver {
@@ -44,5 +43,14 @@ export class UserResolver {
     @Args("input") input: UpdateUserInput
   ): Promise<User> {
     return this.userService.update({ id: user.id, ...input });
+  }
+
+  @Query(() => User)
+  public async getUser(
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<User> {
+    const user = await this.userService.findById(id);
+    if (!user) throw new NotFoundException();
+    return user;
   }
 }

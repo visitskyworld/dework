@@ -11,6 +11,19 @@ export const me = gql`
   ${Fragments.userDetails}
 `;
 
+export const userPaymentMethod = gql`
+  query UserPaymentMethodQuery($id: UUID!) {
+    user: getUser(id: $id) {
+      id
+      paymentMethod {
+        ...PaymentMethod
+      }
+    }
+  }
+
+  ${Fragments.paymentMethod}
+`;
+
 export const organization = gql`
   query GetOrganizationQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {
