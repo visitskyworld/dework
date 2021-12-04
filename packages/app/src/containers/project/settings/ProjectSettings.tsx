@@ -1,9 +1,12 @@
 import { Project } from "@dewo/app/graphql/types";
 import { Alert, Col, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { useUpdateProject } from "../hooks";
+import { shortenedAddress, useUpdateProject } from "../hooks";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
-import { ProjectPaymentMethodForm } from "./ProjectPaymentMethodForm";
+import {
+  paymentMethodTypeToString,
+  ProjectPaymentMethodForm,
+} from "./ProjectPaymentMethodForm";
 
 interface Props {
   project: Project;
@@ -30,7 +33,16 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         <Typography.Title level={5}>Reward Payment Method</Typography.Title>
         {!!project.paymentMethod ? (
           <Alert
-            message={`Set up (${project.paymentMethod.address})`}
+            message={
+              <Typography.Text>
+                {paymentMethodTypeToString[project.paymentMethod.type]}{" "}
+                connected
+                <Typography.Text type="secondary">
+                  {" "}
+                  ({shortenedAddress(project.paymentMethod.address)})
+                </Typography.Text>
+              </Typography.Text>
+            }
             type="success"
             showIcon
             closable

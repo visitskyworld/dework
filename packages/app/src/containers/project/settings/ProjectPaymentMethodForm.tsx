@@ -3,10 +3,14 @@ import {
   CreatePaymentMethodInput,
   PaymentMethodType,
 } from "@dewo/app/graphql/types";
-import { Button, Col, Form, FormInstance, Input, Row, Select } from "antd";
-import * as Icons from "@ant-design/icons";
+import { Button, Col, Form, FormInstance, Row, Select } from "antd";
 import { useRequestAddress } from "@dewo/app/util/ethereum";
 import { useCreatePaymentMethod, useUpdateProject } from "../hooks";
+
+export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
+  [PaymentMethodType.METAMASK]: "Metamask",
+  [PaymentMethodType.GNOSIS_SAFE]: "Gnosis Safe",
+};
 
 interface Props {
   projectId: string;
@@ -77,9 +81,9 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
                 <Select.Option
                   key={type}
                   value={type}
-                  label={type + " (label)"}
+                  label={paymentMethodTypeToString[type]}
                 >
-                  {type + " (label)"}
+                  {paymentMethodTypeToString[type]}
                 </Select.Option>
               ))}
             </Select>
@@ -88,7 +92,7 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId }) => {
         <Col span={12}>
           {!!values.type && (
             <Button block type="primary" loading={loading} onClick={connect}>
-              Connect {values.type}
+              Connect {paymentMethodTypeToString[values.type]}
             </Button>
           )}
 

@@ -19,6 +19,9 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
+export const shortenedAddress = (address: string) =>
+  `${address.slice(0, 6)}...${address.slice(-4)}`;
+
 export function useCreateProject(): (
   input: CreateProjectInput
 ) => Promise<Project> {
