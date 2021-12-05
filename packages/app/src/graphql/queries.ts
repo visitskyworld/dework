@@ -11,9 +11,19 @@ export const me = gql`
   ${Fragments.userDetails}
 `;
 
-export const myTasks = gql`
-  query MyTasksQuery {
-    me {
+export const user = gql`
+  query UserQuery($userId: UUID!) {
+    user: getUser(id: $userId) {
+      ...User
+    }
+  }
+
+  ${Fragments.user}
+`;
+
+export const userTasks = gql`
+  query UserTasksQuery($userId: UUID!) {
+    user: getUser(id: $userId) {
       id
       tasks {
         ...Task

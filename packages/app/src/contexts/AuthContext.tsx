@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { UserDetails } from "../graphql/types";
 import { clearAuthToken } from "../util/authToken";
-import { useUser } from "../util/hooks";
+import { useCurrentUser } from "../util/hooks";
 
 interface AuthContextValue {
   user: UserDetails | undefined;
@@ -32,7 +32,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({
   authenticated: initialAuthenticated,
 }) => {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
-  const user = useUser(!authenticated);
+  const user = useCurrentUser(!authenticated);
 
   const router = useRouter();
   const logout = useCallback(async () => {

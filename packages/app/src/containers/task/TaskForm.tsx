@@ -15,6 +15,7 @@ import {
   InputNumber,
   ConfigProvider,
   Empty,
+  Tooltip,
 } from "antd";
 import {
   CreateTaskInput,
@@ -30,6 +31,7 @@ import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
+import Link from "next/link";
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
   task?: Task;
@@ -233,12 +235,24 @@ export function TaskForm<
                 </Typography.Text>
                 <Col>
                   {assignees.map((user) => (
-                    <Space style={{ width: "100%", display: "flex" }}>
-                      <Avatar
-                        src={user.imageUrl}
-                        icon={<Icons.TeamOutlined />}
-                      />
-                      <Row style={{ width: 120 }}>{user.username}</Row>
+                    <Row style={{ width: "100%" }}>
+                      <Link href={`/profile/${user.id}`}>
+                        <a>
+                          <Tooltip title="Visit profile">
+                            <Space style={{ display: "flex" }}>
+                              <Avatar
+                                src={user.imageUrl}
+                                icon={<Icons.TeamOutlined />}
+                              />
+                              <Row style={{ width: 120 }}>
+                                <Typography.Text>
+                                  {user.username}
+                                </Typography.Text>
+                              </Row>
+                            </Space>
+                          </Tooltip>
+                        </a>
+                      </Link>
                       <Button
                         size="small"
                         onClick={() => {
@@ -252,7 +266,7 @@ export function TaskForm<
                       >
                         Assign
                       </Button>
-                    </Space>
+                    </Row>
                   ))}
                 </Col>
               </Space>

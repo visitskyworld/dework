@@ -2,7 +2,6 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { OrganizationModule } from "../organization/organization.module";
 import { PaymentResolver } from "./payment.resolver";
 import { PaymentService } from "./payment.service";
 

@@ -1,5 +1,5 @@
 import { PaymentMethod } from "@dewo/app/graphql/types";
-import { useUser } from "@dewo/app/util/hooks";
+import { useCurrentUser } from "@dewo/app/util/hooks";
 import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import { PaymentMethodForm } from "../payment/PaymentMethodForm";
@@ -9,7 +9,7 @@ import { useUpdateUser } from "./hooks";
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
-  const user = useUser();
+  const user = useCurrentUser();
 
   const updateUser = useUpdateUser();
   const handlePaymentMethodCreated = useCallback(

@@ -1,22 +1,26 @@
 import React, { FC, useCallback } from "react";
-import { useUser } from "@dewo/app/util/hooks";
 import * as Icons from "@ant-design/icons";
-import { Image, Avatar, Col, Space, Typography } from "antd";
-import { useMyTasks, useUpdateUser } from "./hooks";
-import { useQuery } from "@apollo/client";
+import { Image, Avatar, Space, Typography } from "antd";
+import { useUpdateUser, useUser, useUserTasks } from "./hooks";
 import { TaskBoard } from "../project/board/TaskBoard";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
-interface Props {}
+interface Props {
+  userId: string;
+}
 
-export const UserProfile: FC<Props> = () => {
-  const user = useUser();
+export const UserProfile: FC<Props> = ({ userId }) => {
+  const user = useUser(userId);
+  const tasks = useUserTasks(userId);
+
+  const currentUserId = useAuthContext().user?.id;
+  const isMe = userId === currentUserId;
+
   const updateUser = useUpdateUser();
   const updateUsername = useCallback(
     (username: string) => updateUser({ username }),
     [updateUser]
   );
-
-  const myTasks = useMyTasks();
 
   if (!user) return null;
   return (
@@ -35,13 +39,20 @@ export const UserProfile: FC<Props> = () => {
           size={128}
           icon={<Icons.UserOutlined />}
         />
-        <Typography.Title level={3} editable={{ onChange: updateUsername }}>
+        <Typography.Title
+          level={3}
+          editable={isMe ? { onChange: updateUsername } : undefined}
+        >
           {user.username}
         </Typography.Title>
-        <Typography.Text editable={{ onChange: () => console.warn("update") }}>
+        <Typography.Text
+          editable={
+            isMe ? { onChange: () => console.warn("update") } : undefined
+          }
+        >
           Lorem ipsum dolor sit amet
         </Typography.Text>
-        {!!myTasks && <TaskBoard tasks={myTasks} />}
+        {!!tasks && <TaskBoard tasks={tasks} />}
       </Space>
     </>
   );

@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { ethers } from "ethers";
-import { Constants } from "./constants";
 
 export function useProvider(): ethers.providers.Web3Provider {
   return useMemo(

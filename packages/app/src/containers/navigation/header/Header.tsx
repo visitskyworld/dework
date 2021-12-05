@@ -13,8 +13,8 @@ export const Header: FC<HeaderProps> = () => {
   const { user } = useAuthContext();
   const router = useRouter();
   const navigateToProfile = useCallback(
-    () => router.push("/profile"),
-    [router]
+    () => router.push(`/profile/${user?.id}`),
+    [router, user?.id]
   );
 
   return (

@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { Select, Typography, Row, Col, Button, Alert } from "antd";
 import { useRouter } from "next/router";
-import { useUser } from "@dewo/app/util/hooks";
+import { useCurrentUser } from "@dewo/app/util/hooks";
 import {
   CreateProjectIntegrationMutation,
   CreateProjectIntegrationMutationVariables,
@@ -140,7 +140,7 @@ const PostNewTasksToDiscordIntegration: FC = () => {
 };
 
 export const ProjectDiscordIntegrations: FC = () => {
-  const user = useUser();
+  const user = useCurrentUser();
   const discordConnected = useMemo(
     () => user?.threepids.some((t) => t.source === ThreepidSource.discord),
     [user?.threepids]

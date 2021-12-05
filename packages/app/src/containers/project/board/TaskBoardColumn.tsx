@@ -4,11 +4,15 @@ import { Button, Card, Badge, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { Task, TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
+import {
+  CreateTaskInput,
+  Task,
+  TaskStatusEnum,
+  TaskTag,
+} from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { STATUS_LABEL } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
-import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 
 interface Props {
   status: TaskStatusEnum;

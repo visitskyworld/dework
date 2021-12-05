@@ -1,15 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-} from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
-import { PaymentMethod } from "./PaymentMethod";
 import { Project } from "./Project";
 import { User } from "./User";
 

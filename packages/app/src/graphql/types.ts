@@ -528,31 +528,55 @@ export interface MeQuery {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: MyTasksQuery
+// GraphQL query operation: UserQuery
 // ====================================================
 
-export interface MyTasksQuery_me_tasks_tags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-}
-
-export interface MyTasksQuery_me_tasks_assignees {
+export interface UserQuery_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
 }
 
-export interface MyTasksQuery_me_tasks_reward {
+export interface UserQuery {
+  user: UserQuery_user;
+}
+
+export interface UserQueryVariables {
+  userId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: UserTasksQuery
+// ====================================================
+
+export interface UserTasksQuery_user_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface UserTasksQuery_user_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
 }
 
-export interface MyTasksQuery_me_tasks {
+export interface UserTasksQuery_user_tasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
@@ -560,19 +584,23 @@ export interface MyTasksQuery_me_tasks {
   status: TaskStatusEnum;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
-  tags: MyTasksQuery_me_tasks_tags[];
-  assignees: MyTasksQuery_me_tasks_assignees[];
-  reward: MyTasksQuery_me_tasks_reward | null;
+  tags: UserTasksQuery_user_tasks_tags[];
+  assignees: UserTasksQuery_user_tasks_assignees[];
+  reward: UserTasksQuery_user_tasks_reward | null;
 }
 
-export interface MyTasksQuery_me {
+export interface UserTasksQuery_user {
   __typename: "User";
   id: Scalar.UUID;
-  tasks: MyTasksQuery_me_tasks[];
+  tasks: UserTasksQuery_user_tasks[];
 }
 
-export interface MyTasksQuery {
-  me: MyTasksQuery_me;
+export interface UserTasksQuery {
+  user: UserTasksQuery_user;
+}
+
+export interface UserTasksQueryVariables {
+  userId: Scalar.UUID;
 }
 
 /* tslint:disable */
