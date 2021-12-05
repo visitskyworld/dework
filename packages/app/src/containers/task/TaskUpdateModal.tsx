@@ -57,8 +57,8 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       visible={visible}
       onCancel={onCancel}
       footer={null}
+      width={768}
     >
-      {/* <TaskForm<UpdateTaskInput> */}
       <TaskForm<any>
         key={JSON.stringify(initialValues)}
         mode="update"

@@ -33,6 +33,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       visible={visible}
       onCancel={onCancel}
       footer={null}
+      width={768}
     >
       <TaskForm<CreateTaskInput>
         mode="create"
