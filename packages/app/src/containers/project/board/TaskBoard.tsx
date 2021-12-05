@@ -1,6 +1,10 @@
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import {
+  CreateTaskInput,
+  Task,
+  TaskStatusEnum,
+  TaskTag,
+} from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import { useProject } from "../hooks";
 import React, { FC, useEffect, useCallback, useState } from "react";
 import _ from "lodash";
 import {
@@ -9,7 +13,7 @@ import {
   resetServerContext,
 } from "react-beautiful-dnd";
 import { orderBetweenTasks, useGroupedTasks } from "./util";
-import { ProjectBoardColumn } from "./ProjectBoardColumn";
+import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
 
 const statuses: TaskStatusEnum[] = [
@@ -19,16 +23,23 @@ const statuses: TaskStatusEnum[] = [
   TaskStatusEnum.DONE,
 ];
 
-interface ProjectBoardProps {
-  projectId: string;
+interface Props {
+  tasks: Task[];
+  tags?: TaskTag[];
+  initialValues?: Partial<CreateTaskInput>;
 }
 
 const columnWidth = 300;
 const noTasks: Task[] = [];
+const noTags: TaskTag[] = [];
+const noInitialValues: Partial<CreateTaskInput> = {};
 
-export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
-  const project = useProject(projectId);
-  const tasksByStatus = useGroupedTasks(project?.tasks ?? noTasks);
+export const TaskBoard: FC<Props> = ({
+  tasks,
+  tags = noTags,
+  initialValues = noInitialValues,
+}) => {
+  const tasksByStatus = useGroupedTasks(tasks);
 
   const updateTask = useUpdateTask();
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
@@ -38,7 +49,7 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
       const taskId = result.draggableId;
       const status = result.destination.droppableId as TaskStatusEnum;
 
-      const task = project?.tasks.find((t) => t.id === taskId);
+      const task = tasks.find((t) => t.id === taskId);
       if (!task) return;
 
       const indexExcludingItself = (() => {
@@ -64,7 +75,7 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
 
       await updateTask({ id: taskId, status, sortKey }, task);
     },
-    [project?.tasks, tasksByStatus, updateTask]
+    [tasks, tasksByStatus, updateTask]
   );
 
   const [loaded, setLoaded] = useState(false);
@@ -75,17 +86,17 @@ export const ProjectBoard: FC<ProjectBoardProps> = ({ projectId }) => {
 
   resetServerContext();
   if (!loaded) return null;
-  if (!project) return null;
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Row className="dewo-task-board">
         <Space size="middle" align="start">
           {statuses.map((status) => (
             <div key={status} style={{ width: columnWidth }}>
-              <ProjectBoardColumn
+              <TaskBoardColumn
                 status={status}
-                project={project}
+                tags={tags}
                 tasks={tasksByStatus[status] ?? noTasks}
+                initialValues={initialValues}
               />
             </div>
           ))}

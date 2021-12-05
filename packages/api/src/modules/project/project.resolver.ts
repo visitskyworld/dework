@@ -36,7 +36,7 @@ export class ProjectResolver {
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() project: Project): Promise<Task[]> {
-    return this.taskService.findWithRelations(project.id);
+    return this.taskService.findWithRelations({ projectId: project.id });
   }
 
   @Mutation(() => Project)

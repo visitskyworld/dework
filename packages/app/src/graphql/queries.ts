@@ -11,6 +11,19 @@ export const me = gql`
   ${Fragments.userDetails}
 `;
 
+export const myTasks = gql`
+  query MyTasksQuery {
+    me {
+      id
+      tasks {
+        ...Task
+      }
+    }
+  }
+
+  ${Fragments.task}
+`;
+
 export const userPaymentMethod = gql`
   query UserPaymentMethodQuery($id: UUID!) {
     user: getUser(id: $id) {

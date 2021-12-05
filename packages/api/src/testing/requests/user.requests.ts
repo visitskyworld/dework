@@ -52,4 +52,22 @@ export class UserRequests {
       variables: { input },
     };
   }
+
+  public static me(): GraphQLTestClientRequestBody {
+    return {
+      query: `
+        query Me {
+          me {
+            id
+            tasks {
+              id
+              assignees {
+                id
+              }
+            }
+          }
+        }
+      `,
+    };
+  }
 }

@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { Layout, Modal } from "antd";
 import { Header } from "@dewo/app/containers/navigation/header/Header";
 import { useRouter } from "next/router";
-import { ProjectBoard } from "@dewo/app/containers/project/board/ProjectBoard";
+import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { TaskUpdateModal } from "@dewo/app/containers/task/TaskUpdateModal";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
@@ -43,7 +43,7 @@ const Page: NextPage = () => {
           >
             {!!project && <ProjectSettings project={project} />}
           </Modal>
-          <ProjectBoard projectId={projectId} />
+          <ProjectTaskBoard projectId={projectId} />
         </Layout.Content>
       </Layout>
     </ProjectProvider>

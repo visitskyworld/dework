@@ -27,14 +27,32 @@ export class TaskService {
     return this.taskRepo.findOne(id);
   }
 
-  public async findWithRelations(projectId: string): Promise<Task[]> {
-    return this.taskRepo
+  public async findWithRelations({
+    projectId,
+    assigneeId,
+  }: {
+    projectId?: string;
+    assigneeId?: string;
+  }): Promise<Task[]> {
+    let queryBuilder = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.tags", "taskTag")
-      .leftJoinAndSelect("task.reward", "reward")
-      .where("task.projectId = :projectId", { projectId })
-      .andWhere("task.deletedAt IS NULL")
-      .getMany();
+      .leftJoinAndSelect("task.reward", "reward");
+
+    if (!!projectId) {
+      queryBuilder = queryBuilder.where("task.projectId = :projectId", {
+        projectId,
+      });
+    }
+
+    if (!!assigneeId) {
+      // TODO(fant): this will filter out other task assignees, which is a bug
+      queryBuilder = queryBuilder.where("assignee.id = :assigneeId", {
+        assigneeId,
+      });
+    }
+
+    return queryBuilder.andWhere("task.deletedAt IS NULL").getMany();
   }
 }

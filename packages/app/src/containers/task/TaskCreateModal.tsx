@@ -1,11 +1,11 @@
-import { CreateTaskInput, ProjectDetails, Task } from "@dewo/app/graphql/types";
+import { CreateTaskInput, Task, TaskTag } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback } from "react";
 import { useCreateTask } from "./hooks";
 import { TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
-  project: ProjectDetails;
+  tags: TaskTag[];
   visible: boolean;
   initialValues: Partial<CreateTaskInput>;
   onCancel(): void;
@@ -13,7 +13,7 @@ interface TaskCreateModalProps {
 }
 
 export const TaskCreateModal: FC<TaskCreateModalProps> = ({
-  project,
+  tags,
   visible,
   initialValues,
   onCancel,
@@ -36,7 +36,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     >
       <TaskForm<CreateTaskInput>
         mode="create"
-        project={project}
+        tags={tags}
         initialValues={initialValues}
         buttonText="Create"
         onSubmit={handleSubmit}

@@ -160,4 +160,42 @@ describe("UserResolver", () => {
       });
     });
   });
+
+  describe("Queries", () => {
+    describe("me", () => {
+      it("should return all non-deleted tasks", async () => {
+        const user = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+
+        const task = await fixtures.createTask({
+          assignees: [user, otherUser],
+        });
+        const deletedTask = await fixtures.createTask({
+          assignees: [user],
+          deletedAt: new Date(),
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.me(),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const me = response.body.data?.me;
+        expect(me.tasks).toHaveLength(1);
+        expect(me.tasks).toContainEqual(
+          expect.objectContaining({
+            id: task.id,
+            assignees: expect.arrayContaining([
+              expect.objectContaining({ id: user.id }),
+              // expect.objectContaining({ id: otherUser.id }),
+            ]),
+          })
+        );
+        expect(me.tasks).not.toContainEqual(
+          expect.objectContaining({ id: deletedTask.id })
+        );
+      });
+    });
+  });
 });

@@ -19,20 +19,21 @@ import {
 import {
   CreateTaskInput,
   UpdateTaskInput,
-  ProjectDetails,
   TaskRewardTrigger,
   TaskStatusEnum,
   User,
   Task,
+  TaskTag,
 } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
+import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
   task?: Task;
-  project: ProjectDetails;
+  tags: TaskTag[];
   buttonText: string;
   initialValues?: Partial<TFormValues>;
   assignees?: User[];
@@ -48,7 +49,7 @@ export function TaskForm<
 >({
   mode,
   task,
-  project,
+  tags,
   assignees,
   buttonText,
   initialValues,
@@ -58,10 +59,7 @@ export function TaskForm<
   const [values, setValues] = useState<Partial<TFormValues>>(
     initialValues ?? {}
   );
-  const tagById = useMemo(
-    () => _.keyBy(project.taskTags, "id"),
-    [project.taskTags]
-  );
+  const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -90,12 +88,12 @@ export function TaskForm<
   );
 
   const [tagLoading, setTagLoading] = useState(false);
+  const project = useProjectContext();
   const createTaskTag = useCreateTaskTag();
-  const generateRandomTaskTagColor = useGenerateRandomTaskTagColor(
-    project.taskTags
-  );
+  const generateRandomTaskTagColor = useGenerateRandomTaskTagColor(tags);
   const handleTagsUpdated = useCallback(
     async (labels: string[]) => {
+      if (!project) return;
       const [existingTagIds, newTagLabels] = _.partition(
         labels,
         (existingIdOrNewLabel) => !!tagById[existingIdOrNewLabel]
@@ -125,7 +123,7 @@ export function TaskForm<
         setTagLoading(false);
       }
     },
-    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, project.id]
+    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, project]
   );
 
   const handleChange = useCallback(
@@ -304,7 +302,7 @@ export function TaskForm<
                   />
                 )}
               >
-                {project.taskTags.map((tag) => (
+                {tags.map((tag) => (
                   <Select.Option value={tag.id} label={tag.label}>
                     <Tag color={tag.color}>{tag.label}</Tag>
                   </Select.Option>

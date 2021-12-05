@@ -1,24 +1,27 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Button, Card, Badge, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { ProjectDetails, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task, TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { STATUS_LABEL } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
+import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 
-interface ProjectBoardColumnProps {
+interface Props {
   status: TaskStatusEnum;
   tasks: Task[];
-  project: ProjectDetails;
+  tags: TaskTag[];
+  initialValues: Partial<CreateTaskInput>;
 }
 
-export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
+export const TaskBoardColumn: FC<Props> = ({
   status,
   tasks,
-  project,
+  tags,
+  initialValues,
 }) => {
   const createCardToggle = useToggle();
   return (
@@ -45,8 +48,11 @@ export const ProjectBoardColumn: FC<ProjectBoardColumnProps> = ({
       style={{ width: 300 }}
     >
       <TaskCreateModal
-        project={project}
-        initialValues={{ projectId: project.id, status }}
+        tags={tags}
+        initialValues={useMemo(
+          () => ({ ...initialValues, status }),
+          [status, initialValues]
+        )}
         visible={createCardToggle.value}
         onCancel={createCardToggle.onToggleOff}
         onDone={createCardToggle.onToggleOff}

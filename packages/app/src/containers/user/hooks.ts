@@ -1,6 +1,9 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
+import * as Queries from "@dewo/app/graphql/queries";
 import {
+  MyTasksQuery,
+  Task,
   UpdateUserInput,
   UpdateUserMutation,
   UpdateUserMutationVariables,
@@ -21,4 +24,9 @@ export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
     },
     [mutation]
   );
+}
+
+export function useMyTasks(): Task[] | undefined {
+  const { data } = useQuery<MyTasksQuery>(Queries.myTasks);
+  return data?.me.tasks;
 }

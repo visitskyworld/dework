@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import Link from "next/link";
 import { Breadcrumb, PageHeader, Avatar, Button, Dropdown } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -11,7 +11,11 @@ interface HeaderProps {}
 
 export const Header: FC<HeaderProps> = () => {
   const { user } = useAuthContext();
-  const query = useRouter().query;
+  const router = useRouter();
+  const navigateToProfile = useCallback(
+    () => router.push("/profile"),
+    [router]
+  );
 
   return (
     <PageHeader
@@ -35,6 +39,8 @@ export const Header: FC<HeaderProps> = () => {
               src={user.imageUrl}
               className="pointer-cursor"
               icon={<Icons.UserOutlined />}
+              // @ts-ignore
+              onClick={navigateToProfile}
             />
           </Dropdown>
         ),
@@ -46,10 +52,10 @@ export const Header: FC<HeaderProps> = () => {
             <a>Home</a>
           </Link>
         </Breadcrumb.Item>
-        {!!query.organizationId && (
+        {!!router.query.organizationId && (
           <OrganizationBreadcrumbs
-            organizationId={query.organizationId as string}
-            projectId={query.projectId as string | undefined}
+            organizationId={router.query.organizationId as string}
+            projectId={router.query.projectId as string | undefined}
           />
         )}
       </Breadcrumb>
