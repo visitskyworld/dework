@@ -7,6 +7,7 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
+import _ from "lodash";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -16,18 +17,47 @@ import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
 import { Task } from "@dewo/api/models/Task";
 import { TaskService } from "../task/task.service";
+import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
+import { GraphQLJSONObject } from "graphql-type-json";
+import { AuthorizableUser } from "nest-casl";
+import { GetUserPermissionsInput } from "./dto/GetUserPermissionsInput";
+import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
+import { ProjectRolesGuard } from "../project/project.roles.guard";
+import { TaskRolesGuard } from "../task/task.roles.guard";
 
 @Resolver(() => User)
 @Injectable()
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly taskService: TaskService
+    private readonly taskService: TaskService,
+    private readonly abilityFactory: AbilityFactory
   ) {}
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() user: User): Promise<Task[]> {
     return this.taskService.findWithRelations({ assigneeId: user.id });
+  }
+
+  @ResolveField(() => [GraphQLJSONObject])
+  @UseGuards(OrganizationRolesGuard, ProjectRolesGuard, TaskRolesGuard)
+  public async permissions(
+    @Parent() user: User,
+    @Context("caslUser") caslUser: AuthorizableUser,
+    @Args("input", { type: () => GetUserPermissionsInput, nullable: true })
+    input: GetUserPermissionsInput | undefined
+  ): Promise<unknown[]> {
+    if (user.id !== caslUser.id) {
+      throw new Error("Cannot get permissions for other users");
+    }
+
+    const abilities = this.abilityFactory.createForUser(caslUser);
+    return abilities.rules.map((rule) => {
+      if (_.isObject(rule.subject)) {
+        return { ...rule, subject: (rule.subject as any).name };
+      }
+      return rule;
+    });
   }
 
   @Query(() => User)

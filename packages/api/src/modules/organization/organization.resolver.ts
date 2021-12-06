@@ -30,7 +30,8 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => Organization)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, Organization)
   public async createOrganization(
     @Context("user") user: User,
     @Args("input") input: CreateOrganizationInput

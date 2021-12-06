@@ -32,7 +32,7 @@ export class TaskRolesGuard implements CanActivate {
     ].find((id) => !!id);
 
     if (!taskId) {
-      throw new ForbiddenException("Could not find taskId in variables");
+      return true;
     }
 
     const task = await this.taskRepo.findOne(taskId);

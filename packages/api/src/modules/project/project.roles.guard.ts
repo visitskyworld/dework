@@ -33,7 +33,7 @@ export class ProjectRolesGuard implements CanActivate {
     ].find((id) => !!id);
 
     if (!projectId) {
-      throw new ForbiddenException("Could not find projectId in variables");
+      return true;
     }
 
     const project = await this.projectRepo.findOne(projectId);

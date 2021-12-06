@@ -1,3 +1,4 @@
+import { GetUserPermissionsInput } from "@dewo/api/modules/user/dto/GetUserPermissionsInput";
 import { UpdateUserInput } from "@dewo/api/modules/user/dto/UpdateUserInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
@@ -53,12 +54,15 @@ export class UserRequests {
     };
   }
 
-  public static me(): GraphQLTestClientRequestBody {
+  public static me(
+    input?: GetUserPermissionsInput
+  ): GraphQLTestClientRequestBody<{ input?: GetUserPermissionsInput }> {
     return {
       query: `
-        query Me {
+        query Me($input: GetUserPermissionsInput) {
           me {
             id
+            permissions(input: $input)
             tasks {
               id
               assignees {
@@ -68,6 +72,7 @@ export class UserRequests {
           }
         }
       `,
+      variables: { input },
     };
   }
 }

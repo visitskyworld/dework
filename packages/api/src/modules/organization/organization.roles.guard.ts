@@ -24,11 +24,7 @@ export class OrganizationRolesGuard implements CanActivate {
       gqlContext.req.body?.variables?.input?.id,
     ].find((id) => !!id);
 
-    if (!organizationId) {
-      throw new ForbiddenException(
-        "Could not find organizationId in variables"
-      );
-    }
+    if (!organizationId) return true;
 
     const organizations = await gqlContext.user.organizations;
     if (organizations.some((o) => o.id === organizationId)) {

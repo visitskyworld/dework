@@ -4,7 +4,7 @@ import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
-import { TaskPermissions } from "./task.permissions";
+import { permissions } from "../auth/permissions";
 import { TaskResolver } from "./task.resolver";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
@@ -12,7 +12,7 @@ import { TaskService } from "./task.service";
 @Module({
   imports: [
     TypeOrmModule.forFeature([Task, Project, User]),
-    CaslModule.forFeature({ permissions: TaskPermissions }),
+    CaslModule.forFeature({ permissions }),
   ],
   providers: [TaskResolver, TaskService, TaskRolesGuard],
   exports: [TaskService],
