@@ -7,7 +7,8 @@
     "dev:db": "docker compose up",
     "test": "jest --runInBand --setupFiles tsconfig-paths/register",
     "build": "rm -rf build && nest build --path tsconfig.json",
-    "start": "node build/main.js"
+    "start": "node build/main.js",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
@@ -34,6 +35,7 @@
     "passport": "^0.5.0",
     "passport-discord": "^0.1.4",
     "passport-github": "^1.1.0",
+    "patch-package": "^6.4.7",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",

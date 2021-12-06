@@ -1,0 +1,13 @@
+diff --git a/node_modules/nest-casl/dist/casl.module.js b/node_modules/nest-casl/dist/casl.module.js
+index ba58b93..3e72af1 100644
+--- a/node_modules/nest-casl/dist/casl.module.js
++++ b/node_modules/nest-casl/dist/casl.module.js
+@@ -47,7 +47,7 @@ CaslModule = CaslModule_1 = __decorate([
+                 useValue: {},
+             },
+         ],
+-        exports: [access_service_1.AccessService],
++        exports: [access_service_1.AccessService, ability_factory_1.AbilityFactory],
+     })
+ ], CaslModule);
+ exports.CaslModule = CaslModule;
