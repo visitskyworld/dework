@@ -9,10 +9,7 @@ import {
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
-import {
-  GraphQLAuthGuard,
-  RequireGraphQLAuthGuard,
-} from "../auth/guards/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
@@ -34,13 +31,12 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard)
   public me(@Context("user") user: User): User {
     return user;
   }
 
   @Mutation(() => AuthResponse)
-  @UseGuards(GraphQLAuthGuard)
   public async authWithThreepid(
     @Context("user") user: User | undefined,
     @Args("threepidId", { type: () => GraphQLUUID }) threepidId: string
@@ -56,7 +52,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard)
   public async updateUser(
     @Context("user") user: User,
     @Args("input") input: UpdateUserInput

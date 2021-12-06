@@ -7,14 +7,16 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
-import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
 import { Task } from "@dewo/api/models/Task";
-import { ProjectMemberGuard } from "../auth/guards/projectMember.guard";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
+import { AccessGuard, Actions, UseAbility } from "nest-casl";
+import { ProjectRolesGuard } from "../project/project.roles.guard";
+import { TaskRolesGuard } from "./task.roles.guard";
 
 @Injectable()
 @Resolver(() => Task)
@@ -29,7 +31,8 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, Task)
   public async createTask(
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
@@ -44,7 +47,11 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Task, [
+    TaskService,
+    (service: TaskService, { params }) => service.findById(params.input.id),
+  ])
   public async updateTask(
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
@@ -62,7 +69,11 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.delete, Task, [
+    TaskService,
+    (service: TaskService, { params }) => service.findById(params.id),
+  ])
   public async deleteTask(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Task> {

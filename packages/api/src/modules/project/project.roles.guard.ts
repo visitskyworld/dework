@@ -8,11 +8,12 @@ import {
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { GQLContext } from "../../app/gql.config";
+import { GQLContext } from "../app/gql.config";
 import { Project } from "@dewo/api/models/Project";
+import { Roles } from "../app/app.roles";
 
 @Injectable()
-export class ProjectMemberGuard implements CanActivate {
+export class ProjectRolesGuard implements CanActivate {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>
@@ -21,12 +22,14 @@ export class ProjectMemberGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext =
       GqlExecutionContext.create(context).getContext<GQLContext>();
-    if (!gqlContext.user) throw new UnauthorizedException();
+    if (!gqlContext.user || !gqlContext.caslUser) {
+      throw new UnauthorizedException();
+    }
 
     const projectId = [
       gqlContext.req.body?.variables?.projectId,
-      gqlContext.req.body?.variables?.input?.id,
       gqlContext.req.body?.variables?.input?.projectId,
+      gqlContext.req.body?.variables?.input?.id,
     ].find((id) => !!id);
 
     if (!projectId) {
@@ -39,8 +42,9 @@ export class ProjectMemberGuard implements CanActivate {
     }
 
     const organizations = await gqlContext.user.organizations;
-    if (!organizations.some((o) => o.id === project.organizationId)) {
-      throw new ForbiddenException();
+    if (organizations.some((o) => o.id === project.organizationId)) {
+      gqlContext.caslUser.roles.push(Roles.projectAdmin);
+      gqlContext.caslUser.roles.push(Roles.projectMember);
     }
 
     return true;

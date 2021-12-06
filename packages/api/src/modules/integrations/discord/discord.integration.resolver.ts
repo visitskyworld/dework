@@ -4,12 +4,12 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
 import { User } from "@dewo/api/models/User";
-import { RequireGraphQLAuthGuard } from "../../auth/guards/auth.guard";
 import { DiscordGuild } from "./dto/DiscordGuild";
 import { DiscordChannel } from "./dto/DiscordChannel";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @Resolver(() => Project)
 @Injectable()
@@ -17,7 +17,7 @@ export class DiscordIntegrationResolver {
   constructor(private readonly discord: DiscordService) {}
 
   @Query(() => [DiscordGuild])
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard)
   public async discordListGuilds(
     @Context("user") user: User
   ): Promise<DiscordGuild[]> {

@@ -27,7 +27,6 @@ describe("OrganizationResolver", () => {
         });
 
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
-        client.expectGqlErrorMessage(response, "Missing auth token");
       });
 
       it("should succeed if authed", async () => {

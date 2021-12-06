@@ -11,9 +11,6 @@ export class OrganizationRequests {
       users {
         id
       }
-      paymentMethod {
-        id
-      }
     }
   `;
 

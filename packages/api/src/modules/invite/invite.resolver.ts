@@ -1,7 +1,7 @@
 import { Args, Context, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
-import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 import { InviteService } from "./invite.service";
 import { Invite } from "@dewo/api/models/Invite";
@@ -12,7 +12,7 @@ export class InviteResolver {
   constructor(private readonly inviteService: InviteService) {}
 
   @Mutation(() => Invite)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard)
   public async createInvite(
     @Context("user") user: User,
     @Args("input") input: CreateInviteInput
@@ -21,7 +21,7 @@ export class InviteResolver {
   }
 
   @Mutation(() => Invite)
-  @UseGuards(RequireGraphQLAuthGuard)
+  @UseGuards(AuthGuard)
   public async acceptInvite(
     @Context("user") user: User,
     @Args("id", { type: () => GraphQLUUID }) inviteId: string

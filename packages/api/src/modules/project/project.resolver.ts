@@ -8,16 +8,12 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
-import { RequireGraphQLAuthGuard } from "../auth/guards/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
 import { CreateProjectInput } from "./dto/CreateProjectInput";
 import { Project } from "@dewo/api/models/Project";
-import { OrganizationMemberGuard } from "../auth/guards/organizationMember.guard";
-import { ProjectMemberGuard } from "../auth/guards/projectMember.guard";
 import { CreateTaskTagInput } from "./dto/CreateTaskTagInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
-import { TaskStatus } from "@dewo/api/models/TaskStatus";
-import { CreateTaskStatusInput } from "./dto/CreateTaskStatusInput";
 import GraphQLUUID from "graphql-type-uuid";
 import { Task } from "@dewo/api/models/Task";
 import { TaskService } from "../task/task.service";
@@ -25,6 +21,9 @@ import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
 import { User } from "@dewo/api/models/User";
 import { UpdateProjectInput } from "./dto/UpdateProjectInput";
+import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
+import { AccessGuard, Actions, UseAbility } from "nest-casl";
+import { ProjectRolesGuard } from "./project.roles.guard";
 
 @Resolver(() => Project)
 @Injectable()
@@ -40,7 +39,8 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(RequireGraphQLAuthGuard, OrganizationMemberGuard)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, Project)
   public async createProject(
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
@@ -48,7 +48,11 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Project, [
+    ProjectService,
+    (service: ProjectService, { params }) => service.findById(params.input.id),
+  ])
   public async updateProject(
     @Args("input") input: UpdateProjectInput
   ): Promise<Project> {
@@ -56,7 +60,12 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectIntegration)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Project, [
+    ProjectService,
+    (service: ProjectService, { params }) =>
+      service.findById(params.input.projectId),
+  ])
   public async createProjectIntegration(
     @Args("input") input: CreateProjectIntegrationInput,
     @Context("user") user: User
@@ -68,22 +77,16 @@ export class ProjectResolver {
   }
 
   @Mutation(() => TaskTag)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Project, [
+    ProjectService,
+    (service: ProjectService, { params }) =>
+      service.findById(params.input.projectId),
+  ])
   public async createTaskTag(
     @Args("input") input: CreateTaskTagInput
   ): Promise<TaskTag> {
     return this.projectService.createTag(input);
-  }
-
-  @Mutation(() => TaskStatus)
-  @UseGuards(RequireGraphQLAuthGuard, ProjectMemberGuard)
-  public async createTaskStatus(
-    @Args("input") input: CreateTaskStatusInput
-  ): Promise<TaskStatus> {
-    return this.projectService.createStatus({
-      sortKey: String(Date.now()),
-      ...input,
-    });
   }
 
   @Query(() => Project)

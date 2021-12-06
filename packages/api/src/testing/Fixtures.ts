@@ -16,7 +16,6 @@ import { ProjectService } from "../modules/project/project.service";
 import { Task, TaskStatusEnum } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
 import { TaskTag } from "../models/TaskTag";
-import { TaskStatus } from "../models/TaskStatus";
 import { InviteService } from "../modules/invite/invite.service";
 import { InviteModule } from "../modules/invite/invite.module";
 import { Invite } from "../models/Invite";
@@ -92,17 +91,6 @@ export class Fixtures {
     });
   }
 
-  public async createTaskStatus(
-    partial: Partial<TaskStatus> = {}
-  ): Promise<TaskStatus> {
-    return this.projectService.createStatus({
-      label: faker.company.companyName(),
-      sortKey: String(Date.now()),
-      projectId: await this.createProject().then((p) => p.id),
-      ...partial,
-    });
-  }
-
   public async createInvite(
     partial: Partial<Invite> = {},
     user?: User
@@ -129,6 +117,21 @@ export class Fixtures {
 
   public createAuthToken(user: User): string {
     return this.userService.createAuthToken(user);
+  }
+
+  public async createUserOrgProject(): Promise<{
+    user: User;
+    organization: Organization;
+    project: Project;
+  }> {
+    const user = await this.createUser();
+    const organization = await this.createOrganization({
+      users: [user],
+    });
+    const project = await this.createProject({
+      organizationId: organization.id,
+    });
+    return { user, organization, project };
   }
 }
 
