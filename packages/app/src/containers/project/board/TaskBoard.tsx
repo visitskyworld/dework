@@ -29,7 +29,7 @@ interface Props {
   initialValues?: Partial<CreateTaskInput>;
 }
 
-const columnWidth = 300;
+const columnWidth = 236; // (lg breakpoint (992) - (statuses.length - 1) * gap (16)) / statuses.length
 const noTasks: Task[] = [];
 const noTags: TaskTag[] = [];
 const noInitialValues: Partial<CreateTaskInput> = {};
@@ -95,6 +95,7 @@ export const TaskBoard: FC<Props> = ({
               <TaskBoardColumn
                 status={status}
                 tags={tags}
+                width={columnWidth}
                 tasks={tasksByStatus[status] ?? noTasks}
                 initialValues={initialValues}
               />

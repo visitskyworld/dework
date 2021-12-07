@@ -7,6 +7,9 @@ export class UpdateUserInput {
   public username?: string;
 
   @Field({ nullable: true })
+  public bio?: string;
+
+  @Field({ nullable: true })
   public imageUrl?: string;
 
   @Field(() => GraphQLUUID, { nullable: true })

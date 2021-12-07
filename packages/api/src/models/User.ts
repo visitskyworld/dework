@@ -19,6 +19,10 @@ export class User extends Audit {
   @Field({ nullable: true })
   public username?: string;
 
+  @Column({ nullable: true, length: 4096 })
+  @Field({ nullable: true })
+  public bio?: string;
+
   @Column({ nullable: true, length: 1024 })
   @Field({ nullable: true })
   public imageUrl?: string;

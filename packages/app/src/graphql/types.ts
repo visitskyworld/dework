@@ -62,6 +62,7 @@ export interface UpdateUserMutation_user {
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+  bio: string | null;
   organizations: UpdateUserMutation_user_organizations[];
   threepids: UpdateUserMutation_user_threepids[];
   paymentMethod: UpdateUserMutation_user_paymentMethod | null;
@@ -513,6 +514,7 @@ export interface MeQuery_me {
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+  bio: string | null;
   organizations: MeQuery_me_organizations[];
   threepids: MeQuery_me_threepids[];
   paymentMethod: MeQuery_me_paymentMethod | null;
@@ -528,21 +530,22 @@ export interface MeQuery {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: UserQuery
+// GraphQL query operation: UserProfileQuery
 // ====================================================
 
-export interface UserQuery_user {
+export interface UserProfileQuery_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+  bio: string | null;
 }
 
-export interface UserQuery {
-  user: UserQuery_user;
+export interface UserProfileQuery {
+  user: UserProfileQuery_user;
 }
 
-export interface UserQueryVariables {
+export interface UserProfileQueryVariables {
   userId: Scalar.UUID;
 }
 
@@ -1061,6 +1064,23 @@ export interface Task {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: UserProfile
+// ====================================================
+
+export interface UserProfile {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+  bio: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: UserDetails
 // ====================================================
 
@@ -1089,6 +1109,7 @@ export interface UserDetails {
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+  bio: string | null;
   organizations: UserDetails_organizations[];
   threepids: UserDetails_threepids[];
   paymentMethod: UserDetails_paymentMethod | null;
@@ -1298,6 +1319,7 @@ export interface UpdateTaskRewardInput {
 
 export interface UpdateUserInput {
   username?: string | null;
+  bio?: string | null;
   imageUrl?: string | null;
   paymentMethodId?: Scalar.UUID | null;
 }

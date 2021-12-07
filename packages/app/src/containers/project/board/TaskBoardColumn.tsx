@@ -19,6 +19,7 @@ interface Props {
   status: TaskStatusEnum;
   tasks: Task[];
   tags: TaskTag[];
+  width: number;
   initialValues: Partial<CreateTaskInput>;
 }
 
@@ -26,6 +27,7 @@ export const TaskBoardColumn: FC<Props> = ({
   status,
   tasks,
   tags,
+  width,
   initialValues,
 }) => {
   const createCardToggle = useToggle();
@@ -50,7 +52,7 @@ export const TaskBoardColumn: FC<Props> = ({
           />
         </Can>
       }
-      style={{ width: 300 }}
+      style={{ width }}
     >
       <TaskCreateModal
         tags={tags}

@@ -9,8 +9,9 @@ import {
   UpdateUserMutation,
   UpdateUserMutationVariables,
   User,
-  UserQuery,
-  UserQueryVariables,
+  UserProfileQuery,
+  UserProfileQueryVariables,
+  UserProfile,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -29,10 +30,13 @@ export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
   );
 }
 
-export function useUser(userId: string): User | undefined {
-  const { data } = useQuery<UserQuery, UserQueryVariables>(Queries.user, {
-    variables: { userId },
-  });
+export function useUser(userId: string): UserProfile | undefined {
+  const { data } = useQuery<UserProfileQuery, UserProfileQueryVariables>(
+    Queries.userProfile,
+    {
+      variables: { userId },
+    }
+  );
   return data?.user;
 }
 

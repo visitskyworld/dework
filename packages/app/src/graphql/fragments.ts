@@ -87,9 +87,20 @@ export const task = gql`
   ${user}
 `;
 
+export const userProfile = gql`
+  fragment UserProfile on User {
+    ...User
+    bio
+  }
+
+  ${user}
+  ${organization}
+  ${paymentMethod}
+`;
+
 export const userDetails = gql`
   fragment UserDetails on User {
-    ...User
+    ...UserProfile
     organizations {
       ...Organization
     }
@@ -102,7 +113,7 @@ export const userDetails = gql`
     }
   }
 
-  ${user}
+  ${userProfile}
   ${organization}
   ${paymentMethod}
 `;

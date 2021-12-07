@@ -11,14 +11,14 @@ export const me = gql`
   ${Fragments.userDetails}
 `;
 
-export const user = gql`
-  query UserQuery($userId: UUID!) {
+export const userProfile = gql`
+  query UserProfileQuery($userId: UUID!) {
     user: getUser(id: $userId) {
-      ...User
+      ...UserProfile
     }
   }
 
-  ${Fragments.user}
+  ${Fragments.userProfile}
 `;
 
 export const userTasks = gql`
