@@ -10,7 +10,6 @@ import React, {
 import { UserDetails } from "../graphql/types";
 import { clearAuthToken } from "../util/authToken";
 import { useCurrentUser } from "../util/hooks";
-
 interface AuthContextValue {
   user: UserDetails | undefined;
   logout(): void;

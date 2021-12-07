@@ -17,6 +17,7 @@ import { setContext } from "@apollo/client/link/context";
 import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
+import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -46,7 +47,9 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       </Head>
       <ApolloProvider client={apollo as any}>
         <AuthProvider authenticated={authenticated}>
-          <Component {...pageProps} />
+          <PermissionsProvider>
+            <Component {...pageProps} />
+          </PermissionsProvider>
         </AuthProvider>
       </ApolloProvider>
     </>

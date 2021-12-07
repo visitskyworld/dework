@@ -31,7 +31,7 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
     can(Actions.delete, Task);
   },
 
-  projectMember({ can, user }) {
+  projectMember({ can }) {
     can(Actions.create, Task);
   },
 };

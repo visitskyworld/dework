@@ -639,6 +639,29 @@ export interface UserPaymentMethodQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: PermissionsQuery
+// ====================================================
+
+export interface PermissionsQuery_me {
+  __typename: "User";
+  id: Scalar.UUID;
+  permissions: Scalar.JSONObject[];
+}
+
+export interface PermissionsQuery {
+  me: PermissionsQuery_me;
+}
+
+export interface PermissionsQueryVariables {
+  input?: GetUserPermissionsInput | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetOrganizationQuery
 // ====================================================
 
@@ -1242,6 +1265,12 @@ export interface CreateTaskTagInput {
   label: string;
   color: string;
   projectId: Scalar.UUID;
+}
+
+export interface GetUserPermissionsInput {
+  organizationId?: Scalar.UUID | null;
+  projectId?: Scalar.UUID | null;
+  taskId?: Scalar.UUID | null;
 }
 
 export interface UpdateProjectInput {

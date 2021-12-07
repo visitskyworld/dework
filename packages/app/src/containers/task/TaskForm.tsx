@@ -32,6 +32,8 @@ import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import Link from "next/link";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
   task?: Task;
@@ -42,8 +44,9 @@ interface TaskFormProps<TFormValues> {
   onSubmit(task: TFormValues): unknown;
 }
 
-export const currencyMultiplier: Record<string, number> = {
-  ETH: 10e9,
+const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
+  [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Core team approval",
+  [TaskRewardTrigger.PULL_REQUEST_MERGED]: "PR merged",
 };
 
 export function TaskForm<
@@ -63,6 +66,9 @@ export function TaskForm<
   );
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
+  const canEdit = usePermission(mode, "Task");
+  const canDelete = usePermission("delete", "Task");
+
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: TFormValues) => {
@@ -73,9 +79,7 @@ export function TaskForm<
           ...values,
           reward: !!values.reward?.amount
             ? {
-                amount:
-                  values.reward.amount *
-                  (currencyMultiplier[values.reward.currency] ?? 0),
+                amount: values.reward.amount,
                 currency: values.reward.currency,
                 trigger: values.reward.trigger,
               }
@@ -140,6 +144,7 @@ export function TaskForm<
       ref={formRef}
       layout="vertical"
       initialValues={{ reward: { currency: "ETH" }, ...initialValues }}
+      requiredMark={false}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
@@ -147,73 +152,31 @@ export function TaskForm<
         <Col span={16}>
           <Form.Item
             name="name"
-            label="Task name"
+            // label={mode === "create" ? "Task name" : undefined}
             rules={[{ required: true, message: "Please enter a name" }]}
           >
-            <Input size="large" />
+            <Input.TextArea
+              disabled={!canEdit}
+              autoSize
+              className="dewo-field dewo-field-display ant-typography-h3"
+              placeholder={canEdit ? `Enter a task name...` : "Untitled..."}
+            />
           </Form.Item>
 
-          <Form.Item name="description" label="Description (optional)">
-            <Input.TextArea style={{ minHeight: 120 }} />
+          <Form.Item
+            name="description"
+            label={canEdit ? `Description (optional)` : "Description"}
+          >
+            <Input.TextArea
+              disabled={!canEdit}
+              autoSize
+              className="dewo-field"
+              placeholder={
+                canEdit ? "Enter a description..." : "No description"
+              }
+              style={{ minHeight: 120 }}
+            />
           </Form.Item>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name={["reward", "amount"]} label="Bounty">
-                <InputNumber
-                  placeholder="Enter amount"
-                  value={values.reward?.amount}
-                  addonAfter={
-                    <Form.Item name={["reward", "currency"]} noStyle>
-                      <Select style={{ minWidth: 70 }} placeholder="Currency">
-                        <Select.Option value="ETH">ETH</Select.Option>
-                        <Select.Option value="USDC">USDC</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  }
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name={["reward", "trigger"]}
-                label="Payout trigger"
-                rules={[
-                  {
-                    required: !!values.reward?.amount,
-                    message: "Please enter a payout trigger",
-                  },
-                ]}
-                hidden={!values.reward?.amount}
-              >
-                <Select
-                  loading={tagLoading}
-                  optionFilterProp="label"
-                  placeholder="Select payout trigger"
-                >
-                  {[
-                    {
-                      label: "Core team approval",
-                      value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-                      icon: Icons.TeamOutlined,
-                    },
-                    {
-                      label: "PR merged",
-                      value: TaskRewardTrigger.PULL_REQUEST_MERGED,
-                      icon: Icons.GithubOutlined,
-                    },
-                  ].map((tag) => (
-                    <Select.Option value={tag.value} label={tag.label}>
-                      <Space style={{ alignItems: "center" }}>
-                        <tag.icon />
-                        {tag.label}
-                      </Space>
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
 
           <Form.Item name="projectId" hidden>
             <Input />
@@ -272,21 +235,23 @@ export function TaskForm<
               </Space>
             )}
 
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              loading={loading}
-            >
-              {buttonText}
-            </Button>
-          </Form.Item>
+          {canEdit && (
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                block
+                loading={loading}
+              >
+                {buttonText}
+              </Button>
+            </Form.Item>
+          )}
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{ marginTop: 62 }}>
           <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-            <Select placeholder="Select a task status">
+            <Select placeholder="Select a task status" disabled={!canEdit}>
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
                 <Select.Option key={status} value={status}>
                   {STATUS_LABEL[status]}
@@ -303,6 +268,7 @@ export function TaskForm<
             <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
               <Select
                 mode="tags"
+                disabled={!canEdit}
                 loading={tagLoading}
                 optionFilterProp="label"
                 placeholder="Select tags..."
@@ -325,10 +291,95 @@ export function TaskForm<
             </Form.Item>
           </ConfigProvider>
 
-          {mode === "update" && !!task && (
+          {canEdit ? (
+            <>
+              <Form.Item name={["reward", "amount"]} label="Bounty">
+                <InputNumber
+                  placeholder="Enter amount"
+                  value={values.reward?.amount}
+                  addonAfter={
+                    <Form.Item name={["reward", "currency"]} noStyle>
+                      <Select style={{ minWidth: 70 }} placeholder="Currency">
+                        <Select.Option value="ETH">ETH</Select.Option>
+                        <Select.Option value="USDC">USDC</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  }
+                />
+              </Form.Item>
+              <Form.Item
+                name={["reward", "trigger"]}
+                label="Payout trigger"
+                rules={[
+                  {
+                    required: !!values.reward?.amount,
+                    message: "Please enter a payout trigger",
+                  },
+                ]}
+                hidden={!values.reward?.amount}
+              >
+                <Select
+                  loading={tagLoading}
+                  optionFilterProp="label"
+                  placeholder="Select payout trigger"
+                >
+                  {[
+                    {
+                      label:
+                        rewardTriggerToString[
+                          TaskRewardTrigger.CORE_TEAM_APPROVAL
+                        ],
+                      value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+                      icon: Icons.TeamOutlined,
+                    },
+                    {
+                      label:
+                        rewardTriggerToString[
+                          TaskRewardTrigger.PULL_REQUEST_MERGED
+                        ],
+                      value: TaskRewardTrigger.PULL_REQUEST_MERGED,
+                      icon: Icons.GithubOutlined,
+                    },
+                  ].map((tag) => (
+                    <Select.Option value={tag.value} label={tag.label}>
+                      <Space style={{ alignItems: "center" }}>
+                        <tag.icon />
+                        {tag.label}
+                      </Space>
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </>
+          ) : (
+            !!values.reward && (
+              <Row className="ant-form-item">
+                <Row>
+                  <Typography.Text className="ant-form-item-label">
+                    Reward
+                  </Typography.Text>
+                </Row>
+                <Row>
+                  <Typography.Text>
+                    {values.reward.amount} {values.reward.currency} (
+                    {
+                      rewardTriggerToString[
+                        TaskRewardTrigger.CORE_TEAM_APPROVAL
+                      ]
+                    }
+                    )
+                  </Typography.Text>
+                </Row>
+              </Row>
+            )
+          )}
+
+          {canDelete && mode === "update" && !!task && (
             <>
               <Row>
-                <Typography.Text>Actions</Typography.Text>
+                <Typography.Text className="ant-form-item-label">
+                  Actions
+                </Typography.Text>
               </Row>
               <TaskDeleteButton task={task} />
             </>

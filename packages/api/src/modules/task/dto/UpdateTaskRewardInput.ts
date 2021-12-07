@@ -1,9 +1,9 @@
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, Float, InputType } from "@nestjs/graphql";
 
 @InputType()
 export class UpdateTaskRewardInput {
-  @Field()
+  @Field(() => Float)
   public amount!: number;
 
   @Field()

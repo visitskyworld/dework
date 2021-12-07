@@ -47,6 +47,15 @@ export const userPaymentMethod = gql`
   ${Fragments.paymentMethod}
 `;
 
+export const permissions = gql`
+  query PermissionsQuery($input: GetUserPermissionsInput) {
+    me {
+      id
+      permissions(input: $input)
+    }
+  }
+`;
+
 export const organization = gql`
   query GetOrganizationQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {

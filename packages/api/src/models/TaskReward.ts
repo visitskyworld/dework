@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity } from "typeorm";
 import { Audit } from "./Audit";
 
@@ -12,8 +12,8 @@ registerEnumType(TaskRewardTrigger, { name: "TaskRewardTrigger" });
 @Entity()
 @ObjectType()
 export class TaskReward extends Audit {
-  @Column()
-  @Field()
+  @Column({ type: "float" })
+  @Field(() => Float)
   public amount!: number;
 
   @Column()

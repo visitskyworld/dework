@@ -3,7 +3,7 @@ import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useTask, useUpdateTask } from "./hooks";
-import { currencyMultiplier, TaskForm } from "./TaskForm";
+import { TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
   taskId: string;
@@ -40,9 +40,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       status: task?.status,
       reward: !!task?.reward
         ? {
-            amount:
-              task.reward.amount /
-              (currencyMultiplier[task.reward.currency] ?? 1),
+            amount: task.reward.amount,
             currency: task.reward.currency,
             trigger: task.reward.trigger,
           }
@@ -52,13 +50,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
   );
 
   return (
-    <Modal
-      title="Update Task"
-      visible={visible}
-      onCancel={onCancel}
-      footer={null}
-      width={768}
-    >
+    <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
       <TaskForm<any>
         key={JSON.stringify(initialValues)}
         mode="update"

@@ -4,7 +4,7 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { UserRequests } from "@dewo/api/testing/requests/user.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
-import { Ability, AbilityTuple } from "@casl/ability";
+import { Ability } from "@casl/ability";
 import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";

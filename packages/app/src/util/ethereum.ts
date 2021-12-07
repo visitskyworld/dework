@@ -4,7 +4,9 @@ import { ethers } from "ethers";
 export function useProvider(): ethers.providers.Web3Provider {
   return useMemo(
     () =>
-      typeof window !== "undefined"
+      typeof window !== "undefined" &&
+      // @ts-ignore
+      !!window.ethereum
         ? new ethers.providers.Web3Provider(
             // @ts-ignore
             window.ethereum

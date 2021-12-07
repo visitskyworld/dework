@@ -13,6 +13,8 @@
     "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.5.5",
     "@apollo/react-ssr": "^4.0.0",
+    "@casl/ability": "^5.4.3",
+    "@casl/react": "^2.3.0",
     "@gnosis.pm/safe-apps-sdk": "^6.1.1",
     "antd": "^4.17.1",
     "between": "^0.1.3",

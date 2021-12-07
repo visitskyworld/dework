@@ -3,6 +3,10 @@
 
 @border-radius-base: 4px;
 
+textarea {
+  resize: none;
+}
+
 .ant-tag {
   border-radius: 99999px;
 }
@@ -32,18 +36,62 @@
   }
 }
 
+.ant-form-item {
+  margin-bottom: 12px;
+}
+
+.ant-select-multiple.ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: unset;
+  border: none;
+  padding: 0;
+}
+
 .ant-typography-edit {
   color: @text-color-secondary;
 }
 
-// div.ant-typography-edit-content {
-//   margin-top: 0;
-//   left: 0;
-// }
-
 // match height with input
 .ant-alert {
   padding: 4px 16px;
+}
+
+.ant-typography-h1 { .typography-title-1(); margin: 0; }
+.ant-typography-h2 { .typography-title-2(); margin: 0; }
+.ant-typography-h3 { .typography-title-3(); margin: 0; }
+.ant-typography-h4 { .typography-title-4(); margin: 0; }
+.ant-typography-h5 { .typography-title-5(); margin: 0; }
+
+.ant-select .ant-select-disabled .ant-select-selector {
+  background: unset;
+  border: unset;
+  padding: 0;
+}
+
+.ant-form-vertical .ant-form-item-label {
+  padding-bottom: 2px;
+
+  &, & > label {
+    color: @text-color-secondary;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+  }
+}
+
+.dewo-field {
+  &.dewo-field-display:not(:focus) {
+    padding-left: 0;
+    border-color: transparent;
+  }
+
+  &:disabled {
+    padding: 0;
+    margin: 0;
+    background: unset;
+    border: unset;
+    cursor: unset;
+    color: unset;
+  }
 }
 
 .pointer-cursor {

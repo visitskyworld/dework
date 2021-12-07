@@ -7,7 +7,6 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRouter } from "next/router";
 import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
-import { currencyMultiplier } from "../../task/TaskForm";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import { usePay } from "../../payment/hooks";
 
@@ -65,9 +64,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   <Tag color="#e89a3c" style={{ marginBottom: 4 }}>
                     <Icons.DollarOutlined />
                     <span>
-                      {task.reward.amount /
-                        (currencyMultiplier[task.reward.currency] ?? 1)}{" "}
-                      {task.reward.currency}
+                      {task.reward.amount} {task.reward.currency}
                     </span>
                   </Tag>
                 )}

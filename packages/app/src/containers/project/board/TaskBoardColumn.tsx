@@ -13,6 +13,7 @@ import {
 import { useToggle } from "@dewo/app/util/hooks";
 import { STATUS_LABEL } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
+import { Can } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   status: TaskStatusEnum;
@@ -42,12 +43,12 @@ export const TaskBoardColumn: FC<Props> = ({
         </Space>
       }
       extra={
-        <>
+        <Can I="create" a="Task">
           <Button
             type="text"
             icon={<Icons.PlusOutlined onClick={createCardToggle.onToggleOn} />}
           />
-        </>
+        </Can>
       }
       style={{ width: 300 }}
     >

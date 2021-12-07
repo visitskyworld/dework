@@ -45,7 +45,7 @@ export class UserResolver {
     @Parent() user: User,
     @Context("caslUser") caslUser: AuthorizableUser,
     @Args("input", { type: () => GetUserPermissionsInput, nullable: true })
-    input: GetUserPermissionsInput | undefined
+    _input: GetUserPermissionsInput | undefined
   ): Promise<unknown[]> {
     if (user.id !== caslUser.id) {
       throw new Error("Cannot get permissions for other users");
