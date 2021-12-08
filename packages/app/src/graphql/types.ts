@@ -131,12 +131,21 @@ export interface CreateProjectMutation_project_organization_projects {
   paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
+export interface CreateProjectMutation_project_organization_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface CreateProjectMutation_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
+  users: CreateProjectMutation_project_organization_users[];
 }
 
 export interface CreateProjectMutation_project {
@@ -686,12 +695,21 @@ export interface GetOrganizationQuery_organization_projects {
   paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
+export interface GetOrganizationQuery_organization_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface GetOrganizationQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
+  users: GetOrganizationQuery_organization_users[];
 }
 
 export interface GetOrganizationQuery {
@@ -1145,12 +1163,21 @@ export interface OrganizationDetails_projects {
   paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
+export interface OrganizationDetails_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
 export interface OrganizationDetails {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  description: string | null;
   projects: OrganizationDetails_projects[];
+  users: OrganizationDetails_users[];
 }
 
 /* tslint:disable */

@@ -9,9 +9,14 @@ html {
   background-size: cover;
 }
 
-body, .ant-layout {
-  background: unset;
-}
+// body, .ant-layout {
+//   background: unset;
+// }
+
+@body-background: transparent;
+@component-background: fade(@white, 10%);
+@border-color-base: fade(@white, 40%);
+@border-color-split: fade(@white, 30%);
 
 textarea {
   resize: none;
@@ -22,7 +27,7 @@ textarea {
 }
 
 .ant-card .ant-card {
-  background: #191919;
+  // background: #191919;
 }
 
 .ant-modal-title {
@@ -112,6 +117,24 @@ textarea {
   overflow-x: auto;
   // padding: 0 16px;
   height: 100%;
+}
+
+.ant-card.dewo-card-create-project {
+  height: 100%;
+  cursor: pointer;
+
+  & .ant-card-body {
+    height: 100%;
+    display: grid;
+    place-items: center;
+  }
+}
+
+.hover\:component-highlight {
+  transition: background 0.3s ease;
+  &:hover {
+    background: fade(@white, 20%);
+  }
 }
 
 .max-w-sm { max-width: @screen-sm; }

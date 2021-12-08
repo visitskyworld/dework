@@ -11,6 +11,10 @@ export class Organization extends Audit {
   @Field()
   public name!: string;
 
+  @Column({ nullable: true, length: 4096 })
+  @Field({ nullable: true })
+  public description?: string;
+
   @Column({ nullable: true, length: 1024 })
   @Field({ nullable: true })
   public imageUrl?: string;

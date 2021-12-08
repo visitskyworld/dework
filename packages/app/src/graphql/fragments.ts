@@ -21,9 +21,6 @@ export const organization = gql`
     id
     name
     imageUrl
-    # users {
-    #   ...User
-    # }
   }
 `;
 
@@ -120,13 +117,18 @@ export const userDetails = gql`
 export const organizationDetails = gql`
   fragment OrganizationDetails on Organization {
     ...Organization
+    description
     projects {
       ...Project
+    }
+    users {
+      ...User
     }
   }
 
   ${organization}
   ${project}
+  ${user}
 `;
 
 export const projectDetails = gql`

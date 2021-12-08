@@ -1,20 +1,23 @@
-import { Project } from "@dewo/app/graphql/types";
+import { Project, User } from "@dewo/app/graphql/types";
 import { Avatar, Card, Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import Link from "next/link";
+import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
 
 interface Props {
   project: Project;
+  // TODO(fant): get this from the project instead of from the org through a prop
+  users: User[];
 }
 
-export const ProjectCard: FC<Props> = ({ project }) => {
+export const ProjectCard: FC<Props> = ({ project, users }) => {
   return (
     <Link
       href={`/organization/${project.organizationId}/project/${project.id}`}
     >
       <a>
-        <Card>
+        <Card className="hover:component-highlight">
           <Typography.Title level={4}>{project.name}</Typography.Title>
 
           <Typography.Paragraph type="secondary" ellipsis={{ rows: 4 }}>
@@ -29,8 +32,15 @@ export const ProjectCard: FC<Props> = ({ project }) => {
 
           <Row align="middle">
             <Avatar.Group maxCount={3} style={{ flex: 1 }}>
-              {[1, 2, 3, 4].map((i) => (
-                <Avatar key={i} icon={<Icons.UserOutlined />} />
+              {users.map((user) => (
+                <Avatar
+                  key={user.id}
+                  src={user.imageUrl}
+                  style={{ backgroundColor: colorFromUuid(user.id) }}
+                  icon={
+                    user.username?.[0]?.toUpperCase() ?? <Icons.UserOutlined />
+                  }
+                />
               ))}
             </Avatar.Group>
             <Tag color="#f00333">2 open bounties</Tag>
