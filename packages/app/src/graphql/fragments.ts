@@ -39,6 +39,7 @@ export const project = gql`
   fragment Project on Project {
     id
     name
+    organizationId
     paymentMethod {
       ...PaymentMethod
     }
@@ -94,8 +95,6 @@ export const userProfile = gql`
   }
 
   ${user}
-  ${organization}
-  ${paymentMethod}
 `;
 
 export const userDetails = gql`

@@ -127,6 +127,7 @@ export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
@@ -142,6 +143,7 @@ export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: CreateProjectMutation_project_paymentMethod | null;
   organization: CreateProjectMutation_project_organization;
 }
@@ -174,6 +176,7 @@ export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: UpdateProjectMutation_project_paymentMethod | null;
 }
 
@@ -679,6 +682,7 @@ export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
@@ -759,6 +763,7 @@ export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: GetProjectQuery_project_paymentMethod | null;
   tasks: GetProjectQuery_project_tasks[];
   taskTags: GetProjectQuery_project_taskTags[];
@@ -980,6 +985,7 @@ export interface Project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: Project_paymentMethod | null;
 }
 
@@ -1135,6 +1141,7 @@ export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
@@ -1207,6 +1214,7 @@ export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
+  organizationId: string;
   paymentMethod: ProjectDetails_paymentMethod | null;
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];

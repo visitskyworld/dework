@@ -11,7 +11,6 @@ RUN yarn app install --frozen-lockfile
 COPY tsconfig.json ./
 COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
 
-COPY packages/app/abis packages/app/abis
 COPY packages/app/public packages/app/public
 COPY packages/app/styles packages/app/styles
 COPY packages/app/pages packages/app/pages
@@ -29,6 +28,7 @@ COPY package.json yarn.lock ./
 COPY packages/app/package.json packages/app/
 RUN yarn app install --frozen-lockfile --production
 
+COPY --from=builder /builder/packages/app/public ./packages/app/public
 COPY --from=builder /builder/packages/app/.next ./packages/app/.next
 COPY --from=builder /builder/packages/app/next.config.js ./packages/app/
 
