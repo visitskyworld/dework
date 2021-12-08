@@ -61,7 +61,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
               </Row>
               <Row>
                 {!!task.reward && (
-                  <Tag color="#e89a3c" style={{ marginBottom: 4 }}>
+                  <Tag className="bg-primary" style={{ marginBottom: 4 }}>
                     <Icons.DollarOutlined />
                     <span>
                       {task.reward.amount} {task.reward.currency}

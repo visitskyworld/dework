@@ -50,7 +50,7 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
                 />
               ))}
             </Avatar.Group>
-            <Tag color="#f00333">2 open bounties</Tag>
+            <Tag className="bg-primary">2 open bounties</Tag>
           </Row>
         </Card>
       </a>

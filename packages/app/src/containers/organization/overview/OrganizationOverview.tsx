@@ -7,6 +7,7 @@ import { CoverImageLayout } from "@dewo/app/components/CoverImageLayout";
 import { ProjectCard } from "./ProjectCard";
 import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
 import { CreateProjectCard } from "./CreateProjectCard";
+import { OrganizationTaskBoard } from "./OrganizationTaskBoard";
 
 interface OrganizationOverviewProps {
   organizationId: string;
@@ -55,7 +56,11 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
             </Row>
           </Layout.Content>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="Board" key="board"></Tabs.TabPane>
+        <Tabs.TabPane tab="Board" key="board">
+          <Layout.Content className="max-w-lg mx-auto">
+            <OrganizationTaskBoard organizationId={organizationId} />
+          </Layout.Content>
+        </Tabs.TabPane>
         <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
       </Tabs>
     </>

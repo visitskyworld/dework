@@ -726,6 +726,76 @@ export interface GetOrganizationQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationTasksQuery
+// ====================================================
+
+export interface GetOrganizationTasksQuery_organization_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  tags: GetOrganizationTasksQuery_organization_tasks_tags[];
+  assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
+  reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
+}
+
+export interface GetOrganizationTasksQuery_organization_projects_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetOrganizationTasksQuery_organization_projects {
+  __typename: "Project";
+  taskTags: GetOrganizationTasksQuery_organization_projects_taskTags[];
+}
+
+export interface GetOrganizationTasksQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  tasks: GetOrganizationTasksQuery_organization_tasks[];
+  projects: GetOrganizationTasksQuery_organization_projects[];
+}
+
+export interface GetOrganizationTasksQuery {
+  organization: GetOrganizationTasksQuery_organization;
+}
+
+export interface GetOrganizationTasksQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetProjectQuery
 // ====================================================
 
