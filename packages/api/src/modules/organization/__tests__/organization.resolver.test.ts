@@ -3,6 +3,8 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { OrganizationRequests } from "@dewo/api/testing/requests/organization.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import _ from "lodash";
+import Bluebird from "bluebird";
 import faker from "faker";
 
 describe("OrganizationResolver", () => {
@@ -84,6 +86,33 @@ describe("OrganizationResolver", () => {
         expect(response.status).toEqual(HttpStatus.OK);
         const updated = response.body.data?.organization;
         expect(updated.name).toEqual(expectedName);
+      });
+    });
+  });
+
+  describe("Queries", () => {
+    describe("getOrganization", () => {
+      it("should return tasks from all sub projects", async () => {
+        const organization = await fixtures.createOrganization();
+        const projects = await Bluebird.map(_.range(5), () =>
+          fixtures.createProject({ organizationId: organization.id })
+        );
+        const tasks = await Bluebird.map(projects, (project) =>
+          fixtures.createTask({ projectId: project.id })
+        );
+
+        const response = await client.request({
+          app,
+          body: OrganizationRequests.get(organization.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data.organization;
+        tasks.forEach((task) => {
+          expect(fetched.tasks).toContainEqual(
+            expect.objectContaining({ id: task.id, projectId: task.projectId })
+          );
+        });
       });
     });
   });

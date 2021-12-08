@@ -11,7 +11,7 @@ export const CoverImageLayout: FC<Props> = ({ children, imageUrl, avatar }) => {
     <>
       <Image
         width="100%"
-        height={200}
+        height={160}
         style={{ objectFit: "cover" }}
         src={imageUrl}
         preview={false}

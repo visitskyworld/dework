@@ -11,6 +11,10 @@ export class OrganizationRequests {
       users {
         id
       }
+      tasks {
+        id
+        projectId
+      }
     }
   `;
 
@@ -45,6 +49,23 @@ export class OrganizationRequests {
         ${this.organizationFragment}
       `,
       variables: { input },
+    };
+  }
+
+  public static get(
+    organizationId: string
+  ): GraphQLTestClientRequestBody<{ organizationId: string }> {
+    return {
+      query: `
+        query GetOrganization($organizationId: UUID!) {
+          organization: getOrganization(id: $organizationId) {
+            ...Organization
+          }
+        }
+
+        ${this.organizationFragment}
+      `,
+      variables: { organizationId },
     };
   }
 }

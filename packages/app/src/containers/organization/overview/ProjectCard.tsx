@@ -1,5 +1,5 @@
 import { Project, User } from "@dewo/app/graphql/types";
-import { Avatar, Card, Row, Tag, Typography } from "antd";
+import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import Link from "next/link";
@@ -18,7 +18,14 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
     >
       <a>
         <Card className="hover:component-highlight">
-          <Typography.Title level={4}>{project.name}</Typography.Title>
+          <Typography.Title level={4} style={{ marginBottom: 0 }}>
+            {project.name}
+          </Typography.Title>
+          <Progress
+            size="small"
+            percent={Math.random() * 100 * 1.3}
+            showInfo={false}
+          />
 
           <Typography.Paragraph type="secondary" ellipsis={{ rows: 4 }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

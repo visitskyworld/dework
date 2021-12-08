@@ -29,9 +29,11 @@ export class TaskService {
 
   public async findWithRelations({
     projectId,
+    organizationId,
     assigneeId,
   }: {
     projectId?: string;
+    organizationId?: string;
     assigneeId?: string;
   }): Promise<Task[]> {
     let queryBuilder = this.taskRepo
@@ -44,6 +46,12 @@ export class TaskService {
       queryBuilder = queryBuilder.where("task.projectId = :projectId", {
         projectId,
       });
+    }
+
+    if (!!organizationId) {
+      queryBuilder = queryBuilder
+        .innerJoinAndSelect("task.project", "project")
+        .where("project.organizationId = :organizationId", { organizationId });
     }
 
     if (!!assigneeId) {
