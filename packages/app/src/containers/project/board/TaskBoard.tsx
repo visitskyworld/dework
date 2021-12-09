@@ -15,6 +15,7 @@ import {
 import { orderBetweenTasks, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
+import { TaskUpdateModalListener } from "../../task/TaskUpdateModal";
 
 const statuses: TaskStatusEnum[] = [
   TaskStatusEnum.TODO,
@@ -87,22 +88,25 @@ export const TaskBoard: FC<Props> = ({
   resetServerContext();
   if (!loaded) return null;
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Row className="dewo-task-board">
-        <Space size="middle" align="start">
-          {statuses.map((status) => (
-            <div key={status} style={{ width: columnWidth }}>
-              <TaskBoardColumn
-                status={status}
-                tags={tags}
-                width={columnWidth}
-                tasks={tasksByStatus[status] ?? noTasks}
-                initialValues={initialValues}
-              />
-            </div>
-          ))}
-        </Space>
-      </Row>
-    </DragDropContext>
+    <>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Row className="dewo-task-board">
+          <Space size="middle" align="start">
+            {statuses.map((status) => (
+              <div key={status} style={{ width: columnWidth }}>
+                <TaskBoardColumn
+                  status={status}
+                  tags={tags}
+                  width={columnWidth}
+                  tasks={tasksByStatus[status] ?? noTasks}
+                  initialValues={initialValues}
+                />
+              </div>
+            ))}
+          </Space>
+        </Row>
+      </DragDropContext>
+      <TaskUpdateModalListener />
+    </>
   );
 };

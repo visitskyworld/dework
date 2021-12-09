@@ -2,22 +2,22 @@
 @import '~antd/lib/style/themes/dark.less';
 
 @border-radius-base: 4px;
-
-html {
-  background: #000;
-  background-image: url('/background.png');
-  background-size: cover;
-}
-
-// body, .ant-layout {
-//   background: unset;
-// }
-
 @primary-color: #8570e4;
-@body-background: transparent;
+@body-background: #00042D;
 @component-background: fade(@white, 10%);
 @border-color-base: fade(@white, 40%);
 @border-color-split: fade(@white, 30%);
+
+html {
+  background: @body-background;
+  background-image: url('/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body, .ant-layout {
+  background: transparent;
+}
 
 textarea {
   resize: none;
@@ -27,8 +27,18 @@ textarea {
   border-radius: 99999px;
 }
 
+.ant-menu {
+  background: @body-background;
+  border-radius: @border-radius-base;
+  border: 1px solid fade(@white, 30%);
+}
+
 .ant-card .ant-card {
   // background: #191919;
+}
+
+.ant-layout-content {
+  overflow: auto;
 }
 
 .ant-modal-title {

@@ -895,6 +895,19 @@ export interface GetTaskQuery_task_reward {
   trigger: TaskRewardTrigger;
 }
 
+export interface GetTaskQuery_task_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetTaskQuery_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskTags: GetTaskQuery_task_project_taskTags[];
+}
+
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -906,6 +919,7 @@ export interface GetTaskQuery_task {
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
+  project: GetTaskQuery_task_project;
 }
 
 export interface GetTaskQuery {

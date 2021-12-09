@@ -22,7 +22,7 @@ export class AuthController {
     res.redirect(
       `${this.configService.get("APP_URL")}/auth/3pid/${
         req.user.threepidId
-      }?state=${req.user.state}`
+      }?state=${req.user.state ?? ""}`
     );
     return req.user;
   }
@@ -38,7 +38,7 @@ export class AuthController {
     res.redirect(
       `${this.configService.get("APP_URL")}/auth/3pid/${
         req.user.threepidId
-      }?state=${req.user.state}`
+      }?state=${req.user.state ?? ""}`
     );
     return req.user;
   }

@@ -11,7 +11,6 @@ import {
   GetOrganizationTasksQueryVariables,
   Organization,
   OrganizationDetails,
-  Task,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -37,12 +36,15 @@ export function useCreateOrganization(): (
 }
 
 export function useOrganization(
-  organizationId: string
+  organizationId: string | undefined
 ): OrganizationDetails | undefined {
   const { data } = useQuery<
     GetOrganizationQuery,
     GetOrganizationQueryVariables
-  >(Queries.organization, { variables: { organizationId } });
+  >(Queries.organization, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
   return data?.organization ?? undefined;
 }
 

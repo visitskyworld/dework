@@ -9,14 +9,15 @@ import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import { usePay } from "../../payment/hooks";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { useNavigateToTask } from "@dewo/app/util/navigation";
 
 interface TaskCardProps {
   task: Task;
 }
 
 export const TaskCard: FC<TaskCardProps> = ({ task }) => {
-  // TODO(fant): move this out of here
-  const { organizationId, projectId } = useRouter().query;
+  const navigateToTask = useNavigateToTask(task.id);
 
   const { user } = useAuthContext();
   const updateTask = useUpdateTask();
@@ -49,63 +50,58 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   );
 
   return (
-    <Link
-      href={`/organization/${organizationId}/project/${projectId}/task/${task.id}`}
-    >
-      <a>
-        <Card size="small">
+    <Card size="small" onClick={navigateToTask}>
+      <Row>
+        <Space direction="vertical" size={4} style={{ flex: 1, width: "100%" }}>
           <Row>
-            <Space direction="vertical" size={4} style={{ flex: 1 }}>
-              <Row>
-                <Typography.Text strong>{task.name}</Typography.Text>
-              </Row>
-              <Row>
-                {!!task.reward && (
-                  <Tag className="bg-primary" style={{ marginBottom: 4 }}>
-                    <Icons.DollarOutlined />
-                    <span>
-                      {task.reward.amount} {task.reward.currency}
-                    </span>
-                  </Tag>
-                )}
-                {task.tags.map(({ label, color }, index) => (
-                  <Tag key={index} color={color} style={{ marginBottom: 4 }}>
-                    {/* <Tag key={index} color={`#${color}`} style={{ color: "black" }}> */}
-                    {label}
-                  </Tag>
-                ))}
-              </Row>
-              {task.status === TaskStatusEnum.IN_REVIEW &&
-                !!task.assignees.length && (
-                  <Button
-                    size="small"
-                    icon={<Icons.DollarOutlined />}
-                    onClick={handlePayAndClose}
-                  >
-                    Pay and close
-                  </Button>
-                )}
-              {!!user && task.status === TaskStatusEnum.TODO && (
-                <Button
-                  size="small"
-                  icon={<Icons.ClockCircleOutlined />}
-                  onClick={claimTask}
-                >
-                  Claim
-                </Button>
-              )}
-            </Space>
-            <Col
-              onClick={eatClick}
-              style={{
-                marginRight: -4,
-                marginBottom: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-              }}
+            <Typography.Text strong>{task.name}</Typography.Text>
+          </Row>
+          <Row>
+            {!!task.reward && (
+              <Tag className="bg-primary" style={{ marginBottom: 4 }}>
+                <Icons.DollarOutlined />
+                <span>
+                  {task.reward.amount} {task.reward.currency}
+                </span>
+              </Tag>
+            )}
+            {task.tags.map(({ label, color }, index) => (
+              <Tag key={index} color={color} style={{ marginBottom: 4 }}>
+                {/* <Tag key={index} color={`#${color}`} style={{ color: "black" }}> */}
+                {label}
+              </Tag>
+            ))}
+          </Row>
+          {task.status === TaskStatusEnum.IN_REVIEW && !!task.assignees.length && (
+            <Button
+              size="small"
+              icon={<Icons.DollarOutlined />}
+              onClick={handlePayAndClose}
             >
-              {/* <Dropdown
+              Pay and close
+            </Button>
+          )}
+          {!!user && task.status === TaskStatusEnum.TODO && (
+            <Button
+              size="small"
+              icon={<Icons.ClockCircleOutlined />}
+              onClick={claimTask}
+            >
+              Claim
+            </Button>
+          )}
+        </Space>
+        <Col
+          onClick={eatClick}
+          style={{
+            marginRight: -4,
+            marginBottom: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          {/* <Dropdown
                 placement="bottomRight"
                 overlay={
                   <Menu>
@@ -134,20 +130,14 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
                   style={{ marginRight: -8, marginTop: -8 }}
                 />
               </Dropdown> */}
-              <div style={{ flex: 1 }} />
-              <Avatar.Group maxCount={3} size={16}>
-                {task.assignees.map((user) => (
-                  <Avatar
-                    key={user.id}
-                    src={user.imageUrl}
-                    icon={<Icons.UserOutlined />}
-                  />
-                ))}
-              </Avatar.Group>
-            </Col>
-          </Row>
-        </Card>
-      </a>
-    </Link>
+          <div style={{ flex: 1 }} />
+          <Avatar.Group maxCount={3} size={22}>
+            {task.assignees.map((user) => (
+              <UserAvatar key={user.id} user={user} />
+            ))}
+          </Avatar.Group>
+        </Col>
+      </Row>
+    </Card>
   );
 };

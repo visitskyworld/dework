@@ -99,10 +99,17 @@ export const task = gql`
   query GetTaskQuery($taskId: UUID!) {
     task: getTask(id: $taskId) {
       ...Task
+      project {
+        id
+        taskTags {
+          ...TaskTag
+        }
+      }
     }
   }
 
   ${Fragments.task}
+  ${Fragments.taskTag}
 `;
 
 export const discordListGuilds = gql`

@@ -133,7 +133,9 @@ export function useGenerateRandomTaskTagColor(
   }, [existingTags]);
 }
 
-export function useTask(taskId: string | undefined): Task | undefined {
+export function useTask(
+  taskId: string | undefined
+): GetTaskQuery["task"] | undefined {
   const { data } = useQuery<GetTaskQuery, GetTaskQueryVariables>(Queries.task, {
     variables: { taskId: taskId! },
     skip: !taskId,

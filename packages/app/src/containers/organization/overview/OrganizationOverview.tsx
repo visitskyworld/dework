@@ -24,33 +24,40 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
         avatar={
           <Avatar
             src={organization?.imageUrl}
-            className="pointer-cursor"
             size={128}
             style={{ backgroundColor: colorFromUuid(organizationId) }}
             icon={<Icons.TeamOutlined />}
           />
         }
       >
-        <Typography.Title level={3}>{organization?.name}</Typography.Title>
-        <Typography.Text>{organization?.description}</Typography.Text>
+        <Typography.Title level={3} style={{ textAlign: "center" }}>
+          {organization?.name}
+        </Typography.Title>
+        <Typography.Text style={{ textAlign: "center" }}>
+          {organization?.description}
+        </Typography.Text>
 
-        <Row style={{ marginTop: 24 }}>
+        <Row style={{ marginTop: 24, justifyContent: "center" }}>
           <InviteButton organizationId={organizationId} />
         </Row>
       </CoverImageLayout>
       <Tabs defaultActiveKey="projects" centered>
         <Tabs.TabPane tab="Projects" key="projects">
           <Layout.Content className="max-w-lg mx-auto">
-            <Row gutter={[16, 16]}>
+            <Row gutter={[0, 16]}>
               {organization?.projects.map((project) => (
-                <Col key={project.id} span={8}>
+                <Col
+                  key={project.id}
+                  span={8}
+                  style={{ paddingLeft: 8, paddingRight: 8 }}
+                >
                   <ProjectCard
                     project={project}
                     users={organization?.users ?? []}
                   />
                 </Col>
               ))}
-              <Col span={8}>
+              <Col span={8} style={{ paddingLeft: 8, paddingRight: 8 }}>
                 <CreateProjectCard organizationId={organizationId} />
               </Col>
             </Row>

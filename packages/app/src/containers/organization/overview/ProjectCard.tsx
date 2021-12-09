@@ -1,9 +1,8 @@
 import { Project, User } from "@dewo/app/graphql/types";
 import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
-import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import Link from "next/link";
-import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 interface Props {
   project: Project;
@@ -40,14 +39,7 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
           <Row align="middle">
             <Avatar.Group maxCount={3} style={{ flex: 1 }}>
               {users.map((user) => (
-                <Avatar
-                  key={user.id}
-                  src={user.imageUrl}
-                  style={{ backgroundColor: colorFromUuid(user.id) }}
-                  icon={
-                    user.username?.[0]?.toUpperCase() ?? <Icons.UserOutlined />
-                  }
-                />
+                <UserAvatar key={user.id} user={user} />
               ))}
             </Avatar.Group>
             <Tag className="bg-primary">2 open bounties</Tag>

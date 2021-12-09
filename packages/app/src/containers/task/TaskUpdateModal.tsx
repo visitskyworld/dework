@@ -1,13 +1,13 @@
+import { Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import _ from "lodash";
-import { ProjectDetails, Task, UpdateTaskInput } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
+import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
 import { useTask, useUpdateTask } from "./hooks";
 import { TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
-  taskId: string;
-  project: ProjectDetails;
+  taskId?: string;
   visible: boolean;
   onCancel(): void;
   onDone(task: Task): unknown;
@@ -15,7 +15,6 @@ interface TaskCreateModalProps {
 
 export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
   taskId,
-  project,
   visible,
   onCancel,
   onDone,
@@ -32,7 +31,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
 
   const initialValues = useMemo<UpdateTaskInput>(
     () => ({
-      id: taskId,
+      id: taskId ?? "",
       name: task?.name ?? undefined,
       description: task?.description ?? undefined,
       tagIds: task?.tags.map((t) => t.id),
@@ -55,12 +54,33 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
         key={JSON.stringify(initialValues)}
         mode="update"
         task={task}
-        tags={project.taskTags}
+        tags={task?.project.taskTags ?? []}
         initialValues={initialValues}
         assignees={task?.assignees}
         buttonText="Update"
         onSubmit={handleSubmit}
       />
     </Modal>
+  );
+};
+
+export const TaskUpdateModalListener: FC = () => {
+  const router = useRouter();
+  const taskId = router.query.taskId as string | undefined;
+  const closeTaskModal = useCallback(
+    () =>
+      router.push({
+        pathname: router.pathname,
+        query: _.omit(router.query, "taskId"),
+      }),
+    [router]
+  );
+  return (
+    <TaskUpdateModal
+      taskId={taskId}
+      visible={!!taskId}
+      onCancel={closeTaskModal}
+      onDone={closeTaskModal}
+    />
   );
 };

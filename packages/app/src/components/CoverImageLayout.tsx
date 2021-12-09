@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from "react";
-import { Image, Col } from "antd";
+import { Image, Col, Row } from "antd";
 
 interface Props {
   imageUrl: string;
@@ -20,7 +20,7 @@ export const CoverImageLayout: FC<Props> = ({ children, imageUrl, avatar }) => {
         className="max-w-sm mx-auto"
         style={!!avatar ? { marginTop: -64 } : undefined}
       >
-        {avatar}
+        <Row style={{ justifyContent: "center" }}>{avatar}</Row>
         <Col style={{ marginTop: 24 }}>{children}</Col>
       </Col>
     </>
