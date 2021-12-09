@@ -76,8 +76,7 @@ describe("ProjectResolver", () => {
     });
 
     it("should succeed if user is in org", async () => {
-      const { user, organization, project } =
-        await fixtures.createUserOrgProject();
+      const { user, project } = await fixtures.createUserOrgProject();
       const paymentMethod = await fixtures.createPaymentMethod();
 
       const response = await client.request({

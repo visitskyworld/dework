@@ -20,12 +20,12 @@ export const ProjectOverview: FC<Props> = ({ projectId }) => {
         imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
         avatar={
           <Avatar.Group maxCount={3} size={128}>
-            {organization?.users.map((user, index) => (
-              <Link href={`/profile/${user.id}`}>
+            {organization?.members.map((m, index) => (
+              <Link href={`/profile/${m.user.id}`}>
                 <a>
                   <UserAvatar
-                    key={user.id}
-                    user={user}
+                    key={m.id}
+                    user={m.user}
                     style={index !== 0 ? { marginLeft: -48 } : undefined}
                   />
                 </a>

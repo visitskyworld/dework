@@ -53,7 +53,7 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
                 >
                   <ProjectCard
                     project={project}
-                    users={organization?.users ?? []}
+                    users={organization?.members.map((m) => m.user) ?? []}
                   />
                 </Col>
               ))}

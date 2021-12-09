@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -31,7 +32,8 @@ export class User extends Audit {
   @Field(() => [Threepid])
   public threepids!: Promise<Threepid[]>;
 
-  @ManyToMany(() => Organization, (o: Organization) => o.users)
+  @ManyToMany(() => Organization)
+  @JoinTable({ name: "organization_member" })
   @Field(() => [Organization])
   public organizations!: Promise<Organization[]>;
 

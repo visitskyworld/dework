@@ -131,11 +131,19 @@ export interface CreateProjectMutation_project_organization_projects {
   paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
-export interface CreateProjectMutation_project_organization_users {
+export interface CreateProjectMutation_project_organization_members_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: CreateProjectMutation_project_organization_members_user;
 }
 
 export interface CreateProjectMutation_project_organization {
@@ -145,7 +153,7 @@ export interface CreateProjectMutation_project_organization {
   imageUrl: string | null;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
-  users: CreateProjectMutation_project_organization_users[];
+  members: CreateProjectMutation_project_organization_members[];
 }
 
 export interface CreateProjectMutation_project {
@@ -695,11 +703,19 @@ export interface GetOrganizationQuery_organization_projects {
   paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
-export interface GetOrganizationQuery_organization_users {
+export interface GetOrganizationQuery_organization_members_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+}
+
+export interface GetOrganizationQuery_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: GetOrganizationQuery_organization_members_user;
 }
 
 export interface GetOrganizationQuery_organization {
@@ -709,7 +725,7 @@ export interface GetOrganizationQuery_organization {
   imageUrl: string | null;
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
-  users: GetOrganizationQuery_organization_users[];
+  members: GetOrganizationQuery_organization_members[];
 }
 
 export interface GetOrganizationQuery {
@@ -1057,6 +1073,30 @@ export interface Organization {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: OrganizationMember
+// ====================================================
+
+export interface OrganizationMember_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface OrganizationMember {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: OrganizationMember_user;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectIntegration
 // ====================================================
 
@@ -1247,11 +1287,19 @@ export interface OrganizationDetails_projects {
   paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
-export interface OrganizationDetails_users {
+export interface OrganizationDetails_members_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
+}
+
+export interface OrganizationDetails_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: OrganizationDetails_members_user;
 }
 
 export interface OrganizationDetails {
@@ -1261,7 +1309,7 @@ export interface OrganizationDetails {
   imageUrl: string | null;
   description: string | null;
   projects: OrganizationDetails_projects[];
-  users: OrganizationDetails_users[];
+  members: OrganizationDetails_members[];
 }
 
 /* tslint:disable */
@@ -1339,6 +1387,12 @@ export interface ProjectDetails {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum OrganizationRole {
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
+  OWNER = "OWNER",
+}
 
 export enum PaymentMethodType {
   GNOSIS_SAFE = "GNOSIS_SAFE",

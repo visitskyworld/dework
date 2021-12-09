@@ -5,7 +5,7 @@ import {
 } from "@dewo/api/models/OrganizationMember";
 import { User } from "@dewo/api/models/User";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 
@@ -53,11 +53,15 @@ export class OrganizationService {
     return this.findById(organization.id) as Promise<Organization>;
   }
 
-  // public async getUsers(organizationId: string): Promise<User[]> {
-  //   return this.organizationRepo
-  //     .createQueryBuilder("organization")
-  //     .relation(Organization, "users")
-  //     .of(organizationId)
-  //     .loadMany();
-  // }
+  public async getMembers(
+    organizationId: string
+  ): Promise<OrganizationMember[]> {
+    return this.organizationMemberRepo
+      .createQueryBuilder("member")
+      .leftJoinAndSelect("member.user", "user")
+      .where("member.organizationId = :organizationId", {
+        organizationId,
+      })
+      .getMany();
+  }
 }

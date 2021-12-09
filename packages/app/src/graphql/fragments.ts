@@ -24,6 +24,19 @@ export const organization = gql`
   }
 `;
 
+export const organizationMember = gql`
+  fragment OrganizationMember on OrganizationMember {
+    id
+    role
+    organizationId
+    user {
+      ...User
+    }
+  }
+
+  ${user}
+`;
+
 export const projectIntegration = gql`
   fragment ProjectIntegration on ProjectIntegration {
     id
@@ -121,12 +134,13 @@ export const organizationDetails = gql`
     projects {
       ...Project
     }
-    users {
-      ...User
+    members {
+      ...OrganizationMember
     }
   }
 
   ${organization}
+  ${organizationMember}
   ${project}
   ${user}
 `;
