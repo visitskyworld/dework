@@ -2,12 +2,12 @@ import { Avatar, Col, Layout, Row, Tabs, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import { useOrganization } from "../hooks";
-import { InviteButton } from "../../invite/InviteButton";
 import { CoverImageLayout } from "@dewo/app/components/CoverImageLayout";
 import { ProjectCard } from "./ProjectCard";
 import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
 import { CreateProjectCard } from "./CreateProjectCard";
 import { OrganizationTaskBoard } from "./OrganizationTaskBoard";
+import { OrganizationMemberList } from "./OrganizationMemberList";
 
 interface OrganizationOverviewProps {
   organizationId: string;
@@ -36,10 +36,6 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
         <Typography.Text style={{ textAlign: "center" }}>
           {organization?.description}
         </Typography.Text>
-
-        <Row style={{ marginTop: 24, justifyContent: "center" }}>
-          <InviteButton organizationId={organizationId} />
-        </Row>
       </CoverImageLayout>
       <Tabs defaultActiveKey="projects" centered>
         <Tabs.TabPane tab="Projects" key="projects">
@@ -68,7 +64,11 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
             <OrganizationTaskBoard organizationId={organizationId} />
           </Layout.Content>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
+        <Tabs.TabPane tab="Members" key="members">
+          <Layout.Content className="max-w-lg mx-auto">
+            <OrganizationMemberList organizationId={organizationId} />
+          </Layout.Content>
+        </Tabs.TabPane>
       </Tabs>
     </>
   );

@@ -4,6 +4,7 @@ import { Roles } from "../app/app.roles";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { Task } from "@dewo/api/models/Task";
+import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 
 export const permissions: Permissions<Roles, SubjectType, Actions> = {
   everyone({ can, user }) {
@@ -21,6 +22,10 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
   },
 
   organizationAdmin({ can }) {
+    can(Actions.create, OrganizationMember);
+    can(Actions.update, OrganizationMember);
+    can(Actions.delete, OrganizationMember);
+
     can(Actions.update, Organization);
     can(Actions.delete, Organization);
     can(Actions.create, Project);

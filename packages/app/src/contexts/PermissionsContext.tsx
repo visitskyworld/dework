@@ -17,6 +17,7 @@ type AbilitySubject =
   | "Task"
   | "Project"
   | "Organization"
+  | "OrganizationMember"
   | Task
   | Project
   | Organization;
