@@ -1,10 +1,8 @@
 import React, { FC, useCallback } from "react";
-import Link from "next/link";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useRouter } from "next/router";
 import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";

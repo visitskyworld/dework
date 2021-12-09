@@ -38,10 +38,7 @@ describe("ProjectResolver", () => {
 
       it("should succeed if user is in org", async () => {
         const name = faker.company.companyName();
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({
-          users: [user],
-        });
+        const { user, organization } = await fixtures.createUserOrgProject();
 
         const response = await client.request({
           app,
@@ -79,13 +76,8 @@ describe("ProjectResolver", () => {
     });
 
     it("should succeed if user is in org", async () => {
-      const user = await fixtures.createUser();
-      const organization = await fixtures.createOrganization({
-        users: [user],
-      });
-      const project = await fixtures.createProject({
-        organizationId: organization.id,
-      });
+      const { user, organization, project } =
+        await fixtures.createUserOrgProject();
       const paymentMethod = await fixtures.createPaymentMethod();
 
       const response = await client.request({
@@ -106,11 +98,7 @@ describe("ProjectResolver", () => {
   describe("Queries", () => {
     describe("getProject", () => {
       it("should not return deleted tasks", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization();
-        const project = await fixtures.createProject({
-          organizationId: organization.id,
-        });
+        const { user, project } = await fixtures.createUserOrgProject();
         const task = await fixtures.createTask({
           projectId: project.id,
           deletedAt: new Date(),

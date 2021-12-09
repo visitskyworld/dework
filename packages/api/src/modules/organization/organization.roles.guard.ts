@@ -7,9 +7,20 @@ import {
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { GQLContext } from "../app/gql.config";
 import { Roles } from "../app/app.roles";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  OrganizationMember,
+  OrganizationRole,
+} from "@dewo/api/models/OrganizationMember";
 
 @Injectable()
 export class OrganizationRolesGuard implements CanActivate {
+  constructor(
+    @InjectRepository(OrganizationMember)
+    private readonly organizationMemberRepo: Repository<OrganizationMember>
+  ) {}
+
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext =
       GqlExecutionContext.create(context).getContext<GQLContext>();
@@ -25,9 +36,21 @@ export class OrganizationRolesGuard implements CanActivate {
 
     if (!organizationId) return true;
 
-    const organizations = await gqlContext.user.organizations;
-    if (organizations.some((o) => o.id === organizationId)) {
+    const member = await this.organizationMemberRepo.findOne({
+      organizationId,
+      userId: gqlContext.user.id,
+    });
+
+    if (member?.role === OrganizationRole.OWNER) {
+      gqlContext.caslUser.roles.push(Roles.organizationOwner);
+    }
+
+    if (member?.role === OrganizationRole.ADMIN) {
       gqlContext.caslUser.roles.push(Roles.organizationAdmin);
+    }
+
+    if (member?.role === OrganizationRole.MEMBER) {
+      gqlContext.caslUser.roles.push(Roles.organizationMember);
     }
 
     return true;

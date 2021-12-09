@@ -1,4 +1,5 @@
 import { Organization } from "@dewo/api/models/Organization";
+import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
@@ -13,7 +14,13 @@ import { UserService } from "./user.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Organization, Project, Task]),
+    TypeOrmModule.forFeature([
+      User,
+      Organization,
+      Project,
+      Task,
+      OrganizationMember,
+    ]),
     CaslModule.forFeature({ permissions }),
     ThreepidModule,
     TaskModule,

@@ -1,3 +1,4 @@
+import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskTag } from "@dewo/api/models/TaskTag";
@@ -12,7 +13,13 @@ import { ProjectService } from "./project.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, ProjectIntegration, User, TaskTag]),
+    TypeOrmModule.forFeature([
+      Project,
+      ProjectIntegration,
+      User,
+      TaskTag,
+      OrganizationMember,
+    ]),
     CaslModule.forFeature({ permissions }),
     TaskModule,
   ],

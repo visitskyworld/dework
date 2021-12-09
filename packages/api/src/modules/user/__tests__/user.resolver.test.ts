@@ -8,6 +8,7 @@ import { Ability } from "@casl/ability";
 import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -252,6 +253,22 @@ describe("UserResolver", () => {
           expect(permissions.can("update", "Organization")).toBe(true);
           expect(permissions.can("delete", "Organization")).toBe(true);
           expect(permissions.can("create", "Project")).toBe(true);
+        });
+
+        it("organizationMember", async () => {
+          const user = await fixtures.createUser();
+          const { organization } = await fixtures.createUserOrgProject({
+            organization: {
+              members: [{ userId: user.id, role: OrganizationRole.MEMBER }],
+            },
+          });
+
+          const permissions = await getPermissions(user, {
+            organizationId: organization.id,
+          });
+          expect(permissions.can("update", "Organization")).toBe(false);
+          expect(permissions.can("delete", "Organization")).toBe(false);
+          expect(permissions.can("create", "Project")).toBe(false);
         });
 
         it("projectAdmin", async () => {

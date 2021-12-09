@@ -29,8 +29,10 @@ export class InviteRequests {
             id
             organization {
               id
-              users {
+              members {
                 id
+                role
+                userId
               }
             }
           }

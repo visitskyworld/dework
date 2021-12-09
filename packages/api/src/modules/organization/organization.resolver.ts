@@ -28,11 +28,11 @@ export class OrganizationResolver {
     private readonly taskService: TaskService
   ) {}
 
-  @ResolveField(() => [User])
-  public async users(@Parent() organization: Organization): Promise<User[]> {
-    if (!!organization.users) return organization.users;
-    return this.organizationService.getUsers(organization.id);
-  }
+  // @ResolveField(() => [User])
+  // public async users(@Parent() organization: Organization): Promise<User[]> {
+  //   if (!!organization.users) return organization.users;
+  //   return this.organizationService.getUsers(organization.id);
+  // }
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() organization: Organization): Promise<Task[]> {
@@ -48,10 +48,7 @@ export class OrganizationResolver {
     @Context("user") user: User,
     @Args("input") input: CreateOrganizationInput
   ): Promise<Organization> {
-    return this.organizationService.create({
-      ...input,
-      users: [user],
-    });
+    return this.organizationService.create(input, user);
   }
 
   @Mutation(() => Organization)

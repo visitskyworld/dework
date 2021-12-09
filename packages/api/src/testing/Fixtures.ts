@@ -22,6 +22,7 @@ import { Invite } from "../models/Invite";
 import { PaymentModule } from "../modules/payment/payment.module";
 import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
+import { DeepPartial } from "typeorm";
 
 @Injectable()
 export class Fixtures {
@@ -52,12 +53,16 @@ export class Fixtures {
   }
 
   public async createOrganization(
-    partial: Partial<Organization> = {}
+    partial: DeepPartial<Organization> = {},
+    creator?: User
   ): Promise<Organization> {
-    return this.organizationService.create({
-      name: faker.company.companyName(),
-      ...partial,
-    });
+    return this.organizationService.create(
+      {
+        name: faker.company.companyName(),
+        ...partial,
+      },
+      creator ?? (await this.createUser())
+    );
   }
 
   public async createProject(partial: Partial<Project> = {}): Promise<Project> {
@@ -119,16 +124,24 @@ export class Fixtures {
     return this.userService.createAuthToken(user);
   }
 
-  public async createUserOrgProject(): Promise<{
+  public async createUserOrgProject(
+    partial: {
+      user?: Partial<User>;
+      organization?: DeepPartial<Organization>;
+      project?: Partial<Project>;
+    } = {}
+  ): Promise<{
     user: User;
     organization: Organization;
     project: Project;
   }> {
-    const user = await this.createUser();
-    const organization = await this.createOrganization({
-      users: [user],
-    });
+    const user = await this.createUser(partial.user);
+    const organization = await this.createOrganization(
+      partial.organization,
+      user
+    );
     const project = await this.createProject({
+      ...partial.project,
       organizationId: organization.id,
     });
     return { user, organization, project };

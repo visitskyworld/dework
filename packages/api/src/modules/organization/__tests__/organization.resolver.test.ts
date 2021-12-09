@@ -6,6 +6,7 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;
@@ -46,8 +47,13 @@ describe("OrganizationResolver", () => {
         expect(organization).toBeDefined();
         expect(organization.name).toEqual(name);
         expect(organization.imageUrl).toEqual(imageUrl);
-        expect(organization.users).toHaveLength(1);
-        expect(organization.users[0].id).toEqual(user.id);
+        expect(organization.members).toHaveLength(1);
+        expect(organization.members).toContainEqual(
+          expect.objectContaining({
+            userId: user.id,
+            role: OrganizationRole.OWNER,
+          })
+        );
       });
     });
 
@@ -68,11 +74,7 @@ describe("OrganizationResolver", () => {
       });
 
       it("should succeed if has access", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({
-          users: [user],
-        });
-
+        const { user, organization } = await fixtures.createUserOrgProject();
         const expectedName = faker.company.companyName();
 
         const response = await client.request({

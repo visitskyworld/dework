@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
+import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
 import { User } from "./User";
 
@@ -20,9 +21,16 @@ export class Organization extends Audit {
   public imageUrl?: string;
 
   @ManyToMany(() => User, (user: User) => user.organizations)
-  @JoinTable({ name: "organization_users" })
+  @JoinTable({ name: "organization_user" })
   @Field(() => [User])
   public users!: Promise<User[]> | User[];
+
+  @OneToMany(
+    () => OrganizationMember,
+    (om: OrganizationMember) => om.organization
+  )
+  @Field(() => [OrganizationMember])
+  public members!: Promise<OrganizationMember[]> | OrganizationMember[];
 
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])

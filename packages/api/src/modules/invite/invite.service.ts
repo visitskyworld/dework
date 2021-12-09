@@ -1,4 +1,5 @@
 import { Invite } from "@dewo/api/models/Invite";
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { User } from "@dewo/api/models/User";
 import {
   ForbiddenException,
@@ -45,7 +46,11 @@ export class InviteService {
       const organization = await invite.organization;
       const organizations = await user.organizations;
       if (!organizations.some((o) => o.id === invite.organizationId)) {
-        await this.organizationService.addUser(organization, user);
+        await this.organizationService.addUser(
+          organization,
+          user,
+          OrganizationRole.MEMBER
+        );
       }
     }
 

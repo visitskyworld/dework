@@ -8,8 +8,10 @@ export class OrganizationRequests {
       id
       name
       imageUrl
-      users {
+      members {
         id
+        role
+        userId
       }
       tasks {
         id

@@ -1,7 +1,11 @@
 import { Organization } from "@dewo/api/models/Organization";
+import {
+  OrganizationMember,
+  OrganizationRole,
+} from "@dewo/api/models/OrganizationMember";
 import { User } from "@dewo/api/models/User";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 
@@ -11,13 +15,17 @@ export class OrganizationService {
 
   constructor(
     @InjectRepository(Organization)
-    private readonly organizationRepo: Repository<Organization>
+    private readonly organizationRepo: Repository<Organization>,
+    @InjectRepository(OrganizationMember)
+    private readonly organizationMemberRepo: Repository<OrganizationMember>
   ) {}
 
   public async create(
-    partial: DeepPartial<Organization>
+    partial: DeepPartial<Organization>,
+    creator: User
   ): Promise<Organization> {
     const created = await this.organizationRepo.save(partial);
+    await this.addUser(created, creator, OrganizationRole.OWNER);
     return this.findById(created.id) as Promise<Organization>;
   }
 
@@ -34,21 +42,22 @@ export class OrganizationService {
 
   public async addUser(
     organization: Organization,
-    user: User
+    user: User,
+    role: OrganizationRole
   ): Promise<Organization> {
-    await this.organizationRepo
-      .createQueryBuilder()
-      .relation(Organization, "users")
-      .of(organization)
-      .add(user);
+    await this.organizationMemberRepo.save({
+      organizationId: organization.id,
+      userId: user.id,
+      role,
+    });
     return this.findById(organization.id) as Promise<Organization>;
   }
 
-  public async getUsers(organizationId: string): Promise<User[]> {
-    return this.organizationRepo
-      .createQueryBuilder("organization")
-      .relation(Organization, "users")
-      .of(organizationId)
-      .loadMany();
-  }
+  // public async getUsers(organizationId: string): Promise<User[]> {
+  //   return this.organizationRepo
+  //     .createQueryBuilder("organization")
+  //     .relation(Organization, "users")
+  //     .of(organizationId)
+  //     .loadMany();
+  // }
 }

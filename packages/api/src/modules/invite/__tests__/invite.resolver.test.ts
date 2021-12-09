@@ -1,3 +1,4 @@
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -41,10 +42,7 @@ describe("InviteResolver", () => {
       });
 
       it("should succeed if the user is authenticated", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({
-          users: [user],
-        });
+        const { user, organization } = await fixtures.createUserOrgProject();
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
@@ -60,10 +58,8 @@ describe("InviteResolver", () => {
 
     describe("acceptInvite", () => {
       it("it should connect user to organization", async () => {
-        const inviter = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({
-          users: [inviter],
-        });
+        const { user: inviter, organization } =
+          await fixtures.createUserOrgProject();
 
         const invite = await fixtures.createInvite(
           { organizationId: organization.id },
@@ -79,8 +75,11 @@ describe("InviteResolver", () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetchedInvite = response.body.data?.invite;
-        expect(fetchedInvite.organization.users).toContainEqual(
-          expect.objectContaining({ id: invited.id })
+        expect(fetchedInvite.organization.members).toContainEqual(
+          expect.objectContaining({
+            userId: invited.id,
+            role: OrganizationRole.MEMBER,
+          })
         );
       });
 

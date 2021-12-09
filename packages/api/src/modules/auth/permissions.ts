@@ -16,6 +16,10 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
     can(Actions.update, Task, { assignees: { $elemMatch: { id: user.id } } });
   },
 
+  organizationOwner({ extend }) {
+    extend(Roles.organizationAdmin);
+  },
+
   organizationAdmin({ can }) {
     can(Actions.update, Organization);
     can(Actions.delete, Organization);
