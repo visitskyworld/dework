@@ -13,7 +13,7 @@ To run the project locally you need local environment variables in the following
 * `packages/api/.env.local`
 * `packages/app/.env.local`
 
-Ask the core team for development environment variables.
+Just copy the .env.template files and ask the core team for the missing environment variables.
 
 ## Development
 ### 1. Start local Postgres database
