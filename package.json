@@ -7,7 +7,6 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": "16.x",
     "yarn": "1.22.15"
   },
   "scripts": {
