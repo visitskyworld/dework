@@ -6,6 +6,10 @@
   ],
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "16.x",
+    "yarn": "1.22.15"
+  },
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-pattern='!.*' --quiet --fix",
     "app": "yarn workspace @dewo/app",
