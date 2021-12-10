@@ -21,8 +21,6 @@ export class TaskService {
   public async update(partial: DeepAtLeast<Task, "id">): Promise<Task> {
     const updated = await this.taskRepo.save({
       ...partial,
-      // Force the task to be updated to trigger a subscription,
-      // even if only relations (e.g. assignees) have changed
       updatedAt: new Date(),
     });
     return this.taskRepo.findOne(updated.id) as Promise<Task>;

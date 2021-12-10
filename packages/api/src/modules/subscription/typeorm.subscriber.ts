@@ -26,10 +26,9 @@ export class SubscriptionTypeormSubscriber
   async afterInsert(event: InsertEvent<ObjectLiteral>) {
     if (!!event.entity) {
       const eventName = `on${event.metadata.name}Created`;
-      const entity = await event.manager.findOne(
-        event.metadata.name,
-        event.entity.id
-      );
+      const entity = await event.manager.findOne(event.metadata.name, {
+        id: event.entity.id,
+      });
       this.pubsub.publish(eventName, { [eventName]: entity });
     }
   }
@@ -37,10 +36,9 @@ export class SubscriptionTypeormSubscriber
   async afterUpdate(event: UpdateEvent<unknown>) {
     if (!!event.entity) {
       const eventName = `on${event.metadata.name}Updated`;
-      const entity = await event.manager.findOne(
-        event.metadata.name,
-        event.entity.id
-      );
+      const entity = await event.manager.findOne(event.metadata.name, {
+        id: event.entity.id,
+      });
       this.pubsub.publish(eventName, { [eventName]: entity });
     }
   }
