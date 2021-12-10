@@ -1,32 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@dewo/app/*": ["./packages/app/src/*"],
-      "@dewo/api/*": ["./packages/api/src/*"]
-    }
-  },
-  "exclude": [
-    "node_modules"
-  ],
+  "extends": "./tsconfig.base.json",
   "include": [
     "packages/app",
     "packages/api"
