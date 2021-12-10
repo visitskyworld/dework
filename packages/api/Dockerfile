@@ -15,7 +15,7 @@ RUN apk --no-cache --virtual build-dependencies add \
 && yarn api install --frozen-lockfile \
 && apk del build-dependencies
 
-COPY tsconfig.json .
+COPY tsconfig.base.json .
 COPY packages/api/tsconfig.json packages/api/
 COPY packages/api/src packages/api/src
 RUN yarn api build

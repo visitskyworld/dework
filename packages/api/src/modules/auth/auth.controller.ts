@@ -18,10 +18,10 @@ export class AuthController {
   @Get("github/callback")
   @UseGuards(AuthGuard("github"))
   async githubCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    const appUrl =
-      (req.user.state as any)?.appUrl ?? this.configService.get("APP_URL");
     res.redirect(
-      `${appUrl}/auth/3pid/${req.user.threepidId}?state=${req.user.state ?? ""}`
+      `${this.getAppUrl(req.user.state)}/auth/3pid/${
+        req.user.threepidId
+      }?state=${req.user.state ?? ""}`
     );
     return req.user;
   }
@@ -33,11 +33,21 @@ export class AuthController {
   @Get("discord/callback")
   @UseGuards(AuthGuard("discord"))
   async discordCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    const appUrl =
-      (req.user.state as any)?.appUrl ?? this.configService.get("APP_URL");
     res.redirect(
-      `${appUrl}/auth/3pid/${req.user.threepidId}?state=${req.user.state ?? ""}`
+      `${this.getAppUrl(req.user.state)}/auth/3pid/${
+        req.user.threepidId
+      }?state=${req.user.state ?? ""}`
     );
     return req.user;
+  }
+
+  private getAppUrl(stateString: unknown): string {
+    try {
+      if (typeof stateString === "string") {
+        const state = JSON.parse(stateString);
+        if (!!state.appUrl) return state.appUrl;
+      }
+    } catch {}
+    return this.configService.get("APP_URL") as string;
   }
 }

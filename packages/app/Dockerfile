@@ -8,7 +8,7 @@ COPY package.json yarn.lock ./
 COPY packages/app/package.json packages/app/
 RUN yarn app install --frozen-lockfile
 
-COPY tsconfig.json ./
+COPY tsconfig.base.json ./
 COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
 
 COPY packages/app/public packages/app/public
