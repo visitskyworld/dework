@@ -65,7 +65,7 @@ export class DiscordIntegrationService
     const project = await integration.project;
     const permalink = `${this.config.get("APP_URL")}/organization/${
       project.organizationId
-    }/project/${project.id}/task/${task.id}`;
+    }/project/${project.id}?taskId=${task.id}`;
     channel.send(`New bounty up for grabs! ${task.name}\n${permalink}`);
   }
 
