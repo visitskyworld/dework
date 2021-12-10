@@ -22,7 +22,7 @@ export const CoverImageLayout: FC<Props> = ({ children, imageUrl, avatar }) => {
       )}
       <Col
         className="max-w-sm mx-auto"
-        style={!!avatar && imageUrl ? { marginTop: -64 } : undefined}
+        style={!!avatar && !imageUrl ? { marginTop: -64 } : undefined}
       >
         <Row style={{ justifyContent: "center" }}>{avatar}</Row>
         <Col style={{ marginTop: 24 }}>{children}</Col>
