@@ -19,4 +19,9 @@ export class SubscriptionResolver {
   onTaskCreated() {
     return this.pubsub.asyncIterator("onTaskCreated");
   }
+
+  @Subscription(() => Task)
+  onTaskUpdated() {
+    return this.pubsub.asyncIterator("onTaskUpdated");
+  }
 }

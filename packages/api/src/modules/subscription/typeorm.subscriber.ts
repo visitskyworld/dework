@@ -1,21 +1,15 @@
 import { Task } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
+import { InjectConnection } from "@nestjs/typeorm";
 import {
   Connection,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
-  Repository,
+  RemoveEvent,
   UpdateEvent,
 } from "typeorm";
-import {
-  DiscordProjectIntegrationFeature,
-  ProjectIntegration,
-  ProjectIntegrationSource,
-} from "@dewo/api/models/ProjectIntegration";
-import { ConfigService } from "@nestjs/config";
-import { MessageEmbed } from "discord.js";
+import { SubscriptionPubSubService } from "./pubsub.service";
 
 @Injectable()
 @EventSubscriber()
@@ -24,67 +18,22 @@ export class SubscriptionTypeormSubscriber
 {
   private logger = new Logger(this.constructor.name);
 
-  constructor(@InjectConnection() readonly connection: Connection) {
+  constructor(
+    @InjectConnection() readonly connection: Connection,
+    private readonly pubsub: SubscriptionPubSubService
+  ) {
     connection.subscribers.push(this);
   }
 
   async afterInsert(event: InsertEvent<unknown>) {
-    console.warn("insert...", event);
-    // const task = await this.taskRepo.findOne(event.entity.id);
-    // if (!task) return;
-
-    // const integration = await this.getDiscordIntegration(
-    //   task.projectId,
-    //   DiscordProjectIntegrationFeature.POST_CREATED_TASKS
-    // );
-
-    // if (!integration) return;
-    // this.logger.log(
-    //   `Posting task to Discord: ${JSON.stringify({
-    //     taskId: task.id,
-    //     integrationId: integration.id,
-    //   })}`
-    // );
-
-    // const channel = await this.getDiscordChannel(integration);
-    // if (!channel) return;
-
-    // const project = await integration.project;
-    // const permalink = `${this.config.get("APP_URL")}/organization/${
-    //   project.organizationId
-    // }/project/${project.id}/task/${task.id}`;
-    // channel.send(`New bounty up for grabs! ${task.name}\n${permalink}`);
+    const eventName = `on${event.metadata.name}Created`;
+    this.pubsub.publish(eventName, { [eventName]: event.entity });
   }
 
   async afterUpdate(event: UpdateEvent<unknown>) {
-    // if (!event.entity) return;
-    // const task = await this.taskRepo.findOne(event.entity.id);
-    // if (!task) return;
-    // const integration = await this.getDiscordIntegration(
-    //   task.projectId,
-    //   DiscordProjectIntegrationFeature.POST_CREATED_TASKS
-    // );
-    // if (!integration) return;
-    // this.logger.log(
-    //   `Posting task update to Discord: ${JSON.stringify({
-    //     taskId: task.id,
-    //     integrationId: integration.id,
-    //   })}`
-    // );
-    // const channel = await this.getDiscordChannel(integration);
-    // if (!channel) return;
-    // const project = await task.project;
-    // const permalink = `${this.config.get("APP_URL")}/organization/${
-    //   project.organizationId
-    // }/project/${project.id}/task/${task.id}`;
-    // const msgEmbed = new MessageEmbed()
-    //   .setColor("#0099ff")
-    //   .setTitle(`Bounty updated: ${task.name}`)
-    //   .setURL(`${permalink}`)
-    //   .setAuthor(task.assignees[0]?.username ?? "", task.assignees[0]?.imageUrl)
-    //   .setDescription(`${task.description}`)
-    //   .setTimestamp()
-    //   .setFooter("Dewo™");
-    // channel.send({ embeds: [msgEmbed] });
+    if (!!event.entity) {
+      const eventName = `on${event.metadata.name}Updated`;
+      this.pubsub.publish(eventName, { [eventName]: event.entity });
+    }
   }
 }
