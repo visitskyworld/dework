@@ -82,6 +82,7 @@ export const task = gql`
     status
     sortKey
     deletedAt
+    projectId
     tags {
       ...TaskTag
     }

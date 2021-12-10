@@ -5,6 +5,7 @@ const withLess = require("next-with-less");
 module.exports = withLess({
   reactStrictMode: true,
   publicRuntimeConfig: {
-    API_URL: process.env.API_URL,
+    GRAPHQL_API_URL: process.env.GRAPHQL_API_URL,
+    GRAPHQL_WS_URL: process.env.GRAPHQL_WS_URL,
   },
 });

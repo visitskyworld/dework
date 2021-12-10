@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -14,6 +14,7 @@ import {
   UserProfile,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+import { useListenToTasks } from "../task/hooks";
 
 export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
   const [mutation] = useMutation<
@@ -40,10 +41,14 @@ export function useUser(userId: string): UserProfile | undefined {
   return data?.user;
 }
 
-export function useUserTasks(userId: string): Task[] | undefined {
+export function useUserTasks(
+  userId: string,
+  fetchPolicy?: WatchQueryFetchPolicy
+): Task[] | undefined {
   const { data } = useQuery<UserTasksQuery, UserTasksQueryVariables>(
     Queries.userTasks,
-    { variables: { userId } }
+    { variables: { userId }, fetchPolicy }
   );
+  useListenToTasks();
   return data?.user.tasks;
 }

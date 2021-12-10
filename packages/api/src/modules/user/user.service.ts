@@ -1,4 +1,3 @@
-import { Organization } from "@dewo/api/models/Organization";
 import { Threepid } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { DeepAtLeast } from "@dewo/api/types/general";

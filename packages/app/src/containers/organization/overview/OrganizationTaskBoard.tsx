@@ -8,7 +8,10 @@ interface Props {
 }
 
 export const OrganizationTaskBoard: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganizationTasks(organizationId);
+  const organization = useOrganizationTasks(
+    organizationId,
+    "cache-and-network"
+  );
   const taskTags = useMemo(
     () =>
       _(organization?.projects)

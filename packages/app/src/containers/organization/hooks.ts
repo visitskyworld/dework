@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -13,6 +13,7 @@ import {
   OrganizationDetails,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+import { useListenToTasks } from "../task/hooks";
 
 export function useCreateOrganization(): (
   input: CreateOrganizationInput
@@ -49,11 +50,13 @@ export function useOrganization(
 }
 
 export function useOrganizationTasks(
-  organizationId: string
+  organizationId: string,
+  fetchPolicy: WatchQueryFetchPolicy
 ): GetOrganizationTasksQuery["organization"] | undefined {
   const { data } = useQuery<
     GetOrganizationTasksQuery,
     GetOrganizationTasksQueryVariables
-  >(Queries.organizationTasks, { variables: { organizationId } });
+  >(Queries.organizationTasks, { variables: { organizationId }, fetchPolicy });
+  useListenToTasks();
   return data?.organization ?? undefined;
 }

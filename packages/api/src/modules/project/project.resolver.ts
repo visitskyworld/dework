@@ -1,12 +1,4 @@
-import {
-  Args,
-  Context,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from "@nestjs/graphql";
+import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
@@ -15,7 +7,6 @@ import { Project } from "@dewo/api/models/Project";
 import { CreateTaskTagInput } from "./dto/CreateTaskTagInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
-import { Task } from "@dewo/api/models/Task";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
 import { User } from "@dewo/api/models/User";

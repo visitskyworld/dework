@@ -12,12 +12,16 @@ import {
   createHttpLink,
   InMemoryCache,
   ApolloProvider,
+  split,
+  ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { WebSocketLink } from "@apollo/client/link/ws";
 import { getAuthToken } from "@dewo/app/util/authToken";
-import { NextComponentType } from "next";
+import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -66,20 +70,49 @@ App.getInitialProps = async ({
   };
 };
 
+function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
+  const authLink = setContext((_, { headers }) => {
+    const token = getAuthToken(ctx);
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
+
+  const httpLink = createHttpLink({
+    uri: `${Constants.GRAPHQL_API_URL}/graphql`,
+  });
+
+  if (typeof window === "undefined") {
+    return authLink.concat(httpLink);
+  }
+
+  const wsLink = new WebSocketLink({
+    uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
+    options: { reconnect: true },
+  });
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink,
+    httpLink
+  );
+
+  return authLink.concat(splitLink);
+}
+
 export default withApollo(
   ({ ctx, initialState }) => {
-    const httpLink = createHttpLink({ uri: `${Constants.API_URL}/graphql` });
-    const authLink = setContext((_, { headers }) => {
-      const token = getAuthToken(ctx);
-      return {
-        headers: {
-          ...headers,
-          authorization: token ? `Bearer ${token}` : "",
-        },
-      };
-    });
     return new ApolloClient({
-      link: authLink.concat(httpLink),
+      link: createApolloLink(ctx),
       cache: new InMemoryCache().restore(initialState || {}),
       // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
       credentials: "same-origin",

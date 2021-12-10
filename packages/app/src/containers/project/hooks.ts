@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -7,13 +7,15 @@ import {
   CreateProjectMutationVariables,
   GetProjectQuery,
   GetProjectQueryVariables,
+  GetProjectTasksQuery,
+  GetProjectTasksQueryVariables,
   Project,
-  ProjectDetails,
   UpdateProjectInput,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+import { useListenToTasks } from "../task/hooks";
 
 export function useCreateProject(): (
   input: CreateProjectInput
@@ -49,10 +51,22 @@ export function useUpdateProject(): (
   );
 }
 
-export function useProject(projectId: string): ProjectDetails | undefined {
+export function useProject(projectId: string): Project | undefined {
   const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     Queries.project,
     { variables: { projectId } }
   );
+  return data?.project ?? undefined;
+}
+
+export function useProjectTasks(
+  projectId: string,
+  fetchPolicy?: WatchQueryFetchPolicy
+): GetProjectTasksQuery["project"] | undefined {
+  const { data } = useQuery<
+    GetProjectTasksQuery,
+    GetProjectTasksQueryVariables
+  >(Queries.projectTasks, { variables: { projectId }, fetchPolicy });
+  useListenToTasks();
   return data?.project ?? undefined;
 }

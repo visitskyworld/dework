@@ -154,7 +154,7 @@ export const ProjectDiscordIntegrations: FC = () => {
         type="primary"
         block
         icon={<DiscordIcon />}
-        href={`${Constants.API_URL}/auth/discord?redirect=${redirect}`}
+        href={`${Constants.GRAPHQL_API_URL}/auth/discord?redirect=${redirect}`}
       >
         Connect Discord
       </Button>

@@ -6,7 +6,7 @@
     "dev": "env-cmd -f .env.local next dev",
     "build": "next build",
     "start": "next start",
-    "gen:types": "source .env.local && apollo client:codegen --endpoint \"${API_URL}/graphql\" --target 'typescript' --passthroughCustomScalars --customScalarsPrefix 'Scalar.'  --includes 'src/graphql/**/*.ts' --outputFlat 'src/graphql/types.ts'"
+    "gen:types": "source .env.local && apollo client:codegen --endpoint \"${GRAPHQL_API_URL}/graphql\" --target 'typescript' --passthroughCustomScalars --customScalarsPrefix 'Scalar.'  --includes 'src/graphql/**/*.ts' --outputFlat 'src/graphql/types.ts'"
   },
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
@@ -30,6 +30,7 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "17.0.2",
     "react-hotjar": "^4.0.0",
+    "subscriptions-transport-ws": "^0.11.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

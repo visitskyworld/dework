@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const UserTaskBoard: FC<Props> = ({ userId }) => {
-  const tasks = useUserTasks(userId);
+  const tasks = useUserTasks(userId, "cache-and-network");
   if (!tasks) return null;
   return <TaskBoard tasks={tasks} />;
 };

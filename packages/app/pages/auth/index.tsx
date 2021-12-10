@@ -23,7 +23,7 @@ const Auth: NextPage = () => {
               type="primary"
               block
               icon={<Icons.GithubOutlined />}
-              href={`${Constants.API_URL}/auth/github?state=${state}`}
+              href={`${Constants.GRAPHQL_API_URL}/auth/github?state=${state}`}
             >
               Github
             </Button>
@@ -32,7 +32,7 @@ const Auth: NextPage = () => {
               type="primary"
               block
               icon={<DiscordIcon />}
-              href={`${Constants.API_URL}/auth/discord?state=${state}`}
+              href={`${Constants.GRAPHQL_API_URL}/auth/discord?state=${state}`}
             >
               Discord
             </Button>

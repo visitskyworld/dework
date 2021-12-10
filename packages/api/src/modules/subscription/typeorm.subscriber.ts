@@ -1,12 +1,12 @@
 import { Task } from "@dewo/api/models/Task";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import {
   Connection,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
-  RemoveEvent,
+  ObjectLiteral,
   UpdateEvent,
 } from "typeorm";
 import { SubscriptionPubSubService } from "./pubsub.service";
@@ -16,8 +16,6 @@ import { SubscriptionPubSubService } from "./pubsub.service";
 export class SubscriptionTypeormSubscriber
   implements EntitySubscriberInterface<Task>
 {
-  private logger = new Logger(this.constructor.name);
-
   constructor(
     @InjectConnection() readonly connection: Connection,
     private readonly pubsub: SubscriptionPubSubService
@@ -25,15 +23,25 @@ export class SubscriptionTypeormSubscriber
     connection.subscribers.push(this);
   }
 
-  async afterInsert(event: InsertEvent<unknown>) {
-    const eventName = `on${event.metadata.name}Created`;
-    this.pubsub.publish(eventName, { [eventName]: event.entity });
+  async afterInsert(event: InsertEvent<ObjectLiteral>) {
+    if (!!event.entity) {
+      const eventName = `on${event.metadata.name}Created`;
+      const entity = await event.manager.findOne(
+        event.metadata.name,
+        event.entity.id
+      );
+      this.pubsub.publish(eventName, { [eventName]: entity });
+    }
   }
 
   async afterUpdate(event: UpdateEvent<unknown>) {
     if (!!event.entity) {
       const eventName = `on${event.metadata.name}Updated`;
-      this.pubsub.publish(eventName, { [eventName]: event.entity });
+      const entity = await event.manager.findOne(
+        event.metadata.name,
+        event.entity.id
+      );
+      this.pubsub.publish(eventName, { [eventName]: entity });
     }
   }
 }

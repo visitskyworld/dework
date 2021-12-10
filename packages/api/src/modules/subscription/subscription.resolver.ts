@@ -1,12 +1,4 @@
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-  Subscription,
-} from "@nestjs/graphql";
+import { Subscription } from "@nestjs/graphql";
 import { Injectable } from "@nestjs/common";
 import { Task } from "@dewo/api/models/Task";
 import { SubscriptionPubSubService } from "./pubsub.service";

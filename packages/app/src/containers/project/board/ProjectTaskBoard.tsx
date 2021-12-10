@@ -1,6 +1,6 @@
 import { CreateTaskInput } from "@dewo/app/graphql/types";
 import React, { FC, useMemo } from "react";
-import { useProject } from "../hooks";
+import { useProjectTasks } from "../hooks";
 import { TaskBoard } from "./TaskBoard";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
-  const project = useProject(projectId);
+  const project = useProjectTasks(projectId, "cache-and-network");
   const initialValues = useMemo<Partial<CreateTaskInput>>(
     () => ({ projectId: project?.id }),
     [project?.id]

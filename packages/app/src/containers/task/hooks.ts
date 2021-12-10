@@ -1,6 +1,12 @@
-import { useMutation, useQuery } from "@apollo/client";
+import {
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
+import * as Subscriptions from "@dewo/app/graphql/subscriptions";
 import {
   CreateTaskInput,
   CreateTaskMutation,
@@ -10,35 +16,93 @@ import {
   CreateTaskTagMutationVariables,
   DeleteTaskMutation,
   DeleteTaskMutationVariables,
+  GetProjectTasksQuery,
+  GetProjectTasksQueryVariables,
   GetTaskQuery,
   GetTaskQueryVariables,
   Task,
+  TaskCreatedSubscription,
   TaskTag,
+  TaskUpdatedSubscription,
   UpdateTaskInput,
   UpdateTaskMutation,
   UpdateTaskMutationVariables,
+  UserTasksQuery,
+  UserTasksQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+
+export function useAddTaskToApolloCache(): (task: Task) => void {
+  const apolloClient = useApolloClient();
+  return useCallback(
+    (task: Task) => {
+      try {
+        const data = apolloClient.readQuery<
+          GetProjectTasksQuery,
+          GetProjectTasksQueryVariables
+        >({
+          query: Queries.projectTasks,
+          variables: { projectId: task.projectId },
+        });
+
+        if (!!data && !data.project.tasks.some((t) => t.id === task.id)) {
+          apolloClient.writeQuery({
+            query: Queries.projectTasks,
+            variables: { projectId: task.projectId },
+            data: {
+              project: {
+                ...data.project,
+                tasks: [task, ...data.project.tasks],
+              },
+            },
+          });
+        }
+      } catch {}
+
+      task.assignees.forEach((user) => {
+        try {
+          const data = apolloClient.readQuery<
+            UserTasksQuery,
+            UserTasksQueryVariables
+          >({
+            query: Queries.userTasks,
+            variables: { userId: user.id },
+          });
+
+          if (!!data && !data.user.tasks.some((t) => t.id === task.id)) {
+            apolloClient.writeQuery({
+              query: Queries.userTasks,
+              variables: { userId: user.id },
+              data: {
+                user: {
+                  ...data.user,
+                  tasks: [task, ...data.user.tasks],
+                },
+              },
+            });
+          }
+        } catch {}
+      });
+    },
+    [apolloClient]
+  );
+}
 
 export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
   const [createTask] = useMutation<
     CreateTaskMutation,
     CreateTaskMutationVariables
   >(Mutations.createTask);
+  const addTaskToApolloCache = useAddTaskToApolloCache();
   return useCallback(
     async (input) => {
-      const res = await createTask({
-        variables: { input },
-        // Temporary solution instead of updating Apollo cache directly
-        refetchQueries: [
-          { query: Queries.project, variables: { projectId: input.projectId } },
-        ],
-      });
+      const res = await createTask({ variables: { input } });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.task;
+      addTaskToApolloCache(res.data.task);
+      return res.data.task;
     },
-    [createTask]
+    [createTask, addTaskToApolloCache]
   );
 }
 
@@ -141,4 +205,20 @@ export function useTask(
     skip: !taskId,
   });
   return data?.task ?? undefined;
+}
+
+export function useListenToTasks() {
+  const addTaskToApolloCache = useAddTaskToApolloCache();
+  useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
+    onSubscriptionData(options) {
+      const task = options.subscriptionData.data?.task;
+      if (!!task) addTaskToApolloCache(task);
+    },
+  });
+  useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
+    onSubscriptionData(options) {
+      const task = options.subscriptionData.data?.task;
+      if (!!task) addTaskToApolloCache(task);
+    },
+  });
 }

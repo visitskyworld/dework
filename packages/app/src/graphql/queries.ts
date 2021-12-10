@@ -88,11 +88,28 @@ export const organizationTasks = gql`
 export const project = gql`
   query GetProjectQuery($projectId: UUID!) {
     project: getProject(id: $projectId) {
-      ...ProjectDetails
+      ...Project
     }
   }
 
-  ${Fragments.projectDetails}
+  ${Fragments.project}
+`;
+
+export const projectTasks = gql`
+  query GetProjectTasksQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      id
+      tasks {
+        ...Task
+      }
+      taskTags {
+        ...TaskTag
+      }
+    }
+  }
+
+  ${Fragments.task}
+  ${Fragments.taskTag}
 `;
 
 export const task = gql`
