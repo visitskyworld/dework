@@ -2,20 +2,24 @@ import React, { FC, ReactNode } from "react";
 import { Image, Col, Row } from "antd";
 
 interface Props {
-  imageUrl: string;
+  imageUrl?: string;
   avatar?: ReactNode;
 }
 
 export const CoverImageLayout: FC<Props> = ({ children, imageUrl, avatar }) => {
   return (
     <>
-      <Image
-        width="100%"
-        height={160}
-        style={{ objectFit: "cover" }}
-        src={imageUrl}
-        preview={false}
-      />
+      {!!imageUrl ? (
+        <Image
+          width="100%"
+          height={160}
+          style={{ objectFit: "cover" }}
+          src={imageUrl}
+          preview={false}
+        />
+      ) : (
+        <div style={{ height: 80 }} />
+      )}
       <Col
         className="max-w-sm mx-auto"
         style={!!avatar ? { marginTop: -64 } : undefined}

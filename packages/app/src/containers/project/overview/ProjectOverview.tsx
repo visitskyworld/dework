@@ -17,7 +17,7 @@ export const ProjectOverview: FC<Props> = ({ projectId }) => {
   return (
     <>
       <CoverImageLayout
-        imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
+        // imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
         avatar={
           <Avatar.Group maxCount={3} size={128}>
             {organization?.members.map((m, index) => (

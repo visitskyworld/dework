@@ -20,7 +20,7 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
   return (
     <>
       <CoverImageLayout
-        imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
+        // imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
         avatar={
           <Avatar
             src={organization?.imageUrl}
