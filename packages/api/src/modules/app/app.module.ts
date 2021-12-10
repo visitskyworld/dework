@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { CaslModule } from "nest-casl";
 import { configSchema } from "./config";
 import { postgresConfig } from "./postgres.config";
-import { GraphQLConfig } from "./gql.config";
+import { GraphQLConfig } from "./graphql.config";
 import { AuthModule, GlobalJwtModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
 import { DatabaseModule } from "@dewo/api/testing/Database";
@@ -17,6 +17,7 @@ import { InviteModule } from "../invite/invite.module";
 import { PaymentModule } from "../payment/payment.module";
 import { Roles } from "./app.roles";
 import { User } from "@dewo/api/models/User";
+import { SubscriptionModule } from "../subscription/subscription.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -46,6 +47,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   InviteModule,
   DiscordIntegrationModule,
   PaymentModule,
+  SubscriptionModule,
 ];
 
 @Module({

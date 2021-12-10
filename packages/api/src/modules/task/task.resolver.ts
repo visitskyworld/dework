@@ -17,6 +17,8 @@ import GraphQLUUID from "graphql-type-uuid";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
+import { Organization } from "@dewo/api/models/Organization";
+import { Project } from "@dewo/api/models/Project";
 
 @Injectable()
 @Resolver(() => Task)
@@ -88,5 +90,29 @@ export class TaskResolver {
     const task = await this.taskService.findById(id);
     if (!task) throw new NotFoundException();
     return task;
+  }
+}
+
+@Injectable()
+@Resolver(() => Organization)
+export class OrganizationTasksResolver {
+  constructor(private readonly taskService: TaskService) {}
+
+  @ResolveField(() => [Task])
+  public async tasks(@Parent() organization: Organization): Promise<Task[]> {
+    return this.taskService.findWithRelations({
+      organizationId: organization.id,
+    });
+  }
+}
+
+@Injectable()
+@Resolver(() => Project)
+export class ProjectTasksResolver {
+  constructor(private readonly taskService: TaskService) {}
+
+  @ResolveField(() => [Task])
+  public async tasks(@Parent() project: Project): Promise<Task[]> {
+    return this.taskService.findWithRelations({ projectId: project.id });
   }
 }

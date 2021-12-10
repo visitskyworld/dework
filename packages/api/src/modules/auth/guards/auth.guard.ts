@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { GQLContext } from "../../app/gql.config";
+import { GQLContext } from "../../app/graphql.config";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

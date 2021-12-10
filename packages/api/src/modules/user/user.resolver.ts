@@ -24,6 +24,8 @@ import { GetUserPermissionsInput } from "./dto/GetUserPermissionsInput";
 import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
+import { Organization } from "@dewo/api/models/Organization";
+import { OrganizationService } from "../organization/organization.service";
 
 @Resolver(() => User)
 @Injectable()
@@ -31,12 +33,18 @@ export class UserResolver {
   constructor(
     private readonly userService: UserService,
     private readonly taskService: TaskService,
+    private readonly organizationService: OrganizationService,
     private readonly abilityFactory: AbilityFactory
   ) {}
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() user: User): Promise<Task[]> {
     return this.taskService.findWithRelations({ assigneeId: user.id });
+  }
+
+  @ResolveField(() => [Organization])
+  public async organizations(@Parent() user: User): Promise<Organization[]> {
+    return this.organizationService.findByUser(user.id);
   }
 
   @ResolveField(() => [GraphQLJSONObject])

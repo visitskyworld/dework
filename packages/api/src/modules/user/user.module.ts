@@ -7,6 +7,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
+import { OrganizationModule } from "../organization/organization.module";
 import { TaskModule } from "../task/task.module";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
@@ -24,6 +25,7 @@ import { UserService } from "./user.service";
     CaslModule.forFeature({ permissions }),
     ThreepidModule,
     TaskModule,
+    OrganizationModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

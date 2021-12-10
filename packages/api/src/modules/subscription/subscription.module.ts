@@ -5,28 +5,19 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
-import { OrganizationModule } from "../organization/organization.module";
-import {
-  OrganizationTasksResolver,
-  ProjectTasksResolver,
-  TaskResolver,
-} from "./task.resolver";
-import { TaskRolesGuard } from "./task.roles.guard";
-import { TaskService } from "./task.service";
+import { SubscriptionPubSubService } from "./pubsub.service";
+import { SubscriptionResolver } from "./subscription.resolver";
+import { SubscriptionTypeormSubscriber } from "./typeorm.subscriber";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Task, Project, User]),
     CaslModule.forFeature({ permissions }),
-    OrganizationModule,
   ],
   providers: [
-    TaskResolver,
-    OrganizationTasksResolver,
-    ProjectTasksResolver,
-    TaskService,
-    TaskRolesGuard,
+    SubscriptionResolver,
+    SubscriptionTypeormSubscriber,
+    SubscriptionPubSubService,
   ],
-  exports: [TaskService],
 })
-export class TaskModule {}
+export class SubscriptionModule {}

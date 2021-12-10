@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { GQLContext } from "../app/gql.config";
+import { GQLContext } from "../app/graphql.config";
 import { Roles } from "../app/app.roles";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";

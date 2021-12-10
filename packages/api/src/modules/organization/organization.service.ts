@@ -64,4 +64,12 @@ export class OrganizationService {
       })
       .getMany();
   }
+
+  public async findByUser(userId: string): Promise<Organization[]> {
+    return this.organizationRepo
+      .createQueryBuilder("organization")
+      .innerJoinAndSelect("organization.members", "members")
+      .where("members.userId = :userId", { userId })
+      .getMany();
+  }
 }

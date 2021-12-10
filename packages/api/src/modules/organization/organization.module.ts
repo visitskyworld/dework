@@ -5,7 +5,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
-import { TaskModule } from "../task/task.module";
 import { OrganizationResolver } from "./organization.resolver";
 import { OrganizationService } from "./organization.service";
 
@@ -13,7 +12,6 @@ import { OrganizationService } from "./organization.service";
   imports: [
     TypeOrmModule.forFeature([Organization, User, OrganizationMember]),
     CaslModule.forFeature({ permissions }),
-    TaskModule,
   ],
   providers: [OrganizationResolver, OrganizationService],
   exports: [OrganizationService],

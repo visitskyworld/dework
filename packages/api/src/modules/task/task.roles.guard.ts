@@ -8,15 +8,17 @@ import {
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { GQLContext } from "../app/gql.config";
+import { GQLContext } from "../app/graphql.config";
 import { Task } from "@dewo/api/models/Task";
 import { Roles } from "../app/app.roles";
+import { OrganizationService } from "../organization/organization.service";
 
 @Injectable()
 export class TaskRolesGuard implements CanActivate {
   constructor(
     @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    private readonly taskRepo: Repository<Task>,
+    private readonly organizationService: OrganizationService
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -41,7 +43,9 @@ export class TaskRolesGuard implements CanActivate {
     const project = await task.project;
     if (!project) throw new ForbiddenException("Project not found");
 
-    const organizations = await gqlContext.user.organizations;
+    const organizations = await this.organizationService.findByUser(
+      gqlContext.user.id
+    );
     if (organizations.some((o) => o.id === project.organizationId)) {
       gqlContext.caslUser.roles.push(Roles.projectAdmin);
       gqlContext.caslUser.roles.push(Roles.projectMember);

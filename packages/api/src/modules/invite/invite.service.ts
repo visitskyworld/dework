@@ -25,7 +25,7 @@ export class InviteService {
     user: User
   ): Promise<Invite> {
     if (!!partial.organizationId) {
-      const organizations = await user.organizations;
+      const organizations = await this.organizationService.findByUser(user.id);
       if (!organizations.some((o) => o.id === partial.organizationId)) {
         throw new ForbiddenException();
       }
@@ -44,7 +44,7 @@ export class InviteService {
 
     if (!!invite.organizationId) {
       const organization = await invite.organization;
-      const organizations = await user.organizations;
+      const organizations = await this.organizationService.findByUser(user.id);
       if (!organizations.some((o) => o.id === invite.organizationId)) {
         await this.organizationService.addUser(
           organization,

@@ -16,7 +16,6 @@ import { CreateTaskTagInput } from "./dto/CreateTaskTagInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
 import { Task } from "@dewo/api/models/Task";
-import { TaskService } from "../task/task.service";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
 import { User } from "@dewo/api/models/User";
@@ -28,15 +27,7 @@ import { ProjectRolesGuard } from "./project.roles.guard";
 @Resolver(() => Project)
 @Injectable()
 export class ProjectResolver {
-  constructor(
-    private readonly projectService: ProjectService,
-    private readonly taskService: TaskService
-  ) {}
-
-  @ResolveField(() => [Task])
-  public async tasks(@Parent() project: Project): Promise<Task[]> {
-    return this.taskService.findWithRelations({ projectId: project.id });
-  }
+  constructor(private readonly projectService: ProjectService) {}
 
   @Mutation(() => Project)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)

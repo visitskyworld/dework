@@ -17,17 +17,12 @@ import GraphQLUUID from "graphql-type-uuid";
 import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
-import { Task } from "@dewo/api/models/Task";
-import { TaskService } from "../task/task.service";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 
 @Resolver(() => Organization)
 @Injectable()
 export class OrganizationResolver {
-  constructor(
-    private readonly organizationService: OrganizationService,
-    private readonly taskService: TaskService
-  ) {}
+  constructor(private readonly organizationService: OrganizationService) {}
 
   @ResolveField(() => [OrganizationMember])
   public async members(
@@ -35,13 +30,6 @@ export class OrganizationResolver {
   ): Promise<OrganizationMember[]> {
     if (!!organization.members) return organization.members;
     return this.organizationService.getMembers(organization.id);
-  }
-
-  @ResolveField(() => [Task])
-  public async tasks(@Parent() organization: Organization): Promise<Task[]> {
-    return this.taskService.findWithRelations({
-      organizationId: organization.id,
-    });
   }
 
   @Mutation(() => Organization)

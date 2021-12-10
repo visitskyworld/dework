@@ -87,6 +87,9 @@ export class GraphQLConfig implements GqlOptionsFactory {
         req.caslUser = caslUser;
         return { req, user, caslUser };
       },
+      subscriptions: {
+        "graphql-ws": true,
+      },
     };
   }
 }
