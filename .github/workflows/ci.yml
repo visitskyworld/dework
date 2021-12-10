@@ -1,0 +1,12 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install modules
+        run: yarn
+      - name: Run ESLint
+        run: yarn lint
+      - name: Compile Typescript
+        run: yarn tsc
