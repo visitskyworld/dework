@@ -9,7 +9,8 @@ import { useRouter } from "next/router";
 
 const Auth: NextPage = () => {
   const router = useRouter();
-  const state = _.isEmpty(router.query) ? "" : JSON.stringify(router.query);
+  const appUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const state = JSON.stringify({ ...router.query, appUrl });
   return (
     <Layout>
       <Layout.Content>

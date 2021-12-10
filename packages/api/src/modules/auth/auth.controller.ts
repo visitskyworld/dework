@@ -18,11 +18,10 @@ export class AuthController {
   @Get("github/callback")
   @UseGuards(AuthGuard("github"))
   async githubCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    // @ts-ignore
+    const appUrl =
+      (req.user.state as any)?.appUrl ?? this.configService.get("APP_URL");
     res.redirect(
-      `${this.configService.get("APP_URL")}/auth/3pid/${
-        req.user.threepidId
-      }?state=${req.user.state ?? ""}`
+      `${appUrl}/auth/3pid/${req.user.threepidId}?state=${req.user.state ?? ""}`
     );
     return req.user;
   }
@@ -34,11 +33,10 @@ export class AuthController {
   @Get("discord/callback")
   @UseGuards(AuthGuard("discord"))
   async discordCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    // @ts-ignore
+    const appUrl =
+      (req.user.state as any)?.appUrl ?? this.configService.get("APP_URL");
     res.redirect(
-      `${this.configService.get("APP_URL")}/auth/3pid/${
-        req.user.threepidId
-      }?state=${req.user.state ?? ""}`
+      `${appUrl}/auth/3pid/${req.user.threepidId}?state=${req.user.state ?? ""}`
     );
     return req.user;
   }
