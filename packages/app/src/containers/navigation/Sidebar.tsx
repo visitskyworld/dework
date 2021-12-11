@@ -38,9 +38,8 @@ export const Sidebar: FC = () => {
 
         <Divider />
         {user?.organizations.map((organization) => (
-          <Link href={`/organization/${organization.id}`}>
+          <Link key={organization.id} href={`/organization/${organization.id}`}>
             <Button
-              key={organization.id}
               type="text"
               style={{
                 padding: 0,
