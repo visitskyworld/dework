@@ -53,7 +53,7 @@ export const TaskBoardColumn: FC<Props> = ({
         </Can>
       }
       style={{ width }}
-      className="dewo-task_column"
+      className="dewo-task-board-column"
     >
       <TaskCreateModal
         tags={tags}

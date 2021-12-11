@@ -11,6 +11,7 @@
 @text-color-secondary: fade(@white, 60%); // defaults to 45%
 @layout-header-background: transparent;
 @layout-sider-background: fade(@white, 10%);
+@scrollbar-active-color: fade(@white, 20%);
 
 html {
   background: @body-background;
@@ -140,7 +141,7 @@ textarea {
 
   padding: 0 16px;
 }
-.dewo-task_column{
+.dewo-task-board-column{
   & .ant-card-body{
     //Scrollbar
     &::-webkit-scrollbar {
@@ -148,7 +149,7 @@ textarea {
       height: 7px;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: @primary-color !important;
+      background-color: @component-background ;
       border-radius: @border-radius-base;
       border: 1px solid transparent;
       background-clip: content-box;
@@ -158,7 +159,7 @@ textarea {
     }
     /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
-      background: @primary-color !important;
+      background: @scrollbar-active-color;
     }
     overflow-y: auto;
   }
