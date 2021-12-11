@@ -9,6 +9,8 @@
 @border-color-split: fade(@white, 30%);
 @btn-text-hover-bg: fade(@white, 10%); // defaults to 3%
 @text-color-secondary: fade(@white, 60%); // defaults to 45%
+@layout-header-background: transparent;
+@layout-sider-background: fade(@white, 10%);
 
 html {
   background: @body-background;
@@ -30,9 +32,11 @@ textarea {
 }
 
 .ant-menu {
-  background: @body-background;
-  border-radius: @border-radius-base;
-  border: 1px solid fade(@white, 30%);
+  background: transparent;
+  border: none;
+  // background: @body-background;
+  // border-radius: @border-radius-base;
+  // border: 1px solid fade(@white, 30%);
 }
 
 .ant-card .ant-card {
@@ -128,8 +132,9 @@ textarea {
 
 .dewo-task-board {
   overflow-x: auto;
-  // padding: 0 16px;
   height: 100%;
+
+  padding: 0 16px;
 }
 
 .ant-card.dewo-card-create-project {

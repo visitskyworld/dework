@@ -4,6 +4,7 @@ import {
   Col,
   Layout,
   List,
+  Menu,
   Row,
   Skeleton,
   Space,
@@ -29,7 +30,45 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
   organizationId,
 }) => {
   const organization = useOrganization(organizationId);
-  // <Skeleton.Avatar active={active} size={size} shape={avatarShape} />
+
+  if (!!organization && Math.random()) {
+    return (
+      <Layout>
+        <Layout.Header
+        // style={{ height: "unset", paddingTop: 8, paddingBottom: 8 }}
+        >
+          <Row align="middle">
+            {/* <OrganizationAvatar organization={organization!} size={64} /> */}
+            <Col>
+              <Typography.Title
+                level={2}
+                style={{ margin: 0 /*, marginLeft: 16*/ }}
+              >
+                {organization?.name}
+              </Typography.Title>
+            </Col>
+
+            {/* <div style={{ flex: 1 }} /> */}
+
+            <Col
+              // style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}
+              style={{ marginLeft: 24 }}
+            >
+              <Menu mode="horizontal">
+                <Menu.Item key="1">Projects</Menu.Item>
+                <Menu.Item key="2">Board</Menu.Item>
+                <Menu.Item key="3">Members</Menu.Item>
+              </Menu>
+            </Col>
+          </Row>
+        </Layout.Header>
+        <Layout.Content style={{ marginTop: 24 }}>
+          <OrganizationTaskBoard organizationId={organizationId} />
+        </Layout.Content>
+      </Layout>
+    );
+  }
+
   return (
     <>
       {/* <CoverImageLayout
@@ -65,9 +104,9 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
             }
             description={
               <>
-                <Typography.Text type="secondary">
+                {/* <Typography.Text type="secondary">
                   {"Organization short description"}
-                </Typography.Text>
+                </Typography.Text> */}
                 <Row gutter={24} style={{ marginLeft: -20 }}>
                   <Col>
                     <Button

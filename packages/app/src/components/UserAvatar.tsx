@@ -6,10 +6,11 @@ import { colorFromUuid } from "../util/colorFromUuid";
 
 interface Props extends AvatarProps {
   user: User;
+  tooltip?: Partial<TooltipProps>;
 }
 
-export const UserAvatar: FC<Props> = ({ user, ...otherProps }) => (
-  <Tooltip title={user.username} placement="top">
+export const UserAvatar: FC<Props> = ({ user, tooltip, ...otherProps }) => (
+  <Tooltip title={user.username} placement="top" {...tooltip}>
     <Avatar
       src={user.imageUrl}
       style={{
