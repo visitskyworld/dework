@@ -18,6 +18,7 @@ import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
+import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -53,6 +54,19 @@ export class OrganizationResolver {
     @Args("input") input: UpdateOrganizationInput
   ): Promise<Organization> {
     return this.organizationService.update(input);
+  }
+
+  @Mutation(() => OrganizationMember)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, OrganizationMember)
+  public async updateOrganizationMember(
+    @Args("input") input: UpdateOrganizationMemberInput
+  ): Promise<OrganizationMember> {
+    return this.organizationService.updateMember(
+      input.organizationId,
+      input.userId,
+      input.role
+    );
   }
 
   @Query(() => Organization)

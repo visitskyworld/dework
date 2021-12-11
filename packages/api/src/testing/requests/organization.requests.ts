@@ -1,23 +1,32 @@
 import { CreateOrganizationInput } from "@dewo/api/modules/organization/dto/CreateOrganizationInput";
 import { UpdateOrganizationInput } from "@dewo/api/modules/organization/dto/UpdateOrganizationInput";
+import { UpdateOrganizationMemberInput } from "@dewo/api/modules/organization/dto/UpdateOrganizationMemberInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class OrganizationRequests {
+  private static organizationMemberFragment = `
+    fragment OrganizationMember on OrganizationMember {
+      id
+      role
+      userId
+    }
+  `;
+
   private static organizationFragment = `
     fragment Organization on Organization {
       id
       name
       imageUrl
       members {
-        id
-        role
-        userId
+        ...OrganizationMember
       }
       tasks {
         id
         projectId
       }
     }
+
+    ${this.organizationMemberFragment}
   `;
 
   public static create(
@@ -49,6 +58,23 @@ export class OrganizationRequests {
         }
 
         ${this.organizationFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static updateMember(
+    input: UpdateOrganizationMemberInput
+  ): GraphQLTestClientRequestBody<{ input: UpdateOrganizationMemberInput }> {
+    return {
+      query: `
+        mutation UpdateOrganizationMember($input: UpdateOrganizationMemberInput!) {
+          member: updateOrganizationMember(input: $input) {
+            ...OrganizationMember
+          }
+        }
+
+        ${this.organizationMemberFragment}
       `,
       variables: { input },
     };

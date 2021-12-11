@@ -22,10 +22,11 @@ export class OrganizationService {
 
   public async create(
     partial: DeepPartial<Organization>,
+
     creator: User
   ): Promise<Organization> {
     const created = await this.organizationRepo.save(partial);
-    await this.addUser(created, creator, OrganizationRole.OWNER);
+    await this.addUser(created.id, creator.id, OrganizationRole.OWNER);
     return this.findById(created.id) as Promise<Organization>;
   }
 
@@ -41,16 +42,31 @@ export class OrganizationService {
   }
 
   public async addUser(
-    organization: Organization,
-    user: User,
+    organizationId: string,
+    userId: string,
     role: OrganizationRole
   ): Promise<Organization> {
     await this.organizationMemberRepo.save({
-      organizationId: organization.id,
-      userId: user.id,
       role,
+      userId,
+      organizationId,
     });
-    return this.findById(organization.id) as Promise<Organization>;
+    return this.findById(organizationId) as Promise<Organization>;
+  }
+
+  public async updateMember(
+    organizationId: string,
+    userId: string,
+    role: OrganizationRole
+  ): Promise<OrganizationMember> {
+    const updated = await this.organizationMemberRepo.save({
+      role,
+      userId,
+      organizationId,
+    });
+    return this.organizationMemberRepo.findOne({
+      id: updated.id,
+    }) as Promise<OrganizationMember>;
   }
 
   public async getMembers(

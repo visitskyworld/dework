@@ -4,6 +4,7 @@ import { User } from "../models/User";
 import { UserModule } from "../modules/user/user.module";
 import { UserService } from "../modules/user/user.service";
 import faker from "faker";
+import Bluebird from "bluebird";
 import { ThreepidService } from "../modules/threepid/threepid.service";
 import { ThreepidModule } from "../modules/threepid/threepid.module";
 import { Organization } from "../models/Organization";
@@ -23,6 +24,7 @@ import { PaymentModule } from "../modules/payment/payment.module";
 import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 import { DeepPartial } from "typeorm";
+import { OrganizationRole } from "../models/OrganizationMember";
 
 @Injectable()
 export class Fixtures {
@@ -54,14 +56,28 @@ export class Fixtures {
 
   public async createOrganization(
     partial: DeepPartial<Organization> = {},
-    creator?: User
+    creator?: User,
+    userIds?: string[]
   ): Promise<Organization> {
-    return this.organizationService.create(
+    const organization = await this.organizationService.create(
       {
         name: faker.company.companyName(),
         ...partial,
       },
       creator ?? (await this.createUser())
+    );
+
+    if (!userIds) return organization;
+
+    return Bluebird.reduce(
+      userIds,
+      (_, userId) =>
+        this.organizationService.addUser(
+          organization.id,
+          userId,
+          OrganizationRole.MEMBER
+        ),
+      organization
     );
   }
 

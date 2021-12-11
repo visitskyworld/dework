@@ -47,8 +47,8 @@ export class InviteService {
       const organizations = await this.organizationService.findByUser(user.id);
       if (!organizations.some((o) => o.id === invite.organizationId)) {
         await this.organizationService.addUser(
-          organization,
-          user,
+          organization.id,
+          user.id,
           OrganizationRole.MEMBER
         );
       }

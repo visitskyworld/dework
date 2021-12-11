@@ -19,7 +19,7 @@ const Page: NextPage = () => {
           tab={OrganizationHeaderTab.members}
           organizationId={organizationId}
         />
-        <Layout.Content className="max-w-lg">
+        <Layout.Content className="max-w-sm">
           <OrganizationMemberList organizationId={organizationId} />
         </Layout.Content>
       </Layout.Content>

@@ -34,7 +34,10 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
     [organization?.members]
   );
   return (
-    <>
+    <Space
+      direction="vertical"
+      style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
+    >
       {canAddMember && (
         <Row justify="end">
           <InviteButton organizationId={organizationId} />
@@ -147,6 +150,6 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
           />
         )}
       </Table> */}
-    </>
+    </Space>
   );
 };
