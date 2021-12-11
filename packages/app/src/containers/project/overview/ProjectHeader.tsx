@@ -57,7 +57,6 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
             ],
             itemRender(route, params, routes, paths) {
               const last = routes.indexOf(route) === routes.length - 1;
-              console.warn({ route, params, routes, paths });
               return last ? (
                 <span>{route.breadcrumbName}</span>
               ) : (
