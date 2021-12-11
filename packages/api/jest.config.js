@@ -1,6 +1,6 @@
 // https://github.com/dividab/tsconfig-paths/issues/97#issuecomment-542650519
 const { pathsToModuleNameMapper } = require("ts-jest/utils");
-const { compilerOptions } = require("../../tsconfig");
+const { compilerOptions } = require("../../tsconfig.base");
 
 module.exports = {
   preset: "ts-jest",

@@ -13,6 +13,8 @@ export class ProjectRequests {
       tasks {
         id
       }
+      taskCount
+      doneTaskCount: taskCount(status: DONE)
       paymentMethod {
         id
       }

@@ -3,7 +3,7 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { DeepPartial, IsNull, Repository } from "typeorm";
 
 @Injectable()
 export class TaskService {
@@ -72,6 +72,9 @@ export class TaskService {
     projectId: string;
     status?: TaskStatusEnum;
   }): Promise<number> {
-    return this.taskRepo.count(_.omitBy(query, _.isUndefined));
+    return this.taskRepo.count({
+      ..._.omitBy(query, _.isUndefined),
+      deletedAt: IsNull(),
+    });
   }
 }

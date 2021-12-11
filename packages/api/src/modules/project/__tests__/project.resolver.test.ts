@@ -1,3 +1,4 @@
+import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -115,6 +116,34 @@ describe("ProjectResolver", () => {
         expect(fetchedProject.tasks).not.toContainEqual(
           expect.objectContaining({ id: task.id })
         );
+      });
+
+      it("should calculate taskCount", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+
+        await Promise.all([
+          fixtures.createTask({ projectId: project.id, deletedAt: new Date() }),
+          fixtures.createTask({
+            projectId: project.id,
+            status: TaskStatusEnum.TODO,
+          }),
+          fixtures.createTask({
+            projectId: project.id,
+            status: TaskStatusEnum.DONE,
+          }),
+        ]);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.get(project.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetchedProject = response.body.data?.project;
+        expect(fetchedProject).toBeDefined();
+        expect(fetchedProject.taskCount).toEqual(2);
+        expect(fetchedProject.doneTaskCount).toEqual(1);
       });
     });
   });
