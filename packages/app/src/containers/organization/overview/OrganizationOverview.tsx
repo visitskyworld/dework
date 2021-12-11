@@ -1,26 +1,10 @@
-import {
-  Avatar,
-  Button,
-  Col,
-  Layout,
-  List,
-  Menu,
-  Row,
-  Skeleton,
-  Space,
-  Tabs,
-  Typography,
-} from "antd";
-import * as Icons from "@ant-design/icons";
+import { Col, Layout, Menu, Row, Typography } from "antd";
 import React, { FC, useMemo } from "react";
 import { useOrganization } from "../hooks";
-import { CoverImageLayout } from "@dewo/app/components/CoverImageLayout";
 import { ProjectCard } from "./ProjectCard";
-import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
 import { CreateProjectCard } from "./CreateProjectCard";
 import { OrganizationTaskBoard } from "./OrganizationTaskBoard";
 import { OrganizationMemberList } from "./OrganizationMemberList";
-import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import Link from "next/link";
 
 export enum OrganizationOverviewTab {

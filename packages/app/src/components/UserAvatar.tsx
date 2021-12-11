@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Avatar, AvatarProps, Tooltip } from "antd";
+import { Avatar, AvatarProps, Tooltip, TooltipProps } from "antd";
 import * as Icons from "@ant-design/icons";
 import { User } from "../graphql/types";
 import { colorFromUuid } from "../util/colorFromUuid";

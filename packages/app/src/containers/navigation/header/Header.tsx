@@ -1,11 +1,9 @@
 import React, { FC, useCallback } from "react";
-import Link from "next/link";
-import { Breadcrumb, PageHeader, Avatar, Button, Dropdown } from "antd";
+import { PageHeader, Avatar, Button, Dropdown } from "antd";
 import * as Icons from "@ant-design/icons";
 import { HeaderProfileDropdown } from "./HeaderProfileMenu";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRouter } from "next/router";
-import { OrganizationBreadcrumbs } from "./OrganizationBreadcrumbs";
 
 interface HeaderProps {}
 
