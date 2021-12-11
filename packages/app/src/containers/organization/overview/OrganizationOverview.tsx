@@ -1,4 +1,15 @@
-import { Avatar, Col, Layout, Row, Tabs, Typography } from "antd";
+import {
+  Avatar,
+  Button,
+  Col,
+  Layout,
+  List,
+  Row,
+  Skeleton,
+  Space,
+  Tabs,
+  Typography,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import { useOrganization } from "../hooks";
@@ -8,6 +19,7 @@ import { colorFromUuid } from "@dewo/app/util/colorFromUuid";
 import { CreateProjectCard } from "./CreateProjectCard";
 import { OrganizationTaskBoard } from "./OrganizationTaskBoard";
 import { OrganizationMemberList } from "./OrganizationMemberList";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface OrganizationOverviewProps {
   organizationId: string;
@@ -17,9 +29,10 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
   organizationId,
 }) => {
   const organization = useOrganization(organizationId);
+  // <Skeleton.Avatar active={active} size={size} shape={avatarShape} />
   return (
     <>
-      <CoverImageLayout
+      {/* <CoverImageLayout
         // imageUrl="https://image.freepik.com/free-vector/gradient-liquid-abstract-background_23-2148902633.jpg"
         avatar={
           <Avatar
@@ -33,11 +46,69 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
         <Typography.Title level={3} style={{ textAlign: "center" }}>
           {organization?.name}
         </Typography.Title>
-        <Typography.Text style={{ textAlign: "center" }}>
-          {organization?.description}
-        </Typography.Text>
-      </CoverImageLayout>
-      <Tabs defaultActiveKey="projects" centered>
+      </CoverImageLayout> */}
+
+      <Col className="max-w-sm mx-auto">
+        {/* <Row style={{ justifyContent: "center" }}>{avatar}</Row>
+        <Col style={{ marginTop: 24 }}>{children}</Col> */}
+
+        <Skeleton loading={!organization} avatar={{ size: 64 }}>
+          <List.Item.Meta
+            avatar={
+              <OrganizationAvatar organization={organization!} size={64} />
+            }
+            title={
+              <Typography.Title level={3} style={{ marginBottom: 0 }}>
+                {organization?.name}
+              </Typography.Title>
+            }
+            description={
+              <>
+                <Typography.Text type="secondary">
+                  {"Organization short description"}
+                </Typography.Text>
+                <Row gutter={24} style={{ marginLeft: -20 }}>
+                  <Col>
+                    <Button
+                      type="text"
+                      size="small"
+                      style={{ opacity: 0.7 }}
+                      icon={<Icons.TeamOutlined />}
+                      onClick={() => alert("switch to members tab")}
+                    >
+                      {organization?.members.length} members
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="text"
+                      size="small"
+                      style={{ opacity: 0.7 }}
+                      icon={<Icons.ToolOutlined />}
+                      onClick={() => alert("switch to projects tab")}
+                    >
+                      {organization?.projects.length} projects
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="text"
+                      size="small"
+                      style={{ opacity: 0.7 }}
+                      icon={<Icons.LinkOutlined />}
+                      href="https://fant.io"
+                    >
+                      https://fant.io
+                    </Button>
+                  </Col>
+                </Row>
+              </>
+            }
+          />
+        </Skeleton>
+      </Col>
+
+      <Tabs defaultActiveKey="projects" centered style={{ marginTop: 24 }}>
         <Tabs.TabPane tab="Projects" key="projects">
           <Layout.Content className="max-w-lg mx-auto">
             <Row gutter={[0, 16]}>
@@ -64,8 +135,11 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
             <OrganizationTaskBoard organizationId={organizationId} />
           </Layout.Content>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="Members" key="members">
+        <Tabs.TabPane tab="About" key="about">
           <Layout.Content className="max-w-lg mx-auto">
+            <Typography.Text style={{ textAlign: "center" }}>
+              {organization?.description}
+            </Typography.Text>
             <OrganizationMemberList organizationId={organizationId} />
           </Layout.Content>
         </Tabs.TabPane>
