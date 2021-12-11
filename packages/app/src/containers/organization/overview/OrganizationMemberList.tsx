@@ -2,65 +2,151 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
 import { InviteButton } from "../../invite/InviteButton";
 import { useOrganization } from "../hooks";
-import { Table, Space, Row, Avatar, Button, Select } from 'antd';
+import { Table, Space, Row, Avatar, Button, Select } from "antd";
 import Column from "antd/lib/table/Column";
-import { DeleteOutlined } from "@ant-design/icons";
-import { OrganizationRole, User } from "@dewo/app/graphql/types";
+import * as Icons from "@ant-design/icons";
+import {
+  OrganizationMember,
+  OrganizationRole,
+  User,
+} from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { eatClick } from "@dewo/app/util/eatClick";
 interface Props {
   organizationId: string;
 }
-const { Option } = Select
+
+const roleToString: Record<OrganizationRole, string> = {
+  [OrganizationRole.ADMIN]: "Admin",
+  [OrganizationRole.OWNER]: "Owner",
+  [OrganizationRole.MEMBER]: "Member",
+};
+
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
   const canAddMember = usePermission("create", "OrganizationMember");
   const canUpdateMember = usePermission("update", "OrganizationMember");
-  const canDeleteMember = usePermission("delete", "OrganizationMember");
-  const navigateToProfile = useNavigateToProfile()
-  console.warn(organization?.members, {
-    canAddMember,
-    canUpdateMember,
-    canDeleteMember,
-  });
-  const handleNavigate = (user: User) => () => {
-    navigateToProfile(user)
-  }
-  const members = useMemo(() => organization?.members || [], [organization?.members])
-  return <>
-    {
-      canAddMember && <Row justify="end" >
-        <InviteButton organizationId={organizationId} />
-      </Row>
-    }
+  const canDeleteMember = false; // usePermission("delete", "OrganizationMember");
+  const navigateToProfile = useNavigateToProfile();
+  const members = useMemo(
+    () => organization?.members || [],
+    [organization?.members]
+  );
+  return (
+    <>
+      {canAddMember && (
+        <Row justify="end">
+          <InviteButton organizationId={organizationId} />
+        </Row>
+      )}
 
-    <Table rowSelection={{
-      type: 'checkbox',
-      onChange: (selectedRowKeys: React.Key[], selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      }
-    }} showHeader={false} dataSource={members} >
-
-      <Column
-        title="Avatar"
-        key="avatar"
-        render={(member) => <Space size='small'> < Avatar src={member?.user.imageUrl} alt={member.user.username} /> <Button type="text" onClick={handleNavigate(member.user)}> {member.user.username}</Button></Space>
-
-        }
+      <Table<OrganizationMember>
+        dataSource={members}
+        size="small"
+        showHeader={false}
+        onRow={(member) => ({
+          onClick: () => navigateToProfile(member.user),
+        })}
+        style={{ cursor: "pointer" }}
+        columns={[
+          {
+            key: "avatar",
+            width: 1,
+            render: (_, member: OrganizationMember) => (
+              <UserAvatar user={member.user} />
+            ),
+          },
+          {
+            title: "Username",
+            dataIndex: ["user", "username"],
+          },
+          {
+            title: "Role",
+            dataIndex: "role",
+            width: 1,
+            render: (currentRole: OrganizationRole) => {
+              if (!canUpdateMember) return roleToString[currentRole];
+              return (
+                <Select
+                  defaultValue={currentRole}
+                  style={{ width: "100%" }}
+                  onClick={eatClick}
+                  onChange={(_role) => alert("change role: " + _role)}
+                >
+                  {[
+                    OrganizationRole.ADMIN,
+                    OrganizationRole.OWNER,
+                    OrganizationRole.MEMBER,
+                  ].map((role) => (
+                    <Select.Option key={role} value={role}>
+                      {roleToString[role]}
+                    </Select.Option>
+                  ))}
+                </Select>
+              );
+            },
+          },
+          ...(canDeleteMember
+            ? [
+                {
+                  key: "delete",
+                  width: 1,
+                  render: () => (
+                    <Button type="text" icon={<Icons.DeleteOutlined />} />
+                  ),
+                },
+              ]
+            : []),
+        ]}
       />
-      {
-        canUpdateMember && <Column title="Update Role" align="right" render={(member) => <Select defaultValue={member.role} onChange={() => { }}>
+      {/* 
+      <Table dataSource={members}>
+        <Column
+          title="Avatar"
+          key="avatar"
+          render={(member) => (
+            <Space size="small">
+              {" "}
+              <Avatar
+                src={member?.user.imageUrl}
+                alt={member.user.username}
+              />{" "}
+              <Button type="text" onClick={handleNavigate(member.user)}>
+                {" "}
+                {member.user.username}
+              </Button>
+            </Space>
+          )}
+        />
+        {canUpdateMember && (
+          <Column
+            title="Update Role"
+            align="right"
+            render={(member) => (
+              <Select defaultValue={member.role} onChange={() => {}}>
+                <Option value={OrganizationRole.OWNER}>
+                  {OrganizationRole.OWNER}
+                </Option>
+                <Option value={OrganizationRole.ADMIN}>
+                  {OrganizationRole.ADMIN}
+                </Option>
+                <Option value={OrganizationRole.MEMBER}>
+                  {OrganizationRole.MEMBER}
+                </Option>
+              </Select>
+            )}
+          />
+        )}
 
-          <Option value={OrganizationRole.OWNER}>{OrganizationRole.OWNER}</Option>
-          <Option value={OrganizationRole.ADMIN}>{OrganizationRole.ADMIN}</Option>
-          <Option value={OrganizationRole.MEMBER}>{OrganizationRole.MEMBER}</Option>
-        </Select>} />
-      }
-
-      {
-        canDeleteMember && <Column title="Delete" align="right" render={() => <Button icon={<DeleteOutlined />} />} />
-      }
-
-
-    </Table>
-  </>;
+        {canDeleteMember && (
+          <Column
+            title="Delete"
+            align="right"
+            render={() => <Button icon={<DeleteOutlined />} />}
+          />
+        )}
+      </Table> */}
+    </>
+  );
 };
