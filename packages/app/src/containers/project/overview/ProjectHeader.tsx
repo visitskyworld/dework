@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Col,
-  Layout,
-  Menu,
-  PageHeader,
-  Row,
-  Skeleton,
-  Typography,
-} from "antd";
+import { Avatar, PageHeader, Skeleton, Typography } from "antd";
 import React, { FC } from "react";
 import { useProject } from "../hooks";
 import Link from "next/link";

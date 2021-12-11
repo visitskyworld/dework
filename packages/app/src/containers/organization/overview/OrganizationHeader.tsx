@@ -1,4 +1,4 @@
-import { Col, Layout, Menu, PageHeader, Row, Skeleton, Typography } from "antd";
+import { Menu, PageHeader, Skeleton, Typography } from "antd";
 import React, { FC } from "react";
 import { useOrganization } from "../hooks";
 import Link from "next/link";
