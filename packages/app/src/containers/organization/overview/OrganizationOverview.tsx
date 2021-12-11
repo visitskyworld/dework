@@ -48,7 +48,8 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
         </Typography.Title>
       </CoverImageLayout> */}
 
-      <Col className="max-w-sm mx-auto">
+      {/* <Col className="max-w-sm mx-auto"> */}
+      <Col>
         {/* <Row style={{ justifyContent: "center" }}>{avatar}</Row>
         <Col style={{ marginTop: 24 }}>{children}</Col> */}
 
@@ -108,9 +109,10 @@ export const OrganizationOverview: FC<OrganizationOverviewProps> = ({
         </Skeleton>
       </Col>
 
-      <Tabs defaultActiveKey="projects" centered style={{ marginTop: 24 }}>
+      <Tabs defaultActiveKey="projects" style={{ marginTop: 24 }}>
         <Tabs.TabPane tab="Projects" key="projects">
-          <Layout.Content className="max-w-lg mx-auto">
+          {/* <Layout.Content className="max-w-lg mx-auto"> */}
+          <Layout.Content>
             <Row gutter={[0, 16]}>
               {organization?.projects.map((project) => (
                 <Col

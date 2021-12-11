@@ -19,7 +19,7 @@ export const Header: FC<HeaderProps> = () => {
 
   return (
     <PageHeader
-      title="dewo"
+      title="TBD"
       avatar={{
         src: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/JPEG_example_subimage.svg/256px-JPEG_example_subimage.svg.png",
       }}
@@ -46,7 +46,7 @@ export const Header: FC<HeaderProps> = () => {
         ),
       ]}
     >
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <Breadcrumb.Item>
           <Link href="/">
             <a>Home</a>
@@ -58,7 +58,7 @@ export const Header: FC<HeaderProps> = () => {
             projectId={router.query.projectId as string | undefined}
           />
         )}
-      </Breadcrumb>
+      </Breadcrumb> */}
     </PageHeader>
   );
 };
