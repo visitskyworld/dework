@@ -128,6 +128,8 @@ export interface CreateProjectMutation_project_organization_projects {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
@@ -161,6 +163,8 @@ export interface CreateProjectMutation_project {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: CreateProjectMutation_project_paymentMethod | null;
   organization: CreateProjectMutation_project_organization;
 }
@@ -194,6 +198,8 @@ export interface UpdateProjectMutation_project {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: UpdateProjectMutation_project_paymentMethod | null;
 }
 
@@ -704,6 +710,8 @@ export interface GetOrganizationQuery_organization_projects {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
@@ -832,6 +840,8 @@ export interface GetProjectQuery_project {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: GetProjectQuery_project_paymentMethod | null;
 }
 
@@ -1253,6 +1263,8 @@ export interface Project {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: Project_paymentMethod | null;
 }
 
@@ -1410,6 +1422,8 @@ export interface OrganizationDetails_projects {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
@@ -1501,6 +1515,8 @@ export interface ProjectDetails {
   id: Scalar.UUID;
   name: string;
   organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
   paymentMethod: ProjectDetails_paymentMethod | null;
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];

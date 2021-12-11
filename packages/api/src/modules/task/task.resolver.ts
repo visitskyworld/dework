@@ -5,12 +5,13 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Int,
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
@@ -114,5 +115,14 @@ export class ProjectTasksResolver {
   @ResolveField(() => [Task])
   public async tasks(@Parent() project: Project): Promise<Task[]> {
     return this.taskService.findWithRelations({ projectId: project.id });
+  }
+
+  @ResolveField(() => Int)
+  public async taskCount(
+    @Parent() project: Project,
+    @Args("status", { type: () => TaskStatusEnum, nullable: true })
+    status: TaskStatusEnum | undefined
+  ): Promise<number> {
+    return this.taskService.count({ projectId: project.id, status });
   }
 }

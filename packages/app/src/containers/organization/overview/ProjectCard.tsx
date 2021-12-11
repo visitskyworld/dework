@@ -22,7 +22,11 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
           </Typography.Title>
           <Progress
             size="small"
-            percent={Math.random() * 100 * 1.3}
+            percent={
+              !!project.taskCount
+                ? (project.doneTaskCount / project.taskCount) * 100
+                : undefined
+            }
             showInfo={false}
           />
 

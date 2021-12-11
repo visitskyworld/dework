@@ -50,6 +50,8 @@ export const project = gql`
     id
     name
     organizationId
+    taskCount
+    doneTaskCount: taskCount(status: DONE)
     paymentMethod {
       ...PaymentMethod
     }

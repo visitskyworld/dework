@@ -1,4 +1,5 @@
-import { Task } from "@dewo/api/models/Task";
+import _ from "lodash";
+import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -65,5 +66,12 @@ export class TaskService {
     }
 
     return queryBuilder.andWhere("task.deletedAt IS NULL").getMany();
+  }
+
+  public async count(query: {
+    projectId: string;
+    status?: TaskStatusEnum;
+  }): Promise<number> {
+    return this.taskRepo.count(_.omitBy(query, _.isUndefined));
   }
 }
