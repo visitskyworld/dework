@@ -140,7 +140,29 @@ textarea {
 
   padding: 0 16px;
 }
-
+.dewo-task_column{
+  & .ant-card-body{
+    //Scrollbar
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: @primary-color !important;
+      border-radius: @border-radius-base;
+      border: 1px solid transparent;
+      background-clip: content-box;
+    }
+    &::-webkit-scrollbar-track {
+      background: @component-background;
+    }
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: @primary-color !important;
+    }
+    overflow-y: auto;
+  }
+}
 .ant-card.dewo-card-create-project {
   height: 100%;
   cursor: pointer;
