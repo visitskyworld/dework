@@ -25,7 +25,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       }
       subTitle={
         !!project ? (
-          <Avatar.Group maxCount={3} size="small">
+          <Avatar.Group maxCount={3} size="large">
             {organization?.members.map((m, index) => (
               <Link href={`/profile/${m.user.id}`}>
                 <a>
@@ -39,7 +39,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
             ))}
           </Avatar.Group>
         ) : (
-          <Skeleton.Avatar active size="small" />
+          <Skeleton.Avatar active size="large" />
         )
       }
       breadcrumb={
