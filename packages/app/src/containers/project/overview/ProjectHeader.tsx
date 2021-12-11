@@ -55,7 +55,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
                 breadcrumbName: project.name,
               },
             ],
-            itemRender(route, params, routes, paths) {
+            itemRender(route, _params, routes, paths) {
               const last = routes.indexOf(route) === routes.length - 1;
               return last ? (
                 <span>{route.breadcrumbName}</span>
