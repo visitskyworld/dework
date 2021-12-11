@@ -11,6 +11,10 @@ import {
   GetOrganizationTasksQueryVariables,
   Organization,
   OrganizationDetails,
+  OrganizationMember,
+  UpdateOrganizationMemberInput,
+  UpdateOrganizationMemberMutation,
+  UpdateOrganizationMemberMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -18,13 +22,13 @@ import { useListenToTasks } from "../task/hooks";
 export function useCreateOrganization(): (
   input: CreateOrganizationInput
 ) => Promise<Organization> {
-  const [createOrganization] = useMutation<
+  const [mutation] = useMutation<
     CreateOrganizationMutation,
     CreateOrganizationMutationVariables
   >(Mutations.createOrganization);
   return useCallback(
     async (input) => {
-      const res = await createOrganization({
+      const res = await mutation({
         variables: { input },
         refetchQueries: [{ query: Queries.me }],
       });
@@ -32,7 +36,28 @@ export function useCreateOrganization(): (
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.organization;
     },
-    [createOrganization]
+    [mutation]
+  );
+}
+
+export function useUpdateOrganizationMember(): (
+  input: UpdateOrganizationMemberInput
+) => Promise<OrganizationMember> {
+  const [mutation] = useMutation<
+    UpdateOrganizationMemberMutation,
+    UpdateOrganizationMemberMutationVariables
+  >(Mutations.updateOrganizationMember);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({
+        variables: { input },
+        refetchQueries: [{ query: Queries.me }],
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.member;
+    },
+    [mutation]
   );
 }
 

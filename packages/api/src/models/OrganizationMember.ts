@@ -1,5 +1,12 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, PrimaryColumn, ManyToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  PrimaryColumn,
+  ManyToOne,
+  Index,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { User } from "./User";
@@ -14,6 +21,9 @@ registerEnumType(OrganizationRole, { name: "OrganizationRole" });
 
 @ObjectType()
 @Entity()
+@Index("IDX_unique_user_organization", ["userId", "organizationId"], {
+  unique: true,
+})
 export class OrganizationMember extends Audit {
   @JoinColumn()
   @ManyToOne(() => Organization)

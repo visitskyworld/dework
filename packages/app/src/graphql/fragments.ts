@@ -29,6 +29,7 @@ export const organizationMember = gql`
     id
     role
     organizationId
+    userId
     user {
       ...User
     }

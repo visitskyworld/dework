@@ -1,7 +1,10 @@
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import {
+  usePermission,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
 import { InviteButton } from "../../invite/InviteButton";
-import { useOrganization } from "../hooks";
+import { useOrganization, useUpdateOrganizationMember } from "../hooks";
 import { Table, Space, Row, Avatar, Button, Select } from "antd";
 import Column from "antd/lib/table/Column";
 import * as Icons from "@ant-design/icons";
@@ -25,9 +28,12 @@ const roleToString: Record<OrganizationRole, string> = {
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
+  const updateMember = useUpdateOrganizationMember();
+
   const canAddMember = usePermission("create", "OrganizationMember");
-  const canUpdateMember = usePermission("update", "OrganizationMember");
-  const canDeleteMember = false; // usePermission("delete", "OrganizationMember");
+  const canDeleteMember = usePermission("delete", "OrganizationMember");
+  const hasPermission = usePermissionFn();
+
   const navigateToProfile = useNavigateToProfile();
   const members = useMemo(
     () => organization?.members || [],
@@ -68,14 +74,25 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
             title: "Role",
             dataIndex: "role",
             width: 1,
-            render: (currentRole: OrganizationRole) => {
-              if (!canUpdateMember) return roleToString[currentRole];
+            render: (
+              currentRole: OrganizationRole,
+              member: OrganizationMember
+            ) => {
+              if (!hasPermission("update", member)) {
+                return roleToString[currentRole];
+              }
               return (
                 <Select
                   defaultValue={currentRole}
                   style={{ width: "100%" }}
                   onClick={eatClick}
-                  onChange={(_role) => alert("change role: " + _role)}
+                  onChange={(role) =>
+                    updateMember({
+                      organizationId,
+                      userId: member.user.id,
+                      role,
+                    })
+                  }
                 >
                   {[
                     OrganizationRole.ADMIN,

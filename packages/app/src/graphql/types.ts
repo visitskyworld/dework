@@ -106,6 +106,38 @@ export interface CreateOrganizationMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateOrganizationMemberMutation
+// ====================================================
+
+export interface UpdateOrganizationMemberMutation_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface UpdateOrganizationMemberMutation_member {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: UpdateOrganizationMemberMutation_member_user;
+}
+
+export interface UpdateOrganizationMemberMutation {
+  member: UpdateOrganizationMemberMutation_member;
+}
+
+export interface UpdateOrganizationMemberMutationVariables {
+  input: UpdateOrganizationMemberInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
@@ -1608,6 +1640,12 @@ export interface GetUserPermissionsInput {
   organizationId?: Scalar.UUID | null;
   projectId?: Scalar.UUID | null;
   taskId?: Scalar.UUID | null;
+}
+
+export interface UpdateOrganizationMemberInput {
+  organizationId: Scalar.UUID;
+  userId: Scalar.UUID;
+  role: OrganizationRole;
 }
 
 export interface UpdateProjectInput {
