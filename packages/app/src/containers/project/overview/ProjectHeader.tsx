@@ -53,6 +53,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
               {
                 path: `project/${project.id}`,
                 breadcrumbName: project.name,
+                children: [{ path: "settings", breadcrumbName: "Settings" }],
               },
             ],
             itemRender(route, _params, routes, paths) {
@@ -60,7 +61,9 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
               return last ? (
                 <span>{route.breadcrumbName}</span>
               ) : (
-                <Link href={["", paths].join("/")}>{route.breadcrumbName}</Link>
+                <Link href={["", ...paths].join("/")}>
+                  {route.breadcrumbName}
+                </Link>
               );
             },
           }
