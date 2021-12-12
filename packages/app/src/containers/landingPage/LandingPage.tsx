@@ -40,7 +40,14 @@ export const LandingPage: FC = () => {
 
   if (!user)
     return (
-      <Row className="max-w-l mx-auto">
+      <Row
+        style={{
+          maxWidth: "740px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "0 16px",
+        }}
+      >
         <Space direction="vertical" style={{ flex: 1 }}>
           <Typography.Title
             level={1}
