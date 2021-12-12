@@ -30,7 +30,7 @@ export class Organization extends Audit {
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  public featured?: boolean;
+  @Column({ default: false })
+  @Field()
+  public featured!: boolean;
 }
