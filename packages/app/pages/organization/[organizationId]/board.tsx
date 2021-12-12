@@ -19,7 +19,7 @@ const Page: NextPage = () => {
           tab={OrganizationHeaderTab.board}
           organizationId={organizationId}
         />
-        <Layout.Content style={{ height: "calc(100vh - 85px)" }}>
+        <Layout.Content style={{ flex: 1 }}>
           <OrganizationTaskBoard organizationId={organizationId} />
         </Layout.Content>
       </Layout.Content>
