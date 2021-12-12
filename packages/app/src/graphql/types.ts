@@ -929,6 +929,10 @@ export interface GetPopularOrganizationsQuery {
   popularOrganizations: GetPopularOrganizationsQuery_popularOrganizations[];
 }
 
+export interface GetPopularOrganizationsQueryVariables {
+  limit: number;
+}
+
 /* tslint:disable */
 /* eslint-disable */
 // @generated

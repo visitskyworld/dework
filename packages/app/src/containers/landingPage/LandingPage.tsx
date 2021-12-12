@@ -3,46 +3,66 @@ import { Col, Divider, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
 import { siteTitle, siteDescription } from "../../../pages/copy";
-import { ProjectCard } from "../organization/overview/ProjectCard";
 import { usePopularOrganizations } from "../organization/hooks";
+import { OrganizationCard } from "./OrganizationCard";
+import { OrganizationDetails } from "../../graphql/types";
 
-interface Props {}
+const OrganizationGrid: FC<{ orgs: OrganizationDetails[] }> = ({ orgs }) => {
+  const columns = 2;
+  const rows = [...Array(Math.ceil(orgs.length / columns))];
+  const productRows = rows.map((_, idx) =>
+    orgs.slice(idx * columns, idx * columns + columns)
+  );
 
-export const LandingPage: FC<Props> = () => {
+  const content = productRows.map((row, idx) => (
+    <Row
+      gutter={16}
+      style={{ justifyContent: "center", marginBottom: "16px" }}
+      key={idx}
+    >
+      {row.map((org) => (
+        <Col span={12} key={org.name}>
+          <OrganizationCard
+            organization={org}
+            users={[]} // TODO
+          />
+        </Col>
+      ))}
+    </Row>
+  ));
+  return <>{content}</>;
+};
+
+export const LandingPage: FC = () => {
   const { user } = useAuthContext();
 
-  const popularOrganizations = usePopularOrganizations() || [];
-  const popularProjects = popularOrganizations?.filter(
-    (org) => org.projects[0]
-  );
+  const popularOrganizations = usePopularOrganizations(4) || [];
 
   if (!user)
     return (
-      <Space direction="vertical" style={{ flex: 1, display: "flex" }}>
-        <Typography.Title
-          level={1}
-          style={{ width: "100%", maxWidth: "100%", textAlign: "center" }}
-        >
-          {siteTitle}
-        </Typography.Title>
-        <Typography.Paragraph style={{ textAlign: "center", width: "100%" }}>
-          {siteDescription}
-        </Typography.Paragraph>
-        <Divider />
-        <Typography.Title
-          level={2}
-          style={{ textAlign: "center", width: "100%" }}
-        >
-          Popular projects
-        </Typography.Title>
-        <Row>
-          {popularProjects?.map((project) => (
-            <Col span={12} key={project.name}>
-              <ProjectCard project={project} users={[]}></ProjectCard>
-            </Col>
-          ))}
-        </Row>
-      </Space>
+      <Row className="max-w-l mx-auto">
+        <Space direction="vertical" style={{ flex: 1 }}>
+          <Typography.Title
+            level={1}
+            style={{ width: "100%", maxWidth: "100%", textAlign: "center" }}
+          >
+            {siteTitle}
+          </Typography.Title>
+          <Typography.Paragraph
+            style={{ fontSize: "1.5em", textAlign: "center", width: "100%" }}
+          >
+            {siteDescription}
+          </Typography.Paragraph>
+          <Divider />
+          <Typography.Title
+            level={2}
+            style={{ textAlign: "center", width: "100%" }}
+          >
+            Popular DAOs
+          </Typography.Title>
+          <OrganizationGrid orgs={popularOrganizations} />
+        </Space>
+      </Row>
     );
 
   return (

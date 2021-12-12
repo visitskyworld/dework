@@ -13,6 +13,7 @@ import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
 import { CreateOrganizationInput } from "./dto/CreateOrganizationInput";
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { GraphQLInt } from "graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
@@ -109,8 +110,12 @@ export class OrganizationResolver {
   }
 
   @Query(() => [Organization])
-  public async getPopularOrganizations(): Promise<Organization[]> {
-    const organizations = await this.organizationService.findByPopularity();
+  public async getPopularOrganizations(
+    @Args("limit", { type: () => GraphQLInt }) limit: number
+  ): Promise<Organization[]> {
+    const organizations = await this.organizationService.findByPopularity(
+      limit
+    );
     if (!organizations) throw new NotFoundException();
     return organizations;
   }

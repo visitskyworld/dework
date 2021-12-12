@@ -21,7 +21,10 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
-import { GetPopularOrganizationsQuery } from "../../graphql/types";
+import {
+  GetPopularOrganizationsQuery,
+  GetPopularOrganizationsQueryVariables,
+} from "../../graphql/types";
 
 export function useCreateOrganization(): (
   input: CreateOrganizationInput
@@ -98,11 +101,14 @@ export function useOrganization(
   return data?.organization ?? undefined;
 }
 
-export function usePopularOrganizations(): OrganizationDetails[] | undefined {
-  const { data } = useQuery<GetPopularOrganizationsQuery>(
-    Queries.popularOrganizations
-  );
-  return data?.popularOrganizations ?? undefined;
+export function usePopularOrganizations(
+  limit: number
+): OrganizationDetails[] | undefined {
+  const { data } = useQuery<
+    GetPopularOrganizationsQuery,
+    GetPopularOrganizationsQueryVariables
+  >(Queries.popularOrganizations, { variables: { limit } });
+  return data?.popularOrganizations;
 }
 
 export function useOrganizationTasks(

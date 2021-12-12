@@ -67,8 +67,8 @@ export const organization = gql`
 `;
 
 export const popularOrganizations = gql`
-  query GetPopularOrganizationsQuery {
-    popularOrganizations: getPopularOrganizations {
+  query GetPopularOrganizationsQuery($limit: Int!) {
+    popularOrganizations: getPopularOrganizations(limit: $limit) {
       ...OrganizationDetails
     }
   }
