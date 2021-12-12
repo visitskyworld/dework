@@ -27,7 +27,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
   );
 
   return (
-    <Form onFinish={handleSubmit}>
+    <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
       <Form.Item
         label="Organization Name"
         name="name"

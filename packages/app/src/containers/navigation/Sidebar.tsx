@@ -1,10 +1,11 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Avatar, Button, Col, Divider, Dropdown, Layout, Row } from "antd";
+import { Avatar, Col, Divider, Dropdown, Layout, Row } from "antd";
 import Link from "next/link";
 import React, { FC } from "react";
 import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
+import { CreateOrganizationButton } from "./CreateOrganizationButton";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
@@ -13,20 +14,11 @@ export const Sidebar: FC = () => {
     <Layout.Sider width={72}>
       <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
         <Link href="/">
-          <Button
-            type="text"
-            style={{
-              padding: 0,
-              width: 72,
-              height: 72,
-              display: "grid",
-              placeItems: "center",
-            }}
-          >
+          <a className="dewo-sidebar-item">
             <Avatar size={48} icon={"/"} />
-          </Button>
+          </a>
         </Link>
-        <Row style={{ display: "grid", placeItems: "center" }}>
+        <Row className="dewo-sidebar-item">
           <Dropdown
             key="avatar"
             placement="bottomLeft"
@@ -39,24 +31,16 @@ export const Sidebar: FC = () => {
         <Divider />
         {user?.organizations.map((organization) => (
           <Link key={organization.id} href={`/organization/${organization.id}`}>
-            <Button
-              type="text"
-              style={{
-                padding: 0,
-                width: 72,
-                height: 72,
-                display: "grid",
-                placeItems: "center",
-              }}
-            >
+            <a className="dewo-sidebar-item">
               <OrganizationAvatar
                 size={48}
                 organization={organization}
                 tooltip={{ placement: "right" }}
               />
-            </Button>
+            </a>
           </Link>
         ))}
+        <CreateOrganizationButton />
       </Col>
     </Layout.Sider>
   );

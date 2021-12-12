@@ -33,7 +33,7 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
     can(Actions.create, Project);
   },
 
-  organizationMember({ can, user }) {
+  organizationMember({ can }) {
     can(Actions.update, Task);
   },
 
