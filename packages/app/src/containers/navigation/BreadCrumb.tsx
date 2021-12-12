@@ -23,7 +23,11 @@ export const BreadCrumb: FC<BreadCrumbProps> = ({ routes }) => {
   return !!routes ? (
     <Row style={{ display: "flex", justifyContent: "space-between" }}>
       <Breadcrumb itemRender={itemRender} routes={routes} />
-      {!user && <Button type="primary">Sign in</Button>}
+      {!user && (
+        <Button type="primary" href="/auth">
+          Sign in
+        </Button>
+      )}
     </Row>
   ) : (
     <Skeleton loading active title={false} paragraph={{ rows: 1 }} />
