@@ -20,9 +20,11 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <ProjectHeader projectId={projectId} />
-        <ProjectTaskBoard projectId={projectId} />
+        <Layout.Content style={{ flex: 1 }}>
+          <ProjectTaskBoard projectId={projectId} />
+        </Layout.Content>
       </Layout.Content>
 
       <Modal
