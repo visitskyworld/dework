@@ -6,7 +6,6 @@ import { TaskForm } from "./TaskForm";
 
 interface TaskCreateModalProps {
   tags: TaskTag[];
-  projectId: string;
   visible: boolean;
   initialValues: Partial<CreateTaskInput>;
   onCancel(): void;

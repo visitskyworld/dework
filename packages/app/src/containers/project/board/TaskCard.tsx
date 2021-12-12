@@ -4,7 +4,6 @@ import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
-import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import { usePay } from "../../payment/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
@@ -23,8 +22,8 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
 
   const updateTask = useUpdateTask();
 
-  const project = useProjectContext();
-  const handlePay = usePay(project?.paymentMethod ?? undefined);
+  // TODO
+  const handlePay = usePay(undefined);
   const handlePayAndClose = useCallback(
     async (event) => {
       eatClick(event);

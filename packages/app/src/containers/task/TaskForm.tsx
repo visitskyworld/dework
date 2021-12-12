@@ -30,7 +30,6 @@ import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
-import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import Link from "next/link";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
