@@ -13,7 +13,7 @@ import {
 import { useToggle } from "@dewo/app/util/hooks";
 import { STATUS_LABEL } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
+import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   status: TaskStatusEnum;
@@ -31,6 +31,7 @@ export const TaskBoardColumn: FC<Props> = ({
   initialValues,
 }) => {
   const createCardToggle = useToggle();
+  const hasPermission = usePermissionFn();
   return (
     <Card
       size="small"
@@ -73,7 +74,12 @@ export const TaskBoardColumn: FC<Props> = ({
             style={{ ...provided.droppableProps, minHeight: 30, paddingTop: 4 }}
           >
             {tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
+              <Draggable
+                key={task.id}
+                draggableId={task.id}
+                index={index}
+                isDragDisabled={!hasPermission("update", task)}
+              >
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
@@ -81,6 +87,9 @@ export const TaskBoardColumn: FC<Props> = ({
                     {...provided.dragHandleProps}
                     style={{
                       ...provided.draggableProps.style,
+                      cursor: hasPermission("update", task)
+                        ? "grab"
+                        : "pointer",
                       marginBottom: 8,
                     }}
                   >

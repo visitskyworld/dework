@@ -21,7 +21,9 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
     extend(Roles.organizationAdmin);
   },
 
-  organizationAdmin({ can, user }) {
+  organizationAdmin({ can, user, extend }) {
+    extend(Roles.organizationMember);
+
     can(Actions.create, OrganizationMember);
     can(Actions.update, OrganizationMember, { userId: { $ne: user.id } });
     can(Actions.delete, OrganizationMember);
@@ -29,6 +31,10 @@ export const permissions: Permissions<Roles, SubjectType, Actions> = {
     can(Actions.update, Organization);
     can(Actions.delete, Organization);
     can(Actions.create, Project);
+  },
+
+  organizationMember({ can, user }) {
+    can(Actions.update, Task);
   },
 
   projectAdmin({ can }) {
