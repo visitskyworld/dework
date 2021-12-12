@@ -912,6 +912,7 @@ export interface GetPopularOrganizationsQuery_popularOrganizations_members {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: GetPopularOrganizationsQuery_popularOrganizations_members_user;
 }
 
