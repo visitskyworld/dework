@@ -9,14 +9,9 @@ import {
   useRemoveOrganizationMember,
   useUpdateOrganizationMember,
 } from "../hooks";
-import { Table, Space, Row, Avatar, Button, Select } from "antd";
-import Column from "antd/lib/table/Column";
+import { Table, Space, Row, Button, Select } from "antd";
 import * as Icons from "@ant-design/icons";
-import {
-  OrganizationMember,
-  OrganizationRole,
-  User,
-} from "@dewo/app/graphql/types";
+import { OrganizationMember, OrganizationRole } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
@@ -132,53 +127,6 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
             : []),
         ]}
       />
-      {/* 
-      <Table dataSource={members}>
-        <Column
-          title="Avatar"
-          key="avatar"
-          render={(member) => (
-            <Space size="small">
-              {" "}
-              <Avatar
-                src={member?.user.imageUrl}
-                alt={member.user.username}
-              />{" "}
-              <Button type="text" onClick={handleNavigate(member.user)}>
-                {" "}
-                {member.user.username}
-              </Button>
-            </Space>
-          )}
-        />
-        {canUpdateMember && (
-          <Column
-            title="Update Role"
-            align="right"
-            render={(member) => (
-              <Select defaultValue={member.role} onChange={() => {}}>
-                <Option value={OrganizationRole.OWNER}>
-                  {OrganizationRole.OWNER}
-                </Option>
-                <Option value={OrganizationRole.ADMIN}>
-                  {OrganizationRole.ADMIN}
-                </Option>
-                <Option value={OrganizationRole.MEMBER}>
-                  {OrganizationRole.MEMBER}
-                </Option>
-              </Select>
-            )}
-          />
-        )}
-
-        {canDeleteMember && (
-          <Column
-            title="Delete"
-            align="right"
-            render={() => <Button icon={<DeleteOutlined />} />}
-          />
-        )}
-      </Table> */}
     </Space>
   );
 };
