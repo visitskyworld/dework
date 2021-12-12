@@ -32,5 +32,5 @@ export class Organization extends Audit {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  public popular?: boolean;
+  public featured?: boolean;
 }

@@ -66,9 +66,9 @@ export const organization = gql`
   ${Fragments.organizationDetails}
 `;
 
-export const popularOrganizations = gql`
-  query GetPopularOrganizationsQuery($limit: Int!) {
-    popularOrganizations: getPopularOrganizations(limit: $limit) {
+export const featuredOrganizations = gql`
+  query GetFeaturedOrganizationsQuery($limit: Int!) {
+    featuredOrganizations: getFeaturedOrganizations(limit: $limit) {
       ...OrganizationDetails
     }
   }

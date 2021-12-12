@@ -5,6 +5,8 @@ import {
   CreateOrganizationInput,
   CreateOrganizationMutation,
   CreateOrganizationMutationVariables,
+  GetFeaturedOrganizationsQuery,
+  GetFeaturedOrganizationsQueryVariables,
   GetOrganizationQuery,
   GetOrganizationQueryVariables,
   GetOrganizationTasksQuery,
@@ -21,10 +23,6 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
-import {
-  GetPopularOrganizationsQuery,
-  GetPopularOrganizationsQueryVariables,
-} from "../../graphql/types";
 
 export function useCreateOrganization(): (
   input: CreateOrganizationInput
@@ -101,14 +99,14 @@ export function useOrganization(
   return data?.organization ?? undefined;
 }
 
-export function usePopularOrganizations(
+export function useFeaturedOrganizations(
   limit: number
 ): OrganizationDetails[] | undefined {
   const { data } = useQuery<
-    GetPopularOrganizationsQuery,
-    GetPopularOrganizationsQueryVariables
-  >(Queries.popularOrganizations, { variables: { limit } });
-  return data?.popularOrganizations;
+    GetFeaturedOrganizationsQuery,
+    GetFeaturedOrganizationsQueryVariables
+  >(Queries.featuredOrganizations, { variables: { limit } });
+  return data?.featuredOrganizations;
 }
 
 export function useOrganizationTasks(

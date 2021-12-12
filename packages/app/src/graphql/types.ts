@@ -880,57 +880,57 @@ export interface GetOrganizationQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetPopularOrganizationsQuery
+// GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
-export interface GetPopularOrganizationsQuery_popularOrganizations_projects_paymentMethod {
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
 }
 
-export interface GetPopularOrganizationsQuery_popularOrganizations_projects {
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
-  paymentMethod: GetPopularOrganizationsQuery_popularOrganizations_projects_paymentMethod | null;
+  paymentMethod: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethod | null;
 }
 
-export interface GetPopularOrganizationsQuery_popularOrganizations_members_user {
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
 }
 
-export interface GetPopularOrganizationsQuery_popularOrganizations_members {
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
   __typename: "OrganizationMember";
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
   userId: string;
-  user: GetPopularOrganizationsQuery_popularOrganizations_members_user;
+  user: GetFeaturedOrganizationsQuery_featuredOrganizations_members_user;
 }
 
-export interface GetPopularOrganizationsQuery_popularOrganizations {
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
   description: string | null;
-  projects: GetPopularOrganizationsQuery_popularOrganizations_projects[];
-  members: GetPopularOrganizationsQuery_popularOrganizations_members[];
+  projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
+  members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
 }
 
-export interface GetPopularOrganizationsQuery {
-  popularOrganizations: GetPopularOrganizationsQuery_popularOrganizations[];
+export interface GetFeaturedOrganizationsQuery {
+  featuredOrganizations: GetFeaturedOrganizationsQuery_featuredOrganizations[];
 }
 
-export interface GetPopularOrganizationsQueryVariables {
+export interface GetFeaturedOrganizationsQueryVariables {
   limit: number;
 }
 

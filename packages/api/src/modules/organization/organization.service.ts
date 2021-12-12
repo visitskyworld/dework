@@ -103,10 +103,10 @@ export class OrganizationService {
       .getMany();
   }
 
-  public findByPopularity(limit: number): Promise<Organization[] | undefined> {
+  public findFeatured(limit: number): Promise<Organization[] | undefined> {
     return this.organizationRepo
       .createQueryBuilder("organization")
-      .where("organization.popular = :popular", { popular: true })
+      .where("organization.featured = :featured", { featured: true })
       .limit(limit)
       .getMany();
   }

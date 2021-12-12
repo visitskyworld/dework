@@ -2,7 +2,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Col, Divider, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
-import { usePopularOrganizations } from "../organization/hooks";
+import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
 import { OrganizationDetails } from "../../graphql/types";
 import { siteTitle, siteDescription } from "@dewo/app/util/constants";
@@ -35,8 +35,7 @@ const OrganizationGrid: FC<{ orgs: OrganizationDetails[] }> = ({ orgs }) => {
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
-
-  const popularOrganizations = usePopularOrganizations(4) || [];
+  const featuredOrganizations = useFeaturedOrganizations(4) || [];
 
   if (!user)
     return (
@@ -67,7 +66,7 @@ export const LandingPage: FC = () => {
           >
             Popular DAOs
           </Typography.Title>
-          <OrganizationGrid orgs={popularOrganizations} />
+          <OrganizationGrid orgs={featuredOrganizations} />
         </Space>
       </Row>
     );

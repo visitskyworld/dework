@@ -110,12 +110,10 @@ export class OrganizationResolver {
   }
 
   @Query(() => [Organization])
-  public async getPopularOrganizations(
+  public async getFeaturedOrganizations(
     @Args("limit", { type: () => GraphQLInt }) limit: number
   ): Promise<Organization[]> {
-    const organizations = await this.organizationService.findByPopularity(
-      limit
-    );
+    const organizations = await this.organizationService.findFeatured(limit);
     if (!organizations) throw new NotFoundException();
     return organizations;
   }
