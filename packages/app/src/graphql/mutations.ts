@@ -46,6 +46,21 @@ export const updateOrganizationMember = gql`
   ${Fragments.organizationMember}
 `;
 
+export const removeOrganizationMember = gql`
+  mutation RemoveOrganizationMemberMutation(
+    $input: RemoveOrganizationMemberInput!
+  ) {
+    organization: removeOrganizationMember(input: $input) {
+      id
+      members {
+        ...OrganizationMember
+      }
+    }
+  }
+
+  ${Fragments.organizationMember}
+`;
+
 export const createProject = gql`
   mutation CreateProjectMutation($input: CreateProjectInput!) {
     project: createProject(input: $input) {

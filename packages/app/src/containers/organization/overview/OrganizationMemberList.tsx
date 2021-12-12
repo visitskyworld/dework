@@ -4,7 +4,11 @@ import {
 } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
 import { InviteButton } from "../../invite/InviteButton";
-import { useOrganization, useUpdateOrganizationMember } from "../hooks";
+import {
+  useOrganization,
+  useRemoveOrganizationMember,
+  useUpdateOrganizationMember,
+} from "../hooks";
 import { Table, Space, Row, Avatar, Button, Select } from "antd";
 import Column from "antd/lib/table/Column";
 import * as Icons from "@ant-design/icons";
@@ -29,6 +33,7 @@ const roleToString: Record<OrganizationRole, string> = {
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
   const updateMember = useUpdateOrganizationMember();
+  const removeMember = useRemoveOrganizationMember();
 
   const canAddMember = usePermission("create", "OrganizationMember");
   const canDeleteMember = usePermission("delete", "OrganizationMember");
@@ -112,8 +117,15 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
                 {
                   key: "delete",
                   width: 1,
-                  render: () => (
-                    <Button type="text" icon={<Icons.DeleteOutlined />} />
+                  render: (_: unknown, member: OrganizationMember) => (
+                    <Button
+                      type="text"
+                      icon={<Icons.DeleteOutlined />}
+                      onClick={(event) => {
+                        eatClick(event);
+                        removeMember({ userId: member.userId, organizationId });
+                      }}
+                    />
                   ),
                 },
               ]

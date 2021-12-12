@@ -121,6 +121,7 @@ export interface UpdateOrganizationMemberMutation_member {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: UpdateOrganizationMemberMutation_member_user;
 }
 
@@ -130,6 +131,45 @@ export interface UpdateOrganizationMemberMutation {
 
 export interface UpdateOrganizationMemberMutationVariables {
   input: UpdateOrganizationMemberInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: RemoveOrganizationMemberMutation
+// ====================================================
+
+export interface RemoveOrganizationMemberMutation_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface RemoveOrganizationMemberMutation_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  user: RemoveOrganizationMemberMutation_organization_members_user;
+}
+
+export interface RemoveOrganizationMemberMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  members: RemoveOrganizationMemberMutation_organization_members[];
+}
+
+export interface RemoveOrganizationMemberMutation {
+  organization: RemoveOrganizationMemberMutation_organization;
+}
+
+export interface RemoveOrganizationMemberMutationVariables {
+  input: RemoveOrganizationMemberInput;
 }
 
 /* tslint:disable */
@@ -177,6 +217,7 @@ export interface CreateProjectMutation_project_organization_members {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: CreateProjectMutation_project_organization_members_user;
 }
 
@@ -759,6 +800,7 @@ export interface GetOrganizationQuery_organization_members {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: GetOrganizationQuery_organization_members_user;
 }
 
@@ -1255,6 +1297,7 @@ export interface OrganizationMember {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: OrganizationMember_user;
 }
 
@@ -1471,6 +1514,7 @@ export interface OrganizationDetails_members {
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
+  userId: string;
   user: OrganizationDetails_members_user;
 }
 
@@ -1640,6 +1684,11 @@ export interface GetUserPermissionsInput {
   organizationId?: Scalar.UUID | null;
   projectId?: Scalar.UUID | null;
   taskId?: Scalar.UUID | null;
+}
+
+export interface RemoveOrganizationMemberInput {
+  organizationId: Scalar.UUID;
+  userId: Scalar.UUID;
 }
 
 export interface UpdateOrganizationMemberInput {

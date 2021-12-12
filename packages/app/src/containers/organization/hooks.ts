@@ -12,6 +12,9 @@ import {
   Organization,
   OrganizationDetails,
   OrganizationMember,
+  RemoveOrganizationMemberInput,
+  RemoveOrganizationMemberMutation,
+  RemoveOrganizationMemberMutationVariables,
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
   UpdateOrganizationMemberMutationVariables,
@@ -56,6 +59,26 @@ export function useUpdateOrganizationMember(): (
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.member;
+    },
+    [mutation]
+  );
+}
+
+export function useRemoveOrganizationMember(): (
+  input: RemoveOrganizationMemberInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    RemoveOrganizationMemberMutation,
+    RemoveOrganizationMemberMutationVariables
+  >(Mutations.removeOrganizationMember);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({
+        variables: { input },
+        refetchQueries: [{ query: Queries.me }],
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );
