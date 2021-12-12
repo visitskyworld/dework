@@ -157,6 +157,7 @@ export function TaskForm<
             <Input.TextArea
               disabled={!canEdit}
               autoSize
+              autoFocus={mode === "create"}
               className="dewo-field dewo-field-display ant-typography-h3"
               placeholder={canEdit ? `Enter a task name...` : "Untitled..."}
             />
