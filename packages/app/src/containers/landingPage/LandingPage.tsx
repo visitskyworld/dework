@@ -4,7 +4,6 @@ import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
 import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
-import { OrganizationDetails } from "../../graphql/types";
 import { siteTitle, siteDescription } from "@dewo/app/util/constants";
 
 export const LandingPage: FC = () => {
@@ -47,7 +46,7 @@ export const LandingPage: FC = () => {
           </Typography.Title>
           <Row gutter={[16, 16]}>
             {featuredOrganizations.map((org) => (
-              <Col span={12} key={org.name}>
+              <Col span={12} key={org.id}>
                 <OrganizationCard organization={org} />
               </Col>
             ))}

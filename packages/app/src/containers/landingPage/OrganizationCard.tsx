@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { FC } from "react";
 import { Card, Row, Tag, Typography } from "antd";
 import { OrganizationDetails } from "../../graphql/types";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface Props {
   organization: OrganizationDetails;
@@ -12,14 +13,7 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
     <Link href={`/organization/${organization.id}`}>
       <a>
         <Card className="hover:component-highlight">
-          <img
-            src={
-              organization.imageUrl ??
-              "https://uploads-ssl.webflow.com/60e348808bfdf75f90faaf77/611366105e70cd7e2b27223a_city-green.png"
-            }
-            alt={organization.name}
-            style={{ borderRadius: "50%", width: "100px", height: "100px" }}
-          />
+          <OrganizationAvatar size={100} organization={organization} />
           <Typography.Title
             level={4}
             ellipsis={{
@@ -29,7 +23,7 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
             {organization.name}
           </Typography.Title>
           <Typography.Paragraph>
-            {organization.description ?? "Lorem ipsum dolor sit amet"}
+            {organization.description}
           </Typography.Paragraph>
           <Row align="middle">
             <Tag className="bg-primary">
