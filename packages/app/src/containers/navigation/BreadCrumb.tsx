@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import Link from "next/link";
 import Breadcrumb, { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { OrganizationDetails } from "../../graphql/types";
 import { Skeleton } from "antd";
 
 const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
@@ -14,7 +13,6 @@ const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
 };
 
 type BreadCrumbProps = {
-  organization?: OrganizationDetails;
   routes?: Route[];
 };
 

@@ -52,7 +52,7 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
-      breadcrumb={<BreadCrumb organization={organization} routes={routes} />}
+      breadcrumb={<BreadCrumb routes={routes} />}
       tags={
         <Skeleton
           loading={loading}
