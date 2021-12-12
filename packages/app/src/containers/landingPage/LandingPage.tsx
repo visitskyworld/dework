@@ -1,14 +1,28 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Space, Typography } from "antd";
+import { Col, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
+import { siteTitle, siteDescription } from "../../../pages/copy";
 
 interface Props {}
 
 export const LandingPage: FC<Props> = () => {
   const { user } = useAuthContext();
 
-  if (!user) return null;
+  if (!user)
+    return (
+      <Space direction="vertical" style={{ flex: 1, display: "flex" }}>
+        <Typography.Title
+          level={1}
+          style={{ width: "100%", maxWidth: "100%", textAlign: "center" }}
+        >
+          {siteTitle}
+        </Typography.Title>
+        <Typography.Paragraph style={{ textAlign: "center", width: "100%" }}>
+          {siteDescription}
+        </Typography.Paragraph>
+      </Space>
+    );
 
   return (
     <Space direction="vertical">

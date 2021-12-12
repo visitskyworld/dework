@@ -22,6 +22,7 @@ import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { siteTitle, siteDescription } from "./copy";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -42,10 +43,10 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   return (
     <>
       <Head>
-        <title>dewo</title>
+        <title>{siteTitle}</title>
         <meta
           name="description"
-          content="dewo - the task manager for DAOs and decentralized work"
+          content={`${siteTitle} - ${siteDescription}`}
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
