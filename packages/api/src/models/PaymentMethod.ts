@@ -6,6 +6,7 @@ import { User } from "./User";
 export enum PaymentMethodType {
   METAMASK = "METAMASK",
   GNOSIS_SAFE = "GNOSIS_SAFE",
+  PHANTOM = "PHANTOM",
 }
 
 registerEnumType(PaymentMethodType, { name: "PaymentMethodType" });

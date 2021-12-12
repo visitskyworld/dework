@@ -8,10 +8,12 @@ import { Button, Col, Form, FormInstance, Row, Select } from "antd";
 import { useRequestAddress as useRequestMetamaskAddress } from "@dewo/app/util/ethereum";
 import { useRequestAddress as useRequestGnosisAddress } from "@dewo/app/util/gnosis";
 import { useCreatePaymentMethod } from "./hooks";
+import { useRequestSolanaAddress } from "@dewo/app/util/solana";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
   [PaymentMethodType.GNOSIS_SAFE]: "Gnosis Safe",
+  [PaymentMethodType.PHANTOM]: "Phantom",
 };
 
 interface Props {
@@ -21,6 +23,7 @@ interface Props {
 const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.METAMASK,
   // PaymentMethodType.GNOSIS_SAFE,
+  PaymentMethodType.PHANTOM,
 ];
 
 export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
@@ -39,6 +42,8 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
 
   const requestMetamaskAddress = useRequestMetamaskAddress();
   const requestGnosisAddress = useRequestGnosisAddress();
+  const requestSolanaAddress = useRequestSolanaAddress();
+
   const connect = useCallback(async () => {
     switch (values.type) {
       case PaymentMethodType.METAMASK: {
@@ -51,15 +56,28 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
         formRef.current?.setFieldsValue({ address });
         break;
       }
+      case PaymentMethodType.PHANTOM: {
+        console.log("inside");
+        const address = await requestSolanaAddress();
+        console.log("address", address);
+        formRef.current?.setFieldsValue({ address });
+        break;
+      }
       default:
         throw new Error(`Unknown payment method type: ${values.type}`);
     }
 
     await formRef.current?.submit();
-  }, [requestMetamaskAddress, requestGnosisAddress, values.type]);
+  }, [
+    requestMetamaskAddress,
+    requestGnosisAddress,
+    values.type,
+    requestSolanaAddress,
+  ]);
 
   const [loading, setLoading] = useState(false);
   const createPaymentMethod = useCreatePaymentMethod();
+  console.log("values", values);
   const submitForm = useCallback(
     async (values: CreatePaymentMethodInput) => {
       try {

@@ -1848,6 +1848,7 @@ export enum OrganizationRole {
 export enum PaymentMethodType {
   GNOSIS_SAFE = "GNOSIS_SAFE",
   METAMASK = "METAMASK",
+  PHANTOM = "PHANTOM",
 }
 
 export enum ProjectIntegrationSource {

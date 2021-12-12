@@ -263,6 +263,7 @@ export function TaskForm<
                       <Select style={{ minWidth: 70 }} placeholder="Currency">
                         <Select.Option value="ETH">ETH</Select.Option>
                         <Select.Option value="USDC">USDC</Select.Option>
+                        <Select.Option value="SOL">SOL</Select.Option>
                       </Select>
                     </Form.Item>
                   }

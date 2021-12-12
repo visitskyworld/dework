@@ -15,6 +15,7 @@ import {
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useSignPayout as useSignMetamaskPayout } from "@dewo/app/util/ethereum";
+import { useSignPhantomPayout } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
 export const shortenedAddress = (address: string) =>
@@ -42,6 +43,8 @@ export class NoUserPaymentMethodError extends Error {}
 
 export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const signMetamaskPayout = useSignMetamaskPayout();
+  const signPhantomPayout = useSignPhantomPayout();
+
   const [loadUserPaymentMethod] = useLazyQuery<
     UserPaymentMethodQuery,
     UserPaymentMethodQueryVariables
@@ -83,6 +86,12 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
             throw new Error(`Unknown reward currency: ${task.reward.currency}`);
           }
           break;
+        }
+        case PaymentMethodType.PHANTOM: {
+          await signPhantomPayout(
+            res.data.user.paymentMethod.address,
+            reward.amount
+          );
         }
         default:
           throw new Error(
