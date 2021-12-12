@@ -12,7 +12,7 @@ import {
   DragDropContextProps,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { orderBetweenTasks, useGroupedTasks } from "./util";
+import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
 import { TaskUpdateModalListener } from "../../task/TaskUpdateModal";
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const columnWidth = 300;
-const noTasks: Task[] = [];
+const emptySections: TaskSection[] = [{ tasks: [] }];
 const noTags: TaskTag[] = [];
 const noInitialValues: Partial<CreateTaskInput> = {};
 
@@ -40,7 +40,7 @@ export const TaskBoard: FC<Props> = ({
   tags = noTags,
   initialValues = noInitialValues,
 }) => {
-  const tasksByStatus = useGroupedTasks(tasks);
+  const taskSectionsByStatus = useGroupedTasks(tasks);
 
   const updateTask = useUpdateTask();
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
@@ -48,7 +48,10 @@ export const TaskBoard: FC<Props> = ({
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
-      const status = result.destination.droppableId as TaskStatusEnum;
+      const [status, sectionIndexString] = result.destination.droppableId.split(
+        ":"
+      ) as [TaskStatusEnum, string];
+      const sectionIndex = Number(sectionIndexString);
 
       const task = tasks.find((t) => t.id === taskId);
       if (!task) return;
@@ -70,13 +73,14 @@ export const TaskBoard: FC<Props> = ({
         return newIndex;
       })();
 
-      const taskAbove = tasksByStatus[status]?.[indexExcludingItself - 1];
-      const taskBelow = tasksByStatus[status]?.[indexExcludingItself];
+      const section = taskSectionsByStatus[status]?.[sectionIndex];
+      const taskAbove = section?.tasks[indexExcludingItself - 1];
+      const taskBelow = section?.tasks[indexExcludingItself];
       const sortKey = orderBetweenTasks(taskAbove, taskBelow);
 
       await updateTask({ id: taskId, status, sortKey }, task);
     },
-    [tasks, tasksByStatus, updateTask]
+    [tasks, taskSectionsByStatus, updateTask]
   );
 
   const [loaded, setLoaded] = useState(false);
@@ -98,7 +102,7 @@ export const TaskBoard: FC<Props> = ({
                   status={status}
                   tags={tags}
                   width={columnWidth}
-                  tasks={tasksByStatus[status] ?? noTasks}
+                  taskSections={taskSectionsByStatus[status] ?? emptySections}
                   initialValues={initialValues}
                 />
               </div>

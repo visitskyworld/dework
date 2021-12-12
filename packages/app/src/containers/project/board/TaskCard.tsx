@@ -35,14 +35,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   );
 
   const button = useMemo(() => {
-    if (task.status === TaskStatusEnum.DONE) {
+    if (task.status === TaskStatusEnum.IN_REVIEW && canUpdateTask) {
       return (
-        <Button
-          size="small"
-          type="primary"
-          onClick={handlePayAndClose}
-          disabled={!canClaimTask}
-        >
+        <Button size="small" type="primary" onClick={handlePayAndClose}>
           Pay and Close
         </Button>
       );

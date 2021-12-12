@@ -5,6 +5,11 @@ import { inject } from "between";
 
 const Between = inject("0123456789");
 
+export interface TaskSection {
+  title?: string;
+  tasks: Task[];
+}
+
 export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
   [TaskStatusEnum.TODO]: "To Do",
   [TaskStatusEnum.IN_PROGRESS]: "In Progress",
@@ -12,7 +17,9 @@ export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
   [TaskStatusEnum.DONE]: "Done",
 };
 
-export function useGroupedTasks(tasks: Task[]): Record<TaskStatusEnum, Task[]> {
+export function useGroupedTasks(
+  tasks: Task[]
+): Record<TaskStatusEnum, TaskSection[]> {
   return useMemo(() => {
     return _(tasks)
       .filter((task) => !task.deletedAt)
@@ -20,7 +27,23 @@ export function useGroupedTasks(tasks: Task[]): Record<TaskStatusEnum, Task[]> {
       .mapValues((tasksWithStatus) =>
         _.sortBy(tasksWithStatus, (task) => task.sortKey)
       )
-      .value() as Record<TaskStatusEnum, Task[]>;
+      .mapValues((tasks, status) => {
+        if (status === TaskStatusEnum.TODO) {
+          const [claimed, unclaimed] = _.partition(
+            tasks,
+            (task) => !!task.assignees.length
+          );
+          if (!!claimed.length) {
+            return [
+              { title: "Claimed", tasks: claimed },
+              { title: "Unclaimed", tasks: unclaimed },
+            ];
+          }
+        }
+
+        return [{ tasks }];
+      })
+      .value() as Record<TaskStatusEnum, TaskSection[]>;
   }, [tasks]);
 }
 
