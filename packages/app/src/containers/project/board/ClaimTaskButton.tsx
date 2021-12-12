@@ -21,13 +21,25 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const showClaimEducation = useToggle();
 
   const claimTask = useClaimTask();
-  const handleClaimTask = useCallback(
-    async (event) => {
+  const handleClaimTask = useCallback(async () => {
+    await claimTask(task);
+    showClaimEducation.onToggleOff();
+  }, [claimTask, task, showClaimEducation]);
+
+  const showClaimConfirmation = useCallback(
+    (event) => {
       eatClick(event);
-      await claimTask(task);
       showClaimEducation.onToggleOn();
     },
-    [claimTask, task, showClaimEducation]
+    [showClaimEducation]
+  );
+
+  const hideClaimConfirmation = useCallback(
+    (event) => {
+      eatClick(event);
+      showClaimEducation.onToggleOff();
+    },
+    [showClaimEducation]
   );
 
   return (
@@ -40,16 +52,16 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
         <Button
           size="small"
           icon={<Icons.UnlockOutlined />}
-          onClick={handleClaimTask}
+          onClick={showClaimConfirmation}
         >
           Claim
         </Button>
       )}
       <Modal
         visible={showClaimEducation.value}
-        title="Project Settings"
-        footer={null}
-        onCancel={showClaimEducation.onToggleOff}
+        okText="Claim Task"
+        onOk={handleClaimTask}
+        onCancel={hideClaimConfirmation}
       >
         Education on wth just happened
       </Modal>
