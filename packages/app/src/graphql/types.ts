@@ -880,6 +880,61 @@ export interface GetOrganizationQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetPopularOrganizationsQuery
+// ====================================================
+
+export interface GetPopularOrganizationsQuery_organization_projects_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetPopularOrganizationsQuery_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  name: string;
+  organizationId: string;
+  taskCount: number;
+  doneTaskCount: number;
+  paymentMethod: GetPopularOrganizationsQuery_organization_projects_paymentMethod | null;
+}
+
+export interface GetPopularOrganizationsQuery_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface GetPopularOrganizationsQuery_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  user: GetPopularOrganizationsQuery_organization_members_user;
+}
+
+export interface GetPopularOrganizationsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  description: string | null;
+  projects: GetPopularOrganizationsQuery_organization_projects[];
+  members: GetPopularOrganizationsQuery_organization_members[];
+}
+
+export interface GetPopularOrganizationsQuery {
+  organization: GetPopularOrganizationsQuery_organization[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetOrganizationTasksQuery
 // ====================================================
 

@@ -3,11 +3,16 @@ import { Col, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
 import { siteTitle, siteDescription } from "../../../pages/copy";
+import { ProjectCard } from "../organization/overview/ProjectCard";
+import { usePopularOrganizations } from "../organization/hooks";
 
 interface Props {}
 
 export const LandingPage: FC<Props> = () => {
   const { user } = useAuthContext();
+
+  const projects = usePopularOrganizations();
+  console.log(projects);
 
   if (!user)
     return (
@@ -21,6 +26,13 @@ export const LandingPage: FC<Props> = () => {
         <Typography.Paragraph style={{ textAlign: "center", width: "100%" }}>
           {siteDescription}
         </Typography.Paragraph>
+        <Row>
+          {projects?.map((project) => (
+            <Col span={12} offset={6}>
+              <ProjectCard project={project} users={[]}></ProjectCard>
+            </Col>
+          ))}
+        </Row>
       </Space>
     );
 

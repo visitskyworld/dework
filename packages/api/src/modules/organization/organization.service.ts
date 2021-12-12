@@ -102,4 +102,12 @@ export class OrganizationService {
       .where("members.userId = :userId", { userId })
       .getMany();
   }
+
+  public findByPopularProject(): Promise<Organization[] | undefined> {
+    return this.organizationRepo
+      .createQueryBuilder("popularOrganizations")
+      .innerJoinAndSelect("organization.project", "project")
+      .where("project.popular = :popular", { popular: true })
+      .getMany();
+  }
 }
