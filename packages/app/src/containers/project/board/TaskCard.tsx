@@ -1,14 +1,15 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
-import * as Icons from "@ant-design/icons";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import * as Icons from "@ant-design/icons";
 import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useProjectContext } from "@dewo/app/contexts/ProjectContext";
 import { usePay } from "../../payment/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { ClaimTaskButton } from "./ClaimTaskButton";
 
 interface TaskCardProps {
   task: Task;
@@ -17,23 +18,10 @@ interface TaskCardProps {
 export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   const navigateToTask = useNavigateToTask(task.id);
 
-  const { user } = useAuthContext();
+  const canClaimTask = usePermission("claimTask", task);
+  const canUpdateTask = usePermission("update", task);
+
   const updateTask = useUpdateTask();
-  const claimTask = useCallback(
-    async (event) => {
-      eatClick(event);
-      if (!user) return;
-      await updateTask(
-        {
-          id: task.id,
-          // status: TaskStatusEnum.IN_PROGRESS,
-          assigneeIds: [user.id],
-        },
-        task
-      );
-    },
-    [task, user, updateTask]
-  );
 
   const project = useProjectContext();
   const handlePay = usePay(project?.paymentMethod ?? undefined);
@@ -47,10 +35,50 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     [updateTask, handlePay, task]
   );
 
+  const button = useMemo(() => {
+    if (task.status === TaskStatusEnum.DONE) {
+      return (
+        <Button
+          size="small"
+          type="primary"
+          onClick={handlePayAndClose}
+          disabled={!canClaimTask}
+        >
+          Pay and Close
+        </Button>
+      );
+    }
+
+    if (task.status === TaskStatusEnum.TODO) {
+      if (canUpdateTask && !!task.assignees.length) {
+        return (
+          <Button
+            size="small"
+            type="primary"
+            icon={<Icons.LockOutlined />}
+            onClick={navigateToTask}
+          >
+            Pick contributor
+          </Button>
+        );
+      }
+
+      if (canClaimTask) {
+        return <ClaimTaskButton task={task} />;
+      }
+    }
+
+    return null;
+  }, [task, navigateToTask, handlePayAndClose, canClaimTask, canUpdateTask]);
+
   return (
     <Card size="small" onClick={navigateToTask}>
       <Row>
-        <Space direction="vertical" size={4} style={{ flex: 1, width: "100%" }}>
+        <Space
+          direction="vertical"
+          size={4}
+          style={{ flex: 1, width: "100%", marginBottom: 4 }}
+        >
           <Row>
             <Typography.Text strong>{task.name}</Typography.Text>
           </Row>
@@ -70,24 +98,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
               </Tag>
             ))}
           </Row>
-          {task.status === TaskStatusEnum.IN_REVIEW && !!task.assignees.length && (
-            <Button
-              size="small"
-              icon={<Icons.DollarOutlined />}
-              onClick={handlePayAndClose}
-            >
-              Pay and close
-            </Button>
-          )}
-          {!!user && task.status === TaskStatusEnum.TODO && (
-            <Button
-              size="small"
-              icon={<Icons.ClockCircleOutlined />}
-              onClick={claimTask}
-            >
-              Claim
-            </Button>
-          )}
+          {button}
         </Space>
         <Col
           onClick={eatClick}
@@ -99,35 +110,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
             alignItems: "flex-end",
           }}
         >
-          {/* <Dropdown
-                placement="bottomRight"
-                overlay={
-                  <Menu>
-                    {task.status === TaskStatusEnum.IN_REVIEW && (
-                      <Menu.Item
-                        icon={<Icons.DollarOutlined />}
-                        onClick={handlePayAndClose}
-                      >
-                        Pay and close
-                      </Menu.Item>
-                    )}
-                    {!!user && (
-                      <Menu.Item
-                        icon={<Icons.ClockCircleOutlined />}
-                        onClick={claimTask}
-                      >
-                        Claim
-                      </Menu.Item>
-                    )}
-                  </Menu>
-                }
-              >
-                <Button
-                  type="text"
-                  icon={<Icons.MoreOutlined />}
-                  style={{ marginRight: -8, marginTop: -8 }}
-                />
-              </Dropdown> */}
           <div style={{ flex: 1 }} />
           <Avatar.Group maxCount={3} size={22}>
             {task.assignees.map((user) => (

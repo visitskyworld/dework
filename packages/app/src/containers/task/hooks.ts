@@ -4,6 +4,7 @@ import {
   useQuery,
   useSubscription,
 } from "@apollo/client";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Subscriptions from "@dewo/app/graphql/subscriptions";
@@ -29,6 +30,8 @@ import {
   UpdateTaskMutationVariables,
   UserTasksQuery,
   UserTasksQueryVariables,
+  ClaimTaskMutation,
+  ClaimTaskMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -89,20 +92,20 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
 }
 
 export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
-  const [createTask] = useMutation<
+  const [mutation] = useMutation<
     CreateTaskMutation,
     CreateTaskMutationVariables
   >(Mutations.createTask);
   const addTaskToApolloCache = useAddTaskToApolloCache();
   return useCallback(
     async (input) => {
-      const res = await createTask({ variables: { input } });
+      const res = await mutation({ variables: { input } });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       addTaskToApolloCache(res.data.task);
       return res.data.task;
     },
-    [createTask, addTaskToApolloCache]
+    [mutation, addTaskToApolloCache]
   );
 }
 
@@ -110,13 +113,13 @@ export function useUpdateTask(): (
   input: UpdateTaskInput,
   task: Task
 ) => Promise<Task> {
-  const [updateTask] = useMutation<
+  const [mutation] = useMutation<
     UpdateTaskMutation,
     UpdateTaskMutationVariables
   >(Mutations.updateTask);
   return useCallback(
     async (input, task) => {
-      const res = await updateTask({
+      const res = await mutation({
         variables: { input },
         optimisticResponse: {
           task: { ...task, ...input } as Task,
@@ -126,7 +129,29 @@ export function useUpdateTask(): (
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
     },
-    [updateTask]
+    [mutation]
+  );
+}
+
+export function useClaimTask(): (task: Task) => Promise<Task> {
+  const { user } = useAuthContext();
+  const [mutation] = useMutation<ClaimTaskMutation, ClaimTaskMutationVariables>(
+    Mutations.claimTask
+  );
+  return useCallback(
+    async (task) => {
+      console.warn("claim task...", task);
+      const res = await mutation({
+        variables: { taskId: task.id },
+        optimisticResponse: {
+          task: { ...task, assignees: [...task.assignees, user] } as Task,
+        },
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.task;
+    },
+    [mutation, user]
   );
 }
 

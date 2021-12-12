@@ -394,6 +394,58 @@ export interface UpdateTaskMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: ClaimTaskMutation
+// ====================================================
+
+export interface ClaimTaskMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface ClaimTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface ClaimTaskMutation_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
+export interface ClaimTaskMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  tags: ClaimTaskMutation_task_tags[];
+  assignees: ClaimTaskMutation_task_assignees[];
+  reward: ClaimTaskMutation_task_reward | null;
+}
+
+export interface ClaimTaskMutation {
+  task: ClaimTaskMutation_task;
+}
+
+export interface ClaimTaskMutationVariables {
+  taskId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: DeleteTaskMutation
 // ====================================================
 

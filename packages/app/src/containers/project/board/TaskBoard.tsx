@@ -30,7 +30,7 @@ interface Props {
   initialValues?: Partial<CreateTaskInput>;
 }
 
-const columnWidth = 228; // (lg breakpoint (992) - (statuses.length - 1) * gap (16) - 16 * 2 (left/right padding)) / statuses.length
+const columnWidth = 300;
 const noTasks: Task[] = [];
 const noTags: TaskTag[] = [];
 const noInitialValues: Partial<CreateTaskInput> = {};

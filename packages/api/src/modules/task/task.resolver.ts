@@ -6,6 +6,7 @@ import {
   ResolveField,
   Resolver,
   Int,
+  Context,
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -20,6 +21,8 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
+import { CustomPermissionActions } from "../auth/permissions";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 @Resolver(() => Task)
@@ -47,6 +50,19 @@ export class TaskResolver {
         : [],
       ...input,
     });
+  }
+
+  @Mutation(() => Task)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(CustomPermissionActions.claimTask, Task, [
+    TaskService,
+    (service: TaskService, { params }) => service.findById(params.id),
+  ])
+  public async claimTask(
+    @Context("user") user: User,
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<Task> {
+    return this.taskService.claim(id, user);
   }
 
   @Mutation(() => Task)

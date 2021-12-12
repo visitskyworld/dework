@@ -105,6 +105,16 @@ export const updateTask = gql`
   ${Fragments.task}
 `;
 
+export const claimTask = gql`
+  mutation ClaimTaskMutation($taskId: UUID!) {
+    task: claimTask(id: $taskId) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;
+
 export const deleteTask = gql`
   mutation DeleteTaskMutation($taskId: UUID!) {
     task: deleteTask(id: $taskId) {

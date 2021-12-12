@@ -19,7 +19,7 @@ import {
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 
-type AbilityAction = "create" | "read" | "update" | "delete";
+type AbilityAction = "create" | "read" | "update" | "delete" | "claimTask";
 type AbilitySubject =
   | "Task"
   | "Project"

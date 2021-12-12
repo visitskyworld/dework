@@ -61,6 +61,23 @@ export class TaskRequests {
     };
   }
 
+  public static claim(
+    taskId: string
+  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    return {
+      query: `
+        mutation ClaimTask($taskId: UUID!) {
+          task: claimTask(id: $taskId) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { taskId },
+    };
+  }
+
   public static delete(
     taskId: string
   ): GraphQLTestClientRequestBody<{ taskId: string }> {

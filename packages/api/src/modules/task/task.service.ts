@@ -1,9 +1,10 @@
 import _ from "lodash";
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, IsNull, Repository } from "typeorm";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 export class TaskService {
@@ -25,6 +26,15 @@ export class TaskService {
       updatedAt: new Date(),
     });
     return this.taskRepo.findOne(updated.id) as Promise<Task>;
+  }
+
+  public async claim(taskId: string, user: User): Promise<Task> {
+    const task = await this.taskRepo.findOne(taskId);
+    if (!task) throw new NotFoundException();
+    if (task.assignees.map((a) => a.id).includes(user.id)) return task;
+    task.assignees.push(user);
+    await this.update(task);
+    return this.findById(taskId) as Promise<Task>;
   }
 
   public async findById(id: string): Promise<Task | undefined> {

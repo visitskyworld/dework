@@ -74,7 +74,6 @@ export function TaskForm<
     async (values: TFormValues) => {
       try {
         setLoading(true);
-        console.warn(values);
         await onSubmit({
           ...values,
           reward: !!values.reward?.amount

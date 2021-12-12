@@ -161,6 +161,41 @@ describe("TaskResolver", () => {
       });
     });
 
+    describe("claimTask", () => {
+      it("should succeed and assign the user to the task if status is TODO", async () => {
+        const user = await fixtures.createUser();
+        const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.claim(task.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.task;
+        expect(fetched.assignees).toHaveLength(1);
+        expect(fetched.assignees).toContainEqual(
+          expect.objectContaining({ id: user.id })
+        );
+      });
+
+      it("should succeed and assign the user to the task if status is not TODO", async () => {
+        const user = await fixtures.createUser();
+        const task = await fixtures.createTask({
+          status: TaskStatusEnum.IN_PROGRESS,
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.claim(task.id),
+        });
+
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+    });
+
     describe("deleteTask", () => {
       it("should set task.deletedAt", async () => {
         const { user, project } = await fixtures.createUserOrgProject();
