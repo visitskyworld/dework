@@ -1,7 +1,9 @@
 import { Menu, PageHeader, Skeleton, Typography } from "antd";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { useOrganization } from "../hooks";
 import Link from "next/link";
+import { BreadCrumb } from "../../navigation/BreadCrumb";
+import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 
 export enum OrganizationHeaderTab {
   projects = "projects",
@@ -24,6 +26,21 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
   const organization = useOrganization(organizationId);
   const loading = !organization;
 
+  const routes = useMemo(
+    () =>
+      !!organization && [
+        {
+          path: "../",
+          breadcrumbName: "Home",
+        },
+        {
+          path: `/organization/${organization.id}`,
+          breadcrumbName: organization.name,
+        },
+      ],
+    [organization]
+  ) as Route[];
+
   return (
     <PageHeader
       title={
@@ -35,30 +52,7 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
-      breadcrumb={
-        !!organization ? (
-          {
-            routes: [
-              {
-                path: `organization/${organization.id}`,
-                breadcrumbName: organization.name,
-              },
-            ],
-            itemRender(route, _params, routes, paths) {
-              const last = routes.indexOf(route) === routes.length - 1;
-              return last ? (
-                <span>{route.breadcrumbName}</span>
-              ) : (
-                <Link href={["", ...paths].join("/")}>
-                  {route.breadcrumbName}
-                </Link>
-              );
-            },
-          }
-        ) : (
-          <Skeleton loading active title={false} paragraph={{ rows: 1 }} />
-        )
-      }
+      breadcrumb={<BreadCrumb organization={organization} routes={routes} />}
       tags={
         <Skeleton
           loading={loading}
