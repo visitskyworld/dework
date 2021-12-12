@@ -7,7 +7,6 @@ import {
   Input,
   Select,
   FormInstance,
-  Avatar,
   Row,
   Typography,
   Space,
@@ -16,6 +15,8 @@ import {
   ConfigProvider,
   Empty,
   Tooltip,
+  Card,
+  List,
 } from "antd";
 import {
   CreateTaskInput,
@@ -32,6 +33,8 @@ import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import Link from "next/link";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { AssignTaskCard } from "./AssignTaskCard";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -185,56 +188,6 @@ export function TaskForm<
             <Input />
           </Form.Item>
 
-          {/* TODO: remove this hack and add proper UI */}
-          {!!assignees &&
-            assignees.length > 0 &&
-            (initialValues as any)?.status === TaskStatusEnum.TODO && (
-              <Space
-                direction="vertical"
-                style={{ width: "100%", paddingBottom: 24 }}
-              >
-                <Typography.Text strong>
-                  Contributor Claim Requests
-                </Typography.Text>
-                <Col>
-                  {assignees.map((user) => (
-                    <Row style={{ width: "100%" }}>
-                      <Link href={`/profile/${user.id}`}>
-                        <a>
-                          <Tooltip title="Visit profile">
-                            <Space style={{ display: "flex" }}>
-                              <Avatar
-                                src={user.imageUrl}
-                                icon={<Icons.TeamOutlined />}
-                              />
-                              <Row style={{ width: 120 }}>
-                                <Typography.Text>
-                                  {user.username}
-                                </Typography.Text>
-                              </Row>
-                            </Space>
-                          </Tooltip>
-                        </a>
-                      </Link>
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          // @ts-ignore
-                          formRef.current?.setFieldsValue({
-                            assigneeIds: [user.id],
-                            status: TaskStatusEnum.IN_PROGRESS,
-                          });
-                          formRef.current?.submit();
-                        }}
-                      >
-                        Assign
-                      </Button>
-                    </Row>
-                  ))}
-                </Col>
-              </Space>
-            )}
-
           {canEdit && (
             <Form.Item style={{ marginBottom: 0 }}>
               <Button
@@ -250,6 +203,11 @@ export function TaskForm<
           )}
         </Col>
         <Col span={8} style={{ marginTop: 62 }}>
+          {!!canEdit &&
+            !!task &&
+            task.status === TaskStatusEnum.TODO &&
+            !!task.assignees.length && <AssignTaskCard task={task} />}
+
           <Form.Item name="status" label="Status" rules={[{ required: true }]}>
             <Select placeholder="Select a task status" disabled={!canEdit}>
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (

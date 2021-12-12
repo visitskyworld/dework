@@ -3,6 +3,7 @@
 
 @border-radius-base: 4px;
 @primary-color: #8570e4;
+@primary-color-25: #8570e444;
 @body-background: #00042D;
 @component-background: fade(@white, 10%);
 @border-color-base: fade(@white, 40%);
@@ -217,6 +218,10 @@ textarea {
   }
 }
 
+.ant-list-item-meta {
+  align-items: center;
+}
+
 .dewo-sidebar-item {
   padding: 0;
   width: 72px;
@@ -230,6 +235,11 @@ textarea {
   &:hover {
     background: @component-background;
   }
+}
+
+.ant-card.dewo-card-highlighted {
+  background-color: @primary-color-25;
+  border: 2px solid @primary-color;
 }
 
 .hover\:component-highlight {

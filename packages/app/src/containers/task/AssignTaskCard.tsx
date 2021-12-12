@@ -1,0 +1,72 @@
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { Task, TaskStatusEnum, User } from "@dewo/app/graphql/types";
+import { Button, Card, List, Tooltip, Typography } from "antd";
+import React, { FC, useCallback, useState } from "react";
+import { useUpdateTask } from "./hooks";
+
+interface Props {
+  task: Task;
+}
+
+export const AssignTaskCard: FC<Props> = ({ task }) => {
+  const [loading, setLoading] = useState(false);
+
+  const updateTask = useUpdateTask();
+  const handleAssign = useCallback(
+    async (user: User) => {
+      try {
+        setLoading(true);
+        await updateTask(
+          {
+            id: task.id,
+            assigneeIds: [user.id],
+            status: TaskStatusEnum.IN_PROGRESS,
+          },
+          task
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [updateTask, task]
+  );
+  return (
+    <Card
+      size="small"
+      className="dewo-card-highlighted"
+      style={{ marginTop: 16, marginBottom: 24 }}
+    >
+      <Typography.Text strong>
+        Review contributors wanting to help with this task
+      </Typography.Text>
+
+      {task?.assignees.map((user) => (
+        <List.Item
+          actions={[
+            <Button
+              size="small"
+              loading={loading}
+              onClick={() => handleAssign(user)}
+            >
+              Assign
+            </Button>,
+          ]}
+        >
+          <a
+            href={`/profile/${user.id}`}
+            style={{ width: "100%" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Tooltip title="View profile">
+              <List.Item.Meta
+                avatar={<UserAvatar user={user} tooltip={{ visible: false }} />}
+                title={user.username}
+              />
+            </Tooltip>
+          </a>
+        </List.Item>
+      ))}
+    </Card>
+  );
+};

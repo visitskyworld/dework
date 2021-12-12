@@ -35,6 +35,30 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
+      breadcrumb={
+        !!organization ? (
+          {
+            routes: [
+              {
+                path: `organization/${organization.id}`,
+                breadcrumbName: organization.name,
+              },
+            ],
+            itemRender(route, _params, routes, paths) {
+              const last = routes.indexOf(route) === routes.length - 1;
+              return last ? (
+                <span>{route.breadcrumbName}</span>
+              ) : (
+                <Link href={["", ...paths].join("/")}>
+                  {route.breadcrumbName}
+                </Link>
+              );
+            },
+          }
+        ) : (
+          <Skeleton loading active title={false} paragraph={{ rows: 1 }} />
+        )
+      }
       tags={
         <Skeleton
           loading={loading}
