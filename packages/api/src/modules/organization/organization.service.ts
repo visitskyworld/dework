@@ -103,7 +103,7 @@ export class OrganizationService {
       .getMany();
   }
 
-  public findFeatured(limit: number): Promise<Organization[] | undefined> {
+  public findFeatured(limit: number): Promise<Organization[]> {
     return this.organizationRepo
       .createQueryBuilder("organization")
       .where("organization.featured = :featured", { featured: true })
