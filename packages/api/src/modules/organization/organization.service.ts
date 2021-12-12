@@ -41,6 +41,14 @@ export class OrganizationService {
     return this.organizationRepo.findOne(id);
   }
 
+  public findMember(
+    partial: Partial<
+      Pick<OrganizationMember, "organizationId" | "userId" | "role">
+    >
+  ): Promise<OrganizationMember | undefined> {
+    return this.organizationMemberRepo.findOne(partial);
+  }
+
   public async addUser(
     organizationId: string,
     userId: string,
@@ -59,17 +67,20 @@ export class OrganizationService {
     userId: string,
     role: OrganizationRole
   ): Promise<OrganizationMember> {
-    const member = await this.organizationMemberRepo.findOne({
-      organizationId,
-      userId,
-    });
-
+    const member = await this.findMember({ organizationId, userId });
     if (!member) throw new NotFoundException();
 
     await this.organizationMemberRepo.update({ id: member.id }, { role });
     return this.organizationMemberRepo.findOne({
       id: member.id,
     }) as Promise<OrganizationMember>;
+  }
+
+  public async removeMember(
+    organizationId: string,
+    userId: string
+  ): Promise<void> {
+    await this.organizationMemberRepo.delete({ userId, organizationId });
   }
 
   public async getMembers(

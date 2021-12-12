@@ -114,6 +114,64 @@ describe("OrganizationResolver", () => {
         expect(updated.userId).toEqual(otherUser.id);
       });
 
+      it("should fail to update own role", async () => {
+        const { user, organization } = await fixtures.createUserOrgProject();
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: OrganizationRequests.updateMember({
+            organizationId: organization.id,
+            userId: user.id,
+            role: OrganizationRole.ADMIN,
+          }),
+        });
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("should fail if is organization member", async () => {
+        const adminUser = await fixtures.createUser();
+        const memberUser = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+        const organization = await fixtures.createOrganization({}, adminUser, [
+          otherUser.id,
+        ]);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(memberUser),
+          body: OrganizationRequests.updateMember({
+            organizationId: organization.id,
+            userId: otherUser.id,
+            role: OrganizationRole.ADMIN,
+          }),
+        });
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+    });
+
+    describe("removeOrganizationMember", () => {
+      it("should succeed if is organization admin", async () => {
+        const adminUser = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+        const organization = await fixtures.createOrganization({}, adminUser, [
+          otherUser.id,
+        ]);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(adminUser),
+          body: OrganizationRequests.removeMember({
+            organizationId: organization.id,
+            userId: otherUser.id,
+          }),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const updated = response.body.data?.organization;
+        expect(updated.members).not.toContainEqual(
+          expect.objectContaining({ userId: otherUser.id })
+        );
+      });
+
       it("should fail if is organization member", async () => {
         const adminUser = await fixtures.createUser();
         const memberUser = await fixtures.createUser();

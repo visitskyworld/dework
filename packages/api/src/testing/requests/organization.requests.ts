@@ -1,4 +1,5 @@
 import { CreateOrganizationInput } from "@dewo/api/modules/organization/dto/CreateOrganizationInput";
+import { RemoveOrganizationMemberInput } from "@dewo/api/modules/organization/dto/RemoveOrganizationMemberInput";
 import { UpdateOrganizationInput } from "@dewo/api/modules/organization/dto/UpdateOrganizationInput";
 import { UpdateOrganizationMemberInput } from "@dewo/api/modules/organization/dto/UpdateOrganizationMemberInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
@@ -75,6 +76,23 @@ export class OrganizationRequests {
         }
 
         ${this.organizationMemberFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static removeMember(
+    input: RemoveOrganizationMemberInput
+  ): GraphQLTestClientRequestBody<{ input: RemoveOrganizationMemberInput }> {
+    return {
+      query: `
+        mutation RemoveOrganizationMember($input: RemoveOrganizationMemberInput!) {
+          organization: removeOrganizationMember(input: $input) {
+            ...Organization
+          }
+        }
+
+        ${this.organizationFragment}
       `,
       variables: { input },
     };

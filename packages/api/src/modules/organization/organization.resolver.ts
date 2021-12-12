@@ -19,6 +19,7 @@ import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
+import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -58,7 +59,14 @@ export class OrganizationResolver {
 
   @Mutation(() => OrganizationMember)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, OrganizationMember)
+  @UseAbility(Actions.update, OrganizationMember, [
+    OrganizationService,
+    (service: OrganizationService, { params }) =>
+      service.findMember({
+        userId: params.input.userId,
+        organizationId: params.input.organizationId,
+      }),
+  ])
   public async updateOrganizationMember(
     @Args("input") input: UpdateOrganizationMemberInput
   ): Promise<OrganizationMember> {
@@ -67,6 +75,28 @@ export class OrganizationResolver {
       input.userId,
       input.role
     );
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.delete, OrganizationMember, [
+    OrganizationService,
+    (service: OrganizationService, { params }) =>
+      service.findMember({
+        userId: params.input.userId,
+        organizationId: params.input.organizationId,
+      }),
+  ])
+  public async removeOrganizationMember(
+    @Args("input") input: RemoveOrganizationMemberInput
+  ): Promise<Organization> {
+    await this.organizationService.removeMember(
+      input.organizationId,
+      input.userId
+    );
+    return this.organizationService.findById(
+      input.organizationId
+    ) as Promise<Organization>;
   }
 
   @Query(() => Organization)
