@@ -114,7 +114,6 @@ export class OrganizationResolver {
     @Args("limit", { type: () => GraphQLInt }) limit: number
   ): Promise<Organization[]> {
     const organizations = await this.organizationService.findFeatured(limit);
-    if (!organizations) throw new NotFoundException();
     return organizations;
   }
 }

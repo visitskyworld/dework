@@ -7,32 +7,6 @@ import { OrganizationCard } from "./OrganizationCard";
 import { OrganizationDetails } from "../../graphql/types";
 import { siteTitle, siteDescription } from "@dewo/app/util/constants";
 
-const OrganizationGrid: FC<{ orgs: OrganizationDetails[] }> = ({ orgs }) => {
-  const columns = 2;
-  const rows = [...Array(Math.ceil(orgs.length / columns))];
-  const productRows = rows.map((_, idx) =>
-    orgs.slice(idx * columns, idx * columns + columns)
-  );
-
-  const content = productRows.map((row, idx) => (
-    <Row
-      gutter={16}
-      style={{ justifyContent: "center", marginBottom: "16px" }}
-      key={idx}
-    >
-      {row.map((org) => (
-        <Col span={12} key={org.name}>
-          <OrganizationCard
-            organization={org}
-            users={[]} // TODO
-          />
-        </Col>
-      ))}
-    </Row>
-  ));
-  return <>{content}</>;
-};
-
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
   const featuredOrganizations = useFeaturedOrganizations(4) || [];
@@ -71,7 +45,13 @@ export const LandingPage: FC = () => {
           >
             Popular DAOs
           </Typography.Title>
-          <OrganizationGrid orgs={featuredOrganizations} />
+          <Row gutter={[16, 16]}>
+            {featuredOrganizations.map((org) => (
+              <Col span={12} key={org.name}>
+                <OrganizationCard organization={org} />
+              </Col>
+            ))}
+          </Row>
         </Space>
       </Row>
     );

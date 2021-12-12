@@ -1,15 +1,13 @@
 import Link from "next/link";
 import React, { FC } from "react";
-import { Avatar, Card, Row, Tag, Typography } from "antd";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { OrganizationDetails, User } from "../../graphql/types";
+import { Card, Row, Tag, Typography } from "antd";
+import { OrganizationDetails } from "../../graphql/types";
 
 interface Props {
   organization: OrganizationDetails;
-  users: User[];
 }
 
-export const OrganizationCard: FC<Props> = ({ organization, users }) => {
+export const OrganizationCard: FC<Props> = ({ organization }) => {
   return (
     <Link href={`/organization/${organization.id}`}>
       <a>
@@ -34,11 +32,6 @@ export const OrganizationCard: FC<Props> = ({ organization, users }) => {
             {organization.description ?? "Lorem ipsum dolor sit amet"}
           </Typography.Paragraph>
           <Row align="middle">
-            <Avatar.Group maxCount={3} style={{ flex: 1 }}>
-              {users.map((user) => (
-                <UserAvatar key={user.id} user={user} />
-              ))}
-            </Avatar.Group>
             <Tag className="bg-primary">
               {`📦 ${organization.projects.length} projects`}
             </Tag>
