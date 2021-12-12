@@ -69,6 +69,9 @@ export function TaskForm<
   const canEdit = usePermission(mode, "Task");
   const canDelete = usePermission("delete", "Task");
 
+  const projectId: string =
+    task?.projectId ?? (initialValues as any)?.projectId!;
+
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: TFormValues) => {
@@ -93,12 +96,10 @@ export function TaskForm<
   );
 
   const [tagLoading, setTagLoading] = useState(false);
-  const project = useProjectContext();
   const createTaskTag = useCreateTaskTag();
   const generateRandomTaskTagColor = useGenerateRandomTaskTagColor(tags);
   const handleTagsUpdated = useCallback(
     async (labels: string[]) => {
-      if (!project) return;
       const [existingTagIds, newTagLabels] = _.partition(
         labels,
         (existingIdOrNewLabel) => !!tagById[existingIdOrNewLabel]
@@ -115,7 +116,7 @@ export function TaskForm<
         const tagPs = newTagLabels.map((label) =>
           createTaskTag({
             label,
-            projectId: project.id,
+            projectId,
             color: generateRandomTaskTagColor(),
           })
         );
@@ -128,7 +129,7 @@ export function TaskForm<
         setTagLoading(false);
       }
     },
-    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, project]
+    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, projectId]
   );
 
   const handleChange = useCallback(
