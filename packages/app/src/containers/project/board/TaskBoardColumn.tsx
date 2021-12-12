@@ -6,7 +6,6 @@ import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
 import {
   CreateTaskInput,
-  Task,
   TaskStatusEnum,
   TaskTag,
 } from "@dewo/app/graphql/types";

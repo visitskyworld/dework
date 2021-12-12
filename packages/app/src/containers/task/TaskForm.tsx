@@ -14,9 +14,6 @@ import {
   InputNumber,
   ConfigProvider,
   Empty,
-  Tooltip,
-  Card,
-  List,
 } from "antd";
 import {
   CreateTaskInput,
@@ -31,9 +28,7 @@ import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
-import Link from "next/link";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { AssignTaskCard } from "./AssignTaskCard";
 
 interface TaskFormProps<TFormValues> {
@@ -57,7 +52,6 @@ export function TaskForm<
   mode,
   task,
   tags,
-  assignees,
   buttonText,
   initialValues,
   onSubmit,
