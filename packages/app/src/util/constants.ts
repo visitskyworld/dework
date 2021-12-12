@@ -7,3 +7,7 @@ export const Constants = {
   GRAPHQL_WS_URL: nextConfig.GRAPHQL_WS_URL as string,
   hotjarConfig: { ID: 2731946, version: 6 },
 };
+
+export const siteTitle = "dewo";
+export const siteDescription =
+  "the task manager for DAOs and decentralized work";

@@ -6,7 +6,11 @@ import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
-import { Constants } from "@dewo/app/util/constants";
+import {
+  Constants,
+  siteDescription,
+  siteTitle,
+} from "@dewo/app/util/constants";
 import {
   ApolloClient,
   createHttpLink,
@@ -22,7 +26,6 @@ import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { getMainDefinition } from "@apollo/client/utilities";
-import { siteTitle, siteDescription } from "./copy";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;

@@ -2,10 +2,10 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Col, Divider, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
-import { siteTitle, siteDescription } from "../../../pages/copy";
 import { usePopularOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
 import { OrganizationDetails } from "../../graphql/types";
+import { siteTitle, siteDescription } from "@dewo/app/util/constants";
 
 const OrganizationGrid: FC<{ orgs: OrganizationDetails[] }> = ({ orgs }) => {
   const columns = 2;
