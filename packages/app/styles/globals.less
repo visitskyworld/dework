@@ -11,7 +11,7 @@
 @text-color-secondary: fade(@white, 60%); // defaults to 45%
 @layout-header-background: transparent;
 @layout-sider-background: fade(@white, 10%);
-@scrollbar-active-color: fade(@white, 20%);
+@scrollbar-color: fade(@white, 20%);
 
 html {
   background: @body-background;
@@ -137,31 +137,65 @@ textarea {
 
 .dewo-task-board {
   overflow-x: auto;
+
+  padding: 16px;
+  padding-top: 0;
+
   height: 100%;
 
-  padding: 0 16px;
+  // TODO(fant): rework these hacks
+  & > .ant-space {
+    display: flex;
+    max-height: 100%;
+
+    & > .ant-space-item {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-height: 100%;
+
+      & > div {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        max-height: 100%;
+        
+        & > .ant-card {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          max-height: 100%;
+        }
+      }
+    }
+  }
 }
-.dewo-task-board-column{
-  & .ant-card-body{
-    //Scrollbar
-    &::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: @component-background ;
-      border-radius: @border-radius-base;
-      border: 1px solid transparent;
-      background-clip: content-box;
-    }
-    &::-webkit-scrollbar-track {
-      background: @component-background;
-    }
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-      background: @scrollbar-active-color;
-    }
-    overflow-y: auto;
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: @scrollbar-color;
+  border-radius: @border-radius-base;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+.dewo-task-board-column .ant-card-body {
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: @component-background;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: @scrollbar-color;
   }
 }
 .ant-card.dewo-card-create-project {

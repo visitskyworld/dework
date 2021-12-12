@@ -14,12 +14,14 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <OrganizationHeader
           tab={OrganizationHeaderTab.board}
           organizationId={organizationId}
         />
-        <OrganizationTaskBoard organizationId={organizationId} />
+        <Layout.Content style={{ height: "calc(100vh - 85px)" }}>
+          <OrganizationTaskBoard organizationId={organizationId} />
+        </Layout.Content>
       </Layout.Content>
     </Layout>
   );
