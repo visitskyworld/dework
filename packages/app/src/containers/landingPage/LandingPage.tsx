@@ -1,5 +1,5 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Col, Divider, Row, Space, Typography } from "antd";
+import { Button, Col, Divider, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
 import { useFeaturedOrganizations } from "../organization/hooks";
@@ -59,6 +59,11 @@ export const LandingPage: FC = () => {
           >
             {siteDescription}
           </Typography.Paragraph>
+          <Row style={{ flexDirection: "column", alignItems: "center" }}>
+            <Button type="primary" size="large" href="/auth">
+              Log in
+            </Button>
+          </Row>
           <Divider />
           <Typography.Title
             level={2}
