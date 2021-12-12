@@ -883,50 +883,50 @@ export interface GetOrganizationQueryVariables {
 // GraphQL query operation: GetPopularOrganizationsQuery
 // ====================================================
 
-export interface GetPopularOrganizationsQuery_organization_projects_paymentMethod {
+export interface GetPopularOrganizationsQuery_popularOrganizations_projects_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
 }
 
-export interface GetPopularOrganizationsQuery_organization_projects {
+export interface GetPopularOrganizationsQuery_popularOrganizations_projects {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
-  paymentMethod: GetPopularOrganizationsQuery_organization_projects_paymentMethod | null;
+  paymentMethod: GetPopularOrganizationsQuery_popularOrganizations_projects_paymentMethod | null;
 }
 
-export interface GetPopularOrganizationsQuery_organization_members_user {
+export interface GetPopularOrganizationsQuery_popularOrganizations_members_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
 }
 
-export interface GetPopularOrganizationsQuery_organization_members {
+export interface GetPopularOrganizationsQuery_popularOrganizations_members {
   __typename: "OrganizationMember";
   id: Scalar.UUID;
   role: OrganizationRole;
   organizationId: string;
-  user: GetPopularOrganizationsQuery_organization_members_user;
+  user: GetPopularOrganizationsQuery_popularOrganizations_members_user;
 }
 
-export interface GetPopularOrganizationsQuery_organization {
+export interface GetPopularOrganizationsQuery_popularOrganizations {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
   description: string | null;
-  projects: GetPopularOrganizationsQuery_organization_projects[];
-  members: GetPopularOrganizationsQuery_organization_members[];
+  projects: GetPopularOrganizationsQuery_popularOrganizations_projects[];
+  members: GetPopularOrganizationsQuery_popularOrganizations_members[];
 }
 
 export interface GetPopularOrganizationsQuery {
-  organization: GetPopularOrganizationsQuery_organization[];
+  popularOrganizations: GetPopularOrganizationsQuery_popularOrganizations[];
 }
 
 /* tslint:disable */

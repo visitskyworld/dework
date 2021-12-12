@@ -103,11 +103,10 @@ export class OrganizationService {
       .getMany();
   }
 
-  public findByPopularProject(): Promise<Organization[] | undefined> {
+  public findByPopularity(): Promise<Organization[] | undefined> {
     return this.organizationRepo
-      .createQueryBuilder("popularOrganizations")
-      .innerJoinAndSelect("organization.project", "project")
-      .where("project.popular = :popular", { popular: true })
+      .createQueryBuilder("organization")
+      .where("organization.popular = :popular", { popular: true })
       .getMany();
   }
 }

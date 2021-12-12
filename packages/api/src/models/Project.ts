@@ -42,10 +42,6 @@ export class Project extends Audit {
   @Field({ nullable: true })
   public paymentMethodId?: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  public popular?: boolean;
-
   // @OneToMany(() => TaskStatus, (t: TaskStatus) => t.project)
   // @Field(() => [TaskStatus])
   // public taskStatuses!: Promise<TaskStatus[]>;

@@ -102,7 +102,7 @@ export function usePopularOrganizations(): OrganizationDetails[] | undefined {
   const { data } = useQuery<GetPopularOrganizationsQuery>(
     Queries.popularOrganizations
   );
-  return data?.organizations ?? undefined;
+  return data?.popularOrganizations ?? undefined;
 }
 
 export function useOrganizationTasks(

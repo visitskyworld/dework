@@ -29,4 +29,8 @@ export class Organization extends Audit {
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public popular?: boolean;
 }

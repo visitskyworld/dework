@@ -1,5 +1,5 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Col, Row, Space, Typography } from "antd";
+import { Col, Divider, Row, Space, Typography } from "antd";
 import React, { FC } from "react";
 import { UserTaskBoard } from "../user/UserTaskBoard";
 import { siteTitle, siteDescription } from "../../../pages/copy";
@@ -11,8 +11,10 @@ interface Props {}
 export const LandingPage: FC<Props> = () => {
   const { user } = useAuthContext();
 
-  const projects = usePopularOrganizations();
-  console.log(projects);
+  const popularOrganizations = usePopularOrganizations() || [];
+  const popularProjects = popularOrganizations?.filter(
+    (org) => org.projects[0]
+  );
 
   if (!user)
     return (
@@ -26,9 +28,16 @@ export const LandingPage: FC<Props> = () => {
         <Typography.Paragraph style={{ textAlign: "center", width: "100%" }}>
           {siteDescription}
         </Typography.Paragraph>
+        <Divider />
+        <Typography.Title
+          level={2}
+          style={{ textAlign: "center", width: "100%" }}
+        >
+          Popular projects
+        </Typography.Title>
         <Row>
-          {projects?.map((project) => (
-            <Col span={12} offset={6}>
+          {popularProjects?.map((project) => (
+            <Col span={12} key={project.name}>
               <ProjectCard project={project} users={[]}></ProjectCard>
             </Col>
           ))}

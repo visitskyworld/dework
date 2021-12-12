@@ -68,7 +68,7 @@ export const organization = gql`
 
 export const popularOrganizations = gql`
   query GetPopularOrganizationsQuery {
-    organization: getPopularOrganizations {
+    popularOrganizations: getPopularOrganizations {
       ...OrganizationDetails
     }
   }

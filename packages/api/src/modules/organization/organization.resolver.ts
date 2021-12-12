@@ -110,7 +110,7 @@ export class OrganizationResolver {
 
   @Query(() => [Organization])
   public async getPopularOrganizations(): Promise<Organization[]> {
-    const organizations = await this.organizationService.findByPopularProject();
+    const organizations = await this.organizationService.findByPopularity();
     if (!organizations) throw new NotFoundException();
     return organizations;
   }
