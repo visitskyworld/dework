@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import _ from "lodash";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { inject } from "between";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 const Between = inject("0123456789");
 
@@ -20,6 +21,7 @@ export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
 export function useGroupedTasks(
   tasks: Task[]
 ): Record<TaskStatusEnum, TaskSection[]> {
+  const canUpdateTasks = usePermission("update", "Task");
   return useMemo(() => {
     return _(tasks)
       .filter((task) => !task.deletedAt)
@@ -28,7 +30,7 @@ export function useGroupedTasks(
         _.sortBy(tasksWithStatus, (task) => task.sortKey)
       )
       .mapValues((tasks, status) => {
-        if (status === TaskStatusEnum.TODO) {
+        if (status === TaskStatusEnum.TODO && canUpdateTasks) {
           const [claimed, unclaimed] = _.partition(
             tasks,
             (task) => !!task.assignees.length
@@ -44,7 +46,7 @@ export function useGroupedTasks(
         return [{ tasks }];
       })
       .value() as Record<TaskStatusEnum, TaskSection[]>;
-  }, [tasks]);
+  }, [tasks, canUpdateTasks]);
 }
 
 export function orderBetweenTasks(
