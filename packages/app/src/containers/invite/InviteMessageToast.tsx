@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { Button, message, Space, Typography } from "antd";
@@ -6,6 +6,10 @@ import { RouterContext } from "next/dist/shared/lib/router-context";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+
+const messageBottomStyle: CSSProperties = {
+  marginTop: "calc(100vh - 100px)",
+};
 
 export const InviteMessageToast: FC = () => {
   const router = useRouter();
@@ -22,7 +26,7 @@ export const InviteMessageToast: FC = () => {
       message.success({
         content: "Invite accepted!",
         type: "success",
-        style: { marginTop: "calc(100vh - 100px)" },
+        style: messageBottomStyle,
       });
     } else {
       router.push(`/auth?inviteId=${inviteId}&redirect=${router.asPath}`);
@@ -50,13 +54,10 @@ export const InviteMessageToast: FC = () => {
       ),
       duration: 0, // forever
       type: undefined as any,
-      style: { marginTop: "calc(100vh - 100px)" },
+      style: messageBottomStyle,
       onClick: () => message.destroy(),
     });
-    // }, [!!invite]);
   }, [invite, inviteId, router, handleAcceptInvite]);
 
   return null;
 };
-
-// http://localhost:3000/organization/090946a9-d575-4785-b7bf-08f616bd8bc3/project/f8348382-e249-4878-8d81-3d4e69b9843d?inviteId=dc741047-beb9-46f4-ae1f-fc86f9102996
