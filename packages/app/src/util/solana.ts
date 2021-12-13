@@ -32,10 +32,16 @@ export function useSignPhantomPayout(): (
 ) => Promise<RpcResponseAndContext<SignatureResult>> {
   return useCallback(async () => {
     // @ts-ignore
+    // const provider = await window.solana;
     const provider = await window.solana;
+    const connect = await provider.connect();
+    console.log("connect", connect.publicKey.toString());
+    
     const NETWORK = clusterApiUrl("mainnet-beta");
     console.log("NETWORK", NETWORK);
     const CONNECTION = new Connection(NETWORK);
+    console.log("provider", provider);
+    console.log("provider.publicKey", provider.publicKey);
     const transaction = new Transaction().add(
       ...[
         SystemProgram.transfer({
@@ -52,11 +58,12 @@ export function useSignPhantomPayout(): (
     ).blockhash;
     transaction.feePayer = provider.publicKey;
     // @ts-ignore
+    console.log("before signature");
     const { signature } = await window.solana.signAndSendTransaction(
       transaction
     );
-    const tx = await CONNECTION.confirmTransaction(signature);
     console.log("signature", signature);
+    const tx = await CONNECTION.confirmTransaction(signature);
     return signature;
   }, []);
 }

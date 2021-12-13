@@ -64,6 +64,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const userP = loadUserPaymentMethod({ variables: { id: user.id } });
 
       const project = await projectP.then((res) => res.data?.project);
+      console.log("project?.paymentMethod", project?.paymentMethod);
       if (!project?.paymentMethod) {
         throw new NoProjectPaymentMethodError();
       }
@@ -88,6 +89,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.PHANTOM: {
+          console.log("task.reward", task.reward);
+          console.log("address∏", userPaymentMethod.address);
           await signPhantomPayout(
             res.data.user.paymentMethod.address,
             reward.amount
