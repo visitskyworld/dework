@@ -15,6 +15,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
   const canAddMember = usePermission("create", "OrganizationMember");
+
   return (
     <PageHeader
       title={
@@ -30,18 +31,12 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
         !!project ? (
           <Row align="middle">
             <Avatar.Group maxCount={3} size="large">
-              {organization?.members.map((m, index) => (
-                <Link key={m.id} href={`/profile/${m.user.id}`}>
-                  <a>
-                    <UserAvatar
-                      user={m.user}
-                      style={index !== 0 ? { marginLeft: -24 } : undefined}
-                    />
-                  </a>
-                </Link>
+              {organization?.members.map((m) => (
+                <UserAvatar key={m.id} user={m.user} linkToProfile />
               ))}
             </Avatar.Group>
 
+            <div style={{ width: 24 }} />
             {canAddMember && (
               <InviteButton
                 organizationId={project?.organizationId}

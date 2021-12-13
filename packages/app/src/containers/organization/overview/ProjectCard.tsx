@@ -43,7 +43,7 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
           <Row align="middle">
             <Avatar.Group maxCount={3} style={{ flex: 1 }}>
               {users.map((user) => (
-                <UserAvatar key={user.id} user={user} />
+                <UserAvatar key={user.id} user={user} linkToProfile />
               ))}
             </Avatar.Group>
             <Tag className="bg-primary">2 open bounties</Tag>
