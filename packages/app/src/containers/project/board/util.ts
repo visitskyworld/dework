@@ -37,7 +37,7 @@ export function useGroupedTasks(
           );
           if (!!claimed.length) {
             return [
-              { title: "Claimed", tasks: claimed },
+              { title: "Open claim requests", tasks: claimed },
               { title: "Unclaimed", tasks: unclaimed },
             ];
           }
