@@ -5,8 +5,8 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { InviteButton } from "../../invite/InviteButton";
-import { BreadCrumb } from "../../navigation/BreadCrumb";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
+import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 
 interface Props {
   projectId: string;
@@ -70,7 +70,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
           <Skeleton.Avatar active size="large" />
         )
       }
-      breadcrumb={<BreadCrumb routes={routes} />}
+      breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
     />
   );
 };

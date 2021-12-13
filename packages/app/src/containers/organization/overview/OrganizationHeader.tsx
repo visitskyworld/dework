@@ -2,8 +2,8 @@ import { Menu, PageHeader, Skeleton, Typography } from "antd";
 import React, { FC, useMemo } from "react";
 import { useOrganization } from "../hooks";
 import Link from "next/link";
-import { BreadCrumb } from "../../navigation/BreadCrumb";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
+import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 
 export enum OrganizationHeaderTab {
   projects = "projects",
@@ -52,7 +52,7 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
-      breadcrumb={<BreadCrumb routes={routes} />}
+      breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
       tags={
         <Skeleton
           loading={loading}

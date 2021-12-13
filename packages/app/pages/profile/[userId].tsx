@@ -4,8 +4,8 @@ import { Layout, PageHeader } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { UserProfile } from "@dewo/app/containers/user/UserProfile";
-import { BreadCrumb } from "@dewo/app/containers/navigation/BreadCrumb";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
+import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
 
 const Page: NextPage = () => {
   let userId = useRouter().query.userId as string;
@@ -31,7 +31,7 @@ const Page: NextPage = () => {
       <Layout.Content>
         <PageHeader
           style={{ marginTop: 40 }}
-          breadcrumb={<BreadCrumb routes={routes} />}
+          breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
         />
         <UserProfile userId={userId} />
       </Layout.Content>
