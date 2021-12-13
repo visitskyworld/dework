@@ -36,7 +36,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
             icon={<Icons.LockOutlined />}
             onClick={navigateToTask}
           >
-            Pick contributor
+            Pick applicant
           </Button>
         );
       }

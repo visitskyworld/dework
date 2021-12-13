@@ -36,10 +36,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
       className="dewo-card-highlighted"
       style={{ marginTop: 16, marginBottom: 24 }}
     >
-      <Typography.Text strong>
-        Review contributors wanting to help with this task
-      </Typography.Text>
-
+      <Typography.Text strong>Assign a contributor</Typography.Text>
       {task?.assignees.map((user) => (
         <List.Item
           actions={[

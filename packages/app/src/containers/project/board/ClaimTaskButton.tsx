@@ -57,7 +57,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
               style={{ alignItems: "center", maxWidth: 120 }}
             >
               <Typography.Text style={{ textAlign: "center" }}>
-                You've requested to claim this task
+                You've applied to claim this task
               </Typography.Text>
               <Button
                 size="small"
@@ -79,7 +79,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
           icon={<Icons.UnlockOutlined />}
           onClick={handleClaimTask}
         >
-          Claim
+          Apply
         </Button>
       )}
       <Modal
@@ -88,7 +88,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
         onOk={hideClaimConfirmation}
         onCancel={hideClaimConfirmation}
       >
-        Congratulations - you've just sent a claim request to the task owner!
+        Congratulations - you've just applied to claim the task!
         <br />
         <br />
         You will recieve a Discord notification if you get choosen for the task.
