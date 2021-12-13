@@ -1,27 +1,37 @@
 import React from "react";
 import { NextPage } from "next";
-import { Layout, Tabs } from "antd";
+import { Layout } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { UserProfile } from "@dewo/app/containers/user/UserProfile";
-import { UserTaskBoard } from "@dewo/app/containers/user/UserTaskBoard";
+// import { UserTaskBoard } from "@dewo/app/containers/user/UserTaskBoard";
 
 const Page: NextPage = () => {
   const userId = useRouter().query.userId as string;
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ marginTop: 40 }}>
         <UserProfile userId={userId} />
-        <Tabs defaultActiveKey="board" centered>
+        {/* <Layout.Content
+          className="mx-auto"
+          style={{ maxWidth: 300 * 4 + (3 + 2) * 16 }}
+        >
+          <UserTaskBoard userId={userId} />
+        </Layout.Content> */}
+
+        {/* <Tabs defaultActiveKey="board" centered>
           <Tabs.TabPane tab="Activity" key="activity"></Tabs.TabPane>
           <Tabs.TabPane tab="Board" key="board">
-            <Layout.Content className="max-w-lg mx-auto">
+            <Layout.Content
+              className="mx-auto"
+              style={{ maxWidth: 300 * 4 + (3 + 2) * 16 }}
+            >
               <UserTaskBoard userId={userId} />
             </Layout.Content>
           </Tabs.TabPane>
           <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
-        </Tabs>
+        </Tabs> */}
       </Layout.Content>
     </Layout>
   );

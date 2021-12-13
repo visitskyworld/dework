@@ -56,7 +56,15 @@ export const LandingPage: FC = () => {
     );
 
   return (
-    <Space direction="vertical">
+    <Space
+      direction="vertical"
+      className="mx-auto"
+      style={{
+        display: "block",
+        marginTop: 40,
+        maxWidth: 300 * 4 + (3 + 2) * 16,
+      }}
+    >
       <Typography.Title
         level={3}
         style={{ textAlign: "center", width: "100%" }}
