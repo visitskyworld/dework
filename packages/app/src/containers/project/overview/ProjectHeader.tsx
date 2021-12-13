@@ -1,9 +1,11 @@
-import { Avatar, PageHeader, Skeleton, Typography } from "antd";
+import { Avatar, PageHeader, Row, Skeleton, Typography } from "antd";
 import React, { FC } from "react";
 import { useProject } from "../hooks";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { InviteButton } from "../../invite/InviteButton";
 
 interface Props {
   projectId: string;
@@ -12,6 +14,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
+  const canAddMember = usePermission("create", "OrganizationMember");
   return (
     <PageHeader
       title={
@@ -25,19 +28,27 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       }
       subTitle={
         !!project ? (
-          <Avatar.Group maxCount={3} size="large">
-            {organization?.members.map((m, index) => (
-              <Link href={`/profile/${m.user.id}`}>
-                <a>
-                  <UserAvatar
-                    key={m.id}
-                    user={m.user}
-                    style={index !== 0 ? { marginLeft: -24 } : undefined}
-                  />
-                </a>
-              </Link>
-            ))}
-          </Avatar.Group>
+          <Row align="middle">
+            <Avatar.Group maxCount={3} size="large">
+              {organization?.members.map((m, index) => (
+                <Link key={m.id} href={`/profile/${m.user.id}`}>
+                  <a>
+                    <UserAvatar
+                      user={m.user}
+                      style={index !== 0 ? { marginLeft: -24 } : undefined}
+                    />
+                  </a>
+                </Link>
+              ))}
+            </Avatar.Group>
+
+            {canAddMember && (
+              <InviteButton
+                organizationId={project?.organizationId}
+                projectId={projectId}
+              />
+            )}
+          </Row>
         ) : (
           <Skeleton.Avatar active size="large" />
         )

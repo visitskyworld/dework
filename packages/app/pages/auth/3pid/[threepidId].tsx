@@ -25,7 +25,7 @@ const Auth: NextPage = () => {
       if (!!state.inviteId) {
         await acceptInvite(state.inviteId);
       }
-      await router.push("/");
+      await router.push(state.redirect ?? "/");
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { Args, Context, Mutation } from "@nestjs/graphql";
+import { Args, Context, Query, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -27,5 +27,12 @@ export class InviteResolver {
     @Args("id", { type: () => GraphQLUUID }) inviteId: string
   ): Promise<Invite> {
     return this.inviteService.accept(inviteId, user);
+  }
+
+  @Query(() => Invite, { nullable: true })
+  public async getInvite(
+    @Args("id", { type: () => GraphQLUUID }) inviteId: string
+  ): Promise<Invite | undefined> {
+    return this.inviteService.findById(inviteId);
   }
 }

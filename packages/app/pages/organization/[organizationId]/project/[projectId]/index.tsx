@@ -17,6 +17,7 @@ const Page: NextPage = () => {
     [router, organizationId, projectId]
   );
   const project = useProject(projectId);
+
   return (
     <Layout>
       <Sidebar />

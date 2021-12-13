@@ -1302,6 +1302,44 @@ export interface GetProjectIntegrationsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetInviteQuery
+// ====================================================
+
+export interface GetInviteQuery_invite_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface GetInviteQuery_invite_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+}
+
+export interface GetInviteQuery_invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: GetInviteQuery_invite_inviter;
+  organization: GetInviteQuery_invite_organization | null;
+}
+
+export interface GetInviteQuery {
+  invite: GetInviteQuery_invite | null;
+}
+
+export interface GetInviteQueryVariables {
+  inviteId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
@@ -1760,6 +1798,36 @@ export interface ProjectDetails {
   paymentMethod: ProjectDetails_paymentMethod | null;
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Invite
+// ====================================================
+
+export interface Invite_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string | null;
+  imageUrl: string | null;
+}
+
+export interface Invite_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+}
+
+export interface Invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: Invite_inviter;
+  organization: Invite_organization | null;
 }
 
 /* tslint:disable */

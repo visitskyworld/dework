@@ -26,6 +26,7 @@ import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -57,6 +58,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         <AuthProvider authenticated={authenticated}>
           <PermissionsProvider>
             <Component {...pageProps} />
+            <InviteMessageToast />
           </PermissionsProvider>
         </AuthProvider>
       </ApolloProvider>

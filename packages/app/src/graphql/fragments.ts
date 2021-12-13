@@ -164,3 +164,18 @@ export const projectDetails = gql`
   ${task}
   ${taskTag}
 `;
+
+export const invite = gql`
+  fragment Invite on Invite {
+    id
+    inviter {
+      ...User
+    }
+    organization {
+      ...Organization
+    }
+  }
+
+  ${user}
+  ${organization}
+`;

@@ -170,3 +170,13 @@ export const projectIntegrations = gql`
 
   ${Fragments.projectIntegration}
 `;
+
+export const invite = gql`
+  query GetInviteQuery($inviteId: UUID!) {
+    invite: getInvite(id: $inviteId) {
+      ...Invite
+    }
+  }
+
+  ${Fragments.invite}
+`;

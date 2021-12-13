@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -7,8 +7,22 @@ import {
   CreateInviteMutationVariables,
   AcceptInviteMutation,
   AcceptInviteMutationVariables,
+  GetInviteQuery,
+  GetInviteQueryVariables,
+  Invite,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+
+export function useInvite(inviteId: string | undefined): Invite | undefined {
+  const { data } = useQuery<GetInviteQuery, GetInviteQueryVariables>(
+    Queries.invite,
+    {
+      variables: { inviteId: inviteId! },
+      skip: !inviteId,
+    }
+  );
+  return data?.invite ?? undefined;
+}
 
 export function useCreateInvite(): (
   input: CreateInviteInput
