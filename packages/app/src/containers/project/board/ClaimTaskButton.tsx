@@ -59,11 +59,14 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
       )}
       <Modal
         visible={showClaimEducation.value}
-        okText="Claim Task"
+        okText="Sounds good!"
         onOk={handleClaimTask}
         onCancel={hideClaimConfirmation}
       >
-        Education on wth just happened
+         Congratulations - you've just sent a claim request to the task owner!
+        <br />
+        <br />
+        You will recieve a Discord notification if you get choosen for the task.
       </Modal>
     </>
   );
