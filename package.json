@@ -14,7 +14,9 @@
     "app": "yarn workspace @dewo/app",
     "api": "yarn workspace @dewo/api",
     "deploy:api:demo": "./packages/scripts/deploy-api-demo.sh",
-    "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh"
+    "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
+    "deploy:api:prod": "./packages/scripts/deploy-api-prod.sh",
+    "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.24.0",
