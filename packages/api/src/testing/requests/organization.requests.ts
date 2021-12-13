@@ -27,7 +27,7 @@ export class OrganizationRequests {
       }
     }
 
-    ${this.organizationMemberFragment}
+    ${OrganizationRequests.organizationMemberFragment}
   `;
 
   public static create(
