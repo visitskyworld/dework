@@ -32,6 +32,8 @@ import {
   UserTasksQueryVariables,
   ClaimTaskMutation,
   ClaimTaskMutationVariables,
+  UnclaimTaskMutation,
+  UnclaimTaskMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -140,11 +142,35 @@ export function useClaimTask(): (task: Task) => Promise<Task> {
   );
   return useCallback(
     async (task) => {
-      console.warn("claim task...", task);
       const res = await mutation({
         variables: { taskId: task.id },
         optimisticResponse: {
           task: { ...task, assignees: [...task.assignees, user] } as Task,
+        },
+      });
+
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.task;
+    },
+    [mutation, user]
+  );
+}
+
+export function useUnclaimTask(): (task: Task) => Promise<Task> {
+  const { user } = useAuthContext();
+  const [mutation] = useMutation<
+    UnclaimTaskMutation,
+    UnclaimTaskMutationVariables
+  >(Mutations.unclaimTask);
+  return useCallback(
+    async (task) => {
+      const res = await mutation({
+        variables: { taskId: task.id },
+        optimisticResponse: {
+          task: {
+            ...task,
+            assignees: task.assignees.filter((a) => a.id !== user?.id),
+          } as Task,
         },
       });
 

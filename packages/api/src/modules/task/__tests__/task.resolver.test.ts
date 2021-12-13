@@ -196,6 +196,29 @@ describe("TaskResolver", () => {
       });
     });
 
+    describe("unclaimTask", () => {
+      it("should succeed and unassign the user to the task", async () => {
+        const user = await fixtures.createUser();
+        const task = await fixtures.createTask({
+          status: TaskStatusEnum.TODO,
+          assignees: [user],
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.unclaim(task.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.task;
+        expect(fetched.assignees).toHaveLength(0);
+        expect(fetched.assignees).not.toContainEqual(
+          expect.objectContaining({ id: user.id })
+        );
+      });
+    });
+
     describe("deleteTask", () => {
       it("should set task.deletedAt", async () => {
         const { user, project } = await fixtures.createUserOrgProject();

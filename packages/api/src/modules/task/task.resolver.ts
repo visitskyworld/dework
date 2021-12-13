@@ -66,6 +66,20 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
+  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  // @UseAbility(Actions.update, Task, [
+  //   TaskService,
+  //   (service: TaskService, { params }) => service.findById(params.id),
+  // ])
+  public async unclaimTask(
+    @Context("user") user: User,
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<Task> {
+    return this.taskService.unclaim(id, user);
+  }
+
+  @Mutation(() => Task)
   @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
   @UseAbility(Actions.update, Task, [
     TaskService,

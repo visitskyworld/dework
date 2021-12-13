@@ -37,6 +37,15 @@ export class TaskService {
     return this.findById(taskId) as Promise<Task>;
   }
 
+  public async unclaim(taskId: string, user: User): Promise<Task> {
+    const task = await this.taskRepo.findOne(taskId);
+    if (!task) throw new NotFoundException();
+    if (!task.assignees.map((a) => a.id).includes(user.id)) return task;
+    task.assignees = task.assignees.filter((a) => a.id !== user.id);
+    await this.update(task);
+    return this.findById(taskId) as Promise<Task>;
+  }
+
   public async findById(id: string): Promise<Task | undefined> {
     return this.taskRepo.findOne(id);
   }

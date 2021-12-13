@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
-import { Button, Modal } from "antd";
+import { Button, Modal, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useClaimTask } from "../../task/hooks";
+import { useClaimTask, useUnclaimTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useToggle } from "@dewo/app/util/hooks";
 
@@ -21,19 +21,22 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const showClaimEducation = useToggle();
 
   const claimTask = useClaimTask();
-  const handleClaimTask = useCallback(async () => {
-    await claimTask(task);
-    showClaimEducation.onToggleOff();
-  }, [claimTask, task, showClaimEducation]);
-
-  const showClaimConfirmation = useCallback(
-    (event) => {
+  const unclaimTask = useUnclaimTask();
+  const handleClaimTask = useCallback(
+    async (event) => {
       eatClick(event);
+      await claimTask(task);
       showClaimEducation.onToggleOn();
     },
-    [showClaimEducation]
+    [claimTask, task, showClaimEducation]
   );
-
+  const handleUnclaimTask = useCallback(
+    async (event) => {
+      eatClick(event);
+      unclaimTask(task);
+    },
+    [unclaimTask, task]
+  );
   const hideClaimConfirmation = useCallback(
     (event) => {
       eatClick(event);
@@ -45,14 +48,36 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   return (
     <>
       {hasClaimedTask ? (
-        <Button size="small" disabled icon={<Icons.LockOutlined />}>
-          Requested
-        </Button>
+        <Tooltip
+          placement="bottom"
+          title={
+            <Space
+              direction="vertical"
+              size="small"
+              style={{ alignItems: "center", maxWidth: 120 }}
+            >
+              <Typography.Text style={{ textAlign: "center" }}>
+                You've requested to claim this task
+              </Typography.Text>
+              <Button
+                size="small"
+                onClick={handleUnclaimTask}
+                icon={<Icons.UnlockOutlined />}
+              >
+                Unclaim
+              </Button>
+            </Space>
+          }
+        >
+          <Button size="small" disabled icon={<Icons.LockOutlined />}>
+            Requested
+          </Button>
+        </Tooltip>
       ) : (
         <Button
           size="small"
           icon={<Icons.UnlockOutlined />}
-          onClick={showClaimConfirmation}
+          onClick={handleClaimTask}
         >
           Claim
         </Button>
@@ -60,10 +85,10 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
       <Modal
         visible={showClaimEducation.value}
         okText="Sounds good!"
-        onOk={handleClaimTask}
+        onOk={hideClaimConfirmation}
         onCancel={hideClaimConfirmation}
       >
-         Congratulations - you've just sent a claim request to the task owner!
+        Congratulations - you've just sent a claim request to the task owner!
         <br />
         <br />
         You will recieve a Discord notification if you get choosen for the task.

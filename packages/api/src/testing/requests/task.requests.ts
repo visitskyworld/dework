@@ -78,6 +78,23 @@ export class TaskRequests {
     };
   }
 
+  public static unclaim(
+    taskId: string
+  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    return {
+      query: `
+        mutation UnclaimTask($taskId: UUID!) {
+          task: unclaimTask(id: $taskId) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { taskId },
+    };
+  }
+
   public static delete(
     taskId: string
   ): GraphQLTestClientRequestBody<{ taskId: string }> {
