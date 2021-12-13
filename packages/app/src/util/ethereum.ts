@@ -43,7 +43,7 @@ export function useSignPayout(): (
       return signer.sendTransaction({
         to: toAddress,
         from: signer.getAddress(),
-        value: ethers.utils.parseEther(String(amount / 10e9)),
+        value: ethers.utils.parseEther(String(amount)),
       });
     },
     [requestSigner]

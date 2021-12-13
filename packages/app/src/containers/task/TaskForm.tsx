@@ -250,7 +250,16 @@ export function TaskForm<
                   placeholder="Enter amount"
                   value={values.reward?.amount}
                   addonAfter={
-                    <Form.Item name={["reward", "currency"]} noStyle>
+                    <Form.Item
+                      name={["reward", "currency"]}
+                      noStyle
+                      rules={[
+                        {
+                          required: !!values.reward?.amount,
+                          message: "Select a currency",
+                        },
+                      ]}
+                    >
                       <Select style={{ minWidth: 70 }} placeholder="Currency">
                         <Select.Option value="ETH">ETH</Select.Option>
                         <Select.Option value="USDC">USDC</Select.Option>

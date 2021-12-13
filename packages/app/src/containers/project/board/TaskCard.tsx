@@ -9,6 +9,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
+import { PayAndCloseButton } from "./PayAndCloseButton";
 
 interface TaskCardProps {
   task: Task;
@@ -19,28 +20,13 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
 
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
-
-  const updateTask = useUpdateTask();
-
-  // TODO
-  const handlePay = usePay(undefined);
-  const handlePayAndClose = useCallback(
-    async (event) => {
-      eatClick(event);
-      const receiver = task.assignees[0];
-      await handlePay(receiver.id, task.reward!);
-      await updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
-    },
-    [updateTask, handlePay, task]
-  );
-
   const button = useMemo(() => {
-    if (task.status === TaskStatusEnum.IN_REVIEW && canUpdateTask) {
-      return (
-        <Button size="small" type="primary" onClick={handlePayAndClose}>
-          Pay and Close
-        </Button>
-      );
+    if (
+      task.status === TaskStatusEnum.IN_REVIEW &&
+      !!task.reward &&
+      canUpdateTask
+    ) {
+      return <PayAndCloseButton task={task} />;
     }
 
     if (task.status === TaskStatusEnum.TODO) {
@@ -63,7 +49,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
     }
 
     return null;
-  }, [task, navigateToTask, handlePayAndClose, canClaimTask, canUpdateTask]);
+  }, [task, navigateToTask, canClaimTask, canUpdateTask]);
 
   return (
     <Card size="small" onClick={navigateToTask}>
@@ -78,7 +64,13 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
           </Row>
           <Row>
             {!!task.reward && (
-              <Tag className="bg-primary" style={{ marginBottom: 4 }}>
+              <Tag
+                style={{
+                  marginBottom: 4,
+                  backgroundColor: "white",
+                  color: "black",
+                }}
+              >
                 <Icons.DollarOutlined />
                 <span>
                   {task.reward.amount} {task.reward.currency}
@@ -87,7 +79,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
             )}
             {task.tags.map(({ label, color }, index) => (
               <Tag key={index} color={color} style={{ marginBottom: 4 }}>
-                {/* <Tag key={index} color={`#${color}`} style={{ color: "black" }}> */}
                 {label}
               </Tag>
             ))}

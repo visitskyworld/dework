@@ -1,13 +1,20 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
+import { task } from "@dewo/app/graphql/fragments";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
+  GetProjectQuery,
+  GetProjectQueryVariables,
   PaymentMethod,
   PaymentMethodType,
+  Task,
   TaskReward,
+  User,
+  UserPaymentMethodQuery,
+  UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useSignPayout as useSignMetamaskPayout } from "@dewo/app/util/ethereum";
 import { useCallback } from "react";
@@ -32,38 +39,59 @@ export function useCreatePaymentMethod(): (
   );
 }
 
-export function usePay(
-  paymentMethod: PaymentMethod | undefined
-): (userId: string, reward: TaskReward) => Promise<void> {
+export class NoProjectPaymentMethodError extends Error {}
+export class NoUserPaymentMethodError extends Error {}
+
+export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const signMetamaskPayout = useSignMetamaskPayout();
-  const [loadUserPaymentMethod] = useLazyQuery(Queries.userPaymentMethod);
+  const [loadUserPaymentMethod] = useLazyQuery<
+    UserPaymentMethodQuery,
+    UserPaymentMethodQueryVariables
+  >(Queries.userPaymentMethod);
+  const [loadProjectPaymentMethod] = useLazyQuery<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >(Queries.project);
   return useCallback(
-    async (userId: string, reward: TaskReward) => {
-      if (!paymentMethod) {
-        throw new Error("No payment method selected");
+    async (task: Task, user: User) => {
+      if (!task.reward) throw new Error("Task has no reward, so cannot pay");
+
+      const projectP = loadProjectPaymentMethod({
+        variables: { projectId: task.projectId },
+      });
+
+      const userP = loadUserPaymentMethod({ variables: { id: user.id } });
+
+      const project = await projectP.then((res) => res.data?.project);
+      if (!project?.paymentMethod) {
+        throw new NoProjectPaymentMethodError();
       }
 
-      const res = await loadUserPaymentMethod({ variables: { id: userId } });
-      if (!res.data?.user.paymentMethod) {
-        throw new Error("User has no payment method");
+      const userPaymentMethod = await userP.then(
+        (res) => res.data?.user.paymentMethod
+      );
+      if (!userPaymentMethod) {
+        throw new NoUserPaymentMethodError();
       }
 
-      switch (paymentMethod.type) {
+      switch (project.paymentMethod.type) {
         case PaymentMethodType.METAMASK: {
-          if (reward.currency === "ETH") {
+          if (task.reward.currency === "ETH") {
             await signMetamaskPayout(
-              res.data.user.paymentMethod.address,
-              reward.amount
+              userPaymentMethod.address,
+              task.reward.amount
             );
           } else {
-            throw new Error(`Unknown reward currency: ${reward.currency}`);
+            throw new Error(`Unknown reward currency: ${task.reward.currency}`);
           }
           break;
         }
         default:
-          throw new Error(`Unknown payment method: "${paymentMethod.type}"`);
+          throw new Error(
+            `Unknown payment method: "${project.paymentMethod.type}"`
+          );
       }
     },
-    [paymentMethod, loadUserPaymentMethod, signMetamaskPayout]
+    [loadUserPaymentMethod, loadProjectPaymentMethod, signMetamaskPayout]
   );
 }
