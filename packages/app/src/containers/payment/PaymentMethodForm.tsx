@@ -57,9 +57,7 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
         break;
       }
       case PaymentMethodType.PHANTOM: {
-        console.log("inside");
         const address = await requestSolanaAddress();
-        console.log("address", address);
         formRef.current?.setFieldsValue({ address });
         break;
       }
@@ -77,7 +75,6 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
 
   const [loading, setLoading] = useState(false);
   const createPaymentMethod = useCreatePaymentMethod();
-  console.log("values", values);
   const submitForm = useCallback(
     async (values: CreatePaymentMethodInput) => {
       try {

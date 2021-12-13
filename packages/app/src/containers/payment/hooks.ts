@@ -53,6 +53,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     GetProjectQuery,
     GetProjectQueryVariables
   >(Queries.project);
+
   return useCallback(
     async (task: Task, user: User) => {
       if (!task.reward) throw new Error("Task has no reward, so cannot pay");
@@ -60,11 +61,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const projectP = loadProjectPaymentMethod({
         variables: { projectId: task.projectId },
       });
-
       const userP = loadUserPaymentMethod({ variables: { id: user.id } });
-
       const project = await projectP.then((res) => res.data?.project);
-      console.log("project?.paymentMethod", project?.paymentMethod);
       if (!project?.paymentMethod) {
         throw new NoProjectPaymentMethodError();
       }
@@ -75,7 +73,6 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       if (!userPaymentMethod) {
         throw new NoUserPaymentMethodError();
       }
-
       switch (project.paymentMethod.type) {
         case PaymentMethodType.METAMASK: {
           if (task.reward.currency === "ETH") {
@@ -89,12 +86,11 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.PHANTOM: {
-          console.log("task.reward", task.reward);
-          console.log("address∏", userPaymentMethod.address);
           await signPhantomPayout(
-            res.data.user.paymentMethod.address,
-            reward.amount
+            userPaymentMethod.address,
+            task.reward.amount
           );
+          break;
         }
         default:
           throw new Error(
@@ -102,6 +98,11 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           );
       }
     },
-    [loadUserPaymentMethod, loadProjectPaymentMethod, signMetamaskPayout]
+    [
+      loadUserPaymentMethod,
+      loadProjectPaymentMethod,
+      signMetamaskPayout,
+      signPhantomPayout,
+    ]
   );
 }
