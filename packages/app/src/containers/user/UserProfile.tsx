@@ -57,7 +57,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   return (
     <Col className="mx-auto max-w-sm" style={{ marginBottom: 48 }}>
       <Space size="large" align="start" style={{ width: "100%" }}>
-        <UserAvatar user={user} size={128} />
+        <UserAvatar user={user} size={96} />
         <Space direction="vertical">
           <Typography.Title
             level={3}
