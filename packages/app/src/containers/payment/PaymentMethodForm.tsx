@@ -20,7 +20,7 @@ interface Props {
 
 const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.METAMASK,
-  PaymentMethodType.GNOSIS_SAFE,
+  // PaymentMethodType.GNOSIS_SAFE,
 ];
 
 export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
