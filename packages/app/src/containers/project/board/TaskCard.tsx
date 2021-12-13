@@ -1,10 +1,8 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
-import { useUpdateTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
-import { usePay } from "../../payment/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";

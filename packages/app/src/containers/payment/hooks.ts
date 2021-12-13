@@ -1,5 +1,4 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { task } from "@dewo/app/graphql/fragments";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -11,7 +10,6 @@ import {
   PaymentMethod,
   PaymentMethodType,
   Task,
-  TaskReward,
   User,
   UserPaymentMethodQuery,
   UserPaymentMethodQueryVariables,
