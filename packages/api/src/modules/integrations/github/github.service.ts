@@ -37,8 +37,8 @@ export class GithubPullRequestService {
     taskId: string
   ): Promise<GithubPullRequest | undefined> {
     return this.githubPullRequestRepo
-      .createQueryBuilder("github_pr")
-      .where("github_pr.taskId = :taskId", { taskId: taskId })
+      .createQueryBuilder("github_pull_request")
+      .where("github_pull_request.taskId = :taskId", { taskId: taskId })
       .getOne();
   }
 

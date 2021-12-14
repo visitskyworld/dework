@@ -18,7 +18,7 @@ import { PaymentModule } from "../payment/payment.module";
 import { Roles } from "./app.roles";
 import { User } from "@dewo/api/models/User";
 import { SubscriptionModule } from "../subscription/subscription.module";
-import { GithubPullRequestModule } from "../githubPullRequest/githubPullRequest.module";
+import { GithubIntegrationModule } from "../integrations/github/github.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -46,7 +46,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   ProjectModule,
   TaskModule,
   InviteModule,
-  GithubPullRequestModule,
+  GithubIntegrationModule,
   DiscordIntegrationModule,
   PaymentModule,
   SubscriptionModule,

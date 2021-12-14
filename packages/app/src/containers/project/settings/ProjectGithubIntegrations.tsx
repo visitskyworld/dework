@@ -55,7 +55,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
         <Typography.Paragraph disabled style={{ marginTop: 4 }}>
           <Icons.InfoCircleOutlined />
           {` ${siteTitle} tickets will auto-link pull requests if you reference
-          the ticket ID in the PR description.`}
+          the ticket ID in the PR name like so: feat/dw-115/feature-name.`}
         </Typography.Paragraph>
       </>
     );

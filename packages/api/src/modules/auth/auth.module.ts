@@ -11,8 +11,6 @@ import { ThreepidModule } from "../threepid/threepid.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
 import { ProjectModule } from "../project/project.module";
-import { TaskModule } from "../task/task.module";
-import { GithubPullRequestModule } from "../githubPullRequest/githubPullRequest.module";
 
 @Global()
 @Module({
@@ -35,8 +33,6 @@ export class GlobalJwtModule {}
     PassportModule.register({ defaultStrategy: "jwt" }),
     ThreepidModule,
     ProjectModule,
-    TaskModule,
-    GithubPullRequestModule,
   ],
   providers: [GithubStrategy, DiscordStrategy],
   controllers: [AuthController],
