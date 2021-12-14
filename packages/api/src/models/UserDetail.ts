@@ -1,24 +1,22 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { User } from "discord.js";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
+import { User } from "./User";
 
-export enum UserDetailKey {
+export enum UserDetailType {
   twitter,
   linkedin,
   country,
 }
 
-registerEnumType(UserDetailKey, {
-  name: "UserDetailKey",
-});
+registerEnumType(UserDetailType, { name: "UserDetailType" });
 
 @Entity()
 @ObjectType()
 export class UserDetail extends Audit {
-  @Column({ length: 1024 })
-  @Field()
-  public type!: UserDetailKey;
+  @Column({ enum: UserDetailType })
+  @Field(() => UserDetailType)
+  public type!: UserDetailType;
 
   @Column({ length: 1024 })
   @Field()
