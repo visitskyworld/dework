@@ -42,6 +42,7 @@ export interface UpdateUserMutation_user_organizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface UpdateUserMutation_user_threepids {
@@ -90,6 +91,7 @@ export interface CreateOrganizationMutation_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface CreateOrganizationMutation {
@@ -198,6 +200,7 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -226,6 +229,7 @@ export interface CreateProjectMutation_project_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
@@ -234,6 +238,7 @@ export interface CreateProjectMutation_project_organization {
 export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -269,6 +274,7 @@ export interface UpdateProjectMutation_project_paymentMethod {
 export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -780,6 +786,7 @@ export interface MeQuery_me_organizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface MeQuery_me_threepids {
@@ -824,6 +831,7 @@ export interface UserProfileQuery_user_organizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface UserProfileQuery_user {
@@ -989,6 +997,7 @@ export interface GetOrganizationQuery_organization_projects_paymentMethod {
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -1017,6 +1026,7 @@ export interface GetOrganizationQuery_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
@@ -1049,6 +1059,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -1077,6 +1088,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
@@ -1196,6 +1208,7 @@ export interface GetProjectQuery_project_paymentMethod {
 export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -1469,6 +1482,7 @@ export interface GetInviteQuery_invite_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface GetInviteQuery_invite {
@@ -1660,6 +1674,7 @@ export interface Organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 /* tslint:disable */
@@ -1722,6 +1737,7 @@ export interface Project_paymentMethod {
 export interface Project {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -1835,6 +1851,7 @@ export interface UserProfile_organizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface UserProfile {
@@ -1860,6 +1877,7 @@ export interface UserDetails_organizations {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface UserDetails_threepids {
@@ -1905,6 +1923,7 @@ export interface OrganizationDetails_projects_paymentMethod {
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -1933,6 +1952,7 @@ export interface OrganizationDetails {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
@@ -2015,6 +2035,7 @@ export interface ProjectDetails_taskTags {
 export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
+  slug: string;
   name: string;
   organizationId: string;
   taskCount: number;
@@ -2045,6 +2066,7 @@ export interface Invite_organization {
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
+  slug: string;
 }
 
 export interface Invite {
@@ -2127,6 +2149,7 @@ export interface CreateTaskInput {
   projectId: Scalar.UUID;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
+  ownerId?: Scalar.UUID | null;
   status: TaskStatusEnum;
   reward?: UpdateTaskRewardInput | null;
 }

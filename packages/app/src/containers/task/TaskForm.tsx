@@ -283,14 +283,14 @@ export function TaskForm<
             </Select>
           </Form.Item>
 
-          <Form.Item name="ownerId" label="Owner">
+          <Form.Item name="ownerId" label="Reviewer">
             <Select
               showSearch
               loading={!ownerOptions}
               disabled={!canEdit}
               allowClear
               optionFilterProp="label"
-              placeholder="No task owner..."
+              placeholder="No task reviewer..."
             >
               {ownerOptions?.map((user) => (
                 <Select.Option value={user.id} label={user.username}>

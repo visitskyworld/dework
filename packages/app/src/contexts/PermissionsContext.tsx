@@ -1,5 +1,4 @@
 import * as Queries from "@dewo/app/graphql/queries";
-import { useRouter } from "next/router";
 import React, {
   createContext,
   FC,

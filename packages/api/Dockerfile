@@ -18,6 +18,7 @@ RUN apk --no-cache --virtual build-dependencies add \
 COPY tsconfig.base.json .
 COPY packages/api/tsconfig.json packages/api/
 COPY packages/api/src packages/api/src
+COPY packages/api/types packages/api/types
 RUN yarn api build
 
 ###

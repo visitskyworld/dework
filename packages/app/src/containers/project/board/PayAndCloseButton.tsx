@@ -69,7 +69,7 @@ export const PayAndCloseButton: FC<Props> = ({ task }) => {
         setLoading(false);
       }
     },
-    [task, router, organizationId, payTaskReward, updateTask]
+    [task, router, payTaskReward, updateTask]
   );
   return (
     <Button

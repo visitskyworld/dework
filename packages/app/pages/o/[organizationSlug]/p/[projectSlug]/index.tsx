@@ -22,6 +22,11 @@ const Page: NextPage = () => {
   );
   const project = useProject(projId);
 
+  if (!projId) {
+    router.replace("/");
+    return null;
+  }
+
   return (
     <Layout>
       <Sidebar />

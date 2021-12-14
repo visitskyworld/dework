@@ -8,9 +8,15 @@ import {
 } from "@dewo/app/containers/organization/overview/OrganizationHeader";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { useRouter } from "next/router";
 
 const Page: NextPage = () => {
+  const router = useRouter();
   const organizationId = useParseIdFromSlug("organizationSlug");
+  if (!organizationId) {
+    router.replace("/");
+    return null;
+  }
   return (
     <Layout>
       <Sidebar />

@@ -23,8 +23,10 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
       const inviteId = await createInvite({ organizationId });
       setInviteId(inviteId);
       const inviteLink = !!proj
-        ? `${window.location.origin}/o/${org.slug}/p/${proj.slug}?inviteId=${inviteId}`
-        : `${window.location.origin}/o/${org.slug}?inviteId=${inviteId}`;
+        ? `${window.location.origin}/o/${org!.slug}/p/${
+            proj!.slug
+          }?inviteId=${inviteId}`
+        : `${window.location.origin}/o/${org!.slug}?inviteId=${inviteId}`;
 
       const el = document.createElement("textarea");
       el.value = inviteId;
@@ -35,8 +37,9 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
     } finally {
       setLoading(false);
     }
-  }, [createInvite, organizationId, projectId, org?.slug, proj?.slug]);
+  }, [createInvite, organizationId, org, proj]);
 
+  if (!org || !proj) return null;
   if (!!inviteId) {
     return <Alert message="Invite link copied" type="success" showIcon />;
   }
