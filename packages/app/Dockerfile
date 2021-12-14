@@ -11,6 +11,7 @@ RUN yarn app install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
 
+COPY packages/types packages/types
 COPY packages/app/public packages/app/public
 COPY packages/app/styles packages/app/styles
 COPY packages/app/pages packages/app/pages
