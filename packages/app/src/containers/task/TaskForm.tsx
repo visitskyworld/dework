@@ -233,7 +233,7 @@ export function TaskForm<
                 loading={tagLoading}
                 optionFilterProp="label"
                 optionLabelProp="label" // don't put children inside tagRender
-                placeholder="Select tags..."
+                placeholder={canEdit ? "Select tags..." : "No tags..."}
                 onChange={handleTagsUpdated}
                 tagRender={(props) => (
                   <Tag

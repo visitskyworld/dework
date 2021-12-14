@@ -81,11 +81,20 @@ textarea {
   margin-bottom: 12px;
 }
 
-.ant-select-multiple.ant-select-disabled.ant-select:not(.ant-select-customize-input)
-  .ant-select-selector {
-  background: unset;
-  border: none;
-  padding: 0;
+.ant-select.ant-select-disabled.ant-select:not(.ant-select-customize-input) {
+  & .ant-select-selector {
+    background: unset;
+    border: none;
+    padding: 0;
+  }
+
+  & .ant-select-arrow {
+    display: none;
+  }
+
+  & .ant-select-selection-placeholder {
+    left: 0;
+  }
 }
 
 .ant-typography-edit {
@@ -297,25 +306,6 @@ textarea {
 
 .ant-page-header-heading .ant-avatar {
   margin-right: unset;
-}
-
-.dewo-select-item-full-width {
-
-  // & .ant-select-selector {
-  //   width: unset;
-  // }
-
-  // & .ant-select-selection-item:after {
-  //   display: none;
-  // }
-
-  // & .ant-select-selection-overflow-item {
-  //   width: 100%;
-
-  //   &.ant-select-selection-overflow-item-suffix {
-  //     display: none;
-  //   }
-  // }
 }
 
 .hover\:component-highlight {
