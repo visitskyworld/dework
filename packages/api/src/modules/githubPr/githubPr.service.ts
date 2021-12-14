@@ -1,11 +1,7 @@
 import { GithubPr } from "@dewo/api/models/GithubPr";
 import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
