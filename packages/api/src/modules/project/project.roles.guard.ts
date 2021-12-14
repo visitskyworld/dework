@@ -11,14 +11,18 @@ import { Repository } from "typeorm";
 import { GQLContext } from "../app/graphql.config";
 import { Project } from "@dewo/api/models/Project";
 import { Roles } from "../app/app.roles";
-import { OrganizationService } from "../organization/organization.service";
+import {
+  OrganizationMember,
+  OrganizationRole,
+} from "@dewo/api/models/OrganizationMember";
 
 @Injectable()
 export class ProjectRolesGuard implements CanActivate {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
-    private readonly organizationService: OrganizationService
+    @InjectRepository(OrganizationMember)
+    private readonly organizationMemberRepo: Repository<OrganizationMember>
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -43,14 +47,32 @@ export class ProjectRolesGuard implements CanActivate {
       throw new ForbiddenException("Project not found");
     }
 
-    const organizations = await this.organizationService.findByUser(
-      gqlContext.user.id
-    );
-    if (organizations.some((o) => o.id === project.organizationId)) {
-      gqlContext.caslUser.roles.push(Roles.projectAdmin);
-      gqlContext.caslUser.roles.push(Roles.projectMember);
+    // TODO(fant): DRY this up with OrganizationRolesGuard
+    await this.addCaslRolesForOrganization(project.organizationId, gqlContext);
+    return true;
+  }
+
+  public async addCaslRolesForOrganization(
+    organizationId: string,
+    gqlContext: GQLContext
+  ): Promise<void> {
+    if (!gqlContext.user || !gqlContext.caslUser) return;
+
+    const member = await this.organizationMemberRepo.findOne({
+      organizationId,
+      userId: gqlContext.user.id,
+    });
+
+    if (member?.role === OrganizationRole.OWNER) {
+      gqlContext.caslUser.roles.push(Roles.organizationOwner);
     }
 
-    return true;
+    if (member?.role === OrganizationRole.ADMIN) {
+      gqlContext.caslUser.roles.push(Roles.organizationAdmin);
+    }
+
+    if (member?.role === OrganizationRole.MEMBER) {
+      gqlContext.caslUser.roles.push(Roles.organizationMember);
+    }
   }
 }

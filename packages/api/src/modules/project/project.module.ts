@@ -7,7 +7,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
-import { OrganizationModule } from "../organization/organization.module";
 import { ProjectResolver } from "./project.resolver";
 import { ProjectService } from "./project.service";
 
@@ -21,7 +20,6 @@ import { ProjectService } from "./project.service";
       OrganizationMember,
     ]),
     CaslModule.forFeature({ permissions }),
-    OrganizationModule,
   ],
   providers: [ProjectResolver, ProjectService],
   exports: [ProjectService],

@@ -35,6 +35,16 @@ export class OrganizationRolesGuard implements CanActivate {
     ].find((id) => !!id);
 
     if (!organizationId) return true;
+    await this.addCaslRolesForOrganization(organizationId, gqlContext);
+
+    return true;
+  }
+
+  public async addCaslRolesForOrganization(
+    organizationId: string,
+    gqlContext: GQLContext
+  ): Promise<void> {
+    if (!gqlContext.user || !gqlContext.caslUser) return;
 
     const member = await this.organizationMemberRepo.findOne({
       organizationId,
@@ -52,7 +62,5 @@ export class OrganizationRolesGuard implements CanActivate {
     if (member?.role === OrganizationRole.MEMBER) {
       gqlContext.caslUser.roles.push(Roles.organizationMember);
     }
-
-    return true;
   }
 }

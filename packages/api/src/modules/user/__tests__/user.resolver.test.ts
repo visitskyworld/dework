@@ -260,6 +260,11 @@ describe("UserResolver", () => {
           expect(permissions.can("update", "Organization")).toBe(true);
           expect(permissions.can("delete", "Organization")).toBe(true);
           expect(permissions.can("create", "Project")).toBe(true);
+          expect(permissions.can("update", "Project")).toBe(true);
+          expect(permissions.can("delete", "Project")).toBe(true);
+          expect(permissions.can("create", "Task")).toBe(true);
+          expect(permissions.can("update", "Task")).toBe(true);
+          expect(permissions.can("delete", "Task")).toBe(true);
         });
 
         it("organizationMember", async () => {
@@ -276,21 +281,7 @@ describe("UserResolver", () => {
           expect(permissions.can("update", "Organization")).toBe(false);
           expect(permissions.can("delete", "Organization")).toBe(false);
           expect(permissions.can("create", "Project")).toBe(false);
-        });
-
-        it("projectAdmin", async () => {
-          const { user, organization, project } =
-            await fixtures.createUserOrgProject();
-
-          const permissions = await getPermissions(user, {
-            organizationId: organization.id,
-            projectId: project.id,
-          });
-          expect(permissions.can("update", "Project")).toBe(true);
-          expect(permissions.can("delete", "Project")).toBe(true);
-          expect(permissions.can("create", "Task")).toBe(true);
-          expect(permissions.can("update", "Task")).toBe(true);
-          expect(permissions.can("delete", "Task")).toBe(true);
+          expect(permissions.can("create", "Task")).toBe(false);
         });
       });
     });

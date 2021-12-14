@@ -100,7 +100,7 @@ describe("TaskResolver", () => {
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
       });
 
-      describe("projectAdmin", () => {
+      describe("organizationAdmin", () => {
         it("should succeed", async () => {
           const otherUser = await fixtures.createUser();
           const { user, project } = await fixtures.createUserOrgProject();
@@ -140,8 +140,9 @@ describe("TaskResolver", () => {
         });
       });
 
-      xdescribe("projectMember", () => {
-        xit("should succeed for own task", async () => {});
+      xdescribe("organizationMember", () => {
+        xit("should succeed for assigned task", async () => {});
+        xit("should succeed for owned task", async () => {});
         xit("should fail for other task", async () => {});
       });
 

@@ -44,25 +44,15 @@ export const permissions: Permissions<
 
     can(Actions.update, Organization);
     can(Actions.delete, Organization);
+
     can(Actions.create, Project);
-
-    cannot(CustomPermissionActions.claimTask, Task);
-  },
-
-  organizationMember({ can }) {
-    can(Actions.update, Task);
-  },
-
-  projectAdmin({ can }) {
     can(Actions.update, Project);
     can(Actions.delete, Project);
 
     can(Actions.create, Task);
     can(Actions.update, Task);
     can(Actions.delete, Task);
-  },
 
-  projectMember({ can }) {
-    can(Actions.create, Task);
+    cannot(CustomPermissionActions.claimTask, Task);
   },
 };
