@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import Link from "next/link";
-import { Button, Row, Skeleton } from "antd";
-import BreadCrumb, { Route } from "antd/lib/BreadCrumb/BreadCrumb";
+import { Button, Row, Skeleton, Breadcrumb } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 
 const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
   const last = routes.indexOf(route) === routes.length - 1;
@@ -25,7 +25,7 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
   return (
     <Skeleton loading={!routes} active title={false} paragraph={{ rows: 1 }}>
       <Row style={{ display: "flex", justifyContent: "space-between" }}>
-        <BreadCrumb itemRender={itemRender} routes={routes} />
+        <Breadcrumb itemRender={itemRender} routes={routes} />
         {!user && (
           <Button type="primary" href="/auth">
             Sign in
