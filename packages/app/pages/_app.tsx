@@ -48,7 +48,11 @@ const SlugReplacer: React.FC = () => {
   const organizationId = useParseIdFromSlug("organizationSlug");
   const organization = useOrganization(organizationId);
   useEffect(() => {
-    if (organization && organizationSlug !== organization.slug) {
+    if (
+      organization &&
+      organization.id === organizationId &&
+      organizationSlug !== organization.slug
+    ) {
       router.replace(
         { query: { ...router.query, organizationSlug: organization.slug } },
         undefined,
@@ -62,7 +66,7 @@ const SlugReplacer: React.FC = () => {
   const projectId = useParseIdFromSlug("projectSlug");
   const project = useProject(projectId);
   useEffect(() => {
-    if (project && projectSlug !== project.slug) {
+    if (project && project.id === projectId && projectSlug !== project.slug) {
       router.replace(
         { query: { ...router.query, projectSlug: project.slug } },
         undefined,
