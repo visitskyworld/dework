@@ -22,7 +22,11 @@
     "paths": {
       "@dewo/app/*": ["./packages/app/src/*"],
       "@dewo/api/*": ["./packages/api/src/*"]
-    }
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ]
   },
   "exclude": [
     "node_modules"
