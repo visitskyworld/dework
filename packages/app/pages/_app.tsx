@@ -135,28 +135,30 @@ function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
 
-  if (typeof window === "undefined") {
-    return authLink.concat(httpLink);
-  }
+  return authLink.concat(httpLink);
 
-  const wsLink = new WebSocketLink({
-    uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
-    options: { reconnect: true },
-  });
+  // if (typeof window === "undefined") {
+  //   return authLink.concat(httpLink);
+  // }
 
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
-    },
-    wsLink,
-    httpLink
-  );
+  // const wsLink = new WebSocketLink({
+  //   uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
+  //   options: { reconnect: true },
+  // });
 
-  return authLink.concat(splitLink);
+  // const splitLink = split(
+  //   ({ query }) => {
+  //     const definition = getMainDefinition(query);
+  //     return (
+  //       definition.kind === "OperationDefinition" &&
+  //       definition.operation === "subscription"
+  //     );
+  //   },
+  //   wsLink,
+  //   httpLink
+  // );
+
+  // return authLink.concat(splitLink);
 }
 
 export default withApollo(

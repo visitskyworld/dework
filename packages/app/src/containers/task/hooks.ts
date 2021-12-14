@@ -263,19 +263,20 @@ export function useTask(
 }
 
 export function useListenToTasks() {
-  const addTaskToApolloCache = useAddTaskToApolloCache();
-  useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
-    onSubscriptionData(options) {
-      const task = options.subscriptionData.data?.task;
-      if (!!task) addTaskToApolloCache(task);
-    },
-  });
-  useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
-    onSubscriptionData(options) {
-      const task = options.subscriptionData.data?.task;
-      if (!!task) addTaskToApolloCache(task);
-    },
-  });
+  // TODO(fant): reenable this once we've moved away from Cloud Run
+  // const addTaskToApolloCache = useAddTaskToApolloCache();
+  // useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
+  //   onSubscriptionData(options) {
+  //     const task = options.subscriptionData.data?.task;
+  //     if (!!task) addTaskToApolloCache(task);
+  //   },
+  // });
+  // useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
+  //   onSubscriptionData(options) {
+  //     const task = options.subscriptionData.data?.task;
+  //     if (!!task) addTaskToApolloCache(task);
+  //   },
+  // });
 }
 
 export function useTaskFormUserOptions(
