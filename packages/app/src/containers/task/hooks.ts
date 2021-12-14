@@ -34,8 +34,12 @@ import {
   ClaimTaskMutationVariables,
   UnclaimTaskMutation,
   UnclaimTaskMutationVariables,
+  User,
 } from "@dewo/app/graphql/types";
-import { useCallback } from "react";
+import _ from "lodash";
+import { useCallback, useMemo } from "react";
+import { useOrganization } from "../organization/hooks";
+import { useProject } from "../project/hooks";
 
 export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
@@ -272,4 +276,18 @@ export function useListenToTasks() {
       if (!!task) addTaskToApolloCache(task);
     },
   });
+}
+
+export function useTaskFormOwnerOptions(
+  projectId: string,
+  currentOwner: User | undefined
+): User[] | undefined {
+  const project = useProject(projectId);
+  const organization = useOrganization(project?.organizationId);
+  return useMemo(() => {
+    if (!organization) return undefined;
+    const orgUsers = organization.members.map((m) => m.user);
+    if (!currentOwner) return orgUsers;
+    return _.uniqBy([...orgUsers, currentOwner], (u) => u.id);
+  }, [organization, currentOwner]);
 }

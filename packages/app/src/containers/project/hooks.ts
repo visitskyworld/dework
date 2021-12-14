@@ -51,10 +51,10 @@ export function useUpdateProject(): (
   );
 }
 
-export function useProject(projectId: string): Project | undefined {
+export function useProject(projectId: string | undefined): Project | undefined {
   const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     Queries.project,
-    { variables: { projectId } }
+    { variables: { projectId: projectId! }, skip: !projectId }
   );
   return data?.project ?? undefined;
 }

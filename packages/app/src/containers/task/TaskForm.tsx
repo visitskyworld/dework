@@ -9,9 +9,7 @@ import {
   FormInstance,
   Row,
   Typography,
-  Space,
   Col,
-  InputNumber,
   ConfigProvider,
   Empty,
 } from "antd";
@@ -24,9 +22,12 @@ import {
   Task,
   TaskTag,
 } from "@dewo/app/graphql/types";
-import * as Icons from "@ant-design/icons";
 import { STATUS_LABEL } from "../project/board/util";
-import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
+import {
+  useCreateTaskTag,
+  useGenerateRandomTaskTagColor,
+  useTaskFormOwnerOptions,
+} from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
@@ -34,7 +35,6 @@ import {
   rewardTriggerToString,
   TaskRewardFormFields,
 } from "./TaskRewardFormFields";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 interface TaskFormProps<TFormValues> {
@@ -68,8 +68,10 @@ export function TaskForm<
 
   const projectId: string =
     task?.projectId ?? (initialValues as any)?.projectId!;
-
-  const { user } = useAuthContext();
+  const ownerOptions = useTaskFormOwnerOptions(
+    projectId,
+    task?.owner ?? undefined
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -249,23 +251,22 @@ export function TaskForm<
           <Form.Item name="ownerId" label="Owner">
             <Select
               // mode="multiple"
+              loading={!ownerOptions}
               disabled={!canEdit}
               allowClear
               optionFilterProp="label"
               placeholder="No task owner..."
             >
-              {[user!]
-                // .map((u, i) => ({ ...u, id: String(i) }))
-                .map((user) => (
-                  <Select.Option value={user.id} label={user.username}>
-                    <Row align="middle">
-                      <UserAvatar user={user} size="small" />
-                      <Typography.Text style={{ marginLeft: 8 }}>
-                        {user.username}
-                      </Typography.Text>
-                    </Row>
-                  </Select.Option>
-                ))}
+              {ownerOptions?.map((user) => (
+                <Select.Option value={user.id} label={user.username}>
+                  <Row align="middle">
+                    <UserAvatar user={user} size="small" />
+                    <Typography.Text style={{ marginLeft: 8 }}>
+                      {user.username}
+                    </Typography.Text>
+                  </Row>
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
 
