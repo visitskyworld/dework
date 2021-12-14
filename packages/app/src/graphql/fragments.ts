@@ -91,6 +91,14 @@ export const taskReward = gql`
   }
 `;
 
+export const githubPr = gql`
+  fragment GithubPr on GithubPr {
+    title
+    link
+    status
+  }
+`;
+
 export const task = gql`
   fragment Task on Task {
     id
@@ -112,11 +120,15 @@ export const task = gql`
     creator {
       ...User
     }
+    githubPrs {
+      ...GithubPr
+    }
     reward {
       ...TaskReward
     }
   }
 
+  ${githubPr}
   ${taskTag}
   ${taskReward}
   ${user}

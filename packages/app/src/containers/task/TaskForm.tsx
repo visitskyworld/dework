@@ -21,6 +21,7 @@ import {
   User,
   Task,
   TaskTag,
+  GithubPr,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
@@ -44,6 +45,7 @@ interface TaskFormProps<TFormValues> {
   buttonText: string;
   initialValues?: Partial<TFormValues>;
   assignees?: User[];
+  githubPrs?: GithubPr[];
   onSubmit(task: TFormValues): unknown;
 }
 
@@ -53,6 +55,7 @@ export function TaskForm<
   mode,
   task,
   tags,
+  githubPrs,
   buttonText,
   initialValues,
   onSubmit,
@@ -184,9 +187,6 @@ export function TaskForm<
             />
           </Form.Item>
 
-          <Form.Item name="projectId" hidden>
-            <Input />
-          </Form.Item>
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
@@ -298,6 +298,14 @@ export function TaskForm<
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+
+          <Form.Item name="githubPrs" label="Github PRs">
+            {githubPrs?.map((pr) => (
+              <Button target="_blank" href={pr.link}>
+                {`${pr.title}`}
+              </Button>
+            ))}
           </Form.Item>
 
           {canEdit ? (

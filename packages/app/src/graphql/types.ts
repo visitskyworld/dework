@@ -330,6 +330,13 @@ export interface CreateTaskMutation_task_creator {
   imageUrl: string | null;
 }
 
+export interface CreateTaskMutation_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface CreateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -350,6 +357,7 @@ export interface CreateTaskMutation_task {
   assignees: CreateTaskMutation_task_assignees[];
   owner: CreateTaskMutation_task_owner | null;
   creator: CreateTaskMutation_task_creator | null;
+  githubPrs: CreateTaskMutation_task_githubPrs[];
   reward: CreateTaskMutation_task_reward | null;
 }
 
@@ -398,6 +406,13 @@ export interface UpdateTaskMutation_task_creator {
   imageUrl: string | null;
 }
 
+export interface UpdateTaskMutation_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface UpdateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -418,6 +433,7 @@ export interface UpdateTaskMutation_task {
   assignees: UpdateTaskMutation_task_assignees[];
   owner: UpdateTaskMutation_task_owner | null;
   creator: UpdateTaskMutation_task_creator | null;
+  githubPrs: UpdateTaskMutation_task_githubPrs[];
   reward: UpdateTaskMutation_task_reward | null;
 }
 
@@ -466,6 +482,13 @@ export interface ClaimTaskMutation_task_creator {
   imageUrl: string | null;
 }
 
+export interface ClaimTaskMutation_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface ClaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -486,6 +509,7 @@ export interface ClaimTaskMutation_task {
   assignees: ClaimTaskMutation_task_assignees[];
   owner: ClaimTaskMutation_task_owner | null;
   creator: ClaimTaskMutation_task_creator | null;
+  githubPrs: ClaimTaskMutation_task_githubPrs[];
   reward: ClaimTaskMutation_task_reward | null;
 }
 
@@ -534,6 +558,13 @@ export interface UnclaimTaskMutation_task_creator {
   imageUrl: string | null;
 }
 
+export interface UnclaimTaskMutation_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface UnclaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -554,6 +585,7 @@ export interface UnclaimTaskMutation_task {
   assignees: UnclaimTaskMutation_task_assignees[];
   owner: UnclaimTaskMutation_task_owner | null;
   creator: UnclaimTaskMutation_task_creator | null;
+  githubPrs: UnclaimTaskMutation_task_githubPrs[];
   reward: UnclaimTaskMutation_task_reward | null;
 }
 
@@ -602,6 +634,13 @@ export interface DeleteTaskMutation_task_creator {
   imageUrl: string | null;
 }
 
+export interface DeleteTaskMutation_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface DeleteTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -622,6 +661,7 @@ export interface DeleteTaskMutation_task {
   assignees: DeleteTaskMutation_task_assignees[];
   owner: DeleteTaskMutation_task_owner | null;
   creator: DeleteTaskMutation_task_creator | null;
+  githubPrs: DeleteTaskMutation_task_githubPrs[];
   reward: DeleteTaskMutation_task_reward | null;
 }
 
@@ -891,6 +931,13 @@ export interface UserTasksQuery_user_tasks_creator {
   imageUrl: string | null;
 }
 
+export interface UserTasksQuery_user_tasks_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -911,6 +958,7 @@ export interface UserTasksQuery_user_tasks {
   assignees: UserTasksQuery_user_tasks_assignees[];
   owner: UserTasksQuery_user_tasks_owner | null;
   creator: UserTasksQuery_user_tasks_creator | null;
+  githubPrs: UserTasksQuery_user_tasks_githubPrs[];
   reward: UserTasksQuery_user_tasks_reward | null;
 }
 
@@ -1144,6 +1192,13 @@ export interface GetOrganizationTasksQuery_organization_tasks_creator {
   imageUrl: string | null;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1164,6 +1219,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   owner: GetOrganizationTasksQuery_organization_tasks_owner | null;
   creator: GetOrganizationTasksQuery_organization_tasks_creator | null;
+  githubPrs: GetOrganizationTasksQuery_organization_tasks_githubPrs[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
 }
 
@@ -1267,6 +1323,13 @@ export interface GetProjectTasksQuery_project_tasks_creator {
   imageUrl: string | null;
 }
 
+export interface GetProjectTasksQuery_project_tasks_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface GetProjectTasksQuery_project_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1287,6 +1350,7 @@ export interface GetProjectTasksQuery_project_tasks {
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   owner: GetProjectTasksQuery_project_tasks_owner | null;
   creator: GetProjectTasksQuery_project_tasks_creator | null;
+  githubPrs: GetProjectTasksQuery_project_tasks_githubPrs[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
 }
 
@@ -1349,6 +1413,13 @@ export interface GetTaskQuery_task_creator {
   imageUrl: string | null;
 }
 
+export interface GetTaskQuery_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface GetTaskQuery_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1382,6 +1453,7 @@ export interface GetTaskQuery_task {
   assignees: GetTaskQuery_task_assignees[];
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
+  githubPrs: GetTaskQuery_task_githubPrs[];
   reward: GetTaskQuery_task_reward | null;
   project: GetTaskQuery_task_project;
 }
@@ -1543,6 +1615,13 @@ export interface TaskCreatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
+export interface TaskCreatedSubscription_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface TaskCreatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1563,6 +1642,7 @@ export interface TaskCreatedSubscription_task {
   assignees: TaskCreatedSubscription_task_assignees[];
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
+  githubPrs: TaskCreatedSubscription_task_githubPrs[];
   reward: TaskCreatedSubscription_task_reward | null;
 }
 
@@ -1607,6 +1687,13 @@ export interface TaskUpdatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
+export interface TaskUpdatedSubscription_task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface TaskUpdatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1627,6 +1714,7 @@ export interface TaskUpdatedSubscription_task {
   assignees: TaskUpdatedSubscription_task_assignees[];
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
+  githubPrs: TaskUpdatedSubscription_task_githubPrs[];
   reward: TaskUpdatedSubscription_task_reward | null;
 }
 
@@ -1790,6 +1878,22 @@ export interface TaskReward {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: GithubPr
+// ====================================================
+
+export interface GithubPr {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Task
 // ====================================================
 
@@ -1821,6 +1925,13 @@ export interface Task_creator {
   imageUrl: string | null;
 }
 
+export interface Task_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface Task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1841,6 +1952,7 @@ export interface Task {
   assignees: Task_assignees[];
   owner: Task_owner | null;
   creator: Task_creator | null;
+  githubPrs: Task_githubPrs[];
   reward: Task_reward | null;
 }
 
@@ -2010,6 +2122,13 @@ export interface ProjectDetails_tasks_creator {
   imageUrl: string | null;
 }
 
+export interface ProjectDetails_tasks_githubPrs {
+  __typename: "GithubPr";
+  title: string;
+  link: string;
+  status: GithubPrStatusEnum;
+}
+
 export interface ProjectDetails_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -2030,6 +2149,7 @@ export interface ProjectDetails_tasks {
   assignees: ProjectDetails_tasks_assignees[];
   owner: ProjectDetails_tasks_owner | null;
   creator: ProjectDetails_tasks_creator | null;
+  githubPrs: ProjectDetails_tasks_githubPrs[];
   reward: ProjectDetails_tasks_reward | null;
 }
 
@@ -2094,6 +2214,12 @@ export interface Invite {
 // START Enums and Input Objects
 //==============================================================
 
+export enum GithubPrStatusEnum {
+  DONE = "DONE",
+  DRAFT = "DRAFT",
+  OPEN = "OPEN",
+}
+
 export enum OrganizationRole {
   ADMIN = "ADMIN",
   MEMBER = "MEMBER",
@@ -2108,6 +2234,7 @@ export enum PaymentMethodType {
 
 export enum ProjectIntegrationSource {
   discord = "discord",
+  github = "github",
 }
 
 export enum TaskRewardTrigger {

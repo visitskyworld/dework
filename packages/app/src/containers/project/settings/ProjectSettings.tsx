@@ -5,6 +5,7 @@ import { useUpdateProject } from "../hooks";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
 import { PaymentMethodForm } from "../../payment/PaymentMethodForm";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
+import { ProjectGithubIntegration } from "./ProjectGithubIntegrations";
 
 interface Props {
   project: Project;
@@ -31,6 +32,14 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       <Col>
         <Typography.Title level={5}>Discord Integrations</Typography.Title>
         <ProjectDiscordIntegrations />
+      </Col>
+
+      <Col>
+        <Typography.Title level={5}>Github Integrations</Typography.Title>
+        <ProjectGithubIntegration
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
       </Col>
 
       <Col>

@@ -48,4 +48,14 @@ export class ProjectService {
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
   }
+
+  public findGithubIntegration(
+    installationId: string
+  ): Promise<ProjectIntegration | undefined> {
+    return this.projectIntegrationRepo.findOne({
+      config: {
+        installationId: installationId,
+      },
+    });
+  }
 }

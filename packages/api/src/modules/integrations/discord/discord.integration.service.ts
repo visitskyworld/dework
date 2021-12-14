@@ -1,3 +1,4 @@
+import encoder from "uuid-base62";
 import { Task } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
@@ -18,7 +19,7 @@ import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { MessageEmbed } from "discord.js";
-import encoder from "uuid-base62";
+import { DiscordProjectIntegrationConfig } from "../../../models/ProjectIntegration";
 
 @Injectable()
 @EventSubscriber()
@@ -126,13 +127,15 @@ export class DiscordIntegrationService
   }
 
   private async getDiscordChannel(integration: ProjectIntegration) {
+    const integrationConfig =
+      integration.config as DiscordProjectIntegrationConfig;
     const channel = await this.discord.client.channels.fetch(
-      integration.config.channelId
+      integrationConfig.channelId
     );
     if (!channel) {
       this.logger.error(
         `Could not find channel: ${JSON.stringify({
-          channelId: integration.config.channelId,
+          channelId: integrationConfig.channelId,
           integrationId: integration.id,
         })}`
       );
