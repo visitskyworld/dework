@@ -35,7 +35,7 @@ import {
   rewardTriggerToString,
   TaskRewardFormFields,
 } from "./TaskRewardFormFields";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { UserSelectOption } from "./UserSelectOption";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -272,24 +272,12 @@ export function TaskForm<
               tagRender={(props) => {
                 const user = assigneeOptions?.find((u) => u.id === props.value);
                 if (!user) return <div />;
-                return (
-                  <Row align="middle" style={{ padding: 4 }}>
-                    <UserAvatar user={user} size="small" />
-                    <Typography.Text style={{ marginLeft: 8 }}>
-                      {user.username}
-                    </Typography.Text>
-                  </Row>
-                );
+                return <UserSelectOption user={user} style={{ padding: 4 }} />;
               }}
             >
               {assigneeOptions?.map((user) => (
                 <Select.Option value={user.id} label={user.username}>
-                  <Row align="middle">
-                    <UserAvatar user={user} size="small" />
-                    <Typography.Text style={{ marginLeft: 8 }}>
-                      {user.username}
-                    </Typography.Text>
-                  </Row>
+                  <UserSelectOption user={user} />
                 </Select.Option>
               ))}
             </Select>
@@ -298,7 +286,6 @@ export function TaskForm<
           <Form.Item name="ownerId" label="Owner">
             <Select
               showSearch
-              // className="dewo-select-item-full-width"
               loading={!ownerOptions}
               disabled={!canEdit}
               allowClear
@@ -307,12 +294,7 @@ export function TaskForm<
             >
               {ownerOptions?.map((user) => (
                 <Select.Option value={user.id} label={user.username}>
-                  <Row align="middle">
-                    <UserAvatar user={user} size="small" />
-                    <Typography.Text style={{ marginLeft: 8 }}>
-                      {user.username}
-                    </Typography.Text>
-                  </Row>
+                  <UserSelectOption user={user} />
                 </Select.Option>
               ))}
             </Select>
