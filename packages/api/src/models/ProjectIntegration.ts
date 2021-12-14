@@ -7,10 +7,15 @@ import { User } from "./User";
 
 export enum ProjectIntegrationSource {
   discord = "discord",
+  github = "github",
 }
 
 export enum DiscordProjectIntegrationFeature {
   POST_CREATED_TASKS = "POST_CREATED_TASKS",
+}
+
+export enum GithubProjectIntegrationFeature {
+  ADD_WEBHOOK = "ADD_WEBHOOK",
 }
 
 export interface DiscordProjectIntegrationConfig {
@@ -19,9 +24,16 @@ export interface DiscordProjectIntegrationConfig {
   features: DiscordProjectIntegrationFeature[];
 }
 
+export interface GithubProjectIntegrationConfig {
+  organizationId: string;
+  installationId: string;
+  features: GithubProjectIntegrationFeature[];
+}
+
 export interface ProjectIntegrationConfigMap
   extends Record<ProjectIntegrationSource, any> {
   [ProjectIntegrationSource.discord]: DiscordProjectIntegrationConfig;
+  [ProjectIntegrationSource.github]: GithubProjectIntegrationConfig;
 }
 
 registerEnumType(ProjectIntegrationSource, {

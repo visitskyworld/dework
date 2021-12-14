@@ -7,12 +7,14 @@ import {
   ManyToMany,
   ManyToOne,
   OneToOne,
+  OneToMany,
 } from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
 import { TaskReward } from "./TaskReward";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
+import { GithubPr } from "./GithubPr";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
@@ -83,6 +85,10 @@ export class Task extends Audit {
   @JoinTable({ name: "task_tag_map" })
   @Field(() => [TaskTag])
   public tags!: TaskTag[];
+
+  @OneToMany(() => GithubPr, (g: GithubPr) => g.task)
+  @Field(() => [GithubPr])
+  public githubPrs?: Promise<GithubPr[]>;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })
