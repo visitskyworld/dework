@@ -9,6 +9,7 @@ import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
+import { TaskStatusEnum } from "@dewo/api/models/Task";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -225,10 +226,15 @@ describe("UserResolver", () => {
           const user = await fixtures.createUser();
           const assignedTask = await fixtures.createTask({
             assignees: [user],
+            status: TaskStatusEnum.IN_PROGRESS,
             projectId: project.id,
           });
           const unassignedTask = await fixtures.createTask({
             projectId: project.id,
+          });
+          const ownedTask = await fixtures.createTask({
+            projectId: project.id,
+            ownerId: user.id,
           });
 
           const permissions = await getPermissions(user, {
@@ -240,6 +246,7 @@ describe("UserResolver", () => {
           expect(permissions.can("read", "Project")).toBe(true);
           expect(permissions.can("read", "Task")).toBe(true);
 
+          expect(permissions.can("update", ownedTask)).toBe(true);
           expect(permissions.can("update", assignedTask)).toBe(true);
           expect(permissions.can("update", unassignedTask)).toBe(false);
         });
