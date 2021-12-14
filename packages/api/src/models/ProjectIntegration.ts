@@ -14,8 +14,8 @@ export enum DiscordProjectIntegrationFeature {
   POST_CREATED_TASKS = "POST_CREATED_TASKS",
 }
 
-export enum GithubPullRequestojectIntegrationFeature {
-  ADD_WEBHOOK = "ADD_WEBHOOK",
+export enum GithubProjectIntegrationFeature {
+  ADD_PR_TO_TASK = "ADD_PR_TO_TASK",
 }
 
 export interface DiscordProjectIntegrationConfig {
@@ -24,16 +24,15 @@ export interface DiscordProjectIntegrationConfig {
   features: DiscordProjectIntegrationFeature[];
 }
 
-export interface GithubPullRequestojectIntegrationConfig {
-  organizationId: string;
+export interface GithubProjectIntegrationConfig {
   installationId: string;
-  features: GithubPullRequestojectIntegrationFeature[];
+  features: GithubProjectIntegrationFeature[];
 }
 
 export interface ProjectIntegrationConfigMap
   extends Record<ProjectIntegrationSource, any> {
   [ProjectIntegrationSource.discord]: DiscordProjectIntegrationConfig;
-  [ProjectIntegrationSource.github]: GithubPullRequestojectIntegrationConfig;
+  [ProjectIntegrationSource.github]: GithubProjectIntegrationConfig;
 }
 
 registerEnumType(ProjectIntegrationSource, {
@@ -41,6 +40,9 @@ registerEnumType(ProjectIntegrationSource, {
 });
 registerEnumType(DiscordProjectIntegrationFeature, {
   name: "DiscordProjectIntegrationFeature",
+});
+registerEnumType(GithubProjectIntegrationFeature, {
+  name: "GithubProjectIntegrationFeature",
 });
 
 @Entity()

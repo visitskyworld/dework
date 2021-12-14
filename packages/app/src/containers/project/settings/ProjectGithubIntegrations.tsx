@@ -9,9 +9,8 @@ import { useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Icons from "@ant-design/icons";
 import { useRouter } from "next/router";
+import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
-import { Constants } from "@dewo/app/util/constants";
-import { siteTitle } from "../../../util/constants";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
@@ -20,7 +19,6 @@ interface ProjectGithubIntegrationProps {
 
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
-  organizationId,
 }) => {
   const router = useRouter();
   const auth = useAuthContext();
@@ -38,12 +36,8 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
 
   const hasIntegration = useMemo(
     () =>
-      integrations?.some(
-        (i) =>
-          i.source === ProjectIntegrationSource.github &&
-          (i.config as any).organizationId === organizationId
-      ),
-    [integrations, organizationId]
+      integrations?.some((i) => i.source === ProjectIntegrationSource.github),
+    [integrations]
   );
 
   if (hasIntegration) {

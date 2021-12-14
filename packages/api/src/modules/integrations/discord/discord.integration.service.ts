@@ -19,8 +19,6 @@ import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { MessageEmbed } from "discord.js";
-import { DiscordProjectIntegrationConfig } from "../../../models/ProjectIntegration";
-import { ProjectIntegrationSource } from "../../../../../app/src/graphql/types";
 
 @Injectable()
 @EventSubscriber()
@@ -113,7 +111,7 @@ export class DiscordIntegrationService
   private async getDiscordIntegration(
     projectId: string,
     feature: DiscordProjectIntegrationFeature
-  ): Promise<ProjectIntegration | undefined> {
+  ): Promise<ProjectIntegration<ProjectIntegrationSource.discord> | undefined> {
     const integration = (await this.projectIntegrationRepo.findOne({
       projectId,
       source: ProjectIntegrationSource.discord,

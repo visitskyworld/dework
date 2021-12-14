@@ -303,7 +303,7 @@ export function TaskForm<
           <Form.Item name="githubPullRequests" label="Github PRs">
             {githubPullRequests?.map((pr) => (
               <Button target="_blank" href={pr.link}>
-                {`${pr.title}`}
+                {pr.title}
               </Button>
             ))}
           </Form.Item>

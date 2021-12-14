@@ -7,7 +7,7 @@ import { ProjectService } from "../project/project.service";
 import { StrategyResponse } from "./strategies/types";
 import { GithubPullRequestService } from "../githubPullRequest/githubPullRequest.service";
 import {
-  GithubPullRequestojectIntegrationFeature,
+  GithubProjectIntegrationFeature,
   ProjectIntegrationSource,
 } from "../../models/ProjectIntegration";
 import {
@@ -51,16 +51,15 @@ export class AuthController {
     // First create a ProjectIntegration in the db
     const stateString = req.query.state;
     const installationId = req.query.installation_id;
-    const { creatorId, projectId, organizationId } = JSON.parse(stateString);
+    const { creatorId, projectId } = JSON.parse(stateString);
 
     await this.projectService.createIntegration({
       creatorId,
       projectId,
       source: ProjectIntegrationSource.github,
       config: {
-        organizationId,
         installationId,
-        features: [GithubPullRequestojectIntegrationFeature.ADD_WEBHOOK],
+        features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
       },
     });
 
