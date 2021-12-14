@@ -34,7 +34,12 @@ export const Sidebar: FC = () => {
               <HeaderProfileDropdown onClose={showProfileDropdown.toggleOff} />
             }
           >
-            <UserAvatar user={user} size={48} tooltip={{ title: undefined }} />
+            <UserAvatar
+              user={user}
+              size={48}
+              tooltip={{ visible: false }}
+              style={{ cursor: "pointer" }}
+            />
           </Dropdown>
         </SidebarNavLink>
 
