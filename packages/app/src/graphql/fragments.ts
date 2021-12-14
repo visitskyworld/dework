@@ -106,17 +106,18 @@ export const userProfile = gql`
   fragment UserProfile on User {
     ...User
     bio
+    organizations {
+      ...Organization
+    }
   }
 
   ${user}
+  ${organization}
 `;
 
 export const userDetails = gql`
   fragment UserDetails on User {
     ...UserProfile
-    organizations {
-      ...Organization
-    }
     threepids {
       id
       source
@@ -127,7 +128,6 @@ export const userDetails = gql`
   }
 
   ${userProfile}
-  ${organization}
   ${paymentMethod}
 `;
 

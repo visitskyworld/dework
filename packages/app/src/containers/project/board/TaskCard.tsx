@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { CSSProperties, FC, useMemo } from "react";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
@@ -11,9 +11,10 @@ import { PayAndCloseButton } from "./PayAndCloseButton";
 
 interface TaskCardProps {
   task: Task;
+  style?: CSSProperties;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ task }) => {
+export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   const navigateToTask = useNavigateToTask(task.id);
 
   const canClaimTask = usePermission("claimTask", task);
@@ -50,7 +51,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task }) => {
   }, [task, navigateToTask, canClaimTask, canUpdateTask]);
 
   return (
-    <Card size="small" onClick={navigateToTask}>
+    <Card size="small" style={style} onClick={navigateToTask}>
       <Row>
         <Space
           direction="vertical"

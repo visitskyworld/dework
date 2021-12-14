@@ -739,12 +739,20 @@ export interface MeQuery {
 // GraphQL query operation: UserProfileQuery
 // ====================================================
 
+export interface UserProfileQuery_user_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+}
+
 export interface UserProfileQuery_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
   bio: string | null;
+  organizations: UserProfileQuery_user_organizations[];
 }
 
 export interface UserProfileQuery {
@@ -1630,12 +1638,20 @@ export interface Task {
 // GraphQL fragment: UserProfile
 // ====================================================
 
+export interface UserProfile_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+}
+
 export interface UserProfile {
   __typename: "User";
   id: Scalar.UUID;
   username: string | null;
   imageUrl: string | null;
   bio: string | null;
+  organizations: UserProfile_organizations[];
 }
 
 /* tslint:disable */
