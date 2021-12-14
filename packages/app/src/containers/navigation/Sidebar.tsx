@@ -5,7 +5,7 @@ import { Avatar, Col, Divider, Dropdown, Layout } from "antd";
 import React, { FC } from "react";
 import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
-import NavLink from "@dewo/app/components/NavLink";
+import { SidebarNavLink } from "./SidebarNavLink";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
@@ -13,10 +13,13 @@ export const Sidebar: FC = () => {
   return (
     <Layout.Sider width={72}>
       <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
-        <NavLink href="/" className="dewo-sidebar-item" exact>
+        <SidebarNavLink href="/" className="dewo-sidebar-item" exact>
           <Avatar size={48} icon={"/"} />
-        </NavLink>
-        <NavLink href={`/profile/${user.id}`} className="dewo-sidebar-item">
+        </SidebarNavLink>
+        <SidebarNavLink
+          href={`/profile/${user.id}`}
+          className="dewo-sidebar-item"
+        >
           <Dropdown
             key="avatar"
             placement="bottomLeft"
@@ -24,11 +27,11 @@ export const Sidebar: FC = () => {
           >
             <UserAvatar user={user} size={48} tooltip={{ title: undefined }} />
           </Dropdown>
-        </NavLink>
+        </SidebarNavLink>
 
         <Divider />
         {user?.organizations.map((organization) => (
-          <NavLink
+          <SidebarNavLink
             key={organization.id}
             href={`/organization/${organization.id}`}
             className="dewo-sidebar-item"
@@ -38,7 +41,7 @@ export const Sidebar: FC = () => {
               organization={organization}
               tooltip={{ placement: "right" }}
             />
-          </NavLink>
+          </SidebarNavLink>
         ))}
         <CreateOrganizationButton />
       </Col>

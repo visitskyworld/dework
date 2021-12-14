@@ -1,27 +1,33 @@
 import { useRouter } from "next/router";
 import Link, { LinkProps } from "next/link";
-import { FC, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 
 interface Props extends LinkProps {
   exact?: boolean;
   className?: string;
 }
-const NavLink: FC<Props> = ({ exact, href, children, ...restProps }) => {
+
+export const SidebarNavLink: FC<Props> = ({
+  exact,
+  href,
+  children,
+  ...restProps
+}) => {
   const { asPath } = useRouter();
   const isActive = useMemo(
     () => (exact ? asPath === href : asPath.startsWith(href as string)),
     [exact, asPath, href]
   );
 
-  if (isActive) {
-    restProps.className += " active";
-  }
+  const className = [restProps.className ?? "", isActive ? "active" : ""].join(
+    " "
+  );
 
   return (
     <Link href={href}>
-      <a {...restProps}>{children}</a>
+      <a {...restProps} className={className}>
+        {children}
+      </a>
     </Link>
   );
 };
-
-export default NavLink;
