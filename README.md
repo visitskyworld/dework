@@ -35,3 +35,11 @@ yarn app dev
 ```bash
 yarn api test
 ```
+
+## Wiping the DB locally
+```bash
+(cd packages/api && docker compose down && docker compose stop)
+docker volume ls
+docker volume rm <name of api db volume>
+yarn dev:db
+```
