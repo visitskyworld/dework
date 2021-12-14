@@ -20,6 +20,7 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { MessageEmbed } from "discord.js";
 import { DiscordProjectIntegrationConfig } from "../../../models/ProjectIntegration";
+import { ProjectIntegrationSource } from "../../../../../app/src/graphql/types";
 
 @Injectable()
 @EventSubscriber()
@@ -126,16 +127,16 @@ export class DiscordIntegrationService
     return integration;
   }
 
-  private async getDiscordChannel(integration: ProjectIntegration) {
-    const integrationConfig =
-      integration.config as DiscordProjectIntegrationConfig;
+  private async getDiscordChannel(
+    integration: ProjectIntegration<ProjectIntegrationSource.discord>
+  ) {
     const channel = await this.discord.client.channels.fetch(
-      integrationConfig.channelId
+      integration.config.channelId
     );
     if (!channel) {
       this.logger.error(
         `Could not find channel: ${JSON.stringify({
-          channelId: integrationConfig.channelId,
+          channelId: integration.config.channelId,
           integrationId: integration.id,
         })}`
       );

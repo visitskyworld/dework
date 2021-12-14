@@ -3,17 +3,19 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Task } from "./Task";
 
-export enum GithubPrStatusEnum {
+export enum GithubPullRequestStatusEnum {
   DRAFT = "DRAFT",
   OPEN = "OPEN",
   DONE = "CLOSED",
 }
 
-registerEnumType(GithubPrStatusEnum, { name: "GithubPrStatusEnum" });
+registerEnumType(GithubPullRequestStatusEnum, {
+  name: "GithubPullRequestStatusEnum",
+});
 
 @Entity()
 @ObjectType()
-export class GithubPr extends Audit {
+export class GithubPullRequest extends Audit {
   @Column()
   @Field()
   public title!: string;
@@ -22,9 +24,9 @@ export class GithubPr extends Audit {
   @Field()
   public link!: string;
 
-  @Column({ enum: GithubPrStatusEnum })
-  @Field(() => GithubPrStatusEnum)
-  public status!: GithubPrStatusEnum;
+  @Column({ enum: GithubPullRequestStatusEnum })
+  @Field(() => GithubPullRequestStatusEnum)
+  public status!: GithubPullRequestStatusEnum;
 
   @JoinColumn()
   @ManyToOne(() => Task)

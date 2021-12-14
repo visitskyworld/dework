@@ -14,7 +14,7 @@ import { Project } from "./Project";
 import { TaskReward } from "./TaskReward";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
-import { GithubPr } from "./GithubPr";
+import { GithubPullRequest } from "./GithubPullRequest";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
@@ -86,9 +86,9 @@ export class Task extends Audit {
   @Field(() => [TaskTag])
   public tags!: TaskTag[];
 
-  @OneToMany(() => GithubPr, (g: GithubPr) => g.task)
-  @Field(() => [GithubPr])
-  public githubPrs?: Promise<GithubPr[]>;
+  @OneToMany(() => GithubPullRequest, (g: GithubPullRequest) => g.task)
+  @Field(() => [GithubPullRequest])
+  public githubPullRequests?: Promise<GithubPullRequest[]>;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })

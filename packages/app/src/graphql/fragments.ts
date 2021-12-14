@@ -91,8 +91,8 @@ export const taskReward = gql`
   }
 `;
 
-export const githubPr = gql`
-  fragment GithubPr on GithubPr {
+export const githubPullRequest = gql`
+  fragment GithubPullRequest on GithubPullRequest {
     title
     link
     status
@@ -120,15 +120,15 @@ export const task = gql`
     creator {
       ...User
     }
-    githubPrs {
-      ...GithubPr
+    githubPullRequests {
+      ...GithubPullRequest
     }
     reward {
       ...TaskReward
     }
   }
 
-  ${githubPr}
+  ${githubPullRequest}
   ${taskTag}
   ${taskReward}
   ${user}

@@ -21,7 +21,7 @@ import {
   User,
   Task,
   TaskTag,
-  GithubPr,
+  GithubPullRequest,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
@@ -45,7 +45,7 @@ interface TaskFormProps<TFormValues> {
   buttonText: string;
   initialValues?: Partial<TFormValues>;
   assignees?: User[];
-  githubPrs?: GithubPr[];
+  githubPullRequests?: GithubPullRequest[];
   onSubmit(task: TFormValues): unknown;
 }
 
@@ -55,7 +55,7 @@ export function TaskForm<
   mode,
   task,
   tags,
-  githubPrs,
+  githubPullRequests,
   buttonText,
   initialValues,
   onSubmit,
@@ -300,8 +300,8 @@ export function TaskForm<
             </Select>
           </Form.Item>
 
-          <Form.Item name="githubPrs" label="Github PRs">
-            {githubPrs?.map((pr) => (
+          <Form.Item name="githubPullRequests" label="Github PRs">
+            {githubPullRequests?.map((pr) => (
               <Button target="_blank" href={pr.link}>
                 {`${pr.title}`}
               </Button>

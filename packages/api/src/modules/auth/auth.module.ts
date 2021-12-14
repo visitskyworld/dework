@@ -12,7 +12,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
 import { ProjectModule } from "../project/project.module";
 import { TaskModule } from "../task/task.module";
-import { GithubPrModule } from "../githubPr/githubPr.module";
+import { GithubPullRequestModule } from "../githubPullRequest/githubPullRequest.module";
 
 @Global()
 @Module({
@@ -36,7 +36,7 @@ export class GlobalJwtModule {}
     ThreepidModule,
     ProjectModule,
     TaskModule,
-    GithubPrModule,
+    GithubPullRequestModule,
   ],
   providers: [GithubStrategy, DiscordStrategy],
   controllers: [AuthController],

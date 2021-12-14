@@ -1,7 +1,7 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Profile as DiscordProfile } from "passport-discord";
-import { Profile as GithubProfile } from "passport-github";
+import { Profile as GithubPullRequestofile } from "passport-github";
 import { Audit } from "./Audit";
 import { User } from "./User";
 
@@ -13,7 +13,7 @@ export enum ThreepidSource {
 export interface GithubThreepidConfig {
   accessToken: string;
   refreshToken: undefined;
-  profile: GithubProfile;
+  profile: GithubPullRequestofile;
 }
 
 export interface DiscordThreepidConfig {

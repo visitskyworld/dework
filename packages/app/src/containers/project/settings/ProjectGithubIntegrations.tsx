@@ -13,10 +13,10 @@ import { useAuthContext } from "../../../contexts/AuthContext";
 import { Constants } from "@dewo/app/util/constants";
 import { siteTitle } from "../../../util/constants";
 
-type ProjectGithubIntegrationProps = {
+interface ProjectGithubIntegrationProps {
   projectId: string;
   organizationId: string;
-};
+}
 
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,

@@ -30,7 +30,7 @@ export class ProjectService {
   }
 
   public async createIntegration(
-    partial: DeepPartial<ProjectIntegration>
+    partial: Partial<ProjectIntegration>
   ): Promise<ProjectIntegration> {
     const created = await this.projectIntegrationRepo.save(partial);
     return this.projectIntegrationRepo.findOne(
