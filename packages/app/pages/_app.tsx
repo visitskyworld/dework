@@ -16,16 +16,13 @@ import {
   createHttpLink,
   InMemoryCache,
   ApolloProvider,
-  split,
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { WebSocketLink } from "@apollo/client/link/ws";
 import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
-import { getMainDefinition } from "@apollo/client/utilities";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
 import { useRouter } from "next/router";
 import { useOrganization } from "@dewo/app/containers/organization/hooks";

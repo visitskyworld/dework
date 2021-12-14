@@ -25,7 +25,7 @@
     },
     "typeRoots": [
       "node_modules/@types",
-      "./types"
+      "./packages/types"
     ]
   },
   "exclude": [

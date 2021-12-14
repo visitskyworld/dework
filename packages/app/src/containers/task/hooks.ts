@@ -1,13 +1,7 @@
-import {
-  useApolloClient,
-  useMutation,
-  useQuery,
-  useSubscription,
-} from "@apollo/client";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
-import * as Subscriptions from "@dewo/app/graphql/subscriptions";
 import {
   CreateTaskInput,
   CreateTaskMutation,
@@ -22,9 +16,7 @@ import {
   GetTaskQuery,
   GetTaskQueryVariables,
   Task,
-  TaskCreatedSubscription,
   TaskTag,
-  TaskUpdatedSubscription,
   UpdateTaskInput,
   UpdateTaskMutation,
   UpdateTaskMutationVariables,
