@@ -1,10 +1,10 @@
-@import '~antd/dist/antd.less';
-@import '~antd/lib/style/themes/dark.less';
+@import "~antd/dist/antd.less";
+@import "~antd/lib/style/themes/dark.less";
 
 @border-radius-base: 4px;
 @primary-color: #8570e4;
 @primary-color-25: #8570e444;
-@body-background: #00042D;
+@body-background: #00042d;
 @component-background: fade(@white, 10%);
 @border-color-base: fade(@white, 40%);
 @border-color-split: fade(@white, 30%);
@@ -16,12 +16,13 @@
 
 html {
   background: @body-background;
-  background-image: url('/background.png');
+  background-image: url("/background.png");
   background-size: cover;
   background-repeat: no-repeat;
 }
 
-body, .ant-layout {
+body,
+.ant-layout {
   background: transparent;
 }
 
@@ -67,7 +68,9 @@ textarea {
 }
 
 .ant-btn.hover\:ant-btn-dangerous {
-  &:hover, &:active, &:focus {
+  &:hover,
+  &:active,
+  &:focus {
     background: unset;
     color: @error-color;
     border-color: @error-color;
@@ -78,7 +81,8 @@ textarea {
   margin-bottom: 12px;
 }
 
-.ant-select-multiple.ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+.ant-select-multiple.ant-select-disabled.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
   background: unset;
   border: none;
   padding: 0;
@@ -93,11 +97,26 @@ textarea {
   padding: 4px 16px;
 }
 
-.ant-typography-h1 { .typography-title-1(); margin: 0; }
-.ant-typography-h2 { .typography-title-2(); margin: 0; }
-.ant-typography-h3 { .typography-title-3(); margin: 0; }
-.ant-typography-h4 { .typography-title-4(); margin: 0; }
-.ant-typography-h5 { .typography-title-5(); margin: 0; }
+.ant-typography-h1 {
+  .typography-title-1();
+  margin: 0;
+}
+.ant-typography-h2 {
+  .typography-title-2();
+  margin: 0;
+}
+.ant-typography-h3 {
+  .typography-title-3();
+  margin: 0;
+}
+.ant-typography-h4 {
+  .typography-title-4();
+  margin: 0;
+}
+.ant-typography-h5 {
+  .typography-title-5();
+  margin: 0;
+}
 
 .ant-select .ant-select-disabled .ant-select-selector {
   background: unset;
@@ -105,14 +124,16 @@ textarea {
   padding: 0;
 }
 
-.ant-page-header-heading-left, .ant-page-header-heading-tags {
+.ant-page-header-heading-left,
+.ant-page-header-heading-tags {
   flex: 1;
 }
 
 .ant-form-vertical .ant-form-item-label {
   padding-bottom: 2px;
 
-  &, & > label {
+  &,
+  & > label {
     color: @text-color-secondary;
     text-transform: uppercase;
     font-size: 11px;
@@ -164,7 +185,7 @@ textarea {
         flex-direction: column;
         min-height: 0;
         max-height: 100%;
-        
+
         & > .ant-card {
           display: flex;
           flex-direction: column;
@@ -231,9 +252,28 @@ textarea {
   border-radius: @border-radius-base;
 
   transition: background 0.3s ease-in-out;
-
+  position: relative;
   &:hover {
     background: @component-background;
+    &::before {
+      height: 20px;
+    }
+  }
+  &::before {
+    content: "";
+    width: @border-radius-base;
+    height: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: @white;
+    position: absolute;
+    left: 0;
+    transition: all 0.3s ease-in-out;
+  }
+  &.active {
+    &::before {
+      height: 48px;
+    }
   }
 }
 
@@ -253,9 +293,15 @@ textarea {
   }
 }
 
-.max-w-sm { max-width: @screen-sm; }
-.max-w-md { max-width: @screen-md; }
-.max-w-lg { max-width: @screen-lg; }
+.max-w-sm {
+  max-width: @screen-sm;
+}
+.max-w-md {
+  max-width: @screen-md;
+}
+.max-w-lg {
+  max-width: @screen-lg;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -265,6 +311,7 @@ textarea {
   background: @primary-color;
 }
 
-#__next, .ant-layout {
+#__next,
+.ant-layout {
   height: 100%;
 }
