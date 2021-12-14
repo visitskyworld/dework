@@ -285,7 +285,10 @@ export function useTaskFormOwnerOptions(
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
   return useMemo(() => {
-    if (!organization) return undefined;
+    if (!organization) {
+      return !!currentOwner ? [currentOwner] : undefined;
+    }
+
     const orgUsers = organization.members.map((m) => m.user);
     if (!currentOwner) return orgUsers;
     return _.uniqBy([...orgUsers, currentOwner], (u) => u.id);
