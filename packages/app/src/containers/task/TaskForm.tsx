@@ -30,6 +30,12 @@ import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
+import {
+  rewardTriggerToString,
+  TaskRewardFormFields,
+} from "./TaskRewardFormFields";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -40,11 +46,6 @@ interface TaskFormProps<TFormValues> {
   assignees?: User[];
   onSubmit(task: TFormValues): unknown;
 }
-
-const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
-  [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Core team approval",
-  [TaskRewardTrigger.PULL_REQUEST_MERGED]: "PR merged",
-};
 
 export function TaskForm<
   TFormValues extends CreateTaskInput | UpdateTaskInput
@@ -67,6 +68,8 @@ export function TaskForm<
 
   const projectId: string =
     task?.projectId ?? (initialValues as any)?.projectId!;
+
+  const { user } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -223,9 +226,9 @@ export function TaskForm<
                 disabled={!canEdit}
                 loading={tagLoading}
                 optionFilterProp="label"
+                optionLabelProp="label" // don't put children inside tagRender
                 placeholder="Select tags..."
                 onChange={handleTagsUpdated}
-                optionLabelProp="label" // don't put children inside tagRender
                 tagRender={(props) => (
                   <Tag
                     {...props}
@@ -243,76 +246,31 @@ export function TaskForm<
             </Form.Item>
           </ConfigProvider>
 
+          <Form.Item name="ownerId" label="Owner">
+            <Select
+              // mode="multiple"
+              disabled={!canEdit}
+              allowClear
+              optionFilterProp="label"
+              placeholder="No task owner..."
+            >
+              {[user!]
+                // .map((u, i) => ({ ...u, id: String(i) }))
+                .map((user) => (
+                  <Select.Option value={user.id} label={user.username}>
+                    <Row align="middle">
+                      <UserAvatar user={user} size="small" />
+                      <Typography.Text style={{ marginLeft: 8 }}>
+                        {user.username}
+                      </Typography.Text>
+                    </Row>
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+
           {canEdit ? (
-            <>
-              <Form.Item name={["reward", "amount"]} label="Bounty">
-                <InputNumber
-                  placeholder="Enter amount"
-                  value={values.reward?.amount}
-                  addonAfter={
-                    <Form.Item
-                      name={["reward", "currency"]}
-                      noStyle
-                      rules={[
-                        {
-                          required: !!values.reward?.amount,
-                          message: "Select a currency",
-                        },
-                      ]}
-                    >
-                      <Select style={{ minWidth: 70 }} placeholder="Currency">
-                        <Select.Option value="ETH">ETH</Select.Option>
-                        <Select.Option value="USDC">USDC</Select.Option>
-                        <Select.Option value="SOL">SOL</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  }
-                />
-              </Form.Item>
-              <Form.Item
-                name={["reward", "trigger"]}
-                label="Payout trigger"
-                rules={[
-                  {
-                    required: !!values.reward?.amount,
-                    message: "Please enter a payout trigger",
-                  },
-                ]}
-                hidden={!values.reward?.amount}
-              >
-                <Select
-                  loading={tagLoading}
-                  optionFilterProp="label"
-                  placeholder="Select payout trigger"
-                >
-                  {[
-                    {
-                      label:
-                        rewardTriggerToString[
-                          TaskRewardTrigger.CORE_TEAM_APPROVAL
-                        ],
-                      value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-                      icon: Icons.TeamOutlined,
-                    },
-                    {
-                      label:
-                        rewardTriggerToString[
-                          TaskRewardTrigger.PULL_REQUEST_MERGED
-                        ],
-                      value: TaskRewardTrigger.PULL_REQUEST_MERGED,
-                      icon: Icons.GithubOutlined,
-                    },
-                  ].map((tag) => (
-                    <Select.Option value={tag.value} label={tag.label}>
-                      <Space style={{ alignItems: "center" }}>
-                        <tag.icon />
-                        {tag.label}
-                      </Space>
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </>
+            <TaskRewardFormFields value={values?.reward ?? undefined} />
           ) : (
             !!values.reward && (
               <Row className="ant-form-item">

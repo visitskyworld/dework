@@ -20,6 +20,9 @@ export class CreateTaskInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public assigneeIds?: string[];
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public ownerId?: string;
+
   @Field(() => TaskStatusEnum)
   public status!: TaskStatusEnum;
 

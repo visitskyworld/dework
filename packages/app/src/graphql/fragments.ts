@@ -92,6 +92,12 @@ export const task = gql`
     assignees {
       ...User
     }
+    owner {
+      ...User
+    }
+    creator {
+      ...User
+    }
     reward {
       ...TaskReward
     }

@@ -36,6 +36,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
       description: task?.description ?? undefined,
       tagIds: task?.tags.map((t) => t.id),
       assigneeIds: task?.assignees.map((a) => a.id),
+      ownerId: task?.owner?.id,
       status: task?.status,
       reward: !!task?.reward
         ? {
