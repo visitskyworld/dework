@@ -15,7 +15,14 @@ export const Sidebar: FC = () => {
   if (!user) return null;
   return (
     <Layout.Sider width={72}>
-      <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
+      <Col
+        style={{
+          height: "100%",
+          alignItems: "center",
+          paddingTop: 24,
+          paddingBottom: 12,
+        }}
+      >
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"
@@ -31,12 +38,7 @@ export const Sidebar: FC = () => {
               <HeaderProfileDropdown onClose={showProfileDropdown.toggleOff} />
             }
           >
-            <UserAvatar
-              user={user}
-              size={48}
-              tooltip={{ visible: false }}
-              style={{ marginTop: 24, cursor: "pointer" }}
-            />
+            <UserAvatar user={user} size={48} tooltip={{ visible: false }} />
           </Dropdown>
         </SidebarNavLink>
 
