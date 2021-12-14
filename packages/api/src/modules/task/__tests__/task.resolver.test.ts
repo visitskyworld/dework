@@ -76,6 +76,10 @@ describe("TaskResolver", () => {
         expect(task.reward.amount).toEqual(reward.amount);
         expect(task.reward.currency).toEqual(reward.currency);
         expect(task.reward.trigger).toEqual(reward.trigger);
+        expect(task.creator).not.toEqual(null);
+        expect(task.owner).not.toEqual(null);
+        expect(task.creator.id).toEqual(user.id);
+        expect(task.owner.id).toEqual(user.id);
       });
     });
 
@@ -98,6 +102,7 @@ describe("TaskResolver", () => {
 
       describe("projectAdmin", () => {
         it("should succeed", async () => {
+          const otherUser = await fixtures.createUser();
           const { user, project } = await fixtures.createUserOrgProject();
           const task = await fixtures.createTask({ projectId: project.id });
 
@@ -116,6 +121,7 @@ describe("TaskResolver", () => {
               tagIds: [expectedTag.id],
               assigneeIds: [user.id],
               status: expectedStatus,
+              ownerId: otherUser.id,
             }),
           });
 
@@ -130,6 +136,7 @@ describe("TaskResolver", () => {
           expect(updatedTask.assignees).toContainEqual(
             expect.objectContaining({ id: user.id })
           );
+          expect(updatedTask.owner.id).toEqual(otherUser.id);
         });
       });
 

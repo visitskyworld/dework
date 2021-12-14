@@ -19,6 +19,12 @@ export class TaskRequests {
       assignees {
         id
       }
+      creator {
+        id
+      }
+      owner {
+        id
+      }
       reward {
         amount
         currency

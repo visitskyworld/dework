@@ -23,6 +23,9 @@ export class UpdateTaskInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public assigneeIds?: string[];
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public ownerId?: string;
+
   @Field(() => TaskStatusEnum, { nullable: true })
   public status?: TaskStatusEnum;
 

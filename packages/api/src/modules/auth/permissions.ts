@@ -25,6 +25,7 @@ export const permissions: Permissions<
       assignees: { $elemMatch: { id: user.id } },
       status: { $ne: TaskStatusEnum.TODO },
     });
+    can(Actions.update, Task, { ownerId: user.id });
     can(CustomPermissionActions.claimTask, Task, {
       status: TaskStatusEnum.TODO,
     });

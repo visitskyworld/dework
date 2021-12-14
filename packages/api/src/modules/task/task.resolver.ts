@@ -40,6 +40,7 @@ export class TaskResolver {
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
   @UseAbility(Actions.create, Task)
   public async createTask(
+    @Context("user") user: User,
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
     return this.taskService.create({
@@ -48,6 +49,8 @@ export class TaskResolver {
       assignees: !!input.assigneeIds
         ? (input.assigneeIds.map((id) => ({ id })) as any)
         : [],
+      creatorId: user.id,
+      ownerId: user.id,
       ...input,
     });
   }
