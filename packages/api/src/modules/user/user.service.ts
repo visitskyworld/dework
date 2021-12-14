@@ -1,5 +1,6 @@
 import { Threepid } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
+import { UserDetail } from "@dewo/api/models/UserDetail";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
@@ -8,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Raw, Repository } from "typeorm";
+import { DeepPartial, Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
 
 @Injectable()
@@ -18,6 +19,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(UserDetail)
+    private readonly userDetailRepo: Repository<UserDetail>,
     private readonly threepidService: ThreepidService,
     private readonly jwtService: JwtService
   ) {}
@@ -67,6 +70,13 @@ export class UserService {
     }
     await this.threepidService.update({ ...threepid, userId: user.id });
     threepids.push(threepid);
+  }
+
+  public async createDetail(
+    partial: DeepPartial<UserDetail>
+  ): Promise<UserDetail> {
+    const created = await this.userDetailRepo.save(partial);
+    return this.userDetailRepo.findOne(created.id) as Promise<UserDetail>;
   }
 
   public createAuthToken(user: User): string {

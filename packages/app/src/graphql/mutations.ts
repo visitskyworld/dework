@@ -169,6 +169,13 @@ export const createProjectIntegration = gql`
   ${Fragments.projectIntegration}
 `;
 
+export const createUserDetail = gql`
+  mutation CreateUserDetailMutation($input: CreateUserDetailInput!) {
+    detail: createUserDetail(input: $input) 
+
+  ${Fragments.userDetail}
+`;
+
 export const createInvite = gql`
   mutation CreateInviteMutation($input: CreateInviteInput!) {
     invite: createInvite(input: $input) {

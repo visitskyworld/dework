@@ -47,6 +47,14 @@ export const projectIntegration = gql`
   }
 `;
 
+export const userDetail = gql`
+  fragment UserDetail on UserDetail {
+    id
+    type
+    value
+  }
+`;
+
 export const project = gql`
   fragment Project on Project {
     id

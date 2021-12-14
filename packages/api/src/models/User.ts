@@ -4,6 +4,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
 import { Threepid } from "./Threepid";
+import { UserDetail } from "./UserDetail";
 
 @Entity()
 @ObjectType()
@@ -24,6 +25,10 @@ export class User extends Audit {
   @OneToMany(() => Threepid, (t: Threepid) => t.user)
   @Field(() => [Threepid])
   public threepids!: Promise<Threepid[]>;
+
+  @OneToMany(() => UserDetail, (t: UserDetail) => t.user)
+  @Field(() => [UserDetail])
+  public details!: Promise<UserDetail[]>;
 
   @JoinColumn()
   @ManyToOne(() => PaymentMethod, { nullable: true })

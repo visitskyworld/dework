@@ -26,6 +26,8 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "../organization/organization.service";
+import { UserDetail } from "@dewo/api/models/UserDetail";
+import { CreateUserDetailInput } from "./dto/CreateUserDetail";
 
 @Resolver(() => User)
 @Injectable()
@@ -45,6 +47,18 @@ export class UserResolver {
   @ResolveField(() => [Organization])
   public async organizations(@Parent() user: User): Promise<Organization[]> {
     return this.organizationService.findByUser(user.id);
+  }
+
+  @Mutation(() => UserDetail)
+  @UseGuards(AuthGuard)
+  public async createUserDetail(
+    @Args("input") input: CreateUserDetailInput,
+    @Context("user") user: User
+  ): Promise<UserDetail> {
+    return this.userService.createDetail({
+      ...input,
+      userId: user.id,
+    });
   }
 
   @ResolveField(() => [GraphQLJSONObject])
