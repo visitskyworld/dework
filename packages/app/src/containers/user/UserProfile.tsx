@@ -56,7 +56,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto max-w-lg" style={{ marginTop: 40 }}>
       <Row gutter={16}>
         <Col span={8}>
           <Card>

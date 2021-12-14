@@ -29,10 +29,7 @@ const Page: NextPage = () => {
     <Layout>
       <Sidebar />
       <Layout.Content>
-        <PageHeader
-          style={{ marginTop: 40 }}
-          breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
-        />
+        <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
         <UserProfile userId={userId} />
       </Layout.Content>
     </Layout>

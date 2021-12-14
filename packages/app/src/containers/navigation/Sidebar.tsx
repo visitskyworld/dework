@@ -1,7 +1,7 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Avatar, Col, Divider, Dropdown, Layout } from "antd";
+import { Col, Divider, Dropdown, Layout } from "antd";
 import React, { FC } from "react";
 import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
@@ -16,9 +16,6 @@ export const Sidebar: FC = () => {
   return (
     <Layout.Sider width={72}>
       <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
-        <SidebarNavLink href="/" className="dewo-sidebar-item" exact>
-          <Avatar size={48} icon={"/"} />
-        </SidebarNavLink>
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"
@@ -38,7 +35,7 @@ export const Sidebar: FC = () => {
               user={user}
               size={48}
               tooltip={{ visible: false }}
-              style={{ cursor: "pointer" }}
+              style={{ marginTop: 24, cursor: "pointer" }}
             />
           </Dropdown>
         </SidebarNavLink>
