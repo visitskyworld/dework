@@ -24,13 +24,6 @@ export class InviteService {
     partial: DeepPartial<Invite>,
     user: User
   ): Promise<Invite> {
-    if (!!partial.organizationId) {
-      const organizations = await this.organizationService.findByUser(user.id);
-      if (!organizations.some((o) => o.id === partial.organizationId)) {
-        throw new ForbiddenException();
-      }
-    }
-
     const created = await this.inviteRepo.save({
       ...partial,
       inviterId: user.id,
@@ -42,16 +35,14 @@ export class InviteService {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
 
-    if (!!invite.organizationId) {
-      const organization = await invite.organization;
-      const organizations = await this.organizationService.findByUser(user.id);
-      if (!organizations.some((o) => o.id === invite.organizationId)) {
-        await this.organizationService.addUser(
-          organization.id,
-          user.id,
-          OrganizationRole.MEMBER
-        );
-      }
+    const organization = await invite.organization;
+    const organizations = await this.organizationService.findByUser(user.id);
+    if (!organizations.some((o) => o.id === invite.organizationId)) {
+      await this.organizationService.addUser(
+        organization.id,
+        user.id,
+        invite.role ?? OrganizationRole.MEMBER
+      );
     }
 
     return invite;

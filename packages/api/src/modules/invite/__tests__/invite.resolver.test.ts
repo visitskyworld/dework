@@ -21,9 +21,10 @@ describe("InviteResolver", () => {
   describe("Mutations", () => {
     describe("createInvite", () => {
       it("should fail if the user is unauthenticated", async () => {
+        const organization = await fixtures.createOrganization();
         const response = await client.request({
           app,
-          body: InviteRequests.create({}),
+          body: InviteRequests.create({ organizationId: organization.id }),
         });
 
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
@@ -57,14 +58,18 @@ describe("InviteResolver", () => {
     });
 
     describe("acceptInvite", () => {
-      it("it should connect user to organization", async () => {
+      const createInvite = async (role: OrganizationRole) => {
         const { user: inviter, organization } =
           await fixtures.createUserOrgProject();
 
-        const invite = await fixtures.createInvite(
-          { organizationId: organization.id },
+        return fixtures.createInvite(
+          { organizationId: organization.id, role },
           inviter
         );
+      };
+
+      it("it should connect user to organization", async () => {
+        const invite = await createInvite(OrganizationRole.MEMBER);
         const invited = await fixtures.createUser();
 
         const response = await client.request({
@@ -79,6 +84,26 @@ describe("InviteResolver", () => {
           expect.objectContaining({
             userId: invited.id,
             role: OrganizationRole.MEMBER,
+          })
+        );
+      });
+
+      it("should apply ADMIN role from invite", async () => {
+        const invite = await createInvite(OrganizationRole.ADMIN);
+        const invited = await fixtures.createUser();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(invited),
+          body: InviteRequests.accept(invite.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetchedInvite = response.body.data?.invite;
+        expect(fetchedInvite.organization.members).toContainEqual(
+          expect.objectContaining({
+            userId: invited.id,
+            role: OrganizationRole.ADMIN,
           })
         );
       });
