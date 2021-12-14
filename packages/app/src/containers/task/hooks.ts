@@ -278,19 +278,19 @@ export function useListenToTasks() {
   });
 }
 
-export function useTaskFormOwnerOptions(
+export function useTaskFormUserOptions(
   projectId: string,
-  currentOwner: User | undefined
+  additionalUsers: User[] | undefined
 ): User[] | undefined {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
   return useMemo(() => {
     if (!organization) {
-      return !!currentOwner ? [currentOwner] : undefined;
+      return additionalUsers ?? [];
     }
 
     const orgUsers = organization.members.map((m) => m.user);
-    if (!currentOwner) return orgUsers;
-    return _.uniqBy([...orgUsers, currentOwner], (u) => u.id);
-  }, [organization, currentOwner]);
+    if (!additionalUsers) return orgUsers;
+    return _.uniqBy([...orgUsers, ...additionalUsers], (u) => u.id);
+  }, [organization, additionalUsers]);
 }

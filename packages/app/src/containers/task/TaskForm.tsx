@@ -26,7 +26,7 @@ import { STATUS_LABEL } from "../project/board/util";
 import {
   useCreateTaskTag,
   useGenerateRandomTaskTagColor,
-  useTaskFormOwnerOptions,
+  useTaskFormUserOptions,
 } from "./hooks";
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -68,9 +68,13 @@ export function TaskForm<
 
   const projectId: string =
     task?.projectId ?? (initialValues as any)?.projectId!;
-  const ownerOptions = useTaskFormOwnerOptions(
+  const ownerOptions = useTaskFormUserOptions(
     projectId,
-    task?.owner ?? undefined
+    useMemo(() => (!!task?.owner ? [task.owner] : []), [task?.owner])
+  );
+  const assigneeOptions = useTaskFormUserOptions(
+    projectId,
+    useMemo(() => task?.assignees ?? [], [task?.assignees])
   );
 
   const [loading, setLoading] = useState(false);
@@ -248,9 +252,53 @@ export function TaskForm<
             </Form.Item>
           </ConfigProvider>
 
+          <Form.Item
+            name="assigneeIds"
+            label={
+              values.status === TaskStatusEnum.TODO ? "Applicants" : "Assignees"
+            }
+            rules={[{ type: "array" }]}
+          >
+            <Select
+              mode="multiple"
+              showSearch
+              className="dewo-select-item-full-width"
+              loading={!assigneeOptions}
+              disabled={!canEdit}
+              allowClear
+              optionFilterProp="label"
+              optionLabelProp="label" // don't put children inside tagRender
+              placeholder="No task assignee..."
+              tagRender={(props) => {
+                const user = assigneeOptions?.find((u) => u.id === props.value);
+                if (!user) return <div />;
+                return (
+                  <Row align="middle" style={{ padding: 4 }}>
+                    <UserAvatar user={user} size="small" />
+                    <Typography.Text style={{ marginLeft: 8 }}>
+                      {user.username}
+                    </Typography.Text>
+                  </Row>
+                );
+              }}
+            >
+              {assigneeOptions?.map((user) => (
+                <Select.Option value={user.id} label={user.username}>
+                  <Row align="middle">
+                    <UserAvatar user={user} size="small" />
+                    <Typography.Text style={{ marginLeft: 8 }}>
+                      {user.username}
+                    </Typography.Text>
+                  </Row>
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Form.Item name="ownerId" label="Owner">
             <Select
-              // mode="multiple"
+              showSearch
+              // className="dewo-select-item-full-width"
               loading={!ownerOptions}
               disabled={!canEdit}
               allowClear
