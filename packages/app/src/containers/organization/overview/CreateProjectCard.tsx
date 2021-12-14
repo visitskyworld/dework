@@ -2,9 +2,9 @@ import { Project } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import * as Icons from "@ant-design/icons";
 import { Avatar, Card, Space, Typography } from "antd";
-import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
 import { ProjectCreateModal } from "../../project/create/ProjectCreateModal";
+import { useNavigateToProject } from "@dewo/app/util/navigation";
 
 interface Props {
   organizationId: string;
@@ -12,16 +12,13 @@ interface Props {
 
 export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
   const showModal = useToggle();
-  const router = useRouter();
+  const navigateToProject = useNavigateToProject();
   const handleProjectCreated = useCallback(
     async (project: Project) => {
-      await router.push(
-        "/organization/[organizationId]/project/[projectId]",
-        `/organization/${organizationId}/project/${project.id}`
-      );
+      await navigateToProject(organizationId, project.id);
       showModal.toggleOff();
     },
-    [router, showModal, organizationId]
+    [showModal, organizationId, navigateToProject]
   );
   return (
     <>

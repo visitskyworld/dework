@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppInitialProps, AppProps } from "next/app";
 import { AppContextType } from "next-server/dist/lib/utils";
 import Head from "next/head";
@@ -27,6 +27,10 @@ import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
+import { useRouter } from "next/router";
+import { useOrganization } from "@dewo/app/containers/organization/hooks";
+import { useProject } from "@dewo/app/containers/project/hooks";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -36,6 +40,41 @@ if (typeof window !== "undefined") {
 interface AuthProps {
   authenticated: boolean;
 }
+
+const SlugReplacer: React.FC = () => {
+  // Replace slugs if wrong
+  const router = useRouter();
+  const { organizationSlug, projectSlug } = router.query;
+  const organizationId = useParseIdFromSlug("organizationSlug");
+  const organization = useOrganization(organizationId);
+  useEffect(() => {
+    if (organization && organizationSlug !== organization.slug) {
+      router.replace(
+        { query: { ...router.query, organizationSlug: organization.slug } },
+        undefined,
+        {
+          shallow: true,
+        }
+      );
+    }
+  }, [organizationSlug, organizationId, organization, router]);
+
+  const projectId = useParseIdFromSlug("projectSlug");
+  const project = useProject(projectId);
+  useEffect(() => {
+    if (project && projectSlug !== project.slug) {
+      router.replace(
+        { query: { ...router.query, projectSlug: project.slug } },
+        undefined,
+        {
+          shallow: true,
+        }
+      );
+    }
+  }, [projectSlug, projectId, project, router]);
+
+  return null;
+};
 
 type Props = AppProps & WithApolloProps<any> & AuthProps;
 const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
@@ -59,6 +98,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           <PermissionsProvider>
             <Component {...pageProps} />
             <InviteMessageToast />
+            <SlugReplacer />
           </PermissionsProvider>
         </AuthProvider>
       </ApolloProvider>

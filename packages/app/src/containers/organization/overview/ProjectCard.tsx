@@ -3,6 +3,7 @@ import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
 import React, { FC } from "react";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { useOrganization } from "../hooks";
 
 interface Props {
   project: Project;
@@ -11,9 +12,10 @@ interface Props {
 }
 
 export const ProjectCard: FC<Props> = ({ project, users }) => {
+  const organization = useOrganization(project.organizationId);
   return (
     <Link
-      href={`/organization/${project.organizationId}/project/${project.id}`}
+      href={organization ? `/o/${organization.slug}/p/${project.slug}` : ""}
     >
       <a>
         <Card className="hover:component-highlight">

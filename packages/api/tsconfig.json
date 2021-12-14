@@ -7,7 +7,13 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "isolatedModules": false,
-    "outDir": "build"
+    "outDir": "build",
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ]
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

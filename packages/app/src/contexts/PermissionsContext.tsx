@@ -18,6 +18,7 @@ import {
   Task,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
+import { useParseIdFromSlug } from "../util/uuid";
 
 type AbilityAction = "create" | "read" | "update" | "delete" | "claimTask";
 type AbilitySubject =
@@ -37,15 +38,16 @@ const PermissionsContext = createContext<Ability<AbilityType>>(
 export const Can = createContextualCan(PermissionsContext.Consumer);
 
 export const PermissionsProvider: FC = ({ children }) => {
-  const router = useRouter();
+  const orgId = useParseIdFromSlug("organizationSlug");
+  const projId = useParseIdFromSlug("projectSlug");
 
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
     {
       variables: {
         input: {
-          projectId: router.query.projectId as string | undefined,
-          organizationId: router.query.organizationId as string | undefined,
+          projectId: projId,
+          organizationId: orgId,
         },
       },
     }

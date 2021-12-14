@@ -34,7 +34,7 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           breadcrumbName: "Home",
         },
         {
-          path: `/organization/${organization.id}`,
+          path: `/o/${organization.slug}`,
           breadcrumbName: organization.name,
         },
       ],
@@ -67,7 +67,9 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
               OrganizationHeaderTab.members,
             ].map((tab) => (
               <Menu.Item key={tab}>
-                <Link href={`/organization/${organizationId}/${tab}`}>
+                <Link
+                  href={organization ? `/o/${organization.slug}/${tab}` : ""}
+                >
                   <a>{titleByTab[tab]}</a>
                 </Link>
               </Menu.Item>

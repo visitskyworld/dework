@@ -11,6 +11,7 @@ import {
   usePayTaskReward,
 } from "../../payment/hooks";
 import { useUpdateTask } from "../../task/hooks";
+import { uuidToBase62 } from "@dewo/app/util/uuid";
 
 interface Props {
   task: Task;
@@ -18,9 +19,6 @@ interface Props {
 
 export const PayAndCloseButton: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
-
-  // TODO(fant): remove this...
-  const organizationId = useRouter().query.organizationId as string;
 
   const router = useRouter();
 
@@ -43,7 +41,9 @@ export const PayAndCloseButton: FC<Props> = ({ task }) => {
             btn: (
               <RouterContext.Provider value={router}>
                 <Link
-                  href={`/organization/${organizationId}/project/${task.projectId}/settings`}
+                  href={`/o/${router.query.organizationSlug}/p/${uuidToBase62(
+                    task.projectId
+                  )}/settings`}
                 >
                   <a>
                     <Button type="primary" onClick={notification.destroy}>

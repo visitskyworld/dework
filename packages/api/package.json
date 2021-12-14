@@ -40,7 +40,9 @@
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
-    "typeorm": "^0.2.41"
+    "slugify": "^1.6.3",
+    "typeorm": "^0.2.41",
+    "uuid-base62": "^0.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.1.5",

@@ -21,6 +21,7 @@ export const organization = gql`
     id
     name
     imageUrl
+    slug
   }
 `;
 
@@ -49,6 +50,7 @@ export const projectIntegration = gql`
 export const project = gql`
   fragment Project on Project {
     id
+    slug
     name
     organizationId
     taskCount

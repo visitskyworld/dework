@@ -10,7 +10,7 @@ interface Props {
 
 export const OrganizationCard: FC<Props> = ({ organization }) => {
   return (
-    <Link href={`/organization/${organization.id}`}>
+    <Link href={`/o/${organization.slug}`}>
       <a>
         <Card className="hover:component-highlight">
           <OrganizationAvatar size={100} organization={organization} />

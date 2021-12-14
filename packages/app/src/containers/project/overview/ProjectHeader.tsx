@@ -26,11 +26,11 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
           breadcrumbName: "Home",
         },
         {
-          path: `/organization/${organization.id}`,
+          path: `/o/${organization.slug}`,
           breadcrumbName: organization.name,
         },
         {
-          path: `/project/${project.id}`,
+          path: `/p/${project.slug}`,
           breadcrumbName: project.name,
           children: [{ path: "settings", breadcrumbName: "Settings" }],
         },

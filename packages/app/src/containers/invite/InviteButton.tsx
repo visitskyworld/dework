@@ -2,6 +2,8 @@ import { Alert, Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
 import { useCreateInvite } from "./hooks";
+import { useOrganization } from "../organization/hooks";
+import { useProject } from "../project/hooks";
 
 interface Props {
   organizationId?: string;
@@ -11,6 +13,8 @@ interface Props {
 export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
   const [loading, setLoading] = useState(false);
   const [inviteId, setInviteId] = useState<string>();
+  const org = useOrganization(organizationId);
+  const proj = useProject(projectId);
 
   const createInvite = useCreateInvite();
   const handlePress = useCallback(async () => {
@@ -18,9 +22,9 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
       setLoading(true);
       const inviteId = await createInvite({ organizationId });
       setInviteId(inviteId);
-      const inviteLink = !!projectId
-        ? `${window.location.origin}/organization/${organizationId}/project/${projectId}?inviteId=${inviteId}`
-        : `${window.location.origin}/organization/${organizationId}?inviteId=${inviteId}`;
+      const inviteLink = !!proj
+        ? `${window.location.origin}/o/${org.slug}/p/${proj.slug}?inviteId=${inviteId}`
+        : `${window.location.origin}/o/${org.slug}?inviteId=${inviteId}`;
 
       const el = document.createElement("textarea");
       el.value = inviteId;
@@ -31,7 +35,7 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
     } finally {
       setLoading(false);
     }
-  }, [createInvite, organizationId, projectId]);
+  }, [createInvite, organizationId, projectId, org?.slug, proj?.slug]);
 
   if (!!inviteId) {
     return <Alert message="Invite link copied" type="success" showIcon />;

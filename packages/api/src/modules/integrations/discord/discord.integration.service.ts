@@ -18,6 +18,7 @@ import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { MessageEmbed } from "discord.js";
+import encoder from "uuid-base62";
 
 @Injectable()
 @EventSubscriber()
@@ -63,9 +64,9 @@ export class DiscordIntegrationService
     if (!channel) return;
 
     const project = await integration.project;
-    const permalink = `${this.config.get("APP_URL")}/organization/${
+    const permalink = `${this.config.get("APP_URL")}/o/${encoder.encode(
       project.organizationId
-    }/project/${project.id}?taskId=${task.id}`;
+    )}/p/${project.slug}?taskId=${task.id}`;
     channel.send(`New bounty up for grabs! ${task.name}\n${permalink}`);
   }
 
@@ -91,9 +92,9 @@ export class DiscordIntegrationService
     if (!channel) return;
 
     const project = await task.project;
-    const permalink = `${this.config.get("APP_URL")}/organization/${
+    const permalink = `${this.config.get("APP_URL")}/o/${encoder.encode(
       project.organizationId
-    }/project/${project.id}/task/${task.id}`;
+    )}/p/${project.slug}/task/${task.id}`;
 
     const msgEmbed = new MessageEmbed()
       .setColor("#0099ff")

@@ -44,7 +44,7 @@ export const Sidebar: FC = () => {
         {user?.organizations.map((organization) => (
           <SidebarNavLink
             key={organization.id}
-            href={`/organization/${organization.id}`}
+            href={`/o/${organization.slug}`}
             className="dewo-sidebar-item"
           >
             <OrganizationAvatar

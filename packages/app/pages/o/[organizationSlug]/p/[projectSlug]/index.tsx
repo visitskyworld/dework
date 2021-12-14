@@ -7,24 +7,28 @@ import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTask
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const organizationId = router.query.organizationId as string;
-  const projectId = router.query.projectId as string;
+  const projId = useParseIdFromSlug("projectSlug");
+
   const navigateToProject = useCallback(
-    () => router.push(`/organization/${organizationId}/project/${projectId}`),
-    [router, organizationId, projectId]
+    () =>
+      router.push(
+        `/o/${router.query.organizationSlug}/p/${router.query.projectSlug}`
+      ),
+    [router]
   );
-  const project = useProject(projectId);
+  const project = useProject(projId);
 
   return (
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <ProjectHeader projectId={projectId} />
+        <ProjectHeader projectId={projId} />
         <Layout.Content style={{ flex: 1 }}>
-          <ProjectTaskBoard projectId={projectId} />
+          <ProjectTaskBoard projectId={projId} />
         </Layout.Content>
       </Layout.Content>
 

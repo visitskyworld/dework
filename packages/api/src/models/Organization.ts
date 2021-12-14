@@ -1,8 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, OneToMany } from "typeorm";
+import slugify from "slugify";
+import { AfterLoad, Column, Entity, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
+import encoder from "uuid-base62";
 
 @Entity()
 @ObjectType()
@@ -18,6 +20,15 @@ export class Organization extends Audit {
   @Column({ nullable: true, length: 1024 })
   @Field({ nullable: true })
   public imageUrl?: string;
+
+  @Field()
+  public slug!: string;
+
+  @AfterLoad()
+  getSlug() {
+    const slug = slugify(this.name.slice(0, 12));
+    this.slug = `${slug}-${encoder.encode(this.id)}`;
+  }
 
   @OneToMany(
     () => OrganizationMember,

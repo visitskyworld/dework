@@ -3,20 +3,12 @@ import { Avatar, Button, Tooltip } from "antd";
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { OrganizationCreateModal } from "../organization/create/OrganizationCreateModal";
-import { useRouter } from "next/router";
 import { Organization } from "@dewo/app/graphql/types";
+import { useNavigateToOrganization } from "@dewo/app/util/navigation";
 
 export const CreateOrganizationButton: FC = () => {
-  const router = useRouter();
   const createOrganization = useToggle();
-  const navigateToOrganization = useCallback(
-    async (id: string) =>
-      await router.push(
-        "/organization/[organizationId]",
-        `/organization/${id}`
-      ),
-    [router]
-  );
+  const navigateToOrganization = useNavigateToOrganization();
   const handleOrganizationCreated = useCallback(
     async (organization: Organization) => {
       createOrganization.toggleOff();

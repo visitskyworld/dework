@@ -126,7 +126,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                     {user.organizations.map((organization) => (
                       <Link
                         key={organization.id}
-                        href={`/organization/${organization.id}`}
+                        href={`/o/${organization.slug}`}
                       >
                         <a>
                           <Tag>{organization.name}</Tag>

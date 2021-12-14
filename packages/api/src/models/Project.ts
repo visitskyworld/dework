@@ -1,11 +1,20 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+  AfterLoad,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { PaymentMethod } from "./PaymentMethod";
 import { ProjectIntegration } from "./ProjectIntegration";
 import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
+import slugify from "slugify";
+import encoder from "uuid-base62";
 
 @Entity()
 @ObjectType()
@@ -21,6 +30,15 @@ export class Project extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public organizationId!: string;
+
+  @Field()
+  public slug!: string;
+
+  @AfterLoad()
+  getSlug() {
+    const slug = slugify(this.name.slice(0, 12));
+    this.slug = `${slug}-${encoder.encode(this.id)}`;
+  }
 
   @OneToMany(() => Task, (t: Task) => t.project)
   @Field(() => [Task])

@@ -32,7 +32,8 @@
     "react-dom": "17.0.2",
     "react-hotjar": "^4.0.0",
     "subscriptions-transport-ws": "^0.11.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "uuid-base62": "^0.1.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.177",

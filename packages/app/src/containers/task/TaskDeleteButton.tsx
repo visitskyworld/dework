@@ -17,7 +17,7 @@ export const TaskDeleteButton: FC<TaskDeleteButtonProps> = ({ task }) => {
       setLoading(true);
       await deleteTask(task);
       await router.push(
-        `/organization/${router.query.organizationId}/project/${router.query.projectId}`
+        `/o/${router.query.organizationSlug}/p/${router.query.projectSlug}`
       );
     } finally {
       setLoading(false);
