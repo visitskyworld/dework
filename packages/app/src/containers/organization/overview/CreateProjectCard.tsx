@@ -19,14 +19,14 @@ export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
         "/organization/[organizationId]/project/[projectId]",
         `/organization/${organizationId}/project/${project.id}`
       );
-      showModal.onToggleOff();
+      showModal.toggleOff();
     },
     [router, showModal, organizationId]
   );
   return (
     <>
       <Card
-        onClick={showModal.onToggleOn}
+        onClick={showModal.toggleOn}
         className="dewo-card-create-project hover:component-highlight"
       >
         <Space direction="vertical" align="center">
@@ -39,7 +39,7 @@ export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
       <ProjectCreateModal
         visible={showModal.value}
         organizationId={organizationId}
-        onCancel={showModal.onToggleOff}
+        onCancel={showModal.toggleOff}
         onCreated={handleProjectCreated}
       />
     </>

@@ -4,6 +4,7 @@ import React, { FC, useMemo } from "react";
 
 interface Props extends LinkProps {
   exact?: boolean;
+  clickable?: boolean;
   className?: string;
 }
 
@@ -11,6 +12,7 @@ export const SidebarNavLink: FC<Props> = ({
   exact,
   href,
   children,
+  clickable = true,
   ...restProps
 }) => {
   const { asPath } = useRouter();
@@ -22,6 +24,10 @@ export const SidebarNavLink: FC<Props> = ({
   const className = [restProps.className ?? "", isActive ? "active" : ""].join(
     " "
   );
+
+  if (!clickable) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <Link href={href}>

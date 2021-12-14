@@ -6,9 +6,12 @@ import React, { FC } from "react";
 import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
+import { useToggle } from "@dewo/app/util/hooks";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
+  const showProfileDropdown = useToggle();
+
   if (!user) return null;
   return (
     <Layout.Sider width={72}>
@@ -19,11 +22,17 @@ export const Sidebar: FC = () => {
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"
+          clickable={false}
         >
           <Dropdown
             key="avatar"
             placement="bottomLeft"
-            overlay={<HeaderProfileDropdown />}
+            visible={showProfileDropdown.value}
+            // @ts-ignore
+            onClick={showProfileDropdown.toggle}
+            overlay={
+              <HeaderProfileDropdown onClose={showProfileDropdown.toggleOff} />
+            }
           >
             <UserAvatar user={user} size={48} tooltip={{ title: undefined }} />
           </Dropdown>

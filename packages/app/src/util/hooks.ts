@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MeQuery, UserDetails } from "../graphql/types";
 
 export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
@@ -10,13 +10,18 @@ export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
 
 export function useToggle(): {
   value: boolean;
-  onToggleOn(): void;
-  onToggleOff(): void;
+  toggleOn(): void;
+  toggleOff(): void;
+  toggle(): void;
 } {
   const [value, setValue] = useState(false);
-  const onToggleOn = useCallback(() => setValue(true), []);
-  const onToggleOff = useCallback(() => setValue(false), []);
-  return { value, onToggleOn, onToggleOff };
+  const toggleOn = useCallback(() => setValue(true), []);
+  const toggleOff = useCallback(() => setValue(false), []);
+  const toggle = useCallback(() => setValue(!value), [value]);
+  return useMemo(
+    () => ({ value, toggleOn, toggleOff, toggle }),
+    [value, toggleOn, toggleOff, toggle]
+  );
 }
 
 export function useRerender() {

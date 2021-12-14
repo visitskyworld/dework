@@ -35,7 +35,7 @@ export const permissions: Permissions<
     extend(Roles.organizationAdmin);
   },
 
-  organizationAdmin({ can, user, extend }) {
+  organizationAdmin({ can, cannot, user, extend }) {
     extend(Roles.organizationMember);
 
     can(Actions.create, OrganizationMember);
@@ -45,6 +45,8 @@ export const permissions: Permissions<
     can(Actions.update, Organization);
     can(Actions.delete, Organization);
     can(Actions.create, Project);
+
+    cannot(CustomPermissionActions.claimTask, Task);
   },
 
   organizationMember({ can }) {

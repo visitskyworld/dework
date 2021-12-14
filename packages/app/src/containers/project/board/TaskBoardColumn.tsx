@@ -53,7 +53,7 @@ export const TaskBoardColumn: FC<Props> = ({
         <Can I="create" a="Task">
           <Button
             type="text"
-            icon={<Icons.PlusOutlined onClick={createCardToggle.onToggleOn} />}
+            icon={<Icons.PlusOutlined onClick={createCardToggle.toggleOn} />}
           />
         </Can>
       }
@@ -67,8 +67,8 @@ export const TaskBoardColumn: FC<Props> = ({
           [status, initialValues]
         )}
         visible={createCardToggle.value}
-        onCancel={createCardToggle.onToggleOff}
-        onDone={createCardToggle.onToggleOff}
+        onCancel={createCardToggle.toggleOff}
+        onDone={createCardToggle.toggleOff}
       />
       {taskSections.map((section, index) => (
         <Fragment key={index}>

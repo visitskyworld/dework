@@ -26,7 +26,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
     async (event) => {
       eatClick(event);
       await claimTask(task);
-      showClaimEducation.onToggleOn();
+      showClaimEducation.toggleOn();
     },
     [claimTask, task, showClaimEducation]
   );
@@ -40,7 +40,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const hideClaimConfirmation = useCallback(
     (event) => {
       eatClick(event);
-      showClaimEducation.onToggleOff();
+      showClaimEducation.toggleOff();
     },
     [showClaimEducation]
   );

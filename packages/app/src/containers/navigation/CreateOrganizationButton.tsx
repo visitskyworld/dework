@@ -19,7 +19,7 @@ export const CreateOrganizationButton: FC = () => {
   );
   const handleOrganizationCreated = useCallback(
     async (organization: Organization) => {
-      createOrganization.onToggleOff();
+      createOrganization.toggleOff();
       await navigateToOrganization(organization.id);
     },
     [createOrganization, navigateToOrganization]
@@ -31,14 +31,14 @@ export const CreateOrganizationButton: FC = () => {
         <Button
           type="text"
           className="dewo-sidebar-item"
-          onClick={createOrganization.onToggleOn}
+          onClick={createOrganization.toggleOn}
         >
           <Avatar size={48} icon={<Icons.PlusOutlined />} />
         </Button>
       </Tooltip>
       <OrganizationCreateModal
         visible={createOrganization.value}
-        onCancel={createOrganization.onToggleOff}
+        onCancel={createOrganization.toggleOff}
         onCreated={handleOrganizationCreated}
       />
     </>
