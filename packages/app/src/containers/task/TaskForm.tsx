@@ -65,7 +65,6 @@ export function TaskForm<
     initialValues ?? {}
   );
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
-
   const canEdit = usePermission(mode, "Task");
   const canDelete = usePermission("delete", "Task");
 
@@ -87,6 +86,7 @@ export function TaskForm<
         setLoading(true);
         await onSubmit({
           ...values,
+          projectId,
           reward: !!values.reward?.amount
             ? {
                 amount: values.reward.amount,
@@ -300,13 +300,15 @@ export function TaskForm<
             </Select>
           </Form.Item>
 
-          <Form.Item name="githubPullRequests" label="Github PRs">
-            {githubPullRequests?.map((pr) => (
-              <Button target="_blank" href={pr.link}>
-                {pr.title}
-              </Button>
-            ))}
-          </Form.Item>
+          {githubPullRequests && (
+            <Form.Item name="githubPullRequests" label="Github PRs">
+              {githubPullRequests.map((pr) => (
+                <Button target="_blank" href={pr.link}>
+                  {pr.title}
+                </Button>
+              ))}
+            </Form.Item>
+          )}
 
           {canEdit ? (
             <TaskRewardFormFields value={values?.reward ?? undefined} />

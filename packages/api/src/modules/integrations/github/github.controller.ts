@@ -51,10 +51,10 @@ export class GithubController {
   async githubWebhook(@Req() req: Request) {
     if (req.body.pull_request) {
       const { title, head, state, html_url } = req.body.pull_request;
-      const taskId = head.ref.match(/dw-(\d+)/)[1]; // Find task id in branch name
-      console.log(taskId);
+      const branchName = head?.ref;
+      const taskId = branchName?.match(/dw-([a-z0-9-]+)(\/.*)?$/)?.[1];
 
-      if (taskId === -1) return;
+      if (taskId === undefined) return;
       const pr = await this.githubPullRequestService.findByTaskId(taskId);
       const newPr: GithubPullRequestPayload = {
         title,
