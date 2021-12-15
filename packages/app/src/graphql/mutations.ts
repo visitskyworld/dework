@@ -172,9 +172,7 @@ export const createProjectIntegration = gql`
 export const createUserDetail = gql`
   mutation CreateUserDetailMutation($input: CreateUserDetailInput!) {
     detail: createUserDetail(input: $input) {
-      id
-      value
-      type
+      ...UserDetail
     }
   }
 
