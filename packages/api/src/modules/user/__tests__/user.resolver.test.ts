@@ -235,20 +235,23 @@ describe("UserResolver", () => {
     it("should succeed if is authed", async () => {
       const user = await fixtures.createUser();
       const userDetailType = UserDetailType.twitter;
+      const url = faker.internet.url();
+
       const response = await client.request({
         app,
         auth: fixtures.createAuthToken(user),
         body: UserRequests.createUserDetail({
           type: userDetailType,
-          value: faker.internet.url(),
+          value: url,
         }),
       });
 
       expect(response.status).toEqual(HttpStatus.OK);
+
       const fetched = response.body.data;
-      console.log(fetched);
       expect(fetched.createUserDetail.user.id).toEqual(user.id);
       expect(fetched.createUserDetail.type).toEqual(userDetailType);
+      expect(fetched.createUserDetail.value).toEqual(url);
     });
   });
 

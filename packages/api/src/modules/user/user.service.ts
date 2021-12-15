@@ -73,7 +73,7 @@ export class UserService {
   }
 
   public async createDetail(
-    partial: DeepPartial<UserDetail>
+    partial: DeepAtLeast<UserDetail, "type" & "value">
   ): Promise<UserDetail> {
     const created = await this.userDetailRepo.save(partial);
     return this.userDetailRepo.findOne(created.id) as Promise<UserDetail>;
