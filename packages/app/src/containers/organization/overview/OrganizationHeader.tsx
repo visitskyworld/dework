@@ -1,9 +1,10 @@
-import { Menu, PageHeader, Skeleton, Typography } from "antd";
+import { Menu, PageHeader, Row, Skeleton, Typography } from "antd";
 import React, { FC, useMemo } from "react";
 import { useOrganization } from "../hooks";
 import Link from "next/link";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
+import { JoinOrganizationButton } from "./JoinOrganizationButton";
 
 export enum OrganizationHeaderTab {
   projects = "projects",
@@ -60,21 +61,24 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           paragraph={false}
           title={{ width: 200 }}
         >
-          <Menu mode="horizontal" selectedKeys={[tab]}>
-            {[
-              OrganizationHeaderTab.projects,
-              OrganizationHeaderTab.board,
-              OrganizationHeaderTab.members,
-            ].map((tab) => (
-              <Menu.Item key={tab}>
-                <Link
-                  href={organization ? `/o/${organization.slug}/${tab}` : ""}
-                >
-                  <a>{titleByTab[tab]}</a>
-                </Link>
-              </Menu.Item>
-            ))}
-          </Menu>
+          <Row align="middle">
+            <Menu mode="horizontal" selectedKeys={[tab]}>
+              {[
+                OrganizationHeaderTab.projects,
+                OrganizationHeaderTab.board,
+                OrganizationHeaderTab.members,
+              ].map((tab) => (
+                <Menu.Item key={tab}>
+                  <Link
+                    href={organization ? `/o/${organization.slug}/${tab}` : ""}
+                  >
+                    <a>{titleByTab[tab]}</a>
+                  </Link>
+                </Menu.Item>
+              ))}
+            </Menu>
+            <JoinOrganizationButton organizationId={organizationId} />
+          </Row>
         </Skeleton>
       }
     />

@@ -56,7 +56,13 @@ export function useUpdateOrganizationMember(): (
     async (input) => {
       const res = await mutation({
         variables: { input },
-        refetchQueries: [{ query: Queries.me }],
+        refetchQueries: [
+          { query: Queries.me },
+          {
+            query: Queries.organization,
+            variables: { organizationId: input.organizationId },
+          },
+        ],
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));

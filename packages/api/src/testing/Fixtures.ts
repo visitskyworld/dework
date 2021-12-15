@@ -24,7 +24,7 @@ import { PaymentModule } from "../modules/payment/payment.module";
 import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 import { DeepPartial } from "typeorm";
-import { OrganizationRole } from "../models/OrganizationMember";
+import { OrganizationMember } from "../models/OrganizationMember";
 
 @Injectable()
 export class Fixtures {
@@ -57,7 +57,7 @@ export class Fixtures {
   public async createOrganization(
     partial: DeepPartial<Organization> = {},
     creator?: User,
-    userIds?: string[]
+    members?: Pick<OrganizationMember, "userId" | "role">[]
   ): Promise<Organization> {
     const organization = await this.organizationService.create(
       {
@@ -67,15 +67,14 @@ export class Fixtures {
       creator ?? (await this.createUser())
     );
 
-    if (!userIds) return organization;
-
+    if (!members) return organization;
     return Bluebird.reduce(
-      userIds,
-      (_, userId) =>
+      members,
+      (_, member) =>
         this.organizationService.addUser(
           organization.id,
-          userId,
-          OrganizationRole.MEMBER
+          member.userId,
+          member.role
         ),
       organization
     );

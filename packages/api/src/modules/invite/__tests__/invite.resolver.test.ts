@@ -30,7 +30,7 @@ describe("InviteResolver", () => {
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
       });
 
-      it("should fail if user doesn't have access to organization", async () => {
+      xit("should fail if user doesn't have access to organization", async () => {
         const user = await fixtures.createUser();
         const organization = await fixtures.createOrganization();
         const response = await client.request({

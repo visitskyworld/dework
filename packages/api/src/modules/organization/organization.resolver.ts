@@ -60,18 +60,18 @@ export class OrganizationResolver {
 
   @Mutation(() => OrganizationMember)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, OrganizationMember, [
+  @UseAbility(Actions.manage, OrganizationMember, [
     OrganizationService,
-    (service: OrganizationService, { params }) =>
-      service.findMember({
-        userId: params.input.userId,
-        organizationId: params.input.organizationId,
-      }),
+    async (_service: OrganizationService, { params }) => ({
+      role: params.input.role,
+      userId: params.input.userId,
+      organizationId: params.input.organizationId,
+    }),
   ])
   public async updateOrganizationMember(
     @Args("input") input: UpdateOrganizationMemberInput
   ): Promise<OrganizationMember> {
-    return this.organizationService.updateMember(
+    return this.organizationService.upsertMember(
       input.organizationId,
       input.userId,
       input.role

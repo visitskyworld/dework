@@ -6,7 +6,10 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
+import {
+  OrganizationMember,
+  OrganizationRole,
+} from "@dewo/api/models/OrganizationMember";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;
@@ -92,59 +95,115 @@ describe("OrganizationResolver", () => {
     });
 
     describe("updateOrganizationMember", () => {
-      it("should succeed if is organization admin", async () => {
-        const adminUser = await fixtures.createUser();
-        const otherUser = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({}, adminUser, [
-          otherUser.id,
-        ]);
+      async function fn(
+        requesterRole: OrganizationRole | undefined,
+        targetRole: OrganizationRole,
+        isSameUser: boolean = false
+      ) {
+        const creator = await fixtures.createUser();
+        const requester = await fixtures.createUser();
+        const target = isSameUser ? requester : await fixtures.createUser();
 
-        const response = await client.request({
+        const members: Pick<OrganizationMember, "userId" | "role">[] = [];
+        if (!isSameUser) {
+          members.push({ role: targetRole, userId: target.id });
+        }
+        if (!!requesterRole) {
+          members.push({ role: requesterRole, userId: requester.id });
+        }
+
+        const organization = await fixtures.createOrganization(
+          {},
+          creator,
+          members
+        );
+
+        return client.request({
           app,
-          auth: fixtures.createAuthToken(adminUser),
+          auth: fixtures.createAuthToken(requester),
           body: OrganizationRequests.updateMember({
             organizationId: organization.id,
-            userId: otherUser.id,
-            role: OrganizationRole.ADMIN,
+            userId: target.id,
+            role: targetRole,
           }),
         });
+      }
+
+      it("non-member can add oneself as MEMBER", async () => {
+        const response = await fn(undefined, OrganizationRole.MEMBER, true);
         expect(response.status).toEqual(HttpStatus.OK);
-        const updated = response.body.data?.member;
-        expect(updated.role).toEqual(OrganizationRole.ADMIN);
-        expect(updated.userId).toEqual(otherUser.id);
+        expect(response.body.data?.member.role).toEqual(
+          OrganizationRole.MEMBER
+        );
       });
 
-      it("should fail to update own role", async () => {
-        const { user, organization } = await fixtures.createUserOrgProject();
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: OrganizationRequests.updateMember({
-            organizationId: organization.id,
-            userId: user.id,
-            role: OrganizationRole.ADMIN,
-          }),
-        });
+      it("non-member cannot add oneself as ADMIN", async () => {
+        const response = await fn(undefined, OrganizationRole.ADMIN, true);
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
 
-      it("should fail if is organization member", async () => {
-        const adminUser = await fixtures.createUser();
-        const memberUser = await fixtures.createUser();
-        const otherUser = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({}, adminUser, [
-          otherUser.id,
-        ]);
+      it("non-member cannot add oneself as OWNER", async () => {
+        const response = await fn(undefined, OrganizationRole.OWNER, true);
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
 
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(memberUser),
-          body: OrganizationRequests.updateMember({
-            organizationId: organization.id,
-            userId: otherUser.id,
-            role: OrganizationRole.ADMIN,
-          }),
-        });
+      it("non-member cannot add someone else to org", async () => {
+        const response = await fn(undefined, OrganizationRole.MEMBER);
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("ADMIN can add someone else as MEMBER", async () => {
+        const response = await fn(
+          OrganizationRole.ADMIN,
+          OrganizationRole.MEMBER
+        );
+        expect(response.status).toEqual(HttpStatus.OK);
+        expect(response.body.data?.member.role).toEqual(
+          OrganizationRole.MEMBER
+        );
+      });
+
+      it("ADMIN can add someone else as ADMIN", async () => {
+        const response = await fn(
+          OrganizationRole.ADMIN,
+          OrganizationRole.ADMIN
+        );
+        expect(response.status).toEqual(HttpStatus.OK);
+        expect(response.body.data?.member.role).toEqual(OrganizationRole.ADMIN);
+      });
+
+      it("ADMIN cannot add someone else as OWNER", async () => {
+        const response = await fn(
+          OrganizationRole.ADMIN,
+          OrganizationRole.OWNER
+        );
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("OWNER can add someone else as OWNER", async () => {
+        const response = await fn(
+          OrganizationRole.OWNER,
+          OrganizationRole.OWNER
+        );
+        expect(response.status).toEqual(HttpStatus.OK);
+        expect(response.body.data?.member.role).toEqual(OrganizationRole.OWNER);
+      });
+
+      it("ADMIN cannot update own role", async () => {
+        const response = await fn(
+          OrganizationRole.ADMIN,
+          OrganizationRole.ADMIN,
+          true
+        );
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("OWNER cannot update own role", async () => {
+        const response = await fn(
+          OrganizationRole.OWNER,
+          OrganizationRole.ADMIN,
+          true
+        );
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
     });
@@ -154,7 +213,7 @@ describe("OrganizationResolver", () => {
         const adminUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
         const organization = await fixtures.createOrganization({}, adminUser, [
-          otherUser.id,
+          { userId: otherUser.id, role: OrganizationRole.MEMBER },
         ]);
 
         const response = await client.request({
@@ -177,7 +236,7 @@ describe("OrganizationResolver", () => {
         const memberUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
         const organization = await fixtures.createOrganization({}, adminUser, [
-          otherUser.id,
+          { userId: otherUser.id, role: OrganizationRole.MEMBER },
         ]);
 
         const response = await client.request({

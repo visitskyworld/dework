@@ -5,7 +5,6 @@ import { useCreateInvite } from "./hooks";
 import { useOrganization } from "../organization/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useToggle } from "@dewo/app/util/hooks";
 import { OrganizationRole } from "@dewo/app/graphql/types";
 
 interface Props {
@@ -25,7 +24,10 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
     async (role: OrganizationRole) => {
       try {
         setLoading(true);
-        const inviteId = await createInvite({ organizationId, role });
+        const inviteId = await createInvite({
+          role,
+          organizationId: organizationId!,
+        });
         setInviteId(inviteId);
         const inviteLink = !!proj
           ? `${window.location.origin}/o/${org!.slug}/p/${

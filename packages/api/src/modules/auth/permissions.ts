@@ -4,7 +4,10 @@ import { Roles } from "../app/app.roles";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
+import {
+  OrganizationMember,
+  OrganizationRole,
+} from "@dewo/api/models/OrganizationMember";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -21,6 +24,10 @@ export const permissions: Permissions<
     can(Actions.read, Task);
 
     can(Actions.create, Organization);
+    can(Actions.manage, OrganizationMember, {
+      userId: user.id,
+      role: OrganizationRole.MEMBER,
+    });
     can(Actions.update, Task, {
       assignees: { $elemMatch: { id: user.id } },
       status: { $ne: TaskStatusEnum.TODO },
@@ -31,15 +38,18 @@ export const permissions: Permissions<
     });
   },
 
-  organizationOwner({ extend }) {
+  organizationOwner({ extend, can, user }) {
     extend(Roles.organizationAdmin);
+    can(Actions.manage, OrganizationMember, { userId: { $ne: user.id } });
   },
 
   organizationAdmin({ can, cannot, user, extend }) {
     extend(Roles.organizationMember);
 
-    can(Actions.create, OrganizationMember);
-    can(Actions.update, OrganizationMember, { userId: { $ne: user.id } });
+    can(Actions.manage, OrganizationMember, {
+      userId: { $ne: user.id },
+      role: { $in: [OrganizationRole.ADMIN, OrganizationRole.MEMBER] },
+    });
     can(Actions.delete, OrganizationMember);
 
     can(Actions.update, Organization);

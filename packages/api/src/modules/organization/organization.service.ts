@@ -5,7 +5,7 @@ import {
 } from "@dewo/api/models/OrganizationMember";
 import { User } from "@dewo/api/models/User";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 
@@ -62,18 +62,27 @@ export class OrganizationService {
     return this.findById(organizationId) as Promise<Organization>;
   }
 
-  public async updateMember(
+  public async upsertMember(
     organizationId: string,
     userId: string,
     role: OrganizationRole
   ): Promise<OrganizationMember> {
     const member = await this.findMember({ organizationId, userId });
-    if (!member) throw new NotFoundException();
-
-    await this.organizationMemberRepo.update({ id: member.id }, { role });
-    return this.organizationMemberRepo.findOne({
-      id: member.id,
-    }) as Promise<OrganizationMember>;
+    if (!!member) {
+      await this.organizationMemberRepo.update({ id: member.id }, { role });
+      return this.organizationMemberRepo.findOne({
+        id: member.id,
+      }) as Promise<OrganizationMember>;
+    } else {
+      const created = await this.organizationMemberRepo.save({
+        role,
+        userId,
+        organizationId,
+      });
+      return this.organizationMemberRepo.findOne({
+        id: created.id,
+      }) as Promise<OrganizationMember>;
+    }
   }
 
   public async removeMember(
