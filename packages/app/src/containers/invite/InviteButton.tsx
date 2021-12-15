@@ -1,9 +1,12 @@
-import { Alert, Button } from "antd";
+import { Alert, Button, Dropdown, Menu } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
 import { useCreateInvite } from "./hooks";
 import { useOrganization } from "../organization/hooks";
 import { useProject } from "../project/hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useToggle } from "@dewo/app/util/hooks";
+import { OrganizationRole } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId?: string;
@@ -15,42 +18,65 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
   const [inviteId, setInviteId] = useState<string>();
   const org = useOrganization(organizationId);
   const proj = useProject(projectId);
+  const canInvite = usePermission("create", "OrganizationMember");
 
   const createInvite = useCreateInvite();
-  const handlePress = useCallback(async () => {
-    try {
-      setLoading(true);
-      const inviteId = await createInvite({ organizationId });
-      setInviteId(inviteId);
-      const inviteLink = !!proj
-        ? `${window.location.origin}/o/${org!.slug}/p/${
-            proj!.slug
-          }?inviteId=${inviteId}`
-        : `${window.location.origin}/o/${org!.slug}?inviteId=${inviteId}`;
+  const inviteByRole = useCallback(
+    async (role: OrganizationRole) => {
+      try {
+        setLoading(true);
+        const inviteId = await createInvite({ organizationId, role });
+        setInviteId(inviteId);
+        const inviteLink = !!proj
+          ? `${window.location.origin}/o/${org!.slug}/p/${
+              proj!.slug
+            }?inviteId=${inviteId}`
+          : `${window.location.origin}/o/${org!.slug}?inviteId=${inviteId}`;
 
-      const el = document.createElement("textarea");
-      el.value = inviteId;
-      document.body.appendChild(el);
-      el.select();
-      navigator.clipboard.writeText(inviteLink);
-      document.body.removeChild(el);
-    } finally {
-      setLoading(false);
-    }
-  }, [createInvite, organizationId, org, proj]);
+        const el = document.createElement("textarea");
+        el.value = inviteId;
+        document.body.appendChild(el);
+        el.select();
+        navigator.clipboard.writeText(inviteLink);
+        document.body.removeChild(el);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [createInvite, organizationId, org, proj]
+  );
+  const inviteAdmin = useCallback(
+    () => inviteByRole(OrganizationRole.ADMIN),
+    [inviteByRole]
+  );
+  const inviteMember = useCallback(
+    () => inviteByRole(OrganizationRole.ADMIN),
+    [inviteByRole]
+  );
 
-  if (!org || !proj) return null;
+  if (!org || !proj || !canInvite) return null;
   if (!!inviteId) {
     return <Alert message="Invite link copied" type="success" showIcon />;
   }
+
   return (
-    <Button
-      type="ghost"
-      loading={loading}
-      icon={<Icons.UsergroupAddOutlined />}
-      onClick={handlePress}
+    <Dropdown
+      placement="bottomCenter"
+      trigger={["click"]}
+      overlay={
+        <Menu theme="dark">
+          <Menu.Item onClick={inviteAdmin}>Invite Admin</Menu.Item>
+          <Menu.Item onClick={inviteMember}>Invite Member</Menu.Item>
+        </Menu>
+      }
     >
-      Invite
-    </Button>
+      <Button
+        type="ghost"
+        loading={loading}
+        icon={<Icons.UsergroupAddOutlined />}
+      >
+        Invite
+      </Button>
+    </Dropdown>
   );
 };

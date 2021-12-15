@@ -1489,7 +1489,7 @@ export interface GetInviteQuery_invite {
   __typename: "Invite";
   id: Scalar.UUID;
   inviter: GetInviteQuery_invite_inviter;
-  organization: GetInviteQuery_invite_organization | null;
+  organization: GetInviteQuery_invite_organization;
 }
 
 export interface GetInviteQuery {
@@ -2073,7 +2073,7 @@ export interface Invite {
   __typename: "Invite";
   id: Scalar.UUID;
   inviter: Invite_inviter;
-  organization: Invite_organization | null;
+  organization: Invite_organization;
 }
 
 /* tslint:disable */
@@ -2119,7 +2119,8 @@ export enum ThreepidSource {
 }
 
 export interface CreateInviteInput {
-  organizationId?: Scalar.UUID | null;
+  organizationId: Scalar.UUID;
+  role?: OrganizationRole | null;
 }
 
 export interface CreateOrganizationInput {
