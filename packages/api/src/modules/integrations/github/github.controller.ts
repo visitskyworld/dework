@@ -58,7 +58,6 @@ export class GithubController {
       // Check the task's project has a matching Github integration
       const associatedIntegration =
         await this.projectService.findGithubIntegration(installationId);
-      console.log(associatedIntegration);
       if (!associatedIntegration) {
         return;
       }
