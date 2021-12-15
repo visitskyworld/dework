@@ -1,7 +1,8 @@
+import { User } from "./../../models/User";
 import _ from "lodash";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { DeepPartial, Repository, Raw } from "typeorm";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
@@ -11,7 +12,9 @@ export class ThreepidService {
 
   constructor(
     @InjectRepository(Threepid)
-    private readonly threepidRepo: Repository<Threepid>
+    private readonly threepidRepo: Repository<Threepid>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>
   ) {}
 
   public create(
@@ -56,5 +59,21 @@ export class ThreepidService {
         return (threepid as Threepid<ThreepidSource.github>).config.profile
           .photos?.[0]?.value;
     }
+  }
+
+  public async getUsername(threepid: Threepid): Promise<string | undefined> {
+    let usernameFromSource = threepid.config.profile.username;
+    const existingUsernames = await this.userRepo.find({
+      where: {
+        username: Raw(
+          (alias) =>
+            `${alias} ~ '^${usernameFromSource}\\d+$' or ${alias} = '${usernameFromSource}'`
+        ),
+      },
+    });
+    if (existingUsernames.length) {
+      usernameFromSource = `${usernameFromSource}${existingUsernames.length}`;
+    }
+    return usernameFromSource;
   }
 }

@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Length } from "class-validator";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
@@ -7,9 +8,10 @@ import { Threepid } from "./Threepid";
 @Entity()
 @ObjectType()
 export class User extends Audit {
-  @Column({ unique: true, nullable: true })
-  @Field({ nullable: true })
-  public username?: string;
+  @Column({ unique: true })
+  @Field()
+  @Length(1)
+  public username!: string;
 
   @Column({ nullable: true, length: 4096 })
   @Field({ nullable: true })

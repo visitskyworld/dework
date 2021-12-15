@@ -43,6 +43,7 @@ export class UserService {
     const user = await this.userRepo.save({
       imageUrl: this.threepidService.getImageUrl(threepid),
       threepids: existingUser?.threepids ?? Promise.resolve([]),
+      username: await this.threepidService.getUsername(threepid),
       ...existingUser,
     });
 
