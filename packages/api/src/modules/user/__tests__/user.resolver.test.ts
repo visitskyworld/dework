@@ -218,11 +218,11 @@ describe("UserResolver", () => {
       });
     });
 
-    describe("createUserDetail", () => {
+    describe("setUserDetail", () => {
       it("should fail if is not authed", async () => {
         const response = await client.request({
           app,
-          body: UserRequests.createUserDetail({
+          body: UserRequests.setUserDetail({
             type: UserDetailType.twitter,
             value: faker.internet.url(),
           }),
@@ -239,7 +239,7 @@ describe("UserResolver", () => {
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: UserRequests.createUserDetail({
+          body: UserRequests.setUserDetail({
             type: userDetailType,
             value: url,
           }),
@@ -248,9 +248,9 @@ describe("UserResolver", () => {
         expect(response.status).toEqual(HttpStatus.OK);
 
         const fetched = response.body.data;
-        expect(fetched.createUserDetail.user.id).toEqual(user.id);
-        expect(fetched.createUserDetail.type).toEqual(userDetailType);
-        expect(fetched.createUserDetail.value).toEqual(url);
+        expect(fetched.setUserDetail.user.id).toEqual(user.id);
+        expect(fetched.setUserDetail.type).toEqual(userDetailType);
+        expect(fetched.setUserDetail.value).toEqual(url);
       });
     });
   });

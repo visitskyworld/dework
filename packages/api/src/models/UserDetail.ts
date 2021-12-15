@@ -1,5 +1,5 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { User } from "./User";
 
@@ -15,6 +15,9 @@ registerEnumType(UserDetailType, { name: "UserDetailType" });
 
 @Entity()
 @ObjectType()
+@Index("IDX_unique_user_organization", ["userId", "organizationId"], {
+  unique: true,
+})
 export class UserDetail extends Audit {
   @Column({ enum: UserDetailType })
   @Field(() => UserDetailType)

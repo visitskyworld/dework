@@ -1,4 +1,4 @@
-import { CreateUserDetailInput } from "@dewo/api/modules/user/dto/CreateUserDetail";
+import { SetUserDetailInput } from "@dewo/api/modules/user/dto/SetUserDetail";
 import { GetUserPermissionsInput } from "@dewo/api/modules/user/dto/GetUserPermissionsInput";
 import { UpdateUserInput } from "@dewo/api/modules/user/dto/UpdateUserInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
@@ -38,13 +38,13 @@ export class UserRequests {
     };
   }
 
-  public static createUserDetail(
-    input: CreateUserDetailInput
-  ): GraphQLTestClientRequestBody<{ input: CreateUserDetailInput }> {
+  public static setUserDetail(
+    input: SetUserDetailInput
+  ): GraphQLTestClientRequestBody<{ input: SetUserDetailInput }> {
     return {
       query: `
-        mutation CreateUserDetail($input: CreateUserDetailInput!) {
-          createUserDetail(input: $input) {
+        mutation SetUserDetail($input: SetUserDetailInput!) {
+          setUserDetail(input: $input) {
             type
             value
             user {

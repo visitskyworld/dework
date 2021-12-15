@@ -169,9 +169,9 @@ export const createProjectIntegration = gql`
   ${Fragments.projectIntegration}
 `;
 
-export const createUserDetail = gql`
-  mutation CreateUserDetailMutation($input: CreateUserDetailInput!) {
-    detail: createUserDetail(input: $input) {
+export const setUserDetail = gql`
+  mutation SetUserDetailMutation($input: SetUserDetailInput!) {
+    detail: setUserDetail(input: $input) {
       ...UserDetail
     }
   }

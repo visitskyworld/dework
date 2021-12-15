@@ -27,7 +27,7 @@ import { TaskRolesGuard } from "../task/task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "../organization/organization.service";
 import { UserDetail } from "@dewo/api/models/UserDetail";
-import { CreateUserDetailInput } from "./dto/CreateUserDetail";
+import { SetUserDetailInput } from "./dto/SetUserDetail";
 
 @Resolver(() => User)
 @Injectable()
@@ -51,8 +51,8 @@ export class UserResolver {
 
   @Mutation(() => UserDetail)
   @UseGuards(AuthGuard)
-  public async createUserDetail(
-    @Args("input") input: CreateUserDetailInput,
+  public async setUserDetail(
+    @Args("input") input: SetUserDetailInput,
     @Context("user") user: User
   ): Promise<UserDetail> {
     return this.userService.createDetail({
