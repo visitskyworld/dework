@@ -88,7 +88,7 @@ export class Fixtures {
     });
   }
 
-  public async createTask(partial: Partial<Task> = {}): Promise<Task> {
+  public async createTask(partial: DeepPartial<Task> = {}): Promise<Task> {
     const defaultProjectId = await this.createProject().then((p) => p.id);
     return this.taskService.create({
       name: faker.company.companyName(),

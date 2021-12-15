@@ -205,6 +205,7 @@ export interface CreateProjectMutation_project_organization_projects {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: CreateProjectMutation_project_organization_projects_paymentMethod | null;
 }
 
@@ -243,6 +244,7 @@ export interface CreateProjectMutation_project {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: CreateProjectMutation_project_paymentMethod | null;
   organization: CreateProjectMutation_project_organization;
 }
@@ -279,6 +281,7 @@ export interface UpdateProjectMutation_project {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: UpdateProjectMutation_project_paymentMethod | null;
 }
 
@@ -1002,6 +1005,7 @@ export interface GetOrganizationQuery_organization_projects {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: GetOrganizationQuery_organization_projects_paymentMethod | null;
 }
 
@@ -1064,6 +1068,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethod | null;
 }
 
@@ -1213,6 +1218,7 @@ export interface GetProjectQuery_project {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: GetProjectQuery_project_paymentMethod | null;
 }
 
@@ -1742,6 +1748,7 @@ export interface Project {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: Project_paymentMethod | null;
 }
 
@@ -1928,6 +1935,7 @@ export interface OrganizationDetails_projects {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: OrganizationDetails_projects_paymentMethod | null;
 }
 
@@ -2040,6 +2048,7 @@ export interface ProjectDetails {
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
+  openBountyTaskCount: number;
   paymentMethod: ProjectDetails_paymentMethod | null;
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];

@@ -48,7 +48,13 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
                 <UserAvatar key={user.id} user={user} linkToProfile />
               ))}
             </Avatar.Group>
-            <Tag className="bg-primary">2 open bounties</Tag>
+            {!!project.openBountyTaskCount && (
+              <Tag className="bg-primary">
+                {project.openBountyTaskCount === 1
+                  ? "1 open bounty"
+                  : `${project.openBountyTaskCount} open bounties`}
+              </Tag>
+            )}
           </Row>
         </Card>
       </a>

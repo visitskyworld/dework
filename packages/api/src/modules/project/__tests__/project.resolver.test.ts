@@ -1,4 +1,5 @@
 import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -126,6 +127,15 @@ describe("ProjectResolver", () => {
           fixtures.createTask({
             projectId: project.id,
             status: TaskStatusEnum.TODO,
+            reward: {
+              amount: 1,
+              currency: "USD",
+              trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+            },
+          }),
+          fixtures.createTask({
+            projectId: project.id,
+            status: TaskStatusEnum.TODO,
           }),
           fixtures.createTask({
             projectId: project.id,
@@ -142,8 +152,9 @@ describe("ProjectResolver", () => {
         expect(response.status).toEqual(HttpStatus.OK);
         const fetchedProject = response.body.data?.project;
         expect(fetchedProject).toBeDefined();
-        expect(fetchedProject.taskCount).toEqual(2);
+        expect(fetchedProject.taskCount).toEqual(3);
         expect(fetchedProject.doneTaskCount).toEqual(1);
+        expect(fetchedProject.todoWithRewardTaskCount).toEqual(1);
       });
     });
   });

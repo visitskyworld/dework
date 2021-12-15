@@ -154,8 +154,14 @@ export class ProjectTasksResolver {
   public async taskCount(
     @Parent() project: Project,
     @Args("status", { type: () => TaskStatusEnum, nullable: true })
-    status: TaskStatusEnum | undefined
+    status: TaskStatusEnum | undefined,
+    @Args("rewardNotNull", { type: () => Boolean, nullable: true })
+    rewardNotNull: boolean | undefined
   ): Promise<number> {
-    return this.taskService.count({ projectId: project.id, status });
+    return this.taskService.count({
+      projectId: project.id,
+      status,
+      rewardNotNull,
+    });
   }
 }

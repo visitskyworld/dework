@@ -3,7 +3,7 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, IsNull, Repository } from "typeorm";
+import { DeepPartial, FindConditions, IsNull, Not, Repository } from "typeorm";
 import { User } from "@dewo/api/models/User";
 
 @Injectable()
@@ -90,10 +90,14 @@ export class TaskService {
   public async count(query: {
     projectId: string;
     status?: TaskStatusEnum;
+    rewardNotNull?: boolean;
   }): Promise<number> {
-    return this.taskRepo.count({
-      ..._.omitBy(query, _.isUndefined),
+    const findCondition: FindConditions<Task> = {
+      projectId: query.projectId,
       deletedAt: IsNull(),
-    });
+    };
+    if (!!query.status) findCondition.status = query.status;
+    if (!!query.rewardNotNull) findCondition.rewardId = Not(IsNull());
+    return this.taskRepo.count(findCondition);
   }
 }

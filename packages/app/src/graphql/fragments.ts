@@ -55,6 +55,7 @@ export const project = gql`
     organizationId
     taskCount
     doneTaskCount: taskCount(status: DONE)
+    openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
     paymentMethod {
       ...PaymentMethod
     }
