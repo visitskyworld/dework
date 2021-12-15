@@ -1,10 +1,10 @@
+import encoder from "uuid-base62";
 import { Field, ObjectType } from "@nestjs/graphql";
 import slugify from "slugify";
 import { AfterLoad, Column, Entity, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
-import encoder from "uuid-base62";
 
 @Entity()
 @ObjectType()

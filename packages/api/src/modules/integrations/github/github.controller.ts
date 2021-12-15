@@ -50,25 +50,26 @@ export class GithubController {
   @Post("webhook")
   async githubWebhook(@Req() req: Request) {
     if (req.body.pull_request) {
-      const { title, body, state, html_url } = req.body.pull_request;
+      const { title, head, state, html_url } = req.body.pull_request;
+      const taskId = head.ref.match(/dw-(\d+)/)[1]; // Find task id in branch name
+      console.log(taskId);
 
-      if (!body) return;
-
-      const existingPr = await this.githubPullRequestService.findByTaskId(body);
-      const githubPullRequest: GithubPullRequestPayload = {
+      if (taskId === -1) return;
+      const pr = await this.githubPullRequestService.findByTaskId(taskId);
+      const newPr: GithubPullRequestPayload = {
         title,
         status: state.toUpperCase() as GithubPullRequestStatusEnum, // TODO: map
         link: html_url,
-        taskId: body,
+        taskId: taskId,
       };
 
-      if (existingPr) {
+      if (pr) {
         this.githubPullRequestService.update({
-          ...githubPullRequest,
-          id: existingPr.id,
+          ...newPr,
+          id: pr.id,
         });
       } else {
-        this.githubPullRequestService.create(githubPullRequest);
+        this.githubPullRequestService.create(newPr);
       }
     }
   }
