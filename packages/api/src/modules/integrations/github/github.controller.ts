@@ -50,14 +50,15 @@ export class GithubController {
   @Post("webhook")
   async githubWebhook(@Req() req: Request) {
     if (req.body.pull_request) {
-      const { title, head, state, html_url, installation } =
-        req.body.pull_request;
+      const { title, head, state, html_url } = req.body.pull_request;
       const branchName = head?.ref;
+      const installationId = req.body.installation.id;
       const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
 
       // Check the task's project has a matching Github integration
       const associatedIntegration =
-        await this.projectService.findGithubIntegration(installation?.id);
+        await this.projectService.findGithubIntegration(installationId);
+      console.log(associatedIntegration);
       if (!associatedIntegration) {
         return;
       }
