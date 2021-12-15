@@ -300,7 +300,7 @@ export function TaskForm<
             </Select>
           </Form.Item>
 
-          {githubPullRequests && (
+          {githubPullRequests && githubPullRequests.length > 0 && (
             <Form.Item name="githubPullRequests" label="Github PRs">
               {githubPullRequests.map((pr) => (
                 <Button target="_blank" href={pr.link}>
