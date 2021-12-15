@@ -8,7 +8,7 @@ import {
 import { useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Icons from "@ant-design/icons";
-import { useRouter } from "next/router";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
 
@@ -20,13 +20,12 @@ interface ProjectGithubIntegrationProps {
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
 }) => {
-  const router = useRouter();
   const auth = useAuthContext();
   const appUrl = typeof window !== "undefined" ? window.location.href : "";
   const state = JSON.stringify({
-    ...router.query,
     appUrl,
     creatorId: auth.user?.id,
+    projectId: useParseIdFromSlug("projectSlug"),
   });
   const integrations = useQuery<
     GetProjectIntegrationsQuery,
