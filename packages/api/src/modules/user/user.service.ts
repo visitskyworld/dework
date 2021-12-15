@@ -72,14 +72,27 @@ export class UserService {
     threepids.push(threepid);
   }
 
-  public async createDetail(
+  public async setDetail(
     partial: DeepAtLeast<UserDetail, "type" | "value" | "userId">
   ): Promise<UserDetail> {
     const existing = await this.userDetailRepo.findOne({
       where: { type: partial.type },
+      relations: ["user"],
     });
 
-    if (existing != null) partial.id = existing.id;
+    const isDeleteDetail = partial.value == null;
+    if (isDeleteDetail) {
+      if (existing == null) {
+        throw new NotFoundException(
+          "Tried to remove a userDetail that does not exist"
+        );
+      }
+      await this.userDetailRepo.delete({ type: partial.type });
+      return existing;
+    }
+
+    const isUpdateExistingDetail = existing != null;
+    if (isUpdateExistingDetail) partial.id = existing.id;
     const created = await this.userDetailRepo.save(partial);
 
     return this.userDetailRepo.findOne(created.id) as Promise<UserDetail>;

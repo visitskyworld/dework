@@ -55,7 +55,7 @@ export class UserResolver {
     @Args("input") input: SetUserDetailInput,
     @Context("user") user: User
   ): Promise<UserDetail> {
-    return this.userService.createDetail({
+    return this.userService.setDetail({
       ...input,
       userId: user.id,
     });

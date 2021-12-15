@@ -6,6 +6,6 @@ export class SetUserDetailInput {
   @Field(() => UserDetailType)
   public type!: UserDetailType;
 
-  @Field()
-  public value!: string;
+  @Field({ nullable: true })
+  public value?: string;
 }

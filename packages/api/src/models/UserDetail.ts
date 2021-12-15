@@ -15,7 +15,7 @@ registerEnumType(UserDetailType, { name: "UserDetailType" });
 
 @Entity()
 @ObjectType()
-@Index("IDX_unique_user_organization", ["userId", "organizationId"], {
+@Index("IDX_unique_user_type", ["userId", "type"], {
   unique: true,
 })
 export class UserDetail extends Audit {
@@ -24,8 +24,8 @@ export class UserDetail extends Audit {
   public type!: UserDetailType;
 
   @Column({ length: 1024 })
-  @Field()
-  public value!: string;
+  @Field({ nullable: true })
+  public value?: string;
 
   @JoinColumn()
   @ManyToOne(() => User)
