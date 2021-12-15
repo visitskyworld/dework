@@ -22,15 +22,15 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       !!organization &&
       !!project && [
         {
-          path: "../../",
+          path: "../..",
           breadcrumbName: "Home",
         },
         {
-          path: `/o/${organization.slug}`,
+          path: `o/${organization.slug}`,
           breadcrumbName: organization.name,
         },
         {
-          path: `/p/${project.slug}`,
+          path: `p/${project.slug}`,
           breadcrumbName: project.name,
           children: [{ path: "settings", breadcrumbName: "Settings" }],
         },

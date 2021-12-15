@@ -30,11 +30,11 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
     () =>
       !!organization && [
         {
-          path: "../",
+          path: "..",
           breadcrumbName: "Home",
         },
         {
-          path: `/o/${organization.slug}`,
+          path: `o/${organization.slug}`,
           breadcrumbName: organization.name,
         },
       ],
