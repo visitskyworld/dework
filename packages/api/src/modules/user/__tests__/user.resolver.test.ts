@@ -10,6 +10,7 @@ import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { UserDetailType } from "@dewo/api/models/UserDetail";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -215,6 +216,39 @@ describe("UserResolver", () => {
         expect(fetched.username).toEqual(expectedUsername);
         expect(fetched.paymentMethod.id).toEqual(paymentMethod.id);
       });
+    });
+  });
+
+  describe("createUserDetail", () => {
+    it("should fail if is not authed", async () => {
+      const response = await client.request({
+        app,
+        body: UserRequests.createUserDetail({
+          type: UserDetailType.twitter,
+          value: faker.internet.url(),
+        }),
+      });
+
+      client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
+    });
+
+    it("should succeed if is authed", async () => {
+      const user = await fixtures.createUser();
+      const userDetailType = UserDetailType.twitter;
+      const response = await client.request({
+        app,
+        auth: fixtures.createAuthToken(user),
+        body: UserRequests.createUserDetail({
+          type: userDetailType,
+          value: faker.internet.url(),
+        }),
+      });
+
+      expect(response.status).toEqual(HttpStatus.OK);
+      const fetched = response.body.data;
+      console.log(fetched);
+      expect(fetched.createUserDetail.user.id).toEqual(user.id);
+      expect(fetched.createUserDetail.type).toEqual(userDetailType);
     });
   });
 

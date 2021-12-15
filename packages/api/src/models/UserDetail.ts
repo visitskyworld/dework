@@ -4,9 +4,9 @@ import { Audit } from "./Audit";
 import { User } from "./User";
 
 export enum UserDetailType {
-  twitter,
-  linkedin,
-  country,
+  twitter = "twitter",
+  linkedin = "linkedin",
+  country = "country",
 }
 
 registerEnumType(UserDetailType, { name: "UserDetailType" });

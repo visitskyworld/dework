@@ -1,3 +1,4 @@
+import { CreateUserDetailInput } from "@dewo/api/modules/user/dto/CreateUserDetail";
 import { GetUserPermissionsInput } from "@dewo/api/modules/user/dto/GetUserPermissionsInput";
 import { UpdateUserInput } from "@dewo/api/modules/user/dto/UpdateUserInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
@@ -34,6 +35,27 @@ export class UserRequests {
         ${this.userFragment}
       `,
       variables: { threepidId },
+    };
+  }
+
+  public static createUserDetail(
+    input: CreateUserDetailInput
+  ): GraphQLTestClientRequestBody<{ input: CreateUserDetailInput }> {
+    return {
+      query: `
+        mutation CreateUserDetail($input: CreateUserDetailInput!) {
+          createUserDetail(input: $input) {
+            type
+            value
+            user {
+              ...User
+            }
+          }
+        }
+
+        ${this.userFragment}
+      `,
+      variables: { input },
     };
   }
 
