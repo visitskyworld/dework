@@ -10,7 +10,6 @@ import { DiscordStrategy } from "./strategies/discord.strategy";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
-import { ProjectModule } from "../project/project.module";
 
 @Global()
 @Module({
@@ -32,7 +31,6 @@ export class GlobalJwtModule {}
   imports: [
     PassportModule.register({ defaultStrategy: "jwt" }),
     ThreepidModule,
-    ProjectModule,
   ],
   providers: [GithubStrategy, DiscordStrategy],
   controllers: [AuthController],

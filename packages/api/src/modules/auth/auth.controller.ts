@@ -3,17 +3,13 @@ import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 import { Request, Response } from "express";
 import { ConfigType } from "../app/config";
-import { ProjectService } from "../project/project.service";
 import { StrategyResponse } from "./strategies/types";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
 @Controller("auth")
 export class AuthController {
-  constructor(
-    private readonly configService: ConfigService<ConfigType>,
-    private readonly projectService: ProjectService
-  ) {}
+  constructor(private readonly configService: ConfigService<ConfigType>) {}
 
   @Get("github")
   @UseGuards(AuthGuard("github"))
