@@ -52,10 +52,6 @@ export class ProjectService {
   public findGithubIntegration(
     installationId: string
   ): Promise<ProjectIntegration | undefined> {
-    return this.projectIntegrationRepo.findOne({
-      config: {
-        installationId: installationId,
-      },
-    });
+    return this.projectIntegrationRepo.findOne({ config: { installationId } });
   }
 }

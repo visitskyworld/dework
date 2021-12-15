@@ -14,9 +14,9 @@ import { ProjectService } from "../../project/project.service";
 import { GithubPullRequestService } from "./github.service";
 import { queryToString } from "../../../util/queryToString";
 
-type GithubPullRequestPayload = Omit<
+type GithubPullRequestPayload = Pick<
   GithubPullRequest,
-  "id" | "createdAt" | "updatedAt" | "task"
+  "title" | "status" | "link" | "taskId"
 >;
 
 @Controller("github")
@@ -50,11 +50,26 @@ export class GithubController {
   @Post("webhook")
   async githubWebhook(@Req() req: Request) {
     if (req.body.pull_request) {
-      const { title, head, state, html_url } = req.body.pull_request;
+      const { title, head, state, html_url, installation } =
+        req.body.pull_request;
       const branchName = head?.ref;
-      const taskId = branchName?.match(/dw-([a-z0-9-]+)(\/.*)?$/)?.[1];
+      const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
 
-      if (taskId === undefined) return;
+      // Check the task's project has a matching Github integration
+      const associatedIntegration =
+        await this.projectService.findGithubIntegration(installation?.id);
+      if (!associatedIntegration) {
+        return;
+      }
+
+      // Check there's an actual existing task associated with the branch's taskId
+      const associatedTask =
+        await this.githubPullRequestService.findCorrespondingTask(taskId);
+      if (!associatedTask) {
+        return;
+      }
+
+      // Check if there's an existing DB entry for this pr
       const pr = await this.githubPullRequestService.findByTaskId(taskId);
       const newPr: GithubPullRequestPayload = {
         title,
@@ -64,12 +79,9 @@ export class GithubController {
       };
 
       if (pr) {
-        this.githubPullRequestService.update({
-          ...newPr,
-          id: pr.id,
-        });
+        await this.githubPullRequestService.update({ ...newPr, id: pr.id });
       } else {
-        this.githubPullRequestService.create(newPr);
+        await this.githubPullRequestService.create(newPr);
       }
     }
   }

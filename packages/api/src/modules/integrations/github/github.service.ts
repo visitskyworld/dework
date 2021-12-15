@@ -17,11 +17,6 @@ export class GithubPullRequestService {
   public async create(
     partial: Partial<GithubPullRequest>
   ): Promise<GithubPullRequest | undefined> {
-    if (!this.findCorrespondingTask(partial.taskId)) {
-      // This will happen often until we intelligently look task id in description
-      return;
-    }
-
     const createdTask = await this.githubPullRequestRepo.save(partial);
     return this.githubPullRequestRepo.findOne(createdTask.id);
   }
@@ -36,13 +31,10 @@ export class GithubPullRequestService {
   public async findByTaskId(
     taskId: string
   ): Promise<GithubPullRequest | undefined> {
-    return this.githubPullRequestRepo
-      .createQueryBuilder("github_pull_request")
-      .where("github_pull_request.taskId = :taskId", { taskId: taskId })
-      .getOne();
+    return this.githubPullRequestRepo.findOne({ taskId: taskId });
   }
 
-  private async findCorrespondingTask(
+  public async findCorrespondingTask(
     taskId?: string
   ): Promise<Task | undefined> {
     if (!taskId || taskId.length > 36) {
