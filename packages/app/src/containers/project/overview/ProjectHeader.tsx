@@ -3,10 +3,10 @@ import React, { FC, useMemo } from "react";
 import { useProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { InviteButton } from "../../invite/InviteButton";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
+import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
 
 interface Props {
   projectId: string;
@@ -15,7 +15,6 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
-  const canAddMember = usePermission("create", "OrganizationMember");
 
   const routes = useMemo(
     () =>
@@ -59,12 +58,11 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
             </Avatar.Group>
 
             <div style={{ width: 24 }} />
-            {canAddMember && (
-              <InviteButton
-                organizationId={project?.organizationId}
-                projectId={projectId}
-              />
-            )}
+            <InviteButton
+              organizationId={project?.organizationId}
+              projectId={projectId}
+            />
+            <JoinOrganizationButton organizationId={project?.organizationId} />
           </Row>
         ) : (
           <Skeleton.Avatar active size="large" />

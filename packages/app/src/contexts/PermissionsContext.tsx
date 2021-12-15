@@ -18,17 +18,17 @@ import {
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
+import { AtLeast } from "../types/general";
 
 type AbilityAction = "create" | "read" | "update" | "delete" | "claimTask";
 type AbilitySubject =
   | "Task"
   | "Project"
   | "Organization"
-  | "OrganizationMember"
   | Task
   | Project
   | Organization
-  | OrganizationMember;
+  | AtLeast<OrganizationMember, "__typename" | "role">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
 
 const PermissionsContext = createContext<Ability<AbilityType>>(

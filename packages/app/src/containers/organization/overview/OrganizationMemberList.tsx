@@ -30,8 +30,11 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const updateMember = useUpdateOrganizationMember();
   const removeMember = useRemoveOrganizationMember();
 
-  const canAddMember = usePermission("create", "OrganizationMember");
-  const canDeleteMember = usePermission("delete", "OrganizationMember");
+  const canDeleteMember = usePermission("delete", {
+    __typename: "OrganizationMember",
+    // TODO(fant)
+    role: OrganizationRole.MEMBER,
+  });
   const hasPermission = usePermissionFn();
 
   const navigateToProfile = useNavigateToProfile();
@@ -44,11 +47,9 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
       direction="vertical"
       style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
     >
-      {canAddMember && (
-        <Row justify="end">
-          <InviteButton organizationId={organizationId} />
-        </Row>
-      )}
+      <Row justify="end">
+        <InviteButton organizationId={organizationId} />
+      </Row>
 
       <Table<OrganizationMember>
         dataSource={members}

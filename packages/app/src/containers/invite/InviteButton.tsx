@@ -17,7 +17,15 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
   const [inviteId, setInviteId] = useState<string>();
   const org = useOrganization(organizationId);
   const proj = useProject(projectId);
-  const canInvite = usePermission("create", "OrganizationMember");
+
+  const canInviteAdmin = usePermission("create", {
+    __typename: "OrganizationMember",
+    role: OrganizationRole.ADMIN,
+  });
+  const canInviteMember = usePermission("create", {
+    __typename: "OrganizationMember",
+    role: OrganizationRole.MEMBER,
+  });
 
   const createInvite = useCreateInvite();
   const inviteByRole = useCallback(
@@ -52,13 +60,26 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
     [inviteByRole]
   );
   const inviteMember = useCallback(
-    () => inviteByRole(OrganizationRole.ADMIN),
+    () => inviteByRole(OrganizationRole.MEMBER),
     [inviteByRole]
   );
 
-  if (!org || !proj || !canInvite) return null;
+  if (!org || !proj || !canInviteMember) return null;
   if (!!inviteId) {
     return <Alert message="Invite link copied" type="success" showIcon />;
+  }
+
+  if (!canInviteAdmin) {
+    return (
+      <Button
+        type="ghost"
+        loading={loading}
+        icon={<Icons.UsergroupAddOutlined />}
+        onClick={inviteMember}
+      >
+        Invite
+      </Button>
+    );
   }
 
   return (

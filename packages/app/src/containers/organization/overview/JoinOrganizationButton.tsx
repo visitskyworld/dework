@@ -17,7 +17,7 @@ export const JoinOrganizationButton: FC<Props> = ({ organizationId }) => {
 
   const organization = useOrganization(organizationId);
   const isMember = useMemo(
-    () => organization?.members.some((m) => m.userId === user?.id),
+    () => !!organization?.members.some((m) => m.userId === user?.id),
     [organization, user]
   );
 
