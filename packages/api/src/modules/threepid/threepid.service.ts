@@ -62,7 +62,13 @@ export class ThreepidService {
   }
 
   public async getUsername(threepid: Threepid): Promise<string | undefined> {
-    let usernameFromSource = threepid.config.profile.username;
+    // Check if username is available else check if displayName is available else use default username
+    let usernameFromSource =
+      threepid.config.profile.username ||
+      threepid.config.profile?.displayName
+        ?.toLowerCase()
+        ?.replace(/ /gm, "_") ||
+      "dewo_user";
     const existingUsernames = await this.userRepo.find({
       where: {
         username: Raw(

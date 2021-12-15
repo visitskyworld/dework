@@ -66,6 +66,20 @@ describe("UserResolver", () => {
 
           client.expectGqlError(response, HttpStatus.NOT_FOUND);
         });
+
+        it("should have unique username of user", async () => {
+          const user = await fixtures.createUser();
+          const threepidId = (await user.threepids)[0].id;
+
+          const response = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(threepidId),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const updatedUser = response.body.data?.authWithThreepid.user;
+          expect(updatedUser.username).toBeDefined();
+        });
       });
 
       describe("authed", () => {

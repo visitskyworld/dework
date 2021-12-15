@@ -44,7 +44,12 @@ export class Fixtures {
     return this.threepidService.create({
       source: ThreepidSource.discord,
       threepid: faker.datatype.uuid(),
-      config: { profile: { avatar: faker.internet.avatar() } } as any,
+      config: {
+        profile: {
+          avatar: faker.internet.avatar(),
+          username: faker.internet.userName(),
+        },
+      } as any,
       ...partial,
     });
   }
