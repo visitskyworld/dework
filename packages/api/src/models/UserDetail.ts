@@ -7,6 +7,8 @@ export enum UserDetailType {
   twitter = "twitter",
   linkedin = "linkedin",
   country = "country",
+  website = "website",
+  github = "github",
 }
 
 registerEnumType(UserDetailType, { name: "UserDetailType" });
