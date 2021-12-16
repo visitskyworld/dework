@@ -1,6 +1,7 @@
 import { Avatar, PageHeader, Row, Skeleton, Typography } from "antd";
 import React, { FC, useMemo } from "react";
-import { useProject } from "../hooks";
+import _ from "lodash";
+import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
 import { InviteButton } from "../../invite/InviteButton";
@@ -15,6 +16,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
+  const updateProject = useUpdateProject();
 
   const routes = useMemo(
     () =>
@@ -37,12 +39,24 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
     [organization, project]
   ) as Route[];
 
+  const editProject = _.debounce((text: string | null) => {
+    updateProject({
+      id: projectId,
+      name: text,
+    });
+  }, 500);
+
   return (
     <PageHeader
       title={
         !!project ? (
           <Typography.Title level={3} style={{ margin: 0 }}>
-            {project.name}
+            <div
+              contentEditable="true"
+              onInput={(e) => editProject(e.currentTarget.textContent)}
+            >
+              {project.name}
+            </div>
           </Typography.Title>
         ) : (
           <Skeleton.Button active style={{ width: 200 }} />
