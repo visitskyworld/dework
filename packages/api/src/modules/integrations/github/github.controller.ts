@@ -12,7 +12,6 @@ import {
 import { ConfigType } from "../../app/config";
 import { ProjectService } from "../../project/project.service";
 import { GithubPullRequestService } from "./github.service";
-import { queryToString } from "../../../util/queryToString";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
@@ -30,8 +29,8 @@ export class GithubController {
   // Hit when user finishes the GH app installation
   @Get("app-callback")
   async githubAppCallback(@Req() req: Request, @Res() res: Response) {
-    const stateString = queryToString(req.query.state);
-    const installationId = queryToString(req.query.installation_id);
+    const stateString = req.query.state as string;
+    const installationId = req.query.installation_id as string;
     const { creatorId, projectId } = JSON.parse(stateString);
 
     await this.projectService.createIntegration({
