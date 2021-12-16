@@ -84,6 +84,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
               }
               return (
                 <Select
+                  key={member.id}
                   defaultValue={currentRole}
                   style={{ width: "100%" }}
                   onClick={eatClick}
