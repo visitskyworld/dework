@@ -8,6 +8,7 @@ import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
 import { PayAndCloseButton } from "./PayAndCloseButton";
+import Link from "next/link";
 
 interface TaskCardProps {
   task: Task;
@@ -97,7 +98,11 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
           <div style={{ flex: 1 }} />
           <Avatar.Group maxCount={3} size={22}>
             {task.assignees.map((user) => (
-              <UserAvatar key={user.id} user={user} />
+              <Link href={`/profile/${user.id}`}>
+                <a>
+                  <UserAvatar key={user.id} user={user} />
+                </a>
+              </Link>
             ))}
           </Avatar.Group>
         </Col>
