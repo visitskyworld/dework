@@ -92,7 +92,7 @@ export class UserService {
     if (!usersMatchingUsername.length) return threepidUsername;
     const matchingUsernames = usersMatchingUsername.map((u) => u.username);
     const set = new Set(matchingUsernames);
-    for (let i = 1; i < matchingUsernames.length; i++) {
+    for (let i = 1; i < matchingUsernames.length + 1; i++) {
       const candidate = `${threepidUsername}${i}`;
       if (!set.has(candidate)) return candidate;
     }
