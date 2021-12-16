@@ -54,17 +54,20 @@ export class GithubController {
       const installationId = req.body.installation.id;
       const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
 
-      // Check the task's project has a matching Github integration
-      const associatedIntegration =
-        await this.projectService.findGithubIntegration(installationId);
-      if (!associatedIntegration) {
-        return;
-      }
-
       // Check there's an actual existing task associated with the branch's taskId
       const associatedTask =
         await this.githubPullRequestService.findCorrespondingTask(taskId);
       if (!associatedTask) {
+        return;
+      }
+
+      // Check the task's project has a matching Github integration
+      const associatedIntegration =
+        await this.projectService.findGithubIntegration(
+          installationId,
+          associatedTask.projectId
+        );
+      if (!associatedIntegration) {
         return;
       }
 

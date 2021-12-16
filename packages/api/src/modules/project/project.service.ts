@@ -50,11 +50,14 @@ export class ProjectService {
   }
 
   public findGithubIntegration(
-    installationId: string
+    installationId: string,
+    projectId: string
   ): Promise<ProjectIntegration | undefined> {
     return this.projectIntegrationRepo
       .createQueryBuilder("integration")
-      .where(
+      .where("integration.projectId = :projectId", { projectId: projectId })
+      .andWhere("integration.source = :source", { source: "github" })
+      .andWhere(
         `integration.config ::jsonb @> \'{"installationId":"${installationId}"}\'`
       )
       .getOne();
