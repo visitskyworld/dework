@@ -9,6 +9,7 @@ import Link from "next/link";
 import { TaskCard } from "../project/board/TaskCard";
 import { TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
+import { UploadUserAvatarButton } from "./UploadUserAvatarButton";
 
 interface Props {
   userId: string;
@@ -61,11 +62,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
         <Col span={8}>
           <Card>
             <Space direction="vertical">
-              <UserAvatar
-                user={user}
-                size={96}
-                // style={{ margin: "0 auto", display: "block" }}
-              />
+              <UserAvatar user={user} size={96} />
+              <UploadUserAvatarButton />
+
               <Typography.Title
                 level={3}
                 style={{ marginBottom: 0 }}

@@ -205,3 +205,12 @@ export const createPaymentMethod = gql`
 
   ${Fragments.paymentMethod}
 `;
+
+export const createFileUploadUrl = gql`
+  mutation CreateFileUploadMutation($input: CreateFileUploadUrlInput!) {
+    fileUpload: createFileUploadUrl(input: $input) {
+      signedUrl
+      publicUrl
+    }
+  }
+`;

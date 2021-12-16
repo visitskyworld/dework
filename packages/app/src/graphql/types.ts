@@ -861,6 +861,29 @@ export interface CreatePaymentMethodMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateFileUploadMutation
+// ====================================================
+
+export interface CreateFileUploadMutation_fileUpload {
+  __typename: "CreateFileUploadResponse";
+  signedUrl: string;
+  publicUrl: string;
+}
+
+export interface CreateFileUploadMutation {
+  fileUpload: CreateFileUploadMutation_fileUpload;
+}
+
+export interface CreateFileUploadMutationVariables {
+  input: CreateFileUploadUrlInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -2348,6 +2371,11 @@ export enum UserDetailType {
   linkedin = "linkedin",
   twitter = "twitter",
   website = "website",
+}
+
+export interface CreateFileUploadUrlInput {
+  fileName: string;
+  contentType: string;
 }
 
 export interface CreateInviteInput {
