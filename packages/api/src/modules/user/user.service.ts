@@ -92,16 +92,23 @@ export class UserService {
       existingUsernames.forEach((item) => {
         usernames.push(item.username);
       });
-      usernames = usernames.sort((a: string, b: string) => a.localeCompare(b));
-      const set = new Set(usernames);
-      let i = 0;
-      while (i <= usernames.length) {
-        const candidate = `${threepidUsername}${i}`;
-        if (!set.has(candidate)) return candidate;
-        i++;
-      }
-      throw new Error("Could not generate username");
+      return this.generateUniqueUsername(threepidUsername, usernames);
     }
     return threepidUsername;
+  }
+  public generateUniqueUsername(
+    threepidUsername: string,
+    usernames: string[]
+  ): string {
+    const set = new Set(usernames);
+    let i = 0;
+    while (i <= usernames.length) {
+      // case if user1 is available and user is not and threepidUsername is user
+      if (!set.has(threepidUsername)) return threepidUsername;
+      const candidate = `${threepidUsername}${i + 1}`;
+      if (!set.has(candidate)) return candidate;
+      i++;
+    }
+    throw new Error("Could not generate username");
   }
 }

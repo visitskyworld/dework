@@ -166,6 +166,10 @@ export class Fixtures {
     });
     return { user, organization, project };
   }
+  public generateUsername(username: string): string {
+    const usernames = ["test", "test2", "test3"];
+    return this.userService.generateUniqueUsername(username, usernames);
+  }
 }
 
 @Module({

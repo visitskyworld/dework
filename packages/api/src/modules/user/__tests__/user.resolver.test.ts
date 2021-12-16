@@ -67,7 +67,7 @@ describe("UserResolver", () => {
           client.expectGqlError(response, HttpStatus.NOT_FOUND);
         });
 
-        it("should have unique username of user", async () => {
+        it("should have username of user", async () => {
           const user = await fixtures.createUser();
           const threepidId = (await user.threepids)[0].id;
 
@@ -78,7 +78,21 @@ describe("UserResolver", () => {
 
           expect(response.status).toEqual(HttpStatus.OK);
           const updatedUser = response.body.data?.authWithThreepid.user;
-          expect(updatedUser.username).toBeDefined();
+          expect(updatedUser.username).toEqual(user.username);
+        });
+
+        it("should generate unique username of user", () => {
+          const username = "test";
+          const generatedUsername = fixtures.generateUsername(username);
+
+          expect(generatedUsername).toMatch(new RegExp(`^${username}(\\d+|$)`));
+        });
+
+        it("should generate missing unique username of user", () => {
+          const username = "test";
+          const generatedUsername = fixtures.generateUsername(username);
+
+          expect(generatedUsername).toEqual("test1");
         });
       });
 
