@@ -44,7 +44,8 @@ export class UserRequests {
     return {
       query: `
         mutation SetUserDetail($input: SetUserDetailInput!) {
-          setUserDetail(input: $input) {            
+          setUserDetail(input: $input) { 
+            id           
             details {
               value
               type

@@ -26,7 +26,6 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "../organization/organization.service";
-import { UserDetail } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "./dto/SetUserDetail";
 
 @Resolver(() => User)
@@ -55,10 +54,8 @@ export class UserResolver {
     @Args("input") input: SetUserDetailInput,
     @Context("user") user: User
   ): Promise<User> {
-    return this.userService.setDetail({
-      ...input,
-      userId: user.id,
-    });
+    await this.userService.setDetail(input, user.id);
+    return this.userService.findById(user.id) as Promise<User>;
   }
 
   @ResolveField(() => [GraphQLJSONObject])

@@ -9,8 +9,9 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Raw, Repository } from "typeorm";
+import { Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
+import { SetUserDetailInput } from "./dto/SetUserDetail";
 
 @Injectable()
 export class UserService {
@@ -73,46 +74,25 @@ export class UserService {
   }
 
   public async setDetail(
-    partial: DeepAtLeast<
-      Omit<UserDetail, "value"> & {
-        value: string | null;
-      },
-      "type" | "userId"
-    >
-  ): Promise<User> {
-    const userId = partial.userId;
-    const existing = await this.userDetailRepo.findOne({
-      where: { type: partial.type },
-      relations: ["user"],
-    });
-
-    const isDeleteDetail = partial.value == null;
-    if (isDeleteDetail) {
-      if (existing == null) {
-        throw new NotFoundException(
-          "Tried to remove a userDetail that does not exist"
-        );
-      }
-
-      await this.userDetailRepo.delete({ type: partial.type });
-      const user = await this.findById(userId);
-      if (user == null) {
-        throw new NotFoundException(
-          "Tried to remove a userDetail but could not find user"
-        );
-      }
-      return user;
+    partial: SetUserDetailInput,
+    userId: string
+  ): Promise<void> {
+    if (!partial.value) {
+      await this.userDetailRepo.delete({ type: partial.type, userId });
+      return;
     }
 
-    console.log("UPDARIONG TO", {
-      ...existing,
-      ...(partial as UserDetail),
+    const existing = await this.userDetailRepo.findOne({
+      userId,
+      type: partial.type,
     });
+
     await this.userDetailRepo.save({
       ...existing,
-      ...(partial as UserDetail),
+      userId,
+      type: partial.type,
+      value: partial.value,
     });
-    return this.findById(userId) as Promise<User>;
   }
 
   public createAuthToken(user: User): string {

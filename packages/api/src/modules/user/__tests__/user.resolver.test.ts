@@ -10,7 +10,7 @@ import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
-import { UserDetail, UserDetailType } from "@dewo/api/models/UserDetail";
+import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
 
 describe("UserResolver", () => {
@@ -220,16 +220,14 @@ describe("UserResolver", () => {
     });
 
     describe("setUserDetail", () => {
-      const doesDetailExistInDetails = (
-        detail: SetUserDetailInput,
-        details: UserDetail[]
-      ) => {
-        return (
-          details.find(
-            (d: UserDetail) =>
-              d.type === detail.type && d.value === detail.value
-          ) != null
-        );
+      const setUserDetail = async (detail: SetUserDetailInput, user: User) => {
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.setUserDetail(detail),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        return response.body.data.setUserDetail;
       };
 
       it("should fail if is not authed", async () => {
@@ -246,74 +244,41 @@ describe("UserResolver", () => {
 
       it("should succeed if is authed", async () => {
         const user = await fixtures.createUser();
-        const userDetailType = UserDetailType.twitter;
-        const url = faker.internet.url();
-        const detail = {
-          type: userDetailType,
-          value: url,
+        const detail: SetUserDetailInput = {
+          type: UserDetailType.twitter,
+          value: faker.internet.url(),
         };
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.setUserDetail(detail),
-        });
 
-        expect(response.status).toEqual(HttpStatus.OK);
-
-        const fetched = response.body.data;
-        expect(fetched.setUserDetail.id).toEqual(user.id);
-        expect(fetched.setUserDetail.details.length).toEqual(1);
-        expect(
-          doesDetailExistInDetails(detail, fetched.setUserDetail.details)
-        ).toEqual(true);
+        const fetched = await setUserDetail(detail, user);
+        expect(fetched.id).toEqual(user.id);
+        expect(fetched.details.length).toEqual(1);
+        expect(fetched.details).toContainEqual(
+          expect.objectContaining({ type: detail.type, value: detail.value })
+        );
       });
 
       it("should succeed if detail is replaced on type already existing", async () => {
         const user = await fixtures.createUser();
-        const userDetailType = UserDetailType.twitter;
-        const url1 = faker.internet.url();
-        const url2 = faker.internet.url();
-
-        const detail1 = {
-          type: userDetailType,
-          value: url1,
+        const detail1: SetUserDetailInput = {
+          type: UserDetailType.twitter,
+          value: faker.internet.url(),
         };
-        const detail2 = {
-          type: userDetailType,
-          value: url2,
+        const detail2: SetUserDetailInput = {
+          type: UserDetailType.twitter,
+          value: faker.internet.url(),
         };
 
-        const response1 = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.setUserDetail(detail1),
-        });
+        const fetched1 = await setUserDetail(detail1, user);
+        expect(fetched1.details).toHaveLength(1);
+        expect(fetched1.details).toContainEqual(
+          expect.objectContaining({ type: detail1.type, value: detail1.value })
+        );
 
-        const response2 = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: UserRequests.setUserDetail(detail2),
-        });
-
-        expect(response1.status).toEqual(HttpStatus.OK);
-        expect(response2.status).toEqual(HttpStatus.OK);
-
-        const fetched1 = response1.body.data;
-        const fetched2 = response2.body.data;
-        expect(fetched1.setUserDetail.id).toEqual(fetched2.setUserDetail.id);
-
-        console.log(fetched1.setUserDetail);
-        const newDetail1 = fetched1.setUserDetail.details[0];
-        const newDetail2 = fetched2.setUserDetail.details[0];
-        expect(newDetail1.type).toEqual(newDetail2.type);
-        expect(newDetail1.value).not.toEqual(newDetail2.value);
-
-        expect(
-          doesDetailExistInDetails(detail1, fetched1.setUserDetail.details)
-        ).toEqual(true);
-        expect(
-          doesDetailExistInDetails(detail2, fetched2.setUserDetail.details)
-        ).toEqual(true);
+        const fetched2 = await setUserDetail(detail2, user);
+        expect(fetched2.details).toHaveLength(1);
+        expect(fetched2.details).toContainEqual(
+          expect.objectContaining({ type: detail2.type, value: detail2.value })
+        );
       });
 
       it("should succeed if detail is created and deleted", async () => {
