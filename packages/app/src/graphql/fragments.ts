@@ -5,6 +5,9 @@ export const user = gql`
     id
     username
     imageUrl
+    details {
+      ...UserDetail
+    }
   }
 `;
 

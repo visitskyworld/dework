@@ -10,7 +10,8 @@ import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
-import { UserDetailType } from "@dewo/api/models/UserDetail";
+import { UserDetail, UserDetailType } from "@dewo/api/models/UserDetail";
+import { SetUserDetailInput } from "../dto/SetUserDetail";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -219,6 +220,18 @@ describe("UserResolver", () => {
     });
 
     describe("setUserDetail", () => {
+      const doesDetailExistInDetails = (
+        detail: SetUserDetailInput,
+        details: UserDetail[]
+      ) => {
+        return (
+          details.find(
+            (d: UserDetail) =>
+              d.type === detail.type && d.value === detail.value
+          ) != null
+        );
+      };
+
       it("should fail if is not authed", async () => {
         const response = await client.request({
           app,
@@ -235,22 +248,109 @@ describe("UserResolver", () => {
         const user = await fixtures.createUser();
         const userDetailType = UserDetailType.twitter;
         const url = faker.internet.url();
-
+        const detail = {
+          type: userDetailType,
+          value: url,
+        };
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: UserRequests.setUserDetail({
-            type: userDetailType,
-            value: url,
-          }),
+          body: UserRequests.setUserDetail(detail),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
 
         const fetched = response.body.data;
-        expect(fetched.setUserDetail.user.id).toEqual(user.id);
-        expect(fetched.setUserDetail.type).toEqual(userDetailType);
-        expect(fetched.setUserDetail.value).toEqual(url);
+        expect(fetched.setUserDetail.id).toEqual(user.id);
+        expect(fetched.setUserDetail.details.length).toEqual(1);
+        expect(
+          doesDetailExistInDetails(detail, fetched.setUserDetail.details)
+        ).toEqual(true);
+      });
+
+      it("should succeed if detail is replaced on type already existing", async () => {
+        const user = await fixtures.createUser();
+        const userDetailType = UserDetailType.twitter;
+        const url1 = faker.internet.url();
+        const url2 = faker.internet.url();
+
+        const detail1 = {
+          type: userDetailType,
+          value: url1,
+        };
+        const detail2 = {
+          type: userDetailType,
+          value: url2,
+        };
+
+        const response1 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.setUserDetail(detail1),
+        });
+
+        const response2 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.setUserDetail(detail2),
+        });
+
+        expect(response1.status).toEqual(HttpStatus.OK);
+        expect(response2.status).toEqual(HttpStatus.OK);
+
+        const fetched1 = response1.body.data;
+        const fetched2 = response2.body.data;
+        expect(fetched1.setUserDetail.id).toEqual(fetched2.setUserDetail.id);
+
+        console.log(fetched1.setUserDetail);
+        const newDetail1 = fetched1.setUserDetail.details[0];
+        const newDetail2 = fetched2.setUserDetail.details[0];
+        expect(newDetail1.type).toEqual(newDetail2.type);
+        expect(newDetail1.value).not.toEqual(newDetail2.value);
+
+        expect(
+          doesDetailExistInDetails(detail1, fetched1.setUserDetail.details)
+        ).toEqual(true);
+        expect(
+          doesDetailExistInDetails(detail2, fetched2.setUserDetail.details)
+        ).toEqual(true);
+      });
+
+      it("should succeed if detail is created and deleted", async () => {
+        const user = await fixtures.createUser();
+        const userDetailType = UserDetailType.twitter;
+        const url1 = faker.internet.url();
+        const url2 = null;
+
+        const response1 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.setUserDetail({
+            type: userDetailType,
+            value: url1,
+          }),
+        });
+
+        const response2 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.setUserDetail({
+            type: userDetailType,
+            value: url2,
+          }),
+        });
+
+        expect(response1.status).toEqual(HttpStatus.OK);
+        expect(response2.status).toEqual(HttpStatus.OK);
+
+        const fetched1 = response1.body.data;
+        const fetched2 = response2.body.data;
+        expect(fetched1.setUserDetail.id).toEqual(fetched2.setUserDetail.id);
+
+        const newDetails1 = fetched1.setUserDetail.details;
+        const newDetails2 = fetched2.setUserDetail.details;
+        expect(newDetails1.length).toEqual(1);
+        expect(newDetails2.length).toEqual(0);
       });
     });
   });

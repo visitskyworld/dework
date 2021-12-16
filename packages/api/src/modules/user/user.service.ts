@@ -73,8 +73,14 @@ export class UserService {
   }
 
   public async setDetail(
-    partial: DeepAtLeast<UserDetail, "type" | "value" | "userId">
-  ): Promise<UserDetail> {
+    partial: DeepAtLeast<
+      Omit<UserDetail, "value"> & {
+        value: string | null;
+      },
+      "type" | "userId"
+    >
+  ): Promise<User> {
+    const userId = partial.userId;
     const existing = await this.userDetailRepo.findOne({
       where: { type: partial.type },
       relations: ["user"],
@@ -87,15 +93,26 @@ export class UserService {
           "Tried to remove a userDetail that does not exist"
         );
       }
+
       await this.userDetailRepo.delete({ type: partial.type });
-      return existing;
+      const user = await this.findById(userId);
+      if (user == null) {
+        throw new NotFoundException(
+          "Tried to remove a userDetail but could not find user"
+        );
+      }
+      return user;
     }
 
-    const isUpdateExistingDetail = existing != null;
-    if (isUpdateExistingDetail) partial.id = existing.id;
-    const created = await this.userDetailRepo.save(partial);
-
-    return this.userDetailRepo.findOne(created.id) as Promise<UserDetail>;
+    console.log("UPDARIONG TO", {
+      ...existing,
+      ...(partial as UserDetail),
+    });
+    await this.userDetailRepo.save({
+      ...existing,
+      ...(partial as UserDetail),
+    });
+    return this.findById(userId) as Promise<User>;
   }
 
   public createAuthToken(user: User): string {

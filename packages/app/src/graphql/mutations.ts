@@ -172,11 +172,12 @@ export const createProjectIntegration = gql`
 export const setUserDetail = gql`
   mutation SetUserDetailMutation($input: SetUserDetailInput!) {
     detail: setUserDetail(input: $input) {
-      ...UserDetail
+      ...User
+      details {
+        ...UserDetail
+      }
     }
   }
-
-  ${Fragments.userDetail}
 `;
 
 export const createInvite = gql`

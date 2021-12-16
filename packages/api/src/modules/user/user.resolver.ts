@@ -49,12 +49,12 @@ export class UserResolver {
     return this.organizationService.findByUser(user.id);
   }
 
-  @Mutation(() => UserDetail)
+  @Mutation(() => User)
   @UseGuards(AuthGuard)
   public async setUserDetail(
     @Args("input") input: SetUserDetailInput,
     @Context("user") user: User
-  ): Promise<UserDetail> {
+  ): Promise<User> {
     return this.userService.setDetail({
       ...input,
       userId: user.id,

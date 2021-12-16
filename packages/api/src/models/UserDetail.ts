@@ -24,8 +24,8 @@ export class UserDetail extends Audit {
   public type!: UserDetailType;
 
   @Column({ length: 1024 })
-  @Field({ nullable: true })
-  public value?: string;
+  @Field()
+  public value!: string;
 
   @JoinColumn()
   @ManyToOne(() => User)

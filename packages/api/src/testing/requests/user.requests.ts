@@ -44,16 +44,14 @@ export class UserRequests {
     return {
       query: `
         mutation SetUserDetail($input: SetUserDetailInput!) {
-          setUserDetail(input: $input) {
-            type
-            value
-            user {
-              ...User
+          setUserDetail(input: $input) {            
+            details {
+              value
+              type
             }
           }
         }
 
-        ${this.userFragment}
       `,
       variables: { input },
     };
