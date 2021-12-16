@@ -1,8 +1,7 @@
-import { User } from "./../../models/User";
 import _ from "lodash";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository, Raw } from "typeorm";
+import { DeepPartial, Repository } from "typeorm";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
@@ -12,9 +11,7 @@ export class ThreepidService {
 
   constructor(
     @InjectRepository(Threepid)
-    private readonly threepidRepo: Repository<Threepid>,
-    @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly threepidRepo: Repository<Threepid>
   ) {}
 
   public create(
@@ -61,25 +58,18 @@ export class ThreepidService {
     }
   }
 
-  public async getUsername(threepid: Threepid): Promise<string | undefined> {
-    // Check if username is available else check if displayName is available else use default username
-    let usernameFromSource =
-      threepid.config.profile.username ||
-      threepid.config.profile?.displayName
-        ?.toLowerCase()
-        ?.replace(/ /gm, "_") ||
-      "dewo_user";
-    const existingUsernames = await this.userRepo.find({
-      where: {
-        username: Raw(
-          (alias) =>
-            `${alias} ~ '^${usernameFromSource}\\d+$' or ${alias} = '${usernameFromSource}'`
-        ),
-      },
-    });
-    if (existingUsernames.length) {
-      usernameFromSource = `${usernameFromSource}${existingUsernames.length}`;
+  public getUsername(threepid: Threepid): string {
+    switch (threepid.source) {
+      case ThreepidSource.discord:
+        return (
+          (threepid as Threepid<ThreepidSource.discord>).config.profile
+            .username || "dework_user"
+        );
+      case ThreepidSource.github:
+        return (
+          (threepid as Threepid<ThreepidSource.github>).config.profile
+            .username || "dework_user"
+        );
     }
-    return usernameFromSource;
   }
 }

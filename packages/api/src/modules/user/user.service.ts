@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
 
 @Injectable()
@@ -43,7 +43,9 @@ export class UserService {
     const user = await this.userRepo.save({
       imageUrl: this.threepidService.getImageUrl(threepid),
       threepids: existingUser?.threepids ?? Promise.resolve([]),
-      username: await this.threepidService.getUsername(threepid),
+      username: await this.generateUsername(
+        this.threepidService.getUsername(threepid)
+      ),
       ...existingUser,
     });
 
@@ -78,5 +80,28 @@ export class UserService {
 
   public findById(id: string): Promise<User | undefined> {
     return this.userRepo.findOne(id);
+  }
+  public async generateUsername(threepidUsername: string): Promise<string> {
+    const existingUsernames = await this.userRepo.find({
+      where: {
+        username: Raw((alias) => `${alias} ~ '^${threepidUsername}(\\d+|$)'`),
+      },
+    });
+    if (existingUsernames.length) {
+      let usernames: string[] = [];
+      existingUsernames.forEach((item) => {
+        usernames.push(item.username);
+      });
+      usernames = usernames.sort((a: string, b: string) => a.localeCompare(b));
+      const set = new Set(usernames);
+      let i = 0;
+      while (i <= usernames.length) {
+        const candidate = `${threepidUsername}${i}`;
+        if (!set.has(candidate)) return candidate;
+        i++;
+      }
+      throw new Error("Could not generate username");
+    }
+    return threepidUsername;
   }
 }
