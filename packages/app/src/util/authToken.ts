@@ -43,5 +43,5 @@ export function clearAuthToken(ctx: NextPageContext | undefined) {
   // @ts-ignore
   if (!!ctx?.req) ctx.req.authToken = undefined;
   if (!isServer) localStorage.removeItem(AUTH_TOKEN_KEY);
-  destroyCookie(ctx, AUTH_TOKEN_KEY);
+  destroyCookie(ctx, AUTH_TOKEN_KEY, { path: "/" });
 }
