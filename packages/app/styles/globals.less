@@ -12,7 +12,7 @@
 @text-color-secondary: fade(@white, 60%); // defaults to 45%
 @layout-header-background: transparent;
 @layout-sider-background: fade(@white, 10%);
-@scrollbar-color: fade(@white, 20%);
+@component-background-highlighted: fade(@white, 20%);
 
 html {
   background: @body-background;
@@ -223,7 +223,7 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: @scrollbar-color;
+  background-color: @component-background-highlighted;
   border-radius: @border-radius-base;
   border: 1px solid transparent;
   background-clip: content-box;
@@ -241,7 +241,7 @@ textarea {
   }
 
   &:hover::-webkit-scrollbar-thumb {
-    background: @scrollbar-color;
+    background: @component-background-highlighted;
   }
 }
 .ant-card.dewo-card-create-project {
@@ -331,6 +331,14 @@ textarea {
 
 .bg-primary {
   background: @primary-color;
+}
+
+.bg-component {
+  background: @component-background;
+}
+
+.bg-body {
+  background: @body-background;
 }
 
 #__next,

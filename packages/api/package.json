@@ -33,6 +33,7 @@
     "graphql-type-uuid": "^0.2.0",
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "nest-casl": "^1.4.1",
     "passport": "^0.5.0",
     "passport-discord": "^0.1.4",
@@ -43,6 +44,7 @@
     "rxjs": "^7.4.0",
     "slugify": "^1.6.3",
     "typeorm": "^0.2.41",
+    "uuid": "^8.3.2",
     "uuid-base62": "^0.1.0"
   },
   "devDependencies": {
@@ -55,9 +57,11 @@
     "@types/graphql-type-uuid": "^0.2.3",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.177",
+    "@types/moment": "^2.13.0",
     "@types/passport-discord": "^0.1.5",
     "@types/passport-github": "^1.1.6",
     "@types/supertest": "^2.0.11",
+    "@types/uuid": "^8.3.3",
     "bluebird": "^3.7.2",
     "dotenv": "^10.0.0",
     "faker": "^5.5.3",
