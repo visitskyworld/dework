@@ -1,46 +1,56 @@
+import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class GithubPullRequestService {
+export class GithubService {
   constructor(
     @InjectRepository(GithubPullRequest)
     private readonly githubPullRequestRepo: Repository<GithubPullRequest>,
-    @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    @InjectRepository(GithubBranch)
+    private readonly githubBranchRepo: Repository<GithubBranch>
   ) {}
 
-  public async create(
+  public async createPullRequest(
     partial: Partial<GithubPullRequest>
   ): Promise<GithubPullRequest | undefined> {
     const createdTask = await this.githubPullRequestRepo.save(partial);
     return this.githubPullRequestRepo.findOne(createdTask.id);
   }
 
-  public async update(
+  public async updatePullRequest(
     partial: DeepAtLeast<GithubPullRequest, "id">
   ): Promise<GithubPullRequest | undefined> {
     const updated = await this.githubPullRequestRepo.save(partial);
     return this.githubPullRequestRepo.findOne(updated.id);
   }
 
-  public async findByTaskId(
+  public async findPullRequestByTaskId(
     taskId: string
   ): Promise<GithubPullRequest | undefined> {
     return this.githubPullRequestRepo.findOne({ taskId: taskId });
   }
 
-  public async findCorrespondingTask(
-    taskId?: string
-  ): Promise<Task | undefined> {
-    if (!taskId || taskId.length > 36) {
-      return undefined;
-    }
-    const correspondingTask = await this.taskRepo.findOne(taskId);
-    return correspondingTask;
+  public async createBranch(
+    partial: Partial<GithubBranch>
+  ): Promise<GithubBranch | undefined> {
+    const createdTask = await this.githubBranchRepo.save(partial);
+    return this.githubBranchRepo.findOne(createdTask.id);
+  }
+
+  public async updateBranch(
+    partial: DeepAtLeast<GithubBranch, "id">
+  ): Promise<GithubBranch | undefined> {
+    const updated = await this.githubBranchRepo.save(partial);
+    return this.githubBranchRepo.findOne(updated.id);
+  }
+
+  public async findBranchByTaskId(
+    taskId: string
+  ): Promise<GithubBranch | undefined> {
+    return this.githubBranchRepo.findOne({ taskId: taskId });
   }
 }

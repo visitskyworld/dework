@@ -14,6 +14,7 @@ import { Project } from "./Project";
 import { TaskReward } from "./TaskReward";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
+import { GithubBranch } from "./GithubBranch";
 import { GithubPullRequest } from "./GithubPullRequest";
 import { DiscordChannel } from "./DiscordChannel";
 
@@ -96,6 +97,10 @@ export class Task extends Audit {
   })
   @Field(() => DiscordChannel, { nullable: true })
   public discordChannel?: Promise<DiscordChannel>;
+
+  @OneToMany(() => GithubBranch, (g: GithubBranch) => g.task)
+  @Field(() => [GithubBranch])
+  public githubBranches?: Promise<GithubBranch[]>;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })

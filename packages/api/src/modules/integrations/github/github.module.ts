@@ -1,19 +1,20 @@
-import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import { Task } from "@dewo/api/models/Task";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { GithubBranch } from "@dewo/api/models/GithubBranch";
+import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
+import { Task } from "@dewo/api/models/Task";
 import { GithubController } from "./github.controller";
-import { GithubPullRequestService } from "./github.service";
+import { GithubService } from "./github.service";
 import { TaskModule } from "../../task/task.module";
 import { ProjectModule } from "../../project/project.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([GithubPullRequest, Task]),
+    TypeOrmModule.forFeature([GithubPullRequest, GithubBranch, Task]),
     ProjectModule,
     TaskModule,
   ],
-  providers: [GithubPullRequestService],
+  providers: [GithubService],
   controllers: [GithubController],
 })
 export class GithubIntegrationModule {}

@@ -9,13 +9,21 @@ import {
   ProjectIntegrationSource,
   GithubProjectIntegrationFeature,
 } from "@dewo/api/models/ProjectIntegration";
+import { Task } from "@dewo/api/models/Task";
+import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { ConfigType } from "../../app/config";
+import { GithubService } from "./github.service";
+import { TaskService } from "../../task/task.service";
 import { ProjectService } from "../../project/project.service";
-import { GithubPullRequestService } from "./github.service";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
   "title" | "status" | "link" | "taskId"
+>;
+
+type GithubBranchPayLoad = Pick<
+  GithubBranch,
+  "name" | "repository" | "link" | "taskId"
 >;
 
 @Controller("github")
@@ -23,14 +31,15 @@ export class GithubController {
   constructor(
     private readonly configService: ConfigService<ConfigType>,
     private readonly projectService: ProjectService,
-    private readonly githubPullRequestService: GithubPullRequestService
+    private readonly taskService: TaskService,
+    private readonly githubService: GithubService
   ) {}
 
   // Hit when user finishes the GH app installation
   @Get("app-callback")
-  async githubAppCallback(@Req() req: Request, @Res() res: Response) {
-    const stateString = req.query.state as string;
-    const installationId = req.query.installation_id as string;
+  async githubAppCallback(@Req() { query }: Request, @Res() res: Response) {
+    const stateString = query.state as string;
+    const installationId = query.installation_id as string;
     const { creatorId, projectId } = JSON.parse(stateString);
 
     await this.projectService.createIntegration({
@@ -47,43 +56,55 @@ export class GithubController {
   }
 
   @Post("webhook")
-  async githubWebhook(@Req() req: Request) {
-    if (req.body.pull_request) {
-      const { title, head, state, html_url } = req.body.pull_request;
-      const branchName = head?.ref;
-      const installationId = req.body.installation.id;
-      const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
+  async githubWebhook(@Req() { body }: Request) {
+    // First validate the event's installation and taskId
+    const branchName = body.pull_request?.head?.ref ?? body.ref;
+    const task = await this.getTaskFromBranch(branchName);
+    if (!task) return;
+    const installationId = body.installation.id;
+    const isValidIntegration = await this.projectService.findIntegration(
+      installationId,
+      task.projectId,
+      ProjectIntegrationSource.github
+    );
+    if (!isValidIntegration) return;
 
-      // Check there's an actual existing task associated with the branch's taskId
-      const associatedTask =
-        await this.githubPullRequestService.findCorrespondingTask(taskId);
-      if (!associatedTask) {
-        return;
-      }
+    // Then handle branch and pull request updates separately
+    if (body.ref_type === "branch") {
+      const repository = body.repository.full_name;
+      const branch = await this.githubService.findBranchByTaskId(task.id);
+      const newBranch: GithubBranchPayLoad = {
+        name: branchName,
+        repository,
+        link: `https://github.com/${repository}/compare/${branchName}`,
+        taskId: task.id,
+      };
 
-      // Check the task's project has a matching Github integration
-      const associatedIntegration =
-        await this.projectService.findGithubIntegration(
-          installationId,
-          associatedTask.projectId
-        );
-      if (!associatedIntegration) {
-        return;
+      if (branch) {
+        await this.githubService.updateBranch({
+          ...newBranch,
+          id: branch.id,
+        });
+      } else {
+        await this.githubService.createBranch(newBranch);
       }
+    }
+    if (body.pull_request) {
+      const { title, state, html_url } = body.pull_request;
 
       // Check if there's an existing DB entry for this pr
-      const pr = await this.githubPullRequestService.findByTaskId(taskId);
+      const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const newPr: GithubPullRequestPayload = {
         title,
         status: state.toUpperCase() as GithubPullRequestStatusEnum, // TODO: map
         link: html_url,
-        taskId: taskId,
+        taskId: task.id,
       };
 
       if (pr) {
-        await this.githubPullRequestService.update({ ...newPr, id: pr.id });
+        await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
       } else {
-        await this.githubPullRequestService.create(newPr);
+        await this.githubService.createPullRequest(newPr);
       }
     }
   }
@@ -96,5 +117,16 @@ export class GithubController {
       }
     } catch {}
     return this.configService.get("APP_URL") as string;
+  }
+
+  private async getTaskFromBranch(
+    branchName: string
+  ): Promise<Task | undefined> {
+    const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
+    if (!taskId || taskId.length > 36) return undefined;
+
+    // Check there's an actual existing task associated with the branch's taskId
+    const associatedTask = await this.taskService.findById(taskId);
+    return associatedTask;
   }
 }
