@@ -1,13 +1,18 @@
 import gql from "graphql-tag";
 
+export const userDetail = gql`
+  fragment UserDetail on UserDetail {
+    id
+    type
+    value
+  }
+`;
+
 export const user = gql`
   fragment User on User {
     id
     username
     imageUrl
-    details {
-      ...UserDetail
-    }
   }
 `;
 
@@ -47,14 +52,6 @@ export const projectIntegration = gql`
     id
     source
     config
-  }
-`;
-
-export const userDetail = gql`
-  fragment UserDetail on UserDetail {
-    id
-    type
-    value
   }
 `;
 
@@ -141,10 +138,14 @@ export const userProfile = gql`
     organizations {
       ...Organization
     }
+    details {
+      ...UserDetail
+    }
   }
 
   ${user}
   ${organization}
+  ${userDetail}
 `;
 
 export const userDetails = gql`

@@ -10,7 +10,7 @@
 export interface AuthWithThreepidMutation_authWithThreepid_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -45,6 +45,13 @@ export interface UpdateUserMutation_user_organizations {
   slug: string;
 }
 
+export interface UpdateUserMutation_user_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
 export interface UpdateUserMutation_user_threepids {
   __typename: "Threepid";
   id: Scalar.UUID;
@@ -61,10 +68,11 @@ export interface UpdateUserMutation_user_paymentMethod {
 export interface UpdateUserMutation_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
   bio: string | null;
   organizations: UpdateUserMutation_user_organizations[];
+  details: UpdateUserMutation_user_details[];
   threepids: UpdateUserMutation_user_threepids[];
   paymentMethod: UpdateUserMutation_user_paymentMethod | null;
 }
@@ -114,7 +122,7 @@ export interface CreateOrganizationMutationVariables {
 export interface UpdateOrganizationMemberMutation_member_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -147,7 +155,7 @@ export interface UpdateOrganizationMemberMutationVariables {
 export interface RemoveOrganizationMemberMutation_organization_members_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -212,7 +220,7 @@ export interface CreateProjectMutation_project_organization_projects {
 export interface CreateProjectMutation_project_organization_members_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -312,21 +320,21 @@ export interface CreateTaskMutation_task_tags {
 export interface CreateTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface CreateTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface CreateTaskMutation_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -388,21 +396,21 @@ export interface UpdateTaskMutation_task_tags {
 export interface UpdateTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UpdateTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UpdateTaskMutation_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -464,21 +472,21 @@ export interface ClaimTaskMutation_task_tags {
 export interface ClaimTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface ClaimTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface ClaimTaskMutation_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -540,21 +548,21 @@ export interface UnclaimTaskMutation_task_tags {
 export interface UnclaimTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UnclaimTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UnclaimTaskMutation_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -616,21 +624,21 @@ export interface DeleteTaskMutation_task_tags {
 export interface DeleteTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface DeleteTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface DeleteTaskMutation_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -753,6 +761,38 @@ export interface CreateProjectIntegrationMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: SetUserDetailMutation
+// ====================================================
+
+export interface SetUserDetailMutation_detail_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
+export interface SetUserDetailMutation_detail {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  details: SetUserDetailMutation_detail_details[];
+}
+
+export interface SetUserDetailMutation {
+  detail: SetUserDetailMutation_detail;
+}
+
+export interface SetUserDetailMutationVariables {
+  input: SetUserDetailInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateInviteMutation
 // ====================================================
 
@@ -832,6 +872,13 @@ export interface MeQuery_me_organizations {
   slug: string;
 }
 
+export interface MeQuery_me_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
 export interface MeQuery_me_threepids {
   __typename: "Threepid";
   id: Scalar.UUID;
@@ -848,10 +895,11 @@ export interface MeQuery_me_paymentMethod {
 export interface MeQuery_me {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
   bio: string | null;
   organizations: MeQuery_me_organizations[];
+  details: MeQuery_me_details[];
   threepids: MeQuery_me_threepids[];
   paymentMethod: MeQuery_me_paymentMethod | null;
 }
@@ -877,13 +925,21 @@ export interface UserProfileQuery_user_organizations {
   slug: string;
 }
 
+export interface UserProfileQuery_user_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
 export interface UserProfileQuery_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
   bio: string | null;
   organizations: UserProfileQuery_user_organizations[];
+  details: UserProfileQuery_user_details[];
 }
 
 export interface UserProfileQuery {
@@ -913,21 +969,21 @@ export interface UserTasksQuery_user_tasks_tags {
 export interface UserTasksQuery_user_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UserTasksQuery_user_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface UserTasksQuery_user_tasks_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1060,7 +1116,7 @@ export interface GetOrganizationQuery_organization_projects {
 export interface GetOrganizationQuery_organization_members_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1123,7 +1179,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1174,21 +1230,21 @@ export interface GetOrganizationTasksQuery_organization_tasks_tags {
 export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1305,21 +1361,21 @@ export interface GetProjectTasksQuery_project_tasks_tags {
 export interface GetProjectTasksQuery_project_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetProjectTasksQuery_project_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetProjectTasksQuery_project_tasks_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1395,21 +1451,21 @@ export interface GetTaskQuery_task_tags {
 export interface GetTaskQuery_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface GetTaskQuery_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1551,7 +1607,7 @@ export interface GetProjectIntegrationsQueryVariables {
 export interface GetInviteQuery_invite_inviter {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1597,21 +1653,21 @@ export interface TaskCreatedSubscription_task_tags {
 export interface TaskCreatedSubscription_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface TaskCreatedSubscription_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1669,21 +1725,21 @@ export interface TaskUpdatedSubscription_task_tags {
 export interface TaskUpdatedSubscription_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface TaskUpdatedSubscription_task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1728,13 +1784,29 @@ export interface TaskUpdatedSubscription {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: UserDetail
+// ====================================================
+
+export interface UserDetail {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: User
 // ====================================================
 
 export interface User {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1783,7 +1855,7 @@ export interface Organization {
 export interface OrganizationMember_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1907,21 +1979,21 @@ export interface Task_tags {
 export interface Task_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface Task_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface Task_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -1973,13 +2045,21 @@ export interface UserProfile_organizations {
   slug: string;
 }
 
+export interface UserProfile_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
 export interface UserProfile {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
   bio: string | null;
   organizations: UserProfile_organizations[];
+  details: UserProfile_details[];
 }
 
 /* tslint:disable */
@@ -1999,6 +2079,13 @@ export interface UserDetails_organizations {
   slug: string;
 }
 
+export interface UserDetails_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
 export interface UserDetails_threepids {
   __typename: "Threepid";
   id: Scalar.UUID;
@@ -2015,10 +2102,11 @@ export interface UserDetails_paymentMethod {
 export interface UserDetails {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
   bio: string | null;
   organizations: UserDetails_organizations[];
+  details: UserDetails_details[];
   threepids: UserDetails_threepids[];
   paymentMethod: UserDetails_paymentMethod | null;
 }
@@ -2054,7 +2142,7 @@ export interface OrganizationDetails_projects {
 export interface OrganizationDetails_members_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -2104,21 +2192,21 @@ export interface ProjectDetails_tasks_tags {
 export interface ProjectDetails_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface ProjectDetails_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
 export interface ProjectDetails_tasks_creator {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -2186,7 +2274,7 @@ export interface ProjectDetails {
 export interface Invite_inviter {
   __typename: "User";
   id: Scalar.UUID;
-  username: string | null;
+  username: string;
   imageUrl: string | null;
 }
 
@@ -2254,6 +2342,14 @@ export enum ThreepidSource {
   github = "github",
 }
 
+export enum UserDetailType {
+  country = "country",
+  github = "github",
+  linkedin = "linkedin",
+  twitter = "twitter",
+  website = "website",
+}
+
 export interface CreateInviteInput {
   organizationId: Scalar.UUID;
   role?: OrganizationRole | null;
@@ -2306,6 +2402,11 @@ export interface GetUserPermissionsInput {
 export interface RemoveOrganizationMemberInput {
   organizationId: Scalar.UUID;
   userId: Scalar.UUID;
+}
+
+export interface SetUserDetailInput {
+  type: UserDetailType;
+  value?: string | null;
 }
 
 export interface UpdateOrganizationMemberInput {
