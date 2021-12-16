@@ -86,7 +86,6 @@ export function TaskForm<
         setLoading(true);
         await onSubmit({
           ...values,
-          projectId,
           reward: !!values.reward?.amount
             ? {
                 amount: values.reward.amount,
