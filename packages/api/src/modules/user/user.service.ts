@@ -81,33 +81,20 @@ export class UserService {
   public findById(id: string): Promise<User | undefined> {
     return this.userRepo.findOne(id);
   }
+
   public async generateUsername(threepidUsername: string): Promise<string> {
-    const existingUsernames = await this.userRepo.find({
+    const usersMatchingUsername = await this.userRepo.find({
       where: {
         username: Raw((alias) => `${alias} ~ '^${threepidUsername}(\\d+|$)'`),
       },
     });
-    if (existingUsernames.length) {
-      let usernames: string[] = [];
-      existingUsernames.forEach((item) => {
-        usernames.push(item.username);
-      });
-      return this.generateUniqueUsername(threepidUsername, usernames);
-    }
-    return threepidUsername;
-  }
-  public generateUniqueUsername(
-    threepidUsername: string,
-    usernames: string[]
-  ): string {
-    const set = new Set(usernames);
-    let i = 0;
-    while (i <= usernames.length) {
-      // case if user1 is available and user is not and threepidUsername is user
-      if (!set.has(threepidUsername)) return threepidUsername;
-      const candidate = `${threepidUsername}${i + 1}`;
+
+    if (!usersMatchingUsername.length) return threepidUsername;
+    const matchingUsernames = usersMatchingUsername.map((u) => u.username);
+    const set = new Set(matchingUsernames);
+    for (let i = 1; i < matchingUsernames.length; i++) {
+      const candidate = `${threepidUsername}${i}`;
       if (!set.has(candidate)) return candidate;
-      i++;
     }
     throw new Error("Could not generate username");
   }

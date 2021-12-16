@@ -60,16 +60,17 @@ export class ThreepidService {
 
   public getUsername(threepid: Threepid): string {
     switch (threepid.source) {
-      case ThreepidSource.discord:
-        return (
-          (threepid as Threepid<ThreepidSource.discord>).config.profile
-            .username || "dework_user"
-        );
-      case ThreepidSource.github:
-        return (
-          (threepid as Threepid<ThreepidSource.github>).config.profile
-            .username || "dework_user"
-        );
+      case ThreepidSource.discord: {
+        const config = (threepid as Threepid<ThreepidSource.discord>).config;
+        return config.profile.username;
+      }
+      case ThreepidSource.github: {
+        const config = (threepid as Threepid<ThreepidSource.github>).config;
+        if (!!config.profile.username) return config.profile.username;
+        break;
+      }
     }
+
+    return "deworker";
   }
 }

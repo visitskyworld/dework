@@ -67,32 +67,56 @@ describe("UserResolver", () => {
           client.expectGqlError(response, HttpStatus.NOT_FOUND);
         });
 
-        it("should have username of user", async () => {
-          const user = await fixtures.createUser();
-          const threepidId = (await user.threepids)[0].id;
+        describe("unique username", () => {
+          it("should have username from threepid", async () => {
+            const username = faker.internet.userName();
+            const user = await fixtures.createUser({
+              source: ThreepidSource.discord,
+              // @ts-ignore
+              config: { profile: { username } },
+            });
+            const threepidId = (await user.threepids)[0].id;
 
-          const response = await client.request({
-            app,
-            body: UserRequests.authWithThreepid(threepidId),
+            const response = await client.request({
+              app,
+              body: UserRequests.authWithThreepid(threepidId),
+            });
+
+            expect(response.status).toEqual(HttpStatus.OK);
+            const fetched = response.body.data?.authWithThreepid.user;
+            expect(fetched.username).toEqual(username);
           });
 
-          expect(response.status).toEqual(HttpStatus.OK);
-          const updatedUser = response.body.data?.authWithThreepid.user;
-          expect(updatedUser.username).toEqual(user.username);
-        });
+          it("should generate unique username if username already exists", async () => {
+            function createWithUsername(username: string) {
+              return fixtures.createUser({
+                source: ThreepidSource.discord,
+                // @ts-ignore
+                config: { profile: { username } },
+              });
+            }
 
-        it("should generate unique username of user", () => {
-          const username = "test";
-          const generatedUsername = fixtures.generateUsername(username);
+            const username = faker.internet.userName();
+            await Promise.all([
+              createWithUsername(username),
+              createWithUsername(`${username}1`),
+              createWithUsername(`${username}3`),
+            ]);
 
-          expect(generatedUsername).toMatch(new RegExp(`^${username}(\\d+|$)`));
-        });
+            const threepid = await fixtures.createThreepid({
+              source: ThreepidSource.discord,
+              // @ts-ignore
+              config: { profile: { username } },
+            });
+            const response = await client.request({
+              app,
+              body: UserRequests.authWithThreepid(threepid.id),
+            });
 
-        it("should generate missing unique username of user", () => {
-          const username = "test";
-          const generatedUsername = fixtures.generateUsername(username);
-
-          expect(generatedUsername).toEqual("test1");
+            expect(response.status).toEqual(HttpStatus.OK);
+            const fetched = response.body.data?.authWithThreepid.user;
+            expect(fetched.username).toEqual(`${username}2`);
+          });
         });
       });
 
