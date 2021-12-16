@@ -88,8 +88,8 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
       trigger={["click"]}
       overlay={
         <Menu theme="dark">
-          <Menu.Item onClick={inviteAdmin}>Invite Admin</Menu.Item>
-          <Menu.Item onClick={inviteMember}>Invite Member</Menu.Item>
+          <Menu.Item onClick={inviteAdmin}>Invite Admin(s)</Menu.Item>
+          <Menu.Item onClick={inviteMember}>Invite Member(s)</Menu.Item>
         </Menu>
       }
     >
