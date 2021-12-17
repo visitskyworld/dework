@@ -48,9 +48,9 @@ export class GithubService {
     return this.githubBranchRepo.findOne(updated.id);
   }
 
-  public async findBranchByTaskId(
-    taskId: string
+  public async findBranchByName(
+    name: string
   ): Promise<GithubBranch | undefined> {
-    return this.githubBranchRepo.findOne({ taskId: taskId });
+    return this.githubBranchRepo.findOne({ name: name });
   }
 }

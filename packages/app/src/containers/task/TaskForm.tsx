@@ -12,6 +12,7 @@ import {
   Col,
   ConfigProvider,
   Empty,
+  Divider,
 } from "antd";
 import {
   CreateTaskInput,
@@ -203,6 +204,53 @@ export function TaskForm<
               </Button>
             </Form.Item>
           )}
+          <Divider />
+          {githubPullRequests && githubPullRequests?.length > 0 && (
+            <Form.Item name="githubPullRequests" label="Pull Requests">
+              {githubPullRequests.map((pr) => (
+                <Button
+                  target="_blank"
+                  href={pr.link}
+                  style={{ maxWidth: "100%" }}
+                >
+                  <Typography.Text ellipsis>{pr.title}</Typography.Text>
+                </Button>
+              ))}
+            </Form.Item>
+          )}
+
+          {githubBranches && githubBranches?.length > 0 && (
+            <Form.Item name="githubPullRequests" label="Github Branches">
+              {githubBranches.map((branch) => (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    maxWidth: "100%",
+                    marginBottom: "12px",
+                    gap: "12px",
+                  }}
+                >
+                  <Button
+                    target="_blank"
+                    href={branch.link}
+                    style={{ display: "inline-grid", flex: 1 }}
+                  >
+                    <Typography.Text ellipsis>{branch.name}</Typography.Text>
+                  </Button>
+                  <Button
+                    target="_blank"
+                    href={`${branch.link}?quick_pull=1&title=${
+                      task?.name
+                    }&body=${task?.description ?? ""}`}
+                    type="ghost"
+                  >
+                    Open PR
+                  </Button>
+                </div>
+              ))}
+            </Form.Item>
+          )}
         </Col>
         <Col span={8} style={{ marginTop: 62 }}>
           {!!canEdit &&
@@ -298,34 +346,6 @@ export function TaskForm<
               ))}
             </Select>
           </Form.Item>
-
-          {githubPullRequests && githubPullRequests.length > 0 && (
-            <Form.Item name="githubPullRequests" label="Github PRs">
-              {githubPullRequests.map((pr) => (
-                <Button
-                  target="_blank"
-                  href={pr.link}
-                  style={{ maxWidth: "100%" }}
-                >
-                  <Typography.Text ellipsis>{pr.title}</Typography.Text>
-                </Button>
-              ))}
-            </Form.Item>
-          )}
-
-          {githubBranches && githubBranches.length > 0 && (
-            <Form.Item name="githubPullRequests" label="Github Branches">
-              {githubBranches.map((branch) => (
-                <Button
-                  target="_blank"
-                  href={branch.link}
-                  style={{ maxWidth: "100%" }}
-                >
-                  <Typography.Text ellipsis>{branch.name}</Typography.Text>
-                </Button>
-              ))}
-            </Form.Item>
-          )}
 
           {task?.discordChannel && (
             <Row className="ant-form-item">

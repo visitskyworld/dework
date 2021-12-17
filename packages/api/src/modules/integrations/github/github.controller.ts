@@ -72,19 +72,16 @@ export class GithubController {
     // Then handle branch and pull request updates separately
     if (body.commits?.length > 0) {
       const repository = body.repository.full_name;
-      const branch = await this.githubService.findBranchByTaskId(task.id);
+      const branch = await this.githubService.findBranchByName(branchName);
       const newBranch: GithubBranchPayLoad = {
-        name: branchName,
+        name: branchName.replace("refs/heads/", ""),
         repository,
         link: `https://github.com/${repository}/compare/${branchName}`,
         taskId: task.id,
       };
 
       if (branch) {
-        await this.githubService.updateBranch({
-          ...newBranch,
-          id: branch.id,
-        });
+        await this.githubService.updateBranch(branch);
       } else {
         await this.githubService.createBranch(newBranch);
       }
