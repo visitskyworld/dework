@@ -32,6 +32,7 @@ const Auth: NextPage = () => {
   }, [authWithThreepid, threepidId, router, state, acceptInvite]);
   useEffect(() => {
     auth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
