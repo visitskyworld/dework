@@ -17,7 +17,6 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../hooks";
 import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { useUpdateProject } from "../../project/hooks";
-import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   project: Project;
