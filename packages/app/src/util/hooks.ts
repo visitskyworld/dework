@@ -8,13 +8,15 @@ export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
   return data?.me;
 }
 
-export function useToggle(): {
+interface UseToggleHook {
   isOn: boolean;
   toggleOn(): void;
   toggleOff(): void;
   toggle(): void;
   setToggle(isOn: boolean): void;
-} {
+}
+
+export function useToggle(): UseToggleHook {
   const [isOn, setToggle] = useState(false);
   const toggleOn = useCallback(() => setToggle(true), []);
   const toggleOff = useCallback(() => setToggle(false), []);
