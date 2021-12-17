@@ -14,6 +14,7 @@ import {
   Empty,
   Divider,
 } from "antd";
+import * as Colors from "@ant-design/colors";
 import {
   CreateTaskInput,
   UpdateTaskInput,
@@ -207,9 +208,17 @@ export function TaskForm<
           <Divider />
           {githubPullRequests && githubPullRequests?.length > 0 && (
             <Form.Item name="githubPullRequests" label="Pull Requests">
-              {githubPullRequests.map((pr) => {
-                console.log(pr.branchName);
-                return (
+              {githubPullRequests.map((pr) => (
+                <Row
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginBottom: "12px",
+                    alignItems: "center",
+                    gap: "12px",
+                    maxWidth: "100%",
+                  }}
+                >
                   <Button
                     target="_blank"
                     href={pr.link}
@@ -219,8 +228,16 @@ export function TaskForm<
                       ellipsis
                     >{`#${pr.number} ${pr.title}`}</Typography.Text>
                   </Button>
-                );
-              })}
+                  <Tag
+                    style={{
+                      margin: "0",
+                      backgroundColor: Colors.green.primary,
+                    }}
+                  >
+                    {pr.status}
+                  </Tag>
+                </Row>
+              ))}
             </Form.Item>
           )}
 
