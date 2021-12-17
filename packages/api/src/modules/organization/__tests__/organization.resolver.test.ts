@@ -255,7 +255,33 @@ describe("OrganizationResolver", () => {
 
   describe("Queries", () => {
     describe("getOrganization", () => {
-      it("should return tasks from all non-deleted sub projects", async () => {
+      it("should return non-deleted projects", async () => {
+        const organization = await fixtures.createOrganization();
+        const project = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+        const deletedProject = await fixtures.createProject({
+          organizationId: organization.id,
+          deletedAt: new Date(),
+        });
+
+        const response = await client.request({
+          app,
+          body: OrganizationRequests.get(organization.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data.organization;
+        expect(fetched.projects).toHaveLength(1);
+        expect(fetched.projects).toContainEqual(
+          expect.objectContaining({ id: project.id })
+        );
+        expect(fetched.projects).not.toContainEqual(
+          expect.objectContaining({ id: deletedProject.id })
+        );
+      });
+
+      it("should return tasks from all non-deleted projects", async () => {
         const organization = await fixtures.createOrganization();
         const projects = await Bluebird.map(_.range(5), () =>
           fixtures.createProject({ organizationId: organization.id })

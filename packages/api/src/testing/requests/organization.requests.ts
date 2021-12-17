@@ -21,6 +21,9 @@ export class OrganizationRequests {
       members {
         ...OrganizationMember
       }
+      projects {
+        id
+      }
       tasks {
         id
         projectId

@@ -21,6 +21,7 @@ import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
+import { Project } from "@dewo/api/models/Project";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -33,6 +34,15 @@ export class OrganizationResolver {
   ): Promise<OrganizationMember[]> {
     if (!!organization.members) return organization.members;
     return this.organizationService.getMembers(organization.id);
+  }
+
+  @ResolveField(() => [Project])
+  public async projects(
+    @Parent() organization: Organization
+  ): Promise<Project[]> {
+    // TODO(fant): query organization projects and filter by deletedAt directly
+    const projects = await organization.projects;
+    return projects.filter((p) => !p.deletedAt);
   }
 
   @Mutation(() => Organization)
