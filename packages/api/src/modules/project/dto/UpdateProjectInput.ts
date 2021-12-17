@@ -11,4 +11,7 @@ export class UpdateProjectInput {
 
   @Field(() => GraphQLUUID, { nullable: true })
   public paymentMethodId?: string;
+
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

@@ -255,7 +255,7 @@ describe("OrganizationResolver", () => {
 
   describe("Queries", () => {
     describe("getOrganization", () => {
-      it("should return tasks from all sub projects", async () => {
+      it("should return tasks from all non-deleted sub projects", async () => {
         const organization = await fixtures.createOrganization();
         const projects = await Bluebird.map(_.range(5), () =>
           fixtures.createProject({ organizationId: organization.id })
@@ -263,6 +263,14 @@ describe("OrganizationResolver", () => {
         const tasks = await Bluebird.map(projects, (project) =>
           fixtures.createTask({ projectId: project.id })
         );
+
+        const deletedProject = await fixtures.createProject({
+          organizationId: organization.id,
+          deletedAt: new Date(),
+        });
+        const taskInDeletedProject = await fixtures.createTask({
+          projectId: deletedProject.id,
+        });
 
         const response = await client.request({
           app,
@@ -276,6 +284,13 @@ describe("OrganizationResolver", () => {
             expect.objectContaining({ id: task.id, projectId: task.projectId })
           );
         });
+
+        expect(fetched.tasks).not.toContainEqual(
+          expect.objectContaining({
+            id: taskInDeletedProject.id,
+            projectId: taskInDeletedProject.projectId,
+          })
+        );
       });
     });
   });

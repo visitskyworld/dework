@@ -74,7 +74,8 @@ export class TaskService {
     if (!!organizationId) {
       queryBuilder = queryBuilder
         .innerJoinAndSelect("task.project", "project")
-        .where("project.organizationId = :organizationId", { organizationId });
+        .where("project.organizationId = :organizationId", { organizationId })
+        .andWhere("project.deletedAt IS NULL");
     }
 
     if (!!assigneeId) {
