@@ -18,7 +18,7 @@ import { ProjectService } from "../../project/project.service";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
-  "title" | "status" | "branchName" | "link" | "taskId"
+  "title" | "status" | "number" | "branchName" | "link" | "taskId"
 >;
 
 type GithubBranchPayLoad = Pick<
@@ -87,12 +87,13 @@ export class GithubController {
       }
     }
     if (body.pull_request) {
-      const { title, state, html_url } = body.pull_request;
+      const { title, state, html_url, number } = body.pull_request;
 
       // Check if there's an existing DB entry for this pr
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const newPr: GithubPullRequestPayload = {
         title,
+        number,
         branchName,
         status: state.toUpperCase() as GithubPullRequestStatusEnum, // TODO: map
         link: html_url,

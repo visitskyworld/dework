@@ -26,6 +26,10 @@ export class GithubPullRequest extends Audit {
 
   @Column()
   @Field()
+  public number!: number;
+
+  @Column()
+  @Field()
   public branchName!: string;
 
   @Column({ enum: GithubPullRequestStatusEnum })

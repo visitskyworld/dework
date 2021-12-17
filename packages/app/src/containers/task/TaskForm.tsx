@@ -215,7 +215,9 @@ export function TaskForm<
                     href={pr.link}
                     style={{ maxWidth: "100%" }}
                   >
-                    <Typography.Text ellipsis>{pr.title}</Typography.Text>
+                    <Typography.Text
+                      ellipsis
+                    >{`#${pr.number} ${pr.title}`}</Typography.Text>
                   </Button>
                 );
               })}
