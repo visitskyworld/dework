@@ -1,10 +1,23 @@
 import { Project, User } from "@dewo/app/graphql/types";
-import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
-import React, { FC } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Dropdown,
+  Menu,
+  Progress,
+  Row,
+  Tag,
+  Typography,
+} from "antd";
+import React, { FC, useCallback } from "react";
 import Link from "next/link";
+import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { Can } from "@dewo/app/contexts/PermissionsContext";
+import { useUpdateProject } from "../../project/hooks";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   project: Project;
@@ -14,6 +27,13 @@ interface Props {
 
 export const ProjectCard: FC<Props> = ({ project, users }) => {
   const organization = useOrganization(project.organizationId);
+
+  const updateProject = useUpdateProject();
+  const deleteProject = useCallback(
+    () =>
+      updateProject({ id: project.id, deletedAt: new Date().toISOString() }),
+    [updateProject, project.id]
+  );
   return (
     <Link
       href={organization ? `/o/${organization.slug}/p/${project.slug}` : ""}
@@ -57,6 +77,32 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
               </Tag>
             )}
           </Row>
+
+          <Can I="delete" a="Task">
+            <Dropdown
+              placement="bottomRight"
+              trigger={["click"]}
+              overlay={
+                <Menu
+                  theme="dark"
+                  onClick={(e) => e.domEvent.stopPropagation()}
+                >
+                  <Menu.Item
+                    icon={<Icons.DeleteOutlined />}
+                    onClick={deleteProject}
+                  >
+                    Delete Project
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <Button
+                type="text"
+                icon={<Icons.MoreOutlined />}
+                style={{ position: "absolute", top: 0, right: 0 }}
+              />
+            </Dropdown>
+          </Can>
         </Card>
       </a>
     </Link>

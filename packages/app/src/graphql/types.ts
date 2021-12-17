@@ -210,6 +210,7 @@ export interface CreateProjectMutation_project_organization_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -249,6 +250,7 @@ export interface CreateProjectMutation_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -286,6 +288,7 @@ export interface UpdateProjectMutation_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -1129,6 +1132,7 @@ export interface GetOrganizationQuery_organization_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -1192,6 +1196,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -1350,6 +1355,7 @@ export interface GetProjectQuery_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -1928,6 +1934,7 @@ export interface Project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -2155,6 +2162,7 @@ export interface OrganizationDetails_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -2276,6 +2284,7 @@ export interface ProjectDetails {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  deletedAt: Scalar.DateTime | null;
   organizationId: string;
   taskCount: number;
   doneTaskCount: number;
@@ -2447,6 +2456,7 @@ export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
   paymentMethodId?: Scalar.UUID | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateTaskInput {

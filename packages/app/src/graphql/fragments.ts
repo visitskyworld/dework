@@ -60,6 +60,7 @@ export const project = gql`
     id
     slug
     name
+    deletedAt
     organizationId
     taskCount
     doneTaskCount: taskCount(status: DONE)
