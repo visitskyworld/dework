@@ -302,8 +302,26 @@ export function TaskForm<
           {githubPullRequests && githubPullRequests.length > 0 && (
             <Form.Item name="githubPullRequests" label="Github PRs">
               {githubPullRequests.map((pr) => (
-                <Button target="_blank" href={pr.link}>
-                  {pr.title}
+                <Button
+                  target="_blank"
+                  href={pr.link}
+                  style={{ maxWidth: "100%" }}
+                >
+                  <Typography.Text ellipsis>{pr.title}</Typography.Text>
+                </Button>
+              ))}
+            </Form.Item>
+          )}
+
+          {githubBranches && githubBranches.length > 0 && (
+            <Form.Item name="githubPullRequests" label="Github Branches">
+              {githubBranches.map((branch) => (
+                <Button
+                  target="_blank"
+                  href={branch.link}
+                  style={{ maxWidth: "100%" }}
+                >
+                  <Typography.Text ellipsis>{branch.name}</Typography.Text>
                 </Button>
               ))}
             </Form.Item>

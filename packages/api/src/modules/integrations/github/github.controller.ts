@@ -70,7 +70,7 @@ export class GithubController {
     if (!isValidIntegration) return;
 
     // Then handle branch and pull request updates separately
-    if (body.commits.length > 0) {
+    if (body.commits?.length > 0) {
       const repository = body.repository.full_name;
       const branch = await this.githubService.findBranchByTaskId(task.id);
       const newBranch: GithubBranchPayLoad = {
@@ -79,7 +79,6 @@ export class GithubController {
         link: `https://github.com/${repository}/compare/${branchName}`,
         taskId: task.id,
       };
-      console.log(newBranch);
 
       if (branch) {
         await this.githubService.updateBranch({
