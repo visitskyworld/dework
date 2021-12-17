@@ -41,6 +41,19 @@ export class AuthController {
     return req.user;
   }
 
+  @Get("discord-bot")
+  @UseGuards(AuthGuard("discord-bot"))
+  async discordBot() {}
+
+  @Get("discord-bot/callback")
+  @UseGuards(AuthGuard("discord-bot"))
+  async discordBotCallback(
+    @Req() req: RequestFromCallback,
+    @Res() res: Response
+  ) {
+    return { ok: true };
+  }
+
   private getAppUrl(stateString: unknown): string {
     try {
       if (typeof stateString === "string") {

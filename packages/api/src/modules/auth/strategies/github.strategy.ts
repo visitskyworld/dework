@@ -19,12 +19,12 @@ const PassportGithubStrategy = PassportStrategy(Strategy) as new (
 export class GithubStrategy extends PassportGithubStrategy {
   constructor(
     private readonly threepidService: ThreepidService,
-    readonly configService: ConfigService<ConfigType>
+    readonly config: ConfigService<ConfigType>
   ) {
     super({
-      clientID: configService.get<string>("GITHUB_OAUTH_CLIENT_ID"),
-      clientSecret: configService.get<string>("GITHUB_OAUTH_CLIENT_SECRET"),
-      callbackURL: configService.get<string>("GITHUB_OAUTH_REDIRECT_URI"),
+      clientID: config.get<string>("GITHUB_OAUTH_CLIENT_ID"),
+      clientSecret: config.get<string>("GITHUB_OAUTH_CLIENT_SECRET"),
+      callbackURL: `${config.get<string>("API_URL")}/auth/github/callback`,
       passReqToCallback: true,
     });
   }

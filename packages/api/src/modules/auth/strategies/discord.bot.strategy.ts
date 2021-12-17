@@ -10,13 +10,31 @@ import {
 } from "@dewo/api/models/Threepid";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Request } from "express";
+import { VerifyCallback } from "passport-oauth2";
 
-const PassportDiscordStrategy = PassportStrategy(Strategy) as new (
-  ...args: any[]
-) => AbstractStrategy & Strategy;
+class DiscordBotStrategyClass extends Strategy {
+  constructor(
+    options: Strategy.StrategyOptions,
+    verify: (
+      accessToken: string,
+      refreshToken: string,
+      profile: Strategy.Profile,
+      done: VerifyCallback
+    ) => void
+  ) {
+    super(options, verify);
+    this.name = "discord-bot";
+  }
+}
+
+// http://localhost:8080/auth/discord-bot
+
+const PassportDiscordStrategy = PassportStrategy(
+  DiscordBotStrategyClass
+) as new (...args: any[]) => AbstractStrategy & Strategy;
 
 @Injectable()
-export class DiscordStrategy extends PassportDiscordStrategy {
+export class DiscordBotStrategy extends PassportDiscordStrategy {
   constructor(
     private readonly threepidService: ThreepidService,
     readonly config: ConfigService<ConfigType>
@@ -24,8 +42,8 @@ export class DiscordStrategy extends PassportDiscordStrategy {
     super({
       clientID: config.get<string>("DISCORD_OAUTH_CLIENT_ID"),
       clientSecret: config.get<string>("DISCORD_OAUTH_CLIENT_SECRET"),
-      callbackURL: `${config.get<string>("API_URL")}/auth/discord/callback`,
-      scope: ["identify", "guilds"],
+      callbackURL: `${config.get<string>("API_URL")}/auth/discord-bot/callback`,
+      scope: ["bot"],
       passReqToCallback: true,
     });
   }
@@ -51,6 +69,8 @@ export class DiscordStrategy extends PassportDiscordStrategy {
       source: ThreepidSource.discord,
       config,
     });
+
+    console.warn(JSON.stringify(threepid, null, 2));
 
     return {
       threepidId: threepid.id,
