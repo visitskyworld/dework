@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   project: Project;
