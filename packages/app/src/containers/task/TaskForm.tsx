@@ -22,6 +22,7 @@ import {
   Task,
   TaskTag,
   GithubPullRequest,
+  GithubBranch,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
@@ -47,6 +48,7 @@ interface TaskFormProps<TFormValues> {
   initialValues?: Partial<TFormValues>;
   assignees?: User[];
   githubPullRequests?: GithubPullRequest[];
+  githubBranches?: GithubBranch[];
   onSubmit(task: TFormValues): unknown;
 }
 
@@ -57,6 +59,7 @@ export function TaskForm<
   task,
   tags,
   githubPullRequests,
+  githubBranches,
   buttonText,
   initialValues,
   onSubmit,

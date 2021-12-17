@@ -57,6 +57,7 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
         task={task}
         tags={task?.project.taskTags ?? []}
         githubPullRequests={task?.githubPullRequests ?? []}
+        githubBranches={task?.githubBranches ?? []}
         initialValues={initialValues}
         assignees={task?.assignees}
         buttonText="Update"

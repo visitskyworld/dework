@@ -94,6 +94,18 @@ export const githubPullRequest = gql`
     title
     link
     status
+    createdAt
+    updatedAt
+  }
+`;
+
+export const githubBranch = gql`
+  fragment GithubBranch on GithubBranch {
+    name
+    link
+    repository
+    createdAt
+    updatedAt
   }
 `;
 
@@ -131,12 +143,16 @@ export const task = gql`
     githubPullRequests {
       ...GithubPullRequest
     }
+    githubBranches {
+      ...GithubBranch
+    }
     reward {
       ...TaskReward
     }
   }
 
   ${githubPullRequest}
+  ${githubBranch}
   ${taskTag}
   ${taskReward}
   ${user}
