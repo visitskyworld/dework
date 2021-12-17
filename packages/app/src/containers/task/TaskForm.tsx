@@ -186,10 +186,6 @@ export function TaskForm<
             />
           </Form.Item>
 
-          <Form.Item name="id" hidden>
-            <Input />
-          </Form.Item>
-
           {canEdit && (
             <Form.Item style={{ marginBottom: 0 }}>
               <Button
@@ -346,6 +342,12 @@ export function TaskForm<
           )}
         </Col>
       </Row>
+      <Form.Item name="projectId" hidden>
+        <Input />
+      </Form.Item>
+      <Form.Item name="id" hidden>
+        <Input />
+      </Form.Item>
     </Form>
   );
 }
