@@ -207,48 +207,58 @@ export function TaskForm<
           <Divider />
           {githubPullRequests && githubPullRequests?.length > 0 && (
             <Form.Item name="githubPullRequests" label="Pull Requests">
-              {githubPullRequests.map((pr) => (
-                <Button
-                  target="_blank"
-                  href={pr.link}
-                  style={{ maxWidth: "100%" }}
-                >
-                  <Typography.Text ellipsis>{pr.title}</Typography.Text>
-                </Button>
-              ))}
+              {githubPullRequests.map((pr) => {
+                console.log(pr.branchName);
+                return (
+                  <Button
+                    target="_blank"
+                    href={pr.link}
+                    style={{ maxWidth: "100%" }}
+                  >
+                    <Typography.Text ellipsis>{pr.title}</Typography.Text>
+                  </Button>
+                );
+              })}
             </Form.Item>
           )}
 
           {githubBranches && githubBranches?.length > 0 && (
             <Form.Item name="githubPullRequests" label="Github Branches">
-              {githubBranches.map((branch) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    maxWidth: "100%",
-                    marginBottom: "12px",
-                    gap: "12px",
-                  }}
-                >
-                  <Button
-                    target="_blank"
-                    href={branch.link}
-                    style={{ display: "inline-grid", flex: 1 }}
+              {githubBranches.map((branch) => {
+                const hasOpenPr = !!githubPullRequests?.find(
+                  (pr) => pr.branchName === branch.name
+                );
+
+                if (hasOpenPr) return;
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      maxWidth: "100%",
+                      marginBottom: "12px",
+                      gap: "12px",
+                    }}
                   >
-                    <Typography.Text ellipsis>{branch.name}</Typography.Text>
-                  </Button>
-                  <Button
-                    target="_blank"
-                    href={`${branch.link}?quick_pull=1&title=${
-                      task?.name
-                    }&body=${task?.description ?? ""}`}
-                    type="ghost"
-                  >
-                    Open PR
-                  </Button>
-                </div>
-              ))}
+                    <Button
+                      target="_blank"
+                      href={branch.link}
+                      style={{ display: "inline-grid", flex: 1 }}
+                    >
+                      <Typography.Text ellipsis>{branch.name}</Typography.Text>
+                    </Button>
+                    <Button
+                      target="_blank"
+                      href={`${branch.link}?quick_pull=1&title=${
+                        task?.name
+                      }&body=${task?.description ?? ""}`}
+                      type="ghost"
+                    >
+                      Open PR
+                    </Button>
+                  </div>
+                );
+              })}
             </Form.Item>
           )}
         </Col>

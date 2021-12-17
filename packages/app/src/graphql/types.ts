@@ -352,6 +352,7 @@ export interface CreateTaskMutation_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -447,6 +448,7 @@ export interface UpdateTaskMutation_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -542,6 +544,7 @@ export interface ClaimTaskMutation_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -637,6 +640,7 @@ export interface UnclaimTaskMutation_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -732,6 +736,7 @@ export interface DeleteTaskMutation_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1119,6 +1124,7 @@ export interface UserTasksQuery_user_tasks_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1401,6 +1407,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_githubPullRequests
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1552,6 +1559,7 @@ export interface GetProjectTasksQuery_project_tasks_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1661,6 +1669,7 @@ export interface GetTaskQuery_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1839,6 +1848,7 @@ export interface TaskCreatedSubscription_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -1930,6 +1940,7 @@ export interface TaskUpdatedSubscription_task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -2154,6 +2165,7 @@ export interface GithubPullRequest {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -2239,6 +2251,7 @@ export interface Task_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }
@@ -2472,6 +2485,7 @@ export interface ProjectDetails_tasks_githubPullRequests {
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
+  branchName: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
 }

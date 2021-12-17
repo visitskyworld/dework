@@ -18,7 +18,7 @@ import { ProjectService } from "../../project/project.service";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
-  "title" | "status" | "link" | "taskId"
+  "title" | "status" | "branchName" | "link" | "taskId"
 >;
 
 type GithubBranchPayLoad = Pick<
@@ -93,6 +93,7 @@ export class GithubController {
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const newPr: GithubPullRequestPayload = {
         title,
+        branchName,
         status: state.toUpperCase() as GithubPullRequestStatusEnum, // TODO: map
         link: html_url,
         taskId: task.id,

@@ -94,6 +94,7 @@ export const githubPullRequest = gql`
     title
     link
     status
+    branchName
     createdAt
     updatedAt
   }
