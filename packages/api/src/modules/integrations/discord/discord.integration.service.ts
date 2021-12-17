@@ -43,6 +43,7 @@ export class DiscordIntegrationService
     return Task;
   }
 
+  /*
   async afterInsert(event: InsertEvent<Task>) {
     const task = await this.taskRepo.findOne(event.entity.id);
     if (!task) return;
@@ -153,4 +154,5 @@ export class DiscordIntegrationService
 
     return channel ?? undefined;
   }
+  */
 }

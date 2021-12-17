@@ -10,9 +10,8 @@ export enum ProjectIntegrationSource {
   github = "github",
 }
 
-export enum DiscordProjectIntegrationFeature {
-  POST_CREATED_TASKS = "POST_CREATED_TASKS",
-}
+export enum DiscordProjectIntegrationFeature {}
+// POST_CREATED_TASKS = "POST_CREATED_TASKS",
 
 export enum GithubProjectIntegrationFeature {
   ADD_PR_TO_TASK = "ADD_PR_TO_TASK",
@@ -20,7 +19,7 @@ export enum GithubProjectIntegrationFeature {
 
 export interface DiscordProjectIntegrationConfig {
   guildId: string;
-  channelId: string;
+  permissions: string;
   features: DiscordProjectIntegrationFeature[];
 }
 

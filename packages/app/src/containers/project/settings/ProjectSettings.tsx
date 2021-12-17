@@ -31,7 +31,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Col>
         <Typography.Title level={5}>Discord Integrations</Typography.Title>
-        <ProjectDiscordIntegrations />
+        <ProjectDiscordIntegrations
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
       </Col>
 
       <Col>
