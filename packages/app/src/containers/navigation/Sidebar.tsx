@@ -31,7 +31,7 @@ export const Sidebar: FC = () => {
           <Dropdown
             key="avatar"
             placement="bottomLeft"
-            visible={showProfileDropdown.value}
+            visible={showProfileDropdown.isOn}
             // @ts-ignore
             onClick={showProfileDropdown.toggle}
             overlay={

@@ -29,7 +29,7 @@ export const CreateOrganizationButton: FC = () => {
         </Button>
       </Tooltip>
       <OrganizationCreateModal
-        visible={createOrganization.value}
+        visible={createOrganization.isOn}
         onCancel={createOrganization.toggleOff}
         onCreated={handleOrganizationCreated}
       />

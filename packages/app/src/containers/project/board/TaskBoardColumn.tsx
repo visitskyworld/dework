@@ -66,7 +66,7 @@ export const TaskBoardColumn: FC<Props> = ({
           () => ({ ...initialValues, status }),
           [status, initialValues]
         )}
-        visible={createCardToggle.value}
+        visible={createCardToggle.isOn}
         onCancel={createCardToggle.toggleOff}
         onDone={createCardToggle.toggleOff}
       />

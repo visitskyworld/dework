@@ -45,7 +45,7 @@ export const HeaderProfileDropdown: FC<Props> = ({ onClose }) => {
         </Menu.Item>
       </Menu>
       <Modal
-        visible={userSettings.value}
+        visible={userSettings.isOn}
         title="Settings"
         footer={null}
         onCancel={userSettings.toggleOff}

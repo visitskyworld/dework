@@ -34,7 +34,7 @@ export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
         </Space>
       </Card>
       <ProjectCreateModal
-        visible={showModal.value}
+        visible={showModal.isOn}
         organizationId={organizationId}
         onCancel={showModal.toggleOff}
         onCreated={handleProjectCreated}

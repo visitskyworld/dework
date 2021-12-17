@@ -83,7 +83,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
         </Button>
       )}
       <Modal
-        visible={showClaimEducation.value}
+        visible={showClaimEducation.isOn}
         okText="Sounds good!"
         onOk={hideClaimConfirmation}
         onCancel={hideClaimConfirmation}

@@ -9,18 +9,19 @@ export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
 }
 
 export function useToggle(): {
-  value: boolean;
+  isOn: boolean;
   toggleOn(): void;
   toggleOff(): void;
   toggle(): void;
+  setToggle(isOn: boolean): void;
 } {
-  const [value, setValue] = useState(false);
-  const toggleOn = useCallback(() => setValue(true), []);
-  const toggleOff = useCallback(() => setValue(false), []);
-  const toggle = useCallback(() => setValue(!value), [value]);
+  const [isOn, setToggle] = useState(false);
+  const toggleOn = useCallback(() => setToggle(true), []);
+  const toggleOff = useCallback(() => setToggle(false), []);
+  const toggle = useCallback(() => setToggle(!isOn), [isOn]);
   return useMemo(
-    () => ({ value, toggleOn, toggleOff, toggle }),
-    [value, toggleOn, toggleOff, toggle]
+    () => ({ isOn, toggleOn, toggleOff, toggle, setToggle }),
+    [isOn, toggleOn, toggleOff, toggle, setToggle]
   );
 }
 
