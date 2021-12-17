@@ -37,6 +37,7 @@ export const TaskRewardFormFields: FC<Props> = ({ value }) => {
                 <Select.Option value="ETH">ETH</Select.Option>
                 <Select.Option value="USDC">USDC</Select.Option>
                 <Select.Option value="SOL">SOL</Select.Option>
+                <Select.Option value="HNY">HNY</Select.Option>
               </Select>
             </Form.Item>
           }
