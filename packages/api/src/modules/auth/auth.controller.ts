@@ -51,7 +51,6 @@ export class AuthController {
     return req.user;
   }
 
-  // http://localhost:8080/auth/discord-bot?organizationId=a1506b96-674a-4930-987d-2c45aee30c07&projectId=ba9c02b3-694a-41b7-a652-541ed57e267f
   @Get("discord-bot")
   async discordBot(@Req() req: Request, @Res() res: Response) {
     res.redirect(

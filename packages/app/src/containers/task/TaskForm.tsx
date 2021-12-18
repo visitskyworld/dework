@@ -80,8 +80,6 @@ export function TaskForm<
     useMemo(() => task?.assignees ?? [], [task?.assignees])
   );
 
-  console.warn("TATA", task);
-
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: TFormValues) => {
