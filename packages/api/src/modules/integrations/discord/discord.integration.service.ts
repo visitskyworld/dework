@@ -101,7 +101,7 @@ export class DiscordIntegrationService
 
     await guild.roles.fetch();
     const members = await guild.members.fetch({
-      user: threepids.map((t) => t.config.profile.id),
+      user: threepids.map((t) => t.threepid),
     });
 
     const channel = await category.createChannel(
