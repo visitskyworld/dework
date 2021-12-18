@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Task } from "./Task";
@@ -24,8 +24,8 @@ export class GithubPullRequest extends Audit {
   @Field()
   public link!: string;
 
-  @Column()
-  @Field()
+  @Column({ type: "int" })
+  @Field(() => Int)
   public number!: number;
 
   @Column()
