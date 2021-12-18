@@ -36,7 +36,7 @@ export class Project extends Audit {
 
   @AfterLoad()
   getSlug() {
-    const slug = slugify(this.name.slice(0, 12), { lower: true });
+    const slug = slugify(this.name.slice(0, 12), { lower: true, strict: true });
     this.slug = `${slug}-${encoder.encode(this.id)}`;
   }
 

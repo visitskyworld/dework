@@ -203,8 +203,6 @@ export function TaskForm<
           )}
           <Divider />
 
-          {!!task && <GithubIntegrationSection task={task} />}
-
           {!!task?.discordChannel && (
             <FormSection label="Discord">
               <Button
@@ -221,6 +219,8 @@ export function TaskForm<
               </Button>
             </FormSection>
           )}
+
+          {!!task && <GithubIntegrationSection task={task} />}
         </Col>
         <Col span={8} style={{ marginTop: 62 }}>
           {!!canEdit &&

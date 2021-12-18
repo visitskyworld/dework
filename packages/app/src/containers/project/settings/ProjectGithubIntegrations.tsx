@@ -2,7 +2,6 @@ import React, { FC, useMemo } from "react";
 import { Button, Typography } from "antd";
 import { ProjectIntegrationSource } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
-import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { useProjectIntegrations } from "../hooks";

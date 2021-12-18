@@ -3,21 +3,22 @@ import { ProjectIntegrationSource, Task } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubPullRequestRow } from "./GithubPullRequestRow";
 import { GithubBranchRow } from "./GithubBranchRow";
-import * as Icons from "@ant-design/icons";
-import { useProject, useProjectIntegrations } from "../../project/hooks";
+import slugify from "slugify";
+import { useProjectIntegrations } from "../../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Alert, Button, Typography } from "antd";
-import { useConnectToGithubUrl } from "../../project/settings/ProjectGithubIntegrations";
+import { Typography } from "antd";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { ConnectGithubAlert } from "./ConnectGithubAlert";
 
 interface Props {
   task: Task;
 }
 
 export const GithubIntegrationSection: FC<Props> = ({ task }) => {
+  const { user } = useAuthContext();
   const integrations = useProjectIntegrations(task.projectId);
 
   const canUpdateProject = usePermission("update", "Project");
-  const connectToGithubUrl = useConnectToGithubUrl(task.projectId);
   const hasGithubIntegration = useMemo(
     () =>
       !!integrations?.some((i) => i.source === ProjectIntegrationSource.github),
@@ -34,36 +35,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
   );
 
   if (!hasGithubIntegration && canUpdateProject) {
-    // if (Math.random()) {
-    return (
-      <FormSection label="Github">
-        <Alert
-          message={
-            <>
-              <Typography.Text>
-                Want to automatically link Github branches and make pull
-                requests show up here? Set up our Github integration for this
-                project.
-              </Typography.Text>
-              <br />
-              <Button
-                size="small"
-                style={{ marginTop: 4 }}
-                icon={<Icons.GithubOutlined />}
-                href={connectToGithubUrl}
-              >
-                Connect to Github
-              </Button>
-            </>
-          }
-          closable
-          onClose={
-            // TODO(fant): make sure to not show this prompt for this project again
-            undefined
-          }
-        />
-      </FormSection>
-    );
+    return <ConnectGithubAlert projectId={task.projectId} />;
   }
 
   return (
@@ -82,6 +54,23 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
           ))}
         </FormSection>
       )}
+
+      <FormSection label="Link Github Branch">
+        <Typography.Paragraph
+          type="secondary"
+          className="ant-typography-caption"
+        >
+          Automatically link your task with a Github Pull Request using the
+          branch name below
+        </Typography.Paragraph>
+
+        <Typography.Paragraph copyable type="secondary" className="ant-input">
+          {`git checkout -b ${user?.username ?? "feat"}/dw-${task.id}/${slugify(
+            task.name.slice(0, 12),
+            { lower: true, strict: true }
+          )}`}
+        </Typography.Paragraph>
+      </FormSection>
     </>
   );
 };
