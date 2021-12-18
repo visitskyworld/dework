@@ -14,7 +14,6 @@ import {
   Empty,
   Divider,
 } from "antd";
-import * as Colors from "@ant-design/colors";
 import {
   CreateTaskInput,
   UpdateTaskInput,
@@ -23,9 +22,6 @@ import {
   User,
   Task,
   TaskTag,
-  GithubPullRequest,
-  GithubBranch,
-  GithubPullRequestStatusEnum,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
@@ -42,7 +38,9 @@ import {
   TaskRewardFormFields,
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
-import { GithubPullRequestRow } from "./GithubPullRequestRow";
+
+import { FormSection } from "@dewo/app/components/FormSection";
+import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -204,53 +202,8 @@ export function TaskForm<
             </Form.Item>
           )}
           <Divider />
-          {!!task?.githubPullRequests.length && (
-            <Form.Item name="githubPullRequests" label="Pull Requests">
-              {task.githubPullRequests.map((pr) => (
-                <GithubPullRequestRow key={pr.id} pullRequest={pr} />
-              ))}
-            </Form.Item>
-          )}
 
-          {!!task?.githubBranches.length && (
-            <Form.Item name="githubPullRequests" label="Github Branches">
-              {task.githubBranches.map((branch) => {
-                const hasOpenPr = !!task.githubPullRequests.find(
-                  (pr) => pr.branchName === branch.name
-                );
-
-                if (hasOpenPr) return null;
-                return (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      maxWidth: "100%",
-                      marginBottom: "12px",
-                      gap: "12px",
-                    }}
-                  >
-                    <Button
-                      target="_blank"
-                      href={branch.link}
-                      style={{ display: "inline-grid", flex: 1 }}
-                    >
-                      <Typography.Text ellipsis>{branch.name}</Typography.Text>
-                    </Button>
-                    <Button
-                      target="_blank"
-                      href={`${branch.link}?quick_pull=1&title=${
-                        task?.name
-                      }&body=${task?.description ?? ""}`}
-                      type="ghost"
-                    >
-                      Open PR
-                    </Button>
-                  </div>
-                );
-              })}
-            </Form.Item>
-          )}
+          {!!task && <GithubIntegrationSection task={task} />}
         </Col>
         <Col span={8} style={{ marginTop: 62 }}>
           {!!canEdit &&
@@ -368,12 +321,7 @@ export function TaskForm<
             <TaskRewardFormFields value={values?.reward ?? undefined} />
           ) : (
             !!values.reward && (
-              <Row className="ant-form-item">
-                <Row>
-                  <Typography.Text className="ant-form-item-label">
-                    Reward
-                  </Typography.Text>
-                </Row>
+              <FormSection label="Reward">
                 <Row>
                   <Typography.Text>
                     {values.reward.amount} {values.reward.currency} (
@@ -385,19 +333,14 @@ export function TaskForm<
                     )
                   </Typography.Text>
                 </Row>
-              </Row>
+              </FormSection>
             )
           )}
 
           {canDelete && mode === "update" && !!task && (
-            <>
-              <Row>
-                <Typography.Text className="ant-form-item-label">
-                  Actions
-                </Typography.Text>
-              </Row>
+            <FormSection label="Actions">
               <TaskDeleteButton task={task} />
-            </>
+            </FormSection>
           )}
         </Col>
       </Row>

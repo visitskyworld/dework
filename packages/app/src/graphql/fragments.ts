@@ -104,6 +104,7 @@ export const githubPullRequest = gql`
 
 export const githubBranch = gql`
   fragment GithubBranch on GithubBranch {
+    id
     name
     link
     repository
