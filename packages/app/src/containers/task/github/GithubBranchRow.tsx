@@ -32,7 +32,9 @@ export const GithubBranchRow: FC<Props> = ({ branch, task }) => {
       <Space size="small" style={{ padding: "2px 8px" }}>
         <Avatar icon={<Icons.BranchesOutlined />} size="small" />
         <Col>
-          <Typography.Text strong>{branch.name}</Typography.Text>
+          <Typography.Text strong style={{ maxWidth: 200 }} ellipsis>
+            {branch.name}
+          </Typography.Text>
         </Col>
         <Button size="small" icon={<Icons.GithubOutlined />}>
           Open PR
