@@ -76,7 +76,7 @@ export class DiscordIntegrationService
     }`;
 
     const category = await this.getOrCreateCategory(guild);
-    const channel = await category.createChannel(`${task.name} (${task.id})`, {
+    const channel = await category.createChannel(task.name, {
       type: "GUILD_TEXT",
       topic: `Discussion for Dework task "${task.name}": ${permalink}`,
     });
