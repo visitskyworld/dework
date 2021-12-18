@@ -1,8 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
-import {
-  ProjectIntegration,
-  ProjectIntegrationSource,
-} from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
@@ -50,20 +47,5 @@ export class ProjectService {
 
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
-  }
-
-  public findIntegration(
-    installationId: string,
-    projectId: string,
-    source: ProjectIntegrationSource
-  ): Promise<ProjectIntegration | undefined> {
-    return this.projectIntegrationRepo
-      .createQueryBuilder("integration")
-      .where("integration.projectId = :projectId", { projectId })
-      .andWhere("integration.source = :source", { source })
-      .andWhere(
-        `integration.config ::jsonb @> \'{"installationId":"${installationId}"}\'`
-      )
-      .getOne();
   }
 }

@@ -88,51 +88,51 @@ export const updateProject = gql`
 export const createTask = gql`
   mutation CreateTaskMutation($input: CreateTaskInput!) {
     task: createTask(input: $input) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const updateTask = gql`
   mutation UpdateTaskMutation($input: UpdateTaskInput!) {
     task: updateTask(input: $input) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const claimTask = gql`
   mutation ClaimTaskMutation($taskId: UUID!) {
     task: claimTask(id: $taskId) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const unclaimTask = gql`
   mutation UnclaimTaskMutation($taskId: UUID!) {
     task: unclaimTask(id: $taskId) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const deleteTask = gql`
   mutation DeleteTaskMutation($taskId: UUID!) {
     task: deleteTask(id: $taskId) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const createTaskTag = gql`

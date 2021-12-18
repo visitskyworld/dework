@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ConfigService } from "@nestjs/config";
-import { Controller, Get, Post, Req, Res } from "@nestjs/common";
+import { Controller, Get, Logger, Post, Req, Res } from "@nestjs/common";
 import {
   GithubPullRequest,
   GithubPullRequestStatusEnum,
@@ -13,8 +13,9 @@ import { Task } from "@dewo/api/models/Task";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
-import { TaskService } from "../../task/task.service";
 import { ProjectService } from "../../project/project.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
@@ -28,11 +29,14 @@ type GithubBranchPayLoad = Pick<
 
 @Controller("github")
 export class GithubController {
+  private readonly logger = new Logger("GithubController");
+
   constructor(
     private readonly configService: ConfigService<ConfigType>,
     private readonly projectService: ProjectService,
-    private readonly taskService: TaskService,
-    private readonly githubService: GithubService
+    private readonly githubService: GithubService,
+    @InjectRepository(Task)
+    private readonly taskRepo: Repository<Task>
   ) {}
 
   // Hit when user finishes the GH app installation
@@ -57,18 +61,60 @@ export class GithubController {
 
   @Post("webhook")
   async githubWebhook(@Req() { body }: Request) {
+    this.logger.debug(`Incoming Github webhook: ${JSON.stringify(body)}`);
+
     // First validate the event's installation and taskId
     const branchName = body.pull_request?.head?.ref ?? body.ref;
-    const task = await this.getTaskFromBranch(branchName);
-    if (!task) return;
-    const installationId = body.installation.id;
-    const isValidIntegration = await this.projectService.findIntegration(
-      installationId,
-      task.projectId,
-      ProjectIntegrationSource.github
-    );
-    if (!isValidIntegration) return;
+    const taskNumber = this.parseTaskNumberFromBranchName(branchName);
 
+    if (!taskNumber) {
+      this.logger.debug(
+        `Failed to parse task number from branch name: ${JSON.stringify({
+          branchName,
+        })}`
+      );
+      return;
+    }
+
+    this.logger.debug(
+      `Parsed task number from branch name: ${JSON.stringify({
+        branchName,
+        taskNumber,
+      })}`
+    );
+
+    const installationId = body.installation_id;
+    const task = await this.taskRepo
+      .createQueryBuilder("task")
+      .innerJoin("task.project", "project")
+      .innerJoin("project.integrations", "integration")
+      .where("task.number = :number", { number: taskNumber })
+      .andWhere("project_integration.source = :source", {
+        source: ProjectIntegrationSource.github,
+      })
+      .andWhere("integration.config->>'installationId' = :installationId", {
+        installationId,
+      })
+      .getOne();
+
+    // .andWhere(
+    //   `integration.config ::jsonb @> \'{"installationId":"${installationId}"}\'`
+    // )
+
+    if (!task) {
+      this.logger.debug(
+        `Failed to find task: ${JSON.stringify({ taskNumber, installationId })}`
+      );
+      return;
+    }
+
+    this.logger.debug(
+      `Found task: ${JSON.stringify({
+        taskId: task.id,
+        taskNumber,
+        installationId,
+      })}`
+    );
     // Then handle branch and pull request updates separately
     if (body.commits?.length > 0) {
       const repository = body.repository.full_name;
@@ -118,14 +164,11 @@ export class GithubController {
     return this.configService.get("APP_URL") as string;
   }
 
-  private async getTaskFromBranch(
+  private parseTaskNumberFromBranchName(
     branchName: string
-  ): Promise<Task | undefined> {
-    const taskId = branchName?.match(/\/dw-([a-z0-9-]+)\//)?.[1];
-    if (!taskId || taskId.length > 36) return undefined;
-
-    // Check there's an actual existing task associated with the branch's taskId
-    const associatedTask = await this.taskService.findById(taskId);
-    return associatedTask;
+  ): number | undefined {
+    const taskNumber = branchName?.match(/\/dw-([0-9]+)\//)?.[1];
+    if (!taskNumber) return undefined;
+    return Number(taskNumber);
   }
 }

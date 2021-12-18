@@ -1,21 +1,18 @@
 import React, { FC, useMemo } from "react";
-import { ProjectIntegrationSource, Task } from "@dewo/app/graphql/types";
+import { ProjectIntegrationSource, TaskDetails } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubPullRequestRow } from "./GithubPullRequestRow";
 import { GithubBranchRow } from "./GithubBranchRow";
-import slugify from "slugify";
 import { useProjectIntegrations } from "../../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Typography } from "antd";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ConnectGithubAlert } from "./ConnectGithubAlert";
 
 interface Props {
-  task: Task;
+  task: TaskDetails;
 }
 
 export const GithubIntegrationSection: FC<Props> = ({ task }) => {
-  const { user } = useAuthContext();
   const integrations = useProjectIntegrations(task.projectId);
 
   const canUpdateProject = usePermission("update", "Project");
@@ -65,10 +62,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
         </Typography.Paragraph>
 
         <Typography.Paragraph copyable type="secondary" className="ant-input">
-          {`git checkout -b ${user?.username ?? "feat"}/dw-${task.id}/${slugify(
-            task.name.slice(0, 12),
-            { lower: true, strict: true }
-          )}`}
+          {`git checkout -b ${task.gitBranchName}`}
         </Typography.Paragraph>
       </FormSection>
     </>

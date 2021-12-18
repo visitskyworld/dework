@@ -9,7 +9,9 @@ import {
   OneToOne,
   OneToMany,
   Index,
+  AfterLoad,
 } from "typeorm";
+import slugify from "slugify";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
 import { TaskReward } from "./TaskReward";
@@ -119,4 +121,12 @@ export class Task extends Audit {
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Field()
+  public slug!: string;
+
+  @AfterLoad()
+  getSlug() {
+    this.slug = slugify(this.name.slice(0, 24), { lower: true, strict: true });
+  }
 }

@@ -38,7 +38,7 @@ export const GithubPullRequestRow: FC<Props> = ({ pullRequest }) => {
       <Space size="small" style={{ padding: "2px 8px" }}>
         <Avatar icon={<Icons.BranchesOutlined />} size="small" />
         <Col>
-          <Typography.Text strong style={{ maxWidth: 200 }} ellipsis>
+          <Typography.Text strong style={{ maxWidth: 240 }} ellipsis>
             #{pullRequest.number}{" "}
             <Typography.Text type="secondary">
               {pullRequest.title}

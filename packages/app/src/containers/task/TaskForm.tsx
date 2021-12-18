@@ -20,7 +20,7 @@ import {
   TaskRewardTrigger,
   TaskStatusEnum,
   User,
-  Task,
+  TaskDetails,
   TaskTag,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
@@ -44,7 +44,7 @@ import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
-  task?: Task;
+  task?: TaskDetails;
   tags: TaskTag[];
   buttonText: string;
   initialValues?: Partial<TFormValues>;

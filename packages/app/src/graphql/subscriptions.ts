@@ -4,19 +4,19 @@ import * as Fragments from "./fragments";
 export const taskCreated = gql`
   subscription TaskCreatedSubscription {
     task: onTaskCreated {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const taskUpdated = gql`
   subscription TaskUpdatedSubscription {
     task: onTaskUpdated {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;

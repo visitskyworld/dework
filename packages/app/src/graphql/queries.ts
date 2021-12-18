@@ -125,7 +125,7 @@ export const projectTasks = gql`
 export const task = gql`
   query GetTaskQuery($taskId: UUID!) {
     task: getTask(id: $taskId) {
-      ...Task
+      ...TaskDetails
       project {
         id
         taskTags {
@@ -135,7 +135,7 @@ export const task = gql`
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
   ${Fragments.taskTag}
 `;
 

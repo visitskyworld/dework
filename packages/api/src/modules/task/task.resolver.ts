@@ -36,6 +36,14 @@ export class TaskResolver {
     return refetched!.tags;
   }
 
+  @ResolveField(() => String)
+  public gitBranchName(
+    @Context("user") user: User | undefined,
+    @Parent() task: Task
+  ): string {
+    return `${user?.username ?? "feat"}/dw-${task.number}/${task.slug}`;
+  }
+
   @Mutation(() => Task)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
   @UseAbility(Actions.create, Task)

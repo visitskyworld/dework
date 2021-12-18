@@ -1,13 +1,13 @@
 import React, { FC } from "react";
 import encoder from "uuid-base62";
-import { GithubBranch, Task } from "@dewo/app/graphql/types";
+import { GithubBranch, TaskDetails } from "@dewo/app/graphql/types";
 import { Avatar, Button, Col, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../../project/hooks";
 
 interface Props {
   branch: GithubBranch;
-  task: Task;
+  task: TaskDetails;
 }
 
 export const GithubBranchRow: FC<Props> = ({ branch, task }) => {
@@ -32,7 +32,7 @@ export const GithubBranchRow: FC<Props> = ({ branch, task }) => {
       <Space size="small" style={{ padding: "2px 8px" }}>
         <Avatar icon={<Icons.BranchesOutlined />} size="small" />
         <Col>
-          <Typography.Text strong style={{ maxWidth: 200 }} ellipsis>
+          <Typography.Text strong style={{ maxWidth: 240 }} ellipsis>
             {branch.name}
           </Typography.Text>
         </Col>

@@ -327,49 +327,6 @@ export interface CreateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface CreateTaskMutation_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface CreateTaskMutation_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface CreateTaskMutation_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface CreateTaskMutation_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface CreateTaskMutation_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface CreateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -388,11 +345,6 @@ export interface CreateTaskMutation_task {
   projectId: string;
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
-  owner: CreateTaskMutation_task_owner | null;
-  creator: CreateTaskMutation_task_creator | null;
-  discordChannel: CreateTaskMutation_task_discordChannel | null;
-  githubPullRequests: CreateTaskMutation_task_githubPullRequests[];
-  githubBranches: CreateTaskMutation_task_githubBranches[];
   reward: CreateTaskMutation_task_reward | null;
 }
 
@@ -427,49 +379,6 @@ export interface UpdateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface UpdateTaskMutation_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UpdateTaskMutation_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UpdateTaskMutation_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface UpdateTaskMutation_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface UpdateTaskMutation_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface UpdateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -488,11 +397,6 @@ export interface UpdateTaskMutation_task {
   projectId: string;
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
-  owner: UpdateTaskMutation_task_owner | null;
-  creator: UpdateTaskMutation_task_creator | null;
-  discordChannel: UpdateTaskMutation_task_discordChannel | null;
-  githubPullRequests: UpdateTaskMutation_task_githubPullRequests[];
-  githubBranches: UpdateTaskMutation_task_githubBranches[];
   reward: UpdateTaskMutation_task_reward | null;
 }
 
@@ -527,49 +431,6 @@ export interface ClaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface ClaimTaskMutation_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ClaimTaskMutation_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ClaimTaskMutation_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface ClaimTaskMutation_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface ClaimTaskMutation_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface ClaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -588,11 +449,6 @@ export interface ClaimTaskMutation_task {
   projectId: string;
   tags: ClaimTaskMutation_task_tags[];
   assignees: ClaimTaskMutation_task_assignees[];
-  owner: ClaimTaskMutation_task_owner | null;
-  creator: ClaimTaskMutation_task_creator | null;
-  discordChannel: ClaimTaskMutation_task_discordChannel | null;
-  githubPullRequests: ClaimTaskMutation_task_githubPullRequests[];
-  githubBranches: ClaimTaskMutation_task_githubBranches[];
   reward: ClaimTaskMutation_task_reward | null;
 }
 
@@ -627,49 +483,6 @@ export interface UnclaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface UnclaimTaskMutation_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UnclaimTaskMutation_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UnclaimTaskMutation_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface UnclaimTaskMutation_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface UnclaimTaskMutation_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface UnclaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -688,11 +501,6 @@ export interface UnclaimTaskMutation_task {
   projectId: string;
   tags: UnclaimTaskMutation_task_tags[];
   assignees: UnclaimTaskMutation_task_assignees[];
-  owner: UnclaimTaskMutation_task_owner | null;
-  creator: UnclaimTaskMutation_task_creator | null;
-  discordChannel: UnclaimTaskMutation_task_discordChannel | null;
-  githubPullRequests: UnclaimTaskMutation_task_githubPullRequests[];
-  githubBranches: UnclaimTaskMutation_task_githubBranches[];
   reward: UnclaimTaskMutation_task_reward | null;
 }
 
@@ -727,49 +535,6 @@ export interface DeleteTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface DeleteTaskMutation_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface DeleteTaskMutation_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface DeleteTaskMutation_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface DeleteTaskMutation_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface DeleteTaskMutation_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface DeleteTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -788,11 +553,6 @@ export interface DeleteTaskMutation_task {
   projectId: string;
   tags: DeleteTaskMutation_task_tags[];
   assignees: DeleteTaskMutation_task_assignees[];
-  owner: DeleteTaskMutation_task_owner | null;
-  creator: DeleteTaskMutation_task_creator | null;
-  discordChannel: DeleteTaskMutation_task_discordChannel | null;
-  githubPullRequests: DeleteTaskMutation_task_githubPullRequests[];
-  githubBranches: DeleteTaskMutation_task_githubBranches[];
   reward: DeleteTaskMutation_task_reward | null;
 }
 
@@ -1119,49 +879,6 @@ export interface UserTasksQuery_user_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface UserTasksQuery_user_tasks_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UserTasksQuery_user_tasks_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface UserTasksQuery_user_tasks_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface UserTasksQuery_user_tasks_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface UserTasksQuery_user_tasks_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1180,11 +897,6 @@ export interface UserTasksQuery_user_tasks {
   projectId: string;
   tags: UserTasksQuery_user_tasks_tags[];
   assignees: UserTasksQuery_user_tasks_assignees[];
-  owner: UserTasksQuery_user_tasks_owner | null;
-  creator: UserTasksQuery_user_tasks_creator | null;
-  discordChannel: UserTasksQuery_user_tasks_discordChannel | null;
-  githubPullRequests: UserTasksQuery_user_tasks_githubPullRequests[];
-  githubBranches: UserTasksQuery_user_tasks_githubBranches[];
   reward: UserTasksQuery_user_tasks_reward | null;
 }
 
@@ -1406,49 +1118,6 @@ export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface GetOrganizationTasksQuery_organization_tasks_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface GetOrganizationTasksQuery_organization_tasks_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface GetOrganizationTasksQuery_organization_tasks_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface GetOrganizationTasksQuery_organization_tasks_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface GetOrganizationTasksQuery_organization_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1467,11 +1136,6 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   projectId: string;
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
-  owner: GetOrganizationTasksQuery_organization_tasks_owner | null;
-  creator: GetOrganizationTasksQuery_organization_tasks_creator | null;
-  discordChannel: GetOrganizationTasksQuery_organization_tasks_discordChannel | null;
-  githubPullRequests: GetOrganizationTasksQuery_organization_tasks_githubPullRequests[];
-  githubBranches: GetOrganizationTasksQuery_organization_tasks_githubBranches[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
 }
 
@@ -1562,49 +1226,6 @@ export interface GetProjectTasksQuery_project_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface GetProjectTasksQuery_project_tasks_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface GetProjectTasksQuery_project_tasks_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface GetProjectTasksQuery_project_tasks_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface GetProjectTasksQuery_project_tasks_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface GetProjectTasksQuery_project_tasks_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface GetProjectTasksQuery_project_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1623,11 +1244,6 @@ export interface GetProjectTasksQuery_project_tasks {
   projectId: string;
   tags: GetProjectTasksQuery_project_tasks_tags[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
-  owner: GetProjectTasksQuery_project_tasks_owner | null;
-  creator: GetProjectTasksQuery_project_tasks_creator | null;
-  discordChannel: GetProjectTasksQuery_project_tasks_discordChannel | null;
-  githubPullRequests: GetProjectTasksQuery_project_tasks_githubPullRequests[];
-  githubBranches: GetProjectTasksQuery_project_tasks_githubBranches[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
 }
 
@@ -1676,6 +1292,13 @@ export interface GetTaskQuery_task_assignees {
   imageUrl: string | null;
 }
 
+export interface GetTaskQuery_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -1719,13 +1342,6 @@ export interface GetTaskQuery_task_githubBranches {
   updatedAt: Scalar.DateTime;
 }
 
-export interface GetTaskQuery_task_reward {
-  __typename: "TaskReward";
-  amount: number;
-  currency: string;
-  trigger: TaskRewardTrigger;
-}
-
 export interface GetTaskQuery_task_project_taskTags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -1750,12 +1366,13 @@ export interface GetTaskQuery_task {
   projectId: string;
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
+  reward: GetTaskQuery_task_reward | null;
+  gitBranchName: string;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   discordChannel: GetTaskQuery_task_discordChannel | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
-  reward: GetTaskQuery_task_reward | null;
   project: GetTaskQuery_task_project;
 }
 
@@ -1859,49 +1476,6 @@ export interface TaskCreatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskCreatedSubscription_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskCreatedSubscription_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface TaskCreatedSubscription_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface TaskCreatedSubscription_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface TaskCreatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -1920,11 +1494,6 @@ export interface TaskCreatedSubscription_task {
   projectId: string;
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
-  owner: TaskCreatedSubscription_task_owner | null;
-  creator: TaskCreatedSubscription_task_creator | null;
-  discordChannel: TaskCreatedSubscription_task_discordChannel | null;
-  githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
-  githubBranches: TaskCreatedSubscription_task_githubBranches[];
   reward: TaskCreatedSubscription_task_reward | null;
 }
 
@@ -1955,49 +1524,6 @@ export interface TaskUpdatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskUpdatedSubscription_task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskUpdatedSubscription_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface TaskUpdatedSubscription_task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface TaskUpdatedSubscription_task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface TaskUpdatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -2016,11 +1542,6 @@ export interface TaskUpdatedSubscription_task {
   projectId: string;
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
-  owner: TaskUpdatedSubscription_task_owner | null;
-  creator: TaskUpdatedSubscription_task_creator | null;
-  discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
-  githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
-  githubBranches: TaskUpdatedSubscription_task_githubBranches[];
   reward: TaskUpdatedSubscription_task_reward | null;
 }
 
@@ -2274,49 +1795,6 @@ export interface Task_assignees {
   imageUrl: string | null;
 }
 
-export interface Task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface Task_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface Task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface Task_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface Task_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface Task_reward {
   __typename: "TaskReward";
   amount: number;
@@ -2335,12 +1813,100 @@ export interface Task {
   projectId: string;
   tags: Task_tags[];
   assignees: Task_assignees[];
-  owner: Task_owner | null;
-  creator: Task_creator | null;
-  discordChannel: Task_discordChannel | null;
-  githubPullRequests: Task_githubPullRequests[];
-  githubBranches: Task_githubBranches[];
   reward: Task_reward | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: TaskDetails
+// ====================================================
+
+export interface TaskDetails_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface TaskDetails_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+}
+
+export interface TaskDetails_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface TaskDetails_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface TaskDetails_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface TaskDetails {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  tags: TaskDetails_tags[];
+  assignees: TaskDetails_assignees[];
+  reward: TaskDetails_reward | null;
+  gitBranchName: string;
+  owner: TaskDetails_owner | null;
+  creator: TaskDetails_creator | null;
+  discordChannel: TaskDetails_discordChannel | null;
+  githubPullRequests: TaskDetails_githubPullRequests[];
+  githubBranches: TaskDetails_githubBranches[];
 }
 
 /* tslint:disable */
@@ -2512,49 +2078,6 @@ export interface ProjectDetails_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface ProjectDetails_tasks_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ProjectDetails_tasks_creator {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ProjectDetails_tasks_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-export interface ProjectDetails_tasks_githubPullRequests {
-  __typename: "GithubPullRequest";
-  id: Scalar.UUID;
-  title: string;
-  link: string;
-  status: GithubPullRequestStatusEnum;
-  number: number;
-  branchName: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
-export interface ProjectDetails_tasks_githubBranches {
-  __typename: "GithubBranch";
-  id: Scalar.UUID;
-  name: string;
-  link: string;
-  repository: string;
-  createdAt: Scalar.DateTime;
-  updatedAt: Scalar.DateTime;
-}
-
 export interface ProjectDetails_tasks_reward {
   __typename: "TaskReward";
   amount: number;
@@ -2573,11 +2096,6 @@ export interface ProjectDetails_tasks {
   projectId: string;
   tags: ProjectDetails_tasks_tags[];
   assignees: ProjectDetails_tasks_assignees[];
-  owner: ProjectDetails_tasks_owner | null;
-  creator: ProjectDetails_tasks_creator | null;
-  discordChannel: ProjectDetails_tasks_discordChannel | null;
-  githubPullRequests: ProjectDetails_tasks_githubPullRequests[];
-  githubBranches: ProjectDetails_tasks_githubBranches[];
   reward: ProjectDetails_tasks_reward | null;
 }
 

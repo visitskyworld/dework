@@ -136,6 +136,20 @@ export const task = gql`
     assignees {
       ...User
     }
+    reward {
+      ...TaskReward
+    }
+  }
+
+  ${taskTag}
+  ${taskReward}
+  ${user}
+`;
+
+export const taskDetails = gql`
+  fragment TaskDetails on Task {
+    ...Task
+    gitBranchName
     owner {
       ...User
     }
@@ -151,16 +165,12 @@ export const task = gql`
     githubBranches {
       ...GithubBranch
     }
-    reward {
-      ...TaskReward
-    }
   }
 
+  ${task}
+  ${user}
   ${githubPullRequest}
   ${githubBranch}
-  ${taskTag}
-  ${taskReward}
-  ${user}
   ${discordChannel}
 `;
 
