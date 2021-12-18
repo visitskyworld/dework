@@ -1,13 +1,12 @@
 import encoder from "uuid-base62";
 import { Task } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
+import { InjectConnection } from "@nestjs/typeorm";
 import {
   Connection,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
-  Repository,
 } from "typeorm";
 import {
   ProjectIntegration,
@@ -30,13 +29,7 @@ export class DiscordIntegrationService
   constructor(
     private readonly discord: DiscordService,
     private readonly config: ConfigService<ConfigType>,
-    @InjectConnection() readonly connection: Connection,
-    @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
-    @InjectRepository(DiscordChannel)
-    private readonly discordChannelRepo: Repository<DiscordChannel>,
-    @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    @InjectConnection() readonly connection: Connection
   ) {
     connection.subscribers.push(this);
   }

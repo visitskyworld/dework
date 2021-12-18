@@ -7,8 +7,6 @@ import { Request, Response } from "express";
 import { ConfigType } from "../app/config";
 import { StrategyResponse } from "./strategies/types";
 import { ProjectService } from "../project/project.service";
-import { ThreepidService } from "../threepid/threepid.service";
-import { ThreepidSource } from "@dewo/api/models/Threepid";
 import {
   DiscordProjectIntegrationConfig,
   ProjectIntegrationSource,
@@ -20,7 +18,6 @@ type RequestFromCallback = Request & { user: StrategyResponse };
 export class AuthController {
   constructor(
     private readonly config: ConfigService<ConfigType>,
-    private readonly threepidService: ThreepidService,
     private readonly projectService: ProjectService
   ) {}
 
