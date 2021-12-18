@@ -15,10 +15,13 @@ import {
   ProjectIntegration,
   ProjectIntegrationSource,
 } from "@dewo/api/models/ProjectIntegration";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
 import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
-import { MessageEmbed } from "discord.js";
+import * as DiscordJS from "discord.js";
+import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
 
 @Injectable()
 @EventSubscriber()
@@ -26,6 +29,7 @@ export class DiscordIntegrationService
   implements EntitySubscriberInterface<Task>
 {
   private logger = new Logger(this.constructor.name);
+  // private client: REST;
 
   constructor(
     private readonly discord: DiscordService,
@@ -33,14 +37,62 @@ export class DiscordIntegrationService
     @InjectConnection() readonly connection: Connection,
     @InjectRepository(ProjectIntegration)
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
+    @InjectRepository(DiscordChannel)
+    private readonly discordChannelRepo: Repository<DiscordChannel>,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>
   ) {
     connection.subscribers.push(this);
+
+    // this.client = new REST().setToken(
+    //   config.get("DISCORD_BOT_TOKEN") as string
+    // );
   }
 
   listenTo() {
     return Task;
+  }
+
+  async afterInsert(event: InsertEvent<Task>) {
+    const task = event.entity;
+    const integration = (await this.projectIntegrationRepo.findOne({
+      projectId: task.projectId,
+      source: ProjectIntegrationSource.discord,
+    })) as ProjectIntegration<ProjectIntegrationSource.discord> | undefined;
+
+    if (!integration) return;
+
+    const guild = await this.discord.client.guilds.fetch(
+      integration.config.guildId
+    );
+
+    const category = await this.getOrCreateCategory(guild);
+    const channel = await category.createChannel(`${task.name} (${task.id})`, {
+      type: "GUILD_TEXT",
+    });
+    // TODO(fant): make channel invisible to other users
+    // https://stackoverflow.com/questions/57339085/discord-bot-how-to-create-a-private-text-channel?rq=1
+
+    // TODO(fant): add task owner to discord channel
+
+    await event.manager.save(DiscordChannel, {
+      guildId: guild.id,
+      channelId: channel.id,
+      taskId: task.id,
+    });
+  }
+
+  private async getOrCreateCategory(
+    guild: DiscordJS.Guild
+  ): Promise<DiscordJS.CategoryChannel> {
+    const channels = await guild.channels.fetch();
+    const category = channels.find(
+      (c): c is DiscordJS.CategoryChannel =>
+        c.type === "GUILD_CATEGORY" && c.name === "Dework"
+    );
+
+    if (!!category) return category;
+    return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
   }
 
   /*

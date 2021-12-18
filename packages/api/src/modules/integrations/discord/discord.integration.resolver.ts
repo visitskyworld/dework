@@ -1,3 +1,4 @@
+/*
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { Project } from "@dewo/api/models/Project";
@@ -69,3 +70,4 @@ export class DiscordIntegrationResolver {
     return undefined as any;
   }
 }
+*/

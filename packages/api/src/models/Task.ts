@@ -15,6 +15,7 @@ import { TaskReward } from "./TaskReward";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
 import { GithubPullRequest } from "./GithubPullRequest";
+import { DiscordChannel } from "./DiscordChannel";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
@@ -89,6 +90,12 @@ export class Task extends Audit {
   @OneToMany(() => GithubPullRequest, (g: GithubPullRequest) => g.task)
   @Field(() => [GithubPullRequest])
   public githubPullRequests?: Promise<GithubPullRequest[]>;
+
+  @OneToOne(() => DiscordChannel, (d: DiscordChannel) => d.task, {
+    nullable: true,
+  })
+  @Field(() => DiscordChannel, { nullable: true })
+  public discordChannel?: Promise<DiscordChannel>;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })

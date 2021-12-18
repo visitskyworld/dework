@@ -25,6 +25,8 @@ import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 import { DeepPartial } from "typeorm";
 import { OrganizationMember } from "../models/OrganizationMember";
+import { DeepAtLeast } from "../types/general";
+import { ProjectIntegration } from "../models/ProjectIntegration";
 
 @Injectable()
 export class Fixtures {
@@ -89,6 +91,15 @@ export class Fixtures {
     return this.projectService.create({
       name: faker.company.companyName(),
       organizationId: await this.createOrganization().then((o) => o.id),
+      ...partial,
+    });
+  }
+
+  public async createProjectIntegation(
+    partial: DeepAtLeast<ProjectIntegration, "projectId" | "source" | "config">
+  ): Promise<ProjectIntegration> {
+    return this.projectService.createIntegration({
+      creatorId: await this.createUser().then((u) => u.id),
       ...partial,
     });
   }

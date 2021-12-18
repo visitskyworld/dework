@@ -25,6 +25,11 @@ export class TaskRequests {
       owner {
         id
       }
+      discordChannel {
+        id
+        channelId
+        guildId
+      }
       reward {
         amount
         currency
@@ -64,6 +69,23 @@ export class TaskRequests {
         ${this.taskFragment}
       `,
       variables: { input },
+    };
+  }
+
+  public static get(
+    taskId: string
+  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    return {
+      query: `
+        query GetTask($taskId: UUID!) {
+          task: getTask(id: $taskId) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { taskId },
     };
   }
 
