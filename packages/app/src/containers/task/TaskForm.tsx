@@ -25,6 +25,7 @@ import {
   TaskTag,
   GithubPullRequest,
   GithubBranch,
+  GithubPullRequestStatusEnum,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
@@ -41,6 +42,15 @@ import {
   TaskRewardFormFields,
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
+
+const getPrLabelColor = (status: GithubPullRequestStatusEnum) => {
+  switch (status) {
+    case GithubPullRequestStatusEnum.OPEN:
+      return Colors.green.primary;
+    default:
+      return Colors.grey.primary;
+  }
+};
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -231,7 +241,7 @@ export function TaskForm<
                   <Tag
                     style={{
                       margin: "0",
-                      backgroundColor: Colors.green.primary,
+                      backgroundColor: getPrLabelColor(pr.status),
                     }}
                   >
                     {pr.status}
