@@ -3,6 +3,7 @@ import { Length } from "class-validator";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
+import { TaskApplication } from "./TaskApplication";
 import { Threepid } from "./Threepid";
 import { UserDetail } from "./UserDetail";
 
@@ -37,4 +38,7 @@ export class User extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public paymentMethodId?: string;
+
+  @OneToMany(() => TaskApplication, (taskApplication) => taskApplication.user)
+  public taskApplications!: TaskApplication[];
 }

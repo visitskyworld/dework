@@ -19,6 +19,7 @@ import { User } from "./User";
 import { GithubBranch } from "./GithubBranch";
 import { GithubPullRequest } from "./GithubPullRequest";
 import { DiscordChannel } from "./DiscordChannel";
+import { TaskApplication } from "./TaskApplication";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
@@ -80,6 +81,9 @@ export class Task extends Audit {
   @JoinTable({ name: "task_assignees" })
   @Field(() => [User])
   public assignees!: User[];
+
+  @OneToMany(() => TaskApplication, (taskApplication) => taskApplication.task)
+  public taskApplications!: TaskApplication[];
 
   // @JoinColumn()
   // @ManyToOne(() => TaskStatus)
