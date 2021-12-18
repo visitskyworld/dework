@@ -42,15 +42,7 @@ import {
   TaskRewardFormFields,
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
-
-const getPrLabelColor = (status: GithubPullRequestStatusEnum) => {
-  switch (status) {
-    case GithubPullRequestStatusEnum.OPEN:
-      return Colors.green.primary;
-    default:
-      return Colors.grey.primary;
-  }
-};
+import { GithubPullRequestRow } from "./GithubPullRequestRow";
 
 interface TaskFormProps<TFormValues> {
   mode: "create" | "update";
@@ -59,8 +51,6 @@ interface TaskFormProps<TFormValues> {
   buttonText: string;
   initialValues?: Partial<TFormValues>;
   assignees?: User[];
-  githubPullRequests?: GithubPullRequest[];
-  githubBranches?: GithubBranch[];
   onSubmit(task: TFormValues): unknown;
 }
 
@@ -70,8 +60,6 @@ export function TaskForm<
   mode,
   task,
   tags,
-  githubPullRequests,
-  githubBranches,
   buttonText,
   initialValues,
   onSubmit,
@@ -216,49 +204,22 @@ export function TaskForm<
             </Form.Item>
           )}
           <Divider />
-          {githubPullRequests && githubPullRequests?.length > 0 && (
+          {!!task?.githubPullRequests.length && (
             <Form.Item name="githubPullRequests" label="Pull Requests">
-              {githubPullRequests.map((pr) => (
-                <Row
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    marginBottom: "12px",
-                    alignItems: "center",
-                    gap: "12px",
-                    maxWidth: "100%",
-                  }}
-                >
-                  <Button
-                    target="_blank"
-                    href={pr.link}
-                    style={{ maxWidth: "100%" }}
-                  >
-                    <Typography.Text
-                      ellipsis
-                    >{`#${pr.number} ${pr.title}`}</Typography.Text>
-                  </Button>
-                  <Tag
-                    style={{
-                      margin: "0",
-                      backgroundColor: getPrLabelColor(pr.status),
-                    }}
-                  >
-                    {pr.status}
-                  </Tag>
-                </Row>
+              {task.githubPullRequests.map((pr) => (
+                <GithubPullRequestRow key={pr.id} pullRequest={pr} />
               ))}
             </Form.Item>
           )}
 
-          {githubBranches && githubBranches?.length > 0 && (
+          {!!task?.githubBranches.length && (
             <Form.Item name="githubPullRequests" label="Github Branches">
-              {githubBranches.map((branch) => {
-                const hasOpenPr = !!githubPullRequests?.find(
+              {task.githubBranches.map((branch) => {
+                const hasOpenPr = !!task.githubPullRequests.find(
                   (pr) => pr.branchName === branch.name
                 );
 
-                if (hasOpenPr) return;
+                if (hasOpenPr) return null;
                 return (
                   <div
                     style={{

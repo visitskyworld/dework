@@ -91,6 +91,7 @@ export const taskReward = gql`
 
 export const githubPullRequest = gql`
   fragment GithubPullRequest on GithubPullRequest {
+    id
     title
     link
     status

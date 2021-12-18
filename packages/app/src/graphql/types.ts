@@ -349,6 +349,7 @@ export interface CreateTaskMutation_task_discordChannel {
 
 export interface CreateTaskMutation_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -446,6 +447,7 @@ export interface UpdateTaskMutation_task_discordChannel {
 
 export interface UpdateTaskMutation_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -543,6 +545,7 @@ export interface ClaimTaskMutation_task_discordChannel {
 
 export interface ClaimTaskMutation_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -640,6 +643,7 @@ export interface UnclaimTaskMutation_task_discordChannel {
 
 export interface UnclaimTaskMutation_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -737,6 +741,7 @@ export interface DeleteTaskMutation_task_discordChannel {
 
 export interface DeleteTaskMutation_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1126,6 +1131,7 @@ export interface UserTasksQuery_user_tasks_discordChannel {
 
 export interface UserTasksQuery_user_tasks_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1410,6 +1416,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_discordChannel {
 
 export interface GetOrganizationTasksQuery_organization_tasks_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1563,6 +1570,7 @@ export interface GetProjectTasksQuery_project_tasks_discordChannel {
 
 export interface GetProjectTasksQuery_project_tasks_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1674,6 +1682,7 @@ export interface GetTaskQuery_task_discordChannel {
 
 export interface GetTaskQuery_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1854,6 +1863,7 @@ export interface TaskCreatedSubscription_task_discordChannel {
 
 export interface TaskCreatedSubscription_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -1947,6 +1957,7 @@ export interface TaskUpdatedSubscription_task_discordChannel {
 
 export interface TaskUpdatedSubscription_task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -2173,6 +2184,7 @@ export interface TaskReward {
 
 export interface GithubPullRequest {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -2260,6 +2272,7 @@ export interface Task_discordChannel {
 
 export interface Task_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
@@ -2495,6 +2508,7 @@ export interface ProjectDetails_tasks_discordChannel {
 
 export interface ProjectDetails_tasks_githubPullRequests {
   __typename: "GithubPullRequest";
+  id: Scalar.UUID;
   title: string;
   link: string;
   status: GithubPullRequestStatusEnum;
