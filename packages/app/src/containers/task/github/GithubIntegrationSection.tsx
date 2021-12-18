@@ -27,7 +27,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
           ))}
         </FormSection>
       )}
-      {!!branchesWithoutPullRequests && (
+      {!!branchesWithoutPullRequests.length && (
         <FormSection label="Branches">
           {branchesWithoutPullRequests.map((branch) => (
             <GithubBranchRow key={branch.id} branch={branch} task={task} />

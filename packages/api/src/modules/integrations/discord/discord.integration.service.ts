@@ -97,6 +97,7 @@ export class DiscordIntegrationService
       guildId: guild.id,
       channelId: channel.id,
       taskId: task.id,
+      name: channel.name,
     });
   }
 

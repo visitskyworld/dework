@@ -14,6 +14,10 @@ export class DiscordChannel extends Audit {
   @Field()
   public guildId!: string;
 
+  @Column()
+  @Field()
+  public name!: string;
+
   @JoinColumn()
   @OneToOne(() => Task)
   @Field(() => Task)

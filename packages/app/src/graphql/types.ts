@@ -345,6 +345,7 @@ export interface CreateTaskMutation_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface CreateTaskMutation_task_githubPullRequests {
@@ -444,6 +445,7 @@ export interface UpdateTaskMutation_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface UpdateTaskMutation_task_githubPullRequests {
@@ -543,6 +545,7 @@ export interface ClaimTaskMutation_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface ClaimTaskMutation_task_githubPullRequests {
@@ -642,6 +645,7 @@ export interface UnclaimTaskMutation_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface UnclaimTaskMutation_task_githubPullRequests {
@@ -741,6 +745,7 @@ export interface DeleteTaskMutation_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface DeleteTaskMutation_task_githubPullRequests {
@@ -1132,6 +1137,7 @@ export interface UserTasksQuery_user_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface UserTasksQuery_user_tasks_githubPullRequests {
@@ -1418,6 +1424,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_githubPullRequests {
@@ -1573,6 +1580,7 @@ export interface GetProjectTasksQuery_project_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_githubPullRequests {
@@ -1686,6 +1694,7 @@ export interface GetTaskQuery_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface GetTaskQuery_task_githubPullRequests {
@@ -1868,6 +1877,7 @@ export interface TaskCreatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface TaskCreatedSubscription_task_githubPullRequests {
@@ -1963,6 +1973,7 @@ export interface TaskUpdatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface TaskUpdatedSubscription_task_githubPullRequests {
@@ -2237,6 +2248,7 @@ export interface DiscordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 /* tslint:disable */
@@ -2280,6 +2292,7 @@ export interface Task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface Task_githubPullRequests {
@@ -2517,6 +2530,7 @@ export interface ProjectDetails_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
   link: string;
+  name: string;
 }
 
 export interface ProjectDetails_tasks_githubPullRequests {

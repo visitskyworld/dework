@@ -117,6 +117,7 @@ export const discordChannel = gql`
   fragment DiscordChannel on DiscordChannel {
     id
     link
+    name
   }
 `;
 

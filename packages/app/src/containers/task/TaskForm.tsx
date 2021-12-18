@@ -13,6 +13,7 @@ import {
   ConfigProvider,
   Empty,
   Divider,
+  Space,
 } from "antd";
 import {
   CreateTaskInput,
@@ -33,6 +34,7 @@ import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import * as Colors from "@ant-design/colors";
 import {
   rewardTriggerToString,
   TaskRewardFormFields,
@@ -204,6 +206,40 @@ export function TaskForm<
           <Divider />
 
           {!!task && <GithubIntegrationSection task={task} />}
+
+          {/* {task?.discordChannel && (
+            <FormSection label="Discord">
+              <Button
+                type="text"
+                href={task.discordChannel.link}
+                target="_blank"
+                style={{ padding: 0, margin: "-2px -8px", height: "unset" }}
+              >
+                <Space size="small" style={{ padding: "2px 8px" }}>
+                  <Tag color={Colors.purple.primary} icon={<DiscordIcon />}>
+                    Join discussion on Discord
+                  </Tag>
+                </Space>
+              </Button>
+            </FormSection>
+          )} */}
+
+          {task?.discordChannel && (
+            <FormSection label="Discord">
+              <Button
+                type="primary"
+                href={task.discordChannel.link}
+                target="_blank"
+                icon={<DiscordIcon />}
+                size="small"
+              >
+                Join discussion in
+                <Typography.Text strong style={{ marginLeft: 4 }}>
+                  #{task.discordChannel.name}
+                </Typography.Text>
+              </Button>
+            </FormSection>
+          )}
         </Col>
         <Col span={8} style={{ marginTop: 62 }}>
           {!!canEdit &&
@@ -299,23 +335,6 @@ export function TaskForm<
               ))}
             </Select>
           </Form.Item>
-
-          {task?.discordChannel && (
-            <Row className="ant-form-item">
-              <Row>
-                <Typography.Text className="ant-form-item-label">
-                  Discord Channel
-                </Typography.Text>
-              </Row>
-              <Button
-                target="_blank"
-                href={task.discordChannel.link}
-                icon={<DiscordIcon />}
-              >
-                Join Discussion on Discord
-              </Button>
-            </Row>
-          )}
 
           {canEdit ? (
             <TaskRewardFormFields value={values?.reward ?? undefined} />
