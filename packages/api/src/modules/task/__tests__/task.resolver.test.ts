@@ -98,10 +98,7 @@ describe("TaskResolver", () => {
                 status: TaskStatusEnum.TODO,
               }),
             })
-            .then((res) => {
-              console.warn(res.body);
-              return res.body.data?.task;
-            });
+            .then((res) => res.body.data?.task);
 
         await expect(createTask(first.project.id, first.user)).resolves.toEqual(
           expect.objectContaining({ number: 1 })

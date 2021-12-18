@@ -39,30 +39,30 @@ describe("DiscordIntegration", () => {
 
   afterAll(() => app.close());
 
-  describe("create Discord channel on task creation", () => {
-    async function createProjectWithDiscordIntegration() {
-      const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
-        projectId: project.id,
-        source: ProjectIntegrationSource.discord,
-        config: {
-          features: [],
-          guildId: discordGuildId,
-          permissions: "",
-        } as DiscordProjectIntegrationConfig,
-      });
-      return project;
-    }
+  async function createProjectWithDiscordIntegration() {
+    const project = await fixtures.createProject();
+    await fixtures.createProjectIntegation({
+      projectId: project.id,
+      source: ProjectIntegrationSource.discord,
+      config: {
+        features: [],
+        guildId: discordGuildId,
+        permissions: "",
+      } as DiscordProjectIntegrationConfig,
+    });
+    return project;
+  }
 
-    async function getDiscordChannelPermission(task: Task) {
-      const discordChannel = await task.discordChannel;
-      if (!discordChannel) return null;
-      const channel = (await discord.channels.fetch(
-        discordChannel.channelId
-      )) as Discord.TextChannel;
-      return channel.permissionsFor(discordUserId);
-    }
+  async function getDiscordChannelPermission(task: Task) {
+    const discordChannel = await task.discordChannel;
+    if (!discordChannel) return null;
+    const channel = (await discord.channels.fetch(
+      discordChannel.channelId
+    )) as Discord.TextChannel;
+    return channel.permissionsFor(discordUserId);
+  }
 
+  describe("create task", () => {
     it("should not create Discord channel if project has no Discord integration", async () => {
       const project = await fixtures.createProject();
       const task = await fixtures.createTask({ projectId: project.id });
@@ -92,7 +92,7 @@ describe("DiscordIntegration", () => {
 
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
-      expect(permission!.has("VIEW_CHANNEL")).toBe(true);
+      expect(permission!.has("SEND_MESSAGES")).toBe(true);
     });
 
     it("should add task assignees to Discord channel", async () => {
@@ -104,10 +104,23 @@ describe("DiscordIntegration", () => {
 
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
-      expect(permission!.has("VIEW_CHANNEL")).toBe(true);
+      expect(permission!.has("SEND_MESSAGES")).toBe(true);
+    });
+  });
+
+  describe("update task", () => {
+    it("should add new task owner to Discord channel", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const task = await fixtures.createTask({ projectId: project.id });
+      expect(getDiscordChannelPermission(task)).resolves.toBe(null);
+
+      await taskService.update({ id: task.id, ownerId: user.id });
+      const permission = await getDiscordChannelPermission(task);
+      expect(permission).not.toBe(null);
+      expect(permission!.has("SEND_MESSAGES")).toBe(true);
     });
 
-    it("should add updated task owner to Discord channel on change", async () => {
+    it("should add new task assignee to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
       const task = await fixtures.createTask({ projectId: project.id });
       expect(getDiscordChannelPermission(task)).resolves.toBe(null);
@@ -115,10 +128,22 @@ describe("DiscordIntegration", () => {
       await taskService.update({ id: task.id, assignees: [user] });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
-      expect(permission!.has("VIEW_CHANNEL")).toBe(true);
+      expect(permission!.has("SEND_MESSAGES")).toBe(true);
     });
 
-    xit("should send msg to archive channel when task is moved to done", async () => {});
+    it("should not remove old owner access to Discord channel", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const task = await fixtures.createTask({
+        projectId: project.id,
+        ownerId: user.id,
+      });
+
+      const otherOwner = await fixtures.createUser();
+      await taskService.update({ id: task.id, ownerId: otherOwner.id });
+      const permission = await getDiscordChannelPermission(task);
+      expect(permission).not.toBe(null);
+      expect(permission!.has("SEND_MESSAGES")).toBe(true);
+    });
   });
 
   describe("DiscordIntegrationService", () => {

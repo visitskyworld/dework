@@ -4,6 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 import * as qs from "query-string";
 import { Request, Response } from "express";
+import * as Discord from "discord.js";
 import { ConfigType } from "../app/config";
 import { StrategyResponse } from "./strategies/types";
 import { ProjectService } from "../project/project.service";
@@ -56,8 +57,13 @@ export class AuthController {
     res.redirect(
       `https://discord.com/api/oauth2/authorize?${qs.stringify({
         response_type: "code",
-        // https://discordapi.com/permissions.html#133136
-        permissions: "133136",
+        // https://discordapi.com/permissions.html
+        permissions: new Discord.Permissions([
+          Discord.Permissions.FLAGS.MANAGE_CHANNELS,
+          Discord.Permissions.FLAGS.MANAGE_ROLES,
+          Discord.Permissions.FLAGS.SEND_MESSAGES,
+          Discord.Permissions.FLAGS.MENTION_EVERYONE,
+        ]).bitfield.toString(),
         scope: "bot",
         client_id: this.config.get<string>("DISCORD_OAUTH_CLIENT_ID"),
         state: JSON.stringify(req.query),
