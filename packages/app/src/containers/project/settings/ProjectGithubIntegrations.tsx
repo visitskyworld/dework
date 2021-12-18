@@ -1,38 +1,37 @@
 import React, { FC, useMemo } from "react";
 import { Button, Typography } from "antd";
-import {
-  GetProjectIntegrationsQuery,
-  GetProjectIntegrationsQueryVariables,
-  ProjectIntegrationSource,
-} from "@dewo/app/graphql/types";
-import { useQuery } from "@apollo/client";
-import * as Queries from "@dewo/app/graphql/queries";
+import { ProjectIntegrationSource } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { useProjectIntegrations } from "../hooks";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
   organizationId: string;
 }
 
+export function useConnectToGithubUrl(projectId: string): string {
+  const { user } = useAuthContext();
+  return useMemo(() => {
+    const appUrl = typeof window !== "undefined" ? window.location.href : "";
+    const state = JSON.stringify({
+      appUrl,
+      creatorId: user?.id,
+      projectId,
+    });
+
+    return `${Constants.GITHUB_APP_URL}?state=${state}`;
+  }, [projectId, user?.id]);
+}
+
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
 }) => {
-  const auth = useAuthContext();
-  const appUrl = typeof window !== "undefined" ? window.location.href : "";
-  const state = JSON.stringify({
-    appUrl,
-    creatorId: auth.user?.id,
-    projectId: useParseIdFromSlug("projectSlug"),
-  });
-  const integrations = useQuery<
-    GetProjectIntegrationsQuery,
-    GetProjectIntegrationsQueryVariables
-  >(Queries.projectIntegrations, { variables: { projectId } }).data?.project
-    .integrations;
+  const connectToGithubUrl = useConnectToGithubUrl(projectId);
 
+  const integrations = useProjectIntegrations(projectId);
   const hasIntegration = useMemo(
     () =>
       integrations?.some((i) => i.source === ProjectIntegrationSource.github),
@@ -66,9 +65,9 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
       type="primary"
       block
       icon={<Icons.GithubOutlined />}
-      href={`${Constants.GITHUB_APP_URL}?state=${state}`}
+      href={connectToGithubUrl}
     >
-      Connect Github
+      Connect to Github
     </Button>
   );
 };

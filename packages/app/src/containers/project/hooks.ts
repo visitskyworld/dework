@@ -5,11 +5,14 @@ import {
   CreateProjectInput,
   CreateProjectMutation,
   CreateProjectMutationVariables,
+  GetProjectIntegrationsQuery,
+  GetProjectIntegrationsQueryVariables,
   GetProjectQuery,
   GetProjectQueryVariables,
   GetProjectTasksQuery,
   GetProjectTasksQueryVariables,
   Project,
+  ProjectIntegration,
   UpdateProjectInput,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
@@ -69,4 +72,14 @@ export function useProjectTasks(
   >(Queries.projectTasks, { variables: { projectId }, fetchPolicy });
   useListenToTasks();
   return data?.project ?? undefined;
+}
+
+export function useProjectIntegrations(
+  projectId: string
+): ProjectIntegration[] | undefined {
+  const { data } = useQuery<
+    GetProjectIntegrationsQuery,
+    GetProjectIntegrationsQueryVariables
+  >(Queries.projectIntegrations, { variables: { projectId } });
+  return data?.project.integrations ?? undefined;
 }
