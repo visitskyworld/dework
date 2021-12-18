@@ -8,20 +8,17 @@ import {
   EventSubscriber,
   InsertEvent,
   Repository,
-  UpdateEvent,
 } from "typeorm";
 import {
-  DiscordProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationSource,
 } from "@dewo/api/models/ProjectIntegration";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
 import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import * as DiscordJS from "discord.js";
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
+import { Project } from "@dewo/api/models/Project";
 
 @Injectable()
 @EventSubscriber()
@@ -29,7 +26,6 @@ export class DiscordIntegrationService
   implements EntitySubscriberInterface<Task>
 {
   private logger = new Logger(this.constructor.name);
-  // private client: REST;
 
   constructor(
     private readonly discord: DiscordService,
@@ -43,10 +39,6 @@ export class DiscordIntegrationService
     private readonly taskRepo: Repository<Task>
   ) {
     connection.subscribers.push(this);
-
-    // this.client = new REST().setToken(
-    //   config.get("DISCORD_BOT_TOKEN") as string
-    // );
   }
 
   listenTo() {
@@ -55,21 +47,54 @@ export class DiscordIntegrationService
 
   async afterInsert(event: InsertEvent<Task>) {
     const task = event.entity;
-    const integration = (await this.projectIntegrationRepo.findOne({
-      projectId: task.projectId,
-      source: ProjectIntegrationSource.discord,
-    })) as ProjectIntegration<ProjectIntegrationSource.discord> | undefined;
+    const [project, integration] = await Promise.all([
+      event.manager.findOne(Project, task.projectId) as Promise<Project>,
+      event.manager.findOne(ProjectIntegration, {
+        projectId: task.projectId,
+        source: ProjectIntegrationSource.discord,
+      }) as Promise<
+        ProjectIntegration<ProjectIntegrationSource.discord> | undefined
+      >,
+    ]);
 
     if (!integration) return;
 
+    this.logger.debug(
+      `Task.afterInsert: ${JSON.stringify({
+        taskId: task.id,
+        projectId: task.projectId,
+        integrationId: integration.id,
+        config: integration.config,
+      })}`
+    );
     const guild = await this.discord.client.guilds.fetch(
       integration.config.guildId
     );
 
+    this.logger.debug(
+      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
+    );
+
+    // TODO(fant): abstract this into separate modul
+    const oid = encoder.encode(project.organizationId);
+    const pid = encoder.encode(project.id);
+    const permalink = `${this.config.get("APP_URL")}/o/${oid}/p/${pid}?taskId=${
+      task.id
+    }`;
+
     const category = await this.getOrCreateCategory(guild);
     const channel = await category.createChannel(`${task.name} (${task.id})`, {
       type: "GUILD_TEXT",
+      topic: `Discussion for Dework task "${task.name}": ${permalink}`,
     });
+
+    this.logger.debug(
+      `Created task-specific Discord channel: ${JSON.stringify({
+        guildId: guild.id,
+        channelId: channel.id,
+      })}`
+    );
+
     // TODO(fant): make channel invisible to other users
     // https://stackoverflow.com/questions/57339085/discord-bot-how-to-create-a-private-text-channel?rq=1
 
@@ -91,7 +116,22 @@ export class DiscordIntegrationService
         c.type === "GUILD_CATEGORY" && c.name === "Dework"
     );
 
-    if (!!category) return category;
+    if (!!category) {
+      this.logger.debug(
+        `Found Discord category: ${JSON.stringify({
+          categoryId: category.id,
+          categoryName: category.name,
+          guildId: guild.id,
+        })}`
+      );
+      return category;
+    }
+
+    this.logger.debug(
+      `No Discord category found - creating new one: ${JSON.stringify({
+        guildId: guild.id,
+      })}`
+    );
     return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
   }
 
