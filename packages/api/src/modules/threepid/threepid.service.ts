@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { DeepPartial, FindConditions, Repository } from "typeorm";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
@@ -24,6 +24,10 @@ export class ThreepidService {
     partial: DeepPartial<Threepid>
   ): Promise<Threepid | undefined> {
     return this.threepidRepo.findOne(_.omit(partial, ["user"]));
+  }
+
+  public find(query: FindConditions<Threepid>): Promise<Threepid[]> {
+    return this.threepidRepo.find(query);
   }
 
   public findById(id: string): Promise<Threepid | undefined> {

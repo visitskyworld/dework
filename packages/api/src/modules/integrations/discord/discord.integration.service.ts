@@ -1,11 +1,14 @@
 import encoder from "uuid-base62";
+import _ from "lodash";
 import { Task } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import {
   Connection,
+  EntityManager,
   EntitySubscriberInterface,
   EventSubscriber,
+  In,
   InsertEvent,
 } from "typeorm";
 import {
@@ -15,9 +18,12 @@ import {
 import { DiscordService } from "./discord.service";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
-import * as DiscordJS from "discord.js";
+import * as Discord from "discord.js";
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
 import { Project } from "@dewo/api/models/Project";
+import { User } from "@dewo/api/models/User";
+import { ThreepidService } from "../../threepid/threepid.service";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 
 @Injectable()
 @EventSubscriber()
@@ -28,6 +34,7 @@ export class DiscordIntegrationService
 
   constructor(
     private readonly discord: DiscordService,
+    private readonly threepidService: ThreepidService,
     private readonly config: ConfigService<ConfigType>,
     @InjectConnection() readonly connection: Connection
   ) {
@@ -39,7 +46,15 @@ export class DiscordIntegrationService
   }
 
   async afterInsert(event: InsertEvent<Task>) {
-    const task = event.entity;
+    // const task = event.entity;
+    const task = await event.manager
+      .createQueryBuilder(Task, "task")
+      .leftJoinAndSelect("task.owner", "owner")
+      .leftJoinAndSelect("task.assignees", "assignees")
+      .where("task.id = :id", { id: event.entity.id })
+      .getOne();
+    if (!task) return;
+
     const [project, integration] = await Promise.all([
       event.manager.findOne(Project, task.projectId) as Promise<Project>,
       event.manager.findOne(ProjectIntegration, {
@@ -68,7 +83,15 @@ export class DiscordIntegrationService
       `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
     );
 
-    // TODO(fant): abstract this into separate modul
+    const threepids = await this.findTaskUserThreepids(task);
+    this.logger.debug(
+      `Found threepids of users connected to task: ${JSON.stringify({
+        count: threepids.length,
+        ids: threepids.map((t) => t.id),
+      })}`
+    );
+
+    // TODO(fant): abstract this into separate module
     const oid = encoder.encode(project.organizationId);
     const pid = encoder.encode(project.id);
     const permalink = `${this.config.get("APP_URL")}/o/${oid}/p/${pid}?taskId=${
@@ -76,10 +99,29 @@ export class DiscordIntegrationService
     }`;
 
     const category = await this.getOrCreateCategory(guild);
-    const channel = await category.createChannel(task.name, {
-      type: "GUILD_TEXT",
-      topic: `Discussion for Dework task "${task.name}": ${permalink}`,
+
+    await guild.roles.fetch();
+    const members = await guild.members.fetch({
+      user: threepids.map((t) => t.config.profile.id),
     });
+
+    const channel = await category.createChannel(
+      `${task.number} ${task.name}`,
+      {
+        type: "GUILD_TEXT",
+        topic: `Discussion for Dework task "${task.name}": ${permalink}`,
+        permissionOverwrites: [
+          {
+            id: guild.roles.everyone,
+            deny: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
+          },
+          ...members.map((member) => ({
+            id: member,
+            allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
+          })),
+        ],
+      }
+    );
 
     this.logger.debug(
       `Created task-specific Discord channel: ${JSON.stringify({
@@ -87,11 +129,6 @@ export class DiscordIntegrationService
         channelId: channel.id,
       })}`
     );
-
-    // TODO(fant): make channel invisible to other users
-    // https://stackoverflow.com/questions/57339085/discord-bot-how-to-create-a-private-text-channel?rq=1
-
-    // TODO(fant): add task owner to discord channel
 
     await event.manager.save(DiscordChannel, {
       guildId: guild.id,
@@ -102,11 +139,11 @@ export class DiscordIntegrationService
   }
 
   private async getOrCreateCategory(
-    guild: DiscordJS.Guild
-  ): Promise<DiscordJS.CategoryChannel> {
+    guild: Discord.Guild
+  ): Promise<Discord.CategoryChannel> {
     const channels = await guild.channels.fetch();
     const category = channels.find(
-      (c): c is DiscordJS.CategoryChannel =>
+      (c): c is Discord.CategoryChannel =>
         c.type === "GUILD_CATEGORY" && c.name === "Dework"
     );
 
@@ -127,6 +164,21 @@ export class DiscordIntegrationService
       })}`
     );
     return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
+  }
+
+  public async findTaskUserThreepids(
+    task: Task
+  ): Promise<Threepid<ThreepidSource.discord>[]> {
+    const userIds = _([await task.owner, ...(await task.assignees)])
+      .filter((u): u is User => !!u)
+      .map((u) => u.id)
+      .uniq()
+      .value();
+
+    return this.threepidService.find({
+      source: ThreepidSource.discord,
+      userId: In(userIds),
+    }) as Promise<Threepid<ThreepidSource.discord>[]>;
   }
 
   /*
