@@ -9,13 +9,10 @@ import {
   ProjectIntegrationSource,
   GithubProjectIntegrationFeature,
 } from "@dewo/api/models/ProjectIntegration";
-import { Task } from "@dewo/api/models/Task";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
 import { ProjectService } from "../../project/project.service";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
@@ -34,9 +31,7 @@ export class GithubController {
   constructor(
     private readonly configService: ConfigService<ConfigType>,
     private readonly projectService: ProjectService,
-    private readonly githubService: GithubService,
-    @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    private readonly githubService: GithubService
   ) {}
 
   // Hit when user finishes the GH app installation
@@ -65,7 +60,8 @@ export class GithubController {
 
     // First validate the event's installation and taskId
     const branchName = body.pull_request?.head?.ref ?? body.ref;
-    const taskNumber = this.parseTaskNumberFromBranchName(branchName);
+    const taskNumber =
+      this.githubService.parseTaskNumberFromBranchName(branchName);
 
     if (!taskNumber) {
       this.logger.debug(
@@ -84,22 +80,7 @@ export class GithubController {
     );
 
     const installationId = body.installation_id;
-    const task = await this.taskRepo
-      .createQueryBuilder("task")
-      .innerJoin("task.project", "project")
-      .innerJoin("project.integrations", "integration")
-      .where("task.number = :number", { number: taskNumber })
-      .andWhere("project_integration.source = :source", {
-        source: ProjectIntegrationSource.github,
-      })
-      .andWhere("integration.config->>'installationId' = :installationId", {
-        installationId,
-      })
-      .getOne();
-
-    // .andWhere(
-    //   `integration.config ::jsonb @> \'{"installationId":"${installationId}"}\'`
-    // )
+    const task = await this.githubService.findTask(taskNumber, installationId);
 
     if (!task) {
       this.logger.debug(
@@ -162,13 +143,5 @@ export class GithubController {
       }
     } catch {}
     return this.configService.get("APP_URL") as string;
-  }
-
-  private parseTaskNumberFromBranchName(
-    branchName: string
-  ): number | undefined {
-    const taskNumber = branchName?.match(/\/dw-([0-9]+)\//)?.[1];
-    if (!taskNumber) return undefined;
-    return Number(taskNumber);
   }
 }

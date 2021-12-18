@@ -1,5 +1,7 @@
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
+import { ProjectIntegrationSource } from "@dewo/api/models/ProjectIntegration";
+import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -11,7 +13,9 @@ export class GithubService {
     @InjectRepository(GithubPullRequest)
     private readonly githubPullRequestRepo: Repository<GithubPullRequest>,
     @InjectRepository(GithubBranch)
-    private readonly githubBranchRepo: Repository<GithubBranch>
+    private readonly githubBranchRepo: Repository<GithubBranch>,
+    @InjectRepository(Task)
+    private readonly taskRepo: Repository<Task>
   ) {}
 
   public async createPullRequest(
@@ -52,5 +56,29 @@ export class GithubService {
     name: string
   ): Promise<GithubBranch | undefined> {
     return this.githubBranchRepo.findOne({ name: name });
+  }
+
+  public parseTaskNumberFromBranchName(branchName: string): number | undefined {
+    const taskNumber = branchName?.match(/\/dw-([0-9]+)\//)?.[1];
+    if (!taskNumber) return undefined;
+    return Number(taskNumber);
+  }
+
+  public async findTask(
+    taskNumber: number,
+    githubInstallationId: string
+  ): Promise<Task | undefined> {
+    return this.taskRepo
+      .createQueryBuilder("task")
+      .innerJoin("task.project", "project")
+      .innerJoin("project.integrations", "integration")
+      .where("task.number = :number", { number: taskNumber })
+      .andWhere("integration.source = :source", {
+        source: ProjectIntegrationSource.github,
+      })
+      .andWhere("integration.config->>'installationId' = :installationId", {
+        installationId: githubInstallationId,
+      })
+      .getOne();
   }
 }
