@@ -213,7 +213,11 @@ export function TaskForm<
                 size="small"
               >
                 Join discussion in
-                <Typography.Text strong style={{ marginLeft: 4 }}>
+                <Typography.Text
+                  strong
+                  ellipsis
+                  style={{ marginLeft: 4, maxWidth: 200 }}
+                >
                   #{task.discordChannel.name}
                 </Typography.Text>
               </Button>
