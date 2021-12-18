@@ -5,7 +5,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import {
   Connection,
-  EntityManager,
   EntitySubscriberInterface,
   EventSubscriber,
   In,
@@ -175,6 +174,7 @@ export class DiscordIntegrationService
       .uniq()
       .value();
 
+    if (!userIds.length) return [];
     return this.threepidService.find({
       source: ThreepidSource.discord,
       userId: In(userIds),
