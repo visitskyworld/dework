@@ -32,6 +32,7 @@ import {
 import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
   rewardTriggerToString,
   TaskRewardFormFields,
@@ -78,6 +79,8 @@ export function TaskForm<
     projectId,
     useMemo(() => task?.assignees ?? [], [task?.assignees])
   );
+
+  console.warn("TATA", task);
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -303,6 +306,23 @@ export function TaskForm<
                 </Button>
               ))}
             </Form.Item>
+          )}
+
+          {task?.discordChannel && (
+            <Row className="ant-form-item">
+              <Row>
+                <Typography.Text className="ant-form-item-label">
+                  Discord Channel
+                </Typography.Text>
+              </Row>
+              <Button
+                target="_blank"
+                href={task.discordChannel.link}
+                icon={<DiscordIcon />}
+              >
+                Join Discussion on Discord
+              </Button>
+            </Row>
           )}
 
           {canEdit ? (

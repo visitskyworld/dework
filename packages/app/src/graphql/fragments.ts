@@ -97,6 +97,13 @@ export const githubPullRequest = gql`
   }
 `;
 
+export const discordChannel = gql`
+  fragment DiscordChannel on DiscordChannel {
+    id
+    link
+  }
+`;
+
 export const task = gql`
   fragment Task on Task {
     id
@@ -118,6 +125,9 @@ export const task = gql`
     creator {
       ...User
     }
+    discordChannel {
+      ...DiscordChannel
+    }
     githubPullRequests {
       ...GithubPullRequest
     }
@@ -130,6 +140,7 @@ export const task = gql`
   ${taskTag}
   ${taskReward}
   ${user}
+  ${discordChannel}
 `;
 
 export const userProfile = gql`

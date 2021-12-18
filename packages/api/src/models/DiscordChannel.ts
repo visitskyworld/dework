@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { AfterLoad, Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Task } from "./Task";
 
@@ -21,4 +21,12 @@ export class DiscordChannel extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public taskId!: string;
+
+  @Field()
+  public link!: string;
+
+  @AfterLoad()
+  loadLink() {
+    this.link = `https://discordapp.com/channels/${this.guildId}/${this.channelId}`;
+  }
 }
