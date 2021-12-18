@@ -13,7 +13,6 @@ import {
   ConfigProvider,
   Empty,
   Divider,
-  Space,
 } from "antd";
 import {
   CreateTaskInput,
@@ -34,7 +33,6 @@ import { TaskDeleteButton } from "./TaskDeleteButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-import * as Colors from "@ant-design/colors";
 import {
   rewardTriggerToString,
   TaskRewardFormFields,
@@ -207,24 +205,7 @@ export function TaskForm<
 
           {!!task && <GithubIntegrationSection task={task} />}
 
-          {/* {task?.discordChannel && (
-            <FormSection label="Discord">
-              <Button
-                type="text"
-                href={task.discordChannel.link}
-                target="_blank"
-                style={{ padding: 0, margin: "-2px -8px", height: "unset" }}
-              >
-                <Space size="small" style={{ padding: "2px 8px" }}>
-                  <Tag color={Colors.purple.primary} icon={<DiscordIcon />}>
-                    Join discussion on Discord
-                  </Tag>
-                </Space>
-              </Button>
-            </FormSection>
-          )} */}
-
-          {task?.discordChannel && (
+          {!!task?.discordChannel && (
             <FormSection label="Discord">
               <Button
                 type="primary"
