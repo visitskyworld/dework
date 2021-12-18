@@ -3,7 +3,7 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, FindConditions, IsNull, Not, Repository } from "typeorm";
+import { FindConditions, IsNull, Not, Repository } from "typeorm";
 import { User } from "@dewo/api/models/User";
 
 @Injectable()
@@ -15,8 +15,13 @@ export class TaskService {
     private readonly taskRepo: Repository<Task>
   ) {}
 
-  public async create(partial: DeepPartial<Task>): Promise<Task> {
-    const created = await this.taskRepo.save(partial);
+  public async create(
+    partial: DeepAtLeast<Task, "projectId" | "name" | "status" | "sortKey">
+  ): Promise<Task> {
+    const created = await this.taskRepo.save({
+      ...partial,
+      number: await this.getNextTaskNumber(partial.projectId),
+    });
     return this.taskRepo.findOne(created.id) as Promise<Task>;
   }
 
@@ -100,5 +105,14 @@ export class TaskService {
     if (!!query.status) findCondition.status = query.status;
     if (!!query.rewardNotNull) findCondition.rewardId = Not(IsNull());
     return this.taskRepo.count(findCondition);
+  }
+
+  private async getNextTaskNumber(projectId: string): Promise<number> {
+    const result = await this.taskRepo
+      .createQueryBuilder("task")
+      .select("MAX(task.number)", "max")
+      .where("task.projectId = :projectId", { projectId })
+      .getRawOne();
+    return result.max ? result.max + 1 : 1;
   }
 }

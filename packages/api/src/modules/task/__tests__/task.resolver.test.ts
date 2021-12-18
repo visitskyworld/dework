@@ -1,5 +1,6 @@
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
+import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -80,6 +81,37 @@ describe("TaskResolver", () => {
         expect(task.owner).not.toEqual(null);
         expect(task.creator.id).toEqual(user.id);
         expect(task.owner.id).toEqual(user.id);
+      });
+
+      it("should assign correct task numbers", async () => {
+        const first = await fixtures.createUserOrgProject();
+        const second = await fixtures.createUserOrgProject();
+
+        const createTask = (projectId: string, user: User) =>
+          client
+            .request({
+              app,
+              auth: fixtures.createAuthToken(user),
+              body: TaskRequests.create({
+                projectId,
+                name: faker.lorem.words(5),
+                status: TaskStatusEnum.TODO,
+              }),
+            })
+            .then((res) => {
+              console.warn(res.body);
+              return res.body.data?.task;
+            });
+
+        await expect(createTask(first.project.id, first.user)).resolves.toEqual(
+          expect.objectContaining({ number: 1 })
+        );
+        await expect(createTask(first.project.id, first.user)).resolves.toEqual(
+          expect.objectContaining({ number: 2 })
+        );
+        await expect(
+          createTask(second.project.id, second.user)
+        ).resolves.toEqual(expect.objectContaining({ number: 1 }));
       });
     });
 

@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -8,6 +8,7 @@ import {
   ManyToOne,
   OneToOne,
   OneToMany,
+  Index,
 } from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
@@ -29,7 +30,12 @@ registerEnumType(TaskStatusEnum, { name: "TaskStatusEnum" });
 
 @Entity()
 @ObjectType()
+@Index("IDX_unique_project_number", ["projectId", "number"], { unique: true })
 export class Task extends Audit {
+  @Column({ type: "int" })
+  @Field(() => Int)
+  public number!: number;
+
   @Column()
   @Field()
   public name!: string;

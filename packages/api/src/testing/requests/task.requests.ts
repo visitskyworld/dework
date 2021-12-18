@@ -6,6 +6,7 @@ export class TaskRequests {
   private static taskFragment = `
     fragment Task on Task {
       id
+      number
       name
       description
       status
