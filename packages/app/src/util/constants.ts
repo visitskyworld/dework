@@ -10,6 +10,6 @@ export const Constants = {
   hotjarConfig: { ID: 2731946, version: 6 },
 };
 
-export const siteTitle = "dewo";
+export const siteTitle = "Dework";
 export const siteDescription =
-  "the task manager for DAOs and decentralized work";
+  "The task manager for DAOs and decentralized work";
