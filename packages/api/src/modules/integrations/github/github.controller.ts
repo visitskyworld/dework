@@ -9,7 +9,6 @@ import {
   ProjectIntegrationSource,
   GithubProjectIntegrationFeature,
 } from "@dewo/api/models/ProjectIntegration";
-import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
 import { ProjectService } from "../../project/project.service";
@@ -17,11 +16,6 @@ import { ProjectService } from "../../project/project.service";
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
   "title" | "status" | "number" | "branchName" | "link" | "taskId"
->;
-
-type GithubBranchPayLoad = Pick<
-  GithubBranch,
-  "name" | "repository" | "link" | "taskId"
 >;
 
 @Controller("github")
