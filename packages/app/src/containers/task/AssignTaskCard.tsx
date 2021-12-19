@@ -55,7 +55,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
             target="_blank"
             rel="noreferrer"
           >
-            <Tooltip title="View profile">
+            <Tooltip title={taskApplication.applicationMessage}>
               <List.Item.Meta
                 avatar={
                   <UserAvatar
