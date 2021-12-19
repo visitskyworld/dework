@@ -34,6 +34,15 @@ if (typeof window !== "undefined") {
   hotjar.initialize(ID, version);
 }
 
+const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
+  // dev: "/favicon.dev.svg",
+  // demo: "/favicon.demo.svg",
+  // prod: "/favicon.svg",
+  dev: "/logo.dev.svg",
+  demo: "/logo.demo.svg",
+  prod: "/logo.svg",
+};
+
 interface AuthProps {
   authenticated: boolean;
 }
@@ -92,7 +101,10 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           name="description"
           content={`${siteTitle} - ${siteDescription}`}
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="icon"
+          href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
+        />
       </Head>
       <ApolloProvider client={apollo as any}>
         <AuthProvider authenticated={authenticated}>
