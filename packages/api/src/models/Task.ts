@@ -82,9 +82,6 @@ export class Task extends Audit {
   @Field(() => [User])
   public assignees!: User[];
 
-  // @OneToMany(() => TaskApplication, (taskApplication) => taskApplication.task)
-  // public taskApplications!: TaskApplication[];
-
   @OneToMany(() => TaskApplication, (tA: TaskApplication) => tA.task)
   @Field(() => [TaskApplication])
   public taskApplications!: Promise<TaskApplication[]>;

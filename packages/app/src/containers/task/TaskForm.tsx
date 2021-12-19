@@ -243,7 +243,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!canEdit &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
-            !!task.assignees.length && <AssignTaskCard task={task} />}
+            !!task.taskApplications.length && <AssignTaskCard task={task} />}
 
           <Form.Item
             name="status"

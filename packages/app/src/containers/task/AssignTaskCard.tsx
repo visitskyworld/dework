@@ -37,28 +37,33 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
       style={{ marginTop: 16, marginBottom: 24 }}
     >
       <Typography.Text strong>Assign a contributor</Typography.Text>
-      {task?.assignees.map((user) => (
+      {task?.taskApplications.map((taskApplication) => (
         <List.Item
           actions={[
             <Button
               size="small"
               loading={loading}
-              onClick={() => handleAssign(user)}
+              onClick={() => handleAssign(taskApplication.user)}
             >
               Assign
             </Button>,
           ]}
         >
           <a
-            href={`/profile/${user.id}`}
+            href={`/profile/${taskApplication.user.id}`}
             style={{ width: "100%" }}
             target="_blank"
             rel="noreferrer"
           >
             <Tooltip title="View profile">
               <List.Item.Meta
-                avatar={<UserAvatar user={user} tooltip={{ visible: false }} />}
-                title={user.username}
+                avatar={
+                  <UserAvatar
+                    user={taskApplication.user}
+                    tooltip={{ visible: false }}
+                  />
+                }
+                title={taskApplication.user.username}
               />
             </Tooltip>
           </a>
