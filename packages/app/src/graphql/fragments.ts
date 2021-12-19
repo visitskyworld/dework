@@ -173,6 +173,15 @@ export const discordChannel = gql`
   }
 `;
 
+export const taskApplication = gql`
+  fragment TaskApplication on TaskApplication {
+    applicationMessage
+    user {
+      ...User
+    }
+  }
+`;
+
 export const task = gql`
   fragment Task on Task {
     id
@@ -217,6 +226,9 @@ export const taskDetails = gql`
     githubBranches {
       ...GithubBranch
     }
+    taskApplications {
+      ...TaskApplication
+    }
   }
 
   ${task}
@@ -224,6 +236,7 @@ export const taskDetails = gql`
   ${githubPullRequest}
   ${githubBranch}
   ${discordChannel}
+  ${taskApplication}
 `;
 
 export const userProfile = gql`

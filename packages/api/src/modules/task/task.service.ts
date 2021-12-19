@@ -67,7 +67,7 @@ export class TaskService {
       userId: user.id,
       taskId: taskId,
     });
-    return this.findById(createdTaskApplication.id) as Promise<Task>;
+    return this.findById(taskId) as Promise<Task>;
   }
 
   public async unclaim(taskId: string, user: User): Promise<Task> {

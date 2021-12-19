@@ -15,7 +15,7 @@ interface Props {
 export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
   const hasClaimedTask = useMemo(
-    () => !!user && task.assignees.some((a) => a.id === user.id),
+    () => !!user && task.taskApplications.some((tA) => tA.user.id === user.id),
     [user, task.assignees]
   );
 
