@@ -16,7 +16,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
   const hasClaimedTask = useMemo(
     () => !!user && task.taskApplications.some((tA) => tA.user.id === user.id),
-    [user, task.assignees]
+    [user, task.taskApplications]
   );
 
   const showClaimEducation = useToggle();

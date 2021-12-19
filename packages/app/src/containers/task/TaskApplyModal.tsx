@@ -1,4 +1,3 @@
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback } from "react";
@@ -18,14 +17,13 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
   onCancel,
   onDone,
 }) => {
-  const { user } = useAuthContext();
   const claimTask = useClaimTask();
   const handleSubmit = useCallback(
     async (input) => {
       const claimedTask = await claimTask(task, input.description);
       await onDone(claimedTask);
     },
-    [claimTask, onDone]
+    [claimTask, onDone, task]
   );
   return (
     <Modal
@@ -36,12 +34,13 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
       width={768}
     >
       <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
-        <Form.Item name="description" label={"Description"}>
+        <Form.Item name="description" label={"Application Message"}>
           <Input.TextArea
             autoSize
             className="dewo-field"
-            placeholder="Enter a description..."
+            placeholder="Enter a message on why you should be picked to do this task (max 200 chars)"
             style={{ minHeight: 120 }}
+            maxLength={200}
           />
         </Form.Item>
 
