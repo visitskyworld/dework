@@ -228,7 +228,7 @@ export class DiscordIntegrationService
     }`;
 
     const channel = await category.createChannel(
-      `${task.number} ${task.name}`,
+      `${task.name} ${task.number}`,
       {
         type: "GUILD_TEXT",
         topic: `Discussion for Dework task "${task.name}": ${permalink}`,
