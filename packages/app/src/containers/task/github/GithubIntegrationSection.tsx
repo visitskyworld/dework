@@ -31,6 +31,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
     [task.githubBranches, task.githubPullRequests]
   );
 
+  if (!integrations) return null;
   if (!hasGithubIntegration && canUpdateProject) {
     return <ConnectGithubAlert projectId={task.projectId} />;
   }
