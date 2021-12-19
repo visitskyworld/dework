@@ -3,6 +3,7 @@ import { Project } from "@dewo/api/models/Project";
 import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
@@ -18,6 +19,7 @@ import { TaskService } from "./task.service";
   imports: [
     TypeOrmModule.forFeature([Task, Project, User, OrganizationMember]),
     CaslModule.forFeature({ permissions }),
+    CqrsModule,
   ],
   providers: [
     TaskResolver,

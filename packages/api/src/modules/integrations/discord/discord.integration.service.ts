@@ -1,9 +1,8 @@
-import encoder from "uuid-base62";
+import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import _ from "lodash";
 import Bluebird from "bluebird";
-import { Task } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectConnection } from "@nestjs/typeorm";
+import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
 import {
   Connection,
   EntityManager,
@@ -11,6 +10,7 @@ import {
   EventSubscriber,
   In,
   InsertEvent,
+  Repository,
   UpdateEvent,
 } from "typeorm";
 import {
@@ -26,17 +26,23 @@ import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import encoder from "uuid-base62";
+import { IEventHandler, EventsHandler } from "@nestjs/cqrs";
+import { TaskUpdatedEvent } from "../../task/task-updated.event";
 
 @Injectable()
 @EventSubscriber()
+@EventsHandler(TaskUpdatedEvent)
 export class DiscordIntegrationService
-  implements EntitySubscriberInterface<Task>
+  implements EntitySubscriberInterface<Task>, IEventHandler<TaskUpdatedEvent>
 {
   private logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly discord: DiscordService,
     private readonly threepidService: ThreepidService,
+    @InjectRepository(DiscordChannel)
+    private readonly discordChannelRepo: Repository<DiscordChannel>,
     private readonly config: ConfigService<ConfigType>,
     @InjectConnection() readonly connection: Connection
   ) {
@@ -183,6 +189,142 @@ export class DiscordIntegrationService
     return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
   }
 
+  handle({ oldTask, newTask }: TaskUpdatedEvent) {
+    this.updateMessageStatus(oldTask, newTask);
+  }
+
+  private async updateMessageStatus(oldTask: Task, newTask: Task) {
+    // New applicant added
+    if (newTask.assignees.length > oldTask.assignees.length) {
+      this.postNewAssignee(newTask);
+    }
+
+    const statusChanged = oldTask.status !== newTask.status;
+    if (statusChanged) {
+      switch (newTask.status) {
+        case TaskStatusEnum.IN_PROGRESS:
+          this.postInProgress(newTask);
+          break;
+        case TaskStatusEnum.IN_REVIEW:
+          this.postMovedIntoReview(newTask);
+          break;
+        case TaskStatusEnum.DONE:
+          this.postDone(newTask);
+          break;
+      }
+    }
+  }
+
+  private async getDiscordId(userId: string) {
+    const threepid = (await this.threepidService.findOne({
+      userId,
+      source: ThreepidSource.discord,
+    })) as Threepid<ThreepidSource.discord>;
+    return threepid?.threepid;
+  }
+
+  private async getDiscordChannel(task: Task) {
+    const channel = await this.discordChannelRepo.findOne({
+      taskId: task.id,
+    });
+    if (!channel) return;
+    const dChannel = await this.discord.client.channels.fetch(
+      channel.channelId
+    );
+    if (!dChannel) return;
+
+    if (dChannel.type !== "GUILD_TEXT") {
+      this.logger.log(
+        `Discord channel ${dChannel.id} for task ${task.id} is not a text channel. Aborting.`
+      );
+      return;
+    }
+
+    return dChannel as Discord.TextChannel;
+  }
+
+  private async postDone(task: Task) {
+    const channel = await this.getDiscordChannel(task);
+    if (!channel) return;
+    channel.send(`This task is now marked as done.`);
+  }
+
+  private async postMovedIntoReview(task: Task) {
+    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    if (!owner) return;
+    const message = `<@${owner}> A person has applied to this task.`;
+    const channel = await this.getDiscordChannel(task);
+    if (!channel) return;
+    channel.send(message);
+
+    const fields: {
+      name: string;
+      value: string;
+    }[] = [];
+    const pr = (await task.githubPullRequests)?.[0];
+    if (pr) {
+      fields.push({
+        name: "Github PR",
+        value: pr.link,
+      });
+    }
+    const author = task.assignees?.[0];
+    channel.send({
+      embeds: [
+        {
+          title: `In review`,
+          description: `The task is now in review`,
+          // color: 0x00ffff,
+          fields,
+          author: author && {
+            name: author.username,
+            iconURL: author.imageUrl,
+            // TODO: add permalink util
+            url: `${this.config.get("APP_URL")}/profile/${author.id}`,
+          },
+          // TODO: add permalink util
+          url: `${this.config.get("APP_URL")}/o/${encoder.encode(
+            (await task.project).organizationId
+          )}/p/${encoder.encode(task.projectId)}?taskId=${task.id}`,
+        },
+      ],
+    });
+  }
+
+  private async postInProgress(task: Task) {
+    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    if (!owner) return;
+    const channel = await this.getDiscordChannel(task);
+    if (!channel) return;
+
+    const assigneeId = task.assignees?.[0]?.id;
+    if (!assigneeId) return;
+
+    const assignee = await this.getDiscordId(assigneeId);
+    if (!assignee) return;
+
+    this.logger.debug(`Got assignee: ${assignee} for task ${task.id}`);
+
+    const message = `Hey <@${owner}> and <@${assignee}>! This task has been moved to the next stage.
+
+  Some ground rules:
+  
+  - Always push your local branches to remote each time you make a commit
+  - I will tag you each morning so that you can have a short written 'standup': basically two sentences about where you are and what you'll be working on
+  
+  Following this protocol ==> higher chance of increasing your reputation score`;
+    channel.send(message);
+  }
+
+  private async postNewAssignee(task: Task) {
+    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    if (!owner) return;
+    const message = `<@${owner}> A person has applied to this task.`;
+    const channel = await this.getDiscordChannel(task);
+    if (!channel) return;
+    channel.send(message);
+  }
+
   private async getOrCreateChannel(
     task: Task,
     guild: Discord.Guild,
@@ -213,7 +355,7 @@ export class DiscordIntegrationService
       }
 
       this.logger.warn(
-        `Existing Discord channel record's channel doesn\'t exist: ${existingDiscordChannel.channelId}`
+        `Existing Discord channel record's channel doesn't exist: ${existingDiscordChannel.channelId}`
       );
     }
 

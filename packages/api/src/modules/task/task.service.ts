@@ -5,12 +5,16 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindConditions, IsNull, Not, Repository } from "typeorm";
 import { User } from "@dewo/api/models/User";
+import { EventBus } from "@nestjs/cqrs";
+import { TaskUpdatedEvent } from "./task-updated.event";
 
 @Injectable()
 export class TaskService {
   // private readonly logger = new Logger("UserService");
 
   constructor(
+    private readonly eventBus: EventBus,
+
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>
   ) {}
@@ -26,10 +30,14 @@ export class TaskService {
   }
 
   public async update(partial: DeepAtLeast<Task, "id">): Promise<Task> {
+    const oldTask = await this.taskRepo.findOne({ id: partial.id });
     const updated = await this.taskRepo.save({
       ...partial,
       updatedAt: new Date(),
     });
+
+    this.eventBus.publish(new TaskUpdatedEvent(updated, oldTask!));
+
     return this.taskRepo.findOne(updated.id) as Promise<Task>;
   }
 
