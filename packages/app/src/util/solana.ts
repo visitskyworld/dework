@@ -9,7 +9,7 @@ import {
   SignatureResult,
 } from "@solana/web3.js";
 
-export function useRequestSolanaAddress(): () => Promise<string> {
+export function useRequestAddress(): () => Promise<string> {
   return useCallback(async () => {
     // @ts-ignore
     const provider = await window.solana;

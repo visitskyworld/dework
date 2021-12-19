@@ -4,11 +4,11 @@ import {
   PaymentMethod,
   PaymentMethodType,
 } from "@dewo/app/graphql/types";
-import { Button, Col, Form, FormInstance, Row, Select } from "antd";
-import { useRequestAddress as useRequestMetamaskAddress } from "@dewo/app/util/ethereum";
-import { useRequestAddress as useRequestGnosisAddress } from "@dewo/app/util/gnosis";
+import { Col, Form, FormInstance, Row, Select } from "antd";
 import { useCreatePaymentMethod } from "./hooks";
-import { useRequestSolanaAddress } from "@dewo/app/util/solana";
+import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
+import { ConnectPhantomButton } from "./ConnectPhantomButton";
+import { ConnectGnosisSafe } from "./ConnectGnosisSafe";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
@@ -22,7 +22,7 @@ interface Props {
 
 const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.METAMASK,
-  // PaymentMethodType.GNOSIS_SAFE,
+  PaymentMethodType.GNOSIS_SAFE,
   PaymentMethodType.PHANTOM,
 ];
 
@@ -40,50 +40,16 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
     []
   );
 
-  const requestMetamaskAddress = useRequestMetamaskAddress();
-  const requestGnosisAddress = useRequestGnosisAddress();
-  const requestSolanaAddress = useRequestSolanaAddress();
-
-  const connect = useCallback(async () => {
-    switch (values.type) {
-      case PaymentMethodType.METAMASK: {
-        const address = await requestMetamaskAddress();
-        formRef.current?.setFieldsValue({ address });
-        break;
-      }
-      case PaymentMethodType.GNOSIS_SAFE: {
-        const address = await requestGnosisAddress();
-        formRef.current?.setFieldsValue({ address });
-        break;
-      }
-      case PaymentMethodType.PHANTOM: {
-        const address = await requestSolanaAddress();
-        formRef.current?.setFieldsValue({ address });
-        break;
-      }
-      default:
-        throw new Error(`Unknown payment method type: ${values.type}`);
-    }
-
+  const setAddress = useCallback(async (address: string) => {
+    formRef.current?.setFieldsValue({ address });
     await formRef.current?.submit();
-  }, [
-    requestMetamaskAddress,
-    requestGnosisAddress,
-    values.type,
-    requestSolanaAddress,
-  ]);
+  }, []);
 
-  const [loading, setLoading] = useState(false);
   const createPaymentMethod = useCreatePaymentMethod();
   const submitForm = useCallback(
     async (values: CreatePaymentMethodInput) => {
-      try {
-        setLoading(true);
-        const paymentMethod = await createPaymentMethod(values);
-        onDone(paymentMethod);
-      } finally {
-        setLoading(false);
-      }
+      const paymentMethod = await createPaymentMethod(values);
+      onDone(paymentMethod);
     },
     [createPaymentMethod, onDone]
   );
@@ -110,10 +76,14 @@ export const PaymentMethodForm: FC<Props> = ({ onDone }) => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          {!!values.type && (
-            <Button block type="primary" loading={loading} onClick={connect}>
-              Connect {paymentMethodTypeToString[values.type]}
-            </Button>
+          {values.type === PaymentMethodType.METAMASK && (
+            <ConnectMetamaskButton onConnect={setAddress} />
+          )}
+          {values.type === PaymentMethodType.PHANTOM && (
+            <ConnectPhantomButton onConnect={setAddress} />
+          )}
+          {values.type === PaymentMethodType.GNOSIS_SAFE && (
+            <ConnectGnosisSafe onConnect={setAddress} />
           )}
 
           <Form.Item name="address" hidden rules={[{ required: true }]} />

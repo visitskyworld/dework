@@ -1,10 +1,14 @@
-import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
+import { ethers } from "ethers";
+import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
 
-export function useRequestAddress(): () => Promise<string> {
-  const gnosis = useMemo(() => new SafeAppsSDK({ debug: true }), []);
-  return useCallback(async () => {
-    const safe = await gnosis.safe.getInfo();
-    return safe.safeAddress;
-  }, [gnosis]);
+export function useIsGnosisSafeOwner(): (
+  safeAddress: string,
+  signer: ethers.Signer
+) => Promise<boolean> {
+  return useCallback(async (safeAddress, signer) => {
+    const ethAdapter = new EthersAdapter({ ethers, signer });
+    const safe = await Safe.create({ ethAdapter, safeAddress });
+    return safe.isOwner(await signer.getAddress());
+  }, []);
 }
