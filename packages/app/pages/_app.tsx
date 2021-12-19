@@ -35,9 +35,6 @@ if (typeof window !== "undefined") {
 }
 
 const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
-  // dev: "/favicon.dev.svg",
-  // demo: "/favicon.demo.svg",
-  // prod: "/favicon.svg",
   dev: "/logo.dev.svg",
   demo: "/logo.demo.svg",
   prod: "/logo.svg",
