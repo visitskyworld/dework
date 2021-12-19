@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, PrimaryColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { User } from "./User";
