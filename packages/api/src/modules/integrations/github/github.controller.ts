@@ -79,7 +79,7 @@ export class GithubController {
       })}`
     );
 
-    const installationId = body.installation_id;
+    const installationId = body.installation.id;
     const task = await this.githubService.findTask(taskNumber, installationId);
 
     if (!task) {
@@ -96,23 +96,22 @@ export class GithubController {
         installationId,
       })}`
     );
+
     // Then handle branch and pull request updates separately
-    if (body.commits?.length > 0) {
+    if (body.ref_type === "branch") {
       const repository = body.repository.full_name;
       const branch = await this.githubService.findBranchByName(branchName);
-      const newBranch: GithubBranchPayLoad = {
-        name: branchName.replace("refs/heads/", ""),
-        repository,
-        link: `https://github.com/${repository}/compare/${branchName}`,
-        taskId: task.id,
-      };
 
-      if (branch) {
-        await this.githubService.updateBranch(branch);
-      } else {
-        await this.githubService.createBranch(newBranch);
+      if (!branch) {
+        await this.githubService.createBranch({
+          name: branchName.replace("refs/heads/", ""),
+          repository,
+          link: `https://github.com/${repository}/compare/${branchName}`,
+          taskId: task.id,
+        });
       }
     }
+
     if (body.pull_request) {
       const { title, state, html_url, number } = body.pull_request;
 

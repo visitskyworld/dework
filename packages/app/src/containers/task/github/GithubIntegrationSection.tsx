@@ -61,9 +61,14 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
           branch name below
         </Typography.Paragraph>
 
-        <Typography.Paragraph copyable type="secondary" className="ant-input">
+        <Typography.Text
+          copyable
+          type="secondary"
+          className="ant-input"
+          style={{ display: "inline" }}
+        >
           {`git checkout -b ${task.gitBranchName}`}
-        </Typography.Paragraph>
+        </Typography.Text>
       </FormSection>
     </>
   );
