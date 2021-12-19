@@ -679,6 +679,7 @@ export interface ClaimTaskMutation {
 
 export interface ClaimTaskMutationVariables {
   taskId: Scalar.UUID;
+  applicationMessage: string;
 }
 
 /* tslint:disable */

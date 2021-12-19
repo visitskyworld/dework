@@ -106,8 +106,8 @@ export const updateTask = gql`
 `;
 
 export const claimTask = gql`
-  mutation ClaimTaskMutation($taskId: UUID!) {
-    task: claimTask(id: $taskId) {
+  mutation ClaimTaskMutation($taskId: UUID!, $applicationMessage: String!) {
+    task: claimTask(id: $taskId, applicationMessage: $applicationMessage) {
       ...Task
     }
   }
