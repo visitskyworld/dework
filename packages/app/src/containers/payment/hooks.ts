@@ -5,6 +5,8 @@ import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
+  CreateTaskPaymentMutation,
+  CreateTaskPaymentMutationVariables,
   GetProjectQuery,
   GetProjectQueryVariables,
   PaymentMethod,
@@ -15,6 +17,7 @@ import {
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useSignPayout as useSignMetamaskPayout } from "@dewo/app/util/ethereum";
+import { useSignPayout as useSignGnosisPayout } from "@dewo/app/util/gnosis";
 import { useSignPhantomPayout } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
@@ -44,6 +47,7 @@ export class NoUserPaymentMethodError extends Error {}
 export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const signMetamaskPayout = useSignMetamaskPayout();
   const signPhantomPayout = useSignPhantomPayout();
+  const signGnosisPayout = useSignGnosisPayout();
 
   const [loadUserPaymentMethod] = useLazyQuery<
     UserPaymentMethodQuery,
@@ -53,31 +57,37 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     GetProjectQuery,
     GetProjectQueryVariables
   >(Queries.project);
+  const [createTaskPayment] = useMutation<
+    CreateTaskPaymentMutation,
+    CreateTaskPaymentMutationVariables
+  >(Mutations.createTaskPayment);
 
   return useCallback(
     async (task: Task, user: User) => {
       if (!task.reward) throw new Error("Task has no reward, so cannot pay");
 
-      const projectP = loadProjectPaymentMethod({
-        variables: { projectId: task.projectId },
-      });
-      const userP = loadUserPaymentMethod({ variables: { id: user.id } });
-      const project = await projectP.then((res) => res.data?.project);
-      if (!project?.paymentMethod) {
+      const [fromPaymentMethod, toPaymentMethod] = await Promise.all([
+        loadProjectPaymentMethod({
+          variables: { projectId: task.projectId },
+        }).then((res) => res.data?.project.paymentMethod),
+        loadUserPaymentMethod({ variables: { id: user.id } }).then(
+          (res) => res.data?.user.paymentMethod
+        ),
+      ]);
+
+      if (!fromPaymentMethod) {
         throw new NoProjectPaymentMethodError();
       }
 
-      const userPaymentMethod = await userP.then(
-        (res) => res.data?.user.paymentMethod
-      );
-      if (!userPaymentMethod) {
+      if (!toPaymentMethod) {
         throw new NoUserPaymentMethodError();
       }
-      switch (project.paymentMethod.type) {
+
+      switch (fromPaymentMethod.type) {
         case PaymentMethodType.METAMASK: {
           if (task.reward.currency === "ETH") {
             await signMetamaskPayout(
-              userPaymentMethod.address,
+              toPaymentMethod.address,
               task.reward.amount
             );
           } else {
@@ -86,15 +96,31 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.PHANTOM: {
-          await signPhantomPayout(
-            userPaymentMethod.address,
+          await signPhantomPayout(toPaymentMethod.address, task.reward.amount);
+          break;
+        }
+        case PaymentMethodType.GNOSIS_SAFE: {
+          const signed = await signGnosisPayout(
+            fromPaymentMethod.address,
+            toPaymentMethod.address,
             task.reward.amount
           );
+
+          await createTaskPayment({
+            variables: {
+              input: {
+                taskId: task.id,
+                txHash: signed.txHash,
+                data: { safeTxHash: signed.safeTxHash },
+              },
+            },
+          });
+
           break;
         }
         default:
           throw new Error(
-            `Unknown payment method: "${project.paymentMethod.type}"`
+            `Unknown payment method: "${fromPaymentMethod.type}"`
           );
       }
     },
@@ -103,6 +129,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       loadProjectPaymentMethod,
       signMetamaskPayout,
       signPhantomPayout,
+      signGnosisPayout,
+      createTaskPayment,
     ]
   );
 }

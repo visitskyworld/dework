@@ -24,6 +24,23 @@ export const paymentMethod = gql`
   }
 `;
 
+export const payment = gql`
+  fragment Payment on Payment {
+    id
+    status
+    txHash
+    data
+    from {
+      ...PaymentMethod
+    }
+    to {
+      ...PaymentMethod
+    }
+  }
+
+  ${paymentMethod}
+`;
+
 export const organization = gql`
   fragment Organization on Organization {
     id
@@ -86,7 +103,12 @@ export const taskReward = gql`
     amount
     currency
     trigger
+    payment {
+      ...Payment
+    }
   }
+
+  ${payment}
 `;
 
 export const githubPullRequest = gql`

@@ -142,7 +142,9 @@ export class TaskService {
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.tags", "taskTag")
-      .leftJoinAndSelect("task.reward", "reward");
+      .leftJoinAndSelect("task.reward", "reward")
+      .leftJoinAndSelect("reward.payment", "payment")
+      .leftJoinAndSelect("payment.from", "fromPaymentMethod");
 
     if (!!projectId) {
       queryBuilder = queryBuilder.where("task.projectId = :projectId", {

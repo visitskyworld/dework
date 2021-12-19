@@ -1,4 +1,4 @@
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import { Button, notification } from "antd";
@@ -10,19 +10,18 @@ import {
   NoUserPaymentMethodError,
   usePayTaskReward,
 } from "../../payment/hooks";
-import { useUpdateTask } from "../../task/hooks";
 import { uuidToBase62 } from "@dewo/app/util/uuid";
 
 interface Props {
   task: Task;
+  onDone?(): Promise<unknown>;
 }
 
-export const PayAndCloseButton: FC<Props> = ({ task }) => {
+export const PayButton: FC<Props> = ({ children, task, onDone }) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const updateTask = useUpdateTask();
   const payTaskReward = usePayTaskReward();
   const handlePayAndClose = useCallback(
     async (event) => {
@@ -31,11 +30,11 @@ export const PayAndCloseButton: FC<Props> = ({ task }) => {
       try {
         setLoading(true);
         await payTaskReward(task, receiver);
-        await updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task);
+        await onDone?.();
       } catch (error) {
         if (error instanceof NoProjectPaymentMethodError) {
           notification.info({
-            message: "Project has no payment method",
+            message: "The project has no payment method",
             description:
               "Set up a payment method to pay contributors in this project.",
             btn: (
@@ -69,7 +68,7 @@ export const PayAndCloseButton: FC<Props> = ({ task }) => {
         setLoading(false);
       }
     },
-    [task, router, payTaskReward, updateTask]
+    [task, router, onDone, payTaskReward]
   );
   return (
     <Button
@@ -78,7 +77,7 @@ export const PayAndCloseButton: FC<Props> = ({ task }) => {
       type="primary"
       onClick={handlePayAndClose}
     >
-      Pay and Close
+      {children}
     </Button>
   );
 };

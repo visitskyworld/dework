@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
@@ -7,8 +7,9 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
-import { PayAndCloseButton } from "./PayAndCloseButton";
+import { PayButton } from "./PayButton";
 import Link from "next/link";
+import { useUpdateTask } from "../../task/hooks";
 
 interface TaskCardProps {
   task: Task;
@@ -18,15 +19,46 @@ interface TaskCardProps {
 export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   const navigateToTask = useNavigateToTask(task.id);
 
+  const updateTask = useUpdateTask();
+  const moveToDone = useCallback(
+    () => updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task),
+    [updateTask, task]
+  );
+
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
   const button = useMemo(() => {
     if (
-      task.status === TaskStatusEnum.IN_REVIEW &&
+      task.status === TaskStatusEnum.DONE &&
       !!task.reward &&
+      !task.reward.payment &&
       canUpdateTask
     ) {
-      return <PayAndCloseButton task={task} />;
+      return <PayButton task={task}>Pay</PayButton>;
+    }
+
+    if (
+      task.status === TaskStatusEnum.IN_REVIEW &&
+      !!task.reward &&
+      !task.reward.payment &&
+      canUpdateTask
+    ) {
+      return (
+        <Space>
+          <PayButton task={task} onDone={moveToDone}>
+            {"Approve & Pay"}
+          </PayButton>
+          <Button
+            size="small"
+            onClick={(e) => {
+              eatClick(e);
+              moveToDone();
+            }}
+          >
+            Approve
+          </Button>
+        </Space>
+      );
     }
 
     if (task.status === TaskStatusEnum.TODO) {

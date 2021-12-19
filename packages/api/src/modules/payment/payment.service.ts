@@ -52,6 +52,7 @@ export class PaymentService {
       fromId: data.from.id,
       toId: data.to.id,
       data: data.data,
+      txHash: data.txHash,
       // TODO: fetch depending on payment method
       status: PaymentStatus.PROCESSING,
     });

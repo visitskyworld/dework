@@ -35,16 +35,18 @@ export function useRequestAddress(): () => Promise<string> {
 export function useSignPayout(): (
   toAddress: string,
   amount: number
-) => Promise<ethers.Transaction> {
+) => Promise<string> {
   const requestSigner = useRequestSigner();
   return useCallback(
     async (toAddress, amount) => {
       const signer = await requestSigner();
-      return signer.sendTransaction({
+      const tx = await signer.sendTransaction({
         to: toAddress,
         from: signer.getAddress(),
         value: ethers.utils.parseEther(String(amount)),
       });
+
+      return tx.hash;
     },
     [requestSigner]
   );

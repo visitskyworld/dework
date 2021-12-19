@@ -327,11 +327,79 @@ export interface CreateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface CreateTaskMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreateTaskMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreateTaskMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: CreateTaskMutation_task_reward_payment_from;
+  to: CreateTaskMutation_task_reward_payment_to;
+}
+
 export interface CreateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: CreateTaskMutation_task_reward_payment | null;
+}
+
+export interface CreateTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface CreateTaskMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface CreateTaskMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface CreateTaskMutation_task {
@@ -346,6 +414,12 @@ export interface CreateTaskMutation_task {
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
+  gitBranchName: string;
+  owner: CreateTaskMutation_task_owner | null;
+  creator: CreateTaskMutation_task_creator | null;
+  discordChannel: CreateTaskMutation_task_discordChannel | null;
+  githubPullRequests: CreateTaskMutation_task_githubPullRequests[];
+  githubBranches: CreateTaskMutation_task_githubBranches[];
 }
 
 export interface CreateTaskMutation {
@@ -379,11 +453,79 @@ export interface UpdateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface UpdateTaskMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UpdateTaskMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UpdateTaskMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: UpdateTaskMutation_task_reward_payment_from;
+  to: UpdateTaskMutation_task_reward_payment_to;
+}
+
 export interface UpdateTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: UpdateTaskMutation_task_reward_payment | null;
+}
+
+export interface UpdateTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface UpdateTaskMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface UpdateTaskMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface UpdateTaskMutation_task {
@@ -398,6 +540,12 @@ export interface UpdateTaskMutation_task {
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
+  gitBranchName: string;
+  owner: UpdateTaskMutation_task_owner | null;
+  creator: UpdateTaskMutation_task_creator | null;
+  discordChannel: UpdateTaskMutation_task_discordChannel | null;
+  githubPullRequests: UpdateTaskMutation_task_githubPullRequests[];
+  githubBranches: UpdateTaskMutation_task_githubBranches[];
 }
 
 export interface UpdateTaskMutation {
@@ -431,11 +579,79 @@ export interface ClaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface ClaimTaskMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface ClaimTaskMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface ClaimTaskMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: ClaimTaskMutation_task_reward_payment_from;
+  to: ClaimTaskMutation_task_reward_payment_to;
+}
+
 export interface ClaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: ClaimTaskMutation_task_reward_payment | null;
+}
+
+export interface ClaimTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ClaimTaskMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ClaimTaskMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface ClaimTaskMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface ClaimTaskMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface ClaimTaskMutation_task {
@@ -450,6 +666,12 @@ export interface ClaimTaskMutation_task {
   tags: ClaimTaskMutation_task_tags[];
   assignees: ClaimTaskMutation_task_assignees[];
   reward: ClaimTaskMutation_task_reward | null;
+  gitBranchName: string;
+  owner: ClaimTaskMutation_task_owner | null;
+  creator: ClaimTaskMutation_task_creator | null;
+  discordChannel: ClaimTaskMutation_task_discordChannel | null;
+  githubPullRequests: ClaimTaskMutation_task_githubPullRequests[];
+  githubBranches: ClaimTaskMutation_task_githubBranches[];
 }
 
 export interface ClaimTaskMutation {
@@ -483,11 +705,79 @@ export interface UnclaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface UnclaimTaskMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UnclaimTaskMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UnclaimTaskMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: UnclaimTaskMutation_task_reward_payment_from;
+  to: UnclaimTaskMutation_task_reward_payment_to;
+}
+
 export interface UnclaimTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: UnclaimTaskMutation_task_reward_payment | null;
+}
+
+export interface UnclaimTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UnclaimTaskMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UnclaimTaskMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface UnclaimTaskMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface UnclaimTaskMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface UnclaimTaskMutation_task {
@@ -502,6 +792,12 @@ export interface UnclaimTaskMutation_task {
   tags: UnclaimTaskMutation_task_tags[];
   assignees: UnclaimTaskMutation_task_assignees[];
   reward: UnclaimTaskMutation_task_reward | null;
+  gitBranchName: string;
+  owner: UnclaimTaskMutation_task_owner | null;
+  creator: UnclaimTaskMutation_task_creator | null;
+  discordChannel: UnclaimTaskMutation_task_discordChannel | null;
+  githubPullRequests: UnclaimTaskMutation_task_githubPullRequests[];
+  githubBranches: UnclaimTaskMutation_task_githubBranches[];
 }
 
 export interface UnclaimTaskMutation {
@@ -535,11 +831,79 @@ export interface DeleteTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
+export interface DeleteTaskMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface DeleteTaskMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface DeleteTaskMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: DeleteTaskMutation_task_reward_payment_from;
+  to: DeleteTaskMutation_task_reward_payment_to;
+}
+
 export interface DeleteTaskMutation_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: DeleteTaskMutation_task_reward_payment | null;
+}
+
+export interface DeleteTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface DeleteTaskMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface DeleteTaskMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface DeleteTaskMutation_task {
@@ -554,6 +918,12 @@ export interface DeleteTaskMutation_task {
   tags: DeleteTaskMutation_task_tags[];
   assignees: DeleteTaskMutation_task_assignees[];
   reward: DeleteTaskMutation_task_reward | null;
+  gitBranchName: string;
+  owner: DeleteTaskMutation_task_owner | null;
+  creator: DeleteTaskMutation_task_creator | null;
+  discordChannel: DeleteTaskMutation_task_discordChannel | null;
+  githubPullRequests: DeleteTaskMutation_task_githubPullRequests[];
+  githubBranches: DeleteTaskMutation_task_githubBranches[];
 }
 
 export interface DeleteTaskMutation {
@@ -767,6 +1137,132 @@ export interface CreateFileUploadMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateTaskPaymentMutation
+// ====================================================
+
+export interface CreateTaskPaymentMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface CreateTaskPaymentMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentMutation_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreateTaskPaymentMutation_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface CreateTaskPaymentMutation_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: CreateTaskPaymentMutation_task_reward_payment_from;
+  to: CreateTaskPaymentMutation_task_reward_payment_to;
+}
+
+export interface CreateTaskPaymentMutation_task_reward {
+  __typename: "TaskReward";
+  amount: number;
+  currency: string;
+  trigger: TaskRewardTrigger;
+  payment: CreateTaskPaymentMutation_task_reward_payment | null;
+}
+
+export interface CreateTaskPaymentMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentMutation_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface CreateTaskPaymentMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface CreateTaskPaymentMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface CreateTaskPaymentMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  tags: CreateTaskPaymentMutation_task_tags[];
+  assignees: CreateTaskPaymentMutation_task_assignees[];
+  reward: CreateTaskPaymentMutation_task_reward | null;
+  gitBranchName: string;
+  owner: CreateTaskPaymentMutation_task_owner | null;
+  creator: CreateTaskPaymentMutation_task_creator | null;
+  discordChannel: CreateTaskPaymentMutation_task_discordChannel | null;
+  githubPullRequests: CreateTaskPaymentMutation_task_githubPullRequests[];
+  githubBranches: CreateTaskPaymentMutation_task_githubBranches[];
+}
+
+export interface CreateTaskPaymentMutation {
+  task: CreateTaskPaymentMutation_task;
+}
+
+export interface CreateTaskPaymentMutationVariables {
+  input: CreateTaskPaymentInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -879,11 +1375,36 @@ export interface UserTasksQuery_user_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface UserTasksQuery_user_tasks_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UserTasksQuery_user_tasks_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface UserTasksQuery_user_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: UserTasksQuery_user_tasks_reward_payment_from;
+  to: UserTasksQuery_user_tasks_reward_payment_to;
+}
+
 export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: UserTasksQuery_user_tasks_reward_payment | null;
 }
 
 export interface UserTasksQuery_user_tasks {
@@ -1118,11 +1639,36 @@ export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: GetOrganizationTasksQuery_organization_tasks_reward_payment_from;
+  to: GetOrganizationTasksQuery_organization_tasks_reward_payment_to;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: GetOrganizationTasksQuery_organization_tasks_reward_payment | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks {
@@ -1226,11 +1772,36 @@ export interface GetProjectTasksQuery_project_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface GetProjectTasksQuery_project_tasks_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetProjectTasksQuery_project_tasks_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetProjectTasksQuery_project_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: GetProjectTasksQuery_project_tasks_reward_payment_from;
+  to: GetProjectTasksQuery_project_tasks_reward_payment_to;
+}
+
 export interface GetProjectTasksQuery_project_tasks_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: GetProjectTasksQuery_project_tasks_reward_payment | null;
 }
 
 export interface GetProjectTasksQuery_project_tasks {
@@ -1292,11 +1863,36 @@ export interface GetTaskQuery_task_assignees {
   imageUrl: string | null;
 }
 
+export interface GetTaskQuery_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetTaskQuery_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface GetTaskQuery_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: GetTaskQuery_task_reward_payment_from;
+  to: GetTaskQuery_task_reward_payment_to;
+}
+
 export interface GetTaskQuery_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: GetTaskQuery_task_reward_payment | null;
 }
 
 export interface GetTaskQuery_task_owner {
@@ -1476,11 +2072,79 @@ export interface TaskCreatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
+export interface TaskCreatedSubscription_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskCreatedSubscription_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskCreatedSubscription_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: TaskCreatedSubscription_task_reward_payment_from;
+  to: TaskCreatedSubscription_task_reward_payment_to;
+}
+
 export interface TaskCreatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: TaskCreatedSubscription_task_reward_payment | null;
+}
+
+export interface TaskCreatedSubscription_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface TaskCreatedSubscription_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface TaskCreatedSubscription_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface TaskCreatedSubscription_task {
@@ -1495,6 +2159,12 @@ export interface TaskCreatedSubscription_task {
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
+  gitBranchName: string;
+  owner: TaskCreatedSubscription_task_owner | null;
+  creator: TaskCreatedSubscription_task_creator | null;
+  discordChannel: TaskCreatedSubscription_task_discordChannel | null;
+  githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
+  githubBranches: TaskCreatedSubscription_task_githubBranches[];
 }
 
 export interface TaskCreatedSubscription {
@@ -1524,11 +2194,79 @@ export interface TaskUpdatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
+export interface TaskUpdatedSubscription_task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskUpdatedSubscription_task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskUpdatedSubscription_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: TaskUpdatedSubscription_task_reward_payment_from;
+  to: TaskUpdatedSubscription_task_reward_payment_to;
+}
+
 export interface TaskUpdatedSubscription_task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: TaskUpdatedSubscription_task_reward_payment | null;
+}
+
+export interface TaskUpdatedSubscription_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_discordChannel {
+  __typename: "DiscordChannel";
+  id: Scalar.UUID;
+  link: string;
+  name: string;
+}
+
+export interface TaskUpdatedSubscription_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatusEnum;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface TaskUpdatedSubscription_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repository: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
 }
 
 export interface TaskUpdatedSubscription_task {
@@ -1543,6 +2281,12 @@ export interface TaskUpdatedSubscription_task {
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
+  gitBranchName: string;
+  owner: TaskUpdatedSubscription_task_owner | null;
+  creator: TaskUpdatedSubscription_task_creator | null;
+  discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
+  githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
+  githubBranches: TaskUpdatedSubscription_task_githubBranches[];
 }
 
 export interface TaskUpdatedSubscription {
@@ -1595,6 +2339,39 @@ export interface PaymentMethod {
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Payment
+// ====================================================
+
+export interface Payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface Payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface Payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: Payment_from;
+  to: Payment_to;
 }
 
 /* tslint:disable */
@@ -1709,11 +2486,36 @@ export interface TaskTag {
 // GraphQL fragment: TaskReward
 // ====================================================
 
+export interface TaskReward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskReward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskReward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: TaskReward_payment_from;
+  to: TaskReward_payment_to;
+}
+
 export interface TaskReward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: TaskReward_payment | null;
 }
 
 /* tslint:disable */
@@ -1795,11 +2597,36 @@ export interface Task_assignees {
   imageUrl: string | null;
 }
 
+export interface Task_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface Task_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface Task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: Task_reward_payment_from;
+  to: Task_reward_payment_to;
+}
+
 export interface Task_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: Task_reward_payment | null;
 }
 
 export interface Task {
@@ -1839,11 +2666,36 @@ export interface TaskDetails_assignees {
   imageUrl: string | null;
 }
 
+export interface TaskDetails_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskDetails_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface TaskDetails_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: TaskDetails_reward_payment_from;
+  to: TaskDetails_reward_payment_to;
+}
+
 export interface TaskDetails_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: TaskDetails_reward_payment | null;
 }
 
 export interface TaskDetails_owner {
@@ -2078,11 +2930,36 @@ export interface ProjectDetails_tasks_assignees {
   imageUrl: string | null;
 }
 
+export interface ProjectDetails_tasks_reward_payment_from {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface ProjectDetails_tasks_reward_payment_to {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+}
+
+export interface ProjectDetails_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  txHash: string | null;
+  data: Scalar.JSONObject | null;
+  from: ProjectDetails_tasks_reward_payment_from;
+  to: ProjectDetails_tasks_reward_payment_to;
+}
+
 export interface ProjectDetails_tasks_reward {
   __typename: "TaskReward";
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
+  payment: ProjectDetails_tasks_reward_payment | null;
 }
 
 export interface ProjectDetails_tasks {
@@ -2179,6 +3056,11 @@ export enum PaymentMethodType {
   PHANTOM = "PHANTOM",
 }
 
+export enum PaymentStatus {
+  CONFIRMED = "CONFIRMED",
+  PROCESSING = "PROCESSING",
+}
+
 export enum ProjectIntegrationSource {
   discord = "discord",
   github = "github",
@@ -2249,6 +3131,12 @@ export interface CreateTaskInput {
   ownerId?: Scalar.UUID | null;
   status: TaskStatusEnum;
   reward?: UpdateTaskRewardInput | null;
+}
+
+export interface CreateTaskPaymentInput {
+  taskId: Scalar.UUID;
+  txHash?: string | null;
+  data?: Scalar.JSONObject | null;
 }
 
 export interface CreateTaskTagInput {

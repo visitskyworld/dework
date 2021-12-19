@@ -214,3 +214,13 @@ export const createFileUploadUrl = gql`
     }
   }
 `;
+
+export const createTaskPayment = gql`
+  mutation CreateTaskPaymentMutation($input: CreateTaskPaymentInput!) {
+    task: createTaskPayment(input: $input) {
+      ...TaskDetails
+    }
+  }
+
+  ${Fragments.taskDetails}
+`;
