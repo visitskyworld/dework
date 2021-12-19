@@ -78,9 +78,7 @@ export class TaskService {
   public async unclaim(taskId: string, user: User): Promise<Task> {
     const task = await this.taskRepo.findOne(taskId);
     if (!task) throw new NotFoundException();
-    if (!task.assignees.map((a) => a.id).includes(user.id)) return task;
-    task.assignees = task.assignees.filter((a) => a.id !== user.id);
-    await this.update(task);
+    await this.taskApplicationRepo.delete({ taskId: taskId, userId: user.id });
     return this.findById(taskId) as Promise<Task>;
   }
 
