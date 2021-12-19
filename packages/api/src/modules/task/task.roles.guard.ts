@@ -35,6 +35,7 @@ export class TaskRolesGuard implements CanActivate {
     const taskId = [
       gqlContext.req.body?.variables?.taskId,
       gqlContext.req.body?.variables?.input?.id,
+      gqlContext.req.body?.variables?.input?.taskId,
     ].find((id) => !!id);
 
     if (!taskId) {

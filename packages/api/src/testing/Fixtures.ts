@@ -27,6 +27,7 @@ import { DeepPartial } from "typeorm";
 import { OrganizationMember } from "../models/OrganizationMember";
 import { DeepAtLeast } from "../types/general";
 import { ProjectIntegration } from "../models/ProjectIntegration";
+import { TaskRewardTrigger } from "../models/TaskReward";
 
 @Injectable()
 export class Fixtures {
@@ -115,6 +116,14 @@ export class Fixtures {
       //   projectId: defaultProjectId,
       // }).then((s) => s.id),
       ...partial,
+      reward: !!partial.reward
+        ? {
+            amount: faker.datatype.number({ min: 1, max: 100 }),
+            currency: "ETH",
+            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+            ...partial.reward,
+          }
+        : undefined,
     });
   }
 
@@ -141,7 +150,7 @@ export class Fixtures {
     partial: Partial<PaymentMethod> = {},
     user?: User
   ): Promise<PaymentMethod> {
-    return this.paymentService.create(
+    return this.paymentService.createPaymentMethod(
       {
         type: PaymentMethodType.METAMASK,
         address: "0x0000000000000000000000000000000000000000",
@@ -166,7 +175,11 @@ export class Fixtures {
     organization: Organization;
     project: Project;
   }> {
-    const user = await this.createUser(partial.user);
+    const user = await this.createUser();
+    if (!!partial.user) {
+      await this.userService.update({ ...user, ...partial.user });
+    }
+
     const organization = await this.createOrganization(
       partial.organization,
       user

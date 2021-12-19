@@ -16,6 +16,6 @@ export class PaymentResolver {
     @Context("user") user: User,
     @Args("input") input: CreatePaymentMethodInput
   ): Promise<PaymentMethod> {
-    return this.paymentService.create(input, user);
+    return this.paymentService.createPaymentMethod(input, user);
   }
 }

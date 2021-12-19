@@ -1,22 +1,33 @@
 import _ from "lodash";
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindConditions, IsNull, Not, Repository } from "typeorm";
 import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskUpdatedEvent } from "./task-updated.event";
+import { CreateTaskPaymentInput } from "./dto/CreateTaskPaymentInput";
+import { PaymentService } from "../payment/payment.service";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 
 @Injectable()
 export class TaskService {
-  // private readonly logger = new Logger("UserService");
+  private readonly logger = new Logger("UserService");
 
   constructor(
     private readonly eventBus: EventBus,
 
     @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    private readonly taskRepo: Repository<Task>,
+    @InjectRepository(TaskReward)
+    private readonly taskRewardRepo: Repository<TaskReward>,
+    private readonly paymentService: PaymentService
   ) {}
 
   public async create(
@@ -57,6 +68,61 @@ export class TaskService {
     task.assignees = task.assignees.filter((a) => a.id !== user.id);
     await this.update(task);
     return this.findById(taskId) as Promise<Task>;
+  }
+
+  public async createPayment(input: CreateTaskPaymentInput): Promise<Task> {
+    const task = await this.taskRepo.findOne(input.taskId);
+    if (!task) throw new NotFoundException();
+    if (!task.rewardId) {
+      const msg = "Cannot pay for task without reward";
+      this.logger.error(`${msg} (${JSON.stringify(input)})`);
+      throw new BadRequestException(msg);
+    }
+
+    const assignees = await task.assignees;
+    if (!assignees.length) {
+      const msg = "Cannot pay for task without assignees";
+      this.logger.error(`${msg} (${JSON.stringify(input)})`);
+      throw new BadRequestException(msg);
+    }
+
+    if (assignees.length > 1) {
+      this.logger.warn(
+        `Creating task payment for task with multiple assignees. Only first assignee will be paid (${JSON.stringify(
+          input
+        )})`
+      );
+    }
+
+    const project = await task.project;
+    const fromPaymentMethod = await project.paymentMethod;
+    if (!fromPaymentMethod) {
+      const msg = "Project is missing payment method";
+      this.logger.error(
+        `${msg} (${JSON.stringify({ input, projectId: project.id })})`
+      );
+      throw new BadRequestException(msg);
+    }
+
+    const user = assignees[0];
+    const toPaymentMethod = await user.paymentMethod;
+    if (!toPaymentMethod) {
+      const msg = "User is missing payment method";
+      this.logger.error(
+        `${msg} (${JSON.stringify({ input, userId: user.id })})`
+      );
+      throw new BadRequestException(msg);
+    }
+
+    const payment = await this.paymentService.create({
+      from: fromPaymentMethod,
+      to: toPaymentMethod,
+      txHash: input.txHash,
+      data: input.data,
+    });
+
+    await this.taskRewardRepo.update(task.rewardId, { paymentId: payment.id });
+    return this.findById(task.id) as Promise<Task>;
   }
 
   public async findById(id: string): Promise<Task | undefined> {

@@ -6,6 +6,7 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
+import Bluebird from "bluebird";
 
 describe("ProjectResolver", () => {
   let app: INestApplication;
@@ -122,26 +123,27 @@ describe("ProjectResolver", () => {
       it("should calculate taskCount", async () => {
         const { user, project } = await fixtures.createUserOrgProject();
 
-        await Promise.all([
-          fixtures.createTask({ projectId: project.id, deletedAt: new Date() }),
-          fixtures.createTask({
-            projectId: project.id,
-            status: TaskStatusEnum.TODO,
-            reward: {
-              amount: 1,
-              currency: "USD",
-              trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-            },
-          }),
-          fixtures.createTask({
-            projectId: project.id,
-            status: TaskStatusEnum.TODO,
-          }),
-          fixtures.createTask({
-            projectId: project.id,
-            status: TaskStatusEnum.DONE,
-          }),
-        ]);
+        await fixtures.createTask({
+          projectId: project.id,
+          deletedAt: new Date(),
+        });
+        await fixtures.createTask({
+          projectId: project.id,
+          status: TaskStatusEnum.TODO,
+          reward: {
+            amount: 1,
+            currency: "USD",
+            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+          },
+        });
+        await fixtures.createTask({
+          projectId: project.id,
+          status: TaskStatusEnum.TODO,
+        });
+        await fixtures.createTask({
+          projectId: project.id,
+          status: TaskStatusEnum.DONE,
+        });
 
         const response = await client.request({
           app,

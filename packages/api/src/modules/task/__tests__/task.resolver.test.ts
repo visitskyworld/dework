@@ -1,3 +1,5 @@
+import { PaymentStatus } from "@dewo/api/models/Payment";
+import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
@@ -7,6 +9,7 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
+import { CreateTaskPaymentInput } from "../dto/CreateTaskPaymentInput";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
 describe("TaskResolver", () => {
@@ -254,6 +257,145 @@ describe("TaskResolver", () => {
           expect.objectContaining({ id: user.id })
         );
       });
+    });
+
+    describe("createTaskPayment", () => {
+      const req = (user: User, input: CreateTaskPaymentInput) =>
+        client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.createPayment(input),
+        });
+
+      it("should fail if task has no reward", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+
+        const response = await req(user, {
+          taskId: task.id,
+          data: { safeTxHash: faker.datatype.uuid() },
+        });
+
+        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
+        client.expectGqlErrorMessage(
+          response,
+          "Cannot pay for task without reward"
+        );
+      });
+
+      it("should fail if task has no assignees", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          reward: { currency: "ETH" },
+        });
+
+        const response = await req(user, {
+          taskId: task.id,
+          data: { safeTxHash: faker.datatype.uuid() },
+        });
+
+        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
+        client.expectGqlErrorMessage(
+          response,
+          "Cannot pay for task without assignees"
+        );
+      });
+
+      it("should fail if project has no payment method", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          assignees: [user],
+          reward: { currency: "ETH" },
+        });
+
+        const response = await req(user, {
+          taskId: task.id,
+          data: { safeTxHash: faker.datatype.uuid() },
+        });
+
+        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
+        client.expectGqlErrorMessage(
+          response,
+          "Project is missing payment method"
+        );
+      });
+
+      it("should fail if user has no payment method", async () => {
+        const { user, project } = await fixtures.createUserOrgProject({
+          project: {
+            paymentMethodId: await fixtures
+              .createPaymentMethod()
+              .then((p) => p.id),
+          },
+        });
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          assignees: [user],
+          reward: { currency: "ETH" },
+        });
+
+        const response = await req(user, {
+          taskId: task.id,
+          data: { safeTxHash: faker.datatype.uuid() },
+        });
+
+        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
+        client.expectGqlErrorMessage(
+          response,
+          "User is missing payment method"
+        );
+      });
+
+      describe("payment.type = GNOSIS_SAFE", () => {
+        it("should create payment", async () => {
+          const safeTxHash = faker.datatype.uuid();
+
+          const { user, project } = await fixtures.createUserOrgProject({
+            user: {
+              paymentMethodId: await fixtures
+                .createPaymentMethod({ type: PaymentMethodType.GNOSIS_SAFE })
+                .then((p) => p.id),
+            },
+            project: {
+              paymentMethodId: await fixtures
+                .createPaymentMethod({ type: PaymentMethodType.GNOSIS_SAFE })
+                .then((p) => p.id),
+            },
+          });
+          const task = await fixtures.createTask({
+            projectId: project.id,
+            assignees: [user],
+            reward: { currency: "ETH" },
+          });
+
+          const response = await req(user, {
+            taskId: task.id,
+            data: { safeTxHash },
+          });
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetched = response.body.data?.task;
+          expect(fetched.reward.payment).not.toBe(null);
+          expect(fetched.reward.payment.txHash).toEqual(null);
+          expect(fetched.reward.payment.status).toEqual(
+            PaymentStatus.PROCESSING
+          );
+          expect(fetched.reward.payment.data).toEqual({ safeTxHash });
+        });
+
+        xit("should fail if data.safeTxHash not provided", () => {});
+      });
+
+      xdescribe("payment.type = PHANTOM", () => {
+        it("should fail if txHash not provided", () => {});
+      });
+
+      xdescribe("payment.type = METAMASK", () => {
+        it("should fail if txHash not provided", () => {});
+      });
+
+      // status AWAITING_SIGNATURE
     });
 
     describe("deleteTask", () => {

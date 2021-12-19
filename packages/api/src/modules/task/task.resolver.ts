@@ -23,6 +23,7 @@ import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { CustomPermissionActions } from "../auth/permissions";
 import { User } from "@dewo/api/models/User";
+import { CreateTaskPaymentInput } from "./dto/CreateTaskPaymentInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -123,6 +124,18 @@ export class TaskResolver {
   ): Promise<Task> {
     const task = await this.taskService.update({ id, deletedAt: new Date() });
     return task;
+  }
+
+  @Mutation(() => Task)
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Task, [
+    TaskService,
+    (service: TaskService, { params }) => service.findById(params.input.taskId),
+  ])
+  public async createTaskPayment(
+    @Args("input") input: CreateTaskPaymentInput
+  ): Promise<Task> {
+    return this.taskService.createPayment(input);
   }
 
   @Query(() => Task)

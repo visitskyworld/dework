@@ -1,4 +1,5 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
+import { CreateTaskPaymentInput } from "@dewo/api/modules/task/dto/CreateTaskPaymentInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
@@ -32,9 +33,18 @@ export class TaskRequests {
         guildId
       }
       reward {
+        id
         amount
         currency
         trigger
+        payment {
+          id
+          txHash
+          status
+          fromId
+          toId
+          data
+        }
       }
     }
   `;
@@ -121,6 +131,23 @@ export class TaskRequests {
         ${this.taskFragment}
       `,
       variables: { taskId },
+    };
+  }
+
+  public static createPayment(
+    input: CreateTaskPaymentInput
+  ): GraphQLTestClientRequestBody<{ input: CreateTaskPaymentInput }> {
+    return {
+      query: `
+        mutation CreateTaskPayment($input: CreateTaskPaymentInput!) {
+          task: createTaskPayment(input: $input) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { input },
     };
   }
 
