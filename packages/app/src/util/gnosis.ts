@@ -43,13 +43,11 @@ export function useSignPayout(): (
   return useCallback(
     async (safeAddress, toAddress, amount) => {
       const safe = await requestSafe(safeAddress);
-      const safeTransaction = await safe.createTransaction([
-        {
-          to: toAddress,
-          value: ethers.utils.parseEther(String(amount)).toString(),
-          data: toAddress, // TODO(fant): figure out what this is
-        },
-      ]);
+      const safeTransaction = await safe.createTransaction({
+        to: toAddress,
+        value: ethers.utils.parseEther(String(amount)).toString(),
+        data: toAddress, // TODO(fant): figure out what this is
+      });
 
       const safeTxHash = await safe.getTransactionHash(safeTransaction);
 

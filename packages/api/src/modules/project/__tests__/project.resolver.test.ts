@@ -6,7 +6,6 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
-import Bluebird from "bluebird";
 
 describe("ProjectResolver", () => {
   let app: INestApplication;
