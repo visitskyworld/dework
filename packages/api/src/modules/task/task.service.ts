@@ -10,6 +10,7 @@ import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { ProjectService } from "../project/project.service";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
 
 @Injectable()
 export class TaskService {
@@ -23,7 +24,9 @@ export class TaskService {
     @InjectRepository(TaskReward)
     private readonly taskRewardRepo: Repository<TaskReward>,
     private readonly paymentService: PaymentService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    @InjectRepository(TaskApplication)
+    private readonly taskApplicationRepo: Repository<TaskApplication>
   ) {}
 
   public async create(
@@ -48,13 +51,23 @@ export class TaskService {
     return refetched;
   }
 
-  public async claim(taskId: string, user: User): Promise<Task> {
+  public async claim(
+    taskId: string,
+    user: User,
+    applicationMessage: string
+  ): Promise<Task> {
     const task = await this.taskRepo.findOne(taskId);
     if (!task) throw new NotFoundException();
-    if (task.assignees.map((a) => a.id).includes(user.id)) return task;
-    task.assignees.push(user);
-    await this.update(task);
-    return this.findById(taskId) as Promise<Task>;
+
+    const taskApplications = await task.taskApplications;
+    if (taskApplications.map((a) => a.userId).includes(user.id)) return task;
+
+    const createdTaskApplication = await this.taskApplicationRepo.save({
+      applicationMessage: applicationMessage,
+      userId: user.id,
+      taskId: taskId,
+    });
+    return this.findById(createdTaskApplication.id) as Promise<Task>;
   }
 
   public async unclaim(taskId: string, user: User): Promise<Task> {
