@@ -1,11 +1,12 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
-import { Button, Modal, Space, Tooltip, Typography } from "antd";
+import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useClaimTask, useUnclaimTask } from "../../task/hooks";
+import { useUnclaimTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useToggle } from "@dewo/app/util/hooks";
+import { TaskApplyModal } from "../../task/TaskApplyModal";
 
 interface Props {
   task: Task;
@@ -20,15 +21,13 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
 
   const showClaimEducation = useToggle();
 
-  const claimTask = useClaimTask();
   const unclaimTask = useUnclaimTask();
   const handleClaimTask = useCallback(
-    async (event) => {
+    (event) => {
       eatClick(event);
-      await claimTask(task);
       showClaimEducation.toggleOn();
     },
-    [claimTask, task, showClaimEducation]
+    [showClaimEducation]
   );
   const handleUnclaimTask = useCallback(
     async (event) => {
@@ -82,17 +81,12 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
           Apply
         </Button>
       )}
-      <Modal
+      <TaskApplyModal
+        task={task}
         visible={showClaimEducation.isOn}
-        okText="Sounds good!"
-        onOk={hideClaimConfirmation}
         onCancel={hideClaimConfirmation}
-      >
-        Congratulations - you've just applied to claim the task!
-        <br />
-        <br />
-        You will recieve a Discord notification if you get choosen for the task.
-      </Modal>
+        onDone={showClaimEducation.toggleOff}
+      />
     </>
   );
 };
