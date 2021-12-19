@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { Avatar, Card, Col, Row, Space, Tag, Typography } from "antd";
 import { useUpdateUser, useUser, useUserTasks } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -7,32 +7,30 @@ import * as Colors from "@ant-design/colors";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
 import { TaskCard } from "../project/board/TaskCard";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
+import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
+
+interface UserDetailIconProps {
+  type: UserDetailType;
+}
+
+const UserDetailIcon: FC<UserDetailIconProps> = ({ type }) => {
+  switch (type) {
+    case UserDetailType.twitter:
+      return <Icons.TwitterOutlined />;
+    case UserDetailType.github:
+      return <Icons.GithubOutlined />;
+    case UserDetailType.linkedin:
+      return <Icons.LinkedinFilled />;
+    default:
+      return <Icons.LinkOutlined />;
+  }
+};
 
 interface Props {
   userId: string;
 }
-
-const links: { icon: ReactNode; href: string }[] = [
-  {
-    icon: <Icons.TwitterOutlined />,
-    href: "#",
-  },
-  {
-    icon: <Icons.GithubOutlined />,
-    href: "#",
-  },
-  {
-    icon: <Icons.LinkOutlined />,
-    href: "#",
-  },
-  {
-    icon: <Icons.LinkedinFilled />,
-    href: "#",
-  },
-];
 
 export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
@@ -86,13 +84,16 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               )} */}
 
               <Space>
-                {links.map((link, index) => (
-                  <Link key={index} href={link.href}>
-                    <a>
-                      <Avatar size="small">{link.icon}</Avatar>
-                    </a>
-                  </Link>
-                ))}
+                {!!user.details &&
+                  user.details.map((detail, index) => (
+                    <Link key={index} href={detail.value}>
+                      <a>
+                        <Avatar size="small">
+                          <UserDetailIcon type={detail.type} />
+                        </Avatar>
+                      </a>
+                    </Link>
+                  ))}
               </Space>
 
               <Typography.Text
