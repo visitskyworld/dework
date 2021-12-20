@@ -250,7 +250,7 @@ export class DiscordIntegrationService
   }
 
   private async postMovedIntoReview(task: Task) {
-    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
     const message = `<@${owner}> A person has applied to this task.`;
     const channel = await this.getDiscordChannel(task);
@@ -292,7 +292,7 @@ export class DiscordIntegrationService
   }
 
   private async postInProgress(task: Task) {
-    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
     const channel = await this.getDiscordChannel(task);
     if (!channel) return;
@@ -317,7 +317,7 @@ export class DiscordIntegrationService
   }
 
   private async postNewAssignee(task: Task) {
-    const owner = task.ownerId && this.getDiscordId(task.ownerId);
+    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
     const message = `<@${owner}> A person has applied to this task.`;
     const channel = await this.getDiscordChannel(task);
