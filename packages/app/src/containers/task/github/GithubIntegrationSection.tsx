@@ -42,24 +42,26 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
         </FormSection>
       )}
 
-      <FormSection label="Link Github Branch" className="mb-3">
-        <Typography.Paragraph
-          type="secondary"
-          className="ant-typography-caption"
-        >
-          Automatically link your task with a Github Pull Request using the
-          branch name below
-        </Typography.Paragraph>
+      {!task?.githubBranches && (
+        <FormSection label="Link Github Branch" className="mb-3">
+          <Typography.Paragraph
+            type="secondary"
+            className="ant-typography-caption"
+          >
+            Automatically link your task with a Github Pull Request using the
+            branch name below
+          </Typography.Paragraph>
 
-        <Typography.Text
-          copyable
-          type="secondary"
-          className="ant-input"
-          style={{ display: "inline" }}
-        >
-          {`git checkout -b ${task.gitBranchName}`}
-        </Typography.Text>
-      </FormSection>
+          <Typography.Text
+            copyable
+            type="secondary"
+            className="ant-input"
+            style={{ display: "inline" }}
+          >
+            {`git checkout -b ${task.gitBranchName}`}
+          </Typography.Text>
+        </FormSection>
+      )}
     </>
   );
 };
