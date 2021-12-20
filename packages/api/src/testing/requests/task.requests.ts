@@ -1,5 +1,5 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
-import { CreateTaskPaymentInput } from "@dewo/api/modules/task/dto/CreateTaskPaymentInput";
+import { CreateTaskPaymentsInput } from "@dewo/api/modules/task/dto/CreateTaskPaymentsInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
@@ -135,12 +135,12 @@ export class TaskRequests {
   }
 
   public static createPayment(
-    input: CreateTaskPaymentInput
-  ): GraphQLTestClientRequestBody<{ input: CreateTaskPaymentInput }> {
+    input: CreateTaskPaymentsInput
+  ): GraphQLTestClientRequestBody<{ input: CreateTaskPaymentsInput }> {
     return {
       query: `
-        mutation CreateTaskPayment($input: CreateTaskPaymentInput!) {
-          task: createTaskPayment(input: $input) {
+        mutation CreateTaskPayments($input: CreateTaskPaymentsInput!) {
+          task: createTaskPayments(input: $input) {
             ...Task
           }
         }

@@ -4,12 +4,12 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class CreateTaskPaymentInput {
-  @Field(() => GraphQLUUID)
-  public taskId!: string;
+export class CreateTaskPaymentsInput {
+  @Field(() => [GraphQLUUID])
+  public taskRewardIds!: string[];
 
-  @Field({ nullable: true })
-  public txHash?: string;
+  @Field(() => GraphQLUUID)
+  public paymentMethodId!: string;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   public data!: PaymentData;

@@ -1,5 +1,3 @@
-import { PaymentStatus } from "@dewo/api/models/Payment";
-import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
@@ -9,7 +7,6 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
-import { CreateTaskPaymentInput } from "../dto/CreateTaskPaymentInput";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
 describe("TaskResolver", () => {
@@ -259,6 +256,7 @@ describe("TaskResolver", () => {
       });
     });
 
+    /*
     describe("createTaskPayment", () => {
       const req = (user: User, input: CreateTaskPaymentInput) =>
         client.request({
@@ -397,6 +395,7 @@ describe("TaskResolver", () => {
 
       // status AWAITING_SIGNATURE
     });
+    */
 
     describe("deleteTask", () => {
       it("should set task.deletedAt", async () => {

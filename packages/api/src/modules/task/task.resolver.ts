@@ -23,7 +23,7 @@ import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { CustomPermissionActions } from "../auth/permissions";
 import { User } from "@dewo/api/models/User";
-import { CreateTaskPaymentInput } from "./dto/CreateTaskPaymentInput";
+import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -126,16 +126,18 @@ export class TaskResolver {
     return task;
   }
 
-  @Mutation(() => Task)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Task, [
-    TaskService,
-    (service: TaskService, { params }) => service.findById(params.input.taskId),
-  ])
-  public async createTaskPayment(
-    @Args("input") input: CreateTaskPaymentInput
-  ): Promise<Task> {
-    return this.taskService.createPayment(input);
+  @Mutation(() => [Task])
+  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  // @UseAbility(Actions.update, Task, [
+  //   TaskService,
+  //   (service: TaskService, { params }) => service.findById(params.input.taskId),
+  // ])
+  public async createTaskPayments(
+    @Args("input") input: CreateTaskPaymentsInput
+  ): Promise<Task[]> {
+    if (!input.taskRewardIds.length) return [];
+    return this.taskService.createPayments(input);
   }
 
   @Query(() => Task)
@@ -145,6 +147,14 @@ export class TaskResolver {
     const task = await this.taskService.findById(id);
     if (!task) throw new NotFoundException();
     return task;
+  }
+
+  @Query(() => [Task])
+  public async getTasks(
+    @Args("ids", { type: () => [GraphQLUUID] }) ids: string[]
+  ): Promise<Task[]> {
+    if (!ids.length) return [];
+    return this.taskService.findByIds(ids);
   }
 }
 

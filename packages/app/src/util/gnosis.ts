@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
 import { useRequestAddress, useRequestSigner } from "./ethereum";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
+import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 
 const safeService = new SafeServiceClient(
   "https://safe-transaction.rinkeby.gnosis.io"
@@ -76,5 +77,32 @@ export function useSignPayout(): (
       }
     },
     [requestSafe, requestAddress]
+  );
+}
+
+export function useProposeTransaction(): (
+  safeAddress: string,
+  transactions: MetaTransactionData[]
+) => Promise<string> {
+  const requestAddress = useRequestAddress();
+  const requestSafe = useRequestSafe();
+  return useCallback(
+    async (safeAddress, transactions) => {
+      const senderAddress = await requestAddress();
+      const safe = await requestSafe(safeAddress);
+      const safeTransaction = await safe.createTransaction(transactions);
+
+      const safeTxHash = await safe.getTransactionHash(safeTransaction);
+      await safe.signTransaction(safeTransaction);
+      await safeService.proposeTransaction({
+        safeAddress,
+        safeTransaction,
+        safeTxHash,
+        senderAddress,
+      });
+
+      return safeTxHash;
+    },
+    [requestAddress, requestSafe]
   );
 }

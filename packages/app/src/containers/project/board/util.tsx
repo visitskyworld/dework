@@ -22,7 +22,8 @@ export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
 };
 
 export function useGroupedTasks(
-  tasks: Task[]
+  tasks: Task[],
+  projectId?: string
 ): Record<TaskStatusEnum, TaskSection[]> {
   const canUpdateTasks = usePermission("update", "Task");
   return useMemo(() => {
@@ -59,7 +60,7 @@ export function useGroupedTasks(
             ) {
               unpaid.push(task);
             } else if (
-              task.reward?.payment?.status === PaymentStatus.CONFIRMED
+              task.reward?.payment?.status === PaymentStatus.PROCESSING
             ) {
               processing.push(task);
             } else {
@@ -73,7 +74,12 @@ export function useGroupedTasks(
                 title: "Needs payment",
                 tasks: unpaid,
                 hidden: !unpaid.length,
-                button: <GnosisPayAllButton tasks={unpaid} />,
+                button: !!projectId && (
+                  <GnosisPayAllButton
+                    taskIds={unpaid.map((t) => t.id)}
+                    projectId={projectId}
+                  />
+                ),
               },
               {
                 title: "Processing payment",
@@ -88,7 +94,7 @@ export function useGroupedTasks(
         return [{ tasks }];
       })
       .value() as Record<TaskStatusEnum, TaskSection[]>;
-  }, [tasks, canUpdateTasks]);
+  }, [tasks, projectId, canUpdateTasks]);
 }
 
 export function orderBetweenTasks(

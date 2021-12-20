@@ -5,8 +5,6 @@ import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
-  CreateTaskPaymentMutation,
-  CreateTaskPaymentMutationVariables,
   GetProjectQuery,
   GetProjectQueryVariables,
   PaymentMethod,
@@ -17,7 +15,6 @@ import {
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useSignPayout as useSignMetamaskPayout } from "@dewo/app/util/ethereum";
-import { useSignPayout as useSignGnosisPayout } from "@dewo/app/util/gnosis";
 import { useSignPhantomPayout } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
@@ -47,7 +44,7 @@ export class NoUserPaymentMethodError extends Error {}
 export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const signMetamaskPayout = useSignMetamaskPayout();
   const signPhantomPayout = useSignPhantomPayout();
-  const signGnosisPayout = useSignGnosisPayout();
+  // const signGnosisPayout = useSignGnosisPayout();
 
   const [loadUserPaymentMethod] = useLazyQuery<
     UserPaymentMethodQuery,
@@ -57,10 +54,10 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     GetProjectQuery,
     GetProjectQueryVariables
   >(Queries.project);
-  const [createTaskPayment] = useMutation<
-    CreateTaskPaymentMutation,
-    CreateTaskPaymentMutationVariables
-  >(Mutations.createTaskPayment);
+  // const [createTaskPayment] = useMutation<
+  //   CreateTaskPaymentsMutation,
+  //   CreateTaskPaymentsMutationVariables
+  // >(Mutations.createTaskPayments);
 
   return useCallback(
     async (task: Task, user: User) => {
@@ -100,24 +97,24 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.GNOSIS_SAFE: {
-          const signed = await signGnosisPayout(
-            fromPaymentMethod.address,
-            toPaymentMethod.address,
-            task.reward.amount,
-            task.reward.id
-          );
+          // const signed = await signGnosisPayout(
+          //   fromPaymentMethod.address,
+          //   toPaymentMethod.address,
+          //   task.reward.amount,
+          //   task.reward.id
+          // );
 
-          await createTaskPayment({
-            variables: {
-              input: {
-                taskId: task.id,
-                txHash: signed.txHash,
-                data: { safeTxHash: signed.safeTxHash },
-              },
-            },
-          });
-
-          break;
+          // await createTaskPayment({
+          //   variables: {
+          //     input: {
+          //       taskRewardIds: [tas]
+          //       taskId: task.id,
+          //       txHash: signed.txHash,
+          //       data: { safeTxHash: signed.safeTxHash },
+          //     },
+          //   },
+          // });
+          throw new Error("Implement Gnosis Safe pay now");
         }
         default:
           throw new Error(
@@ -130,8 +127,6 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       loadProjectPaymentMethod,
       signMetamaskPayout,
       signPhantomPayout,
-      signGnosisPayout,
-      createTaskPayment,
     ]
   );
 }

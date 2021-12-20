@@ -6,7 +6,6 @@ import {
 } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, { FC, useEffect, useCallback, useState } from "react";
-import _ from "lodash";
 import {
   DragDropContext,
   DragDropContextProps,
@@ -40,7 +39,7 @@ export const TaskBoard: FC<Props> = ({
   tags = noTags,
   initialValues = noInitialValues,
 }) => {
-  const taskSectionsByStatus = useGroupedTasks(tasks);
+  const taskSectionsByStatus = useGroupedTasks(tasks, initialValues.projectId);
 
   const updateTask = useUpdateTask();
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(

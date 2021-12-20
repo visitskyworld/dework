@@ -12,6 +12,7 @@ export enum PaymentStatus {
 registerEnumType(PaymentStatus, { name: "PaymentStatus" });
 
 export interface GnosisSafePaymentData {
+  txHash?: string;
   safeTxHash: string;
 }
 
@@ -35,22 +36,10 @@ export class Payment<
   @JoinColumn()
   @ManyToOne(() => PaymentMethod)
   @Field(() => PaymentMethod)
-  public from!: Promise<PaymentMethod>;
+  public paymentMethod!: Promise<PaymentMethod>;
   @Column({ type: "uuid" })
   @Field()
-  public fromId!: string;
-
-  @JoinColumn()
-  @ManyToOne(() => PaymentMethod)
-  @Field(() => PaymentMethod)
-  public to!: Promise<PaymentMethod>;
-  @Column({ type: "uuid" })
-  @Field()
-  public toId!: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  public txHash?: string;
+  public paymentMethodId!: string;
 
   @Column("json", { nullable: true })
   @Field(() => GraphQLJSONObject, { nullable: true })

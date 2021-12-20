@@ -7,7 +7,6 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
-import { PayButton } from "./PayButton";
 import Link from "next/link";
 import { useUpdateTask } from "../../task/hooks";
 

@@ -1,18 +1,12 @@
-import _ from "lodash";
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindConditions, IsNull, Not, Repository } from "typeorm";
+import { FindConditions, In, IsNull, Not, Repository } from "typeorm";
 import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskUpdatedEvent } from "./task-updated.event";
-import { CreateTaskPaymentInput } from "./dto/CreateTaskPaymentInput";
+import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 
@@ -70,7 +64,45 @@ export class TaskService {
     return this.findById(taskId) as Promise<Task>;
   }
 
-  public async createPayment(input: CreateTaskPaymentInput): Promise<Task> {
+  public async createPayments(input: CreateTaskPaymentsInput): Promise<Task[]> {
+    // const tasks = await this.taskRepo
+    //   .createQueryBuilder("task")
+    //   .innerJoinAndSelect("task.assignees", "assignees")
+    //   .leftJoinAndSelect("assignees.paymentMethod", "paymentMethod")
+    //   .where("task.id IN (:...ids)", { ids: input.taskIds })
+    //   .andWhere("task.rewardId IS NOT NULL")
+    //   .getMany();
+
+    const fromPaymentMethod = await this.paymentService.findPaymentMethodById(
+      input.paymentMethodId
+    );
+    if (!fromPaymentMethod) {
+      const msg = "Payment method not found";
+      this.logger.error(`${msg} (${JSON.stringify({ input })})`);
+      throw new NotFoundException(msg);
+    }
+
+    const payment = await this.paymentService.create({
+      paymentMethodId: fromPaymentMethod.id,
+      data: input.data,
+    });
+
+    await this.taskRewardRepo.update(
+      { id: In(input.taskRewardIds) },
+      { paymentId: payment.id }
+    );
+
+    return this.taskRepo
+      .createQueryBuilder("task")
+      .where("task.rewardId IN (:...ids)", { ids: input.taskRewardIds })
+      .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.tags", "taskTag")
+      .leftJoinAndSelect("task.reward", "reward")
+      .leftJoinAndSelect("reward.payment", "payment")
+      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
+      .getMany();
+
+    /*
     const task = await this.taskRepo.findOne(input.taskId);
     if (!task) throw new NotFoundException();
     if (!task.rewardId) {
@@ -123,10 +155,15 @@ export class TaskService {
 
     await this.taskRewardRepo.update(task.rewardId, { paymentId: payment.id });
     return this.findById(task.id) as Promise<Task>;
+    */
   }
 
   public async findById(id: string): Promise<Task | undefined> {
     return this.taskRepo.findOne(id);
+  }
+
+  public async findByIds(ids: string[]): Promise<Task[]> {
+    return this.taskRepo.find({ id: In(ids) });
   }
 
   public async findWithRelations({
@@ -144,7 +181,7 @@ export class TaskService {
       .leftJoinAndSelect("task.tags", "taskTag")
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
-      .leftJoinAndSelect("payment.from", "fromPaymentMethod");
+      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod");
 
     if (!!projectId) {
       queryBuilder = queryBuilder.where("task.projectId = :projectId", {

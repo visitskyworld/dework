@@ -1,5 +1,5 @@
 import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Payment } from "./Payment";
 
@@ -26,7 +26,7 @@ export class TaskReward extends Audit {
   public trigger!: TaskRewardTrigger;
 
   @JoinColumn()
-  @OneToOne(() => Payment, { nullable: true, eager: true, cascade: true })
+  @ManyToOne(() => Payment, { nullable: true, eager: true, cascade: true })
   @Field(() => Payment, { nullable: true })
   public payment?: Payment;
   @Column({ type: "uuid", nullable: true })

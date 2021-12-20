@@ -1,24 +1,9 @@
-import {
-  GnosisSafePaymentData,
-  Payment,
-  PaymentData,
-  PaymentStatus,
-} from "@dewo/api/models/Payment";
-import {
-  PaymentMethod,
-  PaymentMethodType,
-} from "@dewo/api/models/PaymentMethod";
+import { Payment, PaymentStatus } from "@dewo/api/models/Payment";
+import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { User } from "@dewo/api/models/User";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
-
-interface CreatePayment {
-  from: PaymentMethod;
-  to: PaymentMethod;
-  data: PaymentData;
-  txHash?: string;
-}
 
 @Injectable()
 export class PaymentService {
@@ -29,7 +14,10 @@ export class PaymentService {
     private readonly paymentMethodRepo: Repository<PaymentMethod>
   ) {}
 
-  public async create(data: CreatePayment): Promise<Payment> {
+  public async create(
+    partial: Pick<Payment, "paymentMethodId" | "data">
+  ): Promise<Payment> {
+    /*
     switch (data.from.type) {
       case PaymentMethodType.GNOSIS_SAFE:
         if (!(data.data as GnosisSafePaymentData).safeTxHash) {
@@ -55,6 +43,13 @@ export class PaymentService {
       txHash: data.txHash,
       // TODO: fetch depending on payment method
       status: PaymentStatus.PROCESSING,
+    });
+    return this.findById(created.id) as Promise<Payment>;
+    */
+
+    const created = await this.paymentRepo.save({
+      status: PaymentStatus.PROCESSING,
+      ...partial,
     });
     return this.findById(created.id) as Promise<Payment>;
   }

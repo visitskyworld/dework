@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";

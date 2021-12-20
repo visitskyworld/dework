@@ -28,12 +28,8 @@ export const payment = gql`
   fragment Payment on Payment {
     id
     status
-    txHash
     data
-    from {
-      ...PaymentMethod
-    }
-    to {
+    paymentMethod {
       ...PaymentMethod
     }
   }

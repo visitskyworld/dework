@@ -215,9 +215,9 @@ export const createFileUploadUrl = gql`
   }
 `;
 
-export const createTaskPayment = gql`
-  mutation CreateTaskPaymentMutation($input: CreateTaskPaymentInput!) {
-    task: createTaskPayment(input: $input) {
+export const createTaskPayments = gql`
+  mutation CreateTaskPaymentsMutation($input: CreateTaskPaymentsInput!) {
+    tasks: createTaskPayments(input: $input) {
       ...TaskDetails
     }
   }
