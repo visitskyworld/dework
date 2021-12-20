@@ -100,6 +100,7 @@ export const taskTag = gql`
 
 export const taskReward = gql`
   fragment TaskReward on TaskReward {
+    id
     amount
     currency
     trigger

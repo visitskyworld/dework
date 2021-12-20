@@ -69,7 +69,7 @@ export const TaskRewardFormFields: FC<Props> = ({ value }) => {
               icon: Icons.GithubOutlined,
             },
           ].map((tag) => (
-            <Select.Option value={tag.value} label={tag.label}>
+            <Select.Option key={tag.value} value={tag.value} label={tag.label}>
               <Space style={{ alignItems: "center" }}>
                 <tag.icon />
                 {tag.label}

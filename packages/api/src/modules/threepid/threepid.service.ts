@@ -55,6 +55,7 @@ export class ThreepidService {
       case ThreepidSource.discord:
         const profile = (threepid as Threepid<ThreepidSource.discord>).config
           .profile;
+        if (!profile.avatar) return undefined;
         return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.jpg`;
       case ThreepidSource.github:
         return (threepid as Threepid<ThreepidSource.github>).config.profile

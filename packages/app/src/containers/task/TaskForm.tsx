@@ -265,7 +265,7 @@ export function TaskForm<
                 )}
               >
                 {tags.map((tag) => (
-                  <Select.Option value={tag.id} label={tag.label}>
+                  <Select.Option key={tag.id} value={tag.id} label={tag.label}>
                     <Tag color={tag.color}>{tag.label}</Tag>
                   </Select.Option>
                 ))}

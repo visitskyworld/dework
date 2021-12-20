@@ -1,6 +1,9 @@
 import { useCallback } from "react";
 import { ethers } from "ethers";
-import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
+import Safe, {
+  EthersAdapter,
+  EthSignSignature,
+} from "@gnosis.pm/safe-core-sdk";
 import { useRequestSigner } from "./ethereum";
 
 export function useRequestSafe(): (safeAddress: string) => Promise<Safe> {
@@ -37,25 +40,73 @@ interface SignPayoutResponse {
 export function useSignPayout(): (
   safeAddress: string,
   toAddress: string,
-  amount: number
+  amount: number,
+  uuid: string
 ) => Promise<SignPayoutResponse> {
   const requestSafe = useRequestSafe();
   return useCallback(
-    async (safeAddress, toAddress, amount) => {
+    async (safeAddress, toAddress, amount, uuid) => {
       const safe = await requestSafe(safeAddress);
       const safeTransaction = await safe.createTransaction({
         to: toAddress,
         value: ethers.utils.parseEther(String(amount)).toString(),
-        data: toAddress, // TODO(fant): figure out what this is
+        data: `0x${uuid.replace(/-/g, "")}`,
+        // nonce: 17,
+      });
+
+      console.warn({
+        value: ethers.utils.parseEther(String(amount)).toString(),
       });
 
       const safeTxHash = await safe.getTransactionHash(safeTransaction);
+      const approvers = await safe.getOwnersWhoApprovedTx(safeTxHash);
+      console.warn("approvers: ", approvers);
 
       const threshold = await safe.getThreshold();
-      if (threshold !== 1) throw new Error("TODO: add multisig support");
+      if (threshold === 1) {
+        const response = await safe.executeTransaction(safeTransaction);
+        return { txHash: response.hash, safeTxHash };
+      } else {
+        if (!approvers.length) {
+          const signature = await safe.signTransactionHash(safeTxHash);
+          const response = await safe.approveTransactionHash(safeTxHash);
+          response.transactionResponse?.wait();
+          console.warn({ response, safeTxHash, signature, safeTransaction });
+        } else {
+          console.warn("added signature...", {
+            // safeTransaction.signatures,
+            // sig1,
+            // sig2,
+            sigs: safeTransaction.signatures,
+          });
 
-      const response = await safe.executeTransaction(safeTransaction);
-      return { txHash: response.hash, safeTxHash };
+          console.warn({ safeTransaction });
+
+          // safe.getOwners = () => Promise.resolve([]);
+          // safe.getOwnersWhoApprovedTx = () => Promise.resolve([]);
+
+          const executeTxResponse = await safe.executeTransaction(
+            safeTransaction,
+            { gasLimit: 0.004 * 1e9 }
+          );
+          await executeTxResponse.transactionResponse?.wait();
+          console.warn({ executeTxResponse });
+        }
+
+        // TODO(fant): consider getting this from the backend
+        // const signature = await safe.signTransactionHash(safeTxHash);
+        // safeTransaction.addSignature(signature);
+        // await safe.signTransaction(safeTransaction);
+
+        // console.warn({
+        //   // response1,
+        //   // signature,
+        //   safeTransaction,
+        //   encSigs: safeTransaction.encodedSignatures(),
+        // });
+
+        throw new Error("TODO: add multisig support");
+      }
     },
     [requestSafe]
   );

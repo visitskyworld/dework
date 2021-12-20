@@ -353,6 +353,7 @@ export interface CreateTaskMutation_task_reward_payment {
 
 export interface CreateTaskMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -430,6 +431,7 @@ export interface UpdateTaskMutation_task_reward_payment {
 
 export interface UpdateTaskMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -507,6 +509,7 @@ export interface ClaimTaskMutation_task_reward_payment {
 
 export interface ClaimTaskMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -584,6 +587,7 @@ export interface UnclaimTaskMutation_task_reward_payment {
 
 export interface UnclaimTaskMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -661,6 +665,7 @@ export interface DeleteTaskMutation_task_reward_payment {
 
 export interface DeleteTaskMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -935,6 +940,7 @@ export interface CreateTaskPaymentMutation_task_reward_payment {
 
 export interface CreateTaskPaymentMutation_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1156,6 +1162,7 @@ export interface UserTasksQuery_user_tasks_reward_payment {
 
 export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1420,6 +1427,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payment {
 
 export interface GetOrganizationTasksQuery_organization_tasks_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1553,6 +1561,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_payment {
 
 export interface GetProjectTasksQuery_project_tasks_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1644,6 +1653,7 @@ export interface GetTaskQuery_task_reward_payment {
 
 export interface GetTaskQuery_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1853,6 +1863,7 @@ export interface TaskCreatedSubscription_task_reward_payment {
 
 export interface TaskCreatedSubscription_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -1975,6 +1986,7 @@ export interface TaskUpdatedSubscription_task_reward_payment {
 
 export interface TaskUpdatedSubscription_task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -2267,6 +2279,7 @@ export interface TaskReward_payment {
 
 export interface TaskReward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -2378,6 +2391,7 @@ export interface Task_reward_payment {
 
 export interface Task_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -2447,6 +2461,7 @@ export interface TaskDetails_reward_payment {
 
 export interface TaskDetails_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;
@@ -2711,6 +2726,7 @@ export interface ProjectDetails_tasks_reward_payment {
 
 export interface ProjectDetails_tasks_reward {
   __typename: "TaskReward";
+  id: Scalar.UUID;
   amount: number;
   currency: string;
   trigger: TaskRewardTrigger;

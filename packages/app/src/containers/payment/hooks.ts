@@ -103,7 +103,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           const signed = await signGnosisPayout(
             fromPaymentMethod.address,
             toPaymentMethod.address,
-            task.reward.amount
+            task.reward.amount,
+            task.reward.id
           );
 
           await createTaskPayment({

@@ -32,6 +32,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
         await payTaskReward(task, receiver);
         await onDone?.();
       } catch (error) {
+        console.error(error);
         if (error instanceof NoProjectPaymentMethodError) {
           notification.info({
             message: "The project has no payment method",
