@@ -65,14 +65,6 @@ export class TaskService {
   }
 
   public async createPayments(input: CreateTaskPaymentsInput): Promise<Task[]> {
-    // const tasks = await this.taskRepo
-    //   .createQueryBuilder("task")
-    //   .innerJoinAndSelect("task.assignees", "assignees")
-    //   .leftJoinAndSelect("assignees.paymentMethod", "paymentMethod")
-    //   .where("task.id IN (:...ids)", { ids: input.taskIds })
-    //   .andWhere("task.rewardId IS NOT NULL")
-    //   .getMany();
-
     const fromPaymentMethod = await this.paymentService.findPaymentMethodById(
       input.paymentMethodId
     );
@@ -92,15 +84,7 @@ export class TaskService {
       { paymentId: payment.id }
     );
 
-    return this.taskRepo
-      .createQueryBuilder("task")
-      .where("task.rewardId IN (:...ids)", { ids: input.taskRewardIds })
-      .leftJoinAndSelect("task.assignees", "assignee")
-      .leftJoinAndSelect("task.tags", "taskTag")
-      .leftJoinAndSelect("task.reward", "reward")
-      .leftJoinAndSelect("reward.payment", "payment")
-      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
-      .getMany();
+    return this.findWithRelations({ rewardIds: input.taskRewardIds });
 
     /*
     const task = await this.taskRepo.findOne(input.taskId);
@@ -167,10 +151,12 @@ export class TaskService {
   }
 
   public async findWithRelations({
+    rewardIds,
     projectId,
     organizationId,
     assigneeId,
   }: {
+    rewardIds?: string[];
     projectId?: string;
     organizationId?: string;
     assigneeId?: string;
@@ -182,6 +168,12 @@ export class TaskService {
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("payment.paymentMethod", "paymentMethod");
+
+    if (!!rewardIds) {
+      queryBuilder = queryBuilder.where("task.rewardId IN (:...rewardIds)", {
+        rewardIds,
+      });
+    }
 
     if (!!projectId) {
       queryBuilder = queryBuilder.where("task.projectId = :projectId", {
