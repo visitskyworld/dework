@@ -290,40 +290,36 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Select>
             </Form.Item>
           </ConfigProvider>
-          {values.status === TaskStatusEnum.TODO ? null : (
-            <Form.Item
-              name="assigneeIds"
-              label={"Assignees"}
-              rules={[{ type: "array" }]}
+          {/* {values.status === TaskStatusEnum.TODO ? null : ( */}
+          <Form.Item
+            name="assigneeIds"
+            label={"Assignees"}
+            rules={[{ type: "array" }]}
+          >
+            <Select
+              mode="multiple"
+              showSearch
+              className="dewo-select-item-full-width"
+              loading={!assigneeOptions}
+              disabled={!canEdit}
+              allowClear
+              optionFilterProp="label"
+              optionLabelProp="label" // don't put children inside tagRender
+              placeholder="No task assignee..."
+              tagRender={(props) => {
+                const user = assigneeOptions?.find((u) => u.id === props.value);
+                if (!user) return <div />;
+                return <UserSelectOption user={user} style={{ padding: 4 }} />;
+              }}
             >
-              <Select
-                mode="multiple"
-                showSearch
-                className="dewo-select-item-full-width"
-                loading={!assigneeOptions}
-                disabled={!canEdit}
-                allowClear
-                optionFilterProp="label"
-                optionLabelProp="label" // don't put children inside tagRender
-                placeholder="No task assignee..."
-                tagRender={(props) => {
-                  const user = assigneeOptions?.find(
-                    (u) => u.id === props.value
-                  );
-                  if (!user) return <div />;
-                  return (
-                    <UserSelectOption user={user} style={{ padding: 4 }} />
-                  );
-                }}
-              >
-                {assigneeOptions?.map((user) => (
-                  <Select.Option value={user.id} label={user.username}>
-                    <UserSelectOption user={user} />
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
+              {assigneeOptions?.map((user) => (
+                <Select.Option value={user.id} label={user.username}>
+                  <UserSelectOption user={user} />
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          {/* )} */}
           <Form.Item name="ownerId" label="Reviewer">
             <Select
               showSearch
