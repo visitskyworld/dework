@@ -184,9 +184,6 @@ export function useClaimTask(): (
     async (task, applicationMessage) => {
       const res = await mutation({
         variables: { taskId: task.id, applicationMessage: applicationMessage },
-        // optimisticResponse: {
-        //   task: { ...task, assignees: [...task.assignees, user] } as Task,
-        // },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
@@ -206,12 +203,6 @@ export function useUnclaimTask(): (task: Task) => Promise<Task> {
     async (task) => {
       const res = await mutation({
         variables: { taskId: task.id },
-        optimisticResponse: {
-          task: {
-            ...task,
-            assignees: task.assignees.filter((a) => a.id !== user?.id),
-          } as Task,
-        },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
