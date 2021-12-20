@@ -7,8 +7,7 @@
     "dev:db": "docker compose up",
     "test": "jest --runInBand --setupFiles tsconfig-paths/register",
     "build": "rm -rf build && nest build --path tsconfig.json",
-    "start": "node build/main.js",
-    "postinstall": "patch-package"
+    "start": "node build/main.js"
   },
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
