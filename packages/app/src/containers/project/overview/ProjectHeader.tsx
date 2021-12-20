@@ -77,6 +77,11 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
                 className="dewo-field dewo-field-display ant-typography-h3"
                 placeholder={`Enter a project name...`}
                 onBlur={() => setIsEdit(false)}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    setIsEdit(false);
+                  }
+                }}
                 onChange={handleChange}
                 value={projectName}
                 bordered={false}
