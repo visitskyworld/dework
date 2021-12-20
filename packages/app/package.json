@@ -15,7 +15,6 @@
     "@apollo/react-ssr": "^4.0.0",
     "@casl/ability": "^5.4.3",
     "@casl/react": "^2.3.0",
-    "@gnosis.pm/safe-apps-sdk": "^6.1.1",
     "@gnosis.pm/safe-core-sdk": "^1.2.0",
     "@gnosis.pm/safe-service-client": "^1.0.1",
     "@solana/web3.js": "^1.31.0",
