@@ -81,7 +81,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     }
 
     return null;
-  }, [task, navigateToTask, canClaimTask, canUpdateTask]);
+  }, [task, navigateToTask, moveToDone, canClaimTask, canUpdateTask]);
 
   return (
     <Card size="small" style={style} onClick={navigateToTask}>
