@@ -1,32 +1,26 @@
-import React, { FC, useCallback, useMemo } from "react";
-import { Avatar, Card, Col, Row, Space, Tag, Typography } from "antd";
-import { useUpdateUser, useUser, useUserTasks } from "./hooks";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  message,
+  Row,
+  Space,
+  Tag,
+  Typography,
+} from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
 import { TaskCard } from "../project/board/TaskCard";
-import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
+import { useUpdateUser, useUser, useUserTasks } from "./hooks";
+import { TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
-
-interface UserDetailIconProps {
-  type: UserDetailType;
-}
-
-const UserDetailIcon: FC<UserDetailIconProps> = ({ type }) => {
-  switch (type) {
-    case UserDetailType.twitter:
-      return <Icons.TwitterOutlined />;
-    case UserDetailType.github:
-      return <Icons.GithubOutlined />;
-    case UserDetailType.linkedin:
-      return <Icons.LinkedinFilled />;
-    default:
-      return <Icons.LinkOutlined />;
-  }
-};
+import { UserDetailsForm } from "./UserDetailsForm";
 
 interface Props {
   userId: string;
@@ -52,6 +46,14 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     [updateUser]
   );
 
+  const [form] = Form.useForm();
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+    if (isEditMode) message.success("Profile updated!");
+  };
+
   if (!user) return null;
 
   return (
@@ -59,89 +61,95 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       <Row gutter={[16, 16]} style={{ margin: 0 }}>
         <Col xs={24} md={8}>
           <Card>
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <Row style={{ position: "relative", display: "inline-block" }}>
+            <Form form={form} layout="vertical" autoComplete="off">
+              <Form.Item
+                key={"avatar"}
+                style={{
+                  position: "relative",
+                  display: "inline-block",
+                  margin: 0,
+                }}
+              >
                 <UserAvatar user={user} size={96} />
-                {isMe && <EditUserAvatarButton />}
-              </Row>
+                {isEditMode && <EditUserAvatarButton />}
+              </Form.Item>
+              <Form.Item key={"username"} style={{ margin: "8px 0 3px 0" }}>
+                <Typography.Title
+                  level={3}
+                  style={{ marginBottom: 0 }}
+                  editable={
+                    isEditMode ? { onChange: updateUsername } : undefined
+                  }
+                >
+                  {user.username}
+                </Typography.Title>
+              </Form.Item>
+              <Form.Item key={"bio"} style={{ margin: 0 }}>
+                <Typography.Text
+                  type="secondary"
+                  editable={isEditMode ? { onChange: updateBio } : undefined}
+                >
+                  {!!user.bio ? user.bio : "No bio..."}
+                </Typography.Text>
+              </Form.Item>
 
-              <Typography.Title
-                level={3}
-                style={{ marginBottom: 0 }}
-                editable={isMe ? { onChange: updateUsername } : undefined}
-              >
-                {user.username}
-              </Typography.Title>
-              <Typography.Paragraph
-                type="secondary"
-                editable={isMe ? { onChange: updateBio } : undefined}
-                ellipsis={{ rows: 2, expandable: true, symbol: "more" }}
-              >
-                {!!user.bio ? user.bio : "No bio..."}
-              </Typography.Paragraph>
-              {/* {isMe && (
-                <Button icon={<Icons.EditOutlined />}>Edit Profile</Button>
-              )} */}
+              <UserDetailsForm
+                isEditMode={isEditMode}
+                userDetails={user.details}
+              />
 
-              <Space>
-                {!!user.details &&
-                  user.details.map((detail, index) => (
-                    <Link key={index} href={detail.value}>
-                      <a>
-                        <Avatar size="small">
-                          <UserDetailIcon type={detail.type} />
-                        </Avatar>
-                      </a>
-                    </Link>
-                  ))}
-              </Space>
-
-              <Typography.Text
-                className="dewo-label"
-                style={{ marginTop: 12, display: "block" }}
-              >
-                Proof of Work
-              </Typography.Text>
-              <Row gutter={[8, 8]} style={{ margin: 0 }}>
-                <Tag style={{ backgroundColor: Colors.volcano.primary }}>
-                  <Icons.FireFilled />
-                  <Typography.Text>80% satisfaction</Typography.Text>
-                </Tag>
-                <Tag style={{ backgroundColor: Colors.blue.primary }}>
-                  <Icons.DollarCircleOutlined />
-                  <Typography.Text>2500 earned</Typography.Text>
-                </Tag>
-                <Tag style={{ backgroundColor: Colors.magenta.primary }}>
-                  <Icons.CheckCircleOutlined />
-                  <Typography.Text>3 tasks completed</Typography.Text>
-                </Tag>
-              </Row>
-
-              {!!user.organizations.length && (
-                <>
-                  <Typography.Text
-                    className="dewo-label"
-                    style={{ marginTop: 12, display: "block" }}
-                  >
-                    Organizations
-                  </Typography.Text>
-                  <Row gutter={[8, 8]} style={{ margin: 0 }}>
-                    {user.organizations.map((organization) => (
-                      <Link
-                        key={organization.id}
-                        href={`/o/${organization.slug}`}
-                      >
-                        <a className="text-overflow-ellipsis">
-                          <Tag className="text-overflow-ellipsis">
-                            {organization.name}
-                          </Tag>
-                        </a>
-                      </Link>
-                    ))}
-                  </Row>
-                </>
+              {!!isMe && (
+                <Button onClick={toggleEditMode} style={{ width: "100%" }}>
+                  {isEditMode ? "Save" : "Edit profile"}
+                </Button>
               )}
-            </Space>
+
+              <Space direction="vertical">
+                <Typography.Text
+                  className="dewo-label"
+                  style={{ marginTop: 16, display: "block" }}
+                >
+                  Proof of Work
+                </Typography.Text>
+                <Row gutter={[8, 8]} style={{ margin: 0 }}>
+                  <Tag style={{ backgroundColor: Colors.volcano.primary }}>
+                    <Icons.FireFilled />
+                    <Typography.Text>80% satisfaction</Typography.Text>
+                  </Tag>
+                  <Tag style={{ backgroundColor: Colors.blue.primary }}>
+                    <Icons.DollarCircleOutlined />
+                    <Typography.Text>2500 earned</Typography.Text>
+                  </Tag>
+                  <Tag style={{ backgroundColor: Colors.magenta.primary }}>
+                    <Icons.CheckCircleOutlined />
+                    <Typography.Text>3 tasks completed</Typography.Text>
+                  </Tag>
+                </Row>
+
+                {!!user.organizations.length && (
+                  <>
+                    <Typography.Text
+                      className="dewo-label"
+                      style={{ marginTop: 12, display: "block" }}
+                    >
+                      Organizations
+                    </Typography.Text>
+                    <Row gutter={[8, 8]} style={{ margin: 0 }}>
+                      {user.organizations.map((organization) => (
+                        <Link
+                          key={organization.id}
+                          href={`/o/${organization.slug}`}
+                        >
+                          <a>
+                            <Tag>{organization.name}</Tag>
+                          </a>
+                        </Link>
+                      ))}
+                    </Row>
+                  </>
+                )}
+              </Space>
+            </Form>
           </Card>
         </Col>
         <Col xs={24} md={16}>
