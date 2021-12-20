@@ -9,6 +9,7 @@ import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface Props {
   projectId: string;
@@ -17,10 +18,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
-  const updateProject = useUpdateProject();
   const canEdit = usePermission("update", "Project");
-  const [isEdit, setIsEdit] = useState(false);
-  const [projectName, setProjectName] = useState("");
 
   const routes = useMemo(
     () =>
@@ -43,51 +41,50 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
     [organization, project]
   ) as Route[];
 
+  const editName = useToggle();
+  const [projectName, setProjectName] = useState("");
+  const updateProject = useUpdateProject();
+  const submitProjectName = useCallback(async () => {
+    await updateProject({ id: projectId, name: projectName });
+    editName.toggleOff();
+  }, [editName, updateProject, projectId, projectName]);
+
   const handleChange = useCallback(async (e: any) => {
     setProjectName(e.target.value);
-    updateProjectName(e.target.value);
   }, []);
 
-  const updateProjectName = _.debounce((name) => {
-    if (name) {
-      updateProject({
-        id: projectId,
-        name: name,
-      });
-    }
-  }, 500);
-
   useEffect(() => {
-    if (!!project) {
-      setProjectName(project.name);
-    }
+    if (!!project) setProjectName(project.name);
   }, [project]);
 
   return (
     <PageHeader
       title={
         !!project ? (
-          <Typography.Title level={3} style={{ margin: 0 }}>
-            {!isEdit ? (
-              <div onClick={() => setIsEdit(true)}>{project.name}</div>
-            ) : (
-              <Input
-                disabled={!canEdit}
-                autoFocus={true}
-                className="dewo-field dewo-field-display ant-typography-h3"
-                placeholder={`Enter a project name...`}
-                onBlur={() => setIsEdit(false)}
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    setIsEdit(false);
-                  }
-                }}
-                onChange={handleChange}
-                value={projectName}
-                bordered={false}
-              />
-            )}
-          </Typography.Title>
+          !editName.isOn ? (
+            <Typography.Title
+              level={3}
+              style={{ margin: 0 }}
+              onClick={editName.toggleOn}
+            >
+              {project.name}
+            </Typography.Title>
+          ) : (
+            <Input
+              disabled={!canEdit}
+              autoFocus={true}
+              className="ant-input dewo-field dewo-field-display ant-typography-h3"
+              placeholder="Enter a project name..."
+              onBlur={editName.toggleOff}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  submitProjectName();
+                }
+              }}
+              onChange={handleChange}
+              value={projectName}
+            />
+          )
         ) : (
           <Skeleton.Button active style={{ width: 200 }} />
         )
