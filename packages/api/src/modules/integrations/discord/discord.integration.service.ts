@@ -43,6 +43,8 @@ export class DiscordIntegrationService
     private readonly threepidService: ThreepidService,
     @InjectRepository(DiscordChannel)
     private readonly discordChannelRepo: Repository<DiscordChannel>,
+    @InjectRepository(Task)
+    private readonly taskRepo: Repository<Task>,
     private readonly config: ConfigService<ConfigType>,
     @InjectConnection() readonly connection: Connection
   ) {
@@ -189,13 +191,17 @@ export class DiscordIntegrationService
     return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
   }
 
-  handle({ oldTask, newTask }: TaskUpdatedEvent) {
-    this.updateMessageStatus(oldTask, newTask);
+  async handle({ oldTask, newTask }: TaskUpdatedEvent) {
+    const task = await this.taskRepo.findOne({ id: newTask.id });
+    if (task) this.updateMessageStatus(oldTask, task);
   }
 
   private async updateMessageStatus(oldTask: Task, newTask: Task) {
     // New applicant added
-    if (newTask.assignees.length > oldTask.assignees.length) {
+    if (
+      newTask.assignees &&
+      newTask.assignees.length > oldTask?.assignees?.length
+    ) {
       this.postNewAssignee(newTask);
     }
 
@@ -252,10 +258,10 @@ export class DiscordIntegrationService
   private async postMovedIntoReview(task: Task) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const message = `<@${owner}> A person has applied to this task.`;
     const channel = await this.getDiscordChannel(task);
+    this.logger.debug(`No discord channel found for task ${task.id}`);
     if (!channel) return;
-    channel.send(message);
+    this.logger.debug("sending message to channel");
 
     const fields: {
       name: string;
@@ -273,7 +279,8 @@ export class DiscordIntegrationService
       embeds: [
         {
           title: `In review`,
-          description: `The task is now in review`,
+          description: `The task is now in review.
+          Owner: <@${owner}>`,
           // color: 0x00ffff,
           fields,
           author: author && {
