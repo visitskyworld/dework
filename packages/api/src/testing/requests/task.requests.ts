@@ -103,19 +103,23 @@ export class TaskRequests {
   }
 
   public static claim(
-    taskId: string
-  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    taskId: string,
+    applicationMessage: string
+  ): GraphQLTestClientRequestBody<{
+    taskId: string;
+    applicationMessage: string;
+  }> {
     return {
       query: `
-        mutation ClaimTask($taskId: UUID!) {
-          task: claimTask(id: $taskId) {
+        mutation ClaimTaskMutation($taskId: UUID!, $applicationMessage: String!) {
+          task: claimTask(id: $taskId, applicationMessage: $applicationMessage) {
             ...Task
           }
         }
 
         ${this.taskFragment}
       `,
-      variables: { taskId },
+      variables: { taskId, applicationMessage },
     };
   }
 

@@ -208,34 +208,31 @@ describe("TaskResolver", () => {
     });
 
     describe("claimTask", () => {
-      it("should succeed and assign the user to the task if status is TODO", async () => {
+      it("should succeed if status is TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
+        const applicationMessage = faker.lorem.words(5);
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id),
+          body: TaskRequests.claim(task.id, applicationMessage),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
-        const fetched = response.body.data?.task;
-        expect(fetched.assignees).toHaveLength(1);
-        expect(fetched.assignees).toContainEqual(
-          expect.objectContaining({ id: user.id })
-        );
       });
 
-      it("should succeed and assign the user to the task if status is not TODO", async () => {
+      it("should not succeed if status is not TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
           status: TaskStatusEnum.IN_PROGRESS,
         });
+        const applicationMessage = faker.lorem.words(5);
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id),
+          body: TaskRequests.claim(task.id, applicationMessage),
         });
 
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
@@ -243,7 +240,7 @@ describe("TaskResolver", () => {
     });
 
     describe("unclaimTask", () => {
-      it("should succeed and unassign the user to the task", async () => {
+      it("should succeed and unapply the user from the task", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
           status: TaskStatusEnum.TODO,
@@ -257,11 +254,6 @@ describe("TaskResolver", () => {
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
-        const fetched = response.body.data?.task;
-        expect(fetched.assignees).toHaveLength(0);
-        expect(fetched.assignees).not.toContainEqual(
-          expect.objectContaining({ id: user.id })
-        );
       });
     });
 
