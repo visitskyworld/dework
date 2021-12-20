@@ -47,9 +47,9 @@ export class TaskService {
       updatedAt: new Date(),
     });
 
-    this.eventBus.publish(new TaskUpdatedEvent(updated, oldTask!));
-
-    return this.taskRepo.findOne(updated.id) as Promise<Task>;
+    const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
+    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask!));
+    return refetched;
   }
 
   public async claim(taskId: string, user: User): Promise<Task> {

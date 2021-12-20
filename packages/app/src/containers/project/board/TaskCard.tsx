@@ -28,14 +28,14 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
   const button = useMemo(() => {
-    if (
-      task.status === TaskStatusEnum.DONE &&
-      !!task.reward &&
-      !task.reward.payment &&
-      canUpdateTask
-    ) {
-      return <PayButton task={task}>Pay</PayButton>;
-    }
+    // if (
+    //   task.status === TaskStatusEnum.DONE &&
+    //   !!task.reward &&
+    //   !task.reward.payment &&
+    //   canUpdateTask
+    // ) {
+    //   return <PayButton task={task}>Pay</PayButton>;
+    // }
 
     if (
       task.status === TaskStatusEnum.IN_REVIEW &&
@@ -44,20 +44,20 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
       canUpdateTask
     ) {
       return (
-        <Space>
-          <PayButton task={task} onDone={moveToDone}>
-            {"Approve & Pay"}
-          </PayButton>
-          <Button
-            size="small"
-            onClick={(e) => {
-              eatClick(e);
-              moveToDone();
-            }}
-          >
-            Approve
-          </Button>
-        </Space>
+        // <Space>
+        //   <PayButton task={task} onDone={moveToDone}>
+        //     {"Approve & Pay"}
+        //   </PayButton>
+        <Button
+          size="small"
+          onClick={(e) => {
+            eatClick(e);
+            moveToDone();
+          }}
+        >
+          Approve
+        </Button>
+        // </Space>
       );
     }
 

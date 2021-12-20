@@ -16,8 +16,8 @@ interface UseToggleHook {
   setToggle(isOn: boolean): void;
 }
 
-export function useToggle(): UseToggleHook {
-  const [isOn, setToggle] = useState(false);
+export function useToggle(defaultIsOn: boolean = false): UseToggleHook {
+  const [isOn, setToggle] = useState(defaultIsOn);
   const toggleOn = useCallback(() => setToggle(true), []);
   const toggleOff = useCallback(() => setToggle(false), []);
   const toggle = useCallback(() => setToggle(!isOn), [isOn]);

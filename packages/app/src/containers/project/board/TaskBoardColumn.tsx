@@ -1,6 +1,6 @@
 import React, { FC, Fragment, useMemo } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Button, Card, Badge, Space, Typography } from "antd";
+import { Button, Card, Badge, Space, Typography, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
@@ -70,64 +70,70 @@ export const TaskBoardColumn: FC<Props> = ({
         onCancel={createCardToggle.toggleOff}
         onDone={createCardToggle.toggleOff}
       />
-      {taskSections.map((section, index) => (
-        <Fragment key={index}>
-          {!!section.title && (
-            <Typography.Text
-              type="secondary"
-              style={{
-                fontWeight: "bold",
-                fontSize: 11,
-                // textAlign: "center",
-                display: "block",
-                paddingTop: index === 0 ? 0 : 8,
-              }}
-            >
-              {section.title.toUpperCase()}
-            </Typography.Text>
-          )}
-          <Droppable droppableId={[status, index].join(":")}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                style={{
-                  ...provided.droppableProps,
-                  minHeight: 90,
-                  paddingTop: 4,
-                }}
-              >
-                {section.tasks.map((task, index) => (
-                  <Draggable
-                    key={task.id}
-                    draggableId={task.id}
-                    index={index}
-                    isDragDisabled={!hasPermission("update", task)}
-                  >
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={{
-                          ...provided.draggableProps.style,
-                          cursor: hasPermission("update", task)
-                            ? "grab"
-                            : "pointer",
-                          marginBottom: 8,
-                        }}
-                      >
-                        <TaskCard task={task} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
+      {taskSections
+        .filter((section) => !section.hidden)
+        .map((section, index) => (
+          <Fragment key={index}>
+            {!!section.title && (
+              <Row align="middle">
+                <Typography.Text
+                  type="secondary"
+                  style={{
+                    flex: 1,
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    // textAlign: "center",
+                    display: "block",
+                    paddingTop: index === 0 ? 0 : 8,
+                  }}
+                >
+                  {section.title.toUpperCase()}
+                </Typography.Text>
+                {section.button}
+              </Row>
             )}
-          </Droppable>
-        </Fragment>
-      ))}
+            <Droppable droppableId={[status, index].join(":")}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  style={{
+                    ...provided.droppableProps,
+                    minHeight: 90,
+                    paddingTop: 4,
+                  }}
+                >
+                  {section.tasks.map((task, index) => (
+                    <Draggable
+                      key={task.id}
+                      draggableId={task.id}
+                      index={index}
+                      isDragDisabled={!hasPermission("update", task)}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            cursor: hasPermission("update", task)
+                              ? "grab"
+                              : "pointer",
+                            marginBottom: 8,
+                          }}
+                        >
+                          <TaskCard task={task} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </Fragment>
+        ))}
     </Card>
   );
 };

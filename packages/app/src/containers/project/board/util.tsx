@@ -1,14 +1,17 @@
-import { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import _ from "lodash";
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { PaymentStatus, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { GnosisPayAllButton } from "./GnosisPayAllButton";
 
 const Between = inject("0123456789");
 
 export interface TaskSection {
   title?: string;
   tasks: Task[];
+  hidden?: boolean;
+  button?: ReactNode;
 }
 
 export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
@@ -39,6 +42,45 @@ export function useGroupedTasks(
             return [
               { title: "Open applications", tasks: claimed },
               { title: "Unclaimed", tasks: unclaimed },
+            ];
+          }
+        }
+
+        if (status === TaskStatusEnum.DONE && canUpdateTasks) {
+          const unpaid: Task[] = [];
+          const processing: Task[] = [];
+          const paid: Task[] = [];
+
+          tasks.forEach((task) => {
+            if (
+              !!task.assignees.length &&
+              !!task.reward &&
+              !task.reward.payment
+            ) {
+              unpaid.push(task);
+            } else if (
+              task.reward?.payment?.status === PaymentStatus.CONFIRMED
+            ) {
+              processing.push(task);
+            } else {
+              paid.push(task);
+            }
+          });
+
+          if (!!unpaid.length || !!processing.length) {
+            return [
+              {
+                title: "Needs payment",
+                tasks: unpaid,
+                hidden: !unpaid.length,
+                button: <GnosisPayAllButton tasks={unpaid} />,
+              },
+              {
+                title: "Processing payment",
+                tasks: processing,
+                hidden: !processing.length,
+              },
+              { title: "Paid", tasks: paid },
             ];
           }
         }

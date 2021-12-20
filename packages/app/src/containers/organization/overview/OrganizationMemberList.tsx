@@ -55,6 +55,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
         dataSource={members}
         size="small"
         showHeader={false}
+        pagination={{ hideOnSinglePage: true }}
         onRow={(member) => ({
           onClick: () => navigateToProfile(member.user),
         })}
