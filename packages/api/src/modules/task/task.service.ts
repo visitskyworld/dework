@@ -67,12 +67,8 @@ export class TaskService {
       userId: user.id,
       taskId: taskId,
     };
-    const createdTaskApplication = await this.taskApplicationRepo.save(
-      taskApplication
-    );
-    (await task.taskApplications).push(createdTaskApplication);
-    return this.update(task);
-    // return this.findById(taskId) as Promise<Task>;
+    await this.taskApplicationRepo.save(taskApplication);
+    return this.findById(taskId) as Promise<Task>;
   }
 
   public async unclaim(taskId: string, user: User): Promise<Task> {

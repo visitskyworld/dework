@@ -37,7 +37,7 @@ export function useGroupedTasks(
         if (status === TaskStatusEnum.TODO && canUpdateTasks) {
           const [claimed, unclaimed] = _.partition(
             tasks,
-            (task) => !!task.assignees.length
+            (task) => !!task.taskApplications.length
           );
           if (!!claimed.length) {
             return [
