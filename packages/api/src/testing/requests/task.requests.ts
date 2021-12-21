@@ -49,7 +49,7 @@ export class TaskRequests {
           data
         }
       }
-      taskApplications {
+      applications {
         user {
           id
         }
@@ -113,25 +113,25 @@ export class TaskRequests {
 
   public static claim(
     taskId: string,
-    taskApplication: CreateTaskApplicationInput
+    application: CreateTaskApplicationInput
   ): GraphQLTestClientRequestBody<{
     taskId: string;
-    taskApplication: CreateTaskApplicationInput;
+    application: CreateTaskApplicationInput;
   }> {
     return {
       query: `
       mutation ClaimTaskMutation(
         $taskId: UUID!
-        $taskApplication: CreateTaskApplicationInput!
+        $application: CreateTaskApplicationInput!
       ) {
-        task: claimTask(id: $taskId, taskApplication: $taskApplication) {
+        task: claimTask(id: $taskId, application: $application) {
           ...Task
         }
       }
 
         ${this.taskFragment}
       `,
-      variables: { taskId, taskApplication },
+      variables: { taskId, application },
     };
   }
 

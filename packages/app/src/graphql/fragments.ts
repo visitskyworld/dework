@@ -175,6 +175,7 @@ export const discordChannel = gql`
 
 export const taskApplication = gql`
   fragment TaskApplication on TaskApplication {
+    id
     message
     startDate
     endDate
@@ -228,7 +229,7 @@ export const taskDetails = gql`
     githubBranches {
       ...GithubBranch
     }
-    taskApplications {
+    applications {
       ...TaskApplication
     }
   }

@@ -215,7 +215,7 @@ describe("TaskResolver", () => {
         const message = faker.lorem.words(5);
         const startDate = faker.date.soon();
         const endDate = faker.date.soon();
-        const taskApplication = {
+        const application = {
           message: message,
           startDate: startDate,
           endDate: endDate,
@@ -224,14 +224,14 @@ describe("TaskResolver", () => {
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, taskApplication),
+          body: TaskRequests.claim(task.id, application),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetched = response.body.data?.task;
-        expect(fetched.taskApplications).toHaveLength(1);
+        expect(fetched.applications).toHaveLength(1);
 
-        const fetchedTaskApplication = fetched.taskApplications[0];
+        const fetchedTaskApplication = fetched.applications[0];
         expect(fetchedTaskApplication.user.id).toEqual(user.id);
         expect(fetchedTaskApplication.message).toEqual(message);
         expect(fetchedTaskApplication.startDate).toEqual(
@@ -245,7 +245,7 @@ describe("TaskResolver", () => {
         const task = await fixtures.createTask({
           status: TaskStatusEnum.IN_PROGRESS,
         });
-        const taskApplication = {
+        const application = {
           message: faker.lorem.words(5),
           startDate: faker.date.soon(),
           endDate: faker.date.soon(),
@@ -254,7 +254,7 @@ describe("TaskResolver", () => {
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, taskApplication),
+          body: TaskRequests.claim(task.id, application),
         });
 
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
@@ -277,7 +277,7 @@ describe("TaskResolver", () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetched = response.body.data?.task;
-        expect(fetched.taskApplications).toHaveLength(0);
+        expect(fetched.applications).toHaveLength(0);
       });
     });
 

@@ -243,7 +243,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!canEdit &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
-            !!task.taskApplications.length && <AssignTaskCard task={task} />}
+            !!task.applications.length && <AssignTaskCard task={task} />}
 
           <Form.Item
             name="status"
@@ -290,7 +290,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Select>
             </Form.Item>
           </ConfigProvider>
-          {/* {values.status === TaskStatusEnum.TODO ? null : ( */}
           <Form.Item
             name="assigneeIds"
             label={"Assignees"}

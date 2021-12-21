@@ -175,16 +175,16 @@ export function useUpdateTask(): (
 
 export function useClaimTask(): (
   task: Task,
-  taskApplication: CreateTaskApplicationInput
+  application: CreateTaskApplicationInput
 ) => Promise<Task> {
   const { user } = useAuthContext();
   const [mutation] = useMutation<ClaimTaskMutation, ClaimTaskMutationVariables>(
     Mutations.claimTask
   );
   return useCallback(
-    async (task, taskApplication) => {
+    async (task, application) => {
       const res = await mutation({
-        variables: { taskId: task.id, taskApplication: taskApplication },
+        variables: { taskId: task.id, application: application },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));

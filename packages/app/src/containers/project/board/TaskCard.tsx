@@ -61,7 +61,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     }
 
     if (task.status === TaskStatusEnum.TODO) {
-      if (canUpdateTask && !!task.taskApplications.length) {
+      if (canUpdateTask && !!task.applications.length) {
         return (
           <Button
             size="small"
@@ -127,20 +127,20 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
           <div style={{ flex: 1 }} />
           <Avatar.Group maxCount={3} size={22}>
             {task.status === TaskStatusEnum.TODO
-              ? task.taskApplications.map((taskApplication) => (
-                  <Link href={`/profile/${taskApplication.user.id}`}>
+              ? task.applications.map((application) => (
+                  <Link
+                    href={`/profile/${application.user.id}`}
+                    key={application.id}
+                  >
                     <a>
-                      <UserAvatar
-                        key={taskApplication.user.id}
-                        user={taskApplication.user}
-                      />
+                      <UserAvatar user={application.user} />
                     </a>
                   </Link>
                 ))
               : task.assignees.map((user) => (
-                  <Link href={`/profile/${user.id}`}>
+                  <Link href={`/profile/${user.id}`} key={user.id}>
                     <a>
-                      <UserAvatar key={user.id} user={user} />
+                      <UserAvatar user={user} />
                     </a>
                   </Link>
                 ))}

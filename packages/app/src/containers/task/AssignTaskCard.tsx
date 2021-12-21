@@ -43,20 +43,20 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
       style={{ marginTop: 16, marginBottom: 24 }}
     >
       <Typography.Text strong>Assign a contributor</Typography.Text>
-      {task?.taskApplications.map((taskApplication) => (
+      {task?.applications.map((application) => (
         <List.Item
           actions={[
             <Button
               size="small"
               loading={loading}
-              onClick={() => handleAssign(taskApplication.user)}
+              onClick={() => handleAssign(application.user)}
             >
               Assign
             </Button>,
           ]}
         >
           <a
-            href={`/profile/${taskApplication.user.id}`}
+            href={`/profile/${application.user.id}`}
             style={{ width: "100%" }}
             target="_blank"
             rel="noreferrer"
@@ -65,22 +65,22 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
               title={
                 "Requesting task for: " +
                 "\n" +
-                formatDate(taskApplication.startDate) +
+                formatDate(application.startDate) +
                 " - " +
-                formatDate(taskApplication.endDate) +
+                formatDate(application.endDate) +
                 "\n\n" +
-                taskApplication.message
+                application.message
               }
               overlayStyle={{ whiteSpace: "pre-line" }}
             >
               <List.Item.Meta
                 avatar={
                   <UserAvatar
-                    user={taskApplication.user}
+                    user={application.user}
                     tooltip={{ visible: false }}
                   />
                 }
-                title={taskApplication.user.username}
+                title={application.user.username}
               />
             </Tooltip>
           </a>

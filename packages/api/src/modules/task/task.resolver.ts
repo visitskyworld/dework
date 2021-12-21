@@ -77,9 +77,9 @@ export class TaskResolver {
   public async claimTask(
     @Context("user") user: User,
     @Args("id", { type: () => GraphQLUUID }) id: string,
-    @Args("taskApplication") taskApplication: CreateTaskApplicationInput
+    @Args("application") application: CreateTaskApplicationInput
   ): Promise<Task> {
-    return this.taskService.claim(id, user, taskApplication);
+    return this.taskService.claim(id, user, application);
   }
 
   @Mutation(() => Task)

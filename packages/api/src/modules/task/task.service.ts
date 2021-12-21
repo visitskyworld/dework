@@ -59,8 +59,8 @@ export class TaskService {
     const task = await this.taskRepo.findOne(taskId);
     if (!task) throw new NotFoundException();
 
-    const taskApplications = await task.taskApplications;
-    if (taskApplications.map((a) => a.userId).includes(user.id)) return task;
+    const applications = await task.applications;
+    if (applications.map((a) => a.userId).includes(user.id)) return task;
 
     const taskApplication = {
       message: application.message,
