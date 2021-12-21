@@ -157,12 +157,12 @@ export function useUpdateTask(): (
     UpdateTaskMutationVariables
   >(Mutations.updateTask);
   return useCallback(
-    async (input, _task) => {
+    async (input, task) => {
       const res = await mutation({
         variables: { input },
-        // optimisticResponse: {
-        //   task: { ...task, ...input } as Task,
-        // },
+        optimisticResponse: {
+          task: _.merge({}, task, _.pickBy(input, _.identity)),
+        },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));

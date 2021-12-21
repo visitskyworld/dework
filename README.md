@@ -59,10 +59,10 @@ BEGIN
 
   INSERT INTO "payment_network" ("id", "name", "slug", "url", "sortKey")
   VALUES
-    (ethmain_id, 'Ethereum Mainnet', 'ethereum-rinkeby', 'url', '1'),
-    (ethrinkeby_id, 'Ethereum Rinkeby', 'ethereum-rinkeby', 'url', '2'),
-    (solana_mainnet_id, 'Solana Mainnet', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '3'),
-    (solana_testnet_id, 'Solana Devnet', 'solana-testnet', 'https://api.testnet.solana.com', '4');
+    (ethmain_id, 'Ethereum', 'ethereum-rinkeby', 'url', '1'),
+    (ethrinkeby_id, 'Ethereum (rinkeby)', 'ethereum-rinkeby', 'url', '2'),
+    (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '3'),
+    (solana_testnet_id, 'Solana (testnet)', 'solana-testnet', 'https://api.testnet.solana.com', '4');
 
   INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
   VALUES

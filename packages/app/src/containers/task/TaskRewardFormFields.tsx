@@ -145,7 +145,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             onChange={handleChangeAmount}
             addonAfter={
               <Select
-                style={{ minWidth: 70 }}
+                style={{ minWidth: 100 }}
                 value={value?.token?.id}
                 placeholder="Token"
                 onChange={handleChangeToken}
