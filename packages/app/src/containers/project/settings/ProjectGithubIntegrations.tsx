@@ -42,12 +42,13 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
       <>
         <Button
           size="large"
-          type="primary"
+          type="ghost"
           block
           icon={<Icons.GithubOutlined />}
-          disabled
+          href={Constants.GITHUB_APP_URL}
+          target="_blank"
         >
-          Connected to Github
+          Manage Github Integration
         </Button>
         <Typography.Paragraph disabled style={{ marginTop: 4 }}>
           <Icons.InfoCircleOutlined />
