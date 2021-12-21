@@ -16,7 +16,7 @@ import { TaskService } from "@dewo/api/modules/task/task.service";
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
 
-describe("DiscordIntegration", () => {
+xdescribe("DiscordIntegration", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
   let discord: Discord.Client;

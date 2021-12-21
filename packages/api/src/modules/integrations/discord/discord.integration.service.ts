@@ -145,6 +145,8 @@ export class DiscordIntegrationService
   }
 
   async handle({ oldTask, newTask }: TaskUpdatedEvent) {
+    if (process.env.NODE_ENV === "test") return;
+
     const task = await this.taskRepo.findOne({ id: newTask.id });
     if (!task) return;
 

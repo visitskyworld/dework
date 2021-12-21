@@ -35,14 +35,16 @@ export class TaskRequests {
       reward {
         id
         amount
-        currency
+        token {
+          id
+          name
+          type
+        }
         trigger
         payment {
           id
-          txHash
           status
-          fromId
-          toId
+          paymentMethodId
           data
         }
       }

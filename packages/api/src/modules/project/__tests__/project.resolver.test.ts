@@ -78,21 +78,21 @@ describe("ProjectResolver", () => {
     });
 
     it("should succeed if user is in org", async () => {
+      const expectedName = faker.company.companyName();
       const { user, project } = await fixtures.createUserOrgProject();
-      const paymentMethod = await fixtures.createPaymentMethod();
 
       const response = await client.request({
         app,
         auth: fixtures.createAuthToken(user),
         body: ProjectRequests.update({
           id: project.id,
-          paymentMethodId: paymentMethod.id,
+          name: expectedName,
         }),
       });
 
       expect(response.status).toEqual(HttpStatus.OK);
       const fetched = response.body.data?.project;
-      expect(fetched.paymentMethod.id).toEqual(paymentMethod.id);
+      expect(fetched.name).toEqual(expectedName);
     });
   });
 

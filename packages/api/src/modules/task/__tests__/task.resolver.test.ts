@@ -46,12 +46,14 @@ describe("TaskResolver", () => {
       });
 
       it("should succeed if user is in project's org", async () => {
+        const token = await fixtures.createPaymentToken();
+
         const name = faker.company.companyName();
         const description = faker.lorem.paragraph();
         const { user, project } = await fixtures.createUserOrgProject();
         const reward: UpdateTaskRewardInput = {
           amount: "100000",
-          tokenId: "",
+          tokenId: token.id,
           trigger: TaskRewardTrigger.PULL_REQUEST_MERGED,
         };
 

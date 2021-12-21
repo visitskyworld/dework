@@ -1,4 +1,6 @@
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
+import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
+import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -20,14 +22,22 @@ describe("PaymentResolver", () => {
 
   describe("Mutations", () => {
     describe("createPaymentMethod", () => {
+      let network: PaymentNetwork;
+      let token: PaymentToken;
+
+      beforeEach(async () => {
+        network = await fixtures.createPaymentNetwork();
+        token = await fixtures.createPaymentToken({ networkId: network.id });
+      });
+
       it("should fail if the user is unauthenticated", async () => {
         const response = await client.request({
           app,
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x123",
-            networkId: "",
-            tokenIds: [],
+            networkId: network.id,
+            tokenIds: [token.id],
           }),
         });
 
@@ -42,8 +52,8 @@ describe("PaymentResolver", () => {
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x123",
-            networkId: "",
-            tokenIds: [],
+            networkId: network.id,
+            tokenIds: [token.id],
           }),
         });
 

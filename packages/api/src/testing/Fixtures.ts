@@ -28,6 +28,8 @@ import { OrganizationMember } from "../models/OrganizationMember";
 import { DeepAtLeast } from "../types/general";
 import { ProjectIntegration } from "../models/ProjectIntegration";
 import { TaskRewardTrigger } from "../models/TaskReward";
+import { PaymentNetwork } from "../models/PaymentNetwork";
+import { PaymentToken, PaymentTokenType } from "../models/PaymentToken";
 
 @Injectable()
 export class Fixtures {
@@ -112,16 +114,13 @@ export class Fixtures {
       projectId: defaultProjectId,
       status: TaskStatusEnum.TODO,
       sortKey: String(Date.now()),
-      // statusId: await this.createTaskStatus({
-      //   projectId: defaultProjectId,
-      // }).then((s) => s.id),
       ...partial,
       reward: !!partial.reward
         ? {
             amount: faker.datatype
               .number({ min: 1 * 10e18, max: 100 * 10e18 })
               .toString(),
-            // TODO(fant): add token!
+            tokenId: await this.createPaymentToken().then((t) => t.id),
             trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
             ...partial.reward,
           }
@@ -148,6 +147,23 @@ export class Fixtures {
     );
   }
 
+  public createPaymentNetwork(partial: Partial<PaymentNetwork> = {}) {
+    return this.paymentService.createPaymentNetwork({
+      name: faker.name.firstName(),
+      url: faker.internet.url(),
+      ...partial,
+    });
+  }
+
+  public async createPaymentToken(partial: Partial<PaymentToken> = {}) {
+    return this.paymentService.createPaymentToken({
+      networkId: await this.createPaymentNetwork().then((n) => n.id),
+      type: PaymentTokenType.ETHER,
+      name: "ETH",
+      ...partial,
+    });
+  }
+
   public async createPaymentMethod(
     partial: Partial<PaymentMethod> = {},
     user?: User
@@ -156,7 +172,7 @@ export class Fixtures {
       {
         type: PaymentMethodType.METAMASK,
         address: "0x0000000000000000000000000000000000000000",
-        networkId: "",
+        networkId: await this.createPaymentNetwork().then((n) => n.id),
         tokenIds: [],
         ...partial,
       },

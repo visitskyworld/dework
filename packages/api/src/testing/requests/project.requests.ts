@@ -16,7 +16,7 @@ export class ProjectRequests {
       taskCount
       doneTaskCount: taskCount(status: DONE)
       todoWithRewardTaskCount: taskCount(status: TODO, rewardNotNull: true)
-      paymentMethod {
+      paymentMethods {
         id
       }
     }

@@ -102,6 +102,25 @@ export class PaymentService {
     return this.paymentMethodRepo.findOne(id);
   }
 
+  public async createPaymentNetwork(
+    partial: AtLeast<PaymentNetwork, "name" | "url">
+  ): Promise<PaymentNetwork> {
+    const created = await this.paymentNetworkRepo.save({
+      sortKey: Date.now().toString(),
+      ...partial,
+    });
+    return this.paymentNetworkRepo.findOne(
+      created.id
+    ) as Promise<PaymentNetwork>;
+  }
+
+  public async createPaymentToken(
+    partial: AtLeast<PaymentToken, "type" | "name" | "networkId">
+  ): Promise<PaymentToken> {
+    const created = await this.paymentTokenRepo.save({ exp: 1, ...partial });
+    return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
+  }
+
   public async getPaymentNetworks(): Promise<PaymentNetwork[]> {
     return this.paymentNetworkRepo.find();
   }
