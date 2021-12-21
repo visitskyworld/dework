@@ -16,8 +16,13 @@ import * as Colors from "@ant-design/colors";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
 import { TaskCard } from "../project/board/TaskCard";
-import { useUpdateUser, useUser, useUserTasks } from "./hooks";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
+import {
+  useUpdateUser,
+  useUser,
+  useUserTasks,
+  useUpdateUserDetail,
+} from "./hooks";
+import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
@@ -37,6 +42,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const currentUserId = useAuthContext().user?.id;
   const isMe = userId === currentUserId;
   const updateUser = useUpdateUser();
+  const updateUserDetail = useUpdateUserDetail();
   const updateUsername = useCallback(
     (username: string) => updateUser({ username }),
     [updateUser]
@@ -49,23 +55,19 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const [form] = Form.useForm();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const intitialValues = user?.details.reduce(
-    (a, v) => ({ ...a, [v.type]: v.value }),
-    {}
-  );
+  const intitialValues: { [k: string]: string } =
+    user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ?? {};
 
-  console.log(user?.details);
-  console.log(intitialValues);
-
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: typeof intitialValues) => {
     setIsEditMode(!isEditMode);
     if (isEditMode) {
+      Object.entries(values).forEach(([type, value]) => {
+        updateUserDetail({ type: type as UserDetailType, value });
+      });
       console.log(values);
       message.success("Profile updated!");
     }
   };
-
-  console.log(user);
 
   if (!user) return null;
 

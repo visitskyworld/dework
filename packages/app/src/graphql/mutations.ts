@@ -191,6 +191,9 @@ export const setUserDetail = gql`
       }
     }
   }
+
+  ${Fragments.user}
+  ${Fragments.userDetail}
 `;
 
 export const createInvite = gql`
