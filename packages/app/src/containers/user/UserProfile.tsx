@@ -58,15 +58,14 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const intitialValues: { [k: string]: string } =
     user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ?? {};
 
+  const toggleEditMode = () => setIsEditMode(!isEditMode);
+
   const onSubmit = (values: typeof intitialValues) => {
-    setIsEditMode(!isEditMode);
-    if (isEditMode) {
-      Object.entries(values).forEach(([type, value]) => {
-        updateUserDetail({ type: type as UserDetailType, value });
-      });
-      console.log(values);
-      message.success("Profile updated!");
-    }
+    toggleEditMode();
+    Object.entries(values).forEach(([type, value]) => {
+      updateUserDetail({ type: type as UserDetailType, value });
+    });
+    message.success("Profile updated!");
   };
 
   if (!user) return null;
@@ -116,13 +115,22 @@ export const UserProfile: FC<Props> = ({ userId }) => {
 
               <UserDetails isEditMode={isEditMode} userDetails={user.details} />
 
-              {!!isMe && (
+              {!!isMe && !!isEditMode && (
+                <Space>
+                  <Button type="primary" htmlType="submit">
+                    Save
+                  </Button>
+                  <Button onClick={toggleEditMode}>Cancel</Button>
+                </Space>
+              )}
+
+              {!!isMe && !isEditMode && (
                 <Button
                   style={{ width: "100%" }}
                   type="primary"
-                  htmlType="submit"
+                  onClick={toggleEditMode}
                 >
-                  {isEditMode ? "Save" : "Edit profile"}
+                  Edit Profile
                 </Button>
               )}
 
