@@ -1,15 +1,19 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
+  GetPaymentNetworksQuery,
   GetProjectQuery,
   GetProjectQueryVariables,
   PaymentMethod,
   PaymentMethodType,
   Task,
+  UpdatePaymentMethodInput,
+  UpdatePaymentMethodMutation,
+  UpdatePaymentMethodMutationVariables,
   User,
   UserPaymentMethodQuery,
   UserPaymentMethodQueryVariables,
@@ -36,6 +40,30 @@ export function useCreatePaymentMethod(): (
     },
     [mutation]
   );
+}
+
+export function useUpdatePaymentMethod(): (
+  input: UpdatePaymentMethodInput
+) => Promise<PaymentMethod> {
+  const [mutation] = useMutation<
+    UpdatePaymentMethodMutation,
+    UpdatePaymentMethodMutationVariables
+  >(Mutations.updatePaymentMethod);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.paymentMethod;
+    },
+    [mutation]
+  );
+}
+
+export function usePaymentNetworks():
+  | GetPaymentNetworksQuery["networks"]
+  | undefined {
+  const { data } = useQuery<GetPaymentNetworksQuery>(Queries.paymentNetworks);
+  return data?.networks ?? undefined;
 }
 
 export class NoProjectPaymentMethodError extends Error {}

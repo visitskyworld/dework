@@ -52,13 +52,9 @@ export class Project extends Audit {
   @Field(() => [ProjectIntegration])
   public integrations!: Promise<ProjectIntegration[]>;
 
-  @JoinColumn()
-  @ManyToOne(() => PaymentMethod, { nullable: true })
-  @Field(() => PaymentMethod, { nullable: true })
-  public paymentMethod?: Promise<PaymentMethod>;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public paymentMethodId?: string;
+  @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.project)
+  @Field(() => [PaymentMethod])
+  public paymentMethods!: Promise<PaymentMethod[]>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

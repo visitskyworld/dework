@@ -1,10 +1,12 @@
-import { Args, Context, Mutation } from "@nestjs/graphql";
+import { Args, Context, Mutation, Query } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { PaymentService } from "./payment.service";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { CreatePaymentMethodInput } from "./dto/CreatePaymentMethodInput";
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
+import { UpdatePaymentMethodInput } from "./dto/UpdatePaymentMethodInput";
 
 @Injectable()
 export class PaymentResolver {
@@ -17,5 +19,19 @@ export class PaymentResolver {
     @Args("input") input: CreatePaymentMethodInput
   ): Promise<PaymentMethod> {
     return this.paymentService.createPaymentMethod(input, user);
+  }
+
+  @Mutation(() => PaymentMethod)
+  // TODO(fant): auth
+  @UseGuards(AuthGuard)
+  public async updatePaymentMethod(
+    @Args("input") input: UpdatePaymentMethodInput
+  ): Promise<PaymentMethod> {
+    return this.paymentService.updatePaymentMethod(input);
+  }
+
+  @Query(() => [PaymentNetwork])
+  public async getPaymentNetworks(): Promise<PaymentNetwork[]> {
+    return this.paymentService.getPaymentNetworks();
   }
 }

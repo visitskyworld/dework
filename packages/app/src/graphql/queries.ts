@@ -152,7 +152,7 @@ export const tasksToPay = gql`
       }
       project {
         id
-        paymentMethod {
+        paymentMethods {
           ...PaymentMethod
         }
       }
@@ -185,4 +185,20 @@ export const invite = gql`
   }
 
   ${Fragments.invite}
+`;
+
+export const paymentNetworks = gql`
+  query GetPaymentNetworksQuery {
+    networks: getPaymentNetworks {
+      ...PaymentNetwork
+      tokens {
+        id
+        name
+        type
+        address
+      }
+    }
+  }
+
+  ${Fragments.paymentNetwork}
 `;

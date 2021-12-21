@@ -6,7 +6,7 @@ import { PaymentNetwork } from "./PaymentNetwork";
 export enum PaymentTokenType {
   ETHER = "ETHER",
   ERC20 = "ERC20",
-  ERC720 = "ERC720",
+  ERC721 = "ERC721",
   ERC1155 = "ERC1155",
   SOL = "SOL",
   SPL_TOKEN = "SPL_TOKEN",

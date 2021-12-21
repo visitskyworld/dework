@@ -1,61 +1,75 @@
-import { PaymentMethod, Project } from "@dewo/app/graphql/types";
-import { Col, Space, Typography } from "antd";
+import { Project } from "@dewo/app/graphql/types";
+import { Button, Col, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { useUpdateProject } from "../hooks";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
-import { PaymentMethodForm } from "../../payment/PaymentMethodForm";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { ProjectGithubIntegration } from "./ProjectGithubIntegrations";
+import { useUpdatePaymentMethod } from "../../payment/hooks";
+import { useToggle } from "@dewo/app/util/hooks";
+import { PaymentMethodForm } from "../../payment/PaymentMethodForm";
 
 interface Props {
   project: Project;
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
-  const updateProject = useUpdateProject();
-
-  const handlePaymentMethodCreated = useCallback(
-    async (paymentMethod: PaymentMethod) => {
-      await updateProject({
-        id: project.id,
-        paymentMethodId: paymentMethod.id,
-      });
-    },
-    [updateProject, project.id]
-  );
+  const updatePaymentMethod = useUpdatePaymentMethod();
   const removePaymentMethod = useCallback(
-    () => updateProject({ id: project.id, paymentMethodId: null }),
-    [updateProject, project.id]
+    (pm) =>
+      updatePaymentMethod({ id: pm.id, deletedAt: new Date().toISOString() }),
+    [updatePaymentMethod]
   );
+
+  const addPaymentMethod = useToggle();
+
   return (
-    <Space direction="vertical" size="large" style={{ width: "100%" }}>
-      <Col>
-        <Typography.Title level={5}>Discord Integrations</Typography.Title>
-        <ProjectDiscordIntegrations
-          projectId={project.id}
-          organizationId={project.organizationId}
-        />
-      </Col>
-
-      <Col>
-        <Typography.Title level={5}>Github Integrations</Typography.Title>
-        <ProjectGithubIntegration
-          projectId={project.id}
-          organizationId={project.organizationId}
-        />
-      </Col>
-
-      <Col>
-        <Typography.Title level={5}>Reward Payment Method</Typography.Title>
-        {!!project.paymentMethod ? (
-          <PaymentMethodSummary
-            paymentMethod={project.paymentMethod}
-            onClose={removePaymentMethod}
+    <>
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        <Col>
+          <Typography.Title level={5}>Discord Integrations</Typography.Title>
+          <ProjectDiscordIntegrations
+            projectId={project.id}
+            organizationId={project.organizationId}
           />
-        ) : (
-          <PaymentMethodForm onDone={handlePaymentMethodCreated} />
-        )}
-      </Col>
-    </Space>
+        </Col>
+
+        <Col>
+          <Typography.Title level={5}>Github Integrations</Typography.Title>
+          <ProjectGithubIntegration
+            projectId={project.id}
+            organizationId={project.organizationId}
+          />
+        </Col>
+
+        <Col>
+          <Typography.Title level={5}>Reward Payment Method</Typography.Title>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            {project.paymentMethods.map((paymentMethod) => (
+              <PaymentMethodSummary
+                type={paymentMethod.type}
+                address={paymentMethod.address}
+                onClose={() => removePaymentMethod(paymentMethod)}
+              />
+            ))}
+
+            <Button onClick={addPaymentMethod.toggleOn}>
+              Add Payment Method
+            </Button>
+          </Space>
+        </Col>
+        <Modal
+          key={project.paymentMethods.length}
+          visible={addPaymentMethod.isOn}
+          title="Add Payment Method"
+          footer={null}
+          onCancel={addPaymentMethod.toggleOff}
+        >
+          <PaymentMethodForm
+            projectId={project.id}
+            onDone={addPaymentMethod.toggleOff}
+          />
+        </Modal>
+      </Space>
+    </>
   );
 };

@@ -4,10 +4,10 @@ import { useRequestSigner } from "@dewo/app/util/ethereum";
 import { useIsGnosisSafeOwner } from "@dewo/app/util/gnosis";
 
 interface Props {
-  onConnect(address: string): Promise<void>;
+  onChange?(address: string): Promise<void>;
 }
 
-export const ConnectGnosisSafe: FC<Props> = ({ onConnect }) => {
+export const ConnectGnosisSafe: FC<Props> = ({ onChange }) => {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const requestSigner = useRequestSigner();
@@ -20,11 +20,11 @@ export const ConnectGnosisSafe: FC<Props> = ({ onConnect }) => {
       const isOwner = await isSafeOwner(address, signer);
       if (!isOwner) throw new Error("Signer is not Gnosis Safe owner");
 
-      await onConnect(address);
+      await onChange?.(address);
     } finally {
       setLoading(false);
     }
-  }, [onConnect, requestSigner, isSafeOwner, address]);
+  }, [onChange, requestSigner, isSafeOwner, address]);
 
   return (
     <Input.Group compact style={{ display: "flex" }}>

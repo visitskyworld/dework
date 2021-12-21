@@ -200,6 +200,28 @@ export const createPaymentMethod = gql`
   mutation CreatePaymentMethodMutation($input: CreatePaymentMethodInput!) {
     paymentMethod: createPaymentMethod(input: $input) {
       ...PaymentMethod
+      project {
+        id
+        paymentMethods {
+          ...PaymentMethod
+        }
+      }
+    }
+  }
+
+  ${Fragments.paymentMethod}
+`;
+
+export const updatePaymentMethod = gql`
+  mutation UpdatePaymentMethodMutation($input: UpdatePaymentMethodInput!) {
+    paymentMethod: updatePaymentMethod(input: $input) {
+      ...PaymentMethod
+      project {
+        id
+        paymentMethods {
+          ...PaymentMethod
+        }
+      }
     }
   }
 

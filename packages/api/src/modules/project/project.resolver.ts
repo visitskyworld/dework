@@ -1,4 +1,12 @@
-import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
@@ -14,11 +22,21 @@ import { UpdateProjectInput } from "./dto/UpdateProjectInput";
 import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { ProjectRolesGuard } from "./project.roles.guard";
+import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 
 @Resolver(() => Project)
 @Injectable()
 export class ProjectResolver {
   constructor(private readonly projectService: ProjectService) {}
+
+  @ResolveField(() => [PaymentMethod])
+  public async paymentMethods(
+    @Parent() project: Project
+  ): Promise<PaymentMethod[]> {
+    // TODO(fant): query project PMs and filter by deletedAt directly
+    const pms = await project.paymentMethods;
+    return pms.filter((p) => !p.deletedAt);
+  }
 
   @Mutation(() => Project)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)

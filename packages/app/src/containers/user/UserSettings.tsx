@@ -27,7 +27,8 @@ export const UserSettings: FC<Props> = () => {
         <Typography.Title level={5}>Reward Payment Method</Typography.Title>
         {!!user?.paymentMethod ? (
           <PaymentMethodSummary
-            paymentMethod={user.paymentMethod}
+            type={user.paymentMethod.type}
+            address={user.paymentMethod.address}
             onClose={removePaymentMethod}
           />
         ) : (

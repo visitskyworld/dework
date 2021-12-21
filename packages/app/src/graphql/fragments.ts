@@ -109,7 +109,7 @@ export const project = gql`
     taskCount
     doneTaskCount: taskCount(status: DONE)
     openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
-    paymentMethod {
+    paymentMethods {
       ...PaymentMethod
     }
   }

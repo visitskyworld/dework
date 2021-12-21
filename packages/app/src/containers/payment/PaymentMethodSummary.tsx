@@ -1,26 +1,28 @@
-import { PaymentMethod } from "@dewo/app/graphql/types";
+import { PaymentMethodType } from "@dewo/app/graphql/types";
 import { Alert, Typography } from "antd";
 import React, { FC } from "react";
 import { shortenedAddress } from "./hooks";
 import { paymentMethodTypeToString } from "./PaymentMethodForm";
 
 interface PaymentMethodSummaryProps {
-  paymentMethod: PaymentMethod;
+  type: PaymentMethodType;
+  address: string;
   onClose?(): void;
 }
 
 export const PaymentMethodSummary: FC<PaymentMethodSummaryProps> = ({
-  paymentMethod,
+  type,
+  address,
   onClose,
 }) => {
   return (
     <Alert
       message={
         <Typography.Text>
-          {paymentMethodTypeToString[paymentMethod.type]} connected
+          {paymentMethodTypeToString[type]} connected
           <Typography.Text type="secondary">
             {" "}
-            ({shortenedAddress(paymentMethod.address)})
+            ({shortenedAddress(address)})
           </Typography.Text>
         </Typography.Text>
       }

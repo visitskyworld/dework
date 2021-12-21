@@ -1,6 +1,9 @@
 import { Payment, PaymentStatus } from "@dewo/api/models/Payment";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
+import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
+import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { User } from "@dewo/api/models/User";
+import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
@@ -11,7 +14,11 @@ export class PaymentService {
     @InjectRepository(Payment)
     private readonly paymentRepo: Repository<Payment>,
     @InjectRepository(PaymentMethod)
-    private readonly paymentMethodRepo: Repository<PaymentMethod>
+    private readonly paymentMethodRepo: Repository<PaymentMethod>,
+    @InjectRepository(PaymentNetwork)
+    private readonly paymentNetworkRepo: Repository<PaymentNetwork>,
+    @InjectRepository(PaymentToken)
+    private readonly paymentTokenRepo: Repository<PaymentToken>
   ) {}
 
   public async create(
@@ -65,6 +72,13 @@ export class PaymentService {
     return this.findPaymentMethodById(created.id) as Promise<PaymentMethod>;
   }
 
+  public async updatePaymentMethod(
+    partial: AtLeast<PaymentMethod, "id">
+  ): Promise<PaymentMethod> {
+    const updated = await this.paymentMethodRepo.save(partial);
+    return this.paymentMethodRepo.findOne(updated.id) as Promise<PaymentMethod>;
+  }
+
   public async findById(id: string): Promise<Payment | undefined> {
     return this.paymentRepo.findOne(id);
   }
@@ -73,5 +87,9 @@ export class PaymentService {
     id: string
   ): Promise<PaymentMethod | undefined> {
     return this.paymentMethodRepo.findOne(id);
+  }
+
+  public async getPaymentNetworks(): Promise<PaymentNetwork[]> {
+    return this.paymentNetworkRepo.find();
   }
 }

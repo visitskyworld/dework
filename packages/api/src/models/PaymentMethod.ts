@@ -10,6 +10,7 @@ import {
 import { Audit } from "./Audit";
 import { PaymentNetwork } from "./PaymentNetwork";
 import { PaymentToken } from "./PaymentToken";
+import { Project } from "./Project";
 import { User } from "./User";
 
 export enum PaymentMethodType {
@@ -48,4 +49,16 @@ export class PaymentMethod extends Audit {
   @JoinTable({ name: "payment_method_token" })
   @Field(() => [PaymentToken])
   public tokens!: Promise<PaymentToken[]>;
+
+  @JoinColumn()
+  @ManyToOne(() => Project, { nullable: true })
+  @Field(() => Project, { nullable: true })
+  public project?: Promise<Project>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public projectId?: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }
