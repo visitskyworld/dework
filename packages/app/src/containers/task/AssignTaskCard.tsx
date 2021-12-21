@@ -69,7 +69,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                 " - " +
                 formatDate(taskApplication.endDate) +
                 "\n\n" +
-                taskApplication.applicationMessage
+                taskApplication.message
               }
               overlayStyle={{ whiteSpace: "pre-line" }}
             >

@@ -53,7 +53,7 @@ export class TaskRequests {
         user {
           id
         }
-        applicationMessage
+        message
         startDate
         endDate
       }

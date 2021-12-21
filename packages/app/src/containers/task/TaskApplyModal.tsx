@@ -23,7 +23,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
   const handleSubmit = useCallback(
     async (input) => {
       const claimedTask = await claimTask(task, {
-        applicationMessage: input.applicationMessage,
+        message: input.message,
         startDate: input.dates[0],
         endDate: input.dates[1],
       });
@@ -52,8 +52,8 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
             <RangePicker name="period" />
           </Form.Item>
           <Form.Item
-            name="applicationMessage"
-            label={"Application Message"}
+            name="message"
+            label={"Message"}
             rules={[{ required: true, message: "Please enter a message" }]}
           >
             <Input.TextArea

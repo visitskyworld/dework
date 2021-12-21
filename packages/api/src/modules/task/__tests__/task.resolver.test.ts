@@ -212,11 +212,11 @@ describe("TaskResolver", () => {
       it("should succeed and create a task application for user if status is TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
-        const applicationMessage = faker.lorem.words(5);
+        const message = faker.lorem.words(5);
         const startDate = faker.date.soon();
         const endDate = faker.date.soon();
         const taskApplication = {
-          applicationMessage: applicationMessage,
+          message: message,
           startDate: startDate,
           endDate: endDate,
         };
@@ -233,9 +233,7 @@ describe("TaskResolver", () => {
 
         const fetchedTaskApplication = fetched.taskApplications[0];
         expect(fetchedTaskApplication.user.id).toEqual(user.id);
-        expect(fetchedTaskApplication.applicationMessage).toEqual(
-          applicationMessage
-        );
+        expect(fetchedTaskApplication.message).toEqual(message);
         expect(fetchedTaskApplication.startDate).toEqual(
           startDate.toISOString()
         );
@@ -248,7 +246,7 @@ describe("TaskResolver", () => {
           status: TaskStatusEnum.IN_PROGRESS,
         });
         const taskApplication = {
-          applicationMessage: faker.lorem.words(5),
+          message: faker.lorem.words(5),
           startDate: faker.date.soon(),
           endDate: faker.date.soon(),
         };

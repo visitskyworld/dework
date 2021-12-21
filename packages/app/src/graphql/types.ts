@@ -470,7 +470,7 @@ export interface CreateTaskMutation_task_taskApplications_user {
 
 export interface CreateTaskMutation_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: CreateTaskMutation_task_taskApplications_user;
@@ -585,7 +585,7 @@ export interface UpdateTaskMutation_task_taskApplications_user {
 
 export interface UpdateTaskMutation_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: UpdateTaskMutation_task_taskApplications_user;
@@ -700,7 +700,7 @@ export interface ClaimTaskMutation_task_taskApplications_user {
 
 export interface ClaimTaskMutation_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: ClaimTaskMutation_task_taskApplications_user;
@@ -816,7 +816,7 @@ export interface UnclaimTaskMutation_task_taskApplications_user {
 
 export interface UnclaimTaskMutation_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: UnclaimTaskMutation_task_taskApplications_user;
@@ -931,7 +931,7 @@ export interface DeleteTaskMutation_task_taskApplications_user {
 
 export interface DeleteTaskMutation_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: DeleteTaskMutation_task_taskApplications_user;
@@ -1639,7 +1639,7 @@ export interface UserTasksQuery_user_tasks_taskApplications_user {
 
 export interface UserTasksQuery_user_tasks_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: UserTasksQuery_user_tasks_taskApplications_user;
@@ -2001,7 +2001,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_taskApplications_u
 
 export interface GetOrganizationTasksQuery_organization_tasks_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: GetOrganizationTasksQuery_organization_tasks_taskApplications_user;
@@ -2192,7 +2192,7 @@ export interface GetProjectTasksQuery_project_tasks_taskApplications_user {
 
 export interface GetProjectTasksQuery_project_tasks_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: GetProjectTasksQuery_project_tasks_taskApplications_user;
@@ -2365,7 +2365,7 @@ export interface GetTaskQuery_task_taskApplications_user {
 
 export interface GetTaskQuery_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: GetTaskQuery_task_taskApplications_user;
@@ -2804,7 +2804,7 @@ export interface TaskCreatedSubscription_task_taskApplications_user {
 
 export interface TaskCreatedSubscription_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: TaskCreatedSubscription_task_taskApplications_user;
@@ -2965,7 +2965,7 @@ export interface TaskUpdatedSubscription_task_taskApplications_user {
 
 export interface TaskUpdatedSubscription_task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: TaskUpdatedSubscription_task_taskApplications_user;
@@ -3405,7 +3405,7 @@ export interface TaskApplication_user {
 
 export interface TaskApplication {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: TaskApplication_user;
@@ -3497,7 +3497,7 @@ export interface Task_taskApplications_user {
 
 export interface Task_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: Task_taskApplications_user;
@@ -3951,7 +3951,7 @@ export interface ProjectDetails_tasks_taskApplications_user {
 
 export interface ProjectDetails_tasks_taskApplications {
   __typename: "TaskApplication";
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   user: ProjectDetails_tasks_taskApplications_user;
@@ -4131,7 +4131,7 @@ export interface CreateProjectIntegrationInput {
 }
 
 export interface CreateTaskApplicationInput {
-  applicationMessage: string;
+  message: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
 }

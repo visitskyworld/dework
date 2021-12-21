@@ -63,7 +63,7 @@ export class TaskService {
     if (taskApplications.map((a) => a.userId).includes(user.id)) return task;
 
     const taskApplication = {
-      applicationMessage: application.applicationMessage,
+      message: application.message,
       startDate: application.startDate,
       endDate: application.endDate,
       userId: user.id,

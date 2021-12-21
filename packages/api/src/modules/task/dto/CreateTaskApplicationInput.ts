@@ -3,7 +3,7 @@ import { Field, InputType } from "@nestjs/graphql";
 @InputType()
 export class CreateTaskApplicationInput {
   @Field()
-  public applicationMessage!: string;
+  public message!: string;
 
   @Field()
   public startDate!: Date;

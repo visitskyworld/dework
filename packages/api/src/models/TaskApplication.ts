@@ -17,7 +17,7 @@ export class TaskApplication extends Audit {
 
   @Column()
   @Field()
-  public applicationMessage!: string;
+  public message!: string;
 
   @Column()
   @Field()
