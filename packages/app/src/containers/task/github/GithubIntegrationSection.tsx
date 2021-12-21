@@ -26,7 +26,9 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
     () =>
       task.githubBranches.filter(
         (branch) =>
-          !task.githubPullRequests.some((pr) => pr.branchName === branch.name)
+          !task.githubPullRequests.some(
+            (pr) => pr.branchName === branch.name
+          ) && !branch.deletedAt
       ),
     [task.githubBranches, task.githubPullRequests]
   );

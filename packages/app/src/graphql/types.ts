@@ -934,6 +934,7 @@ export interface CreateTaskPaymentsMutation_tasks_githubBranches {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks {
@@ -1611,6 +1612,7 @@ export interface GetTaskQuery_task_githubBranches {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 export interface GetTaskQuery_task_project_taskTags {
@@ -1903,6 +1905,7 @@ export interface TaskCreatedSubscription_task_githubBranches {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 export interface TaskCreatedSubscription_task {
@@ -2017,6 +2020,7 @@ export interface TaskUpdatedSubscription_task_githubBranches {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 export interface TaskUpdatedSubscription_task {
@@ -2289,6 +2293,7 @@ export interface GithubBranch {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 /* tslint:disable */
@@ -2456,6 +2461,7 @@ export interface TaskDetails_githubBranches {
   repository: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
 }
 
 export interface TaskDetails {

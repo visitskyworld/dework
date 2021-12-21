@@ -19,13 +19,14 @@ export const GithubBranchRow: FC<Props> = ({ branch, task }) => {
       : `${window.location.origin}/o/${encoder.encode(
           project?.organizationId ?? ""
         )}/p/${encoder.encode(task.projectId)}?taskId=${task.id}`;
-  const link = `${branch.link}?quick_pull=1&title=${
+  const openNewPrLink = `${branch.link}?quick_pull=1&title=${
     task.name
-  }&description=${encodeURIComponent(`Task details: ${taskPermalink}`)}`;
+  }&body=${encodeURIComponent(`Task details: ${taskPermalink}`)}`;
+
   return (
     <Button
       type="text"
-      href={link}
+      href={openNewPrLink}
       target="_blank"
       style={{ padding: 0, margin: "-2px -8px", height: "unset" }}
     >

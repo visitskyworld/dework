@@ -25,4 +25,8 @@ export class GithubBranch extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public taskId!: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

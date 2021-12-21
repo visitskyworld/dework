@@ -129,6 +129,7 @@ export const githubBranch = gql`
     repository
     createdAt
     updatedAt
+    deletedAt
   }
 `;
 

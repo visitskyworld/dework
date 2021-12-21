@@ -50,60 +50,54 @@ export class GithubController {
 
   @Post("webhook")
   async githubWebhook(@Req() { body }: Request) {
-    this.logger.debug(`Incoming Github webhook: ${JSON.stringify(body)}`);
+    this.log("Incoming Github webhook", body);
 
     // First validate the event's installation and taskId
-    const branchName = body.pull_request?.head?.ref ?? body.ref;
+    const branchName = (body.pull_request?.head?.ref ?? body.ref).replace(
+      "refs/heads/",
+      ""
+    );
     const taskNumber =
       this.githubService.parseTaskNumberFromBranchName(branchName);
 
     if (!taskNumber) {
-      this.logger.debug(
-        `Failed to parse task number from branch name: ${JSON.stringify({
-          branchName,
-        })}`
-      );
+      this.log("Failed to parse task number from branch name", branchName);
       return;
     }
 
-    this.logger.debug(
-      `Parsed task number from branch name: ${JSON.stringify({
-        branchName,
-        taskNumber,
-      })}`
-    );
+    this.log("Parsed task number from branch name", { branchName, taskNumber });
 
     const installationId = body.installation.id;
     const task = await this.githubService.findTask(taskNumber, installationId);
 
     if (!task) {
-      this.logger.debug(
-        `Failed to find task: ${JSON.stringify({ taskNumber, installationId })}`
-      );
+      this.log("Failed to find task", { taskNumber, installationId });
       return;
     }
 
-    this.logger.debug(
-      `Found task: ${JSON.stringify({
-        taskId: task.id,
-        taskNumber,
-        installationId,
-      })}`
-    );
+    this.log("Found task", { taskId: task.id, taskNumber, installationId });
 
     // Then handle branch and pull request updates separately
-    if (body.ref_type === "branch") {
-      const repository = body.repository.full_name;
-      const branch = await this.githubService.findBranchByName(branchName);
+    const branch = await this.githubService.findBranchByName(branchName);
+    if (branch) {
+      this.log("Found branch in db", { id: branch.id, name: branch.name });
 
-      if (!branch) {
-        await this.githubService.createBranch({
-          name: branchName.replace("refs/heads/", ""),
-          repository,
-          link: `https://github.com/${repository}/compare/${branchName}`,
-          taskId: task.id,
+      // Check if it's a deletion push
+      if (body.deleted) {
+        await this.githubService.updateBranch({
+          id: branch.id,
+          deletedAt: new Date(),
         });
       }
+    } else if (body.ref_type === "branch") {
+      const repository = body.repository.full_name;
+
+      await this.githubService.createBranch({
+        name: branchName,
+        repository,
+        link: `https://github.com/${repository}/compare/${branchName}`,
+        taskId: task.id,
+      });
     }
 
     if (body.pull_request) {
@@ -136,5 +130,9 @@ export class GithubController {
       }
     } catch {}
     return this.configService.get("APP_URL") as string;
+  }
+
+  private log(description: string, body: any): void {
+    this.logger.debug(`${description}: ${JSON.stringify(body, null, 2)}`);
   }
 }
