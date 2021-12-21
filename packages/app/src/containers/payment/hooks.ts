@@ -94,7 +94,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const [fromPaymentMethod, toPaymentMethod] = await Promise.all([
         loadProjectPaymentMethod({
           variables: { projectId: task.projectId },
-        }).then((res) => res.data?.project.paymentMethod),
+        }).then((res) => res.data?.project.paymentMethods[0]),
         loadUserPaymentMethod({ variables: { id: user.id } }).then(
           (res) => res.data?.user.paymentMethod
         ),
@@ -110,19 +110,21 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
       switch (fromPaymentMethod.type) {
         case PaymentMethodType.METAMASK: {
-          if (task.reward.currency === "ETH") {
-            await signMetamaskPayout(
-              toPaymentMethod.address,
-              task.reward.amount
-            );
-          } else {
-            throw new Error(`Unknown reward currency: ${task.reward.currency}`);
-          }
-          break;
+          throw new Error("Implement Phantom pay now");
+          // if (task.reward.currency === "ETH") {
+          //   await signMetamaskPayout(
+          //     toPaymentMethod.address,
+          //     task.reward.amount
+          //   );
+          // } else {
+          //   throw new Error(`Unknown reward currency: ${task.reward.currency}`);
+          // }
+          // break;
         }
         case PaymentMethodType.PHANTOM: {
-          await signPhantomPayout(toPaymentMethod.address, task.reward.amount);
-          break;
+          throw new Error("Implement Phantom pay now");
+          // await signPhantomPayout(toPaymentMethod.address, task.reward.amount);
+          // break;
         }
         case PaymentMethodType.GNOSIS_SAFE: {
           // const signed = await signGnosisPayout(

@@ -16,7 +16,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Modal, notification, Table, Tag } from "antd";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useProject } from "../hooks";
 import { useRouter } from "next/router";
@@ -66,6 +66,14 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
       setSelectedTaskIds(tasks.filter(canPayTaskAssignee).map((t) => t.id));
   }, [tasks]);
 
+  const gnosisPaymentMethod = useMemo(
+    () =>
+      project?.paymentMethods.find(
+        (pm) => pm.type === PaymentMethodType.GNOSIS_SAFE
+      ),
+    [project?.paymentMethods]
+  );
+
   const [loading, setLoading] = useState(false);
   const proposeTransaction = useProposeTransaction();
   const createTaskPayments = useCreateTaskPayments();
@@ -79,7 +87,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         .filter((task): task is TaskToPay => !!task);
 
       const safeTxHash = await proposeTransaction(
-        project!.paymentMethod!.address,
+        gnosisPaymentMethod!.address,
         tasksToPay.map((task) => ({
           to: userToPay(task).paymentMethod!.address,
           value: ethers.utils
@@ -91,7 +99,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
 
       await createTaskPayments({
         taskRewardIds: tasksToPay.map((t) => t.reward!.id),
-        paymentMethodId: project!.paymentMethod!.id,
+        paymentMethodId: gnosisPaymentMethod!.id,
         data: { safeTxHash },
       });
       modal.toggleOff();
@@ -101,7 +109,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   }, [
     proposeTransaction,
     createTaskPayments,
-    project,
+    gnosisPaymentMethod,
     selectedTaskIds,
     tasks,
     modal,
@@ -110,11 +118,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const router = useRouter();
   const handlePayNow = useCallback(() => {
     if (!project) return;
-    if (
-      project.paymentMethods.some(
-        (pm) => pm.type === PaymentMethodType.GNOSIS_SAFE
-      )
-    ) {
+    if (!!gnosisPaymentMethod) {
       modal.toggleOn();
     } else {
       notification.info({
@@ -138,7 +142,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         ),
       });
     }
-  }, [project, modal, router]);
+  }, [gnosisPaymentMethod, project, modal, router]);
 
   if (!project) return null;
   return (

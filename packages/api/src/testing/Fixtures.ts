@@ -156,6 +156,8 @@ export class Fixtures {
       {
         type: PaymentMethodType.METAMASK,
         address: "0x0000000000000000000000000000000000000000",
+        networkId: "",
+        tokenIds: [],
         ...partial,
       },
       user ?? (await this.createUser())
