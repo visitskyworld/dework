@@ -57,16 +57,19 @@ export const TaskUpdateModal: FC<Props> = ({
 
   return (
     <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
-      <TaskForm
-        key={JSON.stringify(initialValues)}
-        mode="update"
-        task={task}
-        tags={task?.project.taskTags ?? []}
-        initialValues={initialValues}
-        assignees={task?.assignees}
-        buttonText="Update"
-        onSubmit={handleSubmit}
-      />
+      {!!task && (
+        <TaskForm
+          key={JSON.stringify(initialValues)}
+          mode="update"
+          task={task}
+          tags={task!.project.taskTags ?? []}
+          projectId={task!.projectId}
+          initialValues={initialValues}
+          assignees={task!.assignees}
+          buttonText="Update"
+          onSubmit={handleSubmit}
+        />
+      )}
     </Modal>
   );
 };

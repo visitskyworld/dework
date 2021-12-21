@@ -51,6 +51,7 @@ export interface TaskFormValues {
 
 interface TaskFormProps {
   mode: "create" | "update";
+  projectId: string;
   task?: TaskDetails;
   tags: TaskTag[];
   buttonText: string;
@@ -63,6 +64,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   mode,
   task,
   tags,
+  projectId,
   buttonText,
   initialValues,
   onSubmit,
@@ -75,8 +77,6 @@ export const TaskForm: FC<TaskFormProps> = ({
   const canEdit = usePermission(mode, "Task");
   const canDelete = usePermission("delete", "Task");
 
-  const projectId: string =
-    task?.projectId ?? (initialValues as any)?.projectId!;
   const ownerOptions = useTaskFormUserOptions(
     projectId,
     useMemo(() => (!!task?.owner ? [task.owner] : []), [task?.owner])

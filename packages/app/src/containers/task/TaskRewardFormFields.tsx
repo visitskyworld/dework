@@ -1,9 +1,18 @@
 import React, { ComponentType, FC, useCallback, useMemo } from "react";
 import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
-import { InputNumber, Select, Space } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Empty,
+  InputNumber,
+  Select,
+  Space,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../project/hooks";
 import _ from "lodash";
+import { uuidToBase62 } from "@dewo/app/util/uuid";
+import Link from "next/link";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -88,25 +97,47 @@ export const TaskRewardFormFields: FC<Props> = ({
     [onChange, value]
   );
 
+  if (!project) return null;
   return (
     <>
       <Space direction="vertical" style={{ width: "100%" }}>
-        <Select
-          loading={!project}
-          placeholder="Select where you'll pay"
-          value={value?.networkId}
-          onChange={handleChangeNetworkId}
-        >
-          {networks.map((network) => (
-            <Select.Option
-              key={network.id}
-              value={network.id}
-              label={network.name}
+        <ConfigProvider
+          renderEmpty={() => (
+            <Empty
+              imageStyle={{ display: "none" }}
+              description="To add a task reward, you need to connect a wallet to the project"
             >
-              {network.name}
-            </Select.Option>
-          ))}
-        </Select>
+              <Link
+                href={`/o/${uuidToBase62(
+                  project.organizationId
+                )}/p/${uuidToBase62(projectId)}/settings`}
+              >
+                <a>
+                  <Button type="primary" size="small">
+                    Connect now
+                  </Button>
+                </a>
+              </Link>
+            </Empty>
+          )}
+        >
+          <Select
+            loading={!project}
+            placeholder="Select where you'll pay"
+            value={value?.networkId}
+            onChange={handleChangeNetworkId}
+          >
+            {networks.map((network) => (
+              <Select.Option
+                key={network.id}
+                value={network.id}
+                label={network.name}
+              >
+                {network.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </ConfigProvider>
         {!!value?.networkId && (
           <InputNumber
             placeholder="Enter amount"

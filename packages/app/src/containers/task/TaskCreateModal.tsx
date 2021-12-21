@@ -47,6 +47,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       <TaskForm
         mode="create"
         tags={tags}
+        projectId={projectId}
         initialValues={initialValues}
         buttonText="Create"
         onSubmit={handleSubmit}
