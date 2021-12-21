@@ -8,7 +8,7 @@ import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
 import Link from "next/link";
-import { useUpdateTask } from "../../task/hooks";
+import { formatTaskReward, useUpdateTask } from "../../task/hooks";
 
 interface TaskCardProps {
   task: Task;
@@ -103,9 +103,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
                 }}
               >
                 <Icons.DollarOutlined />
-                <span>
-                  {task.reward.amount} {task.reward.currency}
-                </span>
+                <span>{formatTaskReward(task.reward)}</span>
               </Tag>
             )}
             {task.tags.map(({ label, color }, index) => (

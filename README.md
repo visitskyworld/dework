@@ -60,12 +60,12 @@ BEGIN
 
   INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
   VALUES
-    ('ETHER', 'Ether', 18, NULL, ethmain_id),
+    ('ETHER', 'ETH', 18, NULL, ethmain_id),
     ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethmain_id);
 
   INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
   VALUES
-    ('ETHER', 'Ether', 18, NULL, ethrinkeby_id),
+    ('ETHER', 'ETH', 18, NULL, ethrinkeby_id),
     ('ERC20', 'USDC', 18, '0xeb8f08a975ab53e34d8a0330e0d34de942c95926', ethrinkeby_id);
 END $$;
 ```

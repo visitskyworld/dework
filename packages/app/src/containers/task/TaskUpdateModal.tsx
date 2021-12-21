@@ -1,19 +1,19 @@
-import { Task, UpdateTaskInput } from "@dewo/app/graphql/types";
+import { Task } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { Modal } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
-import { useTask, useUpdateTask } from "./hooks";
-import { TaskForm } from "./TaskForm";
+import { toTaskRewardFormValues, useTask, useUpdateTask } from "./hooks";
+import { TaskForm, TaskFormValues } from "./TaskForm";
 
-interface TaskCreateModalProps {
-  taskId?: string;
+interface Props {
+  taskId: string;
   visible: boolean;
   onCancel(): void;
   onDone(task: Task): unknown;
 }
 
-export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
+export const TaskUpdateModal: FC<Props> = ({
   taskId,
   visible,
   onCancel,
@@ -22,36 +22,30 @@ export const TaskUpdateModal: FC<TaskCreateModalProps> = ({
   const task = useTask(taskId);
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
-    async (input: UpdateTaskInput) => {
+    async (input: TaskFormValues) => {
       const updated = await updateTask(input, task!);
       await onDone(updated);
     },
     [updateTask, onDone, task]
   );
 
-  const initialValues = useMemo<UpdateTaskInput>(
+  const initialValues = useMemo<TaskFormValues>(
     () => ({
-      id: taskId ?? "",
+      id: taskId,
       name: task?.name ?? undefined,
       description: task?.description ?? undefined,
-      tagIds: task?.tags.map((t) => t.id),
-      assigneeIds: task?.assignees.map((a) => a.id),
+      tagIds: task?.tags.map((t) => t.id) ?? [],
+      assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,
-      status: task?.status,
-      reward: !!task?.reward
-        ? {
-            amount: task.reward.amount,
-            currency: task.reward.currency,
-            trigger: task.reward.trigger,
-          }
-        : undefined,
+      status: task?.status!,
+      reward: toTaskRewardFormValues(task?.reward ?? undefined),
     }),
     [task, taskId]
   );
 
   return (
     <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
-      <TaskForm<any>
+      <TaskForm
         key={JSON.stringify(initialValues)}
         mode="update"
         task={task}
@@ -78,7 +72,7 @@ export const TaskUpdateModalListener: FC = () => {
   );
   return (
     <TaskUpdateModal
-      taskId={taskId}
+      taskId={taskId!}
       visible={!!taskId}
       onCancel={closeTaskModal}
       onDone={closeTaskModal}

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import _ from "lodash";
 import {
   Tag,
@@ -15,9 +15,6 @@ import {
   Divider,
 } from "antd";
 import {
-  CreateTaskInput,
-  UpdateTaskInput,
-  TaskRewardTrigger,
   TaskStatusEnum,
   User,
   TaskDetails,
@@ -34,36 +31,42 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
-  rewardTriggerToString,
   TaskRewardFormFields,
+  TaskRewardFormValues,
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
-
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 
-interface TaskFormProps<TFormValues> {
+export interface TaskFormValues {
+  projectId?: string;
+  status: TaskStatusEnum;
+  tagIds: string[];
+  assigneeIds: string[];
+  ownerId?: string;
+  reward?: TaskRewardFormValues;
+}
+
+interface TaskFormProps {
   mode: "create" | "update";
   task?: TaskDetails;
   tags: TaskTag[];
   buttonText: string;
-  initialValues?: Partial<TFormValues>;
+  initialValues?: Partial<TaskFormValues>;
   assignees?: User[];
-  onSubmit(task: TFormValues): unknown;
+  onSubmit(values: TaskFormValues): unknown;
 }
 
-export function TaskForm<
-  TFormValues extends CreateTaskInput | UpdateTaskInput
->({
+export const TaskForm: FC<TaskFormProps> = ({
   mode,
   task,
   tags,
   buttonText,
   initialValues,
   onSubmit,
-}: TaskFormProps<TFormValues>) {
-  const formRef = useRef<FormInstance<TFormValues>>(null);
-  const [values, setValues] = useState<Partial<TFormValues>>(
+}) => {
+  const formRef = useRef<FormInstance<TaskFormValues>>(null);
+  const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
   );
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
@@ -83,19 +86,10 @@ export function TaskForm<
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async (values: TFormValues) => {
+    async (values: TaskFormValues) => {
       try {
         setLoading(true);
-        await onSubmit({
-          ...values,
-          reward: !!values.reward?.amount
-            ? {
-                amount: values.reward.amount,
-                currency: values.reward.currency,
-                trigger: values.reward.trigger,
-              }
-            : undefined,
-        });
+        await onSubmit(values);
         formRef.current?.resetFields();
       } finally {
         setLoading(false);
@@ -142,7 +136,7 @@ export function TaskForm<
   );
 
   const handleChange = useCallback(
-    (_changed: Partial<TFormValues>, values: Partial<TFormValues>) => {
+    (_changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
       setValues(values);
     },
     []
@@ -343,20 +337,26 @@ export function TaskForm<
             </Select>
           </Form.Item>
 
-          {canEdit ? (
-            <TaskRewardFormFields value={values?.reward ?? undefined} />
+          {canEdit && !!projectId ? (
+            <Form.Item name="reward" label="Task Reward">
+              <TaskRewardFormFields
+                projectId={projectId}
+                value={values?.reward ?? undefined}
+              />
+            </Form.Item>
           ) : (
             !!values.reward && (
               <FormSection label="Reward">
                 <Row>
                   <Typography.Text>
-                    {values.reward.amount} {values.reward.currency} (
+                    TODO: render task reward
+                    {/* {values.reward.amount} {values.reward.currency} (
                     {
                       rewardTriggerToString[
                         TaskRewardTrigger.CORE_TEAM_APPROVAL
                       ]
                     }
-                    )
+                    ) */}
                   </Typography.Text>
                 </Row>
               </FormSection>
@@ -378,4 +378,4 @@ export function TaskForm<
       </Form.Item>
     </Form>
   );
-}
+};

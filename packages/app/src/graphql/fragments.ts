@@ -28,14 +28,12 @@ export const paymentNetwork = gql`
 export const paymentToken = gql`
   fragment PaymentToken on PaymentToken {
     id
+    exp
     type
+    name
     address
-    network {
-      ...PaymentNetwork
-    }
+    networkId
   }
-
-  ${paymentNetwork}
 `;
 
 export const paymentMethod = gql`

@@ -66,20 +66,14 @@ export interface UpdateUserMutation_user_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UpdateUserMutation_user_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdateUserMutation_user_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdateUserMutation_user_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UpdateUserMutation_user_paymentMethod {
@@ -225,20 +219,14 @@ export interface CreateProjectMutation_project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface CreateProjectMutation_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateProjectMutation_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateProjectMutation_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface CreateProjectMutation_project_paymentMethods {
@@ -258,20 +246,14 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
   sortKey: string;
 }
 
-export interface CreateProjectMutation_project_organization_projects_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateProjectMutation_project_organization_projects_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateProjectMutation_project_organization_projects_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface CreateProjectMutation_project_organization_projects_paymentMethods {
@@ -362,20 +344,14 @@ export interface UpdateProjectMutation_project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface UpdateProjectMutation_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdateProjectMutation_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdateProjectMutation_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface UpdateProjectMutation_project_paymentMethods {
@@ -431,20 +407,14 @@ export interface CreateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface CreateTaskMutation_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateTaskMutation_task_reward_token_network;
+  networkId: string;
 }
 
 export interface CreateTaskMutation_task_reward_payment_paymentMethod_networks {
@@ -455,20 +425,14 @@ export interface CreateTaskMutation_task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface CreateTaskMutation_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateTaskMutation_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateTaskMutation_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface CreateTaskMutation_task_reward_payment_paymentMethod {
@@ -542,20 +506,14 @@ export interface UpdateTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface UpdateTaskMutation_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdateTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdateTaskMutation_task_reward_token_network;
+  networkId: string;
 }
 
 export interface UpdateTaskMutation_task_reward_payment_paymentMethod_networks {
@@ -566,20 +524,14 @@ export interface UpdateTaskMutation_task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UpdateTaskMutation_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdateTaskMutation_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdateTaskMutation_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UpdateTaskMutation_task_reward_payment_paymentMethod {
@@ -653,20 +605,14 @@ export interface ClaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface ClaimTaskMutation_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface ClaimTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: ClaimTaskMutation_task_reward_token_network;
+  networkId: string;
 }
 
 export interface ClaimTaskMutation_task_reward_payment_paymentMethod_networks {
@@ -677,20 +623,14 @@ export interface ClaimTaskMutation_task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface ClaimTaskMutation_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface ClaimTaskMutation_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: ClaimTaskMutation_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface ClaimTaskMutation_task_reward_payment_paymentMethod {
@@ -764,20 +704,14 @@ export interface UnclaimTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface UnclaimTaskMutation_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UnclaimTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UnclaimTaskMutation_task_reward_token_network;
+  networkId: string;
 }
 
 export interface UnclaimTaskMutation_task_reward_payment_paymentMethod_networks {
@@ -788,20 +722,14 @@ export interface UnclaimTaskMutation_task_reward_payment_paymentMethod_networks 
   sortKey: string;
 }
 
-export interface UnclaimTaskMutation_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UnclaimTaskMutation_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UnclaimTaskMutation_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UnclaimTaskMutation_task_reward_payment_paymentMethod {
@@ -875,20 +803,14 @@ export interface DeleteTaskMutation_task_assignees {
   imageUrl: string | null;
 }
 
-export interface DeleteTaskMutation_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface DeleteTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: DeleteTaskMutation_task_reward_token_network;
+  networkId: string;
 }
 
 export interface DeleteTaskMutation_task_reward_payment_paymentMethod_networks {
@@ -899,20 +821,14 @@ export interface DeleteTaskMutation_task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface DeleteTaskMutation_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface DeleteTaskMutation_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: DeleteTaskMutation_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface DeleteTaskMutation_task_reward_payment_paymentMethod {
@@ -1130,20 +1046,14 @@ export interface CreatePaymentMethodMutation_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface CreatePaymentMethodMutation_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreatePaymentMethodMutation_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreatePaymentMethodMutation_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethods_networks {
@@ -1154,20 +1064,14 @@ export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethod
   sortKey: string;
 }
 
-export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethods {
@@ -1220,20 +1124,14 @@ export interface UpdatePaymentMethodMutation_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UpdatePaymentMethodMutation_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdatePaymentMethodMutation_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdatePaymentMethodMutation_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethods_networks {
@@ -1244,20 +1142,14 @@ export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethod
   sortKey: string;
 }
 
-export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UpdatePaymentMethodMutation_paymentMethod_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethods {
@@ -1339,20 +1231,14 @@ export interface CreateTaskPaymentsMutation_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateTaskPaymentsMutation_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_networks {
@@ -1363,20 +1249,14 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_n
   sortKey: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod {
@@ -1515,20 +1395,14 @@ export interface MeQuery_me_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface MeQuery_me_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface MeQuery_me_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: MeQuery_me_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface MeQuery_me_paymentMethod {
@@ -1621,20 +1495,14 @@ export interface UserTasksQuery_user_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface UserTasksQuery_user_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UserTasksQuery_user_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UserTasksQuery_user_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_networks {
@@ -1645,20 +1513,14 @@ export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_networks
   sortKey: string;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UserTasksQuery_user_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod {
@@ -1732,20 +1594,14 @@ export interface UserPaymentMethodQuery_user_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UserPaymentMethodQuery_user_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UserPaymentMethodQuery_user_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UserPaymentMethodQuery_user_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UserPaymentMethodQuery_user_paymentMethod {
@@ -1811,20 +1667,14 @@ export interface GetOrganizationQuery_organization_projects_paymentMethods_netwo
   sortKey: string;
 }
 
-export interface GetOrganizationQuery_organization_projects_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetOrganizationQuery_organization_projects_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetOrganizationQuery_organization_projects_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface GetOrganizationQuery_organization_projects_paymentMethods {
@@ -1901,20 +1751,14 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
   sortKey: string;
 }
 
-export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods {
@@ -1997,20 +1841,14 @@ export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetOrganizationTasksQuery_organization_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_paymentMethod_networks {
@@ -2021,20 +1859,14 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_pay
   sortKey: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetOrganizationTasksQuery_organization_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_paymentMethod {
@@ -2121,20 +1953,14 @@ export interface GetProjectQuery_project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface GetProjectQuery_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetProjectQuery_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetProjectQuery_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface GetProjectQuery_project_paymentMethods {
@@ -2190,20 +2016,14 @@ export interface GetProjectTasksQuery_project_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetProjectTasksQuery_project_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetProjectTasksQuery_project_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod_networks {
@@ -2214,20 +2034,14 @@ export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod
   sortKey: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod {
@@ -2315,20 +2129,14 @@ export interface GetTaskQuery_task_assignees {
   imageUrl: string | null;
 }
 
-export interface GetTaskQuery_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTaskQuery_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTaskQuery_task_reward_token_network;
+  networkId: string;
 }
 
 export interface GetTaskQuery_task_reward_payment_paymentMethod_networks {
@@ -2339,20 +2147,14 @@ export interface GetTaskQuery_task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface GetTaskQuery_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTaskQuery_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTaskQuery_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface GetTaskQuery_task_reward_payment_paymentMethod {
@@ -2491,20 +2293,14 @@ export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface GetTasksToPayQuery_tasks_assignees_paymentMethod {
@@ -2524,20 +2320,14 @@ export interface GetTasksToPayQuery_tasks_assignees {
   paymentMethod: GetTasksToPayQuery_tasks_assignees_paymentMethod | null;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTasksToPayQuery_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTasksToPayQuery_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_networks {
@@ -2548,20 +2338,14 @@ export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_networks 
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTasksToPayQuery_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod {
@@ -2598,20 +2382,14 @@ export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: GetTasksToPayQuery_tasks_project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface GetTasksToPayQuery_tasks_project_paymentMethods {
@@ -2774,20 +2552,14 @@ export interface TaskCreatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskCreatedSubscription_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskCreatedSubscription_task_reward_token_network;
+  networkId: string;
 }
 
 export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_networks {
@@ -2798,20 +2570,14 @@ export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_netwo
   sortKey: string;
 }
 
-export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskCreatedSubscription_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface TaskCreatedSubscription_task_reward_payment_paymentMethod {
@@ -2931,20 +2697,14 @@ export interface TaskUpdatedSubscription_task_assignees {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskUpdatedSubscription_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskUpdatedSubscription_task_reward_token_network;
+  networkId: string;
 }
 
 export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_networks {
@@ -2955,20 +2715,14 @@ export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_netwo
   sortKey: string;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskUpdatedSubscription_task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod {
@@ -3123,20 +2877,14 @@ export interface PaymentNetwork {
 // GraphQL fragment: PaymentToken
 // ====================================================
 
-export interface PaymentToken_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface PaymentToken {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: PaymentToken_network;
+  networkId: string;
 }
 
 /* tslint:disable */
@@ -3156,20 +2904,14 @@ export interface PaymentMethod_networks {
   sortKey: string;
 }
 
-export interface PaymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface PaymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: PaymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface PaymentMethod {
@@ -3198,20 +2940,14 @@ export interface Payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface Payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface Payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: Payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface Payment_paymentMethod {
@@ -3306,20 +3042,14 @@ export interface Project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface Project_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface Project_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: Project_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface Project_paymentMethods {
@@ -3369,20 +3099,14 @@ export interface TaskTag {
 // GraphQL fragment: TaskReward
 // ====================================================
 
-export interface TaskReward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskReward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskReward_token_network;
+  networkId: string;
 }
 
 export interface TaskReward_payment_paymentMethod_networks {
@@ -3393,20 +3117,14 @@ export interface TaskReward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface TaskReward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskReward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskReward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface TaskReward_payment_paymentMethod {
@@ -3515,20 +3233,14 @@ export interface Task_assignees {
   imageUrl: string | null;
 }
 
-export interface Task_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface Task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: Task_reward_token_network;
+  networkId: string;
 }
 
 export interface Task_reward_payment_paymentMethod_networks {
@@ -3539,20 +3251,14 @@ export interface Task_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface Task_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface Task_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: Task_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface Task_reward_payment_paymentMethod {
@@ -3618,20 +3324,14 @@ export interface TaskDetails_assignees {
   imageUrl: string | null;
 }
 
-export interface TaskDetails_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskDetails_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskDetails_reward_token_network;
+  networkId: string;
 }
 
 export interface TaskDetails_reward_payment_paymentMethod_networks {
@@ -3642,20 +3342,14 @@ export interface TaskDetails_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface TaskDetails_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface TaskDetails_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: TaskDetails_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface TaskDetails_reward_payment_paymentMethod {
@@ -3820,20 +3514,14 @@ export interface UserDetails_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UserDetails_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface UserDetails_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: UserDetails_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface UserDetails_paymentMethod {
@@ -3874,20 +3562,14 @@ export interface OrganizationDetails_projects_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface OrganizationDetails_projects_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface OrganizationDetails_projects_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: OrganizationDetails_projects_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface OrganizationDetails_projects_paymentMethods {
@@ -3956,20 +3638,14 @@ export interface ProjectDetails_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface ProjectDetails_paymentMethods_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface ProjectDetails_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: ProjectDetails_paymentMethods_tokens_network;
+  networkId: string;
 }
 
 export interface ProjectDetails_paymentMethods {
@@ -3995,20 +3671,14 @@ export interface ProjectDetails_tasks_assignees {
   imageUrl: string | null;
 }
 
-export interface ProjectDetails_tasks_reward_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface ProjectDetails_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: ProjectDetails_tasks_reward_token_network;
+  networkId: string;
 }
 
 export interface ProjectDetails_tasks_reward_payment_paymentMethod_networks {
@@ -4019,20 +3689,14 @@ export interface ProjectDetails_tasks_reward_payment_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface ProjectDetails_tasks_reward_payment_paymentMethod_tokens_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  name: string;
-  sortKey: string;
-}
-
 export interface ProjectDetails_tasks_reward_payment_paymentMethod_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
+  exp: number;
   type: PaymentTokenType;
+  name: string;
   address: string | null;
-  network: ProjectDetails_tasks_reward_payment_paymentMethod_tokens_network;
+  networkId: string;
 }
 
 export interface ProjectDetails_tasks_reward_payment_paymentMethod {

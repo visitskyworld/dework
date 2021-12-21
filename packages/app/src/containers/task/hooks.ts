@@ -17,7 +17,6 @@ import {
   GetTaskQueryVariables,
   Task,
   TaskTag,
-  UpdateTaskInput,
   UpdateTaskMutation,
   UpdateTaskMutationVariables,
   UserTasksQuery,
@@ -27,11 +26,43 @@ import {
   UnclaimTaskMutation,
   UnclaimTaskMutationVariables,
   User,
+  UpdateTaskRewardInput,
+  TaskReward,
+  UpdateTaskInput,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
+import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import { useOrganization } from "../organization/hooks";
 import { useProject } from "../project/hooks";
+import { TaskRewardFormValues } from "./TaskRewardFormFields";
+import { TaskFormValues } from "./TaskForm";
+
+export const toTaskReward = (
+  reward: TaskRewardFormValues | undefined
+): UpdateTaskRewardInput | undefined => {
+  if (!reward?.amount || !reward?.token || !reward?.trigger) return undefined;
+  return {
+    amount: parseFixed(String(reward.amount), reward.token.exp).toString(),
+    tokenId: reward.token.id,
+    trigger: reward.trigger,
+  };
+};
+
+export const toTaskRewardFormValues = (
+  reward: TaskReward | undefined
+): TaskRewardFormValues | undefined => {
+  if (!reward) return undefined;
+  return {
+    amount: Number(formatFixed(reward.amount, reward.token.exp)),
+    networkId: reward.token.networkId,
+    token: reward.token,
+    trigger: reward.trigger,
+  };
+};
+
+export const formatTaskReward = (reward: TaskReward) =>
+  [formatFixed(reward.amount, reward.token.exp), reward.token.name].join(" ");
 
 export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
@@ -108,7 +139,7 @@ export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
 }
 
 export function useUpdateTask(): (
-  input: UpdateTaskInput,
+  values: TaskFormValues,
   task: Task
 ) => Promise<Task> {
   const [mutation] = useMutation<
@@ -116,12 +147,17 @@ export function useUpdateTask(): (
     UpdateTaskMutationVariables
   >(Mutations.updateTask);
   return useCallback(
-    async (input, task) => {
+    async (values, task) => {
+      const input: UpdateTaskInput = {
+        id: task.id,
+        ...values,
+        reward: !!values.reward ? toTaskReward(values.reward) : undefined,
+      };
       const res = await mutation({
         variables: { input },
-        optimisticResponse: {
-          task: { ...task, ...input } as Task,
-        },
+        // optimisticResponse: {
+        //   task: { ...task, ...input } as Task,
+        // },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));

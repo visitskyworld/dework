@@ -1,93 +1,159 @@
-import React, { FC } from "react";
-import {
-  TaskRewardTrigger,
-  UpdateTaskRewardInput,
-} from "@dewo/app/graphql/types";
-import { Form, InputNumber, Select, Space } from "antd";
+import React, { ComponentType, FC, useCallback, useMemo } from "react";
+import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
+import { InputNumber, Select, Space } from "antd";
 import * as Icons from "@ant-design/icons";
+import { useProject } from "../project/hooks";
+import _ from "lodash";
+
+export interface TaskRewardFormValues {
+  amount: number;
+  networkId: string;
+  token: PaymentToken;
+  trigger: TaskRewardTrigger;
+}
 
 export const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
   [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Core team approval",
   [TaskRewardTrigger.PULL_REQUEST_MERGED]: "PR merged",
 };
 
-interface Props {
-  value?: UpdateTaskRewardInput;
+interface TaskRewardTriggerOption {
+  label: string;
+  value: TaskRewardTrigger;
+  icon: ComponentType;
 }
 
-export const TaskRewardFormFields: FC<Props> = ({ value }) => {
-  if (Math.random()) {
-    // return (
-    //   <>
-    //     <Form.Item name={["reward", "networkId"]} label="Reward">
+const rewardTriggerOptions: TaskRewardTriggerOption[] = [
+  {
+    label: rewardTriggerToString[TaskRewardTrigger.CORE_TEAM_APPROVAL],
+    value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+    icon: Icons.TeamOutlined,
+  },
+  {
+    label: rewardTriggerToString[TaskRewardTrigger.PULL_REQUEST_MERGED],
+    value: TaskRewardTrigger.PULL_REQUEST_MERGED,
+    icon: Icons.GithubOutlined,
+  },
+];
 
-    //     </Form.Item>
-    //   </>
-    // );
-    return null;
-  }
+interface Props {
+  projectId: string;
+  value?: Partial<TaskRewardFormValues>;
+  onChange?(value: Partial<TaskRewardFormValues>): void;
+}
+
+export const TaskRewardFormFields: FC<Props> = ({
+  projectId,
+  value,
+  onChange,
+}) => {
+  const project = useProject(projectId);
+  const networks = useMemo(
+    () =>
+      _(project?.paymentMethods)
+        .map((pm) => pm.networks)
+        .flatten()
+        .uniqBy((n) => n.id)
+        .value(),
+    [project?.paymentMethods]
+  );
+
+  const tokens = useMemo(
+    () =>
+      _(project?.paymentMethods)
+        .map((pm) => pm.tokens)
+        .flatten()
+        .filter((t) => t.networkId === value?.networkId)
+        .value(),
+    [project?.paymentMethods, value?.networkId]
+  );
+
+  const handleChangeNetworkId = useCallback(
+    (networkId: string) =>
+      onChange?.({ ...value, networkId, token: undefined }),
+    [value, onChange]
+  );
+  const handleChangeAmount = useCallback(
+    (amount: number | null) =>
+      onChange?.({ ...value, amount: amount ?? undefined }),
+    [onChange, value]
+  );
+  const handleChangeToken = useCallback(
+    (tokenId: string) =>
+      onChange?.({ ...value, token: tokens.find((t) => t.id === tokenId) }),
+    [onChange, value, tokens]
+  );
+  const handleChangeTrigger = useCallback(
+    (trigger: TaskRewardTrigger) => onChange?.({ ...value, trigger }),
+    [onChange, value]
+  );
+
   return (
     <>
-      <Form.Item name={["reward", "amount"]} label="Bounty">
-        <InputNumber
-          placeholder="Enter amount"
-          value={value?.amount}
-          addonAfter={
-            <Form.Item
-              name={["reward", "currency"]}
-              noStyle
-              rules={[
-                {
-                  required: !!value?.amount,
-                  message: "Select a currency",
-                },
-              ]}
+      <Space direction="vertical" style={{ width: "100%" }}>
+        <Select
+          loading={!project}
+          placeholder="Select where you'll pay"
+          value={value?.networkId}
+          onChange={handleChangeNetworkId}
+        >
+          {networks.map((network) => (
+            <Select.Option
+              key={network.id}
+              value={network.id}
+              label={network.name}
             >
-              <Select style={{ minWidth: 70 }} placeholder="Currency">
-                <Select.Option value="ETH">ETH</Select.Option>
-                <Select.Option value="USDC">USDC</Select.Option>
-                <Select.Option value="SOL">SOL</Select.Option>
-                <Select.Option value="HNY">HNY</Select.Option>
-              </Select>
-            </Form.Item>
-          }
-        />
-      </Form.Item>
-      <Form.Item
-        name={["reward", "trigger"]}
-        label="Payout trigger"
-        rules={[
-          {
-            required: !!value?.amount,
-            message: "Please enter a payout trigger",
-          },
-        ]}
-        hidden={!value?.amount}
-      >
-        <Select optionFilterProp="label" placeholder="Select payout trigger">
-          {[
-            {
-              label:
-                rewardTriggerToString[TaskRewardTrigger.CORE_TEAM_APPROVAL],
-              value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-              icon: Icons.TeamOutlined,
-            },
-            {
-              label:
-                rewardTriggerToString[TaskRewardTrigger.PULL_REQUEST_MERGED],
-              value: TaskRewardTrigger.PULL_REQUEST_MERGED,
-              icon: Icons.GithubOutlined,
-            },
-          ].map((tag) => (
-            <Select.Option key={tag.value} value={tag.value} label={tag.label}>
-              <Space style={{ alignItems: "center" }}>
-                <tag.icon />
-                {tag.label}
-              </Space>
+              {network.name}
             </Select.Option>
           ))}
         </Select>
-      </Form.Item>
+        {!!value?.networkId && (
+          <InputNumber
+            placeholder="Enter amount"
+            value={value?.amount}
+            onChange={handleChangeAmount}
+            addonAfter={
+              <Select
+                style={{ minWidth: 70 }}
+                value={value?.token?.id}
+                placeholder="Token"
+                onChange={handleChangeToken}
+              >
+                {tokens.map((token) => (
+                  <Select.Option
+                    key={token.id}
+                    value={token.id}
+                    label={token.name}
+                  >
+                    {token.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            }
+          />
+        )}
+        {!!value?.amount && !!value?.token && (
+          <Select
+            value={value?.trigger}
+            optionFilterProp="label"
+            placeholder="Select payout trigger"
+            onChange={handleChangeTrigger}
+          >
+            {rewardTriggerOptions.map((tag) => (
+              <Select.Option
+                key={tag.value}
+                value={tag.value}
+                label={tag.label}
+              >
+                <Space style={{ alignItems: "center" }}>
+                  <tag.icon />
+                  {tag.label}
+                </Space>
+              </Select.Option>
+            ))}
+          </Select>
+        )}
+      </Space>
     </>
   );
 };
