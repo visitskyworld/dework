@@ -372,12 +372,6 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
         </Col>
       </Row>
-      <Form.Item name="projectId" hidden>
-        <Input />
-      </Form.Item>
-      <Form.Item name="id" hidden>
-        <Input />
-      </Form.Item>
     </Form>
   );
 };
