@@ -36,9 +36,9 @@ export const UserDetails: FC<UserDetailsProps> = ({
   if (isEditMode) {
     return (
       <>
-        {userDetails.map((detail) => (
+        {Object.values(UserDetailType).map((type) => type!== UserDetailType.country && (
           <div
-            key={detail.id}
+            key={type}
             style={{
               display: "flex",
               flexDirection: "row",
@@ -46,9 +46,9 @@ export const UserDetails: FC<UserDetailsProps> = ({
               margin: "12px 0 16px 0",
             }}
           >
-            <UserDetailIcon type={detail.type} />
+            <UserDetailIcon type={type} />
             <Form.Item
-              name={detail.type}
+              name={type}
               style={{
                 flex: 1,
                 margin: "0 0 0 7px",
@@ -57,7 +57,7 @@ export const UserDetails: FC<UserDetailsProps> = ({
               <Input.TextArea
                 rows={1}
                 wrap="off"
-                placeholder={detail.type}
+                placeholder={type}
                 className="dewo-field dewo-field-profile ant-typography-p"
                 style={{ maxHeight: 28 }}
               />
