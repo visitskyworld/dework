@@ -130,8 +130,6 @@ describe("ProjectResolver", () => {
           projectId: project.id,
           status: TaskStatusEnum.TODO,
           reward: {
-            amount: 1,
-            currency: "USD",
             trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
           },
         });

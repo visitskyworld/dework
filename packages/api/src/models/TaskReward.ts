@@ -1,7 +1,8 @@
-import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Payment } from "./Payment";
+import { PaymentToken } from "./PaymentToken";
 
 export enum TaskRewardTrigger {
   CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
@@ -13,13 +14,17 @@ registerEnumType(TaskRewardTrigger, { name: "TaskRewardTrigger" });
 @Entity()
 @ObjectType()
 export class TaskReward extends Audit {
-  @Column({ type: "float" })
-  @Field(() => Float)
-  public amount!: number;
-
   @Column()
   @Field()
-  public currency!: string;
+  public amount!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => PaymentToken)
+  @Field(() => PaymentToken)
+  public token!: Promise<PaymentToken>;
+  @Column({ type: "uuid" })
+  @Field()
+  public tokenId!: string;
 
   @Column({ enum: TaskRewardTrigger })
   @Field(() => TaskRewardTrigger)

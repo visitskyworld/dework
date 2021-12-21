@@ -3,6 +3,7 @@ import { GraphQLJSONObject } from "graphql-type-json";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod, PaymentMethodType } from "./PaymentMethod";
+import { PaymentNetwork } from "./PaymentNetwork";
 
 export enum PaymentStatus {
   PROCESSING = "PROCESSING",
@@ -40,6 +41,14 @@ export class Payment<
   @Column({ type: "uuid" })
   @Field()
   public paymentMethodId!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => PaymentNetwork)
+  @Field(() => PaymentNetwork)
+  public network!: Promise<PaymentNetwork>;
+  @Column({ type: "uuid" })
+  @Field()
+  public networkId!: string;
 
   @Column("json", { nullable: true })
   @Field(() => GraphQLJSONObject, { nullable: true })

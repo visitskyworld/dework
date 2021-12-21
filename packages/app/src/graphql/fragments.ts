@@ -16,12 +16,43 @@ export const user = gql`
   }
 `;
 
+export const paymentNetwork = gql`
+  fragment PaymentNetwork on PaymentNetwork {
+    id
+    url
+    name
+    sortKey
+  }
+`;
+
+export const paymentToken = gql`
+  fragment PaymentToken on PaymentToken {
+    id
+    type
+    address
+    network {
+      ...PaymentNetwork
+    }
+  }
+
+  ${paymentNetwork}
+`;
+
 export const paymentMethod = gql`
   fragment PaymentMethod on PaymentMethod {
     id
     type
     address
+    networks {
+      ...PaymentNetwork
+    }
+    tokens {
+      ...PaymentToken
+    }
   }
+
+  ${paymentNetwork}
+  ${paymentToken}
 `;
 
 export const payment = gql`
@@ -98,14 +129,17 @@ export const taskReward = gql`
   fragment TaskReward on TaskReward {
     id
     amount
-    currency
     trigger
+    token {
+      ...PaymentToken
+    }
     payment {
       ...Payment
     }
   }
 
   ${payment}
+  ${paymentToken}
 `;
 
 export const githubPullRequest = gql`

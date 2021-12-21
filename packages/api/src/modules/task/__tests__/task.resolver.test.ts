@@ -50,8 +50,8 @@ describe("TaskResolver", () => {
         const description = faker.lorem.paragraph();
         const { user, project } = await fixtures.createUserOrgProject();
         const reward: UpdateTaskRewardInput = {
-          amount: faker.datatype.number(),
-          currency: faker.random.word(),
+          amount: "100000",
+          tokenId: "",
           trigger: TaskRewardTrigger.PULL_REQUEST_MERGED,
         };
 
@@ -75,7 +75,7 @@ describe("TaskResolver", () => {
         expect(task.project.id).toEqual(project.id);
         expect(task.reward).toBeDefined();
         expect(task.reward.amount).toEqual(reward.amount);
-        expect(task.reward.currency).toEqual(reward.currency);
+        expect(task.reward.token.id).toEqual(reward.tokenId);
         expect(task.reward.trigger).toEqual(reward.trigger);
         expect(task.creator).not.toEqual(null);
         expect(task.owner).not.toEqual(null);

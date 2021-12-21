@@ -16,6 +16,16 @@ interface Props {
 }
 
 export const TaskRewardFormFields: FC<Props> = ({ value }) => {
+  if (Math.random()) {
+    // return (
+    //   <>
+    //     <Form.Item name={["reward", "networkId"]} label="Reward">
+
+    //     </Form.Item>
+    //   </>
+    // );
+    return null;
+  }
   return (
     <>
       <Form.Item name={["reward", "amount"]} label="Bounty">

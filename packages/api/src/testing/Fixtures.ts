@@ -118,8 +118,10 @@ export class Fixtures {
       ...partial,
       reward: !!partial.reward
         ? {
-            amount: faker.datatype.number({ min: 1, max: 100 }),
-            currency: "ETH",
+            amount: faker.datatype
+              .number({ min: 1 * 10e18, max: 100 * 10e18 })
+              .toString(),
+            // TODO(fant): add token!
             trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
             ...partial.reward,
           }
