@@ -1,5 +1,6 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
 import { CreateTaskPaymentsInput } from "@dewo/api/modules/task/dto/CreateTaskPaymentsInput";
+import { CreateTaskApplicationInput } from "@dewo/api/modules/task/dto/CreateTaskApplicationInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
@@ -52,6 +53,9 @@ export class TaskRequests {
         user {
           id
         }
+        applicationMessage
+        startDate
+        endDate
       }
     }
   `;
@@ -109,22 +113,25 @@ export class TaskRequests {
 
   public static claim(
     taskId: string,
-    applicationMessage: string
+    taskApplication: CreateTaskApplicationInput
   ): GraphQLTestClientRequestBody<{
     taskId: string;
-    applicationMessage: string;
+    taskApplication: CreateTaskApplicationInput;
   }> {
     return {
       query: `
-        mutation ClaimTaskMutation($taskId: UUID!, $applicationMessage: String!) {
-          task: claimTask(id: $taskId, applicationMessage: $applicationMessage) {
-            ...Task
-          }
+      mutation ClaimTaskMutation(
+        $taskId: UUID!
+        $taskApplication: CreateTaskApplicationInput!
+      ) {
+        task: claimTask(id: $taskId, taskApplication: $taskApplication) {
+          ...Task
         }
+      }
 
         ${this.taskFragment}
       `,
-      variables: { taskId, applicationMessage },
+      variables: { taskId, taskApplication },
     };
   }
 

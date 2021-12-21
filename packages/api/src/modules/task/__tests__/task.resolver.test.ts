@@ -6,6 +6,7 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import { application } from "express";
 import faker from "faker";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
@@ -212,17 +213,33 @@ describe("TaskResolver", () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
         const applicationMessage = faker.lorem.words(5);
+        const startDate = faker.date.soon();
+        const endDate = faker.date.soon();
+        const taskApplication = {
+          applicationMessage: applicationMessage,
+          startDate: startDate,
+          endDate: endDate,
+        };
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, applicationMessage),
+          body: TaskRequests.claim(task.id, taskApplication),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetched = response.body.data?.task;
         expect(fetched.taskApplications).toHaveLength(1);
-        expect(fetched.taskApplications[0].user.id).toEqual(user.id);
+
+        const fetchedTaskApplication = fetched.taskApplications[0];
+        expect(fetchedTaskApplication.user.id).toEqual(user.id);
+        expect(fetchedTaskApplication.applicationMessage).toEqual(
+          applicationMessage
+        );
+        expect(fetchedTaskApplication.startDate).toEqual(
+          startDate.toISOString()
+        );
+        expect(fetchedTaskApplication.endDate).toEqual(endDate.toISOString());
       });
 
       it("should not succeed if status is not TODO", async () => {
@@ -230,12 +247,16 @@ describe("TaskResolver", () => {
         const task = await fixtures.createTask({
           status: TaskStatusEnum.IN_PROGRESS,
         });
-        const applicationMessage = faker.lorem.words(5);
+        const taskApplication = {
+          applicationMessage: faker.lorem.words(5),
+          startDate: faker.date.soon(),
+          endDate: faker.date.soon(),
+        };
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, applicationMessage),
+          body: TaskRequests.claim(task.id, taskApplication),
         });
 
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
