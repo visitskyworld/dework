@@ -30,6 +30,12 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
     },
     [updateTask, task]
   );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString().split(",")[0];
+  };
+
   return (
     <Card
       size="small"
@@ -55,7 +61,18 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
             target="_blank"
             rel="noreferrer"
           >
-            <Tooltip title={taskApplication.applicationMessage}>
+            <Tooltip
+              title={
+                "Requesting task for: " +
+                "\n" +
+                formatDate(taskApplication.startDate) +
+                " - " +
+                formatDate(taskApplication.endDate) +
+                "\n\n" +
+                taskApplication.applicationMessage
+              }
+              overlayStyle={{ whiteSpace: "pre-line" }}
+            >
               <List.Item.Meta
                 avatar={
                   <UserAvatar
