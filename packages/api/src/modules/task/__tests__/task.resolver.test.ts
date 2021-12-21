@@ -6,7 +6,6 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
-import { application } from "express";
 import faker from "faker";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 

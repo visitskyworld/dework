@@ -2,7 +2,14 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindConditions, In, IsNull, Not, Repository } from "typeorm";
+import {
+  FindConditions,
+  In,
+  IsNull,
+  Not,
+  Repository,
+  DeepPartial,
+} from "typeorm";
 import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskUpdatedEvent } from "./task-updated.event";

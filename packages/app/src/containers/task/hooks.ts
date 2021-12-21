@@ -1,5 +1,4 @@
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -177,7 +176,6 @@ export function useClaimTask(): (
   task: Task,
   application: CreateTaskApplicationInput
 ) => Promise<Task> {
-  const { user } = useAuthContext();
   const [mutation] = useMutation<ClaimTaskMutation, ClaimTaskMutationVariables>(
     Mutations.claimTask
   );
@@ -190,12 +188,11 @@ export function useClaimTask(): (
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
     },
-    [mutation, user]
+    [mutation]
   );
 }
 
 export function useUnclaimTask(): (task: Task) => Promise<Task> {
-  const { user } = useAuthContext();
   const [mutation] = useMutation<
     UnclaimTaskMutation,
     UnclaimTaskMutationVariables
@@ -209,7 +206,7 @@ export function useUnclaimTask(): (task: Task) => Promise<Task> {
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
     },
-    [mutation, user]
+    [mutation]
   );
 }
 

@@ -1371,6 +1371,22 @@ export interface CreateTaskPaymentsMutation_tasks_reward {
   payment: CreateTaskPaymentsMutation_tasks_reward_payment | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: CreateTaskPaymentsMutation_tasks_applications_user;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -1427,6 +1443,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   tags: CreateTaskPaymentsMutation_tasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
+  applications: CreateTaskPaymentsMutation_tasks_applications[];
   gitBranchName: string;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
@@ -2320,6 +2337,22 @@ export interface GetTaskQuery_task_reward {
   payment: GetTaskQuery_task_reward_payment | null;
 }
 
+export interface GetTaskQuery_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: GetTaskQuery_task_applications_user;
+}
+
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -2364,22 +2397,6 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
-export interface GetTaskQuery_task_applications_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface GetTaskQuery_task_applications {
-  __typename: "TaskApplication";
-  id: Scalar.UUID;
-  message: string;
-  startDate: Scalar.DateTime;
-  endDate: Scalar.DateTime;
-  user: GetTaskQuery_task_applications_user;
-}
-
 export interface GetTaskQuery_task_project_taskTags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -2405,13 +2422,13 @@ export interface GetTaskQuery_task {
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
+  applications: GetTaskQuery_task_applications[];
   gitBranchName: string;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   discordChannel: GetTaskQuery_task_discordChannel | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
-  applications: GetTaskQuery_task_applications[];
   project: GetTaskQuery_task_project;
 }
 
@@ -2528,6 +2545,22 @@ export interface GetTasksToPayQuery_tasks_reward {
   payment: GetTasksToPayQuery_tasks_reward_payment | null;
 }
 
+export interface GetTasksToPayQuery_tasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksToPayQuery_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: GetTasksToPayQuery_tasks_applications_user;
+}
+
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -2573,6 +2606,7 @@ export interface GetTasksToPayQuery_tasks {
   tags: GetTasksToPayQuery_tasks_tags[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
   reward: GetTasksToPayQuery_tasks_reward | null;
+  applications: GetTasksToPayQuery_tasks_applications[];
   project: GetTasksToPayQuery_tasks_project;
 }
 
@@ -2760,6 +2794,22 @@ export interface TaskCreatedSubscription_task_reward {
   payment: TaskCreatedSubscription_task_reward_payment | null;
 }
 
+export interface TaskCreatedSubscription_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: TaskCreatedSubscription_task_applications_user;
+}
+
 export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -2804,22 +2854,6 @@ export interface TaskCreatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
-export interface TaskCreatedSubscription_task_applications_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskCreatedSubscription_task_applications {
-  __typename: "TaskApplication";
-  id: Scalar.UUID;
-  message: string;
-  startDate: Scalar.DateTime;
-  endDate: Scalar.DateTime;
-  user: TaskCreatedSubscription_task_applications_user;
-}
-
 export interface TaskCreatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2832,13 +2866,13 @@ export interface TaskCreatedSubscription_task {
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
+  applications: TaskCreatedSubscription_task_applications[];
   gitBranchName: string;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   discordChannel: TaskCreatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
-  applications: TaskCreatedSubscription_task_applications[];
 }
 
 export interface TaskCreatedSubscription {
@@ -2922,6 +2956,22 @@ export interface TaskUpdatedSubscription_task_reward {
   payment: TaskUpdatedSubscription_task_reward_payment | null;
 }
 
+export interface TaskUpdatedSubscription_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: TaskUpdatedSubscription_task_applications_user;
+}
+
 export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -2966,22 +3016,6 @@ export interface TaskUpdatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
-export interface TaskUpdatedSubscription_task_applications_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface TaskUpdatedSubscription_task_applications {
-  __typename: "TaskApplication";
-  id: Scalar.UUID;
-  message: string;
-  startDate: Scalar.DateTime;
-  endDate: Scalar.DateTime;
-  user: TaskUpdatedSubscription_task_applications_user;
-}
-
 export interface TaskUpdatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2994,13 +3028,13 @@ export interface TaskUpdatedSubscription_task {
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
+  applications: TaskUpdatedSubscription_task_applications[];
   gitBranchName: string;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
-  applications: TaskUpdatedSubscription_task_applications[];
 }
 
 export interface TaskUpdatedSubscription {
@@ -3608,6 +3642,22 @@ export interface TaskDetails_reward {
   payment: TaskDetails_reward_payment | null;
 }
 
+export interface TaskDetails_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: TaskDetails_applications_user;
+}
+
 export interface TaskDetails_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -3664,6 +3714,7 @@ export interface TaskDetails {
   tags: TaskDetails_tags[];
   assignees: TaskDetails_assignees[];
   reward: TaskDetails_reward | null;
+  applications: TaskDetails_applications[];
   gitBranchName: string;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;

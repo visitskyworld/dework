@@ -203,11 +203,15 @@ export const task = gql`
     reward {
       ...TaskReward
     }
+    applications {
+      ...TaskApplication
+    }
   }
 
   ${taskTag}
   ${taskReward}
   ${user}
+  ${taskApplication}
 `;
 
 export const taskDetails = gql`
