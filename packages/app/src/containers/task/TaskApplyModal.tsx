@@ -59,7 +59,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
             <Input.TextArea
               autoSize
               className="dewo-field"
-              placeholder="Enter a message on why you should be picked to do this task (max 200 chars)"
+              placeholder="Please tell us or show us something similar you've done in the past (max 200 chars)"
               style={{ minHeight: 120 }}
               maxLength={200}
             />
