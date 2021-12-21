@@ -48,6 +48,11 @@ export class TaskRequests {
           data
         }
       }
+      taskApplications {
+        user {
+          id
+        }
+      }
     }
   `;
 

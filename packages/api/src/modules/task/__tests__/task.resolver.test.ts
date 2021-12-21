@@ -208,7 +208,7 @@ describe("TaskResolver", () => {
     });
 
     describe("claimTask", () => {
-      it("should succeed if status is TODO", async () => {
+      it("should succeed and create a task application for user if status is TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
         const applicationMessage = faker.lorem.words(5);
@@ -220,6 +220,9 @@ describe("TaskResolver", () => {
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.task;
+        expect(fetched.taskApplications).toHaveLength(1);
+        expect(fetched.taskApplications[0].user.id).toEqual(user.id);
       });
 
       it("should not succeed if status is not TODO", async () => {
@@ -240,7 +243,7 @@ describe("TaskResolver", () => {
     });
 
     describe("unclaimTask", () => {
-      it("should succeed and unapply the user from the task", async () => {
+      it("should succeed and delete task application", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
           status: TaskStatusEnum.TODO,
@@ -254,6 +257,8 @@ describe("TaskResolver", () => {
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.task;
+        expect(fetched.taskApplications).toHaveLength(0);
       });
     });
 
