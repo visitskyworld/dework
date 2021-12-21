@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useRef, useState } from "react";
+import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import {
   CreatePaymentMethodInput,
   PaymentMethod,
@@ -17,6 +17,15 @@ export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.PHANTOM]: "Phantom",
 };
 
+export const networkSlugsByPaymentMethodType: Record<
+  PaymentMethodType,
+  string[]
+> = {
+  [PaymentMethodType.METAMASK]: ["ethereum-mainnet", "ethereum-rinkeby"],
+  [PaymentMethodType.GNOSIS_SAFE]: ["ethereum-mainnet", "ethereum-rinkeby"],
+  [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
+};
+
 interface Props {
   projectId?: string;
   onDone(paymentMethod: PaymentMethod): void;
@@ -29,11 +38,17 @@ const paymentMethodTypes: PaymentMethodType[] = [
 ];
 
 export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
-  const networks = usePaymentNetworks();
-
   const formRef = useRef<FormInstance<CreatePaymentMethodInput>>(null);
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
   const [loading, setLoading] = useState(false);
+
+  const networks = usePaymentNetworks();
+  const networksForPaymentType = useMemo(() => {
+    if (!networks) return [];
+    if (!values.type) return [];
+    const slugs = networkSlugsByPaymentMethodType[values.type];
+    return networks.filter((n) => slugs.includes(n.slug));
+  }, [networks, values.type]);
 
   const handleChange = useCallback(
     (
@@ -115,7 +130,7 @@ export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
               loading={!networks}
               placeholder="Select what network this payment method is connected to"
             >
-              {networks?.map((network) => (
+              {networksForPaymentType.map((network) => (
                 <Select.Option
                   key={network.id}
                   value={network.id}

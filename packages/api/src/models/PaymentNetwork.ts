@@ -12,6 +12,10 @@ export class PaymentNetwork extends Audit {
 
   @Column()
   @Field()
+  public slug!: string;
+
+  @Column()
+  @Field()
   public url!: string;
 
   @Column()

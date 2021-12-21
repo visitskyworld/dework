@@ -20,6 +20,7 @@ export const paymentNetwork = gql`
   fragment PaymentNetwork on PaymentNetwork {
     id
     url
+    slug
     name
     sortKey
   }

@@ -45,27 +45,35 @@ yarn api dev:db
 
 ## Set up `PaymentNetwork` locally
 ```sql
-DELETE FROM payment_token;
-DELETE FROM payment_network;
-
 DO $$
 DECLARE
   ethmain_id uuid = uuid_generate_v4();
   ethrinkeby_id uuid = uuid_generate_v4();
+  solana_mainnet_id uuid = uuid_generate_v4();
+  solana_testnet_id uuid = uuid_generate_v4();
 BEGIN
-  INSERT INTO "payment_network" ("id", "name", "url", "sortKey")
+  UPDATE task SET "rewardId" = NULL;
+  DELETE FROM task_reward;
+  DELETE FROM payment_token;
+  DELETE FROM payment_network;
+
+  INSERT INTO "payment_network" ("id", "name", "slug", "url", "sortKey")
   VALUES
-    (ethmain_id, 'Ethereum Mainnet', 'url', '1'),
-    (ethrinkeby_id, 'Ethereum Rinkeby', 'url', '2');
+    (ethmain_id, 'Ethereum Mainnet', 'ethereum-rinkeby', 'url', '1'),
+    (ethrinkeby_id, 'Ethereum Rinkeby', 'ethereum-rinkeby', 'url', '2'),
+    (solana_mainnet_id, 'Solana Mainnet', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '3'),
+    (solana_testnet_id, 'Solana Devnet', 'solana-testnet', 'https://api.testnet.solana.com', '4');
 
   INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
   VALUES
     ('ETHER', 'ETH', 18, NULL, ethmain_id),
-    ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethmain_id);
-
-  INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
-  VALUES
     ('ETHER', 'ETH', 18, NULL, ethrinkeby_id),
-    ('ERC20', 'USDC', 18, '0xeb8f08a975ab53e34d8a0330e0d34de942c95926', ethrinkeby_id);
+    ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethmain_id),
+    ('ERC20', 'USDC', 18, '0xeb8f08a975ab53e34d8a0330e0d34de942c95926', ethrinkeby_id),
+
+    ('SOL', 'SOL', 0, NULL, solana_mainnet_id),
+    ('SOL', 'SOL', 18, NULL, solana_testnet_id),
+    ('SPL_TOKEN', 'USDC', 18, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
+    ('SPL_TOKEN', 'USDC', 18, 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
 END $$;
 ```
