@@ -20,7 +20,7 @@ import { useUpdateUser, useUser, useUserTasks } from "./hooks";
 import { TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
-import { UserDetailsForm } from "./UserDetailsForm";
+import { UserDetails } from "./UserDetails";
 
 interface Props {
   userId: string;
@@ -49,10 +49,23 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const [form] = Form.useForm();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const toggleEditMode = () => {
+  const intitialValues = user?.details.reduce(
+    (a, v) => ({ ...a, [v.type]: v.value }),
+    {}
+  );
+
+  console.log(user?.details);
+  console.log(intitialValues);
+
+  const onSubmit = (values: any) => {
     setIsEditMode(!isEditMode);
-    if (isEditMode) message.success("Profile updated!");
+    if (isEditMode) {
+      console.log(values);
+      message.success("Profile updated!");
+    }
   };
+
+  console.log(user);
 
   if (!user) return null;
 
@@ -61,7 +74,13 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       <Row gutter={[16, 16]} style={{ margin: 0 }}>
         <Col xs={24} md={8}>
           <Card>
-            <Form form={form} layout="vertical" autoComplete="off">
+            <Form
+              form={form}
+              layout="vertical"
+              autoComplete="off"
+              initialValues={intitialValues}
+              onFinish={onSubmit}
+            >
               <Form.Item
                 key={"avatar"}
                 style={{
@@ -93,13 +112,14 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 </Typography.Text>
               </Form.Item>
 
-              <UserDetailsForm
-                isEditMode={isEditMode}
-                userDetails={user.details}
-              />
+              <UserDetails isEditMode={isEditMode} userDetails={user.details} />
 
               {!!isMe && (
-                <Button onClick={toggleEditMode} style={{ width: "100%" }}>
+                <Button
+                  style={{ width: "100%" }}
+                  type="primary"
+                  htmlType="submit"
+                >
                   {isEditMode ? "Save" : "Edit profile"}
                 </Button>
               )}

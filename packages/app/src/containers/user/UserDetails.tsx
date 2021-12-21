@@ -1,13 +1,9 @@
 import React, { FC } from "react";
 import Link from "next/link";
 import * as Icons from "@ant-design/icons";
-import { Form, Avatar, Typography } from "antd";
+import { Form, Avatar, Input, Space } from "antd";
 
-import {
-  UserDetail,
-  UserDetailType,
-  UserProfile_details,
-} from "../../graphql/types";
+import { UserDetailType, UserProfile_details } from "../../graphql/types";
 
 interface UserDetailIconProps {
   type: UserDetailType;
@@ -26,53 +22,54 @@ const UserDetailIcon: FC<UserDetailIconProps> = ({ type }) => {
   }
 };
 
-interface UserDetailsFormProps {
+interface UserDetailsProps {
   isEditMode: boolean;
   userDetails: UserProfile_details[];
 }
 
-export const UserDetailsForm: FC<UserDetailsFormProps> = ({
+export const UserDetails: FC<UserDetailsProps> = ({
   isEditMode,
   userDetails,
 }) => {
-  const onChange = (userDetail: UserDetail) => {
-    console.log([...userDetails, userDetail]);
-  };
-
   if (!userDetails) return null;
 
   if (isEditMode) {
     return (
       <>
         {userDetails.map((detail) => (
-          <Form.Item
+          <div
             key={detail.id}
-            style={{ display: "flex", flexDirection: "row" }}
-            rules={[
-              {
-                type: "url",
-                warningOnly: true,
-              },
-            ]}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              margin: "12px 0 16px 0",
+            }}
           >
             <UserDetailIcon type={detail.type} />
-            <Typography.Text
-              style={{ flex: 1, marginLeft: 5 }}
-              type="secondary"
-              editable={{
-                onChange: (value: string) => onChange({ ...detail, value }),
+            <Form.Item
+              name={detail.type}
+              style={{
+                flex: 1,
+                margin: "0 0 0 7px",
               }}
             >
-              {detail.value}
-            </Typography.Text>
-          </Form.Item>
+              <Input.TextArea
+                rows={1}
+                wrap="off"
+                placeholder={detail.type}
+                className="dewo-field dewo-field-profile ant-typography-p"
+                style={{ maxHeight: 28 }}
+              />
+            </Form.Item>
+          </div>
         ))}
       </>
     );
   }
 
   return (
-    <div style={{ margin: "2px 0 12px 0" }}>
+    <Space style={{ margin: "2px 0 12px 0" }}>
       {userDetails.map((detail, index) => (
         <Link key={index} href={detail.value}>
           <a>
@@ -82,6 +79,6 @@ export const UserDetailsForm: FC<UserDetailsFormProps> = ({
           </a>
         </Link>
       ))}
-    </div>
+    </Space>
   );
 };
