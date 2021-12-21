@@ -5,6 +5,7 @@ import { UserTaskBoard } from "../user/UserTaskBoard";
 import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
 import { siteTitle, siteDescription } from "@dewo/app/util/constants";
+import { MobileHeader } from "../navigation/header/MobileHeader";
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
@@ -56,22 +57,26 @@ export const LandingPage: FC = () => {
     );
 
   return (
-    <Space
-      direction="vertical"
-      className="mx-auto"
-      style={{
-        display: "block",
-        marginTop: 40,
-        maxWidth: 300 * 4 + (3 + 2) * 16,
-      }}
-    >
-      <Typography.Title
-        level={3}
-        style={{ textAlign: "center", width: "100%" }}
+    <>
+      <MobileHeader asHeader={true} />
+      <Space
+        direction="vertical"
+        className="mx-auto dewo-landing-page-main"
+        style={{
+          marginTop: 40,
+          maxWidth: 300 * 4 + (3 + 2) * 16,
+          maxHeight: "100%",
+        }}
       >
-        Your tasks for today
-      </Typography.Title>
-      <UserTaskBoard userId={user.id} />
-    </Space>
+        <Typography.Title
+          level={3}
+          style={{ textAlign: "center", width: "100%" }}
+        >
+          Your tasks for today
+        </Typography.Title>
+
+        <UserTaskBoard userId={user.id} />
+      </Space>
+    </>
   );
 };

@@ -58,10 +58,10 @@ export const UserProfile: FC<Props> = ({ userId }) => {
 
   return (
     <div className="mx-auto max-w-lg" style={{ marginTop: 40 }}>
-      <Row gutter={16}>
-        <Col span={8}>
+      <Row gutter={[16, 16]} style={{ margin: 0 }}>
+        <Col xs={24} md={8}>
           <Card>
-            <Space direction="vertical">
+            <Space direction="vertical" style={{ width: "100%" }}>
               <Row style={{ position: "relative", display: "inline-block" }}>
                 <UserAvatar user={user} size={96} />
                 {isMe && <EditUserAvatarButton />}
@@ -74,12 +74,13 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               >
                 {user.username}
               </Typography.Title>
-              <Typography.Text
+              <Typography.Paragraph
                 type="secondary"
                 editable={isMe ? { onChange: updateBio } : undefined}
+                ellipsis={{ rows: 2, expandable: true, symbol: "more" }}
               >
                 {!!user.bio ? user.bio : "No bio..."}
-              </Typography.Text>
+              </Typography.Paragraph>
               {/* {isMe && (
                 <Button icon={<Icons.EditOutlined />}>Edit Profile</Button>
               )} */}
@@ -129,8 +130,10 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                         key={organization.id}
                         href={`/o/${organization.slug}`}
                       >
-                        <a>
-                          <Tag>{organization.name}</Tag>
+                        <a className="text-overflow-ellipsis">
+                          <Tag className="text-overflow-ellipsis">
+                            {organization.name}
+                          </Tag>
                         </a>
                       </Link>
                     ))}
@@ -140,7 +143,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             </Space>
           </Card>
         </Col>
-        <Col span={16}>
+        <Col xs={24} md={16}>
           <Card size="small" title="Completed tasks">
             <Space direction="vertical" style={{ width: "100%" }}>
               {completedTasks.map((task) => (

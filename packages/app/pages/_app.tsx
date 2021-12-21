@@ -24,6 +24,7 @@ import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
+import { SidebarProvider } from "@dewo/app/contexts/sidebarContext";
 import { useRouter } from "next/router";
 import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
@@ -106,9 +107,11 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       <ApolloProvider client={apollo as any}>
         <AuthProvider authenticated={authenticated}>
           <PermissionsProvider>
-            <Component {...pageProps} />
-            <InviteMessageToast />
-            <SlugReplacer />
+            <SidebarProvider>
+              <Component {...pageProps} />
+              <InviteMessageToast />
+              <SlugReplacer />
+            </SidebarProvider>
           </PermissionsProvider>
         </AuthProvider>
       </ApolloProvider>

@@ -158,7 +158,7 @@ export function TaskForm<
       onValuesChange={handleChange}
     >
       <Row gutter={16}>
-        <Col span={16}>
+        <Col span={24}>
           <Form.Item
             name="name"
             // label={mode === "create" ? "Task name" : undefined}
@@ -172,7 +172,24 @@ export function TaskForm<
               placeholder={canEdit ? `Enter a task name...` : "Untitled..."}
             />
           </Form.Item>
-
+        </Col>
+      </Row>
+      <Row gutter={16} className="dewo-task-form">
+        <Col xs={24} sm={16}>
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true }]}
+            className="show-xs"
+          >
+            <Select placeholder="Select a task status" disabled={!canEdit}>
+              {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
+                <Select.Option key={status} value={status}>
+                  {STATUS_LABEL[status]}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item
             name="description"
             label={canEdit ? `Description (optional)` : "Description"}
@@ -226,13 +243,18 @@ export function TaskForm<
 
           {!!task && <GithubIntegrationSection task={task} />}
         </Col>
-        <Col span={8} style={{ marginTop: 62 }}>
+        <Col xs={24} sm={8}>
           {!!canEdit &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
             !!task.assignees.length && <AssignTaskCard task={task} />}
 
-          <Form.Item name="status" label="Status" rules={[{ required: true }]}>
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true }]}
+            className="show-sm"
+          >
             <Select placeholder="Select a task status" disabled={!canEdit}>
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
                 <Select.Option key={status} value={status}>

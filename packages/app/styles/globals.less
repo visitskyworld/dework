@@ -13,7 +13,7 @@
 @layout-header-background: transparent;
 @layout-sider-background: fade(@white, 10%);
 @component-background-highlighted: fade(@white, 20%);
-
+@layout-header-mobile-height: 48px;
 html {
   background: @body-background;
   background-image: url("/background.png");
@@ -232,7 +232,11 @@ textarea {
   border: 1px solid transparent;
   background-clip: content-box;
 }
-
+.dewo-landing-page-main {
+  div:last-child {
+    max-height: 100%;
+  }
+}
 .dewo-task-board-column .ant-card-body {
   overflow-y: auto;
 
@@ -302,7 +306,14 @@ textarea {
     }
   }
 }
-
+.dewo-header-mobile {
+  display: none;
+  @media (max-width: @screen-sm) {
+    display: flex;
+    align-items: center;
+    padding-right: 16px;
+  }
+}
 .ant-card.dewo-card-highlighted {
   background-color: @primary-color-25;
   border: 2px solid @primary-color;
@@ -348,4 +359,21 @@ textarea {
 #__next,
 .ant-layout {
   height: 100%;
+}
+.show-sm {
+  display: none;
+  @media (min-width: @screen-sm) {
+    display: block;
+  }
+}
+.show-xs {
+  display: none;
+  @media (max-width: @screen-sm) {
+    display: block;
+  }
+}
+.text-overflow-ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

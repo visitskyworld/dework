@@ -7,22 +7,28 @@ import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
 import { useToggle } from "@dewo/app/util/hooks";
+import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
   const showProfileDropdown = useToggle();
+  const { isOn, setToggle } = useSidebarContext();
 
+  const handleBreakpoint = (changed: boolean) => {
+    setToggle(changed);
+  };
   if (!user) return null;
   return (
-    <Layout.Sider width={72}>
-      <Col
-        style={{
-          height: "100%",
-          alignItems: "center",
-          paddingTop: 24,
-          paddingBottom: 12,
-        }}
-      >
+    <Layout.Sider
+      collapsible
+      breakpoint="sm"
+      onBreakpoint={handleBreakpoint}
+      width={72}
+      collapsedWidth="0"
+      collapsed={isOn}
+      trigger={null}
+    >
+      <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"

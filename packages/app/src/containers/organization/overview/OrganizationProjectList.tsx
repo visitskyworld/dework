@@ -22,7 +22,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     >
       <Row gutter={[16, 16]}>
         {projects?.map((project) => (
-          <Col key={project.id} span={8}>
+          <Col key={project.id} xs={24} sm={12} md={8}>
             <ProjectCard
               project={project}
               users={organization?.members.map((m) => m.user) ?? []}
@@ -30,7 +30,12 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
           </Col>
         ))}
         <Can I="create" a="Project">
-          <Col span={8} style={{ paddingLeft: 8, paddingRight: 8 }}>
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+            style={{ paddingLeft: 8, paddingRight: 8 }}
+          >
             <CreateProjectCard organizationId={organizationId} />
           </Col>
         </Can>

@@ -8,7 +8,7 @@ export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
   return data?.me;
 }
 
-interface UseToggleHook {
+export interface UseToggleHook {
   isOn: boolean;
   toggleOn(): void;
   toggleOff(): void;
