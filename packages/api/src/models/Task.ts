@@ -8,7 +8,6 @@ import {
   ManyToOne,
   OneToOne,
   OneToMany,
-  Index,
   AfterLoad,
 } from "typeorm";
 import slugify from "slugify";
@@ -32,7 +31,6 @@ registerEnumType(TaskStatusEnum, { name: "TaskStatusEnum" });
 
 @Entity()
 @ObjectType()
-@Index("IDX_unique_project_number", ["projectId", "number"], { unique: true })
 export class Task extends Audit {
   @Column({ type: "int" })
   @Field(() => Int)
