@@ -18,8 +18,6 @@ import {
   UserPaymentMethodQuery,
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
-import { useSignPayout as useSignMetamaskPayout } from "@dewo/app/util/ethereum";
-import { useSignPhantomPayout } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
 export const shortenedAddress = (address: string) =>
@@ -70,8 +68,8 @@ export class NoProjectPaymentMethodError extends Error {}
 export class NoUserPaymentMethodError extends Error {}
 
 export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
-  const signMetamaskPayout = useSignMetamaskPayout();
-  const signPhantomPayout = useSignPhantomPayout();
+  // const signMetamaskPayout = useSignMetamaskPayout();
+  // const signPhantomPayout = useSignPhantomPayout();
   // const signGnosisPayout = useSignGnosisPayout();
 
   const [loadUserPaymentMethod] = useLazyQuery<
@@ -152,11 +150,6 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           );
       }
     },
-    [
-      loadUserPaymentMethod,
-      loadProjectPaymentMethod,
-      signMetamaskPayout,
-      signPhantomPayout,
-    ]
+    [loadProjectPaymentMethod, loadUserPaymentMethod]
   );
 }

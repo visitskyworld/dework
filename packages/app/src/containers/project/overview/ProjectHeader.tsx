@@ -1,6 +1,5 @@
 import { Avatar, Input, PageHeader, Row, Skeleton, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import _ from "lodash";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
