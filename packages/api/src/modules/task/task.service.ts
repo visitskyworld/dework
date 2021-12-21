@@ -54,7 +54,7 @@ export class TaskService {
   public async claim(
     taskId: string,
     user: User,
-    applicationMessage: string
+    application: DeepPartial<TaskApplication>
   ): Promise<Task> {
     const task = await this.taskRepo.findOne(taskId);
     if (!task) throw new NotFoundException();
@@ -63,7 +63,9 @@ export class TaskService {
     if (taskApplications.map((a) => a.userId).includes(user.id)) return task;
 
     const taskApplication = {
-      applicationMessage: applicationMessage,
+      applicationMessage: application.applicationMessage,
+      startDate: application.startDate,
+      endDate: application.endDate,
       userId: user.id,
       taskId: taskId,
     };

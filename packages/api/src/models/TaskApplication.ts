@@ -19,6 +19,14 @@ export class TaskApplication extends Audit {
   @Field()
   public applicationMessage!: string;
 
+  @Column()
+  @Field()
+  public startDate!: Date;
+
+  @Column()
+  @Field()
+  public endDate!: Date;
+
   @JoinColumn()
   @ManyToOne(() => Task)
   @Field(() => Task)

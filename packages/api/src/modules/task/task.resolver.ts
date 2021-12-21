@@ -12,6 +12,7 @@ import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
+import { CreateTaskApplicationInput } from "./dto/CreateTaskApplicationInput";
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
@@ -76,10 +77,9 @@ export class TaskResolver {
   public async claimTask(
     @Context("user") user: User,
     @Args("id", { type: () => GraphQLUUID }) id: string,
-    @Args("applicationMessage", { type: () => String })
-    applicationMessage: string
+    @Args("taskApplication") taskApplication: CreateTaskApplicationInput
   ): Promise<Task> {
-    return this.taskService.claim(id, user, applicationMessage);
+    return this.taskService.claim(id, user, taskApplication);
   }
 
   @Mutation(() => Task)

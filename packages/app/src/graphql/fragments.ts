@@ -176,6 +176,8 @@ export const discordChannel = gql`
 export const taskApplication = gql`
   fragment TaskApplication on TaskApplication {
     applicationMessage
+    startDate
+    endDate
     user {
       ...User
     }

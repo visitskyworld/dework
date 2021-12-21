@@ -3,6 +3,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
+  CreateTaskApplicationInput,
   CreateTaskMutation,
   CreateTaskMutationVariables,
   CreateTaskTagInput,
@@ -174,16 +175,16 @@ export function useUpdateTask(): (
 
 export function useClaimTask(): (
   task: Task,
-  applicationMessage: string
+  taskApplication: CreateTaskApplicationInput
 ) => Promise<Task> {
   const { user } = useAuthContext();
   const [mutation] = useMutation<ClaimTaskMutation, ClaimTaskMutationVariables>(
     Mutations.claimTask
   );
   return useCallback(
-    async (task, applicationMessage) => {
+    async (task, taskApplication) => {
       const res = await mutation({
-        variables: { taskId: task.id, applicationMessage: applicationMessage },
+        variables: { taskId: task.id, taskApplication: taskApplication },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
