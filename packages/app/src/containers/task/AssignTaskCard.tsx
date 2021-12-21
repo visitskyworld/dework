@@ -33,7 +33,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString().split(",")[0];
+    return date.toLocaleString("en-GB").split(",")[0];
   };
 
   return (

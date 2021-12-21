@@ -1,6 +1,6 @@
 import { Task } from "@dewo/app/graphql/types";
 import { Modal, Col } from "antd";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback } from "react";
 import { useClaimTask } from "./hooks";
 import { Form, Button, Input } from "antd";
 import { stopPropagation } from "@dewo/app/util/eatClick";
@@ -19,27 +19,18 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
   onCancel,
   onDone,
 }) => {
-  const [startDate, setStartDate] = useState(Date);
-  const [endDate, setEndDate] = useState(Date);
-
   const claimTask = useClaimTask();
   const handleSubmit = useCallback(
     async (input) => {
       const claimedTask = await claimTask(task, {
         applicationMessage: input.applicationMessage,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: input.dates[0],
+        endDate: input.dates[1],
       });
       await onDone(claimedTask);
     },
     [claimTask, onDone, task]
   );
-  const onChangePeriod = (date: any, dateString: any) => {
-    console.log(date);
-    console.log(dateString);
-    setStartDate(date[0]);
-    setEndDate(date[1]);
-  };
 
   const { RangePicker } = DatePicker;
 
@@ -53,7 +44,13 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
         width={768}
       >
         <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
-          <RangePicker name="period" onChange={onChangePeriod} />
+          <Form.Item
+            name="dates"
+            label={"When are you claiming this task for?"}
+            rules={[{ required: true, message: "Please enter a date" }]}
+          >
+            <RangePicker name="period" />
+          </Form.Item>
           <Form.Item
             name="applicationMessage"
             label={"Application Message"}
