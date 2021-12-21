@@ -10,7 +10,6 @@ import {
   EventSubscriber,
   In,
   Repository,
-  UpdateEvent,
 } from "typeorm";
 import {
   ProjectIntegration,
@@ -44,6 +43,10 @@ export class DiscordIntegrationService
     private readonly discordChannelRepo: Repository<DiscordChannel>,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
+    @InjectRepository(Project)
+    private readonly projectRepo: Repository<Project>,
+    @InjectRepository(ProjectIntegration)
+    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
     private readonly config: ConfigService<ConfigType>,
     @InjectConnection() readonly connection: Connection
   ) {
@@ -59,10 +62,7 @@ export class DiscordIntegrationService
     const task = await this.getTask(event.entity.id, event.manager);
     if (!task) return;
 
-    const integration = await this.getProjectIntegration(
-      task.projectId,
-      event.manager
-    );
+    const integration = await this.getProjectIntegration(task.projectId);
     if (!integration) return;
 
     this.logger.debug(
@@ -84,60 +84,13 @@ export class DiscordIntegrationService
     );
 
     const category = await this.getOrCreateCategory(guild);
-    const channel = await this.getOrCreateChannel(
-      task,
-      guild,
-      category,
-      event.manager
-    );
+    const channel = await this.getOrCreateChannel(task, guild, category);
 
     if (!!channel) {
       await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
     }
   }
   */
-
-  async afterUpdate(event: UpdateEvent<Task>) {
-    if (!event.entity) return;
-    const task = await this.getTask(event.entity.id, event.manager);
-    if (!task) return;
-
-    const integration = await this.getProjectIntegration(
-      task.projectId,
-      event.manager
-    );
-    if (!integration) return;
-
-    this.logger.debug(
-      `Task.afterUpdate: ${JSON.stringify({
-        taskId: task.id,
-        projectId: task.projectId,
-        integrationId: integration.id,
-        config: integration.config,
-      })}`
-    );
-
-    const guild = await this.discord.client.guilds.fetch(
-      integration.config.guildId
-    );
-    await guild.roles.fetch();
-
-    this.logger.debug(
-      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
-    );
-
-    const category = await this.getOrCreateCategory(guild);
-    const channel = await this.getOrCreateChannel(
-      task,
-      guild,
-      category,
-      event.manager
-    );
-
-    if (!!channel) {
-      await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
-    }
-  }
 
   private async getTask(
     id: string,
@@ -153,10 +106,9 @@ export class DiscordIntegrationService
   }
 
   private async getProjectIntegration(
-    projectId: string,
-    entityManager: EntityManager
+    projectId: string
   ): Promise<ProjectIntegration<ProjectIntegrationSource.discord>> {
-    const integration = await entityManager.findOne(ProjectIntegration, {
+    const integration = await this.projectIntegrationRepo.findOne({
       projectId,
       source: ProjectIntegrationSource.discord,
     });
@@ -194,7 +146,37 @@ export class DiscordIntegrationService
 
   async handle({ oldTask, newTask }: TaskUpdatedEvent) {
     const task = await this.taskRepo.findOne({ id: newTask.id });
-    if (task) this.updateMessageStatus(oldTask, task);
+    if (!task) return;
+
+    const integration = await this.getProjectIntegration(task.projectId);
+    if (!integration) return;
+
+    this.logger.debug(
+      `Task.afterUpdate: ${JSON.stringify({
+        taskId: task.id,
+        projectId: task.projectId,
+        integrationId: integration.id,
+        config: integration.config,
+      })}`
+    );
+
+    const guild = await this.discord.client.guilds.fetch(
+      integration.config.guildId
+    );
+    await guild.roles.fetch();
+
+    this.logger.debug(
+      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
+    );
+
+    const category = await this.getOrCreateCategory(guild);
+    const channel = await this.getOrCreateChannel(task, guild, category);
+
+    if (!!channel) {
+      await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
+    }
+
+    await this.updateMessageStatus(oldTask, task);
   }
 
   private async updateMessageStatus(oldTask: Task, newTask: Task) {
@@ -336,8 +318,7 @@ export class DiscordIntegrationService
   private async getOrCreateChannel(
     task: Task,
     guild: Discord.Guild,
-    category: Discord.CategoryChannel,
-    entityManager: EntityManager
+    category: Discord.CategoryChannel
   ): Promise<Discord.TextChannel | undefined> {
     this.logger.debug(
       `Get or create channel: ${JSON.stringify({
@@ -371,7 +352,7 @@ export class DiscordIntegrationService
       return undefined;
     }
 
-    const project = await entityManager.findOne(Project, task.projectId);
+    const project = await this.projectRepo.findOne(task.projectId);
     if (!project) return undefined;
 
     // TODO(fant): abstract this into separate module
@@ -406,7 +387,7 @@ export class DiscordIntegrationService
       })}`
     );
 
-    await entityManager.save(DiscordChannel, {
+    await this.discordChannelRepo.save({
       guildId: guild.id,
       channelId: channel.id,
       taskId: task.id,
@@ -467,117 +448,4 @@ export class DiscordIntegrationService
     );
     return threepids;
   }
-
-  /*
-  async afterInsert(event: InsertEvent<Task>) {
-    const task = await this.taskRepo.findOne(event.entity.id);
-    if (!task) return;
-
-    const integration = await this.getDiscordIntegration(
-      task.projectId,
-      DiscordProjectIntegrationFeature.POST_CREATED_TASKS
-    );
-
-    if (!integration) return;
-    this.logger.log(
-      `Posting task to Discord: ${JSON.stringify({
-        taskId: task.id,
-        integrationId: integration.id,
-      })}`
-    );
-
-    const channel = await this.getDiscordChannel(integration);
-    if (!channel) return;
-
-    const project = await integration.project;
-    const permalink = `${this.config.get("APP_URL")}/o/${encoder.encode(
-      project.organizationId
-    )}/p/${project.slug}?taskId=${task.id}`;
-    channel.send(`New bounty up for grabs! ${task.name}\n${permalink}`);
-  }
-
-  async afterUpdate(event: UpdateEvent<Task>) {
-    if (!event.entity) return;
-    const task = await this.taskRepo.findOne(event.entity.id);
-    if (!task) return;
-
-    const integration = await this.getDiscordIntegration(
-      task.projectId,
-      DiscordProjectIntegrationFeature.POST_CREATED_TASKS
-    );
-
-    if (!integration) return;
-    this.logger.log(
-      `Posting task update to Discord: ${JSON.stringify({
-        taskId: task.id,
-        integrationId: integration.id,
-      })}`
-    );
-
-    const channel = await this.getDiscordChannel(integration);
-    if (!channel) return;
-
-    const project = await task.project;
-    const permalink = `${this.config.get("APP_URL")}/o/${encoder.encode(
-      project.organizationId
-    )}/p/${project.slug}/task/${task.id}`;
-
-    const msgEmbed = new MessageEmbed()
-      .setColor("#0099ff")
-      .setTitle(`Bounty updated: ${task.name}`)
-      .setURL(`${permalink}`)
-      .setAuthor(task.assignees[0]?.username ?? "", task.assignees[0]?.imageUrl)
-      .setDescription(`${task.description}`)
-      .setTimestamp()
-      .setFooter("Dewo™");
-
-    channel.send({ embeds: [msgEmbed] });
-  }
-
-  private async getDiscordIntegration(
-    projectId: string,
-    feature: DiscordProjectIntegrationFeature
-  ): Promise<ProjectIntegration<ProjectIntegrationSource.discord> | undefined> {
-    const integration = (await this.projectIntegrationRepo.findOne({
-      projectId,
-      source: ProjectIntegrationSource.discord,
-    })) as ProjectIntegration<ProjectIntegrationSource.discord>;
-
-    if (!integration) return undefined;
-    if (!integration.config.features.includes(feature)) {
-      return undefined;
-    }
-
-    return integration;
-  }
-
-  private async getDiscordChannel(
-    integration: ProjectIntegration<ProjectIntegrationSource.discord>
-  ) {
-    const channel = await this.discord.client.channels.fetch(
-      integration.config.channelId
-    );
-    if (!channel) {
-      this.logger.error(
-        `Could not find channel: ${JSON.stringify({
-          channelId: integration.config.channelId,
-          integrationId: integration.id,
-        })}`
-      );
-      return undefined;
-    }
-
-    if (!channel.isText()) {
-      this.logger.error(
-        `Channel is not text channel: ${JSON.stringify({
-          channel,
-          integrationId: integration.id,
-        })}`
-      );
-      return undefined;
-    }
-
-    return channel ?? undefined;
-  }
-  */
 }
