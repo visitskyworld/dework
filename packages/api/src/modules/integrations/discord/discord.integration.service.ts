@@ -9,7 +9,6 @@ import {
   EntitySubscriberInterface,
   EventSubscriber,
   In,
-  InsertEvent,
   Repository,
   UpdateEvent,
 } from "typeorm";
@@ -55,6 +54,7 @@ export class DiscordIntegrationService
     return Task;
   }
 
+  /*
   async afterInsert(event: InsertEvent<Task>) {
     const task = await this.getTask(event.entity.id, event.manager);
     if (!task) return;
@@ -95,6 +95,7 @@ export class DiscordIntegrationService
       await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
     }
   }
+  */
 
   async afterUpdate(event: UpdateEvent<Task>) {
     if (!event.entity) return;
