@@ -1,38 +1,40 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { CreateTaskInput, Task, TaskTag } from "@dewo/app/graphql/types";
+import { Task, TaskTag } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTask } from "./hooks";
-import { TaskForm } from "./TaskForm";
+import { TaskForm, TaskFormValues } from "./TaskForm";
 
 interface TaskCreateModalProps {
   tags: TaskTag[];
   visible: boolean;
-  initialValues: Partial<CreateTaskInput>;
+  projectId: string;
+  initialValues: Partial<TaskFormValues>;
   onCancel(): void;
   onDone(task: Task): unknown;
 }
 
 export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   tags,
+  projectId,
   visible,
   initialValues: _initialValues,
   onCancel,
   onDone,
 }) => {
   const { user } = useAuthContext();
-  const initialValues = useMemo<Partial<CreateTaskInput>>(
+  const initialValues = useMemo<Partial<TaskFormValues>>(
     () => ({ ownerId: user?.id, ..._initialValues }),
     [_initialValues, user?.id]
   );
 
   const createTask = useCreateTask();
   const handleSubmit = useCallback(
-    async (input: CreateTaskInput) => {
-      const task = await createTask(input);
+    async (values: TaskFormValues) => {
+      const task = await createTask(values, projectId);
       await onDone(task);
     },
-    [createTask, onDone]
+    [createTask, onDone, projectId]
   );
   return (
     <Modal
@@ -42,7 +44,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       footer={null}
       width={768}
     >
-      <TaskForm<CreateTaskInput>
+      <TaskForm
         mode="create"
         tags={tags}
         initialValues={initialValues}

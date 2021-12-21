@@ -22,6 +22,7 @@ import { useProject } from "../hooks";
 import { useRouter } from "next/router";
 import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
+import { formatTaskReward } from "../../task/hooks";
 
 interface Props {
   projectId: string;
@@ -109,7 +110,11 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const router = useRouter();
   const handlePayNow = useCallback(() => {
     if (!project) return;
-    if (project.paymentMethod?.type === PaymentMethodType.GNOSIS_SAFE) {
+    if (
+      project.paymentMethods.some(
+        (pm) => pm.type === PaymentMethodType.GNOSIS_SAFE
+      )
+    ) {
       modal.toggleOn();
     } else {
       notification.info({
@@ -179,7 +184,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
               width: 1,
               render: (reward: TaskReward, task: TaskToPay) =>
                 canPayTaskAssignee(task) ? (
-                  `${reward.amount} ${reward.currency}`
+                  formatTaskReward(reward)
                 ) : (
                   <Tag color="red">Missing Payment Method</Tag>
                 ),

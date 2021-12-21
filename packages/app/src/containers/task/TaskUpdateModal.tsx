@@ -3,7 +3,12 @@ import _ from "lodash";
 import { Modal } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
-import { toTaskRewardFormValues, useTask, useUpdateTask } from "./hooks";
+import {
+  toTaskReward,
+  toTaskRewardFormValues,
+  useTask,
+  useUpdateTask,
+} from "./hooks";
 import { TaskForm, TaskFormValues } from "./TaskForm";
 
 interface Props {
@@ -22,8 +27,15 @@ export const TaskUpdateModal: FC<Props> = ({
   const task = useTask(taskId);
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
-    async (input: TaskFormValues) => {
-      const updated = await updateTask(input, task!);
+    async (values: TaskFormValues) => {
+      const updated = await updateTask(
+        {
+          id: task!.id,
+          ...values,
+          reward: !!values.reward ? toTaskReward(values.reward) : undefined,
+        },
+        task!
+      );
       await onDone(updated);
     },
     [updateTask, onDone, task]
@@ -32,8 +44,8 @@ export const TaskUpdateModal: FC<Props> = ({
   const initialValues = useMemo<TaskFormValues>(
     () => ({
       id: taskId,
-      name: task?.name ?? undefined,
-      description: task?.description ?? undefined,
+      name: task?.name ?? "",
+      description: task?.description ?? "",
       tagIds: task?.tags.map((t) => t.id) ?? [],
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,

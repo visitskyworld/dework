@@ -1,9 +1,4 @@
-import {
-  CreateTaskInput,
-  Task,
-  TaskStatusEnum,
-  TaskTag,
-} from "@dewo/app/graphql/types";
+import { Task, TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, { FC, useEffect, useCallback, useState } from "react";
 import {
@@ -26,20 +21,15 @@ const statuses: TaskStatusEnum[] = [
 interface Props {
   tasks: Task[];
   tags?: TaskTag[];
-  initialValues?: Partial<CreateTaskInput>;
+  projectId?: string;
 }
 
 const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
 const noTags: TaskTag[] = [];
-const noInitialValues: Partial<CreateTaskInput> = {};
 
-export const TaskBoard: FC<Props> = ({
-  tasks,
-  tags = noTags,
-  initialValues = noInitialValues,
-}) => {
-  const taskSectionsByStatus = useGroupedTasks(tasks, initialValues.projectId);
+export const TaskBoard: FC<Props> = ({ tasks, projectId, tags = noTags }) => {
+  const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
   const updateTask = useUpdateTask();
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
@@ -102,7 +92,7 @@ export const TaskBoard: FC<Props> = ({
                   tags={tags}
                   width={columnWidth}
                   taskSections={taskSectionsByStatus[status] ?? emptySections}
-                  initialValues={initialValues}
+                  projectId={projectId}
                 />
               </div>
             ))}

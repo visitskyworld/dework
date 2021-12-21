@@ -3,7 +3,6 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
-  CreateTaskInput,
   CreateTaskMutation,
   CreateTaskMutationVariables,
   CreateTaskTagInput,
@@ -120,15 +119,26 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
   );
 }
 
-export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
+export function useCreateTask(): (
+  values: TaskFormValues,
+  projectId: string
+) => Promise<Task> {
   const [mutation] = useMutation<
     CreateTaskMutation,
     CreateTaskMutationVariables
   >(Mutations.createTask);
   const addTaskToApolloCache = useAddTaskToApolloCache();
   return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
+    async (values, projectId) => {
+      const res = await mutation({
+        variables: {
+          input: {
+            projectId,
+            ...values,
+            reward: !!values.reward ? toTaskReward(values.reward) : undefined,
+          },
+        },
+      });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       addTaskToApolloCache(res.data.task);
@@ -139,7 +149,7 @@ export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
 }
 
 export function useUpdateTask(): (
-  values: TaskFormValues,
+  input: UpdateTaskInput,
   task: Task
 ) => Promise<Task> {
   const [mutation] = useMutation<
@@ -147,12 +157,7 @@ export function useUpdateTask(): (
     UpdateTaskMutationVariables
   >(Mutations.updateTask);
   return useCallback(
-    async (values, task) => {
-      const input: UpdateTaskInput = {
-        id: task.id,
-        ...values,
-        reward: !!values.reward ? toTaskReward(values.reward) : undefined,
-      };
+    async (input, _task) => {
       const res = await mutation({
         variables: { input },
         // optimisticResponse: {

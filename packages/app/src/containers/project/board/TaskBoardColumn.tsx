@@ -4,22 +4,19 @@ import { Button, Card, Badge, Space, Typography, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import {
-  CreateTaskInput,
-  TaskStatusEnum,
-  TaskTag,
-} from "@dewo/app/graphql/types";
+import { TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
+import { TaskFormValues } from "../../task/TaskForm";
 
 interface Props {
   status: TaskStatusEnum;
   taskSections: TaskSection[];
   tags: TaskTag[];
   width: number;
-  initialValues: Partial<CreateTaskInput>;
+  projectId?: string;
 }
 
 export const TaskBoardColumn: FC<Props> = ({
@@ -27,7 +24,7 @@ export const TaskBoardColumn: FC<Props> = ({
   taskSections,
   tags,
   width,
-  initialValues,
+  projectId,
 }) => {
   const createCardToggle = useToggle();
   const hasPermission = usePermissionFn();
@@ -35,6 +32,10 @@ export const TaskBoardColumn: FC<Props> = ({
     () =>
       taskSections.reduce((count, section) => count + section.tasks.length, 0),
     [taskSections]
+  );
+  const initialValues = useMemo<Partial<TaskFormValues>>(
+    () => ({ status }),
+    [status]
   );
   return (
     <Card
@@ -50,26 +51,28 @@ export const TaskBoardColumn: FC<Props> = ({
         </Space>
       }
       extra={
-        <Can I="create" a="Task">
-          <Button
-            type="text"
-            icon={<Icons.PlusOutlined onClick={createCardToggle.toggleOn} />}
-          />
-        </Can>
+        !!projectId && (
+          <Can I="create" a="Task">
+            <Button
+              type="text"
+              icon={<Icons.PlusOutlined onClick={createCardToggle.toggleOn} />}
+            />
+          </Can>
+        )
       }
       style={{ width }}
       className="dewo-task-board-column"
     >
-      <TaskCreateModal
-        tags={tags}
-        initialValues={useMemo(
-          () => ({ ...initialValues, status }),
-          [status, initialValues]
-        )}
-        visible={createCardToggle.isOn}
-        onCancel={createCardToggle.toggleOff}
-        onDone={createCardToggle.toggleOff}
-      />
+      {!!projectId && (
+        <TaskCreateModal
+          tags={tags}
+          projectId={projectId}
+          initialValues={initialValues}
+          visible={createCardToggle.isOn}
+          onCancel={createCardToggle.toggleOff}
+          onDone={createCardToggle.toggleOff}
+        />
+      )}
       {taskSections
         .filter((section) => !section.hidden)
         .map((section, index) => (

@@ -39,6 +39,8 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 
 export interface TaskFormValues {
+  name: string;
+  description: string;
   projectId?: string;
   status: TaskStatusEnum;
   tagIds: string[];
