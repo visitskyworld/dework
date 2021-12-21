@@ -88,6 +88,11 @@ export class GithubController {
           id: branch.id,
           deletedAt: new Date(),
         });
+      } else {
+        await this.githubService.updateBranch({
+          id: branch.id,
+          deletedAt: null!,
+        });
       }
     } else if (body.ref_type === "branch") {
       const repository = body.repository.full_name;
