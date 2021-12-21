@@ -24,6 +24,7 @@ import { Project } from "@dewo/api/models/Project";
 import { CustomPermissionActions } from "../auth/permissions";
 import { User } from "@dewo/api/models/User";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
+import slugify from "slugify";
 
 @Injectable()
 @Resolver(() => Task)
@@ -42,7 +43,9 @@ export class TaskResolver {
     @Context("user") user: User | undefined,
     @Parent() task: Task
   ): string {
-    return `${user?.username ?? "feat"}/dw-${task.number}/${task.slug}`;
+    const root = user?.username ?? "feat";
+    const slugifiedRoot = slugify(root, { lower: true, strict: true });
+    return `${slugifiedRoot}/dw-${task.number}/${task.slug}`;
   }
 
   @Mutation(() => Task)

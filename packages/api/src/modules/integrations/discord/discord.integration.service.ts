@@ -366,6 +366,10 @@ export class DiscordIntegrationService
       );
     }
 
+    if (task.status === TaskStatusEnum.TODO && !task.assignees.length) {
+      return undefined;
+    }
+
     const project = await entityManager.findOne(Project, task.projectId);
     if (!project) return undefined;
 
