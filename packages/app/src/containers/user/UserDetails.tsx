@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import Link from "next/link";
 import * as Icons from "@ant-design/icons";
 import { Form, Avatar, Input, Space } from "antd";
 
@@ -71,13 +70,11 @@ export const UserDetails: FC<UserDetailsProps> = ({
   return (
     <Space style={{ margin: "2px 0 12px 0" }}>
       {userDetails.map((detail, index) => (
-        <Link key={index} href={detail.value}>
-          <a>
-            <Avatar size="small">
-              <UserDetailIcon type={detail.type} />
-            </Avatar>
-          </a>
-        </Link>
+        <a href={detail.value} target="_blank" key={index}>
+          <Avatar size="small">
+            <UserDetailIcon type={detail.type} />
+          </Avatar>
+        </a>
       ))}
     </Space>
   );
