@@ -9,6 +9,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
 import { PaymentModule } from "../payment/payment.module";
+import { ProjectModule } from "../project/project.module";
 import {
   OrganizationTasksResolver,
   ProjectTasksResolver,
@@ -29,6 +30,7 @@ import { TaskService } from "./task.service";
     CaslModule.forFeature({ permissions }),
     CqrsModule,
     PaymentModule,
+    ProjectModule,
   ],
   providers: [
     TaskResolver,

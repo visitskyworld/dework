@@ -9,6 +9,7 @@ import { TaskUpdatedEvent } from "./task-updated.event";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
+import { ProjectService } from "../project/project.service";
 
 @Injectable()
 export class TaskService {
@@ -21,7 +22,8 @@ export class TaskService {
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(TaskReward)
     private readonly taskRewardRepo: Repository<TaskReward>,
-    private readonly paymentService: PaymentService
+    private readonly paymentService: PaymentService,
+    private readonly projectService: ProjectService
   ) {}
 
   public async create(
@@ -213,10 +215,15 @@ export class TaskService {
   }
 
   private async getNextTaskNumber(projectId: string): Promise<number> {
+    const project = await this.projectService.findById(projectId);
+    if (!project) throw new NotFoundException();
     const result = await this.taskRepo
       .createQueryBuilder("task")
       .select("MAX(task.number)", "max")
-      .where("task.projectId = :projectId", { projectId })
+      .innerJoin("task.project", "project")
+      .where("project.organizationId = :organizationId", {
+        organizationId: project.organizationId,
+      })
       .getRawOne();
     return result.max ? result.max + 1 : 1;
   }

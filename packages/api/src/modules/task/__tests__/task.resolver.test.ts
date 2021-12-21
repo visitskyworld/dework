@@ -85,6 +85,10 @@ describe("TaskResolver", () => {
 
       it("should assign correct task numbers", async () => {
         const first = await fixtures.createUserOrgProject();
+        const anotherProjectInFirst = await fixtures.createProject({
+          organizationId: first.organization.id,
+        });
+
         const second = await fixtures.createUserOrgProject();
 
         const createTask = (projectId: string, user: User) =>
@@ -106,6 +110,9 @@ describe("TaskResolver", () => {
         await expect(createTask(first.project.id, first.user)).resolves.toEqual(
           expect.objectContaining({ number: 2 })
         );
+        await expect(
+          createTask(anotherProjectInFirst.id, first.user)
+        ).resolves.toEqual(expect.objectContaining({ number: 3 }));
         await expect(
           createTask(second.project.id, second.user)
         ).resolves.toEqual(expect.objectContaining({ number: 1 }));
