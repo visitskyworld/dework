@@ -9,6 +9,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
 import Link from "next/link";
 import { formatTaskReward, useUpdateTask } from "../../task/hooks";
+import { PayButton } from "./PayButton";
 
 interface TaskCardProps {
   task: Task;
@@ -27,14 +28,15 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
   const button = useMemo(() => {
-    // if (
-    //   task.status === TaskStatusEnum.DONE &&
-    //   !!task.reward &&
-    //   !task.reward.payment &&
-    //   canUpdateTask
-    // ) {
-    //   return <PayButton task={task}>Pay</PayButton>;
-    // }
+    if (
+      task.status === TaskStatusEnum.DONE &&
+      !!task.assignees.length &&
+      !!task.reward &&
+      !task.reward.payment &&
+      canUpdateTask
+    ) {
+      return <PayButton task={task}>Pay</PayButton>;
+    }
 
     if (
       task.status === TaskStatusEnum.IN_REVIEW &&

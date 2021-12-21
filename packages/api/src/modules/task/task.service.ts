@@ -97,10 +97,11 @@ export class TaskService {
       throw new NotFoundException(msg);
     }
 
-    const payment = await this.paymentService.create({
-      paymentMethodId: fromPaymentMethod.id,
-      data: input.data,
-    });
+    const payment = await this.paymentService.create(
+      fromPaymentMethod,
+      input.networkId,
+      input.data
+    );
 
     await this.taskRewardRepo.update(
       { id: In(input.taskRewardIds) },

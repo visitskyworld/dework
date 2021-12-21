@@ -5,6 +5,8 @@ import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
+  CreateTaskPaymentsMutation,
+  CreateTaskPaymentsMutationVariables,
   GetPaymentNetworksQuery,
   GetProjectQuery,
   GetProjectQueryVariables,
@@ -18,6 +20,7 @@ import {
   UserPaymentMethodQuery,
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
+import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
 export const shortenedAddress = (address: string) =>
@@ -76,37 +79,45 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     UserPaymentMethodQuery,
     UserPaymentMethodQueryVariables
   >(Queries.userPaymentMethod);
-  const [loadProjectPaymentMethod] = useLazyQuery<
-    GetProjectQuery,
-    GetProjectQueryVariables
-  >(Queries.project);
-  // const [createTaskPayment] = useMutation<
-  //   CreateTaskPaymentsMutation,
-  //   CreateTaskPaymentsMutationVariables
-  // >(Mutations.createTaskPayments);
+  const [loadProject] = useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(
+    Queries.project
+  );
+  const [registerTaskPayment] = useMutation<
+    CreateTaskPaymentsMutation,
+    CreateTaskPaymentsMutationVariables
+  >(Mutations.createTaskPayments);
+
+  const createSolanaTransaction = useCreateSolanaTransaction();
 
   return useCallback(
     async (task: Task, user: User) => {
-      if (!task.reward) throw new Error("Task has no reward, so cannot pay");
+      const reward = task.reward;
+      if (!reward) throw new Error("Task has no reward, so cannot pay");
 
-      const [fromPaymentMethod, toPaymentMethod] = await Promise.all([
-        loadProjectPaymentMethod({
+      const [project, userPaymentMethods] = await Promise.all([
+        loadProject({
           variables: { projectId: task.projectId },
-        }).then((res) => res.data?.project.paymentMethods[0]),
-        loadUserPaymentMethod({ variables: { id: user.id } }).then(
-          (res) => res.data?.user.paymentMethod
-        ),
+        }).then((res) => res.data?.project),
+        loadUserPaymentMethod({ variables: { id: user.id } })
+          .then((res) => res.data?.user.paymentMethod)
+          .then((pm) => (!!pm ? [pm!] : [])),
       ]);
 
-      if (!fromPaymentMethod) {
-        throw new NoProjectPaymentMethodError();
-      }
+      if (!project) throw new Error("Project not found");
 
-      if (!toPaymentMethod) {
-        throw new NoUserPaymentMethodError();
-      }
+      const from = project.paymentMethods.find(
+        (pm) =>
+          pm.networks.some((n) => n.id === reward.token.networkId) &&
+          pm.tokens.some((t) => t.id === reward.token.id)
+      );
+      const to = userPaymentMethods.find((pm) =>
+        pm.networks.some((n) => n.id === reward.token.networkId)
+      );
 
-      switch (fromPaymentMethod.type) {
+      if (!from) throw new NoProjectPaymentMethodError();
+      if (!to) throw new NoUserPaymentMethodError();
+
+      switch (from.type) {
         case PaymentMethodType.METAMASK: {
           throw new Error("Implement Phantom pay now");
           // if (task.reward.currency === "ETH") {
@@ -120,9 +131,27 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           // break;
         }
         case PaymentMethodType.PHANTOM: {
-          throw new Error("Implement Phantom pay now");
-          // await signPhantomPayout(toPaymentMethod.address, task.reward.amount);
-          // break;
+          const network = from.networks.find(
+            (n) => n.id === reward.token.networkId
+          )!;
+          const signature = await createSolanaTransaction(
+            from.address,
+            to.address,
+            Number(reward.amount),
+            reward.token,
+            network
+          );
+          await registerTaskPayment({
+            variables: {
+              input: {
+                taskRewardIds: [reward.id],
+                networkId: reward.token.networkId,
+                paymentMethodId: from.id,
+                data: { signature },
+              },
+            },
+          });
+          break;
         }
         case PaymentMethodType.GNOSIS_SAFE: {
           // const signed = await signGnosisPayout(
@@ -145,11 +174,14 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           throw new Error("Implement Gnosis Safe pay now");
         }
         default:
-          throw new Error(
-            `Unknown payment method: "${fromPaymentMethod.type}"`
-          );
+          throw new Error(`Unknown payment method: "${from.type}"`);
       }
     },
-    [loadProjectPaymentMethod, loadUserPaymentMethod]
+    [
+      loadProject,
+      loadUserPaymentMethod,
+      createSolanaTransaction,
+      registerTaskPayment,
+    ]
   );
 }

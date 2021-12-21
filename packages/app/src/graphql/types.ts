@@ -4255,6 +4255,7 @@ export interface CreateTaskInput {
 export interface CreateTaskPaymentsInput {
   taskRewardIds: Scalar.UUID[];
   paymentMethodId: Scalar.UUID;
+  networkId: Scalar.UUID;
   data?: Scalar.JSONObject | null;
 }
 

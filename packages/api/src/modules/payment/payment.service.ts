@@ -1,5 +1,13 @@
-import { Payment, PaymentStatus } from "@dewo/api/models/Payment";
-import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
+import {
+  Payment,
+  PaymentData,
+  PaymentStatus,
+  PhantomPaymentData,
+} from "@dewo/api/models/Payment";
+import {
+  PaymentMethod,
+  PaymentMethodType,
+} from "@dewo/api/models/PaymentMethod";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { User } from "@dewo/api/models/User";
@@ -23,41 +31,32 @@ export class PaymentService {
   ) {}
 
   public async create(
-    partial: Pick<Payment, "paymentMethodId" | "data">
+    paymentMethod: PaymentMethod,
+    networkId: string,
+    data: PaymentData
   ): Promise<Payment> {
-    /*
-    switch (data.from.type) {
+    switch (paymentMethod.type) {
       case PaymentMethodType.GNOSIS_SAFE:
-        if (!(data.data as GnosisSafePaymentData).safeTxHash) {
-          throw new Error(
-            `Cannot create ${PaymentMethodType.METAMASK} payment without data.safeTxHash`
-          );
-        }
-        break;
+        throw new Error("No support for Gnosis Safe payments");
+      // if (!(data.data as GnosisSafePaymentData).safeTxHash) {
+      //   throw new Error(
+      //     `Cannot create ${PaymentMethodType.METAMASK} payment without data.safeTxHash`
+      //   );
+      // }
       case PaymentMethodType.METAMASK:
+        throw new Error("No support for Metamask payments");
       case PaymentMethodType.PHANTOM:
-        if (!data.txHash) {
-          throw new Error(
-            `Cannot create ${PaymentMethodType.METAMASK} payment without txHash`
-          );
+        if (!(data as PhantomPaymentData).signature) {
+          throw new Error(`Cannot create Phantom payment without signature`);
         }
         break;
     }
 
     const created = await this.paymentRepo.save({
-      fromId: data.from.id,
-      toId: data.to.id,
-      data: data.data,
-      txHash: data.txHash,
-      // TODO: fetch depending on payment method
+      data,
+      networkId,
+      paymentMethodId: paymentMethod.id,
       status: PaymentStatus.PROCESSING,
-    });
-    return this.findById(created.id) as Promise<Payment>;
-    */
-
-    const created = await this.paymentRepo.save({
-      status: PaymentStatus.PROCESSING,
-      ...partial,
     });
     return this.findById(created.id) as Promise<Payment>;
   }

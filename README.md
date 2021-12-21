@@ -71,8 +71,8 @@ BEGIN
     ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethmain_id),
     ('ERC20', 'USDC', 18, '0xeb8f08a975ab53e34d8a0330e0d34de942c95926', ethrinkeby_id),
 
-    ('SOL', 'SOL', 0, NULL, solana_mainnet_id),
-    ('SOL', 'SOL', 18, NULL, solana_testnet_id),
+    ('SOL', 'SOL', 9, NULL, solana_mainnet_id),
+    ('SOL', 'SOL', 9, NULL, solana_testnet_id),
     ('SPL_TOKEN', 'USDC', 18, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
     ('SPL_TOKEN', 'USDC', 18, 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
 END $$;

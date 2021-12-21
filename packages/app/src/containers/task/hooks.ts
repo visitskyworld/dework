@@ -40,6 +40,7 @@ import { TaskFormValues } from "./TaskForm";
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
 ): UpdateTaskRewardInput | undefined => {
+  console.warn(reward);
   if (!reward?.amount || !reward?.token || !reward?.trigger) return undefined;
   return {
     amount: parseFixed(String(reward.amount), reward.token.exp).toString(),

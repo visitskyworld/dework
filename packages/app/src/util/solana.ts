@@ -1,13 +1,10 @@
 import { useCallback } from "react";
+import * as solana from "@solana/web3.js";
 import {
-  Connection,
-  PublicKey,
-  Transaction,
-  clusterApiUrl,
-  SystemProgram,
-  RpcResponseAndContext,
-  SignatureResult,
-} from "@solana/web3.js";
+  PaymentNetwork,
+  PaymentToken,
+  PaymentTokenType,
+} from "../graphql/types";
 
 export function useRequestAddress(): () => Promise<string> {
   return useCallback(async () => {
@@ -18,38 +15,47 @@ export function useRequestAddress(): () => Promise<string> {
   }, []);
 }
 
-export function useSignPhantomPayout(): (
+export function useCreateSolanaTransaction(): (
+  fromAddress: string,
   toAddress: string,
-  amount: number
-) => Promise<RpcResponseAndContext<SignatureResult>> {
-  return useCallback(async (toAddress, amount) => {
-    // @ts-ignore
-    const provider = await window.solana;
-    await provider.connect();
+  amount: number,
+  token: PaymentToken,
+  network: PaymentNetwork
+) => Promise<string> {
+  const requestAddress = useRequestAddress();
+  return useCallback(
+    async (fromAddress, toAddress, amount, token, network) => {
+      if (token.type !== PaymentTokenType.SOL) {
+        throw new Error("TODO: implement Solana payments for other tokens");
+      }
 
-    const NETWORK = clusterApiUrl("mainnet-beta");
-    const CONNECTION = new Connection(NETWORK);
-    const transaction = new Transaction().add(
-      ...[
-        SystemProgram.transfer({
-          fromPubkey: provider.publicKey,
-          toPubkey: new PublicKey(toAddress),
-          lamports: solToLamports(amount),
-        }),
-      ]
-    );
-    transaction.recentBlockhash = (
-      await CONNECTION.getRecentBlockhash()
-    ).blockhash;
-    transaction.feePayer = provider.publicKey;
-    // @ts-ignore
-    const { signature } = await window.solana.signAndSendTransaction(
-      transaction
-    );
-    return CONNECTION.confirmTransaction(signature);
-  }, []);
+      const currentAddress = await requestAddress();
+      if (currentAddress !== fromAddress) {
+        throw new Error(`Change Phantom Wallet address to "${fromAddress}"`);
+      }
+
+      const fromPubkey = new solana.PublicKey(fromAddress);
+      const connection = new solana.Connection(network.url);
+      const recentBlock = await connection.getRecentBlockhash();
+      const transaction = new solana.Transaction({
+        recentBlockhash: recentBlock.blockhash,
+        feePayer: fromPubkey,
+      });
+      transaction.add(
+        solana.SystemProgram.transfer({
+          fromPubkey,
+          toPubkey: new solana.PublicKey(toAddress),
+          lamports: amount,
+        })
+      );
+
+      // @ts-ignore
+      const { signature } = await window.solana.signAndSendTransaction(
+        transaction
+      );
+      // await connection.confirmTransaction(signature);
+      return signature;
+    },
+    [requestAddress]
+  );
 }
-
-const solToLamports = (sol: number) => {
-  return sol * 1000000000;
-};

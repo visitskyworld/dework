@@ -11,6 +11,9 @@ export class CreateTaskPaymentsInput {
   @Field(() => GraphQLUUID)
   public paymentMethodId!: string;
 
+  @Field(() => GraphQLUUID)
+  public networkId!: string;
+
   @Field(() => GraphQLJSONObject, { nullable: true })
   public data!: PaymentData;
 }
