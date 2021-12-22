@@ -151,6 +151,7 @@ export class Fixtures {
     return this.paymentService.createPaymentNetwork({
       name: faker.name.firstName(),
       url: faker.internet.url(),
+      slug: faker.internet.userName(),
       ...partial,
     });
   }

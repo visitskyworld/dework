@@ -12,7 +12,7 @@ import {
 } from "typeorm";
 import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
-import { TaskUpdatedEvent } from "./task-updated.event";
+import { TaskCreatedEvent, TaskUpdatedEvent } from "./task.events";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
@@ -25,7 +25,6 @@ export class TaskService {
 
   constructor(
     private readonly eventBus: EventBus,
-
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(TaskReward)
@@ -43,7 +42,9 @@ export class TaskService {
       ...partial,
       number: await this.getNextTaskNumber(partial.projectId),
     });
-    return this.taskRepo.findOne(created.id) as Promise<Task>;
+    const refetched = (await this.taskRepo.findOne(created.id)) as Task;
+    this.eventBus.publish(new TaskCreatedEvent(refetched));
+    return refetched;
   }
 
   public async update(partial: DeepAtLeast<Task, "id">): Promise<Task> {

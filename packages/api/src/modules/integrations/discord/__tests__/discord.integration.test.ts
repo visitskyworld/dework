@@ -9,14 +9,19 @@ import { INestApplication } from "@nestjs/common";
 import { DiscordIntegrationService } from "../discord.integration.service";
 import * as Discord from "discord.js";
 import { DiscordService } from "../discord.service";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { TaskService } from "@dewo/api/modules/task/task.service";
+import { DeepPartial } from "typeorm";
+import {
+  TaskCreatedEvent,
+  TaskUpdatedEvent,
+} from "@dewo/api/modules/task/task.events";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
 
-xdescribe("DiscordIntegration", () => {
+describe("DiscordIntegration", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
   let discord: Discord.Client;
@@ -35,6 +40,10 @@ xdescribe("DiscordIntegration", () => {
       source: ThreepidSource.discord,
       threepid: discordUserId,
     });
+
+    const guild = await discord.guilds.fetch(discordGuildId);
+    const channels = await guild.channels.fetch(undefined, { force: true });
+    await Promise.all([channels.map((channel) => channel.delete())]);
   });
 
   afterAll(() => app.close());
@@ -56,28 +65,84 @@ xdescribe("DiscordIntegration", () => {
   async function getDiscordChannelPermission(task: Task) {
     const discordChannel = await task.discordChannel;
     if (!discordChannel) return null;
-    const channel = (await discord.channels.fetch(
-      discordChannel.channelId
-    )) as Discord.TextChannel;
+    const channel = (await discord.channels.fetch(discordChannel.channelId, {
+      force: true,
+    })) as Discord.TextChannel;
     return channel.permissionsFor(discordUserId);
+  }
+
+  async function createTask(partial: DeepPartial<Task>): Promise<Task> {
+    const task = await fixtures.createTask({
+      status: TaskStatusEnum.IN_PROGRESS,
+      ...partial,
+    });
+    await discordIntegrationService._handle(new TaskCreatedEvent(task));
+    return taskService.findById(task.id) as Promise<Task>;
+  }
+
+  async function updateTask(
+    task: Task,
+    partial: DeepPartial<Task>
+  ): Promise<Task> {
+    const updated = await taskService.update({ id: task.id, ...partial });
+    await discordIntegrationService._handle(
+      new TaskUpdatedEvent(updated, task)
+    );
+    return taskService.findById(task.id) as Promise<Task>;
   }
 
   describe("create task", () => {
     it("should not create Discord channel if project has no Discord integration", async () => {
       const project = await fixtures.createProject();
-      const task = await fixtures.createTask({ projectId: project.id });
-      expect(task.discordChannel).resolves.toBe(null);
+      const task = await createTask({ projectId: project.id });
+      await expect(task.discordChannel).resolves.toBe(null);
     });
 
-    it("should create Discord channel if project has Discord integration", async () => {
+    it("should not create Discord channel if not matching requirements", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({ projectId: project.id });
-      expect(task.discordChannel).resolves.not.toBe(null);
+      const todoTask = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.TODO,
+        assignees: [],
+        // applicants: [],
+      });
+      const doneTask = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.DONE,
+        assignees: [],
+        // applicants: [],
+      });
+      await expect(todoTask.discordChannel).resolves.toBe(null);
+      await expect(doneTask.discordChannel).resolves.toBe(null);
+    });
+
+    it("should create Discord channel if matching requirements", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const taskWithAssignees = await createTask({
+        projectId: project.id,
+        assignees: [user],
+      });
+      // const taskWithApplications = await createTask({
+      //   projectId: project.id,
+      //   // applications: [], // TODO(fant)
+      // });
+      const taskInProgress = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.IN_PROGRESS,
+      });
+      const taskInReview = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.IN_REVIEW,
+      });
+      await expect(taskWithAssignees.discordChannel).resolves.not.toBe(null);
+      // await expect(taskWithApplications.discordChannel).resolves.not.toBe(null);
+      await expect(taskInProgress.discordChannel).resolves.not.toBe(null);
+      await expect(taskInReview.discordChannel).resolves.not.toBe(null);
     });
 
     it("should not give unrelated user Discord channel access", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({ projectId: project.id });
+      const task = await createTask({ projectId: project.id });
 
       const permission = await getDiscordChannelPermission(task);
       expect(permission).toBe(null);
@@ -85,7 +150,7 @@ xdescribe("DiscordIntegration", () => {
 
     it("should add task owner to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({
+      const task = await createTask({
         projectId: project.id,
         ownerId: user.id,
       });
@@ -97,7 +162,7 @@ xdescribe("DiscordIntegration", () => {
 
     it("should add task assignees to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({
+      const task = await createTask({
         projectId: project.id,
         assignees: [user],
       });
@@ -109,12 +174,26 @@ xdescribe("DiscordIntegration", () => {
   });
 
   describe("update task", () => {
+    it("should create Discord channel if task is no longer TODO", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const task = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.TODO,
+      });
+      await expect(task.discordChannel).resolves.toBe(null);
+
+      const updated = await updateTask(task, {
+        status: TaskStatusEnum.IN_PROGRESS,
+      });
+      await expect(updated.discordChannel).resolves.not.toBe(null);
+    });
+
     it("should add new task owner to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({ projectId: project.id });
-      expect(getDiscordChannelPermission(task)).resolves.toBe(null);
+      const task = await createTask({ projectId: project.id });
+      await expect(getDiscordChannelPermission(task)).resolves.toBe(null);
 
-      await taskService.update({ id: task.id, ownerId: user.id });
+      await updateTask(task, { ownerId: user.id });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
       expect(permission!.has("SEND_MESSAGES")).toBe(true);
@@ -122,10 +201,10 @@ xdescribe("DiscordIntegration", () => {
 
     it("should add new task assignee to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({ projectId: project.id });
-      expect(getDiscordChannelPermission(task)).resolves.toBe(null);
+      const task = await createTask({ projectId: project.id });
+      await expect(getDiscordChannelPermission(task)).resolves.toBe(null);
 
-      await taskService.update({ id: task.id, assignees: [user] });
+      await updateTask(task, { assignees: [user] });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
       expect(permission!.has("SEND_MESSAGES")).toBe(true);
@@ -133,16 +212,33 @@ xdescribe("DiscordIntegration", () => {
 
     it("should not remove old owner access to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
-      const task = await fixtures.createTask({
+      const task = await createTask({
         projectId: project.id,
         ownerId: user.id,
       });
 
-      const otherOwner = await fixtures.createUser();
-      await taskService.update({ id: task.id, ownerId: otherOwner.id });
+      const otherOwner = await fixtures.createUser({
+        source: ThreepidSource.github,
+      });
+      await updateTask(task, { ownerId: otherOwner.id });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
       expect(permission!.has("SEND_MESSAGES")).toBe(true);
+    });
+
+    it("should set internal DiscordChannel.deletedAt if channel has been deleted", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const task = await createTask({ projectId: project.id });
+      const discordChannel = await task.discordChannel;
+
+      const guild = await discord.guilds.fetch(discordGuildId);
+      const channel = await guild.channels.fetch(discordChannel!.channelId);
+      await channel?.delete();
+
+      const updated = await updateTask(task, { name: "deleted" });
+      const updatedDiscordChannel = await updated.discordChannel;
+      expect(updatedDiscordChannel).not.toBe(null);
+      expect(updatedDiscordChannel!.deletedAt).not.toBe(null);
     });
   });
 

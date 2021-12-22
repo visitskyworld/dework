@@ -2,14 +2,8 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
-import {
-  Connection,
-  EntitySubscriberInterface,
-  EventSubscriber,
-  In,
-  Repository,
-} from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { EventSubscriber, In, Repository } from "typeorm";
 import {
   ProjectIntegration,
   ProjectIntegrationSource,
@@ -19,19 +13,21 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import * as Discord from "discord.js";
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
-import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import encoder from "uuid-base62";
 import { IEventHandler, EventsHandler } from "@nestjs/cqrs";
-import { TaskUpdatedEvent } from "../../task/task-updated.event";
+import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+
+class DiscordChannelNotFoundError extends Error {}
 
 @Injectable()
 @EventSubscriber()
+@EventsHandler(TaskCreatedEvent)
 @EventsHandler(TaskUpdatedEvent)
 export class DiscordIntegrationService
-  implements EntitySubscriberInterface<Task>, IEventHandler<TaskUpdatedEvent>
+  implements IEventHandler<TaskCreatedEvent | TaskUpdatedEvent>
 {
   private logger = new Logger(this.constructor.name);
 
@@ -40,56 +36,95 @@ export class DiscordIntegrationService
     private readonly threepidService: ThreepidService,
     @InjectRepository(DiscordChannel)
     private readonly discordChannelRepo: Repository<DiscordChannel>,
-    @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>,
-    @InjectRepository(Project)
-    private readonly projectRepo: Repository<Project>,
     @InjectRepository(ProjectIntegration)
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
-    private readonly config: ConfigService<ConfigType>,
-    @InjectConnection() readonly connection: Connection
-  ) {
-    connection.subscribers.push(this);
+    private readonly config: ConfigService<ConfigType>
+  ) {}
+
+  async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
+    if (process.env.NODE_ENV === "test") return;
+    await this._handle(event);
   }
 
-  listenTo() {
-    return Task;
-  }
-
-  /*
-  async afterInsert(event: InsertEvent<Task>) {
-    const task = await this.getTask(event.entity.id, event.manager);
-    if (!task) return;
-
-    const integration = await this.getProjectIntegration(task.projectId);
+  async _handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
+    const integration = await this.getProjectIntegration(event.task.projectId);
     if (!integration) return;
 
-    this.logger.debug(
-      `Task.afterInsert: ${JSON.stringify({
-        taskId: task.id,
-        projectId: task.projectId,
-        integrationId: integration.id,
-        config: integration.config,
-      })}`
-    );
+    try {
+      this.logger.log(`Handle task event: ${JSON.stringify(event)}`);
 
-    const guild = await this.discord.client.guilds.fetch(
-      integration.config.guildId
-    );
-    await guild.roles.fetch();
+      const discord = await this.discord.create();
+      const guild = await discord.guilds.fetch(integration.config.guildId);
+      await guild.roles.fetch();
 
-    this.logger.debug(
-      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
-    );
+      this.logger.debug(
+        `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
+      );
 
-    const category = await this.getOrCreateCategory(guild);
-    const channel = await this.getOrCreateChannel(task, guild, category);
+      const category = await this.getOrCreateCategory(guild);
+      let channel =
+        event instanceof TaskCreatedEvent
+          ? undefined
+          : await this.getExistingDiscordChannel(event.task, guild, category);
 
-    if (!!channel) {
-      await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
+      if (!channel) {
+        const shouldCreate = await this.shouldCreateChannel(event.task);
+        if (!shouldCreate) {
+          this.logger.debug(
+            `No previous channel exists and should not create a new channel (${JSON.stringify(
+              event.task
+            )})`
+          );
+          return;
+        } else {
+          channel = await this.createDiscordChannel(
+            event.task,
+            guild,
+            category,
+            discord
+          );
+        }
+      }
+
+      await this.addTaskUsersToDiscordChannel(event.task, channel, guild);
+
+      const statusChanged =
+        event instanceof TaskCreatedEvent ||
+        event.task.status !== event.prevTask.status;
+      if (statusChanged) {
+        switch (event.task.status) {
+          case TaskStatusEnum.IN_PROGRESS:
+            await this.postInProgress(event.task, discord);
+            break;
+          case TaskStatusEnum.IN_REVIEW:
+            await this.postMovedIntoReview(event.task, discord);
+            break;
+          case TaskStatusEnum.DONE:
+            await this.postDone(event.task, discord);
+            break;
+        }
+      }
+
+      // write about task applicant updates (should that be done elsewhere maybe?)
+    } catch (error) {
+      if (error instanceof DiscordChannelNotFoundError) {
+        await this.discordChannelRepo.update(
+          { taskId: event.task.id },
+          { deletedAt: new Date() }
+        );
+      } else {
+        const errorString = JSON.stringify(
+          error,
+          Object.getOwnPropertyNames(error)
+        );
+        this.logger.error(
+          `Unknown error: ${JSON.stringify({ event, errorString })}`
+        );
+
+        throw error;
+      }
     }
   }
-  */
 
   private async getProjectIntegration(
     projectId: string
@@ -130,68 +165,6 @@ export class DiscordIntegrationService
     return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
   }
 
-  async handle({ oldTask, newTask }: TaskUpdatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
-
-    const task = await this.taskRepo.findOne({ id: newTask.id });
-    if (!task) return;
-
-    const integration = await this.getProjectIntegration(task.projectId);
-    if (!integration) return;
-
-    this.logger.debug(
-      `Task.afterUpdate: ${JSON.stringify({
-        taskId: task.id,
-        projectId: task.projectId,
-        integrationId: integration.id,
-        config: integration.config,
-      })}`
-    );
-
-    const guild = await this.discord.client.guilds.fetch(
-      integration.config.guildId
-    );
-    await guild.roles.fetch();
-
-    this.logger.debug(
-      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
-    );
-
-    const category = await this.getOrCreateCategory(guild);
-    const channel = await this.getOrCreateChannel(task, guild, category);
-
-    if (!!channel) {
-      await this.addRelevantUsersToTaskDiscordChannel(task, channel, guild);
-    }
-
-    await this.updateMessageStatus(oldTask, task);
-  }
-
-  private async updateMessageStatus(oldTask: Task, newTask: Task) {
-    // New applicant added
-    if (
-      newTask.assignees &&
-      newTask.assignees.length > oldTask?.assignees?.length
-    ) {
-      this.postNewAssignee(newTask);
-    }
-
-    const statusChanged = oldTask.status !== newTask.status;
-    if (statusChanged) {
-      switch (newTask.status) {
-        case TaskStatusEnum.IN_PROGRESS:
-          this.postInProgress(newTask);
-          break;
-        case TaskStatusEnum.IN_REVIEW:
-          this.postMovedIntoReview(newTask);
-          break;
-        case TaskStatusEnum.DONE:
-          this.postDone(newTask);
-          break;
-      }
-    }
-  }
-
   private async getDiscordId(userId: string) {
     const threepid = (await this.threepidService.findOne({
       userId,
@@ -200,14 +173,12 @@ export class DiscordIntegrationService
     return threepid?.threepid;
   }
 
-  private async getDiscordChannel(task: Task) {
+  private async getDiscordChannel(task: Task, discord: Discord.Client) {
     const channel = await this.discordChannelRepo.findOne({
       taskId: task.id,
     });
     if (!channel) return;
-    const dChannel = await this.discord.client.channels.fetch(
-      channel.channelId
-    );
+    const dChannel = await discord.channels.fetch(channel.channelId);
     if (!dChannel) return;
 
     if (dChannel.type !== "GUILD_TEXT") {
@@ -220,16 +191,16 @@ export class DiscordIntegrationService
     return dChannel as Discord.TextChannel;
   }
 
-  private async postDone(task: Task) {
-    const channel = await this.getDiscordChannel(task);
+  private async postDone(task: Task, discord: Discord.Client) {
+    const channel = await this.getDiscordChannel(task, discord);
     if (!channel) return;
     channel.send(`This task is now marked as done.`);
   }
 
-  private async postMovedIntoReview(task: Task) {
+  private async postMovedIntoReview(task: Task, discord: Discord.Client) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task);
+    const channel = await this.getDiscordChannel(task, discord);
     this.logger.debug(`No discord channel found for task ${task.id}`);
     if (!channel) return;
     this.logger.debug("sending message to channel");
@@ -269,10 +240,10 @@ export class DiscordIntegrationService
     });
   }
 
-  private async postInProgress(task: Task) {
+  private async postInProgress(task: Task, discord: Discord.Client) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task);
+    const channel = await this.getDiscordChannel(task, discord);
     if (!channel) return;
 
     const assigneeId = task.assignees?.[0]?.id;
@@ -294,74 +265,93 @@ export class DiscordIntegrationService
     channel.send(message);
   }
 
-  private async postNewAssignee(task: Task) {
+  private async postNewAssignee(task: Task, discord: Discord.Client) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
     const message = `<@${owner}> A person has applied to this task.`;
-    const channel = await this.getDiscordChannel(task);
+    const channel = await this.getDiscordChannel(task, discord);
     if (!channel) return;
     channel.send(message);
   }
 
-  private async getOrCreateChannel(
+  private async getExistingDiscordChannel(
     task: Task,
     guild: Discord.Guild,
     category: Discord.CategoryChannel
   ): Promise<Discord.TextChannel | undefined> {
     this.logger.debug(
-      `Get or create channel: ${JSON.stringify({
+      `Get existing Discord channel: ${JSON.stringify({
         taskId: task.id,
         guildId: guild.id,
         categoryId: category.id,
       })}`
     );
 
-    const existingDiscordChannel = await task.discordChannel;
-    if (!!existingDiscordChannel) {
+    const existing = await task.discordChannel;
+    if (!existing) return undefined;
+    if (!!existing.deletedAt) return undefined;
+
+    try {
+      const channel = await guild.channels.fetch(existing.channelId, {
+        force: true,
+      });
+
+      if (!channel) throw new Error("Null channel returned from Discord");
+
       this.logger.debug(
-        `Found existing Discord channel record: ${existingDiscordChannel.id}`
+        `Found existing Discord channel: ${JSON.stringify({
+          taskId: task.id,
+          channelId: channel.id,
+        })}`
       );
-
-      const channel = await guild.channels.fetch(
-        existingDiscordChannel.channelId
-      );
-
-      if (!!channel) {
-        this.logger.debug(`Existing Discord channel exists: ${channel.id}`);
-        return channel as Discord.TextChannel;
-      }
-
+      return channel as Discord.TextChannel;
+    } catch (error) {
       this.logger.warn(
-        `Existing Discord channel record's channel doesn't exist: ${existingDiscordChannel.channelId}`
+        `Failed fetching Discord channel: ${JSON.stringify({
+          taskId: task.id,
+          channelId: existing.channelId,
+          error,
+        })}`
       );
+      throw new DiscordChannelNotFoundError();
     }
+  }
 
-    if (task.status === TaskStatusEnum.TODO && !task.assignees.length) {
-      return undefined;
-    }
+  private async shouldCreateChannel(task: Task): Promise<boolean> {
+    if (task.status === TaskStatusEnum.IN_PROGRESS) return true;
+    if (task.status === TaskStatusEnum.IN_REVIEW) return true;
+    if (!!task.assignees.length) return true;
+    if (!!(await task.applications).length) return true;
+    return false;
+  }
 
-    const project = await this.projectRepo.findOne(task.projectId);
-    if (!project) return undefined;
+  private async createDiscordChannel(
+    task: Task,
+    guild: Discord.Guild,
+    category: Discord.CategoryChannel,
+    discord: Discord.Client
+  ): Promise<Discord.TextChannel> {
+    this.logger.debug(
+      `Creating Discord channel for task: ${JSON.stringify({
+        taskId: task.id,
+        guildId: guild.id,
+        categoryId: category.id,
+      })}`
+    );
 
-    // TODO(fant): abstract this into separate module
-    const oid = encoder.encode(project.organizationId);
-    const pid = encoder.encode(project.id);
-    const permalink = `${this.config.get("APP_URL")}/o/${oid}/p/${pid}?taskId=${
-      task.id
-    }`;
-
+    // const permalink: "TODO(fant): generate permalink to task...";
     const channel = await category.createChannel(
       `${task.name} ${task.number}`,
       {
         type: "GUILD_TEXT",
-        topic: `Discussion for Dework task "${task.name}": ${permalink}`,
+        topic: `Discussion for Dework task "${task.name}"`,
         permissionOverwrites: [
           {
             id: guild.roles.everyone,
             deny: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
           },
           {
-            id: this.discord.client.user!.id,
+            id: discord.user!.id,
             allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
           },
         ],
@@ -369,23 +359,25 @@ export class DiscordIntegrationService
     );
 
     this.logger.debug(
-      `Created task-specific Discord channel: ${JSON.stringify({
+      `Created Discord channel for task: ${JSON.stringify({
+        taskId: task.id,
         guildId: guild.id,
+        categoryId: category.id,
         channelId: channel.id,
       })}`
     );
 
     await this.discordChannelRepo.save({
+      taskId: task.id,
       guildId: guild.id,
       channelId: channel.id,
-      taskId: task.id,
       name: channel.name,
     });
 
     return channel;
   }
 
-  private async addRelevantUsersToTaskDiscordChannel(
+  private async addTaskUsersToDiscordChannel(
     task: Task,
     channel: Discord.TextChannel,
     guild: Discord.Guild
@@ -398,17 +390,28 @@ export class DiscordIntegrationService
     );
 
     const threepids = await this.findTaskUserThreepids(task);
-    const members = await guild.members.fetch({
-      user: threepids.map((t) => t.threepid),
+    await Bluebird.mapSeries(threepids, async (t) => {
+      try {
+        const member = await guild.members.fetch({
+          user: t.threepid,
+          force: true,
+        });
+        await channel.permissionOverwrites.edit(member.user.id, {
+          VIEW_CHANNEL: true,
+        });
+      } catch (error) {
+        this.logger.warn(
+          `Failed updating member permissions: ${JSON.stringify({
+            error,
+            threepid: t.threepid,
+          })}`
+        );
+      }
     });
-
-    await Bluebird.mapSeries(members.values(), (member) =>
-      channel.permissionOverwrites.edit(member.user.id, { VIEW_CHANNEL: true })
-    );
 
     this.logger.debug(
       `Added VIEW_CHANNEL to members: ${JSON.stringify({
-        ids: members.keys(),
+        ids: threepids.map((t) => t.id),
         threepidIds: threepids.map((t) => t.id),
       })}`
     );
