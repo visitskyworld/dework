@@ -1,6 +1,7 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { Task, TaskStatusEnum, User } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip } from "antd";
+import moment from "moment";
 import React, { FC, useCallback, useState } from "react";
 import { useUpdateTask } from "./hooks";
 
@@ -41,10 +42,9 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
       <List
         dataSource={task?.applications}
         renderItem={(application) => {
-          const startDate = new Date(application.startDate);
-          const endDate = new Date(application.endDate);
-          const days =
-            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+          const startDate = moment(application.startDate);
+          const endDate = moment(application.endDate);
+          const days = moment.duration(endDate.diff(startDate)).asDays();
 
           return (
             <List.Item
@@ -74,9 +74,9 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                       }
                       title={application.user.username}
                       description={
-                        startDate.toLocaleString("en-GB").split(",")[0] +
+                        startDate.format("DD/MM/YYYY") +
                         " - " +
-                        endDate.toLocaleString("en-GB").split(",")[0] +
+                        endDate.format("DD/MM/YYYY") +
                         " (" +
                         days +
                         " days)"
