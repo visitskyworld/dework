@@ -1,6 +1,6 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { Task, TaskStatusEnum, User } from "@dewo/app/graphql/types";
-import { Button, Card, List, Typography, Space } from "antd";
+import { Button, Card, List, Typography, Space, Tooltip } from "antd";
 import React, { FC, useCallback, useState } from "react";
 import { useUpdateTask } from "./hooks";
 
@@ -58,31 +58,32 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                 </Button>,
               ]}
             >
-              <Space direction="vertical">
-                <a
-                  href={`/profile/${application.user.id}`}
-                  style={{ width: "100%" }}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <List.Item.Meta
-                    avatar={
-                      <UserAvatar
-                        user={application.user}
-                        tooltip={{ visible: false }}
-                      />
-                    }
-                    title={application.user.username}
-                    description={
-                      startDate.toLocaleString("en-GB").split(",")[0] +
-                      " - " +
-                      endDate.toLocaleString("en-GB").split(",")[0] +
-                      " (" +
-                      days +
-                      " days)"
-                    }
-                  />
-                </a>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Tooltip title={application.user.username} placement="top">
+                  <a
+                    href={`/profile/${application.user.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <List.Item.Meta
+                      avatar={
+                        <UserAvatar
+                          user={application.user}
+                          tooltip={{ visible: false }}
+                        />
+                      }
+                      title={application.user.username}
+                      description={
+                        startDate.toLocaleString("en-GB").split(",")[0] +
+                        " - " +
+                        endDate.toLocaleString("en-GB").split(",")[0] +
+                        " (" +
+                        days +
+                        " days)"
+                      }
+                    />
+                  </a>
+                </Tooltip>
                 <Typography.Text>{application.message}</Typography.Text>
               </Space>
             </List.Item>
