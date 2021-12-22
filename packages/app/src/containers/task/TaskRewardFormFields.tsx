@@ -22,8 +22,8 @@ export interface TaskRewardFormValues {
 }
 
 export const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
-  [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Core team approval",
-  [TaskRewardTrigger.PULL_REQUEST_MERGED]: "PR merged",
+  [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Manually by Core Team",
+  [TaskRewardTrigger.PULL_REQUEST_MERGED]: "On PR merged",
 };
 
 interface TaskRewardTriggerOption {
