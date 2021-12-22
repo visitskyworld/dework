@@ -128,7 +128,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
         >
           <div style={{ flex: 1 }} />
           <Avatar.Group maxCount={3} size={22}>
-            {task.status === TaskStatusEnum.TODO
+            {task.status === TaskStatusEnum.TODO && !task.assignees.length
               ? task.applications.map((application) => (
                   <Link
                     href={`/profile/${application.user.id}`}

@@ -1,6 +1,11 @@
 import { useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 
+const ethereumChainIdBySlug: Record<string, number> = {
+  "ethereum-mainnet": 1,
+  "ethereum-rinkeby": 4,
+};
+
 export function useProvider(): ethers.providers.Web3Provider {
   return useMemo(
     () =>
@@ -13,6 +18,19 @@ export function useProvider(): ethers.providers.Web3Provider {
           )
         : (undefined! as ethers.providers.Web3Provider),
     []
+  );
+}
+
+export function useSwitchChain(): (slug: string) => Promise<void> {
+  const provider = useProvider();
+  return useCallback(
+    async (slug) => {
+      const chainId = ethereumChainIdBySlug[slug];
+      await provider.send("wallet_switchEthereumChain", [
+        { chainId: `0x${chainId}` },
+      ]);
+    },
+    [provider]
   );
 }
 

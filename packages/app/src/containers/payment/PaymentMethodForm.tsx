@@ -50,6 +50,11 @@ export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
     return networks.filter((n) => slugs.includes(n.slug));
   }, [networks, values.type]);
 
+  const selectedNetwork = useMemo(
+    () => networks?.find((n) => n.id === values.networkId),
+    [networks, values.networkId]
+  );
+
   const handleChange = useCallback(
     (
       changed: Partial<CreatePaymentMethodInput>,
@@ -155,7 +160,7 @@ export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                 case PaymentMethodType.GNOSIS_SAFE:
                   return <ConnectGnosisSafe />;
                 case PaymentMethodType.METAMASK:
-                  return <ConnectMetamaskButton />;
+                  return <ConnectMetamaskButton network={selectedNetwork!} />;
               }
             })()}
           </Form.Item>
