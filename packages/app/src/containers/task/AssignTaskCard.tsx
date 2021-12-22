@@ -1,6 +1,6 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { Task, TaskStatusEnum, User } from "@dewo/app/graphql/types";
-import { Button, Card, List, Tooltip, Typography } from "antd";
+import { Button, Card, List, Typography, Space } from "antd";
 import React, { FC, useCallback, useState } from "react";
 import { useUpdateTask } from "./hooks";
 
@@ -31,11 +31,6 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
     [updateTask, task]
   );
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-GB").split(",")[0];
-  };
-
   return (
     <Card
       size="small"
@@ -43,49 +38,58 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
       style={{ marginTop: 16, marginBottom: 24 }}
     >
       <Typography.Text strong>Assign a contributor</Typography.Text>
-      {task?.applications.map((application) => (
-        <List.Item
-          actions={[
-            <Button
-              size="small"
-              loading={loading}
-              onClick={() => handleAssign(application.user)}
+      <List
+        dataSource={task?.applications}
+        renderItem={(application) => {
+          const startDate = new Date(application.startDate);
+          const endDate = new Date(application.endDate);
+          const days =
+            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+          return (
+            <List.Item
+              actions={[
+                <Button
+                  size="small"
+                  loading={loading}
+                  onClick={() => handleAssign(application.user)}
+                >
+                  Assign
+                </Button>,
+              ]}
             >
-              Assign
-            </Button>,
-          ]}
-        >
-          <a
-            href={`/profile/${application.user.id}`}
-            style={{ width: "100%" }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Tooltip
-              title={
-                "Requesting task for: " +
-                "\n" +
-                formatDate(application.startDate) +
-                " - " +
-                formatDate(application.endDate) +
-                "\n\n" +
-                application.message
-              }
-              overlayStyle={{ whiteSpace: "pre-line" }}
-            >
-              <List.Item.Meta
-                avatar={
-                  <UserAvatar
-                    user={application.user}
-                    tooltip={{ visible: false }}
+              <Space direction="vertical">
+                <a
+                  href={`/profile/${application.user.id}`}
+                  style={{ width: "100%" }}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <List.Item.Meta
+                    avatar={
+                      <UserAvatar
+                        user={application.user}
+                        tooltip={{ visible: false }}
+                      />
+                    }
+                    title={application.user.username}
+                    description={
+                      startDate.toLocaleString("en-GB").split(",")[0] +
+                      " - " +
+                      endDate.toLocaleString("en-GB").split(",")[0] +
+                      " (" +
+                      days +
+                      " days)"
+                    }
                   />
-                }
-                title={application.user.username}
-              />
-            </Tooltip>
-          </a>
-        </List.Item>
-      ))}
+                </a>
+                <Typography.Text>{application.message}</Typography.Text>
+              </Space>
+            </List.Item>
+          );
+        }}
+        // ))}
+      />
     </Card>
   );
 };

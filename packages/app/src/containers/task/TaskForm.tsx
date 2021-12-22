@@ -246,13 +246,13 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {!!task && <GithubIntegrationSection task={task} />}
-        </Col>
-        <Col xs={24} sm={8}>
+
           {!!canEdit &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
             !!task.applications.length && <AssignTaskCard task={task} />}
-
+        </Col>
+        <Col xs={24} sm={8}>
           <Form.Item
             name="status"
             label="Status"
