@@ -12,6 +12,8 @@ import {
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
 import { ProjectService } from "../../project/project.service";
+import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskService } from "../../task/task.service";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
@@ -25,6 +27,7 @@ export class GithubController {
   constructor(
     private readonly configService: ConfigService<ConfigType>,
     private readonly projectService: ProjectService,
+    private readonly taskService: TaskService,
     private readonly githubService: GithubService
   ) {}
 
@@ -123,6 +126,12 @@ export class GithubController {
         await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
       } else {
         await this.githubService.createPullRequest(newPr);
+        if (task.status === TaskStatusEnum.IN_PROGRESS) {
+          await this.taskService.update({
+            id: task.id,
+            status: TaskStatusEnum.IN_REVIEW,
+          });
+        }
       }
     }
   }
