@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["http://localhost:3000", "https://dework.xyz", "https://dewo.fant.io"],
+    "origin": ["http://localhost:3000", "https://dework.xyz", "https://dewo.fant.io", "https://*.vercel.app"],
     "responseHeader": ["Content-Type", "x-goog-acl"],
     "method": ["GET", "HEAD","POST", "PUT", "DELETE"],
     "maxAgeSeconds": 3600
