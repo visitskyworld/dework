@@ -240,6 +240,13 @@ export interface CreateProjectMutation_project_paymentMethods {
   tokens: CreateProjectMutation_project_paymentMethods_tokens[];
 }
 
+export interface CreateProjectMutation_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface CreateProjectMutation_project_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -268,6 +275,13 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
   tokens: CreateProjectMutation_project_organization_projects_paymentMethods_tokens[];
 }
 
+export interface CreateProjectMutation_project_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -279,6 +293,7 @@ export interface CreateProjectMutation_project_organization_projects {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
+  integrations: CreateProjectMutation_project_organization_projects_integrations[];
 }
 
 export interface CreateProjectMutation_project_organization_members_user {
@@ -319,6 +334,7 @@ export interface CreateProjectMutation_project {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: CreateProjectMutation_project_paymentMethods[];
+  integrations: CreateProjectMutation_project_integrations[];
   organization: CreateProjectMutation_project_organization;
 }
 
@@ -367,6 +383,13 @@ export interface UpdateProjectMutation_project_paymentMethods {
   tokens: UpdateProjectMutation_project_paymentMethods_tokens[];
 }
 
+export interface UpdateProjectMutation_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -378,6 +401,7 @@ export interface UpdateProjectMutation_project {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: UpdateProjectMutation_project_paymentMethods[];
+  integrations: UpdateProjectMutation_project_integrations[];
 }
 
 export interface UpdateProjectMutation {
@@ -1894,6 +1918,13 @@ export interface GetOrganizationQuery_organization_projects_paymentMethods {
   tokens: GetOrganizationQuery_organization_projects_paymentMethods_tokens[];
 }
 
+export interface GetOrganizationQuery_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1905,6 +1936,7 @@ export interface GetOrganizationQuery_organization_projects {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: GetOrganizationQuery_organization_projects_paymentMethods[];
+  integrations: GetOrganizationQuery_organization_projects_integrations[];
 }
 
 export interface GetOrganizationQuery_organization_members_user {
@@ -1979,6 +2011,13 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
   tokens: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods_tokens[];
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1990,6 +2029,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods[];
+  integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_integrations[];
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members_user {
@@ -2210,6 +2250,13 @@ export interface GetProjectQuery_project_paymentMethods {
   tokens: GetProjectQuery_project_paymentMethods_tokens[];
 }
 
+export interface GetProjectQuery_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -2221,6 +2268,7 @@ export interface GetProjectQuery_project {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: GetProjectQuery_project_paymentMethods[];
+  integrations: GetProjectQuery_project_integrations[];
 }
 
 export interface GetProjectQuery {
@@ -3456,6 +3504,13 @@ export interface Project_paymentMethods {
   tokens: Project_paymentMethods_tokens[];
 }
 
+export interface Project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface Project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -3467,6 +3522,7 @@ export interface Project {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: Project_paymentMethods[];
+  integrations: Project_integrations[];
 }
 
 /* tslint:disable */
@@ -4070,6 +4126,13 @@ export interface OrganizationDetails_projects_paymentMethods {
   tokens: OrganizationDetails_projects_paymentMethods_tokens[];
 }
 
+export interface OrganizationDetails_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
+}
+
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4081,6 +4144,7 @@ export interface OrganizationDetails_projects {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: OrganizationDetails_projects_paymentMethods[];
+  integrations: OrganizationDetails_projects_integrations[];
 }
 
 export interface OrganizationDetails_members_user {
@@ -4145,6 +4209,13 @@ export interface ProjectDetails_paymentMethods {
   address: string;
   networks: ProjectDetails_paymentMethods_networks[];
   tokens: ProjectDetails_paymentMethods_tokens[];
+}
+
+export interface ProjectDetails_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  source: string;
+  config: Scalar.JSONObject;
 }
 
 export interface ProjectDetails_tasks_tags {
@@ -4275,6 +4346,7 @@ export interface ProjectDetails {
   doneTaskCount: number;
   openBountyTaskCount: number;
   paymentMethods: ProjectDetails_paymentMethods[];
+  integrations: ProjectDetails_integrations[];
   tasks: ProjectDetails_tasks[];
   taskTags: ProjectDetails_taskTags[];
 }

@@ -115,9 +115,13 @@ export const project = gql`
     paymentMethods {
       ...PaymentMethod
     }
+    integrations {
+      ...ProjectIntegration
+    }
   }
 
   ${paymentMethod}
+  ${projectIntegration}
 `;
 
 export const taskTag = gql`

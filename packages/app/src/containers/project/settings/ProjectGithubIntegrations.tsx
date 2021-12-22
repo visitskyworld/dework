@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from "react";
 import { Button, Typography } from "antd";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectIntegrationSource } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
-import { useProjectIntegrations } from "../hooks";
+import { useOrganization } from "../../organization/hooks";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
@@ -25,19 +26,29 @@ export function useConnectToGithubUrl(projectId: string): string {
   }, [projectId, user?.id]);
 }
 
+export function useCheckGithubIntegration(organizationId: string): boolean {
+  const organization = useOrganization(organizationId);
+  return (
+    useMemo(
+      () =>
+        organization?.projects.some((proj) =>
+          proj.integrations.find(
+            (int) => int.source === ProjectIntegrationSource.github
+          )
+        ),
+      [organization?.projects]
+    ) ?? false
+  );
+}
+
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
 }) => {
+  const organizationId = useParseIdFromSlug("organizationSlug");
+  const hasGithubIntegration = useCheckGithubIntegration(organizationId ?? "");
   const connectToGithubUrl = useConnectToGithubUrl(projectId);
 
-  const integrations = useProjectIntegrations(projectId);
-  const hasIntegration = useMemo(
-    () =>
-      integrations?.some((i) => i.source === ProjectIntegrationSource.github),
-    [integrations]
-  );
-
-  if (hasIntegration) {
+  if (hasGithubIntegration) {
     return (
       <>
         <Button

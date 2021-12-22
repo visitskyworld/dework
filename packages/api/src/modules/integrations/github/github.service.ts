@@ -70,8 +70,10 @@ export class GithubService {
   ): Promise<Task | undefined> {
     return this.taskRepo
       .createQueryBuilder("task")
-      .innerJoin("task.project", "project")
-      .innerJoin("project.integrations", "integration")
+      .innerJoin("task.project", "taskProject")
+      .innerJoin("taskProject.organization", "organization")
+      .innerJoin("organization.projects", "allProjects")
+      .innerJoin("allProjects.integrations", "integration")
       .where("task.number = :number", { number: taskNumber })
       .andWhere("integration.source = :source", {
         source: ProjectIntegrationSource.github,

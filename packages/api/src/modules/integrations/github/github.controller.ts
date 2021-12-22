@@ -83,7 +83,7 @@ export class GithubController {
     // Then handle branch and pull request updates separately
     const branch = await this.githubService.findBranchByName(branchName);
     if (branch) {
-      this.log("Found branch in db", { id: branch.id, name: branch.name });
+      this.log("Found branch in db", { id: branch.id, name: branchName });
 
       // Check if it's a deletion push
       if (body.deleted) {
@@ -97,8 +97,9 @@ export class GithubController {
           deletedAt: null!,
         });
       }
-    } else if (body.ref_type === "branch") {
+    } else {
       const repository = body.repository.full_name;
+      this.log("Creating new branch in db", { name: branchName, repository });
 
       await this.githubService.createBranch({
         name: branchName,

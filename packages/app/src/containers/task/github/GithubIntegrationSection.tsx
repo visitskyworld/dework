@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from "react";
-import { ProjectIntegrationSource, TaskDetails } from "@dewo/app/graphql/types";
+import { TaskDetails } from "@dewo/app/graphql/types";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubPullRequestRow } from "./GithubPullRequestRow";
 import { GithubBranchRow } from "./GithubBranchRow";
@@ -7,6 +8,7 @@ import { useProjectIntegrations } from "../../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Typography } from "antd";
 import { ConnectGithubAlert } from "./ConnectGithubAlert";
+import { useCheckGithubIntegration } from "../../project/settings/ProjectGithubIntegrations";
 
 interface Props {
   task: TaskDetails;
@@ -14,13 +16,10 @@ interface Props {
 
 export const GithubIntegrationSection: FC<Props> = ({ task }) => {
   const integrations = useProjectIntegrations(task.projectId);
+  const organizationId = useParseIdFromSlug("organizationSlug");
 
   const canUpdateProject = usePermission("update", "Project");
-  const hasGithubIntegration = useMemo(
-    () =>
-      !!integrations?.some((i) => i.source === ProjectIntegrationSource.github),
-    [integrations]
-  );
+  const hasGithubIntegration = useCheckGithubIntegration(organizationId ?? "");
 
   const branchesWithoutPullRequests = useMemo(
     () =>
