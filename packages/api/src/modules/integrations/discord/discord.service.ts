@@ -16,11 +16,4 @@ export class DiscordService implements OnModuleInit {
   async onModuleInit() {
     await this.client.login(this.config.get("DISCORD_BOT_TOKEN"));
   }
-
-  public async create(): Promise<Discord.Client> {
-    return this.client;
-    // const client = new Discord.Client({ intents: [] });
-    // await this.client.login(this.config.get("DISCORD_BOT_TOKEN"));
-    // return client;
-  }
 }

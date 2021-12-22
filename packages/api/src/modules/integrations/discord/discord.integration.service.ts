@@ -42,8 +42,9 @@ export class DiscordIntegrationService {
     try {
       this.logger.log(`Handle task event: ${JSON.stringify(event)}`);
 
-      const discord = await this.discord.create();
-      const guild = await discord.guilds.fetch(integration.config.guildId);
+      const guild = await this.discord.client.guilds.fetch(
+        integration.config.guildId
+      );
       await guild.roles.fetch();
 
       this.logger.debug(
@@ -72,8 +73,7 @@ export class DiscordIntegrationService {
           channel = await this.createDiscordChannel(
             event.task,
             guild,
-            category,
-            discord
+            category
           );
         }
       }
@@ -86,13 +86,13 @@ export class DiscordIntegrationService {
       if (statusChanged) {
         switch (event.task.status) {
           case TaskStatusEnum.IN_PROGRESS:
-            await this.postInProgress(event.task, discord);
+            await this.postInProgress(event.task);
             break;
           case TaskStatusEnum.IN_REVIEW:
-            await this.postMovedIntoReview(event.task, discord);
+            await this.postMovedIntoReview(event.task);
             break;
           case TaskStatusEnum.DONE:
-            await this.postDone(event.task, discord);
+            await this.postDone(event.task);
             break;
         }
       }
@@ -165,12 +165,14 @@ export class DiscordIntegrationService {
     return threepid?.threepid;
   }
 
-  private async getDiscordChannel(task: Task, discord: Discord.Client) {
+  private async getDiscordChannel(task: Task) {
     const channel = await this.discordChannelRepo.findOne({
       taskId: task.id,
     });
     if (!channel) return;
-    const dChannel = await discord.channels.fetch(channel.channelId);
+    const dChannel = await this.discord.client.channels.fetch(
+      channel.channelId
+    );
     if (!dChannel) return;
 
     if (dChannel.type !== "GUILD_TEXT") {
@@ -183,16 +185,16 @@ export class DiscordIntegrationService {
     return dChannel as Discord.TextChannel;
   }
 
-  private async postDone(task: Task, discord: Discord.Client) {
-    const channel = await this.getDiscordChannel(task, discord);
+  private async postDone(task: Task) {
+    const channel = await this.getDiscordChannel(task);
     if (!channel) return;
     channel.send(`This task is now marked as done.`);
   }
 
-  private async postMovedIntoReview(task: Task, discord: Discord.Client) {
+  private async postMovedIntoReview(task: Task) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task, discord);
+    const channel = await this.getDiscordChannel(task);
     this.logger.debug(`No discord channel found for task ${task.id}`);
     if (!channel) return;
     this.logger.debug("sending message to channel");
@@ -232,10 +234,10 @@ export class DiscordIntegrationService {
     });
   }
 
-  private async postInProgress(task: Task, discord: Discord.Client) {
+  private async postInProgress(task: Task) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task, discord);
+    const channel = await this.getDiscordChannel(task);
     if (!channel) return;
 
     const assigneeId = task.assignees?.[0]?.id;
@@ -257,14 +259,14 @@ export class DiscordIntegrationService {
     channel.send(message);
   }
 
-  private async postNewAssignee(task: Task, discord: Discord.Client) {
-    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
-    if (!owner) return;
-    const message = `<@${owner}> A person has applied to this task.`;
-    const channel = await this.getDiscordChannel(task, discord);
-    if (!channel) return;
-    channel.send(message);
-  }
+  // private async postNewAssignee(task: Task) {
+  //   const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
+  //   if (!owner) return;
+  //   const message = `<@${owner}> A person has applied to this task.`;
+  //   const channel = await this.getDiscordChannel(task);
+  //   if (!channel) return;
+  //   channel.send(message);
+  // }
 
   private async getExistingDiscordChannel(
     task: Task,
@@ -327,8 +329,7 @@ export class DiscordIntegrationService {
   private async createDiscordChannel(
     task: Task,
     guild: Discord.Guild,
-    category: Discord.CategoryChannel,
-    discord: Discord.Client
+    category: Discord.CategoryChannel
   ): Promise<Discord.TextChannel> {
     this.logger.debug(
       `Creating Discord channel for task: ${JSON.stringify({
@@ -350,7 +351,7 @@ export class DiscordIntegrationService {
             deny: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
           },
           {
-            id: discord.user!.id,
+            id: this.discord.client.user!.id,
             allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL],
           },
         ],
