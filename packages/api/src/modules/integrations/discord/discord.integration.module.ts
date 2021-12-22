@@ -4,6 +4,10 @@ import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThreepidModule } from "../../threepid/threepid.module";
+import {
+  DiscordIntegrationTaskCreatedEventHandler,
+  DiscordIntegrationTaskUpdatedEventHandler,
+} from "./discord.eventHandlers";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordService } from "./discord.service";
 
@@ -12,6 +16,11 @@ import { DiscordService } from "./discord.service";
     TypeOrmModule.forFeature([User, ProjectIntegration, DiscordChannel]),
     ThreepidModule,
   ],
-  providers: [DiscordService, DiscordIntegrationService],
+  providers: [
+    DiscordService,
+    DiscordIntegrationService,
+    DiscordIntegrationTaskCreatedEventHandler,
+    DiscordIntegrationTaskUpdatedEventHandler,
+  ],
 })
 export class DiscordIntegrationModule {}

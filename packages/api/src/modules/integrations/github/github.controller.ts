@@ -138,6 +138,6 @@ export class GithubController {
   }
 
   private log(description: string, body: any): void {
-    this.logger.debug(`${description}: ${JSON.stringify(body, null, 2)}`);
+    this.logger.debug(`${description}: ${JSON.stringify(body)}`);
   }
 }

@@ -3,7 +3,7 @@ import _ from "lodash";
 import Bluebird from "bluebird";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EventSubscriber, In, Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import {
   ProjectIntegration,
   ProjectIntegrationSource,
@@ -17,18 +17,12 @@ import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import encoder from "uuid-base62";
-import { IEventHandler, EventsHandler } from "@nestjs/cqrs";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
 
 class DiscordChannelNotFoundError extends Error {}
 
 @Injectable()
-@EventSubscriber()
-@EventsHandler(TaskCreatedEvent)
-@EventsHandler(TaskUpdatedEvent)
-export class DiscordIntegrationService
-  implements IEventHandler<TaskCreatedEvent | TaskUpdatedEvent>
-{
+export class DiscordIntegrationService {
   private logger = new Logger(this.constructor.name);
 
   constructor(
@@ -42,11 +36,6 @@ export class DiscordIntegrationService
   ) {}
 
   async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
-    await this._handle(event);
-  }
-
-  async _handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
     const integration = await this.getProjectIntegration(event.task.projectId);
     if (!integration) return;
 
@@ -67,7 +56,10 @@ export class DiscordIntegrationService
           ? undefined
           : await this.getExistingDiscordChannel(event.task, guild, category);
 
+      const discordChannel = await event.task.discordChannel;
       if (!channel) {
+        if (discordChannel?.deletedAt) return;
+
         const shouldCreate = await this.shouldCreateChannel(event.task);
         if (!shouldCreate) {
           this.logger.debug(
@@ -288,8 +280,15 @@ export class DiscordIntegrationService
     );
 
     const existing = await task.discordChannel;
-    if (!existing) return undefined;
-    if (!!existing.deletedAt) return undefined;
+    if (!existing || !!existing.deletedAt) {
+      this.logger.debug(
+        `No existing Discord channel record found: ${JSON.stringify({
+          taskId: task.id,
+          deletedAt: existing?.deletedAt,
+        })}`
+      );
+      return undefined;
+    }
 
     try {
       const channel = await guild.channels.fetch(existing.channelId, {

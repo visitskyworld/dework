@@ -76,7 +76,7 @@ describe("DiscordIntegration", () => {
       status: TaskStatusEnum.IN_PROGRESS,
       ...partial,
     });
-    await discordIntegrationService._handle(new TaskCreatedEvent(task));
+    await discordIntegrationService.handle(new TaskCreatedEvent(task));
     return taskService.findById(task.id) as Promise<Task>;
   }
 
@@ -85,9 +85,7 @@ describe("DiscordIntegration", () => {
     partial: DeepPartial<Task>
   ): Promise<Task> {
     const updated = await taskService.update({ id: task.id, ...partial });
-    await discordIntegrationService._handle(
-      new TaskUpdatedEvent(updated, task)
-    );
+    await discordIntegrationService.handle(new TaskUpdatedEvent(updated, task));
     return taskService.findById(task.id) as Promise<Task>;
   }
 
