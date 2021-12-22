@@ -45,6 +45,18 @@ const rewardTriggerOptions: TaskRewardTriggerOption[] = [
   },
 ];
 
+export async function validator(
+  _rule: unknown, // RuleObject,
+  value: Partial<TaskRewardFormValues> | undefined
+) {
+  if (!value) return;
+  if (!value.networkId) return;
+  if (!value.amount) return;
+
+  if (!value.token) throw new Error("Please enter a token");
+  if (!value.trigger) throw new Error("Please enter approval criteria");
+}
+
 interface Props {
   projectId: string;
   value?: Partial<TaskRewardFormValues>;
@@ -125,6 +137,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             loading={!project}
             placeholder="Select where you'll pay"
             value={value?.networkId}
+            allowClear
             onChange={handleChangeNetworkId}
           >
             {networks.map((network) => (

@@ -39,9 +39,8 @@ import { TaskFormValues } from "./TaskForm";
 
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
-): UpdateTaskRewardInput | undefined => {
-  console.warn(reward);
-  if (!reward?.amount || !reward?.token || !reward?.trigger) return undefined;
+): UpdateTaskRewardInput | null => {
+  if (!reward?.amount || !reward?.token || !reward?.trigger) return null;
   return {
     amount: parseFixed(String(reward.amount), reward.token.exp).toString(),
     tokenId: reward.token.id,
@@ -162,7 +161,12 @@ export function useUpdateTask(): (
       const res = await mutation({
         variables: { input },
         optimisticResponse: {
-          task: _.merge({}, task, _.pickBy(input, _.identity)),
+          // TODO: find a better way to merge optimistic task updates
+          task: _.merge(
+            {},
+            task,
+            _.pickBy(_.omit(input, ["reward"]), _.identity)
+          ),
         },
       });
 

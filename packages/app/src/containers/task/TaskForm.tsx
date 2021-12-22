@@ -33,6 +33,7 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
   TaskRewardFormFields,
   TaskRewardFormValues,
+  validator as validateTaskReward,
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -337,7 +338,13 @@ export const TaskForm: FC<TaskFormProps> = ({
           </Form.Item>
 
           {canEdit && !!projectId ? (
-            <Form.Item name="reward" label="Task Reward">
+            <Form.Item
+              name="reward"
+              label="Task Reward"
+              rules={[
+                { validator: validateTaskReward, validateTrigger: "onSubmit" },
+              ]}
+            >
               <TaskRewardFormFields
                 projectId={projectId}
                 value={values?.reward ?? undefined}
