@@ -82,8 +82,8 @@ export const TaskForm: FC<TaskFormProps> = ({
     initialValues ?? {}
   );
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
-  const canEdit = usePermission(mode, "Task");
-  const canDelete = usePermission("delete", "Task");
+  const canEdit = !!task ? usePermission(mode, task) : true;
+  const canDelete = !!task ? usePermission("delete", task) : false;
 
   const ownerOptions = useTaskFormUserOptions(
     projectId,
@@ -245,12 +245,12 @@ export const TaskForm: FC<TaskFormProps> = ({
             </FormSection>
           )}
 
-          {!!task && <GithubIntegrationSection task={task} />}
-
           {!!canEdit &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
             !!task.applications.length && <AssignTaskCard task={task} />}
+
+          {!!task && <GithubIntegrationSection task={task} />}
         </Col>
         <Col xs={24} sm={8}>
           <Form.Item
