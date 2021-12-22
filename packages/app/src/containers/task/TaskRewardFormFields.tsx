@@ -1,5 +1,9 @@
 import React, { ComponentType, FC, useCallback, useMemo } from "react";
-import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
+import {
+  PaymentStatus,
+  PaymentToken,
+  TaskRewardTrigger,
+} from "@dewo/app/graphql/types";
 import {
   Button,
   ConfigProvider,
@@ -24,6 +28,16 @@ export interface TaskRewardFormValues {
 export const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
   [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Manually by Core Team",
   [TaskRewardTrigger.PULL_REQUEST_MERGED]: "On PR merged",
+};
+
+export const paymentStatusToString: Record<PaymentStatus, string> = {
+  [PaymentStatus.PROCESSING]: "Payment Processing",
+  [PaymentStatus.CONFIRMED]: "Payment Completed",
+};
+
+export const paymentStatusToColor: Record<PaymentStatus, string> = {
+  [PaymentStatus.PROCESSING]: "volcano",
+  [PaymentStatus.CONFIRMED]: "green",
 };
 
 interface TaskRewardTriggerOption {

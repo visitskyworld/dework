@@ -62,9 +62,13 @@ export const payment = gql`
     paymentMethod {
       ...PaymentMethod
     }
+    network {
+      ...PaymentNetwork
+    }
   }
 
   ${paymentMethod}
+  ${paymentNetwork}
 `;
 
 export const organization = gql`

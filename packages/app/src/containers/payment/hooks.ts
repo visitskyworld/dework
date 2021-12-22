@@ -10,6 +10,7 @@ import {
   GetPaymentNetworksQuery,
   GetProjectQuery,
   GetProjectQueryVariables,
+  Payment,
   PaymentMethod,
   PaymentMethodType,
   Task,
@@ -25,6 +26,25 @@ import { useCallback } from "react";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
+
+export function explorerLink(payment: Payment): string | undefined {
+  switch (payment.network.slug) {
+    case "ethereum-mainnet":
+      if (!payment.data?.txHash) return undefined;
+      return `https://etherscan.io/tx/${payment.data.txHash}`;
+    case "ethereu-rinkeby":
+      if (!payment.data?.txHash) return undefined;
+      return `https://rinkeby.etherscan.io/tx/${payment.data.txHash}`;
+    case "solana-mainnet":
+      if (!payment.data?.signature) return undefined;
+      return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;
+    case "solana-testnet":
+      if (!payment.data?.signature) return undefined;
+      return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;
+  }
+
+  return undefined;
+}
 
 export function useCreatePaymentMethod(): (
   input: CreatePaymentMethodInput

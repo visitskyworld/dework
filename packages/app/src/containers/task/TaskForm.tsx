@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import _ from "lodash";
+import * as Icons from "@ant-design/icons";
 import {
   Tag,
   Form,
@@ -19,9 +20,11 @@ import {
   User,
   TaskDetails,
   TaskTag,
+  TaskRewardTrigger,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import {
+  formatTaskReward,
   useCreateTaskTag,
   useGenerateRandomTaskTagColor,
   useTaskFormUserOptions,
@@ -31,6 +34,9 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
+  paymentStatusToColor,
+  paymentStatusToString,
+  rewardTriggerToString,
   TaskRewardFormFields,
   TaskRewardFormValues,
   validator as validateTaskReward,
@@ -38,6 +44,7 @@ import {
 import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
+import { explorerLink } from "../payment/hooks";
 
 export interface TaskFormValues {
   name: string;
@@ -337,7 +344,9 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          {canEdit && !!projectId ? (
+          {canEdit &&
+          !!projectId &&
+          (!task?.reward?.payment || mode === "create") ? (
             <Form.Item
               name="reward"
               label="Task Reward"
@@ -351,20 +360,44 @@ export const TaskForm: FC<TaskFormProps> = ({
               />
             </Form.Item>
           ) : (
-            !!values.reward && (
+            !!task?.reward && (
               <FormSection label="Reward">
                 <Row>
                   <Typography.Text>
-                    TODO: render task reward
-                    {/* {values.reward.amount} {values.reward.currency} (
+                    {formatTaskReward(task.reward)} (
                     {
                       rewardTriggerToString[
                         TaskRewardTrigger.CORE_TEAM_APPROVAL
                       ]
                     }
-                    ) */}
+                    )
                   </Typography.Text>
                 </Row>
+                {!!task.reward.payment && (
+                  <>
+                    <Row>
+                      <Tag
+                        color={paymentStatusToColor[task.reward.payment.status]}
+                      >
+                        {paymentStatusToString[task.reward.payment.status]}
+                      </Tag>
+                    </Row>
+                    <Row>
+                      <a
+                        target="_blank"
+                        href={explorerLink(task.reward.payment)}
+                        rel="noreferrer"
+                      >
+                        <Typography.Text
+                          type="secondary"
+                          className="ant-typography-caption"
+                        >
+                          View on explorer <Icons.ExportOutlined />
+                        </Typography.Text>
+                      </a>
+                    </Row>
+                  </>
+                )}
               </FormSection>
             )
           )}

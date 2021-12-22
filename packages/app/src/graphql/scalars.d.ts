@@ -1,5 +1,5 @@
 namespace Scalar {
   type DateTime = string;
   type UUID = string;
-  type JSONObject = object;
+  type JSONObject = Record<string, any>;
 }
