@@ -45,7 +45,7 @@ describe("GithubService", () => {
       expect(found?.id).toEqual(task.id);
     });
 
-    it("should not return task if integration exists, but with other project", async () => {
+    it("should not return task if integration exists, but with another project outside the org", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
       await fixtures.createProjectIntegation({
@@ -55,6 +55,22 @@ describe("GithubService", () => {
       });
 
       const otherProject = await fixtures.createProject();
+      const task = await fixtures.createTask({ projectId: otherProject.id });
+      const found = await github.findTask(task.number, installationId);
+      expect(found).not.toBeDefined();
+    });
+
+    it("should return task if integration exists with another project within the same org", async () => {
+      const installationId = faker.datatype.uuid();
+      const organization = fixtures.createOrganization();
+      const project = await fixtures.createProject({ organization });
+      await fixtures.createProjectIntegation({
+        projectId: project.id,
+        source: ProjectIntegrationSource.github,
+        config: { installationId, features: [] },
+      });
+
+      const otherProject = await fixtures.createProject({ organization });
       const task = await fixtures.createTask({ projectId: otherProject.id });
       const found = await github.findTask(task.number, installationId);
       expect(found).not.toBeDefined();
