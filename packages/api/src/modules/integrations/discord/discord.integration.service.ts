@@ -5,7 +5,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
 import {
   Connection,
-  EntityManager,
   EntitySubscriberInterface,
   EventSubscriber,
   In,
@@ -91,19 +90,6 @@ export class DiscordIntegrationService
     }
   }
   */
-
-  private async getTask(
-    id: string,
-    entityManager: EntityManager
-  ): Promise<Task | undefined> {
-    return entityManager
-      .createQueryBuilder(Task, "task")
-      .leftJoinAndSelect("task.owner", "owner")
-      .leftJoinAndSelect("task.assignees", "assignees")
-      .leftJoinAndSelect("task.discordChannel", "discordChannel")
-      .where("task.id = :id", { id })
-      .getOne();
-  }
 
   private async getProjectIntegration(
     projectId: string
