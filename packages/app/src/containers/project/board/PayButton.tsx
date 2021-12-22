@@ -56,7 +56,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
           });
         } else if (error instanceof NoUserPaymentMethodError) {
           notification.info({
-            message: `${receiver.username} has no payment address`,
+            message: error.message,
             description: `Please ask ${receiver.username} to set up a payment address in their user settings.`,
           });
         } else {

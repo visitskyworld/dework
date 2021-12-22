@@ -135,7 +135,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       );
 
       if (!from) throw new NoProjectPaymentMethodError();
-      if (!to) throw new NoUserPaymentMethodError();
+
+      const network = from.networks.find(
+        (n) => n.id === reward.token.networkId
+      )!;
+      if (!to) {
+        throw new NoUserPaymentMethodError(
+          `${user.username} has no payment method on ${network.name}`
+        );
+      }
 
       switch (from.type) {
         case PaymentMethodType.METAMASK: {

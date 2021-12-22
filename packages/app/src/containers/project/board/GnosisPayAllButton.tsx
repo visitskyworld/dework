@@ -99,6 +99,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
 
       await createTaskPayments({
         taskRewardIds: tasksToPay.map((t) => t.reward!.id),
+        networkId: gnosisPaymentMethod!.networks[0].id,
         paymentMethodId: gnosisPaymentMethod!.id,
         data: { safeTxHash },
       });
