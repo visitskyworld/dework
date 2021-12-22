@@ -59,7 +59,7 @@ BEGIN
 
   INSERT INTO "payment_network" ("id", "name", "slug", "url", "sortKey")
   VALUES
-    (ethmain_id, 'Ethereum', 'ethereum-rinkeby', 'url', '1'),
+    (ethmain_id, 'Ethereum', 'ethereum-c', 'url', '1'),
     (ethrinkeby_id, 'Ethereum (rinkeby)', 'ethereum-rinkeby', 'url', '2'),
     (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '3'),
     (solana_testnet_id, 'Solana (testnet)', 'solana-testnet', 'https://api.testnet.solana.com', '4');

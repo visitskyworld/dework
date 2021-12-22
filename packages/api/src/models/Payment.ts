@@ -21,8 +21,12 @@ export interface PhantomPaymentData {
   signature: string;
 }
 
+export interface MetamaskPaymentData {
+  txHash: string;
+}
+
 interface PaymentDataMap extends Record<PaymentMethodType, any> {
-  [PaymentMethodType.METAMASK]: undefined;
+  [PaymentMethodType.METAMASK]: MetamaskPaymentData;
   [PaymentMethodType.PHANTOM]: PhantomPaymentData;
   [PaymentMethodType.GNOSIS_SAFE]: GnosisSafePaymentData;
 }

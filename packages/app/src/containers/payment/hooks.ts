@@ -21,6 +21,7 @@ import {
   UserPaymentMethodQuery,
   UserPaymentMethodQueryVariables,
 } from "@dewo/app/graphql/types";
+import { useCreateEthereumTransaction } from "@dewo/app/util/ethereum";
 import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
 import { useCallback } from "react";
 
@@ -32,7 +33,7 @@ export function explorerLink(payment: Payment): string | undefined {
     case "ethereum-mainnet":
       if (!payment.data?.txHash) return undefined;
       return `https://etherscan.io/tx/${payment.data.txHash}`;
-    case "ethereu-rinkeby":
+    case "ethereum-rinkeby":
       if (!payment.data?.txHash) return undefined;
       return `https://rinkeby.etherscan.io/tx/${payment.data.txHash}`;
     case "solana-mainnet":
@@ -108,6 +109,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   >(Mutations.createTaskPayments);
 
   const createSolanaTransaction = useCreateSolanaTransaction();
+  const createEthereuTransaction = useCreateEthereumTransaction();
 
   return useCallback(
     async (task: Task, user: User) => {
@@ -147,16 +149,25 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
       switch (from.type) {
         case PaymentMethodType.METAMASK: {
-          throw new Error("Implement Phantom pay now");
-          // if (task.reward.currency === "ETH") {
-          //   await signMetamaskPayout(
-          //     toPaymentMethod.address,
-          //     task.reward.amount
-          //   );
-          // } else {
-          //   throw new Error(`Unknown reward currency: ${task.reward.currency}`);
-          // }
-          // break;
+          const txHash = await createEthereuTransaction(
+            from.address,
+            to.address,
+            reward.amount,
+            reward.token,
+            network
+          );
+
+          await registerTaskPayment({
+            variables: {
+              input: {
+                taskRewardIds: [reward.id],
+                networkId: reward.token.networkId,
+                paymentMethodId: from.id,
+                data: { txHash },
+              },
+            },
+          });
+          break;
         }
         case PaymentMethodType.PHANTOM: {
           const network = from.networks.find(
@@ -209,6 +220,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       loadProject,
       loadUserPaymentMethod,
       createSolanaTransaction,
+      createEthereuTransaction,
       registerTaskPayment,
     ]
   );

@@ -1,5 +1,10 @@
 import { useCallback, useMemo } from "react";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import {
+  PaymentNetwork,
+  PaymentToken,
+  PaymentTokenType,
+} from "../graphql/types";
 
 const ethereumChainIdBySlug: Record<string, number> = {
   "ethereum-mainnet": 1,
@@ -50,22 +55,37 @@ export function useRequestAddress(): () => Promise<string> {
   }, [requestSigner]);
 }
 
-export function useSignPayout(): (
+export function useCreateEthereumTransaction(): (
+  fromAddress: string,
   toAddress: string,
-  amount: number
+  amount: string,
+  token: PaymentToken,
+  network: PaymentNetwork
 ) => Promise<string> {
+  const requestAddress = useRequestAddress();
   const requestSigner = useRequestSigner();
+  const switchNetwork = useSwitchChain();
   return useCallback(
-    async (toAddress, amount) => {
+    async (fromAddress, toAddress, amount, token, network) => {
+      if (token.type !== PaymentTokenType.ETHER) {
+        throw new Error("TODO: implement Ethereum payments for other tokens");
+      }
+
+      const currentAddress = await requestAddress();
+      if (currentAddress !== fromAddress) {
+        throw new Error(`Change Metamask Wallet address to "${fromAddress}"`);
+      }
+
       const signer = await requestSigner();
+      await switchNetwork(network.slug);
       const tx = await signer.sendTransaction({
         to: toAddress,
-        from: signer.getAddress(),
-        value: ethers.utils.parseEther(String(amount)),
+        from: fromAddress,
+        value: BigNumber.from(amount),
       });
 
       return tx.hash;
     },
-    [requestSigner]
+    [requestAddress, requestSigner, switchNetwork]
   );
 }

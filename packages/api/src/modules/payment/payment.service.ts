@@ -1,4 +1,5 @@
 import {
+  MetamaskPaymentData,
   Payment,
   PaymentData,
   PaymentStatus,
@@ -44,7 +45,10 @@ export class PaymentService {
       //   );
       // }
       case PaymentMethodType.METAMASK:
-        throw new Error("No support for Metamask payments");
+        if (!(data as MetamaskPaymentData).txHash) {
+          throw new Error(`Cannot create Metamask payment without txHash`);
+        }
+        break;
       case PaymentMethodType.PHANTOM:
         if (!(data as PhantomPaymentData).signature) {
           throw new Error(`Cannot create Phantom payment without signature`);
