@@ -526,6 +526,22 @@ export interface CreateTaskMutation_task_reward {
   payment: CreateTaskMutation_task_reward_payment | null;
 }
 
+export interface CreateTaskMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: CreateTaskMutation_task_applications_user;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -538,6 +554,7 @@ export interface CreateTaskMutation_task {
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
+  applications: CreateTaskMutation_task_applications[];
 }
 
 export interface CreateTaskMutation {
@@ -637,6 +654,22 @@ export interface UpdateTaskMutation_task_reward {
   payment: UpdateTaskMutation_task_reward_payment | null;
 }
 
+export interface UpdateTaskMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: UpdateTaskMutation_task_applications_user;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -649,6 +682,7 @@ export interface UpdateTaskMutation_task {
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
+  applications: UpdateTaskMutation_task_applications[];
 }
 
 export interface UpdateTaskMutation {
@@ -748,6 +782,22 @@ export interface ClaimTaskMutation_task_reward {
   payment: ClaimTaskMutation_task_reward_payment | null;
 }
 
+export interface ClaimTaskMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ClaimTaskMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: ClaimTaskMutation_task_applications_user;
+}
+
 export interface ClaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -760,6 +810,7 @@ export interface ClaimTaskMutation_task {
   tags: ClaimTaskMutation_task_tags[];
   assignees: ClaimTaskMutation_task_assignees[];
   reward: ClaimTaskMutation_task_reward | null;
+  applications: ClaimTaskMutation_task_applications[];
 }
 
 export interface ClaimTaskMutation {
@@ -860,6 +911,22 @@ export interface UnclaimTaskMutation_task_reward {
   payment: UnclaimTaskMutation_task_reward_payment | null;
 }
 
+export interface UnclaimTaskMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UnclaimTaskMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: UnclaimTaskMutation_task_applications_user;
+}
+
 export interface UnclaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -872,6 +939,7 @@ export interface UnclaimTaskMutation_task {
   tags: UnclaimTaskMutation_task_tags[];
   assignees: UnclaimTaskMutation_task_assignees[];
   reward: UnclaimTaskMutation_task_reward | null;
+  applications: UnclaimTaskMutation_task_applications[];
 }
 
 export interface UnclaimTaskMutation {
@@ -971,6 +1039,22 @@ export interface DeleteTaskMutation_task_reward {
   payment: DeleteTaskMutation_task_reward_payment | null;
 }
 
+export interface DeleteTaskMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: DeleteTaskMutation_task_applications_user;
+}
+
 export interface DeleteTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -983,6 +1067,7 @@ export interface DeleteTaskMutation_task {
   tags: DeleteTaskMutation_task_tags[];
   assignees: DeleteTaskMutation_task_assignees[];
   reward: DeleteTaskMutation_task_reward | null;
+  applications: DeleteTaskMutation_task_applications[];
 }
 
 export interface DeleteTaskMutation {

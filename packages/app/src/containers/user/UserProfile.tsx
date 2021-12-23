@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import {
   Button,
   Card,
@@ -26,6 +26,7 @@ import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface Props {
   userId: string;
@@ -53,18 +54,24 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   );
 
   const [form] = Form.useForm();
-  const [isEditMode, setIsEditMode] = useState(false);
+  const editing = useToggle(false);
+  const loading = useToggle(false);
 
-  const intitialValues: { [k: string]: string } =
-    user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ?? {};
+  type InititalValues = Record<string, string>;
 
-  const toggleEditMode = () => setIsEditMode(!isEditMode);
+  const intitialValues: InititalValues = useMemo(
+    () =>
+      user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ?? {},
+    [user?.details]
+  );
 
-  const onSubmit = (values: typeof intitialValues) => {
-    toggleEditMode();
-    Object.entries(values).forEach(([type, value]) => {
-      updateUserDetail({ type: type as UserDetailType, value });
+  const onSubmit = async (values: InititalValues) => {
+    loading.toggleOn();
+    Object.entries(values).forEach(async ([type, value]) => {
+      await updateUserDetail({ type: type as UserDetailType, value });
     });
+    editing.toggleOff();
+    loading.toggleOff();
     message.success("Profile updated!");
   };
 
@@ -78,63 +85,69 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             <Form
               form={form}
               layout="vertical"
-              autoComplete="off"
               initialValues={intitialValues}
               onFinish={onSubmit}
             >
-              <Form.Item
-                key={"avatar"}
-                style={{
-                  position: "relative",
-                  display: "inline-block",
-                  margin: 0,
-                }}
-              >
-                <UserAvatar user={user} size={96} />
-                {isEditMode && <EditUserAvatarButton />}
-              </Form.Item>
-              <Form.Item key={"username"} style={{ margin: "8px 0 3px 0" }}>
+              <Space direction="vertical">
+                <Row style={{ position: "relative", display: "inline-block" }}>
+                  <UserAvatar user={user} size={96} />
+                  {editing.isOn && <EditUserAvatarButton />}
+                </Row>
+
                 <Typography.Title
                   level={3}
                   style={{ marginBottom: 0 }}
                   editable={
-                    isEditMode ? { onChange: updateUsername } : undefined
+                    editing.isOn ? { onChange: updateUsername } : undefined
                   }
                 >
                   {user.username}
                 </Typography.Title>
-              </Form.Item>
-              <Form.Item key={"bio"} style={{ margin: 0 }}>
+
                 <Typography.Text
                   type="secondary"
-                  editable={isEditMode ? { onChange: updateBio } : undefined}
+                  editable={editing.isOn ? { onChange: updateBio } : undefined}
                 >
                   {!!user.bio ? user.bio : "No bio..."}
                 </Typography.Text>
-              </Form.Item>
 
-              <UserDetails isEditMode={isEditMode} userDetails={user.details} />
+                <UserDetails
+                  isEditMode={editing.isOn}
+                  userDetails={user.details}
+                />
 
-              {!!isMe && !!isEditMode && (
-                <Space>
-                  <Button type="primary" htmlType="submit">
-                    Save
-                  </Button>
-                  <Button onClick={toggleEditMode}>Cancel</Button>
-                </Space>
-              )}
+                <div style={{ marginTop: 6 }}>
+                  {!!isMe && !!editing.isOn && (
+                    <Space>
+                      <Button
+                        type="ghost"
+                        size="small"
+                        htmlType="submit"
+                        loading={loading.isOn}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="small"
+                        onClick={editing.toggle}
+                        disabled={loading.isOn}
+                      >
+                        Cancel
+                      </Button>
+                    </Space>
+                  )}
+                  {!!isMe && !editing.isOn && (
+                    <Button
+                      type="ghost"
+                      onClick={editing.toggle}
+                      size="small"
+                      style={{ padding: "0 12px" }}
+                    >
+                      Edit Profile
+                    </Button>
+                  )}
+                </div>
 
-              {!!isMe && !isEditMode && (
-                <Button
-                  style={{ width: "100%" }}
-                  type="primary"
-                  onClick={toggleEditMode}
-                >
-                  Edit Profile
-                </Button>
-              )}
-
-              <Space direction="vertical">
                 <Typography.Text
                   className="dewo-label"
                   style={{ marginTop: 16, display: "block" }}
