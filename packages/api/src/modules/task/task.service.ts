@@ -179,6 +179,7 @@ export class TaskService {
     organizationId,
     assigneeId,
     statuses,
+    limit,
   }: {
     ids?: string[];
     rewardIds?: string[];
@@ -187,6 +188,7 @@ export class TaskService {
     assigneeId?: string;
     statuses?: TaskStatusEnum[];
     order?: OrderByCondition;
+    limit?: number;
   }): Promise<Task[]> {
     let query = this.taskRepo
       .createQueryBuilder("task")
@@ -227,6 +229,7 @@ export class TaskService {
     return query
       .andWhere("task.deletedAt IS NULL")
       .orderBy("task.createdAt", "DESC")
+      .limit(limit)
       .getMany();
   }
 

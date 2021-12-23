@@ -6,6 +6,7 @@ import {
   Divider,
   PageHeader,
   Row,
+  Skeleton,
   Space,
   Typography,
 } from "antd";
@@ -20,24 +21,36 @@ import { useTasks } from "../task/hooks";
 import { TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { DeworkIcon } from "@dewo/app/components/icons/Dework";
+import _ from "lodash";
+
+const NUM_COLUMNS = 2;
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
   const featuredOrganizations = useFeaturedOrganizations(4);
   const latestTasks = useTasks(
-    useMemo(() => ({ statuses: [TaskStatusEnum.TODO] }), [])
+    useMemo(() => ({ statuses: [TaskStatusEnum.TODO], limit: 100 }), [])
+  );
+  const latestTaskChunks = useMemo(
+    () =>
+      !!latestTasks
+        ? _.chunk(latestTasks, latestTasks.length / NUM_COLUMNS)
+        : [],
+    [latestTasks]
   );
 
   if (!user)
     return (
       <>
         <PageHeader
-          style={{
-            backgroundColor: "rgba(0,0,0,0.4)",
-            // position: "fixed",
-            // width: "100%",
-            // sticky: "top",
-          }}
+          style={
+            {
+              // backgroundColor: "rgba(0,0,0,0.4)",
+              // position: "fixed",
+              // width: "100%",
+              // sticky: "top",
+            }
+          }
           title={
             <Row align="middle">
               <DeworkIcon style={{ width: 24, height: 24, marginRight: 8 }} />
@@ -54,8 +67,8 @@ export const LandingPage: FC = () => {
         />
         <Divider style={{ margin: 0 }} />
 
-        <Row className="max-w-md mx-auto" style={{ padding: 16 }}>
-          <Space direction="vertical" style={{ flex: 1 }}>
+        <Row style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
+          <Row className="max-w-md mx-auto" style={{ padding: 32 }}>
             <Typography.Title
               level={1}
               style={{ width: "100%", maxWidth: "100%", textAlign: "center" }}
@@ -67,49 +80,67 @@ export const LandingPage: FC = () => {
             >
               {siteDescription}
             </Typography.Paragraph>
-            <Row style={{ flexDirection: "column", alignItems: "center" }}>
-              <Button type="primary" size="large" href="/auth">
-                Log in
-              </Button>
-            </Row>
-            <Divider />
-            <Typography.Title
-              level={2}
-              style={{ textAlign: "center", width: "100%" }}
+            <Button
+              type="primary"
+              size="large"
+              href="/auth"
+              className="mx-auto"
             >
-              🏆 Popular DAOs
-            </Typography.Title>
-            <Row gutter={[16, 16]}>
-              {featuredOrganizations?.map((org) => (
-                <Col span={12} key={org.id}>
-                  <OrganizationCard organization={org} />
-                </Col>
-              ))}
-            </Row>
-            <Divider />
-            {!!latestTasks && (
-              <>
-                <Typography.Title
-                  level={2}
-                  style={{ textAlign: "center", width: "100%" }}
+              Log in
+            </Button>
+          </Row>
+        </Row>
+        <Divider style={{ margin: 0 }} />
+
+        <Row className="max-w-md mx-auto">
+          <Typography.Title
+            level={4}
+            style={{ textAlign: "center", width: "100%", marginTop: 32 }}
+          >
+            🏆 Popular DAOs
+          </Typography.Title>
+          <Row gutter={[16, 16]}>
+            {featuredOrganizations?.map((org) => (
+              <Col span={24 / NUM_COLUMNS} key={org.id}>
+                <OrganizationCard organization={org} />
+              </Col>
+            ))}
+          </Row>
+
+          <Typography.Title
+            level={4}
+            style={{ textAlign: "center", width: "100%", marginTop: 48 }}
+          >
+            🔥 Newest tasks
+          </Typography.Title>
+          {/* <Card size="small"> */}
+          <Row gutter={16} style={{ width: "100%" }}>
+            {latestTaskChunks.map((chunk, index) => (
+              <Col span={24 / NUM_COLUMNS} key={index}>
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%", paddingBottom: 8 }}
                 >
-                  🔥 Newest tasks
-                </Typography.Title>
-                <Card size="small">
-                  <Space direction="vertical" style={{ width: "100%" }}>
-                    {latestTasks.map((task) => (
-                      <TaskCard
-                        key={task.id}
-                        task={task}
-                        style={{ cursor: "pointer" }}
-                      />
+                  {!latestTasks &&
+                    _.range(3).map(() => (
+                      <Card size="small">
+                        <Skeleton loading />
+                      </Card>
                     ))}
-                  </Space>
-                </Card>
-                <TaskUpdateModalListener />
-              </>
-            )}
-          </Space>
+                  {chunk.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      style={{ cursor: "pointer" }}
+                    />
+                  ))}
+                </Space>
+              </Col>
+            ))}
+          </Row>
+          {/* </Card> */}
+          <TaskUpdateModalListener />
         </Row>
       </>
     );

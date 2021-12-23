@@ -31,9 +31,11 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
                 {organization.description}
               </Typography.Paragraph>
               <Row align="middle" gutter={[8, 8]}>
-                <Tag color="green">
-                  {`${organization.projects.length} open bounties`}
-                </Tag>
+                {!!organization.projects.length && (
+                  <Tag color="green">
+                    {`${organization.projects.length} open bounties`}
+                  </Tag>
+                )}
                 <Tag color="yellow">
                   {`${organization.members.length} contributors`}
                 </Tag>

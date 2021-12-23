@@ -1,5 +1,5 @@
 import { TaskStatusEnum } from "@dewo/api/models/Task";
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
@@ -9,4 +9,8 @@ export class GetTasksInput {
 
   @Field(() => [TaskStatusEnum], { nullable: true })
   public statuses?: TaskStatusEnum[];
+
+  // TODO(fant): how to prevent this from being very high?
+  @Field(() => Int, { nullable: true, defaultValue: 1000 })
+  public limit?: number;
 }
