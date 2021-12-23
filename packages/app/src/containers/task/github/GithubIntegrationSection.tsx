@@ -8,7 +8,7 @@ import { useProjectIntegrations } from "../../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Typography } from "antd";
 import { ConnectGithubAlert } from "./ConnectGithubAlert";
-import { useCheckGithubIntegration } from "../../project/settings/ProjectGithubIntegrations";
+import { useHasGithubIntegration } from "../../project/settings/ProjectGithubIntegrations";
 
 interface Props {
   task: TaskDetails;
@@ -19,7 +19,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
   const organizationId = useParseIdFromSlug("organizationSlug");
 
   const canUpdateProject = usePermission("update", "Project");
-  const hasGithubIntegration = useCheckGithubIntegration(organizationId ?? "");
+  const hasGithubIntegration = useHasGithubIntegration(organizationId ?? "");
 
   const branchesWithoutPullRequests = useMemo(
     () =>

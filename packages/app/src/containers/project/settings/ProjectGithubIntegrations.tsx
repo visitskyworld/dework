@@ -26,10 +26,9 @@ export function useConnectToGithubUrl(projectId: string): string {
   }, [projectId, user?.id]);
 }
 
-export function useCheckGithubIntegration(
+export function useHasGithubIntegration(
   organizationId: string | undefined
 ): boolean {
-  if (!organizationId) return false;
   const organization = useOrganization(organizationId);
 
   return useMemo(
@@ -47,7 +46,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
 }) => {
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const hasGithubIntegration = useCheckGithubIntegration(organizationId);
+  const hasGithubIntegration = useHasGithubIntegration(organizationId);
   const connectToGithubUrl = useConnectToGithubUrl(projectId);
 
   if (hasGithubIntegration) {
