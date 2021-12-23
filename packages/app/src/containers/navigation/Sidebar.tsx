@@ -28,7 +28,7 @@ export const Sidebar: FC = () => {
       collapsed={isOn}
       trigger={null}
     >
-      <Col style={{ height: "100%", alignItems: "center", paddingBottom: 12 }}>
+      <Col style={{ height: "100%", alignItems: "center", padding: "12px 0" }}>
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"
@@ -53,7 +53,8 @@ export const Sidebar: FC = () => {
           </Dropdown>
         </SidebarNavLink>
 
-        <Divider />
+        <Divider style={{ margin: "12px 0" }} />
+
         {user?.organizations.map((organization) => (
           <SidebarNavLink
             key={organization.id}
