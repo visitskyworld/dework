@@ -14,6 +14,6 @@ export class DiscordService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    // await this.client.login(this.config.get("DISCORD_BOT_TOKEN"));
+    await this.client.login(this.config.get("DISCORD_BOT_TOKEN"));
   }
 }

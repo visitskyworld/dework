@@ -43,14 +43,6 @@ export const LandingPage: FC = () => {
     return (
       <>
         <PageHeader
-          style={
-            {
-              // backgroundColor: "rgba(0,0,0,0.4)",
-              // position: "fixed",
-              // width: "100%",
-              // sticky: "top",
-            }
-          }
           title={
             <Row align="middle">
               <DeworkIcon style={{ width: 24, height: 24, marginRight: 8 }} />
@@ -113,7 +105,6 @@ export const LandingPage: FC = () => {
           >
             🔥 Newest tasks
           </Typography.Title>
-          {/* <Card size="small"> */}
           <Row gutter={16} style={{ width: "100%" }}>
             {latestTaskChunks.map((chunk, index) => (
               <Col span={24 / NUM_COLUMNS} key={index}>
@@ -139,7 +130,6 @@ export const LandingPage: FC = () => {
               </Col>
             ))}
           </Row>
-          {/* </Card> */}
           <TaskUpdateModalListener />
         </Row>
       </>
