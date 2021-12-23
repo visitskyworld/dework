@@ -14,9 +14,9 @@ const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
   );
 };
 
-type PageHeaderBreadcrumbsProps = {
+interface PageHeaderBreadcrumbsProps {
   routes?: Route[];
-};
+}
 
 export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
   routes,

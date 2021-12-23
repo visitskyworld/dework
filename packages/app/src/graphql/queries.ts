@@ -139,9 +139,19 @@ export const task = gql`
   ${Fragments.taskTag}
 `;
 
+export const tasks = gql`
+  query GetTasksQuery($input: GetTasksInput!) {
+    tasks: getTasks(input: $input) {
+      ...Task
+    }
+  }
+
+  ${Fragments.task}
+`;
+
 export const tasksToPay = gql`
-  query GetTasksToPayQuery($taskIds: [UUID!]!) {
-    tasks: getTasks(ids: $taskIds) {
+  query GetTasksToPayQuery($input: GetTasksInput!) {
+    tasks: getTasks(input: $input) {
       ...Task
 
       assignees {

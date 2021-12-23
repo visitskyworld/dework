@@ -28,6 +28,9 @@ import {
   UpdateTaskRewardInput,
   TaskReward,
   UpdateTaskInput,
+  GetTasksInput,
+  GetTasksQuery,
+  GetTasksQueryVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -290,6 +293,14 @@ export function useTask(
     skip: !taskId,
   });
   return data?.task ?? undefined;
+}
+
+export function useTasks(input: GetTasksInput): Task[] | undefined {
+  const { data } = useQuery<GetTasksQuery, GetTasksQueryVariables>(
+    Queries.tasks,
+    { variables: { input } }
+  );
+  return data?.tasks ?? undefined;
 }
 
 export function useListenToTasks() {

@@ -26,6 +26,7 @@ import { CustomPermissionActions } from "../auth/permissions";
 import { User } from "@dewo/api/models/User";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
+import { GetTasksInput } from "./dto/GetTasksInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -155,14 +156,10 @@ export class TaskResolver {
   }
 
   @Query(() => [Task])
-  public async getTasks(
-    @Args("ids", { type: () => [GraphQLUUID], nullable: true }) ids?: string[],
-    @Args("statuses", { type: () => [TaskStatusEnum], nullable: true })
-    statuses?: TaskStatusEnum[]
-  ): Promise<Task[]> {
-    if (!!ids && !ids.length) return [];
-    if (!!statuses && !statuses.length) return [];
-    return this.taskService.findWithRelations({ ids, statuses });
+  public async getTasks(@Args("input") input: GetTasksInput): Promise<Task[]> {
+    if (input.ids?.length === 0) return [];
+    if (input.statuses?.length === 0) return [];
+    return this.taskService.findWithRelations(input);
   }
 }
 

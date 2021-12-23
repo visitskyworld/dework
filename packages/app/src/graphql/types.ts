@@ -2617,6 +2617,133 @@ export interface GetTaskQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetTasksQuery
+// ====================================================
+
+export interface GetTasksQuery_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+}
+
+export interface GetTasksQuery_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksQuery_tasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface GetTasksQuery_tasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface GetTasksQuery_tasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface GetTasksQuery_tasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: GetTasksQuery_tasks_reward_payment_paymentMethod_networks[];
+  tokens: GetTasksQuery_tasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface GetTasksQuery_tasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface GetTasksQuery_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: GetTasksQuery_tasks_reward_payment_paymentMethod;
+  network: GetTasksQuery_tasks_reward_payment_network;
+}
+
+export interface GetTasksQuery_tasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: GetTasksQuery_tasks_reward_token;
+  payment: GetTasksQuery_tasks_reward_payment | null;
+}
+
+export interface GetTasksQuery_tasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksQuery_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: GetTasksQuery_tasks_applications_user;
+}
+
+export interface GetTasksQuery_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  tags: GetTasksQuery_tasks_tags[];
+  assignees: GetTasksQuery_tasks_assignees[];
+  reward: GetTasksQuery_tasks_reward | null;
+  applications: GetTasksQuery_tasks_applications[];
+}
+
+export interface GetTasksQuery {
+  tasks: GetTasksQuery_tasks[];
+}
+
+export interface GetTasksQueryVariables {
+  input: GetTasksInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetTasksToPayQuery
 // ====================================================
 
@@ -2799,7 +2926,7 @@ export interface GetTasksToPayQuery {
 }
 
 export interface GetTasksToPayQueryVariables {
-  taskIds: Scalar.UUID[];
+  input: GetTasksInput;
 }
 
 /* tslint:disable */
@@ -4515,6 +4642,11 @@ export interface CreateTaskTagInput {
   label: string;
   color: string;
   projectId: Scalar.UUID;
+}
+
+export interface GetTasksInput {
+  ids?: Scalar.UUID[] | null;
+  statuses?: TaskStatusEnum[] | null;
 }
 
 export interface GetUserPermissionsInput {

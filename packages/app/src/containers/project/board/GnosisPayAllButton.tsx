@@ -53,7 +53,7 @@ export function useCreateTaskPayments(): (
 export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const tasks = useQuery<GetTasksToPayQuery, GetTasksToPayQueryVariables>(
     Queries.tasksToPay,
-    { variables: { taskIds } }
+    { variables: { input: { ids: taskIds } } }
   ).data?.tasks;
 
   const project = useProject(projectId);
