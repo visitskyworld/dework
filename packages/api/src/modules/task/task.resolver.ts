@@ -156,10 +156,13 @@ export class TaskResolver {
 
   @Query(() => [Task])
   public async getTasks(
-    @Args("ids", { type: () => [GraphQLUUID] }) ids: string[]
+    @Args("ids", { type: () => [GraphQLUUID], nullable: true }) ids?: string[],
+    @Args("statuses", { type: () => [TaskStatusEnum], nullable: true })
+    statuses?: TaskStatusEnum[]
   ): Promise<Task[]> {
-    if (!ids.length) return [];
-    return this.taskService.findByIds(ids);
+    if (!!ids && !ids.length) return [];
+    if (!!statuses && !statuses.length) return [];
+    return this.taskService.findWithRelations({ ids, statuses });
   }
 }
 

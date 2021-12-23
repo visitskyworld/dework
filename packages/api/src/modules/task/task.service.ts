@@ -9,6 +9,7 @@ import {
   Not,
   Repository,
   DeepPartial,
+  OrderByCondition,
 } from "typeorm";
 import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
@@ -171,22 +172,23 @@ export class TaskService {
     return this.taskRepo.findOne(id);
   }
 
-  public async findByIds(ids: string[]): Promise<Task[]> {
-    return this.taskRepo.find({ id: In(ids) });
-  }
-
   public async findWithRelations({
+    ids,
     rewardIds,
     projectId,
     organizationId,
     assigneeId,
+    statuses,
   }: {
+    ids?: string[];
     rewardIds?: string[];
     projectId?: string;
     organizationId?: string;
     assigneeId?: string;
+    statuses?: TaskStatusEnum[];
+    order?: OrderByCondition;
   }): Promise<Task[]> {
-    let queryBuilder = this.taskRepo
+    let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.tags", "taskTag")
@@ -194,20 +196,20 @@ export class TaskService {
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("payment.paymentMethod", "paymentMethod");
 
+    if (!!ids) {
+      query = query.where("task.id IN (:...ids)", { ids });
+    }
+
     if (!!rewardIds) {
-      queryBuilder = queryBuilder.where("task.rewardId IN (:...rewardIds)", {
-        rewardIds,
-      });
+      query = query.where("task.rewardId IN (:...rewardIds)", { rewardIds });
     }
 
     if (!!projectId) {
-      queryBuilder = queryBuilder.where("task.projectId = :projectId", {
-        projectId,
-      });
+      query = query.where("task.projectId = :projectId", { projectId });
     }
 
     if (!!organizationId) {
-      queryBuilder = queryBuilder
+      query = query
         .innerJoinAndSelect("task.project", "project")
         .where("project.organizationId = :organizationId", { organizationId })
         .andWhere("project.deletedAt IS NULL");
@@ -215,12 +217,17 @@ export class TaskService {
 
     if (!!assigneeId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
-      queryBuilder = queryBuilder.where("assignee.id = :assigneeId", {
-        assigneeId,
-      });
+      query = query.where("assignee.id = :assigneeId", { assigneeId });
     }
 
-    return queryBuilder.andWhere("task.deletedAt IS NULL").getMany();
+    if (!!statuses) {
+      query = query.where("task.status IN (:...statuses)", { statuses });
+    }
+
+    return query
+      .andWhere("task.deletedAt IS NULL")
+      .orderBy("task.createdAt", "DESC")
+      .getMany();
   }
 
   public async count(query: {
