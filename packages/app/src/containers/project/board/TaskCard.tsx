@@ -127,9 +127,11 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
           }}
         >
           <div style={{ flex: 1 }} />
-          <Avatar.Group maxCount={3} size={22}>
-            {task.status === TaskStatusEnum.TODO && !task.assignees.length
-              ? task.applications.map((application) => (
+
+          {task.status === TaskStatusEnum.TODO ? (
+            canUpdateTask ? (
+              <Avatar.Group maxCount={3} size={22}>
+                {task.applications.map((application) => (
                   <Link
                     href={`/profile/${application.user.id}`}
                     key={application.id}
@@ -138,15 +140,20 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
                       <UserAvatar user={application.user} />
                     </a>
                   </Link>
-                ))
-              : task.assignees.map((user) => (
-                  <Link href={`/profile/${user.id}`} key={user.id}>
-                    <a>
-                      <UserAvatar user={user} />
-                    </a>
-                  </Link>
                 ))}
-          </Avatar.Group>
+              </Avatar.Group>
+            ) : null
+          ) : (
+            <Avatar.Group maxCount={3} size={22}>
+              {task.assignees.map((user) => (
+                <Link href={`/profile/${user.id}`} key={user.id}>
+                  <a>
+                    <UserAvatar user={user} />
+                  </a>
+                </Link>
+              ))}
+            </Avatar.Group>
+          )}
         </Col>
       </Row>
     </Card>
