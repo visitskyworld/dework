@@ -20,6 +20,7 @@ import { User } from "@dewo/api/models/User";
 import { SubscriptionModule } from "../subscription/subscription.module";
 import { GithubIntegrationModule } from "../integrations/github/github.module";
 import { FileUploadModule } from "../fileUpload/fileUpload.module";
+import { PermalinkModule } from "../permalink/permalink.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -52,6 +53,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   PaymentModule,
   SubscriptionModule,
   FileUploadModule,
+  PermalinkModule,
 ];
 
 @Module({

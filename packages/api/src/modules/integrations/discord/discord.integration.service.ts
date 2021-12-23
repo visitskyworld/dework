@@ -9,14 +9,12 @@ import {
   ProjectIntegrationSource,
 } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
-import { ConfigService } from "@nestjs/config";
-import { ConfigType } from "../../app/config";
 import * as Discord from "discord.js";
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
 import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
-import encoder from "uuid-base62";
+import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
 
 class DiscordChannelNotFoundError extends Error {}
@@ -27,12 +25,12 @@ export class DiscordIntegrationService {
 
   constructor(
     private readonly discord: DiscordService,
+    private readonly permalink: PermalinkService,
     private readonly threepidService: ThreepidService,
     @InjectRepository(DiscordChannel)
     private readonly discordChannelRepo: Repository<DiscordChannel>,
     @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
-    private readonly config: ConfigService<ConfigType>
+    private readonly projectIntegrationRepo: Repository<ProjectIntegration>
   ) {}
 
   async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
@@ -222,13 +220,9 @@ export class DiscordIntegrationService {
           author: author && {
             name: author.username,
             iconURL: author.imageUrl,
-            // TODO: add permalink util
-            url: `${this.config.get("APP_URL")}/profile/${author.id}`,
+            url: await this.permalink.get(author),
           },
-          // TODO: add permalink util
-          url: `${this.config.get("APP_URL")}/o/${encoder.encode(
-            (await task.project).organizationId
-          )}/p/${encoder.encode(task.projectId)}?taskId=${task.id}`,
+          url: await this.permalink.get(task),
         },
       ],
     });
@@ -339,7 +333,6 @@ export class DiscordIntegrationService {
       })}`
     );
 
-    // const permalink: "TODO(fant): generate permalink to task...";
     const channel = await category.createChannel(
       `${task.name} ${task.number}`,
       {

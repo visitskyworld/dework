@@ -1,4 +1,3 @@
-import encoder from "uuid-base62";
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
@@ -12,6 +11,7 @@ import {
   DiscordProjectIntegrationConfig,
   ProjectIntegrationSource,
 } from "@dewo/api/models/ProjectIntegration";
+import { PermalinkService } from "../permalink/permalink.service";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -19,7 +19,8 @@ type RequestFromCallback = Request & { user: StrategyResponse };
 export class AuthController {
   constructor(
     private readonly config: ConfigService<ConfigType>,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly permalink: PermalinkService
   ) {}
 
   @Get("github")
@@ -104,10 +105,8 @@ export class AuthController {
         config,
       });
 
-      const appUrl = this.getAppUrl(query.state);
-      const oid = encoder.encode(state.organizationId);
-      const pid = encoder.encode(state.projectId);
-      const url = `${appUrl}/o/${oid}/p/${pid}/settings`;
+      const project = await this.projectService.findById(state.projectId);
+      const url = await this.permalink.get(project!);
       res.redirect(url);
     } catch {
       res.redirect(this.config.get("APP_URL") as string);

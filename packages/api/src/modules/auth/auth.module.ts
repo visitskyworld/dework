@@ -11,6 +11,7 @@ import { ThreepidModule } from "../threepid/threepid.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
 import { ProjectModule } from "../project/project.module";
+import { PermalinkModule } from "../permalink/permalink.module";
 
 @Global()
 @Module({
@@ -33,6 +34,7 @@ export class GlobalJwtModule {}
     PassportModule.register({ defaultStrategy: "jwt" }),
     ThreepidModule,
     ProjectModule,
+    PermalinkModule,
   ],
   providers: [GithubStrategy, DiscordStrategy],
   controllers: [AuthController],
