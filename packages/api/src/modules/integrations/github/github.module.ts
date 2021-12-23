@@ -16,5 +16,6 @@ import { TaskModule } from "../../task/task.module";
   ],
   providers: [GithubService],
   controllers: [GithubController],
+  exports: [GithubService],
 })
 export class GithubIntegrationModule {}

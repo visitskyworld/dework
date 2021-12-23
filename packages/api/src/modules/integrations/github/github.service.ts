@@ -20,9 +20,11 @@ export class GithubService {
 
   public async createPullRequest(
     partial: Partial<GithubPullRequest>
-  ): Promise<GithubPullRequest | undefined> {
-    const createdTask = await this.githubPullRequestRepo.save(partial);
-    return this.githubPullRequestRepo.findOne(createdTask.id);
+  ): Promise<GithubPullRequest> {
+    const createdPullRequest = await this.githubPullRequestRepo.save(partial);
+    return this.githubPullRequestRepo.findOne(
+      createdPullRequest.id
+    ) as Promise<GithubPullRequest>;
   }
 
   public async updatePullRequest(
@@ -40,9 +42,11 @@ export class GithubService {
 
   public async createBranch(
     partial: Partial<GithubBranch>
-  ): Promise<GithubBranch | undefined> {
-    const createdTask = await this.githubBranchRepo.save(partial);
-    return this.githubBranchRepo.findOne(createdTask.id);
+  ): Promise<GithubBranch> {
+    const createdBranch = await this.githubBranchRepo.save(partial);
+    return this.githubBranchRepo.findOne(
+      createdBranch.id
+    ) as Promise<GithubBranch>;
   }
 
   public async updateBranch(

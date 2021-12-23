@@ -29,6 +29,40 @@ describe("GithubService", () => {
     });
   });
 
+  describe("findBranchByName", () => {
+    it("should return branch if it has a matching name", async () => {
+      const installationId = faker.datatype.uuid();
+      const project = await fixtures.createProject();
+      await fixtures.createProjectIntegation({
+        projectId: project.id,
+        source: ProjectIntegrationSource.github,
+        config: { installationId, features: [] },
+      });
+
+      const branch = await fixtures.createGithubBranch({ name: "feat/dw-1" });
+      const found = await github.findBranchByName(branch.name);
+      expect(found).toBeDefined();
+      expect(found?.id).toEqual(branch.id);
+    });
+  });
+
+  describe("findPullRequestByTaskId", () => {
+    it("should return pull request if it has a matching taskId", async () => {
+      const installationId = faker.datatype.uuid();
+      const project = await fixtures.createProject();
+      await fixtures.createProjectIntegation({
+        projectId: project.id,
+        source: ProjectIntegrationSource.github,
+        config: { installationId, features: [] },
+      });
+
+      const pr = await fixtures.createGithubPullRequest();
+      const found = await github.findPullRequestByTaskId(pr.taskId);
+      expect(found).toBeDefined();
+      expect(found?.id).toEqual(pr.id);
+    });
+  });
+
   describe("findTask", () => {
     it("should return task if has matching project integration", async () => {
       const installationId = faker.datatype.uuid();

@@ -17,6 +17,13 @@ import { ProjectService } from "../modules/project/project.service";
 import { Task, TaskStatusEnum } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
 import { TaskTag } from "../models/TaskTag";
+import { GithubService } from "../modules/integrations/github/github.service";
+import { GithubBranch } from "../models/GithubBranch";
+import {
+  GithubPullRequest,
+  GithubPullRequestStatusEnum,
+} from "../models/GithubPullRequest";
+import { GithubIntegrationModule } from "../modules/integrations/github/github.module";
 import { InviteService } from "../modules/invite/invite.service";
 import { InviteModule } from "../modules/invite/invite.module";
 import { Invite } from "../models/Invite";
@@ -38,6 +45,7 @@ export class Fixtures {
     private readonly organizationService: OrganizationService,
     private readonly projectService: ProjectService,
     private readonly taskService: TaskService,
+    private readonly githubService: GithubService,
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
     private readonly paymentService: PaymentService
@@ -137,6 +145,32 @@ export class Fixtures {
     });
   }
 
+  public async createGithubBranch(
+    partial: DeepAtLeast<GithubBranch, "name">
+  ): Promise<GithubBranch> {
+    const task = this.createTask();
+    return this.githubService.createBranch({
+      name: partial.name ?? faker.datatype.string(),
+      link: faker.datatype.string(),
+      repository: faker.datatype.string(),
+      task,
+      taskId: await task.then((t) => t.id),
+    });
+  }
+
+  public async createGithubPullRequest(): Promise<GithubPullRequest> {
+    const task = this.createTask();
+    return this.githubService.createPullRequest({
+      title: faker.datatype.string(),
+      link: faker.datatype.string(),
+      branchName: faker.datatype.string(),
+      number: faker.datatype.number(),
+      status: GithubPullRequestStatusEnum.OPEN,
+      task,
+      taskId: await task.then((t) => t.id),
+    });
+  }
+
   public async createInvite(
     partial: Partial<Invite> = {},
     user?: User
@@ -220,6 +254,7 @@ export class Fixtures {
     OrganizationModule,
     ProjectModule,
     TaskModule,
+    GithubIntegrationModule,
     InviteModule,
     PaymentModule,
   ],
