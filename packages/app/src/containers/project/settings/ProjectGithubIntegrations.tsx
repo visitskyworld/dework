@@ -26,18 +26,20 @@ export function useConnectToGithubUrl(projectId: string): string {
   }, [projectId, user?.id]);
 }
 
-export function useCheckGithubIntegration(organizationId: string): boolean {
+export function useCheckGithubIntegration(
+  organizationId: string | undefined
+): boolean {
+  if (!organizationId) return false;
   const organization = useOrganization(organizationId);
-  return (
-    useMemo(
-      () =>
-        organization?.projects.some((proj) =>
-          proj.integrations.find(
-            (int) => int.source === ProjectIntegrationSource.github
-          )
-        ),
-      [organization?.projects]
-    ) ?? false
+
+  return useMemo(
+    () =>
+      !!organization?.projects.some((proj) =>
+        proj.integrations.some(
+          (int) => int.source === ProjectIntegrationSource.github
+        )
+      ),
+    [organization?.projects]
   );
 }
 
@@ -45,7 +47,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
 }) => {
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const hasGithubIntegration = useCheckGithubIntegration(organizationId ?? "");
+  const hasGithubIntegration = useCheckGithubIntegration(organizationId);
   const connectToGithubUrl = useConnectToGithubUrl(projectId);
 
   if (hasGithubIntegration) {
