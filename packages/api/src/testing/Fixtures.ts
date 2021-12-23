@@ -37,6 +37,7 @@ import { ProjectIntegration } from "../models/ProjectIntegration";
 import { TaskRewardTrigger } from "../models/TaskReward";
 import { PaymentNetwork } from "../models/PaymentNetwork";
 import { PaymentToken, PaymentTokenType } from "../models/PaymentToken";
+import { Payment, PaymentData } from "../models/Payment";
 
 @Injectable()
 export class Fixtures {
@@ -212,6 +213,20 @@ export class Fixtures {
         ...partial,
       },
       user ?? (await this.createUser())
+    );
+  }
+
+  public async createPayment(data: {
+    data?: PaymentData;
+    networkId?: string;
+    paymentMethod?: PaymentMethod;
+    createdAt?: Date;
+  }): Promise<Payment> {
+    return this.paymentService.create(
+      data.paymentMethod ?? (await this.createPaymentMethod()),
+      data.networkId ?? (await this.createPaymentNetwork().then((n) => n.id)),
+      data.data ?? { txHash: faker.datatype.uuid() },
+      { createdAt: data.createdAt }
     );
   }
 

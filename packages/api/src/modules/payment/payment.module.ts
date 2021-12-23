@@ -5,6 +5,7 @@ import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { PaymentPoller } from "./payment.poller";
 import { PaymentResolver } from "./payment.resolver";
 import { PaymentService } from "./payment.service";
 
@@ -18,7 +19,7 @@ import { PaymentService } from "./payment.service";
       PaymentToken,
     ]),
   ],
-  providers: [PaymentResolver, PaymentService],
+  providers: [PaymentResolver, PaymentService, PaymentPoller],
   exports: [PaymentService],
 })
 export class PaymentModule {}

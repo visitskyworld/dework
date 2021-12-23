@@ -8,6 +8,7 @@ import { PaymentNetwork } from "./PaymentNetwork";
 export enum PaymentStatus {
   PROCESSING = "PROCESSING",
   CONFIRMED = "CONFIRMED",
+  FAILED = "FAILED",
 }
 
 registerEnumType(PaymentStatus, { name: "PaymentStatus" });
@@ -61,4 +62,7 @@ export class Payment<
   @Column("json", { nullable: true })
   @Field(() => GraphQLJSONObject, { nullable: true })
   public data!: PaymentDataMap[TPaymentMethodType];
+
+  @Column({ type: "timestamp", nullable: true })
+  public nextStatusCheckAt?: Date | null;
 }

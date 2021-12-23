@@ -15,7 +15,7 @@ import { User } from "@dewo/api/models/User";
 import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { DeepPartial, In, Repository } from "typeorm";
 import { CreatePaymentMethodInput } from "./dto/CreatePaymentMethodInput";
 
 @Injectable()
@@ -34,7 +34,8 @@ export class PaymentService {
   public async create(
     paymentMethod: PaymentMethod,
     networkId: string,
-    data: PaymentData
+    data: PaymentData,
+    override: DeepPartial<Payment> = {}
   ): Promise<Payment> {
     switch (paymentMethod.type) {
       case PaymentMethodType.GNOSIS_SAFE:
@@ -57,6 +58,7 @@ export class PaymentService {
     }
 
     const created = await this.paymentRepo.save({
+      ...override,
       data,
       networkId,
       paymentMethodId: paymentMethod.id,
