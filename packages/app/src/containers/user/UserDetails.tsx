@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
-import { Form, Avatar, Input, Space } from "antd";
+import { Form, Avatar, Input, Space, Typography } from "antd";
 
 import { UserDetailType, UserDetail } from "../../graphql/types";
 
@@ -29,34 +29,55 @@ export const UserDetails: FC<UserDetailsProps> = ({
   isEditMode,
   userDetails,
 }) => {
+  const countryDetail = useMemo(
+    () =>
+      userDetails.find(
+        (detail) =>
+          detail.type === UserDetailType.country && detail.value !== ""
+      ),
+    [userDetails]
+  );
+
   if (isEditMode) {
     return (
       <Space direction="vertical" style={{ width: "100%" }}>
-        {Object.values(UserDetailType).map(
-          (type) =>
-            type !== UserDetailType.country && (
-              <div key={type} style={{ display: "flex", alignItems: "center" }}>
-                {iconByType[type]}
-                <Form.Item name={type} style={{ flex: 1, margin: "0 0 0 7px" }}>
-                  <Input
-                    placeholder={placeholderByType[type]}
-                    className="dewo-field dewo-field-profile ant-typography-p"
-                  />
-                </Form.Item>
-              </div>
-            )
-        )}
+        {Object.values(UserDetailType).map((type) => (
+          <div key={type} style={{ display: "flex", alignItems: "center" }}>
+            {iconByType[type]}
+            <Form.Item name={type} style={{ flex: 1, margin: "0 0 0 7px" }}>
+              <Input
+                placeholder={placeholderByType[type]}
+                className="dewo-field dewo-field-profile ant-typography-p"
+              />
+            </Form.Item>
+          </div>
+        ))}
       </Space>
     );
   }
 
   return (
     <Space>
-      {userDetails.map((detail, index) => (
-        <a href={detail.value} target="_blank" key={index} rel="noreferrer">
-          <Avatar size="small">{iconByType[detail.type]}</Avatar>
-        </a>
-      ))}
+      {userDetails.map(
+        (detail, index) =>
+          detail.type !== UserDetailType.country && (
+            <a href={detail.value} target="_blank" key={index} rel="noreferrer">
+              <Avatar size="small">{iconByType[detail.type]}</Avatar>
+            </a>
+          )
+      )}
+      {countryDetail && (
+        <>
+          {iconByType[countryDetail.type]}
+          <Typography.Text
+            type="secondary"
+            ellipsis
+            style={{ maxWidth: "160px" }}
+          >
+            {countryDetail.value}
+          </Typography.Text>
+        </>
+      )}
     </Space>
   );
 };

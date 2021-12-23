@@ -88,7 +88,10 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               initialValues={intitialValues}
               onFinish={onSubmit}
             >
-              <Space direction="vertical">
+              <Space
+                direction="vertical"
+                style={{ position: "relative", maxWidth: "100%" }}
+              >
                 <Row style={{ position: "relative", display: "inline-block" }}>
                   <UserAvatar user={user} size={96} />
                   {editing.isOn && <EditUserAvatarButton />}
@@ -137,12 +140,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                     </Space>
                   )}
                   {!!isMe && !editing.isOn && (
-                    <Button
-                      type="ghost"
-                      onClick={editing.toggle}
-                      size="small"
-                      style={{ padding: "0 12px" }}
-                    >
+                    <Button type="ghost" onClick={editing.toggle} size="small">
                       Edit Profile
                     </Button>
                   )}
