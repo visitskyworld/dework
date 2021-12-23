@@ -5,6 +5,7 @@ import { useClaimTask } from "./hooks";
 import { Form, Button, Input } from "antd";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { DatePicker } from "antd";
+import moment from "moment";
 
 interface TaskApplyModalProps {
   task: Task;
@@ -49,7 +50,10 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
             label={"When are you claiming this task for?"}
             rules={[{ required: true, message: "Please enter a date" }]}
           >
-            <RangePicker name="period" />
+            <RangePicker
+              name="period"
+              disabledDate={(current) => current <= moment().add(-1, "days")}
+            />
           </Form.Item>
           <Form.Item
             name="message"
