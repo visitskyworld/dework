@@ -74,7 +74,7 @@ BEGIN
 
     ('SOL', 'SOL', 9, NULL, solana_mainnet_id),
     ('SOL', 'SOL', 9, NULL, solana_testnet_id),
-    ('SPL_TOKEN', 'USDC', 18, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
-    ('SPL_TOKEN', 'USDC', 18, 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
+    ('SPL_TOKEN', 'USDC', 6, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
+    ('SPL_TOKEN', 'USDC', 6, 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
 END $$;
 ```
