@@ -93,7 +93,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
           style={{ flex: 1, width: "100%", marginBottom: 4 }}
         >
           <Row>
-            <Typography.Text strong>{task.name}</Typography.Text>
+            <Typography.Text strong style={{ maxWidth: "100%" }}>
+              {task.name}
+            </Typography.Text>
           </Row>
           <Row>
             {!!task.reward && (
