@@ -16,7 +16,14 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import { GraphQLInt } from "graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
+import {
+  AccessGuard,
+  AccessService,
+  Actions,
+  CaslUser,
+  UseAbility,
+  UserProxy,
+} from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
@@ -26,7 +33,10 @@ import { Project } from "@dewo/api/models/Project";
 @Resolver(() => Organization)
 @Injectable()
 export class OrganizationResolver {
-  constructor(private readonly organizationService: OrganizationService) {}
+  constructor(
+    private readonly organizationService: OrganizationService,
+    private accessService: AccessService
+  ) {}
 
   @ResolveField(() => [OrganizationMember])
   public async members(
@@ -63,8 +73,13 @@ export class OrganizationResolver {
       service.findById(params.input.id),
   ])
   public async updateOrganization(
-    @Args("input") input: UpdateOrganizationInput
+    @Args("input") input: UpdateOrganizationInput,
+    @CaslUser() userProxy: UserProxy
   ): Promise<Organization> {
+    if (!!input.deletedAt) {
+      const user = await userProxy.get();
+      this.accessService.assertAbility(user!, Actions.delete, Organization);
+    }
     return this.organizationService.update(input);
   }
 

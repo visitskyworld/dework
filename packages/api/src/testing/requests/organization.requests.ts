@@ -18,6 +18,7 @@ export class OrganizationRequests {
       id
       name
       imageUrl
+      deletedAt
       members {
         ...OrganizationMember
       }

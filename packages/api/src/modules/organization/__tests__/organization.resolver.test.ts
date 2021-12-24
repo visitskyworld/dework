@@ -92,6 +92,43 @@ describe("OrganizationResolver", () => {
         const updated = response.body.data?.organization;
         expect(updated.name).toEqual(expectedName);
       });
+
+      describe("deletedAt", () => {
+        it("should set deletedAt if is owner", async () => {
+          const { user: owner, organization } =
+            await fixtures.createUserOrgProject();
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(owner),
+            body: OrganizationRequests.update({
+              id: organization.id,
+              deletedAt: new Date(),
+            }),
+          });
+          expect(response.status).toEqual(HttpStatus.OK);
+          const updated = response.body.data?.organization;
+          expect(updated.deletedAt).not.toBe(null);
+        });
+
+        it("should fail to set deletedAt if is admin", async () => {
+          const admin = await fixtures.createUser();
+          const organization = await fixtures.createOrganization(
+            {},
+            undefined,
+            [{ userId: admin.id, role: OrganizationRole.ADMIN }]
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(admin),
+            body: OrganizationRequests.update({
+              id: organization.id,
+              deletedAt: new Date(),
+            }),
+          });
+          client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
+        });
+      });
     });
 
     describe("updateOrganizationMember", () => {

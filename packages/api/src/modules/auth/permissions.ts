@@ -40,6 +40,8 @@ export const permissions: Permissions<
 
   organizationOwner({ extend, can, user }) {
     extend(Roles.organizationAdmin);
+    can(Actions.delete, Organization);
+    can(Actions.update, Organization, ["deletedAt"]);
     can(Actions.manage, OrganizationMember, { userId: { $ne: user.id } });
   },
 
@@ -53,7 +55,6 @@ export const permissions: Permissions<
     can(Actions.delete, OrganizationMember);
 
     can(Actions.update, Organization);
-    can(Actions.delete, Organization);
 
     can(Actions.create, Project);
     can(Actions.update, Project);
