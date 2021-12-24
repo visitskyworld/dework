@@ -164,6 +164,12 @@ export class PaymentPoller {
 
     const blockNumber = await provider.getBlockNumber();
     const receipt = await provider.getTransactionReceipt(payment.data.txHash);
+    this.logger.debug(
+      `Ethereum transaction receipt: ${JSON.stringify({
+        paymentId: payment.id,
+        receipt,
+      })}`
+    );
 
     const depth = blockNumber - receipt.blockNumber;
     return depth >= this.blockDepthBeforeConfirmed[PaymentMethodType.METAMASK];
@@ -177,6 +183,12 @@ export class PaymentPoller {
     const status = await connection.getSignatureStatus(payment.data.signature, {
       searchTransactionHistory: true,
     });
+    this.logger.debug(
+      `Solana signature status: ${JSON.stringify({
+        paymentId: payment.id,
+        status,
+      })}`
+    );
     return status.value?.confirmationStatus === "finalized";
   }
 
