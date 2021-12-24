@@ -181,7 +181,7 @@ export class PaymentPoller {
   }
 
   public async isGnosisSafeTxConfirmed(
-    payment: Payment<PaymentMethodType.GNOSIS_SAFE>
+    _payment: Payment<PaymentMethodType.GNOSIS_SAFE>
   ): Promise<boolean> {
     // TODO(fant: check if safeTxHash has been published and if so what it's txHash is)
     // Also figure out how to store that txHash
