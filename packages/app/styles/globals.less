@@ -394,9 +394,12 @@ textarea {
     border: 1px solid @border-color-base;
     border-top: none;
     border-radius: 0;
+    padding: 12px;
   }
 
   .w-md-editor-text {
+    padding: 0;
+    padding-bottom: 18px;
     caret-color: @text-color;
   }
   
@@ -447,16 +450,15 @@ textarea {
 .dewo-md-upload {
   background-color: unset;
 
-  &.ant-upload, &.ant-upload.ant-upload-drag-container {
-    &, .ant-upload-drag-container {
-      display: block;
-    }
-  }
-
   &.ant-upload.ant-upload-drag {
     border: none;
   }
   &.ant-upload.ant-upload-drag .ant-upload {
     padding: 0;
   }
+}
+
+.dewo-md-upload.ant-upload.ant-upload-drag .ant-upload-btn,
+.dewo-md-upload.ant-upload.ant-upload-drag .ant-upload-btn .ant-upload-drag-container {
+  display: block;
 }
