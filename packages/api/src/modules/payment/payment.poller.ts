@@ -1,14 +1,20 @@
 import { Payment, PaymentStatus } from "@dewo/api/models/Payment";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
-import { Injectable, Logger } from "@nestjs/common";
+import { Response } from "express";
+import { Controller, Logger, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as ms from "milliseconds";
+import * as solana from "@solana/web3.js";
 import moment from "moment";
+import { ethers } from "ethers";
+import { ConfigService } from "@nestjs/config";
+import { ConfigType } from "../app/config";
 
-@Injectable()
+@Controller("payment")
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);
+  private ethereumProviders: Record<string, ethers.providers.InfuraProvider>;
 
   private checkInterval: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.minutes(1),
@@ -22,10 +28,34 @@ export class PaymentPoller {
     [PaymentMethodType.GNOSIS_SAFE]: Number.MAX_SAFE_INTEGER,
   };
 
+  private blockDepthBeforeConfirmed: Record<PaymentMethodType, number> = {
+    [PaymentMethodType.METAMASK]: 3,
+    [PaymentMethodType.PHANTOM]: 3,
+    [PaymentMethodType.GNOSIS_SAFE]: 3,
+  };
+
   constructor(
     @InjectRepository(Payment)
-    private readonly paymentRepo: Repository<Payment>
-  ) {}
+    private readonly paymentRepo: Repository<Payment>,
+    readonly config: ConfigService<ConfigType>
+  ) {
+    this.ethereumProviders = {
+      "ethereum-mainnet": new ethers.providers.InfuraProvider(
+        "mainnet",
+        config.get("INFURA_PROJECT_ID")
+      ),
+      "ethereum-rinkeby": new ethers.providers.InfuraProvider(
+        "rinkeby",
+        config.get("INFURA_PROJECT_ID")
+      ),
+    };
+  }
+
+  @Post("poll")
+  async pollPayments(@Res() res: Response) {
+    await this.poll();
+    res.json({ ok: true });
+  }
 
   public async poll(): Promise<void> {
     this.logger.log("Polling for blockchain confirmations");
@@ -36,54 +66,59 @@ export class PaymentPoller {
       .leftJoinAndSelect("p.paymentMethod", "paymentMethod")
       .where("p.status = :status", { status: PaymentStatus.PROCESSING })
       .andWhere(
-        "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_DATE )"
+        "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
       )
       .getMany();
 
-    const isConfirmedFn = {
-      [PaymentMethodType.METAMASK]: this.isEthereumTxConfirmed,
-      [PaymentMethodType.PHANTOM]: this.isSolanaTxConfirmed,
-      [PaymentMethodType.GNOSIS_SAFE]: this.isGnosisSafeTxConfirmed,
-    };
-
     for (const payment of payments) {
-      const method = await payment.paymentMethod;
-      const confirmed = await isConfirmedFn[method.type](payment as any);
-      const expired = moment().isAfter(
-        moment(payment.createdAt).add(this.checkTimeout[method.type])
-      );
+      try {
+        const method = await payment.paymentMethod;
+        const confirmed = await this.isConfirmed(payment);
 
-      this.logger.log(
-        `Checked ${payment.id} of type ${method.type}: ${JSON.stringify({
-          confirmed,
-          expired,
-          data: payment.data,
-        })}`
-      );
+        const expiryTimeout = this.checkTimeout[method.type];
+        const expiresAt = moment(payment.createdAt).add(expiryTimeout);
+        const expired = moment().isAfter(expiresAt);
 
-      if (confirmed) {
-        await this.paymentRepo.update(
-          { id: payment.id },
-          { status: PaymentStatus.CONFIRMED, nextStatusCheckAt: null }
-        );
-      } else if (expired) {
-        await this.paymentRepo.update(
-          { id: payment.id },
-          { status: PaymentStatus.FAILED, nextStatusCheckAt: null }
-        );
-      } else {
-        const nextStatusCheckAt = moment()
-          .add(this.checkInterval[method.type])
-          .toDate();
         this.logger.log(
-          `Next check at: ${JSON.stringify({
-            paymentId: payment.id,
-            nextStatusCheckAt,
+          `Checked ${payment.id} of type ${method.type}: ${JSON.stringify({
+            confirmed,
+            expired,
+            data: payment.data,
           })}`
         );
-        await this.paymentRepo.update(
-          { id: payment.id },
-          { nextStatusCheckAt }
+
+        if (confirmed) {
+          await this.paymentRepo.update(
+            { id: payment.id },
+            { status: PaymentStatus.CONFIRMED, nextStatusCheckAt: null }
+          );
+        } else if (expired) {
+          await this.paymentRepo.update(
+            { id: payment.id },
+            { status: PaymentStatus.FAILED, nextStatusCheckAt: null }
+          );
+        } else {
+          const nextStatusCheckAt = moment()
+            .add(this.checkInterval[method.type])
+            .toDate();
+          this.logger.log(
+            `Next check at: ${JSON.stringify({
+              paymentId: payment.id,
+              nextStatusCheckAt,
+            })}`
+          );
+          await this.paymentRepo.update(
+            { id: payment.id },
+            { nextStatusCheckAt }
+          );
+        }
+      } catch (error) {
+        const errorString = JSON.stringify(
+          error,
+          Object.getOwnPropertyNames(error)
+        );
+        this.logger.error(
+          `Error checking payment ${payment.id}: ${errorString}`
         );
       }
     }
@@ -91,18 +126,58 @@ export class PaymentPoller {
     this.logger.log(`Found ${payments.length} payments to check`);
   }
 
+  private async isConfirmed(payment: Payment): Promise<boolean> {
+    const method = await payment.paymentMethod;
+    switch (method.type) {
+      case PaymentMethodType.METAMASK:
+        return this.isEthereumTxConfirmed(
+          payment as Payment<PaymentMethodType.METAMASK>
+        );
+      case PaymentMethodType.PHANTOM:
+        return this.isSolanaTxConfirmed(
+          payment as Payment<PaymentMethodType.PHANTOM>
+        );
+      case PaymentMethodType.GNOSIS_SAFE:
+        return this.isGnosisSafeTxConfirmed(
+          payment as Payment<PaymentMethodType.GNOSIS_SAFE>
+        );
+      default:
+        return false;
+    }
+  }
+
   public async isEthereumTxConfirmed(
     payment: Payment<PaymentMethodType.METAMASK>
   ): Promise<boolean> {
-    // TODO(fant: check status of tx on eth)
-    return false;
+    const network = await payment.network;
+    const provider = this.ethereumProviders[network.slug];
+    if (!provider) {
+      this.logger.error(
+        `No ethers provider for network ${network.slug} (${JSON.stringify({
+          paymentId: payment.id,
+          networkId: network.id,
+          networkSlug: network.slug,
+        })})`
+      );
+      return false;
+    }
+
+    const blockNumber = await provider.getBlockNumber();
+    const receipt = await provider.getTransactionReceipt(payment.data.txHash);
+
+    const depth = blockNumber - receipt.blockNumber;
+    return depth >= this.blockDepthBeforeConfirmed[PaymentMethodType.METAMASK];
   }
 
   public async isSolanaTxConfirmed(
     payment: Payment<PaymentMethodType.PHANTOM>
   ): Promise<boolean> {
-    // TODO(fant: check status of signature on solana)
-    return false;
+    const network = await payment.network;
+    const connection = new solana.Connection(network.url);
+    const status = await connection.getSignatureStatus(payment.data.signature, {
+      searchTransactionHistory: true,
+    });
+    return status.value?.confirmationStatus === "finalized";
   }
 
   public async isGnosisSafeTxConfirmed(
