@@ -67,10 +67,6 @@ export function useCreateEthereumTransaction(): (
   const switchNetwork = useSwitchChain();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
-      if (token.type !== PaymentTokenType.ETHER) {
-        throw new Error("TODO: implement Ethereum payments for other tokens");
-      }
-
       const currentAddress = await requestAddress();
       if (currentAddress !== fromAddress) {
         throw new Error(`Change Metamask Wallet address to "${fromAddress}"`);
@@ -78,13 +74,35 @@ export function useCreateEthereumTransaction(): (
 
       const signer = await requestSigner();
       await switchNetwork(network.slug);
-      const tx = await signer.sendTransaction({
-        to: toAddress,
-        from: fromAddress,
-        value: BigNumber.from(amount),
-      });
 
-      return tx.hash;
+      switch (token.type) {
+        case PaymentTokenType.ETHER: {
+          const tx = await signer.sendTransaction({
+            to: toAddress,
+            from: fromAddress,
+            value: BigNumber.from(amount),
+          });
+          return tx.hash;
+        }
+        case PaymentTokenType.ERC20:
+          // https://gist.github.com/petejkim/72421bc2cb26fad916c84864421773a4
+          const erc20Contract = new ethers.Contract(
+            token.address!,
+            [
+              "function transfer(address to, uint256 value) public returns (bool success)",
+            ],
+            signer
+          );
+          const tx = await erc20Contract.transfer(
+            toAddress,
+            BigNumber.from(amount)
+          );
+          return tx.hash;
+        default:
+          throw new Error(
+            `Ethereum payments for tokens type "${token.type}" not implemented`
+          );
+      }
     },
     [requestAddress, requestSigner, switchNetwork]
   );
