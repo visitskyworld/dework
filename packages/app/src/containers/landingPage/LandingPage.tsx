@@ -34,7 +34,7 @@ export const LandingPage: FC = () => {
   const latestTaskChunks = useMemo(
     () =>
       !!latestTasks
-        ? _.chunk(latestTasks, latestTasks.length / NUM_COLUMNS)
+        ? _.chunk(latestTasks, latestTasks.length / NUM_COLUMNS + 1)
         : [],
     [latestTasks]
   );
