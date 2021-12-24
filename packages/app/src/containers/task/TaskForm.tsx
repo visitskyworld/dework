@@ -44,6 +44,7 @@ import {
 import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
+import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { explorerLink } from "../payment/hooks";
 
 export interface TaskFormValues {
@@ -151,7 +152,6 @@ export const TaskForm: FC<TaskFormProps> = ({
     },
     []
   );
-
   return (
     <Form
       ref={formRef}
@@ -198,14 +198,10 @@ export const TaskForm: FC<TaskFormProps> = ({
             name="description"
             label={canEdit ? `Description (optional)` : "Description"}
           >
-            <Input.TextArea
-              disabled={!canEdit}
-              autoSize
-              className="dewo-field"
-              placeholder={
-                canEdit ? "Enter a description..." : "No description"
-              }
-              style={{ minHeight: 120 }}
+            <MarkdownEditor
+              initialValue={initialValues?.description ?? undefined}
+              editable={canEdit}
+              mode={mode}
             />
           </Form.Item>
 

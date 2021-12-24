@@ -386,3 +386,77 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.dewo-md-editor.w-md-editor {
+  background: transparent;
+  font-family: unset;
+
+  .w-md-editor-input {
+    border: 1px solid @border-color-base;
+    border-top: none;
+    border-radius: 0;
+  }
+
+  .w-md-editor-text {
+    caret-color: @text-color;
+  }
+  
+  .wmde-markdown-color {
+    color: @text-color-secondary;
+  }
+
+  a {
+    color: @primary-color;
+  }
+
+  textarea.w-md-editor-text-input::selection {
+    background-color: fade(@primary-color, 40%);
+  }
+  textarea.w-md-editor-text-input::-moz-selection {
+    background-color: fade(@primary-color, 40%);
+  }
+
+  .wmde-markdown {
+    font-size: unset;
+    font-family: unset;
+  }
+
+  // Disable fixed height of preview area and set it to the natural height of the content
+  .w-md-editor-bar {
+    display: none;
+  }
+
+  &, & .w-md-editor-content {
+    height: unset !important;
+
+    & .w-md-editor-preview {
+      position: unset;
+      padding: unset;
+      padding-top: 8px;
+    }
+  }
+}
+
+.dewo-md-editor-footer {
+  border: 1px solid @border-color-base;
+  border-top: none;
+  border-bottom-left-radius: @border-radius-base;
+  border-bottom-right-radius: @border-radius-base;
+  padding: 4px;
+}
+
+.dewo-md-upload {
+  background-color: unset;
+
+  &.ant-upload, &.ant-upload.ant-upload-drag-container {
+    &, .ant-upload-drag-container {
+      display: block;
+    }
+  }
+
+  &.ant-upload.ant-upload-drag {
+    border: none;
+  }
+  &.ant-upload.ant-upload-drag .ant-upload {
+    padding: 0;
+  }
+}
