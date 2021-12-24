@@ -44,4 +44,8 @@ export class Organization extends Audit {
   @Column({ default: false })
   @Field()
   public featured!: boolean;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

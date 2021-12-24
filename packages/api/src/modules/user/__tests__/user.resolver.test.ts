@@ -356,6 +356,29 @@ describe("UserResolver", () => {
         );
       });
 
+      it("should return non-deleted organizations", async () => {
+        const user = await fixtures.createUser();
+        const existingOrg = await fixtures.createOrganization({}, user);
+        const deletedOrg = await fixtures.createOrganization(
+          { deletedAt: new Date() },
+          user
+        );
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.me(),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const me = response.body.data?.me;
+        expect(me.organizations).toContainEqual(
+          expect.objectContaining({ id: existingOrg.id })
+        );
+        expect(me.organizations).not.toContainEqual(
+          expect.objectContaining({ id: deletedOrg.id })
+        );
+      });
+
       describe("permissions", () => {
         const getPermissions = async (
           user: User,

@@ -84,6 +84,9 @@ export class UserRequests {
           me {
             id
             permissions(input: $input)
+            organizations {
+              id
+            }
             tasks {
               id
               assignees {

@@ -109,6 +109,7 @@ export class OrganizationService {
       .createQueryBuilder("organization")
       .innerJoinAndSelect("organization.members", "members")
       .where("members.userId = :userId", { userId })
+      .andWhere("organization.deletedAt IS NULL")
       .getMany();
   }
 
