@@ -81,6 +81,7 @@ export class PaymentService {
     pm.type = input.type;
     pm.address = input.address;
     pm.projectId = input.projectId;
+    pm.userId = input.userId;
     // @ts-ignore
     pm.tokens = tokens;
     // @ts-ignore

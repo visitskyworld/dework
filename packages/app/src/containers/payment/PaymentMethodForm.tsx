@@ -27,7 +27,7 @@ export const networkSlugsByPaymentMethodType: Record<
 };
 
 interface Props {
-  projectId?: string;
+  inputOverride?: Partial<CreatePaymentMethodInput>;
   onDone(paymentMethod: PaymentMethod): void;
 }
 
@@ -37,7 +37,7 @@ const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.PHANTOM,
 ];
 
-export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
+export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
   const formRef = useRef<FormInstance<CreatePaymentMethodInput>>(null);
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
   const [loading, setLoading] = useState(false);
@@ -83,14 +83,14 @@ export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
         setLoading(true);
         const paymentMethod = await createPaymentMethod({
           ...values,
-          projectId,
+          ...inputOverride,
         });
         await onDone(paymentMethod);
       } finally {
         setLoading(false);
       }
     },
-    [createPaymentMethod, onDone, projectId]
+    [createPaymentMethod, onDone, inputOverride]
   );
 
   return (
@@ -165,11 +165,12 @@ export const PaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
             })()}
           </Form.Item>
         </Col>
-        {!!values.address && (
+        {!!values.address && !!selectedNetwork && (
           <Col span={24} style={{ marginBottom: 8 }}>
             <PaymentMethodSummary
               type={values.type!}
               address={values.address}
+              networkNames={selectedNetwork?.name}
               onClose={clearAddress}
             />
           </Col>

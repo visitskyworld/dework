@@ -281,7 +281,7 @@ export const userDetails = gql`
       id
       source
     }
-    paymentMethod {
+    paymentMethods {
       ...PaymentMethod
     }
   }

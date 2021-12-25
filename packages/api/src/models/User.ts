@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Length } from "class-validator";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
 import { TaskApplication } from "./TaskApplication";
@@ -31,13 +31,9 @@ export class User extends Audit {
   @Field(() => [UserDetail])
   public details!: Promise<UserDetail[]>;
 
-  @JoinColumn()
-  @ManyToOne(() => PaymentMethod, { nullable: true })
-  @Field(() => PaymentMethod, { nullable: true })
-  public paymentMethod?: Promise<PaymentMethod>;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public paymentMethodId?: string;
+  @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.user)
+  @Field(() => [PaymentMethod])
+  public paymentMethods!: Promise<PaymentMethod[]>;
 
   @OneToMany(() => TaskApplication, (taskApplication) => taskApplication.user)
   public taskApplications!: TaskApplication[];

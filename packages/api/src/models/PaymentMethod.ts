@@ -58,6 +58,14 @@ export class PaymentMethod extends Audit {
   @Field({ nullable: true })
   public projectId?: string;
 
+  @JoinColumn()
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  public user?: Promise<User>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public userId?: string;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;

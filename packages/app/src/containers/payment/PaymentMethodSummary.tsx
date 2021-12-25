@@ -6,12 +6,14 @@ import { paymentMethodTypeToString } from "./PaymentMethodForm";
 
 interface PaymentMethodSummaryProps {
   type: PaymentMethodType;
+  networkNames: string;
   address: string;
   onClose?(): void;
 }
 
 export const PaymentMethodSummary: FC<PaymentMethodSummaryProps> = ({
   type,
+  networkNames,
   address,
   onClose,
 }) => {
@@ -19,7 +21,7 @@ export const PaymentMethodSummary: FC<PaymentMethodSummaryProps> = ({
     <Alert
       message={
         <Typography.Text>
-          {paymentMethodTypeToString[type]} connected
+          {paymentMethodTypeToString[type]} connected on {networkNames}
           <Typography.Text type="secondary">
             {" "}
             ({shortenedAddress(address)})

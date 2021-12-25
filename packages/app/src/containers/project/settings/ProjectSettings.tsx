@@ -1,12 +1,11 @@
 import { Project } from "@dewo/app/graphql/types";
-import { Button, Col, Modal, Space, Typography } from "antd";
-import React, { FC, useCallback } from "react";
+import { Col, Space, Typography } from "antd";
+import React, { FC, useCallback, useMemo } from "react";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { ProjectGithubIntegration } from "./ProjectGithubIntegrations";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
-import { useToggle } from "@dewo/app/util/hooks";
-import { PaymentMethodForm } from "../../payment/PaymentMethodForm";
+import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 
 interface Props {
   project: Project;
@@ -19,8 +18,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       updatePaymentMethod({ id: pm.id, deletedAt: new Date().toISOString() }),
     [updatePaymentMethod]
   );
-
-  const addPaymentMethod = useToggle();
 
   return (
     <>
@@ -48,27 +45,22 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
               <PaymentMethodSummary
                 type={paymentMethod.type}
                 address={paymentMethod.address}
+                networkNames={paymentMethod.networks
+                  .map((n) => n.name)
+                  .join(", ")}
                 onClose={() => removePaymentMethod(paymentMethod)}
               />
             ))}
-
-            <Button onClick={addPaymentMethod.toggleOn}>
-              Add Payment Method
-            </Button>
+            <AddPaymentMethodButton
+              key={project.paymentMethods.length}
+              inputOverride={useMemo(
+                () => ({ projectId: project.id }),
+                [project.id]
+              )}
+              onDone={() => alert("refetch project")}
+            />
           </Space>
         </Col>
-        <Modal
-          key={project.paymentMethods.length}
-          visible={addPaymentMethod.isOn}
-          title="Add Payment Method"
-          footer={null}
-          onCancel={addPaymentMethod.toggleOff}
-        >
-          <PaymentMethodForm
-            projectId={project.id}
-            onDone={addPaymentMethod.toggleOff}
-          />
-        </Modal>
       </Space>
     </>
   );

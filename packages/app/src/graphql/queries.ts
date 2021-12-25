@@ -38,7 +38,7 @@ export const userPaymentMethod = gql`
   query UserPaymentMethodQuery($id: UUID!) {
     user: getUser(id: $id) {
       id
-      paymentMethod {
+      paymentMethods {
         ...PaymentMethod
       }
     }
@@ -165,7 +165,7 @@ export const tasksToPay = gql`
 
       assignees {
         ...User
-        paymentMethod {
+        paymentMethods {
           ...PaymentMethod
         }
       }

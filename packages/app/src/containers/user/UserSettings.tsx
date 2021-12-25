@@ -1,39 +1,47 @@
-import { PaymentMethod } from "@dewo/app/graphql/types";
 import { useCurrentUser } from "@dewo/app/util/hooks";
 import { Col, Space, Typography } from "antd";
-import React, { FC, useCallback } from "react";
-import { PaymentMethodForm } from "../payment/PaymentMethodForm";
+import React, { FC, useCallback, useMemo } from "react";
+import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
+import { useUpdatePaymentMethod } from "../payment/hooks";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
-import { useUpdateUser } from "./hooks";
 
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
   const user = useCurrentUser();
+  const paymentMethodOverride = useMemo(() => ({ userId: user?.id }), [user]);
 
-  const updateUser = useUpdateUser();
-  const handlePaymentMethodCreated = useCallback(
-    async (paymentMethod: PaymentMethod) => {
-      await updateUser({ paymentMethodId: paymentMethod.id });
-    },
-    [updateUser]
+  const updatePaymentMethod = useUpdatePaymentMethod();
+  const removePaymentMethod = useCallback(
+    (pm) =>
+      updatePaymentMethod({ id: pm.id, deletedAt: new Date().toISOString() }),
+    [updatePaymentMethod]
   );
-  const removePaymentMethod = useCallback(async () => {
-    await updateUser({ paymentMethodId: null });
-  }, [updateUser]);
+
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Col>
         <Typography.Title level={5}>Reward Payment Method</Typography.Title>
-        {!!user?.paymentMethod ? (
-          <PaymentMethodSummary
-            type={user.paymentMethod.type}
-            address={user.paymentMethod.address}
-            onClose={removePaymentMethod}
-          />
-        ) : (
-          <PaymentMethodForm onDone={handlePaymentMethodCreated} />
-        )}
+        <Space direction="vertical" style={{ width: "100%" }}>
+          {user?.paymentMethods.map((paymentMethod) => (
+            <PaymentMethodSummary
+              type={paymentMethod.type}
+              address={paymentMethod.address}
+              networkNames={paymentMethod.networks
+                .map((n) => n.name)
+                .join(", ")}
+              onClose={() => removePaymentMethod(paymentMethod)}
+            />
+          ))}
+
+          {!!user && (
+            <AddPaymentMethodButton
+              key={user.paymentMethods.length}
+              inputOverride={paymentMethodOverride}
+              onDone={() => alert("refetch user")}
+            />
+          )}
+        </Space>
       </Col>
     </Space>
   );

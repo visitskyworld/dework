@@ -58,7 +58,7 @@ export interface UpdateUserMutation_user_threepids {
   source: ThreepidSource;
 }
 
-export interface UpdateUserMutation_user_paymentMethod_networks {
+export interface UpdateUserMutation_user_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -67,7 +67,7 @@ export interface UpdateUserMutation_user_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UpdateUserMutation_user_paymentMethod_tokens {
+export interface UpdateUserMutation_user_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -77,13 +77,13 @@ export interface UpdateUserMutation_user_paymentMethod_tokens {
   networkId: string;
 }
 
-export interface UpdateUserMutation_user_paymentMethod {
+export interface UpdateUserMutation_user_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: UpdateUserMutation_user_paymentMethod_networks[];
-  tokens: UpdateUserMutation_user_paymentMethod_tokens[];
+  networks: UpdateUserMutation_user_paymentMethods_networks[];
+  tokens: UpdateUserMutation_user_paymentMethods_tokens[];
 }
 
 export interface UpdateUserMutation_user {
@@ -95,7 +95,7 @@ export interface UpdateUserMutation_user {
   organizations: UpdateUserMutation_user_organizations[];
   details: UpdateUserMutation_user_details[];
   threepids: UpdateUserMutation_user_threepids[];
-  paymentMethod: UpdateUserMutation_user_paymentMethod | null;
+  paymentMethods: UpdateUserMutation_user_paymentMethods[];
 }
 
 export interface UpdateUserMutation {
@@ -1622,7 +1622,7 @@ export interface MeQuery_me_threepids {
   source: ThreepidSource;
 }
 
-export interface MeQuery_me_paymentMethod_networks {
+export interface MeQuery_me_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -1631,7 +1631,7 @@ export interface MeQuery_me_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface MeQuery_me_paymentMethod_tokens {
+export interface MeQuery_me_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1641,13 +1641,13 @@ export interface MeQuery_me_paymentMethod_tokens {
   networkId: string;
 }
 
-export interface MeQuery_me_paymentMethod {
+export interface MeQuery_me_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: MeQuery_me_paymentMethod_networks[];
-  tokens: MeQuery_me_paymentMethod_tokens[];
+  networks: MeQuery_me_paymentMethods_networks[];
+  tokens: MeQuery_me_paymentMethods_tokens[];
 }
 
 export interface MeQuery_me {
@@ -1659,7 +1659,7 @@ export interface MeQuery_me {
   organizations: MeQuery_me_organizations[];
   details: MeQuery_me_details[];
   threepids: MeQuery_me_threepids[];
-  paymentMethod: MeQuery_me_paymentMethod | null;
+  paymentMethods: MeQuery_me_paymentMethods[];
 }
 
 export interface MeQuery {
@@ -1851,7 +1851,7 @@ export interface UserTasksQueryVariables {
 // GraphQL query operation: UserPaymentMethodQuery
 // ====================================================
 
-export interface UserPaymentMethodQuery_user_paymentMethod_networks {
+export interface UserPaymentMethodQuery_user_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -1860,7 +1860,7 @@ export interface UserPaymentMethodQuery_user_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UserPaymentMethodQuery_user_paymentMethod_tokens {
+export interface UserPaymentMethodQuery_user_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1870,19 +1870,19 @@ export interface UserPaymentMethodQuery_user_paymentMethod_tokens {
   networkId: string;
 }
 
-export interface UserPaymentMethodQuery_user_paymentMethod {
+export interface UserPaymentMethodQuery_user_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: UserPaymentMethodQuery_user_paymentMethod_networks[];
-  tokens: UserPaymentMethodQuery_user_paymentMethod_tokens[];
+  networks: UserPaymentMethodQuery_user_paymentMethods_networks[];
+  tokens: UserPaymentMethodQuery_user_paymentMethods_tokens[];
 }
 
 export interface UserPaymentMethodQuery_user {
   __typename: "User";
   id: Scalar.UUID;
-  paymentMethod: UserPaymentMethodQuery_user_paymentMethod | null;
+  paymentMethods: UserPaymentMethodQuery_user_paymentMethods[];
 }
 
 export interface UserPaymentMethodQuery {
@@ -2820,7 +2820,7 @@ export interface GetTasksToPayQuery_tasks_tags {
   createdAt: Scalar.DateTime;
 }
 
-export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_networks {
+export interface GetTasksToPayQuery_tasks_assignees_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -2829,7 +2829,7 @@ export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens {
+export interface GetTasksToPayQuery_tasks_assignees_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -2839,13 +2839,13 @@ export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens {
   networkId: string;
 }
 
-export interface GetTasksToPayQuery_tasks_assignees_paymentMethod {
+export interface GetTasksToPayQuery_tasks_assignees_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: GetTasksToPayQuery_tasks_assignees_paymentMethod_networks[];
-  tokens: GetTasksToPayQuery_tasks_assignees_paymentMethod_tokens[];
+  networks: GetTasksToPayQuery_tasks_assignees_paymentMethods_networks[];
+  tokens: GetTasksToPayQuery_tasks_assignees_paymentMethods_tokens[];
 }
 
 export interface GetTasksToPayQuery_tasks_assignees {
@@ -2853,7 +2853,7 @@ export interface GetTasksToPayQuery_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
-  paymentMethod: GetTasksToPayQuery_tasks_assignees_paymentMethod | null;
+  paymentMethods: GetTasksToPayQuery_tasks_assignees_paymentMethods[];
 }
 
 export interface GetTasksToPayQuery_tasks_reward_token {
@@ -4387,7 +4387,7 @@ export interface UserDetails_threepids {
   source: ThreepidSource;
 }
 
-export interface UserDetails_paymentMethod_networks {
+export interface UserDetails_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -4396,7 +4396,7 @@ export interface UserDetails_paymentMethod_networks {
   sortKey: string;
 }
 
-export interface UserDetails_paymentMethod_tokens {
+export interface UserDetails_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -4406,13 +4406,13 @@ export interface UserDetails_paymentMethod_tokens {
   networkId: string;
 }
 
-export interface UserDetails_paymentMethod {
+export interface UserDetails_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: UserDetails_paymentMethod_networks[];
-  tokens: UserDetails_paymentMethod_tokens[];
+  networks: UserDetails_paymentMethods_networks[];
+  tokens: UserDetails_paymentMethods_tokens[];
 }
 
 export interface UserDetails {
@@ -4424,7 +4424,7 @@ export interface UserDetails {
   organizations: UserDetails_organizations[];
   details: UserDetails_details[];
   threepids: UserDetails_threepids[];
-  paymentMethod: UserDetails_paymentMethod | null;
+  paymentMethods: UserDetails_paymentMethods[];
 }
 
 /* tslint:disable */
@@ -4815,6 +4815,7 @@ export interface CreatePaymentMethodInput {
   networkId: Scalar.UUID;
   tokenIds: Scalar.UUID[];
   projectId?: Scalar.UUID | null;
+  userId?: Scalar.UUID | null;
 }
 
 export interface CreateProjectInput {

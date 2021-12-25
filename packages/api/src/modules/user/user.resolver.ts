@@ -27,6 +27,7 @@ import { TaskRolesGuard } from "../task/task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "../organization/organization.service";
 import { SetUserDetailInput } from "./dto/SetUserDetail";
+import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 
 @Resolver(() => User)
 @Injectable()
@@ -46,6 +47,13 @@ export class UserResolver {
   @ResolveField(() => [Organization])
   public async organizations(@Parent() user: User): Promise<Organization[]> {
     return this.organizationService.findByUser(user.id);
+  }
+
+  @ResolveField(() => [PaymentMethod])
+  public async paymentMethods(@Parent() user: User): Promise<PaymentMethod[]> {
+    // TODO(fant): query project PMs and filter by deletedAt directly
+    const pms = await user.paymentMethods;
+    return pms.filter((p) => !p.deletedAt);
   }
 
   @Mutation(() => User)
