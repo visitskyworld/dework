@@ -1,6 +1,7 @@
 import { Task } from "@dewo/api/models/Task";
 import { Injectable } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
+import _ from "lodash";
 import {
   Connection,
   EntitySubscriberInterface,
@@ -24,7 +25,8 @@ export class SubscriptionTypeormSubscriber
   }
 
   async afterInsert(event: InsertEvent<ObjectLiteral>) {
-    if (!!event.entity) {
+    const entity = event.entity;
+    if (!!entity.id) {
       const eventName = `on${event.metadata.name}Created`;
       const entity = await event.manager.findOne(event.metadata.name, {
         id: event.entity.id,
@@ -34,12 +36,13 @@ export class SubscriptionTypeormSubscriber
   }
 
   async afterUpdate(event: UpdateEvent<unknown>) {
-    if (!!event.entity) {
+    const entity = _.merge({}, event.databaseEntity, event.entity);
+    if (!!entity?.id) {
       const eventName = `on${event.metadata.name}Updated`;
-      const entity = await event.manager.findOne(event.metadata.name, {
-        id: event.entity.id,
+      const fetched = await event.manager.findOne(event.metadata.name, {
+        id: entity.id,
       });
-      this.pubsub.publish(eventName, { [eventName]: entity });
+      this.pubsub.publish(eventName, { [eventName]: fetched });
     }
   }
 }

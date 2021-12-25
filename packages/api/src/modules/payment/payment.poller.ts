@@ -88,15 +88,17 @@ export class PaymentPoller {
         );
 
         if (confirmed) {
-          await this.paymentRepo.update(
-            { id: payment.id },
-            { status: PaymentStatus.CONFIRMED, nextStatusCheckAt: null }
-          );
+          await this.paymentRepo.save({
+            ...payment,
+            status: PaymentStatus.CONFIRMED,
+            nextStatusCheckAt: null,
+          });
         } else if (expired) {
-          await this.paymentRepo.update(
-            { id: payment.id },
-            { status: PaymentStatus.FAILED, nextStatusCheckAt: null }
-          );
+          await this.paymentRepo.save({
+            ...payment,
+            status: PaymentStatus.FAILED,
+            nextStatusCheckAt: null,
+          });
         } else {
           const nextStatusCheckAt = moment()
             .add(this.checkInterval[method.type])
@@ -107,10 +109,7 @@ export class PaymentPoller {
               nextStatusCheckAt,
             })}`
           );
-          await this.paymentRepo.update(
-            { id: payment.id },
-            { nextStatusCheckAt }
-          );
+          await this.paymentRepo.save({ ...payment, nextStatusCheckAt });
         }
       } catch (error) {
         const errorString = JSON.stringify(
