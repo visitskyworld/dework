@@ -157,7 +157,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Button>
             </Form.Item>
           )}
-          {/* {mode === "update" && <Divider />} */}
 
           {!!task?.discordChannel && (
             <FormSection label="Discord">
