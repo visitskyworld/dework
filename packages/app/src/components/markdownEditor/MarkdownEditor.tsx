@@ -13,6 +13,7 @@ interface MarkdownEditorProps {
   initialValue?: string | undefined;
   editable: boolean;
   mode: "create" | "update";
+  autoSave?: boolean;
   onChange?(description: string | undefined): void;
   onSave?(): void;
 }
@@ -41,6 +42,14 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     setValue(savedValue);
     editing.toggleOn();
   }, [savedValue, editing]);
+
+  const handleChange = useCallback(
+    (description: string | undefined) => {
+      setValue(description);
+      if (mode === "create") onChange?.(value);
+    },
+    [mode, onChange, value]
+  );
 
   const replaceMarkdownImgPlaceholder = useCallback(
     (placeholderText: string, url: string) =>
@@ -138,7 +147,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
       >
         <MDEditor
           value={value}
-          onChange={setValue}
+          onChange={handleChange}
           className="dewo-md-editor"
           highlightEnable={false}
           hideToolbar
@@ -148,8 +157,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
           textareaProps={{ placeholder: "Enter a description..." }}
           onPaste={handleFilePaste}
           onBlur={stopPropagation}
-          onSave={handleSave}
-          onCancel={editing.toggleOff}
+          onSave={mode === "update" ? handleSave : undefined}
+          onCancel={mode === "update" ? editing.toggleOff : undefined}
         />
       </Upload.Dragger>
     );
@@ -160,6 +169,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         {!!editable && (
           <Button
             size="small"
+            type="ghost"
             icon={<Icons.EditOutlined />}
             style={{ marginTop: 8 }}
             onClick={handleEdit}

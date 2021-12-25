@@ -25,17 +25,21 @@ export const MDEditor = dynamic<Props>(
                 >
                   Markdown formatting and file drag-and-drop supported
                 </Typography.Text>
-                <Button
-                  size="small"
-                  type="text"
-                  style={{ marginRight: 8 }}
-                  onClick={props.onCancel}
-                >
-                  <Typography.Text type="secondary">Cancel</Typography.Text>
-                </Button>
-                <Button size="small" type="primary" onClick={props.onSave}>
-                  Save
-                </Button>
+                {!!props.onCancel && (
+                  <Button
+                    size="small"
+                    type="text"
+                    style={{ marginRight: 8 }}
+                    onClick={props.onCancel}
+                  >
+                    <Typography.Text type="secondary">Cancel</Typography.Text>
+                  </Button>
+                )}
+                {!!props.onSave && (
+                  <Button size="small" type="primary" onClick={props.onSave}>
+                    Save
+                  </Button>
+                )}
               </Row>
             </div>
           )}
