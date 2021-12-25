@@ -53,7 +53,7 @@ export const TaskForm: FC<TaskFormProps> = ({
     initialValues ?? {}
   );
   const canEdit = usePermission(mode, !!task ? task : "Task");
-  const canDelete = usePermission("delete", !!task ? task : "Task");
+  // const canDelete = usePermission("delete", !!task ? task : "Task");
 
   const ownerOptions = useTaskFormUserOptions(
     projectId,
