@@ -1,6 +1,12 @@
-import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import {
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
+import * as Subscriptions from "@dewo/app/graphql/subscriptions";
 import {
   CreateTaskApplicationInput,
   CreateTaskMutation,
@@ -31,6 +37,8 @@ import {
   GetTasksInput,
   GetTasksQuery,
   GetTasksQueryVariables,
+  TaskCreatedSubscription,
+  TaskUpdatedSubscription,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -304,20 +312,19 @@ export function useTasks(input: GetTasksInput): Task[] | undefined {
 }
 
 export function useListenToTasks() {
-  // TODO(fant): reenable this once we've moved away from Cloud Run
-  // const addTaskToApolloCache = useAddTaskToApolloCache();
-  // useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
-  //   onSubscriptionData(options) {
-  //     const task = options.subscriptionData.data?.task;
-  //     if (!!task) addTaskToApolloCache(task);
-  //   },
-  // });
-  // useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
-  //   onSubscriptionData(options) {
-  //     const task = options.subscriptionData.data?.task;
-  //     if (!!task) addTaskToApolloCache(task);
-  //   },
-  // });
+  const addTaskToApolloCache = useAddTaskToApolloCache();
+  useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
+    onSubscriptionData(options) {
+      const task = options.subscriptionData.data?.task;
+      if (!!task) addTaskToApolloCache(task);
+    },
+  });
+  useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
+    onSubscriptionData(options) {
+      const task = options.subscriptionData.data?.task;
+      if (!!task) addTaskToApolloCache(task);
+    },
+  });
 }
 
 export function useTaskFormUserOptions(

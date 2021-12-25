@@ -5,6 +5,7 @@ import Head from "next/head";
 import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
 import { getDataFromTree } from "@apollo/react-ssr";
+import { WebSocketLink } from "@apollo/client/link/ws";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
 import {
   Constants,
@@ -17,6 +18,7 @@ import {
   InMemoryCache,
   ApolloProvider,
   ApolloLink,
+  split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getAuthToken } from "@dewo/app/util/authToken";
@@ -29,6 +31,7 @@ import { useRouter } from "next/router";
 import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 if (typeof window !== "undefined") {
   const { ID, version } = Constants.hotjarConfig;
@@ -144,30 +147,28 @@ function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
 
-  return authLink.concat(httpLink);
+  if (typeof window === "undefined") {
+    return authLink.concat(httpLink);
+  }
 
-  // if (typeof window === "undefined") {
-  //   return authLink.concat(httpLink);
-  // }
+  const wsLink = new WebSocketLink({
+    uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
+    options: { reconnect: true },
+  });
 
-  // const wsLink = new WebSocketLink({
-  //   uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
-  //   options: { reconnect: true },
-  // });
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink,
+    httpLink
+  );
 
-  // const splitLink = split(
-  //   ({ query }) => {
-  //     const definition = getMainDefinition(query);
-  //     return (
-  //       definition.kind === "OperationDefinition" &&
-  //       definition.operation === "subscription"
-  //     );
-  //   },
-  //   wsLink,
-  //   httpLink
-  // );
-
-  // return authLink.concat(splitLink);
+  return authLink.concat(splitLink);
 }
 
 export default withApollo(
