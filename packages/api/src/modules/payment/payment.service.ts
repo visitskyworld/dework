@@ -73,7 +73,9 @@ export class PaymentService {
     user: User
   ): Promise<PaymentMethod> {
     const [tokens, networks] = await Promise.all([
-      this.paymentTokenRepo.find({ id: In(input.tokenIds) }),
+      !!input.tokenIds?.length
+        ? this.paymentTokenRepo.find({ id: In(input.tokenIds) })
+        : ([] as PaymentToken[]),
       this.paymentNetworkRepo.find({ id: input.networkId }),
     ]);
 

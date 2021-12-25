@@ -28,6 +28,7 @@ export const networkSlugsByPaymentMethodType: Record<
 
 interface Props {
   inputOverride?: Partial<CreatePaymentMethodInput>;
+  selectTokens?: boolean;
   onDone(paymentMethod: PaymentMethod): void;
 }
 
@@ -37,7 +38,11 @@ const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.PHANTOM,
 ];
 
-export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
+export const PaymentMethodForm: FC<Props> = ({
+  inputOverride,
+  selectTokens,
+  onDone,
+}) => {
   const formRef = useRef<FormInstance<CreatePaymentMethodInput>>(null);
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
   const [loading, setLoading] = useState(false);
@@ -55,27 +60,6 @@ export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
     [networks, values.networkId]
   );
 
-  const handleChange = useCallback(
-    (
-      changed: Partial<CreatePaymentMethodInput>,
-      values: Partial<CreatePaymentMethodInput>
-    ) => {
-      if (!!changed.type) values.networkId = undefined;
-      if (!!changed.networkId) values.address = undefined;
-      if (!!changed.networkId) values.tokenIds = [];
-
-      setValues(values);
-      formRef.current?.setFieldsValue(values);
-    },
-    []
-  );
-
-  const clearAddress = useCallback(
-    () =>
-      handleChange({ address: undefined }, { ...values, address: undefined }),
-    [handleChange, values]
-  );
-
   const createPaymentMethod = useCreatePaymentMethod();
   const submitForm = useCallback(
     async (values: CreatePaymentMethodInput) => {
@@ -91,6 +75,31 @@ export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
       }
     },
     [createPaymentMethod, onDone, inputOverride]
+  );
+
+  const handleChange = useCallback(
+    (
+      changed: Partial<CreatePaymentMethodInput>,
+      values: Partial<CreatePaymentMethodInput>
+    ) => {
+      if (!!changed.type) values.networkId = undefined;
+      if (!!changed.networkId) values.address = undefined;
+      if (!!changed.networkId) values.tokenIds = [];
+
+      setValues(values);
+      formRef.current?.setFieldsValue(values);
+
+      if (!!changed.address && !selectTokens) {
+        submitForm(values as CreatePaymentMethodInput);
+      }
+    },
+    [selectTokens, submitForm]
+  );
+
+  const clearAddress = useCallback(
+    () =>
+      handleChange({ address: undefined }, { ...values, address: undefined }),
+    [handleChange, values]
   );
 
   return (
@@ -165,7 +174,7 @@ export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
             })()}
           </Form.Item>
         </Col>
-        {!!values.address && !!selectedNetwork && (
+        {!!values.address && !!selectedNetwork && selectTokens && (
           <Col span={24} style={{ marginBottom: 8 }}>
             <PaymentMethodSummary
               type={values.type!}
@@ -176,7 +185,7 @@ export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
           </Col>
         )}
 
-        {!!values.address && (
+        {!!values.address && selectTokens && (
           <Col span={24}>
             <Form.Item
               name="tokenIds"
@@ -209,7 +218,7 @@ export const PaymentMethodForm: FC<Props> = ({ inputOverride, onDone }) => {
             </Form.Item>
           </Col>
         )}
-        {!!values.address && (
+        {!!values.address && selectTokens && (
           <Col span={24}>
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={loading}>
