@@ -65,15 +65,25 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     [user?.details]
   );
 
-  const onSubmit = async (values: InititalValues) => {
-    loading.toggleOn();
-    Object.entries(values).forEach(async ([type, value]) => {
-      await updateUserDetail({ type: type as UserDetailType, value });
-    });
-    editing.toggleOff();
-    loading.toggleOff();
-    message.success("Profile updated!");
-  };
+  const onSubmit = useCallback(
+    async (values: InititalValues) => {
+      try {
+        loading.toggleOn();
+        await Promise.all(
+          Object.entries(values).map(([type, value]) =>
+            updateUserDetail({ type: type as UserDetailType, value })
+          )
+        );
+        message.success("Profile updated!");
+      } catch {
+        message.error("Failed to update user details");
+      } finally {
+        editing.toggleOff();
+        loading.toggleOff();
+      }
+    },
+    [editing, loading, updateUserDetail]
+  );
 
   if (!user) return null;
 

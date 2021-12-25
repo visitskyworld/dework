@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
-import { Form, Avatar, Input, Space, Typography } from "antd";
+import { Form, Avatar, Input, Space, Typography, Row } from "antd";
 
 import { UserDetailType, UserDetail } from "../../graphql/types";
 
@@ -30,27 +30,25 @@ export const UserDetails: FC<UserDetailsProps> = ({
   userDetails,
 }) => {
   const locationDetail = useMemo(
-    () =>
-      userDetails.find(
-        (detail) =>
-          detail.type === UserDetailType.location && detail.value !== ""
-      ),
+    () => userDetails.find((detail) => detail.type === UserDetailType.location),
     [userDetails]
   );
+
+  if (userDetails.length === 0 && !isEditMode) return null;
 
   if (isEditMode) {
     return (
       <Space direction="vertical" style={{ width: "100%" }}>
         {Object.values(UserDetailType).map((type) => (
-          <div key={type} style={{ display: "flex", alignItems: "center" }}>
+          <Row align="middle">
             {iconByType[type]}
-            <Form.Item name={type} style={{ flex: 1, margin: "0 0 0 7px" }}>
+            <Form.Item name={type} style={{ flex: 1, margin: "0 0 0 8px" }}>
               <Input
                 placeholder={placeholderByType[type]}
                 className="dewo-field dewo-field-profile ant-typography-p"
               />
             </Form.Item>
-          </div>
+          </Row>
         ))}
       </Space>
     );
