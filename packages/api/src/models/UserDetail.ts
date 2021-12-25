@@ -6,9 +6,9 @@ import { User } from "./User";
 export enum UserDetailType {
   twitter = "twitter",
   linkedin = "linkedin",
-  location = "location",
   website = "website",
   github = "github",
+  location = "location",
 }
 
 registerEnumType(UserDetailType, { name: "UserDetailType" });

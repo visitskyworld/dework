@@ -9,7 +9,7 @@ const iconByType: Record<UserDetailType, JSX.Element> = {
   [UserDetailType.github]: <Icons.GithubOutlined />,
   [UserDetailType.linkedin]: <Icons.LinkedinFilled />,
   [UserDetailType.website]: <Icons.LinkOutlined />,
-  [UserDetailType.country]: <Icons.FlagOutlined />,
+  [UserDetailType.location]: <Icons.FlagOutlined />,
 };
 
 const placeholderByType: Record<UserDetailType, string> = {
@@ -17,7 +17,7 @@ const placeholderByType: Record<UserDetailType, string> = {
   [UserDetailType.github]: "https://github.com/vbuterin",
   [UserDetailType.linkedin]: "https://www.linkedin.com/in/balajissrinivasan",
   [UserDetailType.website]: "https://my-site.com",
-  [UserDetailType.country]: "Lisbon, Portugal",
+  [UserDetailType.location]: "Lisbon, Portugal",
 };
 
 interface UserDetailsProps {
@@ -29,11 +29,11 @@ export const UserDetails: FC<UserDetailsProps> = ({
   isEditMode,
   userDetails,
 }) => {
-  const countryDetail = useMemo(
+  const locationDetail = useMemo(
     () =>
       userDetails.find(
         (detail) =>
-          detail.type === UserDetailType.country && detail.value !== ""
+          detail.type === UserDetailType.location && detail.value !== ""
       ),
     [userDetails]
   );
@@ -60,21 +60,21 @@ export const UserDetails: FC<UserDetailsProps> = ({
     <Space>
       {userDetails.map(
         (detail, index) =>
-          detail.type !== UserDetailType.country && (
+          detail.type !== UserDetailType.location && (
             <a href={detail.value} target="_blank" key={index} rel="noreferrer">
               <Avatar size="small">{iconByType[detail.type]}</Avatar>
             </a>
           )
       )}
-      {countryDetail && (
+      {locationDetail && (
         <>
-          {iconByType[countryDetail.type]}
+          {iconByType[locationDetail.type]}
           <Typography.Text
             type="secondary"
             ellipsis
             style={{ maxWidth: "160px" }}
           >
-            {countryDetail.value}
+            {locationDetail.value}
           </Typography.Text>
         </>
       )}
