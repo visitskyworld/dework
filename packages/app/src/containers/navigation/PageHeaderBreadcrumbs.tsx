@@ -4,6 +4,7 @@ import { Button, Row, Skeleton, Breadcrumb } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { MobileHeader } from "./header/MobileHeader";
+import { useRouter } from "next/router";
 
 const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
   const last = routes.indexOf(route) === routes.length - 1;
@@ -22,6 +23,7 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
   routes,
 }) => {
   const { user } = useAuthContext();
+  const router = useRouter();
 
   return (
     <Skeleton loading={!routes} active title={false} paragraph={{ rows: 1 }}>
@@ -38,7 +40,7 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
         >
           <Breadcrumb itemRender={itemRender} routes={routes} />
           {!user && (
-            <Button type="primary" href="/auth">
+            <Button type="primary" href={`/auth?redirect=${router.asPath}`}>
               Sign in
             </Button>
           )}

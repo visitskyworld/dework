@@ -25,7 +25,7 @@ export const JoinOrganizationButton: FC<Props> = ({ organizationId }) => {
   const updateOrganizationMember = useUpdateOrganizationMember();
   const joinOrganization = useCallback(async () => {
     if (!user) {
-      router.push("/auth");
+      router.push(`/auth?redirect=${router.asPath}`);
       return;
     }
 
