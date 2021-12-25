@@ -102,7 +102,7 @@ export class UserService {
   ): Promise<void> {
     const location = this.threepidService.getLocation(threePid);
     if (location) {
-      this.setDetail(
+      await this.setDetail(
         { type: UserDetailType.location, value: location },
         userId
       );
@@ -110,7 +110,7 @@ export class UserService {
     if (threePid.source === "github") {
       const githubProfileUrl = (threePid.config as GithubThreepidConfig).profile
         .profileUrl;
-      this.setDetail(
+      await this.setDetail(
         { type: UserDetailType.github, value: githubProfileUrl },
         userId
       );
