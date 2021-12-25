@@ -89,13 +89,13 @@ export class ThreepidService {
       case ThreepidSource.discord:
         const locale = (threepid as Threepid<ThreepidSource.discord>).config
           .profile.locale;
+        if (!locale) return undefined;
         return LocaleCode.getCountryName(locale);
       case ThreepidSource.github:
         const githubThreepidConfigProfileJson = (
           threepid as Threepid<ThreepidSource.github>
         ).config.profile._json as GithubThreepidConfigProfileJson;
-        if (!githubThreepidConfigProfileJson?.location) return undefined;
-        return githubThreepidConfigProfileJson.location;
+        return githubThreepidConfigProfileJson?.location;
     }
   }
 }

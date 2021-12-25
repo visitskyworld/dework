@@ -53,8 +53,8 @@ export class UserService {
       ...existingUser,
     });
 
-    await this.autoPopulateDetails(user.id, threepid);
     await this.connectThreepidToUser(threepid, user);
+    await this.autoPopulateDetails(user.id, threepid);
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
 

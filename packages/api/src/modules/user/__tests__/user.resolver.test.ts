@@ -15,7 +15,6 @@ import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
-import { UserDetail } from "../../../../../app/src/graphql/types";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -188,12 +187,12 @@ describe("UserResolver", () => {
         });
       });
 
-      it("should auto-add location & github details on 1st signup", async () => {
+      it("should auto-add location & github profile url on 1st github auth", async () => {
         const threepid = await fixtures.createThreepid({
           source: ThreepidSource.github,
           config: {
             profile: {
-              profileUrl: "my-site.com",
+              profileUrl: "github.com/my-url",
               _json: { location: "London" },
             },
           } as GithubThreepidConfig,
@@ -208,18 +207,19 @@ describe("UserResolver", () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         const updatedUser = response.body.data?.authWithThreepid.user;
-        console.log(updatedUser);
-        expect(updatedUser.details.length).toEqual(2);
-        expect(
-          updatedUser.details.find(
-            (d: UserDetail) => d.type === UserDetailType.location
-          ).value
-        ).toEqual("London");
-        expect(
-          updatedUser.details.find(
-            (d: UserDetail) => d.type === UserDetailType.github
-          ).value
-        ).toEqual("my-site.com");
+        expect(updatedUser.details).toHaveLength(2);
+        expect(updatedUser.details).toContainEqual(
+          expect.objectContaining({
+            type: UserDetailType.location,
+            value: "London",
+          })
+        );
+        expect(updatedUser.details).toContainEqual(
+          expect.objectContaining({
+            type: UserDetailType.github,
+            value: "github.com/my-url",
+          })
+        );
       });
     });
 
