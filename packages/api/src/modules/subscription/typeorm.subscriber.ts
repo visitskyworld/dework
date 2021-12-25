@@ -26,7 +26,7 @@ export class SubscriptionTypeormSubscriber
 
   async afterInsert(event: InsertEvent<ObjectLiteral>) {
     const entity = event.entity;
-    if (!!entity.id) {
+    if (!!entity?.id) {
       const eventName = `on${event.metadata.name}Created`;
       const entity = await event.manager.findOne(event.metadata.name, {
         id: event.entity.id,
