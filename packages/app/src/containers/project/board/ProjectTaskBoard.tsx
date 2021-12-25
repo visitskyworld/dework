@@ -9,11 +9,5 @@ interface Props {
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
   const project = useProjectTasks(projectId, "cache-and-network");
   if (!project) return null;
-  return (
-    <TaskBoard
-      tasks={project.tasks}
-      tags={project.taskTags}
-      projectId={projectId}
-    />
-  );
+  return <TaskBoard tasks={project.tasks} projectId={projectId} />;
 };

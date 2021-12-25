@@ -4,7 +4,7 @@ import { Button, Card, Badge, Space, Typography, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
+import { TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
@@ -14,7 +14,6 @@ import { TaskFormValues } from "../../task/TaskForm";
 interface Props {
   status: TaskStatusEnum;
   taskSections: TaskSection[];
-  tags: TaskTag[];
   width: number;
   projectId?: string;
 }
@@ -22,7 +21,6 @@ interface Props {
 export const TaskBoardColumn: FC<Props> = ({
   status,
   taskSections,
-  tags,
   width,
   projectId,
 }) => {
@@ -65,7 +63,6 @@ export const TaskBoardColumn: FC<Props> = ({
     >
       {!!projectId && (
         <TaskCreateModal
-          tags={tags}
           projectId={projectId}
           initialValues={initialValues}
           visible={createCardToggle.isOn}

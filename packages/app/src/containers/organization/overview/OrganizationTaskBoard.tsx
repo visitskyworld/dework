@@ -1,5 +1,4 @@
-import _ from "lodash";
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import { TaskBoard } from "../../project/board/TaskBoard";
 import { useOrganizationTasks } from "../hooks";
 
@@ -12,14 +11,6 @@ export const OrganizationTaskBoard: FC<Props> = ({ organizationId }) => {
     organizationId,
     "cache-and-network"
   );
-  const taskTags = useMemo(
-    () =>
-      _(organization?.projects)
-        .map((p) => p.taskTags)
-        .flatten()
-        .value(),
-    [organization?.projects]
-  );
   if (!organization) return null;
-  return <TaskBoard tasks={organization.tasks} tags={taskTags} />;
+  return <TaskBoard tasks={organization.tasks} />;
 };

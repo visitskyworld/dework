@@ -1,8 +1,5 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from "react";
-import _ from "lodash";
-import * as Icons from "@ant-design/icons";
 import {
-  Tag,
   Form,
   Button,
   Input,
@@ -11,32 +8,15 @@ import {
   Row,
   Typography,
   Col,
-  ConfigProvider,
-  Empty,
   Divider,
 } from "antd";
-import {
-  TaskStatusEnum,
-  User,
-  TaskDetails,
-  TaskTag,
-  TaskRewardTrigger,
-} from "@dewo/app/graphql/types";
+import { TaskStatusEnum, User, TaskDetails } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
-import {
-  formatTaskReward,
-  useCreateTaskTag,
-  useGenerateRandomTaskTagColor,
-  useTaskFormUserOptions,
-} from "./hooks";
-import { TaskDeleteButton } from "./TaskDeleteButton";
+import { useTaskFormUserOptions } from "./hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
-  paymentStatusToColor,
-  paymentStatusToString,
-  rewardTriggerToString,
   TaskRewardFormFields,
   TaskRewardFormValues,
   validator as validateTaskReward,
@@ -45,7 +25,8 @@ import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
-import { explorerLink } from "../payment/hooks";
+import { TaskRewardSummary } from "./TaskRewardSummary";
+import { TaskTagSelectField } from "./TaskTagSelectField";
 
 export interface TaskFormValues {
   name: string;
@@ -62,7 +43,6 @@ interface TaskFormProps {
   mode: "create" | "update";
   projectId: string;
   task?: TaskDetails;
-  tags: TaskTag[];
   buttonText: string;
   initialValues?: Partial<TaskFormValues>;
   assignees?: User[];
@@ -72,7 +52,6 @@ interface TaskFormProps {
 export const TaskForm: FC<TaskFormProps> = ({
   mode,
   task,
-  tags,
   projectId,
   buttonText,
   initialValues,
@@ -82,7 +61,6 @@ export const TaskForm: FC<TaskFormProps> = ({
   const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
   );
-  const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
   const canEdit = usePermission(mode, !!task ? task : "Task");
   const canDelete = usePermission("delete", !!task ? task : "Task");
 
@@ -109,43 +87,6 @@ export const TaskForm: FC<TaskFormProps> = ({
     [onSubmit]
   );
 
-  const [tagLoading, setTagLoading] = useState(false);
-  const createTaskTag = useCreateTaskTag();
-  const generateRandomTaskTagColor = useGenerateRandomTaskTagColor(tags);
-  const handleTagsUpdated = useCallback(
-    async (labels: string[]) => {
-      const [existingTagIds, newTagLabels] = _.partition(
-        labels,
-        (existingIdOrNewLabel) => !!tagById[existingIdOrNewLabel]
-      );
-
-      if (tagLoading && !!newTagLabels.length) {
-        // @ts-ignore
-        formRef.current?.setFieldsValue({ tagIds: existingTagIds });
-        return;
-      }
-
-      try {
-        setTagLoading(true);
-        const tagPs = newTagLabels.map((label) =>
-          createTaskTag({
-            label,
-            projectId,
-            color: generateRandomTaskTagColor(),
-          })
-        );
-        const tags = await Promise.all(tagPs);
-        // @ts-ignore
-        formRef.current?.setFieldsValue({
-          tagIds: [...existingTagIds, ...tags.map((t) => t.id)],
-        });
-      } finally {
-        setTagLoading(false);
-      }
-    },
-    [createTaskTag, tagLoading, tagById, generateRandomTaskTagColor, projectId]
-  );
-
   const handleChange = useCallback(
     (_changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
       setValues(values);
@@ -156,7 +97,7 @@ export const TaskForm: FC<TaskFormProps> = ({
     <Form
       ref={formRef}
       layout="vertical"
-      initialValues={{ reward: { currency: "ETH" }, ...initialValues }}
+      initialValues={initialValues}
       requiredMark={false}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
@@ -218,7 +159,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Button>
             </Form.Item>
           )}
-          <Divider />
+          {mode === "update" && <Divider />}
 
           {!!task?.discordChannel && (
             <FormSection label="Discord">
@@ -264,36 +205,8 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <ConfigProvider
-            renderEmpty={() => (
-              <Empty description="Create your first tag by typing..." />
-            )}
-          >
-            <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
-              <Select
-                mode="tags"
-                disabled={!canEdit}
-                loading={tagLoading}
-                optionFilterProp="label"
-                optionLabelProp="label" // don't put children inside tagRender
-                placeholder={canEdit ? "Select tags..." : "No tags..."}
-                onChange={handleTagsUpdated}
-                tagRender={(props) => (
-                  <Tag
-                    {...props}
-                    color={tagById[props.value as string]?.color}
-                    children={props.label}
-                  />
-                )}
-              >
-                {tags.map((tag) => (
-                  <Select.Option key={tag.id} value={tag.id} label={tag.label}>
-                    <Tag color={tag.color}>{tag.label}</Tag>
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </ConfigProvider>
+          <TaskTagSelectField disabled={!canEdit} projectId={projectId} />
+
           <Form.Item
             name="assigneeIds"
             label={"Assignees"}
@@ -322,7 +235,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
-          {/* )} */}
           <Form.Item name="ownerId" label="Reviewer">
             <Select
               showSearch
@@ -356,53 +268,14 @@ export const TaskForm: FC<TaskFormProps> = ({
               />
             </Form.Item>
           ) : (
-            !!task?.reward && (
-              <FormSection label="Reward">
-                <Row>
-                  <Typography.Text>
-                    {formatTaskReward(task.reward)} (
-                    {
-                      rewardTriggerToString[
-                        TaskRewardTrigger.CORE_TEAM_APPROVAL
-                      ]
-                    }
-                    )
-                  </Typography.Text>
-                </Row>
-                {!!task.reward.payment && (
-                  <>
-                    <Row>
-                      <Tag
-                        color={paymentStatusToColor[task.reward.payment.status]}
-                      >
-                        {paymentStatusToString[task.reward.payment.status]}
-                      </Tag>
-                    </Row>
-                    <Row>
-                      <a
-                        target="_blank"
-                        href={explorerLink(task.reward.payment)}
-                        rel="noreferrer"
-                      >
-                        <Typography.Text
-                          type="secondary"
-                          className="ant-typography-caption"
-                        >
-                          View on explorer <Icons.ExportOutlined />
-                        </Typography.Text>
-                      </a>
-                    </Row>
-                  </>
-                )}
-              </FormSection>
-            )
+            !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
 
-          {canDelete && mode === "update" && !!task && (
+          {/* {canDelete && mode === "update" && !!task && (
             <FormSection label="Actions">
               <TaskDeleteButton task={task} />
             </FormSection>
-          )}
+          )} */}
         </Col>
       </Row>
     </Form>

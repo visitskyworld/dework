@@ -112,13 +112,22 @@ export const projectTasks = gql`
       tasks {
         ...Task
       }
+    }
+  }
+
+  ${Fragments.task}
+`;
+
+export const projectTaskTags = gql`
+  query GetProjectTaskTagsQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      id
       taskTags {
         ...TaskTag
       }
     }
   }
 
-  ${Fragments.task}
   ${Fragments.taskTag}
 `;
 

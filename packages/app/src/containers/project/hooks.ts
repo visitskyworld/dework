@@ -13,11 +13,12 @@ import {
   GetProjectTasksQueryVariables,
   Project,
   ProjectIntegration,
+  TaskTag,
   UpdateProjectInput,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
 } from "@dewo/app/graphql/types";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
 export function useCreateProject(): (
@@ -72,6 +73,17 @@ export function useProjectTasks(
   >(Queries.projectTasks, { variables: { projectId }, fetchPolicy });
   useListenToTasks();
   return data?.project ?? undefined;
+}
+
+export function useProjectTaskTags(projectId: string): TaskTag[] {
+  const { data } = useQuery<
+    GetProjectTasksQuery,
+    GetProjectTasksQueryVariables
+  >(Queries.projectTaskTags, { variables: { projectId } });
+  return useMemo(
+    () => data?.project?.taskTags ?? [],
+    [data?.project?.taskTags]
+  );
 }
 
 export function useProjectIntegrations(

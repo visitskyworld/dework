@@ -1,4 +1,4 @@
-import { Task, TaskStatusEnum, TaskTag } from "@dewo/app/graphql/types";
+import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, { FC, useEffect, useCallback, useState } from "react";
 import {
@@ -20,15 +20,13 @@ const statuses: TaskStatusEnum[] = [
 
 interface Props {
   tasks: Task[];
-  tags?: TaskTag[];
   projectId?: string;
 }
 
 const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
-const noTags: TaskTag[] = [];
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId, tags = noTags }) => {
+export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
   const updateTask = useUpdateTask();
@@ -89,7 +87,6 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, tags = noTags }) => {
               <div key={status} style={{ width: columnWidth }}>
                 <TaskBoardColumn
                   status={status}
-                  tags={tags}
                   width={columnWidth}
                   taskSections={taskSectionsByStatus[status] ?? emptySections}
                   projectId={projectId}

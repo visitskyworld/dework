@@ -62,7 +62,6 @@ export const TaskUpdateModal: FC<Props> = ({
           key={JSON.stringify(initialValues)}
           mode="update"
           task={task}
-          tags={task!.project.taskTags ?? []}
           projectId={task!.projectId}
           initialValues={initialValues}
           assignees={task!.assignees}
