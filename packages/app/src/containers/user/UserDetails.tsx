@@ -10,7 +10,7 @@ const iconByType: Record<UserDetailType, JSX.Element> = {
   [UserDetailType.github]: <Icons.GithubOutlined />,
   [UserDetailType.linkedin]: <Icons.LinkedinFilled />,
   [UserDetailType.website]: <Icons.LinkOutlined />,
-  [UserDetailType.location]: <PinIcon />,
+  [UserDetailType.location]: <PinIcon style={{ marginRight: -3 }} />,
 };
 
 const placeholderByType: Record<UserDetailType, string> = {
