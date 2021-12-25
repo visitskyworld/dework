@@ -1,21 +1,30 @@
-import { Menu, PageHeader, Row, Skeleton, Typography } from "antd";
-import React, { FC, useMemo } from "react";
+import { useRouter } from "next/router";
+import { Menu, PageHeader, Row, Skeleton, Typography, Modal } from "antd";
+import React, { FC, useMemo, useCallback } from "react";
 import { useOrganization } from "../hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+
 import Link from "next/link";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { JoinOrganizationButton } from "./JoinOrganizationButton";
 
+import { useUpdateOrganization } from "../hooks";
+
+const { confirm } = Modal;
+
 export enum OrganizationHeaderTab {
   projects = "projects",
   board = "board",
   members = "members",
+  deleteOrganization = "deleteOrganization",
 }
 
 const titleByTab: Record<OrganizationHeaderTab, string> = {
   [OrganizationHeaderTab.projects]: "Projects",
   [OrganizationHeaderTab.board]: "Board",
   [OrganizationHeaderTab.members]: "Members",
+  [OrganizationHeaderTab.deleteOrganization]: "Delete Organization",
 };
 
 interface Props {
@@ -26,6 +35,28 @@ interface Props {
 export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
   const organization = useOrganization(organizationId);
   const loading = !organization;
+  const canDeleteOrganization = usePermission("delete", "Organization");
+  const router = useRouter();
+
+  const updateOrganization = useUpdateOrganization();
+  const deleteOrganization = useCallback(async () => {
+    try {
+      await updateOrganization({
+        id: organizationId,
+        deletedAt: new Date().toISOString(),
+      });
+      await router.push("/");
+    } catch (err) {}
+  }, [updateOrganization, organizationId, router]);
+
+  const showConfirmDeleteOrganization = useCallback(() => {
+    confirm({
+      title: "Do you want to delete organization?",
+      onOk: () => {
+        deleteOrganization();
+      },
+    });
+  }, [deleteOrganization]);
 
   const routes = useMemo(
     () =>
@@ -76,6 +107,14 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
                   </Link>
                 </Menu.Item>
               ))}
+              {canDeleteOrganization && (
+                <Menu.Item
+                  onClick={showConfirmDeleteOrganization}
+                  key={OrganizationHeaderTab.deleteOrganization}
+                >
+                  {titleByTab["deleteOrganization"]}
+                </Menu.Item>
+              )}
             </Menu>
             <JoinOrganizationButton organizationId={organizationId} />
           </Row>

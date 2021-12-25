@@ -131,6 +131,23 @@ export interface CreateOrganizationMutationVariables {
   input: CreateOrganizationInput;
 }
 
+export interface UpdateOrganizationMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface UpdateOrganizationMutation {
+  organization: UpdateOrganizationMutation_organization;
+}
+
+export interface UpdateOrganizationMutationVariables {
+  input: UpdateOrganizationInput;
+}
+
 /* tslint:disable */
 /* eslint-disable */
 // @generated
@@ -4731,6 +4748,11 @@ export interface CreateInviteInput {
 export interface CreateOrganizationInput {
   name: string;
   imageUrl?: string | null;
+}
+
+export interface UpdateOrganizationInput {
+  id: Scalar.UUID;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface CreatePaymentMethodInput {

@@ -20,6 +20,9 @@ import {
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
   UpdateOrganizationMemberMutationVariables,
+  UpdateOrganizationInput,
+  UpdateOrganizationMutation,
+  UpdateOrganizationMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -38,6 +41,26 @@ export function useCreateOrganization(): (
         refetchQueries: [{ query: Queries.me }],
       });
 
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.organization;
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateOrganization(): (
+  input: UpdateOrganizationInput
+) => Promise<Organization> {
+  const [mutation] = useMutation<
+    UpdateOrganizationMutation,
+    UpdateOrganizationMutationVariables
+  >(Mutations.updateOrganization);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({
+        variables: { input },
+        refetchQueries: [{ query: Queries.me }],
+      });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.organization;
     },
