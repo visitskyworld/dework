@@ -97,6 +97,8 @@ export class GithubController {
           deletedAt: null!,
         });
       }
+
+      await this.triggerTaskUpdatedSubscription(task.id);
     } else {
       const repository = body.repository.full_name;
       this.log("Creating new branch in db", { name: branchName, repository });
@@ -107,6 +109,7 @@ export class GithubController {
         link: `https://github.com/${repository}/compare/${branchName}`,
         taskId: task.id,
       });
+      await this.triggerTaskUpdatedSubscription(task.id);
     }
 
     if (body.pull_request) {
@@ -134,7 +137,13 @@ export class GithubController {
           });
         }
       }
+
+      await this.triggerTaskUpdatedSubscription(task.id);
     }
+  }
+
+  private async triggerTaskUpdatedSubscription(taskId: string) {
+    await this.taskService.update({ id: taskId });
   }
 
   private getAppUrl(stateString: unknown): string {
