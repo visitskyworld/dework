@@ -32,25 +32,26 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
     [updateTask, task]
   );
 
+  const tagIds = useMemo(() => task?.tags.map((t) => t.id) ?? [], [task?.tags]);
   const initialValues = useMemo<TaskFormValues>(
     () => ({
       id: taskId,
       name: task?.name ?? "",
       description: task?.description ?? "",
-      tagIds: task?.tags.map((t) => t.id) ?? [],
+      tagIds,
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,
       status: task?.status!,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
     }),
-    [task, taskId]
+    [task, taskId, tagIds]
   );
 
   return (
     <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
       {!!task && (
         <TaskForm
-          key={JSON.stringify(initialValues)}
+          key={taskId}
           mode="update"
           task={task}
           projectId={task!.projectId}

@@ -8,6 +8,7 @@ import {
   Int,
   Context,
 } from "@nestjs/graphql";
+import _ from "lodash";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
@@ -35,9 +36,9 @@ export class TaskResolver {
 
   @ResolveField(() => [TaskTag])
   public async tags(@Parent() task: Task): Promise<TaskTag[]> {
-    if (!!task.tags) return task.tags;
+    if (!!task.tags) return _.sortBy(task.tags, (t) => t.createdAt);
     const refetched = await this.taskService.findById(task.id);
-    return refetched!.tags;
+    return _.sortBy(refetched!.tags, (t) => t.createdAt);
   }
 
   @ResolveField(() => String)

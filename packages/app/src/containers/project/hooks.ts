@@ -11,6 +11,8 @@ import {
   GetProjectQueryVariables,
   GetProjectTasksQuery,
   GetProjectTasksQueryVariables,
+  GetProjectTaskTagsQuery,
+  GetProjectTaskTagsQueryVariables,
   Project,
   ProjectIntegration,
   TaskTag,
@@ -77,8 +79,8 @@ export function useProjectTasks(
 
 export function useProjectTaskTags(projectId: string): TaskTag[] {
   const { data } = useQuery<
-    GetProjectTasksQuery,
-    GetProjectTasksQueryVariables
+    GetProjectTaskTagsQuery,
+    GetProjectTaskTagsQueryVariables
   >(Queries.projectTaskTags, { variables: { projectId } });
   return useMemo(
     () => data?.project?.taskTags ?? [],

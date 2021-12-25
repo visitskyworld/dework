@@ -131,13 +131,21 @@ export interface CreateOrganizationMutationVariables {
   input: CreateOrganizationInput;
 }
 
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateOrganizationMutation
+// ====================================================
+
 export interface UpdateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
   imageUrl: string | null;
   slug: string;
-  deletedAt: Scalar.DateTime | null;
 }
 
 export interface UpdateOrganizationMutation {
@@ -443,6 +451,7 @@ export interface CreateTaskMutation_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface CreateTaskMutation_task_assignees {
@@ -570,6 +579,7 @@ export interface UpdateTaskMutation_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface UpdateTaskMutation_task_assignees {
@@ -697,6 +707,7 @@ export interface ClaimTaskMutation_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface ClaimTaskMutation_task_assignees {
@@ -825,6 +836,7 @@ export interface UnclaimTaskMutation_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface UnclaimTaskMutation_task_assignees {
@@ -952,6 +964,7 @@ export interface DeleteTaskMutation_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface DeleteTaskMutation_task_assignees {
@@ -1079,6 +1092,7 @@ export interface CreateTaskTagMutation_taskTag_project_taskTags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface CreateTaskTagMutation_taskTag_project {
@@ -1092,6 +1106,7 @@ export interface CreateTaskTagMutation_taskTag {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
   project: CreateTaskTagMutation_taskTag_project;
 }
 
@@ -1412,6 +1427,7 @@ export interface CreateTaskPaymentsMutation_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_assignees {
@@ -1705,6 +1721,7 @@ export interface UserTasksQuery_user_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface UserTasksQuery_user_tasks_assignees {
@@ -2098,6 +2115,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_assignees {
@@ -2208,6 +2226,7 @@ export interface GetOrganizationTasksQuery_organization_projects_taskTags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetOrganizationTasksQuery_organization_projects {
@@ -2310,6 +2329,7 @@ export interface GetProjectTasksQuery_project_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetProjectTasksQuery_project_tasks_assignees {
@@ -2415,18 +2435,10 @@ export interface GetProjectTasksQuery_project_tasks {
   applications: GetProjectTasksQuery_project_tasks_applications[];
 }
 
-export interface GetProjectTasksQuery_project_taskTags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-}
-
 export interface GetProjectTasksQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
   tasks: GetProjectTasksQuery_project_tasks[];
-  taskTags: GetProjectTasksQuery_project_taskTags[];
 }
 
 export interface GetProjectTasksQuery {
@@ -2434,6 +2446,37 @@ export interface GetProjectTasksQuery {
 }
 
 export interface GetProjectTasksQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectTaskTagsQuery
+// ====================================================
+
+export interface GetProjectTaskTagsQuery_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetProjectTaskTagsQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskTags: GetProjectTaskTagsQuery_project_taskTags[];
+}
+
+export interface GetProjectTaskTagsQuery {
+  project: GetProjectTaskTagsQuery_project;
+}
+
+export interface GetProjectTaskTagsQueryVariables {
   projectId: Scalar.UUID;
 }
 
@@ -2451,6 +2494,7 @@ export interface GetTaskQuery_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetTaskQuery_task_assignees {
@@ -2590,6 +2634,7 @@ export interface GetTaskQuery_task_project_taskTags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetTaskQuery_task_project {
@@ -2642,6 +2687,7 @@ export interface GetTasksQuery_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetTasksQuery_tasks_assignees {
@@ -2769,6 +2815,7 @@ export interface GetTasksToPayQuery_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface GetTasksToPayQuery_tasks_assignees_paymentMethod_networks {
@@ -3060,6 +3107,7 @@ export interface TaskCreatedSubscription_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface TaskCreatedSubscription_task_assignees {
@@ -3233,6 +3281,7 @@ export interface TaskUpdatedSubscription_task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface TaskUpdatedSubscription_task_assignees {
@@ -3820,6 +3869,7 @@ export interface TaskTag {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 /* tslint:disable */
@@ -3992,6 +4042,7 @@ export interface Task_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface Task_assignees {
@@ -4111,6 +4162,7 @@ export interface TaskDetails_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface TaskDetails_assignees {
@@ -4504,6 +4556,7 @@ export interface ProjectDetails_tasks_tags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface ProjectDetails_tasks_assignees {
@@ -4614,6 +4667,7 @@ export interface ProjectDetails_taskTags {
   id: Scalar.UUID;
   label: string;
   color: string;
+  createdAt: Scalar.DateTime;
 }
 
 export interface ProjectDetails {
@@ -4750,11 +4804,6 @@ export interface CreateOrganizationInput {
   imageUrl?: string | null;
 }
 
-export interface UpdateOrganizationInput {
-  id: Scalar.UUID;
-  deletedAt?: Scalar.DateTime | null;
-}
-
 export interface CreatePaymentMethodInput {
   type: PaymentMethodType;
   address: string;
@@ -4824,6 +4873,14 @@ export interface RemoveOrganizationMemberInput {
 export interface SetUserDetailInput {
   type: UserDetailType;
   value?: string | null;
+}
+
+export interface UpdateOrganizationInput {
+  id: Scalar.UUID;
+  name?: string | null;
+  description?: string | null;
+  imageUrl?: string | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateOrganizationMemberInput {

@@ -129,6 +129,7 @@ export const taskTag = gql`
     id
     label
     color
+    createdAt
   }
 `;
 
