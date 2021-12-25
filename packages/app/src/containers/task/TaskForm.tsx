@@ -19,6 +19,7 @@ import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskDeleteButton } from "./TaskDeleteButton";
+import { TaskActivityFeed } from "./TaskActivityFeed";
 
 export interface TaskFormValues {
   name: string;
@@ -138,6 +139,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           <Form.Item
             name="description"
             label={canEdit ? `Description (optional)` : "Description"}
+            className="mb-3"
           >
             <MarkdownEditor
               initialValue={initialValues?.description ?? undefined}
@@ -162,7 +164,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {!!task?.discordChannel && (
-            <FormSection label="Discord">
+            <FormSection label="Discord" className="mb-3">
               <Button
                 type="primary"
                 href={task.discordChannel.link}
@@ -188,6 +190,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task.applications.length && <AssignTaskCard task={task} />}
 
           {!!task && <GithubIntegrationSection task={task} />}
+          {!!task && <TaskActivityFeed task={task} />}
         </Col>
         <Col xs={24} sm={8}>
           <Form.Item

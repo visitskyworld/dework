@@ -28,21 +28,21 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
   return (
     <>
       {!!task.githubPullRequests.length && (
-        <FormSection label="Pull Requests">
+        <FormSection label="Pull Requests" className="mb-3">
           {task.githubPullRequests.map((pr) => (
             <GithubPullRequestRow key={pr.id} pullRequest={pr} />
           ))}
         </FormSection>
       )}
       {!!branchesWithoutPullRequests.length && (
-        <FormSection label="Branches">
+        <FormSection label="Branches" className="mb-3">
           {branchesWithoutPullRequests.map((branch) => (
             <GithubBranchRow key={branch.id} branch={branch} task={task} />
           ))}
         </FormSection>
       )}
 
-      <FormSection label="Link Github Branch">
+      <FormSection label="Link Github Branch" className="mb-3">
         <Typography.Paragraph
           type="secondary"
           className="ant-typography-caption"

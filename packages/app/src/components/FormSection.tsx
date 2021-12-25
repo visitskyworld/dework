@@ -4,10 +4,11 @@ import React, { FC, ReactNode } from "react";
 interface Props {
   label: string;
   children: ReactNode;
+  className?: string;
 }
 
-export const FormSection: FC<Props> = ({ label, children }) => (
-  <Col className="ant-form-item" style={{ padding: 0 }}>
+export const FormSection: FC<Props> = ({ label, children, className = "" }) => (
+  <Col className={`ant-form-item ${className}`} style={{ padding: 0 }}>
     <Row>
       <Typography.Text className="ant-form-item-label">{label}</Typography.Text>
     </Row>

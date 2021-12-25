@@ -228,6 +228,7 @@ export const taskDetails = gql`
   fragment TaskDetails on Task {
     ...Task
     gitBranchName
+    createdAt
     owner {
       ...User
     }

@@ -1576,6 +1576,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
   gitBranchName: string;
+  createdAt: Scalar.DateTime;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   discordChannel: CreateTaskPaymentsMutation_tasks_discordChannel | null;
@@ -2657,6 +2658,7 @@ export interface GetTaskQuery_task {
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
   gitBranchName: string;
+  createdAt: Scalar.DateTime;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   discordChannel: GetTaskQuery_task_discordChannel | null;
@@ -3256,6 +3258,7 @@ export interface TaskCreatedSubscription_task {
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
   gitBranchName: string;
+  createdAt: Scalar.DateTime;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   discordChannel: TaskCreatedSubscription_task_discordChannel | null;
@@ -3430,6 +3433,7 @@ export interface TaskUpdatedSubscription_task {
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
   gitBranchName: string;
+  createdAt: Scalar.DateTime;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
@@ -4311,6 +4315,7 @@ export interface TaskDetails {
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
   gitBranchName: string;
+  createdAt: Scalar.DateTime;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
   discordChannel: TaskDetails_discordChannel | null;
