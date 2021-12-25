@@ -1,15 +1,5 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from "react";
-import {
-  Form,
-  Button,
-  Input,
-  Select,
-  FormInstance,
-  Row,
-  Typography,
-  Col,
-  Divider,
-} from "antd";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import { Form, Button, Input, Select, Row, Typography, Col } from "antd";
 import { TaskStatusEnum, User, TaskDetails } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import { useTaskFormUserOptions } from "./hooks";
@@ -27,6 +17,7 @@ import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";
+import { useForm } from "antd/lib/form/Form";
 
 export interface TaskFormValues {
   name: string;
@@ -57,7 +48,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   initialValues,
   onSubmit,
 }) => {
-  const formRef = useRef<FormInstance<TaskFormValues>>(null);
+  const [form] = useForm();
   const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
   );
@@ -79,12 +70,12 @@ export const TaskForm: FC<TaskFormProps> = ({
       try {
         setLoading(true);
         await onSubmit(values);
-        formRef.current?.resetFields();
+        form.resetFields();
       } finally {
         setLoading(false);
       }
     },
-    [onSubmit]
+    [onSubmit, form]
   );
 
   const handleChange = useCallback(
@@ -93,14 +84,20 @@ export const TaskForm: FC<TaskFormProps> = ({
     },
     []
   );
+
+  const handleBlur = useCallback(() => {
+    if (mode === "update") form.submit();
+  }, [mode, form]);
+
   return (
     <Form
-      ref={formRef}
+      form={form}
       layout="vertical"
       initialValues={initialValues}
       requiredMark={false}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
+      onBlur={handleBlur}
     >
       <Row gutter={16}>
         <Col span={24}>
@@ -143,10 +140,11 @@ export const TaskForm: FC<TaskFormProps> = ({
               initialValue={initialValues?.description ?? undefined}
               editable={canEdit}
               mode={mode}
+              onSave={handleBlur}
             />
           </Form.Item>
 
-          {canEdit && (
+          {mode === "create" && canEdit && (
             <Form.Item style={{ marginBottom: 0 }}>
               <Button
                 type="primary"
@@ -159,7 +157,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Button>
             </Form.Item>
           )}
-          {mode === "update" && <Divider />}
+          {/* {mode === "update" && <Divider />} */}
 
           {!!task?.discordChannel && (
             <FormSection label="Discord">

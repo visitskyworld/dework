@@ -392,8 +392,9 @@ textarea {
 
   .w-md-editor-input {
     border: 1px solid @border-color-base;
-    border-top: none;
     border-radius: 0;
+    border-top-left-radius: @border-radius-base;
+    border-top-right-radius: @border-radius-base;
     padding: 12px;
   }
 
@@ -444,7 +445,9 @@ textarea {
   border-top: none;
   border-bottom-left-radius: @border-radius-base;
   border-bottom-right-radius: @border-radius-base;
+
   padding: 4px;
+  padding-left: 12px;
 }
 
 .dewo-md-upload {

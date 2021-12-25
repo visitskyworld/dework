@@ -1,35 +1,51 @@
 import React, { ClipboardEvent, FC, useCallback, useState } from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import { Upload, Tabs, notification } from "antd";
-
+import * as Icons from "@ant-design/icons";
+import { Upload, notification, Button, Typography } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadImage } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownImgURL } from "./utils";
 import { MDEditor } from "./MDEditor";
-const { TabPane } = Tabs;
-
+import { useToggle } from "@dewo/app/util/hooks";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
-  onChange?(description: string | undefined): void;
   editable: boolean;
   mode: "create" | "update";
+  onChange?(description: string | undefined): void;
+  onSave?(): void;
 }
+
 export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   initialValue,
-  onChange,
   editable,
   mode,
+  onChange,
+  onSave,
 }) => {
   const uploadImage = useUploadImage();
-  const [value, setValue] = useState<string | undefined>(initialValue);
+
+  const [savedValue, setSavedValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue);
+  const editing = useToggle(mode === "create");
+
+  const handleSave = useCallback(() => {
+    setSavedValue(value);
+    editing.toggleOff();
+    onChange?.(value);
+    onSave?.();
+  }, [editing, onChange, onSave, value]);
+
+  const handleEdit = useCallback(() => {
+    setValue(savedValue);
+    editing.toggleOn();
+  }, [savedValue, editing]);
 
   const replaceMarkdownImgPlaceholder = useCallback(
-    (placeholderText: string, url: string) => {
-      setValue((prevValue) => prevValue?.replace(placeholderText, url));
-      onChange?.(`${value}\n\n${url}`);
-    },
-    [value, onChange]
+    (placeholderText: string, url: string) =>
+      setValue((prevValue) => prevValue?.replace(placeholderText, url)),
+    []
   );
 
   const removeMarkdownImgPlaceholder = useCallback(
@@ -70,19 +86,14 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
       removeMarkdownImgPlaceholder,
     ]
   );
-  const handleChangeValue = useCallback(
-    (description: string | undefined) => {
-      setValue(description);
-      onChange?.(description);
-    },
-    [onChange]
-  );
+
   const handleFileDropped = useCallback(
     (data: UploadRequestOption) => {
       uploadAndAddImage(data.file as File);
     },
     [uploadAndAddImage]
   );
+
   const handleFilePaste = useCallback(
     (data: ClipboardEvent) => {
       if (data.clipboardData.files.length > 0) {
@@ -93,53 +104,70 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     [uploadAndAddImage]
   );
 
-  const renderPreview = useCallback(
-    () =>
-      MDEditor && (
+  const renderPreview = useCallback(() => {
+    if (!savedValue) {
+      return (
+        <Typography.Paragraph type="secondary" style={{ margin: 0 }}>
+          No description...
+        </Typography.Paragraph>
+      );
+    }
+
+    if (!MDEditor) return null;
+    return (
+      <MDEditor
+        value={savedValue}
+        hideToolbar
+        enableScroll={false}
+        previewOptions={{ linkTarget: "_blank" }}
+        className="dewo-md-editor"
+        preview="preview"
+      />
+    );
+  }, [savedValue]);
+
+  if (editing.isOn) {
+    return (
+      <Upload.Dragger
+        openFileDialogOnClick={false}
+        showUploadList={false}
+        maxCount={1}
+        customRequest={handleFileDropped}
+        className="dewo-md-upload"
+        accept="image/*"
+      >
         <MDEditor
           value={value}
+          onChange={setValue}
+          className="dewo-md-editor"
+          highlightEnable={false}
           hideToolbar
+          preview="edit"
           enableScroll={false}
-          previewOptions={{ linkTarget: "_blank" }}
-          className={`dewo-md-editor ${
-            !editable ? "dewo-md-editor-preview-only" : ""
-          }`}
-          preview="preview"
+          autoFocus={mode === "update"}
+          textareaProps={{ placeholder: "Enter a description..." }}
+          onPaste={handleFilePaste}
+          onBlur={stopPropagation}
+          onSave={handleSave}
+          onCancel={editing.toggleOff}
         />
-      ),
-    [value, editable]
-  );
-  if (!editable) return renderPreview();
-  return (
-    <Tabs
-      defaultActiveKey={mode === "create" ? "editor" : "preview"}
-      tabBarStyle={{ marginBottom: 0 }}
-    >
-      <TabPane tab="Editor" key="editor">
-        <Upload.Dragger
-          openFileDialogOnClick={false}
-          showUploadList={false}
-          maxCount={1}
-          customRequest={handleFileDropped}
-          className="dewo-md-upload"
-          accept="image/*"
-        >
-          <MDEditor
-            value={value}
-            onChange={handleChangeValue}
-            className="dewo-md-editor"
-            highlightEnable={false}
-            hideToolbar
-            preview="edit"
-            enableScroll={false}
-            placeholder="Enter a description..."
-            onPaste={handleFilePaste}
-          />
-        </Upload.Dragger>
-      </TabPane>
-      <TabPane tab="Preview" key="preview">
+      </Upload.Dragger>
+    );
+  } else {
+    return (
+      <>
         {renderPreview()}
-      </TabPane>
-    </Tabs>
-  );
+        {!!editable && (
+          <Button
+            size="small"
+            icon={<Icons.EditOutlined />}
+            style={{ marginTop: 8 }}
+            onClick={handleEdit}
+          >
+            Edit description
+          </Button>
+        )}
+      </>
+    );
+  }
 };

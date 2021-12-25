@@ -1,8 +1,14 @@
 import React from "react";
 import { MDEditorProps } from "@uiw/react-md-editor";
-import { Skeleton, Typography } from "antd";
+import { Button, Row, Skeleton, Typography } from "antd";
 import dynamic from "next/dynamic";
-export const MDEditor = dynamic<MDEditorProps>(
+
+interface Props extends MDEditorProps {
+  onSave?(): void;
+  onCancel?(): void;
+}
+
+export const MDEditor = dynamic<Props>(
   () =>
     import("@uiw/react-md-editor").then((Module) => {
       return (props) => (
@@ -10,15 +16,27 @@ export const MDEditor = dynamic<MDEditorProps>(
           <Module.default {...props} />
           {props.preview === "edit" && (
             <div className="dewo-md-editor-footer">
-              <Typography.Text
-                type="secondary"
-                italic
-                className="ant-typography-caption"
-                style={{ opacity: 0.5 }}
-              >
-                Attach files by dragging {"&"} dropping, selecting or pasting
-                them
-              </Typography.Text>
+              <Row align="middle">
+                <Typography.Text
+                  type="secondary"
+                  italic
+                  className="ant-typography-caption"
+                  style={{ opacity: 0.5, flex: 1, textAlign: "left" }}
+                >
+                  Markdown formatting and file drag-and-drop supported
+                </Typography.Text>
+                <Button
+                  size="small"
+                  type="text"
+                  style={{ marginRight: 8 }}
+                  onClick={props.onCancel}
+                >
+                  <Typography.Text type="secondary">Cancel</Typography.Text>
+                </Button>
+                <Button size="small" type="primary" onClick={props.onSave}>
+                  Save
+                </Button>
+              </Row>
             </div>
           )}
         </>
@@ -26,6 +44,6 @@ export const MDEditor = dynamic<MDEditorProps>(
     }),
   {
     ssr: false,
-    loading: () => <Skeleton.Button active block style={{ height: 170 }} />,
+    loading: () => <Skeleton.Button active block />,
   }
 );

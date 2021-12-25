@@ -1,8 +1,10 @@
-export function eatClick(e: React.MouseEvent<any>) {
+import { BaseSyntheticEvent } from "react";
+
+export function eatClick(e: BaseSyntheticEvent<any>) {
   e.preventDefault();
   e.stopPropagation();
 }
 
-export function stopPropagation(e: React.MouseEvent<any>) {
+export function stopPropagation(e: BaseSyntheticEvent<any>) {
   e.stopPropagation();
 }

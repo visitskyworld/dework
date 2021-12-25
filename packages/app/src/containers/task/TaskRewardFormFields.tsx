@@ -1,4 +1,10 @@
-import React, { ComponentType, FC, useCallback, useMemo } from "react";
+import React, {
+  ComponentType,
+  FC,
+  FocusEventHandler,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   PaymentStatus,
   PaymentToken,
@@ -17,6 +23,7 @@ import { useProject } from "../project/hooks";
 import _ from "lodash";
 import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -125,6 +132,20 @@ export const TaskRewardFormFields: FC<Props> = ({
     [onChange, value]
   );
 
+  const handleBlur = useCallback<FocusEventHandler<unknown>>(
+    (event) => {
+      if (
+        !value?.networkId ||
+        !value?.amount ||
+        !value?.token ||
+        !value?.trigger
+      ) {
+        stopPropagation(event);
+      }
+    },
+    [value]
+  );
+
   if (!project) return null;
   return (
     <>
@@ -155,6 +176,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             value={value?.networkId}
             allowClear
             onChange={handleChangeNetworkId}
+            onBlur={handleBlur}
           >
             {networks.map((network) => (
               <Select.Option
@@ -172,12 +194,15 @@ export const TaskRewardFormFields: FC<Props> = ({
             placeholder="Enter amount"
             value={value?.amount}
             onChange={handleChangeAmount}
+            onBlur={handleBlur}
+            style={{ width: "100%" }}
             addonAfter={
               <Select
                 style={{ minWidth: 100 }}
                 value={value?.token?.id}
                 placeholder="Token"
                 onChange={handleChangeToken}
+                onBlur={handleBlur}
               >
                 {tokens.map((token) => (
                   <Select.Option
@@ -198,6 +223,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             optionFilterProp="label"
             placeholder="Select payout trigger"
             onChange={handleChangeTrigger}
+            onBlur={handleBlur}
           >
             {rewardTriggerOptions.map((tag) => (
               <Select.Option

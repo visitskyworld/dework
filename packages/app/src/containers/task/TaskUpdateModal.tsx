@@ -1,4 +1,3 @@
-import { Task } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { Modal } from "antd";
 import { useRouter } from "next/router";
@@ -15,30 +14,22 @@ interface Props {
   taskId: string;
   visible: boolean;
   onCancel(): void;
-  onDone(task: Task): unknown;
 }
 
-export const TaskUpdateModal: FC<Props> = ({
-  taskId,
-  visible,
-  onCancel,
-  onDone,
-}) => {
+export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
   const task = useTask(taskId);
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
-    async (values: TaskFormValues) => {
-      const updated = await updateTask(
+    async (values: TaskFormValues) =>
+      updateTask(
         {
           id: task!.id,
           ...values,
           reward: !!values.reward ? toTaskReward(values.reward) : undefined,
         },
         task!
-      );
-      await onDone(updated);
-    },
-    [updateTask, onDone, task]
+      ),
+    [updateTask, task]
   );
 
   const initialValues = useMemo<TaskFormValues>(
@@ -89,7 +80,6 @@ export const TaskUpdateModalListener: FC = () => {
       taskId={taskId!}
       visible={!!taskId}
       onCancel={closeTaskModal}
-      onDone={closeTaskModal}
     />
   );
 };
