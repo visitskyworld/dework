@@ -44,6 +44,27 @@ describe("PaymentResolver", () => {
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
       });
 
+      it("should fail if trying to create for other user", async () => {
+        const authedUser = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(authedUser),
+          body: PaymentRequests.createPaymentMethod({
+            type: PaymentMethodType.METAMASK,
+            address: "0x123",
+            networkId: network.id,
+            tokenIds: [token.id],
+            userId: otherUser.id,
+          }),
+        });
+
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      xit("should fail if trying to create for project without access", async () => {});
+
       it("should succeed if the user is authenticated", async () => {
         const user = await fixtures.createUser();
         const response = await client.request({
@@ -54,6 +75,7 @@ describe("PaymentResolver", () => {
             address: "0x123",
             networkId: network.id,
             tokenIds: [token.id],
+            userId: user.id,
           }),
         });
 
@@ -63,6 +85,12 @@ describe("PaymentResolver", () => {
         expect(pm.address).toEqual("0x123");
         expect(pm.creatorId).toEqual(user.id);
       });
+    });
+
+    describe("updatePaymentMethod", () => {
+      xit("should fail if trying to update if not authed as PM.userId", async () => {});
+
+      xit("should fail if trying to update if authed user is not project admin", async () => {});
     });
   });
 });
