@@ -38,7 +38,6 @@ export const UserSettings: FC<Props> = () => {
             <AddPaymentMethodButton
               key={user.paymentMethods.length}
               inputOverride={paymentMethodOverride}
-              onDone={() => alert("refetch user")}
             />
           )}
         </Space>

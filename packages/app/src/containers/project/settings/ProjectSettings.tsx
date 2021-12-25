@@ -53,11 +53,11 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
             ))}
             <AddPaymentMethodButton
               key={project.paymentMethods.length}
+              selectTokens
               inputOverride={useMemo(
                 () => ({ projectId: project.id }),
                 [project.id]
               )}
-              onDone={() => alert("refetch project")}
             />
           </Space>
         </Col>
