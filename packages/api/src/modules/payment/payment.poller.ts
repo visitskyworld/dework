@@ -220,13 +220,18 @@ export class PaymentPoller {
 
     const blockNumber = await provider.getBlockNumber();
     const receipt = await provider.getTransactionReceipt(data.txHash);
-    this.logger.debug(
-      `Ethereum transaction receipt: ${JSON.stringify({ data, receipt })}`
-    );
 
     const depth = blockNumber - receipt.blockNumber;
     const confirmed =
       depth >= this.blockDepthBeforeConfirmed[PaymentMethodType.METAMASK];
+    this.logger.debug(
+      `Ethereum transaction receipt: ${JSON.stringify({
+        data,
+        receipt,
+        depth,
+        blockNumber,
+      })}`
+    );
     return { confirmed };
   }
 
