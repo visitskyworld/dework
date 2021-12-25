@@ -3,7 +3,6 @@ import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import _ from "lodash";
 import { RouterContext } from "next/dist/shared/lib/router-context";
-import { ethers } from "ethers";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   CreateTaskPaymentsInput,
@@ -90,9 +89,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         gnosisPaymentMethod!.address,
         tasksToPay.map((task) => ({
           to: userToPay(task).paymentMethod!.address,
-          value: ethers.utils
-            .parseEther(String(task.reward!.amount))
-            .toString(),
+          value: task.reward!.amount,
           data: `0x${task.reward!.id.replace(/-/g, "")}`,
         }))
       );

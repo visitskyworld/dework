@@ -6,6 +6,8 @@ services:
     ports:
       - 5432:5432
     environment:
+      TZ: UTC
+      PGTZ: UTC
       POSTGRES_DATABASE: dewo
       POSTGRES_USER: dewo
       POSTGRES_PASSWORD: dewo
@@ -17,6 +19,8 @@ services:
     ports:
       - 5433:5432
     environment:
+      TZ: UTC
+      PGTZ: UTC
       POSTGRES_DATABASE: dewo-test
       POSTGRES_USER: dewo-test
       POSTGRES_PASSWORD: dewo-test

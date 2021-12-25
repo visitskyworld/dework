@@ -31,11 +31,21 @@ export const shortenedAddress = (address: string) =>
 export function explorerLink(payment: Payment): string | undefined {
   switch (payment.network.slug) {
     case "ethereum-mainnet":
-      if (!payment.data?.txHash) return undefined;
-      return `https://etherscan.io/tx/${payment.data.txHash}`;
+      if (!!payment.data?.txHash) {
+        return `https://etherscan.io/tx/${payment.data.txHash}`;
+      }
+      if (!!payment.data?.safeTxHash) {
+        return `https://gnosis-safe.io/app/${payment.paymentMethod.address}/transactions/queue`;
+      }
+      return undefined;
     case "ethereum-rinkeby":
-      if (!payment.data?.txHash) return undefined;
-      return `https://rinkeby.etherscan.io/tx/${payment.data.txHash}`;
+      if (!!payment.data?.txHash) {
+        return `https://rinkeby.etherscan.io/tx/${payment.data.txHash}`;
+      }
+      if (!!payment.data?.safeTxHash) {
+        return `https://gnosis-safe.io/app/rin:${payment.paymentMethod.address}/transactions/queue`;
+      }
+      return undefined;
     case "solana-mainnet":
       if (!payment.data?.signature) return undefined;
       return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;

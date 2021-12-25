@@ -21,9 +21,11 @@ describe("PaymentPoller", () => {
   });
 
   beforeEach(() => {
-    poller.isEthereumTxConfirmed = jest.fn(() => Promise.resolve(false));
-    poller.isSolanaTxConfirmed = jest.fn(() => Promise.resolve(false));
-    poller.isGnosisSafeTxConfirmed = jest.fn(() => Promise.resolve(false));
+    poller.isEthereumTxConfirmed = jest.fn(async () => ({ confirmed: false }));
+    poller.isSolanaTxConfirmed = jest.fn(async () => ({ confirmed: false }));
+    poller.isGnosisSafeTxConfirmed = jest.fn(async () => ({
+      confirmed: false,
+    }));
   });
 
   afterAll(() => app.close());
@@ -38,7 +40,7 @@ describe("PaymentPoller", () => {
 
     it("should set status to CONFIRMED and nextStatusCheckAt to NULL", async () => {
       const payment = await fixtures.createPayment({ networkId: network.id });
-      poller.isEthereumTxConfirmed = jest.fn(() => Promise.resolve(true));
+      poller.isEthereumTxConfirmed = jest.fn(async () => ({ confirmed: true }));
 
       await poller.poll();
       const updated = await service.findById(payment.id);
@@ -58,7 +60,10 @@ describe("PaymentPoller", () => {
     });
 
     it("should set nextStatusCheckAt to 1m into the future", async () => {
-      const payment = await fixtures.createPayment({ networkId: network.id });
+      const payment = await fixtures.createPayment({
+        networkId: network.id,
+        createdAt: new Date(),
+      });
       await poller.poll();
       const updated = await service.findById(payment.id);
       expect(updated!.status).toBe(PaymentStatus.PROCESSING);
