@@ -33,11 +33,13 @@ export const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
 export const paymentStatusToString: Record<PaymentStatus, string> = {
   [PaymentStatus.PROCESSING]: "Payment Processing",
   [PaymentStatus.CONFIRMED]: "Payment Completed",
+  [PaymentStatus.FAILED]: "Payment Failed",
 };
 
 export const paymentStatusToColor: Record<PaymentStatus, string> = {
   [PaymentStatus.PROCESSING]: "volcano",
   [PaymentStatus.CONFIRMED]: "green",
+  [PaymentStatus.FAILED]: "red",
 };
 
 interface TaskRewardTriggerOption {
