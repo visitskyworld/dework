@@ -337,7 +337,9 @@ export class DiscordIntegrationService {
       `${task.name} ${task.number}`,
       {
         type: "GUILD_TEXT",
-        topic: `Discussion for Dework task "${task.name}"`,
+        topic: `Discussion for Dework task "${
+          task.name
+        }": ${await this.permalink.get(task)}`,
         permissionOverwrites: [
           {
             id: guild.roles.everyone,

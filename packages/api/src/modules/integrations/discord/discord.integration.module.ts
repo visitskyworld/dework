@@ -3,7 +3,7 @@ import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { PermalinkService } from "../../permalink/permalink.service";
+import { PermalinkModule } from "../../permalink/permalink.module";
 import { ThreepidModule } from "../../threepid/threepid.module";
 import {
   DiscordIntegrationTaskCreatedEventHandler,
@@ -16,13 +16,13 @@ import { DiscordService } from "./discord.service";
   imports: [
     TypeOrmModule.forFeature([User, ProjectIntegration, DiscordChannel]),
     ThreepidModule,
+    PermalinkModule,
   ],
   providers: [
     DiscordService,
     DiscordIntegrationService,
     DiscordIntegrationTaskCreatedEventHandler,
     DiscordIntegrationTaskUpdatedEventHandler,
-    PermalinkService,
   ],
 })
 export class DiscordIntegrationModule {}
