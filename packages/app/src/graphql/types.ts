@@ -3381,6 +3381,65 @@ export interface TaskUpdatedSubscription {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL subscription operation: PaymentUpdatedSubscription
+// ====================================================
+
+export interface PaymentUpdatedSubscription_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface PaymentUpdatedSubscription_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface PaymentUpdatedSubscription_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: PaymentUpdatedSubscription_payment_paymentMethod_networks[];
+  tokens: PaymentUpdatedSubscription_payment_paymentMethod_tokens[];
+}
+
+export interface PaymentUpdatedSubscription_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface PaymentUpdatedSubscription_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: PaymentUpdatedSubscription_payment_paymentMethod;
+  network: PaymentUpdatedSubscription_payment_network;
+}
+
+export interface PaymentUpdatedSubscription {
+  payment: PaymentUpdatedSubscription_payment;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: UserDetail
 // ====================================================
 
@@ -4538,6 +4597,7 @@ export enum PaymentMethodType {
 
 export enum PaymentStatus {
   CONFIRMED = "CONFIRMED",
+  FAILED = "FAILED",
   PROCESSING = "PROCESSING",
 }
 

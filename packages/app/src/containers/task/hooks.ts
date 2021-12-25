@@ -39,6 +39,7 @@ import {
   GetTasksQueryVariables,
   TaskCreatedSubscription,
   TaskUpdatedSubscription,
+  PaymentUpdatedSubscription,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -325,6 +326,7 @@ export function useListenToTasks() {
       if (!!task) addTaskToApolloCache(task);
     },
   });
+  useSubscription<PaymentUpdatedSubscription>(Subscriptions.paymentUpdated);
 }
 
 export function useTaskFormUserOptions(
