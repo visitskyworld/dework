@@ -142,7 +142,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
     }
   }, [gnosisPaymentMethod, project, modal, router]);
 
-  if (!project) return null;
+  if (!project || !gnosisPaymentMethod) return null;
   return (
     <>
       <Button type="primary" size="small" onClick={handlePayNow}>

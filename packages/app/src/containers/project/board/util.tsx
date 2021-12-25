@@ -1,9 +1,16 @@
 import React, { ReactNode, useMemo } from "react";
 import _ from "lodash";
-import { PaymentStatus, Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import {
+  PaymentMethodType,
+  PaymentStatus,
+  Task,
+  TaskStatusEnum,
+} from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { GnosisPayAllButton } from "./GnosisPayAllButton";
+import { useProject } from "../hooks";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 const Between = inject("0123456789");
 
@@ -20,6 +27,29 @@ export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
   [TaskStatusEnum.IN_REVIEW]: "In Review",
   [TaskStatusEnum.DONE]: "Done",
 };
+
+export function useShouldShowInlinePayButton(task: Task): boolean {
+  const canUpdateTask = usePermission("update", task);
+  const projectId = useParseIdFromSlug("projectSlug");
+  const project = useProject(projectId);
+  const hasPaymentMethod = useMemo(
+    () =>
+      !!project?.paymentMethods.some(
+        (pm) =>
+          pm.type !== PaymentMethodType.GNOSIS_SAFE &&
+          pm.networks.some((n) => n.id === task.reward?.token.networkId)
+      ),
+    [project?.paymentMethods, task.reward?.token.networkId]
+  );
+  return (
+    task.status === TaskStatusEnum.DONE &&
+    !!task.assignees.length &&
+    !!task.reward &&
+    !task.reward.payment &&
+    canUpdateTask &&
+    hasPaymentMethod
+  );
+}
 
 export function useGroupedTasks(
   tasks: Task[],

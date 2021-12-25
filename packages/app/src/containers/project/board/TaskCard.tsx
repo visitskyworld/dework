@@ -10,6 +10,7 @@ import { ClaimTaskButton } from "./ClaimTaskButton";
 import Link from "next/link";
 import { formatTaskReward, useUpdateTask } from "../../task/hooks";
 import { PayButton } from "./PayButton";
+import { useShouldShowInlinePayButton } from "./util";
 
 interface TaskCardProps {
   task: Task;
@@ -25,16 +26,11 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     [updateTask, task]
   );
 
+  const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
   const button = useMemo(() => {
-    if (
-      task.status === TaskStatusEnum.DONE &&
-      !!task.assignees.length &&
-      !!task.reward &&
-      !task.reward.payment &&
-      canUpdateTask
-    ) {
+    if (shouldShowInlinePayButton) {
       return <PayButton task={task}>Pay</PayButton>;
     }
 
@@ -82,7 +78,14 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     }
 
     return null;
-  }, [task, navigateToTask, moveToDone, canClaimTask, canUpdateTask]);
+  }, [
+    task,
+    shouldShowInlinePayButton,
+    navigateToTask,
+    moveToDone,
+    canClaimTask,
+    canUpdateTask,
+  ]);
 
   return (
     <Card size="small" style={style} onClick={navigateToTask}>
