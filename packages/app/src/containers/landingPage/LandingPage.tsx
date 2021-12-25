@@ -91,9 +91,9 @@ export const LandingPage: FC = () => {
           >
             🏆 Popular DAOs
           </Typography.Title>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} style={{ margin: 0, width: "100%" }}>
             {featuredOrganizations?.map((org) => (
-              <Col span={24 / NUM_COLUMNS} key={org.id}>
+              <Col xs={24} md={24 / NUM_COLUMNS} key={org.id}>
                 <OrganizationCard organization={org} />
               </Col>
             ))}
@@ -105,9 +105,9 @@ export const LandingPage: FC = () => {
           >
             🔥 Newest tasks
           </Typography.Title>
-          <Row gutter={16} style={{ width: "100%" }}>
+          <Row gutter={[16, 16]} style={{ margin: 0, width: "100%" }}>
             {latestTaskChunks.map((chunk, index) => (
-              <Col span={24 / NUM_COLUMNS} key={index}>
+              <Col xs={24} md={24 / NUM_COLUMNS} key={index}>
                 <Space
                   direction="vertical"
                   size="middle"
