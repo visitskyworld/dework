@@ -3440,6 +3440,84 @@ export interface PaymentUpdatedSubscription {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL subscription operation: TaskRewardUpdatedSubscription
+// ====================================================
+
+export interface TaskRewardUpdatedSubscription_taskReward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_networks[];
+  tokens: TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_tokens[];
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod;
+  network: TaskRewardUpdatedSubscription_taskReward_payment_network;
+}
+
+export interface TaskRewardUpdatedSubscription_taskReward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: TaskRewardUpdatedSubscription_taskReward_token;
+  payment: TaskRewardUpdatedSubscription_taskReward_payment | null;
+}
+
+export interface TaskRewardUpdatedSubscription {
+  taskReward: TaskRewardUpdatedSubscription_taskReward;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: UserDetail
 // ====================================================
 

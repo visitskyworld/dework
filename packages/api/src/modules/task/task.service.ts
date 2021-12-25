@@ -4,7 +4,6 @@ import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   FindConditions,
-  In,
   IsNull,
   Not,
   Repository,
@@ -105,9 +104,9 @@ export class TaskService {
       input.data
     );
 
-    await this.taskRewardRepo.update(
-      { id: In(input.taskRewardIds) },
-      { paymentId: payment.id }
+    const rewards = await this.taskRewardRepo.findByIds(input.taskRewardIds);
+    await this.taskRewardRepo.save(
+      rewards.map((r) => ({ ...r, payment: undefined, paymentId: payment.id }))
     );
 
     return this.findWithRelations({ rewardIds: input.taskRewardIds });

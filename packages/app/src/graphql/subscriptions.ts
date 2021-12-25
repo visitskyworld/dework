@@ -30,3 +30,13 @@ export const paymentUpdated = gql`
 
   ${Fragments.payment}
 `;
+
+export const taskRewardUpdated = gql`
+  subscription TaskRewardUpdatedSubscription {
+    taskReward: onTaskRewardUpdated {
+      ...TaskReward
+    }
+  }
+
+  ${Fragments.taskReward}
+`;
