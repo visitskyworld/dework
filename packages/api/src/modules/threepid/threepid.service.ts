@@ -1,4 +1,5 @@
 import _ from "lodash";
+import LocaleCode from "locale-code";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, FindConditions, Repository } from "typeorm";
@@ -86,7 +87,9 @@ export class ThreepidService {
   public getLocation(threepid: Threepid): string | undefined {
     switch (threepid.source) {
       case ThreepidSource.discord:
-        return undefined;
+        const locale = (threepid as Threepid<ThreepidSource.discord>).config
+          .profile.locale;
+        return LocaleCode.getCountryName(locale);
       case ThreepidSource.github:
         const githubThreepidConfigProfileJson = (
           threepid as Threepid<ThreepidSource.github>
