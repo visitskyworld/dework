@@ -186,7 +186,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
             {
               title: "Payment",
               dataIndex: "reward",
-              width: 1,
+              width: 120,
               render: (reward: TaskReward, task: TaskToPay) =>
                 canPayTaskAssignee(task) ? (
                   formatTaskReward(reward)

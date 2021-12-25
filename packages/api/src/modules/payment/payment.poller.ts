@@ -1,5 +1,14 @@
-import { Payment, PaymentStatus } from "@dewo/api/models/Payment";
-import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
+import {
+  GnosisSafePaymentData,
+  MetamaskPaymentData,
+  Payment,
+  PaymentStatus,
+  PhantomPaymentData,
+} from "@dewo/api/models/Payment";
+import {
+  PaymentMethod,
+  PaymentMethodType,
+} from "@dewo/api/models/PaymentMethod";
 import { Response } from "express";
 import { Controller, Logger, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -9,12 +18,16 @@ import * as solana from "@solana/web3.js";
 import moment from "moment";
 import { ethers } from "ethers";
 import { ConfigService } from "@nestjs/config";
+import SafeServiceClient from "@gnosis.pm/safe-service-client";
+import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
 import { ConfigType } from "../app/config";
+import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 
 @Controller("payment")
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);
   private ethereumProviders: Record<string, ethers.providers.InfuraProvider>;
+  private gnosisSafeServiceClients: Record<string, SafeServiceClient>;
 
   private checkInterval: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.minutes(1),
@@ -47,6 +60,14 @@ export class PaymentPoller {
       "ethereum-rinkeby": new ethers.providers.InfuraProvider(
         "rinkeby",
         config.get("INFURA_PROJECT_ID")
+      ),
+    };
+    this.gnosisSafeServiceClients = {
+      "ethereum-mainnet": new SafeServiceClient(
+        "https://safe-transaction.gnosis.io"
+      ),
+      "ethereum-rinkeby": new SafeServiceClient(
+        "https://safe-transaction.rinkeby.gnosis.io"
       ),
     };
   }
@@ -87,30 +108,30 @@ export class PaymentPoller {
           })}`
         );
 
-        if (confirmed) {
-          await this.paymentRepo.save({
-            ...payment,
-            status: PaymentStatus.CONFIRMED,
-            nextStatusCheckAt: null,
-          });
-        } else if (expired) {
-          await this.paymentRepo.save({
-            ...payment,
-            status: PaymentStatus.FAILED,
-            nextStatusCheckAt: null,
-          });
-        } else {
-          const nextStatusCheckAt = moment()
-            .add(this.checkInterval[method.type])
-            .toDate();
-          this.logger.log(
-            `Next check at: ${JSON.stringify({
-              paymentId: payment.id,
-              nextStatusCheckAt,
-            })}`
-          );
-          await this.paymentRepo.save({ ...payment, nextStatusCheckAt });
-        }
+        // if (confirmed) {
+        //   await this.paymentRepo.save({
+        //     ...payment,
+        //     status: PaymentStatus.CONFIRMED,
+        //     nextStatusCheckAt: null,
+        //   });
+        // } else if (expired) {
+        //   await this.paymentRepo.save({
+        //     ...payment,
+        //     status: PaymentStatus.FAILED,
+        //     nextStatusCheckAt: null,
+        //   });
+        // } else {
+        //   const nextStatusCheckAt = moment()
+        //     .add(this.checkInterval[method.type])
+        //     .toDate();
+        //   this.logger.log(
+        //     `Next check at: ${JSON.stringify({
+        //       paymentId: payment.id,
+        //       nextStatusCheckAt,
+        //     })}`
+        //   );
+        //   await this.paymentRepo.save({ ...payment, nextStatusCheckAt });
+        // }
       } catch (error) {
         const errorString = JSON.stringify(
           error,
@@ -126,19 +147,26 @@ export class PaymentPoller {
   }
 
   private async isConfirmed(payment: Payment): Promise<boolean> {
-    const method = await payment.paymentMethod;
+    const [method, network] = await Promise.all([
+      payment.paymentMethod,
+      payment.network,
+    ]);
     switch (method.type) {
       case PaymentMethodType.METAMASK:
         return this.isEthereumTxConfirmed(
-          payment as Payment<PaymentMethodType.METAMASK>
+          payment.data as MetamaskPaymentData,
+          network
         );
       case PaymentMethodType.PHANTOM:
         return this.isSolanaTxConfirmed(
-          payment as Payment<PaymentMethodType.PHANTOM>
+          payment.data as PhantomPaymentData,
+          network
         );
       case PaymentMethodType.GNOSIS_SAFE:
         return this.isGnosisSafeTxConfirmed(
-          payment as Payment<PaymentMethodType.GNOSIS_SAFE>
+          payment.data as GnosisSafePaymentData,
+          method,
+          network
         );
       default:
         return false;
@@ -146,14 +174,13 @@ export class PaymentPoller {
   }
 
   public async isEthereumTxConfirmed(
-    payment: Payment<PaymentMethodType.METAMASK>
+    data: MetamaskPaymentData,
+    network: PaymentNetwork
   ): Promise<boolean> {
-    const network = await payment.network;
     const provider = this.ethereumProviders[network.slug];
     if (!provider) {
       this.logger.error(
         `No ethers provider for network ${network.slug} (${JSON.stringify({
-          paymentId: payment.id,
           networkId: network.id,
           networkSlug: network.slug,
         })})`
@@ -162,12 +189,9 @@ export class PaymentPoller {
     }
 
     const blockNumber = await provider.getBlockNumber();
-    const receipt = await provider.getTransactionReceipt(payment.data.txHash);
+    const receipt = await provider.getTransactionReceipt(data.txHash);
     this.logger.debug(
-      `Ethereum transaction receipt: ${JSON.stringify({
-        paymentId: payment.id,
-        receipt,
-      })}`
+      `Ethereum transaction receipt: ${JSON.stringify({ data, receipt })}`
     );
 
     const depth = blockNumber - receipt.blockNumber;
@@ -175,27 +199,63 @@ export class PaymentPoller {
   }
 
   public async isSolanaTxConfirmed(
-    payment: Payment<PaymentMethodType.PHANTOM>
+    data: PhantomPaymentData,
+    network: PaymentNetwork
   ): Promise<boolean> {
-    const network = await payment.network;
     const connection = new solana.Connection(network.url);
-    const status = await connection.getSignatureStatus(payment.data.signature, {
+    const status = await connection.getSignatureStatus(data.signature, {
       searchTransactionHistory: true,
     });
     this.logger.debug(
-      `Solana signature status: ${JSON.stringify({
-        paymentId: payment.id,
-        status,
-      })}`
+      `Solana signature status: ${JSON.stringify({ data, status })}`
     );
     return status.value?.confirmationStatus === "finalized";
   }
 
   public async isGnosisSafeTxConfirmed(
-    _payment: Payment<PaymentMethodType.GNOSIS_SAFE>
-  ): Promise<boolean> {
-    // TODO(fant: check if safeTxHash has been published and if so what it's txHash is)
-    // Also figure out how to store that txHash
-    return false;
+    data: GnosisSafePaymentData,
+    paymentMethod: PaymentMethod,
+    network: PaymentNetwork
+  ): Promise<{
+    confirmed: boolean;
+    txHash?: string;
+  }> {
+    const safeService = this.gnosisSafeServiceClients[network.slug];
+    if (!safeService) {
+      this.logger.error(
+        `No Gnosis Safe Service client for network ${
+          network.slug
+        } (${JSON.stringify({
+          networkId: network.id,
+          networkSlug: network.slug,
+        })})`
+      );
+      return { confirmed: false };
+    }
+
+    const provider = this.ethereumProviders[network.slug];
+    if (!provider) {
+      this.logger.error(
+        `No ethers provider for network ${network.slug} (${JSON.stringify({
+          networkId: network.id,
+          networkSlug: network.slug,
+        })})`
+      );
+      return { confirmed: false };
+    }
+
+    const signer = ethers.Wallet.createRandom().connect(provider);
+    const ethAdapter = new EthersAdapter({ ethers, signer });
+    const safeAddress = paymentMethod.address;
+
+    const safe = await Safe.create({ ethAdapter, safeAddress });
+    const safeTx = await safeService.getTransaction(data.safeTxHash);
+
+    if (!safeTx.transactionHash) return { confirmed: false };
+    const confirmed = await this.isEthereumTxConfirmed(
+      { txHash: safeTx.transactionHash },
+      network
+    );
+    return { confirmed, txHash: safeTx.transactionHash };
   }
 }

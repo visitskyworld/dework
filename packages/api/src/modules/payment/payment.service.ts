@@ -1,4 +1,5 @@
 import {
+  GnosisSafePaymentData,
   MetamaskPaymentData,
   Payment,
   PaymentData,
@@ -39,12 +40,12 @@ export class PaymentService {
   ): Promise<Payment> {
     switch (paymentMethod.type) {
       case PaymentMethodType.GNOSIS_SAFE:
-        throw new Error("No support for Gnosis Safe payments");
-      // if (!(data.data as GnosisSafePaymentData).safeTxHash) {
-      //   throw new Error(
-      //     `Cannot create ${PaymentMethodType.METAMASK} payment without data.safeTxHash`
-      //   );
-      // }
+        if (!(data as GnosisSafePaymentData).safeTxHash) {
+          throw new Error(
+            `Cannot create Gnosis Safe payment without safeTxHash`
+          );
+        }
+        break;
       case PaymentMethodType.METAMASK:
         if (!(data as MetamaskPaymentData).txHash) {
           throw new Error(`Cannot create Metamask payment without txHash`);

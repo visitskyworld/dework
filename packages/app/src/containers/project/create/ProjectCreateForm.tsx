@@ -29,7 +29,12 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   );
 
   return (
-    <Form initialValues={{ organizationId }} onFinish={handleSubmit}>
+    <Form
+      layout="vertical"
+      requiredMark={false}
+      initialValues={{ organizationId }}
+      onFinish={handleSubmit}
+    >
       <Form.Item
         label="Project Name"
         name="name"
