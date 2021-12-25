@@ -1,6 +1,6 @@
-import { Threepid } from "@dewo/api/models/Threepid";
+import { GithubThreepidConfig, Threepid } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
-import { UserDetail } from "@dewo/api/models/UserDetail";
+import { UserDetail, UserDetailType } from "@dewo/api/models/UserDetail";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
@@ -53,6 +53,7 @@ export class UserService {
       ...existingUser,
     });
 
+    await this.autoPopulateDetails(user.id, threepid);
     await this.connectThreepidToUser(threepid, user);
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
@@ -93,6 +94,27 @@ export class UserService {
       type: partial.type,
       value: partial.value,
     });
+  }
+
+  public async autoPopulateDetails(
+    userId: string,
+    threePid: Threepid
+  ): Promise<void> {
+    const location = this.threepidService.getLocation(threePid);
+    if (location) {
+      this.setDetail(
+        { type: UserDetailType.location, value: location },
+        userId
+      );
+    }
+    if (threePid.source === "github") {
+      const githubProfileUrl = (threePid.config as GithubThreepidConfig).profile
+        .profileUrl;
+      this.setDetail(
+        { type: UserDetailType.github, value: githubProfileUrl },
+        userId
+      );
+    }
   }
 
   public createAuthToken(user: User): string {

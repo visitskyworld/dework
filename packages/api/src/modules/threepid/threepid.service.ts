@@ -78,4 +78,15 @@ export class ThreepidService {
 
     return "deworker";
   }
+
+  public getLocation(threepid: Threepid): string | undefined {
+    switch (threepid.source) {
+      case ThreepidSource.discord:
+        return undefined;
+      case ThreepidSource.github:
+        return JSON.parse(
+          (threepid as Threepid<ThreepidSource.github>).config.profile._raw
+        ).location;
+    }
+  }
 }

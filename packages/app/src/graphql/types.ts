@@ -4787,9 +4787,9 @@ export enum ThreepidSource {
 }
 
 export enum UserDetailType {
-  country = "country",
   github = "github",
   linkedin = "linkedin",
+  location = "location",
   twitter = "twitter",
   website = "website",
 }
