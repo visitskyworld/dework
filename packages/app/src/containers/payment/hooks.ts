@@ -14,6 +14,7 @@ import {
   PaymentMethod,
   PaymentMethodType,
   Task,
+  TaskReward,
   UpdatePaymentMethodInput,
   UpdatePaymentMethodMutation,
   UpdatePaymentMethodMutationVariables,
@@ -27,6 +28,17 @@ import { useCallback } from "react";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
+
+export const canPaymentMethodReceiveTaskReward = (
+  paymentMethod: PaymentMethod,
+  reward: TaskReward
+) => paymentMethod.networks.some((n) => n.id === reward.token.networkId);
+export const canPaymentMethodSendTaskReward = (
+  paymentMethod: PaymentMethod,
+  reward: TaskReward
+) =>
+  paymentMethod.networks.some((n) => n.id === reward.token.networkId) &&
+  paymentMethod.tokens.some((t) => t.id === reward.token.id);
 
 export function explorerLink(payment: Payment): string | undefined {
   switch (payment.network.slug) {
@@ -130,20 +142,18 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         loadProject({
           variables: { projectId: task.projectId },
         }).then((res) => res.data?.project),
-        loadUserPaymentMethod({ variables: { id: user.id } })
-          .then((res) => res.data?.user.paymentMethod)
-          .then((pm) => (!!pm ? [pm!] : [])),
+        loadUserPaymentMethod({ variables: { id: user.id } }).then(
+          (res) => res.data?.user.paymentMethods ?? []
+        ),
       ]);
 
       if (!project) throw new Error("Project not found");
 
-      const from = project.paymentMethods.find(
-        (pm) =>
-          pm.networks.some((n) => n.id === reward.token.networkId) &&
-          pm.tokens.some((t) => t.id === reward.token.id)
+      const from = project.paymentMethods.find((pm) =>
+        canPaymentMethodSendTaskReward(pm, reward)
       );
       const to = userPaymentMethods.find((pm) =>
-        pm.networks.some((n) => n.id === reward.token.networkId)
+        canPaymentMethodReceiveTaskReward(pm, reward)
       );
 
       if (!from) throw new NoProjectPaymentMethodError();

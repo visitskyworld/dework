@@ -4813,7 +4813,7 @@ export interface CreatePaymentMethodInput {
   type: PaymentMethodType;
   address: string;
   networkId: Scalar.UUID;
-  tokenIds: Scalar.UUID[];
+  tokenIds?: Scalar.UUID[] | null;
   projectId?: Scalar.UUID | null;
   userId?: Scalar.UUID | null;
 }

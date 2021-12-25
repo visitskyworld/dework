@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
 import { formatTaskReward } from "../../task/hooks";
+import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
 
 interface Props {
   projectId: string;
@@ -31,7 +32,12 @@ interface Props {
 type TaskToPay = GetTasksToPayQuery["tasks"][number];
 
 const userToPay = (task: TaskToPay) => task.assignees[0];
-const canPayTaskAssignee = (task: TaskToPay) => !!userToPay(task).paymentMethod;
+const canPayTaskAssignee = (task: TaskToPay) => {
+  const user = userToPay(task);
+  return user.paymentMethods.some((pm) =>
+    canPaymentMethodReceiveTaskReward(pm, task.reward!)
+  );
+};
 
 export function useCreateTaskPayments(): (
   input: CreateTaskPaymentsInput
@@ -88,7 +94,9 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
       const safeTxHash = await proposeTransaction(
         gnosisPaymentMethod!.address,
         tasksToPay.map((task) => ({
-          to: userToPay(task).paymentMethod!.address,
+          to: userToPay(task).paymentMethods.find((pm) =>
+            canPaymentMethodReceiveTaskReward(pm, task.reward!)
+          )!.address,
           value: task.reward!.amount,
           data: `0x${task.reward!.id.replace(/-/g, "")}`,
         }))
