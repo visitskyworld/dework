@@ -15,6 +15,10 @@ export class UserRequests {
       paymentMethod {
         id
       }
+      details {
+        value
+        type
+      }
     }
   `;
 

@@ -5,6 +5,10 @@ import { DeepPartial, FindConditions, Repository } from "typeorm";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
+type GithubThreepidConfigProfileJson = {
+  location: string;
+};
+
 @Injectable()
 export class ThreepidService {
   // private readonly logger = new Logger("ThreepidService");
@@ -84,9 +88,11 @@ export class ThreepidService {
       case ThreepidSource.discord:
         return undefined;
       case ThreepidSource.github:
-        return JSON.parse(
-          (threepid as Threepid<ThreepidSource.github>).config.profile._raw
-        ).location;
+        const githubThreepidConfigProfileJson = (
+          threepid as Threepid<ThreepidSource.github>
+        ).config.profile._json as GithubThreepidConfigProfileJson;
+        if (!githubThreepidConfigProfileJson?.location) return undefined;
+        return githubThreepidConfigProfileJson.location;
     }
   }
 }

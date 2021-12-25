@@ -1,4 +1,7 @@
-import { ThreepidSource } from "@dewo/api/models/Threepid";
+import {
+  ThreepidSource,
+  GithubThreepidConfig,
+} from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -12,6 +15,7 @@ import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
+import { UserDetail } from "../../../../../app/src/graphql/types";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -182,6 +186,40 @@ describe("UserResolver", () => {
           client.expectGqlError(response, HttpStatus.FORBIDDEN);
           client.expectGqlErrorMessage(response, "Account already connected");
         });
+      });
+
+      it("should auto-add location & github details on 1st signup", async () => {
+        const threepid = await fixtures.createThreepid({
+          source: ThreepidSource.github,
+          config: {
+            profile: {
+              profileUrl: "my-site.com",
+              _json: { location: "London" },
+            },
+          } as GithubThreepidConfig,
+        });
+        const user = await fixtures.createUser(threepid);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.authWithThreepid(threepid.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const updatedUser = response.body.data?.authWithThreepid.user;
+        console.log(updatedUser);
+        expect(updatedUser.details.length).toEqual(2);
+        expect(
+          updatedUser.details.find(
+            (d: UserDetail) => d.type === UserDetailType.location
+          ).value
+        ).toEqual("London");
+        expect(
+          updatedUser.details.find(
+            (d: UserDetail) => d.type === UserDetailType.github
+          ).value
+        ).toEqual("my-site.com");
       });
     });
 
