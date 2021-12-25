@@ -30,6 +30,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const [savedValue, setSavedValue] = useState(initialValue);
   const [value, setValue] = useState(initialValue);
   const editing = useToggle(mode === "create");
+  const autoSave = mode === "create";
 
   const handleSave = useCallback(() => {
     setSavedValue(value);
@@ -46,9 +47,9 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const handleChange = useCallback(
     (description: string | undefined) => {
       setValue(description);
-      if (mode === "create") onChange?.(value);
+      if (autoSave) onChange?.(value);
     },
-    [mode, onChange, value]
+    [autoSave, onChange, value]
   );
 
   const replaceMarkdownImgPlaceholder = useCallback(
@@ -157,8 +158,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
           textareaProps={{ placeholder: "Enter a description..." }}
           onPaste={handleFilePaste}
           onBlur={stopPropagation}
-          onSave={mode === "update" ? handleSave : undefined}
-          onCancel={mode === "update" ? editing.toggleOff : undefined}
+          onSave={!autoSave ? handleSave : undefined}
+          onCancel={!autoSave ? editing.toggleOff : undefined}
         />
       </Upload.Dragger>
     );
