@@ -28,9 +28,15 @@ export const permissions: Permissions<
       userId: user.id,
       role: OrganizationRole.MEMBER,
     });
-    can(Actions.update, Task, ["status"], {
-      assignees: { $elemMatch: { id: user.id } },
-    });
+    can(
+      Actions.update,
+      Task,
+      ["status", "status[TODO]", "status[IN_PROGRESS]", "status[IN_REVIEW]"],
+      {
+        assignees: { $elemMatch: { id: user.id } },
+        status: { $ne: TaskStatusEnum.DONE },
+      }
+    );
     can(Actions.update, Task, { ownerId: user.id });
     can(CustomPermissionActions.claimTask, Task, {
       status: TaskStatusEnum.TODO,

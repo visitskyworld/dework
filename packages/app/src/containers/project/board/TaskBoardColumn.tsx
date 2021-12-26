@@ -4,7 +4,7 @@ import { Button, Card, Badge, Space, Typography, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
@@ -16,6 +16,7 @@ interface Props {
   taskSections: TaskSection[];
   width: number;
   projectId?: string;
+  currentlyDraggingTask?: Task;
 }
 
 export const TaskBoardColumn: FC<Props> = ({
@@ -23,6 +24,7 @@ export const TaskBoardColumn: FC<Props> = ({
   taskSections,
   width,
   projectId,
+  currentlyDraggingTask,
 }) => {
   const createCardToggle = useToggle();
   const hasPermission = usePermissionFn();
@@ -35,6 +37,7 @@ export const TaskBoardColumn: FC<Props> = ({
     () => ({ status }),
     [status]
   );
+
   return (
     <Card
       size="small"
@@ -92,7 +95,17 @@ export const TaskBoardColumn: FC<Props> = ({
                 {section.button}
               </Row>
             )}
-            <Droppable droppableId={[status, index].join(":")}>
+            <Droppable
+              droppableId={[status, index].join(":")}
+              isDropDisabled={
+                !currentlyDraggingTask ||
+                !hasPermission(
+                  "update",
+                  currentlyDraggingTask,
+                  `status[${status}]`
+                )
+              }
+            >
               {(provided) => (
                 <div
                   ref={provided.innerRef}
@@ -108,7 +121,9 @@ export const TaskBoardColumn: FC<Props> = ({
                       key={task.id}
                       draggableId={task.id}
                       index={index}
-                      isDragDisabled={!hasPermission("update", task)}
+                      isDragDisabled={
+                        !hasPermission("update", task, `status[${status}]`)
+                      }
                     >
                       {(provided) => (
                         <div
@@ -117,7 +132,7 @@ export const TaskBoardColumn: FC<Props> = ({
                           {...provided.dragHandleProps}
                           style={{
                             ...provided.draggableProps.style,
-                            cursor: hasPermission("update", task)
+                            cursor: hasPermission("update", task, "status")
                               ? "grab"
                               : "pointer",
                             marginBottom: 8,

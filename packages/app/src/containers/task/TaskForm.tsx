@@ -61,7 +61,8 @@ export const TaskForm: FC<TaskFormProps> = ({
   const canDelete = usePermission("delete", !!task ? task : "Task");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
-    (field: keyof TaskFormValues) => hasPermission(mode, task ?? "Task", field),
+    (field: keyof TaskFormValues | `status[${TaskStatusEnum}]`) =>
+      hasPermission(mode, task ?? "Task", field),
     [hasPermission, mode, task]
   );
 
@@ -141,7 +142,11 @@ export const TaskForm: FC<TaskFormProps> = ({
               disabled={!canChange("status")}
             >
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
-                <Select.Option key={status} value={status}>
+                <Select.Option
+                  key={status}
+                  value={status}
+                  disabled={!canChange(`status[${status}]`)}
+                >
                   {STATUS_LABEL[status]}
                 </Select.Option>
               ))}
@@ -211,7 +216,11 @@ export const TaskForm: FC<TaskFormProps> = ({
               disabled={!canChange("status")}
             >
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
-                <Select.Option key={status} value={status}>
+                <Select.Option
+                  key={status}
+                  value={status}
+                  disabled={!canChange(`status[${status}]`)}
+                >
                   {STATUS_LABEL[status]}
                 </Select.Option>
               ))}

@@ -1,9 +1,10 @@
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import React, { FC, useEffect, useCallback, useState } from "react";
+import React, { FC, useEffect, useCallback, useState, useMemo } from "react";
 import {
   DragDropContext,
   DragDropContextProps,
+  DragStart,
   resetServerContext,
 } from "react-beautiful-dnd";
 import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
@@ -29,9 +30,20 @@ const emptySections: TaskSection[] = [{ tasks: [] }];
 export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
+  const [currentDraggableId, setCurrentDraggableId] = useState<string>();
+  const currentlyDraggingTask = useMemo(
+    () => tasks.find((t) => t.id === currentDraggableId),
+    [tasks, currentDraggableId]
+  );
+
   const updateTask = useUpdateTask();
+  const handleDragStart = useCallback(
+    (dragStart: DragStart) => setCurrentDraggableId(dragStart.draggableId),
+    []
+  );
   const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
     async (result) => {
+      setCurrentDraggableId(undefined);
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
@@ -80,7 +92,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
   if (!loaded) return null;
   return (
     <>
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
         <Row className="dewo-task-board">
           <Space size="middle" align="start">
             {statuses.map((status) => (
@@ -90,6 +102,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
                   width={columnWidth}
                   taskSections={taskSectionsByStatus[status] ?? emptySections}
                   projectId={projectId}
+                  currentlyDraggingTask={currentlyDraggingTask}
                 />
               </div>
             ))}
