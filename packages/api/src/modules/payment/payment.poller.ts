@@ -44,9 +44,9 @@ export class PaymentPoller {
   };
 
   private blockDepthBeforeConfirmed: Record<PaymentMethodType, number> = {
-    [PaymentMethodType.METAMASK]: 3,
-    [PaymentMethodType.PHANTOM]: 3,
-    [PaymentMethodType.GNOSIS_SAFE]: 3,
+    [PaymentMethodType.METAMASK]: 1,
+    [PaymentMethodType.PHANTOM]: 1,
+    [PaymentMethodType.GNOSIS_SAFE]: 1,
   };
 
   constructor(
