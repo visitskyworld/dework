@@ -48,7 +48,7 @@
     "query-string": "^7.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
-    "slugify": "^1.6.3",
+    "slugify": "^1.6.4",
     "typeorm": "^0.2.41",
     "uuid": "^8.3.2",
     "uuid-base62": "^0.1.0"
