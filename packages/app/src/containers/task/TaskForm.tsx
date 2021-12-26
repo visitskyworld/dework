@@ -3,7 +3,10 @@ import { Form, Button, Input, Select, Row, Typography, Col } from "antd";
 import { TaskStatusEnum, User, TaskDetails } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import { useTaskFormUserOptions } from "./hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import {
+  usePermission,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "./AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
@@ -54,8 +57,13 @@ export const TaskForm: FC<TaskFormProps> = ({
   const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
   );
-  const canEdit = usePermission(mode, !!task ? task : "Task");
+  const canSubmit = usePermission(mode, !!task ? task : "Task");
   const canDelete = usePermission("delete", !!task ? task : "Task");
+  const hasPermission = usePermissionFn();
+  const canChange = useCallback(
+    (field: keyof TaskFormValues) => hasPermission(mode, task ?? "Task", field),
+    [hasPermission, mode, task]
+  );
 
   const ownerOptions = useTaskFormUserOptions(
     projectId,
@@ -111,11 +119,11 @@ export const TaskForm: FC<TaskFormProps> = ({
             rules={[{ required: true, message: "Please enter a name" }]}
           >
             <Input.TextArea
-              disabled={!canEdit}
+              disabled={!canChange("name")}
               autoSize
               autoFocus={mode === "create"}
               className="dewo-field dewo-field-display ant-typography-h3"
-              placeholder={canEdit ? `Enter a task name...` : "Untitled..."}
+              placeholder={`Enter a task name...`}
             />
           </Form.Item>
         </Col>
@@ -128,7 +136,10 @@ export const TaskForm: FC<TaskFormProps> = ({
             rules={[{ required: true }]}
             className="show-xs"
           >
-            <Select placeholder="Select a task status" disabled={!canEdit}>
+            <Select
+              placeholder="Select a task status"
+              disabled={!canChange("status")}
+            >
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
                 <Select.Option key={status} value={status}>
                   {STATUS_LABEL[status]}
@@ -136,20 +147,16 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="description"
-            label={canEdit ? `Description (optional)` : "Description"}
-            className="mb-3"
-          >
+          <Form.Item name="description" label={"Description"} className="mb-3">
             <MarkdownEditor
               initialValue={initialValues?.description ?? undefined}
-              editable={canEdit}
+              editable={canChange("description")}
               mode={mode}
               onSave={handleBlur}
             />
           </Form.Item>
 
-          {mode === "create" && canEdit && (
+          {mode === "create" && canSubmit && (
             <Form.Item style={{ marginBottom: 0 }}>
               <Button
                 type="primary"
@@ -184,7 +191,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             </FormSection>
           )}
 
-          {!!canEdit &&
+          {!!canChange("assigneeIds") &&
             !!task &&
             task.status === TaskStatusEnum.TODO &&
             !!task.applications.length && <AssignTaskCard task={task} />}
@@ -199,7 +206,10 @@ export const TaskForm: FC<TaskFormProps> = ({
             rules={[{ required: true }]}
             className="show-sm"
           >
-            <Select placeholder="Select a task status" disabled={!canEdit}>
+            <Select
+              placeholder="Select a task status"
+              disabled={!canChange("status")}
+            >
               {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
                 <Select.Option key={status} value={status}>
                   {STATUS_LABEL[status]}
@@ -208,7 +218,10 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <TaskTagSelectField disabled={!canEdit} projectId={projectId} />
+          <TaskTagSelectField
+            disabled={!canChange("tagIds")}
+            projectId={projectId}
+          />
 
           <Form.Item
             name="assigneeIds"
@@ -220,7 +233,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               showSearch
               className="dewo-select-item-full-width"
               loading={!assigneeOptions}
-              disabled={!canEdit}
+              disabled={!canChange("assigneeIds")}
               allowClear
               optionFilterProp="label"
               optionLabelProp="label" // don't put children inside tagRender
@@ -228,7 +241,9 @@ export const TaskForm: FC<TaskFormProps> = ({
               tagRender={(props) => {
                 const user = assigneeOptions?.find((u) => u.id === props.value);
                 if (!user) return <div />;
-                return <UserSelectOption user={user} style={{ padding: 4 }} />;
+                return (
+                  <UserSelectOption user={user} style={{ paddingRight: 12 }} />
+                );
               }}
             >
               {assigneeOptions?.map((user) => (
@@ -242,7 +257,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             <Select
               showSearch
               loading={!ownerOptions}
-              disabled={!canEdit}
+              disabled={!canChange("ownerId")}
               allowClear
               optionFilterProp="label"
               placeholder="No task reviewer..."
@@ -255,7 +270,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          {canEdit &&
+          {canChange("reward") &&
           !!projectId &&
           (!task?.reward?.payment || mode === "create") ? (
             <Form.Item
