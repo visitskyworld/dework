@@ -21,7 +21,7 @@ import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEdit
 import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
-import { TaskDeleteButton } from "./TaskDeleteButton";
+import { TaskNumberAndSettings } from "./TaskNumberAndSettings";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 
 export interface TaskFormValues {
@@ -58,7 +58,6 @@ export const TaskForm: FC<TaskFormProps> = ({
     initialValues ?? {}
   );
   const canSubmit = usePermission(mode, !!task ? task : "Task");
-  const canDelete = usePermission("delete", !!task ? task : "Task");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
     (field: keyof TaskFormValues | `status[${TaskStatusEnum}]`) =>
@@ -124,7 +123,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               autoSize
               autoFocus={mode === "create"}
               className="dewo-field dewo-field-display ant-typography-h3"
-              placeholder={`Enter a task name...`}
+              placeholder="Enter a task name..."
             />
           </Form.Item>
         </Col>
@@ -152,7 +151,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="description" label={"Description"} className="mb-3">
+          <Form.Item name="description" label="Description" className="mb-3">
             <MarkdownEditor
               initialValue={initialValues?.description ?? undefined}
               editable={canChange("description")}
@@ -205,6 +204,8 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && <TaskActivityFeed task={task} />}
         </Col>
         <Col xs={24} sm={8}>
+          {!!task && <TaskNumberAndSettings task={task} />}
+
           <Form.Item
             name="status"
             label="Status"
@@ -296,12 +297,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Form.Item>
           ) : (
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
-          )}
-
-          {canDelete && mode === "update" && !!task && (
-            <FormSection label="Actions">
-              <TaskDeleteButton task={task} />
-            </FormSection>
           )}
         </Col>
       </Row>

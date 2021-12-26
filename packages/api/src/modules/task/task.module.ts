@@ -18,6 +18,7 @@ import {
 } from "./task.resolver";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
+import { PermalinkModule } from "../permalink/permalink.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { TaskService } from "./task.service";
     CqrsModule,
     PaymentModule,
     ProjectModule,
+    PermalinkModule,
   ],
   providers: [
     TaskResolver,

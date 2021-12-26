@@ -552,6 +552,7 @@ export interface CreateTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
@@ -681,6 +682,7 @@ export interface UpdateTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
@@ -810,6 +812,7 @@ export interface ClaimTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: ClaimTaskMutation_task_tags[];
   assignees: ClaimTaskMutation_task_assignees[];
   reward: ClaimTaskMutation_task_reward | null;
@@ -940,6 +943,7 @@ export interface UnclaimTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: UnclaimTaskMutation_task_tags[];
   assignees: UnclaimTaskMutation_task_assignees[];
   reward: UnclaimTaskMutation_task_reward | null;
@@ -1069,6 +1073,7 @@ export interface DeleteTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: DeleteTaskMutation_task_tags[];
   assignees: DeleteTaskMutation_task_assignees[];
   reward: DeleteTaskMutation_task_reward | null;
@@ -1612,12 +1617,14 @@ export interface CreateTaskPaymentsMutation_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: CreateTaskPaymentsMutation_tasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
+  permalink: string;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   discordChannel: CreateTaskPaymentsMutation_tasks_discordChannel | null;
@@ -1864,6 +1871,7 @@ export interface UserTasksQuery_user_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: UserTasksQuery_user_tasks_tags[];
   assignees: UserTasksQuery_user_tasks_assignees[];
   reward: UserTasksQuery_user_tasks_reward | null;
@@ -2259,6 +2267,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
@@ -2474,6 +2483,7 @@ export interface GetProjectTasksQuery_project_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: GetProjectTasksQuery_project_tasks_tags[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
@@ -2698,12 +2708,14 @@ export interface GetTaskQuery_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
+  permalink: string;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   discordChannel: GetTaskQuery_task_discordChannel | null;
@@ -2835,6 +2847,7 @@ export interface GetTasksQuery_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: GetTasksQuery_tasks_tags[];
   assignees: GetTasksQuery_tasks_assignees[];
   reward: GetTasksQuery_tasks_reward | null;
@@ -3027,6 +3040,7 @@ export interface GetTasksToPayQuery_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: GetTasksToPayQuery_tasks_tags[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
   reward: GetTasksToPayQuery_tasks_reward | null;
@@ -3301,12 +3315,14 @@ export interface TaskCreatedSubscription_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
+  permalink: string;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   discordChannel: TaskCreatedSubscription_task_discordChannel | null;
@@ -3477,12 +3493,14 @@ export interface TaskUpdatedSubscription_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
+  permalink: string;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
@@ -4196,6 +4214,7 @@ export interface Task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: Task_tags[];
   assignees: Task_assignees[];
   reward: Task_reward | null;
@@ -4361,12 +4380,14 @@ export interface TaskDetails {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: TaskDetails_tags[];
   assignees: TaskDetails_assignees[];
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
+  permalink: string;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
   discordChannel: TaskDetails_discordChannel | null;
@@ -4713,6 +4734,7 @@ export interface ProjectDetails_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
+  number: number;
   tags: ProjectDetails_tasks_tags[];
   assignees: ProjectDetails_tasks_assignees[];
   reward: ProjectDetails_tasks_reward | null;

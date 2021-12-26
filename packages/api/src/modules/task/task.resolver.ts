@@ -28,11 +28,15 @@ import { User } from "@dewo/api/models/User";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
 import { GetTasksInput } from "./dto/GetTasksInput";
+import { PermalinkService } from "../permalink/permalink.service";
 
 @Injectable()
 @Resolver(() => Task)
 export class TaskResolver {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly permalinkService: PermalinkService
+  ) {}
 
   @ResolveField(() => [TaskTag])
   public async tags(@Parent() task: Task): Promise<TaskTag[]> {
@@ -49,6 +53,11 @@ export class TaskResolver {
     const root = user?.username ?? "feat";
     const slugifiedRoot = slugify(root, { lower: true, strict: true });
     return `${slugifiedRoot}/dw-${task.number}/${task.slug}`;
+  }
+
+  @ResolveField(() => String)
+  public permalink(@Parent() task: Task): Promise<string> {
+    return this.permalinkService.get(task);
   }
 
   @Mutation(() => Task)

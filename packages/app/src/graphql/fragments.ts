@@ -205,6 +205,7 @@ export const task = gql`
     deletedAt
     projectId
     ownerId
+    number
     tags {
       ...TaskTag
     }
@@ -230,6 +231,7 @@ export const taskDetails = gql`
     ...Task
     gitBranchName
     createdAt
+    permalink
     owner {
       ...User
     }

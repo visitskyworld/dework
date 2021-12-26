@@ -110,61 +110,6 @@ export class TaskService {
     );
 
     return this.findWithRelations({ rewardIds: input.taskRewardIds });
-
-    /*
-    const task = await this.taskRepo.findOne(input.taskId);
-    if (!task) throw new NotFoundException();
-    if (!task.rewardId) {
-      const msg = "Cannot pay for task without reward";
-      this.logger.error(`${msg} (${JSON.stringify(input)})`);
-      throw new BadRequestException(msg);
-    }
-
-    const assignees = await task.assignees;
-    if (!assignees.length) {
-      const msg = "Cannot pay for task without assignees";
-      this.logger.error(`${msg} (${JSON.stringify(input)})`);
-      throw new BadRequestException(msg);
-    }
-
-    if (assignees.length > 1) {
-      this.logger.warn(
-        `Creating task payment for task with multiple assignees. Only first assignee will be paid (${JSON.stringify(
-          input
-        )})`
-      );
-    }
-
-    const project = await task.project;
-    const fromPaymentMethod = await project.paymentMethod;
-    if (!fromPaymentMethod) {
-      const msg = "Project is missing payment method";
-      this.logger.error(
-        `${msg} (${JSON.stringify({ input, projectId: project.id })})`
-      );
-      throw new BadRequestException(msg);
-    }
-
-    const user = assignees[0];
-    const toPaymentMethod = await user.paymentMethod;
-    if (!toPaymentMethod) {
-      const msg = "User is missing payment method";
-      this.logger.error(
-        `${msg} (${JSON.stringify({ input, userId: user.id })})`
-      );
-      throw new BadRequestException(msg);
-    }
-
-    const payment = await this.paymentService.create({
-      from: fromPaymentMethod,
-      to: toPaymentMethod,
-      txHash: input.txHash,
-      data: input.data,
-    });
-
-    await this.taskRewardRepo.update(task.rewardId, { paymentId: payment.id });
-    return this.findById(task.id) as Promise<Task>;
-    */
   }
 
   public async findById(id: string): Promise<Task | undefined> {

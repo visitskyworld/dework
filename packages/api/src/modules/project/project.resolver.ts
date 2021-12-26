@@ -23,11 +23,20 @@ import { OrganizationRolesGuard } from "../organization/organization.roles.guard
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { ProjectRolesGuard } from "./project.roles.guard";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
+import { PermalinkService } from "../permalink/permalink.service";
 
 @Resolver(() => Project)
 @Injectable()
 export class ProjectResolver {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly permalinkService: PermalinkService
+  ) {}
+
+  @ResolveField(() => String)
+  public permalink(@Parent() project: Project): Promise<string> {
+    return this.permalinkService.get(project);
+  }
 
   @ResolveField(() => [PaymentMethod])
   public async paymentMethods(

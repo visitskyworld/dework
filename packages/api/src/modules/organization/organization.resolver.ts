@@ -29,14 +29,21 @@ import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
 import { Project } from "@dewo/api/models/Project";
+import { PermalinkService } from "../permalink/permalink.service";
 
 @Resolver(() => Organization)
 @Injectable()
 export class OrganizationResolver {
   constructor(
     private readonly organizationService: OrganizationService,
-    private accessService: AccessService
+    private readonly permalinkService: PermalinkService,
+    private readonly accessService: AccessService
   ) {}
+
+  @ResolveField(() => String)
+  public permalink(@Parent() organization: Organization): Promise<string> {
+    return this.permalinkService.get(organization);
+  }
 
   @ResolveField(() => [OrganizationMember])
   public async members(
