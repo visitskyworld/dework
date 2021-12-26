@@ -11,8 +11,6 @@ import {
   Typography,
 } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
 import { TaskCard } from "../project/board/TaskCard";
@@ -156,7 +154,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                   )}
                 </div>
 
-                <Typography.Text
+                {/* <Typography.Text
                   className="dewo-label"
                   style={{ marginTop: 16, display: "block" }}
                 >
@@ -175,7 +173,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                     <Icons.CheckCircleOutlined />
                     <Typography.Text>3 tasks completed</Typography.Text>
                   </Tag>
-                </Row>
+                </Row> */}
 
                 {!!user.organizations.length && (
                   <>

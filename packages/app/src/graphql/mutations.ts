@@ -74,25 +74,25 @@ export const removeOrganizationMember = gql`
 export const createProject = gql`
   mutation CreateProjectMutation($input: CreateProjectInput!) {
     project: createProject(input: $input) {
-      ...Project
+      ...ProjectDetails
       organization {
         ...OrganizationDetails
       }
     }
   }
 
-  ${Fragments.project}
+  ${Fragments.projectDetails}
   ${Fragments.organizationDetails}
 `;
 
 export const updateProject = gql`
   mutation UpdateProjectMutation($input: UpdateProjectInput!) {
     project: updateProject(input: $input) {
-      ...Project
+      ...ProjectDetails
     }
   }
 
-  ${Fragments.project}
+  ${Fragments.projectDetails}
 `;
 
 export const createTask = gql`
@@ -208,8 +208,16 @@ export const acceptInvite = gql`
   mutation AcceptInviteMutation($inviteId: UUID!) {
     invite: acceptInvite(id: $inviteId) {
       id
+      organization {
+        id
+        members {
+          ...OrganizationMember
+        }
+      }
     }
   }
+
+  ${Fragments.organizationMember}
 `;
 
 export const createPaymentMethod = gql`

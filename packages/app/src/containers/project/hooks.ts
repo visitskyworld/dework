@@ -14,6 +14,7 @@ import {
   GetProjectTaskTagsQuery,
   GetProjectTaskTagsQueryVariables,
   Project,
+  ProjectDetails,
   ProjectIntegration,
   TaskTag,
   UpdateProjectInput,
@@ -57,7 +58,9 @@ export function useUpdateProject(): (
   );
 }
 
-export function useProject(projectId: string | undefined): Project | undefined {
+export function useProject(
+  projectId: string | undefined
+): ProjectDetails | undefined {
   const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     Queries.project,
     { variables: { projectId: projectId! }, skip: !projectId }

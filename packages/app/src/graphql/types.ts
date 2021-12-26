@@ -314,6 +314,7 @@ export interface CreateProjectMutation_project_organization_projects {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -355,6 +356,7 @@ export interface CreateProjectMutation_project {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -422,6 +424,7 @@ export interface UpdateProjectMutation_project {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -1577,6 +1580,16 @@ export interface CreateTaskPaymentsMutation_tasks_creator {
   imageUrl: string | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -1627,6 +1640,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   permalink: string;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
+  project: CreateTaskPaymentsMutation_tasks_project;
   discordChannel: CreateTaskPaymentsMutation_tasks_discordChannel | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
@@ -2017,6 +2031,7 @@ export interface GetOrganizationQuery_organization_projects {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -2110,6 +2125,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -2353,6 +2369,7 @@ export interface GetProjectQuery_project {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -2654,6 +2671,25 @@ export interface GetTaskQuery_task_creator {
   imageUrl: string | null;
 }
 
+export interface GetTaskQuery_task_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetTaskQuery_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  taskTags: GetTaskQuery_task_project_taskTags[];
+}
+
 export interface GetTaskQuery_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -2684,20 +2720,6 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
-export interface GetTaskQuery_task_project_taskTags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface GetTaskQuery_task_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  taskTags: GetTaskQuery_task_project_taskTags[];
-}
-
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2718,10 +2740,10 @@ export interface GetTaskQuery_task {
   permalink: string;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
+  project: GetTaskQuery_task_project;
   discordChannel: GetTaskQuery_task_discordChannel | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
-  project: GetTaskQuery_task_project;
 }
 
 export interface GetTaskQuery {
@@ -3275,6 +3297,16 @@ export interface TaskCreatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
+export interface TaskCreatedSubscription_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskCreatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -3325,6 +3357,7 @@ export interface TaskCreatedSubscription_task {
   permalink: string;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
+  project: TaskCreatedSubscription_task_project;
   discordChannel: TaskCreatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
@@ -3453,6 +3486,16 @@ export interface TaskUpdatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
+export interface TaskUpdatedSubscription_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskUpdatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -3503,6 +3546,7 @@ export interface TaskUpdatedSubscription_task {
   permalink: string;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
+  project: TaskUpdatedSubscription_task_project;
   discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
@@ -3877,7 +3921,26 @@ export interface ProjectIntegration {
 // GraphQL fragment: Project
 // ====================================================
 
-export interface Project_paymentMethods_networks {
+export interface Project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: ProjectDetails
+// ====================================================
+
+export interface ProjectDetails_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   url: string;
@@ -3886,7 +3949,7 @@ export interface Project_paymentMethods_networks {
   sortKey: string;
 }
 
-export interface Project_paymentMethods_tokens {
+export interface ProjectDetails_paymentMethods_tokens {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -3896,34 +3959,35 @@ export interface Project_paymentMethods_tokens {
   networkId: string;
 }
 
-export interface Project_paymentMethods {
+export interface ProjectDetails_paymentMethods {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  networks: Project_paymentMethods_networks[];
-  tokens: Project_paymentMethods_tokens[];
+  networks: ProjectDetails_paymentMethods_networks[];
+  tokens: ProjectDetails_paymentMethods_tokens[];
 }
 
-export interface Project_integrations {
+export interface ProjectDetails_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
   source: string;
   config: Scalar.JSONObject;
 }
 
-export interface Project {
+export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
   slug: string;
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: Project_paymentMethods[];
-  integrations: Project_integrations[];
+  paymentMethods: ProjectDetails_paymentMethods[];
+  integrations: ProjectDetails_integrations[];
 }
 
 /* tslint:disable */
@@ -4340,6 +4404,16 @@ export interface TaskDetails_creator {
   imageUrl: string | null;
 }
 
+export interface TaskDetails_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskDetails_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -4390,6 +4464,7 @@ export interface TaskDetails {
   permalink: string;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
+  project: TaskDetails_project;
   discordChannel: TaskDetails_discordChannel | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
@@ -4550,6 +4625,7 @@ export interface OrganizationDetails_projects {
   name: string;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
+  permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
@@ -4582,187 +4658,6 @@ export interface OrganizationDetails {
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: ProjectDetails
-// ====================================================
-
-export interface ProjectDetails_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  slug: string;
-  name: string;
-  sortKey: string;
-}
-
-export interface ProjectDetails_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  address: string | null;
-  networkId: string;
-}
-
-export interface ProjectDetails_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: ProjectDetails_paymentMethods_networks[];
-  tokens: ProjectDetails_paymentMethods_tokens[];
-}
-
-export interface ProjectDetails_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  source: string;
-  config: Scalar.JSONObject;
-}
-
-export interface ProjectDetails_tasks_tags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface ProjectDetails_tasks_assignees {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ProjectDetails_tasks_reward_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  address: string | null;
-  networkId: string;
-}
-
-export interface ProjectDetails_tasks_reward_payment_paymentMethod_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  slug: string;
-  name: string;
-  sortKey: string;
-}
-
-export interface ProjectDetails_tasks_reward_payment_paymentMethod_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  address: string | null;
-  networkId: string;
-}
-
-export interface ProjectDetails_tasks_reward_payment_paymentMethod {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: ProjectDetails_tasks_reward_payment_paymentMethod_networks[];
-  tokens: ProjectDetails_tasks_reward_payment_paymentMethod_tokens[];
-}
-
-export interface ProjectDetails_tasks_reward_payment_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  url: string;
-  slug: string;
-  name: string;
-  sortKey: string;
-}
-
-export interface ProjectDetails_tasks_reward_payment {
-  __typename: "Payment";
-  id: Scalar.UUID;
-  status: PaymentStatus;
-  data: Scalar.JSONObject | null;
-  paymentMethod: ProjectDetails_tasks_reward_payment_paymentMethod;
-  network: ProjectDetails_tasks_reward_payment_network;
-}
-
-export interface ProjectDetails_tasks_reward {
-  __typename: "TaskReward";
-  id: Scalar.UUID;
-  amount: string;
-  trigger: TaskRewardTrigger;
-  token: ProjectDetails_tasks_reward_token;
-  payment: ProjectDetails_tasks_reward_payment | null;
-}
-
-export interface ProjectDetails_tasks_applications_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface ProjectDetails_tasks_applications {
-  __typename: "TaskApplication";
-  id: Scalar.UUID;
-  message: string;
-  startDate: Scalar.DateTime;
-  endDate: Scalar.DateTime;
-  user: ProjectDetails_tasks_applications_user;
-}
-
-export interface ProjectDetails_tasks {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
-  description: string | null;
-  status: TaskStatusEnum;
-  sortKey: string;
-  deletedAt: Scalar.DateTime | null;
-  projectId: string;
-  ownerId: string | null;
-  number: number;
-  tags: ProjectDetails_tasks_tags[];
-  assignees: ProjectDetails_tasks_assignees[];
-  reward: ProjectDetails_tasks_reward | null;
-  applications: ProjectDetails_tasks_applications[];
-}
-
-export interface ProjectDetails_taskTags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface ProjectDetails {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
-  paymentMethods: ProjectDetails_paymentMethods[];
-  integrations: ProjectDetails_integrations[];
-  tasks: ProjectDetails_tasks[];
-  taskTags: ProjectDetails_taskTags[];
 }
 
 /* tslint:disable */

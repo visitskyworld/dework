@@ -1,9 +1,7 @@
 import React, { FC } from "react";
-import encoder from "uuid-base62";
 import { GithubBranch, TaskDetails } from "@dewo/app/graphql/types";
 import { Avatar, Button, Col, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProject } from "../../project/hooks";
 
 interface Props {
   branch: GithubBranch;
@@ -11,17 +9,9 @@ interface Props {
 }
 
 export const GithubBranchRow: FC<Props> = ({ branch, task }) => {
-  const project = useProject(task.projectId);
-  // TODO(fant): hack
-  const taskPermalink =
-    typeof window === "undefined"
-      ? ""
-      : `${window.location.origin}/o/${encoder.encode(
-          project?.organizationId ?? ""
-        )}/p/${encoder.encode(task.projectId)}?taskId=${task.id}`;
   const openNewPrLink = `${branch.link}?quick_pull=1&title=${
     task.name
-  }&body=${encodeURIComponent(`Task details: ${taskPermalink}`)}`;
+  }&body=${encodeURIComponent(`Task details: ${task.permalink}`)}`;
 
   return (
     <Button

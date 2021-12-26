@@ -1,4 +1,4 @@
-import { Project } from "@dewo/app/graphql/types";
+import { ProjectDetails } from "@dewo/app/graphql/types";
 import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
@@ -8,7 +8,7 @@ import { useUpdatePaymentMethod } from "../../payment/hooks";
 import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 
 interface Props {
-  project: Project;
+  project: ProjectDetails;
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {

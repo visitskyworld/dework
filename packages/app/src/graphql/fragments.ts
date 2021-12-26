@@ -109,6 +109,13 @@ export const project = gql`
     name
     deletedAt
     organizationId
+    permalink
+  }
+`;
+
+export const projectDetails = gql`
+  fragment ProjectDetails on Project {
+    ...Project
     taskCount
     doneTaskCount: taskCount(status: DONE)
     openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
@@ -120,6 +127,7 @@ export const project = gql`
     }
   }
 
+  ${project}
   ${paymentMethod}
   ${projectIntegration}
 `;
@@ -238,6 +246,9 @@ export const taskDetails = gql`
     creator {
       ...User
     }
+    project {
+      ...Project
+    }
     discordChannel {
       ...DiscordChannel
     }
@@ -254,6 +265,7 @@ export const taskDetails = gql`
 
   ${task}
   ${user}
+  ${project}
   ${githubPullRequest}
   ${githubBranch}
   ${discordChannel}
@@ -298,7 +310,7 @@ export const organizationDetails = gql`
     ...Organization
     description
     projects {
-      ...Project
+      ...ProjectDetails
     }
     members {
       ...OrganizationMember
@@ -307,24 +319,8 @@ export const organizationDetails = gql`
 
   ${organization}
   ${organizationMember}
-  ${project}
+  ${projectDetails}
   ${user}
-`;
-
-export const projectDetails = gql`
-  fragment ProjectDetails on Project {
-    ...Project
-    tasks {
-      ...Task
-    }
-    taskTags {
-      ...TaskTag
-    }
-  }
-
-  ${project}
-  ${task}
-  ${taskTag}
 `;
 
 export const invite = gql`

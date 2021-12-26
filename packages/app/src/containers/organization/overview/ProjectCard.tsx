@@ -1,4 +1,4 @@
-import { Project, User } from "@dewo/app/graphql/types";
+import { ProjectDetails, User } from "@dewo/app/graphql/types";
 import {
   Avatar,
   Button,
@@ -19,7 +19,7 @@ import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { useUpdateProject } from "../../project/hooks";
 
 interface Props {
-  project: Project;
+  project: ProjectDetails;
   // TODO(fant): get this from the project instead of from the org through a prop
   users: User[];
 }

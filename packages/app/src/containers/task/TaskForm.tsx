@@ -23,6 +23,8 @@ import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskNumberAndSettings } from "./TaskNumberAndSettings";
 import { TaskActivityFeed } from "./TaskActivityFeed";
+import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
+import Link from "next/link";
 
 export interface TaskFormValues {
   name: string;
@@ -297,6 +299,21 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Form.Item>
           ) : (
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
+          )}
+
+          {!!task && (
+            <FormSection label="Project">
+              <Link href={task.project.permalink}>
+                <a>
+                  <Row align="middle">
+                    <ProjectAvatar size="small" project={task.project} />
+                    <Typography.Text style={{ marginLeft: 8 }}>
+                      {task.project.name}
+                    </Typography.Text>
+                  </Row>
+                </a>
+              </Link>
+            </FormSection>
           )}
         </Col>
       </Row>
