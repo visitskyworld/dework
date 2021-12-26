@@ -35,17 +35,15 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
       >
         <Input />
       </Form.Item>
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          size="large"
-          block
-          loading={loading}
-        >
-          Create
-        </Button>
-      </Form.Item>
+      <Button
+        type="primary"
+        htmlType="submit"
+        size="large"
+        block
+        loading={loading}
+      >
+        Create
+      </Button>
     </Form>
   );
 };

@@ -163,17 +163,15 @@ export const TaskForm: FC<TaskFormProps> = ({
           </Form.Item>
 
           {mode === "create" && canSubmit && (
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                block
-                loading={loading}
-              >
-                {buttonText}
-              </Button>
-            </Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+            >
+              {buttonText}
+            </Button>
           )}
 
           {!!task?.discordChannel && (

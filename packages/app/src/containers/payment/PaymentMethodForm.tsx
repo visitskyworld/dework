@@ -220,11 +220,9 @@ export const PaymentMethodForm: FC<Props> = ({
         )}
         {!!values.address && selectTokens && (
           <Col span={24}>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block loading={loading}>
-                Add Payment Method
-              </Button>
-            </Form.Item>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              Add Payment Method
+            </Button>
           </Col>
         )}
       </Row>

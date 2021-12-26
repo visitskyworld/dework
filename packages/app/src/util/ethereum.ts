@@ -55,6 +55,35 @@ export function useRequestAddress(): () => Promise<string> {
   }, [requestSigner]);
 }
 
+interface ERC20Contract {
+  balanceOf(owner: string): Promise<BigNumber>;
+  transfer(
+    to: string,
+    value: BigNumber
+  ): Promise<ethers.providers.TransactionResponse>;
+}
+
+export function useERC20Contract(): (
+  address: string
+) => Promise<ethers.Contract & ERC20Contract> {
+  const requestSigner = useRequestSigner();
+  return useCallback(
+    async (address) => {
+      const signer = await requestSigner();
+      // https://gist.github.com/petejkim/72421bc2cb26fad916c84864421773a4
+      return new ethers.Contract(
+        address,
+        [
+          "function balanceOf(address owner) public view returns (uint256 balance)",
+          "function transfer(address to, uint256 value) public returns (bool success)",
+        ],
+        signer
+      ) as ethers.Contract & ERC20Contract;
+    },
+    [requestSigner]
+  );
+}
+
 export function useCreateEthereumTransaction(): (
   fromAddress: string,
   toAddress: string,
@@ -65,6 +94,7 @@ export function useCreateEthereumTransaction(): (
   const requestAddress = useRequestAddress();
   const requestSigner = useRequestSigner();
   const switchNetwork = useSwitchChain();
+  const loadERC20Contract = useERC20Contract();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
       const currentAddress = await requestAddress();
@@ -85,18 +115,8 @@ export function useCreateEthereumTransaction(): (
           return tx.hash;
         }
         case PaymentTokenType.ERC20:
-          // https://gist.github.com/petejkim/72421bc2cb26fad916c84864421773a4
-          const erc20Contract = new ethers.Contract(
-            token.address!,
-            [
-              "function transfer(address to, uint256 value) public returns (bool success)",
-            ],
-            signer
-          );
-          const tx = await erc20Contract.transfer(
-            toAddress,
-            BigNumber.from(amount)
-          );
+          const contract = await loadERC20Contract(token.address!);
+          const tx = await contract.transfer(toAddress, BigNumber.from(amount));
           return tx.hash;
         default:
           throw new Error(
@@ -104,6 +124,6 @@ export function useCreateEthereumTransaction(): (
           );
       }
     },
-    [requestAddress, requestSigner, switchNetwork]
+    [requestAddress, requestSigner, switchNetwork, loadERC20Contract]
   );
 }

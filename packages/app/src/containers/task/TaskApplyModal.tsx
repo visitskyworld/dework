@@ -68,11 +68,9 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
             />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Button type="primary" htmlType="submit" size="large" block>
-              Apply
-            </Button>
-          </Form.Item>
+          <Button type="primary" htmlType="submit" size="large" block>
+            Apply
+          </Button>
         </Form>
       </Modal>
     </Col>

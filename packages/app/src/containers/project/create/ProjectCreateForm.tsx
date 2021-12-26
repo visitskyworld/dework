@@ -45,17 +45,15 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          size="large"
-          block
-          loading={loading}
-        >
-          Create
-        </Button>
-      </Form.Item>
+      <Button
+        type="primary"
+        htmlType="submit"
+        size="large"
+        block
+        loading={loading}
+      >
+        Create
+      </Button>
     </Form>
   );
 };
