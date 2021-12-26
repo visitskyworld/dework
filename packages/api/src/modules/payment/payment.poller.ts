@@ -34,7 +34,7 @@ export class PaymentPoller {
   private checkInterval: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.minutes(1),
     [PaymentMethodType.PHANTOM]: ms.seconds(10),
-    [PaymentMethodType.GNOSIS_SAFE]: ms.hours(1),
+    [PaymentMethodType.GNOSIS_SAFE]: ms.minutes(1),
   };
 
   private checkTimeout: Record<PaymentMethodType, number> = {
