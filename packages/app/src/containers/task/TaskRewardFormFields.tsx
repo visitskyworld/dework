@@ -71,7 +71,7 @@ export async function validator(
   _rule: unknown, // RuleObject,
   value: Partial<TaskRewardFormValues> | undefined
 ) {
-  if (!value) return;
+  if (!value || _.isEmpty(value)) return;
   if (!value.networkId) return;
   if (!value.amount) return;
 
@@ -82,7 +82,7 @@ export async function validator(
 interface Props {
   projectId: string;
   value?: Partial<TaskRewardFormValues>;
-  onChange?(value: Partial<TaskRewardFormValues> | null): void;
+  onChange?(value: Partial<TaskRewardFormValues>): void;
   onClear(): void;
 }
 
@@ -149,8 +149,8 @@ export const TaskRewardFormFields: FC<Props> = ({
   );
 
   const handleClear = useCallback(() => {
-    onChange?.(null);
-    onClear();
+    onChange?.({});
+    requestAnimationFrame(onClear);
   }, [onChange, onClear]);
 
   if (!project) return null;

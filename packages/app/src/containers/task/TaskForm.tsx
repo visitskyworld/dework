@@ -79,7 +79,6 @@ export const TaskForm: FC<TaskFormProps> = ({
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: TaskFormValues) => {
-      console.warn("handle sabmit", values);
       try {
         setLoading(true);
         await onSubmit(values);
