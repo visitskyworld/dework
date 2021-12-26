@@ -303,10 +303,13 @@ export function useTask(
   return data?.task ?? undefined;
 }
 
-export function useTasks(input: GetTasksInput): Task[] | undefined {
+export function useTasks(
+  input: GetTasksInput,
+  skip: boolean = false
+): Task[] | undefined {
   const { data } = useQuery<GetTasksQuery, GetTasksQueryVariables>(
     Queries.tasks,
-    { variables: { input } }
+    { variables: { input }, skip }
   );
   return data?.tasks ?? undefined;
 }

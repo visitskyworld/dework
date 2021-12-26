@@ -18,7 +18,7 @@ import { siteTitle, siteDescription } from "@dewo/app/util/constants";
 import { MobileHeader } from "../navigation/header/MobileHeader";
 import { TaskCard } from "../project/board/TaskCard";
 import { useTasks } from "../task/hooks";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { DeworkIcon } from "@dewo/app/components/icons/Dework";
 import _ from "lodash";
@@ -27,17 +27,26 @@ const NUM_COLUMNS = 2;
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
-  const featuredOrganizations = useFeaturedOrganizations(4);
+  const organizations = useFeaturedOrganizations(4);
   const latestTasks = useTasks(
-    useMemo(() => ({ statuses: [TaskStatusEnum.TODO], limit: 100 }), [])
+    useMemo(
+      () => ({
+        statuses: [TaskStatusEnum.TODO],
+        limit: 100,
+        organizationIds: organizations?.map((o) => o.id),
+      }),
+      [organizations]
+    ),
+    !organizations
   );
-  const latestTaskChunks = useMemo(
-    () =>
-      !!latestTasks
-        ? _.chunk(latestTasks, latestTasks.length / NUM_COLUMNS + 1)
-        : [],
-    [latestTasks]
-  );
+  const latestTaskChunks = useMemo(() => {
+    if (!latestTasks) return [];
+    const chunks = _.range(NUM_COLUMNS).map<Task[]>(() => []);
+    latestTasks.forEach((task, index) => {
+      chunks[index % NUM_COLUMNS].push(task);
+    });
+    return chunks;
+  }, [latestTasks]);
 
   if (!user)
     return (
@@ -92,7 +101,7 @@ export const LandingPage: FC = () => {
             🏆 Popular DAOs
           </Typography.Title>
           <Row gutter={[16, 16]} style={{ margin: 0, width: "100%" }}>
-            {featuredOrganizations?.map((org) => (
+            {organizations?.map((org) => (
               <Col xs={24} md={24 / NUM_COLUMNS} key={org.id}>
                 <OrganizationCard organization={org} />
               </Col>

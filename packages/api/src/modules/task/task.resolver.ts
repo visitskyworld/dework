@@ -181,7 +181,7 @@ export class OrganizationTasksResolver {
   @ResolveField(() => [Task])
   public async tasks(@Parent() organization: Organization): Promise<Task[]> {
     return this.taskService.findWithRelations({
-      organizationId: organization.id,
+      organizationIds: [organization.id],
     });
   }
 }
@@ -193,7 +193,7 @@ export class ProjectTasksResolver {
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() project: Project): Promise<Task[]> {
-    return this.taskService.findWithRelations({ projectId: project.id });
+    return this.taskService.findWithRelations({ projectIds: [project.id] });
   }
 
   @ResolveField(() => Int)

@@ -7,6 +7,9 @@ export class GetTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public ids?: string[];
 
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public organizationIds?: string[];
+
   @Field(() => [TaskStatusEnum], { nullable: true })
   public statuses?: TaskStatusEnum[];
 

@@ -119,16 +119,16 @@ export class TaskService {
   public async findWithRelations({
     ids,
     rewardIds,
-    projectId,
-    organizationId,
+    projectIds,
+    organizationIds,
     assigneeId,
     statuses,
     limit,
   }: {
     ids?: string[];
     rewardIds?: string[];
-    projectId?: string;
-    organizationId?: string;
+    projectIds?: string[];
+    organizationIds?: string[];
     assigneeId?: string;
     statuses?: TaskStatusEnum[];
     order?: OrderByCondition;
@@ -150,14 +150,16 @@ export class TaskService {
       query = query.where("task.rewardId IN (:...rewardIds)", { rewardIds });
     }
 
-    if (!!projectId) {
-      query = query.where("task.projectId = :projectId", { projectId });
+    if (!!projectIds) {
+      query = query.where("task.projectId IN (:...projectIds)", { projectIds });
     }
 
-    if (!!organizationId) {
+    if (!!organizationIds) {
       query = query
         .innerJoinAndSelect("task.project", "project")
-        .where("project.organizationId = :organizationId", { organizationId })
+        .where("project.organizationId IN (:...organizationIds)", {
+          organizationIds,
+        })
         .andWhere("project.deletedAt IS NULL");
     }
 

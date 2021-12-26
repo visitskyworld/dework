@@ -4935,6 +4935,7 @@ export interface CreateTaskTagInput {
 
 export interface GetTasksInput {
   ids?: Scalar.UUID[] | null;
+  organizationIds?: Scalar.UUID[] | null;
   statuses?: TaskStatusEnum[] | null;
   limit?: number | null;
 }
