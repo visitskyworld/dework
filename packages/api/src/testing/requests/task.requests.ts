@@ -3,6 +3,7 @@ import { CreateTaskPaymentsInput } from "@dewo/api/modules/task/dto/CreateTaskPa
 import { CreateTaskApplicationInput } from "@dewo/api/modules/task/dto/CreateTaskApplicationInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
+import { GetTasksInput } from "@dewo/api/modules/task/dto/GetTasksInput";
 
 export class TaskRequests {
   private static taskFragment = `
@@ -108,6 +109,23 @@ export class TaskRequests {
         ${this.taskFragment}
       `,
       variables: { taskId },
+    };
+  }
+
+  public static getBatch(
+    input: GetTasksInput
+  ): GraphQLTestClientRequestBody<{ input: GetTasksInput }> {
+    return {
+      query: `
+        query GetTasks($input: GetTasksInput!) {
+          tasks: getTasks(input: $input) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { input },
     };
   }
 

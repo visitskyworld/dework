@@ -140,7 +140,8 @@ export class TaskService {
       .leftJoinAndSelect("task.tags", "taskTag")
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
-      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod");
+      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
+      .leftJoinAndSelect("task.project", "project");
 
     if (!!ids) {
       query = query.where("task.id IN (:...ids)", { ids });
@@ -156,7 +157,6 @@ export class TaskService {
 
     if (!!organizationIds) {
       query = query
-        .innerJoinAndSelect("task.project", "project")
         .where("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })

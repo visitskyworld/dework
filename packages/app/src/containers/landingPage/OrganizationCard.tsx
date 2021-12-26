@@ -39,7 +39,7 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
                 <Tag color="yellow">
                   {`${organization.members.length} contributors`}
                 </Tag>
-                <Tag color="blue">{`X completed tasks last week`}</Tag>
+                <Tag color="blue">{`17 completed tasks last week`}</Tag>
               </Row>
             </Col>
           </Space>

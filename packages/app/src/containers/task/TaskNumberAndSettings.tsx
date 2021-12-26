@@ -51,7 +51,7 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
                     text={task.permalink}
                     onCopy={copiedToClipboard}
                   >
-                    <Typography.Text>Permalink</Typography.Text>
+                    <Typography.Text>Copy task link</Typography.Text>
                   </CopyToClipboard>
                 }
               />

@@ -438,4 +438,53 @@ describe("TaskResolver", () => {
       });
     });
   });
+
+  describe("Queries", () => {
+    describe("getTasks", () => {
+      it("should only return tasks with matching statuses", async () => {
+        const todo = await fixtures.createTask({ status: TaskStatusEnum.TODO });
+        const done = await fixtures.createTask({ status: TaskStatusEnum.DONE });
+        const response = await client.request({
+          app,
+          body: TaskRequests.getBatch({ statuses: [TaskStatusEnum.TODO] }),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const tasks = response.body.data?.tasks;
+        expect(tasks).toContainEqual(expect.objectContaining({ id: todo.id }));
+        expect(tasks).not.toContainEqual(
+          expect.objectContaining({ id: done.id })
+        );
+      });
+
+      it("should only return tasks with matching organizationIds", async () => {
+        const first = await fixtures.createUserOrgProject();
+        const second = await fixtures.createUserOrgProject();
+
+        const firstTask = await fixtures.createTask({
+          projectId: first.project.id,
+        });
+        const secondTask = await fixtures.createTask({
+          projectId: second.project.id,
+        });
+
+        const response = await client.request({
+          app,
+          body: TaskRequests.getBatch({
+            organizationIds: [first.organization.id],
+          }),
+        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const tasks = response.body.data?.tasks;
+        expect(tasks).toContainEqual(
+          expect.objectContaining({ id: firstTask.id })
+        );
+        expect(tasks).not.toContainEqual(
+          expect.objectContaining({ id: secondTask.id })
+        );
+      });
+
+      it("should only return tasks with matching ids", async () => {});
+    });
+  });
 });
