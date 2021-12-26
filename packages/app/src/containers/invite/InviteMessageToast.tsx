@@ -27,6 +27,10 @@ export const InviteMessageToast: FC = () => {
         type: "success",
         style: messageBottomStyle,
       });
+      router.push({
+        pathname: router.pathname,
+        query: _.omit(router.query, ["inviteId"]),
+      });
     } else {
       router.push(`/auth?inviteId=${inviteId}&redirect=${router.asPath}`);
     }

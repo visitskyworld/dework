@@ -42,7 +42,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
         </FormSection>
       )}
 
-      {!task?.githubBranches && (
+      {!task.githubBranches.length && (
         <FormSection label="Link Github Branch" className="mb-3">
           <Typography.Paragraph
             type="secondary"
