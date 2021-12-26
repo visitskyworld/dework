@@ -21,7 +21,6 @@ import {
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../project/hooks";
 import _ from "lodash";
-import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
@@ -83,13 +82,15 @@ export async function validator(
 interface Props {
   projectId: string;
   value?: Partial<TaskRewardFormValues>;
-  onChange?(value: Partial<TaskRewardFormValues>): void;
+  onChange?(value: Partial<TaskRewardFormValues> | null): void;
+  onClear(): void;
 }
 
 export const TaskRewardFormFields: FC<Props> = ({
   projectId,
   value,
   onChange,
+  onClear,
 }) => {
   const project = useProject(projectId);
   const networks = useMemo(
@@ -135,17 +136,22 @@ export const TaskRewardFormFields: FC<Props> = ({
 
   const handleBlur = useCallback<FocusEventHandler<unknown>>(
     (event) => {
-      if (
-        !value?.networkId ||
-        !value?.amount ||
-        !value?.token ||
-        !value?.trigger
-      ) {
+      const allValuesSet =
+        !!value?.networkId &&
+        !!value?.amount &&
+        !!value?.token &&
+        !!value?.trigger;
+      if (!allValuesSet) {
         stopPropagation(event);
       }
     },
     [value]
   );
+
+  const handleClear = useCallback(() => {
+    onChange?.(null);
+    onClear();
+  }, [onChange, onClear]);
 
   if (!project) return null;
   return (
@@ -157,11 +163,7 @@ export const TaskRewardFormFields: FC<Props> = ({
               imageStyle={{ display: "none" }}
               description="To add a task reward, you need to connect a wallet to the project"
             >
-              <Link
-                href={`/o/${uuidToBase62(
-                  project.organizationId
-                )}/p/${uuidToBase62(projectId)}/settings`}
-              >
+              <Link href={`${project.permalink}/settings`}>
                 <a>
                   <Button type="primary" size="small">
                     Connect now
@@ -178,6 +180,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             allowClear
             onChange={handleChangeNetworkId}
             onBlur={handleBlur}
+            onClear={handleClear}
           >
             {networks.map((network) => (
               <Select.Option

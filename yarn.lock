@@ -12573,6 +12573,11 @@ slugify@^1.6.4:
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.4.tgz#33d84cc9e859ca3852e6537af6a5ff5bb9e439aa"
   integrity sha512-Pcz296CK0uGnTf4iNQId79Uv6/5G16t0g0x3OsxWS8qVSOW+JXNnNHKVcuDiMgEGTWyK6zjlWXo2dvzV/FLf9Q==
 
+slugify@^1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.4.tgz#33d84cc9e859ca3852e6537af6a5ff5bb9e439aa"
+  integrity sha512-Pcz296CK0uGnTf4iNQId79Uv6/5G16t0g0x3OsxWS8qVSOW+JXNnNHKVcuDiMgEGTWyK6zjlWXo2dvzV/FLf9Q==
+
 smpltmpl@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/smpltmpl/-/smpltmpl-1.0.2.tgz#b6e9d0eedab7827455c46c98fb8b9505ae6d4a82"

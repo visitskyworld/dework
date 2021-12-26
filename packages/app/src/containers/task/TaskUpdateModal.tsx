@@ -25,7 +25,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         {
           id: task!.id,
           ...values,
-          reward: !!values.reward ? toTaskReward(values.reward) : undefined,
+          reward: !!values.reward ? toTaskReward(values.reward) : values.reward,
         },
         task!
       ),
