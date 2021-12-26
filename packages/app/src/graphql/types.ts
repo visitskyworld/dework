@@ -1292,6 +1292,40 @@ export interface CreatePaymentMethodMutation_paymentMethod_project {
   paymentMethods: CreatePaymentMethodMutation_paymentMethod_project_paymentMethods[];
 }
 
+export interface CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface CreatePaymentMethodMutation_paymentMethod_user_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_networks[];
+  tokens: CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_tokens[];
+}
+
+export interface CreatePaymentMethodMutation_paymentMethod_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  paymentMethods: CreatePaymentMethodMutation_paymentMethod_user_paymentMethods[];
+}
+
 export interface CreatePaymentMethodMutation_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
@@ -1300,6 +1334,7 @@ export interface CreatePaymentMethodMutation_paymentMethod {
   networks: CreatePaymentMethodMutation_paymentMethod_networks[];
   tokens: CreatePaymentMethodMutation_paymentMethod_tokens[];
   project: CreatePaymentMethodMutation_paymentMethod_project | null;
+  user: CreatePaymentMethodMutation_paymentMethod_user | null;
 }
 
 export interface CreatePaymentMethodMutation {
