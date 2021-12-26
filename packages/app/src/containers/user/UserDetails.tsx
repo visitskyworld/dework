@@ -3,14 +3,13 @@ import * as Icons from "@ant-design/icons";
 import { Form, Avatar, Input, Space, Typography, Row } from "antd";
 
 import { UserDetailType, UserDetail } from "../../graphql/types";
-import { PinIcon } from "../../components/icons/PinIcon";
 
 const iconByType: Record<UserDetailType, JSX.Element> = {
   [UserDetailType.twitter]: <Icons.TwitterOutlined />,
   [UserDetailType.github]: <Icons.GithubOutlined />,
   [UserDetailType.linkedin]: <Icons.LinkedinFilled />,
   [UserDetailType.website]: <Icons.LinkOutlined />,
-  [UserDetailType.location]: <PinIcon style={{ marginRight: -3 }} />,
+  [UserDetailType.location]: <Icons.EnvironmentOutlined />,
 };
 
 const placeholderByType: Record<UserDetailType, string> = {
@@ -82,7 +81,7 @@ export const UserDetails: FC<UserDetailsProps> = ({
           )
       )}
       {locationDetail && (
-        <Space align="center" size="small" style={{ marginTop: 2 }}>
+        <Space align="center" size={4} style={{ marginTop: 2 }}>
           {iconByType[locationDetailType]}
           <Typography.Text
             type="secondary"

@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn eslint --fix $(git diff --name-only HEAD | grep -E '\.tsx?$' | xargs)
+yarn eslint --fix $(git diff --diff-filter=d --name-only HEAD | grep -E '\.tsx?$' | xargs)
 git add .
