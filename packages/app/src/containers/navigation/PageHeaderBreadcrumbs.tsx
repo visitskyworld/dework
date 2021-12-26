@@ -6,14 +6,9 @@ import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { MobileHeader } from "./header/MobileHeader";
 import { useRouter } from "next/router";
 
-const itemRender = (route: Route, _params: any, routes: any, paths: any) => {
-  const last = routes.indexOf(route) === routes.length - 1;
-  return last ? (
-    <span>{route.breadcrumbName}</span>
-  ) : (
-    <Link href={["", ...paths].join("/")}>{route.breadcrumbName}</Link>
-  );
-};
+const itemRender = (route: Route, _params: any, _routes: any, paths: any) => (
+  <Link href={["", ...paths].join("/")}>{route.breadcrumbName}</Link>
+);
 
 interface PageHeaderBreadcrumbsProps {
   routes?: Route[];

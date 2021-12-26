@@ -1,5 +1,6 @@
 import { Avatar, Input, PageHeader, Row, Skeleton, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
@@ -19,26 +20,31 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const organization = useOrganization(project?.organizationId);
   const canEdit = usePermission("update", "Project");
 
-  const routes = useMemo(
-    () =>
-      !!organization &&
-      !!project && [
-        {
-          path: "../..",
-          breadcrumbName: "Home",
-        },
-        {
-          path: `o/${organization.slug}`,
-          breadcrumbName: organization.name,
-        },
-        {
-          path: `p/${project.slug}`,
-          breadcrumbName: project.name,
-          children: [{ path: "settings", breadcrumbName: "Settings" }],
-        },
-      ],
-    [organization, project]
-  ) as Route[];
+  const routes = useMemo<Route[] | undefined>(() => {
+    if (!organization || !project) return undefined;
+    return [
+      {
+        path: "../..",
+        breadcrumbName: "Home",
+      },
+      {
+        path: `o/${organization.slug}`,
+        breadcrumbName: organization.name,
+      },
+      {
+        path: `p/${project.slug}`,
+        breadcrumbName: project.name,
+      },
+      ...(canEdit
+        ? [
+            {
+              path: "settings",
+              breadcrumbName: (<Icons.SettingOutlined />) as any as string,
+            },
+          ]
+        : []),
+    ];
+  }, [organization, project, canEdit]);
 
   const editName = useToggle();
   const [projectName, setProjectName] = useState("");

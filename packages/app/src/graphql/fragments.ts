@@ -204,6 +204,7 @@ export const task = gql`
     sortKey
     deletedAt
     projectId
+    ownerId
     tags {
       ...TaskTag
     }

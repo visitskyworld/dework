@@ -11,6 +11,7 @@ import Link from "next/link";
 import { formatTaskReward, useUpdateTask } from "../../task/hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface TaskCardProps {
   task: Task;
@@ -19,6 +20,7 @@ interface TaskCardProps {
 
 export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   const navigateToTask = useNavigateToTask(task.id);
+  const currentUserId = useAuthContext().user?.id;
 
   const updateTask = useUpdateTask();
   const moveToDone = useCallback(
@@ -38,7 +40,8 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
       task.status === TaskStatusEnum.IN_REVIEW &&
       !!task.reward &&
       !task.reward.payment &&
-      canUpdateTask
+      !!currentUserId &&
+      task.ownerId === currentUserId
     ) {
       return (
         // <Space>
@@ -85,6 +88,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     moveToDone,
     canClaimTask,
     canUpdateTask,
+    currentUserId,
   ]);
 
   return (
