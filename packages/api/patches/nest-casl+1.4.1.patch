@@ -1,5 +1,5 @@
 diff --git a/node_modules/nest-casl/dist/casl.module.js b/node_modules/nest-casl/dist/casl.module.js
-index ba58b93..3e72af1 100644
+index ba58b93..30e5f21 100644
 --- a/node_modules/nest-casl/dist/casl.module.js
 +++ b/node_modules/nest-casl/dist/casl.module.js
 @@ -47,7 +47,7 @@ CaslModule = CaslModule_1 = __decorate([
@@ -11,3 +11,19 @@ index ba58b93..3e72af1 100644
      })
  ], CaslModule);
  exports.CaslModule = CaslModule;
+diff --git a/node_modules/nest-casl/dist/factories/ability.factory.js b/node_modules/nest-casl/dist/factories/ability.factory.js
+index 14e2832..2db769f 100644
+--- a/node_modules/nest-casl/dist/factories/ability.factory.js
++++ b/node_modules/nest-casl/dist/factories/ability.factory.js
+@@ -35,7 +35,10 @@ let AbilityFactory = class AbilityFactory {
+         });
+         // For PureAbility skip conditions check, conditions will be available for filtering through @CaslConditions() param
+         if (abilityClass === ability_1.PureAbility) {
+-            return ability.build({ conditionsMatcher: exports.nullConditionsMatcher });
++            return ability.build({
++                conditionsMatcher: exports.nullConditionsMatcher,
++                fieldMatcher: (fields) => (field) => fields.includes(field)
++            });
+         }
+         return ability.build();
+     }
