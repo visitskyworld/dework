@@ -108,6 +108,7 @@ export const TaskRewardFormFields: FC<Props> = ({
         .map((pm) => pm.tokens)
         .flatten()
         .filter((t) => t.networkId === value?.networkId)
+        .uniqBy((t) => t.id)
         .value(),
     [project?.paymentMethods, value?.networkId]
   );
