@@ -1,6 +1,5 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
-  Button,
   Card,
   Col,
   Divider,
@@ -22,6 +21,7 @@ import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { DeworkIcon } from "@dewo/app/components/icons/Dework";
 import _ from "lodash";
+import { LoginButton } from "../auth/LoginButton";
 
 const NUM_COLUMNS = 2;
 
@@ -60,11 +60,7 @@ export const LandingPage: FC = () => {
               </Typography.Title>
             </Row>
           }
-          extra={
-            <Button type="primary" href="/auth">
-              Sign in
-            </Button>
-          }
+          extra={<LoginButton type="primary">Sign in</LoginButton>}
         />
         <Divider style={{ margin: 0 }} />
 
@@ -81,14 +77,9 @@ export const LandingPage: FC = () => {
             >
               {siteDescription}
             </Typography.Paragraph>
-            <Button
-              type="primary"
-              size="large"
-              href="/auth"
-              className="mx-auto"
-            >
+            <LoginButton type="primary" size="large" className="mx-auto">
               Log in
-            </Button>
+            </LoginButton>
           </Row>
         </Row>
         <Divider style={{ margin: 0 }} />

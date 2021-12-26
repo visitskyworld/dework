@@ -12,6 +12,7 @@ import { formatTaskReward, useUpdateTask } from "../../task/hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { LoginButton } from "../../auth/LoginButton";
 
 interface TaskCardProps {
   task: Task;
@@ -80,13 +81,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
       }
 
       return (
-        <Link href="/auth">
-          <a>
-            <Button size="small" icon={<Icons.UnlockOutlined />}>
-              Apply
-            </Button>
-          </a>
-        </Link>
+        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+          Apply
+        </LoginButton>
       );
     }
 
