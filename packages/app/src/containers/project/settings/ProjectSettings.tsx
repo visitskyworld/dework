@@ -43,6 +43,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           <Space direction="vertical" style={{ width: "100%" }}>
             {project.paymentMethods.map((paymentMethod) => (
               <PaymentMethodSummary
+                key={paymentMethod.id}
                 type={paymentMethod.type}
                 address={paymentMethod.address}
                 networkNames={paymentMethod.networks

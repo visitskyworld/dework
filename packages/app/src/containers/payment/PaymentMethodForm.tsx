@@ -1,8 +1,16 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   CreatePaymentMethodInput,
   PaymentMethod,
   PaymentMethodType,
+  PaymentTokenType,
 } from "@dewo/app/graphql/types";
 import { Button, Col, Form, FormInstance, Row, Select } from "antd";
 import { useCreatePaymentMethod, usePaymentNetworks } from "./hooks";
@@ -10,6 +18,7 @@ import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { PaymentMethodSummary } from "./PaymentMethodSummary";
 import { ConnectPhantomButton } from "./ConnectPhantomButton";
 import { ConnectGnosisSafe } from "./ConnectGnosisSafe";
+import { useERC20Contract } from "@dewo/app/util/ethereum";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
@@ -59,6 +68,42 @@ export const PaymentMethodForm: FC<Props> = ({
     () => networks?.find((n) => n.id === values.networkId),
     [networks, values.networkId]
   );
+
+  const [isTokenInWallet, setTokenInWallet] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const loadERC20Contract = useERC20Contract();
+  const loadTokensInWallet = useCallback(async () => {
+    setTokenInWallet({});
+    selectedNetwork?.tokens.forEach(async (token) => {
+      switch (token.type) {
+        case PaymentTokenType.ETHER:
+        case PaymentTokenType.SOL:
+          setTokenInWallet((prev) => ({ ...prev, [token.id]: true }));
+          break;
+        case PaymentTokenType.ERC20:
+          if (!token.address || !values.address) return false;
+          try {
+            const contract = await loadERC20Contract(token.address);
+            const balance = await contract.balanceOf(values.address);
+            setTokenInWallet((prev) => ({
+              ...prev,
+              [token.id]: balance.gt(0),
+            }));
+          } catch {
+            setTokenInWallet((prev) => ({ ...prev, [token.id]: false }));
+          }
+          break;
+        default:
+          setTokenInWallet((prev) => ({ ...prev, [token.id]: false }));
+          break;
+      }
+    });
+  }, [selectedNetwork?.tokens, values.address, loadERC20Contract]);
+  useEffect(() => {
+    loadTokensInWallet();
+  }, [loadTokensInWallet]);
 
   const createPaymentMethod = useCreatePaymentMethod();
   const submitForm = useCallback(
@@ -203,9 +248,9 @@ export const PaymentMethodForm: FC<Props> = ({
                 mode="multiple"
                 placeholder="Select what tokens this address can pay out"
               >
-                {networks
-                  ?.find((n) => n.id === values.networkId)
-                  ?.tokens.map((token) => (
+                {selectedNetwork?.tokens
+                  .filter((token) => !!isTokenInWallet[token.id])
+                  .map((token) => (
                     <Select.Option
                       key={token.id}
                       value={token.id}
