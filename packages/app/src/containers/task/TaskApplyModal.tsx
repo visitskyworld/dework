@@ -42,7 +42,6 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
         visible={visible}
         onCancel={onCancel}
         footer={null}
-        width={768}
       >
         <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
           <Form.Item

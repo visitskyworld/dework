@@ -78,6 +78,16 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
       if (canClaimTask) {
         return <ClaimTaskButton task={task} />;
       }
+
+      return (
+        <Link href="/auth">
+          <a>
+            <Button size="small" icon={<Icons.UnlockOutlined />}>
+              Apply
+            </Button>
+          </a>
+        </Link>
+      );
     }
 
     return null;
