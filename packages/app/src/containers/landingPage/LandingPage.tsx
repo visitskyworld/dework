@@ -27,7 +27,7 @@ import { LoginButton } from "../auth/LoginButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import YouTube from "react-youtube";
 
-const NUM_COLUMNS = 2;
+const NUM_COLUMNS = 3;
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
@@ -84,9 +84,9 @@ export const LandingPage: FC = () => {
             ),
           ]}
           style={{ width: "100%" }}
-          className="max-w-lg mx-auto"
+          className="max-w-xl mx-auto"
         />
-        <Row className="max-w-lg mx-auto" style={{ width: "100%" }}>
+        <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
           <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
             <Space direction="vertical" size="large">
               <Typography.Title level={1}>
@@ -163,7 +163,7 @@ export const LandingPage: FC = () => {
         </Row>
         <Row
           style={{
-            padding: "96px 24px",
+            padding: "64px 24px",
             backgroundColor: "rgba(255,255,255,0.1)",
           }}
         >
