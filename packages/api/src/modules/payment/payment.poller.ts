@@ -33,9 +33,9 @@ export class PaymentPoller {
   private gnosisSafeServiceClients: Record<string, SafeServiceClient>;
 
   private checkInterval: Record<PaymentMethodType, number> = {
-    [PaymentMethodType.METAMASK]: ms.minutes(1),
-    [PaymentMethodType.PHANTOM]: ms.seconds(10),
-    [PaymentMethodType.GNOSIS_SAFE]: ms.minutes(1),
+    [PaymentMethodType.METAMASK]: ms.seconds(5),
+    [PaymentMethodType.PHANTOM]: ms.seconds(5),
+    [PaymentMethodType.GNOSIS_SAFE]: ms.seconds(5),
   };
 
   private checkTimeout: Record<PaymentMethodType, number> = {
@@ -84,7 +84,12 @@ export class PaymentPoller {
     const n = Number(_n) || 1;
     const sleep = Number(_sleep) || 0;
 
+    this.logger.log(`Polling payments (${JSON.stringify({ n, sleep })})`);
+
     for (let i = 0; i < n; i++) {
+      this.logger.debug(
+        `Looping payments polling (${JSON.stringify({ i, n, sleep })})`
+      );
       await this.poll();
       await Bluebird.delay(sleep);
     }
