@@ -42,11 +42,11 @@ yarn api test
 1. Add Testnet to Metamask:
 https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup
 
-Network Name: Sokol Testnet
-New RPC URL: https://sokol.poa.network
-Chain ID: 0x4d (77)
-Symbol: xDai
-Block Explorer URL: https://blockscout.com/poa/sokol
+* Network Name: Sokol Testnet
+* New RPC URL: https://sokol.poa.network
+* Chain ID: 0x4d (77)
+* Symbol: xDai
+* Block Explorer URL: https://blockscout.com/poa/sokol
 
 2. Get some xDai
 https://forum.poa.network/t/sokol-testnet-resources/1776
