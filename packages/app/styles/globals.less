@@ -232,6 +232,18 @@ textarea {
   border: 1px solid transparent;
   background-clip: content-box;
 }
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: @component-background;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background: @component-background-highlighted;
+}
+
 .dewo-landing-page-main {
   div:last-child {
     max-height: 100%;
@@ -239,18 +251,6 @@ textarea {
 }
 .dewo-task-board-column .ant-card-body {
   overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: @component-background;
-  }
-
-  &:hover::-webkit-scrollbar-thumb {
-    background: @component-background-highlighted;
-  }
 }
 .ant-card.dewo-card-create-project {
   height: 100%;

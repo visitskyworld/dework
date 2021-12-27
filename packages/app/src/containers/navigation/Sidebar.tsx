@@ -28,7 +28,14 @@ export const Sidebar: FC = () => {
       collapsed={isOn}
       trigger={null}
     >
-      <Col style={{ height: "100%", alignItems: "center", padding: "12px 0" }}>
+      <Col
+        style={{
+          height: "100%",
+          padding: "12px 0",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <SidebarNavLink
           href={`/profile/${user.id}`}
           className="dewo-sidebar-item"
@@ -55,20 +62,22 @@ export const Sidebar: FC = () => {
 
         <Divider style={{ margin: "12px 0" }} />
 
-        {user?.organizations.map((organization) => (
-          <SidebarNavLink
-            key={organization.id}
-            href={`/o/${organization.slug}`}
-            className="dewo-sidebar-item"
-          >
-            <OrganizationAvatar
-              size={48}
-              organization={organization}
-              tooltip={{ placement: "right" }}
-            />
-          </SidebarNavLink>
-        ))}
-        <CreateOrganizationButton />
+        <Col style={{ flex: 1, overflowX: "hidden", overflowY: "auto" }}>
+          {user?.organizations.map((organization) => (
+            <SidebarNavLink
+              key={organization.id}
+              href={`/o/${organization.slug}`}
+              className="dewo-sidebar-item"
+            >
+              <OrganizationAvatar
+                size={48}
+                organization={organization}
+                tooltip={{ placement: "right" }}
+              />
+            </SidebarNavLink>
+          ))}
+          <CreateOrganizationButton />
+        </Col>
       </Col>
     </Layout.Sider>
   );
