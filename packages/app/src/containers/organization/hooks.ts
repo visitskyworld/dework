@@ -17,10 +17,10 @@ import {
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
   RemoveOrganizationMemberMutationVariables,
+  UpdateOrganizationInput,
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
   UpdateOrganizationMemberMutationVariables,
-  UpdateOrganizationInput,
   UpdateOrganizationMutation,
   UpdateOrganizationMutationVariables,
 } from "@dewo/app/graphql/types";
@@ -61,6 +61,7 @@ export function useUpdateOrganization(): (
         variables: { input },
         refetchQueries: [{ query: Queries.me }],
       });
+
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.organization;
     },

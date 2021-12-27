@@ -1,15 +1,22 @@
 import { useRouter } from "next/router";
-import { Menu, PageHeader, Row, Skeleton, Typography, Modal } from "antd";
-import React, { FC, useMemo, useCallback } from "react";
-import { useOrganization } from "../hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import {
+  Input,
+  Menu,
+  PageHeader,
+  Row,
+  Skeleton,
+  Typography,
+  Modal,
+} from "antd";
+import React, { FC, useMemo, useCallback, useEffect, useState } from "react";
+import { useOrganization, useUpdateOrganization } from "../hooks";
 
 import Link from "next/link";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { JoinOrganizationButton } from "./JoinOrganizationButton";
-
-import { useUpdateOrganization } from "../hooks";
+import { useToggle } from "@dewo/app/util/hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 const { confirm } = Modal;
 
@@ -34,11 +41,14 @@ interface Props {
 
 export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
   const organization = useOrganization(organizationId);
+  const [organizationName, setOrganizationName] = useState("");
+  const editName = useToggle();
+  const canEdit = usePermission("update", "Organization");
+  const updateOrganization = useUpdateOrganization();
   const loading = !organization;
   const canDeleteOrganization = usePermission("delete", "Organization");
   const router = useRouter();
 
-  const updateOrganization = useUpdateOrganization();
   const deleteOrganization = useCallback(async () => {
     try {
       await updateOrganization({
@@ -57,6 +67,19 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
       },
     });
   }, [deleteOrganization]);
+
+  const submitOrganizationName = useCallback(async () => {
+    await updateOrganization({ id: organizationId, name: organizationName });
+    editName.toggleOff();
+  }, [editName, organizationId, organizationName, updateOrganization]);
+
+  const handleChange = useCallback(async (e: any) => {
+    setOrganizationName(e.target.value);
+  }, []);
+
+  useEffect(() => {
+    if (!!organization) setOrganizationName(organization.name);
+  }, [organization]);
 
   const routes = useMemo(
     () =>
@@ -77,9 +100,30 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
     <PageHeader
       title={
         !!organization ? (
-          <Typography.Title level={3} style={{ margin: 0 }}>
-            {organization.name}
-          </Typography.Title>
+          !editName.isOn ? (
+            <Typography.Title
+              level={3}
+              style={{ margin: 0 }}
+              onClick={editName.toggleOn}
+            >
+              {organization.name}
+            </Typography.Title>
+          ) : (
+            <Input
+              disabled={!canEdit}
+              autoFocus={true}
+              className="ant-input dewo-field dewo-field-display ant-typography-h3"
+              placeholder="Enter a organization name..."
+              onBlur={editName.toggleOff}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  submitOrganizationName();
+                }
+              }}
+              onChange={handleChange}
+              value={organizationName}
+            />
+          )
         ) : (
           <Skeleton.Button active style={{ width: 200 }} />
         )
