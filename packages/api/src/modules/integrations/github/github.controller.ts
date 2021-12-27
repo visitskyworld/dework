@@ -15,6 +15,13 @@ import { ProjectService } from "../../project/project.service";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
 
+// The three actions Github's API uses
+enum GithubPullRequestActions {
+  OPENED = "opened",
+  REOPENED = "reopened",
+  CLOSED = "closed",
+}
+
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
   "title" | "status" | "number" | "branchName" | "link" | "taskId"
@@ -114,31 +121,49 @@ export class GithubController {
 
     if (body.pull_request) {
       const { title, state, html_url, number } = body.pull_request;
-
-      // Check if there's an existing DB entry for this pr
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const newPr: GithubPullRequestPayload = {
         title,
         number,
         branchName,
-        status: state.toUpperCase() as GithubPullRequestStatusEnum, // TODO: map
+        status: state.toUpperCase(),
         link: html_url,
         taskId: task.id,
       };
 
-      if (pr) {
-        await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
-      } else {
-        await this.githubService.createPullRequest(newPr);
-        if (task.status === TaskStatusEnum.IN_PROGRESS) {
-          await this.taskService.update({
-            id: task.id,
-            status: TaskStatusEnum.IN_REVIEW,
+      switch (body.action) {
+        case GithubPullRequestActions.CLOSED:
+          if (!pr) return;
+          const isMerged = body.pull_request.merged as boolean;
+          const newStatus = isMerged
+            ? GithubPullRequestStatusEnum.MERGED
+            : GithubPullRequestStatusEnum.CLOSED;
+          await this.githubService.updatePullRequest({
+            ...newPr,
+            id: pr.id,
+            status: newStatus,
           });
-        }
+          if (isMerged) {
+            this.taskService.update({
+              id: task.id,
+              status: TaskStatusEnum.DONE,
+            });
+          }
+          break;
+        default:
+          if (pr) {
+            await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
+          } else {
+            await this.githubService.createPullRequest(newPr);
+            if (task.status === TaskStatusEnum.IN_PROGRESS) {
+              await this.taskService.update({
+                id: task.id,
+                status: TaskStatusEnum.IN_REVIEW,
+              });
+            }
+          }
+          await this.triggerTaskUpdatedSubscription(task.id);
       }
-
-      await this.triggerTaskUpdatedSubscription(task.id);
     }
   }
 

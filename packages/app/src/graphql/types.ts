@@ -5352,8 +5352,9 @@ export interface Invite {
 //==============================================================
 
 export enum GithubPullRequestStatusEnum {
-  DONE = "DONE",
+  CLOSED = "CLOSED",
   DRAFT = "DRAFT",
+  MERGED = "MERGED",
   OPEN = "OPEN",
 }
 

@@ -8,14 +8,16 @@ import * as Icons from "@ant-design/icons";
 
 const tagColorByStatus: Record<GithubPullRequestStatusEnum, string> = {
   [GithubPullRequestStatusEnum.OPEN]: "green",
-  [GithubPullRequestStatusEnum.DONE]: "purple",
+  [GithubPullRequestStatusEnum.MERGED]: "purple",
   [GithubPullRequestStatusEnum.DRAFT]: "gray",
+  [GithubPullRequestStatusEnum.CLOSED]: "gray",
 };
 
 const labelByStatus: Record<GithubPullRequestStatusEnum, string> = {
   [GithubPullRequestStatusEnum.OPEN]: "Open",
-  [GithubPullRequestStatusEnum.DONE]: "Done",
+  [GithubPullRequestStatusEnum.MERGED]: "Merged",
   [GithubPullRequestStatusEnum.DRAFT]: "Draft",
+  [GithubPullRequestStatusEnum.CLOSED]: "Closed",
 };
 
 interface Props {

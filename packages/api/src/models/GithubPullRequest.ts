@@ -4,9 +4,10 @@ import { Audit } from "./Audit";
 import { Task } from "./Task";
 
 export enum GithubPullRequestStatusEnum {
-  DRAFT = "DRAFT",
   OPEN = "OPEN",
-  DONE = "CLOSED",
+  DRAFT = "DRAFT",
+  CLOSED = "CLOSED",
+  MERGED = "MERGED",
 }
 
 registerEnumType(GithubPullRequestStatusEnum, {
