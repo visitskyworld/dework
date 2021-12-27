@@ -67,8 +67,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const addMarkdownImgPlaceholder = useCallback((placeholderText: string) => {
     setValue(
       (prevValue) =>
-        `${prevValue} ${
-          prevValue && prevValue?.trim()?.length > 0 ? "\n\n" : ""
+        `${prevValue ?? ""} ${
+          !!prevValue?.trim()?.length ? "\n\n" : ""
         } ${placeholderText}`
     );
   }, []);

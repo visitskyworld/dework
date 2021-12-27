@@ -7,7 +7,9 @@ import React, { FC } from "react";
 export const LoginButton: FC<ButtonProps> = ({ className, ...props }) => {
   const router = useRouter();
   return (
-    <Link href={`/auth?redirect=${router.asPath}`}>
+    <Link
+      href={router.asPath === "/" ? "/auth" : `/auth?redirect=${router.asPath}`}
+    >
       <a onClick={stopPropagation} className={className}>
         <Button {...props} />
       </a>

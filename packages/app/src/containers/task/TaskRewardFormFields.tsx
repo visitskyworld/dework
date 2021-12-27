@@ -179,16 +179,18 @@ export const TaskRewardFormFields: FC<Props> = ({
             dropdownRender={(menu) => (
               <>
                 {menu}
-                <AddPaymentMethodButton
-                  block
-                  type="text"
-                  style={{ textAlign: "left", marginTop: 4 }}
-                  className="text-secondary"
-                  icon={<Icons.PlusCircleOutlined />}
-                  selectTokens
-                  inputOverride={paymentMethodInputOverride}
-                  children="Add another"
-                />
+                {!!networks.length && (
+                  <AddPaymentMethodButton
+                    block
+                    type="text"
+                    style={{ textAlign: "left", marginTop: 4 }}
+                    className="text-secondary"
+                    icon={<Icons.PlusCircleOutlined />}
+                    selectTokens
+                    inputOverride={paymentMethodInputOverride}
+                    children="Add another"
+                  />
+                )}
               </>
             )}
             onChange={handleChangeNetworkId}

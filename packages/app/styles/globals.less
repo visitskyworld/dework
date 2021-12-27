@@ -64,6 +64,10 @@ textarea {
   padding-bottom: 4px;
 }
 
+.ant-btn:not(.ant-btn-text) {
+  font-weight: 600;
+}
+
 .ant-btn.ant-btn-ghost {
   background: @btn-text-hover-bg;
 }
@@ -478,3 +482,16 @@ textarea {
 .dewo-md-upload.ant-upload.ant-upload-drag .ant-upload-btn .ant-upload-drag-container {
   display: block;
 }
+
+.dewo-lp-feature-tabs {
+  .ant-tabs-nav:before {
+    display: none;
+  }
+
+  img {
+    border: 1px solid @primary-color;
+    border-radius: @border-radius-base * 2;
+    box-shadow: 0 0 10px 0 @primary-color;
+  }
+}
+
