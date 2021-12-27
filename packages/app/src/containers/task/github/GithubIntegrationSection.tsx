@@ -24,7 +24,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
     [task.githubBranches, task.githubPullRequests]
   );
 
-  if (!integrations) return null;
+  if (!integrations?.length) return null;
   return (
     <>
       {!!task.githubPullRequests.length && (
