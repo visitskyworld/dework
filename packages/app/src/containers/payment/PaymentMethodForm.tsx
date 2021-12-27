@@ -24,7 +24,12 @@ export const networkSlugsByPaymentMethodType: Record<
   PaymentMethodType,
   string[]
 > = {
-  [PaymentMethodType.METAMASK]: ["ethereum-mainnet", "ethereum-rinkeby"],
+  [PaymentMethodType.METAMASK]: [
+    "ethereum-mainnet",
+    "ethereum-rinkeby",
+    "gnosis-chain",
+    "sokol-testnet",
+  ],
   [PaymentMethodType.GNOSIS_SAFE]: ["ethereum-mainnet", "ethereum-rinkeby"],
   [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
 };

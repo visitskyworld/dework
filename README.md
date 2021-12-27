@@ -36,6 +36,24 @@ yarn app dev
 yarn api test
 ```
 
+## Testing on different chains
+
+### Sokol Testnet
+1. Add Testnet to Metamask:
+https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup
+
+Network Name: Sokol Testnet
+New RPC URL: https://sokol.poa.network
+Chain ID: 0x4d (77)
+Symbol: xDai
+Block Explorer URL: https://blockscout.com/poa/sokol
+
+2. Get some xDai
+https://forum.poa.network/t/sokol-testnet-resources/1776
+
+3. Get some ERC20 tokens
+https://erc20faucet.com
+
 ## Wiping the DB locally
 ```bash
 (cd packages/api && docker compose down && docker compose stop)
@@ -47,30 +65,38 @@ yarn api dev:db
 ```sql
 DO $$
 DECLARE
-  ethmain_id uuid = uuid_generate_v4();
-  ethrinkeby_id uuid = uuid_generate_v4();
+  ethereum_mainnet_id uuid = uuid_generate_v4();
+  ethereum_rinkeby_id uuid = uuid_generate_v4();
+  gnosis_chain_id uuid = uuid_generate_v4();
+  sokol_testnet_id uuid = uuid_generate_v4();
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
 BEGIN
   UPDATE task SET "rewardId" = NULL;
   DELETE FROM task_reward;
+  DELETE FROM payment;
+  DELETE FROM payment_method;
   DELETE FROM payment_token;
   DELETE FROM payment_network;
 
   INSERT INTO "payment_network" ("id", "name", "slug", "url", "sortKey")
   VALUES
-    (ethmain_id, 'Ethereum', 'ethereum-mainnet', 'url', '1'),
-    (ethrinkeby_id, 'Ethereum (rinkeby)', 'ethereum-rinkeby', 'url', '2'),
-    (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '3'),
-    (solana_testnet_id, 'Solana (testnet)', 'solana-testnet', 'https://api.testnet.solana.com', '4');
+    (ethereum_mainnet_id, 'Ethereum Mainnet', 'ethereum-mainnet', '', '10'),
+    (gnosis_chain_id, 'xDai (Gnosis Chain)', 'gnosis-chain', 'https://rpc.xdaichain.com', '11'),
+    (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '12'),
+    (ethereum_rinkeby_id, 'Ethereum Rinkeby', 'ethereum-rinkeby', '', '20'),
+    (sokol_testnet_id, 'Sokol Testnet', 'sokol-testnet', 'https://sokol.poa.network', '22'),
+    (solana_testnet_id, 'Solana Testnet', 'solana-testnet', 'https://api.testnet.solana.com', '21');
 
   INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
   VALUES
-    ('ETHER', 'ETH', 18, NULL, ethmain_id),
-    ('ETHER', 'ETH', 18, NULL, ethrinkeby_id),
-    ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethmain_id),
-    -- ('ERC20', 'USDC', 18, '0xeb8f08a975ab53e34d8a0330e0d34de942c95926', ethrinkeby_id),
-    ('ERC20', 'USDC', 18, '0xfab46e002bbf0b4509813474841e0716e6730136', ethrinkeby_id),
+    ('ETHER', 'ETH', 18, NULL, ethereum_mainnet_id),
+    ('ETHER', 'ETH', 18, NULL, ethereum_rinkeby_id),
+    ('ETHER', 'xDAI', 18, NULL, gnosis_chain_id),
+    ('ETHER', 'SPOA', 18, NULL, sokol_testnet_id),
+    ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethereum_mainnet_id),
+    ('ERC20', 'FAU', 18, '0xfab46e002bbf0b4509813474841e0716e6730136', ethereum_rinkeby_id),
+    ('ERC20', 'FAU', 18, '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id),
 
     ('SOL', 'SOL', 9, NULL, solana_mainnet_id),
     ('SOL', 'SOL', 9, NULL, solana_testnet_id),

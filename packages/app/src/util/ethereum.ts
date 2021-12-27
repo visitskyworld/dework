@@ -9,6 +9,8 @@ import {
 const ethereumChainIdBySlug: Record<string, number> = {
   "ethereum-mainnet": 1,
   "ethereum-rinkeby": 4,
+  "sokol-testnet": 77,
+  "gnosis-chain": 100,
 };
 
 export function useProvider(): ethers.providers.Web3Provider {
@@ -32,7 +34,7 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
     async (slug) => {
       const chainId = ethereumChainIdBySlug[slug];
       await provider.send("wallet_switchEthereumChain", [
-        { chainId: `0x${chainId}` },
+        { chainId: `0x${chainId.toString(16)}` },
       ]);
     },
     [provider]

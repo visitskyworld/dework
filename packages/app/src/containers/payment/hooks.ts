@@ -58,6 +58,16 @@ export function explorerLink(payment: Payment): string | undefined {
         return `https://gnosis-safe.io/app/rin:${payment.paymentMethod.address}/transactions/queue`;
       }
       return undefined;
+    case "gnosis-chain":
+      if (!!payment.data?.txHash) {
+        return `https://blockscout.com/xdai/mainnet/tx/${payment.data.txHash}`;
+      }
+      return undefined;
+    case "sokol-testnet":
+      if (!!payment.data?.txHash) {
+        return `https://blockscout.com/poa/sokol/tx/${payment.data.txHash}`;
+      }
+      return undefined;
     case "solana-mainnet":
       if (!payment.data?.signature) return undefined;
       return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;

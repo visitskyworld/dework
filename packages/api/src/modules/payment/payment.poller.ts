@@ -64,6 +64,10 @@ export class PaymentPoller {
         "rinkeby",
         config.get("INFURA_PROJECT_ID")
       ),
+      "gnosis-chain": new ethers.providers.InfuraProvider(
+        "rinkeby",
+        config.get("INFURA_PROJECT_ID")
+      ),
     };
     this.gnosisSafeServiceClients = {
       "ethereum-mainnet": new SafeServiceClient(
@@ -207,7 +211,9 @@ export class PaymentPoller {
     data: MetamaskPaymentData,
     network: PaymentNetwork
   ): Promise<ConfirmPaymentResponse> {
-    const provider = this.ethereumProviders[network.slug];
+    const provider =
+      this.ethereumProviders[network.slug] ??
+      new ethers.providers.JsonRpcProvider(network.url);
     if (!provider) {
       this.logger.error(
         `No ethers provider for network ${network.slug} (${JSON.stringify({
