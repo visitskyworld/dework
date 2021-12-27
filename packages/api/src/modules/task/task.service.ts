@@ -141,23 +141,26 @@ export class TaskService {
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
-      .leftJoinAndSelect("task.project", "project");
+      .leftJoinAndSelect("task.project", "project")
+      .where("1 = 1");
 
     if (!!ids) {
-      query = query.where("task.id IN (:...ids)", { ids });
+      query = query.andWhere("task.id IN (:...ids)", { ids });
     }
 
     if (!!rewardIds) {
-      query = query.where("task.rewardId IN (:...rewardIds)", { rewardIds });
+      query = query.andWhere("task.rewardId IN (:...rewardIds)", { rewardIds });
     }
 
     if (!!projectIds) {
-      query = query.where("task.projectId IN (:...projectIds)", { projectIds });
+      query = query.andWhere("task.projectId IN (:...projectIds)", {
+        projectIds,
+      });
     }
 
     if (!!organizationIds) {
       query = query
-        .where("project.organizationId IN (:...organizationIds)", {
+        .andWhere("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })
         .andWhere("project.deletedAt IS NULL");
@@ -165,11 +168,11 @@ export class TaskService {
 
     if (!!assigneeId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
-      query = query.where("assignee.id = :assigneeId", { assigneeId });
+      query = query.andWhere("assignee.id = :assigneeId", { assigneeId });
     }
 
     if (!!statuses) {
-      query = query.where("task.status IN (:...statuses)", { statuses });
+      query = query.andWhere("task.status IN (:...statuses)", { statuses });
     }
 
     return query
