@@ -7,11 +7,65 @@
 // GraphQL mutation operation: AuthWithThreepidMutation
 // ====================================================
 
+export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_details {
+  __typename: "UserDetail";
+  id: Scalar.UUID;
+  type: UserDetailType;
+  value: string;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_threepids {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+  source: ThreepidSource;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  url: string;
+  slug: string;
+  name: string;
+  sortKey: string;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  address: string | null;
+  networkId: string;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_networks[];
+  tokens: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_tokens[];
+}
+
 export interface AuthWithThreepidMutation_authWithThreepid_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  bio: string | null;
+  organizations: AuthWithThreepidMutation_authWithThreepid_user_organizations[];
+  details: AuthWithThreepidMutation_authWithThreepid_user_details[];
+  threepids: AuthWithThreepidMutation_authWithThreepid_user_threepids[];
+  paymentMethods: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods[];
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid {
@@ -1230,9 +1284,32 @@ export interface CreateInviteMutationVariables {
 // GraphQL mutation operation: AcceptInviteMutation
 // ====================================================
 
+export interface AcceptInviteMutation_invite_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface AcceptInviteMutation_invite_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  user: AcceptInviteMutation_invite_organization_members_user;
+}
+
+export interface AcceptInviteMutation_invite_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  members: AcceptInviteMutation_invite_organization_members[];
+}
+
 export interface AcceptInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
+  organization: AcceptInviteMutation_invite_organization;
 }
 
 export interface AcceptInviteMutation {
