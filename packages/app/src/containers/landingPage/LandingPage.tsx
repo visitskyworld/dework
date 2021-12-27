@@ -10,10 +10,10 @@ import {
   Row,
   Skeleton,
   Space,
-  Tabs,
   Typography,
+  Modal,
 } from "antd";
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo, useRef } from "react";
 import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
 import { siteTitle, siteDescription } from "@dewo/app/util/constants";
@@ -24,6 +24,8 @@ import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { DeworkIcon } from "@dewo/app/components/icons/Dework";
 import _ from "lodash";
 import { LoginButton } from "../auth/LoginButton";
+import { useToggle } from "@dewo/app/util/hooks";
+import YouTube from "react-youtube";
 
 const NUM_COLUMNS = 2;
 
@@ -50,6 +52,13 @@ export const LandingPage: FC = () => {
     return chunks;
   }, [latestTasks]);
 
+  const watchVideoDemo = useToggle();
+  const youtubeRef = useRef<YouTube>(null);
+  const closeVideoDemoModal = useCallback(() => {
+    watchVideoDemo.toggleOff();
+    youtubeRef.current?.getInternalPlayer().pauseVideo();
+  }, [watchVideoDemo]);
+
   if (Math.random()) {
     return (
       <>
@@ -63,9 +72,11 @@ export const LandingPage: FC = () => {
             </Row>
           }
           extra={[
-            <LoginButton key="log-in" type="text">
-              Log In
-            </LoginButton>,
+            !user && (
+              <LoginButton key="log-in" type="text">
+                Log In
+              </LoginButton>
+            ),
             !user && (
               <LoginButton key="get-started" type="primary">
                 Get Started
@@ -87,7 +98,7 @@ export const LandingPage: FC = () => {
                   <Divider />
                 </Row>
                 <Typography.Paragraph style={{ fontSize: "150%" }}>
-                  Manage your tasks and bounties in one place. Get bounty
+                  Manage your tasks and bounties in one place. Get contributor
                   applicants, sync with Discord, boost the reputation of
                   contributors, and pay with your own DAO's tokens
                 </Typography.Paragraph>
@@ -101,6 +112,7 @@ export const LandingPage: FC = () => {
                   type="text"
                   size="large"
                   icon={<Icons.PlayCircleOutlined />}
+                  onClick={watchVideoDemo.toggleOn}
                 >
                   Watch Video
                 </Button>
@@ -112,7 +124,14 @@ export const LandingPage: FC = () => {
             xs={24}
             style={{ padding: 24, display: "grid", placeItems: "center" }}
           >
-            <Tabs centered type="line" className="dewo-lp-feature-tabs">
+            <Image
+              width="100%"
+              src={
+                "https://moralis.io/wp-content/uploads/2021/07/new_homepage_img.svg"
+              }
+              preview={false}
+            />
+            {/* <Tabs centered type="line" className="dewo-lp-feature-tabs">
               <Tabs.TabPane
                 tab="Feature X"
                 key="feature-x"
@@ -139,7 +158,7 @@ export const LandingPage: FC = () => {
               <Tabs.TabPane tab="Feature Z" key="feature-z">
                 Content of Tab Pane 1
               </Tabs.TabPane>
-            </Tabs>
+            </Tabs> */}
           </Col>
         </Row>
         <Row
@@ -164,6 +183,23 @@ export const LandingPage: FC = () => {
             </Row>
           </Col>
         </Row>
+        <Modal
+          visible={watchVideoDemo.isOn}
+          footer={null}
+          bodyStyle={{ padding: 0 }}
+          width="min(1280px, 100vw)"
+          onCancel={closeVideoDemoModal}
+        >
+          <YouTube
+            ref={youtubeRef}
+            videoId="66SaEDzlmP4"
+            opts={{
+              width: "100%",
+              height: "720",
+              playerVars: { autoplay: 1 },
+            }}
+          />
+        </Modal>
       </>
     );
   }
