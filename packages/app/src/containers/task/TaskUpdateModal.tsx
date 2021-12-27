@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
 import {
@@ -49,18 +49,20 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
 
   return (
     <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
-      {!!task && (
-        <TaskForm
-          key={taskId}
-          mode="update"
-          task={task}
-          projectId={task!.projectId}
-          initialValues={initialValues}
-          assignees={task!.assignees}
-          buttonText="Update"
-          onSubmit={handleSubmit}
-        />
-      )}
+      <Skeleton loading={!task} active paragraph={{ rows: 5 }}>
+        {!!task && (
+          <TaskForm
+            key={taskId}
+            mode="update"
+            task={task}
+            projectId={task!.projectId}
+            initialValues={initialValues}
+            assignees={task!.assignees}
+            buttonText="Update"
+            onSubmit={handleSubmit}
+          />
+        )}
+      </Skeleton>
     </Modal>
   );
 };
