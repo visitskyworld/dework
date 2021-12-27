@@ -126,6 +126,11 @@ App.getInitialProps = async ({
   Component,
   ctx,
 }): Promise<AppInitialProps & AuthProps> => {
+  if (ctx.res?.statusCode === 404) {
+    ctx.res.writeHead(301, { location: "/" });
+    ctx.res.end();
+  }
+
   return {
     pageProps: await Component.getInitialProps?.(ctx),
     authenticated: !!getAuthToken(ctx as any),
