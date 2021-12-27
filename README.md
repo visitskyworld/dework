@@ -48,11 +48,9 @@ https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup
 * Symbol: xDai
 * Block Explorer URL: https://blockscout.com/poa/sokol
 
-2. Get some xDai
-https://forum.poa.network/t/sokol-testnet-resources/1776
+2. Get some SPOA (the ETH equivalent native token): https://forum.poa.network/t/sokol-testnet-resources/1776
 
-3. Get some ERC20 tokens
-https://erc20faucet.com
+3. Get some ERC20 tokens: https://erc20faucet.com
 
 ## Wiping the DB locally
 ```bash
