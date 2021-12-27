@@ -137,6 +137,16 @@ export class Fixtures {
     });
   }
 
+  public async getTask(id: string): Promise<Task | undefined> {
+    return this.taskService.findById(id);
+  }
+
+  public async updateTask(
+    partial: DeepAtLeast<Task, "id">
+  ): Promise<Task | undefined> {
+    return this.taskService.update(partial);
+  }
+
   public async createTaskTag(partial: Partial<TaskTag> = {}): Promise<TaskTag> {
     return this.projectService.createTag({
       label: faker.company.companyName(),
@@ -159,7 +169,9 @@ export class Fixtures {
     });
   }
 
-  public async createGithubPullRequest(): Promise<GithubPullRequest> {
+  public async createGithubPullRequest(
+    partial: Partial<GithubPullRequest>
+  ): Promise<GithubPullRequest> {
     const task = this.createTask();
     return this.githubService.createPullRequest({
       title: faker.datatype.string(),
@@ -169,6 +181,7 @@ export class Fixtures {
       status: GithubPullRequestStatusEnum.OPEN,
       task,
       taskId: await task.then((t) => t.id),
+      ...partial,
     });
   }
 

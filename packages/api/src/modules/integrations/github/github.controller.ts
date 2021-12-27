@@ -148,11 +148,17 @@ export class GithubController {
               id: task.id,
               status: TaskStatusEnum.DONE,
             });
+            this.log("Updated task status to DONE", {
+              taskId: task.id,
+              taskNumber: task.number,
+            });
           }
+          this.log("Updated PR status", { title: pr.title, status: newStatus });
           break;
         default:
           if (pr) {
             await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
+            this.log("Updated PR in db", { title: pr.title });
           } else {
             await this.githubService.createPullRequest(newPr);
             if (task.status === TaskStatusEnum.IN_PROGRESS && !draft) {
@@ -161,6 +167,7 @@ export class GithubController {
                 status: TaskStatusEnum.IN_REVIEW,
               });
             }
+            this.log("Created new PR in db", { title: newPr.title });
           }
           await this.triggerTaskUpdatedSubscription(task.id);
       }

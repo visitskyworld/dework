@@ -56,7 +56,7 @@ describe("GithubService", () => {
         config: { installationId, features: [] },
       });
 
-      const pr = await fixtures.createGithubPullRequest();
+      const pr = await fixtures.createGithubPullRequest({});
       const found = await github.findPullRequestByTaskId(pr.taskId);
       expect(found).toBeDefined();
       expect(found?.id).toEqual(pr.id);
