@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FC } from "react";
 
-export const LoginButton: FC<ButtonProps> = (props) => {
+export const LoginButton: FC<ButtonProps> = ({ className, ...props }) => {
   const router = useRouter();
   return (
     <Link href={`/auth?redirect=${router.asPath}`}>
-      <a onClick={stopPropagation}>
+      <a onClick={stopPropagation} className={className}>
         <Button {...props} />
       </a>
     </Link>
