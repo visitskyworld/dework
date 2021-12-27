@@ -6,12 +6,12 @@ export const authWithThreepid = gql`
     authWithThreepid(threepidId: $threepidId) {
       authToken
       user {
-        ...User
+        ...UserDetails
       }
     }
   }
 
-  ${Fragments.user}
+  ${Fragments.userDetails}
 `;
 
 export const updateUser = gql`

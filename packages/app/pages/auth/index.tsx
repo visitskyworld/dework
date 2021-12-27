@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NextPage } from "next";
-import { Button, Layout, Modal, Space, Typography } from "antd";
-import * as Icons from "@ant-design/icons";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-import { Constants } from "@dewo/app/util/constants";
+import { Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
+import { ThreepidSource } from "@dewo/app/graphql/types";
+import { ThreepidAuthButton } from "@dewo/app/containers/auth/ThreepidAuthButton";
 
 const Auth: NextPage = () => {
   const router = useRouter();
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const state = JSON.stringify({ ...router.query, appUrl });
+  const state = useMemo(
+    () => ({ ...router.query, appUrl }),
+    [router.query, appUrl]
+  );
   return (
     <Layout>
       <Layout.Content>
@@ -18,24 +20,22 @@ const Auth: NextPage = () => {
             <Typography.Title level={2} style={{ textAlign: "center" }}>
               Sign up
             </Typography.Title>
-            <Button
+            <ThreepidAuthButton
+              source={ThreepidSource.github}
+              children="Github"
               size="large"
               type="primary"
               block
-              icon={<Icons.GithubOutlined />}
-              href={`${Constants.GRAPHQL_API_URL}/auth/github?state=${state}`}
-            >
-              Github
-            </Button>
-            <Button
+              state={state}
+            />
+            <ThreepidAuthButton
+              source={ThreepidSource.discord}
+              children="Discord"
               size="large"
               type="primary"
               block
-              icon={<DiscordIcon />}
-              href={`${Constants.GRAPHQL_API_URL}/auth/discord?state=${state}`}
-            >
-              Discord
-            </Button>
+              state={state}
+            />
           </Space>
         </Modal>
       </Layout.Content>

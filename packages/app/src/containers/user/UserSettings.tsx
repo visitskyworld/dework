@@ -1,6 +1,12 @@
+import { ThreepidSource } from "@dewo/app/graphql/types";
 import { useCurrentUser } from "@dewo/app/util/hooks";
-import { Col, Space, Typography } from "antd";
+import { Alert, Col, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
+import {
+  getThreepidName,
+  renderThreepidIcon,
+  ThreepidAuthButton,
+} from "../auth/ThreepidAuthButton";
 import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { useUpdatePaymentMethod } from "../payment/hooks";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
@@ -39,6 +45,26 @@ export const UserSettings: FC<Props> = () => {
               inputOverride={paymentMethodOverride}
               children="Add Payment Method"
             />
+          )}
+        </Space>
+      </Col>
+      <Col>
+        <Typography.Title level={5}>Connected Accounts</Typography.Title>
+        <Space direction="vertical">
+          {[ThreepidSource.github, ThreepidSource.discord].map((source) =>
+            user?.threepids.some((t) => t.source === source) ? (
+              <Alert
+                message={`Connected with ${getThreepidName[source]}`}
+                icon={renderThreepidIcon[source]}
+                type="success"
+                showIcon
+              />
+            ) : (
+              <ThreepidAuthButton
+                source={source}
+                children={`Connect with ${getThreepidName[source]}`}
+              />
+            )
           )}
         </Space>
       </Col>
