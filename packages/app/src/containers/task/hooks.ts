@@ -3,6 +3,7 @@ import {
   useMutation,
   useQuery,
   useSubscription,
+  WatchQueryFetchPolicy,
 } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
@@ -294,11 +295,13 @@ export function useGenerateRandomTaskTagColor(
 }
 
 export function useTask(
-  taskId: string | undefined
+  taskId: string | undefined,
+  fetchPolicy?: WatchQueryFetchPolicy
 ): GetTaskQuery["task"] | undefined {
   const { data } = useQuery<GetTaskQuery, GetTaskQueryVariables>(Queries.task, {
     variables: { taskId: taskId! },
     skip: !taskId,
+    fetchPolicy,
   });
   return data?.task ?? undefined;
 }
