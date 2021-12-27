@@ -63,28 +63,28 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
     }
 
     if (task.status === TaskStatusEnum.TODO) {
-      if (canUpdateTask && !!task.applications.length) {
+      if (canUpdateTask) {
+        if (!!task.applications.length) {
+          return (
+            <Button
+              size="small"
+              type="primary"
+              icon={<Icons.LockOutlined />}
+              onClick={navigateToTask}
+            >
+              Pick applicant
+            </Button>
+          );
+        }
+      } else if (canClaimTask) {
+        return <ClaimTaskButton task={task} />;
+      } else {
         return (
-          <Button
-            size="small"
-            type="primary"
-            icon={<Icons.LockOutlined />}
-            onClick={navigateToTask}
-          >
-            Pick applicant
-          </Button>
+          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            Apply
+          </LoginButton>
         );
       }
-
-      if (canClaimTask) {
-        return <ClaimTaskButton task={task} />;
-      }
-
-      return (
-        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-          Apply
-        </LoginButton>
-      );
     }
 
     return null;
