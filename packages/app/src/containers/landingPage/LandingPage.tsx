@@ -72,9 +72,11 @@ export const LandingPage: FC = () => {
           <Typography.Paragraph style={{ textAlign: "center", width: "100%" }}>
             {siteDescription}
           </Typography.Paragraph>
-          <LoginButton type="primary" size="large" className="mx-auto">
-            Log in
-          </LoginButton>
+          {!user && (
+            <LoginButton type="primary" size="large" className="mx-auto">
+              Log in
+            </LoginButton>
+          )}
         </Row>
       </Row>
       <Divider style={{ margin: 0 }} />
