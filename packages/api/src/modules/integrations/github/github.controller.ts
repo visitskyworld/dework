@@ -120,7 +120,7 @@ export class GithubController {
     }
 
     if (body.pull_request) {
-      const { title, state, html_url, number } = body.pull_request;
+      const { title, state, html_url, number, draft } = body.pull_request;
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const newPr: GithubPullRequestPayload = {
         title,
@@ -155,7 +155,7 @@ export class GithubController {
             await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
           } else {
             await this.githubService.createPullRequest(newPr);
-            if (task.status === TaskStatusEnum.IN_PROGRESS) {
+            if (task.status === TaskStatusEnum.IN_PROGRESS && !draft) {
               await this.taskService.update({
                 id: task.id,
                 status: TaskStatusEnum.IN_REVIEW,
