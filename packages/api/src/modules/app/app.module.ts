@@ -21,6 +21,7 @@ import { SubscriptionModule } from "../subscription/subscription.module";
 import { GithubIntegrationModule } from "../integrations/github/github.module";
 import { FileUploadModule } from "../fileUpload/fileUpload.module";
 import { PermalinkModule } from "../permalink/permalink.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -38,6 +39,7 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
     getUserFromRequest: (req) => req.caslUser,
   }),
   DatabaseModule,
+  ScheduleModule.forRoot(),
 ];
 
 export const AppModuleImports: ModuleMetadata["imports"] = [

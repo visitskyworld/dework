@@ -21,7 +21,6 @@ import { PaymentService } from "./payment.service";
     ]),
   ],
   providers: [PaymentResolver, PaymentService, PaymentPoller],
-  controllers: [PaymentPoller],
   exports: [PaymentService],
 })
 export class PaymentModule implements NestModule {

@@ -7,8 +7,7 @@ import {
   PhantomPaymentData,
 } from "@dewo/api/models/Payment";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
-import { Response } from "express";
-import { Controller, Logger, Post, Query, Res } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as ms from "milliseconds";
@@ -19,14 +18,15 @@ import { ConfigService } from "@nestjs/config";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
 import { ConfigType } from "../app/config";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
-import Bluebird from "bluebird";
+import { Interval } from "@nestjs/schedule";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
   data?: Partial<PaymentData>;
 }
 
-@Controller("payment")
+// @Controller("payment")
+@Injectable()
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);
   private ethereumProviders: Record<string, ethers.providers.InfuraProvider>;
@@ -75,26 +75,31 @@ export class PaymentPoller {
     };
   }
 
-  @Post("poll")
-  async pollPayments(
-    @Query("n") _n: string,
-    @Query("sleep") _sleep: string,
-    @Res() res: Response
-  ) {
-    const n = Number(_n) || 1;
-    const sleep = Number(_sleep) || 0;
+  // @Post("poll")
+  // async pollPayments(
+  //   @Query("n") _n: string,
+  //   @Query("sleep") _sleep: string,
+  //   @Res() res: Response
+  // ) {
+  //   const n = Number(_n) || 1;
+  //   const sleep = Number(_sleep) || 0;
 
-    this.logger.log(`Polling payments (${JSON.stringify({ n, sleep })})`);
+  //   this.logger.log(`Polling payments (${JSON.stringify({ n, sleep })})`);
 
-    for (let i = 0; i < n; i++) {
-      this.logger.debug(
-        `Looping payments polling (${JSON.stringify({ i, n, sleep })})`
-      );
-      await this.poll();
-      await Bluebird.delay(sleep);
-    }
+  //   for (let i = 0; i < n; i++) {
+  //     this.logger.debug(
+  //       `Looping payments polling (${JSON.stringify({ i, n, sleep })})`
+  //     );
+  //     await this.poll();
+  //     await Bluebird.delay(sleep);
+  //   }
 
-    res.json({ ok: true, n, sleep });
+  //   res.json({ ok: true, n, sleep });
+  // }
+
+  @Interval(5000)
+  async cron() {
+    await this.poll();
   }
 
   public async poll(): Promise<void> {
