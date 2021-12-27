@@ -10,19 +10,12 @@ import {
   PaymentToken,
   TaskRewardTrigger,
 } from "@dewo/app/graphql/types";
-import {
-  Button,
-  ConfigProvider,
-  Empty,
-  InputNumber,
-  Select,
-  Space,
-} from "antd";
+import { ConfigProvider, Empty, InputNumber, Select, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../project/hooks";
 import _ from "lodash";
-import Link from "next/link";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -153,6 +146,11 @@ export const TaskRewardFormFields: FC<Props> = ({
     requestAnimationFrame(onClear);
   }, [onChange, onClear]);
 
+  const paymentMethodInputOverride = useMemo(
+    () => ({ projectId }),
+    [projectId]
+  );
+
   if (!project) return null;
   return (
     <>
@@ -163,13 +161,13 @@ export const TaskRewardFormFields: FC<Props> = ({
               imageStyle={{ display: "none" }}
               description="To add a task reward, you need to connect a wallet to the project"
             >
-              <Link href={`${project.permalink}/settings`}>
-                <a>
-                  <Button type="primary" size="small">
-                    Connect now
-                  </Button>
-                </a>
-              </Link>
+              <AddPaymentMethodButton
+                type="primary"
+                size="small"
+                selectTokens
+                inputOverride={paymentMethodInputOverride}
+                children="Connect now"
+              />
             </Empty>
           )}
         >
@@ -178,6 +176,21 @@ export const TaskRewardFormFields: FC<Props> = ({
             placeholder="Select where you'll pay"
             value={value?.networkId}
             allowClear
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                <AddPaymentMethodButton
+                  block
+                  type="text"
+                  style={{ textAlign: "left", marginTop: 4 }}
+                  className="text-secondary"
+                  icon={<Icons.PlusCircleOutlined />}
+                  selectTokens
+                  inputOverride={paymentMethodInputOverride}
+                  children="Add another"
+                />
+              </>
+            )}
             onChange={handleChangeNetworkId}
             onBlur={handleBlur}
             onClear={handleClear}

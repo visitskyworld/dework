@@ -1,24 +1,18 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   CreatePaymentMethodInput,
   PaymentMethod,
   PaymentMethodType,
   PaymentTokenType,
 } from "@dewo/app/graphql/types";
-import { Button, Col, Form, FormInstance, Row, Select } from "antd";
+import { Button, Col, Form, message, Row, Select } from "antd";
 import { useCreatePaymentMethod, usePaymentNetworks } from "./hooks";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { PaymentMethodSummary } from "./PaymentMethodSummary";
 import { ConnectPhantomButton } from "./ConnectPhantomButton";
 import { ConnectGnosisSafe } from "./ConnectGnosisSafe";
 import { useERC20Contract } from "@dewo/app/util/ethereum";
+import { useForm } from "antd/lib/form/Form";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
@@ -52,7 +46,7 @@ export const PaymentMethodForm: FC<Props> = ({
   selectTokens,
   onDone,
 }) => {
-  const formRef = useRef<FormInstance<CreatePaymentMethodInput>>(null);
+  const [form] = useForm<CreatePaymentMethodInput>();
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
   const [loading, setLoading] = useState(false);
 
@@ -115,11 +109,14 @@ export const PaymentMethodForm: FC<Props> = ({
           ...inputOverride,
         });
         await onDone(paymentMethod);
+        setValues({});
+        form.resetFields();
+        message.success("Payment method added");
       } finally {
         setLoading(false);
       }
     },
-    [createPaymentMethod, onDone, inputOverride]
+    [createPaymentMethod, onDone, inputOverride, form]
   );
 
   const handleChange = useCallback(
@@ -132,13 +129,13 @@ export const PaymentMethodForm: FC<Props> = ({
       if (!!changed.networkId) values.tokenIds = [];
 
       setValues(values);
-      formRef.current?.setFieldsValue(values);
+      form.setFieldsValue(values);
 
       if (!!changed.address && !selectTokens) {
         submitForm(values as CreatePaymentMethodInput);
       }
     },
-    [selectTokens, submitForm]
+    [form, selectTokens, submitForm]
   );
 
   const clearAddress = useCallback(
@@ -149,7 +146,7 @@ export const PaymentMethodForm: FC<Props> = ({
 
   return (
     <Form
-      ref={formRef}
+      form={form}
       layout="vertical"
       requiredMark={false}
       onFinish={submitForm}

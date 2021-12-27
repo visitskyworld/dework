@@ -36,8 +36,8 @@ export const UserSettings: FC<Props> = () => {
 
           {!!user && (
             <AddPaymentMethodButton
-              key={user.paymentMethods.length}
               inputOverride={paymentMethodOverride}
+              children="Add Payment Method"
             />
           )}
         </Space>

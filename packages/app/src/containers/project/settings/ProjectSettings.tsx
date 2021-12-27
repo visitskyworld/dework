@@ -59,6 +59,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
                 () => ({ projectId: project.id }),
                 [project.id]
               )}
+              children="Add Payment Method"
             />
           </Space>
         </Col>

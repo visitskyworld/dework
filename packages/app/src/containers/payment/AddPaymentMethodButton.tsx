@@ -1,10 +1,10 @@
 import { CreatePaymentMethodInput } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Modal } from "antd";
+import { Button, ButtonProps, Modal } from "antd";
 import React, { FC } from "react";
 import { PaymentMethodForm } from "./PaymentMethodForm";
 
-interface Props {
+interface Props extends ButtonProps {
   inputOverride?: Partial<CreatePaymentMethodInput>;
   selectTokens?: boolean;
 }
@@ -12,11 +12,12 @@ interface Props {
 export const AddPaymentMethodButton: FC<Props> = ({
   inputOverride,
   selectTokens,
+  ...buttonProps
 }) => {
   const addPaymentMethod = useToggle();
   return (
     <>
-      <Button onClick={addPaymentMethod.toggleOn}>Add Payment Method</Button>
+      <Button {...buttonProps} onClick={addPaymentMethod.toggleOn} />
       <Modal
         visible={addPaymentMethod.isOn}
         title="Add Payment Method"
