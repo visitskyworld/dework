@@ -8,7 +8,7 @@ import {
 } from "@dewo/api/models/Payment";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { Response } from "express";
-import { Controller, Logger, Post, Res } from "@nestjs/common";
+import { Controller, Logger, Post, Query, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as ms from "milliseconds";
@@ -19,6 +19,7 @@ import { ConfigService } from "@nestjs/config";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
 import { ConfigType } from "../app/config";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
+import Bluebird from "bluebird";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
@@ -75,9 +76,20 @@ export class PaymentPoller {
   }
 
   @Post("poll")
-  async pollPayments(@Res() res: Response) {
-    await this.poll();
-    res.json({ ok: true });
+  async pollPayments(
+    @Query("n") _n: string,
+    @Query("sleep") _sleep: string,
+    @Res() res: Response
+  ) {
+    const n = Number(_n) || 1;
+    const sleep = Number(_sleep) || 0;
+
+    for (let i = 0; i < n; i++) {
+      await this.poll();
+      await Bluebird.delay(sleep);
+    }
+
+    res.json({ ok: true, n, sleep });
   }
 
   public async poll(): Promise<void> {
