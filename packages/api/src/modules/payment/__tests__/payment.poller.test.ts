@@ -59,7 +59,7 @@ describe("PaymentPoller", () => {
       expect(updated!.nextStatusCheckAt).toBe(null);
     });
 
-    it("should set nextStatusCheckAt to 1m into the future", async () => {
+    it("should set nextStatusCheckAt to 5s into the future", async () => {
       const payment = await fixtures.createPayment({
         networkId: network.id,
         createdAt: new Date(),
@@ -68,10 +68,10 @@ describe("PaymentPoller", () => {
       const updated = await service.findById(payment.id);
       expect(updated!.status).toBe(PaymentStatus.PROCESSING);
       expect(updated!.nextStatusCheckAt?.getTime()).toBeGreaterThan(
-        moment().add(1, "minute").subtract(1, "second").valueOf()
+        moment().add(5, "seconds").subtract(1, "second").valueOf()
       );
       expect(updated!.nextStatusCheckAt?.getTime()).toBeLessThan(
-        moment().add(1, "minute").add(1, "second").valueOf()
+        moment().add(5, "seconds").add(1, "second").valueOf()
       );
     });
   });

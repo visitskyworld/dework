@@ -75,28 +75,6 @@ export class PaymentPoller {
     };
   }
 
-  // @Post("poll")
-  // async pollPayments(
-  //   @Query("n") _n: string,
-  //   @Query("sleep") _sleep: string,
-  //   @Res() res: Response
-  // ) {
-  //   const n = Number(_n) || 1;
-  //   const sleep = Number(_sleep) || 0;
-
-  //   this.logger.log(`Polling payments (${JSON.stringify({ n, sleep })})`);
-
-  //   for (let i = 0; i < n; i++) {
-  //     this.logger.debug(
-  //       `Looping payments polling (${JSON.stringify({ i, n, sleep })})`
-  //     );
-  //     await this.poll();
-  //     await Bluebird.delay(sleep);
-  //   }
-
-  //   res.json({ ok: true, n, sleep });
-  // }
-
   @Interval(5000)
   async cron() {
     await this.poll();
@@ -110,9 +88,9 @@ export class PaymentPoller {
       .leftJoinAndSelect("p.network", "network")
       .leftJoinAndSelect("p.paymentMethod", "paymentMethod")
       .where("p.status = :status", { status: PaymentStatus.PROCESSING })
-      .andWhere(
-        "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
-      )
+      // .andWhere(
+      //   "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
+      // )
       .getMany();
 
     this.logger.log(`Found ${payments.length} payments to check`);
