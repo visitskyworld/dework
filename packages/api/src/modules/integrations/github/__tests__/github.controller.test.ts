@@ -23,22 +23,27 @@ describe("GithubController", () => {
 
   afterAll(() => app.close());
 
+  async function createProjectWithGithubIntegration(installationId: string) {
+    const project = await fixtures.createProject();
+    await fixtures.createProjectIntegation({
+      projectId: project.id,
+      source: ProjectIntegrationSource.github,
+      config: {
+        installationId,
+        features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
+      },
+    });
+    return project;
+  }
+
   describe("webhook", () => {
     const installationId = faker.datatype.string();
 
     it("should create a branch in db", async () => {
-      const project = await fixtures.createProject();
+      const project = await createProjectWithGithubIntegration(installationId);
       const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatusEnum.IN_PROGRESS,
-      });
-      await fixtures.createProjectIntegation({
-        projectId: project.id,
-        source: ProjectIntegrationSource.github,
-        config: {
-          installationId,
-          features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
-        },
       });
 
       const response = await client.request({
@@ -65,31 +70,20 @@ describe("GithubController", () => {
     });
 
     xit("should update a task's status to done when a PR is merged", async () => {
-      const project = await fixtures.createProject();
-      const task = fixtures.createTask({
+      const project = await createProjectWithGithubIntegration(installationId);
+      const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatusEnum.IN_REVIEW,
       });
-      const { id: taskId, number: taskNumber } = await task.then();
       const branch = await fixtures.createGithubBranch({
-        name: `refs/heads/username/dw-${taskNumber}/feature`,
-        task,
-        taskId,
+        name: `refs/heads/username/dw-${task.number}/feature`,
+        taskId: task.id,
         repository: "username/my-repo",
       });
       const pullRequest = await fixtures.createGithubPullRequest({
         title: faker.datatype.string(),
-        task,
-        taskId,
+        taskId: task.id,
         branchName: branch.name,
-      });
-      await fixtures.createProjectIntegation({
-        projectId: project.id,
-        source: ProjectIntegrationSource.github,
-        config: {
-          installationId,
-          features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
-        },
       });
 
       const response = await client.request({
@@ -114,7 +108,7 @@ describe("GithubController", () => {
         } as any,
       });
 
-      const updatedTask = await fixtures.getTask(taskId);
+      const updatedTask = await fixtures.getTask(task.id);
 
       expect(response.status).toEqual(HttpStatus.CREATED);
       expect(updatedTask?.status).toEqual(TaskStatusEnum.DONE);
