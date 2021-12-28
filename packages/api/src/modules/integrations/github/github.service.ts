@@ -37,7 +37,7 @@ export class GithubService {
   public async findPullRequestByTaskId(
     taskId: string
   ): Promise<GithubPullRequest | undefined> {
-    return this.githubPullRequestRepo.findOne({ taskId: taskId });
+    return this.githubPullRequestRepo.findOne({ taskId });
   }
 
   public async createBranch(

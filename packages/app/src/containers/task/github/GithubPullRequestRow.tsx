@@ -10,7 +10,7 @@ const tagColorByStatus: Record<GithubPullRequestStatusEnum, string> = {
   [GithubPullRequestStatusEnum.OPEN]: "green",
   [GithubPullRequestStatusEnum.MERGED]: "purple",
   [GithubPullRequestStatusEnum.DRAFT]: "gray",
-  [GithubPullRequestStatusEnum.CLOSED]: "gray",
+  [GithubPullRequestStatusEnum.CLOSED]: "red",
 };
 
 const labelByStatus: Record<GithubPullRequestStatusEnum, string> = {

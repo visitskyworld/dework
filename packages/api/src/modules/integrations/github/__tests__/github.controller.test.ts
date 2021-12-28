@@ -9,6 +9,8 @@ import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { GithubPullRequestActions } from "../github.controller";
+import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -39,17 +41,18 @@ describe("GithubController", () => {
   describe("webhook", () => {
     const installationId = faker.datatype.string();
 
-    it("should create a branch in db", async () => {
+    it("should create a branch in the DB", async () => {
       const project = await createProjectWithGithubIntegration(installationId);
       const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatusEnum.IN_PROGRESS,
       });
+      const branchName = `username/dw-${task.number}/feature`;
 
       const response = await client.request({
         app,
         body: {
-          ref: `refs/heads/username/dw-${task.number}/feature`,
+          ref: branchName,
           pull_request: {
             title: "test",
             state: "open",
@@ -67,9 +70,11 @@ describe("GithubController", () => {
       });
 
       expect(response.status).toEqual(HttpStatus.CREATED);
+      const branchFromDb = await fixtures.getGithubBranchbyName(branchName);
+      expect(branchFromDb?.name).toEqual(branchName);
     });
 
-    xit("should update a task's status to done when a PR is merged", async () => {
+    it("should update a task's status to done when a PR is merged", async () => {
       const project = await createProjectWithGithubIntegration(installationId);
       const task = await fixtures.createTask({
         projectId: project.id,
@@ -86,11 +91,40 @@ describe("GithubController", () => {
         branchName: branch.name,
       });
 
-      const response = await client.request({
+      const prOpenedResponse = await client.request({
         app,
         body: {
           ref: branch.name,
-          action: "closed",
+          action: GithubPullRequestActions.OPENED,
+          pull_request: {
+            title: pullRequest.title,
+            state: "open",
+            html_url: faker.internet.url(),
+            number: faker.datatype.number(),
+            draft: false,
+            merged: false,
+          },
+          installation: {
+            id: installationId,
+          },
+          repository: {
+            full_name: branch.repository,
+          },
+        } as any,
+      });
+
+      const prFromDb = await fixtures.getGithubPullRequestByTaskId(task.id);
+      const taskFromDb = await fixtures.getTask(task.id);
+      expect(prOpenedResponse.status).toEqual(HttpStatus.CREATED);
+      expect(prFromDb?.taskId).toEqual(task.id);
+      expect(prFromDb?.status).toEqual(GithubPullRequestStatusEnum.OPEN);
+      expect(taskFromDb?.status).toEqual(TaskStatusEnum.IN_REVIEW);
+
+      const prClosedResponse = await client.request({
+        app,
+        body: {
+          ref: branch.name,
+          action: GithubPullRequestActions.CLOSED,
           pull_request: {
             title: pullRequest.title,
             state: "open",
@@ -108,10 +142,16 @@ describe("GithubController", () => {
         } as any,
       });
 
-      const updatedTask = await fixtures.getTask(task.id);
-
-      expect(response.status).toEqual(HttpStatus.CREATED);
-      expect(updatedTask?.status).toEqual(TaskStatusEnum.DONE);
+      const mergedPrFromDb = await fixtures.getGithubPullRequestByTaskId(
+        task.id
+      );
+      const doneTaskFromDb = await fixtures.getTask(task.id);
+      expect(prClosedResponse.status).toEqual(HttpStatus.CREATED);
+      expect(mergedPrFromDb?.taskId).toEqual(task.id);
+      expect(mergedPrFromDb?.status).toEqual(
+        GithubPullRequestStatusEnum.MERGED
+      );
+      expect(doneTaskFromDb?.status).toEqual(TaskStatusEnum.DONE);
     });
   });
 });

@@ -16,7 +16,7 @@ import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
 
 // The three actions Github's API uses
-enum GithubPullRequestActions {
+export enum GithubPullRequestActions {
   OPENED = "opened",
   REOPENED = "reopened",
   CLOSED = "closed",
@@ -90,7 +90,10 @@ export class GithubController {
     // Then handle branch and pull request updates separately
     const branch = await this.githubService.findBranchByName(branchName);
     if (branch) {
-      this.log("Found branch in db", { id: branch.id, name: branchName });
+      this.log("Found existing branch", {
+        name: branchName,
+        repository: branch.repository,
+      });
 
       // Check if it's a deletion push
       if (body.deleted) {
@@ -108,14 +111,14 @@ export class GithubController {
       await this.triggerTaskUpdatedSubscription(task.id);
     } else {
       const repository = body.repository.full_name;
-      this.log("Creating new branch in db", { name: branchName, repository });
-
       await this.githubService.createBranch({
         name: branchName,
         repository,
         link: `https://github.com/${repository}/compare/${branchName}`,
         taskId: task.id,
       });
+      this.log("Created a new branch", { name: branchName, repository });
+
       await this.triggerTaskUpdatedSubscription(task.id);
     }
 
@@ -153,15 +156,21 @@ export class GithubController {
               status: TaskStatusEnum.DONE,
             });
           }
-          this.log("Updated PR status", { title: pr.title, status: newStatus });
+          this.log("Updated PR's status", {
+            title: pr.title,
+            status: newStatus,
+          });
           break;
         default:
           if (pr) {
             await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
-            this.log("Updated PR in db", { title: pr.title });
+            this.log("Updated PR", { title: pr.title, taskId: task.id });
           } else {
             await this.githubService.createPullRequest(newPr);
-            this.log("Created new PR in db", { title: newPr.title });
+            this.log("Created a new PR", {
+              title: newPr.title,
+              taskId: task.id,
+            });
           }
           if (!draft) {
             await this.taskService.update({

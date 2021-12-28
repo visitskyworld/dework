@@ -169,6 +169,12 @@ export class Fixtures {
     });
   }
 
+  public async getGithubBranchbyName(
+    branchName: string
+  ): Promise<GithubBranch | undefined> {
+    return this.githubService.findBranchByName(branchName);
+  }
+
   public async createGithubPullRequest(
     partial: Partial<GithubPullRequest>
   ): Promise<GithubPullRequest> {
@@ -183,6 +189,12 @@ export class Fixtures {
       taskId: await task.then((t) => t.id),
       ...partial,
     });
+  }
+
+  public async getGithubPullRequestByTaskId(
+    taskId: string
+  ): Promise<GithubPullRequest | undefined> {
+    return this.githubService.findPullRequestByTaskId(taskId);
   }
 
   public async createInvite(
