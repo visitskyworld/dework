@@ -144,13 +144,13 @@ export class GithubController {
             status: newStatus,
           });
           if (isMerged) {
-            this.taskService.update({
+            await this.taskService.update({
               id: task.id,
               status: TaskStatusEnum.DONE,
             });
-            this.log("Updated task status to DONE", {
-              taskId: task.id,
+            this.log("Updated task status", {
               taskNumber: task.number,
+              status: TaskStatusEnum.DONE,
             });
           }
           this.log("Updated PR status", { title: pr.title, status: newStatus });
@@ -161,13 +161,17 @@ export class GithubController {
             this.log("Updated PR in db", { title: pr.title });
           } else {
             await this.githubService.createPullRequest(newPr);
-            if (task.status === TaskStatusEnum.IN_PROGRESS && !draft) {
-              await this.taskService.update({
-                id: task.id,
-                status: TaskStatusEnum.IN_REVIEW,
-              });
-            }
             this.log("Created new PR in db", { title: newPr.title });
+          }
+          if (!draft) {
+            await this.taskService.update({
+              id: task.id,
+              status: TaskStatusEnum.IN_REVIEW,
+            });
+            this.log("Updated task status", {
+              taskNumber: task.number,
+              status: TaskStatusEnum.IN_REVIEW,
+            });
           }
           await this.triggerTaskUpdatedSubscription(task.id);
       }
