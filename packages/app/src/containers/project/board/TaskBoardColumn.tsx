@@ -1,6 +1,6 @@
 import React, { FC, Fragment, useMemo } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Button, Card, Badge, Space, Typography, Row } from "antd";
+import { Button, Card, Badge, Space, Typography, Row, Empty } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
@@ -10,6 +10,9 @@ import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
+import WalletsIcon from "@dewo/app/assets/wallets.svg";
+
+console.log({ WalletsIcon });
 
 interface Props {
   status: TaskStatusEnum;
@@ -36,6 +39,11 @@ export const TaskBoardColumn: FC<Props> = ({
   const initialValues = useMemo<Partial<TaskFormValues>>(
     () => ({ status }),
     [status]
+  );
+
+  const empty = useMemo(
+    () => taskSections.every((s) => !s.tasks.length),
+    [taskSections]
   );
 
   return (
@@ -144,6 +152,15 @@ export const TaskBoardColumn: FC<Props> = ({
                     </Draggable>
                   ))}
                   {provided.placeholder}
+                  {empty && (
+                    <Empty
+                      // image={<Icons.DollarOutlined style={{ fontSize: 56 }} />}
+                      image={WalletsIcon.src}
+                      imageStyle={{ height: 32, opacity: 0.7 }}
+                      style={{ padding: 8 }}
+                      description="Pay for done tasks in crypto"
+                    />
+                  )}
                 </div>
               )}
             </Droppable>
