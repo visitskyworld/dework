@@ -112,7 +112,7 @@ export class PaymentService {
   }
 
   public async createPaymentNetwork(
-    partial: AtLeast<PaymentNetwork, "name" | "url">
+    partial: AtLeast<PaymentNetwork, "name" | "type" | "config">
   ): Promise<PaymentNetwork> {
     const created = await this.paymentNetworkRepo.save({
       sortKey: Date.now().toString(),

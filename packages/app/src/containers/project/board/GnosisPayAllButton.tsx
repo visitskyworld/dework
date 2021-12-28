@@ -97,7 +97,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         .filter((task): task is TaskToPay => !!task);
 
       const network = gnosisPaymentMethod!.networks[0];
-      await switchChain(network.slug);
+      await switchChain(network);
 
       const transactions = await Promise.all(
         tasksToPay.map(async (task): Promise<MetaTransactionData> => {

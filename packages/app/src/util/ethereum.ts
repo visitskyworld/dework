@@ -6,14 +6,6 @@ import {
   PaymentTokenType,
 } from "../graphql/types";
 
-const ethereumChainIdBySlug: Record<string, number> = {
-  "ethereum-mainnet": 1,
-  "ethereum-rinkeby": 4,
-  "sokol-testnet": 77,
-  "gnosis-chain": 100,
-  "polygon-mainnet": 137,
-};
-
 export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
   const loadProvider = useCallback(() => {
     if (
@@ -42,11 +34,11 @@ export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
   return provider;
 }
 
-export function useSwitchChain(): (slug: string) => Promise<void> {
+export function useSwitchChain(): (network: PaymentNetwork) => Promise<void> {
   const provider = useProvider();
   return useCallback(
-    async (slug) => {
-      const chainId = ethereumChainIdBySlug[slug];
+    async (network) => {
+      const chainId = network.config.chainId as number;
       const currentNetwork = await provider.current.getNetwork();
       if (currentNetwork.chainId === chainId) {
         return;
@@ -125,7 +117,7 @@ export function useCreateEthereumTransaction(): (
 ) => Promise<string> {
   const requestAddress = useRequestAddress();
   const requestSigner = useRequestSigner();
-  const switchNetwork = useSwitchChain();
+  const switchChain = useSwitchChain();
   const loadERC20Contract = useERC20Contract();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
@@ -134,11 +126,11 @@ export function useCreateEthereumTransaction(): (
         throw new Error(`Change Metamask Wallet address to "${fromAddress}"`);
       }
 
-      await switchNetwork(network.slug);
+      await switchChain(network);
       const signer = await requestSigner();
 
       switch (token.type) {
-        case PaymentTokenType.ETHER: {
+        case PaymentTokenType.NATIVE: {
           const tx = await signer.sendTransaction({
             to: toAddress,
             from: fromAddress,
@@ -156,6 +148,6 @@ export function useCreateEthereumTransaction(): (
           );
       }
     },
-    [requestAddress, requestSigner, switchNetwork, loadERC20Contract]
+    [requestAddress, requestSigner, switchChain, loadERC20Contract]
   );
 }

@@ -31,6 +31,8 @@ export const networkSlugsByPaymentMethodType: Record<
     "gnosis-chain",
     "polygon-mainnet",
     "sokol-testnet",
+    "avalance-mainnet",
+    "fantom-mainnet",
   ],
   [PaymentMethodType.GNOSIS_SAFE]: [
     "ethereum-mainnet",
@@ -89,8 +91,7 @@ export const PaymentMethodForm: FC<Props> = ({
       }
 
       switch (token.type) {
-        case PaymentTokenType.ETHER:
-        case PaymentTokenType.SOL:
+        case PaymentTokenType.NATIVE:
           setTokenInWallet((prev) => ({ ...prev, [token.id]: true }));
           break;
         case PaymentTokenType.ERC20:

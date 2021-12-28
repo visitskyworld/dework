@@ -19,7 +19,7 @@ export const ConnectGnosisSafe: FC<Props> = ({ network, onChange }) => {
     try {
       setLoading(true);
 
-      await switchChain(network.slug);
+      await switchChain(network);
       const signer = await requestSigner();
       const isOwner = await isSafeOwner(address, signer);
       if (!isOwner) {

@@ -42,7 +42,7 @@ export function useCreateSolanaTransaction(): (
 
       const fromPubkey = new solana.PublicKey(fromAddress);
       const toPubkey = new solana.PublicKey(toAddress);
-      const connection = new solana.Connection(network.url);
+      const connection = new solana.Connection(network.config.rpcUrl);
       const recentBlock = await connection.getRecentBlockhash();
       const transaction = new solana.Transaction({
         recentBlockhash: recentBlock.blockhash,
@@ -50,7 +50,7 @@ export function useCreateSolanaTransaction(): (
       });
 
       switch (token.type) {
-        case PaymentTokenType.SOL: {
+        case PaymentTokenType.NATIVE: {
           transaction.add(
             solana.SystemProgram.transfer({
               fromPubkey,

@@ -35,7 +35,7 @@ import { OrganizationMember } from "../models/OrganizationMember";
 import { DeepAtLeast } from "../types/general";
 import { ProjectIntegration } from "../models/ProjectIntegration";
 import { TaskRewardTrigger } from "../models/TaskReward";
-import { PaymentNetwork } from "../models/PaymentNetwork";
+import { PaymentNetwork, PaymentNetworkType } from "../models/PaymentNetwork";
 import { PaymentToken, PaymentTokenType } from "../models/PaymentToken";
 import { Payment, PaymentData } from "../models/Payment";
 
@@ -185,8 +185,13 @@ export class Fixtures {
   public createPaymentNetwork(partial: Partial<PaymentNetwork> = {}) {
     return this.paymentService.createPaymentNetwork({
       name: faker.name.firstName(),
-      url: faker.internet.url(),
       slug: faker.internet.userName(),
+      type: PaymentNetworkType.ETHEREUM,
+      config: {
+        chainId: -1,
+        rpcUrl: faker.internet.url(),
+        explorerUrl: faker.internet.url(),
+      },
       ...partial,
     });
   }
@@ -194,7 +199,7 @@ export class Fixtures {
   public async createPaymentToken(partial: Partial<PaymentToken> = {}) {
     return this.paymentService.createPaymentToken({
       networkId: await this.createPaymentNetwork().then((n) => n.id),
-      type: PaymentTokenType.ETHER,
+      type: PaymentTokenType.NATIVE,
       name: "ETH",
       ...partial,
     });

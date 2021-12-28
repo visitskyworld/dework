@@ -16,8 +16,6 @@ export interface ConfigType {
   DISCORD_OAUTH_CLIENT_SECRET: string;
   DISCORD_BOT_TOKEN: string;
 
-  INFURA_PROJECT_ID: string;
-
   GOOGLE_CLOUD_CREDENTIALS: string;
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
 }
@@ -38,8 +36,6 @@ export const configSchema = Joi.object<ConfigType>({
   DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
   DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
   DISCORD_BOT_TOKEN: Joi.string().required(),
-
-  INFURA_PROJECT_ID: Joi.string().required(),
 
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),

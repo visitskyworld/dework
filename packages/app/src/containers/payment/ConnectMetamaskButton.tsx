@@ -15,7 +15,7 @@ export const ConnectMetamaskButton: FC<Props> = ({ network, onChange }) => {
   const connect = useCallback(async () => {
     try {
       setLoading(true);
-      await switchChain(network.slug);
+      await switchChain(network);
       const address = await requestAddress();
       await onChange?.(address);
     } finally {

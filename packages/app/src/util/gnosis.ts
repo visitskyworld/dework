@@ -111,7 +111,7 @@ export function useProposeTransaction(): (
       }
       const safeService = new SafeServiceClient(safeServiceUrl);
 
-      await switchChain(network.slug);
+      await switchChain(network);
       const senderAddress = await requestAddress();
       const safe = await requestSafe(safeAddress);
       const safeTransaction = await safe.createTransaction(transactions);

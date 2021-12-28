@@ -17,7 +17,10 @@ import { ethers } from "ethers";
 import { ConfigService } from "@nestjs/config";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
 import { ConfigType } from "../app/config";
-import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
+import {
+  PaymentNetwork,
+  PaymentNetworkType,
+} from "@dewo/api/models/PaymentNetwork";
 import { Interval } from "@nestjs/schedule";
 
 interface ConfirmPaymentResponse {
@@ -29,8 +32,6 @@ interface ConfirmPaymentResponse {
 @Injectable()
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);
-  private ethereumProviders: Record<string, ethers.providers.InfuraProvider>;
-  private gnosisSafeServiceClients: Record<string, SafeServiceClient>;
 
   private checkInterval: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.seconds(5),
@@ -54,36 +55,7 @@ export class PaymentPoller {
     @InjectRepository(Payment)
     private readonly paymentRepo: Repository<Payment>,
     readonly config: ConfigService<ConfigType>
-  ) {
-    this.ethereumProviders = {
-      "ethereum-mainnet": new ethers.providers.InfuraProvider(
-        "mainnet",
-        config.get("INFURA_PROJECT_ID")
-      ),
-      "ethereum-rinkeby": new ethers.providers.InfuraProvider(
-        "rinkeby",
-        config.get("INFURA_PROJECT_ID")
-      ),
-      "gnosis-chain": new ethers.providers.InfuraProvider(
-        "rinkeby",
-        config.get("INFURA_PROJECT_ID")
-      ),
-    };
-    this.gnosisSafeServiceClients = {
-      "ethereum-mainnet": new SafeServiceClient(
-        "https://safe-transaction.gnosis.io"
-      ),
-      "ethereum-rinkeby": new SafeServiceClient(
-        "https://safe-transaction.rinkeby.gnosis.io"
-      ),
-      "gnosis-chain": new SafeServiceClient(
-        "https://safe-transaction.xdai.gnosis.io"
-      ),
-      "polygon-mainnet": new SafeServiceClient(
-        "https://safe-transaction.polygon.gnosis.io"
-      ),
-    };
-  }
+  ) {}
 
   @Interval(5000)
   async cron() {
@@ -172,7 +144,7 @@ export class PaymentPoller {
       case PaymentMethodType.PHANTOM:
         return this.isSolanaTxConfirmed(
           payment.data as PhantomPaymentData,
-          network
+          network as PaymentNetwork<PaymentNetworkType.SOLANA>
         );
       case PaymentMethodType.METAMASK:
       case PaymentMethodType.GNOSIS_SAFE:
@@ -182,12 +154,12 @@ export class PaymentPoller {
         if (data.txHash) {
           return this.isEthereumTxConfirmed(
             data as MetamaskPaymentData,
-            network
+            network as PaymentNetwork<PaymentNetworkType.ETHEREUM>
           );
         }
         return this.isGnosisSafeTxConfirmed(
           data as GnosisSafePaymentData,
-          network
+          network as PaymentNetwork<PaymentNetworkType.ETHEREUM>
         );
       default:
         return { confirmed: false };
@@ -215,11 +187,11 @@ export class PaymentPoller {
 
   public async isEthereumTxConfirmed(
     data: MetamaskPaymentData,
-    network: PaymentNetwork
+    network: PaymentNetwork<PaymentNetworkType.ETHEREUM>
   ): Promise<ConfirmPaymentResponse> {
-    const provider =
-      this.ethereumProviders[network.slug] ??
-      new ethers.providers.JsonRpcProvider(network.url);
+    const provider = new ethers.providers.JsonRpcProvider(
+      network.config.rpcUrl
+    );
     if (!provider) {
       this.logger.error(
         `No ethers provider for network ${network.slug} (${JSON.stringify({
@@ -249,9 +221,9 @@ export class PaymentPoller {
 
   public async isSolanaTxConfirmed(
     data: PhantomPaymentData,
-    network: PaymentNetwork
+    network: PaymentNetwork<PaymentNetworkType.SOLANA>
   ): Promise<ConfirmPaymentResponse> {
-    const connection = new solana.Connection(network.url);
+    const connection = new solana.Connection(network.config.rpcUrl);
     const status = await connection.getSignatureStatus(data.signature, {
       searchTransactionHistory: true,
     });
@@ -264,9 +236,15 @@ export class PaymentPoller {
 
   public async isGnosisSafeTxConfirmed(
     data: GnosisSafePaymentData,
-    network: PaymentNetwork
+    network: PaymentNetwork<PaymentNetworkType.ETHEREUM>
   ): Promise<ConfirmPaymentResponse> {
-    const safeService = this.gnosisSafeServiceClients[network.slug];
+    if (!network.config.gnosisSafe) {
+      return { confirmed: false };
+    }
+
+    const safeService = new SafeServiceClient(
+      network.config.gnosisSafe.serviceUrl
+    );
     if (!safeService) {
       this.logger.error(
         `No Gnosis Safe Service client for network ${
@@ -279,7 +257,9 @@ export class PaymentPoller {
       return { confirmed: false };
     }
 
-    const provider = this.ethereumProviders[network.slug];
+    const provider = new ethers.providers.JsonRpcProvider(
+      network.config.rpcUrl
+    );
     if (!provider) {
       this.logger.error(
         `No ethers provider for network ${network.slug} (${JSON.stringify({
@@ -291,7 +271,21 @@ export class PaymentPoller {
     }
 
     const safeTx = await safeService.getTransaction(data.safeTxHash);
-    if (!safeTx.transactionHash) return { confirmed: false };
+    if (!safeTx.transactionHash) {
+      this.logger.debug(
+        `Gnosis Safe Transaction has no transactionHash (${JSON.stringify(
+          data
+        )})`
+      );
+      return { confirmed: false };
+    }
+
+    this.logger.debug(
+      `Gnosis Safe Transaction has transactionHash (${JSON.stringify({
+        ...data,
+        txHash: safeTx.transactionHash,
+      })})`
+    );
     const confirmed = await this.isEthereumTxConfirmed(
       { txHash: safeTx.transactionHash },
       network

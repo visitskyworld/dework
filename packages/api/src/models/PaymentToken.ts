@@ -4,11 +4,10 @@ import { Audit } from "./Audit";
 import { PaymentNetwork } from "./PaymentNetwork";
 
 export enum PaymentTokenType {
-  ETHER = "ETHER",
+  NATIVE = "NATIVE",
   ERC20 = "ERC20",
   ERC721 = "ERC721",
   ERC1155 = "ERC1155",
-  SOL = "SOL",
   SPL_TOKEN = "SPL_TOKEN",
 }
 

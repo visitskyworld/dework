@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import * as URL from "url";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -41,44 +42,20 @@ export const canPaymentMethodSendTaskReward = (
   paymentMethod.tokens.some((t) => t.id === reward.token.id);
 
 export function explorerLink(payment: Payment): string | undefined {
-  switch (payment.network.slug) {
-    case "ethereum-mainnet":
-      if (!!payment.data?.txHash) {
-        return `https://etherscan.io/tx/${payment.data.txHash}`;
-      }
-      if (!!payment.data?.safeTxHash) {
-        return `https://gnosis-safe.io/app/${payment.paymentMethod.address}/transactions/queue`;
-      }
-      return undefined;
-    case "ethereum-rinkeby":
-      if (!!payment.data?.txHash) {
-        return `https://rinkeby.etherscan.io/tx/${payment.data.txHash}`;
-      }
-      if (!!payment.data?.safeTxHash) {
-        return `https://gnosis-safe.io/app/rin:${payment.paymentMethod.address}/transactions/queue`;
-      }
-      return undefined;
-    case "gnosis-chain":
-      if (!!payment.data?.txHash) {
-        return `https://blockscout.com/xdai/mainnet/tx/${payment.data.txHash}`;
-      }
-      return undefined;
-    case "polygon-mainnet":
-      if (!!payment.data?.txHash) {
-        return `https://polygonscan.com/tx/${payment.data.txHash}`;
-      }
-      return undefined;
-    case "sokol-testnet":
-      if (!!payment.data?.txHash) {
-        return `https://blockscout.com/poa/sokol/tx/${payment.data.txHash}`;
-      }
-      return undefined;
-    case "solana-mainnet":
-      if (!payment.data?.signature) return undefined;
-      return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;
-    case "solana-testnet":
-      if (!payment.data?.signature) return undefined;
-      return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=testnet`;
+  if (!!payment.data?.signature) {
+    return `https://explorer.solana.com/tx/${payment.data.signature}?cluster=${payment.network.config.cluster}`;
+  }
+
+  if (!!payment.data?.txHash) {
+    const url = URL.parse(payment.network.config.explorerUrl);
+    url.pathname += `/tx/${payment.data.txHash}`;
+    return url.href;
+  }
+
+  if (!!payment.data?.safeTxHash && !!payment.network.config.gnosisSafe) {
+    const addressPrefix = payment.network.config.gnosisSafe.addressPrefix;
+    const prefix = !!addressPrefix ? `${addressPrefix}:` : "";
+    return `https://gnosis-safe.io/app/${prefix}${payment.paymentMethod.address}/transactions/queue`;
   }
 
   return undefined;
