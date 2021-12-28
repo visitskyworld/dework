@@ -21,7 +21,7 @@ export const PaymentMethodSummary: FC<PaymentMethodSummaryProps> = ({
     <Alert
       message={
         <Typography.Text>
-          {paymentMethodTypeToString[type]} connected on {networkNames}
+          {paymentMethodTypeToString[type]} connected to {networkNames}
           <Typography.Text type="secondary">
             {" "}
             ({shortenedAddress(address)})
