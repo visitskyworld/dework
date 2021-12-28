@@ -76,6 +76,12 @@ export class PaymentPoller {
       "ethereum-rinkeby": new SafeServiceClient(
         "https://safe-transaction.rinkeby.gnosis.io"
       ),
+      "gnosis-chain": new SafeServiceClient(
+        "https://safe-transaction.xdai.gnosis.io"
+      ),
+      "polygon-mainnet": new SafeServiceClient(
+        "https://safe-transaction.polygon.gnosis.io"
+      ),
     };
   }
 
