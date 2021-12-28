@@ -40,6 +40,8 @@ export const InviteMessageToast: FC = () => {
   useEffect(() => {
     if (!invite) return;
 
+    const inviter = invite.inviter.username;
+    const org = invite.organization?.name ?? "Dework";
     message.destroy();
     message.open({
       content: (
@@ -47,9 +49,9 @@ export const InviteMessageToast: FC = () => {
           <Space>
             <UserAvatar user={invite.inviter} />
             <Typography.Text style={{ marginRight: 16 }}>
-              {invite.inviter.username} has invited you{" "}
-              {invite.role !== "MEMBER" ? "as an admin" : ""} to{" "}
-              {invite.organization?.name ?? "Dework"}
+              {invite.role === "ADMIN"
+                ? `${inviter} has invited you as an admin to ${org}`
+                : `${inviter} has invited you to ${org}`}
             </Typography.Text>
             <Button type="primary" onClick={handleAcceptInvite}>
               Accept invite
