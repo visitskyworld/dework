@@ -11,6 +11,7 @@ const ethereumChainIdBySlug: Record<string, number> = {
   "ethereum-rinkeby": 4,
   "sokol-testnet": 77,
   "gnosis-chain": 100,
+  "polygon-mainnet": 137,
 };
 
 export function useProvider(): ethers.providers.Web3Provider {

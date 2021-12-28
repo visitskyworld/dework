@@ -66,6 +66,7 @@ DECLARE
   ethereum_mainnet_id uuid = uuid_generate_v4();
   ethereum_rinkeby_id uuid = uuid_generate_v4();
   gnosis_chain_id uuid = uuid_generate_v4();
+  polygon_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
@@ -81,7 +82,8 @@ BEGIN
   VALUES
     (ethereum_mainnet_id, 'Ethereum Mainnet', 'ethereum-mainnet', '', '10'),
     (gnosis_chain_id, 'xDai (Gnosis Chain)', 'gnosis-chain', 'https://rpc.xdaichain.com', '11'),
-    (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '12'),
+    (polygon_id, 'Polygon Mainnet', 'polygon-mainnet', 'https://polygon-rpc.com', '12'),
+    (solana_mainnet_id, 'Solana', 'solana-mainnet', 'https://api.mainnet-beta.solana.com', '13'),
     (ethereum_rinkeby_id, 'Ethereum Rinkeby', 'ethereum-rinkeby', '', '20'),
     (sokol_testnet_id, 'Sokol Testnet', 'sokol-testnet', 'https://sokol.poa.network', '22'),
     (solana_testnet_id, 'Solana Testnet', 'solana-testnet', 'https://api.testnet.solana.com', '21');
@@ -91,6 +93,7 @@ BEGIN
     ('ETHER', 'ETH', 18, 'ALWAYS', NULL, ethereum_mainnet_id),
     ('ETHER', 'ETH', 18, 'ALWAYS', NULL, ethereum_rinkeby_id),
     ('ETHER', 'xDAI', 18, 'ALWAYS', NULL, gnosis_chain_id),
+    ('ETHER', 'MATIC', 18, 'ALWAYS', NULL, polygon_id),
     ('ETHER', 'SPOA', 18, 'ALWAYS', NULL, sokol_testnet_id),
     ('ERC20', 'USDC', 18, 'ALWAYS', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethereum_mainnet_id),
     ('ERC20', 'FAU', 18, 'ALWAYS', '0xfab46e002bbf0b4509813474841e0716e6730136', ethereum_rinkeby_id),

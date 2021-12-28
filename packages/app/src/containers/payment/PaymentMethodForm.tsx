@@ -29,6 +29,7 @@ export const networkSlugsByPaymentMethodType: Record<
     "ethereum-mainnet",
     "ethereum-rinkeby",
     "gnosis-chain",
+    "polygon-mainnet",
     "sokol-testnet",
   ],
   [PaymentMethodType.GNOSIS_SAFE]: ["ethereum-mainnet", "ethereum-rinkeby"],

@@ -63,6 +63,11 @@ export function explorerLink(payment: Payment): string | undefined {
         return `https://blockscout.com/xdai/mainnet/tx/${payment.data.txHash}`;
       }
       return undefined;
+    case "polygon-mainnet":
+      if (!!payment.data?.txHash) {
+        return `https://polygonscan.com/tx/${payment.data.txHash}`;
+      }
+      return undefined;
     case "sokol-testnet":
       if (!!payment.data?.txHash) {
         return `https://blockscout.com/poa/sokol/tx/${payment.data.txHash}`;
