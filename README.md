@@ -66,7 +66,7 @@ DECLARE
   ethereum_mainnet_id uuid = uuid_generate_v4();
   ethereum_rinkeby_id uuid = uuid_generate_v4();
   gnosis_chain_id uuid = uuid_generate_v4();
-  polygon_id uuid = uuid_generate_v4();
+  polygon_id uuid = uuid_generate_v4();gnos
   sokol_testnet_id uuid = uuid_generate_v4();
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
@@ -95,8 +95,8 @@ BEGIN
     ('ETHER', 'xDAI', 18, 'ALWAYS', NULL, gnosis_chain_id),
     ('ETHER', 'MATIC', 18, 'ALWAYS', NULL, polygon_id),
     ('ETHER', 'SPOA', 18, 'ALWAYS', NULL, sokol_testnet_id),
-    ('ERC20', 'USDC', 18, 'ALWAYS', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethereum_mainnet_id),
-    ('ERC20', 'FAU', 18, 'ALWAYS', '0xfab46e002bbf0b4509813474841e0716e6730136', ethereum_rinkeby_id),
+    ('ERC20', 'USDC', 18, 'ALWAYS', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', ethereum_mainnet_id),
+    ('ERC20', 'FAU', 18, 'ALWAYS', '0xFab46E002BbF0b4509813474841E0716E6730136', ethereum_rinkeby_id),
     ('ERC20', 'FAU', 18, 'ALWAYS', '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id),
 
     ('SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id),

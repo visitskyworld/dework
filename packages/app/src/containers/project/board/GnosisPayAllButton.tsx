@@ -11,6 +11,7 @@ import {
   GetTasksToPayQuery,
   GetTasksToPayQueryVariables,
   PaymentMethodType,
+  PaymentTokenType,
   TaskReward,
 } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -23,6 +24,8 @@ import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
 import { formatTaskReward } from "../../task/hooks";
 import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
+import { useERC20Contract, useSwitchChain } from "@dewo/app/util/ethereum";
+import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 
 interface Props {
   projectId: string;
@@ -82,6 +85,8 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const [loading, setLoading] = useState(false);
   const proposeTransaction = useProposeTransaction();
   const createTaskPayments = useCreateTaskPayments();
+  const switchChain = useSwitchChain();
+  const loadERC20Contract = useERC20Contract();
   const submit = useCallback(async () => {
     try {
       setLoading(true);
@@ -92,15 +97,43 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         .filter((task): task is TaskToPay => !!task);
 
       const network = gnosisPaymentMethod!.networks[0];
+      await switchChain(network.slug);
+
+      const transactions = await Promise.all(
+        tasksToPay.map(async (task): Promise<MetaTransactionData> => {
+          const reward = task.reward!;
+          const toAddress = userToPay(task).paymentMethods.find((pm) =>
+            canPaymentMethodReceiveTaskReward(pm, reward)
+          )!.address;
+
+          if (
+            reward.token.type === PaymentTokenType.ERC20 &&
+            !!reward.token.address
+          ) {
+            const contract = await loadERC20Contract(reward.token.address);
+            // https://ethereum.stackexchange.com/a/116793/89347
+            // https://github.com/ethers-io/ethers.js/issues/478#issuecomment-495814010
+            return {
+              to: reward.token.address,
+              value: "0",
+              data: contract.interface.encodeFunctionData("transfer", [
+                toAddress,
+                reward.amount,
+              ]),
+            };
+          }
+
+          return {
+            to: toAddress,
+            value: reward.amount,
+            data: `0x${reward.id.replace(/-/g, "")}`,
+          };
+        })
+      );
+
       const safeTxHash = await proposeTransaction(
         gnosisPaymentMethod!.address,
-        tasksToPay.map((task) => ({
-          to: userToPay(task).paymentMethods.find((pm) =>
-            canPaymentMethodReceiveTaskReward(pm, task.reward!)
-          )!.address,
-          value: task.reward!.amount,
-          data: `0x${task.reward!.id.replace(/-/g, "")}`,
-        })),
+        transactions,
         network
       );
 
@@ -117,6 +150,8 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   }, [
     proposeTransaction,
     createTaskPayments,
+    switchChain,
+    loadERC20Contract,
     gnosisPaymentMethod,
     selectedTaskIds,
     tasks,
