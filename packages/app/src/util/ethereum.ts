@@ -45,6 +45,11 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
   return useCallback(
     async (slug) => {
       const chainId = ethereumChainIdBySlug[slug];
+      const currentNetwork = await provider.getNetwork();
+      if (currentNetwork.chainId === chainId) {
+        return;
+      }
+
       const networkChangedPromise = new Promise<void>((resolve) => {
         // @ts-ignore
         window.ethereum.on("chainChanged", (chainIdHex) => {
