@@ -245,7 +245,7 @@ export const PaymentMethodForm: FC<Props> = ({
           </Col>
         )}
 
-        {!!values.address && selectTokens && (
+        {!!values.address && !!selectedNetwork && selectTokens && (
           <Col span={24}>
             <Form.Item
               name="tokenIds"
