@@ -131,6 +131,6 @@ export class PaymentService {
   }
 
   public async getPaymentNetworks(): Promise<PaymentNetwork[]> {
-    return this.paymentNetworkRepo.find();
+    return this.paymentNetworkRepo.find({ order: { sortKey: "ASC" } });
   }
 }
