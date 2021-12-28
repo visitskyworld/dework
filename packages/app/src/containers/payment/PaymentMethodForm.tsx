@@ -90,7 +90,8 @@ export const PaymentMethodForm: FC<Props> = ({
               ...prev,
               [token.id]: balance.gt(0),
             }));
-          } catch {
+          } catch (error) {
+            console.error(error);
             setTokenInWallet((prev) => ({ ...prev, [token.id]: false }));
           }
           break;

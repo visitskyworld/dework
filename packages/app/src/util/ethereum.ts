@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import {
   PaymentNetwork,
@@ -14,6 +14,17 @@ const ethereumChainIdBySlug: Record<string, number> = {
 };
 
 export function useProvider(): ethers.providers.Web3Provider {
+  const [chainId, setChainId] = useState<number>(
+    // @ts-ignore
+    Number(window.ethereum.networkVersion)
+  );
+  useEffect(() => {
+    // @ts-ignore
+    window.ethereum.on("chainChanged", (chainIdHex) =>
+      setChainId(BigNumber.from(chainIdHex).toNumber())
+    );
+  }, []);
+
   return useMemo(
     () =>
       typeof window !== "undefined" &&
@@ -21,10 +32,11 @@ export function useProvider(): ethers.providers.Web3Provider {
       !!window.ethereum
         ? new ethers.providers.Web3Provider(
             // @ts-ignore
-            window.ethereum
+            window.ethereum,
+            chainId
           )
         : (undefined! as ethers.providers.Web3Provider),
-    []
+    [chainId]
   );
 }
 
@@ -33,9 +45,20 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
   return useCallback(
     async (slug) => {
       const chainId = ethereumChainIdBySlug[slug];
+      const networkChangedPromise = new Promise<void>((resolve) => {
+        // @ts-ignore
+        window.ethereum.on("chainChanged", (chainIdHex) => {
+          if (BigNumber.from(chainIdHex).toNumber() === chainId) {
+            resolve();
+          }
+        });
+      });
+
       await provider.send("wallet_switchEthereumChain", [
         { chainId: `0x${chainId.toString(16)}` },
       ]);
+
+      await networkChangedPromise;
     },
     [provider]
   );
@@ -104,8 +127,8 @@ export function useCreateEthereumTransaction(): (
         throw new Error(`Change Metamask Wallet address to "${fromAddress}"`);
       }
 
-      const signer = await requestSigner();
       await switchNetwork(network.slug);
+      const signer = await requestSigner();
 
       switch (token.type) {
         case PaymentTokenType.ETHER: {
