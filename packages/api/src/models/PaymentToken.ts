@@ -12,7 +12,13 @@ export enum PaymentTokenType {
   SPL_TOKEN = "SPL_TOKEN",
 }
 
+export enum PaymentTokenVisibility {
+  ALWAYS = "ALWAYS",
+  IF_HAS_BALANCE = "IF_HAS_BALANCE",
+}
+
 registerEnumType(PaymentTokenType, { name: "PaymentTokenType" });
+registerEnumType(PaymentTokenVisibility, { name: "PaymentTokenVisibility" });
 
 @Entity()
 @ObjectType()
@@ -28,6 +34,13 @@ export class PaymentToken extends Audit {
   @Column()
   @Field()
   public exp!: number;
+
+  @Column("enum", {
+    enum: PaymentTokenVisibility,
+    default: PaymentTokenVisibility.IF_HAS_BALANCE,
+  })
+  @Field(() => PaymentTokenVisibility)
+  public visibility!: PaymentTokenVisibility;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

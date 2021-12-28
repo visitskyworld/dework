@@ -4,6 +4,7 @@ import {
   PaymentMethod,
   PaymentMethodType,
   PaymentTokenType,
+  PaymentTokenVisibility,
 } from "@dewo/app/graphql/types";
 import { Button, Col, Form, message, Row, Select } from "antd";
 import { useCreatePaymentMethod, usePaymentNetworks } from "./hooks";
@@ -76,6 +77,11 @@ export const PaymentMethodForm: FC<Props> = ({
   const loadTokensInWallet = useCallback(async () => {
     setTokenInWallet({});
     selectedNetwork?.tokens.forEach(async (token) => {
+      if (token.visibility === PaymentTokenVisibility.ALWAYS) {
+        setTokenInWallet((prev) => ({ ...prev, [token.id]: true }));
+        return;
+      }
+
       switch (token.type) {
         case PaymentTokenType.ETHER:
         case PaymentTokenType.SOL:

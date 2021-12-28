@@ -211,13 +211,11 @@ export const paymentNetworks = gql`
     networks: getPaymentNetworks {
       ...PaymentNetwork
       tokens {
-        id
-        name
-        type
-        address
+        ...PaymentToken
       }
     }
   }
 
   ${Fragments.paymentNetwork}
+  ${Fragments.paymentToken}
 `;

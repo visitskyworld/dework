@@ -86,19 +86,19 @@ BEGIN
     (sokol_testnet_id, 'Sokol Testnet', 'sokol-testnet', 'https://sokol.poa.network', '22'),
     (solana_testnet_id, 'Solana Testnet', 'solana-testnet', 'https://api.testnet.solana.com', '21');
 
-  INSERT INTO "payment_token" ("type", "name", "exp", "address", "networkId")
+  INSERT INTO "payment_token" ("type", "name", "exp", "visibility", "address", "networkId")
   VALUES
-    ('ETHER', 'ETH', 18, NULL, ethereum_mainnet_id),
-    ('ETHER', 'ETH', 18, NULL, ethereum_rinkeby_id),
-    ('ETHER', 'xDAI', 18, NULL, gnosis_chain_id),
-    ('ETHER', 'SPOA', 18, NULL, sokol_testnet_id),
-    ('ERC20', 'USDC', 18, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethereum_mainnet_id),
-    ('ERC20', 'FAU', 18, '0xfab46e002bbf0b4509813474841e0716e6730136', ethereum_rinkeby_id),
-    ('ERC20', 'FAU', 18, '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id),
+    ('ETHER', 'ETH', 18, 'ALWAYS', NULL, ethereum_mainnet_id),
+    ('ETHER', 'ETH', 18, 'ALWAYS', NULL, ethereum_rinkeby_id),
+    ('ETHER', 'xDAI', 18, 'ALWAYS', NULL, gnosis_chain_id),
+    ('ETHER', 'SPOA', 18, 'ALWAYS', NULL, sokol_testnet_id),
+    ('ERC20', 'USDC', 18, 'ALWAYS', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', ethereum_mainnet_id),
+    ('ERC20', 'FAU', 18, 'ALWAYS', '0xfab46e002bbf0b4509813474841e0716e6730136', ethereum_rinkeby_id),
+    ('ERC20', 'FAU', 18, 'ALWAYS', '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id),
 
-    ('SOL', 'SOL', 9, NULL, solana_mainnet_id),
-    ('SOL', 'SOL', 9, NULL, solana_testnet_id),
-    ('SPL_TOKEN', 'USDC', 6, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
-    ('SPL_TOKEN', 'USDC', 6, 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
+    ('SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id),
+    ('SOL', 'SOL', 9, 'ALWAYS', NULL, solana_testnet_id),
+    ('SPL_TOKEN', 'USDC', 6, 'ALWAYS', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
+    ('SPL_TOKEN', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
 END $$;
 ```

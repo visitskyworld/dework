@@ -34,6 +34,7 @@ export const paymentToken = gql`
     name
     address
     networkId
+    visibility
   }
 `;
 
