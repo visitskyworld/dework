@@ -12,7 +12,7 @@ export class UserRequests {
       threepids {
         id
       }
-      paymentMethod {
+      paymentMethods {
         id
       }
       details {

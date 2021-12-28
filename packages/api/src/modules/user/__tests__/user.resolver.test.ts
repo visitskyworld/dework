@@ -237,8 +237,6 @@ describe("UserResolver", () => {
 
       it("should succeed if is authed", async () => {
         const user = await fixtures.createUser();
-        const paymentMethod = await fixtures.createPaymentMethod();
-
         const expectedUsername = faker.company.companyName();
 
         const response = await client.request({
@@ -246,14 +244,12 @@ describe("UserResolver", () => {
           auth: fixtures.createAuthToken(user),
           body: UserRequests.update({
             username: expectedUsername,
-            paymentMethodId: paymentMethod.id,
           }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetched = response.body.data?.user;
         expect(fetched.username).toEqual(expectedUsername);
-        expect(fetched.paymentMethod.id).toEqual(paymentMethod.id);
       });
     });
 
