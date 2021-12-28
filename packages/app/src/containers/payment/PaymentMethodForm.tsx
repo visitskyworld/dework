@@ -32,7 +32,12 @@ export const networkSlugsByPaymentMethodType: Record<
     "polygon-mainnet",
     "sokol-testnet",
   ],
-  [PaymentMethodType.GNOSIS_SAFE]: ["ethereum-mainnet", "ethereum-rinkeby"],
+  [PaymentMethodType.GNOSIS_SAFE]: [
+    "ethereum-mainnet",
+    "ethereum-rinkeby",
+    "gnosis-chain",
+    "polygon-mainnet",
+  ],
   [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
 };
 
@@ -222,7 +227,7 @@ export const PaymentMethodForm: FC<Props> = ({
                 case PaymentMethodType.PHANTOM:
                   return <ConnectPhantomButton />;
                 case PaymentMethodType.GNOSIS_SAFE:
-                  return <ConnectGnosisSafe />;
+                  return <ConnectGnosisSafe network={selectedNetwork!} />;
                 case PaymentMethodType.METAMASK:
                   return <ConnectMetamaskButton network={selectedNetwork!} />;
               }

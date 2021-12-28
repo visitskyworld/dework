@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { BigNumber, ethers } from "ethers";
 import {
   PaymentNetwork,
@@ -14,31 +14,32 @@ const ethereumChainIdBySlug: Record<string, number> = {
   "polygon-mainnet": 137,
 };
 
-export function useProvider(): ethers.providers.Web3Provider {
-  const [chainId, setChainId] = useState<number>(
-    // @ts-ignore
-    Number(window.ethereum.networkVersion)
-  );
-  useEffect(() => {
-    // @ts-ignore
-    window.ethereum.on("chainChanged", (chainIdHex) =>
-      setChainId(BigNumber.from(chainIdHex).toNumber())
-    );
-  }, []);
-
-  return useMemo(
-    () =>
+export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
+  const loadProvider = useCallback(() => {
+    if (
       typeof window !== "undefined" &&
       // @ts-ignore
       !!window.ethereum
-        ? new ethers.providers.Web3Provider(
-            // @ts-ignore
-            window.ethereum,
-            chainId
-          )
-        : (undefined! as ethers.providers.Web3Provider),
-    [chainId]
-  );
+    ) {
+      return new ethers.providers.Web3Provider(
+        // @ts-ignore
+        window.ethereum
+      );
+    }
+
+    return undefined! as ethers.providers.Web3Provider;
+  }, []);
+  const provider = useRef(loadProvider());
+
+  useEffect(() => {
+    // @ts-ignore
+    window.ethereum.on(
+      "chainChanged",
+      () => (provider.current = loadProvider())
+    );
+  }, [loadProvider]);
+
+  return provider;
 }
 
 export function useSwitchChain(): (slug: string) => Promise<void> {
@@ -46,7 +47,7 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
   return useCallback(
     async (slug) => {
       const chainId = ethereumChainIdBySlug[slug];
-      const currentNetwork = await provider.getNetwork();
+      const currentNetwork = await provider.current.getNetwork();
       if (currentNetwork.chainId === chainId) {
         return;
       }
@@ -60,7 +61,7 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
         });
       });
 
-      await provider.send("wallet_switchEthereumChain", [
+      await provider.current.send("wallet_switchEthereumChain", [
         { chainId: `0x${chainId.toString(16)}` },
       ]);
 
@@ -73,8 +74,8 @@ export function useSwitchChain(): (slug: string) => Promise<void> {
 export function useRequestSigner(): () => Promise<ethers.Signer> {
   const provider = useProvider();
   return useCallback(async () => {
-    await provider.send("eth_requestAccounts", []);
-    return provider.getSigner();
+    await provider.current.send("eth_requestAccounts", []);
+    return provider.current.getSigner();
   }, [provider]);
 }
 

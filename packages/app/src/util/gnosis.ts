@@ -1,13 +1,21 @@
 import { useCallback } from "react";
 import { ethers } from "ethers";
 import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
-import { useRequestAddress, useRequestSigner } from "./ethereum";
+import {
+  useRequestAddress,
+  useRequestSigner,
+  useSwitchChain,
+} from "./ethereum";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
+import { PaymentNetwork } from "../graphql/types";
 
-const safeService = new SafeServiceClient(
-  "https://safe-transaction.rinkeby.gnosis.io"
-);
+const safeServiceUrlByNetworkSlug: Record<string, string> = {
+  "ethereum-mainnet": "https://safe-transaction.gnosis.io",
+  "ethereum-rinkeby": "https://safe-transaction.rinkeby.gnosis.io",
+  "gnosis-chain": "https://safe-transaction.xdai.gnosis.io",
+  "polygon-mainnet": "https://safe-transaction.polygon.gnosis.io",
+};
 
 export function useRequestSafe(): (safeAddress: string) => Promise<Safe> {
   const requestSigner = useRequestSigner();
@@ -35,6 +43,7 @@ export function useIsGnosisSafeOwner(): (
   );
 }
 
+/*
 interface SignPayoutResponse {
   txHash?: string;
   safeTxHash: string;
@@ -66,6 +75,11 @@ export function useSignPayout(): (
         const response = await safe.executeTransaction(safeTransaction);
         return { txHash: response.hash, safeTxHash };
       } else {
+        const safeServiceUrl = safeServiceUrlByNetworkSlug[network.slug]
+        const safeService = new SafeServiceClient(
+          safeServiceUrl
+        );
+
         await safe.signTransaction(safeTransaction);
         await safeService.proposeTransaction({
           safeAddress,
@@ -79,15 +93,25 @@ export function useSignPayout(): (
     [requestSafe, requestAddress]
   );
 }
+*/
 
 export function useProposeTransaction(): (
   safeAddress: string,
-  transactions: MetaTransactionData[]
+  transactions: MetaTransactionData[],
+  network: PaymentNetwork
 ) => Promise<string> {
   const requestAddress = useRequestAddress();
   const requestSafe = useRequestSafe();
+  const switchChain = useSwitchChain();
   return useCallback(
-    async (safeAddress, transactions) => {
+    async (safeAddress, transactions, network) => {
+      const safeServiceUrl = safeServiceUrlByNetworkSlug[network.slug];
+      if (!safeServiceUrl) {
+        throw new Error(`No safe service for ${network.slug}`);
+      }
+      const safeService = new SafeServiceClient(safeServiceUrl);
+
+      await switchChain(network.slug);
       const senderAddress = await requestAddress();
       const safe = await requestSafe(safeAddress);
       const safeTransaction = await safe.createTransaction(transactions);
@@ -103,6 +127,6 @@ export function useProposeTransaction(): (
 
       return safeTxHash;
     },
-    [requestAddress, requestSafe]
+    [requestAddress, requestSafe, switchChain]
   );
 }

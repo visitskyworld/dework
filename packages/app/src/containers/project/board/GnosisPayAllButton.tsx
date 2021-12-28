@@ -91,6 +91,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         .map((taskId) => taskById[taskId])
         .filter((task): task is TaskToPay => !!task);
 
+      const network = gnosisPaymentMethod!.networks[0];
       const safeTxHash = await proposeTransaction(
         gnosisPaymentMethod!.address,
         tasksToPay.map((task) => ({
@@ -99,12 +100,13 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
           )!.address,
           value: task.reward!.amount,
           data: `0x${task.reward!.id.replace(/-/g, "")}`,
-        }))
+        })),
+        network
       );
 
       await createTaskPayments({
         taskRewardIds: tasksToPay.map((t) => t.reward!.id),
-        networkId: gnosisPaymentMethod!.networks[0].id,
+        networkId: network.id,
         paymentMethodId: gnosisPaymentMethod!.id,
         data: { safeTxHash },
       });
