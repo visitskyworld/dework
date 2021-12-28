@@ -47,7 +47,8 @@ export const InviteMessageToast: FC = () => {
           <Space>
             <UserAvatar user={invite.inviter} />
             <Typography.Text style={{ marginRight: 16 }}>
-              {invite.inviter.username} has invited you to{" "}
+              {invite.inviter.username} has invited you{" "}
+              {invite.role !== "MEMBER" ? "as an admin" : ""} to{" "}
               {invite.organization?.name ?? "Dework"}
             </Typography.Text>
             <Button type="primary" onClick={handleAcceptInvite}>

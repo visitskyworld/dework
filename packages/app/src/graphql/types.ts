@@ -3253,6 +3253,7 @@ export interface GetInviteQuery_invite_organization {
 export interface GetInviteQuery_invite {
   __typename: "Invite";
   id: Scalar.UUID;
+  role: OrganizationRole | null;
   inviter: GetInviteQuery_invite_inviter;
   organization: GetInviteQuery_invite_organization;
 }
@@ -4827,6 +4828,7 @@ export interface Invite_organization {
 export interface Invite {
   __typename: "Invite";
   id: Scalar.UUID;
+  role: OrganizationRole | null;
   inviter: Invite_inviter;
   organization: Invite_organization;
 }
