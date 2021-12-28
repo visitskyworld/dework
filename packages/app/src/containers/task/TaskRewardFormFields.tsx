@@ -10,12 +10,20 @@ import {
   PaymentToken,
   TaskRewardTrigger,
 } from "@dewo/app/graphql/types";
-import { ConfigProvider, Empty, InputNumber, Select, Space } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Empty,
+  InputNumber,
+  Select,
+  Space,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../project/hooks";
 import _ from "lodash";
 import { stopPropagation } from "@dewo/app/util/eatClick";
-import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
+import { AddPaymentMethodModal } from "../payment/AddPaymentMethodButton";
+import { useToggle } from "@dewo/app/util/hooks";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -146,6 +154,7 @@ export const TaskRewardFormFields: FC<Props> = ({
     requestAnimationFrame(onClear);
   }, [onChange, onClear]);
 
+  const addPaymentMethod = useToggle();
   const paymentMethodInputOverride = useMemo(
     () => ({ projectId }),
     [projectId]
@@ -161,12 +170,11 @@ export const TaskRewardFormFields: FC<Props> = ({
               imageStyle={{ display: "none" }}
               description="To add a task reward, you need to connect a wallet to the project"
             >
-              <AddPaymentMethodButton
+              <Button
                 type="primary"
                 size="small"
-                selectTokens
-                inputOverride={paymentMethodInputOverride}
                 children="Connect now"
+                onClick={addPaymentMethod.toggleOn}
               />
             </Empty>
           )}
@@ -180,15 +188,14 @@ export const TaskRewardFormFields: FC<Props> = ({
               <>
                 {menu}
                 {!!networks.length && (
-                  <AddPaymentMethodButton
+                  <Button
                     block
                     type="text"
                     style={{ textAlign: "left", marginTop: 4 }}
                     className="text-secondary"
                     icon={<Icons.PlusCircleOutlined />}
-                    selectTokens
-                    inputOverride={paymentMethodInputOverride}
                     children="Add another"
+                    onClick={addPaymentMethod.toggleOn}
                   />
                 )}
               </>
@@ -259,6 +266,11 @@ export const TaskRewardFormFields: FC<Props> = ({
           </Select>
         )}
       </Space>
+      <AddPaymentMethodModal
+        selectTokens
+        inputOverride={paymentMethodInputOverride}
+        toggle={addPaymentMethod}
+      />
     </>
   );
 };
