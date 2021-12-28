@@ -66,7 +66,7 @@ DECLARE
   ethereum_mainnet_id uuid = uuid_generate_v4();
   ethereum_rinkeby_id uuid = uuid_generate_v4();
   gnosis_chain_id uuid = uuid_generate_v4();
-  polygon_id uuid = uuid_generate_v4();gnos
+  polygon_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
