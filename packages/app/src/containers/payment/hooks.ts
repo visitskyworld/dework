@@ -48,8 +48,8 @@ export function explorerLink(payment: Payment): string | undefined {
 
   if (!!payment.data?.txHash) {
     const url = URL.parse(payment.network.config.explorerUrl);
-    url.pathname += `/tx/${payment.data.txHash}`;
-    return url.href;
+    url.pathname += `tx/${payment.data.txHash}`;
+    return URL.format(url);
   }
 
   if (!!payment.data?.safeTxHash && !!payment.network.config.gnosisSafe) {

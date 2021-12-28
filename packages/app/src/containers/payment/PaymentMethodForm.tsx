@@ -31,7 +31,7 @@ export const networkSlugsByPaymentMethodType: Record<
     "gnosis-chain",
     "polygon-mainnet",
     "sokol-testnet",
-    "avalance-mainnet",
+    "avalanche-mainnet",
     "fantom-mainnet",
   ],
   [PaymentMethodType.GNOSIS_SAFE]: [
