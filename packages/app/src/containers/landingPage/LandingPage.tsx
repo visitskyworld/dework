@@ -49,13 +49,8 @@ export const LandingPage: FC = () => {
         }
         extra={[
           !user && (
-            <LoginButton key="log-in" type="text">
-              Log In
-            </LoginButton>
-          ),
-          !user && (
             <LoginButton key="get-started" type="primary">
-              Get Started
+              Connect
             </LoginButton>
           ),
         ]}
