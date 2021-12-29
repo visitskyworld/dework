@@ -234,9 +234,9 @@ export const TaskRewardFormFields: FC<Props> = ({
                   <Select.Option
                     key={token.id}
                     value={token.id}
-                    label={token.name}
+                    label={token.symbol}
                   >
-                    {token.name}
+                    {token.symbol}
                   </Select.Option>
                 ))}
               </Select>

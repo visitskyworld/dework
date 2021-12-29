@@ -73,7 +73,7 @@ export const toTaskRewardFormValues = (
 };
 
 export const formatTaskReward = (reward: TaskReward) =>
-  [formatFixed(reward.amount, reward.token.exp), reward.token.name].join(" ");
+  [formatFixed(reward.amount, reward.token.exp), reward.token.symbol].join(" ");
 
 export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
