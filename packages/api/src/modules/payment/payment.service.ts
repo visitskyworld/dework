@@ -16,7 +16,7 @@ import { User } from "@dewo/api/models/User";
 import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, In, Repository } from "typeorm";
+import { DeepPartial, In, IsNull, Repository } from "typeorm";
 import { CreatePaymentMethodInput } from "./dto/CreatePaymentMethodInput";
 
 @Injectable()
@@ -124,9 +124,16 @@ export class PaymentService {
   }
 
   public async createPaymentToken(
-    partial: AtLeast<PaymentToken, "type" | "name" | "networkId">
+    partial: AtLeast<PaymentToken, "type" | "name" | "symbol" | "networkId">
   ): Promise<PaymentToken> {
-    const created = await this.paymentTokenRepo.save({ exp: 1, ...partial });
+    const existing = await this.paymentTokenRepo.findOne({
+      type: partial.type,
+      networkId: partial.networkId,
+      address: partial.address ?? IsNull(),
+    });
+    if (!!existing) return existing;
+
+    const created = await this.paymentTokenRepo.save({ exp: 0, ...partial });
     return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
   }
 

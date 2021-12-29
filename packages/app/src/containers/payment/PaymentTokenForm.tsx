@@ -134,7 +134,7 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
               </Form.Item>
               <Button
                 loading={lookupLoading.isOn}
-                type="primary"
+                type="ghost"
                 style={{ width: "25%" }}
                 onClick={lookupAddress}
               >

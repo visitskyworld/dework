@@ -200,7 +200,8 @@ export class Fixtures {
     return this.paymentService.createPaymentToken({
       networkId: await this.createPaymentNetwork().then((n) => n.id),
       type: PaymentTokenType.NATIVE,
-      name: "ETH",
+      name: "Ether",
+      symbol: "ETH",
       ...partial,
     });
   }

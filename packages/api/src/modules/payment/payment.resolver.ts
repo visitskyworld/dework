@@ -7,6 +7,8 @@ import { CreatePaymentMethodInput } from "./dto/CreatePaymentMethodInput";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 import { UpdatePaymentMethodInput } from "./dto/UpdatePaymentMethodInput";
+import { PaymentToken } from "@dewo/api/models/PaymentToken";
+import { CreatePaymentTokenInput } from "./dto/CreatePaymentTokenInput";
 
 @Injectable()
 export class PaymentResolver {
@@ -23,6 +25,14 @@ export class PaymentResolver {
       throw new ForbiddenException();
     }
     return this.paymentService.createPaymentMethod(input, user);
+  }
+
+  @Mutation(() => PaymentToken)
+  @UseGuards(AuthGuard)
+  public async createPaymentToken(
+    @Args("input") input: CreatePaymentTokenInput
+  ): Promise<PaymentToken> {
+    return this.paymentService.createPaymentToken(input);
   }
 
   @Mutation(() => PaymentMethod)
