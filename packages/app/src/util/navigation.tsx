@@ -11,6 +11,14 @@ export function useNavigateToProfile(): (user: User) => void {
   );
 }
 
+export function useNavigateToUserTaskBoard(): (user: User) => void {
+  const router = useRouter();
+  return useCallback(
+    (user: User) => router.push(`/profile/${user.id}/board`),
+    [router]
+  );
+}
+
 export function useNavigateToTask(taskId: string): () => void {
   const router = useRouter();
   return useCallback(

@@ -4,7 +4,10 @@ import * as Icons from "@ant-design/icons";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { UserSettings } from "../../user/UserSettings";
-import { useNavigateToProfile } from "@dewo/app/util/navigation";
+import {
+  useNavigateToProfile,
+  useNavigateToUserTaskBoard,
+} from "@dewo/app/util/navigation";
 
 interface Props {
   onClose(): void;
@@ -19,10 +22,16 @@ export const HeaderProfileDropdown: FC<Props> = ({ onClose }) => {
   }, [userSettings, onClose]);
 
   const navigateToProfile = useNavigateToProfile();
+  const navigateToUserTaskBoard = useNavigateToUserTaskBoard();
+
   const handleNavigateToProfile = useCallback(() => {
     navigateToProfile(user!);
     onClose();
   }, [navigateToProfile, onClose, user]);
+  const handleNavigateToBoard = useCallback(() => {
+    navigateToUserTaskBoard(user!);
+    onClose();
+  }, [navigateToUserTaskBoard, onClose, user]);
 
   if (!user) return null;
   return (
@@ -32,7 +41,13 @@ export const HeaderProfileDropdown: FC<Props> = ({ onClose }) => {
           icon={<Icons.UserOutlined />}
           onClick={handleNavigateToProfile}
         >
-          Your Profile
+          My Profile
+        </Menu.Item>
+        <Menu.Item
+          icon={<Icons.CheckCircleOutlined />}
+          onClick={handleNavigateToBoard}
+        >
+          My Task Board
         </Menu.Item>
         <Menu.Item
           icon={<Icons.SettingOutlined />}
