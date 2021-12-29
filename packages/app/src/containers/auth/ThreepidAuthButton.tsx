@@ -8,11 +8,13 @@ import { Button, ButtonProps } from "antd";
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
   [ThreepidSource.github]: <Icons.GithubOutlined />,
+  [ThreepidSource.metamask]: <Icons.GithubOutlined />,
 };
 
 export const getThreepidName: Record<ThreepidSource, string> = {
   [ThreepidSource.discord]: "Discord",
   [ThreepidSource.github]: "GitHub",
+  [ThreepidSource.metamask]: "Metamask",
 };
 
 interface Props extends ButtonProps {

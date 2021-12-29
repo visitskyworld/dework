@@ -3,7 +3,10 @@ import { NextPage } from "next";
 import { Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import { ThreepidSource } from "@dewo/app/graphql/types";
-import { ThreepidAuthButton } from "@dewo/app/containers/auth/ThreepidAuthButton";
+import {
+  getThreepidName,
+  ThreepidAuthButton,
+} from "@dewo/app/containers/auth/ThreepidAuthButton";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -18,11 +21,11 @@ const Auth: NextPage = () => {
         <Modal visible footer={null}>
           <Space direction="vertical" style={{ width: "100%" }}>
             <Typography.Title level={2} style={{ textAlign: "center" }}>
-              Sign up
+              Sign in
             </Typography.Title>
             <ThreepidAuthButton
-              source={ThreepidSource.github}
-              children="Github"
+              source={ThreepidSource.metamask}
+              children={getThreepidName[ThreepidSource.metamask]}
               size="large"
               type="primary"
               block
@@ -30,7 +33,15 @@ const Auth: NextPage = () => {
             />
             <ThreepidAuthButton
               source={ThreepidSource.discord}
-              children="Discord"
+              children={getThreepidName[ThreepidSource.discord]}
+              size="large"
+              type="primary"
+              block
+              state={state}
+            />
+            <ThreepidAuthButton
+              source={ThreepidSource.github}
+              children={getThreepidName[ThreepidSource.github]}
               size="large"
               type="primary"
               block

@@ -8,6 +8,7 @@ import { User } from "./User";
 export enum ThreepidSource {
   github = "github",
   discord = "discord",
+  metamask = "metamask",
 }
 
 export interface GithubThreepidConfig {
@@ -22,9 +23,15 @@ export interface DiscordThreepidConfig {
   profile: DiscordProfile;
 }
 
+export interface MetamaskThreepidConfig {
+  message: string;
+  signature: string;
+}
+
 interface ThreepidConfigMap extends Record<ThreepidSource, any> {
   [ThreepidSource.github]: GithubThreepidConfig;
   [ThreepidSource.discord]: DiscordThreepidConfig;
+  [ThreepidSource.metamask]: MetamaskThreepidConfig;
 }
 
 registerEnumType(ThreepidSource, { name: "ThreepidSource" });
