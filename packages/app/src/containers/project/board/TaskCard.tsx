@@ -136,7 +136,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
               >
                 <OrganizationAvatar
                   organization={task.project.organization}
-                  size={20}
+                  size={21}
                 />
                 <Typography.Text style={{ marginLeft: 4 }}>
                   {task.project.organization.name}
