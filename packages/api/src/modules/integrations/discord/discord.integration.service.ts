@@ -261,14 +261,14 @@ export class DiscordIntegrationService {
     channel.send(message);
   }
 
-  // private async postNewApplicant(task: Task) {
-  //   const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
-  //   if (!owner) return;
-  //   const message = `<@${owner}> A person has applied to this task.`;
-  //   const channel = await this.getDiscordChannel(task);
-  //   if (!channel) return;
-  //   channel.send(message);
-  // }
+  private async postNewApplicant(task: Task) {
+    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
+    if (!owner) return;
+    const message = `<@${owner}> A person has applied to this task.`;
+    const channel = await this.getDiscordChannel(task);
+    if (!channel) return;
+    channel.send(message);
+  }
 
   private async getExistingDiscordChannel(
     task: Task,
