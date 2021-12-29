@@ -1,39 +1,33 @@
 import React, { FC, useCallback, useState } from "react";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
-import { PaymentNetwork, PaymentTokenType } from "@dewo/app/graphql/types";
+import {
+  CreatePaymentTokenInput,
+  PaymentNetwork,
+  PaymentToken,
+  PaymentTokenType,
+} from "@dewo/app/graphql/types";
 import { useForm } from "antd/lib/form/Form";
 import { useERC20Contract } from "@dewo/app/util/ethereum";
 import { FormSection } from "@dewo/app/components/FormSection";
-
-interface FormValuesTodoReplaceWithGraphQLType {
-  networkId: string;
-  type: PaymentTokenType;
-  address: string;
-  exp: number;
-  name: string;
-  symbol: string;
-}
+import { useCreatePaymentToken } from "./hooks";
 
 interface FormProps {
   network: PaymentNetwork;
-  onDone(): void;
+  onDone(token: PaymentToken): void;
 }
 
-interface FormModalProps {
-  network: PaymentNetwork;
+interface FormModalProps extends FormProps {
   toggle: UseToggleHook;
 }
 
 export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
-  const [form] = useForm<FormValuesTodoReplaceWithGraphQLType>();
+  const [form] = useForm<CreatePaymentTokenInput>();
 
   const submitLoading = useToggle();
   const lookupLoading = useToggle();
 
-  const [values, setValues] = useState<
-    Partial<FormValuesTodoReplaceWithGraphQLType>
-  >({});
+  const [values, setValues] = useState<Partial<CreatePaymentTokenInput>>({});
 
   const loadERC20Contract = useERC20Contract();
   const lookupAddress = useCallback(async () => {
@@ -63,18 +57,24 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
 
   const handleChange = useCallback(
     (
-      _changed: Partial<FormValuesTodoReplaceWithGraphQLType>,
-      values: Partial<FormValuesTodoReplaceWithGraphQLType>
+      _changed: Partial<CreatePaymentTokenInput>,
+      values: Partial<CreatePaymentTokenInput>
     ) => setValues(values),
     []
   );
 
+  const createPaymentToken = useCreatePaymentToken();
   const handleSubmit = useCallback(
-    async (values: FormValuesTodoReplaceWithGraphQLType) => {
-      console.log(values);
-      alert("handle submit");
+    async (values: CreatePaymentTokenInput) => {
+      submitLoading.toggleOn();
+      try {
+        const token = await createPaymentToken(values);
+        onDone(token);
+      } finally {
+        submitLoading.toggleOff();
+      }
     },
-    []
+    [createPaymentToken, onDone, submitLoading]
   );
 
   return (
@@ -193,15 +193,26 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
 };
 
 export const PaymentTokenFormModal: FC<FormModalProps> = ({
-  network,
   toggle,
-}) => (
-  <Modal
-    visible={toggle.isOn}
-    title="Add Custom Token"
-    footer={null}
-    onCancel={toggle.toggleOff}
-  >
-    <PaymentTokenForm network={network} onDone={toggle.toggleOff} />
-  </Modal>
-);
+  onDone,
+  ...formProps
+}) => {
+  const handleDone = useCallback(
+    (token: PaymentToken) => {
+      toggle.toggleOff();
+      onDone(token);
+    },
+    [toggle, onDone]
+  );
+
+  return (
+    <Modal
+      visible={toggle.isOn}
+      title="Add Custom Token"
+      footer={null}
+      onCancel={toggle.toggleOff}
+    >
+      <PaymentTokenForm onDone={handleDone} {...formProps} />
+    </Modal>
+  );
+};

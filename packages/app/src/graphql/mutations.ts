@@ -250,6 +250,23 @@ export const createPaymentMethod = gql`
   ${Fragments.paymentMethod}
 `;
 
+export const createPaymentToken = gql`
+  mutation CreatePaymentTokenMutation($input: CreatePaymentTokenInput!) {
+    token: createPaymentToken(input: $input) {
+      ...PaymentToken
+      network {
+        ...PaymentNetwork
+        tokens {
+          ...PaymentToken
+        }
+      }
+    }
+  }
+
+  ${Fragments.paymentToken}
+  ${Fragments.paymentNetwork}
+`;
+
 export const updatePaymentMethod = gql`
   mutation UpdatePaymentMethodMutation($input: UpdatePaymentMethodInput!) {
     paymentMethod: updatePaymentMethod(input: $input) {

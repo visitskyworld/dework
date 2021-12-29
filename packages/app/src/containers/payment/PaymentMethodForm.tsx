@@ -4,6 +4,7 @@ import {
   CreatePaymentMethodInput,
   PaymentMethod,
   PaymentMethodType,
+  PaymentToken,
   PaymentTokenType,
   PaymentTokenVisibility,
 } from "@dewo/app/graphql/types";
@@ -66,6 +67,7 @@ export const PaymentMethodForm: FC<Props> = ({
   const [form] = useForm<CreatePaymentMethodInput>();
   const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
   const [loading, setLoading] = useState(false);
+  const [customTokens, setCustomTokens] = useState<PaymentToken[]>([]);
 
   const networks = usePaymentNetworks();
   const networksForPaymentType = useMemo(() => {
@@ -75,51 +77,56 @@ export const PaymentMethodForm: FC<Props> = ({
     return networks.filter((n) => slugs.includes(n.slug));
   }, [networks, values.type]);
 
+  const [shouldShowToken, setShouldShowToken] = useState<
+    Record<string, boolean>
+  >({});
+
   const selectedNetwork = useMemo(
     () => networks?.find((n) => n.id === values.networkId),
     [networks, values.networkId]
   );
-
-  const [isTokenInWallet, setTokenInWallet] = useState<Record<string, boolean>>(
-    {}
+  const selectedNetworkTokens = useMemo(
+    () =>
+      selectedNetwork?.tokens.filter((token) => !!shouldShowToken[token.id]),
+    [selectedNetwork?.tokens, shouldShowToken]
   );
 
   const loadERC20Contract = useERC20Contract();
-  const loadTokensInWallet = useCallback(async () => {
-    setTokenInWallet({});
+  const loadShouldShowToken = useCallback(async () => {
+    setShouldShowToken({});
     selectedNetwork?.tokens.forEach(async (token) => {
       if (token.visibility === PaymentTokenVisibility.ALWAYS) {
-        setTokenInWallet((prev) => ({ ...prev, [token.id]: true }));
+        setShouldShowToken((prev) => ({ ...prev, [token.id]: true }));
         return;
       }
 
       switch (token.type) {
         case PaymentTokenType.NATIVE:
-          setTokenInWallet((prev) => ({ ...prev, [token.id]: true }));
+          setShouldShowToken((prev) => ({ ...prev, [token.id]: true }));
           break;
         case PaymentTokenType.ERC20:
           if (!token.address || !values.address) return false;
           try {
             const contract = await loadERC20Contract(token.address);
             const balance = await contract.balanceOf(values.address);
-            setTokenInWallet((prev) => ({
+            setShouldShowToken((prev) => ({
               ...prev,
               [token.id]: balance.gt(0),
             }));
           } catch (error) {
             console.error(error);
-            setTokenInWallet((prev) => ({ ...prev, [token.id]: false }));
+            setShouldShowToken((prev) => ({ ...prev, [token.id]: false }));
           }
           break;
         default:
-          setTokenInWallet((prev) => ({ ...prev, [token.id]: false }));
+          setShouldShowToken((prev) => ({ ...prev, [token.id]: false }));
           break;
       }
     });
   }, [selectedNetwork?.tokens, values.address, loadERC20Contract]);
   useEffect(() => {
-    loadTokensInWallet();
-  }, [loadTokensInWallet]);
+    loadShouldShowToken();
+  }, [loadShouldShowToken]);
 
   const createPaymentMethod = useCreatePaymentMethod();
   const submitForm = useCallback(
@@ -164,6 +171,17 @@ export const PaymentMethodForm: FC<Props> = ({
     () =>
       handleChange({ address: undefined }, { ...values, address: undefined }),
     [handleChange, values]
+  );
+
+  const addCustomToken = useCallback(
+    (token: PaymentToken) => {
+      setCustomTokens((prev) => [...prev, token]);
+      const change: Partial<CreatePaymentMethodInput> = {
+        tokenIds: [...(values.tokenIds ?? []), token.id],
+      };
+      handleChange(change, { ...values, ...change });
+    },
+    [values, handleChange]
   );
 
   const addPaymentToken = useToggle();
@@ -283,8 +301,21 @@ export const PaymentMethodForm: FC<Props> = ({
                   </>
                 )}
               >
-                {selectedNetwork?.tokens
-                  .filter((token) => !!isTokenInWallet[token.id])
+                {selectedNetworkTokens?.map((token) => (
+                  <Select.Option
+                    key={token.id}
+                    value={token.id}
+                    label={token.name}
+                  >
+                    {token.name}
+                  </Select.Option>
+                ))}
+                {customTokens
+                  .filter((token) => token.networkId === selectedNetwork?.id)
+                  .filter(
+                    (token) =>
+                      !selectedNetworkTokens?.some((t) => t.id === token.id)
+                  )
                   .map((token) => (
                     <Select.Option
                       key={token.id}
@@ -311,6 +342,7 @@ export const PaymentMethodForm: FC<Props> = ({
           key={selectedNetwork.id}
           network={selectedNetwork}
           toggle={addPaymentToken}
+          onDone={addCustomToken}
         />
       )}
     </Form>

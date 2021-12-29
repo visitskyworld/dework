@@ -1517,6 +1517,59 @@ export interface CreatePaymentMethodMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreatePaymentTokenMutation
+// ====================================================
+
+export interface CreatePaymentTokenMutation_token_network_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreatePaymentTokenMutation_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+  tokens: CreatePaymentTokenMutation_token_network_tokens[];
+}
+
+export interface CreatePaymentTokenMutation_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreatePaymentTokenMutation_token_network;
+}
+
+export interface CreatePaymentTokenMutation {
+  token: CreatePaymentTokenMutation_token;
+}
+
+export interface CreatePaymentTokenMutationVariables {
+  input: CreatePaymentTokenInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: UpdatePaymentMethodMutation
 // ====================================================
 
@@ -5084,6 +5137,15 @@ export interface CreatePaymentMethodInput {
   tokenIds?: Scalar.UUID[] | null;
   projectId?: Scalar.UUID | null;
   userId?: Scalar.UUID | null;
+}
+
+export interface CreatePaymentTokenInput {
+  type: PaymentTokenType;
+  address: string;
+  name: string;
+  symbol: string;
+  exp: number;
+  networkId: Scalar.UUID;
 }
 
 export interface CreateProjectInput {

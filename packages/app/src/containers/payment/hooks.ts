@@ -6,6 +6,9 @@ import {
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
+  CreatePaymentTokenInput,
+  CreatePaymentTokenMutation,
+  CreatePaymentTokenMutationVariables,
   CreateTaskPaymentsMutation,
   CreateTaskPaymentsMutationVariables,
   GetPaymentNetworksQuery,
@@ -14,6 +17,7 @@ import {
   Payment,
   PaymentMethod,
   PaymentMethodType,
+  PaymentToken,
   Task,
   TaskReward,
   UpdatePaymentMethodInput,
@@ -90,6 +94,23 @@ export function useUpdatePaymentMethod(): (
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.paymentMethod;
+    },
+    [mutation]
+  );
+}
+
+export function useCreatePaymentToken(): (
+  input: CreatePaymentTokenInput
+) => Promise<PaymentToken> {
+  const [mutation] = useMutation<
+    CreatePaymentTokenMutation,
+    CreatePaymentTokenMutationVariables
+  >(Mutations.createPaymentToken);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.token;
     },
     [mutation]
   );
