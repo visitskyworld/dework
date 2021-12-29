@@ -48,6 +48,20 @@ describe("DiscordIntegration", () => {
 
   afterAll(() => app.close());
 
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
+
+  afterEach(async () => {
+    // Creating a Discord channel seems to be subject to a pretty strict rate limit, causing very long delays.
+    // Waiting just 10s seems to let tests run without much delay.
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+  });
+
+  function hasViewAccess(perms: Discord.Permissions | null) {
+    return !!perms?.has("VIEW_CHANNEL");
+  }
+
   async function createProjectWithDiscordIntegration() {
     const project = await fixtures.createProject();
     await fixtures.createProjectIntegation({
@@ -143,7 +157,7 @@ describe("DiscordIntegration", () => {
       const task = await createTask({ projectId: project.id });
 
       const permission = await getDiscordChannelPermission(task);
-      expect(permission).toBe(null);
+      expect(hasViewAccess(permission)).toBe(false);
     });
 
     it("should add task owner to Discord channel", async () => {
@@ -189,7 +203,10 @@ describe("DiscordIntegration", () => {
     it("should add new task owner to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
       const task = await createTask({ projectId: project.id });
-      await expect(getDiscordChannelPermission(task)).resolves.toBe(null);
+
+      await getDiscordChannelPermission(task).then((perms) =>
+        expect(hasViewAccess(perms)).toBe(false)
+      );
 
       await updateTask(task, { ownerId: user.id });
       const permission = await getDiscordChannelPermission(task);
@@ -200,7 +217,9 @@ describe("DiscordIntegration", () => {
     it("should add new task assignee to Discord channel", async () => {
       const project = await createProjectWithDiscordIntegration();
       const task = await createTask({ projectId: project.id });
-      await expect(getDiscordChannelPermission(task)).resolves.toBe(null);
+      await getDiscordChannelPermission(task).then((perms) =>
+        expect(hasViewAccess(perms)).toBe(false)
+      );
 
       await updateTask(task, { assignees: [user] });
       const permission = await getDiscordChannelPermission(task);
