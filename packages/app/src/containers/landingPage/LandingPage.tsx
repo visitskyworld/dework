@@ -42,16 +42,18 @@ export const LandingPage: FC = () => {
             style={{
               height: "unset",
               margin: "0 auto",
-              width: 300,
+              width: 512,
               padding: 0,
             }}
           >
             <Card>
               <Space direction="vertical" align="center">
-                <Avatar size="large">
+                <Avatar size={96} style={{ fontSize: 48 }}>
                   <Icons.PlusOutlined />
                 </Avatar>
-                <Typography.Title level={5}>Set up DAO</Typography.Title>
+                <Typography.Title level={3} style={{ marginTop: 16 }}>
+                  Set up DAO
+                </Typography.Title>
               </Space>
             </Card>
           </CreateOrganizationButton>
