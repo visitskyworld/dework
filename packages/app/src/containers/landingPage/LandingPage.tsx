@@ -66,7 +66,7 @@ export const LandingPage: FC = () => {
         <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
           <Space direction="vertical" size="large">
             <Typography.Title level={1}>
-              A web3-native Asana with crypto payments, credentialing, bounties
+              A web3-native Asana with token payments, credentialing, bounties
               and more
             </Typography.Title>
             <Row>
@@ -102,7 +102,7 @@ export const LandingPage: FC = () => {
         >
           <Tabs centered type="line" className="dewo-lp-feature-tabs">
             <Tabs.TabPane
-              tab="Crypto Payments"
+              tab="Token Payments"
               key="crypto-payments"
               style={{ padding: 8 }}
             >
