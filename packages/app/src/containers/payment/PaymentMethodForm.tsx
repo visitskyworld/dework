@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import * as Icons from "@ant-design/icons";
 import {
   CreatePaymentMethodInput,
   PaymentMethod,
@@ -14,6 +15,8 @@ import { ConnectPhantomButton } from "./ConnectPhantomButton";
 import { ConnectGnosisSafe } from "./ConnectGnosisSafe";
 import { useERC20Contract } from "@dewo/app/util/ethereum";
 import { useForm } from "antd/lib/form/Form";
+import { useToggle } from "@dewo/app/util/hooks";
+import { PaymentTokenFormModal } from "./PaymentTokenForm";
 
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
@@ -163,6 +166,8 @@ export const PaymentMethodForm: FC<Props> = ({
     [handleChange, values]
   );
 
+  const addPaymentToken = useToggle();
+
   return (
     <Form
       form={form}
@@ -263,6 +268,20 @@ export const PaymentMethodForm: FC<Props> = ({
                 loading={!networks}
                 mode="multiple"
                 placeholder="Select what tokens this address can pay out"
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Button
+                      block
+                      type="text"
+                      style={{ textAlign: "left", marginTop: 4 }}
+                      className="text-secondary"
+                      icon={<Icons.PlusCircleOutlined />}
+                      children="Add your own ERC20 token"
+                      onClick={addPaymentToken.toggleOn}
+                    />
+                  </>
+                )}
               >
                 {selectedNetwork?.tokens
                   .filter((token) => !!isTokenInWallet[token.id])
@@ -287,6 +306,13 @@ export const PaymentMethodForm: FC<Props> = ({
           </Col>
         )}
       </Row>
+      {!!selectedNetwork && (
+        <PaymentTokenFormModal
+          key={selectedNetwork.id}
+          network={selectedNetwork}
+          toggle={addPaymentToken}
+        />
+      )}
     </Form>
   );
 };

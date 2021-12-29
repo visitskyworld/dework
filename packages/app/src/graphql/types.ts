@@ -44,6 +44,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_t
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -152,6 +153,7 @@ export interface UpdateUserMutation_user_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -333,6 +335,7 @@ export interface CreateProjectMutation_project_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -370,6 +373,7 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -482,6 +486,7 @@ export interface UpdateProjectMutation_project_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -556,6 +561,7 @@ export interface CreateTaskMutation_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -577,6 +583,7 @@ export interface CreateTaskMutation_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -690,6 +697,7 @@ export interface UpdateTaskMutation_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -711,6 +719,7 @@ export interface UpdateTaskMutation_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -824,6 +833,7 @@ export interface ClaimTaskMutation_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -845,6 +855,7 @@ export interface ClaimTaskMutation_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -959,6 +970,7 @@ export interface UnclaimTaskMutation_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -980,6 +992,7 @@ export interface UnclaimTaskMutation_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1093,6 +1106,7 @@ export interface DeleteTaskMutation_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1114,6 +1128,7 @@ export interface DeleteTaskMutation_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1397,6 +1412,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1418,6 +1434,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethod
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1454,6 +1471,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_t
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1518,6 +1536,7 @@ export interface UpdatePaymentMethodMutation_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1539,6 +1558,7 @@ export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethod
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1630,6 +1650,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1651,6 +1672,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_t
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1843,6 +1865,7 @@ export interface MeQuery_me_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1945,6 +1968,7 @@ export interface UserTasksQuery_user_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -1966,6 +1990,7 @@ export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2080,6 +2105,7 @@ export interface UserPaymentMethodQuery_user_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2156,6 +2182,7 @@ export interface GetOrganizationQuery_organization_projects_paymentMethods_token
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2252,6 +2279,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2353,6 +2381,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2374,6 +2403,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_pay
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2502,6 +2532,7 @@ export interface GetProjectQuery_project_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2576,6 +2607,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2597,6 +2629,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2747,6 +2780,7 @@ export interface GetTaskQuery_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2768,6 +2802,7 @@ export interface GetTaskQuery_task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2953,6 +2988,7 @@ export interface GetTasksQuery_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -2974,6 +3010,7 @@ export interface GetTasksQuery_tasks_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3090,6 +3127,7 @@ export interface GetTasksToPayQuery_tasks_assignees_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3118,6 +3156,7 @@ export interface GetTasksToPayQuery_tasks_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3139,6 +3178,7 @@ export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3213,6 +3253,7 @@ export interface GetTasksToPayQuery_tasks_project_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3344,6 +3385,7 @@ export interface GetPaymentNetworksQuery_networks_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3394,6 +3436,7 @@ export interface TaskCreatedSubscription_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3415,6 +3458,7 @@ export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_token
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3587,6 +3631,7 @@ export interface TaskUpdatedSubscription_task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3608,6 +3653,7 @@ export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_token
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3775,6 +3821,7 @@ export interface PaymentUpdatedSubscription_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3827,6 +3874,7 @@ export interface TaskRewardUpdatedSubscription_taskReward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3848,6 +3896,7 @@ export interface TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3960,6 +4009,7 @@ export interface PaymentToken {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -3990,6 +4040,7 @@ export interface PaymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4029,6 +4080,7 @@ export interface Payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4164,6 +4216,7 @@ export interface ProjectDetails_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4232,6 +4285,7 @@ export interface TaskReward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4253,6 +4307,7 @@ export interface TaskReward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4407,6 +4462,7 @@ export interface Task_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4428,6 +4484,7 @@ export interface Task_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4533,6 +4590,7 @@ export interface TaskDetails_reward_token {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4554,6 +4612,7 @@ export interface TaskDetails_reward_payment_paymentMethod_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4772,6 +4831,7 @@ export interface UserDetails_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
@@ -4823,6 +4883,7 @@ export interface OrganizationDetails_projects_paymentMethods_tokens {
   exp: number;
   type: PaymentTokenType;
   name: string;
+  symbol: string;
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;

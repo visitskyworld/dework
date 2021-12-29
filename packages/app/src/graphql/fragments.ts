@@ -33,6 +33,7 @@ export const paymentToken = gql`
     exp
     type
     name
+    symbol
     address
     networkId
     visibility

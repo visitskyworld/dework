@@ -32,6 +32,10 @@ export class PaymentToken extends Audit {
 
   @Column()
   @Field()
+  public symbol!: string;
+
+  @Column()
+  @Field()
   public exp!: number;
 
   @Column("enum", {

@@ -81,6 +81,9 @@ export function useRequestAddress(): () => Promise<string> {
 
 interface ERC20Contract {
   balanceOf(owner: string): Promise<BigNumber>;
+  name(): Promise<string>;
+  symbol(): Promise<string>;
+  decimals(): Promise<number>;
   transfer(
     to: string,
     value: BigNumber
@@ -100,6 +103,9 @@ export function useERC20Contract(): (
         [
           "function balanceOf(address owner) public view returns (uint256 balance)",
           "function transfer(address to, uint256 value) public returns (bool success)",
+          "function name() public view returns (string memory)",
+          "function symbol() public view returns (string memory)",
+          "function decimals() public view returns (uint8)",
         ],
         signer
       ) as ethers.Contract & ERC20Contract;
