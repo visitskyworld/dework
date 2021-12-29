@@ -1,12 +1,11 @@
 import { useToggle } from "@dewo/app/util/hooks";
-import { Avatar, Button, Tooltip } from "antd";
+import { Button, ButtonProps } from "antd";
 import React, { FC, useCallback } from "react";
-import * as Icons from "@ant-design/icons";
 import { OrganizationCreateModal } from "../organization/create/OrganizationCreateModal";
 import { Organization } from "@dewo/app/graphql/types";
 import { useNavigateToOrganization } from "@dewo/app/util/navigation";
 
-export const CreateOrganizationButton: FC = () => {
+export const CreateOrganizationButton: FC<ButtonProps> = (buttonProps) => {
   const createOrganization = useToggle();
   const navigateToOrganization = useNavigateToOrganization();
   const handleOrganizationCreated = useCallback(
@@ -19,15 +18,7 @@ export const CreateOrganizationButton: FC = () => {
 
   return (
     <>
-      <Tooltip title="Create Organization" placement="right">
-        <Button
-          type="text"
-          className="dewo-sidebar-item"
-          onClick={createOrganization.toggleOn}
-        >
-          <Avatar size={48} icon={<Icons.PlusOutlined />} />
-        </Button>
-      </Tooltip>
+      <Button {...buttonProps} onClick={createOrganization.toggleOn} />
       <OrganizationCreateModal
         visible={createOrganization.isOn}
         onCancel={createOrganization.toggleOff}

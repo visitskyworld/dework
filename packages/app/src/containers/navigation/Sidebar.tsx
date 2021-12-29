@@ -1,8 +1,9 @@
+import React, { FC } from "react";
+import * as Icons from "@ant-design/icons";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Col, Divider, Dropdown, Layout } from "antd";
-import React, { FC } from "react";
+import { Avatar, Col, Divider, Dropdown, Layout, Tooltip } from "antd";
 import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
@@ -76,7 +77,11 @@ export const Sidebar: FC = () => {
               />
             </SidebarNavLink>
           ))}
-          <CreateOrganizationButton />
+          <Tooltip title="Create Organization" placement="right">
+            <CreateOrganizationButton type="text" className="dewo-sidebar-item">
+              <Avatar size={48} icon={<Icons.PlusOutlined />} />
+            </CreateOrganizationButton>
+          </Tooltip>
         </Col>
       </Col>
     </Layout.Sider>
