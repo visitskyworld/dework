@@ -237,6 +237,22 @@ export const task = gql`
   ${taskApplication}
 `;
 
+export const taskWithOrganization = gql`
+  fragment TaskWithOrganization on Task {
+    ...Task
+    project {
+      ...Project
+      organization {
+        ...Organization
+      }
+    }
+  }
+
+  ${task}
+  ${project}
+  ${organization}
+`;
+
 export const taskDetails = gql`
   fragment TaskDetails on Task {
     ...Task

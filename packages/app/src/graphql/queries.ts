@@ -26,12 +26,12 @@ export const userTasks = gql`
     user: getUser(id: $userId) {
       id
       tasks {
-        ...Task
+        ...TaskWithOrganization
       }
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskWithOrganization}
 `;
 
 export const userPaymentMethod = gql`

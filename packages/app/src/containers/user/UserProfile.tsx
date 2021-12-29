@@ -17,8 +17,8 @@ import { TaskCard } from "../project/board/TaskCard";
 import {
   useUpdateUser,
   useUser,
-  useUserTasks,
   useUpdateUserDetail,
+  useUserTasks,
 } from "./hooks";
 import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
@@ -32,7 +32,7 @@ interface Props {
 
 export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
-  const tasks = useUserTasks(userId, "cache-and-network");
+  const tasks = useUserTasks(userId);
   const completedTasks = useMemo(
     () => tasks?.filter((t) => t.status === TaskStatusEnum.DONE) ?? [],
     [tasks]

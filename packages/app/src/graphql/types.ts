@@ -2139,6 +2139,168 @@ export interface UserTasksQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: UserTasksWithOrganizationQuery
+// ====================================================
+
+export interface UserTasksWithOrganizationQuery_user_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod_networks[];
+  tokens: UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: UserTasksWithOrganizationQuery_user_tasks_reward_payment_paymentMethod;
+  network: UserTasksWithOrganizationQuery_user_tasks_reward_payment_network;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: UserTasksWithOrganizationQuery_user_tasks_reward_token;
+  payment: UserTasksWithOrganizationQuery_user_tasks_reward_payment | null;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: UserTasksWithOrganizationQuery_user_tasks_applications_user;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  organization: UserTasksWithOrganizationQuery_user_tasks_project_organization;
+}
+
+export interface UserTasksWithOrganizationQuery_user_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  tags: UserTasksWithOrganizationQuery_user_tasks_tags[];
+  assignees: UserTasksWithOrganizationQuery_user_tasks_assignees[];
+  reward: UserTasksWithOrganizationQuery_user_tasks_reward | null;
+  applications: UserTasksWithOrganizationQuery_user_tasks_applications[];
+  project: UserTasksWithOrganizationQuery_user_tasks_project;
+}
+
+export interface UserTasksWithOrganizationQuery_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  tasks: UserTasksWithOrganizationQuery_user_tasks[];
+}
+
+export interface UserTasksWithOrganizationQuery {
+  user: UserTasksWithOrganizationQuery_user;
+}
+
+export interface UserTasksWithOrganizationQueryVariables {
+  userId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: UserPaymentMethodQuery
 // ====================================================
 
@@ -4611,6 +4773,154 @@ export interface Task {
   assignees: Task_assignees[];
   reward: Task_reward | null;
   applications: Task_applications[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: TaskWithOrganization
+// ====================================================
+
+export interface TaskWithOrganization_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface TaskWithOrganization_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskWithOrganization_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskWithOrganization_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskWithOrganization_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskWithOrganization_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskWithOrganization_reward_payment_paymentMethod_networks[];
+  tokens: TaskWithOrganization_reward_payment_paymentMethod_tokens[];
+}
+
+export interface TaskWithOrganization_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskWithOrganization_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskWithOrganization_reward_payment_paymentMethod;
+  network: TaskWithOrganization_reward_payment_network;
+}
+
+export interface TaskWithOrganization_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: TaskWithOrganization_reward_token;
+  payment: TaskWithOrganization_reward_payment | null;
+}
+
+export interface TaskWithOrganization_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskWithOrganization_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  user: TaskWithOrganization_applications_user;
+}
+
+export interface TaskWithOrganization_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+}
+
+export interface TaskWithOrganization_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  organization: TaskWithOrganization_project_organization;
+}
+
+export interface TaskWithOrganization {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatusEnum;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  tags: TaskWithOrganization_tags[];
+  assignees: TaskWithOrganization_assignees[];
+  reward: TaskWithOrganization_reward | null;
+  applications: TaskWithOrganization_applications[];
+  project: TaskWithOrganization_project;
 }
 
 /* tslint:disable */

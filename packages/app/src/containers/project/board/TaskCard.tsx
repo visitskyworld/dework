@@ -1,6 +1,10 @@
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import {
+  Task,
+  TaskStatusEnum,
+  TaskWithOrganization,
+} from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -13,9 +17,10 @@ import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface TaskCardProps {
-  task: Task;
+  task: Task | TaskWithOrganization;
   style?: CSSProperties;
 }
 
@@ -122,6 +127,20 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
               >
                 <Icons.DollarOutlined />
                 <span>{formatTaskReward(task.reward)}</span>
+              </Tag>
+            )}
+            {"project" in task && (
+              <Tag
+                className="bg-component"
+                style={{ marginBottom: 4, paddingLeft: 0 }}
+              >
+                <OrganizationAvatar
+                  organization={task.project.organization}
+                  size={20}
+                />
+                <Typography.Text style={{ marginLeft: 4 }}>
+                  {task.project.organization.name}
+                </Typography.Text>
               </Tag>
             )}
             {task.tags.map(({ label, color }, index) => (
