@@ -14,6 +14,14 @@ export const authWithThreepid = gql`
   ${Fragments.userDetails}
 `;
 
+export const createMetamaskThreepid = gql`
+  mutation CreateMetamaskThreepid($input: CreateMetamaskThreepidInput!) {
+    threepid: createMetamaskThreepid(input: $input) {
+      id
+    }
+  }
+`;
+
 export const updateUser = gql`
   mutation UpdateUserMutation($input: UpdateUserInput!) {
     user: updateUser(input: $input) {

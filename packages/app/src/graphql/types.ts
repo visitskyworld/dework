@@ -90,6 +90,28 @@ export interface AuthWithThreepidMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateMetamaskThreepid
+// ====================================================
+
+export interface CreateMetamaskThreepid_threepid {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+}
+
+export interface CreateMetamaskThreepid {
+  threepid: CreateMetamaskThreepid_threepid;
+}
+
+export interface CreateMetamaskThreepidVariables {
+  input: CreateMetamaskThreepidInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: UpdateUserMutation
 // ====================================================
 
@@ -4962,6 +4984,7 @@ export enum TaskStatusEnum {
 export enum ThreepidSource {
   discord = "discord",
   github = "github",
+  metamask = "metamask",
 }
 
 export enum UserDetailType {
@@ -4980,6 +5003,12 @@ export interface CreateFileUploadUrlInput {
 export interface CreateInviteInput {
   organizationId: Scalar.UUID;
   role?: OrganizationRole | null;
+}
+
+export interface CreateMetamaskThreepidInput {
+  message: string;
+  signature: string;
+  address: string;
 }
 
 export interface CreateOrganizationInput {

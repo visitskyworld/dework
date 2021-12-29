@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { NextPage } from "next";
 import { Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
@@ -7,6 +7,7 @@ import {
   getThreepidName,
   ThreepidAuthButton,
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
+import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -15,6 +16,15 @@ const Auth: NextPage = () => {
     () => ({ ...router.query, appUrl }),
     [router.query, appUrl]
   );
+
+  const createMetamaskThreepid = useCreateMetamaskThreepid();
+  const authWithMetamask = useCallback(async () => {
+    const threepidId = await createMetamaskThreepid();
+    await router.push(
+      `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
+    );
+  }, [createMetamaskThreepid, router, state]);
+
   return (
     <Layout>
       <Layout.Content>
@@ -27,15 +37,17 @@ const Auth: NextPage = () => {
               source={ThreepidSource.metamask}
               children={getThreepidName[ThreepidSource.metamask]}
               size="large"
-              type="primary"
+              type="ghost"
               block
               state={state}
+              href={undefined}
+              onClick={authWithMetamask}
             />
             <ThreepidAuthButton
               source={ThreepidSource.discord}
               children={getThreepidName[ThreepidSource.discord]}
               size="large"
-              type="primary"
+              type="ghost"
               block
               state={state}
             />
@@ -43,7 +55,7 @@ const Auth: NextPage = () => {
               source={ThreepidSource.github}
               children={getThreepidName[ThreepidSource.github]}
               size="large"
-              type="primary"
+              type="ghost"
               block
               state={state}
             />

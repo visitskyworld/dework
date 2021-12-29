@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, {
   createContext,
   FC,
@@ -33,12 +32,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const user = useCurrentUser(!authenticated);
 
-  const router = useRouter();
   const logout = useCallback(async () => {
     clearAuthToken(undefined);
     setAuthenticated(false);
-    router.push("/");
-  }, [router]);
+    window.location.href = "/";
+  }, []);
   return (
     <AuthContext.Provider value={{ user, logout, setAuthenticated }}>
       {useMemo(() => children, [children])}

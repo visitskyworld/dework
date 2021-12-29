@@ -4,9 +4,12 @@ import * as Mutations from "@dewo/app/graphql/mutations";
 import {
   AuthWithThreepidMutation,
   AuthWithThreepidMutationVariables,
+  CreateMetamaskThreepid,
+  CreateMetamaskThreepidVariables,
 } from "@dewo/app/graphql/types";
 import { setAuthToken } from "@dewo/app/util/authToken";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { useProvider, useRequestSigner } from "@dewo/app/util/ethereum";
 
 export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
   const { setAuthenticated } = useAuthContext();
@@ -25,4 +28,33 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
     },
     [authWithThreepid, setAuthenticated]
   );
+}
+
+export function useCreateMetamaskThreepid(): () => Promise<string> {
+  const provider = useProvider();
+  const requestSigner = useRequestSigner();
+
+  const [mutation] = useMutation<
+    CreateMetamaskThreepid,
+    CreateMetamaskThreepidVariables
+  >(Mutations.createMetamaskThreepid);
+
+  return useCallback(async () => {
+    const signer = await requestSigner();
+    const address = await signer.getAddress();
+
+    const message = "Dework Sign In";
+    const signature = await provider.current.send("personal_sign", [
+      address,
+      message,
+    ]);
+
+    const res = await mutation({
+      variables: { input: { address, message, signature } },
+    });
+    if (!res.data) {
+      throw new Error("Failed to create Metamask threepid");
+    }
+    return res.data.threepid.id;
+  }, [provider, requestSigner, mutation]);
 }
