@@ -8,6 +8,7 @@ import {
   ThreepidAuthButton,
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
 import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
+import { useToggle } from "@dewo/app/util/hooks";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -17,13 +18,19 @@ const Auth: NextPage = () => {
     [router.query, appUrl]
   );
 
+  const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
   const authWithMetamask = useCallback(async () => {
-    const threepidId = await createMetamaskThreepid();
-    await router.push(
-      `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
-    );
-  }, [createMetamaskThreepid, router, state]);
+    try {
+      authingWithMetamask.toggleOn();
+      const threepidId = await createMetamaskThreepid();
+      await router.push(
+        `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
+      );
+    } finally {
+      authingWithMetamask.toggleOff();
+    }
+  }, [createMetamaskThreepid, router, state, authingWithMetamask]);
 
   return (
     <Layout>
@@ -34,6 +41,7 @@ const Auth: NextPage = () => {
               Sign in
             </Typography.Title>
             <ThreepidAuthButton
+              loading={authingWithMetamask.isOn}
               source={ThreepidSource.metamask}
               children={getThreepidName[ThreepidSource.metamask]}
               size="large"
