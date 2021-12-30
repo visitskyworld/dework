@@ -5,15 +5,15 @@ import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
 import { Task } from "@dewo/api/models/Task";
 import { GithubController } from "./github.controller";
 import { GithubService } from "./github.service";
-import { ProjectModule } from "../../project/project.module";
 import { TaskModule } from "../../task/task.module";
 import { LoggerMiddleware } from "../../auth/logger";
+import { IntegrationModule } from "../integration.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([GithubPullRequest, GithubBranch, Task]),
     TaskModule,
-    ProjectModule,
+    IntegrationModule,
   ],
   providers: [GithubService],
   controllers: [GithubController],

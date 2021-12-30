@@ -1,7 +1,6 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
 
-import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -22,24 +21,10 @@ describe("GithubController", () => {
 
   afterAll(() => app.close());
 
-  async function createProjectWithGithubIntegration(installationId: string) {
-    const project = await fixtures.createProject();
-    await fixtures.createProjectIntegration({
-      projectId: project.id,
-      type: ProjectIntegrationType.GITHUB,
-      config: {
-        installationId,
-        features: [],
-      },
-    });
-    return project;
-  }
-
   describe("webhook", () => {
-    const installationId = faker.datatype.string();
-
     it("should create a branch in the DB", async () => {
-      const project = await createProjectWithGithubIntegration(installationId);
+      const { project, installationId } =
+        await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatusEnum.IN_PROGRESS,
@@ -57,9 +42,7 @@ describe("GithubController", () => {
             number: faker.datatype.number(),
             draft: false,
           },
-          installation: {
-            id: installationId,
-          },
+          installation: { id: installationId },
           repository: {
             full_name: "username/my-repo",
           },
@@ -72,7 +55,8 @@ describe("GithubController", () => {
     });
 
     it("should update a task's status to done when a PR is merged", async () => {
-      const project = await createProjectWithGithubIntegration(installationId);
+      const { project, installationId } =
+        await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatusEnum.IN_REVIEW,
@@ -101,12 +85,8 @@ describe("GithubController", () => {
             draft: false,
             merged: false,
           },
-          installation: {
-            id: installationId,
-          },
-          repository: {
-            full_name: branch.repository,
-          },
+          installation: { id: installationId },
+          repository: { full_name: branch.repository },
         } as any,
       });
 
@@ -130,12 +110,8 @@ describe("GithubController", () => {
             draft: false,
             merged: true,
           },
-          installation: {
-            id: installationId,
-          },
-          repository: {
-            full_name: branch.repository,
-          },
+          installation: { id: installationId },
+          repository: { full_name: branch.repository },
         } as any,
       });
 

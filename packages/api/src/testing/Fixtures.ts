@@ -32,12 +32,21 @@ import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 import { DeepPartial } from "typeorm";
 import { OrganizationMember } from "../models/OrganizationMember";
-import { DeepAtLeast } from "../types/general";
-import { ProjectIntegration } from "../models/ProjectIntegration";
+import { AtLeast, DeepAtLeast } from "../types/general";
+import {
+  ProjectIntegration,
+  ProjectIntegrationType,
+} from "../models/ProjectIntegration";
 import { TaskRewardTrigger } from "../models/TaskReward";
 import { PaymentNetwork, PaymentNetworkType } from "../models/PaymentNetwork";
 import { PaymentToken, PaymentTokenType } from "../models/PaymentToken";
 import { Payment, PaymentData } from "../models/Payment";
+import { IntegrationService } from "../modules/integrations/integration.service";
+import { IntegrationModule } from "../modules/integrations/integration.module";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "../models/OrganizationIntegration";
 
 @Injectable()
 export class Fixtures {
@@ -45,6 +54,7 @@ export class Fixtures {
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
     private readonly projectService: ProjectService,
+    private readonly integrationService: IntegrationService,
     private readonly taskService: TaskService,
     private readonly githubService: GithubService,
     private readonly threepidService: ThreepidService,
@@ -108,9 +118,21 @@ export class Fixtures {
   }
 
   public async createProjectIntegration(
-    partial: DeepAtLeast<ProjectIntegration, "projectId" | "type" | "config">
+    partial: AtLeast<ProjectIntegration, "projectId" | "type" | "config">
   ): Promise<ProjectIntegration> {
-    return this.projectService.createIntegration({
+    return this.integrationService.createProjectIntegration({
+      creatorId: await this.createUser().then((u) => u.id),
+      ...partial,
+    });
+  }
+
+  public async createOrganizationIntegration(
+    partial: AtLeast<
+      OrganizationIntegration,
+      "organizationId" | "type" | "config"
+    >
+  ): Promise<OrganizationIntegration> {
+    return this.integrationService.createOrganizationIntegration({
       creatorId: await this.createUser().then((u) => u.id),
       ...partial,
     });
@@ -291,6 +313,32 @@ export class Fixtures {
     });
     return { user, organization, project };
   }
+
+  public async createProjectWithGithubIntegration(
+    partial: Partial<Project> = {}
+  ): Promise<{
+    project: Project;
+    installationId: string;
+  }> {
+    const installationId = faker.datatype.uuid();
+    const project = await this.createProject(partial);
+    const organizationIntegration = (await this.createOrganizationIntegration({
+      organizationId: project.organizationId,
+      type: OrganizationIntegrationType.GITHUB,
+      config: { installationId },
+    })) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
+    await this.createProjectIntegration({
+      projectId: project.id,
+      type: ProjectIntegrationType.GITHUB,
+      organizationIntegrationId: organizationIntegration.id,
+      config: {
+        owner: faker.internet.userName(),
+        repo: faker.internet.userName(),
+        features: [],
+      },
+    });
+    return { project, installationId };
+  }
 }
 
 @Module({
@@ -299,6 +347,7 @@ export class Fixtures {
     UserModule,
     OrganizationModule,
     ProjectModule,
+    IntegrationModule,
     TaskModule,
     GithubIntegrationModule,
     InviteModule,

@@ -5,12 +5,12 @@ import {
   GithubPullRequest,
   GithubPullRequestStatusEnum,
 } from "@dewo/api/models/GithubPullRequest";
-import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
-import { ProjectService } from "../../project/project.service";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
+import { IntegrationService } from "../integration.service";
+import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 
 // The actions Github's API uses
 export enum GithubPullRequestActions {
@@ -31,7 +31,7 @@ export class GithubController {
 
   constructor(
     private readonly configService: ConfigService<ConfigType>,
-    private readonly projectService: ProjectService,
+    private readonly integrationService: IntegrationService,
     private readonly taskService: TaskService,
     private readonly githubService: GithubService
   ) {}
@@ -41,16 +41,13 @@ export class GithubController {
   async githubAppCallback(@Req() { query }: Request, @Res() res: Response) {
     const stateString = query.state as string;
     const installationId = query.installation_id as string;
-    const { creatorId, projectId } = JSON.parse(stateString);
+    const { creatorId, organizationId } = JSON.parse(stateString);
 
-    await this.projectService.createIntegration({
+    await this.integrationService.createOrganizationIntegration({
       creatorId,
-      projectId,
-      type: ProjectIntegrationType.GITHUB,
-      config: {
-        installationId,
-        features: [],
-      },
+      organizationId,
+      type: OrganizationIntegrationType.GITHUB,
+      config: { installationId },
     });
 
     res.redirect(this.getAppUrl(stateString));

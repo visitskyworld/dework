@@ -24,13 +24,15 @@ import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { ProjectRolesGuard } from "./project.roles.guard";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
+import { IntegrationService } from "../integrations/integration.service";
 
 @Resolver(() => Project)
 @Injectable()
 export class ProjectResolver {
   constructor(
     private readonly projectService: ProjectService,
-    private readonly permalinkService: PermalinkService
+    private readonly permalinkService: PermalinkService,
+    private readonly integrationService: IntegrationService
   ) {}
 
   @ResolveField(() => String)
@@ -79,7 +81,7 @@ export class ProjectResolver {
     @Args("input") input: CreateProjectIntegrationInput,
     @Context("user") user: User
   ): Promise<ProjectIntegration> {
-    return this.projectService.createIntegration({
+    return this.integrationService.createProjectIntegration({
       ...input,
       creatorId: user.id,
     });

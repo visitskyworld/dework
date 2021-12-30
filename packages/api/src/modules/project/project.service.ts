@@ -1,5 +1,4 @@
 import { Project } from "@dewo/api/models/Project";
-import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
@@ -13,8 +12,6 @@ export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
-    @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
     @InjectRepository(TaskTag)
     private readonly taskTagRepo: Repository<TaskTag>
   ) {}
@@ -27,15 +24,6 @@ export class ProjectService {
   public async update(partial: DeepAtLeast<Project, "id">): Promise<Project> {
     const updated = await this.projectRepo.save(partial);
     return this.projectRepo.findOne(updated.id) as Promise<Project>;
-  }
-
-  public async createIntegration(
-    partial: DeepPartial<ProjectIntegration>
-  ): Promise<ProjectIntegration> {
-    const created = await this.projectIntegrationRepo.save(partial);
-    return this.projectIntegrationRepo.findOne(
-      created.id
-    ) as Promise<ProjectIntegration>;
   }
 
   public async createTag(

@@ -74,15 +74,14 @@ export class GithubService {
   ): Promise<Task | undefined> {
     return this.taskRepo
       .createQueryBuilder("task")
-      .innerJoin("task.project", "taskProject")
-      .innerJoin("taskProject.organization", "organization")
-      .innerJoin("organization.projects", "allProjects")
-      .innerJoin("allProjects.integrations", "integration")
+      .innerJoin("task.project", "project")
+      .innerJoin("project.integrations", "projInt")
+      .innerJoin("projInt.organizationIntegration", "orgInt")
       .where("task.number = :number", { number: taskNumber })
-      .andWhere("integration.type = :type", {
+      .andWhere("orgInt.type = :type", {
         type: ProjectIntegrationType.GITHUB,
       })
-      .andWhere("integration.config->>'installationId' = :installationId", {
+      .andWhere(`"orgInt"."config"->>'installationId' = :installationId`, {
         installationId: githubInstallationId,
       })
       .getOne();

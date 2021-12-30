@@ -26,7 +26,8 @@ export interface DiscordProjectIntegrationConfig {
 }
 
 export interface GithubProjectIntegrationConfig {
-  installationId: string;
+  owner: string;
+  repo: string;
   features: GithubProjectIntegrationFeature[];
 }
 

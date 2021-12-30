@@ -5,6 +5,7 @@ import { AfterLoad, Column, Entity, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
+import { OrganizationIntegration } from "./OrganizationIntegration";
 
 @Entity()
 @ObjectType()
@@ -40,6 +41,13 @@ export class Organization extends Audit {
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
+
+  @OneToMany(
+    () => OrganizationIntegration,
+    (o: OrganizationIntegration) => o.organization
+  )
+  @Field(() => [OrganizationIntegration])
+  public integrations!: Promise<OrganizationIntegration[]>;
 
   @Column({ default: false })
   @Field()

@@ -12,6 +12,7 @@ import {
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { PermalinkService } from "../permalink/permalink.service";
+import { IntegrationService } from "../integrations/integration.service";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -20,6 +21,7 @@ export class AuthController {
   constructor(
     private readonly config: ConfigService<ConfigType>,
     private readonly projectService: ProjectService,
+    private readonly integrationService: IntegrationService,
     private readonly permalink: PermalinkService
   ) {}
 
@@ -96,7 +98,7 @@ export class AuthController {
         features: [],
       };
 
-      await this.projectService.createIntegration({
+      await this.integrationService.createProjectIntegration({
         // TODO(fant): we need to somehow verify that this was the user that initiated the connection
         creatorId: state.userId,
         projectId: state.projectId,
