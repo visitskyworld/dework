@@ -25,7 +25,7 @@ export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
 
   useEffect(() => {
     // @ts-ignore
-    window.ethereum.on(
+    window.ethereum?.on(
       "chainChanged",
       () => (provider.current = loadProvider())
     );
