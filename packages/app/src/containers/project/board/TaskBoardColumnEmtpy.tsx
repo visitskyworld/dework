@@ -17,11 +17,7 @@ export const TaskBoardColumnEmpty: FC<TaskBoardColumnEmptyProps> = ({
         {icon}
       </Avatar>
     }
-    imageStyle={{
-      height: 72,
-      paddingLeft: 24,
-      paddingRight: 24,
-    }}
+    imageStyle={{ height: 72, paddingLeft: 24, paddingRight: 24 }}
     style={{ padding: 8 }}
   />
 );
