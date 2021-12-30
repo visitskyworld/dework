@@ -15,11 +15,12 @@ import { ProjectService } from "../../project/project.service";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
 
-// The three actions Github's API uses
+// The actions Github's API uses
 export enum GithubPullRequestActions {
   OPENED = "opened",
   REOPENED = "reopened",
   CLOSED = "closed",
+  READY_FOR_REVIEW = "ready_for_review", // When PR is updated from draft -> open
 }
 
 type GithubPullRequestPayload = Pick<
