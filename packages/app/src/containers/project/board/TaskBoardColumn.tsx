@@ -174,9 +174,6 @@ export const TaskBoardColumn: FC<Props> = ({
                   {provided.placeholder}
                   {empty && (
                     <Empty
-                      // image={<Icons.DollarOutlined style={{ fontSize: 56 }} />}
-                      // image={WalletsIcon.src}
-                      // imageStyle={{ height: 32, opacity: 0.7 }}
                       description={emptyStateTitle[status]}
                       image={
                         <Avatar size={64} style={{ fontSize: 32 }}>
