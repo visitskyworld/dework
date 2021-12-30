@@ -8,9 +8,24 @@ import { ExplorePopularDaosSection } from "./ExplorePopularDaosSection";
 import { LandingPageFooter } from "./Footer";
 import { ProductSection } from "./ProductSection";
 import { UserTaskBoard } from "../user/UserTaskBoard";
+import { PageHeaderBreadcrumbs } from "../navigation/PageHeaderBreadcrumbs";
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
+  if (!!user) {
+    return (
+      <>
+        <PageHeader
+          breadcrumb={
+            <PageHeaderBreadcrumbs
+              routes={[{ path: "/", breadcrumbName: "Home" }]}
+            />
+          }
+        />
+        <UserTaskBoard userId={user.id} />
+      </>
+    );
+  }
   return (
     <>
       <PageHeader
@@ -32,15 +47,9 @@ export const LandingPage: FC = () => {
         style={{ width: "100%" }}
         className="max-w-xl mx-auto"
       />
-      {!!user ? (
-        <UserTaskBoard userId={user.id} />
-      ) : (
-        <>
-          <ProductSection />
-          <ExplorePopularDaosSection />
-          <LandingPageFooter />
-        </>
-      )}
+      <ProductSection />
+      <ExplorePopularDaosSection />
+      <LandingPageFooter />
     </>
   );
 };
