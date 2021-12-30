@@ -1,22 +1,24 @@
 import { useRouter } from "next/router";
+import * as Icons from "@ant-design/icons";
 import {
   Input,
-  Menu,
   PageHeader,
   Row,
   Skeleton,
   Typography,
   Modal,
+  Dropdown,
+  Button,
+  Menu,
 } from "antd";
 import React, { FC, useMemo, useCallback, useEffect, useState } from "react";
 import { useOrganization, useUpdateOrganization } from "../hooks";
-
-import Link from "next/link";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { JoinOrganizationButton } from "./JoinOrganizationButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import Link from "next/link";
 
 const { confirm } = Modal;
 
@@ -42,6 +44,7 @@ interface Props {
 export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
   const organization = useOrganization(organizationId);
   const [organizationName, setOrganizationName] = useState("");
+  const showMoreDropdown = useToggle();
   const editName = useToggle();
   const canEdit = usePermission("update", "Organization");
   const updateOrganization = useUpdateOrganization();
@@ -137,29 +140,42 @@ export const OrganizationHeader: FC<Props> = ({ organizationId, tab }) => {
           title={{ width: 200 }}
         >
           <Row align="middle">
-            <Menu mode="horizontal" selectedKeys={[tab]}>
-              {[
-                OrganizationHeaderTab.projects,
-                OrganizationHeaderTab.board,
-                OrganizationHeaderTab.members,
-              ].map((tab) => (
-                <Menu.Item key={tab}>
-                  <Link
-                    href={organization ? `/o/${organization.slug}/${tab}` : ""}
-                  >
-                    <a>{titleByTab[tab]}</a>
-                  </Link>
-                </Menu.Item>
-              ))}
-              {canDeleteOrganization && (
-                <Menu.Item
-                  onClick={showConfirmDeleteOrganization}
-                  key={OrganizationHeaderTab.deleteOrganization}
-                >
-                  {titleByTab["deleteOrganization"]}
-                </Menu.Item>
-              )}
-            </Menu>
+            <Dropdown
+              key="avatar"
+              placement="bottomLeft"
+              visible={showMoreDropdown.isOn}
+              // @ts-ignore
+              onClick={showMoreDropdown.toggle}
+              overlay={
+                <Menu theme="dark" selectedKeys={[tab]}>
+                  {[
+                    OrganizationHeaderTab.projects,
+                    OrganizationHeaderTab.board,
+                    OrganizationHeaderTab.members,
+                  ].map((tab) => (
+                    <Menu.Item key={tab}>
+                      <Link
+                        href={
+                          organization ? `/o/${organization.slug}/${tab}` : ""
+                        }
+                      >
+                        <a>{titleByTab[tab]}</a>
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                  {canDeleteOrganization && (
+                    <Menu.Item
+                      onClick={showConfirmDeleteOrganization}
+                      key={OrganizationHeaderTab.deleteOrganization}
+                    >
+                      {titleByTab["deleteOrganization"]}
+                    </Menu.Item>
+                  )}
+                </Menu>
+              }
+            >
+              <Button icon={<Icons.MoreOutlined />} type="text" size="large" />
+            </Dropdown>
             <JoinOrganizationButton organizationId={organizationId} />
           </Row>
         </Skeleton>
