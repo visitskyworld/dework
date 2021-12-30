@@ -5,7 +5,7 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 export const LandingPageFooter: FC = () => {
   return (
-    <Layout.Footer>
+    <Layout.Footer style={{ backgroundColor: "transparent" }}>
       <Typography.Paragraph style={{ textAlign: "center" }}>
         Have questions or feedback? Reach out on Twitter or Discord
       </Typography.Paragraph>

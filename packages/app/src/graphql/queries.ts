@@ -151,11 +151,11 @@ export const task = gql`
 export const tasks = gql`
   query GetTasksQuery($input: GetTasksInput!) {
     tasks: getTasks(input: $input) {
-      ...Task
+      ...TaskWithOrganization
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskWithOrganization}
 `;
 
 export const tasksToPay = gql`
