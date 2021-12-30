@@ -185,7 +185,8 @@ export class Fixtures {
     return this.githubService.createBranch({
       name: partial.name ?? faker.datatype.string(),
       link: faker.datatype.string(),
-      repository: faker.datatype.string(),
+      repo: faker.internet.userName(),
+      owner: faker.internet.userName(),
       task,
       taskId: await task.then((t) => t.id),
     });
@@ -318,9 +319,16 @@ export class Fixtures {
     partial: Partial<Project> = {}
   ): Promise<{
     project: Project;
-    installationId: string;
+    github: {
+      installationId: string;
+      owner: string;
+      repo: string;
+    };
   }> {
     const installationId = faker.datatype.uuid();
+    const owner = faker.internet.userName();
+    const repo = faker.internet.userName();
+
     const project = await this.createProject(partial);
     const organizationIntegration = (await this.createOrganizationIntegration({
       organizationId: project.organizationId,
@@ -331,13 +339,9 @@ export class Fixtures {
       projectId: project.id,
       type: ProjectIntegrationType.GITHUB,
       organizationIntegrationId: organizationIntegration.id,
-      config: {
-        owner: faker.internet.userName(),
-        repo: faker.internet.userName(),
-        features: [],
-      },
+      config: { owner, repo, features: [] },
     });
-    return { project, installationId };
+    return { project, github: { installationId, owner, repo } };
   }
 }
 

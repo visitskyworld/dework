@@ -16,7 +16,11 @@ export class GithubBranch extends Audit {
 
   @Column()
   @Field()
-  public repository!: string;
+  public owner!: string;
+
+  @Column()
+  @Field()
+  public repo!: string;
 
   @JoinColumn()
   @ManyToOne(() => Task)

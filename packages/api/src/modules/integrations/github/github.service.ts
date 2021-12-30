@@ -1,5 +1,6 @@
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
+import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
@@ -68,21 +69,26 @@ export class GithubService {
     return Number(taskNumber);
   }
 
-  public async findTask(
-    taskNumber: number,
-    githubInstallationId: string
-  ): Promise<Task | undefined> {
+  public async findTask(query: {
+    taskNumber: number;
+    owner: string;
+    repo: string;
+    installationId: string;
+  }): Promise<Task | undefined> {
     return this.taskRepo
       .createQueryBuilder("task")
       .innerJoin("task.project", "project")
       .innerJoin("project.integrations", "projInt")
       .innerJoin("projInt.organizationIntegration", "orgInt")
-      .where("task.number = :number", { number: taskNumber })
+      .where("task.number = :number", { number: query.taskNumber })
+      .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
+      .andWhere(`"projInt"."config"->>'repo' = :repo`, { repo: query.repo })
+      .andWhere(`"projInt"."config"->>'owner' = :owner`, { owner: query.owner })
       .andWhere("orgInt.type = :type", {
-        type: ProjectIntegrationType.GITHUB,
+        type: OrganizationIntegrationType.GITHUB,
       })
       .andWhere(`"orgInt"."config"->>'installationId' = :installationId`, {
-        installationId: githubInstallationId,
+        installationId: query.installationId,
       })
       .getOne();
   }

@@ -23,7 +23,7 @@ describe("GithubController", () => {
 
   describe("webhook", () => {
     it("should create a branch in the DB", async () => {
-      const { project, installationId } =
+      const { project, github } =
         await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
@@ -42,10 +42,8 @@ describe("GithubController", () => {
             number: faker.datatype.number(),
             draft: false,
           },
-          installation: { id: installationId },
-          repository: {
-            full_name: "username/my-repo",
-          },
+          installation: { id: github.installationId },
+          repository: { name: github.repo, owner: { login: github.owner } },
         } as any,
       });
 
@@ -55,7 +53,7 @@ describe("GithubController", () => {
     });
 
     it("should update a task's status to done when a PR is merged", async () => {
-      const { project, installationId } =
+      const { project, github } =
         await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
@@ -64,7 +62,8 @@ describe("GithubController", () => {
       const branch = await fixtures.createGithubBranch({
         name: `refs/heads/username/dw-${task.number}/feature`,
         taskId: task.id,
-        repository: "username/my-repo",
+        owner: github.owner,
+        repo: github.repo,
       });
       const pullRequest = await fixtures.createGithubPullRequest({
         title: faker.datatype.string(),
@@ -85,8 +84,8 @@ describe("GithubController", () => {
             draft: false,
             merged: false,
           },
-          installation: { id: installationId },
-          repository: { full_name: branch.repository },
+          installation: { id: github.installationId },
+          repository: { name: github.repo, owner: { login: github.owner } },
         } as any,
       });
 
@@ -110,8 +109,8 @@ describe("GithubController", () => {
             draft: false,
             merged: true,
           },
-          installation: { id: installationId },
-          repository: { full_name: branch.repository },
+          installation: { id: github.installationId },
+          repository: { name: github.repo, owner: { login: github.owner } },
         } as any,
       });
 

@@ -6,19 +6,19 @@ import { GithubService } from "../github.service";
 describe("GithubService", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
-  let github: GithubService;
+  let githubService: GithubService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
-    github = app.get(GithubService);
+    githubService = app.get(GithubService);
   });
 
   afterAll(() => app.close());
 
   describe("parseTaskNumberFromBranchName", () => {
     it("should correctly parse task number", () => {
-      const fn = github.parseTaskNumberFromBranchName;
+      const fn = githubService.parseTaskNumberFromBranchName;
       expect(fn("feat/dw-123/feature-name")).toBe(123);
       expect(fn("feat/dw-123")).toBe(undefined);
       expect(fn("dw-123/feature-name")).toBe(undefined);
@@ -29,35 +29,39 @@ describe("GithubService", () => {
 
   describe("findTask", () => {
     it("should return task if has matching project integration", async () => {
-      const { project, installationId } =
+      const { project, github } =
         await fixtures.createProjectWithGithubIntegration();
 
       const task = await fixtures.createTask({ projectId: project.id });
-      const found = await github.findTask(task.number, installationId);
+      const found = await githubService.findTask({
+        taskNumber: task.number,
+        ...github,
+      });
       expect(found).toBeDefined();
       expect(found?.id).toEqual(task.id);
     });
 
     it("should not return task if integration exists with another project within the same org", async () => {
       const organization = await fixtures.createOrganization();
-      const { installationId } =
-        await fixtures.createProjectWithGithubIntegration({
-          organizationId: organization.id,
-        });
+      const { github } = await fixtures.createProjectWithGithubIntegration({
+        organizationId: organization.id,
+      });
 
       const otherProject = await fixtures.createProject({
         organizationId: organization.id,
       });
       const task = await fixtures.createTask({ projectId: otherProject.id });
-      const found = await github.findTask(task.number, installationId);
+      const found = await githubService.findTask({
+        taskNumber: task.number,
+        ...github,
+      });
       expect(found).not.toBeDefined();
     });
 
     it("should not return task if number does not match", async () => {
-      const { installationId } =
-        await fixtures.createProjectWithGithubIntegration();
+      const { github } = await fixtures.createProjectWithGithubIntegration();
 
-      const found = await github.findTask(-1, installationId);
+      const found = await githubService.findTask({ taskNumber: -1, ...github });
       expect(found).not.toBeDefined();
     });
   });
