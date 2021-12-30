@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from "react";
 import { TaskStatusEnum } from "@dewo/app/graphql/types";
-import { Col, Row, Space } from "antd";
+import { Avatar, Card, Col, List, Row, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import { OrganizationCard } from "../landingPage/OrganizationCard";
 import { useFeaturedOrganizations } from "../organization/hooks";
@@ -10,6 +10,7 @@ import { TaskSectionTitle } from "../project/board/TaskSectionTitle";
 import { useTasks } from "../task/hooks";
 import { useUserTasks } from "./hooks";
 import { TaskBoardColumnEmptyProps } from "../project/board/TaskBoardColumnEmtpy";
+import { CreateOrganizationButton } from "../navigation/CreateOrganizationButton";
 
 interface Props {
   userId: string;
@@ -66,6 +67,27 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
                       title={{ level: 5 }}
                     />
                   ))}
+                  <CreateOrganizationButton
+                    block
+                    type="text"
+                    style={{
+                      height: "unset",
+                      margin: "0 auto",
+                      textAlign: "left",
+                      padding: 0,
+                    }}
+                  >
+                    <Card size="small">
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar>
+                            <Icons.PlusOutlined />
+                          </Avatar>
+                        }
+                        title="Set up your own DAO"
+                      />
+                    </Card>
+                  </CreateOrganizationButton>
                 </Space>
               </Col>
             )}
