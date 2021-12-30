@@ -1,6 +1,15 @@
-import React, { FC, Fragment, useMemo } from "react";
+import React, { FC, Fragment, ReactNode, useMemo } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Button, Card, Badge, Space, Typography, Row, Empty } from "antd";
+import {
+  Button,
+  Card,
+  Badge,
+  Space,
+  Typography,
+  Row,
+  Empty,
+  Avatar,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
@@ -11,8 +20,30 @@ import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
 import WalletsIcon from "@dewo/app/assets/wallets.svg";
+import RecruitmentIcon from "@dewo/app/assets/graphics/recruitment.png";
+import WorkingIcon from "@dewo/app/assets/graphics/working.png";
+import ConfirmIcon from "@dewo/app/assets/graphics/confirm.png";
 
-console.log({ WalletsIcon });
+const emptyStateTitle: Record<TaskStatusEnum, string> = {
+  [TaskStatusEnum.TODO]: "Put out tasks, let contributors explore and apply",
+  [TaskStatusEnum.IN_PROGRESS]: "Keep track of contributor tasks in progress",
+  [TaskStatusEnum.IN_REVIEW]: "When a contributor is done, review the work",
+  [TaskStatusEnum.DONE]: "Pay for completed tasks in crypto using any token",
+};
+
+const _emptyStateIcon: Record<TaskStatusEnum, string> = {
+  [TaskStatusEnum.TODO]: RecruitmentIcon.src,
+  [TaskStatusEnum.IN_PROGRESS]: WorkingIcon.src,
+  [TaskStatusEnum.IN_REVIEW]: ConfirmIcon.src,
+  [TaskStatusEnum.DONE]: WalletsIcon.src,
+};
+
+const emptyStateIcon: Record<TaskStatusEnum, ReactNode> = {
+  [TaskStatusEnum.TODO]: <Icons.UsergroupAddOutlined />,
+  [TaskStatusEnum.IN_PROGRESS]: <Icons.ThunderboltOutlined />,
+  [TaskStatusEnum.IN_REVIEW]: <Icons.SafetyOutlined />,
+  [TaskStatusEnum.DONE]: <Icons.DollarCircleOutlined />,
+};
 
 interface Props {
   status: TaskStatusEnum;
@@ -155,10 +186,20 @@ export const TaskBoardColumn: FC<Props> = ({
                   {empty && (
                     <Empty
                       // image={<Icons.DollarOutlined style={{ fontSize: 56 }} />}
-                      image={WalletsIcon.src}
-                      imageStyle={{ height: 32, opacity: 0.7 }}
+                      // image={WalletsIcon.src}
+                      // imageStyle={{ height: 32, opacity: 0.7 }}
+                      description={emptyStateTitle[status]}
+                      image={
+                        <Avatar size={64} style={{ fontSize: 32 }}>
+                          {emptyStateIcon[status]}
+                        </Avatar>
+                      }
+                      imageStyle={{
+                        height: 72,
+                        paddingLeft: 24,
+                        paddingRight: 24,
+                      }}
                       style={{ padding: 8 }}
-                      description="Pay for done tasks in crypto"
                     />
                   )}
                 </div>
