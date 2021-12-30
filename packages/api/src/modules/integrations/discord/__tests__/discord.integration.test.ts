@@ -238,6 +238,21 @@ describe("DiscordIntegration", () => {
       expect(updatedDiscordChannel).not.toBe(null);
       expect(updatedDiscordChannel!.deletedAt).not.toBe(null);
     });
+
+    it("should move Discord channel to 'archived' section if status is done", async () => {
+      const project = await createProjectWithDiscordIntegration();
+      const task = await createTask({
+        projectId: project.id,
+        status: TaskStatusEnum.IN_PROGRESS,
+      });
+
+      const updated = await updateTask(task, { status: TaskStatusEnum.DONE });
+      const discordChannel = await updated.discordChannel;
+      const guild = await discord.guilds.fetch(discordGuildId);
+      const channel = await guild.channels.fetch(discordChannel!.channelId);
+      const category = await guild.channels.fetch(channel!.parentId!);
+      expect(category?.name).toEqual("Dework (archived)");
+    });
   });
 
   describe("DiscordIntegrationService", () => {

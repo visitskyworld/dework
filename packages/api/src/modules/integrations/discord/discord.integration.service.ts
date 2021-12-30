@@ -49,11 +49,15 @@ export class DiscordIntegrationService {
         `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
       );
 
-      const category = await this.getOrCreateCategory(guild);
+      const activeCategory = await this.getOrCreateCategory(guild, "Dework");
       let channel =
         event instanceof TaskCreatedEvent
           ? undefined
-          : await this.getExistingDiscordChannel(event.task, guild, category);
+          : await this.getExistingDiscordChannel(
+              event.task,
+              guild,
+              activeCategory
+            );
 
       const discordChannel = await event.task.discordChannel;
       if (!channel) {
@@ -71,7 +75,7 @@ export class DiscordIntegrationService {
           channel = await this.createDiscordChannel(
             event.task,
             guild,
-            category
+            activeCategory
           );
         }
       }
@@ -91,6 +95,11 @@ export class DiscordIntegrationService {
             break;
           case TaskStatusEnum.DONE:
             await this.postDone(event.task);
+            const archivedCategory = await this.getOrCreateCategory(
+              guild,
+              "Dework (archived)"
+            );
+            await channel.setParent(archivedCategory);
             break;
         }
       }
@@ -128,12 +137,13 @@ export class DiscordIntegrationService {
   }
 
   private async getOrCreateCategory(
-    guild: Discord.Guild
+    guild: Discord.Guild,
+    name: string
   ): Promise<Discord.CategoryChannel> {
     const channels = await guild.channels.fetch();
     const category = channels.find(
       (c): c is Discord.CategoryChannel =>
-        c.type === "GUILD_CATEGORY" && c.name === "Dework"
+        c.type === "GUILD_CATEGORY" && c.name === name
     );
 
     if (!!category) {
@@ -152,7 +162,7 @@ export class DiscordIntegrationService {
         guildId: guild.id,
       })}`
     );
-    return guild.channels.create("Dework", { type: "GUILD_CATEGORY" });
+    return guild.channels.create(name, { type: "GUILD_CATEGORY" });
   }
 
   private async getDiscordId(userId: string) {
