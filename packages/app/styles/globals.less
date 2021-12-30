@@ -447,6 +447,13 @@ textarea {
   .wmde-markdown {
     font-size: unset;
     font-family: unset;
+
+    pre {
+      background: @component-background;
+      code {
+        background: transparent;
+      }
+    }
   }
 
   // Disable fixed height of preview area and set it to the natural height of the content
@@ -501,4 +508,3 @@ textarea {
     box-shadow: 0 0 10px 0 @primary-color;
   }
 }
-
