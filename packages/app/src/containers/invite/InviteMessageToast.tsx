@@ -6,6 +6,8 @@ import { RouterContext } from "next/dist/shared/lib/router-context";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { useToggle } from "@dewo/app/util/hooks";
+import { LoginModal } from "../auth/LoginModal";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 100px)",
@@ -17,25 +19,22 @@ export const InviteMessageToast: FC = () => {
   const invite = useInvite(inviteId);
 
   const authenticated = !!useAuthContext().user;
+  const authModalVisible = useToggle();
 
   const acceptInvite = useAcceptInvite();
   const handleAcceptInvite = useCallback(async () => {
-    if (authenticated) {
-      await acceptInvite(inviteId!);
-      message.destroy();
-      message.success({
-        content: "Invite accepted!",
-        type: "success",
-        style: messageBottomStyle,
-      });
-      router.push({
-        pathname: router.pathname,
-        query: _.omit(router.query, ["inviteId"]),
-      });
-    } else {
-      router.push(`/auth?inviteId=${inviteId}&redirect=${router.asPath}`);
-    }
-  }, [acceptInvite, authenticated, inviteId, router]);
+    await acceptInvite(inviteId!);
+    message.destroy();
+    message.success({
+      content: "Invite accepted!",
+      type: "success",
+      style: messageBottomStyle,
+    });
+    router.push({
+      pathname: router.pathname,
+      query: _.omit(router.query, ["inviteId"]),
+    });
+  }, [acceptInvite, inviteId, router]);
 
   useEffect(() => {
     if (!invite) return;
@@ -53,7 +52,12 @@ export const InviteMessageToast: FC = () => {
                 ? `${inviter} has invited you as an admin to ${org}`
                 : `${inviter} has invited you to ${org}`}
             </Typography.Text>
-            <Button type="primary" onClick={handleAcceptInvite}>
+            <Button
+              type="primary"
+              onClick={
+                authenticated ? handleAcceptInvite : authModalVisible.toggleOn
+              }
+            >
               Accept invite
             </Button>
           </Space>
@@ -64,7 +68,14 @@ export const InviteMessageToast: FC = () => {
       style: messageBottomStyle,
       onClick: () => message.destroy(),
     });
-  }, [invite, inviteId, router, handleAcceptInvite]);
+  }, [
+    invite,
+    inviteId,
+    router,
+    authenticated,
+    authModalVisible.toggleOn,
+    handleAcceptInvite,
+  ]);
 
-  return null;
+  return <LoginModal toggle={authModalVisible} />;
 };
