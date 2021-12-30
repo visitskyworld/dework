@@ -54,7 +54,7 @@ export const OrganizationCard: FC<Props> = ({
                   {organization.description}
                 </Typography.Paragraph>
                 <Row align="middle" gutter={[8, 8]}>
-                  {!!organization.projects.length && (
+                  {!!openBountiesCount && (
                     <Tag color="green">
                       {`${openBountiesCount} open bounties`}
                     </Tag>
