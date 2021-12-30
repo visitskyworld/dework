@@ -10,7 +10,10 @@ import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
-import { TaskBoardColumnEmpty } from "./TaskBoardColumnEmtpy";
+import {
+  TaskBoardColumnEmpty,
+  TaskBoardColumnEmptyProps,
+} from "./TaskBoardColumnEmtpy";
 import { TaskSectionTitle } from "./TaskSectionTitle";
 
 interface Props {
@@ -20,6 +23,7 @@ interface Props {
   projectId?: string;
   currentlyDraggingTask?: Task;
   footer?: ReactNode;
+  empty?: TaskBoardColumnEmptyProps;
 }
 
 export const TaskBoardColumn: FC<Props> = ({
@@ -29,6 +33,7 @@ export const TaskBoardColumn: FC<Props> = ({
   projectId,
   currentlyDraggingTask,
   footer,
+  empty,
 }) => {
   const createCardToggle = useToggle();
   const hasPermission = usePermissionFn();
@@ -42,7 +47,7 @@ export const TaskBoardColumn: FC<Props> = ({
     [status]
   );
 
-  const empty = useMemo(
+  const isEmpty = useMemo(
     () => taskSections.every((s) => !s.tasks.length),
     [taskSections]
   );
@@ -144,7 +149,7 @@ export const TaskBoardColumn: FC<Props> = ({
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  {empty && <TaskBoardColumnEmpty status={status} />}
+                  {isEmpty && !!empty && <TaskBoardColumnEmpty {...empty} />}
                 </div>
               )}
             </Droppable>

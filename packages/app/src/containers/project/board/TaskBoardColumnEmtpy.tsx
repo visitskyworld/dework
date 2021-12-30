@@ -1,32 +1,20 @@
 import React, { FC, ReactNode } from "react";
 import { Empty, Avatar } from "antd";
-import * as Icons from "@ant-design/icons";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
 
-const emptyStateTitle: Record<TaskStatusEnum, string> = {
-  [TaskStatusEnum.TODO]: "Put out tasks, let contributors explore and apply",
-  [TaskStatusEnum.IN_PROGRESS]: "Keep track of contributor tasks in progress",
-  [TaskStatusEnum.IN_REVIEW]: "When a contributor is done, review the work",
-  [TaskStatusEnum.DONE]: "Pay for completed tasks in crypto using any token",
-};
-
-const emptyStateIcon: Record<TaskStatusEnum, ReactNode> = {
-  [TaskStatusEnum.TODO]: <Icons.UsergroupAddOutlined />,
-  [TaskStatusEnum.IN_PROGRESS]: <Icons.ThunderboltOutlined />,
-  [TaskStatusEnum.IN_REVIEW]: <Icons.SafetyOutlined />,
-  [TaskStatusEnum.DONE]: <Icons.DollarCircleOutlined />,
-};
-
-interface Props {
-  status: TaskStatusEnum;
+export interface TaskBoardColumnEmptyProps {
+  title: string;
+  icon: ReactNode;
 }
 
-export const TaskBoardColumnEmpty: FC<Props> = ({ status }) => (
+export const TaskBoardColumnEmpty: FC<TaskBoardColumnEmptyProps> = ({
+  title,
+  icon,
+}) => (
   <Empty
-    description={emptyStateTitle[status]}
+    description={title}
     image={
       <Avatar size={64} style={{ fontSize: 32 }}>
-        {emptyStateIcon[status]}
+        {icon}
       </Avatar>
     }
     imageStyle={{

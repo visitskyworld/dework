@@ -1,10 +1,10 @@
 import React, { FC } from "react";
 import Link from "next/link";
-import { Button, Row, Skeleton, Breadcrumb } from "antd";
+import { Row, Skeleton, Breadcrumb } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { MobileHeader } from "./header/MobileHeader";
-import { useRouter } from "next/router";
+import { LoginButton } from "../auth/LoginButton";
 
 const itemRender = (route: Route, _params: any, _routes: any, paths: any) => (
   <Link href={["", ...paths].join("/")}>{route.breadcrumbName}</Link>
@@ -18,8 +18,6 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
   routes,
 }) => {
   const { user } = useAuthContext();
-  const router = useRouter();
-
   return (
     <Skeleton loading={!routes} active title={false} paragraph={{ rows: 1 }}>
       <Row style={{ display: "flex", alignItems: "center" }}>
@@ -34,11 +32,7 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
           }}
         >
           <Breadcrumb itemRender={itemRender} routes={routes} />
-          {!user && (
-            <Button type="primary" href={`/auth?redirect=${router.asPath}`}>
-              Sign in
-            </Button>
-          )}
+          {!user && <LoginButton type="primary">Connect</LoginButton>}
         </Row>
       </Row>
     </Skeleton>

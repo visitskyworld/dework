@@ -18,6 +18,7 @@ import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
 import { TaskUpdateModalListener } from "../../task/TaskUpdateModal";
+import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 
 const statuses: TaskStatusEnum[] = [
   TaskStatusEnum.TODO,
@@ -30,12 +31,13 @@ interface Props {
   tasks: Task[];
   projectId?: string;
   footer?: Partial<Record<TaskStatusEnum, ReactNode>>;
+  empty?: Partial<Record<TaskStatusEnum, TaskBoardColumnEmptyProps>>;
 }
 
 const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId, footer }) => {
+export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
@@ -112,6 +114,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer }) => {
                   projectId={projectId}
                   currentlyDraggingTask={currentlyDraggingTask}
                   footer={footer?.[status]}
+                  empty={empty?.[status]}
                 />
               </div>
             ))}

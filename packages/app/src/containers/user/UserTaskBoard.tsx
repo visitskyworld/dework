@@ -1,79 +1,92 @@
+import React, { FC, useMemo } from "react";
 import { TaskStatusEnum } from "@dewo/app/graphql/types";
-import { Space } from "antd";
-import React, { FC } from "react";
+import { Col, Row, Space } from "antd";
+import * as Icons from "@ant-design/icons";
 import { OrganizationCard } from "../landingPage/OrganizationCard";
 import { useFeaturedOrganizations } from "../organization/hooks";
 import { TaskBoard } from "../project/board/TaskBoard";
+import { TaskCard } from "../project/board/TaskCard";
 import { TaskSectionTitle } from "../project/board/TaskSectionTitle";
+import { useTasks } from "../task/hooks";
 import { useUserTasks } from "./hooks";
+import { TaskBoardColumnEmptyProps } from "../project/board/TaskBoardColumnEmtpy";
 
 interface Props {
   userId: string;
 }
 
+const empty: Partial<Record<TaskStatusEnum, TaskBoardColumnEmptyProps>> = {
+  [TaskStatusEnum.IN_PROGRESS]: {
+    title: "First apply to tasks, then the ones assigned to you appear here",
+    icon: <Icons.ThunderboltOutlined />,
+  },
+  [TaskStatusEnum.IN_REVIEW]: {
+    title: "When you're done with a task, put it here for review by the DAO",
+    icon: <Icons.SafetyOutlined />,
+  },
+  [TaskStatusEnum.DONE]: {
+    title: "Keep track of your completed tasks and reward payment here",
+    icon: <Icons.DollarCircleOutlined />,
+  },
+};
+
 export const UserTaskBoard: FC<Props> = ({ userId }) => {
   const tasks = useUserTasks(userId, "cache-and-network");
   const organizations = useFeaturedOrganizations(3);
+  const latestTasks = useTasks(
+    useMemo(
+      () => ({
+        statuses: [TaskStatusEnum.TODO],
+        limit: 100,
+        organizationIds: organizations?.map((o) => o.id),
+      }),
+      [organizations]
+    ),
+    !organizations
+  );
+
   if (!tasks) return null;
   return (
     <TaskBoard
       tasks={tasks}
+      empty={empty}
       footer={{
         [TaskStatusEnum.TODO]: (
-          <>
+          <Row gutter={[8, 8]}>
             {!!organizations?.length && (
-              <>
-                <TaskSectionTitle
-                  title="Explore DAOs"
-                  style={{ paddingTop: 8 }}
-                />
+              <Col span={24}>
+                <TaskSectionTitle title="Explore DAOs" />
                 <Space
                   direction="vertical"
                   style={{ width: "100%", marginBottom: 8 }}
                 >
                   {organizations.map((organization) => (
-                    // <Card size="small">{organization.name}</Card>
-                    /*
-                    <Card key={organization.id} size="small">
-                      <List.Item.Meta
-                        avatar={
-                          <OrganizationAvatar
-                            organization={organization}
-                            // tooltip={{ visible: false }}
-                          />
-                        }
-                        title={
-                          <Typography.Text strong>
-                            {organization.name}
-                          </Typography.Text>
-                        }
-                        description={
-                          <>
-                            <Typography.Paragraph
-                              type="secondary"
-                              ellipsis={{ rows: 3 }}
-                              style={{ marginBottom: 4, lineHeight: "130%" }}
-                            >
-                              {organization.description}
-                            </Typography.Paragraph>
-                            <Row>
-                              <Tag color="green">12 open bounties</Tag>
-                            </Row>
-                          </>
-                        }
-                      />
-                    </Card>
-                    */
-
                     <OrganizationCard
                       organization={organization}
                       title={{ level: 5 }}
                     />
                   ))}
                 </Space>
-              </>
+              </Col>
             )}
-          </>
+            {!!latestTasks?.length && (
+              <Col span={24}>
+                <TaskSectionTitle title="Apply to new tasks" />
+                <Space
+                  direction="vertical"
+                  style={{ width: "100%", marginBottom: 8 }}
+                >
+                  {latestTasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      style={{ cursor: "pointer" }}
+                    />
+                  ))}
+                </Space>
+              </Col>
+            )}
+          </Row>
         ),
       }}
     />
