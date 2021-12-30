@@ -119,8 +119,6 @@ export class DiscordIntegrationService {
         this.logger.error(
           `Unknown error: ${JSON.stringify({ event, errorString })}`
         );
-
-        throw error;
       }
     }
   }
