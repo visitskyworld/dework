@@ -1,6 +1,6 @@
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import { ProjectIntegrationSource } from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
@@ -79,8 +79,8 @@ export class GithubService {
       .innerJoin("organization.projects", "allProjects")
       .innerJoin("allProjects.integrations", "integration")
       .where("task.number = :number", { number: taskNumber })
-      .andWhere("integration.source = :source", {
-        source: ProjectIntegrationSource.github,
+      .andWhere("integration.type = :type", {
+        type: ProjectIntegrationType.GITHUB,
       })
       .andWhere("integration.config->>'installationId' = :installationId", {
         installationId: githubInstallationId,

@@ -5,10 +5,7 @@ import {
   GithubPullRequest,
   GithubPullRequestStatusEnum,
 } from "@dewo/api/models/GithubPullRequest";
-import {
-  ProjectIntegrationSource,
-  GithubProjectIntegrationFeature,
-} from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
 import { ProjectService } from "../../project/project.service";
@@ -49,10 +46,10 @@ export class GithubController {
     await this.projectService.createIntegration({
       creatorId,
       projectId,
-      source: ProjectIntegrationSource.github,
+      type: ProjectIntegrationType.GITHUB,
       config: {
         installationId,
-        features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
+        features: [],
       },
     });
 

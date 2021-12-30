@@ -1,6 +1,6 @@
 import {
   DiscordProjectIntegrationConfig,
-  ProjectIntegrationSource,
+  ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -64,9 +64,9 @@ describe("DiscordIntegration", () => {
 
   async function createProjectWithDiscordIntegration() {
     const project = await fixtures.createProject();
-    await fixtures.createProjectIntegation({
+    await fixtures.createProjectIntegration({
       projectId: project.id,
-      source: ProjectIntegrationSource.discord,
+      type: ProjectIntegrationType.DISCORD,
       config: {
         features: [],
         guildId: discordGuildId,

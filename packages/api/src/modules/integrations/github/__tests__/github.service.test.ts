@@ -1,4 +1,4 @@
-import { ProjectIntegrationSource } from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
@@ -33,9 +33,9 @@ describe("GithubService", () => {
     it("should return branch if it has a matching name", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 
@@ -50,9 +50,9 @@ describe("GithubService", () => {
     it("should return pull request if it has a matching taskId", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 
@@ -67,9 +67,9 @@ describe("GithubService", () => {
     it("should return task if has matching project integration", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 
@@ -82,9 +82,9 @@ describe("GithubService", () => {
     it("should not return task if integration exists, but with another project outside the org", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 
@@ -98,9 +98,9 @@ describe("GithubService", () => {
       const installationId = faker.datatype.uuid();
       const organization = fixtures.createOrganization();
       const project = await fixtures.createProject({ organization });
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 
@@ -113,9 +113,9 @@ describe("GithubService", () => {
     it("should not return task if number does not match", async () => {
       const installationId = faker.datatype.uuid();
       const project = await fixtures.createProject();
-      await fixtures.createProjectIntegation({
+      await fixtures.createProjectIntegration({
         projectId: project.id,
-        source: ProjectIntegrationSource.github,
+        type: ProjectIntegrationType.GITHUB,
         config: { installationId, features: [] },
       });
 

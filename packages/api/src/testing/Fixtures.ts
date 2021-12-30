@@ -107,8 +107,8 @@ export class Fixtures {
     });
   }
 
-  public async createProjectIntegation(
-    partial: DeepAtLeast<ProjectIntegration, "projectId" | "source" | "config">
+  public async createProjectIntegration(
+    partial: DeepAtLeast<ProjectIntegration, "projectId" | "type" | "config">
   ): Promise<ProjectIntegration> {
     return this.projectService.createIntegration({
       creatorId: await this.createUser().then((u) => u.id),

@@ -1,10 +1,7 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
 
-import {
-  GithubProjectIntegrationFeature,
-  ProjectIntegrationSource,
-} from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -27,12 +24,12 @@ describe("GithubController", () => {
 
   async function createProjectWithGithubIntegration(installationId: string) {
     const project = await fixtures.createProject();
-    await fixtures.createProjectIntegation({
+    await fixtures.createProjectIntegration({
       projectId: project.id,
-      source: ProjectIntegrationSource.github,
+      type: ProjectIntegrationType.GITHUB,
       config: {
         installationId,
-        features: [GithubProjectIntegrationFeature.ADD_PR_TO_TASK],
+        features: [],
       },
     });
     return project;

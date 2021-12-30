@@ -9,7 +9,7 @@ import { StrategyResponse } from "./strategies/types";
 import { ProjectService } from "../project/project.service";
 import {
   DiscordProjectIntegrationConfig,
-  ProjectIntegrationSource,
+  ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { PermalinkService } from "../permalink/permalink.service";
 
@@ -100,7 +100,7 @@ export class AuthController {
         // TODO(fant): we need to somehow verify that this was the user that initiated the connection
         creatorId: state.userId,
         projectId: state.projectId,
-        source: ProjectIntegrationSource.discord,
+        type: ProjectIntegrationType.DISCORD,
         config,
       });
 

@@ -6,7 +6,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import {
   ProjectIntegration,
-  ProjectIntegrationSource,
+  ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
 import * as Discord from "discord.js";
@@ -125,13 +125,13 @@ export class DiscordIntegrationService {
 
   private async getProjectIntegration(
     projectId: string
-  ): Promise<ProjectIntegration<ProjectIntegrationSource.discord>> {
+  ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>> {
     const integration = await this.projectIntegrationRepo.findOne({
       projectId,
-      source: ProjectIntegrationSource.discord,
+      type: ProjectIntegrationType.DISCORD,
     });
 
-    return integration as ProjectIntegration<ProjectIntegrationSource.discord>;
+    return integration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
   }
 
   private async getOrCreateCategory(
