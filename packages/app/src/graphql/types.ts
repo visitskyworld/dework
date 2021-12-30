@@ -13,6 +13,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_details {
@@ -122,6 +123,7 @@ export interface UpdateUserMutation_user_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UpdateUserMutation_user_details {
@@ -203,6 +205,7 @@ export interface CreateOrganizationMutation_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface CreateOrganizationMutation {
@@ -228,6 +231,7 @@ export interface UpdateOrganizationMutation_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UpdateOrganizationMutation {
@@ -432,6 +436,7 @@ export interface CreateProjectMutation_project_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
@@ -1887,6 +1892,7 @@ export interface MeQuery_me_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface MeQuery_me_details {
@@ -1964,6 +1970,7 @@ export interface UserProfileQuery_user_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UserProfileQuery_user_details {
@@ -2108,6 +2115,7 @@ export interface UserTasksQuery_user_tasks_project_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UserTasksQuery_user_tasks_project {
@@ -2314,6 +2322,7 @@ export interface GetOrganizationQuery_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
@@ -2411,6 +2420,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
@@ -3425,6 +3435,7 @@ export interface GetInviteQuery_invite_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface GetInviteQuery_invite {
@@ -4202,6 +4213,7 @@ export interface Organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 /* tslint:disable */
@@ -4750,6 +4762,7 @@ export interface TaskWithOrganization_project_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface TaskWithOrganization_project {
@@ -4987,6 +5000,7 @@ export interface UserProfile_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UserProfile_details {
@@ -5021,6 +5035,7 @@ export interface UserDetails_organizations {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface UserDetails_details {
@@ -5163,6 +5178,7 @@ export interface OrganizationDetails {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
@@ -5190,6 +5206,7 @@ export interface Invite_organization {
   name: string;
   imageUrl: string | null;
   slug: string;
+  permalink: string;
 }
 
 export interface Invite {

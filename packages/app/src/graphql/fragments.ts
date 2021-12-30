@@ -80,6 +80,7 @@ export const organization = gql`
     name
     imageUrl
     slug
+    permalink
   }
 `;
 

@@ -6,7 +6,7 @@ import { OrganizationCard } from "./OrganizationCard";
 const NUM_COLUMNS = 3;
 
 export const ExplorePopularDaosSection: FC = () => {
-  const organizations = useFeaturedOrganizations(4);
+  const organizations = useFeaturedOrganizations(NUM_COLUMNS);
   return (
     <Row
       style={{
@@ -32,7 +32,11 @@ export const ExplorePopularDaosSection: FC = () => {
         >
           {organizations?.map((org) => (
             <Col xs={24} md={24 / NUM_COLUMNS} key={org.id}>
-              <OrganizationCard organization={org} />
+              <OrganizationCard
+                organization={org}
+                avatar={{ size: 72 }}
+                title={{ level: 4 }}
+              />
             </Col>
           ))}
         </Row>

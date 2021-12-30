@@ -1,6 +1,13 @@
 import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import React, { FC, useEffect, useCallback, useState, useMemo } from "react";
+import React, {
+  FC,
+  useEffect,
+  useCallback,
+  useState,
+  useMemo,
+  ReactNode,
+} from "react";
 import {
   DragDropContext,
   DragDropContextProps,
@@ -22,12 +29,13 @@ const statuses: TaskStatusEnum[] = [
 interface Props {
   tasks: Task[];
   projectId?: string;
+  footer?: Partial<Record<TaskStatusEnum, ReactNode>>;
 }
 
 const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
+export const TaskBoard: FC<Props> = ({ tasks, projectId, footer }) => {
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
@@ -103,6 +111,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId }) => {
                   taskSections={taskSectionsByStatus[status] ?? emptySections}
                   projectId={projectId}
                   currentlyDraggingTask={currentlyDraggingTask}
+                  footer={footer?.[status]}
                 />
               </div>
             ))}

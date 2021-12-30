@@ -104,7 +104,12 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
   ]);
 
   return (
-    <Card size="small" style={style} onClick={navigateToTask}>
+    <Card
+      size="small"
+      style={style}
+      className="hover:component-highlight"
+      onClick={navigateToTask}
+    >
       <Row>
         <Space
           direction="vertical"
@@ -136,7 +141,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
               >
                 <OrganizationAvatar
                   organization={task.project.organization}
-                  size={21}
+                  size={20}
                 />
                 <Typography.Text style={{ marginLeft: 4 }}>
                   {task.project.organization.name}

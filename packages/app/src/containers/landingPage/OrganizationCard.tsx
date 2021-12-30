@@ -1,24 +1,75 @@
 import Link from "next/link";
-import React, { FC } from "react";
-import { Card, Col, Row, Space, Tag, Typography } from "antd";
+import React, { FC, useMemo } from "react";
+import { AvatarProps, Card, List, Row, Tag, Typography } from "antd";
 import { OrganizationDetails } from "../../graphql/types";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { TitleProps } from "antd/lib/typography/Title";
 
 interface Props {
   organization: OrganizationDetails;
+  avatar?: AvatarProps;
+  title?: TitleProps;
 }
 
-export const OrganizationCard: FC<Props> = ({ organization }) => {
+export const OrganizationCard: FC<Props> = ({
+  organization,
+  avatar,
+  title,
+}) => {
+  const openBountiesCount = useMemo(
+    () =>
+      organization.projects
+        .map((p) => p.openBountyTaskCount)
+        .reduce((a, b) => a + b, 0),
+    [organization]
+  );
   return (
-    <Link href={`/o/${organization.slug}`}>
+    <Link href={organization.permalink}>
       <a>
         <Card
           size="small"
           style={{ paddingTop: 8, paddingBottom: 8 }}
           className="hover:component-highlight"
         >
+          <List.Item.Meta
+            avatar={
+              <OrganizationAvatar {...avatar} organization={organization} />
+            }
+            title={
+              <Typography.Title
+                {...title}
+                ellipsis={{ rows: 1 }}
+                style={{ marginBottom: 0 }}
+              >
+                {organization.name}
+              </Typography.Title>
+            }
+            description={
+              <>
+                <Typography.Paragraph
+                  type="secondary"
+                  ellipsis={{ rows: 3 }}
+                  style={{ lineHeight: "130%", marginBottom: 4 }}
+                >
+                  {organization.description}
+                </Typography.Paragraph>
+                <Row align="middle" gutter={[8, 8]}>
+                  {!!organization.projects.length && (
+                    <Tag color="green">
+                      {`${openBountiesCount} open bounties`}
+                    </Tag>
+                  )}
+                  <Tag color="yellow">
+                    {`${organization.members.length} contributors`}
+                  </Tag>
+                  {/* <Tag color="blue">{`17 tasks last week`}</Tag> */}
+                </Row>
+              </>
+            }
+          />
+          {/*
           <Space>
-            <OrganizationAvatar size={72} organization={organization} />
+            <OrganizationAvatar {...avatar} organization={organization} />
             <Col>
               <Typography.Title
                 level={4}
@@ -33,7 +84,7 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
               <Row align="middle" gutter={[8, 8]}>
                 {!!organization.projects.length && (
                   <Tag color="green">
-                    {`${organization.projects.length} open bounties`}
+                    {`${openBountiesCount} open bounties`}
                   </Tag>
                 )}
                 <Tag color="yellow">
@@ -43,6 +94,7 @@ export const OrganizationCard: FC<Props> = ({ organization }) => {
               </Row>
             </Col>
           </Space>
+                */}
         </Card>
       </a>
     </Link>
