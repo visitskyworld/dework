@@ -19,23 +19,12 @@ import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
-import WalletsIcon from "@dewo/app/assets/wallets.svg";
-import RecruitmentIcon from "@dewo/app/assets/graphics/recruitment.png";
-import WorkingIcon from "@dewo/app/assets/graphics/working.png";
-import ConfirmIcon from "@dewo/app/assets/graphics/confirm.png";
 
 const emptyStateTitle: Record<TaskStatusEnum, string> = {
   [TaskStatusEnum.TODO]: "Put out tasks, let contributors explore and apply",
   [TaskStatusEnum.IN_PROGRESS]: "Keep track of contributor tasks in progress",
   [TaskStatusEnum.IN_REVIEW]: "When a contributor is done, review the work",
   [TaskStatusEnum.DONE]: "Pay for completed tasks in crypto using any token",
-};
-
-const _emptyStateIcon: Record<TaskStatusEnum, string> = {
-  [TaskStatusEnum.TODO]: RecruitmentIcon.src,
-  [TaskStatusEnum.IN_PROGRESS]: WorkingIcon.src,
-  [TaskStatusEnum.IN_REVIEW]: ConfirmIcon.src,
-  [TaskStatusEnum.DONE]: WalletsIcon.src,
 };
 
 const emptyStateIcon: Record<TaskStatusEnum, ReactNode> = {
