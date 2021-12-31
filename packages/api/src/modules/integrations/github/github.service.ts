@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import * as path from "path";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
 import {
@@ -130,10 +129,7 @@ export class GithubService {
   }
 
   private createClient(installationId: string): Octokit {
-    const privateKeyPath = path.join(
-      process.cwd(),
-      this.config.get("GITHUB_APP_PRIVATE_KEY_PATH") as string
-    );
+    const privateKeyPath = this.config.get("GITHUB_APP_PRIVATE_KEY_PATH");
     return new Octokit({
       authStrategy: createAppAuth,
       auth: {
