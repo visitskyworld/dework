@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Switch, Typography, Select } from "antd";
+import { Form, Button, Input, Typography, Select, Radio } from "antd";
 import { useCreateProject, useCreateProjectIntegration } from "../hooks";
 import {
   CreateProjectInput,
@@ -16,7 +16,7 @@ import {
 import { useConnectToGithubUrl } from "../settings/ProjectGithubIntegrations";
 
 interface FormValues extends CreateProjectInput {
-  isDevProject?: boolean;
+  type?: "dev" | "non-dev";
   githubRepoId?: string;
 }
 
@@ -48,7 +48,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async ({ isDevProject, githubRepoId, ...input }: FormValues) => {
+    async ({ type, githubRepoId, ...input }: FormValues) => {
       try {
         setLoading(true);
         const project = await createProject(input);
@@ -98,14 +98,14 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         <Input placeholder="Enter a project name..." />
       </Form.Item>
 
-      <Form.Item
-        label="Is this a dev project?"
-        name="isDevProject"
-        valuePropName="checked"
-      >
-        <Switch />
+      <Form.Item label="Project Type" name="type">
+        <Radio.Group>
+          <Radio.Button value="dev">Development</Radio.Button>
+          <Radio.Button value="non-dev">Non-dev</Radio.Button>
+        </Radio.Group>
       </Form.Item>
-      {values.isDevProject && !!organization && !hasGithubIntegration && (
+
+      {values.type === "dev" && !!organization && !hasGithubIntegration && (
         <FormSection label="Github Integration (optional)">
           <Typography.Paragraph style={{ marginBottom: 0 }}>
             Want to automatically link Github branches and make pull requests
@@ -121,7 +121,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </Button>
         </FormSection>
       )}
-      {values.isDevProject && !!organization && hasGithubIntegration && (
+      {values.type === "dev" && !!organization && hasGithubIntegration && (
         <Form.Item name="githubRepoId" label="Connect Github repo">
           <Select
             loading={!githubRepos}
