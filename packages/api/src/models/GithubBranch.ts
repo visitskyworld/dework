@@ -16,7 +16,7 @@ export class GithubBranch extends Audit {
 
   @Column()
   @Field()
-  public owner!: string;
+  public organization!: string;
 
   @Column()
   @Field()

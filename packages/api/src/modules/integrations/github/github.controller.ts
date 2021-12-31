@@ -73,13 +73,13 @@ export class GithubController {
     this.log("Parsed task number from branch name", { branchName, taskNumber });
 
     const installationId = body.installation.id;
-    const owner = body.repository.owner.login;
+    const organization = body.repository.owner.login;
     const repo = body.repository.name;
 
     const task = await this.githubService.findTask({
       taskNumber,
       installationId,
-      owner,
+      organization,
       repo,
     });
 
@@ -96,7 +96,7 @@ export class GithubController {
       this.log("Found existing branch", {
         name: branchName,
         repo: branch.repo,
-        owner: branch.owner,
+        organization: branch.organization,
       });
 
       // Check if it's a deletion push
@@ -115,15 +115,19 @@ export class GithubController {
       await this.triggerTaskUpdatedSubscription(task.id);
     } else {
       const repo = body.repository.name;
-      const owner = body.repository.owner.login;
+      const organization = body.repository.owner.login;
       await this.githubService.createBranch({
         name: branchName,
         repo,
-        owner,
-        link: `https://github.com/${owner}/${repo}/compare/${branchName}`,
+        organization,
+        link: `https://github.com/${organization}/${repo}/compare/${branchName}`,
         taskId: task.id,
       });
-      this.log("Created a new branch", { name: branchName, repo, owner });
+      this.log("Created a new branch", {
+        name: branchName,
+        repo,
+        organization,
+      });
 
       await this.triggerTaskUpdatedSubscription(task.id);
     }

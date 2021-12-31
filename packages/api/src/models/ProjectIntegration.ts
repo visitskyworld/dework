@@ -26,7 +26,7 @@ export interface DiscordProjectIntegrationConfig {
 }
 
 export interface GithubProjectIntegrationConfig {
-  owner: string;
+  organization: string;
   repo: string;
   features: GithubProjectIntegrationFeature[];
 }

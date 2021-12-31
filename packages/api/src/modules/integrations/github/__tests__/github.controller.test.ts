@@ -43,7 +43,10 @@ describe("GithubController", () => {
             draft: false,
           },
           installation: { id: github.installationId },
-          repository: { name: github.repo, owner: { login: github.owner } },
+          repository: {
+            name: github.repo,
+            owner: { login: github.organization },
+          },
         } as any,
       });
 
@@ -62,7 +65,7 @@ describe("GithubController", () => {
       const branch = await fixtures.createGithubBranch({
         name: `refs/heads/username/dw-${task.number}/feature`,
         taskId: task.id,
-        owner: github.owner,
+        organization: github.organization,
         repo: github.repo,
       });
       const pullRequest = await fixtures.createGithubPullRequest({
@@ -85,7 +88,10 @@ describe("GithubController", () => {
             merged: false,
           },
           installation: { id: github.installationId },
-          repository: { name: github.repo, owner: { login: github.owner } },
+          repository: {
+            name: github.repo,
+            owner: { login: github.organization },
+          },
         } as any,
       });
 
@@ -110,7 +116,10 @@ describe("GithubController", () => {
             merged: true,
           },
           installation: { id: github.installationId },
-          repository: { name: github.repo, owner: { login: github.owner } },
+          repository: {
+            name: github.repo,
+            owner: { login: github.organization },
+          },
         } as any,
       });
 

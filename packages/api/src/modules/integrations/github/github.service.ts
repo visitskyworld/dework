@@ -1,12 +1,22 @@
+import * as fs from "fs";
+import * as path from "path";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
+import { createAppAuth } from "@octokit/auth-app";
+import { Octokit } from "@octokit/rest";
 import { Repository } from "typeorm";
+import { ConfigType } from "../../app/config";
+import { GithubRepo } from "./dto/GithubRepo";
 
 @Injectable()
 export class GithubService {
@@ -16,7 +26,10 @@ export class GithubService {
     @InjectRepository(GithubBranch)
     private readonly githubBranchRepo: Repository<GithubBranch>,
     @InjectRepository(Task)
-    private readonly taskRepo: Repository<Task>
+    private readonly taskRepo: Repository<Task>,
+    @InjectRepository(OrganizationIntegration)
+    private readonly organizationIntegrationRepo: Repository<OrganizationIntegration>,
+    private readonly config: ConfigService<ConfigType>
   ) {}
 
   public async createPullRequest(
@@ -71,7 +84,7 @@ export class GithubService {
 
   public async findTask(query: {
     taskNumber: number;
-    owner: string;
+    organization: string;
     repo: string;
     installationId: string;
   }): Promise<Task | undefined> {
@@ -83,7 +96,9 @@ export class GithubService {
       .where("task.number = :number", { number: query.taskNumber })
       .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
       .andWhere(`"projInt"."config"->>'repo' = :repo`, { repo: query.repo })
-      .andWhere(`"projInt"."config"->>'owner' = :owner`, { owner: query.owner })
+      .andWhere(`"projInt"."config"->>'organization' = :organization`, {
+        owner: query.organization,
+      })
       .andWhere("orgInt.type = :type", {
         type: OrganizationIntegrationType.GITHUB,
       })
@@ -91,5 +106,41 @@ export class GithubService {
         installationId: query.installationId,
       })
       .getOne();
+  }
+
+  public async getOrganizationRepos(
+    organizationId: string
+  ): Promise<GithubRepo[]> {
+    const integration = (await this.organizationIntegrationRepo.findOne({
+      organizationId,
+      type: OrganizationIntegrationType.GITHUB,
+    })) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const client = this.createClient(integration.config.installationId);
+    const res = await client.apps.listReposAccessibleToInstallation();
+    return res.data.repositories.map((repo) => ({
+      id: repo.node_id,
+      name: repo.name,
+      organization: repo.owner.login,
+      integrationId: integration.id,
+    }));
+  }
+
+  private createClient(installationId: string): Octokit {
+    const privateKeyPath = path.join(
+      process.cwd(),
+      this.config.get("GITHUB_APP_PRIVATE_KEY_PATH") as string
+    );
+    return new Octokit({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: this.config.get("GITHUB_APP_ID"),
+        privateKey: fs.readFileSync(privateKeyPath, "utf8"),
+        installationId,
+      },
+    });
   }
 }

@@ -8,14 +8,21 @@ import { GithubService } from "./github.service";
 import { TaskModule } from "../../task/task.module";
 import { LoggerMiddleware } from "../../auth/logger";
 import { IntegrationModule } from "../integration.module";
+import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegration";
+import { GithubResolver } from "./github.resolver";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([GithubPullRequest, GithubBranch, Task]),
+    TypeOrmModule.forFeature([
+      GithubPullRequest,
+      GithubBranch,
+      Task,
+      OrganizationIntegration,
+    ]),
     TaskModule,
     IntegrationModule,
   ],
-  providers: [GithubService],
+  providers: [GithubService, GithubResolver],
   controllers: [GithubController],
   exports: [GithubService],
 })

@@ -23,6 +23,8 @@
     "@nestjs/platform-express": "^8.2.3",
     "@nestjs/schedule": "^1.0.2",
     "@nestjs/typeorm": "^8.0.2",
+    "@octokit/auth-app": "^3.6.1",
+    "@octokit/rest": "^18.12.0",
     "@solana/web3.js": "^1.31.0",
     "apollo-server-core": "^3.5.0",
     "apollo-server-express": "^3.5.0",

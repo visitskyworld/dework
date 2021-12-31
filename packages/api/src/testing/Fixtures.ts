@@ -186,7 +186,7 @@ export class Fixtures {
       name: partial.name ?? faker.datatype.string(),
       link: faker.datatype.string(),
       repo: faker.internet.userName(),
-      owner: faker.internet.userName(),
+      organization: faker.internet.userName(),
       task,
       taskId: await task.then((t) => t.id),
     });
@@ -321,12 +321,12 @@ export class Fixtures {
     project: Project;
     github: {
       installationId: string;
-      owner: string;
+      organization: string;
       repo: string;
     };
   }> {
     const installationId = faker.datatype.uuid();
-    const owner = faker.internet.userName();
+    const organization = faker.internet.userName();
     const repo = faker.internet.userName();
 
     const project = await this.createProject(partial);
@@ -339,9 +339,9 @@ export class Fixtures {
       projectId: project.id,
       type: ProjectIntegrationType.GITHUB,
       organizationIntegrationId: organizationIntegration.id,
-      config: { owner, repo, features: [] },
+      config: { organization, repo, features: [] },
     });
-    return { project, github: { installationId, owner, repo } };
+    return { project, github: { installationId, organization, repo } };
   }
 }
 
