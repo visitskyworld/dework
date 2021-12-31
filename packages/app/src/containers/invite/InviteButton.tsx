@@ -1,4 +1,4 @@
-import { Alert, Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown, Menu, message } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
 import { useCreateInvite } from "./hooks";
@@ -14,7 +14,6 @@ interface Props {
 
 export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
   const [loading, setLoading] = useState(false);
-  const [inviteId, setInviteId] = useState<string>();
   const org = useOrganization(organizationId);
   const proj = useProject(projectId);
 
@@ -36,7 +35,6 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
           role,
           organizationId: organizationId!,
         });
-        setInviteId(inviteId);
         const inviteLink = !!proj
           ? `${window.location.origin}/o/${org!.slug}/p/${
               proj!.slug
@@ -49,6 +47,8 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
         el.select();
         navigator.clipboard.writeText(inviteLink);
         document.body.removeChild(el);
+
+        message.success({ content: "Invite link copied", type: "success" });
       } finally {
         setLoading(false);
       }
@@ -65,10 +65,6 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
   );
 
   if (!org || !proj || !canInviteMember) return null;
-  if (!!inviteId) {
-    return <Alert message="Invite link copied" type="success" showIcon />;
-  }
-
   if (!canInviteAdmin) {
     return (
       <Button
