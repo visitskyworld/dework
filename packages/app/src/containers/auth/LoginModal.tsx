@@ -8,6 +8,7 @@ import {
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
 import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
+import { useProvider } from "@dewo/app/util/ethereum";
 
 interface Props {
   toggle: UseToggleHook;
@@ -21,19 +22,35 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     [router.query, router.asPath, appUrl]
   );
 
+  const isMetamaskAvailable = !!useProvider().current;
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
   const authWithMetamask = useCallback(async () => {
+    if (!isMetamaskAvailable) {
+      window.open(
+        `https://metamask.app.link/dapp/${window.location.hostname}/${window.location.pathname}`
+      );
+      return;
+    }
+
     try {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       await router.push(
         `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
       );
+    } catch (error) {
+      alert((error as Error).message);
     } finally {
       authingWithMetamask.toggleOff();
     }
-  }, [createMetamaskThreepid, router, state, authingWithMetamask]);
+  }, [
+    createMetamaskThreepid,
+    router,
+    state,
+    authingWithMetamask,
+    isMetamaskAvailable,
+  ]);
 
   return (
     <Modal
