@@ -10,6 +10,7 @@ module.exports = withLess(
       GRAPHQL_WS_URL: process.env.GRAPHQL_WS_URL,
       GITHUB_APP_URL: process.env.GITHUB_APP_URL,
       ENVIRONMENT: process.env.ENVIRONMENT,
+      SENTRY_DSN: process.env.SENTRY_DSN,
     },
   })
 );

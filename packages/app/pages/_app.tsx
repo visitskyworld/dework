@@ -6,6 +6,7 @@ import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
 import {
   Constants,
@@ -43,6 +44,8 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
   demo: "/logo.demo.svg",
   prod: "/logo.svg",
 };
+
+Sentry.init({ dsn: Constants.SENTRY_DSN, environment: Constants.ENVIRONMENT });
 
 interface AuthProps {
   authenticated: boolean;
