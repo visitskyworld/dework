@@ -16,4 +16,7 @@ export class CreateProjectIntegrationInput {
 
   @Field(() => GraphQLUUID)
   public projectId!: string;
+
+  @Field(() => GraphQLUUID)
+  public organizationIntegrationId!: string;
 }

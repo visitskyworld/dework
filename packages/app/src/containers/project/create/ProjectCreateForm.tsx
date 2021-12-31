@@ -1,7 +1,23 @@
-import React, { FC, useCallback, useState } from "react";
-import { Form, Button, Input } from "antd";
-import { useCreateProject } from "../hooks";
-import { CreateProjectInput, Project } from "@dewo/app/graphql/types";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import { Form, Button, Input, Switch, Typography, Select } from "antd";
+import { useCreateProject, useCreateProjectIntegration } from "../hooks";
+import {
+  CreateProjectInput,
+  OrganizationIntegrationType,
+  Project,
+  ProjectIntegrationType,
+} from "@dewo/app/graphql/types";
+import { FormSection } from "@dewo/app/components/FormSection";
+import * as Icons from "@ant-design/icons";
+import {
+  useOrganization,
+  useOrganizationGithubRepos,
+} from "../../organization/hooks";
+
+interface FormValues extends CreateProjectInput {
+  isDevProject?: boolean;
+  githubRepoId?: string;
+}
 
 interface ProjectCreateFormProps {
   organizationId: string;
@@ -12,36 +28,118 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
+  const organization = useOrganization(organizationId);
   const createProject = useCreateProject();
+  const createProjectIntegration = useCreateProjectIntegration();
+
+  const hasGithubIntegration = useMemo(
+    () =>
+      !!organization?.integrations.some(
+        (i) => i.type === OrganizationIntegrationType.GITHUB
+      ),
+    [organization?.integrations]
+  );
+  const githubRepos = useOrganizationGithubRepos(
+    organizationId,
+    !hasGithubIntegration
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async (values: CreateProjectInput) => {
+    async ({ isDevProject, githubRepoId, ...input }: FormValues) => {
       try {
         setLoading(true);
-        const project = await createProject(values);
+        const project = await createProject(input);
+
+        const repo = githubRepos?.find((r) => r.id === githubRepoId);
+        if (!!repo) {
+          await createProjectIntegration({
+            projectId: project.id,
+            type: ProjectIntegrationType.GITHUB,
+            organizationIntegrationId: repo.integrationId,
+            config: {
+              repo: repo.name,
+              organization: repo.organization,
+              features: [],
+            },
+          });
+        }
+
         await onCreated(project);
       } finally {
         setLoading(false);
       }
     },
-    [createProject, onCreated]
+    [createProject, createProjectIntegration, onCreated, githubRepos]
+  );
+
+  const [values, setValues] = useState<Partial<FormValues>>({});
+  const handleChange = useCallback(
+    (_changed: Partial<FormValues>, values: Partial<FormValues>) =>
+      setValues(values),
+    []
   );
 
   return (
-    <Form
+    <Form<FormValues>
       layout="vertical"
       requiredMark={false}
       initialValues={{ organizationId }}
       onFinish={handleSubmit}
+      onValuesChange={handleChange}
     >
       <Form.Item
         label="Project Name"
         name="name"
         rules={[{ required: true, message: "Please enter a name" }]}
       >
-        <Input />
+        <Input placeholder="Enter a project name..." />
       </Form.Item>
+
+      <Form.Item
+        label="Is this a dev project?"
+        name="isDevProject"
+        valuePropName="checked"
+      >
+        <Switch />
+      </Form.Item>
+      {values.isDevProject && !!organization && !hasGithubIntegration && (
+        <FormSection label="Github Integration (optional)">
+          <Typography.Paragraph style={{ marginBottom: 0 }}>
+            Want to automatically link Github branches and make pull requests
+            show up here? Set up the Github integration for this project.
+          </Typography.Paragraph>
+          <Button
+            // size="small"
+            type="ghost"
+            style={{ marginTop: 4 }}
+            icon={<Icons.GithubOutlined />}
+            href={"#"}
+          >
+            Connect to Github
+          </Button>
+        </FormSection>
+      )}
+      {values.isDevProject && !!organization && hasGithubIntegration && (
+        <Form.Item name="githubRepoId" label="Connect Github repo">
+          <Select
+            loading={!githubRepos}
+            placeholder="Select Github Repo"
+            allowClear
+          >
+            {githubRepos?.map((repo) => (
+              <Select.Option
+                key={repo.id}
+                value={repo.id}
+                label={`${repo.organization}/${repo.name}`}
+              >
+                {`${repo.organization}/${repo.name}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
+
       <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
         <Input />
       </Form.Item>

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { TaskDetails } from "@dewo/app/graphql/types";
+import { ProjectIntegrationType, TaskDetails } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubPullRequestRow } from "./GithubPullRequestRow";
 import { GithubBranchRow } from "./GithubBranchRow";
@@ -12,6 +12,10 @@ interface Props {
 
 export const GithubIntegrationSection: FC<Props> = ({ task }) => {
   const integrations = useProjectIntegrations(task.projectId);
+  const hasGithubIntegration = useMemo(
+    () => integrations?.some((i) => i.type === ProjectIntegrationType.GITHUB),
+    [integrations]
+  );
 
   const branchesWithoutPullRequests = useMemo(
     () =>
@@ -24,7 +28,7 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
     [task.githubBranches, task.githubPullRequests]
   );
 
-  if (!integrations?.length) return null;
+  if (!hasGithubIntegration) return null;
   return (
     <>
       {!!task.githubPullRequests.length && (

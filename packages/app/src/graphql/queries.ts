@@ -219,3 +219,13 @@ export const paymentNetworks = gql`
   ${Fragments.paymentNetwork}
   ${Fragments.paymentToken}
 `;
+
+export const organizationGithubRepos = gql`
+  query GetOrganizationGithubReposQuery($organizationId: UUID!) {
+    repos: getGithubRepos(organizationId: $organizationId) {
+      ...GithubRepo
+    }
+  }
+
+  ${Fragments.githubRepo}
+`;

@@ -98,10 +98,18 @@ export const organizationMember = gql`
   ${user}
 `;
 
+export const organizationIntegration = gql`
+  fragment OrganizationIntegration on OrganizationIntegration {
+    id
+    type
+    config
+  }
+`;
+
 export const projectIntegration = gql`
   fragment ProjectIntegration on ProjectIntegration {
     id
-    source
+    type
     config
   }
 `;
@@ -180,10 +188,20 @@ export const githubBranch = gql`
     id
     name
     link
-    repository
+    repo
+    organization
     createdAt
     updatedAt
     deletedAt
+  }
+`;
+
+export const githubRepo = gql`
+  fragment GithubRepo on GithubRepo {
+    id
+    name
+    organization
+    integrationId
   }
 `;
 
@@ -335,10 +353,14 @@ export const organizationDetails = gql`
     members {
       ...OrganizationMember
     }
+    integrations {
+      ...OrganizationIntegration
+    }
   }
 
   ${organization}
   ${organizationMember}
+  ${organizationIntegration}
   ${projectDetails}
   ${user}
 `;

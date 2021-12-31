@@ -17,7 +17,7 @@ export const ConnectGithubAlert: FC<Props> = ({ projectId }) => {
           <>
             <Typography.Text>
               Want to automatically link Github branches and make pull requests
-              show up here? Set up our Github integration for this project.
+              show up here? Set up the Github integration for this project.
             </Typography.Text>
             <br />
             <Button

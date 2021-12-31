@@ -357,7 +357,7 @@ export interface CreateProjectMutation_project_paymentMethods {
 export interface CreateProjectMutation_project_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -395,7 +395,7 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
 export interface CreateProjectMutation_project_organization_projects_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -430,6 +430,13 @@ export interface CreateProjectMutation_project_organization_members {
   user: CreateProjectMutation_project_organization_members_user;
 }
 
+export interface CreateProjectMutation_project_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
 export interface CreateProjectMutation_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -440,6 +447,7 @@ export interface CreateProjectMutation_project_organization {
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
+  integrations: CreateProjectMutation_project_organization_integrations[];
 }
 
 export interface CreateProjectMutation_project {
@@ -509,7 +517,7 @@ export interface UpdateProjectMutation_project_paymentMethods {
 export interface UpdateProjectMutation_project_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -1269,7 +1277,7 @@ export interface CreateTaskTagMutationVariables {
 export interface CreateProjectIntegrationMutation_integration_project_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -1282,6 +1290,8 @@ export interface CreateProjectIntegrationMutation_integration_project {
 export interface CreateProjectIntegrationMutation_integration {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
   project: CreateProjectIntegrationMutation_integration_project;
 }
 
@@ -1837,7 +1847,8 @@ export interface CreateTaskPaymentsMutation_tasks_githubBranches {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
@@ -2281,7 +2292,7 @@ export interface GetOrganizationQuery_organization_projects_paymentMethods {
 export interface GetOrganizationQuery_organization_projects_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -2316,6 +2327,13 @@ export interface GetOrganizationQuery_organization_members {
   user: GetOrganizationQuery_organization_members_user;
 }
 
+export interface GetOrganizationQuery_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
 export interface GetOrganizationQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -2326,6 +2344,7 @@ export interface GetOrganizationQuery_organization {
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
+  integrations: GetOrganizationQuery_organization_integrations[];
 }
 
 export interface GetOrganizationQuery {
@@ -2379,7 +2398,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -2414,6 +2433,13 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
   user: GetFeaturedOrganizationsQuery_featuredOrganizations_members_user;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -2424,6 +2450,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
+  integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_integrations[];
 }
 
 export interface GetFeaturedOrganizationsQuery {
@@ -2633,7 +2660,7 @@ export interface GetProjectQuery_project_paymentMethods {
 export interface GetProjectQuery_project_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -3001,7 +3028,8 @@ export interface GetTaskQuery_task_githubBranches {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
@@ -3152,6 +3180,26 @@ export interface GetTasksQuery_tasks_applications {
   user: GetTasksQuery_tasks_applications_user;
 }
 
+export interface GetTasksQuery_tasks_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetTasksQuery_tasks_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  organization: GetTasksQuery_tasks_project_organization;
+}
+
 export interface GetTasksQuery_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3167,6 +3215,7 @@ export interface GetTasksQuery_tasks {
   assignees: GetTasksQuery_tasks_assignees[];
   reward: GetTasksQuery_tasks_reward | null;
   applications: GetTasksQuery_tasks_applications[];
+  project: GetTasksQuery_tasks_project;
 }
 
 export interface GetTasksQuery {
@@ -3395,7 +3444,7 @@ export interface GetTasksToPayQueryVariables {
 export interface GetProjectIntegrationsQuery_project_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -3488,6 +3537,31 @@ export interface GetPaymentNetworksQuery_networks {
 
 export interface GetPaymentNetworksQuery {
   networks: GetPaymentNetworksQuery_networks[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationGithubReposQuery
+// ====================================================
+
+export interface GetOrganizationGithubReposQuery_repos {
+  __typename: "GithubRepo";
+  id: string;
+  name: string;
+  organization: string;
+  integrationId: Scalar.UUID;
+}
+
+export interface GetOrganizationGithubReposQuery {
+  repos: GetOrganizationGithubReposQuery_repos[] | null;
+}
+
+export interface GetOrganizationGithubReposQueryVariables {
+  organizationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -3649,7 +3723,8 @@ export interface TaskCreatedSubscription_task_githubBranches {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
@@ -3844,7 +3919,8 @@ export interface TaskUpdatedSubscription_task_githubBranches {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
@@ -4247,13 +4323,29 @@ export interface OrganizationMember {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: OrganizationIntegration
+// ====================================================
+
+export interface OrganizationIntegration {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectIntegration
 // ====================================================
 
 export interface ProjectIntegration {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -4319,7 +4411,7 @@ export interface ProjectDetails_paymentMethods {
 export interface ProjectDetails_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -4470,10 +4562,28 @@ export interface GithubBranch {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: GithubRepo
+// ====================================================
+
+export interface GithubRepo {
+  __typename: "GithubRepo";
+  id: string;
+  name: string;
+  organization: string;
+  integrationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -4953,7 +5063,8 @@ export interface TaskDetails_githubBranches {
   id: Scalar.UUID;
   name: string;
   link: string;
-  repository: string;
+  repo: string;
+  organization: string;
   createdAt: Scalar.DateTime;
   updatedAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
@@ -5137,7 +5248,7 @@ export interface OrganizationDetails_projects_paymentMethods {
 export interface OrganizationDetails_projects_integrations {
   __typename: "ProjectIntegration";
   id: Scalar.UUID;
-  source: string;
+  type: string;
   config: Scalar.JSONObject;
 }
 
@@ -5172,6 +5283,13 @@ export interface OrganizationDetails_members {
   user: OrganizationDetails_members_user;
 }
 
+export interface OrganizationDetails_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
 export interface OrganizationDetails {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5182,6 +5300,7 @@ export interface OrganizationDetails {
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
+  integrations: OrganizationDetails_integrations[];
 }
 
 /* tslint:disable */
@@ -5233,6 +5352,11 @@ export enum GithubPullRequestStatusEnum {
   OPEN = "OPEN",
 }
 
+export enum OrganizationIntegrationType {
+  DISCORD = "DISCORD",
+  GITHUB = "GITHUB",
+}
+
 export enum OrganizationRole {
   ADMIN = "ADMIN",
   MEMBER = "MEMBER",
@@ -5264,9 +5388,9 @@ export enum PaymentTokenVisibility {
   IF_HAS_BALANCE = "IF_HAS_BALANCE",
 }
 
-export enum ProjectIntegrationSource {
-  discord = "discord",
-  github = "github",
+export enum ProjectIntegrationType {
+  DISCORD = "DISCORD",
+  GITHUB = "GITHUB",
 }
 
 export enum TaskRewardTrigger {
@@ -5340,9 +5464,10 @@ export interface CreateProjectInput {
 }
 
 export interface CreateProjectIntegrationInput {
-  source: ProjectIntegrationSource;
+  type: ProjectIntegrationType;
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
+  organizationIntegrationId: Scalar.UUID;
 }
 
 export interface CreateTaskApplicationInput {

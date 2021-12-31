@@ -4,7 +4,7 @@ import { useCurrentUser } from "@dewo/app/util/hooks";
 import {
   GetProjectIntegrationsQuery,
   GetProjectIntegrationsQueryVariables,
-  ProjectIntegrationSource,
+  ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useQuery } from "@apollo/client";
@@ -28,8 +28,7 @@ export const ProjectDiscordIntegrations: FC<Props> = ({
     .integrations;
 
   const integration = useMemo(
-    () =>
-      integrations?.find((i) => i.source === ProjectIntegrationSource.discord),
+    () => integrations?.find((i) => i.type === ProjectIntegrationType.DISCORD),
     [integrations]
   );
 

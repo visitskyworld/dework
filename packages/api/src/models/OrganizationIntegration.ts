@@ -50,7 +50,7 @@ export class OrganizationIntegration<
   @Field()
   public creatorId!: string;
 
-  @Field()
+  @Field(() => OrganizationIntegrationType)
   @Column("enum", { enum: OrganizationIntegrationType })
   public type!: TType;
 

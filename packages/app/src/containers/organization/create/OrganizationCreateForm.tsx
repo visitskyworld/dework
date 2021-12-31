@@ -17,7 +17,9 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
     async (values: CreateOrganizationInput) => {
       try {
         setLoading(true);
-        const organization = await createOrganization(values);
+        const organization = await createOrganization({
+          name: values.name,
+        });
         await onCreated(organization);
       } finally {
         setLoading(false);
@@ -27,7 +29,11 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
   );
 
   return (
-    <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
+    <Form<CreateOrganizationInput>
+      layout="vertical"
+      requiredMark={false}
+      onFinish={handleSubmit}
+    >
       <Form.Item
         label="Organization Name"
         name="name"
@@ -35,6 +41,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
       >
         <Input />
       </Form.Item>
+
       <Button
         type="primary"
         htmlType="submit"

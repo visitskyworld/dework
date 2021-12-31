@@ -7,10 +7,13 @@ import {
   CreateOrganizationMutationVariables,
   GetFeaturedOrganizationsQuery,
   GetFeaturedOrganizationsQueryVariables,
+  GetOrganizationGithubReposQuery,
+  GetOrganizationGithubReposQueryVariables,
   GetOrganizationQuery,
   GetOrganizationQueryVariables,
   GetOrganizationTasksQuery,
   GetOrganizationTasksQueryVariables,
+  GithubRepo,
   Organization,
   OrganizationDetails,
   OrganizationMember,
@@ -149,4 +152,15 @@ export function useOrganizationTasks(
   >(Queries.organizationTasks, { variables: { organizationId }, fetchPolicy });
   useListenToTasks();
   return data?.organization ?? undefined;
+}
+
+export function useOrganizationGithubRepos(
+  organizationId: string,
+  skip: boolean = false
+): GithubRepo[] | undefined {
+  const { data } = useQuery<
+    GetOrganizationGithubReposQuery,
+    GetOrganizationGithubReposQueryVariables
+  >(Queries.organizationGithubRepos, { variables: { organizationId }, skip });
+  return data?.repos ?? undefined;
 }

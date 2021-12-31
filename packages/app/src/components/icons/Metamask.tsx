@@ -8,7 +8,7 @@ const MetamaskSvg = () => (
     height="1rem"
     viewBox="0 0 212 189"
   >
-    <g fill="none" fill-rule="evenodd">
+    <g fill="none" fillRule="evenodd">
       <polygon
         fill="#CDBDB2"
         points="60.75 173.25 88.313 180.563 88.313 171 90.563 168.75 106.313 168.75 106.313 180 106.313 187.875 89.438 187.875 68.625 178.875"

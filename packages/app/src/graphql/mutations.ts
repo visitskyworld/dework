@@ -177,7 +177,7 @@ export const createProjectIntegration = gql`
     $input: CreateProjectIntegrationInput!
   ) {
     integration: createProjectIntegration(input: $input) {
-      id
+      ...ProjectIntegration
       project {
         id
         integrations {
