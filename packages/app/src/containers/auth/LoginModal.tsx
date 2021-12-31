@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { Modal, Space } from "antd";
+import { Modal, Popconfirm, Space } from "antd";
 import { useRouter } from "next/router";
+import MobileDetect from "mobile-detect";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import {
   getThreepidName,
@@ -25,6 +26,12 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
   const isMetamaskAvailable = !!useProvider().current;
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
+  const isMobile = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    const md = new MobileDetect(window.navigator.userAgent);
+    return md.is("iOS") || md.is("AndroidOS");
+  }, []);
+
   const authWithMetamask = useCallback(async () => {
     if (!isMetamaskAvailable) {
       window.open(
@@ -52,6 +59,7 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     isMetamaskAvailable,
   ]);
 
+  const showMetamaskPrompt = isMobile && !isMetamaskAvailable;
   return (
     <Modal
       visible={toggle.isOn}
@@ -61,17 +69,25 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
       onCancel={toggle.toggleOff}
     >
       <Space direction="vertical" style={{ width: "100%" }}>
-        <ThreepidAuthButton
-          loading={authingWithMetamask.isOn}
-          source={ThreepidSource.metamask}
-          children={getThreepidName[ThreepidSource.metamask]}
-          size="large"
-          type="ghost"
-          block
-          state={state}
-          href={undefined}
-          onClick={authWithMetamask}
-        />
+        <Popconfirm
+          title="To connect with Metamask on mobile, open the Metamask app, go to the browser tab, and open dework.xyz"
+          disabled={!showMetamaskPrompt}
+          okText="Open Metamask"
+          onConfirm={authWithMetamask}
+          style={{ maxWidth: 120 }}
+        >
+          <ThreepidAuthButton
+            loading={authingWithMetamask.isOn}
+            source={ThreepidSource.metamask}
+            children={getThreepidName[ThreepidSource.metamask]}
+            size="large"
+            type="ghost"
+            block
+            state={state}
+            href={undefined}
+            onClick={showMetamaskPrompt ? undefined : authWithMetamask}
+          />
+        </Popconfirm>
         <ThreepidAuthButton
           source={ThreepidSource.discord}
           children={getThreepidName[ThreepidSource.discord]}

@@ -1470,6 +1470,11 @@
     refractor "^3.4.0"
     unist-util-visit "^2.0.3"
 
+"@metamask/detect-provider@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-1.2.0.tgz#3667a7531f2a682e3c3a43eaf3a1958bdb42a696"
+  integrity sha512-ocA76vt+8D0thgXZ7LxFPyqw3H7988qblgzddTDA6B8a/yU0uKV42QR/DhA+Jh11rJjxW0jKvwb5htA6krNZDQ==
+
 "@napi-rs/triples@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
@@ -2706,6 +2711,13 @@
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.2.tgz#93e25bf9ee75fe0fd80b594bc4feb0e862111b5a"
   integrity sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==
+
+"@types/mobile-detect@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@types/mobile-detect/-/mobile-detect-1.3.4.tgz#1c6a7d1115c42e4e8d7388265126bc3609ea6747"
+  integrity sha512-MGBTvT5c7aH8eX6szFYP3dWPryNLt5iGlo31XNaJtt8o6jsg6tjn99eEMq9l8T6cPZymsr+J4Jth8+/G/04ZDw==
+  dependencies:
+    mobile-detect "*"
 
 "@types/moment@^2.13.0":
   version "2.13.0"
@@ -10315,6 +10327,11 @@ mkdirp@^0.5.4, mkdirp@^0.5.5:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+mobile-detect@*, mobile-detect@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/mobile-detect/-/mobile-detect-1.4.5.tgz#da393c3c413ca1a9bcdd9ced653c38281c0fb6ad"
+  integrity sha512-yc0LhH6tItlvfLBugVUEtgawwFU2sIe+cSdmRJJCTMZ5GEJyLxNyC/NIOAOGk67Fa8GNpOttO3Xz/1bHpXFD/g==
 
 moment-timezone@^0.5.x:
   version "0.5.34"

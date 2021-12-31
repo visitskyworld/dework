@@ -5,33 +5,27 @@ import {
   PaymentToken,
   PaymentTokenType,
 } from "../graphql/types";
+import detectEthereumProvider from "@metamask/detect-provider";
 
 export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
-  const loadProvider = useCallback(() => {
-    if (
-      typeof window !== "undefined" &&
-      // @ts-ignore
-      !!window.ethereum
-    ) {
-      return new ethers.providers.Web3Provider(
-        // @ts-ignore
-        window.ethereum
-      );
+  const provider = useRef<ethers.providers.Web3Provider>();
+  const loadProvider = useCallback(async () => {
+    const ethereum = await detectEthereumProvider();
+    if (!!ethereum) {
+      provider.current = new ethers.providers.Web3Provider(ethereum as any);
     }
-
-    return undefined! as ethers.providers.Web3Provider;
   }, []);
-  const provider = useRef(loadProvider());
 
   useEffect(() => {
     // @ts-ignore
-    window.ethereum?.on(
-      "chainChanged",
-      () => (provider.current = loadProvider())
-    );
+    window.ethereum?.on("chainChanged", loadProvider);
   }, [loadProvider]);
 
-  return provider;
+  useEffect(() => {
+    loadProvider();
+  }, [loadProvider]);
+
+  return provider as MutableRefObject<ethers.providers.Web3Provider>;
 }
 
 export function useSwitchChain(): (network: PaymentNetwork) => Promise<void> {
