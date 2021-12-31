@@ -96,7 +96,7 @@ export class GithubService {
       .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
       .andWhere(`"projInt"."config"->>'repo' = :repo`, { repo: query.repo })
       .andWhere(`"projInt"."config"->>'organization' = :organization`, {
-        owner: query.organization,
+        organization: query.organization,
       })
       .andWhere("orgInt.type = :type", {
         type: OrganizationIntegrationType.GITHUB,
