@@ -1,6 +1,5 @@
 import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import _ from "lodash";
-import Bluebird from "bluebird";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
@@ -16,8 +15,9 @@ import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+import Bluebird from "bluebird";
 
-class DiscordChannelNotFoundError extends Error {}
+// class DiscordChannelNotFoundError extends Error {}
 
 @Injectable()
 export class DiscordIntegrationService {
@@ -49,16 +49,52 @@ export class DiscordIntegrationService {
         `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
       );
 
-      const activeCategory = await this.getOrCreateCategory(guild, "Dework");
-      let channel =
+      const channel = (await guild.channels.fetch(
+        integration.config.channelId,
+        { force: true }
+      )) as Discord.TextChannel;
+      if (!channel) {
+        this.logger.warn(
+          `Could not find Discord channel (${JSON.stringify(
+            integration.config
+          )})`
+        );
+        return;
+      }
+
+      const discordThread = await event.task.discordChannel;
+      let thread =
         event instanceof TaskCreatedEvent
           ? undefined
-          : await this.getExistingDiscordChannel(
-              event.task,
-              guild,
-              activeCategory
-            );
+          : await this.getExistingDiscordThread(event.task, channel);
 
+      if (!thread) {
+        if (discordThread?.deletedAt) return;
+
+        const shouldCreate = await this.shouldCreateChannel(event.task);
+        if (!shouldCreate) {
+          this.logger.debug(
+            `No previous thread exists and should not create a new thread (${JSON.stringify(
+              event.task
+            )})`
+          );
+          return;
+        } else {
+          thread = await this.createDiscordThread(event.task, channel);
+        }
+      }
+
+      // const activeCategory = await this.getOrCreateCategory(guild, "Dework");
+      // let channel =
+      //   event instanceof TaskCreatedEvent
+      //     ? undefined
+      //     : await this.getExistingDiscordChannel(
+      //         event.task,
+      //         guild,
+      //         activeCategory
+      //       );
+
+      /*
       const discordChannel = await event.task.discordChannel;
       if (!channel) {
         if (discordChannel?.deletedAt) return;
@@ -72,15 +108,18 @@ export class DiscordIntegrationService {
           );
           return;
         } else {
-          channel = await this.createDiscordChannel(
-            event.task,
-            guild,
-            activeCategory
-          );
+          // channel = await this.createDiscordChannel(
+          //   event.task,
+          //   guild,
+          //   activeCategory
+          // );
         }
       }
 
       await this.addTaskUsersToDiscordChannel(event.task, channel, guild);
+      */
+
+      await this.addTaskUsersToDiscordThread(event.task, thread, guild);
 
       const statusChanged =
         event instanceof TaskCreatedEvent ||
@@ -88,38 +127,38 @@ export class DiscordIntegrationService {
       if (statusChanged) {
         switch (event.task.status) {
           case TaskStatusEnum.IN_PROGRESS:
-            await this.postInProgress(event.task);
+            await this.postInProgress(event.task, thread);
             break;
           case TaskStatusEnum.IN_REVIEW:
-            await this.postMovedIntoReview(event.task);
+            await this.postMovedIntoReview(event.task, thread);
             break;
           case TaskStatusEnum.DONE:
-            await this.postDone(event.task);
-            const archivedCategory = await this.getOrCreateCategory(
-              guild,
-              "Dework (archived)"
-            );
-            await channel.setParent(archivedCategory);
+            await this.postDone(event.task, thread);
+            // const archivedCategory = await this.getOrCreateCategory(
+            //   guild,
+            //   "Dework (archived)"
+            // );
+            // await channel.setParent(archivedCategory);
             break;
         }
       }
 
       // write about task applicant updates (should that be done elsewhere maybe?)
     } catch (error) {
-      if (error instanceof DiscordChannelNotFoundError) {
-        await this.discordChannelRepo.update(
-          { taskId: event.task.id },
-          { deletedAt: new Date() }
-        );
-      } else {
-        const errorString = JSON.stringify(
-          error,
-          Object.getOwnPropertyNames(error)
-        );
-        this.logger.error(
-          `Unknown error: ${JSON.stringify({ event, errorString })}`
-        );
-      }
+      // if (error instanceof DiscordChannelNotFoundError) {
+      //   await this.discordChannelRepo.update(
+      //     { taskId: event.task.id },
+      //     { deletedAt: new Date() }
+      //   );
+      // } else {
+      const errorString = JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      );
+      this.logger.error(
+        `Unknown error: ${JSON.stringify({ event, errorString })}`
+      );
+      // }
     }
   }
 
@@ -134,6 +173,7 @@ export class DiscordIntegrationService {
     return integration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
   }
 
+  /*
   private async getOrCreateCategory(
     guild: Discord.Guild,
     name: string
@@ -162,6 +202,7 @@ export class DiscordIntegrationService {
     );
     return guild.channels.create(name, { type: "GUILD_CATEGORY" });
   }
+  */
 
   private async getDiscordId(userId: string) {
     const threepid = (await this.threepidService.findOne({
@@ -171,38 +212,21 @@ export class DiscordIntegrationService {
     return threepid?.threepid;
   }
 
-  private async getDiscordChannel(task: Task) {
-    const channel = await this.discordChannelRepo.findOne({
-      taskId: task.id,
-    });
-    if (!channel) return;
-    const dChannel = await this.discord.client.channels.fetch(
-      channel.channelId
+  private async postDone(_task: Task, thread: Discord.TextBasedChannels) {
+    if (thread.isThread() && thread.archived) await thread.setArchived(false);
+
+    await thread.send(
+      `This task is now marked as done and has been archived automatically @fant.sol`
     );
-    if (!dChannel) return;
-
-    if (dChannel.type !== "GUILD_TEXT") {
-      this.logger.log(
-        `Discord channel ${dChannel.id} for task ${task.id} is not a text channel. Aborting.`
-      );
-      return;
-    }
-
-    return dChannel as Discord.TextChannel;
+    if (thread.isThread()) await thread.setArchived(true);
   }
 
-  private async postDone(task: Task) {
-    const channel = await this.getDiscordChannel(task);
-    if (!channel) return;
-    channel.send(`This task is now marked as done.`);
-  }
-
-  private async postMovedIntoReview(task: Task) {
+  private async postMovedIntoReview(
+    task: Task,
+    thread: Discord.TextBasedChannels
+  ) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task);
-    this.logger.debug(`No discord channel found for task ${task.id}`);
-    if (!channel) return;
     this.logger.debug("sending message to channel");
 
     const fields: {
@@ -211,13 +235,11 @@ export class DiscordIntegrationService {
     }[] = [];
     const pr = (await task.githubPullRequests)?.[0];
     if (pr) {
-      fields.push({
-        name: "Github PR",
-        value: pr.link,
-      });
+      fields.push({ name: "Github PR", value: pr.link });
     }
     const author = task.assignees?.[0];
-    channel.send({
+    if (thread.isThread() && thread.archived) await thread.setArchived(false);
+    await thread.send({
       embeds: [
         {
           title: `In review`,
@@ -236,11 +258,9 @@ export class DiscordIntegrationService {
     });
   }
 
-  private async postInProgress(task: Task) {
+  private async postInProgress(task: Task, thread: Discord.TextBasedChannels) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
-    const channel = await this.getDiscordChannel(task);
-    if (!channel) return;
 
     const assigneeId = task.assignees?.[0]?.id;
     if (!assigneeId) return;
@@ -258,16 +278,16 @@ export class DiscordIntegrationService {
   - I will tag you each morning so that you can have a short written 'standup': basically two sentences about where you are and what you'll be working on
   
   Following this protocol ==> higher chance of increasing your reputation score`;
-    channel.send(message);
+    if (thread.isThread() && thread.archived) await thread.setArchived(false);
+    await thread.send(message);
   }
 
-  private async postNewApplicant(task: Task) {
+  /*
+  private async postNewApplicant(task: Task, thread: Discord.ThreadChannel) {
     const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
     if (!owner) return;
     const message = `<@${owner}> A person has applied to this task.`;
-    const channel = await this.getDiscordChannel(task);
-    if (!channel) return;
-    channel.send(message);
+    thread.send(message);
   }
 
   private async getExistingDiscordChannel(
@@ -319,6 +339,21 @@ export class DiscordIntegrationService {
       throw new DiscordChannelNotFoundError();
     }
   }
+  */
+
+  private async getExistingDiscordThread(
+    task: Task,
+    channel: Discord.TextChannel
+  ): Promise<Discord.ThreadChannel | undefined> {
+    const existing = await task.discordChannel;
+    if (!existing) return undefined;
+
+    const thread = await channel.threads.fetch(existing.channelId, {
+      force: true,
+    });
+    if (!thread) throw new Error("Null thread returned from Discord");
+    return thread;
+  }
 
   private async shouldCreateChannel(task: Task): Promise<boolean> {
     if (task.status === TaskStatusEnum.IN_PROGRESS) return true;
@@ -328,6 +363,7 @@ export class DiscordIntegrationService {
     return false;
   }
 
+  /*
   private async createDiscordChannel(
     task: Task,
     guild: Discord.Guild,
@@ -379,7 +415,46 @@ export class DiscordIntegrationService {
 
     return channel;
   }
+  */
 
+  private async createDiscordThread(
+    task: Task,
+    channel: Discord.TextChannel
+  ): Promise<Discord.ThreadChannel> {
+    const thread = await channel.threads.create({
+      name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
+      autoArchiveDuration: 1440,
+    });
+
+    const creator = await task.creator;
+    await thread.send({
+      content: `Thread for Dework task "${task.name}"`,
+      embeds: [
+        {
+          title: task.name,
+          author: !!creator
+            ? {
+                name: creator.username,
+                iconURL: creator.imageUrl,
+                url: await this.permalink.get(creator),
+              }
+            : undefined,
+          url: await this.permalink.get(task),
+        },
+      ],
+    });
+
+    await this.discordChannelRepo.save({
+      taskId: task.id,
+      guildId: channel.guildId,
+      channelId: thread.id,
+      name: thread.name,
+    });
+
+    return thread;
+  }
+
+  /*
   private async addTaskUsersToDiscordChannel(
     task: Task,
     channel: Discord.TextChannel,
@@ -402,6 +477,49 @@ export class DiscordIntegrationService {
         await channel.permissionOverwrites.edit(member.user.id, {
           VIEW_CHANNEL: true,
         });
+      } catch (error) {
+        this.logger.warn(
+          `Failed updating member permissions: ${JSON.stringify({
+            error,
+            threepid: t.threepid,
+          })}`
+        );
+      }
+    });
+
+    this.logger.debug(
+      `Added VIEW_CHANNEL to members: ${JSON.stringify({
+        ids: threepids.map((t) => t.id),
+        threepidIds: threepids.map((t) => t.id),
+      })}`
+    );
+  }
+  */
+
+  private async addTaskUsersToDiscordThread(
+    task: Task,
+    thread: Discord.ThreadChannel,
+    guild: Discord.Guild
+  ): Promise<void> {
+    this.logger.debug(
+      `Add relevant users to Discord thread: ${JSON.stringify({
+        taskId: task.id,
+        threadId: thread.id,
+      })}`
+    );
+
+    const threepids = await this.findTaskUserThreepids(task);
+    await Bluebird.mapSeries(threepids, async (t) => {
+      try {
+        const member = await guild.members.fetch({
+          user: t.threepid,
+          force: true,
+        });
+
+        await thread.members.add(member.user.id);
+        // await channel.permissionOverwrites.edit(member.user.id, {
+        //   VIEW_CHANNEL: true,
+        // });
       } catch (error) {
         this.logger.warn(
           `Failed updating member permissions: ${JSON.stringify({

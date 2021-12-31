@@ -42,8 +42,8 @@ const DeworkSvg = () => (
         y2="233"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#8570E4" />
-        <stop offset="1" stop-color="#FA4990" />
+        <stop stopColor="#8570E4" />
+        <stop offset="1" stopColor="#FA4990" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_6_108"
@@ -53,8 +53,8 @@ const DeworkSvg = () => (
         y2="233"
         gradientUnits="userSpaceOnUse"
       >
-        <stop offset="0.546875" stop-opacity="0" />
-        <stop offset="0.958044" stop-opacity="0.5" />
+        <stop offset="0.546875" stopOpacity="0" />
+        <stop offset="0.958044" stopOpacity="0.5" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_6_108"
@@ -64,9 +64,9 @@ const DeworkSvg = () => (
         y2="466"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-opacity="0.2" />
-        <stop offset="0.499239" stop-opacity="0" />
-        <stop offset="1" stop-opacity="0.2" />
+        <stop stopOpacity="0.2" />
+        <stop offset="0.499239" stopOpacity="0" />
+        <stop offset="1" stopOpacity="0.2" />
       </linearGradient>
     </defs>
   </svg>

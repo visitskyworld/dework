@@ -63,6 +63,7 @@ export class AuthController {
         // https://discordapi.com/permissions.html
         permissions: new Discord.Permissions([
           Discord.Permissions.FLAGS.MANAGE_CHANNELS,
+          Discord.Permissions.FLAGS.MANAGE_THREADS,
           Discord.Permissions.FLAGS.MANAGE_ROLES,
           Discord.Permissions.FLAGS.SEND_MESSAGES,
         ]).bitfield.toString(),
@@ -94,6 +95,7 @@ export class AuthController {
       const state = JSON.parse(query.state!);
       const config: DiscordProjectIntegrationConfig = {
         guildId: query.guild_id,
+        channelId: "926605369436962926",
         permissions: query.permissions,
         features: [],
       };

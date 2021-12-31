@@ -21,6 +21,7 @@ export enum GithubProjectIntegrationFeature {
 
 export interface DiscordProjectIntegrationConfig {
   guildId: string;
+  channelId: string;
   permissions: string;
   features: DiscordProjectIntegrationFeature[];
 }
