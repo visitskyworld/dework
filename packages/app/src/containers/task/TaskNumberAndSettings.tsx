@@ -1,8 +1,17 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import * as Icons from "@ant-design/icons";
 import { TaskDetails } from "@dewo/app/graphql/types";
-import { stopPropagation } from "@dewo/app/util/eatClick";
-import { Button, Col, Dropdown, Menu, message, Row, Typography } from "antd";
+import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
+import {
+  Button,
+  Col,
+  Dropdown,
+  Menu,
+  message,
+  Popconfirm,
+  Row,
+  Typography,
+} from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
 import { useDeleteTask } from "./hooks";
@@ -56,11 +65,19 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
                 }
               />
               {canDelete && (
-                <Menu.Item
-                  icon={<Icons.DeleteOutlined />}
-                  children="Delete"
-                  onClick={handleDeleteTask}
-                />
+                <Popconfirm
+                  icon={null}
+                  title="Delete this task?"
+                  okType="danger"
+                  okText="Delete"
+                  onConfirm={handleDeleteTask}
+                >
+                  <Menu.Item
+                    icon={<Icons.DeleteOutlined />}
+                    children="Delete"
+                    onClick={(e) => eatClick(e.domEvent)}
+                  />
+                </Popconfirm>
               )}
             </Menu>
           }
