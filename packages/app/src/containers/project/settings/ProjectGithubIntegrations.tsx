@@ -1,29 +1,29 @@
 import React, { FC, useMemo } from "react";
 import { Button, Typography } from "antd";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
-import { ProjectIntegrationSource } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import { Constants, siteTitle } from "@dewo/app/util/constants";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { useOrganization } from "../../organization/hooks";
+import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
   organizationId: string;
 }
 
-export function useConnectToGithubUrl(projectId: string): string {
+export function useConnectToGithubUrl(organizationId: string): string {
   const { user } = useAuthContext();
   return useMemo(() => {
     const appUrl = typeof window !== "undefined" ? window.location.href : "";
     const state = JSON.stringify({
       appUrl,
       creatorId: user?.id,
-      projectId,
+      organizationId,
     });
 
-    return `${Constants.GITHUB_APP_URL}?state=${state}`;
-  }, [projectId, user?.id]);
+    return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
+  }, [organizationId, user?.id]);
 }
 
 export function useHasGithubIntegration(
@@ -35,7 +35,7 @@ export function useHasGithubIntegration(
     () =>
       !!organization?.projects.some((proj) =>
         proj.integrations.some(
-          (int) => int.source === ProjectIntegrationSource.github
+          (int) => int.type === ProjectIntegrationType.GITHUB
         )
       ),
     [organization?.projects]

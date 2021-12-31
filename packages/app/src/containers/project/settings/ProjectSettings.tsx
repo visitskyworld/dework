@@ -3,7 +3,6 @@ import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
-import { ProjectGithubIntegration } from "./ProjectGithubIntegrations";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
 import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 
@@ -30,13 +29,13 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           />
         </Col>
 
-        <Col>
+        {/* <Col>
           <Typography.Title level={5}>Github Integrations</Typography.Title>
           <ProjectGithubIntegration
             projectId={project.id}
             organizationId={project.organizationId}
           />
-        </Col>
+        </Col> */}
 
         <Col>
           <Typography.Title level={5}>Reward Payment Method</Typography.Title>

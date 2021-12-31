@@ -13,6 +13,7 @@ import {
   useOrganization,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
+import { useConnectToGithubUrl } from "../settings/ProjectGithubIntegrations";
 
 interface FormValues extends CreateProjectInput {
   isDevProject?: boolean;
@@ -32,6 +33,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const createProject = useCreateProject();
   const createProjectIntegration = useCreateProjectIntegration();
 
+  const connectToGithubUrl = useConnectToGithubUrl(organizationId);
   const hasGithubIntegration = useMemo(
     () =>
       !!organization?.integrations.some(
@@ -107,14 +109,13 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         <FormSection label="Github Integration (optional)">
           <Typography.Paragraph style={{ marginBottom: 0 }}>
             Want to automatically link Github branches and make pull requests
-            show up here? Set up the Github integration for this project.
+            show up in tasks? Set up the Github integration for this project.
           </Typography.Paragraph>
           <Button
-            // size="small"
             type="ghost"
             style={{ marginTop: 4 }}
             icon={<Icons.GithubOutlined />}
-            href={"#"}
+            href={connectToGithubUrl}
           >
             Connect to Github
           </Button>
