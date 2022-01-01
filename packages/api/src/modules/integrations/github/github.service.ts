@@ -1,10 +1,7 @@
 import * as fs from "fs";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import {
-  OrganizationIntegration,
-  OrganizationIntegrationType,
-} from "@dewo/api/models/OrganizationIntegration";
+import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
@@ -16,6 +13,7 @@ import { Octokit } from "@octokit/rest";
 import { Repository } from "typeorm";
 import { ConfigType } from "../../app/config";
 import { GithubRepo } from "./dto/GithubRepo";
+import { IntegrationService } from "../integration.service";
 
 @Injectable()
 export class GithubService {
@@ -26,8 +24,7 @@ export class GithubService {
     private readonly githubBranchRepo: Repository<GithubBranch>,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
-    @InjectRepository(OrganizationIntegration)
-    private readonly organizationIntegrationRepo: Repository<OrganizationIntegration>,
+    private readonly integrationService: IntegrationService,
     private readonly config: ConfigService<ConfigType>
   ) {}
 
@@ -110,10 +107,11 @@ export class GithubService {
   public async getOrganizationRepos(
     organizationId: string
   ): Promise<GithubRepo[]> {
-    const integration = (await this.organizationIntegrationRepo.findOne({
-      organizationId,
-      type: OrganizationIntegrationType.GITHUB,
-    })) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.GITHUB
+      );
     if (!integration) {
       throw new NotFoundException("Organization integration not found");
     }

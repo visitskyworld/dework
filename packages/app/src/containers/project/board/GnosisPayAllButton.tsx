@@ -20,7 +20,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useProject } from "../hooks";
 import { useRouter } from "next/router";
-import { uuidToBase62 } from "@dewo/app/util/uuid";
 import Link from "next/link";
 import { formatTaskReward } from "../../task/hooks";
 import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
@@ -170,11 +169,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
           "To batch pay for tasks, a Gnosis Safe needs to be connected to the project. Head to project settings to connect your Gnosis Safe to handle payouts.",
         btn: (
           <RouterContext.Provider value={router}>
-            <Link
-              href={`/o/${uuidToBase62(
-                project.organizationId
-              )}/p/${uuidToBase62(project.id)}/settings`}
-            >
+            <Link href={`${project.permalink}/settings`}>
               <a>
                 <Button type="primary" onClick={notification.destroy}>
                   Connect Gnosis Safe

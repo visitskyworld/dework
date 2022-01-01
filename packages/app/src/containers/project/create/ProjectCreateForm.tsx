@@ -132,6 +132,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </Button>
         </FormSection>
       )}
+      {!!organization && hasDiscordIntegration && "canect"}
 
       <Form.Item label="Project Type" name="type">
         <Radio.Group>

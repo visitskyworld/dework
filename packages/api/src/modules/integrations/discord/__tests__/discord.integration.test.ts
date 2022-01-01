@@ -17,10 +17,10 @@ import {
   TaskCreatedEvent,
   TaskUpdatedEvent,
 } from "@dewo/api/modules/task/task.events";
-import faker from "faker";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
+const discordChannelId = "926823781102661652";
 
 describe("DiscordIntegration", () => {
   let app: INestApplication;
@@ -29,8 +29,6 @@ describe("DiscordIntegration", () => {
   let taskService: TaskService;
   let discordIntegrationService: DiscordIntegrationService;
   let user: User;
-
-  let discordChannelId: string;
 
   beforeAll(async () => {
     app = await getTestApp();
@@ -43,13 +41,6 @@ describe("DiscordIntegration", () => {
       source: ThreepidSource.discord,
       threepid: discordUserId,
     });
-
-    const guild = await discord.guilds.fetch(discordGuildId);
-    const channels = await guild.channels.fetch(undefined, { force: true });
-    await Promise.all([channels.map((channel) => channel.delete())]);
-
-    const channel = await guild.channels.create(faker.internet.userName());
-    discordChannelId = channel.id;
   });
 
   afterAll(() => app.close());

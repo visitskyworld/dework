@@ -1,4 +1,7 @@
-import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegration";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -29,5 +32,17 @@ export class IntegrationService {
     return this.organizationIntegrationRepo.findOne(
       created.id
     ) as Promise<OrganizationIntegration>;
+  }
+
+  public async findOrganizationIntegration<
+    T extends OrganizationIntegrationType
+  >(
+    organizationId: string,
+    type: T
+  ): Promise<OrganizationIntegration<T> | undefined> {
+    return this.organizationIntegrationRepo.findOne({
+      type,
+      organizationId,
+    }) as Promise<OrganizationIntegration<T>>;
   }
 }

@@ -5,10 +5,12 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PermalinkModule } from "../../permalink/permalink.module";
 import { ThreepidModule } from "../../threepid/threepid.module";
+import { IntegrationModule } from "../integration.module";
 import {
   DiscordIntegrationTaskCreatedEventHandler,
   DiscordIntegrationTaskUpdatedEventHandler,
 } from "./discord.eventHandlers";
+import { DiscordIntegrationResolver } from "./discord.integration.resolver";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordService } from "./discord.service";
 
@@ -17,10 +19,12 @@ import { DiscordService } from "./discord.service";
     TypeOrmModule.forFeature([User, ProjectIntegration, DiscordChannel]),
     ThreepidModule,
     PermalinkModule,
+    IntegrationModule,
   ],
   providers: [
     DiscordService,
     DiscordIntegrationService,
+    DiscordIntegrationResolver,
     DiscordIntegrationTaskCreatedEventHandler,
     DiscordIntegrationTaskUpdatedEventHandler,
   ],
