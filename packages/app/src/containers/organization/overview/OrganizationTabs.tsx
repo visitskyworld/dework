@@ -9,6 +9,9 @@ import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
 import { OrganizationSettings } from "./OrganizationSettings";
+import { JoinOrganizationButton } from "./JoinOrganizationButton";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { OrganizationMemberList } from "./OrganizationMemberList";
 
 interface Props {
   organizationId: string;
@@ -22,6 +25,7 @@ export const OrganizationTabs: FC<Props> = ({
   settingsTab,
 }) => {
   const organization = useOrganization(organizationId);
+  const canUpdateOrganization = usePermission("delete", "Organization");
 
   const router = useRouter();
   const navigateToTab = useCallback(
@@ -70,7 +74,7 @@ export const OrganizationTabs: FC<Props> = ({
             <Divider />
 
             <Typography.Title level={5}>Contributors</Typography.Title>
-            <Row>
+            <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
                 {!organization &&
                   [1, 2, 3].map((i) => <Skeleton.Avatar key={i} />)}
@@ -79,29 +83,42 @@ export const OrganizationTabs: FC<Props> = ({
                 ))}
               </Avatar.Group>
             </Row>
-            <InviteButton
-              organizationId={organizationId}
-              style={{ marginTop: 16 }}
-            />
+            <InviteButton organizationId={organizationId} />
+            <JoinOrganizationButton organizationId={organizationId} />
           </Col>
         </Row>
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <>
-            <Icons.TeamOutlined />
-            Contributors
-          </>
-        }
-        key="contributors"
-        className="max-w-lg mx-auto w-full"
-      >
-        <OrganizationSettings
-          organizationId={organizationId}
-          currentTab="contributors"
-          onTabClick={navigateToSettingsTab}
-        />
-      </Tabs.TabPane>
+      {canUpdateOrganization ? (
+        <Tabs.TabPane
+          tab={
+            <>
+              <Icons.TeamOutlined />
+              Contributors
+            </>
+          }
+          key="contributors"
+          className="max-w-lg mx-auto w-full"
+        >
+          <OrganizationSettings
+            organizationId={organizationId}
+            currentTab="contributors"
+            onTabClick={navigateToSettingsTab}
+          />
+        </Tabs.TabPane>
+      ) : (
+        <Tabs.TabPane
+          tab={
+            <>
+              <Icons.TeamOutlined />
+              Contributors
+            </>
+          }
+          key="contributors"
+          className="max-w-sm mx-auto w-full"
+        >
+          <OrganizationMemberList organizationId={organizationId} />
+        </Tabs.TabPane>
+      )}
       <Tabs.TabPane
         tab={
           <>
@@ -115,22 +132,24 @@ export const OrganizationTabs: FC<Props> = ({
       >
         <OrganizationTaskBoard organizationId={organizationId} />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <>
-            <Icons.SettingOutlined />
-            Settings
-          </>
-        }
-        key="settings"
-        className="max-w-lg mx-auto w-full"
-      >
-        <OrganizationSettings
-          organizationId={organizationId}
-          currentTab={settingsTab ?? "contributors"}
-          onTabClick={navigateToSettingsTab}
-        />
-      </Tabs.TabPane>
+      {canUpdateOrganization && (
+        <Tabs.TabPane
+          tab={
+            <>
+              <Icons.SettingOutlined />
+              Settings
+            </>
+          }
+          key="settings"
+          className="max-w-lg mx-auto w-full"
+        >
+          <OrganizationSettings
+            organizationId={organizationId}
+            currentTab={settingsTab ?? "contributors"}
+            onTabClick={navigateToSettingsTab}
+          />
+        </Tabs.TabPane>
+      )}
     </Tabs>
   );
 };
