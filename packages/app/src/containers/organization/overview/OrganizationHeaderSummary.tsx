@@ -38,23 +38,6 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
           >
             {organization.description}
           </Typography.Paragraph>
-          {/* <UserDetails
-            isEditMode={false}
-            userDetails={[
-              {
-                __typename: "UserDetail",
-                id: "1",
-                type: UserDetailType.website,
-                value: "https://www.citydao.io",
-              },
-              {
-                __typename: "UserDetail",
-                id: "1",
-                type: UserDetailType.github,
-                value: "https://github.com/deworkxyz",
-              },
-            ]}
-          /> */}
         </>
       }
     />
