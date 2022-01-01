@@ -6,16 +6,21 @@ import { OrganizationProjectList } from "@dewo/app/containers/organization/overv
 import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
-import { OrganizationMemberList } from "@dewo/app/containers/organization/overview/OrganizationMemberList";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
+import { OrganizationSettings } from "./OrganizationSettings";
 
 interface Props {
   organizationId: string;
-  activeKey: string;
+  currentTab: string;
+  settingsTab?: string;
 }
 
-export const OrganizationTabs: FC<Props> = ({ organizationId, activeKey }) => {
+export const OrganizationTabs: FC<Props> = ({
+  organizationId,
+  currentTab,
+  settingsTab,
+}) => {
   const organization = useOrganization(organizationId);
 
   const router = useRouter();
@@ -23,11 +28,16 @@ export const OrganizationTabs: FC<Props> = ({ organizationId, activeKey }) => {
     (tab: string) => router.push(`${organization!.permalink}/${tab}`),
     [organization, router]
   );
+  const navigateToSettingsTab = useCallback(
+    (tab: string) => router.push(`${organization!.permalink}/settings/${tab}`),
+    [organization, router]
+  );
+
   return (
     <Tabs
       centered
       style={{ marginTop: 16 }}
-      activeKey={activeKey}
+      activeKey={currentTab}
       onTabClick={navigateToTab}
     >
       <Tabs.TabPane
@@ -84,9 +94,13 @@ export const OrganizationTabs: FC<Props> = ({ organizationId, activeKey }) => {
           </>
         }
         key="contributors"
-        className="max-w-sm mx-auto w-full"
+        className="max-w-lg mx-auto w-full"
       >
-        <OrganizationMemberList organizationId={organizationId} />
+        <OrganizationSettings
+          organizationId={organizationId}
+          currentTab="contributors"
+          onTabClick={navigateToSettingsTab}
+        />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={
@@ -100,6 +114,22 @@ export const OrganizationTabs: FC<Props> = ({ organizationId, activeKey }) => {
         style={{ maxWidth: 300 * 4 + 16 * 5 }}
       >
         <OrganizationTaskBoard organizationId={organizationId} />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={
+          <>
+            <Icons.SettingOutlined />
+            Settings
+          </>
+        }
+        key="settings"
+        className="max-w-lg mx-auto w-full"
+      >
+        <OrganizationSettings
+          organizationId={organizationId}
+          currentTab={settingsTab ?? "contributors"}
+          onTabClick={navigateToSettingsTab}
+        />
       </Tabs.TabPane>
     </Tabs>
   );

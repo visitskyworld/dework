@@ -12,8 +12,8 @@ import { OrganizationTabs } from "@dewo/app/containers/organization/overview/Org
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const organizationTab =
-    (router.query.tab as string | undefined) ?? "overview";
+  const currentTab = (router.query.tab as string | undefined) ?? "overview";
+  const settingsTab = router.query.settingsTab as string | undefined;
   const organizationId = useParseIdFromSlug("organizationSlug");
   const organization = useOrganization(organizationId);
   const routes = useMemo(
@@ -46,7 +46,8 @@ const Page: NextPage = () => {
         </Row>
         <OrganizationTabs
           organizationId={organizationId}
-          activeKey={organizationTab}
+          currentTab={currentTab}
+          settingsTab={settingsTab}
         />
       </Layout.Content>
     </Layout>

@@ -526,3 +526,28 @@ textarea {
     box-shadow: 0 0 10px 0 @primary-color;
   }
 }
+
+.dewo-settings-tabs {
+  .ant-tabs-nav-list {
+    display: flex;
+    flex-direction: column;
+    width: 192px;
+
+    .ant-tabs-tab-active {
+      background: @component-background;
+
+      .ant-tabs-tab-btn {
+        color: @text-color;
+      }
+    }
+  }
+  
+  .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 0;
+  }
+
+  .ant-tabs-tab {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
