@@ -23,6 +23,10 @@ export class Project extends Audit {
   @Field()
   public name!: string;
 
+  @Column({ nullable: true, length: 4096 })
+  @Field({ nullable: true })
+  public description!: string;
+
   @JoinColumn()
   @ManyToOne(() => Organization)
   @Field(() => Organization)

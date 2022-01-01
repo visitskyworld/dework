@@ -9,6 +9,9 @@ export class UpdateProjectInput {
   @Field({ nullable: true })
   public name?: string;
 
+  @Field({ nullable: true })
+  public description?: string;
+
   @Field(() => GraphQLUUID, { nullable: true })
   public paymentMethodId?: string;
 

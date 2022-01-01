@@ -1,15 +1,24 @@
-import { Avatar, Input, PageHeader, Row, Skeleton, Typography } from "antd";
+import {
+  Avatar,
+  Button,
+  Input,
+  PageHeader,
+  Row,
+  Skeleton,
+  Typography,
+} from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
-import { InviteButton } from "../../invite/InviteButton";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
-import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
+import { InviteButton } from "../../invite/InviteButton";
+import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
+import Link from "next/link";
 
 interface Props {
   projectId: string;
@@ -18,7 +27,6 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
-  const canEdit = usePermission("update", "Project");
 
   const routes = useMemo<Route[] | undefined>(() => {
     if (!organization || !project) return undefined;
@@ -35,16 +43,8 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
         path: `p/${project.slug}`,
         breadcrumbName: project.name,
       },
-      ...(canEdit
-        ? [
-            {
-              path: "settings",
-              breadcrumbName: (<Icons.SettingOutlined />) as any as string,
-            },
-          ]
-        : []),
     ];
-  }, [organization, project, canEdit]);
+  }, [organization, project]);
 
   const editName = useToggle();
   const [projectName, setProjectName] = useState("");
@@ -97,13 +97,34 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       subTitle={
         !!project ? (
           <Row align="middle">
-            <Avatar.Group maxCount={3} size="large">
+            <Avatar.Group maxCount={3} size="large" style={{ marginRight: 8 }}>
               {organization?.members.map((m) => (
                 <UserAvatar key={m.id} user={m.user} linkToProfile />
               ))}
             </Avatar.Group>
 
-            <div style={{ width: 24 }} />
+            <Row style={{ marginRight: 8 }}>
+              <Link href={`${project?.permalink}/about`}>
+                <a>
+                  <Button
+                    type="text"
+                    size="large"
+                    icon={<Icons.InfoCircleOutlined />}
+                  />
+                </a>
+              </Link>
+              <Can I="update" a="Project">
+                <Link href={`${project?.permalink}/settings`}>
+                  <a>
+                    <Button
+                      type="text"
+                      size="large"
+                      icon={<Icons.SettingOutlined />}
+                    />
+                  </a>
+                </Link>
+              </Can>
+            </Row>
             <InviteButton
               organizationId={project?.organizationId}
               projectId={projectId}

@@ -8,6 +8,7 @@ import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHead
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -44,6 +45,13 @@ const Page: NextPage = () => {
         onCancel={navigateToProject}
       >
         {!!project && <ProjectSettings project={project} />}
+      </Modal>
+      <Modal
+        visible={router.route.endsWith("/about")}
+        footer={null}
+        onCancel={navigateToProject}
+      >
+        {!!project && <ProjectAbout project={project} />}
       </Modal>
     </Layout>
   );

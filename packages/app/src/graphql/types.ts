@@ -404,6 +404,7 @@ export interface CreateProjectMutation_project_organization_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -455,6 +456,7 @@ export interface CreateProjectMutation_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -526,6 +528,7 @@ export interface UpdateProjectMutation_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -1818,6 +1821,7 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2134,6 +2138,7 @@ export interface UserTasksQuery_user_tasks_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2301,6 +2306,7 @@ export interface GetOrganizationQuery_organization_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2407,6 +2413,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2669,6 +2676,7 @@ export interface GetProjectQuery_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2998,6 +3006,7 @@ export interface GetTaskQuery_task_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3194,6 +3203,7 @@ export interface GetTasksQuery_tasks_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3718,6 +3728,7 @@ export interface TaskCreatedSubscription_task_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3914,6 +3925,7 @@ export interface TaskUpdatedSubscription_task_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4387,6 +4399,7 @@ export interface Project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4444,6 +4457,7 @@ export interface ProjectDetails {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4624,22 +4638,6 @@ export interface DiscordChannel {
   id: Scalar.UUID;
   link: string;
   name: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: DiscordIntegrationChannel
-// ====================================================
-
-export interface DiscordIntegrationChannel {
-  __typename: "DiscordIntegrationChannel";
-  id: string;
-  name: string;
-  integrationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -4920,6 +4918,7 @@ export interface TaskWithOrganization_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5074,6 +5073,7 @@ export interface TaskDetails_project {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5297,6 +5297,7 @@ export interface OrganizationDetails_projects {
   id: Scalar.UUID;
   slug: string;
   name: string;
+  description: string | null;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5586,6 +5587,7 @@ export interface UpdatePaymentMethodInput {
 export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
+  description?: string | null;
   paymentMethodId?: Scalar.UUID | null;
   deletedAt?: Scalar.DateTime | null;
 }
