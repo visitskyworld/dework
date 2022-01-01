@@ -38,7 +38,7 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
       href={organization ? `/o/${organization.slug}/p/${project.slug}` : ""}
     >
       <a>
-        <Card className="hover:component-highlight">
+        <Card className="hover:component-highlight h-full">
           <Typography.Title level={4} style={{ marginBottom: 0 }}>
             {project.name}
           </Typography.Title>

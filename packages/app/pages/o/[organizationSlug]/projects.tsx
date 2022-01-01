@@ -29,6 +29,8 @@ import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
+import { OrganizationMemberList } from "@dewo/app/containers/organization/overview/OrganizationMemberList";
+import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -207,8 +209,9 @@ const Page: NextPage = () => {
                 </>
               }
               key="contributors"
+              className="max-w-sm mx-auto w-full"
             >
-              bao
+              <OrganizationMemberList organizationId={organizationId} />
             </Tabs.TabPane>
             <Tabs.TabPane
               tab={
@@ -218,8 +221,10 @@ const Page: NextPage = () => {
                 </>
               }
               key="board"
+              className="mx-auto w-full"
+              style={{ maxWidth: 300 * 4 + 16 * 5 }}
             >
-              bao
+              <OrganizationTaskBoard organizationId={organizationId} />
             </Tabs.TabPane>
             {/* <Tabs.TabPane
               tab={
