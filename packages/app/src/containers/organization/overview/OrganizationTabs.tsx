@@ -25,7 +25,7 @@ export const OrganizationTabs: FC<Props> = ({
   settingsTab,
 }) => {
   const organization = useOrganization(organizationId);
-  const canUpdateOrganization = usePermission("delete", "Organization");
+  const canUpdateOrganization = usePermission("update", "Organization");
 
   const router = useRouter();
   const navigateToTab = useCallback(

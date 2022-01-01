@@ -48,6 +48,7 @@ const Page: NextPage = () => {
       </Modal>
       <Modal
         visible={router.route.endsWith("/about")}
+        title="About"
         footer={null}
         onCancel={navigateToProject}
       >
