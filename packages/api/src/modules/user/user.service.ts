@@ -1,4 +1,4 @@
-import { GithubThreepidConfig, Threepid } from "@dewo/api/models/Threepid";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { UserDetail, UserDetailType } from "@dewo/api/models/UserDetail";
 import { DeepAtLeast } from "@dewo/api/types/general";
@@ -98,20 +98,36 @@ export class UserService {
 
   public async autoPopulateDetails(
     userId: string,
-    threePid: Threepid
+    threepid: Threepid
   ): Promise<void> {
-    const location = this.threepidService.getLocation(threePid);
+    const location = this.threepidService.getLocation(threepid);
     if (location) {
       await this.setDetail(
         { type: UserDetailType.location, value: location },
         userId
       );
     }
-    if (threePid.source === "github") {
-      const githubProfileUrl = (threePid.config as GithubThreepidConfig).profile
-        .profileUrl;
+
+    if (threepid.source === ThreepidSource.discord) {
+      const discordProfileUrl = this.threepidService.getProfileUrl(
+        threepid as Threepid<ThreepidSource.discord>
+      );
       await this.setDetail(
-        { type: UserDetailType.github, value: githubProfileUrl },
+        {
+          type: UserDetailType.discord,
+          value: discordProfileUrl,
+        },
+        userId
+      );
+    } else if (threepid.source === ThreepidSource.github) {
+      const githubProfileUrl = this.threepidService.getProfileUrl(
+        threepid as Threepid<ThreepidSource.github>
+      );
+      await this.setDetail(
+        {
+          type: UserDetailType.github,
+          value: githubProfileUrl,
+        },
         userId
       );
     }

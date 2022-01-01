@@ -36,6 +36,11 @@ yarn app dev
 yarn api test
 ```
 
+## Wiping the DB locally
+```bash
+yarn api db:wipe
+```
+
 ## Testing on different chains
 
 ### Sokol Testnet
@@ -51,13 +56,6 @@ https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup
 2. Get some SPOA (the ETH equivalent native token): https://forum.poa.network/t/sokol-testnet-resources/1776
 
 3. Get some ERC20 tokens: https://erc20faucet.com
-
-## Wiping the DB locally
-```bash
-(cd packages/api && docker compose down && docker compose stop)
-docker volume rm api_dewo-postgres-data
-yarn api dev:db
-```
 
 ## Set up `PaymentNetwork` locally
 ```sql

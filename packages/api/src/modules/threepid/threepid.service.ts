@@ -3,7 +3,12 @@ import LocaleCode from "locale-code";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, FindConditions, Repository } from "typeorm";
-import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import {
+  DiscordThreepidConfig,
+  GithubThreepidConfig,
+  Threepid,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
 
 type GithubThreepidConfigProfileJson = {
@@ -58,25 +63,24 @@ export class ThreepidService {
   public getImageUrl(threepid: Threepid): string | undefined {
     switch (threepid.source) {
       case ThreepidSource.discord:
-        const profile = (threepid as Threepid<ThreepidSource.discord>).config
-          .profile;
+        const profile = this.getDiscordThreePidConfig(threepid).profile;
         if (!profile.avatar) return undefined;
         return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.jpg`;
       case ThreepidSource.github:
-        return (threepid as Threepid<ThreepidSource.github>).config.profile
-          .photos?.[0]?.value;
+        return this.getGithubThreePidConfig(threepid).profile.photos?.[0]
+          ?.value;
     }
   }
 
   public getUsername(threepid: Threepid): string {
     switch (threepid.source) {
       case ThreepidSource.discord: {
-        const config = (threepid as Threepid<ThreepidSource.discord>).config;
-        return config.profile.username;
+        return this.getDiscordThreePidConfig(threepid).profile.username;
       }
       case ThreepidSource.github: {
-        const config = (threepid as Threepid<ThreepidSource.github>).config;
-        if (!!config.profile.username) return config.profile.username;
+        const githubUsername =
+          this.getGithubThreePidConfig(threepid).profile.username;
+        if (!!githubUsername) return githubUsername;
         break;
       }
     }
@@ -87,15 +91,34 @@ export class ThreepidService {
   public getLocation(threepid: Threepid): string | undefined {
     switch (threepid.source) {
       case ThreepidSource.discord:
-        const locale = (threepid as Threepid<ThreepidSource.discord>).config
-          .profile.locale;
+        const locale = this.getDiscordThreePidConfig(threepid).profile.locale;
         if (!locale) return undefined;
         return LocaleCode.getCountryName(locale);
       case ThreepidSource.github:
-        const githubThreepidConfigProfileJson = (
-          threepid as Threepid<ThreepidSource.github>
-        ).config.profile._json as GithubThreepidConfigProfileJson;
+        const githubThreepidConfigProfileJson = this.getGithubThreePidConfig(
+          threepid
+        ).profile._json as GithubThreepidConfigProfileJson;
         return githubThreepidConfigProfileJson?.location;
     }
+  }
+
+  public getProfileUrl(
+    threepid: Threepid<ThreepidSource.github | ThreepidSource.discord>
+  ): string {
+    switch (threepid.source) {
+      case ThreepidSource.discord:
+        const discordProfile = this.getDiscordThreePidConfig(threepid).profile;
+        return `https://discord.com/users/${discordProfile.id}`;
+      case ThreepidSource.github:
+        return this.getGithubThreePidConfig(threepid).profile.profileUrl;
+    }
+  }
+
+  private getDiscordThreePidConfig(threepid: Threepid): DiscordThreepidConfig {
+    return threepid.config as DiscordThreepidConfig;
+  }
+
+  private getGithubThreePidConfig(threepid: Threepid): GithubThreepidConfig {
+    return threepid.config as GithubThreepidConfig;
   }
 }

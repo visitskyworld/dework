@@ -8,6 +8,7 @@ export enum UserDetailType {
   linkedin = "linkedin",
   website = "website",
   github = "github",
+  discord = "discord",
   location = "location",
 }
 

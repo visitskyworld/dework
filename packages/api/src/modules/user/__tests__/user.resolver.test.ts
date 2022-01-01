@@ -1,6 +1,7 @@
 import {
   ThreepidSource,
   GithubThreepidConfig,
+  DiscordThreepidConfig,
 } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -187,7 +188,7 @@ describe("UserResolver", () => {
         });
       });
 
-      it("should auto-add location & github profile url on 1st github auth", async () => {
+      it("should auto populate location & Github profile-url details on 1st Github auth", async () => {
         const threepid = await fixtures.createThreepid({
           source: ThreepidSource.github,
           config: {
@@ -220,6 +221,34 @@ describe("UserResolver", () => {
             value: "github.com/my-url",
           })
         );
+      });
+
+      it("should auto populate Discord profile-url user detail on 1st Discord auth", async () => {
+        const threepid = await fixtures.createThreepid({
+          source: ThreepidSource.discord,
+          config: {
+            profile: {
+              id: "123",
+              username: "my-username",
+              locale: "en_US",
+            },
+          } as DiscordThreepidConfig,
+        });
+        const user = await fixtures.createUser(threepid);
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.authWithThreepid(threepid.id),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const updatedUser = response.body.data?.authWithThreepid.user;
+        expect(updatedUser.details).toHaveLength(1);
+        expect(updatedUser.details).toContainEqual({
+          type: UserDetailType.discord,
+          value: "https://discord.com/users/123",
+        });
       });
     });
 
@@ -285,7 +314,7 @@ describe("UserResolver", () => {
 
         const fetched = await setUserDetail(detail, user);
         expect(fetched.id).toEqual(user.id);
-        expect(fetched.details.length).toEqual(1);
+        expect(fetched.details.length).toEqual(2);
         expect(fetched.details).toContainEqual(
           expect.objectContaining({ type: detail.type, value: detail.value })
         );
@@ -303,13 +332,13 @@ describe("UserResolver", () => {
         };
 
         const fetched1 = await setUserDetail(detail1, user);
-        expect(fetched1.details).toHaveLength(1);
+        expect(fetched1.details).toHaveLength(2);
         expect(fetched1.details).toContainEqual(
           expect.objectContaining({ type: detail1.type, value: detail1.value })
         );
 
         const fetched2 = await setUserDetail(detail2, user);
-        expect(fetched2.details).toHaveLength(1);
+        expect(fetched2.details).toHaveLength(2);
         expect(fetched2.details).toContainEqual(
           expect.objectContaining({ type: detail2.type, value: detail2.value })
         );
@@ -348,8 +377,8 @@ describe("UserResolver", () => {
 
         const newDetails1 = fetched1.setUserDetail.details;
         const newDetails2 = fetched2.setUserDetail.details;
-        expect(newDetails1.length).toEqual(1);
-        expect(newDetails2.length).toEqual(0);
+        expect(newDetails1.length).toEqual(2);
+        expect(newDetails2.length).toEqual(1);
       });
     });
   });

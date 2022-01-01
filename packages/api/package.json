@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --no-notify --require dotenv/config --require tsconfig-paths/register src/main.ts dotenv_config_path=.env.local",
     "dev:db": "docker compose up",
+    "db:wipe": "docker compose down && docker compose stop && docker volume rm api_dewo-postgres-data",
     "test": "jest --runInBand --setupFiles tsconfig-paths/register",
     "build": "rm -rf build && nest build --path tsconfig.json",
     "start": "node build/main.js"
