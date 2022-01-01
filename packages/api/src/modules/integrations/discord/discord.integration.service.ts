@@ -16,6 +16,10 @@ import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
 import Bluebird from "bluebird";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 
 class DiscordChannelNotFoundError extends Error {}
 
@@ -36,12 +40,15 @@ export class DiscordIntegrationService {
   async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
     const integration = await this.getProjectIntegration(event.task.projectId);
     if (!integration) return;
+    const organizationIntegration =
+      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
+    if (!organizationIntegration) return;
 
     try {
       this.logger.log(`Handle task event: ${JSON.stringify(event)}`);
 
       const guild = await this.discord.client.guilds.fetch(
-        integration.config.guildId
+        organizationIntegration.config.guildId
       );
       await guild.roles.fetch();
 

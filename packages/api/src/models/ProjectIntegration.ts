@@ -11,8 +11,6 @@ export enum ProjectIntegrationType {
   GITHUB = "GITHUB",
 }
 
-export enum DiscordProjectIntegrationFeature {}
-
 export enum GithubProjectIntegrationFeature {
   SHOW_BRANCHES = "SHOW_BRANCHES",
   SHOW_PULL_REQUESTS = "SHOW_PULL_REQUESTS",
@@ -20,10 +18,7 @@ export enum GithubProjectIntegrationFeature {
 }
 
 export interface DiscordProjectIntegrationConfig {
-  guildId: string;
   channelId: string;
-  permissions: string;
-  features: DiscordProjectIntegrationFeature[];
 }
 
 export interface GithubProjectIntegrationConfig {
@@ -40,9 +35,6 @@ export interface ProjectIntegrationConfigMap
 
 registerEnumType(ProjectIntegrationType, {
   name: "ProjectIntegrationType",
-});
-registerEnumType(DiscordProjectIntegrationFeature, {
-  name: "DiscordProjectIntegrationFeature",
 });
 registerEnumType(GithubProjectIntegrationFeature, {
   name: "GithubProjectIntegrationFeature",

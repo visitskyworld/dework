@@ -6,9 +6,6 @@ import { Request, Response } from "express";
 import * as Discord from "discord.js";
 import { ConfigType } from "../app/config";
 import { StrategyResponse } from "./strategies/types";
-import { ProjectService } from "../project/project.service";
-
-import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
 import {
   DiscordOrganizationIntegrationConfig,
@@ -21,9 +18,7 @@ type RequestFromCallback = Request & { user: StrategyResponse };
 export class AuthController {
   constructor(
     private readonly config: ConfigService<ConfigType>,
-    private readonly projectService: ProjectService,
-    private readonly integrationService: IntegrationService,
-    private readonly permalink: PermalinkService
+    private readonly integrationService: IntegrationService
   ) {}
 
   @Get("github")

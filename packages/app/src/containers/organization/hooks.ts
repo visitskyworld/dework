@@ -7,6 +7,8 @@ import {
   CreateOrganizationMutationVariables,
   GetFeaturedOrganizationsQuery,
   GetFeaturedOrganizationsQueryVariables,
+  GetOrganizationDiscordChannelsQuery,
+  GetOrganizationDiscordChannelsQueryVariables,
   GetOrganizationGithubReposQuery,
   GetOrganizationGithubReposQueryVariables,
   GetOrganizationQuery,
@@ -163,4 +165,18 @@ export function useOrganizationGithubRepos(
     GetOrganizationGithubReposQueryVariables
   >(Queries.organizationGithubRepos, { variables: { organizationId }, skip });
   return data?.repos ?? undefined;
+}
+
+export function useOrganizationDiscordChannels(
+  organizationId: string,
+  skip: boolean = false
+): GetOrganizationDiscordChannelsQuery["channels"] | undefined {
+  const { data } = useQuery<
+    GetOrganizationDiscordChannelsQuery,
+    GetOrganizationDiscordChannelsQueryVariables
+  >(Queries.organizationDiscordChannels, {
+    variables: { organizationId },
+    skip,
+  });
+  return data?.channels ?? undefined;
 }

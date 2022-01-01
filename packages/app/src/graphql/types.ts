@@ -3570,6 +3570,30 @@ export interface GetOrganizationGithubReposQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationDiscordChannelsQuery
+// ====================================================
+
+export interface GetOrganizationDiscordChannelsQuery_channels {
+  __typename: "DiscordIntegrationChannel";
+  id: string;
+  name: string;
+  integrationId: Scalar.UUID;
+}
+
+export interface GetOrganizationDiscordChannelsQuery {
+  channels: GetOrganizationDiscordChannelsQuery_channels[] | null;
+}
+
+export interface GetOrganizationDiscordChannelsQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
@@ -4600,6 +4624,22 @@ export interface DiscordChannel {
   id: Scalar.UUID;
   link: string;
   name: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: DiscordIntegrationChannel
+// ====================================================
+
+export interface DiscordIntegrationChannel {
+  __typename: "DiscordIntegrationChannel";
+  id: string;
+  name: string;
+  integrationId: Scalar.UUID;
 }
 
 /* tslint:disable */

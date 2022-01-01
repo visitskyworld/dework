@@ -11,6 +11,7 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import * as Icons from "@ant-design/icons";
 import {
   useOrganization,
+  useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
 import { useConnectToGithubUrl } from "../settings/ProjectGithubIntegrations";
@@ -22,6 +23,7 @@ import { useRouter } from "next/router";
 interface FormValues extends CreateProjectInput {
   type?: "dev" | "non-dev";
   githubRepoId?: string;
+  discordChannelId?: string;
 }
 
 interface ProjectCreateFormProps {
@@ -59,10 +61,14 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     organizationId,
     !hasGithubIntegration
   );
+  const discordChannels = useOrganizationDiscordChannels(
+    organizationId,
+    !hasDiscordIntegration
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async ({ type, githubRepoId, ...input }: FormValues) => {
+    async ({ type, githubRepoId, discordChannelId, ...input }: FormValues) => {
       try {
         setLoading(true);
         const project = await createProject(input);
@@ -81,12 +87,28 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           });
         }
 
+        const channel = discordChannels?.find((c) => c.id === discordChannelId);
+        if (!!channel) {
+          await createProjectIntegration({
+            projectId: project.id,
+            type: ProjectIntegrationType.DISCORD,
+            organizationIntegrationId: channel.integrationId,
+            config: { channelId: channel.id },
+          });
+        }
+
         await onCreated(project);
       } finally {
         setLoading(false);
       }
     },
-    [createProject, createProjectIntegration, onCreated, githubRepos]
+    [
+      createProject,
+      createProjectIntegration,
+      onCreated,
+      githubRepos,
+      discordChannels,
+    ]
   );
 
   const [values, setValues] = useState<Partial<FormValues>>({});
@@ -132,7 +154,25 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </Button>
         </FormSection>
       )}
-      {!!organization && hasDiscordIntegration && "canect"}
+      {!!organization && hasDiscordIntegration && (
+        <Form.Item name="discordChannelId" label="Connect Discord Channel">
+          <Select
+            loading={!discordChannels}
+            placeholder="Select Discord Channel"
+            allowClear
+          >
+            {discordChannels?.map((channel) => (
+              <Select.Option
+                key={channel.id}
+                value={channel.id}
+                label={`#${channel.name}`}
+              >
+                {`#${channel.name}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
 
       <Form.Item label="Project Type" name="type">
         <Radio.Group>
@@ -158,7 +198,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         </FormSection>
       )}
       {values.type === "dev" && !!organization && hasGithubIntegration && (
-        <Form.Item name="githubRepoId" label="Connect Github repo">
+        <Form.Item name="githubRepoId" label="Connect Github Repo">
           <Select
             loading={!githubRepos}
             placeholder="Select Github Repo"

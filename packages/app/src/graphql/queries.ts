@@ -229,3 +229,13 @@ export const organizationGithubRepos = gql`
 
   ${Fragments.githubRepo}
 `;
+
+export const organizationDiscordChannels = gql`
+  query GetOrganizationDiscordChannelsQuery($organizationId: UUID!) {
+    channels: getDiscordIntegrationChannels(organizationId: $organizationId) {
+      id
+      name
+      integrationId
+    }
+  }
+`;
