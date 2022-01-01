@@ -62,9 +62,7 @@ export class AuthController {
         response_type: "code",
         // https://discordapi.com/permissions.html
         permissions: new Discord.Permissions([
-          Discord.Permissions.FLAGS.MANAGE_CHANNELS,
           Discord.Permissions.FLAGS.MANAGE_THREADS,
-          Discord.Permissions.FLAGS.MANAGE_ROLES,
           Discord.Permissions.FLAGS.SEND_MESSAGES,
         ]).bitfield.toString(),
         scope: "bot",
