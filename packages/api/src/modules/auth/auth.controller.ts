@@ -7,12 +7,13 @@ import * as Discord from "discord.js";
 import { ConfigType } from "../app/config";
 import { StrategyResponse } from "./strategies/types";
 import { ProjectService } from "../project/project.service";
-import {
-  DiscordProjectIntegrationConfig,
-  ProjectIntegrationType,
-} from "@dewo/api/models/ProjectIntegration";
+
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
+import {
+  DiscordOrganizationIntegrationConfig,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -91,24 +92,22 @@ export class AuthController {
 
     try {
       const state = JSON.parse(query.state!);
-      const config: DiscordProjectIntegrationConfig = {
+      const config: DiscordOrganizationIntegrationConfig = {
         guildId: query.guild_id,
-        channelId: "926605369436962926",
         permissions: query.permissions,
-        features: [],
       };
 
-      await this.integrationService.createProjectIntegration({
+      await this.integrationService.createOrganizationIntegration({
         // TODO(fant): we need to somehow verify that this was the user that initiated the connection
         creatorId: state.userId,
-        projectId: state.projectId,
-        type: ProjectIntegrationType.DISCORD,
+        organizationId: state.organizationId,
+        type: OrganizationIntegrationType.DISCORD,
         config,
       });
 
-      const project = await this.projectService.findById(state.projectId);
-      const url = await this.permalink.get(project!);
-      res.redirect(url);
+      const appUrl = this.getAppUrl(query.state);
+      const redirectUrl = `${appUrl}${state.redirect ?? ""}`;
+      res.redirect(redirectUrl);
     } catch {
       res.redirect(this.config.get("APP_URL") as string);
     }

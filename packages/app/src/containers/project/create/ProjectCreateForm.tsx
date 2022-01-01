@@ -14,6 +14,10 @@ import {
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
 import { useConnectToGithubUrl } from "../settings/ProjectGithubIntegrations";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { Constants } from "@dewo/app/util/constants";
+import { useRouter } from "next/router";
 
 interface FormValues extends CreateProjectInput {
   type?: "dev" | "non-dev";
@@ -29,6 +33,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
+  const { user } = useAuthContext();
+  const router = useRouter();
   const organization = useOrganization(organizationId);
   const createProject = useCreateProject();
   const createProjectIntegration = useCreateProjectIntegration();
@@ -41,6 +47,14 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       ),
     [organization?.integrations]
   );
+  const hasDiscordIntegration = useMemo(
+    () =>
+      !!organization?.integrations.some(
+        (i) => i.type === OrganizationIntegrationType.DISCORD
+      ),
+    [organization?.integrations]
+  );
+
   const githubRepos = useOrganizationGithubRepos(
     organizationId,
     !hasGithubIntegration
@@ -98,6 +112,27 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         <Input placeholder="Enter a project name..." />
       </Form.Item>
 
+      {!!organization && !hasDiscordIntegration && (
+        <FormSection label="Discord Integration (recommended)">
+          <Typography.Paragraph style={{ marginBottom: 9 }}>
+            Want to automatically create Discord threads to discuss Dework
+            tasks? Try out the Discord integration for this project!
+          </Typography.Paragraph>
+          <Button
+            type="ghost"
+            style={{ marginTop: 4 }}
+            icon={<DiscordIcon />}
+            href={`${
+              Constants.GRAPHQL_API_URL
+            }/auth/discord-bot?organizationId=${organizationId}&userId=${
+              user!.id
+            }&redirect=${router.asPath}`}
+          >
+            Connect to Discord
+          </Button>
+        </FormSection>
+      )}
+
       <Form.Item label="Project Type" name="type">
         <Radio.Group>
           <Radio.Button value="non-dev">Non-dev</Radio.Button>
@@ -109,7 +144,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         <FormSection label="Github Integration (optional)">
           <Typography.Paragraph style={{ marginBottom: 0 }}>
             Want to automatically link Github branches and make pull requests
-            show up in tasks? Set up the Github integration for this project.
+            show up in tasks? Try out the Github integration for this project!
           </Typography.Paragraph>
           <Button
             type="ghost"

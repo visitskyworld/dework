@@ -1,7 +1,6 @@
 import { ProjectDetails } from "@dewo/app/graphql/types";
 import { Col, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
-import { ProjectDiscordIntegrations } from "./ProjectDiscordIntegrations";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
 import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
@@ -21,13 +20,13 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
-        <Col>
+        {/* <Col>
           <Typography.Title level={5}>Discord Integrations</Typography.Title>
           <ProjectDiscordIntegrations
             projectId={project.id}
             organizationId={project.organizationId}
           />
-        </Col>
+        </Col> */}
 
         {/* <Col>
           <Typography.Title level={5}>Github Integrations</Typography.Title>
