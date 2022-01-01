@@ -3,8 +3,6 @@ import { Injectable } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
-// import { GithubService } from "./github.service";
-// import { GithubRepo } from "./dto/GithubRepo";
 
 @Injectable()
 export class DiscordIntegrationResolver {
