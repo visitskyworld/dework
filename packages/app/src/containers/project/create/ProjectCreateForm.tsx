@@ -100,8 +100,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
       <Form.Item label="Project Type" name="type">
         <Radio.Group>
-          <Radio.Button value="dev">Development</Radio.Button>
           <Radio.Button value="non-dev">Non-dev</Radio.Button>
+          <Radio.Button value="dev">Development</Radio.Button>
         </Radio.Group>
       </Form.Item>
 
