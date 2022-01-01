@@ -33,7 +33,7 @@ export interface TaskFormValues {
   status: TaskStatusEnum;
   tagIds: string[];
   assigneeIds: string[];
-  ownerId?: string;
+  ownerId?: string | null;
   reward?: TaskRewardFormValues;
 }
 
@@ -55,7 +55,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   initialValues,
   onSubmit,
 }) => {
-  const [form] = useForm();
+  const [form] = useForm<TaskFormValues>();
   const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
   );
@@ -93,10 +93,14 @@ export const TaskForm: FC<TaskFormProps> = ({
   );
 
   const handleChange = useCallback(
-    (_changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
+    (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
+      if ("ownerId" in changed && changed.ownerId === undefined) {
+        values.ownerId = null;
+      }
+      form.setFieldsValue(values);
       setValues(values);
     },
-    []
+    [form]
   );
 
   const handleBlur = useCallback(() => {
@@ -271,6 +275,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               allowClear
               optionFilterProp="label"
               placeholder="No task reviewer..."
+              onClear={handleBlur}
             >
               {ownerOptions?.map((user) => (
                 <Select.Option value={user.id} label={user.username}>
