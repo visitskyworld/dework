@@ -28,7 +28,7 @@ export const OrganizationCard: FC<Props> = ({
       <a>
         <Card
           size="small"
-          style={{ paddingTop: 8, paddingBottom: 8 }}
+          style={{ paddingTop: 8, paddingBottom: 8, height: "100%" }}
           className="hover:component-highlight"
         >
           <List.Item.Meta
