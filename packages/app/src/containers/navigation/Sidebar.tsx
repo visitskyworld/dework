@@ -28,6 +28,7 @@ export const Sidebar: FC = () => {
       collapsedWidth="0"
       collapsed={isOn}
       trigger={null}
+      className="dewo-divider-right"
     >
       <Col
         style={{

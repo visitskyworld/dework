@@ -7,6 +7,7 @@
 @primary-color-25: #8570e444;
 @body-background: #00042d;
 @component-background: fade(@white, 10%);
+@divider-color: fade(@white, 20%);
 @border-color-base: fade(@white, 40%);
 @border-color-split: fade(@white, 30%);
 @btn-text-hover-bg: fade(@white, 10%); // defaults to 3%
@@ -342,7 +343,7 @@ textarea {
   }
 }
 
-.ant-layout-sider {
+.dewo-divider-right {
   border-right: 1px solid @divider-color;
 }
 
@@ -352,6 +353,10 @@ textarea {
 
 .ant-popover-message-title {
   max-width: 200px;
+}
+
+.ant-tabs-tab .anticon {
+  margin-right: 8px;
 }
 
 .max-w-sm {
@@ -369,6 +374,9 @@ textarea {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+.w-full {
+  width: 100%;
 }
 
 .mb-2 {

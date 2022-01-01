@@ -1,6 +1,6 @@
 import { Button, Dropdown, Menu, message } from "antd";
 import * as Icons from "@ant-design/icons";
-import React, { FC, useCallback, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useState } from "react";
 import { useCreateInvite } from "./hooks";
 import { useOrganization } from "../organization/hooks";
 import { useProject } from "../project/hooks";
@@ -10,9 +10,14 @@ import { OrganizationRole } from "@dewo/app/graphql/types";
 interface Props {
   organizationId?: string;
   projectId?: string;
+  style?: CSSProperties;
 }
 
-export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
+export const InviteButton: FC<Props> = ({
+  organizationId,
+  projectId,
+  style,
+}) => {
   const [loading, setLoading] = useState(false);
   const org = useOrganization(organizationId);
   const proj = useProject(projectId);
@@ -64,13 +69,14 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
     [inviteByRole]
   );
 
-  if (!org || !proj || !canInviteMember) return null;
+  if (!org || !canInviteMember) return null;
   if (!canInviteAdmin) {
     return (
       <Button
         type="ghost"
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
+        style={style}
         onClick={inviteMember}
       >
         Invite
@@ -93,6 +99,7 @@ export const InviteButton: FC<Props> = ({ organizationId, projectId }) => {
         type="ghost"
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
+        style={style}
       >
         Invite
       </Button>
