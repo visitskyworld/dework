@@ -11,7 +11,9 @@ interface Props {
 
 export const ProjectAbout: FC<Props> = ({ project }) => {
   const canUpdateProject = usePermission("update", "Project");
-  const [description, setDescription] = useState(project.description);
+  const [description, setDescription] = useState(
+    project.description ?? undefined
+  );
   const updateProject = useUpdateProject();
   const handleSave = useCallback(
     () => updateProject({ id: project.id, description }),

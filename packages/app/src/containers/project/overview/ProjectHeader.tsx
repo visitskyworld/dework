@@ -14,7 +14,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
+import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { InviteButton } from "../../invite/InviteButton";
 import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
@@ -27,6 +27,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
   const project = useProject(projectId);
   const organization = useOrganization(project?.organizationId);
+  const canEdit = usePermission("update", "Project");
 
   const routes = useMemo<Route[] | undefined>(() => {
     if (!organization || !project) return undefined;
