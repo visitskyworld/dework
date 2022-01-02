@@ -2,20 +2,22 @@ import React, { ClipboardEvent, FC, useCallback, useState } from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import * as Icons from "@ant-design/icons";
-import { Upload, notification, Button, Typography } from "antd";
+import { Upload, notification, Button } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadImage } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownImgURL } from "./utils";
 import { MDEditor } from "./MDEditor";
 import { useToggle } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import { MarkdownPreview } from "./MarkdownPreview";
+
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
   editable: boolean;
   mode: "create" | "update";
   autoSave?: boolean;
   onChange?(description: string | undefined): void;
-  onSave?(): void;
+  onSave?(description: string | undefined): void;
 }
 
 export const MarkdownEditor: FC<MarkdownEditorProps> = ({
@@ -36,7 +38,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     setSavedValue(value);
     editing.toggleOff();
     onChange?.(value);
-    onSave?.();
+    onSave?.(value);
   }, [editing, onChange, onSave, value]);
 
   const handleEdit = useCallback(() => {
@@ -114,28 +116,6 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     [uploadAndAddImage]
   );
 
-  const renderPreview = useCallback(() => {
-    if (!savedValue) {
-      return (
-        <Typography.Paragraph type="secondary" style={{ margin: 0 }}>
-          No description...
-        </Typography.Paragraph>
-      );
-    }
-
-    if (!MDEditor) return null;
-    return (
-      <MDEditor
-        value={savedValue}
-        hideToolbar
-        enableScroll={false}
-        previewOptions={{ linkTarget: "_blank" }}
-        className="dewo-md-editor"
-        preview="preview"
-      />
-    );
-  }, [savedValue]);
-
   if (editing.isOn) {
     return (
       <Upload.Dragger
@@ -166,7 +146,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   } else {
     return (
       <>
-        {renderPreview()}
+        <MarkdownPreview value={savedValue} />
         {!!editable && (
           <Button
             size="small"

@@ -1,9 +1,11 @@
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { Avatar, Col, Divider, Row, Skeleton, Tabs, Typography } from "antd";
-
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
-import { useOrganization } from "@dewo/app/containers/organization/hooks";
+import {
+  useOrganization,
+  useUpdateOrganization,
+} from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
@@ -12,6 +14,7 @@ import { OrganizationSettings } from "./OrganizationSettings";
 import { JoinOrganizationButton } from "./JoinOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { OrganizationMemberList } from "./OrganizationMemberList";
+import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 
 interface Props {
   organizationId: string;
@@ -35,6 +38,13 @@ export const OrganizationTabs: FC<Props> = ({
   const navigateToSettingsTab = useCallback(
     (tab: string) => router.push(`${organization!.permalink}/settings/${tab}`),
     [organization, router]
+  );
+
+  const updateOrganization = useUpdateOrganization();
+  const updateDescription = useCallback(
+    (description: string) =>
+      updateOrganization({ id: organizationId, description }),
+    [updateOrganization, organizationId]
   );
 
   return (
@@ -62,13 +72,12 @@ export const OrganizationTabs: FC<Props> = ({
           <Col span={6}>
             <Typography.Title level={5}>Intro</Typography.Title>
             <Skeleton loading={!organization} paragraph={{ rows: 6 }}>
-              <Typography.Paragraph
-                type="secondary"
-                style={{ marginBottom: 8, maxWidth: 480 }}
-                ellipsis={{ rows: 6 }}
-              >
-                {organization?.description ?? "No description..."}
-              </Typography.Paragraph>
+              <MarkdownEditor
+                initialValue={organization?.description ?? undefined}
+                editable={canUpdateOrganization}
+                mode="update"
+                onSave={updateDescription}
+              />
             </Skeleton>
 
             <Divider />

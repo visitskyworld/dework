@@ -34,7 +34,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
           <Typography.Paragraph
             type="secondary"
             style={{ marginBottom: 8, maxWidth: 480 }}
-            ellipsis={{ rows: 4 }}
+            ellipsis={{ rows: 2 }}
           >
             {organization.description}
           </Typography.Paragraph>

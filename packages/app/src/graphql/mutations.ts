@@ -45,11 +45,11 @@ export const createOrganization = gql`
 export const updateOrganization = gql`
   mutation UpdateOrganizationMutation($input: UpdateOrganizationInput!) {
     organization: updateOrganization(input: $input) {
-      ...Organization
+      ...OrganizationDetails
     }
   }
 
-  ${Fragments.organization}
+  ${Fragments.organizationDetails}
 `;
 
 export const updateOrganizationMember = gql`

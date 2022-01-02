@@ -225,6 +225,83 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: UpdateOrganizationMutation
 // ====================================================
 
+export interface UpdateOrganizationMutation_organization_projects_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateOrganizationMutation_organization_projects_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UpdateOrganizationMutation_organization_projects_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: UpdateOrganizationMutation_organization_projects_paymentMethods_networks[];
+  tokens: UpdateOrganizationMutation_organization_projects_paymentMethods_tokens[];
+}
+
+export interface UpdateOrganizationMutation_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+}
+
+export interface UpdateOrganizationMutation_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  taskCount: number;
+  doneTaskCount: number;
+  openBountyTaskCount: number;
+  paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
+  integrations: UpdateOrganizationMutation_organization_projects_integrations[];
+}
+
+export interface UpdateOrganizationMutation_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateOrganizationMutation_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  user: UpdateOrganizationMutation_organization_members_user;
+}
+
+export interface UpdateOrganizationMutation_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
 export interface UpdateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -232,6 +309,10 @@ export interface UpdateOrganizationMutation_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  description: string | null;
+  projects: UpdateOrganizationMutation_organization_projects[];
+  members: UpdateOrganizationMutation_organization_members[];
+  integrations: UpdateOrganizationMutation_organization_integrations[];
 }
 
 export interface UpdateOrganizationMutation {
