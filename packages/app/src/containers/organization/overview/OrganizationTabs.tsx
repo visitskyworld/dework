@@ -80,8 +80,6 @@ export const OrganizationTabs: FC<Props> = ({
 
             <Divider />
 
-            <Divider />
-
             <Typography.Title level={5}>Core team</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
