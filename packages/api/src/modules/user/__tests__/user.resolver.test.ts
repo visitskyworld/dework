@@ -12,7 +12,6 @@ import { Ability } from "@casl/ability";
 import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
@@ -483,9 +482,12 @@ describe("UserResolver", () => {
             projectId: project.id,
           });
           expect(permissions.can("read", "Organization")).toBe(true);
-          expect(permissions.can("create", "Organization")).toBe(true);
           expect(permissions.can("read", "Project")).toBe(true);
           expect(permissions.can("read", "Task")).toBe(true);
+
+          expect(permissions.can("create", "Organization")).toBe(true);
+          expect(permissions.can("create", "Project")).toBe(false);
+          expect(permissions.can("create", "Task")).toBe(false);
 
           expect(permissions.can("update", ownedTask)).toBe(true);
           expect(permissions.can("update", assignedTask)).toBe(true);
@@ -506,23 +508,6 @@ describe("UserResolver", () => {
           expect(permissions.can("create", "Task")).toBe(true);
           expect(permissions.can("update", "Task")).toBe(true);
           expect(permissions.can("delete", "Task")).toBe(true);
-        });
-
-        it("organizationMember", async () => {
-          const user = await fixtures.createUser();
-          const organization = await fixtures.createOrganization(
-            {},
-            undefined,
-            [{ userId: user.id, role: OrganizationRole.MEMBER }]
-          );
-
-          const permissions = await getPermissions(user, {
-            organizationId: organization.id,
-          });
-          expect(permissions.can("update", "Organization")).toBe(false);
-          expect(permissions.can("delete", "Organization")).toBe(false);
-          expect(permissions.can("create", "Project")).toBe(false);
-          expect(permissions.can("create", "Task")).toBe(false);
         });
 
         it("projectAdmin", async () => {

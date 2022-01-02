@@ -74,10 +74,6 @@ export class TaskRolesGuard implements CanActivate {
     if (member?.role === OrganizationRole.ADMIN) {
       gqlContext.caslUser.roles.push(Roles.organizationAdmin);
     }
-
-    if (member?.role === OrganizationRole.MEMBER) {
-      gqlContext.caslUser.roles.push(Roles.organizationMember);
-    }
   }
 
   // TODO(fant): DRY this up with ProjectRolesGuard

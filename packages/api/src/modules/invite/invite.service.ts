@@ -1,10 +1,10 @@
 import { Invite } from "@dewo/api/models/Invite";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { User } from "@dewo/api/models/User";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { OrganizationService } from "../organization/organization.service";
+import { ProjectService } from "../project/project.service";
 
 @Injectable()
 export class InviteService {
@@ -13,7 +13,8 @@ export class InviteService {
   constructor(
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
-    private readonly organizationService: OrganizationService
+    private readonly organizationService: OrganizationService,
+    private readonly projectService: ProjectService
   ) {}
 
   public async create(
@@ -31,14 +32,20 @@ export class InviteService {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
 
-    const organization = await invite.organization;
-    const organizations = await this.organizationService.findByUser(user.id);
-    if (!organizations.some((o) => o.id === invite.organizationId)) {
-      await this.organizationService.addUser(
-        organization.id,
+    if (!!invite.organizationId && !!invite.organizationRole) {
+      await this.organizationService.upsertMember(
+        invite.organizationId,
         user.id,
-        invite.role ?? OrganizationRole.MEMBER
+        invite.organizationRole
       );
+    }
+
+    if (!!invite.projectId && !!invite.projectRole) {
+      await this.projectService.upsertMember({
+        projectId: invite.projectId,
+        userId: user.id,
+        role: invite.projectRole,
+      });
     }
 
     return invite;

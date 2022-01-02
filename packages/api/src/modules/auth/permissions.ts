@@ -9,6 +9,7 @@ import {
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -27,7 +28,7 @@ export const permissions: Permissions<
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
-      role: OrganizationRole.MEMBER,
+      role: OrganizationRole.FOLLOWER,
     });
     can(
       Actions.update,
@@ -51,12 +52,11 @@ export const permissions: Permissions<
   },
 
   organizationAdmin({ can, cannot, user, extend }) {
-    extend(Roles.organizationMember);
     extend(Roles.projectAdmin);
 
     can(Actions.manage, OrganizationMember, {
       userId: { $ne: user.id },
-      role: { $in: [OrganizationRole.ADMIN, OrganizationRole.MEMBER] },
+      role: { $in: [OrganizationRole.ADMIN, OrganizationRole.FOLLOWER] },
     });
     can(Actions.delete, OrganizationMember);
 
@@ -64,12 +64,14 @@ export const permissions: Permissions<
 
     can(Actions.create, Project);
     can(Actions.delete, Project);
+    can(Actions.manage, ProjectMember);
 
     cannot(CustomPermissionActions.claimTask, Task);
   },
 
   projectAdmin({ can }) {
     can(Actions.update, Project);
+    can(Actions.manage, ProjectMember);
 
     can(Actions.create, ProjectIntegration);
     can(Actions.update, ProjectIntegration);

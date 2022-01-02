@@ -14,7 +14,7 @@ import { User } from "./User";
 export enum OrganizationRole {
   OWNER = "OWNER",
   ADMIN = "ADMIN",
-  MEMBER = "MEMBER",
+  FOLLOWER = "FOLLOWER",
 }
 
 registerEnumType(OrganizationRole, { name: "OrganizationRole" });

@@ -3,10 +3,10 @@ import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class CreateInviteInput {
+export class CreateOrganizationInviteInput {
   @Field(() => GraphQLUUID)
   public organizationId!: string;
 
-  @Field(() => OrganizationRole, { nullable: true })
-  public role?: OrganizationRole;
+  @Field(() => OrganizationRole)
+  public role!: OrganizationRole;
 }

@@ -1,17 +1,37 @@
-import { CreateInviteInput } from "@dewo/api/modules/invite/dto/CreateInviteInput";
+import { CreateOrganizationInviteInput } from "@dewo/api/modules/invite/dto/CreateOrganizationInviteInput";
+import { CreateProjectInviteInput } from "@dewo/api/modules/invite/dto/CreateProjectInviteInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class InviteRequests {
-  public static create(
-    input: CreateInviteInput
-  ): GraphQLTestClientRequestBody<{ input: CreateInviteInput }> {
+  public static createOrganizationInvite(
+    input: CreateOrganizationInviteInput
+  ): GraphQLTestClientRequestBody<{ input: CreateOrganizationInviteInput }> {
     return {
       query: `
-        mutation CreateInvite($input: CreateInviteInput!) {
-          invite: createInvite(input: $input) {
+        mutation CreateOrganizationInvite($input: CreateOrganizationInviteInput!) {
+          invite: createOrganizationInvite(input: $input) {
             id
             inviterId
             organizationId
+            organizationRole
+          }
+        }
+      `,
+      variables: { input },
+    };
+  }
+
+  public static createProjectInvite(
+    input: CreateProjectInviteInput
+  ): GraphQLTestClientRequestBody<{ input: CreateProjectInviteInput }> {
+    return {
+      query: `
+        mutation CreateProjectInvite($input: CreateProjectInviteInput!) {
+          invite: createProjectInvite(input: $input) {
+            id
+            inviterId
+            projectId
+            projectRole
           }
         }
       `,
@@ -28,6 +48,14 @@ export class InviteRequests {
           invite: acceptInvite(id: $inviteId) {
             id
             organization {
+              id
+              members {
+                id
+                role
+                userId
+              }
+            }
+            project {
               id
               members {
                 id

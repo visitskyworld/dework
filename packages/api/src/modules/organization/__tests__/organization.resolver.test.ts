@@ -166,11 +166,11 @@ describe("OrganizationResolver", () => {
         });
       }
 
-      it("non-member can add oneself as MEMBER", async () => {
-        const response = await fn(undefined, OrganizationRole.MEMBER, true);
+      it("non-member can add oneself as FOLLOWER", async () => {
+        const response = await fn(undefined, OrganizationRole.FOLLOWER, true);
         expect(response.status).toEqual(HttpStatus.OK);
         expect(response.body.data?.member.role).toEqual(
-          OrganizationRole.MEMBER
+          OrganizationRole.FOLLOWER
         );
       });
 
@@ -185,18 +185,18 @@ describe("OrganizationResolver", () => {
       });
 
       it("non-member cannot add someone else to org", async () => {
-        const response = await fn(undefined, OrganizationRole.MEMBER);
+        const response = await fn(undefined, OrganizationRole.FOLLOWER);
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
 
-      it("ADMIN can add someone else as MEMBER", async () => {
+      it("ADMIN can add someone else as FOLLOWER", async () => {
         const response = await fn(
           OrganizationRole.ADMIN,
-          OrganizationRole.MEMBER
+          OrganizationRole.FOLLOWER
         );
         expect(response.status).toEqual(HttpStatus.OK);
         expect(response.body.data?.member.role).toEqual(
-          OrganizationRole.MEMBER
+          OrganizationRole.FOLLOWER
         );
       });
 
@@ -250,7 +250,7 @@ describe("OrganizationResolver", () => {
         const adminUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
         const organization = await fixtures.createOrganization({}, adminUser, [
-          { userId: otherUser.id, role: OrganizationRole.MEMBER },
+          { userId: otherUser.id, role: OrganizationRole.FOLLOWER },
         ]);
 
         const response = await client.request({
@@ -273,7 +273,7 @@ describe("OrganizationResolver", () => {
         const memberUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
         const organization = await fixtures.createOrganization({}, adminUser, [
-          { userId: otherUser.id, role: OrganizationRole.MEMBER },
+          { userId: otherUser.id, role: OrganizationRole.FOLLOWER },
         ]);
 
         const response = await client.request({

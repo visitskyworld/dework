@@ -19,57 +19,81 @@ describe("InviteResolver", () => {
   afterAll(() => app.close());
 
   describe("Mutations", () => {
-    describe("createInvite", () => {
-      it("should fail if the user is unauthenticated", async () => {
-        const organization = await fixtures.createOrganization();
-        const response = await client.request({
-          app,
-          body: InviteRequests.create({ organizationId: organization.id }),
-        });
-
-        client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
-      });
-
-      xit("should fail if user doesn't have access to organization", async () => {
+    describe("createOrganizationInvite", () => {
+      async function fn(
+        inviterRole: OrganizationRole | undefined,
+        invitedRole: OrganizationRole
+      ) {
         const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization();
-        const response = await client.request({
+        const organization = await fixtures.createOrganization(
+          {},
+          undefined,
+          !!inviterRole ? [{ userId: user.id, role: inviterRole }] : []
+        );
+
+        return client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: InviteRequests.create({ organizationId: organization.id }),
+          body: InviteRequests.createOrganizationInvite({
+            organizationId: organization.id,
+            role: invitedRole,
+          }),
         });
+      }
 
-        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      it("FOLLOWER cannot invite FOLLOWER", async () => {
+        const res = await fn(
+          OrganizationRole.FOLLOWER,
+          OrganizationRole.FOLLOWER
+        );
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
 
-      it("should succeed if the user is authenticated", async () => {
-        const { user, organization } = await fixtures.createUserOrgProject();
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.create({ organizationId: organization.id }),
-        });
+      it("FOLLOWER cannot invite ADMIN", async () => {
+        const res = await fn(OrganizationRole.FOLLOWER, OrganizationRole.ADMIN);
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+      });
 
-        expect(response.statusCode).toEqual(HttpStatus.OK);
-        const invite = response.body.data?.invite;
-        expect(invite.inviterId).toEqual(user.id);
-        expect(invite.organizationId).toEqual(organization.id);
+      it("ADMIN can invite ADMIN", async () => {
+        const res = await fn(OrganizationRole.ADMIN, OrganizationRole.ADMIN);
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ organizationRole: OrganizationRole.ADMIN })
+        );
+      });
+
+      it("ADMIN cannot invite OWNER", async () => {
+        const res = await fn(OrganizationRole.ADMIN, OrganizationRole.OWNER);
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+      });
+
+      it("OWNER can invite ADMIN", async () => {
+        const res = await fn(OrganizationRole.OWNER, OrganizationRole.ADMIN);
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ organizationRole: OrganizationRole.ADMIN })
+        );
+      });
+
+      it("OWNER can invite OWNER", async () => {
+        const res = await fn(OrganizationRole.OWNER, OrganizationRole.OWNER);
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ organizationRole: OrganizationRole.OWNER })
+        );
       });
     });
 
     describe("acceptInvite", () => {
-      const createInvite = async (role: OrganizationRole) => {
+      const createInvite = async (organizationRole: OrganizationRole) => {
         const { user: inviter, organization } =
           await fixtures.createUserOrgProject();
 
         return fixtures.createInvite(
-          { organizationId: organization.id, role },
+          { organizationId: organization.id, organizationRole },
           inviter
         );
       };
 
       it("it should connect user to organization", async () => {
-        const invite = await createInvite(OrganizationRole.MEMBER);
+        const invite = await createInvite(OrganizationRole.FOLLOWER);
         const invited = await fixtures.createUser();
 
         const response = await client.request({
@@ -83,7 +107,7 @@ describe("InviteResolver", () => {
         expect(fetchedInvite.organization.members).toContainEqual(
           expect.objectContaining({
             userId: invited.id,
-            role: OrganizationRole.MEMBER,
+            role: OrganizationRole.FOLLOWER,
           })
         );
       });

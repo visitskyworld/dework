@@ -3,22 +3,36 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { OrganizationRole } from "./OrganizationMember";
+import { Project } from "./Project";
+import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
 
 @Entity()
 @ObjectType()
 export class Invite extends Audit {
   @JoinColumn()
-  @ManyToOne(() => Organization)
-  @Field(() => Organization)
-  public organization!: Promise<Organization>;
-  @Column({ type: "uuid" })
-  @Field()
-  public organizationId!: string;
+  @ManyToOne(() => Organization, { nullable: true })
+  @Field(() => Organization, { nullable: true })
+  public organization?: Promise<Organization>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public organizationId?: string;
 
   @Column({ enum: OrganizationRole, nullable: true })
   @Field(() => OrganizationRole, { nullable: true })
-  public role?: OrganizationRole;
+  public organizationRole?: OrganizationRole;
+
+  @JoinColumn()
+  @ManyToOne(() => Project, { nullable: true })
+  @Field(() => Project, { nullable: true })
+  public project?: Promise<Project>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public projectId?: string;
+
+  @Column({ enum: ProjectRole, nullable: true })
+  @Field(() => ProjectRole, { nullable: true })
+  public projectRole?: ProjectRole;
 
   @JoinColumn()
   @ManyToOne(() => User)
