@@ -84,7 +84,7 @@ export const OrganizationTabs: FC<Props> = ({
           <Col span={6}>
             <Typography.Title level={5}>Contributors</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
-              <Avatar.Group maxCount={3} size="large">
+              <Avatar.Group maxCount={10} size="large">
                 {!organization &&
                   _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
                 {contributors.map((user) => (
