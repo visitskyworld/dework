@@ -258,12 +258,10 @@ export class DiscordIntegrationService {
 
     const message = `Hey <@${owner}> and <@${assignee}>! This task has been moved to the next stage.
 
-  Some ground rules:
-  
+  Please keep in mind to:
   - Always push your local branches to remote each time you make a commit
-  - I will tag you each morning so that you can have a short written 'standup': basically two sentences about where you are and what you'll be working on
-  
-  Following this protocol ==> higher chance of successfully completing this task`;
+  - Please write two sentences here each morning to keep each other in sync`;
+
     this.post(thread, message);
   }
 
