@@ -1,7 +1,8 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { List, Skeleton, Typography } from "antd";
-import React, { FC } from "react";
-import { useOrganization } from "../hooks";
+import React, { FC, useCallback } from "react";
+import { useOrganization, useUpdateOrganization } from "../hooks";
 
 interface Props {
   organizationId: string;
@@ -9,6 +10,14 @@ interface Props {
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
+  const canUpdateOrganization = usePermission("update", "Organization");
+
+  const updateOrganization = useUpdateOrganization();
+  const updateDescription = useCallback(
+    (description: string) =>
+      updateOrganization({ id: organizationId, description }),
+    [updateOrganization, organizationId]
+  );
 
   if (!organization) {
     return (
@@ -30,15 +39,19 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
         </Typography.Title>
       }
       description={
-        <>
+        (!!organization.description || canUpdateOrganization) && (
           <Typography.Paragraph
             type="secondary"
-            style={{ marginBottom: 8, maxWidth: 480 }}
-            ellipsis={{ rows: 2 }}
+            style={{ maxWidth: 480 }}
+            editable={
+              canUpdateOrganization
+                ? { onChange: updateDescription, autoSize: true }
+                : undefined
+            }
           >
-            {organization.description}
+            {organization.description || "No description..."}
           </Typography.Paragraph>
-        </>
+        )
       }
     />
   );

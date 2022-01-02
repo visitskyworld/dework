@@ -1,11 +1,8 @@
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
-import { Avatar, Col, Divider, Row, Skeleton, Tabs, Typography } from "antd";
+import { Avatar, Col, Row, Skeleton, Tabs, Typography } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
-import {
-  useOrganization,
-  useUpdateOrganization,
-} from "@dewo/app/containers/organization/hooks";
+import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
@@ -14,7 +11,6 @@ import { OrganizationSettings } from "./OrganizationSettings";
 import { JoinOrganizationButton } from "./JoinOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { OrganizationMemberList } from "./OrganizationMemberList";
-import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 
 interface Props {
   organizationId: string;
@@ -40,13 +36,6 @@ export const OrganizationTabs: FC<Props> = ({
     [organization, router]
   );
 
-  const updateOrganization = useUpdateOrganization();
-  const updateDescription = useCallback(
-    (description: string) =>
-      updateOrganization({ id: organizationId, description }),
-    [updateOrganization, organizationId]
-  );
-
   return (
     <Tabs
       centered
@@ -70,7 +59,7 @@ export const OrganizationTabs: FC<Props> = ({
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col span={6}>
-            <Typography.Title level={5}>Intro</Typography.Title>
+            {/* <Typography.Title level={5}>Intro</Typography.Title>
             <Skeleton loading={!organization} paragraph={{ rows: 6 }}>
               <MarkdownEditor
                 initialValue={organization?.description ?? undefined}
@@ -80,7 +69,7 @@ export const OrganizationTabs: FC<Props> = ({
               />
             </Skeleton>
 
-            <Divider />
+            <Divider /> */}
 
             <Typography.Title level={5}>Contributors</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
