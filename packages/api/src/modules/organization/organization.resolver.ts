@@ -55,11 +55,10 @@ export class OrganizationResolver {
 
   @ResolveField(() => [Project])
   public async projects(
+    @Context("user") user: User | undefined,
     @Parent() organization: Organization
   ): Promise<Project[]> {
-    // TODO(fant): query organization projects and filter by deletedAt directly
-    const projects = await organization.projects;
-    return projects.filter((p) => !p.deletedAt);
+    return this.organizationService.getProjects(organization.id, user?.id);
   }
 
   @Mutation(() => Organization)

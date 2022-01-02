@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
-import { Avatar, Col, Row, Skeleton, Tabs, Typography } from "antd";
+import { Avatar, Col, Divider, Row, Skeleton, Tabs, Typography } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
 import {
   useOrganization,
@@ -82,6 +82,19 @@ export const OrganizationTabs: FC<Props> = ({
 
             <Typography.Title level={5}>Core team</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
+              <Avatar.Group maxCount={10} size="large">
+                {!organization &&
+                  _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
+                {contributors.map((user) => (
+                  <UserAvatar key={user.id} user={user} linkToProfile />
+                ))}
+              </Avatar.Group>
+            </Row>
+
+            <Divider />
+
+            <Typography.Title level={5}>Core team</Typography.Title>
+            <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
                 {!organization &&
                   _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
@@ -136,7 +149,7 @@ export const OrganizationTabs: FC<Props> = ({
         }
         key="board"
         className="mx-auto w-full"
-        style={{ maxWidth: 300 * 4 + 16 * 5 }}
+        style={{ maxWidth: 300 * 4 + 16 * 3 + 24 * 2 }}
       >
         <OrganizationTaskBoard organizationId={organizationId} />
       </Tabs.TabPane>

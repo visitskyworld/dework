@@ -1,4 +1,4 @@
-import { ProjectDetails } from "@dewo/app/graphql/types";
+import { ProjectDetails, ProjectVisibility } from "@dewo/app/graphql/types";
 import {
   Avatar,
   Button,
@@ -33,6 +33,12 @@ export const ProjectCard: FC<Props> = ({ project }) => {
       <a>
         <Card className="hover:component-highlight h-full">
           <Typography.Title level={4} style={{ marginBottom: 0 }}>
+            {project.visibility === ProjectVisibility.PRIVATE && (
+              <Typography.Text type="secondary">
+                <Icons.LockOutlined />
+                {"  "}
+              </Typography.Text>
+            )}
             {project.name}
           </Typography.Title>
           <Progress

@@ -6,6 +6,7 @@ import {
   OrganizationIntegrationType,
   Project,
   ProjectIntegrationType,
+  ProjectVisibility,
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import {
@@ -119,7 +120,11 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     <Form<FormValues>
       layout="vertical"
       requiredMark={false}
-      initialValues={{ organizationId }}
+      initialValues={{
+        organizationId,
+        visibility: ProjectVisibility.PUBLIC,
+        type: "non-dev",
+      }}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
@@ -171,6 +176,19 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             </Select>
           </Form.Item>
         )}
+
+        <Form.Item
+          label="Visibility"
+          name="visibility"
+          tooltip="By default all projects are public. Make a project private if you only want to share it with invited contributors."
+        >
+          <Radio.Group>
+            <Radio.Button value={ProjectVisibility.PUBLIC}>Public</Radio.Button>
+            <Radio.Button value={ProjectVisibility.PRIVATE}>
+              Private
+            </Radio.Button>
+          </Radio.Group>
+        </Form.Item>
 
         <Form.Item label="Project Type" name="type">
           <Radio.Group>

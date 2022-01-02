@@ -18,6 +18,7 @@ import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { ProjectService } from "../project/project.service";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { ProjectVisibility } from "@dewo/api/models/Project";
 
 @Injectable()
 export class TaskService {
@@ -142,7 +143,7 @@ export class TaskService {
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
-      .leftJoinAndSelect("task.project", "project")
+      .innerJoinAndSelect("task.project", "project")
       .where("1 = 1");
 
     if (!!ids) {
@@ -164,7 +165,10 @@ export class TaskService {
         .andWhere("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })
-        .andWhere("project.deletedAt IS NULL");
+        .andWhere("project.deletedAt IS NULL")
+        .andWhere("project.visibility = :public", {
+          public: ProjectVisibility.PUBLIC,
+        });
     }
 
     if (!!assigneeId) {

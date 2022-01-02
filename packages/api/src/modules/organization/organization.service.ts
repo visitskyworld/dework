@@ -3,11 +3,13 @@ import {
   OrganizationMember,
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
+import { Project, ProjectVisibility } from "@dewo/api/models/Project";
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { User } from "@dewo/api/models/User";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { Brackets, DeepPartial, Repository } from "typeorm";
 
 @Injectable()
 export class OrganizationService {
@@ -17,7 +19,9 @@ export class OrganizationService {
     @InjectRepository(Organization)
     private readonly organizationRepo: Repository<Organization>,
     @InjectRepository(OrganizationMember)
-    private readonly organizationMemberRepo: Repository<OrganizationMember>
+    private readonly organizationMemberRepo: Repository<OrganizationMember>,
+    @InjectRepository(Project)
+    private readonly projectRepo: Repository<Project>
   ) {}
 
   public async create(
@@ -92,15 +96,40 @@ export class OrganizationService {
     await this.organizationMemberRepo.delete({ userId, organizationId });
   }
 
-  public async getMembers(
-    organizationId: string
-  ): Promise<OrganizationMember[]> {
+  public getMembers(organizationId: string): Promise<OrganizationMember[]> {
     return this.organizationMemberRepo
       .createQueryBuilder("member")
       .leftJoinAndSelect("member.user", "user")
       .where("member.organizationId = :organizationId", {
         organizationId,
       })
+      .getMany();
+  }
+
+  public getProjects(
+    organizationId: string,
+    userId: string | undefined
+  ): Promise<Project[]> {
+    return this.projectRepo
+      .createQueryBuilder("project")
+      .leftJoin("project.members", "pm", "pm.userId = :userId", { userId })
+      .innerJoin("project.organization", "organization")
+      .leftJoin("organization.members", "om", "om.userId = :userId", { userId })
+      .where("project.deletedAt IS NULL")
+      .andWhere("project.organizationId = :organizationId", { organizationId })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where("project.visibility = :public", {
+            public: ProjectVisibility.PUBLIC,
+          })
+            .orWhere("om.role IN (:...orgRoles)", {
+              orgRoles: [OrganizationRole.OWNER, OrganizationRole.ADMIN],
+            })
+            .orWhere("pm.role IN (:...projectRoles)", {
+              projectRoles: [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR],
+            });
+        })
+      )
       .getMany();
   }
 

@@ -10,6 +10,8 @@ import {
   OrganizationMember,
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
+import { ProjectVisibility } from "@dewo/api/models/Project";
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;
@@ -292,32 +294,6 @@ describe("OrganizationResolver", () => {
 
   describe("Queries", () => {
     describe("getOrganization", () => {
-      it("should return non-deleted projects", async () => {
-        const organization = await fixtures.createOrganization();
-        const project = await fixtures.createProject({
-          organizationId: organization.id,
-        });
-        const deletedProject = await fixtures.createProject({
-          organizationId: organization.id,
-          deletedAt: new Date(),
-        });
-
-        const response = await client.request({
-          app,
-          body: OrganizationRequests.get(organization.id),
-        });
-
-        expect(response.status).toEqual(HttpStatus.OK);
-        const fetched = response.body.data.organization;
-        expect(fetched.projects).toHaveLength(1);
-        expect(fetched.projects).toContainEqual(
-          expect.objectContaining({ id: project.id })
-        );
-        expect(fetched.projects).not.toContainEqual(
-          expect.objectContaining({ id: deletedProject.id })
-        );
-      });
-
       it("should return tasks from all non-deleted projects", async () => {
         const organization = await fixtures.createOrganization();
         const projects = await Bluebird.map(_.range(5), () =>
@@ -335,6 +311,14 @@ describe("OrganizationResolver", () => {
           projectId: deletedProject.id,
         });
 
+        const privateProject = await fixtures.createProject({
+          organizationId: organization.id,
+          visibility: ProjectVisibility.PRIVATE,
+        });
+        const taskInPrivateProject = await fixtures.createTask({
+          projectId: privateProject.id,
+        });
+
         const response = await client.request({
           app,
           body: OrganizationRequests.get(organization.id),
@@ -344,16 +328,112 @@ describe("OrganizationResolver", () => {
         const fetched = response.body.data.organization;
         tasks.forEach((task) => {
           expect(fetched.tasks).toContainEqual(
-            expect.objectContaining({ id: task.id, projectId: task.projectId })
+            expect.objectContaining({ id: task.id })
           );
         });
 
         expect(fetched.tasks).not.toContainEqual(
-          expect.objectContaining({
-            id: taskInDeletedProject.id,
-            projectId: taskInDeletedProject.projectId,
-          })
+          expect.objectContaining({ id: taskInDeletedProject.id })
         );
+        expect(fetched.tasks).not.toContainEqual(
+          expect.objectContaining({ id: taskInPrivateProject.id })
+        );
+      });
+
+      describe("projects", () => {
+        it("should return non-deleted, public projects", async () => {
+          const organization = await fixtures.createOrganization();
+          const project = await fixtures.createProject({
+            organizationId: organization.id,
+          });
+          const deletedProject = await fixtures.createProject({
+            organizationId: organization.id,
+            deletedAt: new Date(),
+          });
+          const privateProject = await fixtures.createProject({
+            organizationId: organization.id,
+            visibility: ProjectVisibility.PRIVATE,
+          });
+
+          const response = await client.request({
+            app,
+            body: OrganizationRequests.get(organization.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetched = response.body.data.organization;
+          expect(fetched.projects).toHaveLength(1);
+          expect(fetched.projects).toContainEqual(
+            expect.objectContaining({ id: project.id })
+          );
+          expect(fetched.projects).not.toContainEqual(
+            expect.objectContaining({ id: deletedProject.id })
+          );
+          expect(fetched.projects).not.toContainEqual(
+            expect.objectContaining({ id: privateProject.id })
+          );
+        });
+
+        it("should show private projects to org admins", async () => {
+          const orgAdmin = await fixtures.createUser();
+          const organization = await fixtures.createOrganization(
+            {},
+            undefined,
+            [{ userId: orgAdmin.id, role: OrganizationRole.ADMIN }]
+          );
+          const project = await fixtures.createProject({
+            organizationId: organization.id,
+            visibility: ProjectVisibility.PRIVATE,
+          });
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(orgAdmin),
+            body: OrganizationRequests.get(organization.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetched = response.body.data.organization;
+          expect(fetched.projects).toContainEqual(
+            expect.objectContaining({ id: project.id })
+          );
+        });
+
+        it("should show private projects to proj admins and contributors", async () => {
+          const user = await fixtures.createUser();
+          const organization = await fixtures.createOrganization();
+          const adminProject = await fixtures.createProject(
+            {
+              organizationId: organization.id,
+              visibility: ProjectVisibility.PRIVATE,
+            },
+            undefined,
+            [{ userId: user.id, role: ProjectRole.ADMIN }]
+          );
+          const contributorProject = await fixtures.createProject(
+            {
+              organizationId: organization.id,
+              visibility: ProjectVisibility.PRIVATE,
+            },
+            undefined,
+            [{ userId: user.id, role: ProjectRole.CONTRIBUTOR }]
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: OrganizationRequests.get(organization.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetched = response.body.data.organization;
+          expect(fetched.projects).toContainEqual(
+            expect.objectContaining({ id: adminProject.id })
+          );
+          expect(fetched.projects).toContainEqual(
+            expect.objectContaining({ id: contributorProject.id })
+          );
+        });
       });
     });
   });

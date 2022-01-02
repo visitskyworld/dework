@@ -20,6 +20,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import Link from "next/link";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
+import { ProjectVisibility } from "@dewo/app/graphql/types";
 
 interface Props {
   projectId: string;
@@ -74,6 +75,12 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
               style={{ margin: 0 }}
               onClick={editName.toggleOn}
             >
+              {project.visibility === ProjectVisibility.PRIVATE && (
+                <Typography.Text type="secondary">
+                  <Icons.LockOutlined />
+                  {"  "}
+                </Typography.Text>
+              )}
               {project.name}
             </Typography.Title>
           ) : (

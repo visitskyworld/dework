@@ -225,6 +225,22 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: UpdateOrganizationMutation
 // ====================================================
 
+export interface UpdateOrganizationMutation_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateOrganizationMutation_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: UpdateOrganizationMutation_organization_projects_members_user;
+}
+
 export interface UpdateOrganizationMutation_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -269,12 +285,14 @@ export interface UpdateOrganizationMutation_organization_projects {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: UpdateOrganizationMutation_organization_projects_members[];
   paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
   integrations: UpdateOrganizationMutation_organization_projects_integrations[];
 }
@@ -518,6 +536,7 @@ export interface CreateProjectMutation_project_organization_projects {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -571,6 +590,7 @@ export interface CreateProjectMutation_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -660,6 +680,7 @@ export interface UpdateProjectMutation_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -1585,10 +1606,56 @@ export interface AcceptInviteMutation_invite_organization {
   members: AcceptInviteMutation_invite_organization_members[];
 }
 
+export interface AcceptInviteMutation_invite_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface AcceptInviteMutation_invite_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: AcceptInviteMutation_invite_project_members_user;
+}
+
+export interface AcceptInviteMutation_invite_project_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface AcceptInviteMutation_invite_project_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  user: AcceptInviteMutation_invite_project_organization_members_user;
+}
+
+export interface AcceptInviteMutation_invite_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  members: AcceptInviteMutation_invite_project_organization_members[];
+}
+
+export interface AcceptInviteMutation_invite_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  members: AcceptInviteMutation_invite_project_members[];
+  organization: AcceptInviteMutation_invite_project_organization;
+}
+
 export interface AcceptInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
   organization: AcceptInviteMutation_invite_organization | null;
+  project: AcceptInviteMutation_invite_project | null;
 }
 
 export interface AcceptInviteMutation {
@@ -2061,6 +2128,7 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2386,6 +2454,7 @@ export interface UserTasksQuery_user_tasks_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2571,6 +2640,7 @@ export interface GetOrganizationQuery_organization_projects {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2695,6 +2765,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -2983,6 +3054,7 @@ export interface GetProjectQuery_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3329,6 +3401,7 @@ export interface GetTaskQuery_task_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3534,6 +3607,7 @@ export interface GetTasksQuery_tasks_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3842,6 +3916,7 @@ export interface GetInviteQuery_invite_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4088,6 +4163,7 @@ export interface TaskCreatedSubscription_task_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4293,6 +4369,7 @@ export interface TaskUpdatedSubscription_task_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4793,6 +4870,7 @@ export interface Project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4867,6 +4945,7 @@ export interface ProjectDetails {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5360,6 +5439,7 @@ export interface TaskWithOrganization_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5523,6 +5603,7 @@ export interface TaskDetails_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5764,6 +5845,7 @@ export interface OrganizationDetails_projects {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5842,6 +5924,7 @@ export interface Invite_project {
   slug: string;
   name: string;
   description: string | null;
+  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5919,6 +6002,11 @@ export enum ProjectRole {
   CONTRIBUTOR = "CONTRIBUTOR",
 }
 
+export enum ProjectVisibility {
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC",
+}
+
 export enum TaskRewardTrigger {
   CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
   PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
@@ -5988,6 +6076,7 @@ export interface CreatePaymentTokenInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
+  visibility: ProjectVisibility;
 }
 
 export interface CreateProjectIntegrationInput {

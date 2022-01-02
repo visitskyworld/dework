@@ -58,7 +58,9 @@ export const permissions: Permissions<
       userId: { $ne: user.id },
       role: { $in: [OrganizationRole.ADMIN, OrganizationRole.FOLLOWER] },
     });
-    can(Actions.delete, OrganizationMember);
+    can(Actions.delete, OrganizationMember, {
+      role: { $ne: OrganizationRole.OWNER },
+    });
 
     can(Actions.update, Organization);
 

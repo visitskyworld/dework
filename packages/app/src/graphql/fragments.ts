@@ -134,6 +134,7 @@ export const project = gql`
     slug
     name
     description
+    visibility
     deletedAt
     organizationId
     permalink

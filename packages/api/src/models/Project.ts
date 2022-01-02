@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import {
   AfterLoad,
   Column,
@@ -17,6 +17,13 @@ import slugify from "slugify";
 import encoder from "uuid-base62";
 import { ProjectMember } from "./ProjectMember";
 
+export enum ProjectVisibility {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+}
+
+registerEnumType(ProjectVisibility, { name: "ProjectVisibility" });
+
 @Entity()
 @ObjectType()
 export class Project extends Audit {
@@ -27,6 +34,10 @@ export class Project extends Audit {
   @Column({ nullable: true, length: 4096 })
   @Field({ nullable: true })
   public description!: string;
+
+  @Column({ enum: ProjectVisibility, default: ProjectVisibility.PUBLIC })
+  @Field(() => ProjectVisibility)
+  public visibility!: ProjectVisibility;
 
   @JoinColumn()
   @ManyToOne(() => Organization)

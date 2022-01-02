@@ -1,3 +1,4 @@
+import { ProjectVisibility } from "@dewo/api/models/Project";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -8,4 +9,7 @@ export class CreateProjectInput {
 
   @Field(() => GraphQLUUID)
   public organizationId!: string;
+
+  @Field(() => ProjectVisibility)
+  public visibility?: ProjectVisibility;
 }

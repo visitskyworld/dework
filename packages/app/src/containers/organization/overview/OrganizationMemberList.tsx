@@ -28,10 +28,13 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
   const removeMember = useRemoveOrganizationMember();
 
-  const canDeleteMember = usePermission("delete", {
+  const canDeleteAdmin = usePermission("delete", {
     __typename: "OrganizationMember",
-    // TODO(fant)
-    role: OrganizationRole.FOLLOWER,
+    role: OrganizationRole.ADMIN,
+  });
+  const canDeleteOwner = usePermission("delete", {
+    __typename: "OrganizationMember",
+    role: OrganizationRole.OWNER,
   });
 
   const navigateToProfile = useNavigateToProfile();
@@ -91,22 +94,29 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
               return roleToString[role];
             },
           },
-          ...(canDeleteMember
+          ...(canDeleteAdmin || canDeleteOwner
             ? [
                 {
                   key: "delete",
                   width: 1,
-                  render: (_: unknown, user: User) =>
-                    !!organizationRoleByUserId[user.id] && (
-                      <Button
-                        type="text"
-                        icon={<Icons.DeleteOutlined />}
-                        onClick={(event) => {
-                          eatClick(event);
-                          removeMember({ userId: user.id, organizationId });
-                        }}
-                      />
-                    ),
+                  render: (_: unknown, user: User) => {
+                    const role = organizationRoleByUserId[user.id];
+                    if (
+                      (role === OrganizationRole.OWNER && canDeleteOwner) ||
+                      (role === OrganizationRole.ADMIN && canDeleteAdmin)
+                    ) {
+                      return (
+                        <Button
+                          type="text"
+                          icon={<Icons.DeleteOutlined />}
+                          onClick={(event) => {
+                            eatClick(event);
+                            removeMember({ userId: user.id, organizationId });
+                          }}
+                        />
+                      );
+                    }
+                  },
                 },
               ]
             : []),
