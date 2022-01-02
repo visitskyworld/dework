@@ -1,19 +1,13 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
-import {
-  useOrganization,
-  useOrganizationContributors,
-  useOrganizationCoreTeam,
-  useRemoveOrganizationMember,
-} from "../hooks";
+import { useOrganization, useRemoveOrganizationMember } from "../hooks";
 import { Table, Space, Row, Button } from "antd";
 import * as Icons from "@ant-design/icons";
-import { OrganizationRole, User } from "@dewo/app/graphql/types";
+import { OrganizationMember, OrganizationRole } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
-import _ from "lodash";
 
 interface Props {
   organizationId: string;
@@ -39,25 +33,9 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
 
   const navigateToProfile = useNavigateToProfile();
 
-  const coreTeam = useOrganizationCoreTeam(organizationId);
-  const contributors = useOrganizationContributors(organizationId);
-  const contributorsWithoutCoreTeam = useMemo(
-    () => contributors.filter((c) => !coreTeam.some((u) => u.id === c.id)),
-    [contributors, coreTeam]
-  );
-  const users = useMemo(
-    () => [...coreTeam, ...contributorsWithoutCoreTeam],
-    [coreTeam, contributorsWithoutCoreTeam]
-  );
-
-  const organizationRoleByUserId = useMemo(
+  const members = useMemo(
     () =>
-      _(organization?.members)
-        .keyBy((m) => m.user.id)
-        .mapValues((m) =>
-          m.role === OrganizationRole.FOLLOWER ? undefined : m.role
-        )
-        .value(),
+      organization?.members.filter((m) => m.role !== OrganizationRole.FOLLOWER),
     [organization?.members]
   );
 
@@ -70,53 +48,41 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
         <OrganizationInviteButton organizationId={organizationId} />
       </Row>
 
-      <Table<User>
-        dataSource={users}
+      <Table<OrganizationMember>
+        dataSource={members}
         size="small"
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
-        onRow={(user) => ({ onClick: () => navigateToProfile(user) })}
+        onRow={(m) => ({ onClick: () => navigateToProfile(m.user) })}
         style={{ cursor: "pointer" }}
         columns={[
           {
             key: "avatar",
             width: 1,
-            render: (_, user: User) => <UserAvatar user={user} />,
+            render: (_, m: OrganizationMember) => <UserAvatar user={m.user} />,
           },
-          { title: "Username", dataIndex: "username" },
+          { title: "Username", dataIndex: ["user", "username"] },
           {
             title: "Role",
             dataIndex: "role",
             width: 1,
-            render: (_, user: User) => {
-              const role = organizationRoleByUserId[user.id];
-              if (!role) return "Contributor";
-              return roleToString[role];
-            },
+            render: (role: OrganizationRole) => roleToString[role],
           },
           ...(canDeleteAdmin || canDeleteOwner
             ? [
                 {
                   key: "delete",
                   width: 1,
-                  render: (_: unknown, user: User) => {
-                    const role = organizationRoleByUserId[user.id];
-                    if (
-                      (role === OrganizationRole.OWNER && canDeleteOwner) ||
-                      (role === OrganizationRole.ADMIN && canDeleteAdmin)
-                    ) {
-                      return (
-                        <Button
-                          type="text"
-                          icon={<Icons.DeleteOutlined />}
-                          onClick={(event) => {
-                            eatClick(event);
-                            removeMember({ userId: user.id, organizationId });
-                          }}
-                        />
-                      );
-                    }
-                  },
+                  render: (_: unknown, m: OrganizationMember) => (
+                    <Button
+                      type="text"
+                      icon={<Icons.DeleteOutlined />}
+                      onClick={(event) => {
+                        eatClick(event);
+                        removeMember({ userId: m.user.id, organizationId });
+                      }}
+                    />
+                  ),
                 },
               ]
             : []),

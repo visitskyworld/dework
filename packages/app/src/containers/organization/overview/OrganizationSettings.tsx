@@ -55,7 +55,7 @@ export const OrganizationSettings: FC<Props> = ({
         </Card>
       )}
     >
-      <Tabs.TabPane tab="Contributors" key="contributors">
+      <Tabs.TabPane tab="Core Team" key="members">
         <OrganizationMemberList organizationId={organizationId} />
       </Tabs.TabPane>
       {canDeleteOrganization && (

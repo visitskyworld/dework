@@ -109,37 +109,18 @@ export const OrganizationTabs: FC<Props> = ({
           </Col>
         </Row>
       </Tabs.TabPane>
-      {canUpdateOrganization ? (
-        <Tabs.TabPane
-          tab={
-            <>
-              <Icons.TeamOutlined />
-              Contributors
-            </>
-          }
-          key="contributors"
-          className="max-w-lg mx-auto w-full"
-        >
-          <OrganizationSettings
-            organizationId={organizationId}
-            currentTab="contributors"
-            onTabClick={navigateToSettingsTab}
-          />
-        </Tabs.TabPane>
-      ) : (
-        <Tabs.TabPane
-          tab={
-            <>
-              <Icons.TeamOutlined />
-              Contributors
-            </>
-          }
-          key="contributors"
-          className="max-w-sm mx-auto w-full"
-        >
-          <OrganizationMemberList organizationId={organizationId} />
-        </Tabs.TabPane>
-      )}
+      <Tabs.TabPane
+        tab={
+          <>
+            <Icons.TeamOutlined />
+            Contributors
+          </>
+        }
+        key="contributors"
+        className="max-w-sm mx-auto w-full"
+      >
+        <OrganizationMemberList organizationId={organizationId} />
+      </Tabs.TabPane>
       <Tabs.TabPane
         tab={
           <>
@@ -166,7 +147,7 @@ export const OrganizationTabs: FC<Props> = ({
         >
           <OrganizationSettings
             organizationId={organizationId}
-            currentTab={settingsTab ?? "contributors"}
+            currentTab={settingsTab ?? "members"}
             onTabClick={navigateToSettingsTab}
           />
         </Tabs.TabPane>
