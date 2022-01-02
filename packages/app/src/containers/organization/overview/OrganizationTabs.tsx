@@ -4,7 +4,7 @@ import { Avatar, Col, Row, Skeleton, Tabs, Typography } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
 import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
+import { OrganizationInviteButton } from "@dewo/app/containers/invite/OrganizationInviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
 import { OrganizationSettings } from "./OrganizationSettings";
@@ -106,7 +106,7 @@ export const OrganizationTabs: FC<Props> = ({
               </Avatar.Group>
             </Row>
 
-            <InviteButton organizationId={organizationId} />
+            <OrganizationInviteButton organizationId={organizationId} />
             <FollowOrganizationButton organizationId={organizationId} />
           </Col>
         </Row>

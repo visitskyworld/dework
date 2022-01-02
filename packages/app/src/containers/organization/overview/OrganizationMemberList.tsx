@@ -3,7 +3,7 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
-import { InviteButton } from "../../invite/InviteButton";
+import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
 import {
   useOrganization,
   useRemoveOrganizationMember,
@@ -50,7 +50,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
       style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
     >
       <Row justify="end">
-        <InviteButton organizationId={organizationId} />
+        <OrganizationInviteButton organizationId={organizationId} />
       </Row>
 
       <Table<OrganizationMember>
