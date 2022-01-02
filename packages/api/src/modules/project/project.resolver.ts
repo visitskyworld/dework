@@ -28,6 +28,7 @@ import { IntegrationService } from "../integrations/integration.service";
 import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
+import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -97,6 +98,23 @@ export class ProjectResolver {
     @Args("input") input: UpdateProjectMemberInput
   ): Promise<ProjectMember> {
     return this.projectService.upsertMember(input);
+  }
+
+  @Mutation(() => Project)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.delete, ProjectMember, [
+    ProjectService,
+    (service: ProjectService, { params }) =>
+      service.findMember({
+        userId: params.input.userId,
+        projectId: params.input.projectId,
+      }),
+  ])
+  public async removeProjectMember(
+    @Args("input") input: RemoveProjectMemberInput
+  ): Promise<Project> {
+    await this.projectService.removeMember(input.projectId, input.userId);
+    return this.projectService.findById(input.projectId) as Promise<Project>;
   }
 
   @Mutation(() => ProjectIntegration)

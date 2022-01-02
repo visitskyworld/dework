@@ -419,6 +419,78 @@ export interface RemoveOrganizationMemberMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateProjectMemberMutation
+// ====================================================
+
+export interface UpdateProjectMemberMutation_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateProjectMemberMutation_member {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: UpdateProjectMemberMutation_member_user;
+}
+
+export interface UpdateProjectMemberMutation {
+  member: UpdateProjectMemberMutation_member;
+}
+
+export interface UpdateProjectMemberMutationVariables {
+  input: UpdateProjectMemberInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: RemoveProjectMemberMutation
+// ====================================================
+
+export interface RemoveProjectMemberMutation_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface RemoveProjectMemberMutation_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: RemoveProjectMemberMutation_project_members_user;
+}
+
+export interface RemoveProjectMemberMutation_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  members: RemoveProjectMemberMutation_project_members[];
+}
+
+export interface RemoveProjectMemberMutation {
+  project: RemoveProjectMemberMutation_project;
+}
+
+export interface RemoveProjectMemberMutationVariables {
+  input: RemoveProjectMemberInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
@@ -6139,6 +6211,11 @@ export interface RemoveOrganizationMemberInput {
   userId: Scalar.UUID;
 }
 
+export interface RemoveProjectMemberInput {
+  projectId: Scalar.UUID;
+  userId: Scalar.UUID;
+}
+
 export interface SetUserDetailInput {
   type: UserDetailType;
   value?: string | null;
@@ -6174,6 +6251,12 @@ export interface UpdateProjectInput {
 export interface UpdateProjectIntegrationInput {
   id: Scalar.UUID;
   deletedAt?: Scalar.DateTime | null;
+}
+
+export interface UpdateProjectMemberInput {
+  projectId: Scalar.UUID;
+  userId: Scalar.UUID;
+  role: ProjectRole;
 }
 
 export interface UpdateTaskInput {

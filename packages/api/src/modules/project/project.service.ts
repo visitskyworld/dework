@@ -66,7 +66,11 @@ export class ProjectService {
     }
   }
 
-  private findMember(
+  public async removeMember(projectId: string, userId: string): Promise<void> {
+    await this.projectMemberRepo.delete({ userId, projectId });
+  }
+
+  public findMember(
     partial: Partial<Pick<ProjectMember, "projectId" | "userId" | "role">>
   ): Promise<ProjectMember | undefined> {
     return this.projectMemberRepo.findOne(partial);

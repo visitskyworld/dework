@@ -6,6 +6,8 @@ import { useUpdatePaymentMethod } from "../../payment/hooks";
 import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 import { ProjectGithubIntegration } from "./ProjectGithubIntegration";
 import { FormSection } from "@dewo/app/components/FormSection";
+import { ProjectMemberList } from "./ProjectMemberList";
+import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 
 interface Props {
   project: ProjectDetails;
@@ -50,6 +52,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
             ))}
             <AddPaymentMethodButton
               key={project.paymentMethods.length}
+              type="ghost"
               selectTokens
               inputOverride={useMemo(
                 () => ({ projectId: project.id }),
@@ -58,6 +61,14 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
               children="Add Payment Method"
             />
           </Space>
+        </FormSection>
+
+        <FormSection label="Members">
+          <ProjectMemberList projectId={project.id} />
+          <ProjectInviteButton
+            projectId={project.id}
+            style={{ marginTop: 8 }}
+          />
         </FormSection>
       </Space>
     </>

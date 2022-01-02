@@ -16,8 +16,15 @@ import {
   Project,
   ProjectDetails,
   ProjectIntegration,
+  ProjectMember,
+  RemoveProjectMemberInput,
+  RemoveProjectMemberMutation,
+  RemoveProjectMemberMutationVariables,
   TaskTag,
   UpdateProjectInput,
+  UpdateProjectMemberInput,
+  UpdateProjectMemberMutation,
+  UpdateProjectMemberMutationVariables,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
 } from "@dewo/app/graphql/types";
@@ -53,6 +60,39 @@ export function useUpdateProject(): (
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.project;
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateProjectMember(): (
+  input: UpdateProjectMemberInput
+) => Promise<ProjectMember> {
+  const [mutation] = useMutation<
+    UpdateProjectMemberMutation,
+    UpdateProjectMemberMutationVariables
+  >(Mutations.updateProjectMember);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.member;
+    },
+    [mutation]
+  );
+}
+
+export function useRemoveProjectMember(): (
+  input: RemoveProjectMemberInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    RemoveProjectMemberMutation,
+    RemoveProjectMemberMutationVariables
+  >(Mutations.removeProjectMember);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );
