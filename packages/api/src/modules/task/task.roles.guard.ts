@@ -91,9 +91,5 @@ export class TaskRolesGuard implements CanActivate {
     if (member?.role === ProjectRole.ADMIN) {
       gqlContext.caslUser.roles.push(Roles.projectAdmin);
     }
-
-    if (member?.role === ProjectRole.MEMBER) {
-      gqlContext.caslUser.roles.push(Roles.projectMember);
-    }
   }
 }

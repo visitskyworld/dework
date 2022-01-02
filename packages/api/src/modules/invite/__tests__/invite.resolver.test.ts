@@ -1,4 +1,5 @@
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -21,8 +22,8 @@ describe("InviteResolver", () => {
   describe("Mutations", () => {
     describe("createOrganizationInvite", () => {
       async function fn(
-        inviterRole: OrganizationRole | undefined,
-        invitedRole: OrganizationRole
+        invitedRole: OrganizationRole,
+        inviterRole?: OrganizationRole
       ) {
         const user = await fixtures.createUser();
         const organization = await fixtures.createOrganization(
@@ -50,7 +51,7 @@ describe("InviteResolver", () => {
       });
 
       it("FOLLOWER cannot invite ADMIN", async () => {
-        const res = await fn(OrganizationRole.FOLLOWER, OrganizationRole.ADMIN);
+        const res = await fn(OrganizationRole.ADMIN, OrganizationRole.FOLLOWER);
         client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
 
@@ -62,12 +63,12 @@ describe("InviteResolver", () => {
       });
 
       it("ADMIN cannot invite OWNER", async () => {
-        const res = await fn(OrganizationRole.ADMIN, OrganizationRole.OWNER);
+        const res = await fn(OrganizationRole.OWNER, OrganizationRole.ADMIN);
         client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
 
       it("OWNER can invite ADMIN", async () => {
-        const res = await fn(OrganizationRole.OWNER, OrganizationRole.ADMIN);
+        const res = await fn(OrganizationRole.ADMIN, OrganizationRole.OWNER);
         expect(res.body.data.invite).toEqual(
           expect.objectContaining({ organizationRole: OrganizationRole.ADMIN })
         );
@@ -77,6 +78,88 @@ describe("InviteResolver", () => {
         const res = await fn(OrganizationRole.OWNER, OrganizationRole.OWNER);
         expect(res.body.data.invite).toEqual(
           expect.objectContaining({ organizationRole: OrganizationRole.OWNER })
+        );
+      });
+    });
+
+    describe("createProjectInvite", () => {
+      async function fn(
+        invitedRole: ProjectRole,
+        inviterProjectRole?: ProjectRole,
+        inviterOrganizationRole?: OrganizationRole
+      ) {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization(
+          {},
+          undefined,
+          !!inviterOrganizationRole
+            ? [{ userId: user.id, role: inviterOrganizationRole }]
+            : []
+        );
+
+        const project = await fixtures.createProject(
+          { organizationId: organization.id },
+          undefined,
+          !!inviterProjectRole
+            ? [{ userId: user.id, role: inviterProjectRole }]
+            : []
+        );
+
+        return client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: InviteRequests.createProjectInvite({
+            projectId: project.id,
+            role: invitedRole,
+          }),
+        });
+      }
+
+      it("non-member cannot invite CONTRIBUTOR", async () => {
+        const res = await fn(ProjectRole.CONTRIBUTOR);
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+      });
+
+      it("CONTRIBUTOR cannot invite CONTRIBUTOR", async () => {
+        const res = await fn(ProjectRole.CONTRIBUTOR, ProjectRole.CONTRIBUTOR);
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+      });
+
+      it("ADMIN can invite CONTRIBUTOR", async () => {
+        const res = await fn(ProjectRole.CONTRIBUTOR, ProjectRole.ADMIN);
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
+        );
+      });
+
+      it("org FOLLOWER cannot invite CONTRIBUTOR", async () => {
+        const res = await fn(
+          ProjectRole.CONTRIBUTOR,
+          undefined,
+          OrganizationRole.FOLLOWER
+        );
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+      });
+
+      it("org ADMIN can invite CONTRIBUTOR", async () => {
+        const res = await fn(
+          ProjectRole.CONTRIBUTOR,
+          undefined,
+          OrganizationRole.ADMIN
+        );
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
+        );
+      });
+
+      it("org ADMIN can invite ADMIN", async () => {
+        const res = await fn(
+          ProjectRole.ADMIN,
+          undefined,
+          OrganizationRole.ADMIN
+        );
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ projectRole: ProjectRole.ADMIN })
         );
       });
     });
