@@ -9,7 +9,7 @@ import {
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -80,5 +80,9 @@ export const permissions: Permissions<
     can(Actions.create, Task);
     can(Actions.update, Task);
     can(Actions.delete, Task);
+  },
+
+  projectContributor({ can }) {
+    can(Actions.create, ProjectMember, { role: ProjectRole.CONTRIBUTOR });
   },
 };

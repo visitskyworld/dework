@@ -120,9 +120,11 @@ describe("InviteResolver", () => {
         client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
 
-      it("CONTRIBUTOR cannot invite CONTRIBUTOR", async () => {
+      it("CONTRIBUTOR can invite CONTRIBUTOR", async () => {
         const res = await fn(ProjectRole.CONTRIBUTOR, ProjectRole.CONTRIBUTOR);
-        client.expectGqlError(res, HttpStatus.FORBIDDEN);
+        expect(res.body.data.invite).toEqual(
+          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
+        );
       });
 
       it("ADMIN can invite CONTRIBUTOR", async () => {
