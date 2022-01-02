@@ -59,18 +59,6 @@ export const OrganizationTabs: FC<Props> = ({
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col span={6}>
-            {/* <Typography.Title level={5}>Intro</Typography.Title>
-            <Skeleton loading={!organization} paragraph={{ rows: 6 }}>
-              <MarkdownEditor
-                initialValue={organization?.description ?? undefined}
-                editable={canUpdateOrganization}
-                mode="update"
-                onSave={updateDescription}
-              />
-            </Skeleton>
-
-            <Divider /> */}
-
             <Typography.Title level={5}>Contributors</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
