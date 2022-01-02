@@ -55,7 +55,10 @@ export function useGroupedTasks(
   tasks: Task[],
   projectId?: string
 ): Record<TaskStatusEnum, TaskSection[]> {
-  const canUpdateTasks = usePermission("update", "Task");
+  const canUpdateTasks = usePermission("update", {
+    __typename: "Task",
+    id: "",
+  } as Task);
   return useMemo(() => {
     return _(tasks)
       .filter((task) => !task.deletedAt)
