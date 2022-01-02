@@ -16,6 +16,7 @@ import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
+import { Organization } from "@dewo/api/models/Organization";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -509,10 +510,13 @@ describe("UserResolver", () => {
 
         it("organizationMember", async () => {
           const user = await fixtures.createUser();
+          const partialOrg = new Organization();
+          // @ts-ignore
+          partialOrg.members = [
+            { userId: user.id, role: OrganizationRole.MEMBER },
+          ];
           const { organization } = await fixtures.createUserOrgProject({
-            organization: {
-              members: [{ userId: user.id, role: OrganizationRole.MEMBER }],
-            },
+            organization: partialOrg,
           });
 
           const permissions = await getPermissions(user, {

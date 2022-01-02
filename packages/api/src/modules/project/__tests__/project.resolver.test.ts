@@ -1,4 +1,5 @@
 import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -57,6 +58,12 @@ describe("ProjectResolver", () => {
         expect(project).toBeDefined();
         expect(project.name).toEqual(name);
         expect(project.organization.id).toEqual(organization.id);
+        expect(project.members).toContainEqual(
+          expect.objectContaining({
+            userId: user.id,
+            role: ProjectRole.ADMIN,
+          })
+        );
       });
     });
 
@@ -143,6 +150,16 @@ describe("ProjectResolver", () => {
         expect(fetched.project.id).toEqual(project.id);
         expect(fetched.project.integrations).toHaveLength(0);
       });
+    });
+
+    xdescribe("updateProjectMember", () => {
+      it("non-member cannot add oneself as MEMBER", async () => {});
+
+      it("ADMIN can add someone else as ADMIN", async () => {});
+
+      it("ADMIN can add someone else as MEMBER", async () => {});
+
+      it("organization ADMIN can add someone else as ADMIN", async () => {});
     });
   });
 

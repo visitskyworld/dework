@@ -109,12 +109,20 @@ export class Fixtures {
     );
   }
 
-  public async createProject(partial: Partial<Project> = {}): Promise<Project> {
-    return this.projectService.create({
-      name: faker.company.companyName(),
-      organizationId: await this.createOrganization().then((o) => o.id),
-      ...partial,
-    });
+  public async createProject(
+    partialProject: Partial<Project> = {},
+    partialCreator: Partial<User> = {}
+  ): Promise<Project> {
+    const creator = await this.createUser(partialCreator);
+    const organization = await this.createOrganization({}, creator);
+    return this.projectService.create(
+      {
+        name: faker.company.companyName(),
+        organizationId: organization.id,
+        ...partialProject,
+      },
+      creator
+    );
   }
 
   public async createProjectIntegration(

@@ -26,6 +26,8 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
 import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -63,9 +65,10 @@ export class ProjectResolver {
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
   @UseAbility(Actions.create, Project)
   public async createProject(
+    @Context("user") user: User,
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
-    return this.projectService.create(input);
+    return this.projectService.create(input, user);
   }
 
   @Mutation(() => Project)
@@ -79,6 +82,44 @@ export class ProjectResolver {
   ): Promise<Project> {
     return this.projectService.update(input);
   }
+
+  @Mutation(() => ProjectMember)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.manage, ProjectMember, [
+    ProjectService,
+    async (_service: ProjectService, { params }) => ({
+      role: params.input.role,
+      userId: params.input.userId,
+      projectId: params.input.projectId,
+    }),
+  ])
+  public async updateProjectMember(
+    @Args("input") input: UpdateProjectMemberInput
+  ): Promise<ProjectMember> {
+    return this.projectService.upsertMember(input);
+  }
+
+  // @Mutation(() => Organization)
+  // @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  // @UseAbility(Actions.delete, OrganizationMember, [
+  //   OrganizationService,
+  //   (service: OrganizationService, { params }) =>
+  //     service.findMember({
+  //       userId: params.input.userId,
+  //       organizationId: params.input.organizationId,
+  //     }),
+  // ])
+  // public async removeOrganizationMember(
+  //   @Args("input") input: RemoveOrganizationMemberInput
+  // ): Promise<Organization> {
+  //   await this.organizationService.removeMember(
+  //     input.organizationId,
+  //     input.userId
+  //   );
+  //   return this.organizationService.findById(
+  //     input.organizationId
+  //   ) as Promise<Organization>;
+  // }
 
   @Mutation(() => ProjectIntegration)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)

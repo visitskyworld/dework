@@ -15,6 +15,7 @@ import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
 import slugify from "slugify";
 import encoder from "uuid-base62";
+import { ProjectMember } from "./ProjectMember";
 
 @Entity()
 @ObjectType()
@@ -59,6 +60,10 @@ export class Project extends Audit {
   @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.project)
   @Field(() => [PaymentMethod])
   public paymentMethods!: Promise<PaymentMethod[]>;
+
+  @OneToMany(() => ProjectMember, (om: ProjectMember) => om.project)
+  @Field(() => [ProjectMember])
+  public members!: Promise<ProjectMember[]>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
