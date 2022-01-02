@@ -1,8 +1,12 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { Avatar, Col, Row, Skeleton, Tabs, Typography } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
-import { useOrganization } from "@dewo/app/containers/organization/hooks";
+import {
+  useOrganization,
+  useOrganizationContributors,
+  useOrganizationCoreTeam,
+} from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { OrganizationInviteButton } from "@dewo/app/containers/invite/OrganizationInviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
@@ -12,7 +16,6 @@ import { FollowOrganizationButton } from "./FollowOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { OrganizationMemberList } from "./OrganizationMemberList";
 import _ from "lodash";
-import { OrganizationRole } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId: string;
@@ -38,26 +41,8 @@ export const OrganizationTabs: FC<Props> = ({
     [organization, router]
   );
 
-  const coreTeam = useMemo(
-    () =>
-      organization?.members
-        .filter((m) =>
-          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
-        )
-        .map((m) => m.user),
-    [organization?.members]
-  );
-  const contributors = useMemo(
-    () =>
-      _(organization?.projects)
-        .map((p) => p.members)
-        .flatten()
-        .map((m) => m.user)
-        .concat(coreTeam ?? [])
-        .uniqBy((u) => u.id)
-        .value(),
-    [organization, coreTeam]
-  );
+  const coreTeam = useOrganizationCoreTeam(organizationId);
+  const contributors = useOrganizationContributors(organizationId);
 
   return (
     <Tabs

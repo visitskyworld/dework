@@ -6,15 +6,18 @@ import React, { FC, useMemo } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
 import {
   useOrganization,
+  useOrganizationContributors,
+  useOrganizationCoreTeam,
   useRemoveOrganizationMember,
   useUpdateOrganizationMember,
 } from "../hooks";
-import { Table, Space, Row, Button, Select } from "antd";
+import { Table, Space, Row, Button } from "antd";
 import * as Icons from "@ant-design/icons";
-import { OrganizationMember, OrganizationRole } from "@dewo/app/graphql/types";
+import { OrganizationRole, User } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
+import _ from "lodash";
 interface Props {
   organizationId: string;
 }
@@ -44,6 +47,29 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
       ),
     [organization?.members]
   );
+
+  const coreTeam = useOrganizationCoreTeam(organizationId);
+  const contributors = useOrganizationContributors(organizationId);
+  const contributorsWithoutCoreTeam = useMemo(
+    () => contributors.filter((c) => !coreTeam.some((u) => u.id === c.id)),
+    [contributors, coreTeam]
+  );
+  const users = useMemo(
+    () => [...coreTeam, ...contributorsWithoutCoreTeam],
+    [coreTeam, contributorsWithoutCoreTeam]
+  );
+
+  const organizationRoleByUserId = useMemo(
+    () =>
+      _(organization?.members)
+        .keyBy((m) => m.user.id)
+        .mapValues((m) =>
+          m.role === OrganizationRole.FOLLOWER ? undefined : m.role
+        )
+        .value(),
+    [organization?.members]
+  );
+
   return (
     <Space
       direction="vertical"
@@ -53,61 +79,28 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
         <OrganizationInviteButton organizationId={organizationId} />
       </Row>
 
-      <Table<OrganizationMember>
-        dataSource={members}
+      <Table<User>
+        dataSource={users}
         size="small"
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
-        onRow={(member) => ({
-          onClick: () => navigateToProfile(member.user),
-        })}
+        onRow={(user) => ({ onClick: () => navigateToProfile(user) })}
         style={{ cursor: "pointer" }}
         columns={[
           {
             key: "avatar",
             width: 1,
-            render: (_, member: OrganizationMember) => (
-              <UserAvatar user={member.user} />
-            ),
+            render: (_, user: User) => <UserAvatar user={user} />,
           },
-          {
-            title: "Username",
-            dataIndex: ["user", "username"],
-          },
+          { title: "Username", dataIndex: "username" },
           {
             title: "Role",
             dataIndex: "role",
             width: 1,
-            render: (
-              currentRole: OrganizationRole,
-              member: OrganizationMember
-            ) => {
-              if (!hasPermission("update", member)) {
-                return roleToString[currentRole];
-              }
-              return (
-                <Select
-                  key={member.id}
-                  defaultValue={currentRole}
-                  style={{ width: "100%" }}
-                  onClick={eatClick}
-                  onChange={(role) =>
-                    updateMember({
-                      organizationId,
-                      userId: member.user.id,
-                      role,
-                    })
-                  }
-                >
-                  {[OrganizationRole.ADMIN, OrganizationRole.OWNER].map(
-                    (role) => (
-                      <Select.Option key={role} value={role}>
-                        {roleToString[role]}
-                      </Select.Option>
-                    )
-                  )}
-                </Select>
-              );
+            render: (_, user: User) => {
+              const role = organizationRoleByUserId[user.id];
+              if (!role) return "Contributor";
+              return roleToString[role];
             },
           },
           ...(canDeleteMember
@@ -115,16 +108,17 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
                 {
                   key: "delete",
                   width: 1,
-                  render: (_: unknown, member: OrganizationMember) => (
-                    <Button
-                      type="text"
-                      icon={<Icons.DeleteOutlined />}
-                      onClick={(event) => {
-                        eatClick(event);
-                        removeMember({ userId: member.userId, organizationId });
-                      }}
-                    />
-                  ),
+                  render: (_: unknown, user: User) =>
+                    !!organizationRoleByUserId[user.id] && (
+                      <Button
+                        type="text"
+                        icon={<Icons.DeleteOutlined />}
+                        onClick={(event) => {
+                          eatClick(event);
+                          removeMember({ userId: user.id, organizationId });
+                        }}
+                      />
+                    ),
                 },
               ]
             : []),

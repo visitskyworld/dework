@@ -19,6 +19,7 @@ import {
   Organization,
   OrganizationDetails,
   OrganizationMember,
+  OrganizationRole,
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
   RemoveOrganizationMemberMutationVariables,
@@ -28,8 +29,10 @@ import {
   UpdateOrganizationMemberMutationVariables,
   UpdateOrganizationMutation,
   UpdateOrganizationMutationVariables,
+  User,
 } from "@dewo/app/graphql/types";
-import { useCallback } from "react";
+import _ from "lodash";
+import { useCallback, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
 export function useCreateOrganization(): (
@@ -182,4 +185,33 @@ export function useOrganizationDiscordChannels(
     skip,
   });
   return data?.channels ?? undefined;
+}
+
+export function useOrganizationCoreTeam(organizationId: string): User[] {
+  const organization = useOrganization(organizationId);
+  return useMemo(
+    () =>
+      organization?.members
+        .filter((m) =>
+          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
+        )
+        .map((m) => m.user) ?? [],
+    [organization?.members]
+  );
+}
+
+export function useOrganizationContributors(organizationId: string): User[] {
+  const organization = useOrganization(organizationId);
+  const coreTeam = useOrganizationCoreTeam(organizationId);
+  return useMemo(
+    () =>
+      _(organization?.projects)
+        .map((p) => p.members)
+        .flatten()
+        .map((m) => m.user)
+        .concat(coreTeam)
+        .uniqBy((u) => u.id)
+        .value(),
+    [organization, coreTeam]
+  );
 }

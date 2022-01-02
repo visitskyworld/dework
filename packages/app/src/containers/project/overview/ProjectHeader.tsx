@@ -5,6 +5,7 @@ import {
   PageHeader,
   Row,
   Skeleton,
+  Space,
   Typography,
 } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
@@ -104,32 +105,34 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
               ))}
             </Avatar.Group>
 
-            <Row style={{ marginRight: 8 }}>
-              <Link href={`${project?.permalink}/about`}>
-                <a>
-                  <Button
-                    type="text"
-                    size="large"
-                    icon={<Icons.InfoCircleOutlined />}
-                  />
-                </a>
-              </Link>
-              <Can I="update" a="Project">
-                <Link href={`${project?.permalink}/settings`}>
+            <Space>
+              <Row>
+                <Link href={`${project?.permalink}/about`}>
                   <a>
                     <Button
                       type="text"
                       size="large"
-                      icon={<Icons.SettingOutlined />}
+                      icon={<Icons.InfoCircleOutlined />}
                     />
                   </a>
                 </Link>
-              </Can>
-            </Row>
-            <ProjectInviteButton projectId={projectId} />
-            <FollowOrganizationButton
-              organizationId={project?.organizationId}
-            />
+                <Can I="update" a="Project">
+                  <Link href={`${project?.permalink}/settings`}>
+                    <a>
+                      <Button
+                        type="text"
+                        size="large"
+                        icon={<Icons.SettingOutlined />}
+                      />
+                    </a>
+                  </Link>
+                </Can>
+              </Row>
+              <ProjectInviteButton projectId={projectId} />
+              <FollowOrganizationButton
+                organizationId={project?.organizationId}
+              />
+            </Space>
           </Row>
         ) : (
           <Skeleton.Avatar active size="large" />
