@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { NextPage } from "next";
 import { Layout, PageHeader, Row } from "antd";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
@@ -9,6 +9,8 @@ import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { OrganizationHeaderSummary } from "@dewo/app/containers/organization/overview/OrganizationHeaderSummary";
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
+import { Project } from "@dewo/app/graphql/types";
+import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -31,6 +33,11 @@ const Page: NextPage = () => {
     [organization]
   ) as Route[];
 
+  const navigateToProject = useCallback(
+    (project: Project) => router.push(project.permalink),
+    [router]
+  );
+
   if (!organizationId) {
     router.replace("/");
     return null;
@@ -50,6 +57,13 @@ const Page: NextPage = () => {
           settingsTab={settingsTab}
         />
       </Layout.Content>
+
+      <ProjectCreateModal
+        visible={router.route.endsWith("/create")}
+        organizationId={organizationId}
+        onCreated={navigateToProject}
+        onCancel={router.back}
+      />
     </Layout>
   );
 };
