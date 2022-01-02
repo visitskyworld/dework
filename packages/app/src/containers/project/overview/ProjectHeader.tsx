@@ -99,7 +99,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
         !!project ? (
           <Row align="middle">
             <Avatar.Group maxCount={3} size="large" style={{ marginRight: 8 }}>
-              {organization?.members.map((m) => (
+              {project?.members.map((m) => (
                 <UserAvatar key={m.id} user={m.user} linkToProfile />
               ))}
             </Avatar.Group>

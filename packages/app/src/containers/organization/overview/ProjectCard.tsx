@@ -1,4 +1,4 @@
-import { ProjectDetails, User } from "@dewo/app/graphql/types";
+import { ProjectDetails } from "@dewo/app/graphql/types";
 import {
   Avatar,
   Button,
@@ -14,19 +14,14 @@ import React, { FC, useCallback } from "react";
 import Link from "next/link";
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { useOrganization } from "../hooks";
 import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { useUpdateProject } from "../../project/hooks";
 
 interface Props {
   project: ProjectDetails;
-  // TODO(fant): get this from the project instead of from the org through a prop
-  users: User[];
 }
 
-export const ProjectCard: FC<Props> = ({ project, users }) => {
-  const organization = useOrganization(project.organizationId);
-
+export const ProjectCard: FC<Props> = ({ project }) => {
   const updateProject = useUpdateProject();
   const deleteProject = useCallback(
     () =>
@@ -34,9 +29,7 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
     [updateProject, project.id]
   );
   return (
-    <Link
-      href={organization ? `/o/${organization.slug}/p/${project.slug}` : ""}
-    >
+    <Link href={project.permalink}>
       <a>
         <Card className="hover:component-highlight h-full">
           <Typography.Title level={4} style={{ marginBottom: 0 }}>
@@ -64,8 +57,8 @@ export const ProjectCard: FC<Props> = ({ project, users }) => {
 
           <Row align="middle">
             <Avatar.Group maxCount={3} style={{ flex: 1 }}>
-              {users.map((user) => (
-                <UserAvatar key={user.id} user={user} linkToProfile />
+              {project.members.map((member) => (
+                <UserAvatar key={member.id} user={member.user} linkToProfile />
               ))}
             </Avatar.Group>
             {!!project.openBountyTaskCount && (

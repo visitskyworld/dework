@@ -404,6 +404,22 @@ export interface RemoveOrganizationMemberMutationVariables {
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
+export interface CreateProjectMutation_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: CreateProjectMutation_project_members_user;
+}
+
 export interface CreateProjectMutation_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -440,6 +456,22 @@ export interface CreateProjectMutation_project_integrations {
   id: Scalar.UUID;
   type: string;
   config: Scalar.JSONObject;
+}
+
+export interface CreateProjectMutation_project_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: CreateProjectMutation_project_organization_projects_members_user;
 }
 
 export interface CreateProjectMutation_project_organization_projects_paymentMethods_networks {
@@ -492,6 +524,7 @@ export interface CreateProjectMutation_project_organization_projects {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: CreateProjectMutation_project_organization_projects_members[];
   paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
   integrations: CreateProjectMutation_project_organization_projects_integrations[];
 }
@@ -544,6 +577,7 @@ export interface CreateProjectMutation_project {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: CreateProjectMutation_project_members[];
   paymentMethods: CreateProjectMutation_project_paymentMethods[];
   integrations: CreateProjectMutation_project_integrations[];
   organization: CreateProjectMutation_project_organization;
@@ -565,6 +599,22 @@ export interface CreateProjectMutationVariables {
 // ====================================================
 // GraphQL mutation operation: UpdateProjectMutation
 // ====================================================
+
+export interface UpdateProjectMutation_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateProjectMutation_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: UpdateProjectMutation_project_members_user;
+}
 
 export interface UpdateProjectMutation_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
@@ -616,6 +666,7 @@ export interface UpdateProjectMutation_project {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: UpdateProjectMutation_project_members[];
   paymentMethods: UpdateProjectMutation_project_paymentMethods[];
   integrations: UpdateProjectMutation_project_integrations[];
 }
@@ -2438,6 +2489,22 @@ export interface PermissionsQueryVariables {
 // GraphQL query operation: GetOrganizationQuery
 // ====================================================
 
+export interface GetOrganizationQuery_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationQuery_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: GetOrganizationQuery_organization_projects_members_user;
+}
+
 export interface GetOrganizationQuery_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -2488,6 +2555,7 @@ export interface GetOrganizationQuery_organization_projects {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: GetOrganizationQuery_organization_projects_members[];
   paymentMethods: GetOrganizationQuery_organization_projects_paymentMethods[];
   integrations: GetOrganizationQuery_organization_projects_integrations[];
 }
@@ -2545,6 +2613,22 @@ export interface GetOrganizationQueryVariables {
 // GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members_user;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -2595,6 +2679,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members[];
   paymentMethods: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods[];
   integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_integrations[];
 }
@@ -2816,6 +2901,22 @@ export interface GetOrganizationTasksQueryVariables {
 // GraphQL query operation: GetProjectQuery
 // ====================================================
 
+export interface GetProjectQuery_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetProjectQuery_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: GetProjectQuery_project_members_user;
+}
+
 export interface GetProjectQuery_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -2866,6 +2967,7 @@ export interface GetProjectQuery_project {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: GetProjectQuery_project_members[];
   paymentMethods: GetProjectQuery_project_paymentMethods[];
   integrations: GetProjectQuery_project_integrations[];
 }
@@ -4590,6 +4692,31 @@ export interface OrganizationMember {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: ProjectMember
+// ====================================================
+
+export interface ProjectMember_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ProjectMember {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: ProjectMember_user;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: OrganizationIntegration
 // ====================================================
 
@@ -4645,6 +4772,22 @@ export interface Project {
 // GraphQL fragment: ProjectDetails
 // ====================================================
 
+export interface ProjectDetails_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ProjectDetails_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: ProjectDetails_members_user;
+}
+
 export interface ProjectDetails_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4695,6 +4838,7 @@ export interface ProjectDetails {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: ProjectDetails_members[];
   paymentMethods: ProjectDetails_paymentMethods[];
   integrations: ProjectDetails_integrations[];
 }
@@ -5525,6 +5669,22 @@ export interface UserDetails {
 // GraphQL fragment: OrganizationDetails
 // ====================================================
 
+export interface OrganizationDetails_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface OrganizationDetails_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: OrganizationDetails_projects_members_user;
+}
+
 export interface OrganizationDetails_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -5575,6 +5735,7 @@ export interface OrganizationDetails_projects {
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
+  members: OrganizationDetails_projects_members[];
   paymentMethods: OrganizationDetails_projects_paymentMethods[];
   integrations: OrganizationDetails_projects_integrations[];
 }
@@ -5703,6 +5864,11 @@ export enum PaymentTokenVisibility {
 export enum ProjectIntegrationType {
   DISCORD = "DISCORD",
   GITHUB = "GITHUB",
+}
+
+export enum ProjectRole {
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
 }
 
 export enum TaskRewardTrigger {

@@ -98,6 +98,20 @@ export const organizationMember = gql`
   ${user}
 `;
 
+export const projectMember = gql`
+  fragment ProjectMember on ProjectMember {
+    id
+    role
+    projectId
+    userId
+    user {
+      ...User
+    }
+  }
+
+  ${user}
+`;
+
 export const organizationIntegration = gql`
   fragment OrganizationIntegration on OrganizationIntegration {
     id
@@ -132,6 +146,9 @@ export const projectDetails = gql`
     taskCount
     doneTaskCount: taskCount(status: DONE)
     openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
+    members {
+      ...ProjectMember
+    }
     paymentMethods {
       ...PaymentMethod
     }
@@ -141,6 +158,7 @@ export const projectDetails = gql`
   }
 
   ${project}
+  ${projectMember}
   ${paymentMethod}
   ${projectIntegration}
 `;

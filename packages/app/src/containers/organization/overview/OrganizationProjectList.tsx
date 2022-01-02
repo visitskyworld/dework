@@ -19,10 +19,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     <Row gutter={[16, 16]}>
       {projects?.map((project) => (
         <Col key={project.id} xs={24} sm={12} md={8}>
-          <ProjectCard
-            project={project}
-            users={organization?.members.map((m) => m.user) ?? []}
-          />
+          <ProjectCard project={project} />
         </Col>
       ))}
       <Can I="create" a="Project">
