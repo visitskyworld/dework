@@ -4,13 +4,13 @@ import { Button } from "antd";
 import { useOrganization, useUpdateOrganizationMember } from "../hooks";
 import { OrganizationRole } from "@dewo/app/graphql/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useRouter } from "next/router";
+import { LoginButton } from "../../auth/LoginButton";
 
 interface Props {
   organizationId: string;
 }
 
-export const JoinOrganizationButton: FC<Props> = ({ organizationId }) => {
+export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuthContext();
@@ -21,35 +21,37 @@ export const JoinOrganizationButton: FC<Props> = ({ organizationId }) => {
     [organization, user]
   );
 
-  const router = useRouter();
   const updateOrganizationMember = useUpdateOrganizationMember();
-  const joinOrganization = useCallback(async () => {
-    if (!user) {
-      router.push(`/auth?redirect=${router.asPath}`);
-      return;
-    }
-
+  const followOrganization = useCallback(async () => {
     try {
       setLoading(true);
       await updateOrganizationMember({
-        role: OrganizationRole.MEMBER,
-        userId: user.id,
+        role: OrganizationRole.FOLLOWER,
+        userId: user!.id,
         organizationId,
       });
     } finally {
       setLoading(false);
     }
-  }, [router, user, organizationId, updateOrganizationMember]);
+  }, [user, organizationId, updateOrganizationMember]);
 
   if (isMember) return null;
+  if (!user) {
+    return (
+      <LoginButton type="ghost" loading={loading} icon={<Icons.StarOutlined />}>
+        Follow {organization?.name}
+      </LoginButton>
+    );
+  }
+
   return (
     <Button
       type="ghost"
       loading={loading}
-      icon={<Icons.UsergroupAddOutlined />}
-      onClick={joinOrganization}
+      icon={<Icons.StarOutlined />}
+      onClick={followOrganization}
     >
-      Join {organization?.name}
+      Follow {organization?.name}
     </Button>
   );
 };

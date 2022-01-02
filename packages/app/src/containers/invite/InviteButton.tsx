@@ -1,11 +1,11 @@
 import { Button, Dropdown, Menu, message } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback, useState } from "react";
-import { useCreateInvite } from "./hooks";
+import { useCreateOrganizationInvite, useCreateProjectInvite } from "./hooks";
 import { useOrganization } from "../organization/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { OrganizationRole } from "@dewo/app/graphql/types";
+import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId?: string;
@@ -19,90 +19,136 @@ export const InviteButton: FC<Props> = ({
   style,
 }) => {
   const [loading, setLoading] = useState(false);
-  const org = useOrganization(organizationId);
-  const proj = useProject(projectId);
+  const organization = useOrganization(organizationId);
+  const project = useProject(projectId);
 
-  const canInviteAdmin = usePermission("create", {
+  const canInviteOrganizationAdmin = usePermission("create", {
     __typename: "OrganizationMember",
     role: OrganizationRole.ADMIN,
   });
-  const canInviteMember = usePermission("create", {
-    __typename: "OrganizationMember",
-    role: OrganizationRole.MEMBER,
+  const canInviteProjectAdmin = usePermission("create", {
+    __typename: "ProjectMember",
+    role: ProjectRole.ADMIN,
+  });
+  const canInviteProjectContributor = usePermission("create", {
+    __typename: "ProjectMember",
+    role: ProjectRole.CONTRIBUTOR,
   });
 
-  const createInvite = useCreateInvite();
-  const inviteByRole = useCallback(
-    async (role: OrganizationRole) => {
+  const copyToClipboardAndShowSuccessMessage = useCallback(
+    (inviteLink: string) => {
+      const el = document.createElement("textarea");
+      el.value = inviteLink;
+      document.body.appendChild(el);
+      el.select();
+      navigator.clipboard.writeText(inviteLink);
+      document.body.removeChild(el);
+
+      message.success({ content: "Invite link copied", type: "success" });
+    },
+    []
+  );
+
+  const createOrganizationInvite = useCreateOrganizationInvite();
+  const inviteOrganizationAdmin = useCallback(async () => {
+    try {
+      setLoading(true);
+      const inviteId = await createOrganizationInvite({
+        organizationId: organization!.id,
+        role: OrganizationRole.ADMIN,
+      });
+      const inviteLink = `${organization!.permalink}?inviteId=${inviteId}`;
+      copyToClipboardAndShowSuccessMessage(inviteLink);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    createOrganizationInvite,
+    copyToClipboardAndShowSuccessMessage,
+    organization,
+  ]);
+
+  const createProjectInvite = useCreateProjectInvite();
+  const inviteToProject = useCallback(
+    async (role: ProjectRole) => {
       try {
         setLoading(true);
-        const inviteId = await createInvite({
+        const inviteId = await createProjectInvite({
           role,
-          organizationId: organizationId!,
+          projectId: project!.id,
         });
-        const inviteLink = !!proj
-          ? `${window.location.origin}/o/${org!.slug}/p/${
-              proj!.slug
-            }?inviteId=${inviteId}`
-          : `${window.location.origin}/o/${org!.slug}?inviteId=${inviteId}`;
-
-        const el = document.createElement("textarea");
-        el.value = inviteId;
-        document.body.appendChild(el);
-        el.select();
-        navigator.clipboard.writeText(inviteLink);
-        document.body.removeChild(el);
-
-        message.success({ content: "Invite link copied", type: "success" });
+        const inviteLink = `${project!.permalink}?inviteId=${inviteId}`;
+        copyToClipboardAndShowSuccessMessage(inviteLink);
       } finally {
         setLoading(false);
       }
     },
-    [createInvite, organizationId, org, proj]
+    [createProjectInvite, copyToClipboardAndShowSuccessMessage, project]
   );
-  const inviteAdmin = useCallback(
-    () => inviteByRole(OrganizationRole.ADMIN),
-    [inviteByRole]
+  const inviteProjectContributor = useCallback(
+    () => inviteToProject(ProjectRole.CONTRIBUTOR),
+    [inviteToProject]
   );
-  const inviteMember = useCallback(
-    () => inviteByRole(OrganizationRole.MEMBER),
-    [inviteByRole]
+  const inviteProjectAdmin = useCallback(
+    () => inviteToProject(ProjectRole.ADMIN),
+    [inviteToProject]
   );
 
-  if (!org || !canInviteMember) return null;
-  if (!canInviteAdmin) {
+  if (!!organization && canInviteOrganizationAdmin) {
     return (
       <Button
         type="ghost"
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
         style={style}
-        onClick={inviteMember}
+        onClick={inviteOrganizationAdmin}
       >
-        Invite
+        Invite Core Team
       </Button>
     );
   }
 
-  return (
-    <Dropdown
-      placement="bottomCenter"
-      trigger={["click"]}
-      overlay={
-        <Menu>
-          <Menu.Item onClick={inviteMember}>Invite Member(s)</Menu.Item>
-          <Menu.Item onClick={inviteAdmin}>Invite Admin</Menu.Item>
-        </Menu>
-      }
-    >
+  if (!!project && canInviteProjectContributor && !canInviteProjectAdmin) {
+    return (
       <Button
         type="ghost"
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
         style={style}
+        onClick={inviteProjectContributor}
       >
-        Invite
+        Invite Contributor
       </Button>
-    </Dropdown>
-  );
+    );
+  }
+
+  if (!!project && canInviteProjectContributor && !!canInviteProjectAdmin) {
+    return (
+      <Dropdown
+        placement="bottomCenter"
+        trigger={["click"]}
+        overlay={
+          <Menu>
+            <Menu.Item onClick={inviteProjectContributor}>
+              Invite Contributor(s)
+            </Menu.Item>
+            <Menu.Item onClick={inviteProjectAdmin}>
+              Invite Project Admin
+            </Menu.Item>
+          </Menu>
+        }
+      >
+        <Button
+          type="ghost"
+          loading={loading}
+          icon={<Icons.UsergroupAddOutlined />}
+          style={style}
+        >
+          Invite
+        </Button>
+      </Dropdown>
+    );
+  }
+
+  return null;
 };

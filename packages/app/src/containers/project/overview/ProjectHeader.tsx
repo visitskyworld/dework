@@ -17,8 +17,8 @@ import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { InviteButton } from "../../invite/InviteButton";
-import { JoinOrganizationButton } from "../../organization/overview/JoinOrganizationButton";
 import Link from "next/link";
+import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 
 interface Props {
   projectId: string;
@@ -126,11 +126,10 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
                 </Link>
               </Can>
             </Row>
-            <InviteButton
+            <InviteButton projectId={projectId} />
+            <FollowOrganizationButton
               organizationId={project?.organizationId}
-              projectId={projectId}
             />
-            <JoinOrganizationButton organizationId={project?.organizationId} />
           </Row>
         ) : (
           <Skeleton.Avatar active size="large" />

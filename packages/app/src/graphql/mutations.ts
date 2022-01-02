@@ -204,9 +204,19 @@ export const setUserDetail = gql`
   ${Fragments.userDetail}
 `;
 
-export const createInvite = gql`
-  mutation CreateInviteMutation($input: CreateInviteInput!) {
-    invite: createInvite(input: $input) {
+export const createOrganizationInvite = gql`
+  mutation CreateOrganizationInviteMutation(
+    $input: CreateOrganizationInviteInput!
+  ) {
+    invite: createOrganizationInvite(input: $input) {
+      id
+    }
+  }
+`;
+
+export const createProjectInvite = gql`
+  mutation CreateProjectInviteMutation($input: CreateProjectInviteInput!) {
+    invite: createProjectInvite(input: $input) {
       id
     }
   }

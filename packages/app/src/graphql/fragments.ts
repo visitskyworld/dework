@@ -399,15 +399,21 @@ export const organizationDetails = gql`
 export const invite = gql`
   fragment Invite on Invite {
     id
-    role
     inviter {
       ...User
     }
+    organizationRole
     organization {
       ...Organization
+    }
+
+    projectRole
+    project {
+      ...Project
     }
   }
 
   ${user}
   ${organization}
+  ${project}
 `;

@@ -1516,20 +1516,42 @@ export interface SetUserDetailMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateInviteMutation
+// GraphQL mutation operation: CreateOrganizationInviteMutation
 // ====================================================
 
-export interface CreateInviteMutation_invite {
+export interface CreateOrganizationInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
 }
 
-export interface CreateInviteMutation {
-  invite: CreateInviteMutation_invite;
+export interface CreateOrganizationInviteMutation {
+  invite: CreateOrganizationInviteMutation_invite;
 }
 
-export interface CreateInviteMutationVariables {
-  input: CreateInviteInput;
+export interface CreateOrganizationInviteMutationVariables {
+  input: CreateOrganizationInviteInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateProjectInviteMutation
+// ====================================================
+
+export interface CreateProjectInviteMutation_invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+}
+
+export interface CreateProjectInviteMutation {
+  invite: CreateProjectInviteMutation_invite;
+}
+
+export interface CreateProjectInviteMutationVariables {
+  input: CreateProjectInviteInput;
 }
 
 /* tslint:disable */
@@ -1566,7 +1588,7 @@ export interface AcceptInviteMutation_invite_organization {
 export interface AcceptInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
-  organization: AcceptInviteMutation_invite_organization;
+  organization: AcceptInviteMutation_invite_organization | null;
 }
 
 export interface AcceptInviteMutation {
@@ -3814,12 +3836,25 @@ export interface GetInviteQuery_invite_organization {
   permalink: string;
 }
 
+export interface GetInviteQuery_invite_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface GetInviteQuery_invite {
   __typename: "Invite";
   id: Scalar.UUID;
-  role: OrganizationRole | null;
   inviter: GetInviteQuery_invite_inviter;
-  organization: GetInviteQuery_invite_organization;
+  organizationRole: OrganizationRole | null;
+  organization: GetInviteQuery_invite_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetInviteQuery_invite_project | null;
 }
 
 export interface GetInviteQuery {
@@ -5801,12 +5836,25 @@ export interface Invite_organization {
   permalink: string;
 }
 
+export interface Invite_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface Invite {
   __typename: "Invite";
   id: Scalar.UUID;
-  role: OrganizationRole | null;
   inviter: Invite_inviter;
-  organization: Invite_organization;
+  organizationRole: OrganizationRole | null;
+  organization: Invite_organization | null;
+  projectRole: ProjectRole | null;
+  project: Invite_project | null;
 }
 
 /* tslint:disable */
@@ -5832,7 +5880,7 @@ export enum OrganizationIntegrationType {
 
 export enum OrganizationRole {
   ADMIN = "ADMIN",
-  MEMBER = "MEMBER",
+  FOLLOWER = "FOLLOWER",
   OWNER = "OWNER",
 }
 
@@ -5868,7 +5916,7 @@ export enum ProjectIntegrationType {
 
 export enum ProjectRole {
   ADMIN = "ADMIN",
-  MEMBER = "MEMBER",
+  CONTRIBUTOR = "CONTRIBUTOR",
 }
 
 export enum TaskRewardTrigger {
@@ -5903,11 +5951,6 @@ export interface CreateFileUploadUrlInput {
   contentType: string;
 }
 
-export interface CreateInviteInput {
-  organizationId: Scalar.UUID;
-  role?: OrganizationRole | null;
-}
-
 export interface CreateMetamaskThreepidInput {
   message: string;
   signature: string;
@@ -5917,6 +5960,11 @@ export interface CreateMetamaskThreepidInput {
 export interface CreateOrganizationInput {
   name: string;
   imageUrl?: string | null;
+}
+
+export interface CreateOrganizationInviteInput {
+  organizationId: Scalar.UUID;
+  role: OrganizationRole;
 }
 
 export interface CreatePaymentMethodInput {
@@ -5947,6 +5995,11 @@ export interface CreateProjectIntegrationInput {
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
   organizationIntegrationId?: Scalar.UUID | null;
+}
+
+export interface CreateProjectInviteInput {
+  projectId: Scalar.UUID;
+  role: ProjectRole;
 }
 
 export interface CreateTaskApplicationInput {

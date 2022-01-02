@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { Avatar, Col, Row, Skeleton, Tabs, Typography } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
@@ -8,9 +8,11 @@ import { InviteButton } from "@dewo/app/containers/invite/InviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
 import { OrganizationSettings } from "./OrganizationSettings";
-import { JoinOrganizationButton } from "./JoinOrganizationButton";
+import { FollowOrganizationButton } from "./FollowOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { OrganizationMemberList } from "./OrganizationMemberList";
+import _ from "lodash";
+import { OrganizationRole } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId: string;
@@ -34,6 +36,27 @@ export const OrganizationTabs: FC<Props> = ({
   const navigateToSettingsTab = useCallback(
     (tab: string) => router.push(`${organization!.permalink}/settings/${tab}`),
     [organization, router]
+  );
+
+  const coreTeam = useMemo(
+    () =>
+      organization?.members
+        .filter((m) =>
+          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
+        )
+        .map((m) => m.user),
+    [organization?.members]
+  );
+  const contributors = useMemo(
+    () =>
+      _(organization?.projects)
+        .map((p) => p.members)
+        .flatten()
+        .map((m) => m.user)
+        .concat(coreTeam ?? [])
+        .uniqBy((u) => u.id)
+        .value(),
+    [organization, coreTeam]
   );
 
   return (
@@ -63,14 +86,28 @@ export const OrganizationTabs: FC<Props> = ({
             <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
                 {!organization &&
-                  [1, 2, 3].map((i) => <Skeleton.Avatar key={i} />)}
-                {organization?.members.map((m) => (
-                  <UserAvatar key={m.id} user={m.user} linkToProfile />
+                  _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
+                {contributors.map((user) => (
+                  <UserAvatar key={user.id} user={user} linkToProfile />
                 ))}
               </Avatar.Group>
             </Row>
+
+            <Divider />
+
+            <Typography.Title level={5}>Core team</Typography.Title>
+            <Row style={{ marginBottom: 16 }}>
+              <Avatar.Group maxCount={3} size="large">
+                {!organization &&
+                  _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
+                {coreTeam?.map((user) => (
+                  <UserAvatar key={user.id} user={user} linkToProfile />
+                ))}
+              </Avatar.Group>
+            </Row>
+
             <InviteButton organizationId={organizationId} />
-            <JoinOrganizationButton organizationId={organizationId} />
+            <FollowOrganizationButton organizationId={organizationId} />
           </Col>
         </Row>
       </Tabs.TabPane>

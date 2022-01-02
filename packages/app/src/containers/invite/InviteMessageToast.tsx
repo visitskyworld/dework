@@ -1,4 +1,10 @@
-import React, { CSSProperties, FC, useCallback, useEffect } from "react";
+import React, {
+  CSSProperties,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { Button, message, Space, Typography } from "antd";
@@ -8,6 +14,7 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
+import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 100px)",
@@ -36,11 +43,32 @@ export const InviteMessageToast: FC = () => {
     });
   }, [acceptInvite, inviteId, router]);
 
+  const inviteMessage = useMemo(() => {
+    if (!invite) return undefined;
+
+    const inviter = invite.inviter.username;
+    if (!!invite.organization) {
+      if (invite.organizationRole === OrganizationRole.ADMIN) {
+        return `${inviter} has invited you as an admin to ${invite.organization.name}`;
+      }
+
+      return `${inviter} has invited you to ${invite.organization.name}`;
+    }
+
+    if (!!invite.project) {
+      if (invite.projectRole === ProjectRole.ADMIN) {
+        return `${inviter} has invited you as an admin to ${invite.project.name}`;
+      }
+
+      return `${inviter} has invited you to ${invite.project.name}`;
+    }
+
+    return `${inviter} has invited you to Dework`;
+  }, [invite]);
+
   useEffect(() => {
     if (!invite) return;
 
-    const inviter = invite.inviter.username;
-    const org = invite.organization?.name ?? "Dework";
     message.destroy();
     message.open({
       content: (
@@ -48,9 +76,7 @@ export const InviteMessageToast: FC = () => {
           <Space>
             <UserAvatar user={invite.inviter} />
             <Typography.Text style={{ marginRight: 16 }}>
-              {invite.role === "ADMIN"
-                ? `${inviter} has invited you as an admin to ${org}`
-                : `${inviter} has invited you to ${org}`}
+              {inviteMessage}
             </Typography.Text>
             <Button
               type="primary"
@@ -71,6 +97,7 @@ export const InviteMessageToast: FC = () => {
   }, [
     invite,
     inviteId,
+    inviteMessage,
     router,
     authenticated,
     authModalVisible.toggleOn,

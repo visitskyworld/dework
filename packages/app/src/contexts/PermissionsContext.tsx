@@ -14,6 +14,7 @@ import {
   PermissionsQuery,
   PermissionsQueryVariables,
   Project,
+  ProjectMember,
   Task,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
@@ -28,7 +29,8 @@ type AbilitySubject =
   | Task
   | Project
   | Organization
-  | AtLeast<OrganizationMember, "__typename" | "role">;
+  | AtLeast<OrganizationMember, "__typename" | "role">
+  | AtLeast<ProjectMember, "__typename" | "role">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
 
 const PermissionsContext = createContext<Ability<AbilityType>>(

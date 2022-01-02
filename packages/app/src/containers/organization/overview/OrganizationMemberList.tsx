@@ -19,10 +19,9 @@ interface Props {
   organizationId: string;
 }
 
-const roleToString: Record<OrganizationRole, string> = {
+const roleToString: Partial<Record<OrganizationRole, string>> = {
   [OrganizationRole.ADMIN]: "Admin",
   [OrganizationRole.OWNER]: "Owner",
-  [OrganizationRole.MEMBER]: "Member",
 };
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
@@ -33,13 +32,16 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const canDeleteMember = usePermission("delete", {
     __typename: "OrganizationMember",
     // TODO(fant)
-    role: OrganizationRole.MEMBER,
+    role: OrganizationRole.FOLLOWER,
   });
   const hasPermission = usePermissionFn();
 
   const navigateToProfile = useNavigateToProfile();
   const members = useMemo(
-    () => organization?.members || [],
+    () =>
+      organization?.members.filter((m) =>
+        [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
+      ),
     [organization?.members]
   );
   return (
@@ -97,15 +99,13 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
                     })
                   }
                 >
-                  {[
-                    OrganizationRole.ADMIN,
-                    OrganizationRole.OWNER,
-                    OrganizationRole.MEMBER,
-                  ].map((role) => (
-                    <Select.Option key={role} value={role}>
-                      {roleToString[role]}
-                    </Select.Option>
-                  ))}
+                  {[OrganizationRole.ADMIN, OrganizationRole.OWNER].map(
+                    (role) => (
+                      <Select.Option key={role} value={role}>
+                        {roleToString[role]}
+                      </Select.Option>
+                    )
+                  )}
                 </Select>
               );
             },
