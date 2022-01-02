@@ -197,32 +197,41 @@ describe("InviteResolver", () => {
         });
       });
 
-      it("it should connect user to project", async () => {
-        const { user: inviter, project } =
-          await fixtures.createUserOrgProject();
-        const invite = await fixtures.createInvite(
-          {
-            projectId: project.id,
-            projectRole: ProjectRole.ADMIN,
-          },
-          inviter
-        );
-        const invited = await fixtures.createUser();
+      describe("project", () => {
+        it("it should connect user to project", async () => {
+          const { user: inviter, project } =
+            await fixtures.createUserOrgProject();
+          const invite = await fixtures.createInvite(
+            {
+              projectId: project.id,
+              projectRole: ProjectRole.ADMIN,
+            },
+            inviter
+          );
+          const invited = await fixtures.createUser();
 
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(invited),
-          body: InviteRequests.accept(invite.id),
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetchedInvite = response.body.data?.invite;
+          expect(fetchedInvite.project.members).toContainEqual(
+            expect.objectContaining({
+              userId: invited.id,
+              role: ProjectRole.ADMIN,
+            })
+          );
+
+          const user = fetchedInvite.project.members.find(
+            (m: any) => m.userId === invited.id
+          )?.user!;
+          expect(user.organizations).toContainEqual(
+            expect.objectContaining({ id: project.organizationId })
+          );
         });
-
-        expect(response.status).toEqual(HttpStatus.OK);
-        const fetchedInvite = response.body.data?.invite;
-        expect(fetchedInvite.project.members).toContainEqual(
-          expect.objectContaining({
-            userId: invited.id,
-            role: ProjectRole.ADMIN,
-          })
-        );
       });
     });
   });

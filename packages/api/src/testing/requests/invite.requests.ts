@@ -61,6 +61,12 @@ export class InviteRequests {
                 id
                 role
                 userId
+                user {
+                  id
+                  organizations {
+                    id
+                  }
+                }
               }
             }
           }
