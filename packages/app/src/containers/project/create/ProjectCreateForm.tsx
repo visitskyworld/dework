@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Typography, Select, Radio } from "antd";
-import { useCreateProject, useCreateProjectIntegration } from "../hooks";
+import { Form, Button, Input, Select, Radio, Space } from "antd";
+import { useCreateProject } from "../hooks";
 import {
   CreateProjectInput,
   OrganizationIntegrationType,
@@ -8,17 +8,22 @@ import {
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
-import * as Icons from "@ant-design/icons";
 import {
   useOrganization,
   useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
-import { useConnectToGithubUrl } from "../settings/ProjectGithubIntegrations";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Constants } from "@dewo/app/util/constants";
 import { useRouter } from "next/router";
+import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
+import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
+import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
+import {
+  useCreateGithubProjectIntegration,
+  useCreateProjectIntegration,
+} from "../../integrations/hooks";
 
 interface FormValues extends CreateProjectInput {
   type?: "dev" | "non-dev";
@@ -40,8 +45,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const organization = useOrganization(organizationId);
   const createProject = useCreateProject();
   const createProjectIntegration = useCreateProjectIntegration();
+  const createGithubIntegration = useCreateGithubProjectIntegration();
 
-  const connectToGithubUrl = useConnectToGithubUrl(organizationId);
   const hasGithubIntegration = useMemo(
     () =>
       !!organization?.integrations.some(
@@ -75,16 +80,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         const repo = githubRepos?.find((r) => r.id === githubRepoId);
         if (!!repo) {
-          await createProjectIntegration({
-            projectId: project.id,
-            type: ProjectIntegrationType.GITHUB,
-            organizationIntegrationId: repo.integrationId,
-            config: {
-              repo: repo.name,
-              organization: repo.organization,
-              features: [],
-            },
-          });
+          await createGithubIntegration(project.id, repo);
         }
 
         const channel = discordChannels?.find((c) => c.id === discordChannelId);
@@ -105,6 +101,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     [
       createProject,
       createProjectIntegration,
+      createGithubIntegration,
       onCreated,
       githubRepos,
       discordChannels,
@@ -126,109 +123,93 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
-      <Form.Item
-        label="Project Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter a name" }]}
-      >
-        <Input placeholder="Enter a project name..." />
-      </Form.Item>
-
-      {!!organization && !hasDiscordIntegration && (
-        <FormSection label="Discord Integration (recommended)">
-          <Typography.Paragraph style={{ marginBottom: 9 }}>
-            Want to automatically create Discord threads to discuss Dework
-            tasks? Try out the Discord integration for this project!
-          </Typography.Paragraph>
-          <Button
-            type="ghost"
-            style={{ marginTop: 4 }}
-            icon={<DiscordIcon />}
-            href={`${
-              Constants.GRAPHQL_API_URL
-            }/auth/discord-bot?organizationId=${organizationId}&userId=${
-              user!.id
-            }&redirect=${router.asPath}`}
-          >
-            Connect to Discord
-          </Button>
-        </FormSection>
-      )}
-      {!!organization && hasDiscordIntegration && (
-        <Form.Item name="discordChannelId" label="Connect Discord Channel">
-          <Select
-            loading={!discordChannels}
-            placeholder="Select Discord Channel"
-            allowClear
-          >
-            {discordChannels?.map((channel) => (
-              <Select.Option
-                key={channel.id}
-                value={channel.id}
-                label={`#${channel.name}`}
-              >
-                {`#${channel.name}`}
-              </Select.Option>
-            ))}
-          </Select>
+      <Space direction="vertical" style={{ width: "100%" }}>
+        <Form.Item
+          label="Project Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter a name" }]}
+        >
+          <Input placeholder="Enter a project name..." />
         </Form.Item>
-      )}
 
-      <Form.Item label="Project Type" name="type">
-        <Radio.Group>
-          <Radio.Button value="non-dev">Non-dev</Radio.Button>
-          <Radio.Button value="dev">Development</Radio.Button>
-        </Radio.Group>
-      </Form.Item>
+        {!!organization && !hasDiscordIntegration && (
+          <FormSection label="Discord Integration">
+            {/* <Typography.Paragraph type="secondary" style={{ marginBottom: 9 }}>
+              Want to automatically create Discord threads to discuss Dework
+              tasks? Try out the Discord integration for this project!
+            </Typography.Paragraph> */}
+            <Button
+              type="ghost"
+              style={{ marginTop: 4 }}
+              icon={<DiscordIcon />}
+              href={`${
+                Constants.GRAPHQL_API_URL
+              }/auth/discord-bot?organizationId=${organizationId}&userId=${
+                user!.id
+              }&redirect=${router.asPath}`}
+            >
+              Connect to Discord
+            </Button>
+          </FormSection>
+        )}
+        {!!organization && hasDiscordIntegration && (
+          <Form.Item name="discordChannelId" label="Connect Discord Channel">
+            <Select
+              loading={!discordChannels}
+              placeholder="Select Discord Channel"
+              allowClear
+            >
+              {discordChannels?.map((channel) => (
+                <Select.Option
+                  key={channel.id}
+                  value={channel.id}
+                  label={`#${channel.name}`}
+                >
+                  {`#${channel.name}`}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
 
-      {values.type === "dev" && !!organization && !hasGithubIntegration && (
-        <FormSection label="Github Integration (optional)">
-          <Typography.Paragraph style={{ marginBottom: 0 }}>
-            Want to automatically link Github branches and make pull requests
-            show up in tasks? Try out the Github integration for this project!
-          </Typography.Paragraph>
-          <Button
-            type="ghost"
-            style={{ marginTop: 4 }}
-            icon={<Icons.GithubOutlined />}
-            href={connectToGithubUrl}
-          >
-            Connect to Github
-          </Button>
-        </FormSection>
-      )}
-      {values.type === "dev" && !!organization && hasGithubIntegration && (
-        <Form.Item name="githubRepoId" label="Connect Github Repo">
-          <Select
-            loading={!githubRepos}
-            placeholder="Select Github Repo"
-            allowClear
-          >
-            {githubRepos?.map((repo) => (
-              <Select.Option
-                key={repo.id}
-                value={repo.id}
-                label={`${repo.organization}/${repo.name}`}
-              >
-                {`${repo.organization}/${repo.name}`}
-              </Select.Option>
-            ))}
-          </Select>
+        <Form.Item label="Project Type" name="type">
+          <Radio.Group>
+            <Radio.Button value="non-dev">Non-dev</Radio.Button>
+            <Radio.Button value="dev">Development</Radio.Button>
+          </Radio.Group>
         </Form.Item>
-      )}
 
-      <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Button
-        type="primary"
-        htmlType="submit"
-        size="large"
-        block
-        loading={loading}
-      >
-        Create
-      </Button>
+        {values.type === "dev" && !!organization && (
+          <ConnectToGithubFormSection>
+            {hasGithubIntegration ? (
+              <Form.Item name="githubRepoId">
+                <ConnectProjectToGithubSelect
+                  organizationId={organizationId}
+                  repos={githubRepos}
+                  allowClear
+                />
+              </Form.Item>
+            ) : (
+              <ConnectOrganizationToGithubButton
+                organizationId={organizationId}
+              />
+            )}
+          </ConnectToGithubFormSection>
+        )}
+
+        <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="large"
+          block
+          loading={loading}
+        >
+          Create
+        </Button>
+      </Space>
     </Form>
   );
 };

@@ -157,13 +157,16 @@ export function useOrganizationTasks(
 }
 
 export function useOrganizationGithubRepos(
-  organizationId: string,
+  organizationId: string | undefined,
   skip: boolean = false
 ): GithubRepo[] | undefined {
   const { data } = useQuery<
     GetOrganizationGithubReposQuery,
     GetOrganizationGithubReposQueryVariables
-  >(Queries.organizationGithubRepos, { variables: { organizationId }, skip });
+  >(Queries.organizationGithubRepos, {
+    variables: { organizationId: organizationId! },
+    skip: skip && !!organizationId,
+  });
   return data?.repos ?? undefined;
 }
 

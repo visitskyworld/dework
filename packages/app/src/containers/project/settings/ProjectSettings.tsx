@@ -1,9 +1,11 @@
 import { ProjectDetails } from "@dewo/app/graphql/types";
-import { Col, Space, Typography } from "antd";
+import { Space } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
 import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
+import { ProjectGithubIntegration } from "./ProjectGithubIntegration";
+import { FormSection } from "@dewo/app/components/FormSection";
 
 interface Props {
   project: ProjectDetails;
@@ -22,22 +24,18 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
         {/* <Col>
           <Typography.Title level={5}>Discord Integrations</Typography.Title>
-          <ProjectDiscordIntegrations
+          <ProjectDiscordIntegration
             projectId={project.id}
             organizationId={project.organizationId}
           />
         </Col> */}
 
-        {/* <Col>
-          <Typography.Title level={5}>Github Integrations</Typography.Title>
-          <ProjectGithubIntegration
-            projectId={project.id}
-            organizationId={project.organizationId}
-          />
-        </Col> */}
+        <ProjectGithubIntegration
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
 
-        <Col>
-          <Typography.Title level={5}>Reward Payment Method</Typography.Title>
+        <FormSection label="Payment Method">
           <Space direction="vertical" style={{ width: "100%" }}>
             {project.paymentMethods.map((paymentMethod) => (
               <PaymentMethodSummary
@@ -60,7 +58,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
               children="Add Payment Method"
             />
           </Space>
-        </Col>
+        </FormSection>
       </Space>
     </>
   );

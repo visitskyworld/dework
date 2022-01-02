@@ -15,7 +15,7 @@ interface Props {
   projectId: string;
 }
 
-export const ProjectDiscordIntegrations: FC<Props> = ({
+export const ProjectDiscordIntegration: FC<Props> = ({
   organizationId,
   projectId,
 }) => {

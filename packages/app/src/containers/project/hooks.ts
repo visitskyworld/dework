@@ -3,9 +3,6 @@ import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
   CreateProjectInput,
-  CreateProjectIntegrationInput,
-  CreateProjectIntegrationMutation,
-  CreateProjectIntegrationMutationVariables,
   CreateProjectMutation,
   CreateProjectMutationVariables,
   GetProjectIntegrationsQuery,
@@ -56,23 +53,6 @@ export function useUpdateProject(): (
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.project;
-    },
-    [mutation]
-  );
-}
-
-export function useCreateProjectIntegration(): (
-  input: CreateProjectIntegrationInput
-) => Promise<ProjectIntegration> {
-  const [mutation] = useMutation<
-    CreateProjectIntegrationMutation,
-    CreateProjectIntegrationMutationVariables
-  >(Mutations.createProjectIntegration);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.integration;
     },
     [mutation]
   );
