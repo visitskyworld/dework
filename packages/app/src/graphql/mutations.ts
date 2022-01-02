@@ -232,10 +232,17 @@ export const acceptInvite = gql`
           ...OrganizationMember
         }
       }
+      project {
+        id
+        members {
+          ...ProjectMember
+        }
+      }
     }
   }
 
   ${Fragments.organizationMember}
+  ${Fragments.projectMember}
 `;
 
 export const createPaymentMethod = gql`
