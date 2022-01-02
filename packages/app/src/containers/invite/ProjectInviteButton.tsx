@@ -54,7 +54,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     [inviteToProject]
   );
 
-  if (!!project && canInviteProjectContributor && !canInviteProjectAdmin) {
+  if (!!project && canInviteProjectContributor) {
     if (canInviteProjectAdmin) {
       return (
         <Dropdown

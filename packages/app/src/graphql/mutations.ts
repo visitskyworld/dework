@@ -237,6 +237,12 @@ export const acceptInvite = gql`
         members {
           ...ProjectMember
         }
+        organization {
+          id
+          members {
+            ...OrganizationMember
+          }
+        }
       }
     }
   }
