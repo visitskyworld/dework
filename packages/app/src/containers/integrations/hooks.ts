@@ -64,3 +64,20 @@ export function useCreateGithubProjectIntegration(): (
     [createProjectIntegration]
   );
 }
+
+export function useUpdateProjectIntegration(): (
+  input: UpdateProjectIntegrationInput
+) => Promise<PaymentMethod> {
+  const [mutation] = useMutation<
+    UpdateProjectIntegrationMutation,
+    UpdateProjectIntegrationMutationVariables
+  >(Mutations.updateProjectIntegration);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.integration;
+    },
+    [mutation]
+  );
+}

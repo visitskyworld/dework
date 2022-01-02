@@ -316,7 +316,8 @@ export class Fixtures {
   }
 
   public async createProjectWithGithubIntegration(
-    partial: Partial<Project> = {}
+    partialProject: Partial<Project> = {},
+    partialProjectIntegration: Partial<ProjectIntegration> = {}
   ): Promise<{
     project: Project;
     github: {
@@ -329,7 +330,7 @@ export class Fixtures {
     const organization = faker.internet.userName();
     const repo = faker.internet.userName();
 
-    const project = await this.createProject(partial);
+    const project = await this.createProject(partialProject);
     const organizationIntegration = (await this.createOrganizationIntegration({
       organizationId: project.organizationId,
       type: OrganizationIntegrationType.GITHUB,
@@ -340,6 +341,7 @@ export class Fixtures {
       type: ProjectIntegrationType.GITHUB,
       organizationIntegrationId: organizationIntegration.id,
       config: { organization, repo, features: [] },
+      ...partialProjectIntegration,
     });
     return { project, github: { installationId, organization, repo } };
   }

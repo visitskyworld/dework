@@ -283,6 +283,24 @@ export const updatePaymentMethod = gql`
   ${Fragments.paymentMethod}
 `;
 
+export const updateProjectIntegration = gql`
+  mutation UpdateProjectIntegrationMutation(
+    $input: UpdateProjectIntegrationInput!
+  ) {
+    integration: updateProjectIntegration(input: $input) {
+      ...ProjectIntegration
+      project {
+        id
+        integrations {
+          ...ProjectIntegration
+        }
+      }
+    }
+  }
+
+  ${Fragments.projectIntegration}
+`;
+
 export const createFileUploadUrl = gql`
   mutation CreateFileUploadMutation($input: CreateFileUploadUrlInput!) {
     fileUpload: createFileUploadUrl(input: $input) {

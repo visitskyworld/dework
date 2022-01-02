@@ -25,6 +25,7 @@ import { ProjectRolesGuard } from "./project.roles.guard";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
+import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -47,6 +48,15 @@ export class ProjectResolver {
     // TODO(fant): query project PMs and filter by deletedAt directly
     const pms = await project.paymentMethods;
     return pms.filter((p) => !p.deletedAt);
+  }
+
+  @ResolveField(() => [ProjectIntegration])
+  public async integrations(
+    @Parent() project: Project
+  ): Promise<ProjectIntegration[]> {
+    // TODO(fant): query project PMs and filter by deletedAt directly
+    const integrations = await project.integrations;
+    return integrations.filter((i) => !i.deletedAt);
   }
 
   @Mutation(() => Project)
@@ -72,11 +82,7 @@ export class ProjectResolver {
 
   @Mutation(() => ProjectIntegration)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Project, [
-    ProjectService,
-    (service: ProjectService, { params }) =>
-      service.findById(params.input.projectId),
-  ])
+  @UseAbility(Actions.create, ProjectIntegration as any)
   public async createProjectIntegration(
     @Args("input") input: CreateProjectIntegrationInput,
     @Context("user") user: User
@@ -85,6 +91,15 @@ export class ProjectResolver {
       ...input,
       creatorId: user.id,
     });
+  }
+
+  @Mutation(() => ProjectIntegration)
+  // TODO(fant): auth
+  @UseGuards(AuthGuard)
+  public async updateProjectIntegration(
+    @Args("input") input: UpdateProjectIntegrationInput
+  ): Promise<ProjectIntegration> {
+    return this.integrationService.updateProjectIntegration(input);
   }
 
   @Mutation(() => TaskTag)

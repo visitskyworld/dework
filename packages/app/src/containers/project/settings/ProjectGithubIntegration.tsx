@@ -12,7 +12,10 @@ import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectT
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import { Alert, Button, Input, Typography } from "antd";
-import { useCreateGithubProjectIntegration } from "../../integrations/hooks";
+import {
+  useCreateGithubProjectIntegration,
+  useUpdateProjectIntegration,
+} from "../../integrations/hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
 import Link from "next/link";
@@ -75,7 +78,11 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
     githubRepos,
   ]);
 
-  const removeGithubIntegration = () => alert("remove githab");
+  const updateProjectIntegration = useUpdateProjectIntegration();
+  const removeGithubIntegration = useCallback(
+    () => updateProjectIntegration({ id: projInt?.id, deletedAt: new Date() }),
+    [projInt?.id, updateProjectIntegration]
+  );
 
   if (!project) return null;
   if (!!projInt) {

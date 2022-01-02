@@ -76,4 +76,8 @@ export class ProjectIntegration<
   @Column("json")
   @Field(() => GraphQLJSONObject)
   public config!: ProjectIntegrationConfigMap[TType];
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

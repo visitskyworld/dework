@@ -3,6 +3,7 @@ import {
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
+import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -22,6 +23,15 @@ export class IntegrationService {
     const created = await this.projectIntegrationRepo.save(partial);
     return this.projectIntegrationRepo.findOne(
       created.id
+    ) as Promise<ProjectIntegration>;
+  }
+
+  public async updateProjectIntegration(
+    partial: AtLeast<ProjectIntegration, "id">
+  ): Promise<ProjectIntegration> {
+    const updated = await this.projectIntegrationRepo.save(partial);
+    return this.projectIntegrationRepo.findOne(
+      updated.id
     ) as Promise<ProjectIntegration>;
   }
 

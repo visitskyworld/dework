@@ -90,6 +90,7 @@ export class GithubService {
       .innerJoin("project.integrations", "projInt")
       .innerJoin("projInt.organizationIntegration", "orgInt")
       .where("task.number = :number", { number: query.taskNumber })
+      .andWhere("projInt.deletedAt IS NULL")
       .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
       .andWhere(`"projInt"."config"->>'repo' = :repo`, { repo: query.repo })
       .andWhere(`"projInt"."config"->>'organization' = :organization`, {

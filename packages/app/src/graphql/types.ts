@@ -1674,6 +1674,44 @@ export interface UpdatePaymentMethodMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateProjectIntegrationMutation
+// ====================================================
+
+export interface UpdateProjectIntegrationMutation_integration_project_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+}
+
+export interface UpdateProjectIntegrationMutation_integration_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  integrations: UpdateProjectIntegrationMutation_integration_project_integrations[];
+}
+
+export interface UpdateProjectIntegrationMutation_integration {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+  project: UpdateProjectIntegrationMutation_integration_project;
+}
+
+export interface UpdateProjectIntegrationMutation {
+  integration: UpdateProjectIntegrationMutation_integration;
+}
+
+export interface UpdateProjectIntegrationMutationVariables {
+  input: UpdateProjectIntegrationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateFileUploadMutation
 // ====================================================
 
@@ -5509,7 +5547,7 @@ export interface CreateProjectIntegrationInput {
   type: ProjectIntegrationType;
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
-  organizationIntegrationId: Scalar.UUID;
+  organizationIntegrationId?: Scalar.UUID | null;
 }
 
 export interface CreateTaskApplicationInput {
@@ -5589,6 +5627,11 @@ export interface UpdateProjectInput {
   name?: string | null;
   description?: string | null;
   paymentMethodId?: Scalar.UUID | null;
+  deletedAt?: Scalar.DateTime | null;
+}
+
+export interface UpdateProjectIntegrationInput {
+  id: Scalar.UUID;
   deletedAt?: Scalar.DateTime | null;
 }
 

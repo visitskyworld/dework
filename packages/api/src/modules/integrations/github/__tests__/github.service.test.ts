@@ -64,5 +64,20 @@ describe("GithubService", () => {
       const found = await githubService.findTask({ taskNumber: -1, ...github });
       expect(found).not.toBeDefined();
     });
+
+    it("should not return task if project integration is deleted", async () => {
+      const { project, github } =
+        await fixtures.createProjectWithGithubIntegration(
+          {},
+          { deletedAt: new Date() }
+        );
+
+      const task = await fixtures.createTask({ projectId: project.id });
+      const found = await githubService.findTask({
+        taskNumber: task.number,
+        ...github,
+      });
+      expect(found).not.toBeDefined();
+    });
   });
 });

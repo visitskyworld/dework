@@ -1,3 +1,4 @@
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -58,41 +59,90 @@ describe("ProjectResolver", () => {
         expect(project.organization.id).toEqual(organization.id);
       });
     });
-  });
 
-  describe("updateProject", () => {
-    it("should fail if user is not in org", async () => {
-      const user = await fixtures.createUser();
-      const project = await fixtures.createProject();
+    describe("updateProject", () => {
+      it("should fail if user is not in org", async () => {
+        const user = await fixtures.createUser();
+        const project = await fixtures.createProject();
 
-      const response = await client.request({
-        app,
-        auth: fixtures.createAuthToken(user),
-        body: ProjectRequests.update({
-          id: project.id,
-          name: faker.company.companyName(),
-        }),
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.update({
+            id: project.id,
+            name: faker.company.companyName(),
+          }),
+        });
+
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
 
-      client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      it("should succeed if user is in org", async () => {
+        const expectedName = faker.company.companyName();
+        const { user, project } = await fixtures.createUserOrgProject();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.update({
+            id: project.id,
+            name: expectedName,
+          }),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.project;
+        expect(fetched.name).toEqual(expectedName);
+      });
     });
 
-    it("should succeed if user is in org", async () => {
-      const expectedName = faker.company.companyName();
-      const { user, project } = await fixtures.createUserOrgProject();
+    describe("createProjectIntegration", () => {
+      it("should succeed for admins", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.createIntegration({
+            projectId: project.id,
+            type: ProjectIntegrationType.DISCORD,
+            config: { channelId: "123" },
+          }),
+        });
 
-      const response = await client.request({
-        app,
-        auth: fixtures.createAuthToken(user),
-        body: ProjectRequests.update({
-          id: project.id,
-          name: expectedName,
-        }),
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.integration;
+        expect(fetched.type).toEqual(ProjectIntegrationType.DISCORD);
+        expect(fetched.project.id).toEqual(project.id);
+        expect(fetched.project.integrations).toHaveLength(1);
+        expect(fetched.project.integrations).toContainEqual(
+          expect.objectContaining({ id: fetched.id })
+        );
       });
+    });
 
-      expect(response.status).toEqual(HttpStatus.OK);
-      const fetched = response.body.data?.project;
-      expect(fetched.name).toEqual(expectedName);
+    describe("updateProjectIntegration", () => {
+      it("should not return deleted integration", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const integration = await fixtures.createProjectIntegration({
+          type: ProjectIntegrationType.DISCORD,
+          projectId: project.id,
+          config: { channelId: "123" },
+        });
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.updateIntegration({
+            id: integration.id,
+            deletedAt: new Date(),
+          }),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.integration;
+        expect(fetched.type).toEqual(ProjectIntegrationType.DISCORD);
+        expect(fetched.project.id).toEqual(project.id);
+        expect(fetched.project.integrations).toHaveLength(0);
+      });
     });
   });
 

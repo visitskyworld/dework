@@ -2,7 +2,7 @@ import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
 import _ from "lodash";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { In, IsNull, Repository } from "typeorm";
 import {
   ProjectIntegration,
   ProjectIntegrationType,
@@ -149,6 +149,7 @@ export class DiscordIntegrationService {
     const integration = await this.projectIntegrationRepo.findOne({
       projectId,
       type: ProjectIntegrationType.DISCORD,
+      deletedAt: IsNull(),
     });
 
     return integration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
