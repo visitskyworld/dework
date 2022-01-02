@@ -187,7 +187,9 @@ export function useOrganizationDiscordChannels(
   return data?.channels ?? undefined;
 }
 
-export function useOrganizationCoreTeam(organizationId: string): User[] {
+export function useOrganizationCoreTeam(
+  organizationId: string | undefined
+): User[] {
   const organization = useOrganization(organizationId);
   return useMemo(
     () =>
@@ -200,7 +202,9 @@ export function useOrganizationCoreTeam(organizationId: string): User[] {
   );
 }
 
-export function useOrganizationContributors(organizationId: string): User[] {
+export function useOrganizationContributors(
+  organizationId: string | undefined
+): User[] {
   const organization = useOrganization(organizationId);
   const coreTeam = useOrganizationCoreTeam(organizationId);
   return useMemo(

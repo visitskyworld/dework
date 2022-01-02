@@ -44,7 +44,7 @@ import {
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
-import { useOrganization } from "../organization/hooks";
+import { useOrganizationCoreTeam } from "../organization/hooks";
 import { useProject } from "../project/hooks";
 import { TaskRewardFormValues } from "./TaskRewardFormFields";
 import { TaskFormValues } from "./TaskForm";
@@ -340,14 +340,17 @@ export function useTaskFormUserOptions(
   additionalUsers: User[] | undefined
 ): User[] | undefined {
   const project = useProject(projectId);
-  const organization = useOrganization(project?.organizationId);
+  const organizationCoreTeam = useOrganizationCoreTeam(project?.organizationId);
+
   return useMemo(() => {
-    if (!organization) {
+    if (!project) {
       return additionalUsers ?? [];
     }
 
-    const orgUsers = organization.members.map((m) => m.user);
-    if (!additionalUsers) return orgUsers;
-    return _.uniqBy([...orgUsers, ...additionalUsers], (u) => u.id);
-  }, [organization, additionalUsers]);
+    const projectUsers = project?.members.map((m) => m.user);
+    return _.uniqBy(
+      [...projectUsers, ...organizationCoreTeam, ...(additionalUsers ?? [])],
+      (u) => u.id
+    );
+  }, [project, additionalUsers, organizationCoreTeam]);
 }
