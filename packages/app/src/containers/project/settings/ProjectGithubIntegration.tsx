@@ -143,40 +143,4 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
       />
     </ConnectToGithubFormSection>
   );
-
-  /*
-  if (hasGithubIntegration) {
-    return (
-      <>
-        <Button
-          size="large"
-          type="ghost"
-          block
-          icon={<Icons.GithubOutlined />}
-          href={Constants.GITHUB_APP_URL}
-          target="_blank"
-        >
-          Manage Github Integration
-        </Button>
-        <Typography.Paragraph disabled style={{ marginTop: 4 }}>
-          <Icons.InfoCircleOutlined />
-          {` ${siteTitle} tickets will auto-link pull requests if you reference
-          the ticket ID in the PR name like so: feat/dw-115/feature-name.`}
-        </Typography.Paragraph>
-      </>
-    );
-  }
-
-  return (
-    <Button
-      size="large"
-      type="primary"
-      block
-      icon={<Icons.GithubOutlined />}
-      href={connectToGithubUrl}
-    >
-      Connect to Github
-    </Button>
-  );
-  */
 };
