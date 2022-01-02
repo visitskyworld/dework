@@ -10,6 +10,8 @@ import {
   Tag,
   Typography,
 } from "antd";
+import * as Icons from "@ant-design/icons";
+import * as Colors from "@ant-design/colors";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
@@ -154,26 +156,26 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                   )}
                 </div>
 
-                {/* <Typography.Text
+                <Typography.Text
                   className="dewo-label"
                   style={{ marginTop: 16, display: "block" }}
                 >
                   Proof of Work
                 </Typography.Text>
                 <Row gutter={[8, 8]} style={{ margin: 0 }}>
-                  <Tag style={{ backgroundColor: Colors.volcano.primary }}>
+                  {/* <Tag style={{ backgroundColor: Colors.volcano.primary }}>
                     <Icons.FireFilled />
                     <Typography.Text>80% satisfaction</Typography.Text>
-                  </Tag>
+                  </Tag> */}
                   <Tag style={{ backgroundColor: Colors.blue.primary }}>
                     <Icons.DollarCircleOutlined />
-                    <Typography.Text>2500 earned</Typography.Text>
+                    <Typography.Text>0 earned</Typography.Text>
                   </Tag>
-                  <Tag style={{ backgroundColor: Colors.magenta.primary }}>
+                  {/* <Tag style={{ backgroundColor: Colors.magenta.primary }}>
                     <Icons.CheckCircleOutlined />
                     <Typography.Text>3 tasks completed</Typography.Text>
-                  </Tag>
-                </Row> */}
+                  </Tag> */}
+                </Row>
 
                 {!!user.organizations.length && (
                   <>
