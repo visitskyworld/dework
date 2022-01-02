@@ -99,28 +99,6 @@ export class ProjectResolver {
     return this.projectService.upsertMember(input);
   }
 
-  // @Mutation(() => Organization)
-  // @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  // @UseAbility(Actions.delete, OrganizationMember, [
-  //   OrganizationService,
-  //   (service: OrganizationService, { params }) =>
-  //     service.findMember({
-  //       userId: params.input.userId,
-  //       organizationId: params.input.organizationId,
-  //     }),
-  // ])
-  // public async removeOrganizationMember(
-  //   @Args("input") input: RemoveOrganizationMemberInput
-  // ): Promise<Organization> {
-  //   await this.organizationService.removeMember(
-  //     input.organizationId,
-  //     input.userId
-  //   );
-  //   return this.organizationService.findById(
-  //     input.organizationId
-  //   ) as Promise<Organization>;
-  // }
-
   @Mutation(() => ProjectIntegration)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
   @UseAbility(Actions.create, ProjectIntegration as any)
