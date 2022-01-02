@@ -1,10 +1,20 @@
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
-import { Tag, Card, Avatar, Typography, Space, Row, Col, Button } from "antd";
 import {
   Task,
   TaskStatusEnum,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
+import {
+  Tag,
+  Card,
+  Avatar,
+  Typography,
+  Space,
+  Row,
+  Col,
+  Button,
+  Rate,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -22,9 +32,10 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
   style?: CSSProperties;
+  showReview?: boolean;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
+export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const navigateToTask = useNavigateToTask(task.id);
   const currentUserId = useAuthContext().user?.id;
 
@@ -196,6 +207,22 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style }) => {
           )}
         </Col>
       </Row>
+      {showReview && (
+        <>
+          <Row style={{ marginBottom: 4 }}>
+            {!!task.review?.rating && (
+              <Rate
+                disabled
+                defaultValue={task.review?.rating}
+                style={{ fontSize: 15 }}
+              />
+            )}
+          </Row>
+          <Row>
+            <Typography.Text>{task.review?.message}</Typography.Text>
+          </Row>
+        </>
+      )}
     </Card>
   );
 };

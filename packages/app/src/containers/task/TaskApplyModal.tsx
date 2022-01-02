@@ -46,7 +46,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
         <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
           <Form.Item
             name="dates"
-            label={"When are you claiming this task for?"}
+            label="When are you claiming this task for?"
             rules={[{ required: true, message: "Please enter a date" }]}
           >
             <RangePicker
@@ -56,7 +56,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
           </Form.Item>
           <Form.Item
             name="message"
-            label={"Message"}
+            label="Message"
             rules={[{ required: true, message: "Please enter a message" }]}
           >
             <Input.TextArea

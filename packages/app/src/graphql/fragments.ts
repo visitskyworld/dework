@@ -171,6 +171,14 @@ export const taskReward = gql`
   ${paymentToken}
 `;
 
+export const taskReview = gql`
+  fragment TaskReview on TaskReview {
+    id
+    message
+    rating
+  }
+`;
+
 export const githubPullRequest = gql`
   fragment GithubPullRequest on GithubPullRequest {
     id
@@ -249,12 +257,16 @@ export const task = gql`
     applications {
       ...TaskApplication
     }
+    review {
+      ...TaskReview
+    }
   }
 
   ${taskTag}
   ${taskReward}
   ${user}
   ${taskApplication}
+  ${taskReview}
 `;
 
 export const taskWithOrganization = gql`

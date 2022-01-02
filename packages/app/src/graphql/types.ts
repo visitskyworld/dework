@@ -658,6 +658,13 @@ export interface CreateTaskMutation_task_applications {
   user: CreateTaskMutation_task_applications_user;
 }
 
+export interface CreateTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -673,6 +680,7 @@ export interface CreateTaskMutation_task {
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
   applications: CreateTaskMutation_task_applications[];
+  review: CreateTaskMutation_task_review | null;
 }
 
 export interface CreateTaskMutation {
@@ -794,6 +802,13 @@ export interface UpdateTaskMutation_task_applications {
   user: UpdateTaskMutation_task_applications_user;
 }
 
+export interface UpdateTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -809,6 +824,7 @@ export interface UpdateTaskMutation_task {
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
   applications: UpdateTaskMutation_task_applications[];
+  review: UpdateTaskMutation_task_review | null;
 }
 
 export interface UpdateTaskMutation {
@@ -930,6 +946,13 @@ export interface ClaimTaskMutation_task_applications {
   user: ClaimTaskMutation_task_applications_user;
 }
 
+export interface ClaimTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface ClaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -945,6 +968,7 @@ export interface ClaimTaskMutation_task {
   assignees: ClaimTaskMutation_task_assignees[];
   reward: ClaimTaskMutation_task_reward | null;
   applications: ClaimTaskMutation_task_applications[];
+  review: ClaimTaskMutation_task_review | null;
 }
 
 export interface ClaimTaskMutation {
@@ -1067,6 +1091,13 @@ export interface UnclaimTaskMutation_task_applications {
   user: UnclaimTaskMutation_task_applications_user;
 }
 
+export interface UnclaimTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface UnclaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1082,6 +1113,7 @@ export interface UnclaimTaskMutation_task {
   assignees: UnclaimTaskMutation_task_assignees[];
   reward: UnclaimTaskMutation_task_reward | null;
   applications: UnclaimTaskMutation_task_applications[];
+  review: UnclaimTaskMutation_task_review | null;
 }
 
 export interface UnclaimTaskMutation {
@@ -1203,6 +1235,13 @@ export interface DeleteTaskMutation_task_applications {
   user: DeleteTaskMutation_task_applications_user;
 }
 
+export interface DeleteTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface DeleteTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1218,6 +1257,7 @@ export interface DeleteTaskMutation_task {
   assignees: DeleteTaskMutation_task_assignees[];
   reward: DeleteTaskMutation_task_reward | null;
   applications: DeleteTaskMutation_task_applications[];
+  review: DeleteTaskMutation_task_review | null;
 }
 
 export interface DeleteTaskMutation {
@@ -1840,6 +1880,13 @@ export interface CreateTaskPaymentsMutation_tasks_applications {
   user: CreateTaskPaymentsMutation_tasks_applications_user;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -1911,6 +1958,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
+  review: CreateTaskPaymentsMutation_tasks_review | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -2162,6 +2210,13 @@ export interface UserTasksQuery_user_tasks_applications {
   user: UserTasksQuery_user_tasks_applications_user;
 }
 
+export interface UserTasksQuery_user_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface UserTasksQuery_user_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -2198,6 +2253,7 @@ export interface UserTasksQuery_user_tasks {
   assignees: UserTasksQuery_user_tasks_assignees[];
   reward: UserTasksQuery_user_tasks_reward | null;
   applications: UserTasksQuery_user_tasks_applications[];
+  review: UserTasksQuery_user_tasks_review | null;
   project: UserTasksQuery_user_tasks_project;
 }
 
@@ -2617,6 +2673,13 @@ export interface GetOrganizationTasksQuery_organization_tasks_applications {
   user: GetOrganizationTasksQuery_organization_tasks_applications_user;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2632,6 +2695,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
   applications: GetOrganizationTasksQuery_organization_tasks_applications[];
+  review: GetOrganizationTasksQuery_organization_tasks_review | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_projects_taskTags {
@@ -2844,6 +2908,13 @@ export interface GetProjectTasksQuery_project_tasks_applications {
   user: GetProjectTasksQuery_project_tasks_applications_user;
 }
 
+export interface GetProjectTasksQuery_project_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface GetProjectTasksQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2859,6 +2930,7 @@ export interface GetProjectTasksQuery_project_tasks {
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
   applications: GetProjectTasksQuery_project_tasks_applications[];
+  review: GetProjectTasksQuery_project_tasks_review | null;
 }
 
 export interface GetProjectTasksQuery_project {
@@ -3017,6 +3089,13 @@ export interface GetTaskQuery_task_applications {
   user: GetTaskQuery_task_applications_user;
 }
 
+export interface GetTaskQuery_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -3097,6 +3176,7 @@ export interface GetTaskQuery_task {
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
+  review: GetTaskQuery_task_review | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -3227,6 +3307,13 @@ export interface GetTasksQuery_tasks_applications {
   user: GetTasksQuery_tasks_applications_user;
 }
 
+export interface GetTasksQuery_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface GetTasksQuery_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3263,6 +3350,7 @@ export interface GetTasksQuery_tasks {
   assignees: GetTasksQuery_tasks_assignees[];
   reward: GetTasksQuery_tasks_reward | null;
   applications: GetTasksQuery_tasks_applications[];
+  review: GetTasksQuery_tasks_review | null;
   project: GetTasksQuery_tasks_project;
 }
 
@@ -3417,6 +3505,13 @@ export interface GetTasksToPayQuery_tasks_applications {
   user: GetTasksToPayQuery_tasks_applications_user;
 }
 
+export interface GetTasksToPayQuery_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -3469,6 +3564,7 @@ export interface GetTasksToPayQuery_tasks {
   assignees: GetTasksToPayQuery_tasks_assignees[];
   reward: GetTasksToPayQuery_tasks_reward | null;
   applications: GetTasksToPayQuery_tasks_applications[];
+  review: GetTasksToPayQuery_tasks_review | null;
   project: GetTasksToPayQuery_tasks_project;
 }
 
@@ -3747,6 +3843,13 @@ export interface TaskCreatedSubscription_task_applications {
   user: TaskCreatedSubscription_task_applications_user;
 }
 
+export interface TaskCreatedSubscription_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -3818,6 +3921,7 @@ export interface TaskCreatedSubscription_task {
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
+  review: TaskCreatedSubscription_task_review | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -3944,6 +4048,13 @@ export interface TaskUpdatedSubscription_task_applications {
   user: TaskUpdatedSubscription_task_applications_user;
 }
 
+export interface TaskUpdatedSubscription_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -4015,6 +4126,7 @@ export interface TaskUpdatedSubscription_task {
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
+  review: TaskUpdatedSubscription_task_review | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -4609,6 +4721,22 @@ export interface TaskReward {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskReview
+// ====================================================
+
+export interface TaskReview {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: GithubPullRequest
 // ====================================================
 
@@ -4814,6 +4942,13 @@ export interface Task_applications {
   user: Task_applications_user;
 }
 
+export interface Task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4829,6 +4964,7 @@ export interface Task {
   assignees: Task_assignees[];
   reward: Task_reward | null;
   applications: Task_applications[];
+  review: Task_review | null;
 }
 
 /* tslint:disable */
@@ -4942,6 +5078,13 @@ export interface TaskWithOrganization_applications {
   user: TaskWithOrganization_applications_user;
 }
 
+export interface TaskWithOrganization_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface TaskWithOrganization_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4978,6 +5121,7 @@ export interface TaskWithOrganization {
   assignees: TaskWithOrganization_assignees[];
   reward: TaskWithOrganization_reward | null;
   applications: TaskWithOrganization_applications[];
+  review: TaskWithOrganization_review | null;
   project: TaskWithOrganization_project;
 }
 
@@ -5092,6 +5236,13 @@ export interface TaskDetails_applications {
   user: TaskDetails_applications_user;
 }
 
+export interface TaskDetails_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
 export interface TaskDetails_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -5163,6 +5314,7 @@ export interface TaskDetails {
   assignees: TaskDetails_assignees[];
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
+  review: TaskDetails_review | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -5645,6 +5797,13 @@ export interface UpdateTaskInput {
   ownerId?: Scalar.UUID | null;
   status?: TaskStatusEnum | null;
   reward?: UpdateTaskRewardInput | null;
+  review?: UpdateTaskReviewInput | null;
+}
+
+export interface UpdateTaskReviewInput {
+  message?: string | null;
+  rating?: number | null;
+  reviewerId?: Scalar.UUID | null;
 }
 
 export interface UpdateTaskRewardInput {

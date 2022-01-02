@@ -14,6 +14,7 @@ import slugify from "slugify";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
 import { TaskReward } from "./TaskReward";
+import { TaskReview } from "./TaskReview";
 import { TaskTag } from "./TaskTag";
 import { User } from "./User";
 import { GithubBranch } from "./GithubBranch";
@@ -123,6 +124,14 @@ export class Task extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public rewardId?: string;
+
+  @JoinColumn()
+  @OneToOne(() => TaskReview, { nullable: true, cascade: true })
+  @Field(() => TaskReview, { nullable: true })
+  public review?: TaskReview;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public reviewId?: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

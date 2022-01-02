@@ -19,6 +19,9 @@ import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
 import { TaskUpdateModalListener } from "../../task/TaskUpdateModal";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
+import { ContributorReviewModal } from "../../task/ContributorReviewModal";
+import { useToggle } from "@dewo/app/util/hooks";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 const statuses: TaskStatusEnum[] = [
   TaskStatusEnum.TODO,
@@ -38,6 +41,7 @@ const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
 
 export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
+  const { user } = useAuthContext();
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
@@ -45,6 +49,9 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
     () => tasks.find((t) => t.id === currentDraggableId),
     [tasks, currentDraggableId]
   );
+
+  const reviewModalToggle = useToggle();
+  const [taskInReview, setTaskInReview] = useState<Task | undefined>(undefined);
 
   const updateTask = useUpdateTask();
   const handleDragStart = useCallback(
@@ -87,9 +94,17 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
       const taskBelow = section?.tasks[indexExcludingItself];
       const sortKey = orderBetweenTasks(taskAbove, taskBelow);
 
-      await updateTask({ id: taskId, status, sortKey }, task);
+      const updatedTask = await updateTask(
+        { id: taskId, status, sortKey },
+        task
+      );
+
+      if (status === TaskStatusEnum.DONE && task.ownerId === user?.id) {
+        reviewModalToggle.toggleOn();
+        setTaskInReview(updatedTask);
+      }
     },
-    [tasks, taskSectionsByStatus, updateTask]
+    [tasks, taskSectionsByStatus, updateTask, reviewModalToggle, user]
   );
 
   const [loaded, setLoaded] = useState(false);
@@ -120,6 +135,15 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
             ))}
           </Space>
         </Row>
+        {!!taskInReview && (
+          <ContributorReviewModal
+            key={taskInReview.id}
+            task={taskInReview}
+            visible={reviewModalToggle.isOn}
+            onCancel={reviewModalToggle.toggleOff}
+            onDone={reviewModalToggle.toggleOff}
+          />
+        )}
       </DragDropContext>
       <TaskUpdateModalListener />
     </>

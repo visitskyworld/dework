@@ -209,6 +209,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                   key={task.id}
                   task={task}
                   style={{ cursor: "pointer" }}
+                  showReview
                 />
               ))}
             </Space>

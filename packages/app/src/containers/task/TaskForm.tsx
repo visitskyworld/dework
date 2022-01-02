@@ -239,7 +239,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <Form.Item
             name="assigneeIds"
-            label={"Assignees"}
+            label="Assignees"
             rules={[{ type: "array" }]}
           >
             <Select
