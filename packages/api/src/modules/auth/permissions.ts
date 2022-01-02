@@ -52,6 +52,7 @@ export const permissions: Permissions<
 
   organizationAdmin({ can, cannot, user, extend }) {
     extend(Roles.organizationMember);
+    extend(Roles.projectAdmin);
 
     can(Actions.manage, OrganizationMember, {
       userId: { $ne: user.id },
@@ -62,8 +63,13 @@ export const permissions: Permissions<
     can(Actions.update, Organization);
 
     can(Actions.create, Project);
-    can(Actions.update, Project);
     can(Actions.delete, Project);
+
+    cannot(CustomPermissionActions.claimTask, Task);
+  },
+
+  projectAdmin({ can }) {
+    can(Actions.update, Project);
 
     can(Actions.create, ProjectIntegration);
     can(Actions.update, ProjectIntegration);
@@ -72,7 +78,5 @@ export const permissions: Permissions<
     can(Actions.create, Task);
     can(Actions.update, Task);
     can(Actions.delete, Task);
-
-    cannot(CustomPermissionActions.claimTask, Task);
   },
 };

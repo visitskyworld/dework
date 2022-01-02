@@ -16,7 +16,7 @@ import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { UserDetailType } from "@dewo/api/models/UserDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetail";
-import { Organization } from "@dewo/api/models/Organization";
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -510,14 +510,11 @@ describe("UserResolver", () => {
 
         it("organizationMember", async () => {
           const user = await fixtures.createUser();
-          const partialOrg = new Organization();
-          // @ts-ignore
-          partialOrg.members = [
-            { userId: user.id, role: OrganizationRole.MEMBER },
-          ];
-          const { organization } = await fixtures.createUserOrgProject({
-            organization: partialOrg,
-          });
+          const organization = await fixtures.createOrganization(
+            {},
+            undefined,
+            [{ userId: user.id, role: OrganizationRole.MEMBER }]
+          );
 
           const permissions = await getPermissions(user, {
             organizationId: organization.id,
@@ -526,6 +523,26 @@ describe("UserResolver", () => {
           expect(permissions.can("delete", "Organization")).toBe(false);
           expect(permissions.can("create", "Project")).toBe(false);
           expect(permissions.can("create", "Task")).toBe(false);
+        });
+
+        it("projectAdmin", async () => {
+          const user = await fixtures.createUser();
+          const organization = await fixtures.createOrganization();
+          const project = await fixtures.createProject(
+            { organizationId: organization.id },
+            undefined,
+            [{ userId: user.id, role: ProjectRole.ADMIN }]
+          );
+
+          const permissions = await getPermissions(user, {
+            projectId: project.id,
+          });
+          expect(permissions.can("create", "Project")).toBe(false);
+          expect(permissions.can("delete", "Project")).toBe(false);
+          expect(permissions.can("update", "Project")).toBe(true);
+          expect(permissions.can("create", "Task")).toBe(true);
+          expect(permissions.can("update", "Task")).toBe(true);
+          expect(permissions.can("delete", "Task")).toBe(true);
         });
       });
     });

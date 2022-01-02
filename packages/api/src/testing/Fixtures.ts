@@ -47,6 +47,7 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "../models/OrganizationIntegration";
+import { ProjectMember } from "../models/ProjectMember";
 
 @Injectable()
 export class Fixtures {
@@ -111,11 +112,12 @@ export class Fixtures {
 
   public async createProject(
     partialProject: Partial<Project> = {},
-    partialCreator: Partial<User> = {}
+    _creator?: User,
+    members?: Pick<ProjectMember, "userId" | "role">[]
   ): Promise<Project> {
-    const creator = await this.createUser(partialCreator);
+    const creator = _creator ?? (await this.createUser());
     const organization = await this.createOrganization({}, creator);
-    return this.projectService.create(
+    const project = await this.projectService.create(
       {
         name: faker.company.companyName(),
         organizationId: organization.id,
@@ -123,6 +125,14 @@ export class Fixtures {
       },
       creator
     );
+
+    if (!members) return project;
+    await Promise.all(
+      members.map((member) =>
+        this.projectService.upsertMember({ ...member, projectId: project.id })
+      )
+    );
+    return this.projectService.findById(project.id) as Promise<Project>;
   }
 
   public async createProjectIntegration(

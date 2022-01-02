@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { GQLContext } from "../app/graphql.config";
 import { Roles } from "../app/app.roles";
@@ -25,7 +20,7 @@ export class OrganizationRolesGuard implements CanActivate {
     const gqlContext =
       GqlExecutionContext.create(context).getContext<GQLContext>();
     if (!gqlContext.user || !gqlContext.caslUser) {
-      throw new UnauthorizedException();
+      return true;
     }
 
     const organizationId = [

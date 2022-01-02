@@ -1,6 +1,7 @@
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { UserDetail } from "@dewo/api/models/UserDetail";
@@ -22,6 +23,7 @@ import { UserService } from "./user.service";
       Organization,
       Project,
       Task,
+      ProjectMember,
       OrganizationMember,
     ]),
     CaslModule.forFeature({ permissions }),

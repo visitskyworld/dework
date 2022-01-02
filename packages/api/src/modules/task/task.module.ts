@@ -19,6 +19,7 @@ import {
 import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PermalinkModule } from "../permalink/permalink.module";
       TaskApplication,
       Project,
       User,
+      ProjectMember,
       OrganizationMember,
     ]),
     CaslModule.forFeature({ permissions }),

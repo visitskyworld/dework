@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -15,6 +14,7 @@ import {
   OrganizationMember,
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
+import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 
 @Injectable()
 export class TaskRolesGuard implements CanActivate {
@@ -22,14 +22,16 @@ export class TaskRolesGuard implements CanActivate {
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(OrganizationMember)
-    private readonly organizationMemberRepo: Repository<OrganizationMember>
+    private readonly organizationMemberRepo: Repository<OrganizationMember>,
+    @InjectRepository(ProjectMember)
+    private readonly projectMemberRepo: Repository<ProjectMember>
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext =
       GqlExecutionContext.create(context).getContext<GQLContext>();
     if (!gqlContext.user || !gqlContext.caslUser) {
-      throw new UnauthorizedException();
+      return true;
     }
 
     const taskId = [
@@ -48,11 +50,12 @@ export class TaskRolesGuard implements CanActivate {
     const project = await task.project;
     if (!project) throw new ForbiddenException("Project not found");
 
-    // TODO(fant): DRY this up with OrganizationRolesGuard
     await this.addCaslRolesForOrganization(project.organizationId, gqlContext);
+    await this.addCaslRolesForProject(project.id, gqlContext);
     return true;
   }
 
+  // TODO(fant): DRY this up with OrganizationRolesGuard
   public async addCaslRolesForOrganization(
     organizationId: string,
     gqlContext: GQLContext
@@ -74,6 +77,27 @@ export class TaskRolesGuard implements CanActivate {
 
     if (member?.role === OrganizationRole.MEMBER) {
       gqlContext.caslUser.roles.push(Roles.organizationMember);
+    }
+  }
+
+  // TODO(fant): DRY this up with ProjectRolesGuard
+  public async addCaslRolesForProject(
+    projectId: string,
+    gqlContext: GQLContext
+  ): Promise<void> {
+    if (!gqlContext.user || !gqlContext.caslUser) return;
+
+    const member = await this.projectMemberRepo.findOne({
+      projectId,
+      userId: gqlContext.user.id,
+    });
+
+    if (member?.role === ProjectRole.ADMIN) {
+      gqlContext.caslUser.roles.push(Roles.projectAdmin);
+    }
+
+    if (member?.role === ProjectRole.MEMBER) {
+      gqlContext.caslUser.roles.push(Roles.projectMember);
     }
   }
 }

@@ -13,7 +13,7 @@ import { User } from "./User";
 
 export enum ProjectRole {
   ADMIN = "ADMIN",
-  CONTRIBUTOR = "CONTRIBUTOR",
+  MEMBER = "MEMBER",
 }
 
 registerEnumType(ProjectRole, { name: "ProjectRole" });
