@@ -14,8 +14,8 @@ import { useRouter } from "next/router";
 import { OrganizationSettings } from "./OrganizationSettings";
 import { FollowOrganizationButton } from "./FollowOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { OrganizationMemberList } from "./OrganizationMemberList";
 import _ from "lodash";
+import { OrganizationContributorList } from "./OrganizationContributorList";
 
 interface Props {
   organizationId: string;
@@ -119,7 +119,7 @@ export const OrganizationTabs: FC<Props> = ({
         key="contributors"
         className="max-w-sm mx-auto w-full"
       >
-        <OrganizationMemberList organizationId={organizationId} />
+        <OrganizationContributorList organizationId={organizationId} />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={

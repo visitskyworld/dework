@@ -13,7 +13,9 @@ interface Props {
   organizationId: string;
 }
 
-const roleToString: Partial<Record<OrganizationRole, string>> = {
+export const organizationRoleToString: Partial<
+  Record<OrganizationRole, string>
+> = {
   [OrganizationRole.ADMIN]: "Admin",
   [OrganizationRole.OWNER]: "Owner",
 };
@@ -66,7 +68,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
             title: "Role",
             dataIndex: "role",
             width: 1,
-            render: (role: OrganizationRole) => roleToString[role],
+            render: (role: OrganizationRole) => organizationRoleToString[role],
           },
           ...(canDeleteAdmin || canDeleteOwner
             ? [
