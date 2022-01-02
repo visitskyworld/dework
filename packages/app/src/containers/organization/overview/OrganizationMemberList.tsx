@@ -1,7 +1,4 @@
-import {
-  usePermission,
-  usePermissionFn,
-} from "@dewo/app/contexts/PermissionsContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC, useMemo } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
 import {
@@ -9,7 +6,6 @@ import {
   useOrganizationContributors,
   useOrganizationCoreTeam,
   useRemoveOrganizationMember,
-  useUpdateOrganizationMember,
 } from "../hooks";
 import { Table, Space, Row, Button } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -18,6 +14,7 @@ import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
 import _ from "lodash";
+
 interface Props {
   organizationId: string;
 }
@@ -29,7 +26,6 @@ const roleToString: Partial<Record<OrganizationRole, string>> = {
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
-  const updateMember = useUpdateOrganizationMember();
   const removeMember = useRemoveOrganizationMember();
 
   const canDeleteMember = usePermission("delete", {
@@ -37,16 +33,8 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
     // TODO(fant)
     role: OrganizationRole.FOLLOWER,
   });
-  const hasPermission = usePermissionFn();
 
   const navigateToProfile = useNavigateToProfile();
-  const members = useMemo(
-    () =>
-      organization?.members.filter((m) =>
-        [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
-      ),
-    [organization?.members]
-  );
 
   const coreTeam = useOrganizationCoreTeam(organizationId);
   const contributors = useOrganizationContributors(organizationId);
