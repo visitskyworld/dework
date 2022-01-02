@@ -40,7 +40,7 @@ export class ProjectMember extends Audit {
   @Field()
   public userId!: string;
 
-  @Column({ enum: ProjectRole })
+  @Column("enum", { enum: ProjectRole })
   @Field(() => ProjectRole)
   public role!: ProjectRole;
 }

@@ -41,7 +41,7 @@ export class OrganizationMember extends Audit {
   @Field()
   public userId!: string;
 
-  @Column({ enum: OrganizationRole })
+  @Column("enum", { enum: OrganizationRole })
   @Field(() => OrganizationRole)
   public role!: OrganizationRole;
 }
