@@ -165,18 +165,46 @@ describe("InviteResolver", () => {
     });
 
     describe("acceptInvite", () => {
-      const createInvite = async (organizationRole: OrganizationRole) => {
-        const { user: inviter, organization } =
-          await fixtures.createUserOrgProject();
+      describe("organization", () => {
+        it("it should connect user to organization", async () => {
+          const { user: inviter, organization } =
+            await fixtures.createUserOrgProject();
+          const invite = await fixtures.createInvite(
+            {
+              organizationId: organization.id,
+              organizationRole: OrganizationRole.ADMIN,
+            },
+            inviter
+          );
+          const invited = await fixtures.createUser();
 
-        return fixtures.createInvite(
-          { organizationId: organization.id, organizationRole },
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetchedInvite = response.body.data?.invite;
+          expect(fetchedInvite.organization.members).toContainEqual(
+            expect.objectContaining({
+              userId: invited.id,
+              role: OrganizationRole.ADMIN,
+            })
+          );
+        });
+      });
+
+      it("it should connect user to project", async () => {
+        const { user: inviter, project } =
+          await fixtures.createUserOrgProject();
+        const invite = await fixtures.createInvite(
+          {
+            projectId: project.id,
+            projectRole: ProjectRole.ADMIN,
+          },
           inviter
         );
-      };
-
-      it("it should connect user to organization", async () => {
-        const invite = await createInvite(OrganizationRole.FOLLOWER);
         const invited = await fixtures.createUser();
 
         const response = await client.request({
@@ -187,35 +215,13 @@ describe("InviteResolver", () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         const fetchedInvite = response.body.data?.invite;
-        expect(fetchedInvite.organization.members).toContainEqual(
+        expect(fetchedInvite.project.members).toContainEqual(
           expect.objectContaining({
             userId: invited.id,
-            role: OrganizationRole.FOLLOWER,
+            role: ProjectRole.ADMIN,
           })
         );
       });
-
-      it("should apply ADMIN role from invite", async () => {
-        const invite = await createInvite(OrganizationRole.ADMIN);
-        const invited = await fixtures.createUser();
-
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(invited),
-          body: InviteRequests.accept(invite.id),
-        });
-
-        expect(response.status).toEqual(HttpStatus.OK);
-        const fetchedInvite = response.body.data?.invite;
-        expect(fetchedInvite.organization.members).toContainEqual(
-          expect.objectContaining({
-            userId: invited.id,
-            role: OrganizationRole.ADMIN,
-          })
-        );
-      });
-
-      xit("should connect user to project", () => {});
     });
   });
 });
