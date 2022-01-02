@@ -80,8 +80,12 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
 
   const updateProjectIntegration = useUpdateProjectIntegration();
   const removeGithubIntegration = useCallback(
-    () => updateProjectIntegration({ id: projInt?.id, deletedAt: new Date() }),
-    [projInt?.id, updateProjectIntegration]
+    () =>
+      updateProjectIntegration({
+        id: projInt!.id,
+        deletedAt: new Date().toISOString(),
+      }),
+    [projInt, updateProjectIntegration]
   );
 
   if (!project) return null;

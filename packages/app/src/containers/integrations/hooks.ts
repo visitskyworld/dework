@@ -4,6 +4,9 @@ import {
   CreateProjectIntegrationInput,
   CreateProjectIntegrationMutation,
   CreateProjectIntegrationMutationVariables,
+  UpdateProjectIntegrationInput,
+  UpdateProjectIntegrationMutation,
+  UpdateProjectIntegrationMutationVariables,
   GithubRepo,
   ProjectIntegration,
   ProjectIntegrationType,
@@ -67,7 +70,7 @@ export function useCreateGithubProjectIntegration(): (
 
 export function useUpdateProjectIntegration(): (
   input: UpdateProjectIntegrationInput
-) => Promise<PaymentMethod> {
+) => Promise<ProjectIntegration> {
   const [mutation] = useMutation<
     UpdateProjectIntegrationMutation,
     UpdateProjectIntegrationMutationVariables
