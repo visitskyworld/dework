@@ -343,13 +343,13 @@ export function useTaskFormUserOptions(
   const organizationCoreTeam = useOrganizationCoreTeam(project?.organizationId);
 
   return useMemo(() => {
-    if (!project) {
-      return additionalUsers ?? [];
-    }
-
     const projectUsers = project?.members.map((m) => m.user);
     return _.uniqBy(
-      [...projectUsers, ...organizationCoreTeam, ...(additionalUsers ?? [])],
+      [
+        ...(projectUsers ?? []),
+        ...organizationCoreTeam,
+        ...(additionalUsers ?? []),
+      ],
       (u) => u.id
     );
   }, [project, additionalUsers, organizationCoreTeam]);
