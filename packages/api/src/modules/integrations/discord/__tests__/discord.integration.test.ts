@@ -67,7 +67,7 @@ describe("DiscordIntegration", () => {
     await fixtures.createProjectIntegration({
       projectId: project.id,
       type: ProjectIntegrationType.DISCORD,
-      config: { channelId: discordChannelId },
+      config: { channelId: discordChannelId, channelName: "test" },
       organizationIntegrationId: orgInt.id,
     });
     return project;

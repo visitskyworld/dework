@@ -112,7 +112,7 @@ describe("ProjectResolver", () => {
           body: ProjectRequests.createIntegration({
             projectId: project.id,
             type: ProjectIntegrationType.DISCORD,
-            config: { channelId: "123" },
+            config: { channelId: "123", channelName: "123" },
           }),
         });
 
@@ -133,7 +133,7 @@ describe("ProjectResolver", () => {
         const integration = await fixtures.createProjectIntegration({
           type: ProjectIntegrationType.DISCORD,
           projectId: project.id,
-          config: { channelId: "123" },
+          config: { channelId: "123", channelName: "123" },
         });
         const response = await client.request({
           app,
