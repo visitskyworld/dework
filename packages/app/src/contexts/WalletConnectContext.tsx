@@ -17,7 +17,12 @@ function openModal() {
     title: "Step 1: Connect Metamask",
     okText: "Open Metamask",
     onOk: () => {
-      window.open(connector.uri);
+      // window.open(connector.uri);
+      console.log(
+        `https://metamask.app.link/wc?d=${Date.now()}&uri=${encodeURIComponent(
+          connector.uri
+        )}`
+      );
       modal.destroy();
     },
     onCancel: () => modal.destroy(),

@@ -9,6 +9,7 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { ISessionParams } from "@walletconnect/types";
 import { useWalletConnect } from "../contexts/WalletConnectContext";
 import { Modal } from "antd";
+import { convertUtf8ToHex } from "@walletconnect/utils";
 import { MetamaskIcon } from "../components/icons/Metamask";
 
 export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
@@ -16,7 +17,7 @@ export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
   const loadProvider = useCallback(async () => {
     const ethereum = await detectEthereumProvider();
     if (!!ethereum) {
-      provider.current = new ethers.providers.Web3Provider(ethereum as any);
+      // provider.current = new ethers.providers.Web3Provider(ethereum as any);
     } else {
       // let destroyModal: () => void;
       // const walletConnectProvider = new WalletConnectProvider({
@@ -106,8 +107,16 @@ export function useRequestAddress(): () => Promise<string> {
     } else {
       if (walletConnect.connector.connected) {
         await walletConnect.connector.killSession();
+        // return walletConnect.connector.accounts[0];
       }
+
       await walletConnect.connector.createSession();
+      alert(
+        JSON.stringify({
+          handshakeId: walletConnect.connector.handshakeId,
+          handshakeTopic: walletConnect.connector.handshakeTopic,
+        })
+      );
       const payload = await new Promise<{ params: ISessionParams[] }>(
         (resolve, reject) => {
           walletConnect.connector.on("connect", (error, payload) =>
@@ -134,17 +143,30 @@ export function usePersonalSign(): (
       if (provider.current) {
         return provider.current.send("personal_sign", [message, address]);
       } else {
-        const modal = Modal.confirm({
-          icon: <MetamaskIcon />,
-          title: "Step 2: Sign Message",
-          okText: "Open Metamask",
-          onOk: () => {
-            window.open("https://metamask.app.link");
-            modal.destroy();
-          },
-          onCancel: () => modal.destroy(),
+        return new Promise(async (resolve, reject) => {
+          const modal = Modal.confirm({
+            icon: <MetamaskIcon />,
+            title: "Step 2: Sign Message", // (by manually opening Metamask again)",
+            // okText: "Awaiting confirmation",
+            okText: "Open Metamask",
+            // okButtonProps: { loading: true, disabled: true },
+            onOk: async () => {
+              window.open("https://metamask.app.link");
+              modal.destroy();
+            },
+            onCancel: () => {
+              modal.destroy();
+              reject(new Error("User cancelled signing message"));
+            },
+          });
+
+          const signature = await walletConnect.connector.signPersonalMessage([
+            convertUtf8ToHex(message),
+            address,
+          ]);
+          modal.destroy();
+          resolve(signature);
         });
-        return walletConnect.connector.signPersonalMessage([message, address]);
       }
     },
     [provider, walletConnect]
