@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { Modal, Space } from "antd";
+import { Button, Modal, notification, Space } from "antd";
 import { useRouter } from "next/router";
 import MobileDetect from "mobile-detect";
 import { ThreepidSource } from "@dewo/app/graphql/types";
@@ -19,8 +19,6 @@ interface Props {
   toggle: UseToggleHook;
 }
 
-let wcUri: string;
-
 const connector = new WalletConnect({
   bridge: "https://bridge.walletconnect.org",
   clientMeta: {
@@ -31,17 +29,17 @@ const connector = new WalletConnect({
   },
 });
 
-connector.on("connect", (error, payload) => {
+connector.on("connect", (error) => {
   if (error) {
     throw error;
   }
 
-  alert(JSON.stringify(payload.params[0], null, 2));
+  // alert("connected: " + JSON.stringify(payload.params[0], null, 2));
 
-  connector.signPersonalMessage([
-    "that became personal to me",
-    payload.params[0].accounts[0],
-  ]);
+  // connector.signPersonalMessage([
+  //   "that became personal to me",
+  //   payload.params[0].accounts[0],
+  // ]);
 });
 
 connector.on("*", (...args) => alert(JSON.stringify(args, null, 2)));
@@ -56,10 +54,14 @@ connector.on("*", (...args) => alert(JSON.stringify(args, null, 2)));
 //   connector.createSession();
 // }
 
-const signP = connector.signPersonalMessage([
-  "that became personal to me",
-  connector.session.accounts[0],
-]);
+// if (connector.connected) {
+//   connector.killSession();
+// }
+
+// const signP = connector.signPersonalMessage([
+//   "that became personal to me",
+//   connector.session.accounts[0],
+// ]);
 
 export const LoginModal: FC<Props> = ({ toggle }) => {
   const router = useRouter();
@@ -78,27 +80,70 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     return md.is("iOS") || md.is("AndroidOS");
   }, []);
 
+  const walletConnectSessionCreation = useMemo(() => {
+    if (connector.connected) {
+      return connector.killSession().then(() => connector.createSession());
+    }
+    return connector.createSession();
+  }, []);
+
   const authWithMetamask = useCallback(async () => {
     if (Math.random()) {
       const metamaskUri = `https://metamask.app.link/wc?uri=${encodeURIComponent(
         connector.uri
       )}`;
 
-      alert(connector.connected);
-      if (!connector.connected) {
-        const sessionP = null; // connector.createSession();
+      let awaited = false;
+      if (walletConnectSessionCreation !== undefined) {
         window.open(metamaskUri);
-        const session = await sessionP;
-        alert(JSON.stringify(session, null, 2));
-      } else {
-        // const resP = connector.signPersonalMessage([
-        //   connector.session.accounts[0],
-        //   "that became personal to me",
-        // ]);
-        window.open(metamaskUri);
-        const res = await signP;
-        alert(JSON.stringify(res, null, 2));
+        await walletConnectSessionCreation;
+        const connected = await new Promise((resolve, reject) => {
+          connector.on("connect", (error, payload) => {
+            if (error) reject(error);
+            else resolve(payload);
+          });
+        });
+        awaited = true;
+        alert("connected: " + JSON.stringify(connected, null, 2));
       }
+
+      if (awaited) {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const res = await new Promise((resolve) => {
+          connector
+            .signPersonalMessage([
+              "that became personal to me",
+              connector.session.accounts[0],
+            ])
+            .then(resolve);
+          notification.info({
+            message: "sign msg",
+            btn: (
+              <Button href={metamaskUri} target="_blank">
+                sign msg
+              </Button>
+            ),
+          });
+        });
+
+        alert("signed: " + JSON.stringify(res, null, 2));
+      }
+
+      // alert(connector.connected);
+      // if (!connector.connected) {
+      //   const sessionP = null; // connector.createSession();
+      //   window.open(metamaskUri);
+      //   const session = await sessionP;
+      //   alert(JSON.stringify(session, null, 2));
+      // } else {
+      //   // const resP = connector.signPersonalMessage([
+      //   //   connector.session.accounts[0],
+      //   //   "that became personal to me",
+      //   // ]);
+      //   window.open(metamaskUri);
+      //   const res = await signP;
+      //   alert(JSON.stringify(res, null, 2));
+      // }
 
       // if (!connector.connected) {
       // } else {
@@ -144,9 +189,11 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     state,
     authingWithMetamask,
     isMetamaskAvailable,
+    walletConnectSessionCreation,
   ]);
 
   const showMetamaskPrompt = isMobile && !isMetamaskAvailable;
+  console.log(showMetamaskPrompt);
   return (
     <Modal
       visible={toggle.isOn}
