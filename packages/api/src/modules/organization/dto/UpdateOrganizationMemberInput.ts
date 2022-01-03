@@ -10,6 +10,9 @@ export class UpdateOrganizationMemberInput {
   @Field(() => GraphQLUUID)
   public userId!: string;
 
-  @Field(() => OrganizationRole)
-  public role!: OrganizationRole;
+  @Field(() => OrganizationRole, { nullable: true })
+  public role?: OrganizationRole;
+
+  @Field({ nullable: true })
+  public sortKey?: string;
 }

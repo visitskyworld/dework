@@ -12,6 +12,7 @@ import {
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { User } from "@dewo/api/models/User";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;
@@ -244,6 +245,39 @@ describe("OrganizationResolver", () => {
           true
         );
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("should allow anyone to update own sortKey", async () => {
+        const owner = await fixtures.createUser();
+        const admin = await fixtures.createUser();
+        const follower = await fixtures.createUser();
+
+        const organization = await fixtures.createOrganization({}, undefined, [
+          { userId: owner.id, role: OrganizationRole.OWNER },
+          { userId: admin.id, role: OrganizationRole.ADMIN },
+          { userId: follower.id, role: OrganizationRole.FOLLOWER },
+        ]);
+
+        const sortKey = Date.now().toString();
+
+        const req = (user: User) =>
+          client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: OrganizationRequests.updateMember({
+              organizationId: organization.id,
+              userId: user.id,
+              sortKey,
+            }),
+          });
+
+        const ownerResponse = await req(owner);
+        const adminResponse = await req(admin);
+        const followerResponse = await req(follower);
+
+        expect(ownerResponse.body.data?.member.sortKey).toEqual(sortKey);
+        expect(adminResponse.body.data?.member.sortKey).toEqual(sortKey);
+        expect(followerResponse.body.data?.member.sortKey).toEqual(sortKey);
       });
     });
 

@@ -44,4 +44,8 @@ export class OrganizationMember extends Audit {
   @Column("enum", { enum: OrganizationRole })
   @Field(() => OrganizationRole)
   public role!: OrganizationRole;
+
+  @Column()
+  @Field()
+  public sortKey!: string;
 }

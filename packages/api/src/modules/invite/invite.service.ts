@@ -10,8 +10,6 @@ import { ProjectService } from "../project/project.service";
 
 @Injectable()
 export class InviteService {
-  // private readonly logger = new Logger("UserService");
-
   constructor(
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
@@ -35,11 +33,11 @@ export class InviteService {
     if (!invite) throw new NotFoundException();
 
     if (!!invite.organizationId && !!invite.organizationRole) {
-      await this.organizationService.upsertMember(
-        invite.organizationId,
-        user.id,
-        invite.organizationRole
-      );
+      await this.organizationService.upsertMember({
+        organizationId: invite.organizationId,
+        role: invite.organizationRole,
+        userId: user.id,
+      });
     }
 
     if (!!invite.projectId && !!invite.projectRole) {
@@ -55,11 +53,11 @@ export class InviteService {
         organizationId: project.organizationId,
       });
       if (!organizationMember) {
-        await this.organizationService.upsertMember(
-          project.organizationId,
-          user.id,
-          OrganizationRole.FOLLOWER
-        );
+        await this.organizationService.upsertMember({
+          organizationId: project.organizationId,
+          role: OrganizationRole.FOLLOWER,
+          userId: user.id,
+        });
       }
     }
 

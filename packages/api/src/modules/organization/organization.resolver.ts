@@ -7,7 +7,12 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
@@ -20,6 +25,7 @@ import {
   AccessGuard,
   AccessService,
   Actions,
+  AuthorizableUser,
   CaslUser,
   UseAbility,
   UserProxy,
@@ -30,6 +36,8 @@ import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInp
 import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
 import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
+import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
+import { subject } from "@casl/ability";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -37,7 +45,8 @@ export class OrganizationResolver {
   constructor(
     private readonly organizationService: OrganizationService,
     private readonly permalinkService: PermalinkService,
-    private readonly accessService: AccessService
+    private readonly accessService: AccessService,
+    private readonly abilityFactory: AbilityFactory
   ) {}
 
   @ResolveField(() => String)
@@ -90,23 +99,25 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => OrganizationMember)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.manage, OrganizationMember, [
-    OrganizationService,
-    async (_service: OrganizationService, { params }) => ({
-      role: params.input.role,
-      userId: params.input.userId,
-      organizationId: params.input.organizationId,
-    }),
-  ])
+  @UseGuards(AuthGuard, OrganizationRolesGuard)
   public async updateOrganizationMember(
-    @Args("input") input: UpdateOrganizationMemberInput
+    @Args("input") input: UpdateOrganizationMemberInput,
+    @Context("caslUser") caslUser: AuthorizableUser
   ): Promise<OrganizationMember> {
-    return this.organizationService.upsertMember(
-      input.organizationId,
-      input.userId,
-      input.role
-    );
+    if (!!input.role) {
+      const abilities = this.abilityFactory.createForUser(caslUser);
+      const can = abilities.can(
+        Actions.update,
+        subject(OrganizationMember as any, {
+          role: input.role,
+          userId: input.userId,
+          organizationId: input.organizationId,
+        })
+      );
+      if (!can) throw new ForbiddenException();
+    }
+
+    return this.organizationService.upsertMember(input);
   }
 
   @Mutation(() => Organization)

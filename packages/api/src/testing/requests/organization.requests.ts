@@ -10,6 +10,7 @@ export class OrganizationRequests {
       id
       role
       userId
+      sortKey
     }
   `;
 

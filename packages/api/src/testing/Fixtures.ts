@@ -4,7 +4,6 @@ import { User } from "../models/User";
 import { UserModule } from "../modules/user/user.module";
 import { UserService } from "../modules/user/user.service";
 import faker from "faker";
-import Bluebird from "bluebird";
 import { ThreepidService } from "../modules/threepid/threepid.service";
 import { ThreepidModule } from "../modules/threepid/threepid.module";
 import { Organization } from "../models/Organization";
@@ -98,16 +97,17 @@ export class Fixtures {
     );
 
     if (!members) return organization;
-    return Bluebird.reduce(
-      members,
-      (_, member) =>
-        this.organizationService.addUser(
-          organization.id,
-          member.userId,
-          member.role
-        ),
-      organization
+    await Promise.all(
+      members.map((member) =>
+        this.organizationService.upsertMember({
+          ...member,
+          organizationId: organization.id,
+        })
+      )
     );
+    return this.organizationService.findById(
+      organization.id
+    ) as Promise<Organization>;
   }
 
   public async createProject(

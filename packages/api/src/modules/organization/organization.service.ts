@@ -10,6 +10,7 @@ import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DeepPartial, Repository } from "typeorm";
+import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 
 @Injectable()
 export class OrganizationService {
@@ -30,7 +31,11 @@ export class OrganizationService {
     creator: User
   ): Promise<Organization> {
     const created = await this.organizationRepo.save(partial);
-    await this.addUser(created.id, creator.id, OrganizationRole.OWNER);
+    await this.upsertMember({
+      organizationId: created.id,
+      userId: creator.id,
+      role: OrganizationRole.OWNER,
+    });
     return this.findById(created.id) as Promise<Organization>;
   }
 
@@ -53,35 +58,23 @@ export class OrganizationService {
     return this.organizationMemberRepo.findOne(partial);
   }
 
-  public async addUser(
-    organizationId: string,
-    userId: string,
-    role: OrganizationRole
-  ): Promise<Organization> {
-    await this.organizationMemberRepo.save({
-      role,
-      userId,
-      organizationId,
-    });
-    return this.findById(organizationId) as Promise<Organization>;
-  }
-
   public async upsertMember(
-    organizationId: string,
-    userId: string,
-    role: OrganizationRole
+    data: UpdateOrganizationMemberInput
   ): Promise<OrganizationMember> {
-    const member = await this.findMember({ organizationId, userId });
+    const member = await this.findMember({
+      organizationId: data.organizationId,
+      userId: data.userId,
+    });
     if (!!member) {
-      await this.organizationMemberRepo.update({ id: member.id }, { role });
+      await this.organizationMemberRepo.update({ id: member.id }, data);
       return this.organizationMemberRepo.findOne({
         id: member.id,
       }) as Promise<OrganizationMember>;
     } else {
       const created = await this.organizationMemberRepo.save({
-        role,
-        userId,
-        organizationId,
+        sortKey: Date.now().toString(),
+        role: OrganizationRole.FOLLOWER,
+        ...data,
       });
       return this.organizationMemberRepo.findOne({
         id: created.id,
