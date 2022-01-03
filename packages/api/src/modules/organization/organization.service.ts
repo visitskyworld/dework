@@ -132,6 +132,7 @@ export class OrganizationService {
       .innerJoinAndSelect("organization.members", "members")
       .where("members.userId = :userId", { userId })
       .andWhere("organization.deletedAt IS NULL")
+      .orderBy("organization.sortKey", "DESC")
       .getMany();
   }
 
