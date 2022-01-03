@@ -10,6 +10,7 @@ import {
   GithubRepo,
   ProjectIntegration,
   ProjectIntegrationType,
+  DiscordIntegrationChannel,
 } from "@dewo/app/graphql/types";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
@@ -62,6 +63,24 @@ export function useCreateGithubProjectIntegration(): (
           organization: repo.organization,
           features: [],
         },
+      });
+    },
+    [createProjectIntegration]
+  );
+}
+
+export function useCreateDiscordProjectIntegration(): (
+  projectId: string,
+  channel: DiscordIntegrationChannel
+) => Promise<ProjectIntegration> {
+  const createProjectIntegration = useCreateProjectIntegration();
+  return useCallback(
+    (projectId, channel) => {
+      return createProjectIntegration({
+        projectId,
+        type: ProjectIntegrationType.DISCORD,
+        organizationIntegrationId: channel.integrationId,
+        config: { channelId: channel.id, channelName: channel.name },
       });
     },
     [createProjectIntegration]

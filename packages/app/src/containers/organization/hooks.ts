@@ -5,6 +5,7 @@ import {
   CreateOrganizationInput,
   CreateOrganizationMutation,
   CreateOrganizationMutationVariables,
+  DiscordIntegrationChannel,
   GetFeaturedOrganizationsQuery,
   GetFeaturedOrganizationsQueryVariables,
   GetOrganizationDiscordChannelsQuery,
@@ -176,7 +177,7 @@ export function useOrganizationGithubRepos(
 export function useOrganizationDiscordChannels(
   organizationId: string,
   skip: boolean = false
-): GetOrganizationDiscordChannelsQuery["channels"] | undefined {
+): DiscordIntegrationChannel[] | undefined {
   const { data } = useQuery<
     GetOrganizationDiscordChannelsQuery,
     GetOrganizationDiscordChannelsQueryVariables

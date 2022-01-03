@@ -5262,6 +5262,22 @@ export interface DiscordChannel {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: DiscordIntegrationChannel
+// ====================================================
+
+export interface DiscordIntegrationChannel {
+  __typename: "DiscordIntegrationChannel";
+  id: string;
+  name: string;
+  integrationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: TaskApplication
 // ====================================================
 

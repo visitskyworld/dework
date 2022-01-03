@@ -19,6 +19,7 @@ export enum GithubProjectIntegrationFeature {
 
 export interface DiscordProjectIntegrationConfig {
   channelId: string;
+  channelName: string;
 }
 
 export interface GithubProjectIntegrationConfig {

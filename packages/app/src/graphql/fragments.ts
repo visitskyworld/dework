@@ -241,6 +241,14 @@ export const discordChannel = gql`
   }
 `;
 
+export const discordIntegrationChannel = gql`
+  fragment DiscordIntegrationChannel on DiscordIntegrationChannel {
+    id
+    name
+    integrationId
+  }
+`;
+
 export const taskApplication = gql`
   fragment TaskApplication on TaskApplication {
     id

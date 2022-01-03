@@ -1,61 +1,168 @@
-import React, { FC, useMemo } from "react";
-import { Button, Alert } from "antd";
-import { useCurrentUser } from "@dewo/app/util/hooks";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
-  GetProjectIntegrationsQuery,
-  GetProjectIntegrationsQueryVariables,
+  OrganizationIntegration,
+  OrganizationIntegrationType,
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-import { useQuery } from "@apollo/client";
-import * as Queries from "@dewo/app/graphql/queries";
+import { useProject } from "../hooks";
+import {
+  useOrganization,
+  useOrganizationDiscordChannels,
+} from "../../organization/hooks";
+import { useToggle } from "@dewo/app/util/hooks";
+import {
+  useCreateDiscordProjectIntegration,
+  useUpdateProjectIntegration,
+} from "../../integrations/hooks";
+import { FormSection } from "@dewo/app/components/FormSection";
+import { Alert, Button, Input, Typography } from "antd";
+import Link from "next/link";
 import { Constants } from "@dewo/app/util/constants";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { useRouter } from "next/router";
+import { ConnectToDiscordFormSection } from "../../integrations/ConnectToDiscordFormSection";
+import { ConnectProjectToDiscordSelect } from "../../integrations/ConnectProjectToDiscordSelect";
+
 interface Props {
-  organizationId: string;
   projectId: string;
+  organizationId: string;
+}
+
+function useOrganizationDiscordIntegration(
+  organizationId: string | undefined
+): OrganizationIntegration | undefined {
+  const organization = useOrganization(organizationId);
+  return useMemo(
+    () =>
+      organization?.integrations.find(
+        (i) => i.type === OrganizationIntegrationType.DISCORD
+      ),
+    [organization?.integrations]
+  );
 }
 
 export const ProjectDiscordIntegration: FC<Props> = ({
-  organizationId,
   projectId,
+  organizationId,
 }) => {
-  const user = useCurrentUser();
+  const { user } = useAuthContext();
+  const router = useRouter();
 
-  const integrations = useQuery<
-    GetProjectIntegrationsQuery,
-    GetProjectIntegrationsQueryVariables
-  >(Queries.projectIntegrations, { variables: { projectId } }).data?.project
-    .integrations;
-
-  const integration = useMemo(
-    () => integrations?.find((i) => i.type === ProjectIntegrationType.DISCORD),
-    [integrations]
+  const project = useProject(projectId);
+  const orgInt = useOrganizationDiscordIntegration(organizationId);
+  const projInt = useMemo(
+    () =>
+      project?.integrations.find(
+        (i) => i.type === ProjectIntegrationType.DISCORD
+      ),
+    [project?.integrations]
   );
 
-  if (!user) return null;
-  if (!!integration) {
+  const discordChannels = useOrganizationDiscordChannels(
+    organizationId,
+    !orgInt
+  );
+  const [selectedDiscordChannelId, setSelectedDiscordChannelId] =
+    useState<string>();
+
+  const loading = useToggle();
+  const createIntegration = useCreateDiscordProjectIntegration();
+  const handleConnect = useCallback(async () => {
+    loading.toggleOn();
+    try {
+      const channel = discordChannels?.find(
+        (r) => r.id === selectedDiscordChannelId
+      );
+      if (!channel) return;
+      await createIntegration(projectId, channel);
+    } finally {
+      loading.toggleOff();
+    }
+  }, [
+    loading,
+    projectId,
+    discordChannels,
+    selectedDiscordChannelId,
+    createIntegration,
+  ]);
+
+  const updateIntegration = useUpdateProjectIntegration();
+  const removeIntegration = useCallback(
+    () =>
+      updateIntegration({
+        id: projInt!.id,
+        deletedAt: new Date().toISOString(),
+      }),
+    [projInt, updateIntegration]
+  );
+
+  if (!project) return null;
+  if (!!projInt && !!orgInt) {
     return (
-      <Alert
-        message={`Connected to Discord (${
-          (integration.config as any).guildId
-        })`}
-        type="success"
-        showIcon
-        closable
-        onClose={() => alert("remove discord integration")}
-      />
+      <FormSection label="Discord Integration">
+        <Alert
+          message={
+            <Typography.Text>
+              Connected to{" "}
+              <Link
+                href={`https://discord.com/channels/${orgInt.config.guildId}/${projInt.config.channelId}`}
+              >
+                <a target="_blank">
+                  <Typography.Text strong>
+                    #{projInt.config.channelName}
+                  </Typography.Text>
+                </a>
+              </Link>
+            </Typography.Text>
+          }
+          type="success"
+          showIcon
+          closable
+          onClose={removeIntegration}
+        />
+      </FormSection>
+    );
+  }
+
+  if (!!orgInt) {
+    return (
+      <ConnectToDiscordFormSection>
+        <Input.Group compact style={{ display: "flex" }}>
+          <ConnectProjectToDiscordSelect
+            channels={discordChannels}
+            organizationId={project.organizationId}
+            allowClear
+            style={{ flex: 1 }}
+            onChange={setSelectedDiscordChannelId}
+          />
+          <Button
+            loading={loading.isOn}
+            disabled={!selectedDiscordChannelId}
+            type="primary"
+            onClick={handleConnect}
+          >
+            Connect
+          </Button>
+        </Input.Group>
+      </ConnectToDiscordFormSection>
     );
   }
 
   return (
-    <Button
-      size="large"
-      type="primary"
-      block
-      icon={<DiscordIcon />}
-      href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?organizationId=${organizationId}&projectId=${projectId}&userId=${user.id}`}
-    >
-      Connect Discord
-    </Button>
+    <ConnectToDiscordFormSection>
+      <Button
+        type="ghost"
+        style={{ marginTop: 4 }}
+        icon={<DiscordIcon />}
+        href={`${
+          Constants.GRAPHQL_API_URL
+        }/auth/discord-bot?organizationId=${organizationId}&userId=${
+          user!.id
+        }&redirect=${router.asPath}`}
+      >
+        Connect to Discord
+      </Button>
+    </ConnectToDiscordFormSection>
   );
 };

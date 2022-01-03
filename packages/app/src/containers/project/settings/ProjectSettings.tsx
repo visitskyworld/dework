@@ -8,6 +8,7 @@ import { ProjectGithubIntegration } from "./ProjectGithubIntegration";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { ProjectMemberList } from "./ProjectMemberList";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
+import { ProjectDiscordIntegration } from "./ProjectDiscordIntegration";
 
 interface Props {
   project: ProjectDetails;
@@ -24,13 +25,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
-        {/* <Col>
-          <Typography.Title level={5}>Discord Integrations</Typography.Title>
-          <ProjectDiscordIntegration
-            projectId={project.id}
-            organizationId={project.organizationId}
-          />
-        </Col> */}
+        <ProjectDiscordIntegration
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
 
         <ProjectGithubIntegration
           projectId={project.id}

@@ -1,11 +1,10 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Select, Radio, Space } from "antd";
+import { Form, Button, Input, Radio, Space } from "antd";
 import { useCreateProject } from "../hooks";
 import {
   CreateProjectInput,
   OrganizationIntegrationType,
   Project,
-  ProjectIntegrationType,
   ProjectVisibility,
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -14,17 +13,15 @@ import {
   useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Constants } from "@dewo/app/util/constants";
-import { useRouter } from "next/router";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import {
+  useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
-  useCreateProjectIntegration,
 } from "../../integrations/hooks";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { ConnectProjectToDiscordSelect } from "../../integrations/ConnectProjectToDiscordSelect";
 
 interface FormValues extends CreateProjectInput {
   type?: "dev" | "non-dev";
@@ -41,11 +38,9 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
-  const { user } = useAuthContext();
-  const router = useRouter();
   const organization = useOrganization(organizationId);
   const createProject = useCreateProject();
-  const createProjectIntegration = useCreateProjectIntegration();
+  const createDiscordIntegration = useCreateDiscordProjectIntegration();
   const createGithubIntegration = useCreateGithubProjectIntegration();
 
   const hasGithubIntegration = useMemo(
@@ -86,12 +81,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         const channel = discordChannels?.find((c) => c.id === discordChannelId);
         if (!!channel) {
-          await createProjectIntegration({
-            projectId: project.id,
-            type: ProjectIntegrationType.DISCORD,
-            organizationIntegrationId: channel.integrationId,
-            config: { channelId: channel.id },
-          });
+          await createDiscordIntegration(project.id, channel);
         }
 
         await onCreated(project);
@@ -101,7 +91,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     },
     [
       createProject,
-      createProjectIntegration,
+      createDiscordIntegration,
       createGithubIntegration,
       onCreated,
       githubRepos,
@@ -139,41 +129,17 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         {!!organization && !hasDiscordIntegration && (
           <FormSection label="Discord Integration">
-            {/* <Typography.Paragraph type="secondary" style={{ marginBottom: 9 }}>
-              Want to automatically create Discord threads to discuss Dework
-              tasks? Try out the Discord integration for this project!
-            </Typography.Paragraph> */}
-            <Button
-              type="ghost"
-              style={{ marginTop: 4 }}
-              icon={<DiscordIcon />}
-              href={`${
-                Constants.GRAPHQL_API_URL
-              }/auth/discord-bot?organizationId=${organizationId}&userId=${
-                user!.id
-              }&redirect=${router.asPath}`}
-            >
-              Connect to Discord
-            </Button>
+            <ConnectOrganizationToDiscordButton
+              organizationId={organization.id}
+            />
           </FormSection>
         )}
         {!!organization && hasDiscordIntegration && (
           <Form.Item name="discordChannelId" label="Connect Discord Channel">
-            <Select
-              loading={!discordChannels}
-              placeholder="Select Discord Channel"
-              allowClear
-            >
-              {discordChannels?.map((channel) => (
-                <Select.Option
-                  key={channel.id}
-                  value={channel.id}
-                  label={`#${channel.name}`}
-                >
-                  {`#${channel.name}`}
-                </Select.Option>
-              ))}
-            </Select>
+            <ConnectProjectToDiscordSelect
+              organizationId={organization.id}
+              channels={discordChannels}
+            />
           </Form.Item>
         )}
 

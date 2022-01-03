@@ -25,7 +25,7 @@ interface ProjectGithubIntegrationProps {
   organizationId: string;
 }
 
-export function useOrganizationHasGithubIntegration(
+function useHasOrganizationGithubIntegration(
   organizationId: string | undefined
 ): boolean {
   const organization = useOrganization(organizationId);
@@ -40,11 +40,10 @@ export function useOrganizationHasGithubIntegration(
 
 export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
+  organizationId,
 }) => {
   const project = useProject(projectId);
-  const hasOrgInt = useOrganizationHasGithubIntegration(
-    project?.organizationId
-  );
+  const hasOrgInt = useHasOrganizationGithubIntegration(organizationId);
   const projInt = useMemo(
     () =>
       project?.integrations.find(
@@ -59,33 +58,33 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   );
   const [selectedGithubRepoId, setSelectedGithubRepoId] = useState<string>();
 
-  const creatingGithubIntegration = useToggle();
-  const createGithubIntegration = useCreateGithubProjectIntegration();
-  const handleConnectGithub = useCallback(async () => {
-    creatingGithubIntegration.toggleOn();
+  const loading = useToggle();
+  const createIntegration = useCreateGithubProjectIntegration();
+  const handleConnect = useCallback(async () => {
+    loading.toggleOn();
     try {
       const repo = githubRepos?.find((r) => r.id === selectedGithubRepoId);
       if (!repo) return;
-      await createGithubIntegration(projectId, repo);
+      await createIntegration(projectId, repo);
     } finally {
-      creatingGithubIntegration.toggleOff();
+      loading.toggleOff();
     }
   }, [
-    creatingGithubIntegration,
-    createGithubIntegration,
+    loading,
+    createIntegration,
     selectedGithubRepoId,
     projectId,
     githubRepos,
   ]);
 
-  const updateProjectIntegration = useUpdateProjectIntegration();
-  const removeGithubIntegration = useCallback(
+  const updateIntegration = useUpdateProjectIntegration();
+  const removeIntegration = useCallback(
     () =>
-      updateProjectIntegration({
+      updateIntegration({
         id: projInt!.id,
         deletedAt: new Date().toISOString(),
       }),
-    [projInt, updateProjectIntegration]
+    [projInt, updateIntegration]
   );
 
   if (!project) return null;
@@ -110,7 +109,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
           type="success"
           showIcon
           closable
-          onClose={removeGithubIntegration}
+          onClose={removeIntegration}
         />
       </FormSection>
     );
@@ -128,10 +127,10 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
             onChange={setSelectedGithubRepoId}
           />
           <Button
-            loading={creatingGithubIntegration.isOn}
+            loading={loading.isOn}
             disabled={!selectedGithubRepoId}
             type="primary"
-            onClick={handleConnectGithub}
+            onClick={handleConnect}
           >
             Connect
           </Button>
