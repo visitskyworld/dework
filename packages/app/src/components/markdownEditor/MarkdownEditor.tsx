@@ -2,7 +2,7 @@ import React, { ClipboardEvent, FC, useCallback, useState } from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import * as Icons from "@ant-design/icons";
-import { Upload, notification, Button } from "antd";
+import { Upload, notification, Button, message } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadFile } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownURL } from "./utils";
@@ -120,6 +120,14 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     [uploadAndAddFile]
   );
 
+  const beforeUpload = useCallback((file: File) => {
+    const isLt2M = file.size / 1024 / 1024 < 40;
+    if (!isLt2M) {
+      message.error("File must be smaller than 40MB.");
+    }
+    return isLt2M;
+  }, []);
+
   if (editing.isOn) {
     return (
       <Upload.Dragger
@@ -128,6 +136,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         maxCount={1}
         customRequest={handleFileDropped}
         className="dewo-md-upload"
+        beforeUpload={beforeUpload}
       >
         <MDEditor
           value={value}
