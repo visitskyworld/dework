@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
 import { useUpdateOrganization } from "../hooks";
 import { OrganizationMemberList } from "./OrganizationMemberList";
+import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
 
 interface Props {
   organizationId: string;
@@ -55,6 +56,9 @@ export const OrganizationSettings: FC<Props> = ({
         </Card>
       )}
     >
+      <Tabs.TabPane tab="Profile" key="profile">
+        <OrganizationProfileSettings organizationId={organizationId} />
+      </Tabs.TabPane>
       <Tabs.TabPane tab="Core Team" key="members">
         <OrganizationMemberList organizationId={organizationId} />
       </Tabs.TabPane>
