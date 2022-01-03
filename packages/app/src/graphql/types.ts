@@ -2278,6 +2278,45 @@ export interface CreateTaskPaymentsMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: StartWalletConnectSessionMutation
+// ====================================================
+
+export interface StartWalletConnectSessionMutation {
+  connectorUri: string;
+}
+
+export interface StartWalletConnectSessionMutationVariables {
+  sessionId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CheckWalletConnectSessionMutation
+// ====================================================
+
+export interface CheckWalletConnectSessionMutation_threepid {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+}
+
+export interface CheckWalletConnectSessionMutation {
+  threepid: CheckWalletConnectSessionMutation_threepid | null;
+}
+
+export interface CheckWalletConnectSessionMutationVariables {
+  sessionId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 

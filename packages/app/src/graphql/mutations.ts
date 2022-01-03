@@ -365,3 +365,17 @@ export const createTaskPayments = gql`
 
   ${Fragments.taskDetails}
 `;
+
+export const startWalletConnectSession = gql`
+  mutation StartWalletConnectSessionMutation($sessionId: UUID!) {
+    connectorUri: startWalletConnectSession(sessionId: $sessionId)
+  }
+`;
+
+export const checkWalletConnectSession = gql`
+  mutation CheckWalletConnectSessionMutation($sessionId: UUID!) {
+    threepid: checkWalletConnectSession(sessionId: $sessionId) {
+      id
+    }
+  }
+`;

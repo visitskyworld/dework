@@ -13,6 +13,7 @@ import { User } from "@dewo/api/models/User";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { IntegrationModule } from "../integrations/integration.module";
 import { ProjectModule } from "../project/project.module";
+import { WalletConnectResolver } from "./walletconnect.resolver";
 
 @Global()
 @Module({
@@ -38,7 +39,7 @@ export class GlobalJwtModule {}
     IntegrationModule,
     PermalinkModule,
   ],
-  providers: [GithubStrategy, DiscordStrategy],
+  providers: [GithubStrategy, DiscordStrategy, WalletConnectResolver],
   controllers: [AuthController],
 })
 export class AuthModule implements NestModule {
