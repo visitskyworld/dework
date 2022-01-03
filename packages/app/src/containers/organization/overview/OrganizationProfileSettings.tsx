@@ -1,8 +1,20 @@
 import React, { FC, useCallback, useState } from "react";
-import { Button, Card, Form, Input, message, Space } from "antd";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  message,
+  Row,
+  Space,
+  Typography,
+} from "antd";
+import * as Icons from "@ant-design/icons";
 import { useOrganization, useUpdateOrganization } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { UpdateOrganizationInput } from "../../../graphql/types";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 interface Props {
   organizationId: string;
@@ -55,22 +67,64 @@ export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
           onFinish={handleSubmit}
           style={{ maxWidth: 480 }}
         >
+          <Typography.Title level={4} style={{ marginBottom: 4 }}>
+            Organization profile
+          </Typography.Title>
+          <Divider style={{ marginTop: 0 }} />
+
           <Form.Item
             label="Organization display name"
             name="name"
             initialValue={organization.name}
-            rules={[{ required: true, message: "Please enter a name" }]}
+            rules={[{ required: true, message: "Please enter a display name" }]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
             label="Description"
             name="description"
             initialValue={organization.description}
-            rules={[{ required: false, message: "No description..." }]}
+            rules={[{ required: false }]}
           >
-            <Input.TextArea />
+            <Input.TextArea placeholder="No description..." />
           </Form.Item>
+
+          <Form.Item label="Details">
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <Row align="middle">
+                <DiscordIcon style={{ width: 20 }} />
+                <Form.Item
+                  name="discord"
+                  rules={[{ required: false }]}
+                  style={{ flex: 1, margin: "0 0 0 8px" }}
+                >
+                  <Input placeholder="https://discord.com/channels/918603668935311391" />
+                </Form.Item>
+              </Row>
+              <Row align="middle">
+                <Icons.TwitterOutlined style={{ width: 20 }} />
+                <Form.Item
+                  name="twitter"
+                  rules={[{ required: false }]}
+                  style={{ flex: 1, margin: "0 0 0 8px" }}
+                >
+                  <Input placeholder="https://twitter.com/deworkxyz" />
+                </Form.Item>
+              </Row>
+              <Row align="middle">
+                <Icons.EnvironmentOutlined style={{ width: 20 }} />
+                <Form.Item
+                  name="location"
+                  rules={[{ required: false }]}
+                  style={{ flex: 1, margin: "0 0 0 8px" }}
+                >
+                  <Input placeholder="Lisbon" />
+                </Form.Item>
+              </Row>
+            </Space>
+          </Form.Item>
+
           <Button
             type="ghost"
             htmlType="submit"
