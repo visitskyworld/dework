@@ -1,6 +1,15 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Select, Row, Typography, Col } from "antd";
 import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
+import {
+  Form,
+  Button,
+  Input,
+  Select,
+  Row,
+  Typography,
+  Col,
+  Divider,
+} from "antd";
 import { STATUS_LABEL } from "../project/board/util";
 import { useTaskFormUserOptions } from "./hooks";
 import {
@@ -29,6 +38,7 @@ import Link from "next/link";
 export interface TaskFormValues {
   name: string;
   description: string;
+  submission: string;
   projectId?: string;
   status: TaskStatus;
   tagIds: string[];
@@ -206,6 +216,30 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {!!task && <GithubIntegrationSection task={task} />}
           {!!task && <TaskActivityFeed task={task} />}
+          {mode === "update" && (
+            <>
+              <Divider>Submission</Divider>
+              <Form.Item
+                name="submission"
+                label="Completed Work"
+                className="mb-3"
+              >
+                <MarkdownEditor
+                  initialValue={initialValues?.submission ?? undefined}
+                  placeholder={
+                    "No submission yet." +
+                    (canChange("status")
+                      ? " Please submit any files to be reviewed and write a short summary of your completed work."
+                      : "")
+                  }
+                  buttonText="Edit submission"
+                  editable={canChange("status")}
+                  mode={mode}
+                  onSave={handleBlur}
+                />
+              </Form.Item>
+            </>
+          )}
         </Col>
         <Col xs={24} sm={8}>
           {!!task && <TaskNumberAndSettings task={task} />}

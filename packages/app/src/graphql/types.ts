@@ -944,6 +944,7 @@ export interface CreateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -1096,6 +1097,7 @@ export interface UpdateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -1248,6 +1250,7 @@ export interface ClaimTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -1401,6 +1404,7 @@ export interface UnclaimTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -1553,6 +1557,7 @@ export interface DeleteTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -2425,6 +2430,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -2768,6 +2774,7 @@ export interface UserTasksQuery_user_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -3284,6 +3291,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -3551,6 +3559,7 @@ export interface GetProjectTasksQuery_project_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -3806,6 +3815,7 @@ export interface GetTaskQuery_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -4027,6 +4037,7 @@ export interface GetTasksQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -4249,6 +4260,7 @@ export interface GetTasksToPayQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -4630,6 +4642,7 @@ export interface TaskCreatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -4844,6 +4857,7 @@ export interface TaskUpdatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -5772,6 +5786,7 @@ export interface Task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -5938,6 +5953,7 @@ export interface TaskWithOrganization {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -6140,6 +6156,7 @@ export interface TaskDetails {
   id: Scalar.UUID;
   name: string;
   description: string | null;
+  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
@@ -6722,6 +6739,7 @@ export interface UpdateTaskInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
+  submission?: string | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;

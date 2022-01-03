@@ -52,6 +52,10 @@ export class Task extends Audit {
   @Field(() => TaskStatus)
   public status!: TaskStatus;
 
+  @Column({ nullable: true, length: 4096 })
+  @Field({ nullable: true })
+  public submission?: string;
+
   @Column()
   @Field()
   public sortKey!: string;

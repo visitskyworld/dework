@@ -6,13 +6,17 @@ import { MDEditor } from "./MDEditor";
 
 interface Props {
   value?: string;
+  placeholder?: string;
 }
 
-export const MarkdownPreview: FC<Props> = ({ value }) => {
+export const MarkdownPreview: FC<Props> = ({
+  value,
+  placeholder = "No description...",
+}) => {
   if (!value) {
     return (
       <Typography.Paragraph type="secondary" style={{ margin: 0 }}>
-        No description...
+        {placeholder}
       </Typography.Paragraph>
     );
   }

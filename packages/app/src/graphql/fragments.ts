@@ -277,6 +277,7 @@ export const task = gql`
     id
     name
     description
+    submission
     status
     sortKey
     deletedAt

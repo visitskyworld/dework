@@ -38,6 +38,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       id: taskId,
       name: task?.name ?? "",
       description: task?.description ?? "",
+      submission: task?.submission ?? "",
       tagIds,
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,

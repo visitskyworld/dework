@@ -5,7 +5,7 @@ import * as Icons from "@ant-design/icons";
 import { Upload, notification, Button } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadImage } from "../../containers/fileUploads/hooks";
-import { getMarkdownImgPlaceholder, getMarkdownImgURL } from "./utils";
+import { getMarkdownImgPlaceholder, getMarkdownURL } from "./utils";
 import { MDEditor } from "./MDEditor";
 import { useToggle } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
@@ -13,6 +13,8 @@ import { MarkdownPreview } from "./MarkdownPreview";
 
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
+  placeholder?: string;
+  buttonText?: string;
   editable: boolean;
   mode: "create" | "update";
   autoSave?: boolean;
@@ -22,6 +24,8 @@ interface MarkdownEditorProps {
 
 export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   initialValue,
+  placeholder,
+  buttonText = "Edit",
   editable,
   mode,
   onChange,
@@ -81,7 +85,9 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
 
       try {
         const imgUrl = await uploadImage(file);
-        const url = getMarkdownImgURL(file.name, imgUrl);
+        const url =
+          (file.type.includes("image/") ? "!" : "") +
+          getMarkdownURL(file.name, imgUrl);
         replaceMarkdownImgPlaceholder(placeholderText, url);
       } catch (e) {
         removeMarkdownImgPlaceholder(placeholderText);
@@ -124,7 +130,6 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         maxCount={1}
         customRequest={handleFileDropped}
         className="dewo-md-upload"
-        accept="image/*"
       >
         <MDEditor
           value={value}
@@ -146,7 +151,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   } else {
     return (
       <>
-        <MarkdownPreview value={savedValue} />
+        <MarkdownPreview value={savedValue} placeholder={placeholder} />
         {!!editable && (
           <Button
             size="small"
@@ -155,7 +160,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
             style={{ marginTop: 8 }}
             onClick={handleEdit}
           >
-            Edit description
+            {buttonText}
           </Button>
         )}
       </>
