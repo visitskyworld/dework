@@ -85,9 +85,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
 
       try {
         const imgUrl = await uploadFile(file);
-        const url =
-          (file.type.includes("image/") ? "!" : "") +
-          getMarkdownURL(file.name, imgUrl);
+        const url = getMarkdownURL(file, imgUrl);
         replaceMarkdownImgPlaceholder(placeholderText, url);
       } catch (e) {
         removeMarkdownImgPlaceholder(placeholderText);
