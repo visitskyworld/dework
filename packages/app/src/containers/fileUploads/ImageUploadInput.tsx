@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import { useUploadImage } from "./hooks";
+import { useUploadFile } from "./hooks";
 import { FilePicker } from "@dewo/app/components/FilePicker";
 
 interface FileUploadInputProps {
@@ -21,7 +21,7 @@ export const ImageUploadInput: FC<FileUploadInputProps> = ({
   onChange,
 }) => {
   const [loading, setLoading] = useState(false);
-  const uploadImage = useUploadImage();
+  const uploadImage = useUploadFile();
   const handleSelectImage = useCallback(
     async ([image]: [File]) => {
       try {
