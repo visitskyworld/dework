@@ -9,7 +9,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { setAuthToken } from "@dewo/app/util/authToken";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useProvider, useRequestSigner } from "@dewo/app/util/ethereum";
+import { usePersonalSign, useRequestAddress } from "@dewo/app/util/ethereum";
 
 export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
   const { setAuthenticated } = useAuthContext();
@@ -31,8 +31,8 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
 }
 
 export function useCreateMetamaskThreepid(): () => Promise<string> {
-  const provider = useProvider();
-  const requestSigner = useRequestSigner();
+  const requestAddress = useRequestAddress();
+  const personalSign = usePersonalSign();
 
   const [mutation] = useMutation<
     CreateMetamaskThreepid,
@@ -40,17 +40,13 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
   >(Mutations.createMetamaskThreepid);
 
   return useCallback(async () => {
-    const signer = await requestSigner();
-    const address = await signer.getAddress();
+    const address = await requestAddress();
 
     // When doing this immediately, we get stuck in infinite loading.
     // Note(fant): should we somehow await provider.current to be refreshed?
     await new Promise((resolve) => setTimeout(resolve, 500));
     const message = "Dework Sign In";
-    const signature = await provider.current.send("personal_sign", [
-      address,
-      message,
-    ]);
+    const signature = await personalSign(message, address);
 
     const res = await mutation({
       variables: { input: { address, message, signature } },
@@ -59,5 +55,5 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
       throw new Error("Failed to create Metamask threepid");
     }
     return res.data.threepid.id;
-  }, [provider, requestSigner, mutation]);
+  }, [personalSign, requestAddress, mutation]);
 }

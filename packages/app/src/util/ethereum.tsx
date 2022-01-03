@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import React, { MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { BigNumber, ethers } from "ethers";
 import {
   PaymentNetwork,
@@ -6,6 +6,10 @@ import {
   PaymentTokenType,
 } from "../graphql/types";
 import detectEthereumProvider from "@metamask/detect-provider";
+import { ISessionParams } from "@walletconnect/types";
+import { useWalletConnect } from "../contexts/WalletConnectContext";
+import { Modal } from "antd";
+import { MetamaskIcon } from "../components/icons/Metamask";
 
 export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
   const provider = useRef<ethers.providers.Web3Provider>();
@@ -13,6 +17,32 @@ export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
     const ethereum = await detectEthereumProvider();
     if (!!ethereum) {
       provider.current = new ethers.providers.Web3Provider(ethereum as any);
+    } else {
+      // let destroyModal: () => void;
+      // const walletConnectProvider = new WalletConnectProvider({
+      //   infuraId: "433fc1b200c5458ebd548093da9135d8",
+      //   qrcodeModal: {
+      //     open: (uri) => {
+      //       ({ destroy: destroyModal } = Modal.confirm({
+      //         title: "Open Metamask",
+      //         onOk: () => window.open(uri),
+      //       }));
+      //     },
+      //     close: () => destroyModal?.(),
+      //   },
+      // }) as any;
+      // alert("wow: " + provider.current.send);
+      // if (walletConnectProvider.wc.connected) {
+      //   try {
+      //     await walletConnectProvider.wc.killSession();
+      //   } catch (error) {
+      //     alert("error");
+      //   }
+      // }
+      // walletConnectProvider.wc.on("display_uri", (...args) =>
+      //   alert("dasply url: " + JSON.stringify(args, null, 2))
+      // );
+      // provider.current = walletConnectWeb3Provider;
     }
   }, []);
 
@@ -66,11 +96,59 @@ export function useRequestSigner(): () => Promise<ethers.Signer> {
 }
 
 export function useRequestAddress(): () => Promise<string> {
+  const provider = useProvider();
+  const walletConnect = useWalletConnect();
   const requestSigner = useRequestSigner();
   return useCallback(async () => {
-    const signer = await requestSigner();
-    return signer.getAddress();
-  }, [requestSigner]);
+    if (provider.current) {
+      const signer = await requestSigner();
+      return signer.getAddress();
+    } else {
+      if (walletConnect.connector.connected) {
+        await walletConnect.connector.killSession();
+      }
+      await walletConnect.connector.createSession();
+      const payload = await new Promise<{ params: ISessionParams[] }>(
+        (resolve, reject) => {
+          walletConnect.connector.on("connect", (error, payload) =>
+            !!error ? reject(error) : resolve(payload)
+          );
+        }
+      );
+
+      const address = payload.params[0]?.accounts?.[0];
+      if (!!address) return address;
+      throw new Error("Failed to connect with WalletConnect");
+    }
+  }, [requestSigner, provider, walletConnect]);
+}
+
+export function usePersonalSign(): (
+  message: string,
+  address: string
+) => Promise<string> {
+  const provider = useProvider();
+  const walletConnect = useWalletConnect();
+  return useCallback(
+    async (message, address) => {
+      if (provider.current) {
+        return provider.current.send("personal_sign", [message, address]);
+      } else {
+        const modal = Modal.confirm({
+          icon: <MetamaskIcon />,
+          title: "Step 2: Sign Message",
+          okText: "Open Metamask",
+          onOk: () => {
+            window.open("https://metamask.app.link");
+            modal.destroy();
+          },
+          onCancel: () => modal.destroy(),
+        });
+        return walletConnect.connector.signPersonalMessage([message, address]);
+      }
+    },
+    [provider, walletConnect]
+  );
 }
 
 interface ERC20Contract {
