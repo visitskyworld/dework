@@ -4,7 +4,7 @@ import "@uiw/react-markdown-preview/markdown.css";
 import * as Icons from "@ant-design/icons";
 import { Upload, notification, Button } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
-import { useUploadImage } from "../../containers/fileUploads/hooks";
+import { useUploadFile } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownURL } from "./utils";
 import { MDEditor } from "./MDEditor";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -31,7 +31,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   onChange,
   onSave,
 }) => {
-  const uploadImage = useUploadImage();
+  const uploadFile = useUploadFile();
 
   const [savedValue, setSavedValue] = useState(initialValue);
   const [value, setValue] = useState(initialValue);
@@ -78,13 +78,13 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         } ${placeholderText}`
     );
   }, []);
-  const uploadAndAddImage = useCallback(
+  const uploadAndAddFile = useCallback(
     async (file: File) => {
       const placeholderText = getMarkdownImgPlaceholder(file);
       addMarkdownImgPlaceholder(placeholderText);
 
       try {
-        const imgUrl = await uploadImage(file);
+        const imgUrl = await uploadFile(file);
         const url =
           (file.type.includes("image/") ? "!" : "") +
           getMarkdownURL(file.name, imgUrl);
@@ -100,26 +100,26 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     [
       replaceMarkdownImgPlaceholder,
       addMarkdownImgPlaceholder,
-      uploadImage,
+      uploadFile,
       removeMarkdownImgPlaceholder,
     ]
   );
 
   const handleFileDropped = useCallback(
     (data: UploadRequestOption) => {
-      uploadAndAddImage(data.file as File);
+      uploadAndAddFile(data.file as File);
     },
-    [uploadAndAddImage]
+    [uploadAndAddFile]
   );
 
   const handleFilePaste = useCallback(
     (data: ClipboardEvent) => {
       if (data.clipboardData.files.length > 0) {
         const file = data.clipboardData.files[0];
-        if (file.type.includes("image/")) uploadAndAddImage(file);
+        if (file.type.includes("image/")) uploadAndAddFile(file);
       }
     },
-    [uploadAndAddImage]
+    [uploadAndAddFile]
   );
 
   if (editing.isOn) {
@@ -140,7 +140,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
           preview="edit"
           enableScroll={false}
           autoFocus={mode === "update"}
-          textareaProps={{ placeholder: "Enter a description..." }}
+          textareaProps={{ placeholder: "Write something or attach files..." }}
           onPaste={handleFilePaste}
           onBlur={stopPropagation}
           onSave={!autoSave ? handleSave : undefined}

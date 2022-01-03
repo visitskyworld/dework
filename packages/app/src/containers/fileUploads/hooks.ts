@@ -7,20 +7,20 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
-export function useUploadImage(): (file: File) => Promise<string> {
+export function useUploadFile(): (file: File) => Promise<string> {
   const [createSignedUrl] = useMutation<
     CreateFileUploadMutation,
     CreateFileUploadMutationVariables
   >(Mutations.createFileUploadUrl);
   return useCallback(
-    async (image: File): Promise<string> => {
+    async (file: File): Promise<string> => {
       const { data } = await createSignedUrl({
         variables: {
-          input: { fileName: slugify(image.name), contentType: image.type },
+          input: { fileName: slugify(file.name), contentType: file.type },
         },
       });
-      if (!data?.fileUpload) throw new Error("Failed to upload image");
-      await fetch(data.fileUpload.signedUrl, { method: "PUT", body: image });
+      if (!data?.fileUpload) throw new Error("Failed to upload file");
+      await fetch(data.fileUpload.signedUrl, { method: "PUT", body: file });
       return data.fileUpload.publicUrl;
     },
     [createSignedUrl]
