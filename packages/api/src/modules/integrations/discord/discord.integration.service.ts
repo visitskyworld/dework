@@ -4,6 +4,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Repository } from "typeorm";
 import {
+  DiscordProjectIntegrationConfig,
+  DiscordProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
@@ -69,29 +71,20 @@ export class DiscordIntegrationService {
         return;
       }
 
-      const discordThread = await event.task.discordChannel;
-      let thread =
-        event instanceof TaskCreatedEvent
-          ? undefined
-          : await this.getExistingDiscordThread(event.task, channel);
+      const channelToPostTo = await this.getDiscordChannelToPostTo(
+        event.task,
+        channel,
+        integration.config
+      );
 
-      if (!thread) {
-        if (discordThread?.deletedAt) return;
-
-        const shouldCreate = await this.shouldCreateThread(event.task);
-        if (!shouldCreate) {
-          this.logger.debug(
-            `No previous thread exists and should not create a new thread (${JSON.stringify(
-              event.task
-            )})`
-          );
-          return;
-        } else {
-          thread = await this.createDiscordThread(event.task, channel);
-        }
+      if (!channelToPostTo) return;
+      if (channelToPostTo.isThread()) {
+        await this.addTaskUsersToDiscordThread(
+          event.task,
+          channelToPostTo,
+          guild
+        );
       }
-
-      await this.addTaskUsersToDiscordThread(event.task, thread, guild);
 
       const statusChanged =
         event instanceof TaskCreatedEvent ||
@@ -99,17 +92,22 @@ export class DiscordIntegrationService {
       if (statusChanged) {
         switch (event.task.status) {
           case TaskStatusEnum.IN_PROGRESS:
-            await this.postInProgress(event.task, thread);
+            await this.postInProgress(event.task, channelToPostTo);
             break;
           case TaskStatusEnum.IN_REVIEW:
-            await this.postMovedIntoReview(event.task, thread);
+            await this.postMovedIntoReview(event.task, channelToPostTo);
             break;
           case TaskStatusEnum.DONE:
-            await this.postDone(thread);
+            await this.postDone(
+              channelToPostTo,
+              !integration.config.features.includes(
+                DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD
+              )
+            );
 
             const threepids = await this.findTaskUserThreepids(event.task);
             await channel.send({
-              content: "<:Stonks:755835632676372571>",
+              content: ":partying_face:",
               embeds: [
                 {
                   title: event.task.name,
@@ -126,7 +124,7 @@ export class DiscordIntegrationService {
 
       if (event instanceof TaskUpdatedEvent) {
         if (event.task.ownerId !== event.prevTask.ownerId) {
-          await this.postOwnerChange(event.task, thread);
+          await this.postOwnerChange(event.task, channelToPostTo);
         }
 
         const assigneeIds = event.task.assignees.map((u) => u.id).sort();
@@ -134,7 +132,7 @@ export class DiscordIntegrationService {
           .map((u) => u.id)
           .sort();
         if (!_.isEqual(assigneeIds, prevAssigneeIds)) {
-          await this.postAssigneesChange(event.task, thread);
+          await this.postAssigneesChange(event.task, channelToPostTo);
         }
       }
 
@@ -157,6 +155,51 @@ export class DiscordIntegrationService {
     }
   }
 
+  private async getDiscordChannelToPostTo(
+    task: Task,
+    channel: Discord.TextChannel,
+    config: DiscordProjectIntegrationConfig
+  ): Promise<Discord.TextBasedChannels | undefined> {
+    const toChannel =
+      DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL;
+    const toThread =
+      DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
+    const toThreadPerTask =
+      DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK;
+    if (config.features.includes(toChannel)) {
+      return channel;
+    }
+
+    if (config.features.includes(toThread) && !!config.threadId) {
+      const thread = await channel.threads.fetch(config.threadId, {
+        force: true,
+      });
+      return thread ?? undefined;
+    }
+
+    if (config.features.includes(toThreadPerTask)) {
+      const discordThread = await task.discordChannel;
+      if (!!discordThread?.deletedAt) return undefined;
+
+      const existingThread = await this.getExistingDiscordThread(task, channel);
+      if (!!existingThread) return existingThread;
+
+      const shouldCreate = await this.shouldCreateThread(task);
+      if (!shouldCreate) {
+        this.logger.debug(
+          `No previous thread exists and should not create a new thread (${JSON.stringify(
+            task
+          )})`
+        );
+        return;
+      }
+
+      return this.createDiscordThread(task, channel);
+    }
+
+    return undefined;
+  }
+
   private async getProjectIntegration(
     projectId: string
   ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>> {
@@ -177,28 +220,36 @@ export class DiscordIntegrationService {
     return threepid?.threepid;
   }
 
-  private async postDone(thread: Discord.TextBasedChannels) {
+  private async postDone(
+    channel: Discord.TextBasedChannels,
+    shouldArchiveThread: boolean
+  ) {
     await this.post(
-      thread,
+      channel,
       "This task is now marked as done and has been automatically archived"
     );
-    if (thread.isThread()) await thread.setArchived(true);
+    if (channel.isThread() && shouldArchiveThread) {
+      await channel.setArchived(true);
+    }
   }
 
-  private async postOwnerChange(task: Task, thread: Discord.TextBasedChannels) {
+  private async postOwnerChange(
+    task: Task,
+    channel: Discord.TextBasedChannels
+  ) {
     if (!task.ownerId) return;
     const owner = await this.getDiscordId(task.ownerId);
     if (!owner) return;
 
     await this.post(
-      thread,
+      channel,
       `<@${owner}> has been added as the reviewer for this task`
     );
   }
 
   private async postAssigneesChange(
     task: Task,
-    thread: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannels
   ) {
     if (!task.assignees.length) return;
 
@@ -213,7 +264,7 @@ export class DiscordIntegrationService {
       .join(", ");
 
     await this.post(
-      thread,
+      channel,
       `${assigneesString} ${
         task.assignees.length === 1 ? "is" : "are"
       } leading the work on this task`
@@ -222,36 +273,18 @@ export class DiscordIntegrationService {
 
   private async postMovedIntoReview(
     task: Task,
-    thread: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannels
   ) {
-    if (!task.ownerId) return;
-    const owner = await this.getDiscordId(task.ownerId);
-    if (!owner) return;
+    const owner = !!task.ownerId
+      ? await this.getDiscordId(task.ownerId)
+      : undefined;
 
-    const fields: {
-      name: string;
-      value: string;
-    }[] = [];
-    const pr = (await task.githubPullRequests)?.[0];
-    if (pr) {
-      fields.push({ name: "Github PR", value: pr.link });
-    }
-    const author = task.assignees?.[0];
-    if (thread.isThread() && thread.archived) await thread.setArchived(false);
-    await thread.send({
+    this.post(channel, {
+      content: !!owner ? `<@${owner}>` : undefined,
       embeds: [
         {
-          title: `In review`,
-          description: `The task is now in review.
-          Reviewer: <@${owner}>`,
-          fields,
-          author: !!author
-            ? {
-                name: author.username,
-                iconURL: author.imageUrl,
-                url: await this.permalink.get(author),
-              }
-            : undefined,
+          title: task.name,
+          description: "The task is now in review",
           url: await this.permalink.get(task),
         },
       ],
@@ -280,17 +313,19 @@ export class DiscordIntegrationService {
   }
 
   private async post(
-    thread: Discord.TextBasedChannels,
-    message: string | Discord.MessagePayload
+    channel: Discord.TextBasedChannels,
+    message: string | Discord.MessageOptions
   ): Promise<void> {
     this.logger.debug(
       `Sending message to channel: ${JSON.stringify({
-        channelId: thread.id,
+        channelId: channel.id,
         message,
       })}`
     );
-    if (thread.isThread() && thread.archived) await thread.setArchived(false);
-    await thread.send(message);
+    if (channel.isThread() && channel.archived) {
+      await channel.setArchived(false);
+    }
+    await channel.send(message);
   }
 
   private async getExistingDiscordThread(
