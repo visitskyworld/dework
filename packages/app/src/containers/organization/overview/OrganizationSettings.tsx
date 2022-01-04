@@ -42,7 +42,6 @@ export const OrganizationSettings: FC<Props> = ({
   organizationId,
   onTabClick,
 }) => {
-  const canUpdateOrganization = usePermission("update", "Organization");
   const canDeleteOrganization = usePermission("delete", "Organization");
   return (
     <Tabs
@@ -57,11 +56,9 @@ export const OrganizationSettings: FC<Props> = ({
         </Card>
       )}
     >
-      {canUpdateOrganization && (
-        <Tabs.TabPane tab="Profile" key="profile">
-          <OrganizationProfileSettings organizationId={organizationId} />
-        </Tabs.TabPane>
-      )}
+      <Tabs.TabPane tab="Profile" key="profile">
+        <OrganizationProfileSettings organizationId={organizationId} />
+      </Tabs.TabPane>
       <Tabs.TabPane tab="Core Team" key="members">
         <OrganizationMemberList organizationId={organizationId} />
       </Tabs.TabPane>
