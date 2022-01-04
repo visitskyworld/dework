@@ -23,8 +23,7 @@ import { ContributorReviewModal } from "../../task/ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
-const statuses: TaskStatus[] = [
-  TaskStatus.BACKLOG,
+const defaultStatuses: TaskStatus[] = [
   TaskStatus.TODO,
   TaskStatus.IN_PROGRESS,
   TaskStatus.IN_REVIEW,
@@ -36,12 +35,19 @@ interface Props {
   projectId?: string;
   footer?: Partial<Record<TaskStatus, ReactNode>>;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
+  statuses?: TaskStatus[];
 }
 
 const columnWidth = 300;
 const emptySections: TaskSection[] = [{ tasks: [] }];
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
+export const TaskBoard: FC<Props> = ({
+  tasks,
+  projectId,
+  footer,
+  empty,
+  statuses = defaultStatuses,
+}) => {
   const { user } = useAuthContext();
   const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
 

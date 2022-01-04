@@ -1,3 +1,4 @@
+import { ProjectOptions } from "@dewo/api/models/Project";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -12,8 +13,8 @@ export class UpdateProjectInput {
   @Field({ nullable: true })
   public description?: string;
 
-  @Field(() => GraphQLUUID, { nullable: true })
-  public paymentMethodId?: string;
+  @Field(() => ProjectOptions, { nullable: true })
+  public options?: ProjectOptions;
 
   @Field({ nullable: true })
   public deletedAt?: Date;

@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Radio, Space } from "antd";
+import { Form, Button, Input, Radio, Space, Divider, Checkbox } from "antd";
+import * as Icons from "@ant-design/icons";
 import { useCreateProject } from "../hooks";
 import {
   CreateProjectInput,
@@ -25,6 +26,7 @@ import {
   DiscordIntegrationFormFields,
   FormValues as DiscordFormFields,
 } from "../../integrations/CreateDiscordIntegrationForm";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface FormValues extends CreateProjectInput, Partial<DiscordFormFields> {
   type?: "dev" | "non-dev";
@@ -90,6 +92,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           name: values.name,
           visibility: values.visibility,
           organizationId: values.organizationId,
+          options: values.options,
         });
 
         const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
@@ -127,6 +130,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       discordThreads,
     ]
   );
+
+  const advancedOptions = useToggle();
 
   return (
     <Form<FormValues>
@@ -203,6 +208,42 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             )}
           </ConnectToGithubFormSection>
         )}
+
+        <Divider plain>
+          {/* <Typography.Text type="secondary">
+            Advanced
+            <Typography.Text
+              className="ant-typography-caption"
+              style={{ marginLeft: 4 }}
+            >
+              <Icons.DownOutlined />
+            </Typography.Text>
+          </Typography.Text> */}
+          <Button
+            type="text"
+            style={{ padding: "0 8px", height: "unset" }}
+            className="text-secondary"
+            onClick={advancedOptions.toggle}
+          >
+            Advanced
+            {advancedOptions.isOn ? (
+              <Icons.UpOutlined />
+            ) : (
+              <Icons.DownOutlined />
+            )}
+          </Button>
+        </Divider>
+
+        <Form.Item hidden={!advancedOptions.isOn}>
+          <Form.Item
+            name={["options", "showBacklogColumn"]}
+            valuePropName="checked"
+            label="Contributor Suggestions"
+            tooltip="Show a column to the left of 'To Do' where contributors can suggest and vote on tasks."
+          >
+            <Checkbox>Enable Suggestions Column</Checkbox>
+          </Form.Item>
+        </Form.Item>
 
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />

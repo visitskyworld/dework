@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { useProjectTasks } from "../hooks";
+import React, { FC, useMemo } from "react";
+import { useProject, useProjectTasks } from "../hooks";
 import { TaskBoard } from "./TaskBoard";
 import * as Icons from "@ant-design/icons";
 import { TaskStatus } from "@dewo/app/graphql/types";
@@ -33,9 +33,25 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 };
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
-  const project = useProjectTasks(projectId, "cache-and-network");
-  if (!project) return null;
+  const project = useProject(projectId);
+  const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
+  const statuses = useMemo(
+    () => [
+      ...(!!project?.options?.showBacklogColumn ? [TaskStatus.BACKLOG] : []),
+      TaskStatus.TODO,
+      TaskStatus.IN_PROGRESS,
+      TaskStatus.IN_REVIEW,
+      TaskStatus.DONE,
+    ],
+    [project?.options?.showBacklogColumn]
+  );
+  if (!tasks) return null;
   return (
-    <TaskBoard tasks={project.tasks} projectId={projectId} empty={empty} />
+    <TaskBoard
+      tasks={tasks}
+      projectId={projectId}
+      empty={empty}
+      statuses={statuses}
+    />
   );
 };

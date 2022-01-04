@@ -3,7 +3,7 @@ import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
@@ -35,7 +35,13 @@ export class ProjectService {
   }
 
   public async update(partial: DeepAtLeast<Project, "id">): Promise<Project> {
-    const updated = await this.projectRepo.save(partial);
+    const current = await this.projectRepo.findOne(partial.id);
+    if (!current) throw new NotFoundException();
+    const updated = await this.projectRepo.save({
+      ...current,
+      ...partial,
+      options: { ...current.options, ...partial.options },
+    });
     return this.projectRepo.findOne(updated.id) as Promise<Project>;
   }
 

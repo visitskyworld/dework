@@ -225,6 +225,11 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: UpdateOrganizationMutation
 // ====================================================
 
+export interface UpdateOrganizationMutation_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface UpdateOrganizationMutation_organization_projects_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -290,6 +295,7 @@ export interface UpdateOrganizationMutation_organization_projects {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: UpdateOrganizationMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: UpdateOrganizationMutation_organization_projects_members[];
@@ -503,6 +509,11 @@ export interface RemoveProjectMemberMutationVariables {
 // GraphQL mutation operation: CreateProjectMutation
 // ====================================================
 
+export interface CreateProjectMutation_project_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface CreateProjectMutation_project_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -555,6 +566,11 @@ export interface CreateProjectMutation_project_integrations {
   id: Scalar.UUID;
   type: string;
   config: Scalar.JSONObject;
+}
+
+export interface CreateProjectMutation_project_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
 }
 
 export interface CreateProjectMutation_project_organization_projects_members_user {
@@ -622,6 +638,7 @@ export interface CreateProjectMutation_project_organization_projects {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: CreateProjectMutation_project_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: CreateProjectMutation_project_organization_projects_members[];
@@ -685,6 +702,7 @@ export interface CreateProjectMutation_project {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: CreateProjectMutation_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: CreateProjectMutation_project_members[];
@@ -709,6 +727,11 @@ export interface CreateProjectMutationVariables {
 // ====================================================
 // GraphQL mutation operation: UpdateProjectMutation
 // ====================================================
+
+export interface UpdateProjectMutation_project_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
 
 export interface UpdateProjectMutation_project_members_user {
   __typename: "User";
@@ -775,6 +798,7 @@ export interface UpdateProjectMutation_project {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: UpdateProjectMutation_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: UpdateProjectMutation_project_members[];
@@ -2743,6 +2767,11 @@ export interface PermissionsQueryVariables {
 // GraphQL query operation: GetOrganizationQuery
 // ====================================================
 
+export interface GetOrganizationQuery_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface GetOrganizationQuery_organization_projects_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -2808,6 +2837,7 @@ export interface GetOrganizationQuery_organization_projects {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: GetOrganizationQuery_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: GetOrganizationQuery_organization_projects_members[];
@@ -2877,6 +2907,11 @@ export interface GetOrganizationQueryVariables {
 // GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -2942,6 +2977,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members[];
@@ -3175,6 +3211,11 @@ export interface GetOrganizationTasksQueryVariables {
 // GraphQL query operation: GetProjectQuery
 // ====================================================
 
+export interface GetProjectQuery_project_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface GetProjectQuery_project_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -3240,6 +3281,7 @@ export interface GetProjectQuery_project {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: GetProjectQuery_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: GetProjectQuery_project_members[];
@@ -5067,6 +5109,11 @@ export interface Project {
 // GraphQL fragment: ProjectDetails
 // ====================================================
 
+export interface ProjectDetails_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface ProjectDetails_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -5132,6 +5179,7 @@ export interface ProjectDetails {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: ProjectDetails_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: ProjectDetails_members[];
@@ -5983,6 +6031,11 @@ export interface UserDetails {
 // GraphQL fragment: OrganizationDetails
 // ====================================================
 
+export interface OrganizationDetails_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
 export interface OrganizationDetails_projects_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -6048,6 +6101,7 @@ export interface OrganizationDetails_projects {
   organizationId: string;
   permalink: string;
   taskCount: number;
+  options: OrganizationDetails_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
   members: OrganizationDetails_projects_members[];
@@ -6285,6 +6339,7 @@ export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
   visibility?: ProjectVisibility | null;
+  options?: ProjectOptionsInput | null;
 }
 
 export interface CreateProjectIntegrationInput {
@@ -6342,6 +6397,10 @@ export interface GetUserPermissionsInput {
   taskId?: Scalar.UUID | null;
 }
 
+export interface ProjectOptionsInput {
+  showBacklogColumn?: boolean | null;
+}
+
 export interface RemoveOrganizationMemberInput {
   organizationId: Scalar.UUID;
   userId: Scalar.UUID;
@@ -6388,7 +6447,7 @@ export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
-  paymentMethodId?: Scalar.UUID | null;
+  options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
 }
 

@@ -145,6 +145,9 @@ export const projectDetails = gql`
   fragment ProjectDetails on Project {
     ...Project
     taskCount
+    options {
+      showBacklogColumn
+    }
     doneTaskCount: taskCount(status: DONE)
     openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
     members {

@@ -1,4 +1,9 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from "@nestjs/graphql";
 import {
   AfterLoad,
   Column,
@@ -23,6 +28,13 @@ export enum ProjectVisibility {
 }
 
 registerEnumType(ProjectVisibility, { name: "ProjectVisibility" });
+
+@ObjectType()
+@InputType("ProjectOptionsInput")
+export class ProjectOptions {
+  @Field({ nullable: true })
+  public showBacklogColumn?: boolean;
+}
 
 @Entity()
 @ObjectType()
@@ -79,4 +91,8 @@ export class Project extends Audit {
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Column("json", { nullable: true })
+  @Field({ nullable: true })
+  public options?: ProjectOptions;
 }
