@@ -1,18 +1,11 @@
 import React, { FC, useMemo } from "react";
-import * as Icons from "@ant-design/icons";
-import { Form, Avatar, Input, Space, Typography, Row } from "antd";
+import { Form, Input, Space, Typography, Row } from "antd";
 
 import { EntityDetailType, EntityDetail } from "../../graphql/types";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-
-const iconByType: Record<EntityDetailType, JSX.Element> = {
-  [EntityDetailType.twitter]: <Icons.TwitterOutlined />,
-  [EntityDetailType.github]: <Icons.GithubOutlined />,
-  [EntityDetailType.discord]: <DiscordIcon />,
-  [EntityDetailType.linkedin]: <Icons.LinkedinFilled />,
-  [EntityDetailType.website]: <Icons.LinkOutlined />,
-  [EntityDetailType.location]: <Icons.EnvironmentOutlined />,
-};
+import {
+  EntityDetailAvatar,
+  iconByType,
+} from "@dewo/app/components/EntityDetailAvatar";
 
 const placeholderByType: Record<EntityDetailType, string> = {
   [EntityDetailType.twitter]: "https://twitter.com/lastcontrarian",
@@ -78,9 +71,7 @@ export const UserDetails: FC<EntityDetailsProps> = ({
       {userDetails.map(
         (detail, index) =>
           detail.type !== locationDetailType && (
-            <a href={detail.value} target="_blank" key={index} rel="noreferrer">
-              <Avatar size="small">{iconByType[detail.type]}</Avatar>
-            </a>
+            <EntityDetailAvatar entityDetail={detail} key={index} />
           )
       )}
       {locationDetail && (

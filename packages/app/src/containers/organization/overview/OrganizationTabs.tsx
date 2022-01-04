@@ -1,6 +1,15 @@
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
-import { Avatar, Col, Divider, Row, Skeleton, Tabs, Typography } from "antd";
+import {
+  Avatar,
+  Col,
+  Divider,
+  Row,
+  Skeleton,
+  Space,
+  Tabs,
+  Typography,
+} from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
 import {
   useOrganization,
@@ -16,6 +25,7 @@ import { FollowOrganizationButton } from "./FollowOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
 import { OrganizationContributorList } from "./OrganizationContributorList";
+import { EntityDetailAvatar } from "../../../components/EntityDetailAvatar";
 
 interface Props {
   organizationId: string;
@@ -67,6 +77,18 @@ export const OrganizationTabs: FC<Props> = ({
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col span={6}>
+            {organization?.details && (
+              <>
+                <Typography.Title level={5}>Socials</Typography.Title>
+                <Space direction="horizontal">
+                  {organization?.details.map((detail) => (
+                    <EntityDetailAvatar entityDetail={detail} key={detail.id} />
+                  ))}
+                </Space>
+                <Divider />
+              </>
+            )}
+
             <Typography.Title level={5}>Contributors</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={10} size="large">

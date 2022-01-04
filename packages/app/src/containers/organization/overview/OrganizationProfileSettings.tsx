@@ -24,8 +24,8 @@ import { EntityDetailType } from "@dewo/app/graphql/types";
 interface SetOrganizationFormInput extends UpdateOrganizationInput {
   type: EntityDetailType;
   discord: EntityDetailType.discord;
-  github: EntityDetailType.github;
-  location: EntityDetailType.location;
+  twitter: EntityDetailType.twitter;
+  website: EntityDetailType.website;
 }
 
 interface OrganizationProfileSettingsProps {
@@ -55,6 +55,16 @@ export const OrganizationProfileSettings: FC<
           organizationId,
           type: EntityDetailType.discord,
           value: values.discord,
+        });
+        await updateOrganisazionDetail({
+          organizationId,
+          type: EntityDetailType.twitter,
+          value: values.twitter,
+        });
+        await updateOrganisazionDetail({
+          organizationId,
+          type: EntityDetailType.website,
+          value: values.website,
         });
         message.success({
           content: "Organization profile updated!",
@@ -109,7 +119,7 @@ export const OrganizationProfileSettings: FC<
             <Input.TextArea placeholder="No description..." />
           </Form.Item>
 
-          <Form.Item label="Details">
+          <Form.Item label="Socials">
             <Space direction="vertical" style={{ width: "100%" }}>
               <Row align="middle">
                 <DiscordIcon style={{ width: 20 }} />
@@ -142,13 +152,18 @@ export const OrganizationProfileSettings: FC<
                 </Form.Item>
               </Row>
               <Row align="middle">
-                <Icons.EnvironmentOutlined style={{ width: 20 }} />
+                <Icons.LinkOutlined style={{ width: 20 }} />
                 <Form.Item
-                  name="location"
+                  name="website"
+                  initialValue={
+                    organization.details.find(
+                      (d) => d.type === EntityDetailType.website
+                    )?.value
+                  }
                   rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >
-                  <Input placeholder="Lisbon" />
+                  <Input placeholder="https://dework.xyz" />
                 </Form.Item>
               </Row>
             </Space>
