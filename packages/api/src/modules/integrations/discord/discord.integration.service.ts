@@ -281,32 +281,35 @@ export class DiscordIntegrationService {
       ? await this.getDiscordId(task.ownerId)
       : undefined;
 
+    const firstAssignee = task.assignees[0];
     await this.postTaskCard(
       channel,
       task,
       "Ready for review!",
-      !!owner ? [owner] : undefined
+      !!owner ? [owner] : undefined,
+      !!firstAssignee
+        ? {
+            author: {
+              name: firstAssignee.username,
+              iconURL: firstAssignee.imageUrl,
+              url: await this.permalink.get(firstAssignee),
+            },
+          }
+        : undefined
     );
   }
 
   private async postInProgress(task: Task, channel: Discord.TextBasedChannels) {
-    const discordIdPs = _([task.ownerId, ...task.assignees.map((u) => u.id)])
-      .filter((userId): userId is string => !!userId)
-      .uniq()
-      .map((id) => this.getDiscordId(id))
-      .value();
-    const discordIds = (await Promise.all(discordIdPs)).filter(
-      (id): id is string => !!id
-    );
-    const intro = !!discordIds.length
-      ? `Hey ${discordIds.map((id) => `<@${id}>`).join(", ")},`
+    const threepids = await this.findTaskUserThreepids(task);
+    const intro = !!threepids.length
+      ? `Hey ${threepids.map((t) => `<@${t.threepid}>`).join(", ")},`
       : "";
 
     await this.postTaskCard(
       channel,
       task,
       "Task moved to in progress!",
-      !!discordIds.length ? discordIds : undefined
+      !!threepids.length ? threepids.map((t) => t.threepid) : undefined
     );
     await this.post(
       channel,
@@ -324,7 +327,8 @@ Please keep in mind to:
     channel: Discord.TextBasedChannels,
     task: Task,
     message: string,
-    discordIdsToTag?: string[]
+    discordIdsToTag?: string[],
+    embedOverride?: Partial<Discord.MessageEmbedOptions>
   ): Promise<void> {
     await this.post(channel, {
       content: discordIdsToTag?.map((id) => `<@${id}>`).join(" "),
@@ -333,6 +337,7 @@ Please keep in mind to:
           title: task.name,
           description: message,
           url: await this.permalink.get(task),
+          ...embedOverride,
         },
       ],
     });
