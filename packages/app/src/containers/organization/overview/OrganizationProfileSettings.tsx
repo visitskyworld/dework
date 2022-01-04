@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -23,9 +23,9 @@ import { EntityDetailType } from "@dewo/app/graphql/types";
 
 interface SetOrganizationFormInput extends UpdateOrganizationInput {
   type: EntityDetailType;
-  discord: EntityDetailType.discord;
-  twitter: EntityDetailType.twitter;
-  website: EntityDetailType.website;
+  discord: string;
+  twitter: string;
+  website: string;
 }
 
 interface OrganizationProfileSettingsProps {
@@ -41,6 +41,16 @@ export const OrganizationProfileSettings: FC<
   const updateOrganization = useUpdateOrganization();
   const updateOrganisazionDetail = useUpdateOrganizationDetail();
 
+  const initialOrganizationFormValues = useMemo(() => {
+    return {
+      name: organization?.name,
+      description: organization?.description,
+      discord: organization?.details.find((d) => d.type === "discord")?.value,
+      twitter: organization?.details.find((d) => d.type === "twitter")?.value,
+      website: organization?.details.find((d) => d.type === "website")?.value,
+    };
+  }, [organization]);
+
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: SetOrganizationFormInput) => {
@@ -51,21 +61,27 @@ export const OrganizationProfileSettings: FC<
           name: values.name,
           description: values.description,
         });
-        await updateOrganisazionDetail({
-          organizationId,
-          type: EntityDetailType.discord,
-          value: values.discord,
-        });
-        await updateOrganisazionDetail({
-          organizationId,
-          type: EntityDetailType.twitter,
-          value: values.twitter,
-        });
-        await updateOrganisazionDetail({
-          organizationId,
-          type: EntityDetailType.website,
-          value: values.website,
-        });
+        if (values.discord !== initialOrganizationFormValues.discord) {
+          await updateOrganisazionDetail({
+            organizationId,
+            type: EntityDetailType.discord,
+            value: values.discord,
+          });
+        }
+        if (values.twitter !== initialOrganizationFormValues.twitter) {
+          await updateOrganisazionDetail({
+            organizationId,
+            type: EntityDetailType.twitter,
+            value: values.twitter,
+          });
+        }
+        if (values.website !== initialOrganizationFormValues.website) {
+          await updateOrganisazionDetail({
+            organizationId,
+            type: EntityDetailType.website,
+            value: values.website,
+          });
+        }
         message.success({
           content: "Organization profile updated!",
           type: "success",
@@ -79,7 +95,12 @@ export const OrganizationProfileSettings: FC<
         setLoading(false);
       }
     },
-    [organizationId, updateOrganisazionDetail, updateOrganization]
+    [
+      organizationId,
+      initialOrganizationFormValues,
+      updateOrganization,
+      updateOrganisazionDetail,
+    ]
   );
 
   if (!organization) return null;
@@ -95,6 +116,7 @@ export const OrganizationProfileSettings: FC<
           requiredMark={false}
           onFinish={handleSubmit}
           style={{ maxWidth: 480 }}
+          initialValues={initialOrganizationFormValues}
         >
           <Typography.Title level={4} style={{ marginBottom: 4 }}>
             Organization profile
@@ -125,12 +147,6 @@ export const OrganizationProfileSettings: FC<
                 <DiscordIcon style={{ width: 20 }} />
                 <Form.Item
                   name="discord"
-                  initialValue={
-                    organization.details.find(
-                      (d) => d.type === EntityDetailType.discord
-                    )?.value
-                  }
-                  rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >
                   <Input placeholder="https://discord.com/channels/918603668935311391" />
@@ -140,12 +156,6 @@ export const OrganizationProfileSettings: FC<
                 <Icons.TwitterOutlined style={{ width: 20 }} />
                 <Form.Item
                   name="twitter"
-                  initialValue={
-                    organization.details.find(
-                      (d) => d.type === EntityDetailType.twitter
-                    )?.value
-                  }
-                  rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >
                   <Input placeholder="https://twitter.com/deworkxyz" />
@@ -155,12 +165,6 @@ export const OrganizationProfileSettings: FC<
                 <Icons.LinkOutlined style={{ width: 20 }} />
                 <Form.Item
                   name="website"
-                  initialValue={
-                    organization.details.find(
-                      (d) => d.type === EntityDetailType.website
-                    )?.value
-                  }
-                  rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >
                   <Input placeholder="https://dework.xyz" />

@@ -60,8 +60,8 @@ export class OrganizationService {
   ): Promise<EntityDetail | void> {
     if (!partial.value) {
       await this.entityDetailRepo.delete({
-        type: partial.type,
         organizationId,
+        type: partial.type,
       });
       return;
     }

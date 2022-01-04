@@ -6267,7 +6267,7 @@ export interface CreatePaymentTokenInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
-  visibility: ProjectVisibility;
+  visibility?: ProjectVisibility | null;
 }
 
 export interface CreateProjectIntegrationInput {
@@ -6357,7 +6357,8 @@ export interface UpdateOrganizationInput {
 export interface UpdateOrganizationMemberInput {
   organizationId: Scalar.UUID;
   userId: Scalar.UUID;
-  role: OrganizationRole;
+  role?: OrganizationRole | null;
+  sortKey?: string | null;
 }
 
 export interface UpdatePaymentMethodInput {

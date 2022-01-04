@@ -20,6 +20,9 @@ registerEnumType(EntityDetailType, { name: "EntityDetailType" });
 @Index("IDX_unique_user_type", ["userId", "type"], {
   unique: true,
 })
+@Index("IDX_unique_organization_type", ["organizationId", "type"], {
+  unique: true,
+})
 export class EntityDetail extends Audit {
   @Column({ enum: EntityDetailType })
   @Field(() => EntityDetailType)
