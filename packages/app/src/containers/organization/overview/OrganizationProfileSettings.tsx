@@ -55,25 +55,27 @@ export const OrganizationProfileSettings: FC<
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: SetOrganizationFormInput) => {
+      if (
+        JSON.stringify(initialOrganizationFormValues) === JSON.stringify(values)
+      ) {
+        // No changes
+        return;
+      }
       try {
         setLoading(true);
         await Promise.all(
-          Object.keys(initialOrganizationFormValues).map((key) => {
-            if (key === "name" || key === "description") {
+          Object.entries(values).map(([key, value]) => {
+            if (key === "discord" || key === "twitter" || key === "website") {
+              updateOrganizationDetail({
+                organizationId,
+                type: key as EntityDetailType,
+                value: value,
+              });
+            } else if (key === "name") {
               updateOrganization({
                 id: organizationId,
                 name: values.name,
                 description: values.description,
-              });
-            } else if (
-              key === "discord" ||
-              key === "twitter" ||
-              key === "website"
-            ) {
-              updateOrganizationDetail({
-                organizationId,
-                type: key as EntityDetailType,
-                value: values[key],
               });
             }
           })
