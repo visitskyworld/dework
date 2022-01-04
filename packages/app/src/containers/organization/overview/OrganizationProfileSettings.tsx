@@ -156,7 +156,10 @@ export const OrganizationProfileSettings: FC<
             <Input.TextArea placeholder="No description..." />
           </Form.Item>
 
-          <Form.Item label="Socials">
+          <Form.Item
+            label="Socials"
+            style={{ marginTop: 20, marginBottom: 24 }}
+          >
             <Space direction="vertical" style={{ width: "100%" }}>
               <OrganizationDetailFormItem type={EntityDetailType.discord} />
               <OrganizationDetailFormItem type={EntityDetailType.twitter} />
