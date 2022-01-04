@@ -23,9 +23,9 @@ import { EntityDetailType } from "@dewo/app/graphql/types";
 interface SetOrganizationFormInput {
   name: string;
   description?: string;
-  discord?: EntityDetailType.discord;
-  twitter?: EntityDetailType.twitter;
-  website?: EntityDetailType.website;
+  discord?: string;
+  twitter?: string;
+  website?: string;
 }
 
 interface OrganizationProfileSettingsProps {
@@ -39,7 +39,7 @@ export const OrganizationProfileSettings: FC<
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const updateOrganization = useUpdateOrganization();
-  const updateOrganisazionDetail = useUpdateOrganizationDetail();
+  const updateOrganizationDetail = useUpdateOrganizationDetail();
 
   const initialOrganizationFormValues = useMemo(
     () => ({
@@ -70,7 +70,7 @@ export const OrganizationProfileSettings: FC<
               key === "twitter" ||
               key === "website"
             ) {
-              updateOrganisazionDetail({
+              updateOrganizationDetail({
                 organizationId,
                 type: key as EntityDetailType,
                 value: values[key],
@@ -96,7 +96,7 @@ export const OrganizationProfileSettings: FC<
       organizationId,
       initialOrganizationFormValues,
       updateOrganization,
-      updateOrganisazionDetail,
+      updateOrganizationDetail,
     ]
   );
 
