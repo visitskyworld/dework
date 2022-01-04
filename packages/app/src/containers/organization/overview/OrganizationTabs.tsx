@@ -77,7 +77,7 @@ export const OrganizationTabs: FC<Props> = ({
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col span={6}>
-            {organization?.details && (
+            {Boolean(organization?.details.length) && (
               <>
                 <Typography.Title level={5}>Socials</Typography.Title>
                 <Space direction="horizontal">
