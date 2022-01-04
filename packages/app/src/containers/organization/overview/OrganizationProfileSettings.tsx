@@ -17,15 +17,15 @@ import {
   useUpdateOrganizationDetail,
 } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { UpdateOrganizationInput } from "../../../graphql/types";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { EntityDetailType } from "@dewo/app/graphql/types";
 
-interface SetOrganizationFormInput extends UpdateOrganizationInput {
-  type: EntityDetailType;
-  discord: string;
-  twitter: string;
-  website: string;
+interface SetOrganizationFormInput {
+  name: string;
+  description?: string;
+  discord?: EntityDetailType.discord;
+  twitter?: EntityDetailType.twitter;
+  website?: EntityDetailType.website;
 }
 
 interface OrganizationProfileSettingsProps {
@@ -41,47 +41,44 @@ export const OrganizationProfileSettings: FC<
   const updateOrganization = useUpdateOrganization();
   const updateOrganisazionDetail = useUpdateOrganizationDetail();
 
-  const initialOrganizationFormValues = useMemo(() => {
-    return {
-      name: organization?.name,
+  const initialOrganizationFormValues = useMemo(
+    () => ({
+      name: organization?.name ?? "",
       description: organization?.description,
       discord: organization?.details.find((d) => d.type === "discord")?.value,
       twitter: organization?.details.find((d) => d.type === "twitter")?.value,
       website: organization?.details.find((d) => d.type === "website")?.value,
-    };
-  }, [organization]);
+    }),
+    [organization]
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: SetOrganizationFormInput) => {
       try {
         setLoading(true);
-        await updateOrganization({
-          id: organizationId,
-          name: values.name,
-          description: values.description,
-        });
-        if (values.discord !== initialOrganizationFormValues.discord) {
-          await updateOrganisazionDetail({
-            organizationId,
-            type: EntityDetailType.discord,
-            value: values.discord,
-          });
-        }
-        if (values.twitter !== initialOrganizationFormValues.twitter) {
-          await updateOrganisazionDetail({
-            organizationId,
-            type: EntityDetailType.twitter,
-            value: values.twitter,
-          });
-        }
-        if (values.website !== initialOrganizationFormValues.website) {
-          await updateOrganisazionDetail({
-            organizationId,
-            type: EntityDetailType.website,
-            value: values.website,
-          });
-        }
+        await Promise.all(
+          Object.keys(initialOrganizationFormValues).map((key) => {
+            if (key === "name" || key === "description") {
+              updateOrganization({
+                id: organizationId,
+                name: values.name,
+                description: values.description,
+              });
+            } else if (
+              key === "discord" ||
+              key === "twitter" ||
+              key === "website"
+            ) {
+              updateOrganisazionDetail({
+                organizationId,
+                type: key as EntityDetailType,
+                value: values[key],
+              });
+            }
+          })
+        );
+
         message.success({
           content: "Organization profile updated!",
           type: "success",

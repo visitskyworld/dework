@@ -215,7 +215,7 @@ export const createProjectIntegration = gql`
 
 export const setUserDetail = gql`
   mutation SetUserDetailMutation($input: SetUserDetailInput!) {
-    detail: setUserDetail(input: $input) {
+    organization: setUserDetail(input: $input) {
       ...User
       details {
         ...EntityDetail
@@ -229,11 +229,15 @@ export const setUserDetail = gql`
 
 export const setOrganizationDetail = gql`
   mutation SetOrganizationDetailMutation($input: SetOrganizationDetailInput!) {
-    detail: setOrganizationDetail(input: $input) {
-      ...EntityDetail
+    organization: setOrganizationDetail(input: $input) {
+      ...Organization
+      details {
+        ...EntityDetail
+      }
     }
   }
 
+  ${Fragments.organization}
   ${Fragments.entityDetail}
 `;
 

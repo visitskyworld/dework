@@ -32,7 +32,6 @@ import {
 } from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
-import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
@@ -100,15 +99,16 @@ export class OrganizationResolver {
     return this.organizationService.update(input);
   }
 
-  @Mutation(() => EntityDetail)
+  @Mutation(() => Organization)
   @UseGuards(AuthGuard)
   public async setOrganizationDetail(
     @Args("input") input: SetOrganizationDetailInput
-  ): Promise<EntityDetail | void> {
-    return this.organizationService.upsertDetail(
+  ): Promise<Organization | undefined> {
+    await this.organizationService.upsertDetail(
       { type: input.type, value: input.value },
       input.organizationId
-    ) as Promise<EntityDetail | void>;
+    );
+    return this.organizationService.findById(input.organizationId);
   }
 
   @Mutation(() => OrganizationMember)

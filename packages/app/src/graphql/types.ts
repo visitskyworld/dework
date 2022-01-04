@@ -1596,23 +1596,23 @@ export interface CreateProjectIntegrationMutationVariables {
 // GraphQL mutation operation: SetUserDetailMutation
 // ====================================================
 
-export interface SetUserDetailMutation_detail_details {
+export interface SetUserDetailMutation_organization_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
   type: EntityDetailType;
   value: string;
 }
 
-export interface SetUserDetailMutation_detail {
+export interface SetUserDetailMutation_organization {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
-  details: SetUserDetailMutation_detail_details[];
+  details: SetUserDetailMutation_organization_details[];
 }
 
 export interface SetUserDetailMutation {
-  detail: SetUserDetailMutation_detail;
+  organization: SetUserDetailMutation_organization;
 }
 
 export interface SetUserDetailMutationVariables {
@@ -1628,15 +1628,25 @@ export interface SetUserDetailMutationVariables {
 // GraphQL mutation operation: SetOrganizationDetailMutation
 // ====================================================
 
-export interface SetOrganizationDetailMutation_detail {
+export interface SetOrganizationDetailMutation_organization_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
   type: EntityDetailType;
   value: string;
 }
 
+export interface SetOrganizationDetailMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+  details: SetOrganizationDetailMutation_organization_details[];
+}
+
 export interface SetOrganizationDetailMutation {
-  detail: SetOrganizationDetailMutation_detail;
+  organization: SetOrganizationDetailMutation_organization;
 }
 
 export interface SetOrganizationDetailMutationVariables {

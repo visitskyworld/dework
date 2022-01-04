@@ -79,16 +79,6 @@ export class OrganizationService {
     });
   }
 
-  public getDetails(organizationId: string): Promise<EntityDetail[]> {
-    return this.entityDetailRepo
-      .createQueryBuilder("detail")
-      .leftJoinAndSelect("detail.organization", "organization")
-      .where("organization.id = :organizationId", {
-        organizationId,
-      })
-      .getMany();
-  }
-
   public findMember(
     partial: Partial<
       Pick<OrganizationMember, "organizationId" | "userId" | "role">

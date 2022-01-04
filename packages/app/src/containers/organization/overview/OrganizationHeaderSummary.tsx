@@ -30,9 +30,11 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
         </Typography.Title>
       }
       description={
-        <Typography.Paragraph type="secondary" style={{ maxWidth: 480 }}>
-          {organization.description || "No description..."}
-        </Typography.Paragraph>
+        organization.description && (
+          <Typography.Paragraph type="secondary" style={{ maxWidth: 480 }}>
+            {organization.description}
+          </Typography.Paragraph>
+        )
       }
     />
   );

@@ -61,9 +61,9 @@ export class UserResolver {
   public async setUserDetail(
     @Args("input") input: SetUserDetailInput,
     @Context("user") user: User
-  ): Promise<User> {
+  ): Promise<User | undefined> {
     await this.userService.setDetail(input, user.id);
-    return this.userService.findById(user.id) as Promise<User>;
+    return this.userService.findById(user.id);
   }
 
   @ResolveField(() => [GraphQLJSONObject])
