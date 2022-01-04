@@ -210,15 +210,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         )}
 
         <Divider plain>
-          {/* <Typography.Text type="secondary">
-            Advanced
-            <Typography.Text
-              className="ant-typography-caption"
-              style={{ marginLeft: 4 }}
-            >
-              <Icons.DownOutlined />
-            </Typography.Text>
-          </Typography.Text> */}
           <Button
             type="text"
             style={{ padding: "0 8px", height: "unset" }}
