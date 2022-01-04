@@ -108,12 +108,14 @@ export class OrganizationResolver {
   ])
   public async setOrganizationDetail(
     @Args("input") input: SetOrganizationDetailInput
-  ): Promise<Organization | undefined> {
+  ): Promise<Organization> {
     await this.organizationService.upsertDetail(
       { type: input.type, value: input.value },
       input.organizationId
     );
-    return this.organizationService.findById(input.organizationId);
+    return this.organizationService.findById(
+      input.organizationId
+    ) as Promise<Organization>;
   }
 
   @Mutation(() => OrganizationMember)
