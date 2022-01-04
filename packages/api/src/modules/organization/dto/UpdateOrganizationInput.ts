@@ -10,6 +10,9 @@ export class UpdateOrganizationInput {
   public name?: string;
 
   @Field({ nullable: true })
+  public tagline?: string;
+
+  @Field({ nullable: true })
   public description?: string;
 
   @Field({ nullable: true })

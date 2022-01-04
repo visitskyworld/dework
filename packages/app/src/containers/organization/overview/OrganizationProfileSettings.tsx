@@ -22,6 +22,7 @@ import { EntityDetailType } from "@dewo/app/graphql/types";
 
 interface SetOrganizationFormInput {
   name: string;
+  tagline?: string;
   description?: string;
   discord?: string;
   twitter?: string;
@@ -44,6 +45,7 @@ export const OrganizationProfileSettings: FC<
   const initialOrganizationFormValues = useMemo(
     () => ({
       name: organization?.name ?? "",
+      tagline: organization?.tagline,
       description: organization?.description,
       discord: organization?.details.find((d) => d.type === "discord")?.value,
       twitter: organization?.details.find((d) => d.type === "twitter")?.value,
@@ -76,6 +78,7 @@ export const OrganizationProfileSettings: FC<
                 id: organizationId,
                 name: values.name,
                 description: values.description,
+                tagline: values.tagline,
               });
             }
           })
@@ -123,10 +126,18 @@ export const OrganizationProfileSettings: FC<
           <Divider style={{ marginTop: 0 }} />
 
           <Form.Item
-            label="Organization display name"
+            label="Name"
             name="name"
             initialValue={organization.name}
             rules={[{ required: true, message: "Please enter a display name" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Tagline"
+            name="tagline"
+            initialValue={organization.tagline}
           >
             <Input />
           </Form.Item>

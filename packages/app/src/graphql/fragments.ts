@@ -386,6 +386,7 @@ export const userDetails = gql`
 export const organizationDetails = gql`
   fragment OrganizationDetails on Organization {
     ...Organization
+    tagline
     description
     projects {
       ...ProjectDetails

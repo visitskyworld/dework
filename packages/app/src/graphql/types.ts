@@ -334,6 +334,7 @@ export interface UpdateOrganizationMutation_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  tagline: string | null;
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
   members: UpdateOrganizationMutation_organization_members[];
@@ -665,6 +666,7 @@ export interface CreateProjectMutation_project_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  tagline: string | null;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
@@ -2850,6 +2852,7 @@ export interface GetOrganizationQuery_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  tagline: string | null;
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
@@ -2983,6 +2986,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  tagline: string | null;
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
@@ -6087,6 +6091,7 @@ export interface OrganizationDetails {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  tagline: string | null;
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
@@ -6359,6 +6364,7 @@ export interface SetUserDetailInput {
 export interface UpdateOrganizationInput {
   id: Scalar.UUID;
   name?: string | null;
+  tagline?: string | null;
   description?: string | null;
   imageUrl?: string | null;
   deletedAt?: Scalar.DateTime | null;
