@@ -100,6 +100,7 @@ export class DiscordIntegrationService {
           case TaskStatusEnum.DONE:
             await this.postDone(
               channelToPostTo,
+              event.task,
               !integration.config.features.includes(
                 DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD
               )
@@ -212,7 +213,7 @@ export class DiscordIntegrationService {
     return integration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
   }
 
-  private async getDiscordId(userId: string) {
+  private async getDiscordId(userId: string): Promise<string | undefined> {
     const threepid = (await this.threepidService.findOne({
       userId,
       source: ThreepidSource.discord,
@@ -222,12 +223,10 @@ export class DiscordIntegrationService {
 
   private async postDone(
     channel: Discord.TextBasedChannels,
+    task: Task,
     shouldArchiveThread: boolean
   ) {
-    await this.post(
-      channel,
-      "This task is now marked as done and has been automatically archived"
-    );
+    await this.postTaskCard(channel, task, "Task completed!");
     if (channel.isThread() && shouldArchiveThread) {
       await channel.setArchived(true);
     }
@@ -237,13 +236,17 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannels
   ) {
-    if (!task.ownerId) return;
-    const owner = await this.getDiscordId(task.ownerId);
+    const owner = await task.owner;
     if (!owner) return;
+    const ownerDiscordId = await this.getDiscordId(owner.id);
 
-    await this.post(
+    await this.postTaskCard(
       channel,
-      `<@${owner}> has been added as the reviewer for this task`
+      task,
+      `${
+        !!ownerDiscordId ? `<@${ownerDiscordId}>` : owner.username
+      } added as the reviewer of the task`,
+      !!ownerDiscordId ? [ownerDiscordId] : undefined
     );
   }
 
@@ -263,11 +266,10 @@ export class DiscordIntegrationService {
       )
       .join(", ");
 
-    await this.post(
+    await this.postTaskCard(
       channel,
-      `${assigneesString} ${
-        task.assignees.length === 1 ? "is" : "are"
-      } leading the work on this task`
+      task,
+      `${assigneesString} assigned to the task`
     );
   }
 
@@ -279,37 +281,61 @@ export class DiscordIntegrationService {
       ? await this.getDiscordId(task.ownerId)
       : undefined;
 
-    this.post(channel, {
-      content: !!owner ? `<@${owner}>` : undefined,
+    await this.postTaskCard(
+      channel,
+      task,
+      "Ready for review!",
+      !!owner ? [owner] : undefined
+    );
+  }
+
+  private async postInProgress(task: Task, channel: Discord.TextBasedChannels) {
+    const discordIdPs = _([task.ownerId, ...task.assignees.map((u) => u.id)])
+      .filter((userId): userId is string => !!userId)
+      .uniq()
+      .map((id) => this.getDiscordId(id))
+      .value();
+    const discordIds = (await Promise.all(discordIdPs)).filter(
+      (id): id is string => !!id
+    );
+    const intro = !!discordIds.length
+      ? `Hey ${discordIds.map((id) => `<@${id}>`).join(", ")},`
+      : "";
+
+    await this.postTaskCard(
+      channel,
+      task,
+      "Task moved to in progress!",
+      !!discordIds.length ? discordIds : undefined
+    );
+    await this.post(
+      channel,
+      `
+${intro} This task has been moved to the next stage.
+    
+Please keep in mind to:
+- Always push your local branches to remote each time you make a commit
+- Please write two sentences here each morning to keep each other in sync
+`.trim()
+    );
+  }
+
+  private async postTaskCard(
+    channel: Discord.TextBasedChannels,
+    task: Task,
+    message: string,
+    discordIdsToTag?: string[]
+  ): Promise<void> {
+    await this.post(channel, {
+      content: discordIdsToTag?.map((id) => `<@${id}>`).join(" "),
       embeds: [
         {
           title: task.name,
-          description: "The task is now in review",
+          description: message,
           url: await this.permalink.get(task),
         },
       ],
     });
-  }
-
-  private async postInProgress(task: Task, thread: Discord.TextBasedChannels) {
-    const owner = task.ownerId && (await this.getDiscordId(task.ownerId));
-    if (!owner) return;
-
-    const assigneeId = task.assignees?.[0]?.id;
-    if (!assigneeId) return;
-
-    const assignee = await this.getDiscordId(assigneeId);
-    if (!assignee) return;
-
-    this.logger.debug(`Got assignee: ${assignee} for task ${task.id}`);
-
-    const message = `Hey <@${owner}> and <@${assignee}>! This task has been moved to the next stage.
-
-  Please keep in mind to:
-  - Always push your local branches to remote each time you make a commit
-  - Please write two sentences here each morning to keep each other in sync`;
-
-    this.post(thread, message);
   }
 
   private async post(
