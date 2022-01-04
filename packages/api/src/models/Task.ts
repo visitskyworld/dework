@@ -22,14 +22,15 @@ import { GithubPullRequest } from "./GithubPullRequest";
 import { DiscordChannel } from "./DiscordChannel";
 import { TaskApplication } from "./TaskApplication";
 
-export enum TaskStatusEnum {
+export enum TaskStatus {
+  BACKLOG = "BACKLOG",
   TODO = "TODO",
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
   DONE = "DONE",
 }
 
-registerEnumType(TaskStatusEnum, { name: "TaskStatusEnum" });
+registerEnumType(TaskStatus, { name: "TaskStatus" });
 
 @Entity()
 @ObjectType()
@@ -46,9 +47,9 @@ export class Task extends Audit {
   @Field({ nullable: true })
   public description?: string;
 
-  @Column({ enum: TaskStatusEnum })
-  @Field(() => TaskStatusEnum)
-  public status!: TaskStatusEnum;
+  @Column({ enum: TaskStatus })
+  @Field(() => TaskStatus)
+  public status!: TaskStatus;
 
   @Column()
   @Field()

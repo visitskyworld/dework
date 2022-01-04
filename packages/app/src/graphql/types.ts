@@ -913,7 +913,7 @@ export interface CreateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -1057,7 +1057,7 @@ export interface UpdateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -1201,7 +1201,7 @@ export interface ClaimTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -1346,7 +1346,7 @@ export interface UnclaimTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -1490,7 +1490,7 @@ export interface DeleteTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -2294,7 +2294,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -2629,7 +2629,7 @@ export interface UserTasksQuery_user_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -3125,7 +3125,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -3378,7 +3378,7 @@ export interface GetProjectTasksQuery_project_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -3625,7 +3625,7 @@ export interface GetTaskQuery_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -3800,7 +3800,7 @@ export interface GetTasksQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -4014,7 +4014,7 @@ export interface GetTasksToPayQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -4387,7 +4387,7 @@ export interface TaskCreatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -4593,7 +4593,7 @@ export interface TaskUpdatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -5491,7 +5491,7 @@ export interface Task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -5649,7 +5649,7 @@ export interface TaskWithOrganization {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -5843,7 +5843,7 @@ export interface TaskDetails {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   sortKey: string;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
@@ -6228,7 +6228,7 @@ export enum TaskRewardTrigger {
   PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
 }
 
-export enum TaskStatusEnum {
+export enum TaskStatus {
   DONE = "DONE",
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
@@ -6311,7 +6311,7 @@ export interface CreateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   reward?: UpdateTaskRewardInput | null;
 }
 
@@ -6331,7 +6331,7 @@ export interface CreateTaskTagInput {
 export interface GetTasksInput {
   ids?: Scalar.UUID[] | null;
   organizationIds?: Scalar.UUID[] | null;
-  statuses?: TaskStatusEnum[] | null;
+  statuses?: TaskStatus[] | null;
   limit?: number | null;
 }
 
@@ -6410,7 +6410,7 @@ export interface UpdateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;
-  status?: TaskStatusEnum | null;
+  status?: TaskStatus | null;
   reward?: UpdateTaskRewardInput | null;
   review?: UpdateTaskReviewInput | null;
 }

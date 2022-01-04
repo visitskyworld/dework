@@ -3,7 +3,7 @@ import { SubjectType } from "@casl/ability";
 import { Roles } from "../app/app.roles";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
-import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import {
   OrganizationMember,
   OrganizationRole,
@@ -36,12 +36,12 @@ export const permissions: Permissions<
       ["status", "status[TODO]", "status[IN_PROGRESS]", "status[IN_REVIEW]"],
       {
         assignees: { $elemMatch: { id: user.id } },
-        status: { $ne: TaskStatusEnum.DONE },
+        status: { $ne: TaskStatus.DONE },
       }
     );
     can(Actions.update, Task, { ownerId: user.id });
     can(CustomPermissionActions.claimTask, Task, {
-      status: TaskStatusEnum.TODO,
+      status: TaskStatus.TODO,
     });
   },
 

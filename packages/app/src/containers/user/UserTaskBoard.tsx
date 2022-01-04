@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { TaskStatusEnum } from "@dewo/app/graphql/types";
+import { TaskStatus } from "@dewo/app/graphql/types";
 import { Avatar, Card, Col, List, Row, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import { OrganizationCard } from "../landingPage/OrganizationCard";
@@ -16,16 +16,16 @@ interface Props {
   userId: string;
 }
 
-const empty: Partial<Record<TaskStatusEnum, TaskBoardColumnEmptyProps>> = {
-  [TaskStatusEnum.IN_PROGRESS]: {
+const empty: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>> = {
+  [TaskStatus.IN_PROGRESS]: {
     title: "First apply to tasks, then the ones assigned to you appear here",
     icon: <Icons.ThunderboltOutlined />,
   },
-  [TaskStatusEnum.IN_REVIEW]: {
+  [TaskStatus.IN_REVIEW]: {
     title: "When you're done with a task, put it here for review by the DAO",
     icon: <Icons.SafetyOutlined />,
   },
-  [TaskStatusEnum.DONE]: {
+  [TaskStatus.DONE]: {
     title: "Keep track of your completed tasks and reward payment here",
     icon: <Icons.DollarCircleOutlined />,
   },
@@ -37,7 +37,7 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
   const latestTasks = useTasks(
     useMemo(
       () => ({
-        statuses: [TaskStatusEnum.TODO],
+        statuses: [TaskStatus.TODO],
         limit: 100,
         organizationIds: organizations?.map((o) => o.id),
       }),
@@ -52,7 +52,7 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
       tasks={tasks}
       empty={empty}
       footer={{
-        [TaskStatusEnum.TODO]: (
+        [TaskStatus.TODO]: (
           <Row gutter={[8, 8]}>
             {!!organizations?.length && (
               <Col span={24}>

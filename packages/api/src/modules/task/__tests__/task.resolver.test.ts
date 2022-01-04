@@ -1,4 +1,4 @@
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -38,7 +38,7 @@ describe("TaskResolver", () => {
             name: faker.lorem.words(5),
             description: faker.lorem.paragraph(),
             projectId: project.id,
-            status: TaskStatusEnum.TODO,
+            status: TaskStatus.TODO,
           }),
         });
 
@@ -64,7 +64,7 @@ describe("TaskResolver", () => {
             name,
             description,
             projectId: project.id,
-            status: TaskStatusEnum.TODO,
+            status: TaskStatus.TODO,
             reward,
           }),
         });
@@ -101,7 +101,7 @@ describe("TaskResolver", () => {
               body: TaskRequests.create({
                 projectId,
                 name: faker.lorem.words(5),
-                status: TaskStatusEnum.TODO,
+                status: TaskStatus.TODO,
               }),
             })
             .then((res) => res.body.data?.task);
@@ -148,7 +148,7 @@ describe("TaskResolver", () => {
           const expectedTag = await fixtures.createTaskTag({
             projectId: project.id,
           });
-          const expectedStatus = TaskStatusEnum.IN_REVIEW;
+          const expectedStatus = TaskStatus.IN_REVIEW;
 
           const response = await client.request({
             app,
@@ -210,7 +210,7 @@ describe("TaskResolver", () => {
     describe("claimTask", () => {
       it("should succeed and create a task application for user if status is TODO", async () => {
         const user = await fixtures.createUser();
-        const task = await fixtures.createTask({ status: TaskStatusEnum.TODO });
+        const task = await fixtures.createTask({ status: TaskStatus.TODO });
         const message = faker.lorem.words(5);
         const startDate = faker.date.soon();
         const endDate = faker.date.soon();
@@ -242,7 +242,7 @@ describe("TaskResolver", () => {
       it("should not succeed if status is not TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
-          status: TaskStatusEnum.IN_PROGRESS,
+          status: TaskStatus.IN_PROGRESS,
         });
         const application = {
           message: faker.lorem.words(5),
@@ -264,7 +264,7 @@ describe("TaskResolver", () => {
       it("should succeed and delete task application", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
-          status: TaskStatusEnum.TODO,
+          status: TaskStatus.TODO,
           assignees: [user],
         });
 
@@ -442,11 +442,11 @@ describe("TaskResolver", () => {
   describe("Queries", () => {
     describe("getTasks", () => {
       it("should only return tasks with matching statuses", async () => {
-        const todo = await fixtures.createTask({ status: TaskStatusEnum.TODO });
-        const done = await fixtures.createTask({ status: TaskStatusEnum.DONE });
+        const todo = await fixtures.createTask({ status: TaskStatus.TODO });
+        const done = await fixtures.createTask({ status: TaskStatus.DONE });
         const response = await client.request({
           app,
-          body: TaskRequests.getBatch({ statuses: [TaskStatusEnum.TODO] }),
+          body: TaskRequests.getBatch({ statuses: [TaskStatus.TODO] }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);

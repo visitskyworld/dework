@@ -1,4 +1,4 @@
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { Field, InputType, Int } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -10,8 +10,8 @@ export class GetTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public organizationIds?: string[];
 
-  @Field(() => [TaskStatusEnum], { nullable: true })
-  public statuses?: TaskStatusEnum[];
+  @Field(() => [TaskStatus], { nullable: true })
+  public statuses?: TaskStatus[];
 
   // TODO(fant): how to prevent this from being very high?
   @Field(() => Int, { nullable: true, defaultValue: 1000 })

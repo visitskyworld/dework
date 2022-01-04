@@ -1,4 +1,4 @@
-import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import _ from "lodash";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -91,13 +91,13 @@ export class DiscordIntegrationService {
         event.task.status !== event.prevTask.status;
       if (statusChanged) {
         switch (event.task.status) {
-          case TaskStatusEnum.IN_PROGRESS:
+          case TaskStatus.IN_PROGRESS:
             await this.postInProgress(event.task, channelToPostTo);
             break;
-          case TaskStatusEnum.IN_REVIEW:
+          case TaskStatus.IN_REVIEW:
             await this.postMovedIntoReview(event.task, channelToPostTo);
             break;
-          case TaskStatusEnum.DONE:
+          case TaskStatus.DONE:
             await this.postDone(
               channelToPostTo,
               event.task,
@@ -403,8 +403,8 @@ export class DiscordIntegrationService {
   }
 
   private async shouldCreateThread(task: Task): Promise<boolean> {
-    if (task.status === TaskStatusEnum.IN_PROGRESS) return true;
-    if (task.status === TaskStatusEnum.IN_REVIEW) return true;
+    if (task.status === TaskStatus.IN_PROGRESS) return true;
+    if (task.status === TaskStatus.IN_REVIEW) return true;
     if (!!task.assignees.length) return true;
     if (!!(await task.applications).length) return true;
     return false;

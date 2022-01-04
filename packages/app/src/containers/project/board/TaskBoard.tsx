@@ -1,4 +1,4 @@
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, {
   FC,
@@ -23,18 +23,18 @@ import { ContributorReviewModal } from "../../task/ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
-const statuses: TaskStatusEnum[] = [
-  TaskStatusEnum.TODO,
-  TaskStatusEnum.IN_PROGRESS,
-  TaskStatusEnum.IN_REVIEW,
-  TaskStatusEnum.DONE,
+const statuses: TaskStatus[] = [
+  TaskStatus.TODO,
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.IN_REVIEW,
+  TaskStatus.DONE,
 ];
 
 interface Props {
   tasks: Task[];
   projectId?: string;
-  footer?: Partial<Record<TaskStatusEnum, ReactNode>>;
-  empty?: Partial<Record<TaskStatusEnum, TaskBoardColumnEmptyProps>>;
+  footer?: Partial<Record<TaskStatus, ReactNode>>;
+  empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
 }
 
 const columnWidth = 300;
@@ -66,7 +66,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
       const taskId = result.draggableId;
       const [status, sectionIndexString] = result.destination.droppableId.split(
         ":"
-      ) as [TaskStatusEnum, string];
+      ) as [TaskStatus, string];
       const sectionIndex = Number(sectionIndexString);
 
       const task = tasks.find((t) => t.id === taskId);
@@ -99,7 +99,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
         task
       );
 
-      if (status === TaskStatusEnum.DONE && task.ownerId === user?.id) {
+      if (status === TaskStatus.DONE && task.ownerId === user?.id) {
         reviewModalToggle.toggleOn();
         setTaskInReview(updatedTask);
       }

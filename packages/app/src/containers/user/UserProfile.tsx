@@ -22,7 +22,7 @@ import {
   useUpdateUserDetail,
   useUserTasks,
 } from "./hooks";
-import { TaskStatusEnum, EntityDetailType } from "@dewo/app/graphql/types";
+import { TaskStatus, EntityDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
@@ -36,7 +36,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
   const tasks = useUserTasks(userId);
   const completedTasks = useMemo(
-    () => tasks?.filter((t) => t.status === TaskStatusEnum.DONE) ?? [],
+    () => tasks?.filter((t) => t.status === TaskStatus.DONE) ?? [],
     [tasks]
   );
 

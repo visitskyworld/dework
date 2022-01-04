@@ -1,4 +1,4 @@
-import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -131,7 +131,7 @@ export class TaskService {
     projectIds?: string[];
     organizationIds?: string[];
     assigneeId?: string;
-    statuses?: TaskStatusEnum[];
+    statuses?: TaskStatus[];
     order?: OrderByCondition;
     limit?: number;
   }): Promise<Task[]> {
@@ -189,7 +189,7 @@ export class TaskService {
 
   public async count(query: {
     projectId: string;
-    status?: TaskStatusEnum;
+    status?: TaskStatus;
     rewardNotNull?: boolean;
   }): Promise<number> {
     const findCondition: FindConditions<Task> = {

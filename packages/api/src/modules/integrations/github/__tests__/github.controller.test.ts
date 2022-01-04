@@ -4,7 +4,7 @@ import faker from "faker";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestActions } from "../github.controller";
 import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
 
@@ -27,7 +27,7 @@ describe("GithubController", () => {
         await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
-        status: TaskStatusEnum.IN_PROGRESS,
+        status: TaskStatus.IN_PROGRESS,
       });
       const branchName = `username/dw-${task.number}/feature`;
 
@@ -60,7 +60,7 @@ describe("GithubController", () => {
         await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({
         projectId: project.id,
-        status: TaskStatusEnum.IN_REVIEW,
+        status: TaskStatus.IN_REVIEW,
       });
       const branch = await fixtures.createGithubBranch({
         name: `refs/heads/username/dw-${task.number}/feature`,
@@ -100,7 +100,7 @@ describe("GithubController", () => {
       expect(prOpenedResponse.status).toEqual(HttpStatus.CREATED);
       expect(prFromDb?.taskId).toEqual(task.id);
       expect(prFromDb?.status).toEqual(GithubPullRequestStatusEnum.OPEN);
-      expect(taskFromDb?.status).toEqual(TaskStatusEnum.IN_REVIEW);
+      expect(taskFromDb?.status).toEqual(TaskStatus.IN_REVIEW);
 
       const prClosedResponse = await client.request({
         app,
@@ -132,7 +132,7 @@ describe("GithubController", () => {
       expect(mergedPrFromDb?.status).toEqual(
         GithubPullRequestStatusEnum.MERGED
       );
-      expect(doneTaskFromDb?.status).toEqual(TaskStatusEnum.DONE);
+      expect(doneTaskFromDb?.status).toEqual(TaskStatus.DONE);
     });
   });
 });

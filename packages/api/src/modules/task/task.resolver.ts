@@ -14,7 +14,7 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
 import { CreateTaskApplicationInput } from "./dto/CreateTaskApplicationInput";
-import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
@@ -199,8 +199,8 @@ export class ProjectTasksResolver {
   @ResolveField(() => Int)
   public async taskCount(
     @Parent() project: Project,
-    @Args("status", { type: () => TaskStatusEnum, nullable: true })
-    status: TaskStatusEnum | undefined,
+    @Args("status", { type: () => TaskStatus, nullable: true })
+    status: TaskStatus | undefined,
     @Args("rewardNotNull", { type: () => Boolean, nullable: true })
     rewardNotNull: boolean | undefined
   ): Promise<number> {

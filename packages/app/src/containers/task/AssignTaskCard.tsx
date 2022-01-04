@@ -1,5 +1,5 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { Task, TaskStatusEnum, User } from "@dewo/app/graphql/types";
+import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip } from "antd";
 import moment from "moment";
 import React, { FC, useCallback, useState } from "react";
@@ -21,7 +21,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
           {
             id: task.id,
             assigneeIds: [user.id],
-            status: TaskStatusEnum.IN_PROGRESS,
+            status: TaskStatus.IN_PROGRESS,
           },
           task
         );

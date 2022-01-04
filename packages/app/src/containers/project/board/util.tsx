@@ -4,7 +4,7 @@ import {
   PaymentMethodType,
   PaymentStatus,
   Task,
-  TaskStatusEnum,
+  TaskStatus,
 } from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -21,11 +21,11 @@ export interface TaskSection {
   button?: ReactNode;
 }
 
-export const STATUS_LABEL: Record<TaskStatusEnum, string> = {
-  [TaskStatusEnum.TODO]: "To Do",
-  [TaskStatusEnum.IN_PROGRESS]: "In Progress",
-  [TaskStatusEnum.IN_REVIEW]: "In Review",
-  [TaskStatusEnum.DONE]: "Done",
+export const STATUS_LABEL: Record<TaskStatus, string> = {
+  [TaskStatus.TODO]: "To Do",
+  [TaskStatus.IN_PROGRESS]: "In Progress",
+  [TaskStatus.IN_REVIEW]: "In Review",
+  [TaskStatus.DONE]: "Done",
 };
 
 export function useShouldShowInlinePayButton(task: Task): boolean {
@@ -42,7 +42,7 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
     [project?.paymentMethods, task.reward?.token.networkId]
   );
   return (
-    task.status === TaskStatusEnum.DONE &&
+    task.status === TaskStatus.DONE &&
     !!task.assignees.length &&
     !!task.reward &&
     !task.reward.payment &&
@@ -54,7 +54,7 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
 export function useGroupedTasks(
   tasks: Task[],
   projectId?: string
-): Record<TaskStatusEnum, TaskSection[]> {
+): Record<TaskStatus, TaskSection[]> {
   const canUpdateTasks = usePermission("update", {
     __typename: "Task",
   } as Task);
@@ -66,7 +66,7 @@ export function useGroupedTasks(
         _.sortBy(tasksWithStatus, (task) => task.sortKey)
       )
       .mapValues((tasks, status) => {
-        if (status === TaskStatusEnum.TODO && canUpdateTasks) {
+        if (status === TaskStatus.TODO && canUpdateTasks) {
           const [claimed, unclaimed] = _.partition(
             tasks,
             (task) => !!task.applications.length
@@ -79,7 +79,7 @@ export function useGroupedTasks(
           }
         }
 
-        if (status === TaskStatusEnum.DONE && canUpdateTasks) {
+        if (status === TaskStatus.DONE && canUpdateTasks) {
           const unpaid: Task[] = [];
           const processing: Task[] = [];
           const paid: Task[] = [];
@@ -125,7 +125,7 @@ export function useGroupedTasks(
 
         return [{ tasks }];
       })
-      .value() as Record<TaskStatusEnum, TaskSection[]>;
+      .value() as Record<TaskStatus, TaskSection[]>;
   }, [tasks, projectId, canUpdateTasks]);
 }
 

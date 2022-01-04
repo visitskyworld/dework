@@ -9,7 +9,7 @@ import { INestApplication } from "@nestjs/common";
 import { DiscordIntegrationService } from "../discord.integration.service";
 import * as Discord from "discord.js";
 import { DiscordService } from "../discord.service";
-import { Task, TaskStatusEnum } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { TaskService } from "@dewo/api/modules/task/task.service";
 import { DeepPartial } from "typeorm";
@@ -93,7 +93,7 @@ describe("DiscordIntegration", () => {
 
   async function createTask(partial: DeepPartial<Task>): Promise<Task> {
     const task = await fixtures.createTask({
-      status: TaskStatusEnum.IN_PROGRESS,
+      status: TaskStatus.IN_PROGRESS,
       ...partial,
     });
     await discordIntegrationService.handle(new TaskCreatedEvent(task));
@@ -120,12 +120,12 @@ describe("DiscordIntegration", () => {
       const project = await createProjectWithDiscordIntegration();
       const todoTask = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.TODO,
+        status: TaskStatus.TODO,
         assignees: [],
       });
       const doneTask = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.DONE,
+        status: TaskStatus.DONE,
         assignees: [],
       });
       await expect(todoTask.discordChannel).resolves.toBe(null);
@@ -144,11 +144,11 @@ describe("DiscordIntegration", () => {
       // });
       const taskInProgress = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.IN_PROGRESS,
+        status: TaskStatus.IN_PROGRESS,
       });
       const taskInReview = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.IN_REVIEW,
+        status: TaskStatus.IN_REVIEW,
       });
       await expect(taskWithAssignees.discordChannel).resolves.not.toBe(null);
       // await expect(taskWithApplications.discordChannel).resolves.not.toBe(null);
@@ -194,12 +194,12 @@ describe("DiscordIntegration", () => {
       const project = await createProjectWithDiscordIntegration();
       const task = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.TODO,
+        status: TaskStatus.TODO,
       });
       await expect(task.discordChannel).resolves.toBe(null);
 
       const updated = await updateTask(task, {
-        status: TaskStatusEnum.IN_PROGRESS,
+        status: TaskStatus.IN_PROGRESS,
       });
       await expect(updated.discordChannel).resolves.not.toBe(null);
     });
@@ -270,10 +270,10 @@ describe("DiscordIntegration", () => {
       const project = await createProjectWithDiscordIntegration();
       const task = await createTask({
         projectId: project.id,
-        status: TaskStatusEnum.IN_PROGRESS,
+        status: TaskStatus.IN_PROGRESS,
       });
 
-      const updated = await updateTask(task, { status: TaskStatusEnum.DONE });
+      const updated = await updateTask(task, { status: TaskStatus.DONE });
       const discordChannel = await updated.discordChannel;
       const guild = await discord.guilds.fetch(discordGuildId);
       const parentChannel = await guild.channels.fetch(discordChannelId);

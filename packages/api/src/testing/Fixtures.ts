@@ -13,7 +13,7 @@ import { ProjectModule } from "../modules/project/project.module";
 import { TaskModule } from "../modules/task/task.module";
 import { Project } from "../models/Project";
 import { ProjectService } from "../modules/project/project.service";
-import { Task, TaskStatusEnum } from "../models/Task";
+import { Task, TaskStatus } from "../models/Task";
 import { TaskService } from "../modules/task/task.service";
 import { TaskTag } from "../models/TaskTag";
 import { GithubService } from "../modules/integrations/github/github.service";
@@ -161,7 +161,7 @@ export class Fixtures {
     return this.taskService.create({
       name: faker.company.companyName(),
       projectId: defaultProjectId,
-      status: TaskStatusEnum.TODO,
+      status: TaskStatus.TODO,
       sortKey: String(Date.now()),
       ...partial,
       reward: !!partial.reward

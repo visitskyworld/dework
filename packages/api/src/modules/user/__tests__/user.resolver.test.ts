@@ -12,7 +12,7 @@ import { Ability } from "@casl/ability";
 import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
@@ -466,7 +466,7 @@ describe("UserResolver", () => {
           const user = await fixtures.createUser();
           const assignedTask = await fixtures.createTask({
             assignees: [user],
-            status: TaskStatusEnum.IN_PROGRESS,
+            status: TaskStatus.IN_PROGRESS,
             projectId: project.id,
           });
           const unassignedTask = await fixtures.createTask({

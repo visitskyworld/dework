@@ -7,7 +7,7 @@ import {
 } from "@dewo/api/models/GithubPullRequest";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
@@ -159,11 +159,11 @@ export class GithubController {
           if (isMerged) {
             await this.taskService.update({
               id: task.id,
-              status: TaskStatusEnum.DONE,
+              status: TaskStatus.DONE,
             });
             this.log("Updated task status", {
               taskNumber: task.number,
-              status: TaskStatusEnum.DONE,
+              status: TaskStatus.DONE,
             });
           }
           this.log("Updated PR's status", {
@@ -185,11 +185,11 @@ export class GithubController {
           if (!draft) {
             await this.taskService.update({
               id: task.id,
-              status: TaskStatusEnum.IN_REVIEW,
+              status: TaskStatus.IN_REVIEW,
             });
             this.log("Updated task status", {
               taskNumber: task.number,
-              status: TaskStatusEnum.IN_REVIEW,
+              status: TaskStatus.IN_REVIEW,
             });
           }
           await this.triggerTaskUpdatedSubscription(task.id);

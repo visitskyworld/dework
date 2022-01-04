@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { Form, Button, Input, Select, Row, Typography, Col } from "antd";
-import { TaskStatusEnum, User, TaskDetails } from "@dewo/app/graphql/types";
+import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../project/board/util";
 import { useTaskFormUserOptions } from "./hooks";
 import {
@@ -30,7 +30,7 @@ export interface TaskFormValues {
   name: string;
   description: string;
   projectId?: string;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   tagIds: string[];
   assigneeIds: string[];
   ownerId?: string | null;
@@ -62,7 +62,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   const canSubmit = usePermission(mode, !!task ? task : "Task");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
-    (field: keyof TaskFormValues | `status[${TaskStatusEnum}]`) =>
+    (field: keyof TaskFormValues | `status[${TaskStatus}]`) =>
       hasPermission(mode, task ?? "Task", field),
     [hasPermission, mode, task]
   );
@@ -146,7 +146,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Select a task status"
               disabled={!canChange("status")}
             >
-              {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
+              {(Object.keys(STATUS_LABEL) as TaskStatus[]).map((status) => (
                 <Select.Option
                   key={status}
                   value={status}
@@ -201,7 +201,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {!!canChange("assigneeIds") &&
             !!task &&
-            task.status === TaskStatusEnum.TODO &&
+            task.status === TaskStatus.TODO &&
             !!task.applications.length && <AssignTaskCard task={task} />}
 
           {!!task && <GithubIntegrationSection task={task} />}
@@ -220,7 +220,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Select a task status"
               disabled={!canChange("status")}
             >
-              {(Object.keys(STATUS_LABEL) as TaskStatusEnum[]).map((status) => (
+              {(Object.keys(STATUS_LABEL) as TaskStatus[]).map((status) => (
                 <Select.Option
                   key={status}
                   value={status}

@@ -1,7 +1,7 @@
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import {
   Task,
-  TaskStatusEnum,
+  TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import {
@@ -41,7 +41,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
 
   const updateTask = useUpdateTask();
   const moveToDone = useCallback(
-    () => updateTask({ id: task.id, status: TaskStatusEnum.DONE }, task),
+    () => updateTask({ id: task.id, status: TaskStatus.DONE }, task),
     [updateTask, task]
   );
 
@@ -54,7 +54,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
     }
 
     if (
-      task.status === TaskStatusEnum.IN_REVIEW &&
+      task.status === TaskStatus.IN_REVIEW &&
       !!task.reward &&
       !task.reward.payment &&
       !!currentUserId &&
@@ -78,7 +78,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       );
     }
 
-    if (task.status === TaskStatusEnum.TODO) {
+    if (task.status === TaskStatus.TODO) {
       if (canUpdateTask) {
         if (!!task.applications.length) {
           return (
@@ -179,7 +179,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
         >
           <div style={{ flex: 1 }} />
 
-          {task.status === TaskStatusEnum.TODO && !task.assignees.length ? (
+          {task.status === TaskStatus.TODO && !task.assignees.length ? (
             canUpdateTask ? (
               <Avatar.Group maxCount={3} size={22}>
                 {task.applications.map((application) => (

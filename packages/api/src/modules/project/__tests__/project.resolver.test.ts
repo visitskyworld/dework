@@ -3,7 +3,7 @@ import {
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
-import { TaskStatusEnum } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -210,18 +210,18 @@ describe("ProjectResolver", () => {
         });
         await fixtures.createTask({
           projectId: project.id,
-          status: TaskStatusEnum.TODO,
+          status: TaskStatus.TODO,
           reward: {
             trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
           },
         });
         await fixtures.createTask({
           projectId: project.id,
-          status: TaskStatusEnum.TODO,
+          status: TaskStatus.TODO,
         });
         await fixtures.createTask({
           projectId: project.id,
-          status: TaskStatusEnum.DONE,
+          status: TaskStatus.DONE,
         });
 
         const response = await client.request({

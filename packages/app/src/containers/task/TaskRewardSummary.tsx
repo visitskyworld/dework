@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { Tag, Row, Typography } from "antd";
 import {
-  TaskStatusEnum,
+  TaskStatus,
   TaskRewardTrigger,
   TaskReward,
 } from "@dewo/app/graphql/types";
@@ -20,7 +20,7 @@ export interface TaskFormValues {
   name: string;
   description: string;
   projectId?: string;
-  status: TaskStatusEnum;
+  status: TaskStatus;
   tagIds: string[];
   assigneeIds: string[];
   ownerId?: string;

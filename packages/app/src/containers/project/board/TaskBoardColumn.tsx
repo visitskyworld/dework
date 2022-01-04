@@ -4,7 +4,7 @@ import { Button, Card, Badge, Space, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { TaskCard } from "./TaskCard";
-import { Task, TaskStatusEnum } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
@@ -17,7 +17,7 @@ import {
 import { TaskSectionTitle } from "./TaskSectionTitle";
 
 interface Props {
-  status: TaskStatusEnum;
+  status: TaskStatus;
   taskSections: TaskSection[];
   width: number;
   projectId?: string;
