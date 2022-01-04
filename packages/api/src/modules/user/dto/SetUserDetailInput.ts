@@ -1,11 +1,11 @@
-import { UserDetailType } from "@dewo/api/models/UserDetail";
+import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { Field, InputType } from "@nestjs/graphql";
 import { GraphQLString } from "graphql";
 
 @InputType()
 export class SetUserDetailInput {
-  @Field(() => UserDetailType)
-  public type!: UserDetailType;
+  @Field(() => EntityDetailType)
+  public type!: EntityDetailType;
 
   @Field(() => GraphQLString, { nullable: true })
   public value!: string | null;

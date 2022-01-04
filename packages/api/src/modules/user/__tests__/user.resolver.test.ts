@@ -13,8 +13,8 @@ import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
-import { UserDetailType } from "@dewo/api/models/UserDetail";
-import { SetUserDetailInput } from "../dto/SetUserDetail";
+import { EntityDetailType } from "@dewo/api/models/EntityDetail";
+import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 
 describe("UserResolver", () => {
@@ -211,13 +211,13 @@ describe("UserResolver", () => {
         expect(updatedUser.details).toHaveLength(2);
         expect(updatedUser.details).toContainEqual(
           expect.objectContaining({
-            type: UserDetailType.location,
+            type: EntityDetailType.location,
             value: "London",
           })
         );
         expect(updatedUser.details).toContainEqual(
           expect.objectContaining({
-            type: UserDetailType.github,
+            type: EntityDetailType.github,
             value: "github.com/my-url",
           })
         );
@@ -246,7 +246,7 @@ describe("UserResolver", () => {
         const updatedUser = response.body.data?.authWithThreepid.user;
         expect(updatedUser.details).toHaveLength(1);
         expect(updatedUser.details).toContainEqual({
-          type: UserDetailType.discord,
+          type: EntityDetailType.discord,
           value: "https://discord.com/users/123",
         });
       });
@@ -297,7 +297,7 @@ describe("UserResolver", () => {
         const response = await client.request({
           app,
           body: UserRequests.setUserDetail({
-            type: UserDetailType.twitter,
+            type: EntityDetailType.twitter,
             value: faker.internet.url(),
           }),
         });
@@ -308,7 +308,7 @@ describe("UserResolver", () => {
       it("should succeed if is authed", async () => {
         const user = await fixtures.createUser();
         const detail: SetUserDetailInput = {
-          type: UserDetailType.twitter,
+          type: EntityDetailType.twitter,
           value: faker.internet.url(),
         };
 
@@ -323,11 +323,11 @@ describe("UserResolver", () => {
       it("should succeed if detail is replaced on type already existing", async () => {
         const user = await fixtures.createUser();
         const detail1: SetUserDetailInput = {
-          type: UserDetailType.twitter,
+          type: EntityDetailType.twitter,
           value: faker.internet.url(),
         };
         const detail2: SetUserDetailInput = {
-          type: UserDetailType.twitter,
+          type: EntityDetailType.twitter,
           value: faker.internet.url(),
         };
 
@@ -346,7 +346,7 @@ describe("UserResolver", () => {
 
       it("should succeed if detail is created and deleted", async () => {
         const user = await fixtures.createUser();
-        const userDetailType = UserDetailType.twitter;
+        const entityDetailType = EntityDetailType.twitter;
         const url1 = faker.internet.url();
         const url2 = null;
 
@@ -354,7 +354,7 @@ describe("UserResolver", () => {
           app,
           auth: fixtures.createAuthToken(user),
           body: UserRequests.setUserDetail({
-            type: userDetailType,
+            type: entityDetailType,
             value: url1,
           }),
         });
@@ -363,7 +363,7 @@ describe("UserResolver", () => {
           app,
           auth: fixtures.createAuthToken(user),
           body: UserRequests.setUserDetail({
-            type: userDetailType,
+            type: entityDetailType,
             value: url2,
           }),
         });

@@ -22,7 +22,7 @@ import {
   useUpdateUserDetail,
   useUserTasks,
 } from "./hooks";
-import { TaskStatusEnum, UserDetailType } from "@dewo/app/graphql/types";
+import { TaskStatusEnum, EntityDetailType } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
@@ -71,7 +71,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
         loading.toggleOn();
         await Promise.all(
           Object.entries(values).map(([type, value]) =>
-            updateUserDetail({ type: type as UserDetailType, value })
+            updateUserDetail({ type: type as EntityDetailType, value })
           )
         );
         message.success("Profile updated!");

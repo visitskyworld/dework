@@ -4,7 +4,7 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
-import { UserDetail } from "@dewo/api/models/UserDetail";
+import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
@@ -19,7 +19,7 @@ import { UserService } from "./user.service";
   imports: [
     TypeOrmModule.forFeature([
       User,
-      UserDetail,
+      EntityDetail,
       Organization,
       Project,
       Task,

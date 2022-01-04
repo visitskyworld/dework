@@ -24,6 +24,10 @@ import {
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
   RemoveOrganizationMemberMutationVariables,
+  SetOrganizationDetailInput,
+  SetOrganizationDetailMutation,
+  SetOrganizationDetailMutationVariables,
+  SetOrganizationDetailMutation_organization,
   UpdateOrganizationInput,
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
@@ -71,6 +75,23 @@ export function useUpdateOrganization(): (
         refetchQueries: [{ query: Queries.me }],
       });
 
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.organization;
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateOrganizationDetail(): (
+  input: SetOrganizationDetailInput
+) => Promise<SetOrganizationDetailMutation_organization> {
+  const [mutation] = useMutation<
+    SetOrganizationDetailMutation,
+    SetOrganizationDetailMutationVariables
+  >(Mutations.setOrganizationDetail);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.organization;
     },

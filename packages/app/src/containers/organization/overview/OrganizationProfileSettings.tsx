@@ -11,30 +11,50 @@ import {
   Typography,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useOrganization, useUpdateOrganization } from "../hooks";
+import {
+  useOrganization,
+  useUpdateOrganization,
+  useUpdateOrganizationDetail,
+} from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { UpdateOrganizationInput } from "../../../graphql/types";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { EntityDetailType } from "@dewo/app/graphql/types";
 
-interface Props {
+interface SetOrganizationFormInput extends UpdateOrganizationInput {
+  type: EntityDetailType;
+  discord: EntityDetailType.discord;
+  github: EntityDetailType.github;
+  location: EntityDetailType.location;
+}
+
+interface OrganizationProfileSettingsProps {
   organizationId: string;
 }
 
-export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
+export const OrganizationProfileSettings: FC<
+  OrganizationProfileSettingsProps
+> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const updateOrganization = useUpdateOrganization();
+  const updateOrganisazionDetail = useUpdateOrganizationDetail();
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async (values: UpdateOrganizationInput) => {
+    async (values: SetOrganizationFormInput) => {
       try {
         setLoading(true);
         await updateOrganization({
           id: organizationId,
           name: values.name,
           description: values.description,
+        });
+        await updateOrganisazionDetail({
+          organizationId,
+          type: EntityDetailType.discord,
+          value: values.discord,
         });
         message.success({
           content: "Organization profile updated!",
@@ -49,7 +69,7 @@ export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
         setLoading(false);
       }
     },
-    [organizationId, updateOrganization]
+    [organizationId, updateOrganisazionDetail, updateOrganization]
   );
 
   if (!organization) return null;
@@ -58,10 +78,9 @@ export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
     <Space
       direction="vertical"
       style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
-      contentEditable={canUpdateOrganization}
     >
       <Card>
-        <Form<UpdateOrganizationInput>
+        <Form<SetOrganizationFormInput>
           layout="vertical"
           requiredMark={false}
           onFinish={handleSubmit}
@@ -96,6 +115,11 @@ export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
                 <DiscordIcon style={{ width: 20 }} />
                 <Form.Item
                   name="discord"
+                  initialValue={
+                    organization.details.find(
+                      (d) => d.type === EntityDetailType.discord
+                    )?.value
+                  }
                   rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >
@@ -106,6 +130,11 @@ export const OrganizationProfileSettings: FC<Props> = ({ organizationId }) => {
                 <Icons.TwitterOutlined style={{ width: 20 }} />
                 <Form.Item
                   name="twitter"
+                  initialValue={
+                    organization.details.find(
+                      (d) => d.type === EntityDetailType.twitter
+                    )?.value
+                  }
                   rules={[{ required: false }]}
                   style={{ flex: 1, margin: "0 0 0 8px" }}
                 >

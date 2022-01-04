@@ -134,7 +134,7 @@ export const OrganizationTabs: FC<Props> = ({
         >
           <OrganizationSettings
             organizationId={organizationId}
-            currentTab={settingsTab ?? "members"}
+            currentTab={settingsTab ?? "profile"}
             onTabClick={navigateToSettingsTab}
           />
         </Tabs.TabPane>

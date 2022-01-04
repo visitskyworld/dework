@@ -15,11 +15,11 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
-import { SetUserDetailMutation_detail } from "../../graphql/types";
 import {
   SetUserDetailInput,
   SetUserDetailMutation,
   SetUserDetailMutationVariables,
+  SetUserDetailMutation_detail,
 } from "../../graphql/types";
 
 export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {

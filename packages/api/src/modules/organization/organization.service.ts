@@ -1,3 +1,4 @@
+import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Organization } from "@dewo/api/models/Organization";
 import {
   OrganizationMember,
@@ -10,6 +11,7 @@ import { DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DeepPartial, Repository } from "typeorm";
+import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 
 @Injectable()
@@ -22,7 +24,9 @@ export class OrganizationService {
     @InjectRepository(OrganizationMember)
     private readonly organizationMemberRepo: Repository<OrganizationMember>,
     @InjectRepository(Project)
-    private readonly projectRepo: Repository<Project>
+    private readonly projectRepo: Repository<Project>,
+    @InjectRepository(EntityDetail)
+    private readonly entityDetailRepo: Repository<EntityDetail>
   ) {}
 
   public async create(
@@ -48,6 +52,41 @@ export class OrganizationService {
 
   public findById(id: string): Promise<Organization | undefined> {
     return this.organizationRepo.findOne(id);
+  }
+
+  public async upsertDetail(
+    partial: Omit<SetOrganizationDetailInput, "organizationId">,
+    organizationId: string
+  ): Promise<EntityDetail | void> {
+    if (!partial.value) {
+      await this.entityDetailRepo.delete({
+        type: partial.type,
+        organizationId,
+      });
+      return;
+    }
+
+    const existing = await this.entityDetailRepo.findOne({
+      organizationId,
+      type: partial.type,
+    });
+
+    return this.entityDetailRepo.save({
+      ...existing,
+      organizationId,
+      type: partial.type,
+      value: partial.value,
+    });
+  }
+
+  public getDetails(organizationId: string): Promise<EntityDetail[]> {
+    return this.entityDetailRepo
+      .createQueryBuilder("detail")
+      .leftJoinAndSelect("detail.organization", "organization")
+      .where("organization.id = :organizationId", {
+        organizationId,
+      })
+      .getMany();
   }
 
   public findMember(

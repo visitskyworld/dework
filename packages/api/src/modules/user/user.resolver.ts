@@ -26,7 +26,7 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "../organization/organization.service";
-import { SetUserDetailInput } from "./dto/SetUserDetail";
+import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 
 @Resolver(() => User)

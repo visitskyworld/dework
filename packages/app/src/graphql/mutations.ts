@@ -218,13 +218,23 @@ export const setUserDetail = gql`
     detail: setUserDetail(input: $input) {
       ...User
       details {
-        ...UserDetail
+        ...EntityDetail
       }
     }
   }
 
   ${Fragments.user}
-  ${Fragments.userDetail}
+  ${Fragments.entityDetail}
+`;
+
+export const setOrganizationDetail = gql`
+  mutation SetOrganizationDetailMutation($input: SetOrganizationDetailInput!) {
+    detail: setOrganizationDetail(input: $input) {
+      ...EntityDetail
+    }
+  }
+
+  ${Fragments.entityDetail}
 `;
 
 export const createOrganizationInvite = gql`

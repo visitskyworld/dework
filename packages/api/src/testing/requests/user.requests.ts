@@ -1,4 +1,4 @@
-import { SetUserDetailInput } from "@dewo/api/modules/user/dto/SetUserDetail";
+import { SetUserDetailInput } from "@dewo/api/modules/user/dto/SetUserDetailInput";
 import { GetUserPermissionsInput } from "@dewo/api/modules/user/dto/GetUserPermissionsInput";
 import { UpdateUserInput } from "@dewo/api/modules/user/dto/UpdateUserInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
@@ -47,7 +47,7 @@ export class UserRequests {
   ): GraphQLTestClientRequestBody<{ input: SetUserDetailInput }> {
     return {
       query: `
-        mutation SetUserDetail($input: SetUserDetailInput!) {
+        mutation SetUserDetail($input: SetEntityDetailInput!) {
           setUserDetail(input: $input) { 
             id           
             details {

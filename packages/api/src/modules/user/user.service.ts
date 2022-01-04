@@ -1,6 +1,6 @@
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
-import { UserDetail, UserDetailType } from "@dewo/api/models/UserDetail";
+import { EntityDetail, EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
@@ -11,7 +11,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
-import { SetUserDetailInput } from "./dto/SetUserDetail";
+import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 
 @Injectable()
 export class UserService {
@@ -20,8 +20,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectRepository(UserDetail)
-    private readonly userDetailRepo: Repository<UserDetail>,
+    @InjectRepository(EntityDetail)
+    private readonly entityDetailRepo: Repository<EntityDetail>,
     private readonly threepidService: ThreepidService,
     private readonly jwtService: JwtService
   ) {}
@@ -79,16 +79,16 @@ export class UserService {
     userId: string
   ): Promise<void> {
     if (!partial.value) {
-      await this.userDetailRepo.delete({ type: partial.type, userId });
+      await this.entityDetailRepo.delete({ type: partial.type, userId });
       return;
     }
 
-    const existing = await this.userDetailRepo.findOne({
+    const existing = await this.entityDetailRepo.findOne({
       userId,
       type: partial.type,
     });
 
-    await this.userDetailRepo.save({
+    await this.entityDetailRepo.save({
       ...existing,
       userId,
       type: partial.type,
@@ -103,7 +103,7 @@ export class UserService {
     const location = this.threepidService.getLocation(threepid);
     if (location) {
       await this.setDetail(
-        { type: UserDetailType.location, value: location },
+        { type: EntityDetailType.location, value: location },
         userId
       );
     }
@@ -114,7 +114,7 @@ export class UserService {
       );
       await this.setDetail(
         {
-          type: UserDetailType.discord,
+          type: EntityDetailType.discord,
           value: discordProfileUrl,
         },
         userId
@@ -125,7 +125,7 @@ export class UserService {
       );
       await this.setDetail(
         {
-          type: UserDetailType.github,
+          type: EntityDetailType.github,
           value: githubProfileUrl,
         },
         userId

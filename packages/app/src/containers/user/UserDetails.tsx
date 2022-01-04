@@ -2,37 +2,37 @@ import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { Form, Avatar, Input, Space, Typography, Row } from "antd";
 
-import { UserDetailType, UserDetail } from "../../graphql/types";
+import { EntityDetailType, EntityDetail } from "../../graphql/types";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
-const iconByType: Record<UserDetailType, JSX.Element> = {
-  [UserDetailType.twitter]: <Icons.TwitterOutlined />,
-  [UserDetailType.github]: <Icons.GithubOutlined />,
-  [UserDetailType.discord]: <DiscordIcon />,
-  [UserDetailType.linkedin]: <Icons.LinkedinFilled />,
-  [UserDetailType.website]: <Icons.LinkOutlined />,
-  [UserDetailType.location]: <Icons.EnvironmentOutlined />,
+const iconByType: Record<EntityDetailType, JSX.Element> = {
+  [EntityDetailType.twitter]: <Icons.TwitterOutlined />,
+  [EntityDetailType.github]: <Icons.GithubOutlined />,
+  [EntityDetailType.discord]: <DiscordIcon />,
+  [EntityDetailType.linkedin]: <Icons.LinkedinFilled />,
+  [EntityDetailType.website]: <Icons.LinkOutlined />,
+  [EntityDetailType.location]: <Icons.EnvironmentOutlined />,
 };
 
-const placeholderByType: Record<UserDetailType, string> = {
-  [UserDetailType.twitter]: "https://twitter.com/lastcontrarian",
-  [UserDetailType.github]: "https://github.com/vbuterin",
-  [UserDetailType.discord]: "https://discord.com/users/123",
-  [UserDetailType.linkedin]: "https://www.linkedin.com/in/balajissrinivasan",
-  [UserDetailType.website]: "https://my-site.com",
-  [UserDetailType.location]: "Lisbon, Portugal",
+const placeholderByType: Record<EntityDetailType, string> = {
+  [EntityDetailType.twitter]: "https://twitter.com/lastcontrarian",
+  [EntityDetailType.github]: "https://github.com/vbuterin",
+  [EntityDetailType.discord]: "https://discord.com/users/123",
+  [EntityDetailType.linkedin]: "https://www.linkedin.com/in/balajissrinivasan",
+  [EntityDetailType.website]: "https://my-site.com",
+  [EntityDetailType.location]: "Lisbon, Portugal",
 };
 
-interface UserDetailsProps {
+interface EntityDetailsProps {
   isEditMode: boolean;
-  userDetails: UserDetail[];
+  userDetails: EntityDetail[];
 }
 
-export const UserDetails: FC<UserDetailsProps> = ({
+export const UserDetails: FC<EntityDetailsProps> = ({
   isEditMode,
   userDetails,
 }) => {
-  const locationDetailType = useMemo(() => UserDetailType.location, []);
+  const locationDetailType = useMemo(() => EntityDetailType.location, []);
   const locationDetail = useMemo(
     () => userDetails.find((detail) => detail.type === locationDetailType),
     [userDetails, locationDetailType]
@@ -43,7 +43,7 @@ export const UserDetails: FC<UserDetailsProps> = ({
   if (isEditMode) {
     return (
       <Space direction="vertical" style={{ width: "100%" }}>
-        {Object.values(UserDetailType).map(
+        {Object.values(EntityDetailType).map(
           (type) =>
             type !== locationDetailType && (
               <Row align="middle">

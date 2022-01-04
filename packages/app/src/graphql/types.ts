@@ -17,9 +17,9 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -127,9 +127,9 @@ export interface UpdateUserMutation_user_organizations {
 }
 
 export interface UpdateUserMutation_user_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -313,6 +313,13 @@ export interface UpdateOrganizationMutation_organization_members {
   user: UpdateOrganizationMutation_organization_members_user;
 }
 
+export interface UpdateOrganizationMutation_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
 export interface UpdateOrganizationMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
@@ -330,6 +337,7 @@ export interface UpdateOrganizationMutation_organization {
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
   members: UpdateOrganizationMutation_organization_members[];
+  details: UpdateOrganizationMutation_organization_details[];
   integrations: UpdateOrganizationMutation_organization_integrations[];
 }
 
@@ -636,6 +644,13 @@ export interface CreateProjectMutation_project_organization_members {
   user: CreateProjectMutation_project_organization_members_user;
 }
 
+export interface CreateProjectMutation_project_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
 export interface CreateProjectMutation_project_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
@@ -653,6 +668,7 @@ export interface CreateProjectMutation_project_organization {
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
+  details: CreateProjectMutation_project_organization_details[];
   integrations: CreateProjectMutation_project_organization_integrations[];
 }
 
@@ -1581,9 +1597,9 @@ export interface CreateProjectIntegrationMutationVariables {
 // ====================================================
 
 export interface SetUserDetailMutation_detail_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -1601,6 +1617,30 @@ export interface SetUserDetailMutation {
 
 export interface SetUserDetailMutationVariables {
   input: SetUserDetailInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: SetOrganizationDetailMutation
+// ====================================================
+
+export interface SetOrganizationDetailMutation_detail {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface SetOrganizationDetailMutation {
+  detail: SetOrganizationDetailMutation_detail;
+}
+
+export interface SetOrganizationDetailMutationVariables {
+  input: SetOrganizationDetailInput;
 }
 
 /* tslint:disable */
@@ -2330,9 +2370,9 @@ export interface MeQuery_me_organizations {
 }
 
 export interface MeQuery_me_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -2408,9 +2448,9 @@ export interface UserProfileQuery_user_organizations {
 }
 
 export interface UserProfileQuery_user_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -2779,6 +2819,13 @@ export interface GetOrganizationQuery_organization_members {
   user: GetOrganizationQuery_organization_members_user;
 }
 
+export interface GetOrganizationQuery_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
 export interface GetOrganizationQuery_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
@@ -2796,6 +2843,7 @@ export interface GetOrganizationQuery_organization {
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
+  details: GetOrganizationQuery_organization_details[];
   integrations: GetOrganizationQuery_organization_integrations[];
 }
 
@@ -2904,6 +2952,13 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
   user: GetFeaturedOrganizationsQuery_featuredOrganizations_members_user;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
@@ -2921,6 +2976,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
+  details: GetFeaturedOrganizationsQuery_featuredOrganizations_details[];
   integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_integrations[];
 }
 
@@ -4701,13 +4757,13 @@ export interface TaskRewardUpdatedSubscription {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserDetail
+// GraphQL fragment: EntityDetail
 // ====================================================
 
-export interface UserDetail {
-  __typename: "UserDetail";
+export interface EntityDetail {
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -5813,9 +5869,9 @@ export interface UserProfile_organizations {
 }
 
 export interface UserProfile_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -5848,9 +5904,9 @@ export interface UserDetails_organizations {
 }
 
 export interface UserDetails_details {
-  __typename: "UserDetail";
+  __typename: "EntityDetail";
   id: Scalar.UUID;
-  type: UserDetailType;
+  type: EntityDetailType;
   value: string;
 }
 
@@ -6000,6 +6056,13 @@ export interface OrganizationDetails_members {
   user: OrganizationDetails_members_user;
 }
 
+export interface OrganizationDetails_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
 export interface OrganizationDetails_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
@@ -6017,6 +6080,7 @@ export interface OrganizationDetails {
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
+  details: OrganizationDetails_details[];
   integrations: OrganizationDetails_integrations[];
 }
 
@@ -6075,6 +6139,15 @@ export interface Invite {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum EntityDetailType {
+  discord = "discord",
+  github = "github",
+  linkedin = "linkedin",
+  location = "location",
+  twitter = "twitter",
+  website = "website",
+}
 
 export enum GithubPullRequestStatusEnum {
   CLOSED = "CLOSED",
@@ -6150,15 +6223,6 @@ export enum ThreepidSource {
   discord = "discord",
   github = "github",
   metamask = "metamask",
-}
-
-export enum UserDetailType {
-  discord = "discord",
-  github = "github",
-  linkedin = "linkedin",
-  location = "location",
-  twitter = "twitter",
-  website = "website",
 }
 
 export interface CreateFileUploadUrlInput {
@@ -6271,8 +6335,14 @@ export interface RemoveProjectMemberInput {
   userId: Scalar.UUID;
 }
 
+export interface SetOrganizationDetailInput {
+  type: EntityDetailType;
+  value?: string | null;
+  organizationId: Scalar.UUID;
+}
+
 export interface SetUserDetailInput {
-  type: UserDetailType;
+  type: EntityDetailType;
   value?: string | null;
 }
 

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
-export const userDetail = gql`
-  fragment UserDetail on UserDetail {
+export const entityDetail = gql`
+  fragment EntityDetail on EntityDetail {
     id
     type
     value
@@ -358,13 +358,13 @@ export const userProfile = gql`
       ...Organization
     }
     details {
-      ...UserDetail
+      ...EntityDetail
     }
   }
 
   ${user}
   ${organization}
-  ${userDetail}
+  ${entityDetail}
 `;
 
 export const userDetails = gql`
@@ -393,6 +393,9 @@ export const organizationDetails = gql`
     members {
       ...OrganizationMember
     }
+    details {
+      ...EntityDetail
+    }
     integrations {
       ...OrganizationIntegration
     }
@@ -402,6 +405,7 @@ export const organizationDetails = gql`
   ${organizationMember}
   ${organizationIntegration}
   ${projectDetails}
+  ${entityDetail}
   ${user}
 `;
 

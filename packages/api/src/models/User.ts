@@ -5,7 +5,7 @@ import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
 import { TaskApplication } from "./TaskApplication";
 import { Threepid } from "./Threepid";
-import { UserDetail } from "./UserDetail";
+import { EntityDetail } from "./EntityDetail";
 
 @Entity()
 @ObjectType()
@@ -27,9 +27,9 @@ export class User extends Audit {
   @Field(() => [Threepid])
   public threepids!: Promise<Threepid[]>;
 
-  @OneToMany(() => UserDetail, (t: UserDetail) => t.user)
-  @Field(() => [UserDetail])
-  public details!: Promise<UserDetail[]>;
+  @OneToMany(() => EntityDetail, (t: EntityDetail) => t.user)
+  @Field(() => [EntityDetail])
+  public details!: Promise<EntityDetail[]>;
 
   @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.user)
   @Field(() => [PaymentMethod])
