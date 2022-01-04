@@ -27,7 +27,7 @@ import {
   SetOrganizationDetailInput,
   SetOrganizationDetailMutation,
   SetOrganizationDetailMutationVariables,
-  SetOrganizationDetailMutation_organization,
+  SetOrganizationDetailMutation_detail,
   UpdateOrganizationInput,
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
@@ -84,7 +84,7 @@ export function useUpdateOrganization(): (
 
 export function useUpdateOrganizationDetail(): (
   input: SetOrganizationDetailInput
-) => Promise<SetOrganizationDetailMutation_organization> {
+) => Promise<SetOrganizationDetailMutation_detail> {
   const [mutation] = useMutation<
     SetOrganizationDetailMutation,
     SetOrganizationDetailMutationVariables
@@ -93,7 +93,7 @@ export function useUpdateOrganizationDetail(): (
     async (input) => {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.organization;
+      return res.data?.detail;
     },
     [mutation]
   );
