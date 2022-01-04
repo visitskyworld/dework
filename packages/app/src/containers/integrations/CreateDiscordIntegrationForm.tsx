@@ -158,7 +158,7 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
         type="primary"
         htmlType="submit"
         block
-        // loading={submitLoading.isOn}
+        loading={submitting.isOn}
         hidden={!values.feature}
       >
         Connect Discord

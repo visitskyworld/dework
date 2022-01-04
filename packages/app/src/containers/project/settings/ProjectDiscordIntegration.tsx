@@ -111,27 +111,6 @@ export const ProjectDiscordIntegration: FC<Props> = ({
         onSubmit={handleSubmit}
       />
     );
-    // return (
-    //   <ConnectToDiscordFormSection>
-    //     <Input.Group compact style={{ display: "flex" }}>
-    //       <ConnectProjectToDiscordSelect
-    //         channels={discordChannels}
-    //         organizationId={project.organizationId}
-    //         allowClear
-    //         style={{ flex: 1 }}
-    //         onChange={setSelectedDiscordChannelId}
-    //       />
-    //       <Button
-    //         loading={loading.isOn}
-    //         disabled={!selectedDiscordChannelId}
-    //         type="primary"
-    //         onClick={handleConnect}
-    //       >
-    //         Connect
-    //       </Button>
-    //     </Input.Group>
-    //   </ConnectToDiscordFormSection>
-    // );
   }
 
   return (
