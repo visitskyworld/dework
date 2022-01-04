@@ -17,17 +17,18 @@ import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrg
 import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import {
-  DiscordProjectIntegrationFeature,
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
-import { ConnectProjectToDiscordSelect } from "../../integrations/ConnectProjectToDiscordSelect";
+import {
+  DiscordIntegrationFormFields,
+  FormValues as DiscordFormFields,
+} from "../../integrations/CreateDiscordIntegrationForm";
 
-interface FormValues extends CreateProjectInput {
+interface FormValues extends CreateProjectInput, Partial<DiscordFormFields> {
   type?: "dev" | "non-dev";
   githubRepoId?: string;
-  discordChannelId?: string;
 }
 
 interface ProjectCreateFormProps {
@@ -40,6 +41,14 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   onCreated,
 }) => {
   const organization = useOrganization(organizationId);
+
+  const [values, setValues] = useState<Partial<FormValues>>({});
+  const handleChange = useCallback(
+    (_changed: Partial<FormValues>, values: Partial<FormValues>) =>
+      setValues(values),
+    []
+  );
+
   const createProject = useCreateProject();
   const createDiscordIntegration = useCreateDiscordProjectIntegration();
   const createGithubIntegration = useCreateGithubProjectIntegration();
@@ -67,26 +76,39 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     { organizationId },
     !hasDiscordIntegration
   );
+  const discordThreads = useOrganizationDiscordChannels(
+    { organizationId, discordParentChannelId: values.discordChannelId },
+    !hasDiscordIntegration
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
-    async ({ type, githubRepoId, discordChannelId, ...input }: FormValues) => {
+    async (values: FormValues) => {
       try {
         setLoading(true);
-        const project = await createProject(input);
+        const project = await createProject({
+          name: values.name,
+          visibility: values.visibility,
+          organizationId: values.organizationId,
+        });
 
-        const repo = githubRepos?.find((r) => r.id === githubRepoId);
+        const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
         if (!!repo) {
           await createGithubIntegration(project.id, repo);
         }
 
-        const channel = discordChannels?.find((c) => c.id === discordChannelId);
-        if (!!channel) {
+        const channel = discordChannels?.find(
+          (c) => c.id === values.discordChannelId
+        );
+        const thread = discordThreads?.find(
+          (c) => c.id === values.discordThreadId
+        );
+        if (!!channel && values.discordFeature) {
           await createDiscordIntegration({
             projectId: project.id,
             channel,
-            feature:
-              DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+            thread,
+            feature: values.discordFeature,
           });
         }
 
@@ -102,14 +124,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       onCreated,
       githubRepos,
       discordChannels,
+      discordThreads,
     ]
-  );
-
-  const [values, setValues] = useState<Partial<FormValues>>({});
-  const handleChange = useCallback(
-    (_changed: Partial<FormValues>, values: Partial<FormValues>) =>
-      setValues(values),
-    []
   );
 
   return (
@@ -141,12 +157,13 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
         {!!organization && hasDiscordIntegration && (
-          <Form.Item name="discordChannelId" label="Connect Discord Channel">
-            <ConnectProjectToDiscordSelect
-              organizationId={organization.id}
+          <FormSection label="Discord Integration">
+            <DiscordIntegrationFormFields
+              values={values}
               channels={discordChannels}
+              threads={discordThreads}
             />
-          </Form.Item>
+          </FormSection>
         )}
 
         <Form.Item
