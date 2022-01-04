@@ -63,7 +63,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     !hasGithubIntegration
   );
   const discordChannels = useOrganizationDiscordChannels(
-    organizationId,
+    { organizationId },
     !hasDiscordIntegration
   );
 

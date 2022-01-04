@@ -11,8 +11,10 @@ export class DiscordIntegrationResolver {
   // TODO(fant): do we want to make sure the requesting user is an org admin?
   @Query(() => [DiscordIntegrationChannel], { nullable: true })
   public async getDiscordIntegrationChannels(
-    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
+    @Args("discordParentChannelId", { nullable: true })
+    parentChannelId: string
   ): Promise<DiscordIntegrationChannel[]> {
-    return this.discord.getChannels(organizationId);
+    return this.discord.getChannels(organizationId, parentChannelId);
   }
 }

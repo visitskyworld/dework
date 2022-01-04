@@ -16,6 +16,13 @@ import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
 import { useCallback, useMemo } from "react";
 
+// Copied from @dewo/api/models/ProjectIntegration
+export enum DiscordProjectIntegrationFeature {
+  POST_TASK_UPDATES_TO_CHANNEL = "POST_TASK_UPDATES_TO_CHANNEL",
+  POST_TASK_UPDATES_TO_THREAD = "POST_TASK_UPDATES_TO_THREAD",
+  POST_TASK_UPDATES_TO_THREAD_PER_TASK = "POST_TASK_UPDATES_TO_THREAD_PER_TASK",
+}
+
 export function useConnectToGithubUrl(organizationId: string): string {
   const { user } = useAuthContext();
   return useMemo(() => {
@@ -69,18 +76,25 @@ export function useCreateGithubProjectIntegration(): (
   );
 }
 
-export function useCreateDiscordProjectIntegration(): (
-  projectId: string,
-  channel: DiscordIntegrationChannel
-) => Promise<ProjectIntegration> {
+export function useCreateDiscordProjectIntegration(): (input: {
+  projectId: string;
+  feature: DiscordProjectIntegrationFeature;
+  channel: DiscordIntegrationChannel;
+  thread?: DiscordIntegrationChannel;
+}) => Promise<ProjectIntegration> {
   const createProjectIntegration = useCreateProjectIntegration();
   return useCallback(
-    (projectId, channel) => {
+    ({ projectId, feature, channel, thread }) => {
       return createProjectIntegration({
         projectId,
         type: ProjectIntegrationType.DISCORD,
         organizationIntegrationId: channel.integrationId,
-        config: { channelId: channel.id, channelName: channel.name },
+        config: {
+          features: [feature],
+          channelId: channel.id,
+          threadId: thread?.id,
+          name: thread?.name ?? channel.name,
+        },
       });
     },
     [createProjectIntegration]

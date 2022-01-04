@@ -10,7 +10,10 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { IntegrationService } from "../integration.service";
-import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 
 @Injectable()
 @EventSubscriber()
@@ -30,7 +33,8 @@ export class DiscordService implements OnModuleInit {
   }
 
   public async getChannels(
-    organizationId: string
+    organizationId: string,
+    parentChannelId: string
   ): Promise<DiscordIntegrationChannel[]> {
     const integration =
       await this.integrationService.findOrganizationIntegration(
@@ -54,15 +58,28 @@ export class DiscordService implements OnModuleInit {
       return [];
     }
 
-    const channels = await guild.channels.fetch(undefined, { force: true });
-    return channels
-      .filter((channel) => channel.isText())
-      .map(
-        (channel): DiscordIntegrationChannel => ({
-          id: channel.id,
-          name: channel.name,
-          integrationId: integration.id,
-        })
-      );
+    if (!!parentChannelId) {
+      const channel = await guild.channels.fetch(parentChannelId, {
+        force: true,
+      });
+      if (!channel?.isText()) return [];
+      const fetched = await channel.threads.fetchActive(false);
+      return fetched.threads.map(this.toIntegrationChannel(integration));
+    } else {
+      const channels = await guild.channels.fetch(undefined, { force: true });
+      return channels
+        .filter((channel) => channel.isText())
+        .map(this.toIntegrationChannel(integration));
+    }
   }
+
+  private toIntegrationChannel =
+    (integration: OrganizationIntegration) =>
+    (
+      channel: Discord.GuildChannel | Discord.ThreadChannel
+    ): DiscordIntegrationChannel => ({
+      id: channel.id,
+      name: channel.name,
+      integrationId: integration.id,
+    });
 }

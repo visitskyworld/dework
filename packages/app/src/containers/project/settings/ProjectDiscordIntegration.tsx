@@ -15,14 +15,17 @@ import {
   useUpdateProjectIntegration,
 } from "../../integrations/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { Alert, Button, Input, Typography } from "antd";
+import { Alert, Button, Typography } from "antd";
 import Link from "next/link";
 import { Constants } from "@dewo/app/util/constants";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useRouter } from "next/router";
 import { ConnectToDiscordFormSection } from "../../integrations/ConnectToDiscordFormSection";
-import { ConnectProjectToDiscordSelect } from "../../integrations/ConnectProjectToDiscordSelect";
+import {
+  CreateDiscordIntegrationForm,
+  CreateDiscordIntegrationFormValues,
+} from "../../integrations/CreateDiscordIntegrationForm";
 
 interface Props {
   projectId: string;
@@ -60,7 +63,7 @@ export const ProjectDiscordIntegration: FC<Props> = ({
   );
 
   const discordChannels = useOrganizationDiscordChannels(
-    organizationId,
+    { organizationId },
     !orgInt
   );
   const [selectedDiscordChannelId, setSelectedDiscordChannelId] =
@@ -68,24 +71,12 @@ export const ProjectDiscordIntegration: FC<Props> = ({
 
   const loading = useToggle();
   const createIntegration = useCreateDiscordProjectIntegration();
-  const handleConnect = useCallback(async () => {
-    loading.toggleOn();
-    try {
-      const channel = discordChannels?.find(
-        (r) => r.id === selectedDiscordChannelId
-      );
-      if (!channel) return;
-      await createIntegration(projectId, channel);
-    } finally {
-      loading.toggleOff();
-    }
-  }, [
-    loading,
-    projectId,
-    discordChannels,
-    selectedDiscordChannelId,
-    createIntegration,
-  ]);
+  const handleSubmit = useCallback(
+    async (values: CreateDiscordIntegrationFormValues) => {
+      await createIntegration({ projectId, ...values });
+    },
+    [createIntegration, projectId]
+  );
 
   const updateIntegration = useUpdateProjectIntegration();
   const removeIntegration = useCallback(
@@ -110,7 +101,7 @@ export const ProjectDiscordIntegration: FC<Props> = ({
               >
                 <a target="_blank">
                   <Typography.Text strong>
-                    #{projInt.config.channelName}
+                    {projInt.config.name}
                   </Typography.Text>
                 </a>
               </Link>
@@ -127,26 +118,32 @@ export const ProjectDiscordIntegration: FC<Props> = ({
 
   if (!!orgInt) {
     return (
-      <ConnectToDiscordFormSection>
-        <Input.Group compact style={{ display: "flex" }}>
-          <ConnectProjectToDiscordSelect
-            channels={discordChannels}
-            organizationId={project.organizationId}
-            allowClear
-            style={{ flex: 1 }}
-            onChange={setSelectedDiscordChannelId}
-          />
-          <Button
-            loading={loading.isOn}
-            disabled={!selectedDiscordChannelId}
-            type="primary"
-            onClick={handleConnect}
-          >
-            Connect
-          </Button>
-        </Input.Group>
-      </ConnectToDiscordFormSection>
+      <CreateDiscordIntegrationForm
+        organizationId={organizationId}
+        onSubmit={handleSubmit}
+      />
     );
+    // return (
+    //   <ConnectToDiscordFormSection>
+    //     <Input.Group compact style={{ display: "flex" }}>
+    //       <ConnectProjectToDiscordSelect
+    //         channels={discordChannels}
+    //         organizationId={project.organizationId}
+    //         allowClear
+    //         style={{ flex: 1 }}
+    //         onChange={setSelectedDiscordChannelId}
+    //       />
+    //       <Button
+    //         loading={loading.isOn}
+    //         disabled={!selectedDiscordChannelId}
+    //         type="primary"
+    //         onClick={handleConnect}
+    //       >
+    //         Connect
+    //       </Button>
+    //     </Input.Group>
+    //   </ConnectToDiscordFormSection>
+    // );
   }
 
   return (

@@ -196,16 +196,13 @@ export function useOrganizationGithubRepos(
 }
 
 export function useOrganizationDiscordChannels(
-  organizationId: string,
+  variables: GetOrganizationDiscordChannelsQueryVariables,
   skip: boolean = false
 ): DiscordIntegrationChannel[] | undefined {
   const { data } = useQuery<
     GetOrganizationDiscordChannelsQuery,
     GetOrganizationDiscordChannelsQueryVariables
-  >(Queries.organizationDiscordChannels, {
-    variables: { organizationId },
-    skip,
-  });
+  >(Queries.organizationDiscordChannels, { variables, skip });
   return data?.channels ?? undefined;
 }
 

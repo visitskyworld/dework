@@ -16,6 +16,7 @@ describe("DiscordIntegrationResolver", () => {
   let discord: Discord.Client;
   let client: GraphQLTestClient;
   let discordChannel: Discord.TextChannel;
+  let discordThread: Discord.ThreadChannel;
 
   beforeAll(async () => {
     app = await getTestApp();
@@ -27,6 +28,9 @@ describe("DiscordIntegrationResolver", () => {
     discordChannel = (await guild.channels.fetch(discordChannelId, {
       force: true,
     })) as Discord.TextChannel;
+    discordThread = (await discordChannel.threads.create({
+      name: "test thread",
+    })) as Discord.ThreadChannel;
   });
 
   afterAll(() => app.close());
@@ -62,6 +66,32 @@ describe("DiscordIntegrationResolver", () => {
           expect.objectContaining({
             id: discordChannel.id,
             name: discordChannel.name,
+            integrationId: integration.id,
+          })
+        );
+      });
+
+      it("should return nested Discord threads for organization", async () => {
+        const organization = await fixtures.createOrganization();
+        const integration = await fixtures.createOrganizationIntegration({
+          organizationId: organization.id,
+          type: OrganizationIntegrationType.DISCORD,
+          config: { guildId: discordGuildId, permissions: "" },
+        });
+
+        const response = await client.request({
+          app,
+          body: DiscordIntegrationRequests.getChannels(
+            organization.id,
+            discordChannel.id
+          ),
+        });
+
+        const channels = response.body.data?.channels;
+        expect(channels).toContainEqual(
+          expect.objectContaining({
+            id: discordThread.id,
+            name: discordThread.name,
             integrationId: integration.id,
           })
         );

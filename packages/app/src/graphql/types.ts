@@ -4204,6 +4204,7 @@ export interface GetOrganizationDiscordChannelsQuery {
 
 export interface GetOrganizationDiscordChannelsQueryVariables {
   organizationId: Scalar.UUID;
+  discordParentChannelId?: string | null;
 }
 
 /* tslint:disable */

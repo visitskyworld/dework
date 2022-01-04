@@ -17,9 +17,17 @@ export enum GithubProjectIntegrationFeature {
   // update status on PR up, PR closed, PR merged
 }
 
+export enum DiscordProjectIntegrationFeature {
+  POST_TASK_UPDATES_TO_CHANNEL = "POST_TASK_UPDATES_TO_CHANNEL",
+  POST_TASK_UPDATES_TO_THREAD = "POST_TASK_UPDATES_TO_THREAD",
+  POST_TASK_UPDATES_TO_THREAD_PER_TASK = "POST_TASK_UPDATES_TO_THREAD_PER_TASK",
+}
+
 export interface DiscordProjectIntegrationConfig {
   channelId: string;
-  channelName: string;
+  threadId: string;
+  name: string;
+  features: DiscordProjectIntegrationFeature[];
 }
 
 export interface GithubProjectIntegrationConfig {
@@ -39,6 +47,9 @@ registerEnumType(ProjectIntegrationType, {
 });
 registerEnumType(GithubProjectIntegrationFeature, {
   name: "GithubProjectIntegrationFeature",
+});
+registerEnumType(DiscordProjectIntegrationFeature, {
+  name: "DiscordProjectIntegrationFeature",
 });
 
 @Entity()
