@@ -1,15 +1,11 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import {
   OrganizationIntegration,
   OrganizationIntegrationType,
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
 import { useProject } from "../hooks";
-import {
-  useOrganization,
-  useOrganizationDiscordChannels,
-} from "../../organization/hooks";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useOrganization } from "../../organization/hooks";
 import {
   useCreateDiscordProjectIntegration,
   useUpdateProjectIntegration,
@@ -62,14 +58,6 @@ export const ProjectDiscordIntegration: FC<Props> = ({
     [project?.integrations]
   );
 
-  const discordChannels = useOrganizationDiscordChannels(
-    { organizationId },
-    !orgInt
-  );
-  const [selectedDiscordChannelId, setSelectedDiscordChannelId] =
-    useState<string>();
-
-  const loading = useToggle();
   const createIntegration = useCreateDiscordProjectIntegration();
   const handleSubmit = useCallback(
     async (values: CreateDiscordIntegrationFormValues) => {

@@ -1,4 +1,7 @@
-import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
+import {
+  DiscordProjectIntegrationFeature,
+  ProjectIntegrationType,
+} from "@dewo/api/models/ProjectIntegration";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -67,7 +70,13 @@ describe("DiscordIntegration", () => {
     await fixtures.createProjectIntegration({
       projectId: project.id,
       type: ProjectIntegrationType.DISCORD,
-      config: { channelId: discordChannelId, channelName: "test" },
+      config: {
+        channelId: discordChannelId,
+        name: "test",
+        features: [
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+        ],
+      },
       organizationIntegrationId: orgInt.id,
     });
     return project;

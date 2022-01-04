@@ -1,4 +1,7 @@
-import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
+import {
+  DiscordProjectIntegrationFeature,
+  ProjectIntegrationType,
+} from "@dewo/api/models/ProjectIntegration";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskStatusEnum } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
@@ -112,7 +115,13 @@ describe("ProjectResolver", () => {
           body: ProjectRequests.createIntegration({
             projectId: project.id,
             type: ProjectIntegrationType.DISCORD,
-            config: { channelId: "123", channelName: "123" },
+            config: {
+              channelId: "123",
+              name: "test",
+              features: [
+                DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+              ],
+            },
           }),
         });
 
@@ -133,7 +142,13 @@ describe("ProjectResolver", () => {
         const integration = await fixtures.createProjectIntegration({
           type: ProjectIntegrationType.DISCORD,
           projectId: project.id,
-          config: { channelId: "123", channelName: "123" },
+          config: {
+            channelId: "123",
+            name: "test",
+            features: [
+              DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+            ],
+          },
         });
         const response = await client.request({
           app,

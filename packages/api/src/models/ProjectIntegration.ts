@@ -25,7 +25,7 @@ export enum DiscordProjectIntegrationFeature {
 
 export interface DiscordProjectIntegrationConfig {
   channelId: string;
-  threadId: string;
+  threadId?: string;
   name: string;
   features: DiscordProjectIntegrationFeature[];
 }

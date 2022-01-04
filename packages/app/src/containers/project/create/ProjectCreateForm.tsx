@@ -17,6 +17,7 @@ import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrg
 import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import {
+  DiscordProjectIntegrationFeature,
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
@@ -81,7 +82,12 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         const channel = discordChannels?.find((c) => c.id === discordChannelId);
         if (!!channel) {
-          await createDiscordIntegration(project.id, channel);
+          await createDiscordIntegration({
+            projectId: project.id,
+            channel,
+            feature:
+              DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+          });
         }
 
         await onCreated(project);
