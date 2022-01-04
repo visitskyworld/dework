@@ -5,6 +5,15 @@ import { Avatar } from "antd";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { EntityDetail, EntityDetailType } from "../graphql/types";
 
+export const placeholderByType: Record<EntityDetailType, string> = {
+  [EntityDetailType.twitter]: "https://twitter.com/lastcontrarian",
+  [EntityDetailType.github]: "https://github.com/vbuterin",
+  [EntityDetailType.discord]: "https://discord.com/users/123",
+  [EntityDetailType.linkedin]: "https://www.linkedin.com/in/balajissrinivasan",
+  [EntityDetailType.website]: "https://my-site.com",
+  [EntityDetailType.location]: "Lisbon, Portugal",
+};
+
 export const iconByType: Record<EntityDetailType, JSX.Element> = {
   [EntityDetailType.twitter]: <Icons.TwitterOutlined />,
   [EntityDetailType.github]: <Icons.GithubOutlined />,

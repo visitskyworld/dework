@@ -5,16 +5,8 @@ import { EntityDetailType, EntityDetail } from "../../graphql/types";
 import {
   EntityDetailAvatar,
   iconByType,
+  placeholderByType,
 } from "@dewo/app/components/EntityDetailAvatar";
-
-const placeholderByType: Record<EntityDetailType, string> = {
-  [EntityDetailType.twitter]: "https://twitter.com/lastcontrarian",
-  [EntityDetailType.github]: "https://github.com/vbuterin",
-  [EntityDetailType.discord]: "https://discord.com/users/123",
-  [EntityDetailType.linkedin]: "https://www.linkedin.com/in/balajissrinivasan",
-  [EntityDetailType.website]: "https://my-site.com",
-  [EntityDetailType.location]: "Lisbon, Portugal",
-};
 
 interface EntityDetailsProps {
   isEditMode: boolean;

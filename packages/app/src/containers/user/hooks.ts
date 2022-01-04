@@ -19,7 +19,7 @@ import {
   SetUserDetailInput,
   SetUserDetailMutation,
   SetUserDetailMutationVariables,
-  SetUserDetailMutation_detail,
+  SetUserDetailMutation_organization,
 } from "../../graphql/types";
 
 export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
@@ -39,7 +39,7 @@ export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
 
 export function useUpdateUserDetail(): (
   input: SetUserDetailInput
-) => Promise<SetUserDetailMutation_detail> {
+) => Promise<SetUserDetailMutation_organization> {
   const [mutation] = useMutation<
     SetUserDetailMutation,
     SetUserDetailMutationVariables
@@ -48,7 +48,7 @@ export function useUpdateUserDetail(): (
     async (input) => {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.detail;
+      return res.data?.organization;
     },
     [mutation]
   );

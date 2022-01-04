@@ -6,19 +6,17 @@ import {
   Form,
   Input,
   message,
-  Row,
   Space,
   Typography,
 } from "antd";
-import * as Icons from "@ant-design/icons";
 import {
   useOrganization,
   useUpdateOrganization,
   useUpdateOrganizationDetail,
 } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { EntityDetailType } from "@dewo/app/graphql/types";
+import { OrganizationDetailFormItem } from "./OrganizationDetailFormItem";
 
 interface SetOrganizationFormInput {
   name: string;
@@ -146,40 +144,15 @@ export const OrganizationProfileSettings: FC<
             label="Description"
             name="description"
             initialValue={organization.description}
-            rules={[{ required: false }]}
           >
             <Input.TextArea placeholder="No description..." />
           </Form.Item>
 
           <Form.Item label="Socials">
             <Space direction="vertical" style={{ width: "100%" }}>
-              <Row align="middle">
-                <DiscordIcon style={{ width: 20 }} />
-                <Form.Item
-                  name="discord"
-                  style={{ flex: 1, margin: "0 0 0 8px" }}
-                >
-                  <Input placeholder="https://discord.com/channels/918603668935311391" />
-                </Form.Item>
-              </Row>
-              <Row align="middle">
-                <Icons.TwitterOutlined style={{ width: 20 }} />
-                <Form.Item
-                  name="twitter"
-                  style={{ flex: 1, margin: "0 0 0 8px" }}
-                >
-                  <Input placeholder="https://twitter.com/deworkxyz" />
-                </Form.Item>
-              </Row>
-              <Row align="middle">
-                <Icons.LinkOutlined style={{ width: 20 }} />
-                <Form.Item
-                  name="website"
-                  style={{ flex: 1, margin: "0 0 0 8px" }}
-                >
-                  <Input placeholder="https://dework.xyz" />
-                </Form.Item>
-              </Row>
+              <OrganizationDetailFormItem type={EntityDetailType.discord} />
+              <OrganizationDetailFormItem type={EntityDetailType.twitter} />
+              <OrganizationDetailFormItem type={EntityDetailType.website} />
             </Space>
           </Form.Item>
 
