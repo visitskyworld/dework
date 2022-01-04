@@ -100,7 +100,12 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => Organization)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Organization, [
+    OrganizationService,
+    (service: OrganizationService, { params }) =>
+      service.findById(params.input.id),
+  ])
   public async setOrganizationDetail(
     @Args("input") input: SetOrganizationDetailInput
   ): Promise<Organization | undefined> {
