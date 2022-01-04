@@ -1,14 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import {
-  Button,
-  Card,
-  Divider,
-  Form,
-  Input,
-  message,
-  Space,
-  Typography,
-} from "antd";
+import { Button, Divider, Form, Input, message, Space, Typography } from "antd";
 import {
   useOrganization,
   useUpdateOrganization,
@@ -118,66 +109,61 @@ export const OrganizationProfileSettings: FC<
       direction="vertical"
       style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
     >
-      <Card>
-        <Form<SetOrganizationFormInput>
-          layout="vertical"
-          requiredMark={false}
-          onFinish={handleSubmit}
-          style={{ maxWidth: 480 }}
-          initialValues={initialOrganizationFormValues}
+      <Form<SetOrganizationFormInput>
+        layout="vertical"
+        requiredMark={false}
+        onFinish={handleSubmit}
+        style={{ maxWidth: 480 }}
+        initialValues={initialOrganizationFormValues}
+      >
+        <Typography.Title level={4} style={{ marginBottom: 4 }}>
+          Organization profile
+        </Typography.Title>
+        <Divider style={{ marginTop: 0 }} />
+
+        <Form.Item
+          label="Name"
+          name="name"
+          initialValue={organization.name}
+          rules={[{ required: true, message: "Please enter a display name" }]}
         >
-          <Typography.Title level={4} style={{ marginBottom: 4 }}>
-            Organization profile
-          </Typography.Title>
-          <Divider style={{ marginTop: 0 }} />
+          <Input />
+        </Form.Item>
 
-          <Form.Item
-            label="Name"
-            name="name"
-            initialValue={organization.name}
-            rules={[{ required: true, message: "Please enter a display name" }]}
-          >
-            <Input />
-          </Form.Item>
+        <Form.Item
+          label="Tagline"
+          name="tagline"
+          initialValue={organization.tagline}
+        >
+          <Input />
+        </Form.Item>
 
-          <Form.Item
-            label="Tagline"
-            name="tagline"
-            initialValue={organization.tagline}
-          >
-            <Input />
-          </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          initialValue={organization.description}
+        >
+          <Input.TextArea placeholder="No description..." />
+        </Form.Item>
 
-          <Form.Item
-            label="Description"
-            name="description"
-            initialValue={organization.description}
-          >
-            <Input.TextArea placeholder="No description..." />
-          </Form.Item>
+        <Form.Item label="Socials" style={{ marginTop: 20, marginBottom: 24 }}>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <OrganizationDetailFormItem type={EntityDetailType.discord} />
+            <OrganizationDetailFormItem type={EntityDetailType.twitter} />
+            <OrganizationDetailFormItem type={EntityDetailType.website} />
+          </Space>
+        </Form.Item>
 
-          <Form.Item
-            label="Socials"
-            style={{ marginTop: 20, marginBottom: 24 }}
-          >
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <OrganizationDetailFormItem type={EntityDetailType.discord} />
-              <OrganizationDetailFormItem type={EntityDetailType.twitter} />
-              <OrganizationDetailFormItem type={EntityDetailType.website} />
-            </Space>
-          </Form.Item>
-
-          <Button
-            type="ghost"
-            htmlType="submit"
-            size="middle"
-            loading={loading}
-            disabled={!canUpdateOrganization}
-          >
-            Update profile
-          </Button>
-        </Form>
-      </Card>
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="middle"
+          loading={loading}
+          disabled={!canUpdateOrganization}
+        >
+          Update profile
+        </Button>
+      </Form>
     </Space>
   );
 };

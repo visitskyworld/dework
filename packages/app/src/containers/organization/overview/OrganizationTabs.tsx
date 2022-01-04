@@ -77,17 +77,16 @@ export const OrganizationTabs: FC<Props> = ({
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col span={6}>
-            {Boolean(organization?.details.length) && (
-              <>
-                <Typography.Title level={5}>Socials</Typography.Title>
-                <Space direction="horizontal">
-                  {organization?.details.map((detail) => (
-                    <EntityDetailAvatar entityDetail={detail} key={detail.id} />
-                  ))}
-                </Space>
-                <Divider />
-              </>
-            )}
+            <Typography.Title level={5}>About</Typography.Title>
+            <Typography.Paragraph type="secondary">
+              {organization?.description || "No description..."}
+            </Typography.Paragraph>
+            <Space>
+              {organization?.details.map((detail) => (
+                <EntityDetailAvatar entityDetail={detail} key={detail.id} />
+              ))}
+            </Space>
+            <Divider />
 
             <Typography.Title level={5}>Contributors</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
