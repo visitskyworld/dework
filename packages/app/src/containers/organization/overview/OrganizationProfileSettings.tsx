@@ -63,24 +63,32 @@ export const OrganizationProfileSettings: FC<
       }
       try {
         setLoading(true);
-        await Promise.all(
-          Object.entries(values).map(([key, value]) => {
-            if (key === "discord" || key === "twitter" || key === "website") {
-              updateOrganizationDetail({
-                organizationId,
-                type: key as EntityDetailType,
-                value: value,
-              });
-            } else if (key === "name") {
-              updateOrganization({
-                id: organizationId,
-                name: values.name,
-                description: values.description,
-                tagline: values.tagline,
-              });
-            }
-          })
-        );
+        const { discord, twitter, website, ...organizationValues } = values;
+
+        await Promise.all([
+          discord !== initialOrganizationFormValues.discord &&
+            updateOrganizationDetail({
+              organizationId,
+              type: EntityDetailType.discord,
+              value: discord,
+            }),
+          twitter !== initialOrganizationFormValues.twitter &&
+            updateOrganizationDetail({
+              organizationId,
+              type: EntityDetailType.twitter,
+              value: twitter,
+            }),
+          website !== initialOrganizationFormValues.website &&
+            updateOrganizationDetail({
+              organizationId,
+              type: EntityDetailType.website,
+              value: website,
+            }),
+          updateOrganization({
+            id: organizationId,
+            ...organizationValues,
+          }),
+        ]);
 
         message.success({
           content: "Organization profile updated!",
