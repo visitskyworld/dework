@@ -106,6 +106,20 @@ export class DiscordIntegrationService {
             break;
           case TaskStatusEnum.DONE:
             await this.postDone(thread);
+
+            const threepids = await this.findTaskUserThreepids(event.task);
+            await channel.send({
+              content: "<:Stonks:755835632676372571>",
+              embeds: [
+                {
+                  title: event.task.name,
+                  description: `Task is now done! ${threepids
+                    .map((t) => `<@${t.threepid}>`)
+                    .join(" ")}`,
+                  url: await this.permalink.get(event.task),
+                },
+              ],
+            });
             break;
         }
       }
