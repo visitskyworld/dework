@@ -26,7 +26,7 @@ type AbilitySubject =
   | "Task"
   | "Project"
   | "Organization"
-  | Task
+  | AtLeast<Task, "__typename" | "status">
   | Project
   | Organization
   | AtLeast<OrganizationMember, "__typename" | "role">

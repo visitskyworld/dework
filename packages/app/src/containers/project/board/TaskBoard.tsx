@@ -24,6 +24,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 const statuses: TaskStatus[] = [
+  TaskStatus.BACKLOG,
   TaskStatus.TODO,
   TaskStatus.IN_PROGRESS,
   TaskStatus.IN_REVIEW,

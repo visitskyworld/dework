@@ -6229,6 +6229,7 @@ export enum TaskRewardTrigger {
 }
 
 export enum TaskStatus {
+  BACKLOG = "BACKLOG",
   DONE = "DONE",
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",

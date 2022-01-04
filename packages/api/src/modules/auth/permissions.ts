@@ -86,5 +86,6 @@ export const permissions: Permissions<
 
   projectContributor({ can }) {
     can(Actions.create, ProjectMember, { role: ProjectRole.CONTRIBUTOR });
+    can(Actions.create, Task, { status: TaskStatus.BACKLOG });
   },
 };

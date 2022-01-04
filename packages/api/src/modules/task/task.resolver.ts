@@ -62,7 +62,12 @@ export class TaskResolver {
 
   @Mutation(() => Task)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, Task)
+  @UseAbility(Actions.create, Task, [
+    TaskService,
+    async (_service: TaskService, { params }) => ({
+      status: params.input.status,
+    }),
+  ])
   public async createTask(
     @Context("user") user: User,
     @Args("input") input: CreateTaskInput

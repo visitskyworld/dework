@@ -10,6 +10,10 @@ interface Props {
 }
 
 const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
+  [TaskStatus.BACKLOG]: {
+    title: "Contributors can create suggestions and vote on them",
+    icon: <Icons.BulbOutlined />,
+  },
   [TaskStatus.TODO]: {
     title: "Put out tasks, let contributors explore and apply",
     icon: <Icons.UsergroupAddOutlined />,

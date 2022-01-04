@@ -22,6 +22,7 @@ export interface TaskSection {
 }
 
 export const STATUS_LABEL: Record<TaskStatus, string> = {
+  [TaskStatus.BACKLOG]: "Suggestions",
   [TaskStatus.TODO]: "To Do",
   [TaskStatus.IN_PROGRESS]: "In Progress",
   [TaskStatus.IN_REVIEW]: "In Review",
