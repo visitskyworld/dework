@@ -12,6 +12,7 @@ import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegratio
 import { GithubResolver } from "./github.resolver";
 import { GithubIntegrationService } from "./github.integration.service";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
+import { ProjectModule } from "../../project/project.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
       OrganizationIntegration,
     ]),
     TaskModule,
+    ProjectModule,
     IntegrationModule,
   ],
   providers: [GithubService, GithubResolver, GithubIntegrationService],

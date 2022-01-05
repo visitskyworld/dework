@@ -9,6 +9,7 @@ import { GithubPullRequestActions } from "../github.controller";
 import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
 import { IssuesOpenedEvent } from "@octokit/webhooks-types";
 import { DeepPartial } from "typeorm";
+import { TaskTagSource } from "@dewo/api/models/TaskTag";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -146,6 +147,10 @@ describe("GithubController", () => {
         const name = faker.lorem.sentence();
         const description = faker.lorem.sentence();
 
+        const labelId = faker.datatype.number(1000);
+        const labelName = faker.lorem.word();
+        const labelColor = "bada55";
+
         await client.request<DeepPartial<IssuesOpenedEvent>>({
           app,
           body: {
@@ -155,6 +160,7 @@ describe("GithubController", () => {
               url,
               title: name,
               body: description,
+              labels: [{ id: labelId, name: labelName, color: labelColor }],
             },
             installation: { id: github.installationId },
             repository: {
@@ -165,12 +171,21 @@ describe("GithubController", () => {
         });
 
         const tasks = await project.tasks;
-        const task = tasks[0];
+        const task = await fixtures.getTask(tasks[0].id);
         expect(task).toBeDefined();
         expect(task!.name).toEqual(name);
         expect(task!.status).toEqual(TaskStatus.TODO);
-        expect(task.description).toContain(description);
-        expect(task.description).toContain(url);
+        expect(task!.description).toContain(description);
+        expect(task!.description).toContain(url);
+        expect(task!.tags).toHaveLength(1);
+        expect(task!.tags).toContainEqual(
+          expect.objectContaining({
+            label: labelName,
+            color: "lime",
+            source: TaskTagSource.GITHUB,
+            externalId: String(labelId),
+          })
+        );
       });
     });
   });

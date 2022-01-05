@@ -46,7 +46,7 @@ export class ProjectService {
   }
 
   public async createTag(
-    partial: AtLeast<TaskTag, "projectId">
+    partial: AtLeast<TaskTag, "projectId" | "label" | "color">
   ): Promise<TaskTag> {
     const created = await this.taskTagRepo.save(partial);
     return this.taskTagRepo.findOne(created.id) as Promise<TaskTag>;
