@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 import { ConfigService } from "@nestjs/config";
 import { Controller, Get, Logger, Post, Req, Res } from "@nestjs/common";
-import {
-  GithubPullRequest,
-  GithubPullRequestStatusEnum,
-} from "@dewo/api/models/GithubPullRequest";
+import { WebhookEvent } from "@octokit/webhooks-types";
+import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
-import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
@@ -54,9 +51,16 @@ export class GithubController {
   }
 
   @Post("webhook")
-  async githubWebhook(@Req() { body }: Request) {
-    this.log("Incoming Github webhook", body);
+  async githubWebhook(@Req() request: Request) {
+    const event = request.body as WebhookEvent;
+    this.log("Incoming Github webhook", event);
 
+    if ("issue" in event) {
+      if (event.action === "created") {
+      }
+    }
+
+    /*
     // First validate the event's installation and taskId
     const branchName = (body.pull_request?.head?.ref ?? body.ref).replace(
       "refs/heads/",
@@ -195,6 +199,7 @@ export class GithubController {
           await this.triggerTaskUpdatedSubscription(task.id);
       }
     }
+    */
   }
 
   private async triggerTaskUpdatedSubscription(taskId: string) {
