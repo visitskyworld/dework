@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { Modal, Space, Tag } from "antd";
+import { Modal, Space } from "antd";
 import { useRouter } from "next/router";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import {
@@ -54,9 +54,9 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
           children={
             <>
               {getThreepidName[ThreepidSource.metamask]}
-              {!isMetaMaskAvailable && (
+              {/* {!isMetaMaskAvailable && (
                 <Tag style={{ marginLeft: 8 }}>Beta</Tag>
-              )}
+              )} */}
             </>
           }
           size="large"
