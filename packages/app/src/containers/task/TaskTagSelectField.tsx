@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Tag, Form, Select, ConfigProvider, Empty } from "antd";
 import { useCreateTaskTag, useGenerateRandomTaskTagColor } from "./hooks";
 import { useProjectTaskTags } from "../project/hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   disabled: boolean;
@@ -23,6 +24,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   onChange,
 }) => {
   const tags = useProjectTaskTags(projectId);
+  const canCreateTag = usePermission("create", "TaskTag");
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
   const [loading, setLoading] = useState(false);
@@ -69,7 +71,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
 
   return (
     <Select
-      mode="tags"
+      mode={canCreateTag ? "tags" : "multiple"}
       value={value}
       disabled={disabled}
       loading={loading}

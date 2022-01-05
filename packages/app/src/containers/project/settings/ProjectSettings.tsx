@@ -1,5 +1,5 @@
-import { ProjectDetails } from "@dewo/app/graphql/types";
-import { Space } from "antd";
+import { ProjectDetails, UpdateProjectInput } from "@dewo/app/graphql/types";
+import { Form, Input, Space } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
@@ -9,12 +9,21 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { ProjectMemberList } from "./ProjectMemberList";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { ProjectDiscordIntegration } from "./ProjectDiscordIntegration";
+import { ProjectSettingsFormFields } from "./ProjectSettingsFormFields";
+import { useUpdateProject } from "../hooks";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
+  const updateProject = useUpdateProject();
+  const handleUpdateProject = useCallback(
+    (values: Partial<UpdateProjectInput>) =>
+      updateProject({ id: project.id, ...values }),
+    [updateProject, project.id]
+  );
+
   const updatePaymentMethod = useUpdatePaymentMethod();
   const removePaymentMethod = useCallback(
     (pm) =>
@@ -60,6 +69,25 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
             />
           </Space>
         </FormSection>
+
+        <Form<UpdateProjectInput>
+          layout="vertical"
+          requiredMark={false}
+          initialValues={useMemo(
+            () => ({
+              id: project.id,
+              visibility: project.visibility,
+              options: project.options,
+            }),
+            [project]
+          )}
+          onValuesChange={handleUpdateProject}
+        >
+          <ProjectSettingsFormFields />
+          <Form.Item name="id" hidden>
+            <Input />
+          </Form.Item>
+        </Form>
 
         <FormSection label="Members">
           <ProjectMemberList projectId={project.id} />

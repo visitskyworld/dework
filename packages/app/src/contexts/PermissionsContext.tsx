@@ -24,6 +24,7 @@ import { AtLeast } from "../types/general";
 type AbilityAction = "create" | "read" | "update" | "delete" | "claimTask";
 type AbilitySubject =
   | "Task"
+  | "TaskTag"
   | "Project"
   | "Organization"
   | AtLeast<Task, "__typename" | "status">

@@ -11,6 +11,7 @@ import {
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { TaskTag } from "@dewo/api/models/TaskTag";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -85,6 +86,8 @@ export const permissions: Permissions<
     can(Actions.create, Task);
     can(Actions.update, Task);
     can(Actions.delete, Task);
+
+    can(Actions.create, TaskTag);
   },
 
   projectContributor({ can, user }) {

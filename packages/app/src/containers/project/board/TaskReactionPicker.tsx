@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { Emojione } from "react-emoji-render";
-import { Task, TaskReaction } from "@dewo/app/graphql/types";
+import { Task, TaskReaction, TaskStatus } from "@dewo/app/graphql/types";
 import { Badge, Col, Row, Tooltip } from "antd";
 import _ from "lodash";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -78,17 +78,16 @@ export const TaskReactionPicker: FC<Props> = ({ task }) => {
           selected: reactions.some((r) => r.userId === user?.id),
         }))
         .sortBy((r) => r.reactions.length)
-        .concat({
-          reaction: ":arrow_up_small:",
-          reactions: [],
-          selected: false,
-        })
-        .uniqBy((r) => r.reaction)
         .value(),
     [task.reactions, user?.id]
   );
 
-  if (!task.reactions) return null;
+  const hasArrowUpSmall = useMemo(
+    () => grouped.some((r) => r.reaction === ":arrow_up_small:"),
+    [grouped]
+  );
+
+  if (!task.reactions.length && task.status !== TaskStatus.BACKLOG) return null;
   return (
     <Row gutter={8}>
       {grouped.map((group) => (
@@ -98,6 +97,16 @@ export const TaskReactionPicker: FC<Props> = ({ task }) => {
           reaction={group}
         />
       ))}
+      {!hasArrowUpSmall && (
+        <TaskReactionItem
+          taskId={task.id}
+          reaction={{
+            reaction: ":arrow_up_small:",
+            reactions: [],
+            selected: false,
+          }}
+        />
+      )}
     </Row>
   );
 };

@@ -34,7 +34,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       if (values.status === TaskStatus.BACKLOG) {
         await createTaskReaction({
           taskId: task.id,
-          reaction: "arrow_up_small",
+          reaction: ":arrow_up_small:",
         });
       }
       await onDone(task);

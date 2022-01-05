@@ -141,11 +141,7 @@ export class ProjectResolver {
 
   @Mutation(() => TaskTag)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Project, [
-    ProjectService,
-    (service: ProjectService, { params }) =>
-      service.findById(params.input.projectId),
-  ])
+  @UseAbility(Actions.create, TaskTag)
   public async createTaskTag(
     @Args("input") input: CreateTaskTagInput
   ): Promise<TaskTag> {

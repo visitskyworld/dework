@@ -166,9 +166,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               </Tag>
             ))}
           </Row>
-          {task.status === TaskStatus.BACKLOG && (
-            <TaskReactionPicker task={task} />
-          )}
+          <TaskReactionPicker task={task} />
           {button}
         </Space>
         <Col
