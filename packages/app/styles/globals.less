@@ -569,3 +569,31 @@ textarea {
     padding-left: 12px;
   }
 }
+
+.dewo-task-reaction {
+  padding-left: 4px;
+  border-radius: @border-radius-base;
+  border: 1px solid @border-color-base;
+
+  transition: background, border 0.3s ease-in-out;
+  
+  &.dewo-task-reaction-selected {
+    border: 1px solid @primary-color;
+    background: @primary-color-25;
+  }
+
+  &.dewo-task-reaction-selectable {
+    cursor: pointer;
+  }
+
+  .ant-badge .ant-badge-count {
+    background: transparent;
+    box-shadow: none;
+    font-weight: 600;
+  }
+
+  .emojione {
+    display: grid;
+    place-items: center;
+  }
+}

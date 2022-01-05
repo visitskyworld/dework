@@ -28,6 +28,7 @@ import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { TaskReactionPicker } from "./TaskReactionPicker";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -165,6 +166,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               </Tag>
             ))}
           </Row>
+          {task.status === TaskStatus.BACKLOG && (
+            <TaskReactionPicker task={task} />
+          )}
           {button}
         </Space>
         <Col

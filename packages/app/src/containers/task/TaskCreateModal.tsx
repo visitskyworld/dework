@@ -1,8 +1,8 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Task } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
-import { useCreateTask } from "./hooks";
+import { useCreateTask, useCreateTaskReaction } from "./hooks";
 import { TaskForm, TaskFormValues } from "./TaskForm";
 
 interface TaskCreateModalProps {
@@ -27,12 +27,19 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   );
 
   const createTask = useCreateTask();
+  const createTaskReaction = useCreateTaskReaction();
   const handleSubmit = useCallback(
     async (values: TaskFormValues) => {
       const task = await createTask(values, projectId);
+      if (values.status === TaskStatus.BACKLOG) {
+        await createTaskReaction({
+          taskId: task.id,
+          reaction: "arrow_up_small",
+        });
+      }
       await onDone(task);
     },
-    [createTask, onDone, projectId]
+    [createTask, onDone, createTaskReaction, projectId]
   );
   return (
     <Modal

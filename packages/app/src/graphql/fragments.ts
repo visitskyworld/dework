@@ -264,6 +264,14 @@ export const taskApplication = gql`
   }
 `;
 
+export const taskReaction = gql`
+  fragment TaskReaction on TaskReaction {
+    id
+    userId
+    reaction
+  }
+`;
+
 export const task = gql`
   fragment Task on Task {
     id
@@ -290,6 +298,9 @@ export const task = gql`
     review {
       ...TaskReview
     }
+    reactions {
+      ...TaskReaction
+    }
   }
 
   ${taskTag}
@@ -297,6 +308,7 @@ export const task = gql`
   ${user}
   ${taskApplication}
   ${taskReview}
+  ${taskReaction}
 `;
 
 export const taskWithOrganization = gql`

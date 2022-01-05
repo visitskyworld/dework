@@ -179,6 +179,32 @@ export const deleteTask = gql`
   ${Fragments.task}
 `;
 
+export const createTaskReaction = gql`
+  mutation CreateTaskReactionMutation($input: TaskReactionInput!) {
+    task: createTaskReaction(input: $input) {
+      id
+      reactions {
+        ...TaskReaction
+      }
+    }
+  }
+
+  ${Fragments.taskReaction}
+`;
+
+export const deleteTaskReaction = gql`
+  mutation DeleteTaskReactionMutation($input: TaskReactionInput!) {
+    task: deleteTaskReaction(input: $input) {
+      id
+      reactions {
+        ...TaskReaction
+      }
+    }
+  }
+
+  ${Fragments.taskReaction}
+`;
+
 export const createTaskTag = gql`
   mutation CreateTaskTagMutation($input: CreateTaskTagInput!) {
     taskTag: createTaskTag(input: $input) {

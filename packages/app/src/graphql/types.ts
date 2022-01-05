@@ -932,6 +932,13 @@ export interface CreateTaskMutation_task_review {
   rating: number | null;
 }
 
+export interface CreateTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -948,6 +955,7 @@ export interface CreateTaskMutation_task {
   reward: CreateTaskMutation_task_reward | null;
   applications: CreateTaskMutation_task_applications[];
   review: CreateTaskMutation_task_review | null;
+  reactions: CreateTaskMutation_task_reactions[];
 }
 
 export interface CreateTaskMutation {
@@ -1076,6 +1084,13 @@ export interface UpdateTaskMutation_task_review {
   rating: number | null;
 }
 
+export interface UpdateTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1092,6 +1107,7 @@ export interface UpdateTaskMutation_task {
   reward: UpdateTaskMutation_task_reward | null;
   applications: UpdateTaskMutation_task_applications[];
   review: UpdateTaskMutation_task_review | null;
+  reactions: UpdateTaskMutation_task_reactions[];
 }
 
 export interface UpdateTaskMutation {
@@ -1220,6 +1236,13 @@ export interface ClaimTaskMutation_task_review {
   rating: number | null;
 }
 
+export interface ClaimTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface ClaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1236,6 +1259,7 @@ export interface ClaimTaskMutation_task {
   reward: ClaimTaskMutation_task_reward | null;
   applications: ClaimTaskMutation_task_applications[];
   review: ClaimTaskMutation_task_review | null;
+  reactions: ClaimTaskMutation_task_reactions[];
 }
 
 export interface ClaimTaskMutation {
@@ -1365,6 +1389,13 @@ export interface UnclaimTaskMutation_task_review {
   rating: number | null;
 }
 
+export interface UnclaimTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface UnclaimTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1381,6 +1412,7 @@ export interface UnclaimTaskMutation_task {
   reward: UnclaimTaskMutation_task_reward | null;
   applications: UnclaimTaskMutation_task_applications[];
   review: UnclaimTaskMutation_task_review | null;
+  reactions: UnclaimTaskMutation_task_reactions[];
 }
 
 export interface UnclaimTaskMutation {
@@ -1509,6 +1541,13 @@ export interface DeleteTaskMutation_task_review {
   rating: number | null;
 }
 
+export interface DeleteTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface DeleteTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1525,6 +1564,7 @@ export interface DeleteTaskMutation_task {
   reward: DeleteTaskMutation_task_reward | null;
   applications: DeleteTaskMutation_task_applications[];
   review: DeleteTaskMutation_task_review | null;
+  reactions: DeleteTaskMutation_task_reactions[];
 }
 
 export interface DeleteTaskMutation {
@@ -1533,6 +1573,66 @@ export interface DeleteTaskMutation {
 
 export interface DeleteTaskMutationVariables {
   taskId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTaskReactionMutation
+// ====================================================
+
+export interface CreateTaskReactionMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface CreateTaskReactionMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  reactions: CreateTaskReactionMutation_task_reactions[];
+}
+
+export interface CreateTaskReactionMutation {
+  task: CreateTaskReactionMutation_task;
+}
+
+export interface CreateTaskReactionMutationVariables {
+  input: TaskReactionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: DeleteTaskReactionMutation
+// ====================================================
+
+export interface DeleteTaskReactionMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface DeleteTaskReactionMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  reactions: DeleteTaskReactionMutation_task_reactions[];
+}
+
+export interface DeleteTaskReactionMutation {
+  task: DeleteTaskReactionMutation_task;
+}
+
+export interface DeleteTaskReactionMutationVariables {
+  input: TaskReactionInput;
 }
 
 /* tslint:disable */
@@ -2256,6 +2356,13 @@ export interface CreateTaskPaymentsMutation_tasks_review {
   rating: number | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -2329,6 +2436,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
   review: CreateTaskPaymentsMutation_tasks_review | null;
+  reactions: CreateTaskPaymentsMutation_tasks_reactions[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -2626,6 +2734,13 @@ export interface UserTasksQuery_user_tasks_review {
   rating: number | null;
 }
 
+export interface UserTasksQuery_user_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface UserTasksQuery_user_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -2664,6 +2779,7 @@ export interface UserTasksQuery_user_tasks {
   reward: UserTasksQuery_user_tasks_reward | null;
   applications: UserTasksQuery_user_tasks_applications[];
   review: UserTasksQuery_user_tasks_review | null;
+  reactions: UserTasksQuery_user_tasks_reactions[];
   project: UserTasksQuery_user_tasks_project;
 }
 
@@ -3156,6 +3272,13 @@ export interface GetOrganizationTasksQuery_organization_tasks_review {
   rating: number | null;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3172,6 +3295,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
   applications: GetOrganizationTasksQuery_organization_tasks_applications[];
   review: GetOrganizationTasksQuery_organization_tasks_review | null;
+  reactions: GetOrganizationTasksQuery_organization_tasks_reactions[];
 }
 
 export interface GetOrganizationTasksQuery_organization_projects_taskTags {
@@ -3415,6 +3539,13 @@ export interface GetProjectTasksQuery_project_tasks_review {
   rating: number | null;
 }
 
+export interface GetProjectTasksQuery_project_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface GetProjectTasksQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3431,6 +3562,7 @@ export interface GetProjectTasksQuery_project_tasks {
   reward: GetProjectTasksQuery_project_tasks_reward | null;
   applications: GetProjectTasksQuery_project_tasks_applications[];
   review: GetProjectTasksQuery_project_tasks_review | null;
+  reactions: GetProjectTasksQuery_project_tasks_reactions[];
 }
 
 export interface GetProjectTasksQuery_project {
@@ -3596,6 +3728,13 @@ export interface GetTaskQuery_task_review {
   rating: number | null;
 }
 
+export interface GetTaskQuery_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -3678,6 +3817,7 @@ export interface GetTaskQuery_task {
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
   review: GetTaskQuery_task_review | null;
+  reactions: GetTaskQuery_task_reactions[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -3815,6 +3955,13 @@ export interface GetTasksQuery_tasks_review {
   rating: number | null;
 }
 
+export interface GetTasksQuery_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface GetTasksQuery_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3853,6 +4000,7 @@ export interface GetTasksQuery_tasks {
   reward: GetTasksQuery_tasks_reward | null;
   applications: GetTasksQuery_tasks_applications[];
   review: GetTasksQuery_tasks_review | null;
+  reactions: GetTasksQuery_tasks_reactions[];
   project: GetTasksQuery_tasks_project;
 }
 
@@ -4014,6 +4162,13 @@ export interface GetTasksToPayQuery_tasks_review {
   rating: number | null;
 }
 
+export interface GetTasksToPayQuery_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4067,6 +4222,7 @@ export interface GetTasksToPayQuery_tasks {
   reward: GetTasksToPayQuery_tasks_reward | null;
   applications: GetTasksToPayQuery_tasks_applications[];
   review: GetTasksToPayQuery_tasks_review | null;
+  reactions: GetTasksToPayQuery_tasks_reactions[];
   project: GetTasksToPayQuery_tasks_project;
 }
 
@@ -4367,6 +4523,13 @@ export interface TaskCreatedSubscription_task_review {
   rating: number | null;
 }
 
+export interface TaskCreatedSubscription_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -4440,6 +4603,7 @@ export interface TaskCreatedSubscription_task {
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
   review: TaskCreatedSubscription_task_review | null;
+  reactions: TaskCreatedSubscription_task_reactions[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -4573,6 +4737,13 @@ export interface TaskUpdatedSubscription_task_review {
   rating: number | null;
 }
 
+export interface TaskUpdatedSubscription_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -4646,6 +4817,7 @@ export interface TaskUpdatedSubscription_task {
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
   review: TaskUpdatedSubscription_task_review | null;
+  reactions: TaskUpdatedSubscription_task_reactions[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -5422,6 +5594,22 @@ export interface TaskApplication {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskReaction
+// ====================================================
+
+export interface TaskReaction {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Task
 // ====================================================
 
@@ -5534,6 +5722,13 @@ export interface Task_review {
   rating: number | null;
 }
 
+export interface Task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5550,6 +5745,7 @@ export interface Task {
   reward: Task_reward | null;
   applications: Task_applications[];
   review: Task_review | null;
+  reactions: Task_reactions[];
 }
 
 /* tslint:disable */
@@ -5670,6 +5866,13 @@ export interface TaskWithOrganization_review {
   rating: number | null;
 }
 
+export interface TaskWithOrganization_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface TaskWithOrganization_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5708,6 +5911,7 @@ export interface TaskWithOrganization {
   reward: TaskWithOrganization_reward | null;
   applications: TaskWithOrganization_applications[];
   review: TaskWithOrganization_review | null;
+  reactions: TaskWithOrganization_reactions[];
   project: TaskWithOrganization_project;
 }
 
@@ -5829,6 +6033,13 @@ export interface TaskDetails_review {
   rating: number | null;
 }
 
+export interface TaskDetails_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface TaskDetails_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -5902,6 +6113,7 @@ export interface TaskDetails {
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
   review: TaskDetails_review | null;
+  reactions: TaskDetails_reactions[];
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -6420,6 +6632,11 @@ export interface SetOrganizationDetailInput {
 export interface SetUserDetailInput {
   type: EntityDetailType;
   value?: string | null;
+}
+
+export interface TaskReactionInput {
+  reaction: string;
+  taskId: Scalar.UUID;
 }
 
 export interface UpdateOrganizationInput {

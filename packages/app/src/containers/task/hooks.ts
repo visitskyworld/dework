@@ -40,6 +40,11 @@ import {
   GetTasksQueryVariables,
   TaskCreatedSubscription,
   TaskUpdatedSubscription,
+  TaskReactionInput,
+  CreateTaskReactionMutation,
+  CreateTaskReactionMutationVariables,
+  DeleteTaskReactionMutation,
+  DeleteTaskReactionMutationVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -222,6 +227,38 @@ export function useUnclaimTask(): (task: Task) => Promise<Task> {
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
+    },
+    [mutation]
+  );
+}
+
+export function useCreateTaskReaction(): (
+  input: TaskReactionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateTaskReactionMutation,
+    CreateTaskReactionMutationVariables
+  >(Mutations.createTaskReaction);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteTaskReaction(): (
+  input: TaskReactionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteTaskReactionMutation,
+    DeleteTaskReactionMutationVariables
+  >(Mutations.deleteTaskReaction);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );
