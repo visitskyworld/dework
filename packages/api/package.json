@@ -41,7 +41,6 @@
     "graphql-type-json": "^0.3.2",
     "graphql-type-uuid": "^0.2.0",
     "joi": "^17.4.2",
-    "locale-code": "^2.0.2",
     "lodash": "^4.17.21",
     "milliseconds": "^1.0.3",
     "moment": "^2.29.1",
