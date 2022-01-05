@@ -313,13 +313,7 @@ export class DiscordIntegrationService {
     );
     await this.post(
       channel,
-      `
-${intro} This task has been moved to the next stage.
-    
-Please keep in mind to:
-- Always push your local branches to remote each time you make a commit
-- Please write two sentences here each morning to keep each other in sync
-`.trim()
+      `${intro} This task has been moved to the next stage.`.trim()
     );
   }
 
