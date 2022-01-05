@@ -67,7 +67,7 @@ export const TaskBoardColumn: FC<Props> = ({
       }
       extra={
         !!projectId && (
-          <Can I="create" this={{ __typename: "Task", status }}>
+          <Can I="create" this={{ __typename: "Task", status, ownerId: null }}>
             <Button
               type="text"
               icon={<Icons.PlusOutlined onClick={createCardToggle.toggleOn} />}

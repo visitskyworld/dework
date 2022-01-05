@@ -66,9 +66,11 @@ export class TaskResolver {
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
   @UseAbility(Actions.create, Task, [
     TaskService,
-    async (_service: TaskService, { params }) => ({
-      status: params.input.status,
-    }),
+    async (_service: TaskService, { params }) =>
+      ({
+        status: params.input.status,
+        ownerId: params.input.ownerId,
+      } as Partial<Task>),
   ])
   public async createTask(
     @Context("user") user: User,

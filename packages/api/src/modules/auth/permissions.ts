@@ -95,9 +95,11 @@ export const permissions: Permissions<
     can(Actions.create, TaskTag);
   },
 
-  projectContributor({ can, user }) {
+  projectContributor({ can, cannot, user }) {
     can(Actions.create, ProjectMember, { role: ProjectRole.CONTRIBUTOR });
     can(Actions.create, Task, { status: TaskStatus.BACKLOG });
+    cannot(Actions.create, Task, "ownerId");
+
     can(Actions.manage, TaskReaction, { userId: user.id });
   },
 };

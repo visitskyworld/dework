@@ -1,4 +1,5 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
@@ -21,9 +22,18 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   onDone,
 }) => {
   const { user } = useAuthContext();
+
+  const canSetTaskOwner = usePermission("create", {
+    __typename: "Task",
+    status: TaskStatus.BACKLOG,
+    ownerId: user?.id,
+  });
   const initialValues = useMemo<Partial<TaskFormValues>>(
-    () => ({ ownerId: user?.id, ..._initialValues }),
-    [_initialValues, user?.id]
+    () =>
+      canSetTaskOwner
+        ? { ownerId: user?.id, ..._initialValues }
+        : _initialValues,
+    [_initialValues, canSetTaskOwner, user?.id]
   );
 
   const createTask = useCreateTask();
