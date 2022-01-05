@@ -5,7 +5,7 @@ import { Organization } from "../graphql/types";
 import { colorFromUuid } from "../util/colorFromUuid";
 
 interface Props extends AvatarProps {
-  organization: Organization;
+  organization: Pick<Organization, "id" | "imageUrl" | "name">;
   tooltip?: Partial<TooltipProps>;
 }
 
