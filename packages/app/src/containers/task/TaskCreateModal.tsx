@@ -23,17 +23,13 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
 }) => {
   const { user } = useAuthContext();
 
-  const canSetTaskOwner = usePermission("create", {
-    __typename: "Task",
-    status: TaskStatus.BACKLOG,
-    ownerId: user?.id,
-  });
+  const canCreateTaskOwner = usePermission("create", "Task", "ownerId");
   const initialValues = useMemo<Partial<TaskFormValues>>(
     () =>
-      canSetTaskOwner
+      canCreateTaskOwner
         ? { ownerId: user?.id, ..._initialValues }
         : _initialValues,
-    [_initialValues, canSetTaskOwner, user?.id]
+    [_initialValues, canCreateTaskOwner, user?.id]
   );
 
   const createTask = useCreateTask();
