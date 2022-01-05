@@ -1,9 +1,9 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
-import { CreateTaskPaymentsInput } from "@dewo/api/modules/task/dto/CreateTaskPaymentsInput";
 import { CreateTaskApplicationInput } from "@dewo/api/modules/task/dto/CreateTaskApplicationInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 import { GetTasksInput } from "@dewo/api/modules/task/dto/GetTasksInput";
+import { TaskReactionInput } from "@dewo/api/modules/task/dto/TaskReactionInput";
 
 export class TaskRequests {
   private static taskFragment = `
@@ -57,6 +57,10 @@ export class TaskRequests {
         message
         startDate
         endDate
+      }
+      reactions {
+        reaction
+        userId
       }
     }
   `;
@@ -170,13 +174,30 @@ export class TaskRequests {
     };
   }
 
-  public static createPayment(
-    input: CreateTaskPaymentsInput
-  ): GraphQLTestClientRequestBody<{ input: CreateTaskPaymentsInput }> {
+  public static createReaction(
+    input: TaskReactionInput
+  ): GraphQLTestClientRequestBody<{ input: TaskReactionInput }> {
     return {
       query: `
-        mutation CreateTaskPayments($input: CreateTaskPaymentsInput!) {
-          task: createTaskPayments(input: $input) {
+        mutation CreateTaskReaction($input: TaskReactionInput!) {
+          task: createTaskReaction(input: $input) {
+            ...Task
+          }
+        }
+
+        ${this.taskFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static deleteReaction(
+    input: TaskReactionInput
+  ): GraphQLTestClientRequestBody<{ input: TaskReactionInput }> {
+    return {
+      query: `
+        mutation DeleteTaskReaction($input: TaskReactionInput!) {
+          task: deleteTaskReaction(input: $input) {
             ...Task
           }
         }

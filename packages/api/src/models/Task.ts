@@ -21,6 +21,7 @@ import { GithubBranch } from "./GithubBranch";
 import { GithubPullRequest } from "./GithubPullRequest";
 import { DiscordChannel } from "./DiscordChannel";
 import { TaskApplication } from "./TaskApplication";
+import { TaskReaction } from "./TaskReaction";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -90,6 +91,10 @@ export class Task extends Audit {
   )
   @Field(() => [TaskApplication])
   public applications!: Promise<TaskApplication[]>;
+
+  @OneToMany(() => TaskReaction, (r: TaskReaction) => r.task)
+  @Field(() => [TaskReaction])
+  public reactions!: Promise<TaskReaction[]>;
 
   // @JoinColumn()
   // @ManyToOne(() => TaskStatus)

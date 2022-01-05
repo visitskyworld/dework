@@ -19,6 +19,8 @@ import { TaskReward } from "@dewo/api/models/TaskReward";
 import { ProjectService } from "../project/project.service";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { ProjectVisibility } from "@dewo/api/models/Project";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { TaskReactionInput } from "./dto/TaskReactionInput";
 
 @Injectable()
 export class TaskService {
@@ -28,6 +30,8 @@ export class TaskService {
     private readonly eventBus: EventBus,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
+    @InjectRepository(TaskReaction)
+    private readonly taskReactionRepo: Repository<TaskReaction>,
     @InjectRepository(TaskReward)
     private readonly taskRewardRepo: Repository<TaskReward>,
     private readonly paymentService: PaymentService,
@@ -111,6 +115,22 @@ export class TaskService {
     );
 
     return this.findWithRelations({ rewardIds: input.taskRewardIds });
+  }
+
+  public async createReaction(
+    input: TaskReactionInput,
+    userId: string
+  ): Promise<void> {
+    const existing = await this.taskReactionRepo.findOne({ ...input, userId });
+    if (!!existing) return;
+    await this.taskReactionRepo.save({ ...input, userId });
+  }
+
+  public async deleteReaction(
+    input: TaskReactionInput,
+    userId: string
+  ): Promise<void> {
+    await this.taskReactionRepo.delete({ ...input, userId });
   }
 
   public async findById(id: string): Promise<Task | undefined> {

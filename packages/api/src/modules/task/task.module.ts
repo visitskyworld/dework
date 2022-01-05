@@ -20,6 +20,7 @@ import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ProjectMember } from "@dewo/api/models/ProjectMember";
       Task,
       TaskReward,
       TaskApplication,
+      TaskReaction,
       Project,
       User,
       ProjectMember,

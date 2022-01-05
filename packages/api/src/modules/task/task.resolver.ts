@@ -29,6 +29,8 @@ import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
 import { GetTasksInput } from "./dto/GetTasksInput";
 import { PermalinkService } from "../permalink/permalink.service";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { TaskReactionInput } from "./dto/TaskReactionInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -159,6 +161,27 @@ export class TaskResolver {
   ): Promise<Task[]> {
     if (!input.taskRewardIds.length) return [];
     return this.taskService.createPayments(input);
+  }
+
+  @Mutation(() => Task)
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.manage, TaskReaction)
+  public async createTaskReaction(
+    @Context("user") user: User,
+    @Args("input") input: TaskReactionInput
+  ): Promise<Task> {
+    await this.taskService.createReaction(input, user.id);
+    return this.taskService.findById(input.taskId) as Promise<Task>;
+  }
+
+  @Mutation(() => Task)
+  @UseGuards(AuthGuard)
+  public async deleteTaskReaction(
+    @Context("user") user: User,
+    @Args("input") input: TaskReactionInput
+  ): Promise<Task> {
+    await this.taskService.deleteReaction(input, user.id);
+    return this.taskService.findById(input.taskId) as Promise<Task>;
   }
 
   @Query(() => Task)

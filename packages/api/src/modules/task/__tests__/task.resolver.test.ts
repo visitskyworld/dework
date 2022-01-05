@@ -7,6 +7,7 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
+import { TaskReactionInput } from "../dto/TaskReactionInput";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
 describe("TaskResolver", () => {
@@ -280,147 +281,6 @@ describe("TaskResolver", () => {
       });
     });
 
-    /*
-    describe("createTaskPayment", () => {
-      const req = (user: User, input: CreateTaskPaymentInput) =>
-        client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: TaskRequests.createPayment(input),
-        });
-
-      it("should fail if task has no reward", async () => {
-        const { user, project } = await fixtures.createUserOrgProject();
-        const task = await fixtures.createTask({ projectId: project.id });
-
-        const response = await req(user, {
-          taskId: task.id,
-          data: { safeTxHash: faker.datatype.uuid() },
-        });
-
-        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
-        client.expectGqlErrorMessage(
-          response,
-          "Cannot pay for task without reward"
-        );
-      });
-
-      it("should fail if task has no assignees", async () => {
-        const { user, project } = await fixtures.createUserOrgProject();
-        const task = await fixtures.createTask({
-          projectId: project.id,
-          reward: { currency: "ETH" },
-        });
-
-        const response = await req(user, {
-          taskId: task.id,
-          data: { safeTxHash: faker.datatype.uuid() },
-        });
-
-        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
-        client.expectGqlErrorMessage(
-          response,
-          "Cannot pay for task without assignees"
-        );
-      });
-
-      it("should fail if project has no payment method", async () => {
-        const { user, project } = await fixtures.createUserOrgProject();
-        const task = await fixtures.createTask({
-          projectId: project.id,
-          assignees: [user],
-          reward: { currency: "ETH" },
-        });
-
-        const response = await req(user, {
-          taskId: task.id,
-          data: { safeTxHash: faker.datatype.uuid() },
-        });
-
-        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
-        client.expectGqlErrorMessage(
-          response,
-          "Project is missing payment method"
-        );
-      });
-
-      it("should fail if user has no payment method", async () => {
-        const { user, project } = await fixtures.createUserOrgProject({
-          project: {
-            paymentMethodId: await fixtures
-              .createPaymentMethod()
-              .then((p) => p.id),
-          },
-        });
-        const task = await fixtures.createTask({
-          projectId: project.id,
-          assignees: [user],
-          reward: { currency: "ETH" },
-        });
-
-        const response = await req(user, {
-          taskId: task.id,
-          data: { safeTxHash: faker.datatype.uuid() },
-        });
-
-        client.expectGqlError(response, HttpStatus.BAD_REQUEST);
-        client.expectGqlErrorMessage(
-          response,
-          "User is missing payment method"
-        );
-      });
-
-      describe("payment.type = GNOSIS_SAFE", () => {
-        it("should create payment", async () => {
-          const safeTxHash = faker.datatype.uuid();
-
-          const { user, project } = await fixtures.createUserOrgProject({
-            user: {
-              paymentMethodId: await fixtures
-                .createPaymentMethod({ type: PaymentMethodType.GNOSIS_SAFE })
-                .then((p) => p.id),
-            },
-            project: {
-              paymentMethodId: await fixtures
-                .createPaymentMethod({ type: PaymentMethodType.GNOSIS_SAFE })
-                .then((p) => p.id),
-            },
-          });
-          const task = await fixtures.createTask({
-            projectId: project.id,
-            assignees: [user],
-            reward: { currency: "ETH" },
-          });
-
-          const response = await req(user, {
-            taskId: task.id,
-            data: { safeTxHash },
-          });
-          expect(response.status).toEqual(HttpStatus.OK);
-          const fetched = response.body.data?.task;
-          expect(fetched.reward.payment).not.toBe(null);
-          expect(fetched.reward.payment.txHash).toEqual(null);
-          expect(fetched.reward.payment.status).toEqual(
-            PaymentStatus.PROCESSING
-          );
-          expect(fetched.reward.payment.data).toEqual({ safeTxHash });
-        });
-
-        xit("should fail if data.safeTxHash not provided", () => {});
-      });
-
-      xdescribe("payment.type = PHANTOM", () => {
-        it("should fail if txHash not provided", () => {});
-      });
-
-      xdescribe("payment.type = METAMASK", () => {
-        it("should fail if txHash not provided", () => {});
-      });
-
-      // status AWAITING_SIGNATURE
-    });
-    */
-
     describe("deleteTask", () => {
       it("should set task.deletedAt", async () => {
         const { user, project } = await fixtures.createUserOrgProject();
@@ -435,6 +295,59 @@ describe("TaskResolver", () => {
         expect(response.status).toEqual(HttpStatus.OK);
         const deletedTask = response.body.data?.task;
         expect(deletedTask.deletedAt).not.toBe(null);
+      });
+    });
+
+    describe("createTaskReaction + deleteTaskReaction", () => {
+      const create = (user: User, input: TaskReactionInput) =>
+        client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.createReaction(input),
+        });
+
+      const del = (user: User, input: TaskReactionInput) =>
+        client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.deleteReaction(input),
+        });
+
+      it("should fail for non-contributors", async () => {
+        const user = await fixtures.createUser();
+        const task = await fixtures.createTask();
+
+        const response = await create(user, {
+          taskId: task.id,
+          reaction: "like",
+        });
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+      });
+
+      it("should add and remove reactions properly", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+
+        const res1 = await create(user, { taskId: task.id, reaction: "1" });
+        expect(res1.body.data.task.reactions).toEqual([
+          expect.objectContaining({ reaction: "1", userId: user.id }),
+        ]);
+
+        const res2 = await create(user, { taskId: task.id, reaction: "1" });
+        expect(res2.body.data.task.reactions).toEqual([
+          expect.objectContaining({ reaction: "1", userId: user.id }),
+        ]);
+
+        const res3 = await create(user, { taskId: task.id, reaction: "2" });
+        expect(res3.body.data.task.reactions).toEqual([
+          expect.objectContaining({ reaction: "1", userId: user.id }),
+          expect.objectContaining({ reaction: "2", userId: user.id }),
+        ]);
+
+        const res4 = await del(user, { taskId: task.id, reaction: "1" });
+        expect(res4.body.data.task.reactions).toEqual([
+          expect.objectContaining({ reaction: "2", userId: user.id }),
+        ]);
       });
     });
   });

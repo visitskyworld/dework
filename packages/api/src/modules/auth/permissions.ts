@@ -10,6 +10,7 @@ import {
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -71,7 +72,9 @@ export const permissions: Permissions<
     cannot(CustomPermissionActions.claimTask, Task);
   },
 
-  projectAdmin({ can }) {
+  projectAdmin({ can, extend }) {
+    extend(Roles.projectContributor);
+
     can(Actions.update, Project);
     can(Actions.manage, ProjectMember);
 
@@ -84,8 +87,9 @@ export const permissions: Permissions<
     can(Actions.delete, Task);
   },
 
-  projectContributor({ can }) {
+  projectContributor({ can, user }) {
     can(Actions.create, ProjectMember, { role: ProjectRole.CONTRIBUTOR });
     can(Actions.create, Task, { status: TaskStatus.BACKLOG });
+    can(Actions.manage, TaskReaction, { userId: user.id });
   },
 };
