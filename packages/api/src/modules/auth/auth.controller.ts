@@ -87,18 +87,21 @@ export class AuthController {
 
     try {
       const state = JSON.parse(query.state!);
-      const config: DiscordOrganizationIntegrationConfig = {
-        guildId: query.guild_id,
-        permissions: query.permissions,
-      };
 
-      await this.integrationService.createOrganizationIntegration({
-        // TODO(fant): we need to somehow verify that this was the user that initiated the connection
-        creatorId: state.userId,
-        organizationId: state.organizationId,
-        type: OrganizationIntegrationType.DISCORD,
-        config,
-      });
+      if (!!query.guild_id && !!query.permissions) {
+        const config: DiscordOrganizationIntegrationConfig = {
+          guildId: query.guild_id,
+          permissions: query.permissions,
+        };
+
+        await this.integrationService.createOrganizationIntegration({
+          // TODO(fant): we need to somehow verify that this was the user that initiated the connection
+          creatorId: state.userId,
+          organizationId: state.organizationId,
+          type: OrganizationIntegrationType.DISCORD,
+          config,
+        });
+      }
 
       const appUrl = this.getAppUrl(query.state);
       const redirectUrl = `${appUrl}${state.redirect ?? ""}`;
