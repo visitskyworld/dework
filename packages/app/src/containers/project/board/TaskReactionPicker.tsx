@@ -81,7 +81,6 @@ const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
               <Typography.Paragraph
                 style={{ marginBottom: 4, textAlign: "center" }}
               >
-                {/* {reaction.selected ? "Remove" : "Add"} {reaction.reaction} */}
                 {reaction.reactions.length === 1
                   ? "1 reaction"
                   : `${reaction.reactions.length} reactions`}
