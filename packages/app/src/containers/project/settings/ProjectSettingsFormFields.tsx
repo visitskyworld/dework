@@ -5,7 +5,7 @@ import * as Icons from "@ant-design/icons";
 import { ProjectVisibility } from "@dewo/app/graphql/types";
 
 export const ProjectSettingsFormFields: FC = () => {
-  const advancedOptions = useToggle();
+  const advancedOptions = useToggle(true);
   return (
     <>
       <Form.Item
