@@ -339,12 +339,12 @@ export class Fixtures {
   ): Promise<{
     project: Project;
     github: {
-      installationId: string;
+      installationId: number;
       organization: string;
       repo: string;
     };
   }> {
-    const installationId = faker.datatype.uuid();
+    const installationId = Date.now();
     const organization = faker.internet.userName();
     const repo = faker.internet.userName();
 

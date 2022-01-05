@@ -7,6 +7,8 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestActions } from "../github.controller";
 import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
+import { IssuesOpenedEvent } from "@octokit/webhooks-types";
+import { DeepPartial } from "typeorm";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -133,6 +135,43 @@ describe("GithubController", () => {
         GithubPullRequestStatusEnum.MERGED
       );
       expect(doneTaskFromDb?.status).toEqual(TaskStatus.DONE);
+    });
+
+    describe("issue created", () => {
+      it("should save task with reference to Github issue", async () => {
+        const { project, github } =
+          await fixtures.createProjectWithGithubIntegration();
+
+        const url = faker.internet.url();
+        const name = faker.lorem.sentence();
+        const description = faker.lorem.sentence();
+
+        await client.request<DeepPartial<IssuesOpenedEvent>>({
+          app,
+          body: {
+            action: "opened",
+            issue: {
+              state: "open",
+              url,
+              title: name,
+              body: description,
+            },
+            installation: { id: github.installationId },
+            repository: {
+              name: github.repo,
+              owner: { login: github.organization },
+            },
+          },
+        });
+
+        const tasks = await project.tasks;
+        const task = tasks[0];
+        expect(task).toBeDefined();
+        expect(task!.name).toEqual(name);
+        expect(task!.status).toEqual(TaskStatus.TODO);
+        expect(task.description).toContain(description);
+        expect(task.description).toContain(url);
+      });
     });
   });
 });

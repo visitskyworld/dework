@@ -8,6 +8,7 @@ import { GithubService } from "./github.service";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import { GithubIntegrationService } from "./github.integration.service";
 
 // The actions Github's API uses
 export enum GithubPullRequestActions {
@@ -30,14 +31,15 @@ export class GithubController {
     private readonly configService: ConfigService<ConfigType>,
     private readonly integrationService: IntegrationService,
     private readonly taskService: TaskService,
-    private readonly githubService: GithubService
+    private readonly githubService: GithubService,
+    private readonly githubIntegrationService: GithubIntegrationService
   ) {}
 
   // Hit when user finishes the GH app installation
   @Get("app-callback")
   async githubAppCallback(@Req() { query }: Request, @Res() res: Response) {
     const stateString = query.state as string;
-    const installationId = query.installation_id as string;
+    const installationId = Number(query.installation_id);
     const { creatorId, organizationId } = JSON.parse(stateString);
 
     await this.integrationService.createOrganizationIntegration({
@@ -55,8 +57,30 @@ export class GithubController {
     const event = request.body as WebhookEvent;
     this.log("Incoming Github webhook", event);
 
+    if (
+      !("installation" in event) ||
+      !("repository" in event) ||
+      !event.installation ||
+      !event.repository
+    ) {
+      this.log("No Github installation in event", {});
+      return;
+    }
+
+    const integration = await this.githubService.findIntegration(
+      event.installation.id,
+      event.repository.owner.login,
+      event.repository.name
+    );
+    if (!integration) {
+      this.log("No integration found for Github installation", event);
+      return;
+    }
+
+    this.log("Found project integration for Github installation", integration);
     if ("issue" in event) {
-      if (event.action === "created") {
+      if (event.action === "opened") {
+        await this.githubIntegrationService.onIssueCreated(event, integration);
       }
     }
 

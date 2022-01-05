@@ -39,11 +39,12 @@ export class TaskService {
   ) {}
 
   public async create(
-    partial: DeepAtLeast<Task, "projectId" | "name" | "status" | "sortKey">
+    partial: DeepAtLeast<Task, "projectId" | "name" | "status">
   ): Promise<Task> {
     const created = await this.taskRepo.save({
       ...partial,
       number: await this.getNextTaskNumber(partial.projectId),
+      sortKey: Date.now().toString(),
     });
     const refetched = (await this.taskRepo.findOne(created.id)) as Task;
     this.eventBus.publish(new TaskCreatedEvent(refetched));

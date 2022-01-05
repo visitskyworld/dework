@@ -16,7 +16,7 @@ export interface DiscordOrganizationIntegrationConfig {
 }
 
 export interface GithubOrganizationIntegrationConfig {
-  installationId: string;
+  installationId: number;
 }
 
 export interface OrganizationIntegrationConfigMap

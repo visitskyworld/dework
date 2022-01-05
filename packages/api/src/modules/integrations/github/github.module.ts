@@ -10,6 +10,8 @@ import { LoggerMiddleware } from "../../auth/logger";
 import { IntegrationModule } from "../integration.module";
 import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegration";
 import { GithubResolver } from "./github.resolver";
+import { GithubIntegrationService } from "./github.integration.service";
+import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 
 @Module({
   imports: [
@@ -17,12 +19,13 @@ import { GithubResolver } from "./github.resolver";
       GithubPullRequest,
       GithubBranch,
       Task,
+      ProjectIntegration,
       OrganizationIntegration,
     ]),
     TaskModule,
     IntegrationModule,
   ],
-  providers: [GithubService, GithubResolver],
+  providers: [GithubService, GithubResolver, GithubIntegrationService],
   controllers: [GithubController],
   exports: [GithubService],
 })

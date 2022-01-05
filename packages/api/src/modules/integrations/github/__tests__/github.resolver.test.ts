@@ -7,7 +7,7 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 
 const githubRepo = "unit-tests";
 const githubOrganization = "deworkxyz-testing";
-const installationId = "21818562";
+const installationId = 21818562;
 
 describe("GithubResolver", () => {
   let app: INestApplication;
