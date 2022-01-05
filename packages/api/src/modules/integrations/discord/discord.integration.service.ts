@@ -414,28 +414,34 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextChannel
   ): Promise<Discord.ThreadChannel> {
+    this.logger.debug(
+      `Creating discord thread for task: ${JSON.stringify({
+        taskId: task.id,
+        channelId: channel.id,
+      })}`
+    );
+
     const thread = await channel.threads.create({
       name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
       autoArchiveDuration: 1440,
     });
 
     const creator = await task.creator;
-    await thread.send({
-      content: `Thread for Dework task "${task.name}"`,
-      embeds: [
-        {
-          title: task.name,
-          author: !!creator
-            ? {
-                name: creator.username,
-                iconURL: creator.imageUrl,
-                url: await this.permalink.get(creator),
-              }
-            : undefined,
-          url: await this.permalink.get(task),
-        },
-      ],
-    });
+    await this.postTaskCard(
+      thread,
+      task,
+      `Thread for Dework task "${task.name}"`,
+      undefined,
+      {
+        author: !!creator
+          ? {
+              name: creator.username,
+              iconURL: creator.imageUrl,
+              url: await this.permalink.get(creator),
+            }
+          : undefined,
+      }
+    );
 
     await this.discordChannelRepo.save({
       taskId: task.id,
