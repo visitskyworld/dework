@@ -148,6 +148,23 @@ export const task = gql`
   ${Fragments.taskTag}
 `;
 
+export const taskReactionUsers = gql`
+  query GetTaskReactionUsersQuery($taskId: UUID!) {
+    task: getTask(id: $taskId) {
+      id
+      reactions {
+        ...TaskReaction
+        user {
+          ...User
+        }
+      }
+    }
+  }
+
+  ${Fragments.taskReaction}
+  ${Fragments.user}
+`;
+
 export const tasks = gql`
   query GetTasksQuery($input: GetTasksInput!) {
     tasks: getTasks(input: $input) {

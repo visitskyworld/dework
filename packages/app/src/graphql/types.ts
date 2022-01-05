@@ -3843,6 +3843,44 @@ export interface GetTaskQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetTaskReactionUsersQuery
+// ====================================================
+
+export interface GetTaskReactionUsersQuery_task_reactions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskReactionUsersQuery_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+  user: GetTaskReactionUsersQuery_task_reactions_user;
+}
+
+export interface GetTaskReactionUsersQuery_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  reactions: GetTaskReactionUsersQuery_task_reactions[];
+}
+
+export interface GetTaskReactionUsersQuery {
+  task: GetTaskReactionUsersQuery_task;
+}
+
+export interface GetTaskReactionUsersQueryVariables {
+  taskId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetTasksQuery
 // ====================================================
 
@@ -6664,6 +6702,7 @@ export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
+  visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
 }

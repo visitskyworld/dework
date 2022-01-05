@@ -1,5 +1,6 @@
 import {
   useApolloClient,
+  useLazyQuery,
   useMutation,
   useQuery,
   useSubscription,
@@ -45,6 +46,8 @@ import {
   CreateTaskReactionMutationVariables,
   DeleteTaskReactionMutation,
   DeleteTaskReactionMutationVariables,
+  GetTaskReactionUsersQuery,
+  GetTaskReactionUsersQueryVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -341,6 +344,13 @@ export function useTask(
     fetchPolicy,
   });
   return data?.task ?? undefined;
+}
+
+export function useLazyTaskReactionUsers(taskId: string) {
+  return useLazyQuery<
+    GetTaskReactionUsersQuery,
+    GetTaskReactionUsersQueryVariables
+  >(Queries.taskReactionUsers, { variables: { taskId } });
 }
 
 export function useTasks(
