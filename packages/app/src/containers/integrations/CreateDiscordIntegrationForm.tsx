@@ -91,8 +91,8 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
               },
             ]}
           >
-            <Select loading={!threads} placeholder="Select Discord Channel...">
-              {threads?.map((channel) => (
+            <Select loading={!channels} placeholder="Select Discord Channel...">
+              {channels?.map((channel) => (
                 <Select.Option key={channel.id} value={channel.id}>
                   {`#${channel.name}`}
                 </Select.Option>
