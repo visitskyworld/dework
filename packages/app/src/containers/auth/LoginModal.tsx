@@ -51,14 +51,7 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
         <ThreepidAuthButton
           loading={authingWithMetamask.isOn}
           source={ThreepidSource.metamask}
-          children={
-            <>
-              {getThreepidName[ThreepidSource.metamask]}
-              {/* {!isMetaMaskAvailable && (
-                <Tag style={{ marginLeft: 8 }}>Beta</Tag>
-              )} */}
-            </>
-          }
+          children={getThreepidName[ThreepidSource.metamask]}
           size="large"
           type="ghost"
           block
