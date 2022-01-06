@@ -311,10 +311,10 @@ export class DiscordIntegrationService {
       "Task moved to in progress!",
       !!threepids.length ? threepids.map((t) => t.threepid) : undefined
     );
-    await this.post(
-      channel,
-      `${intro} This task has been moved to the next stage.`.trim()
-    );
+    // await this.post(
+    //   channel,
+    //   `${intro} This task has been moved to the next stage.`.trim()
+    // );
   }
 
   private async postTaskCard(
