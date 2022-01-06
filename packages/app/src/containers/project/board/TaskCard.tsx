@@ -93,7 +93,11 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           return <ClaimTaskButton task={task} />;
         } else {
           return (
-            <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            <LoginButton
+              size="small"
+              icon={<Icons.UnlockOutlined />}
+              onClick={eatClick}
+            >
               Apply
             </LoginButton>
           );

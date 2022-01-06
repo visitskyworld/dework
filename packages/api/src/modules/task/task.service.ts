@@ -7,10 +7,8 @@ import {
   IsNull,
   Not,
   Repository,
-  DeepPartial,
   OrderByCondition,
 } from "typeorm";
-import { User } from "@dewo/api/models/User";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "./task.events";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
@@ -64,32 +62,27 @@ export class TaskService {
     return refetched;
   }
 
-  public async claim(
-    taskId: string,
-    user: User,
-    application: DeepPartial<TaskApplication>
-  ): Promise<Task> {
-    const task = await this.taskRepo.findOne(taskId);
+  public async createTaskApplication(
+    partial: DeepAtLeast<TaskApplication, "userId" | "taskId">
+  ): Promise<TaskApplication> {
+    const task = await this.taskRepo.findOne(partial.taskId);
     if (!task) throw new NotFoundException();
 
     const applications = await task.applications;
-    if (applications.map((a) => a.userId).includes(user.id)) return task;
+    const existing = applications.find((a) => a.userId === partial.userId);
+    if (!!existing) return existing;
 
-    const taskApplication = {
-      message: application.message,
-      startDate: application.startDate,
-      endDate: application.endDate,
-      userId: user.id,
-      taskId: taskId,
-    };
-    await this.taskApplicationRepo.save(taskApplication);
-    return this.findById(taskId) as Promise<Task>;
+    const created = await this.taskApplicationRepo.save(partial);
+    return this.taskApplicationRepo.findOne({
+      id: created.id,
+    }) as Promise<TaskApplication>;
   }
 
-  public async unclaim(taskId: string, user: User): Promise<Task> {
-    const task = await this.taskRepo.findOne(taskId);
-    if (!task) throw new NotFoundException();
-    await this.taskApplicationRepo.delete({ taskId: taskId, userId: user.id });
+  public async deleteTaskApplication(
+    taskId: string,
+    userId: string
+  ): Promise<Task> {
+    await this.taskApplicationRepo.delete({ taskId, userId });
     return this.findById(taskId) as Promise<Task>;
   }
 

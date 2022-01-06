@@ -8,6 +8,7 @@ import {
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
 import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   toggle: UseToggleHook;
@@ -37,13 +38,21 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     }
   }, [createMetamaskThreepid, router, state, authingWithMetamask]);
 
+  const handleCancel = useCallback(
+    (e) => {
+      toggle.toggleOff();
+      stopPropagation(e);
+    },
+    [toggle]
+  );
+
   return (
     <Modal
       visible={toggle.isOn}
       footer={null}
       title="Connect"
       width={368}
-      onCancel={toggle.toggleOff}
+      onCancel={handleCancel}
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         <ThreepidAuthButton

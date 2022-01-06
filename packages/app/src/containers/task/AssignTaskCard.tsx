@@ -49,13 +49,23 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
           return (
             <List.Item
               actions={[
-                <Button
-                  size="small"
-                  loading={loading}
-                  onClick={() => handleAssign(application.user)}
-                >
-                  Assign
-                </Button>,
+                <Space size={4} direction="vertical">
+                  <Button
+                    size="small"
+                    loading={loading}
+                    onClick={() => handleAssign(application.user)}
+                  >
+                    Assign
+                  </Button>
+                  <Button
+                    key="remove"
+                    size="small"
+                    type="text"
+                    className="text-secondary"
+                  >
+                    Remove
+                  </Button>
+                </Space>,
               ]}
             >
               <Space direction="vertical" style={{ width: "100%" }}>

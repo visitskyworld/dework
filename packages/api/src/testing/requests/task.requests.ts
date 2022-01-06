@@ -4,8 +4,20 @@ import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 import { GetTasksInput } from "@dewo/api/modules/task/dto/GetTasksInput";
 import { TaskReactionInput } from "@dewo/api/modules/task/dto/TaskReactionInput";
+import { DeleteTaskApplicationInput } from "@dewo/api/modules/task/dto/DeleteTaskApplicationInput";
 
 export class TaskRequests {
+  private static taskApplicationFragment = `
+    fragment TaskApplication on TaskApplication {
+      user {
+        id
+      }
+      message
+      startDate
+      endDate
+    }
+  `;
+
   private static taskFragment = `
     fragment Task on Task {
       id
@@ -51,18 +63,15 @@ export class TaskRequests {
         }
       }
       applications {
-        user {
-          id
-        }
-        message
-        startDate
-        endDate
+        ...TaskApplication
       }
       reactions {
         reaction
         userId
       }
     }
+
+    ${TaskRequests.taskApplicationFragment}
   `;
 
   public static create(
@@ -133,44 +142,42 @@ export class TaskRequests {
     };
   }
 
-  public static claim(
-    taskId: string,
-    application: CreateTaskApplicationInput
-  ): GraphQLTestClientRequestBody<{
-    taskId: string;
-    application: CreateTaskApplicationInput;
-  }> {
+  public static createApplication(
+    input: CreateTaskApplicationInput
+  ): GraphQLTestClientRequestBody<{ input: CreateTaskApplicationInput }> {
     return {
       query: `
-      mutation ClaimTaskMutation(
-        $taskId: UUID!
-        $application: CreateTaskApplicationInput!
+      mutation CreateTaskApplication(
+        $input: CreateTaskApplicationInput!
       ) {
-        task: claimTask(id: $taskId, application: $application) {
-          ...Task
+        application: createTaskApplication(input: $input) {
+          id
+          task {
+            ...Task
+          }
         }
       }
 
         ${this.taskFragment}
       `,
-      variables: { taskId, application },
+      variables: { input },
     };
   }
 
-  public static unclaim(
-    taskId: string
-  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+  public static deleteApplication(
+    input: DeleteTaskApplicationInput
+  ): GraphQLTestClientRequestBody<{ input: DeleteTaskApplicationInput }> {
     return {
       query: `
-        mutation UnclaimTask($taskId: UUID!) {
-          task: unclaimTask(id: $taskId) {
+        mutation DeleteTaskApplication($input: DeleteTaskApplicationInput!) {
+          task: deleteTaskApplication(input: $input) {
             ...Task
           }
         }
 
         ${this.taskFragment}
       `,
-      variables: { taskId },
+      variables: { input },
     };
   }
 

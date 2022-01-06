@@ -206,36 +206,34 @@ describe("TaskResolver", () => {
       });
     });
 
-    describe("claimTask", () => {
+    describe("createTaskApplication", () => {
       it("should succeed and create a task application for user if status is TODO", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({ status: TaskStatus.TODO });
         const message = faker.lorem.words(5);
         const startDate = faker.date.soon();
         const endDate = faker.date.soon();
-        const application = {
-          message: message,
-          startDate: startDate,
-          endDate: endDate,
-        };
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, application),
+          body: TaskRequests.createApplication({
+            message: message,
+            startDate: startDate,
+            endDate: endDate,
+            userId: user.id,
+            taskId: task.id,
+          }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
-        const fetched = response.body.data?.task;
+        const fetched = response.body.data?.application.task;
         expect(fetched.applications).toHaveLength(1);
-
-        const fetchedTaskApplication = fetched.applications[0];
-        expect(fetchedTaskApplication.user.id).toEqual(user.id);
-        expect(fetchedTaskApplication.message).toEqual(message);
-        expect(fetchedTaskApplication.startDate).toEqual(
-          startDate.toISOString()
-        );
-        expect(fetchedTaskApplication.endDate).toEqual(endDate.toISOString());
+        const application = fetched.applications[0];
+        expect(application.user.id).toEqual(user.id);
+        expect(application.message).toEqual(message);
+        expect(application.startDate).toEqual(startDate.toISOString());
+        expect(application.endDate).toEqual(endDate.toISOString());
       });
 
       it("should not succeed if status is not TODO", async () => {
@@ -243,24 +241,25 @@ describe("TaskResolver", () => {
         const task = await fixtures.createTask({
           status: TaskStatus.IN_PROGRESS,
         });
-        const application = {
-          message: faker.lorem.words(5),
-          startDate: faker.date.soon(),
-          endDate: faker.date.soon(),
-        };
 
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.claim(task.id, application),
+          body: TaskRequests.createApplication({
+            message: faker.lorem.words(5),
+            startDate: faker.date.soon(),
+            endDate: faker.date.soon(),
+            userId: user.id,
+            taskId: task.id,
+          }),
         });
 
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
     });
 
-    describe("unclaimTask", () => {
-      it("should succeed and delete task application", async () => {
+    describe("deleteTaskApplication", () => {
+      it("should succeed for the current user", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask({
           status: TaskStatus.TODO,
@@ -270,7 +269,34 @@ describe("TaskResolver", () => {
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
-          body: TaskRequests.unclaim(task.id),
+          body: TaskRequests.deleteApplication({
+            taskId: task.id,
+            userId: user.id,
+          }),
+        });
+
+        expect(response.status).toEqual(HttpStatus.OK);
+        const fetched = response.body.data?.task;
+        expect(fetched.applications).toHaveLength(0);
+      });
+
+      it("should succeed for project admin", async () => {
+        const admin = await fixtures.createUser();
+        const assignee = await fixtures.createUser();
+        const project = await fixtures.createProject({}, admin);
+        const task = await fixtures.createTask({
+          status: TaskStatus.TODO,
+          assignees: [assignee],
+          projectId: project.id,
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(admin),
+          body: TaskRequests.deleteApplication({
+            taskId: task.id,
+            userId: assignee.id,
+          }),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
