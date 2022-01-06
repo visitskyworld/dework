@@ -8,7 +8,6 @@ import {
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
 import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
-import { useProvider } from "@dewo/app/util/ethereum";
 
 interface Props {
   toggle: UseToggleHook;
@@ -22,7 +21,6 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
     [router.query, router.asPath, appUrl]
   );
 
-  const isMetaMaskAvailable = useProvider().current;
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
   const authWithMetamask = useCallback(async () => {
