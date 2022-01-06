@@ -83,7 +83,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           )}
           onValuesChange={handleUpdateProject}
         >
-          <ProjectSettingsFormFields />
+          <ProjectSettingsFormFields mode="update" project={project} />
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>

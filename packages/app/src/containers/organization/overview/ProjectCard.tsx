@@ -1,33 +1,15 @@
 import { ProjectDetails, ProjectVisibility } from "@dewo/app/graphql/types";
-import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  Menu,
-  Progress,
-  Row,
-  Tag,
-  Typography,
-} from "antd";
-import React, { FC, useCallback } from "react";
+import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
+import React, { FC } from "react";
 import Link from "next/link";
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
-import { useUpdateProject } from "../../project/hooks";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectCard: FC<Props> = ({ project }) => {
-  const updateProject = useUpdateProject();
-  const deleteProject = useCallback(
-    () =>
-      updateProject({ id: project.id, deletedAt: new Date().toISOString() }),
-    [updateProject, project.id]
-  );
   return (
     <Link href={project.permalink}>
       <a>
@@ -75,32 +57,6 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               </Tag>
             )}
           </Row>
-
-          <Can I="delete" a="Task">
-            <Dropdown
-              placement="bottomRight"
-              trigger={["click"]}
-              overlay={
-                <Menu
-                  theme="dark"
-                  onClick={(e) => e.domEvent.stopPropagation()}
-                >
-                  <Menu.Item
-                    icon={<Icons.DeleteOutlined />}
-                    onClick={deleteProject}
-                  >
-                    Delete Project
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <Button
-                type="text"
-                icon={<Icons.MoreOutlined />}
-                style={{ position: "absolute", top: 0, right: 0 }}
-              />
-            </Dropdown>
-          </Can>
         </Card>
       </a>
     </Link>
