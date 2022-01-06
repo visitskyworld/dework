@@ -2,7 +2,7 @@ import {
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
-import { TaskStatus } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
 import * as Github from "@octokit/webhooks-types";
 import * as Colors from "@ant-design/colors";
@@ -16,6 +16,15 @@ import { GithubService } from "./github.service";
 @Injectable()
 export class GithubIntegrationService {
   private logger = new Logger(this.constructor.name);
+  private githubIssueLabel: Github.Label = {
+    id: 0,
+    node_id: "",
+    url: "",
+    name: "github issue",
+    description: null,
+    color: "238636",
+    default: false,
+  };
 
   private nearestColor = NearestColor.from({
     red: Colors.red.primary!,
@@ -51,7 +60,10 @@ export class GithubIntegrationService {
     );
 
     const project = await integration.project;
-    const tags = await this.getOrCreateTaskTags(issue.labels ?? [], project);
+    const tags = await this.getOrCreateTaskTags(
+      [...(issue.labels ?? []), this.githubIssueLabel],
+      project
+    );
 
     const existingIssue = await this.githubService.findIssue(
       issue.id,
@@ -79,11 +91,18 @@ export class GithubIntegrationService {
         );
       }
 
+      const existingTask = (await this.taskService.findById(
+        existingIssue.taskId
+      )) as Task;
+      const nonGithubTags = existingTask.tags.filter(
+        (t) => t.source !== TaskTagSource.GITHUB
+      );
+
       const task = await this.taskService.update({
         id: existingIssue.taskId,
         name: issue.title,
         description,
-        tags,
+        tags: [...tags, ...nonGithubTags],
         status: updatedStatus,
       });
 

@@ -182,7 +182,15 @@ describe("GithubController", () => {
         expect(task!.status).toEqual(TaskStatus.TODO);
         expect(task!.description).toContain(description);
         expect(task!.description).toContain(url);
-        expect(task!.tags).toHaveLength(1);
+        expect(task!.tags).toHaveLength(2);
+        expect(task!.tags).toContainEqual(
+          expect.objectContaining({
+            label: "github issue",
+            color: "green",
+            source: TaskTagSource.GITHUB,
+            externalId: 0,
+          })
+        );
         expect(task!.tags).toContainEqual(
           expect.objectContaining({
             label: limeGithubLabel.name,
@@ -269,8 +277,7 @@ describe("GithubController", () => {
         expect(updatedTask!.status).toEqual(TaskStatus.DONE);
         expect(updatedTask!.description).toContain(description);
         expect(updatedTask!.description).toContain(url);
-        expect(updatedTask!.tags).toHaveLength(1);
-        expect(updatedTask!.tags).not.toContainEqual(
+        expect(updatedTask!.tags).toContainEqual(
           expect.objectContaining({ id: originalTag.id })
         );
         expect(updatedTask!.tags).toContainEqual(
