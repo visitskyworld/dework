@@ -101,10 +101,8 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
     <>
       <Head>
         <title>{siteTitle}</title>
-        <meta
-          name="description"
-          content={`${siteTitle} - ${siteDescription}`}
-        />
+        <meta name="description" content={`${siteDescription}`} />
+        <meta name="img" content="https://i.imgur.com/vs0aXnL.png" />
         <link
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
