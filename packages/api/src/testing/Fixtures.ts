@@ -20,7 +20,7 @@ import { GithubService } from "../modules/integrations/github/github.service";
 import { GithubBranch } from "../models/GithubBranch";
 import {
   GithubPullRequest,
-  GithubPullRequestStatusEnum,
+  GithubPullRequestStatus,
 } from "../models/GithubPullRequest";
 import { GithubIntegrationModule } from "../modules/integrations/github/github.module";
 import { InviteService } from "../modules/invite/invite.service";
@@ -226,7 +226,7 @@ export class Fixtures {
       link: faker.datatype.string(),
       branchName: faker.datatype.string(),
       number: faker.datatype.number(),
-      status: GithubPullRequestStatusEnum.OPEN,
+      status: GithubPullRequestStatus.OPEN,
       task,
       taskId: await task.then((t) => t.id),
       ...partial,

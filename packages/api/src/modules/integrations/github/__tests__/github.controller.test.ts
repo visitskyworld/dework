@@ -6,7 +6,7 @@ import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestActions } from "../github.controller";
-import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
+import { GithubPullRequestStatus } from "@dewo/api/models/GithubPullRequest";
 import * as Github from "@octokit/webhooks-types";
 import { DeepPartial } from "typeorm";
 import { TaskTagSource } from "@dewo/api/models/TaskTag";
@@ -41,23 +41,17 @@ describe("GithubController", () => {
       });
       const branchName = `username/dw-${task.number}/feature`;
 
-      const response = await client.request({
+      const response = await client.request<DeepPartial<Github.PushEvent>>({
         app,
         body: {
           ref: branchName,
-          pull_request: {
-            title: "test",
-            state: "open",
-            html_url: faker.internet.url(),
-            number: faker.datatype.number(),
-            draft: false,
-          },
+          commits: [],
           installation: { id: github.installationId },
           repository: {
             name: github.repo,
             owner: { login: github.organization },
           },
-        } as any,
+        },
       });
 
       expect(response.status).toEqual(HttpStatus.CREATED);
@@ -84,10 +78,11 @@ describe("GithubController", () => {
         branchName: branch.name,
       });
 
-      const prOpenedResponse = await client.request({
+      const prOpenedResponse = await client.request<
+        DeepPartial<Github.PullRequestOpenedEvent>
+      >({
         app,
         body: {
-          ref: branch.name,
           action: GithubPullRequestActions.OPENED,
           pull_request: {
             title: pullRequest.title,
@@ -96,41 +91,44 @@ describe("GithubController", () => {
             number: faker.datatype.number(),
             draft: false,
             merged: false,
+            head: { ref: branch.name },
           },
           installation: { id: github.installationId },
           repository: {
             name: github.repo,
             owner: { login: github.organization },
           },
-        } as any,
+        },
       });
 
       const prFromDb = await fixtures.getGithubPullRequestByTaskId(task.id);
       const taskFromDb = await fixtures.getTask(task.id);
       expect(prOpenedResponse.status).toEqual(HttpStatus.CREATED);
       expect(prFromDb?.taskId).toEqual(task.id);
-      expect(prFromDb?.status).toEqual(GithubPullRequestStatusEnum.OPEN);
+      expect(prFromDb?.status).toEqual(GithubPullRequestStatus.OPEN);
       expect(taskFromDb?.status).toEqual(TaskStatus.IN_REVIEW);
 
-      const prClosedResponse = await client.request({
+      const prClosedResponse = await client.request<
+        DeepPartial<Github.PullRequestClosedEvent>
+      >({
         app,
         body: {
-          ref: branch.name,
           action: GithubPullRequestActions.CLOSED,
           pull_request: {
             title: pullRequest.title,
-            state: "open",
+            state: "closed",
             html_url: faker.internet.url(),
             number: faker.datatype.number(),
             draft: false,
             merged: true,
+            head: { ref: branch.name },
           },
           installation: { id: github.installationId },
           repository: {
             name: github.repo,
             owner: { login: github.organization },
           },
-        } as any,
+        },
       });
 
       const mergedPrFromDb = await fixtures.getGithubPullRequestByTaskId(
@@ -139,9 +137,7 @@ describe("GithubController", () => {
       const doneTaskFromDb = await fixtures.getTask(task.id);
       expect(prClosedResponse.status).toEqual(HttpStatus.CREATED);
       expect(mergedPrFromDb?.taskId).toEqual(task.id);
-      expect(mergedPrFromDb?.status).toEqual(
-        GithubPullRequestStatusEnum.MERGED
-      );
+      expect(mergedPrFromDb?.status).toEqual(GithubPullRequestStatus.MERGED);
       expect(doneTaskFromDb?.status).toEqual(TaskStatus.DONE);
     });
 
@@ -188,7 +184,7 @@ describe("GithubController", () => {
             label: "github issue",
             color: "green",
             source: TaskTagSource.GITHUB,
-            externalId: 0,
+            externalId: String(0),
           })
         );
         expect(task!.tags).toContainEqual(

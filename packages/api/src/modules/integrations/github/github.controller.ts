@@ -1,14 +1,18 @@
 import { Request, Response } from "express";
 import { ConfigService } from "@nestjs/config";
 import { Controller, Get, Logger, Post, Req, Res } from "@nestjs/common";
-import { WebhookEvent } from "@octokit/webhooks-types";
-import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
+import * as Github from "@octokit/webhooks-types";
+import {
+  GithubPullRequest,
+  GithubPullRequestStatus,
+} from "@dewo/api/models/GithubPullRequest";
 import { ConfigType } from "../../app/config";
 import { GithubService } from "./github.service";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { GithubIntegrationService } from "./github.integration.service";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 
 // The actions Github's API uses
 export enum GithubPullRequestActions {
@@ -71,7 +75,7 @@ export class GithubController {
   @Post("webhook")
   @PreventConcurrency()
   async githubWebhook(@Req() request: Request) {
-    const event = request.body as WebhookEvent;
+    const event = request.body as Github.WebhookEvent;
     this.log("Incoming Github webhook", event);
 
     if (
@@ -99,25 +103,155 @@ export class GithubController {
       await this.githubIntegrationService.updateIssue(event.issue, integration);
     }
 
-    /*
-    // First validate the event's installation and taskId
-    const branchName = (body.pull_request?.head?.ref ?? body.ref).replace(
-      "refs/heads/",
-      ""
-    );
+    // PushEvent
+    if ("ref" in event && "installation" in event && "commits" in event) {
+      const result = await this.getBranchAndTask(
+        event.ref,
+        event.repository,
+        event.installation.id
+      );
+      if (!result) return;
+      const { task, branchName, organization, repo } = result;
+
+      const branch = await this.githubService.findBranchByName(branchName);
+      if (branch) {
+        this.log("Found existing branch", {
+          name: branchName,
+          repo: branch.repo,
+          organization: branch.organization,
+        });
+
+        if (event.deleted) {
+          await this.githubService.updateBranch({
+            id: branch.id,
+            deletedAt: new Date(),
+          });
+        } else {
+          await this.githubService.updateBranch({
+            id: branch.id,
+            deletedAt: null!,
+          });
+        }
+
+        await this.triggerTaskUpdatedSubscription(task.id);
+      } else {
+        await this.githubService.createBranch({
+          name: branchName,
+          repo,
+          organization,
+          link: `https://github.com/${organization}/${repo}/compare/${branchName}`,
+          taskId: task.id,
+        });
+        this.log("Created a new branch", {
+          name: branchName,
+          repo,
+          organization,
+        });
+
+        await this.triggerTaskUpdatedSubscription(task.id);
+      }
+    }
+
+    if ("pull_request" in event) {
+      const result = await this.getBranchAndTask(
+        event.pull_request.head.ref,
+        event.repository,
+        event.installation.id
+      );
+      if (!result) return;
+      const { task, branchName } = result;
+
+      const { title, state, html_url, number, draft } = event.pull_request;
+      const pr = await this.githubService.findPullRequestByTaskId(task.id);
+      const prData: GithubPullRequestPayload = {
+        title,
+        number,
+        branchName,
+        status: {
+          open: GithubPullRequestStatus.OPEN,
+          closed: GithubPullRequestStatus.CLOSED,
+        }[state],
+        link: html_url,
+        taskId: task.id,
+      };
+
+      if (event.action === "closed") {
+        if (!pr) return;
+        const merged = event.pull_request.merged;
+        const status = merged
+          ? GithubPullRequestStatus.MERGED
+          : GithubPullRequestStatus.CLOSED;
+        await this.githubService.updatePullRequest({
+          ...prData,
+          id: pr.id,
+          status,
+        });
+
+        this.log("Updated PR's status", { title: pr.title, status });
+
+        if (merged) {
+          await this.taskService.update({
+            id: task.id,
+            status: TaskStatus.DONE,
+          });
+          this.log("Updated task status", {
+            taskNumber: task.number,
+            status: TaskStatus.DONE,
+          });
+        }
+      } else {
+        if (pr) {
+          await this.githubService.updatePullRequest({ ...prData, id: pr.id });
+          this.log("Updated PR", { title: pr.title, taskId: task.id });
+        } else {
+          await this.githubService.createPullRequest(prData);
+          this.log("Created a new PR", {
+            title: prData.title,
+            taskId: task.id,
+          });
+        }
+
+        if (!draft) {
+          await this.taskService.update({
+            id: task.id,
+            status: TaskStatus.IN_REVIEW,
+          });
+          this.log("Updated task status", {
+            taskNumber: task.number,
+            status: TaskStatus.IN_REVIEW,
+          });
+        }
+      }
+
+      await this.triggerTaskUpdatedSubscription(task.id);
+    }
+  }
+
+  private async getBranchAndTask(
+    ref: string,
+    repository: Github.Repository,
+    installationId: number
+    // event: Github.PushEvent | Github.PullRequestEvent
+  ): Promise<
+    | { branchName: string; task: Task; organization: string; repo: string }
+    | undefined
+  > {
+    const branchName = ref.replace("refs/head/", "");
     const taskNumber =
       this.githubService.parseTaskNumberFromBranchName(branchName);
 
     if (!taskNumber) {
       this.log("Failed to parse task number from branch name", branchName);
-      return;
+      return undefined;
     }
 
-    this.log("Parsed task number from branch name", { branchName, taskNumber });
+    this.log("Parsed task number from branch name", {
+      branchName,
+      taskNumber,
+    });
 
-    const installationId = body.installation.id;
-    const organization = body.repository.owner.login;
-    const repo = body.repository.name;
+    const organization = repository.owner.login;
+    const repo = repository.name;
 
     const task = await this.githubService.findTask({
       taskNumber,
@@ -128,117 +262,11 @@ export class GithubController {
 
     if (!task) {
       this.log("Failed to find task", { taskNumber, installationId });
-      return;
+      return undefined;
     }
 
     this.log("Found task", { taskId: task.id, taskNumber, installationId });
-
-    // Then handle branch and pull request updates separately
-    const branch = await this.githubService.findBranchByName(branchName);
-    if (branch) {
-      this.log("Found existing branch", {
-        name: branchName,
-        repo: branch.repo,
-        organization: branch.organization,
-      });
-
-      // Check if it's a deletion push
-      if (body.deleted) {
-        await this.githubService.updateBranch({
-          id: branch.id,
-          deletedAt: new Date(),
-        });
-      } else {
-        await this.githubService.updateBranch({
-          id: branch.id,
-          deletedAt: null!,
-        });
-      }
-
-      await this.triggerTaskUpdatedSubscription(task.id);
-    } else {
-      const repo = body.repository.name;
-      const organization = body.repository.owner.login;
-      await this.githubService.createBranch({
-        name: branchName,
-        repo,
-        organization,
-        link: `https://github.com/${organization}/${repo}/compare/${branchName}`,
-        taskId: task.id,
-      });
-      this.log("Created a new branch", {
-        name: branchName,
-        repo,
-        organization,
-      });
-
-      await this.triggerTaskUpdatedSubscription(task.id);
-    }
-
-    if (body.pull_request) {
-      const { title, state, html_url, number, draft } = body.pull_request;
-      const pr = await this.githubService.findPullRequestByTaskId(task.id);
-      const newPr: GithubPullRequestPayload = {
-        title,
-        number,
-        branchName,
-        status: state.toUpperCase(),
-        link: html_url,
-        taskId: task.id,
-      };
-
-      switch (body.action) {
-        case GithubPullRequestActions.CLOSED:
-          if (!pr) return;
-          const isMerged = body.pull_request.merged as boolean;
-          const newStatus = isMerged
-            ? GithubPullRequestStatusEnum.MERGED
-            : GithubPullRequestStatusEnum.CLOSED;
-          await this.githubService.updatePullRequest({
-            ...newPr,
-            id: pr.id,
-            status: newStatus,
-          });
-          if (isMerged) {
-            await this.taskService.update({
-              id: task.id,
-              status: TaskStatus.DONE,
-            });
-            this.log("Updated task status", {
-              taskNumber: task.number,
-              status: TaskStatus.DONE,
-            });
-          }
-          this.log("Updated PR's status", {
-            title: pr.title,
-            status: newStatus,
-          });
-          break;
-        default:
-          if (pr) {
-            await this.githubService.updatePullRequest({ ...newPr, id: pr.id });
-            this.log("Updated PR", { title: pr.title, taskId: task.id });
-          } else {
-            await this.githubService.createPullRequest(newPr);
-            this.log("Created a new PR", {
-              title: newPr.title,
-              taskId: task.id,
-            });
-          }
-          if (!draft) {
-            await this.taskService.update({
-              id: task.id,
-              status: TaskStatus.IN_REVIEW,
-            });
-            this.log("Updated task status", {
-              taskNumber: task.number,
-              status: TaskStatus.IN_REVIEW,
-            });
-          }
-          await this.triggerTaskUpdatedSubscription(task.id);
-      }
-    }
-    */
+    return { task, branchName, organization, repo };
   }
 
   private async triggerTaskUpdatedSubscription(taskId: string) {
