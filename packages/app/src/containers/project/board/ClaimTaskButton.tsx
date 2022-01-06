@@ -3,10 +3,10 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
 import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useUnclaimTask } from "../../task/hooks";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useToggle } from "@dewo/app/util/hooks";
 import { TaskApplyModal } from "../../task/TaskApplyModal";
+import { useDeleteTaskApplication } from "../../task/hooks";
 
 interface Props {
   task: Task;
@@ -21,7 +21,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
 
   const showClaimEducation = useToggle();
 
-  const unclaimTask = useUnclaimTask();
+  const deleteTaskApplication = useDeleteTaskApplication();
   const handleClaimTask = useCallback(
     (event) => {
       eatClick(event);
@@ -32,9 +32,9 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const handleUnclaimTask = useCallback(
     async (event) => {
       eatClick(event);
-      unclaimTask(task);
+      deleteTaskApplication({ taskId: task.id, userId: user!.id });
     },
-    [unclaimTask, task]
+    [deleteTaskApplication, task.id, user]
   );
   const hideClaimConfirmation = useCallback(
     (event) => {

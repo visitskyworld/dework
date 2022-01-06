@@ -1,11 +1,12 @@
 import { Task } from "@dewo/app/graphql/types";
 import { Modal, Col } from "antd";
 import React, { FC, useCallback } from "react";
-import { useClaimTask } from "./hooks";
+import { useCreateTaskApplication } from "./hooks";
 import { Form, Button, Input } from "antd";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { DatePicker } from "antd";
 import moment from "moment";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface TaskApplyModalProps {
   task: Task;
@@ -20,17 +21,20 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
   onCancel,
   onDone,
 }) => {
-  const claimTask = useClaimTask();
+  const { user } = useAuthContext();
+  const createTaskApplication = useCreateTaskApplication();
   const handleSubmit = useCallback(
     async (input) => {
-      const claimedTask = await claimTask(task, {
+      const claimedTask = await createTaskApplication({
+        taskId: task.id,
+        userId: user!.id,
         message: input.message,
         startDate: input.dates[0],
         endDate: input.dates[1],
       });
       await onDone(claimedTask);
     },
-    [claimTask, onDone, task]
+    [createTaskApplication, onDone, task.id, user]
   );
 
   const { RangePicker } = DatePicker;

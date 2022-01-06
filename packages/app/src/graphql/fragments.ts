@@ -267,6 +267,7 @@ export const taskApplication = gql`
     message
     startDate
     endDate
+    userId
     user {
       ...User
     }

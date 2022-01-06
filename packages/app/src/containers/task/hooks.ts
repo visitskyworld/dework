@@ -28,10 +28,6 @@ import {
   UpdateTaskMutationVariables,
   UserTasksQuery,
   UserTasksQueryVariables,
-  ClaimTaskMutation,
-  ClaimTaskMutationVariables,
-  UnclaimTaskMutation,
-  UnclaimTaskMutationVariables,
   User,
   UpdateTaskRewardInput,
   TaskReward,
@@ -49,6 +45,11 @@ import {
   GetTaskReactionUsersQuery,
   GetTaskReactionUsersQueryVariables,
   OrganizationTag,
+  DeleteTaskApplicationInput,
+  CreateTaskApplicationMutation,
+  CreateTaskApplicationMutationVariables,
+  DeleteTaskApplicationMutation,
+  DeleteTaskApplicationMutationVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -198,37 +199,33 @@ export function useUpdateTask(): (
   );
 }
 
-export function useClaimTask(): (
-  task: Task,
-  application: CreateTaskApplicationInput
+export function useCreateTaskApplication(): (
+  input: CreateTaskApplicationInput
 ) => Promise<Task> {
-  const [mutation] = useMutation<ClaimTaskMutation, ClaimTaskMutationVariables>(
-    Mutations.claimTask
-  );
+  const [mutation] = useMutation<
+    CreateTaskApplicationMutation,
+    CreateTaskApplicationMutationVariables
+  >(Mutations.createTaskApplication);
   return useCallback(
-    async (task, application) => {
-      const res = await mutation({
-        variables: { taskId: task.id, application: application },
-      });
-
+    async (input) => {
+      const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.task;
+      return res.data?.application.task;
     },
     [mutation]
   );
 }
 
-export function useUnclaimTask(): (task: Task) => Promise<Task> {
+export function useDeleteTaskApplication(): (
+  input: DeleteTaskApplicationInput
+) => Promise<Task> {
   const [mutation] = useMutation<
-    UnclaimTaskMutation,
-    UnclaimTaskMutationVariables
-  >(Mutations.unclaimTask);
+    DeleteTaskApplicationMutation,
+    DeleteTaskApplicationMutationVariables
+  >(Mutations.deleteTaskApplication);
   return useCallback(
-    async (task) => {
-      const res = await mutation({
-        variables: { taskId: task.id },
-      });
-
+    async (input) => {
+      const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
     },
