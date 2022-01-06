@@ -68,13 +68,22 @@ export function useGroupedTasks(
       )
       .mapValues((tasks, status) => {
         if (status === TaskStatus.TODO && canUpdateTasks) {
-          const [claimed, unclaimed] = _.partition(
+          const [assigned, unassigned] = _.partition(
             tasks,
+            (task) => !!task.assignees.length
+          );
+          const [claimed, unclaimed] = _.partition(
+            unassigned,
             (task) => !!task.applications.length
           );
-          if (!!claimed.length) {
+          if (!!assigned.length || !!claimed.length) {
             return [
-              { title: "Open applications", tasks: claimed },
+              { title: "Assigned", tasks: assigned, hidden: !assigned.length },
+              {
+                title: "Open applications",
+                tasks: claimed,
+                hidden: !claimed.length,
+              },
               { title: "Unclaimed", tasks: unclaimed },
             ];
           }
