@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
 
-const NUM_COLUMNS = 3;
+const NUM_COLUMNS = 8;
 
 export const ExplorePopularDaosSection: FC = () => {
   const organizations = useFeaturedOrganizations(NUM_COLUMNS);
