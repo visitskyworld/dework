@@ -4,13 +4,14 @@ import {
 } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { Injectable, Logger } from "@nestjs/common";
-import { IssuesOpenedEvent, Label } from "@octokit/webhooks-types";
+import * as Github from "@octokit/webhooks-types";
 import * as Colors from "@ant-design/colors";
 import NearestColor from "nearest-color";
 import { TaskService } from "../../task/task.service";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
+import { GithubService } from "./github.service";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -34,59 +35,85 @@ export class GithubIntegrationService {
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly githubService: GithubService
   ) {}
 
-  public async onIssueCreated(
-    event: IssuesOpenedEvent,
+  public async updateIssue(
+    issue: Github.Issue,
     integration: ProjectIntegration<ProjectIntegrationType.GITHUB>
-  ): Promise<void> {
+  ) {
     this.logger.log(
-      `Process (${JSON.stringify({
-        issueId: event.issue.id,
+      `Processing Github issue: ${JSON.stringify({
+        issueId: issue.id,
         integrationId: integration.id,
-      })})`,
-      "onIssueCreated"
+      })}`
     );
 
     const project = await integration.project;
-    const tags = await this.getOrCreateTaskTags(
-      event.issue.labels ?? [],
-      project
+    const tags = await this.getOrCreateTaskTags(issue.labels ?? [], project);
+
+    const existingIssue = await this.githubService.findIssue(
+      issue.id,
+      project.id
     );
 
-    const task = await this.taskService.create({
-      name: event.issue.title,
-      description: [
-        event.issue.body,
-        `Originally created from Github issue: ${event.issue.url}`,
-      ]
-        .filter((s) => !!s)
-        .join("\n\n"),
-      tags,
-      status: TaskStatus.TODO,
-      projectId: integration.projectId,
-    });
+    if (!!existingIssue) {
+      this.logger.log(`Found existing issue: ${JSON.stringify(existingIssue)}`);
 
-    this.logger.log(
-      `Created task (${JSON.stringify({ taskId: task.id })})`,
-      "onIssueCreated"
-    );
+      // const task = await this.taskService.update({
+      //   id: existingIssue.taskId,,
+      // })
+    } else {
+      this.logger.log(`Creating task from GH issue: ${JSON.stringify(issue)}`);
+      const task = await this.taskService.create({
+        name: issue.title,
+        description: [
+          issue.body,
+          `Originally created from Github issue: ${issue.url}`,
+        ]
+          .filter((s) => !!s)
+          .join("\n\n"),
+        tags,
+        status: TaskStatus.TODO,
+        projectId: integration.projectId,
+      });
+
+      this.logger.log(
+        `Creating GithubIssue for task: ${JSON.stringify({ taskId: task.id })}`
+      );
+
+      const githubIssue = await this.githubService.createIssue({
+        externalId: issue.id,
+        taskId: task.id,
+      });
+
+      this.logger.log(
+        `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
+      );
+    }
   }
 
   private async getOrCreateTaskTags(
-    githubLabels: Label[],
+    githubLabels: Github.Label[],
     project: Project
   ): Promise<TaskTag[]> {
     if (!githubLabels) return [];
 
-    const matchesLabel = (label: Label) => (tag: TaskTag) =>
+    const matchesLabel = (label: Github.Label) => (tag: TaskTag) =>
       tag.source === TaskTagSource.GITHUB &&
       tag.externalId === String(label.id);
 
     const existingTags = await project.taskTags;
     const newGithubLabels = githubLabels.filter(
       (label) => !existingTags.some(matchesLabel(label))
+    );
+
+    this.logger.log(
+      `Getting/creating task tags: ${JSON.stringify({
+        existing: existingTags.map((t) => t.id),
+        newGithubLabels,
+      })}`
     );
 
     const newTags = await Promise.all(
@@ -100,6 +127,14 @@ export class GithubIntegrationService {
         })
       )
     );
+
+    if (!!newGithubLabels.length) {
+      this.logger.log(
+        `Created new task tags: ${JSON.stringify({
+          tagIds: newTags.map((t) => t.id),
+        })}`
+      );
+    }
 
     return githubLabels
       .map(

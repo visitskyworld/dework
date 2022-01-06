@@ -22,6 +22,7 @@ import { GithubPullRequest } from "./GithubPullRequest";
 import { DiscordChannel } from "./DiscordChannel";
 import { TaskApplication } from "./TaskApplication";
 import { TaskReaction } from "./TaskReaction";
+import { GithubIssue } from "./GithubIssue";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -117,15 +118,21 @@ export class Task extends Audit {
   @Field(() => [GithubPullRequest])
   public githubPullRequests?: Promise<GithubPullRequest[]>;
 
+  @OneToMany(() => GithubBranch, (g: GithubBranch) => g.task)
+  @Field(() => [GithubBranch])
+  public githubBranches?: Promise<GithubBranch[]>;
+
+  @OneToOne(() => GithubIssue, (x: GithubIssue) => x.task, {
+    nullable: true,
+  })
+  @Field(() => GithubIssue, { nullable: true })
+  public githubIssue?: Promise<GithubIssue>;
+
   @OneToOne(() => DiscordChannel, (d: DiscordChannel) => d.task, {
     nullable: true,
   })
   @Field(() => DiscordChannel, { nullable: true })
   public discordChannel?: Promise<DiscordChannel>;
-
-  @OneToMany(() => GithubBranch, (g: GithubBranch) => g.task)
-  @Field(() => [GithubBranch])
-  public githubBranches?: Promise<GithubBranch[]>;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })

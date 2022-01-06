@@ -79,9 +79,7 @@ export class GithubController {
 
     this.log("Found project integration for Github installation", integration);
     if ("issue" in event) {
-      if (event.action === "opened") {
-        await this.githubIntegrationService.onIssueCreated(event, integration);
-      }
+      await this.githubIntegrationService.updateIssue(event.issue, integration);
     }
 
     /*

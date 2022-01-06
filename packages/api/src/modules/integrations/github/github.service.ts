@@ -17,6 +17,7 @@ import { Repository } from "typeorm";
 import { ConfigType } from "../../app/config";
 import { GithubRepo } from "./dto/GithubRepo";
 import { IntegrationService } from "../integration.service";
+import { GithubIssue } from "@dewo/api/models/GithubIssue";
 
 @Injectable()
 export class GithubService {
@@ -25,6 +26,8 @@ export class GithubService {
     private readonly githubPullRequestRepo: Repository<GithubPullRequest>,
     @InjectRepository(GithubBranch)
     private readonly githubBranchRepo: Repository<GithubBranch>,
+    @InjectRepository(GithubIssue)
+    private readonly githubIssueRepo: Repository<GithubIssue>,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(ProjectIntegration)
@@ -36,17 +39,19 @@ export class GithubService {
   public async createPullRequest(
     partial: Partial<GithubPullRequest>
   ): Promise<GithubPullRequest> {
-    const createdPullRequest = await this.githubPullRequestRepo.save(partial);
+    const created = await this.githubPullRequestRepo.save(partial);
     return this.githubPullRequestRepo.findOne(
-      createdPullRequest.id
+      created.id
     ) as Promise<GithubPullRequest>;
   }
 
   public async updatePullRequest(
     partial: DeepAtLeast<GithubPullRequest, "id">
-  ): Promise<GithubPullRequest | undefined> {
+  ): Promise<GithubPullRequest> {
     const updated = await this.githubPullRequestRepo.save(partial);
-    return this.githubPullRequestRepo.findOne(updated.id);
+    return this.githubPullRequestRepo.findOne(
+      updated.id
+    ) as Promise<GithubPullRequest>;
   }
 
   public async findPullRequestByTaskId(
@@ -58,23 +63,47 @@ export class GithubService {
   public async createBranch(
     partial: Partial<GithubBranch>
   ): Promise<GithubBranch> {
-    const createdBranch = await this.githubBranchRepo.save(partial);
-    return this.githubBranchRepo.findOne(
-      createdBranch.id
-    ) as Promise<GithubBranch>;
+    const created = await this.githubBranchRepo.save(partial);
+    return this.githubBranchRepo.findOne(created.id) as Promise<GithubBranch>;
   }
 
   public async updateBranch(
     partial: DeepAtLeast<GithubBranch, "id">
-  ): Promise<GithubBranch | undefined> {
+  ): Promise<GithubBranch> {
     const updated = await this.githubBranchRepo.save(partial);
-    return this.githubBranchRepo.findOne(updated.id);
+    return this.githubBranchRepo.findOne(updated.id) as Promise<GithubBranch>;
   }
 
   public async findBranchByName(
     name: string
   ): Promise<GithubBranch | undefined> {
     return this.githubBranchRepo.findOne({ name: name });
+  }
+
+  public async createIssue(
+    partial: Partial<GithubIssue>
+  ): Promise<GithubIssue> {
+    const created = await this.githubIssueRepo.save(partial);
+    return this.githubIssueRepo.findOne(created.id) as Promise<GithubIssue>;
+  }
+
+  public async updateIssue(
+    partial: DeepAtLeast<GithubIssue, "id">
+  ): Promise<GithubIssue> {
+    const updated = await this.githubIssueRepo.save(partial);
+    return this.githubIssueRepo.findOne(updated.id) as Promise<GithubIssue>;
+  }
+
+  public async findIssue(
+    externalId: number,
+    projectId: string
+  ): Promise<GithubIssue | undefined> {
+    return this.githubIssueRepo
+      .createQueryBuilder("issue")
+      .innerJoin("issue.task", "task")
+      .where("task.projectId = :projectId", { projectId })
+      .andWhere("issue.externalId = :externalId", { externalId })
+      .getOne();
   }
 
   public parseTaskNumberFromBranchName(branchName: string): number | undefined {

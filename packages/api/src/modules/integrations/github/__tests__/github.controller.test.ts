@@ -146,6 +146,7 @@ describe("GithubController", () => {
         const url = faker.internet.url();
         const name = faker.lorem.sentence();
         const description = faker.lorem.sentence();
+        const issueId = faker.datatype.number(100);
 
         const labelId = faker.datatype.number(1000);
         const labelName = faker.lorem.word();
@@ -156,6 +157,7 @@ describe("GithubController", () => {
           body: {
             action: "opened",
             issue: {
+              id: issueId,
               state: "open",
               url,
               title: name,
@@ -186,6 +188,10 @@ describe("GithubController", () => {
             externalId: String(labelId),
           })
         );
+
+        const githubIssue = await task?.githubIssue;
+        expect(githubIssue).toBeTruthy();
+        expect(githubIssue!.externalId).toEqual(issueId);
       });
     });
   });

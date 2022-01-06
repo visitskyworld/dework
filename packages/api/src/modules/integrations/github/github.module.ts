@@ -13,12 +13,14 @@ import { GithubResolver } from "./github.resolver";
 import { GithubIntegrationService } from "./github.integration.service";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { ProjectModule } from "../../project/project.module";
+import { GithubIssue } from "@dewo/api/models/GithubIssue";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       GithubPullRequest,
       GithubBranch,
+      GithubIssue,
       Task,
       ProjectIntegration,
       OrganizationIntegration,
