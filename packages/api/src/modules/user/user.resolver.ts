@@ -66,18 +66,13 @@ export class UserResolver {
     return this.userService.findById(user.id) as Promise<User>;
   }
 
-  @ResolveField(() => [GraphQLJSONObject])
+  @Query(() => [GraphQLJSONObject])
   @UseGuards(OrganizationRolesGuard, ProjectRolesGuard, TaskRolesGuard)
-  public async permissions(
-    @Parent() user: User,
+  public async getPermissions(
     @Context("caslUser") caslUser: AuthorizableUser,
-    @Args("input", { type: () => GetUserPermissionsInput, nullable: true })
-    _input: GetUserPermissionsInput | undefined
+    @Args("input", { type: () => GetUserPermissionsInput })
+    _input: GetUserPermissionsInput
   ): Promise<unknown[]> {
-    if (user.id !== caslUser.id) {
-      throw new Error("Cannot get permissions for other users");
-    }
-
     const abilities = this.abilityFactory.createForUser(caslUser);
     return abilities.rules.map((rule) => {
       if (_.isObject(rule.subject)) {

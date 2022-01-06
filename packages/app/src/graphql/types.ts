@@ -2934,18 +2934,12 @@ export interface UserPaymentMethodQueryVariables {
 // GraphQL query operation: PermissionsQuery
 // ====================================================
 
-export interface PermissionsQuery_me {
-  __typename: "User";
-  id: Scalar.UUID;
+export interface PermissionsQuery {
   permissions: Scalar.JSONObject[];
 }
 
-export interface PermissionsQuery {
-  me: PermissionsQuery_me;
-}
-
 export interface PermissionsQueryVariables {
-  input?: GetUserPermissionsInput | null;
+  input: GetUserPermissionsInput;
 }
 
 /* tslint:disable */

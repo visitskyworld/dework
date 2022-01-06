@@ -46,15 +46,10 @@ export const PermissionsProvider: FC = ({ children }) => {
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
     {
-      variables: {
-        input: {
-          projectId: projId,
-          organizationId: orgId,
-        },
-      },
+      variables: { input: { projectId: projId, organizationId: orgId } },
     }
   );
-  const permissions = data?.me.permissions;
+  const permissions = data?.permissions;
   const ability = useMemo(
     () =>
       new Ability<AbilityType>((permissions as any[]) ?? [], {

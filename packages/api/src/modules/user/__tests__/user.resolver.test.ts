@@ -441,94 +441,93 @@ describe("UserResolver", () => {
           expect.objectContaining({ id: deletedOrg.id })
         );
       });
+    });
 
-      describe("permissions", () => {
-        const getPermissions = async (
-          user: User,
-          input: GetUserPermissionsInput = {}
-        ) => {
-          const response = await client.request({
-            app,
-            auth: fixtures.createAuthToken(user),
-            body: UserRequests.me(input),
-          });
-
-          expect(response.status).toEqual(HttpStatus.OK);
-          const permissions = response.body.data?.me.permissions;
-          return new Ability(permissions, {
-            detectSubjectType: (object) => object.constructor.name,
-          });
-        };
-
-        it("everyone", async () => {
-          const { organization, project } =
-            await fixtures.createUserOrgProject();
-          const user = await fixtures.createUser();
-          const assignedTask = await fixtures.createTask({
-            assignees: [user],
-            status: TaskStatus.IN_PROGRESS,
-            projectId: project.id,
-          });
-          const unassignedTask = await fixtures.createTask({
-            projectId: project.id,
-          });
-          const ownedTask = await fixtures.createTask({
-            projectId: project.id,
-            ownerId: user.id,
-          });
-
-          const permissions = await getPermissions(user, {
-            organizationId: organization.id,
-            projectId: project.id,
-          });
-          expect(permissions.can("read", "Organization")).toBe(true);
-          expect(permissions.can("read", "Project")).toBe(true);
-          expect(permissions.can("read", "Task")).toBe(true);
-
-          expect(permissions.can("create", "Organization")).toBe(true);
-          expect(permissions.can("create", "Project")).toBe(false);
-          expect(permissions.can("create", "Task")).toBe(false);
-
-          expect(permissions.can("update", ownedTask)).toBe(true);
-          expect(permissions.can("update", assignedTask)).toBe(true);
-          expect(permissions.can("update", unassignedTask)).toBe(false);
+    describe("permissions", () => {
+      const getPermissions = async (
+        user: User | undefined,
+        input: GetUserPermissionsInput = {}
+      ) => {
+        const response = await client.request({
+          app,
+          auth: !!user ? fixtures.createAuthToken(user) : undefined,
+          body: UserRequests.permissions(input),
         });
 
-        it("organizationAdmin", async () => {
-          const { user, organization } = await fixtures.createUserOrgProject();
+        expect(response.status).toEqual(HttpStatus.OK);
+        const permissions = response.body.data?.permissions;
+        return new Ability(permissions, {
+          detectSubjectType: (object) => object.constructor.name,
+        });
+      };
 
-          const permissions = await getPermissions(user, {
-            organizationId: organization.id,
-          });
-          expect(permissions.can("update", "Organization")).toBe(true);
-          expect(permissions.can("delete", "Organization")).toBe(true);
-          expect(permissions.can("create", "Project")).toBe(true);
-          expect(permissions.can("update", "Project")).toBe(true);
-          expect(permissions.can("delete", "Project")).toBe(true);
-          expect(permissions.can("create", "Task")).toBe(true);
-          expect(permissions.can("update", "Task")).toBe(true);
-          expect(permissions.can("delete", "Task")).toBe(true);
+      it("everyone", async () => {
+        const { organization, project } = await fixtures.createUserOrgProject();
+        const user = await fixtures.createUser();
+        const assignedTask = await fixtures.createTask({
+          assignees: [user],
+          status: TaskStatus.IN_PROGRESS,
+          projectId: project.id,
+        });
+        const unassignedTask = await fixtures.createTask({
+          projectId: project.id,
+        });
+        const ownedTask = await fixtures.createTask({
+          projectId: project.id,
+          ownerId: user.id,
         });
 
-        it("projectAdmin", async () => {
-          const user = await fixtures.createUser();
-          const organization = await fixtures.createOrganization();
-          const project = await fixtures.createProject(
-            { organizationId: organization.id },
-            undefined,
-            [{ userId: user.id, role: ProjectRole.ADMIN }]
-          );
-
-          const permissions = await getPermissions(user, {
-            projectId: project.id,
-          });
-          expect(permissions.can("create", "Project")).toBe(false);
-          expect(permissions.can("delete", "Project")).toBe(false);
-          expect(permissions.can("update", "Project")).toBe(true);
-          expect(permissions.can("create", "Task")).toBe(true);
-          expect(permissions.can("update", "Task")).toBe(true);
-          expect(permissions.can("delete", "Task")).toBe(true);
+        const permissions = await getPermissions(user, {
+          organizationId: organization.id,
+          projectId: project.id,
         });
+        expect(permissions.can("read", "Organization")).toBe(true);
+        expect(permissions.can("read", "Project")).toBe(true);
+        expect(permissions.can("read", "Task")).toBe(true);
+
+        expect(permissions.can("create", "Organization")).toBe(true);
+        expect(permissions.can("create", "Project")).toBe(false);
+        expect(permissions.can("create", "Task")).toBe(false);
+
+        expect(permissions.can("update", ownedTask)).toBe(true);
+        expect(permissions.can("update", assignedTask)).toBe(true);
+        expect(permissions.can("update", unassignedTask)).toBe(false);
+      });
+
+      it("organizationAdmin", async () => {
+        const { user, organization } = await fixtures.createUserOrgProject();
+
+        const permissions = await getPermissions(user, {
+          organizationId: organization.id,
+        });
+        expect(permissions.can("update", "Organization")).toBe(true);
+        expect(permissions.can("delete", "Organization")).toBe(true);
+        expect(permissions.can("create", "Project")).toBe(true);
+        expect(permissions.can("update", "Project")).toBe(true);
+        expect(permissions.can("delete", "Project")).toBe(true);
+        expect(permissions.can("create", "Task")).toBe(true);
+        expect(permissions.can("update", "Task")).toBe(true);
+        expect(permissions.can("delete", "Task")).toBe(true);
+      });
+
+      it("projectAdmin", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization();
+        const project = await fixtures.createProject(
+          { organizationId: organization.id },
+          undefined,
+          [{ userId: user.id, role: ProjectRole.ADMIN }]
+        );
+
+        const permissions = await getPermissions(user, {
+          projectId: project.id,
+        });
+        expect(permissions.can("create", "Project")).toBe(false);
+        expect(permissions.can("delete", "Project")).toBe(false);
+        expect(permissions.can("update", "Project")).toBe(true);
+        expect(permissions.can("create", "Task")).toBe(true);
+        expect(permissions.can("update", "Task")).toBe(true);
+        expect(permissions.can("delete", "Task")).toBe(true);
       });
     });
   });
