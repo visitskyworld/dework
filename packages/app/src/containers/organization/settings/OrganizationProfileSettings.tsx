@@ -149,8 +149,37 @@ export const OrganizationProfileSettings: FC<
 
         <Divider style={{ marginTop: 0 }} />
 
-        <Row gutter={48}>
-          <Col span={18} className="dewo-divider-right">
+        <Row gutter={[20, 16]} style={{ flexDirection: "row-reverse" }}>
+          <Col xs={48} md={6} style={{ width: "100%" }}>
+            <FormSection
+              label="Profile Image"
+              style={{ display: "inline-block", padding: 0 }}
+            >
+              <OrganizationAvatar
+                size={96}
+                organization={{
+                  id: organization.id,
+                  name: values.name,
+                  imageUrl: values.imageUrl ?? null,
+                }}
+              />
+              <Form.Item
+                name="imageUrl"
+                style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
+              >
+                <ImageUploadInput>
+                  <Button
+                    icon={<Icons.EditOutlined />}
+                    shape="circle"
+                    type="primary"
+                    className="bg-body"
+                  />
+                </ImageUploadInput>
+              </Form.Item>
+            </FormSection>
+          </Col>
+
+          <Col xs={48} md={18} flex={1}>
             <Form.Item
               label="Name"
               name="name"
@@ -191,35 +220,6 @@ export const OrganizationProfileSettings: FC<
             >
               Update profile
             </Button>
-          </Col>
-
-          <Col span={6}>
-            <FormSection
-              label="Profile Image"
-              style={{ display: "inline-block" }}
-            >
-              <OrganizationAvatar
-                size={96}
-                organization={{
-                  id: organization.id,
-                  name: values.name,
-                  imageUrl: values.imageUrl ?? null,
-                }}
-              />
-              <Form.Item
-                name="imageUrl"
-                style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
-              >
-                <ImageUploadInput>
-                  <Button
-                    icon={<Icons.EditOutlined />}
-                    shape="circle"
-                    type="primary"
-                    className="bg-body"
-                  />
-                </ImageUploadInput>
-              </Form.Item>
-            </FormSection>
           </Col>
         </Row>
       </Form>
