@@ -319,6 +319,14 @@ export interface UpdateOrganizationMutation_organization_members {
   user: UpdateOrganizationMutation_organization_members_user;
 }
 
+export interface UpdateOrganizationMutation_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
 export interface UpdateOrganizationMutation_organization_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
@@ -344,6 +352,7 @@ export interface UpdateOrganizationMutation_organization {
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
   members: UpdateOrganizationMutation_organization_members[];
+  tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
   integrations: UpdateOrganizationMutation_organization_integrations[];
 }
@@ -354,6 +363,55 @@ export interface UpdateOrganizationMutation {
 
 export interface UpdateOrganizationMutationVariables {
   input: UpdateOrganizationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateOrganizationTagMutation
+// ====================================================
+
+export interface CreateOrganizationTagMutation_organizationTag_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateOrganizationTagMutation_organizationTag_organization_allTags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateOrganizationTagMutation_organizationTag_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  tags: CreateOrganizationTagMutation_organizationTag_organization_tags[];
+  allTags: CreateOrganizationTagMutation_organizationTag_organization_allTags[];
+}
+
+export interface CreateOrganizationTagMutation_organizationTag {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  organization: CreateOrganizationTagMutation_organizationTag_organization;
+}
+
+export interface CreateOrganizationTagMutation {
+  organizationTag: CreateOrganizationTagMutation_organizationTag;
+}
+
+export interface CreateOrganizationTagMutationVariables {
+  input: CreateOrganizationTagInput;
 }
 
 /* tslint:disable */
@@ -662,6 +720,14 @@ export interface CreateProjectMutation_project_organization_members {
   user: CreateProjectMutation_project_organization_members_user;
 }
 
+export interface CreateProjectMutation_project_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
 export interface CreateProjectMutation_project_organization_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
@@ -687,6 +753,7 @@ export interface CreateProjectMutation_project_organization {
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   members: CreateProjectMutation_project_organization_members[];
+  tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
   integrations: CreateProjectMutation_project_organization_integrations[];
 }
@@ -2984,6 +3051,14 @@ export interface GetOrganizationQuery_organization_members {
   user: GetOrganizationQuery_organization_members_user;
 }
 
+export interface GetOrganizationQuery_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
 export interface GetOrganizationQuery_organization_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
@@ -3009,6 +3084,7 @@ export interface GetOrganizationQuery_organization {
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   members: GetOrganizationQuery_organization_members[];
+  tags: GetOrganizationQuery_organization_tags[];
   details: GetOrganizationQuery_organization_details[];
   integrations: GetOrganizationQuery_organization_integrations[];
 }
@@ -3124,6 +3200,14 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
   user: GetFeaturedOrganizationsQuery_featuredOrganizations_members_user;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
@@ -3149,6 +3233,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
+  tags: GetFeaturedOrganizationsQuery_featuredOrganizations_tags[];
   details: GetFeaturedOrganizationsQuery_featuredOrganizations_details[];
   integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_integrations[];
 }
@@ -3159,6 +3244,46 @@ export interface GetFeaturedOrganizationsQuery {
 
 export interface GetFeaturedOrganizationsQueryVariables {
   limit: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationTagsQuery
+// ====================================================
+
+export interface GetOrganizationTagsQuery_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetOrganizationTagsQuery_organization_allTags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetOrganizationTagsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  tags: GetOrganizationTagsQuery_organization_tags[];
+  allTags: GetOrganizationTagsQuery_organization_allTags[];
+}
+
+export interface GetOrganizationTagsQuery {
+  organization: GetOrganizationTagsQuery_organization;
+}
+
+export interface GetOrganizationTagsQueryVariables {
+  organizationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -5227,6 +5352,23 @@ export interface Organization {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: OrganizationTag
+// ====================================================
+
+export interface OrganizationTag {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: OrganizationMember
 // ====================================================
 
@@ -6392,6 +6534,14 @@ export interface OrganizationDetails_members {
   user: OrganizationDetails_members_user;
 }
 
+export interface OrganizationDetails_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
 export interface OrganizationDetails_details {
   __typename: "EntityDetail";
   id: Scalar.UUID;
@@ -6417,6 +6567,7 @@ export interface OrganizationDetails {
   description: string | null;
   projects: OrganizationDetails_projects[];
   members: OrganizationDetails_members[];
+  tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
   integrations: OrganizationDetails_integrations[];
 }
@@ -6584,6 +6735,12 @@ export interface CreateOrganizationInviteInput {
   role: OrganizationRole;
 }
 
+export interface CreateOrganizationTagInput {
+  label: string;
+  color: string;
+  organizationId: Scalar.UUID;
+}
+
 export interface CreatePaymentMethodInput {
   type: PaymentMethodType;
   address: string;
@@ -6699,6 +6856,7 @@ export interface UpdateOrganizationInput {
   name?: string | null;
   tagline?: string | null;
   description?: string | null;
+  tagIds?: Scalar.UUID[] | null;
   imageUrl?: string | null;
   deletedAt?: Scalar.DateTime | null;
 }

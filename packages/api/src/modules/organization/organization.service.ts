@@ -4,10 +4,11 @@ import {
   OrganizationMember,
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
+import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { Project, ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { User } from "@dewo/api/models/User";
-import { DeepAtLeast } from "@dewo/api/types/general";
+import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DeepPartial, Repository } from "typeorm";
@@ -25,6 +26,8 @@ export class OrganizationService {
     private readonly organizationMemberRepo: Repository<OrganizationMember>,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+    @InjectRepository(OrganizationTag)
+    private readonly organizationTagRepo: Repository<OrganizationTag>,
     @InjectRepository(EntityDetail)
     private readonly entityDetailRepo: Repository<EntityDetail>
   ) {}
@@ -79,6 +82,15 @@ export class OrganizationService {
     });
   }
 
+  public async createTag(
+    partial: AtLeast<OrganizationTag, "organizationId">
+  ): Promise<OrganizationTag> {
+    const created = await this.organizationTagRepo.save(partial);
+    return this.organizationTagRepo.findOne(
+      created.id
+    ) as Promise<OrganizationTag>;
+  }
+
   public findMember(
     partial: Partial<
       Pick<OrganizationMember, "organizationId" | "userId" | "role">
@@ -123,6 +135,16 @@ export class OrganizationService {
       .createQueryBuilder("member")
       .leftJoinAndSelect("member.user", "user")
       .where("member.organizationId = :organizationId", {
+        organizationId,
+      })
+      .getMany();
+  }
+
+  public getAllTags(organizationId: string): Promise<OrganizationTag[]> {
+    return this.organizationTagRepo
+      .createQueryBuilder("tag")
+      .leftJoinAndSelect("tag.organization", "organization")
+      .where("tag.organizationId = :organizationId", {
         organizationId,
       })
       .getMany();

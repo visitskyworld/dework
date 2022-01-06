@@ -3,7 +3,7 @@ import { Card, Modal, Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
 import { useUpdateOrganization } from "../hooks";
-import { OrganizationMemberList } from "./OrganizationMemberList";
+import { OrganizationMemberList } from "../overview/OrganizationMemberList";
 import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
 
 interface Props {

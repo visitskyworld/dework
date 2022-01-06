@@ -15,6 +15,9 @@ export class UpdateOrganizationInput {
   @Field({ nullable: true })
   public description?: string;
 
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public tagIds?: string[];
+
   @Field({ nullable: true })
   public imageUrl?: string;
 

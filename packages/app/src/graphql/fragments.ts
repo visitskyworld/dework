@@ -84,6 +84,15 @@ export const organization = gql`
   }
 `;
 
+export const organizationTag = gql`
+  fragment OrganizationTag on OrganizationTag {
+    id
+    label
+    color
+    createdAt
+  }
+`;
+
 export const organizationMember = gql`
   fragment OrganizationMember on OrganizationMember {
     id
@@ -410,6 +419,9 @@ export const organizationDetails = gql`
     members {
       ...OrganizationMember
     }
+    tags {
+      ...OrganizationTag
+    }
     details {
       ...EntityDetail
     }
@@ -422,6 +434,7 @@ export const organizationDetails = gql`
   ${organizationMember}
   ${organizationIntegration}
   ${projectDetails}
+  ${organizationTag}
   ${entityDetail}
   ${user}
 `;

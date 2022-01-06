@@ -2,6 +2,7 @@ import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
+import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -18,6 +19,7 @@ import { OrganizationService } from "./organization.service";
       User,
       OrganizationMember,
       Project,
+      OrganizationTag,
       EntityDetail,
     ]),
     CaslModule.forFeature({ permissions }),

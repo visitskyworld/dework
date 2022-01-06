@@ -48,6 +48,7 @@ import {
   DeleteTaskReactionMutationVariables,
   GetTaskReactionUsersQuery,
   GetTaskReactionUsersQueryVariables,
+  OrganizationTag,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -305,8 +306,8 @@ export function useCreateTaskTag(): (
   );
 }
 
-export function useGenerateRandomTaskTagColor(
-  existingTags: TaskTag[]
+export function useGenerateRandomTagColor(
+  existingTags: TaskTag[] | OrganizationTag[]
 ): () => string {
   return useCallback(() => {
     const colors = [

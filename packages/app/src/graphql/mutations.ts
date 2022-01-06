@@ -52,6 +52,25 @@ export const updateOrganization = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const createOrganizationTag = gql`
+  mutation CreateOrganizationTagMutation($input: CreateOrganizationTagInput!) {
+    organizationTag: createOrganizationTag(input: $input) {
+      ...OrganizationTag
+      organization {
+        id
+        tags {
+          ...OrganizationTag
+        }
+        allTags {
+          ...OrganizationTag
+        }
+      }
+    }
+  }
+
+  ${Fragments.organizationTag}
+`;
+
 export const updateOrganizationMember = gql`
   mutation UpdateOrganizationMemberMutation(
     $input: UpdateOrganizationMemberInput!

@@ -8,6 +8,7 @@ import {
   Skeleton,
   Space,
   Tabs,
+  Tag,
   Typography,
 } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
@@ -20,7 +21,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { OrganizationInviteButton } from "@dewo/app/containers/invite/OrganizationInviteButton";
 import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
-import { OrganizationSettings } from "./OrganizationSettings";
+import { OrganizationSettings } from "../settings/OrganizationSettings";
 import { FollowOrganizationButton } from "./FollowOrganizationButton";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
@@ -86,6 +87,16 @@ export const OrganizationTabs: FC<Props> = ({
                 <EntityDetailAvatar entityDetail={detail} key={detail.id} />
               ))}
             </Space>
+            {!!organization?.tags.length && (
+              <Row style={{ marginTop: 16 }}>
+                {organization?.tags.map((tag) => (
+                  <Tag key={tag.id} color={tag.color}>
+                    {tag.label}
+                  </Tag>
+                ))}
+              </Row>
+            )}
+
             <Divider />
 
             <Typography.Title level={5}>Contributors</Typography.Title>

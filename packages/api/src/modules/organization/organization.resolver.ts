@@ -13,6 +13,7 @@ import {
   NotFoundException,
   UseGuards,
 } from "@nestjs/common";
+import _ from "lodash";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
@@ -32,6 +33,8 @@ import {
 } from "nest-casl";
 import { OrganizationRolesGuard } from "./organization.roles.guard";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
+import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
+import { CreateOrganizationTagInput } from "./dto/CreateOrganizationTagInput";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
@@ -71,6 +74,24 @@ export class OrganizationResolver {
     return this.organizationService.getProjects(organization.id, user?.id);
   }
 
+  @ResolveField(() => [OrganizationTag])
+  public async tags(
+    @Parent() organization: Organization
+  ): Promise<OrganizationTag[]> {
+    if (!!organization.tags)
+      return _.sortBy(organization.tags, (t) => t.createdAt);
+    const refetched = await this.organizationService.findById(organization.id);
+    return _.sortBy(refetched!.tags, (t) => t.createdAt);
+  }
+
+  @ResolveField(() => [OrganizationTag])
+  public async allTags(
+    @Parent() organization: Organization
+  ): Promise<OrganizationTag[]> {
+    if (!!organization.tags) return organization.tags;
+    return this.organizationService.getAllTags(organization.id);
+  }
+
   @Mutation(() => Organization)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
   @UseAbility(Actions.create, Organization)
@@ -96,7 +117,12 @@ export class OrganizationResolver {
       const user = await userProxy.get();
       this.accessService.assertAbility(user!, Actions.delete, Organization);
     }
-    return this.organizationService.update(input);
+    return this.organizationService.update({
+      ...input,
+      tags: !!input.tagIds
+        ? (input.tagIds.map((id) => ({ id })) as any)
+        : undefined,
+    });
   }
 
   @Mutation(() => Organization)
@@ -116,6 +142,15 @@ export class OrganizationResolver {
     return this.organizationService.findById(
       input.organizationId
     ) as Promise<Organization>;
+  }
+
+  @Mutation(() => OrganizationTag)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, Organization)
+  public async createOrganizationTag(
+    @Args("input") input: CreateOrganizationTagInput
+  ): Promise<OrganizationTag> {
+    return this.organizationService.createTag(input);
   }
 
   @Mutation(() => OrganizationMember)

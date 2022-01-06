@@ -76,6 +76,22 @@ export const featuredOrganizations = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const organizationTags = gql`
+  query GetOrganizationTagsQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      id
+      tags {
+        ...OrganizationTag
+      }
+      allTags {
+        ...OrganizationTag
+      }
+    }
+  }
+
+  ${Fragments.organizationTag}
+`;
+
 export const organizationTasks = gql`
   query GetOrganizationTasksQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {

@@ -1,35 +1,28 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import _ from "lodash";
 import { Tag, Form, Select, ConfigProvider, Empty } from "antd";
-import { useCreateTaskTag, useGenerateRandomTagColor } from "./hooks";
-import { useProjectTaskTags } from "../project/hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useCreateOrganizationTag, useAllOrganizationTags } from "../hooks";
+import { useGenerateRandomTagColor } from "../../task/hooks";
 
-interface Props {
-  disabled: boolean;
-  projectId: string;
+interface OrganizationTagSelectFieldProps {
+  organizationId: string;
 }
 
-interface ComponentProps {
-  disabled: boolean;
-  projectId: string;
+interface OrganizationTagSelectFieldComponentProps
+  extends OrganizationTagSelectFieldProps {
   value?: string[];
   onChange?(value: string[]): void;
 }
 
-const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
-  projectId,
-  disabled,
-  value,
-  onChange,
-}) => {
-  const tags = useProjectTaskTags(projectId);
-  const canCreateTag = usePermission("create", "TaskTag");
+const OrganizationTagSelectFieldComponent: FC<
+  OrganizationTagSelectFieldComponentProps
+> = ({ value, organizationId, onChange }) => {
+  const tags = useAllOrganizationTags(organizationId);
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
   const [loading, setLoading] = useState(false);
-  const createTaskTag = useCreateTaskTag();
-  const generateRandomTaskTagColor = useGenerateRandomTagColor(tags);
+  const createOrganizationTag = useCreateOrganizationTag();
+  const generateRandomTagColor = useGenerateRandomTagColor(tags);
 
   const handleChange = useCallback(
     async (labels: string[]) => {
@@ -47,10 +40,10 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
         setLoading(true);
         onChange?.(labels);
         const tagPs = newTagLabels.map((label) =>
-          createTaskTag({
+          createOrganizationTag({
             label,
-            projectId,
-            color: generateRandomTaskTagColor(),
+            organizationId,
+            color: generateRandomTagColor(),
           })
         );
         const tags = await Promise.all(tagPs);
@@ -60,24 +53,23 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
       }
     },
     [
-      createTaskTag,
-      tagById,
       loading,
-      generateRandomTaskTagColor,
-      projectId,
+      tagById,
+      organizationId,
       onChange,
+      createOrganizationTag,
+      generateRandomTagColor,
     ]
   );
 
   return (
     <Select
-      mode={canCreateTag ? "tags" : "multiple"}
+      mode={"tags"}
       value={value}
-      disabled={disabled}
       loading={loading}
       optionFilterProp="label"
       optionLabelProp="label" // don't put children inside tagRender
-      placeholder={disabled ? "Select tags..." : "No tags..."}
+      placeholder={"Select tags..."}
       onChange={handleChange}
       tagRender={(props) => (
         <Tag
@@ -96,14 +88,16 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   );
 };
 
-export const TaskTagSelectField: FC<Props> = ({ disabled, projectId }) => (
+export const OrganizationTagSelectField: FC<
+  OrganizationTagSelectFieldProps
+> = ({ organizationId }) => (
   <ConfigProvider
     renderEmpty={() => (
       <Empty description="Create your first tag by typing..." />
     )}
   >
     <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
-      <TaskTagSelectFieldComponent disabled={disabled} projectId={projectId} />
+      <OrganizationTagSelectFieldComponent organizationId={organizationId} />
     </Form.Item>
   </ConfigProvider>
 );

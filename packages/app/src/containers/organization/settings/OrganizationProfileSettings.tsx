@@ -1,5 +1,9 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { Button, Divider, Form, Input, message, Space, Typography } from "antd";
+import { useForm } from "antd/lib/form/Form";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { FormSection } from "@dewo/app/components/FormSection";
+import * as Icons from "@ant-design/icons";
 import {
   useOrganization,
   useUpdateOrganization,
@@ -7,18 +11,16 @@ import {
 } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { EntityDetailType } from "@dewo/app/graphql/types";
-import { OrganizationDetailFormItem } from "./OrganizationDetailFormItem";
-import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import { useForm } from "antd/lib/form/Form";
-import { FormSection } from "@dewo/app/components/FormSection";
-import * as Icons from "@ant-design/icons";
+import { OrganizationDetailFormItem } from "../overview/OrganizationDetailFormItem";
+import { OrganizationTagSelectField } from "./OrganizationTagSelectField";
 import { ImageUploadInput } from "../../fileUploads/ImageUploadInput";
 
-interface FormValues {
+export interface FormValues {
   name: string;
   tagline?: string;
   description?: string;
   imageUrl?: string;
+  tagIds: string[];
   discord?: string;
   twitter?: string;
   website?: string;
@@ -31,21 +33,33 @@ interface OrganizationProfileSettingsProps {
 export const OrganizationProfileSettings: FC<
   OrganizationProfileSettingsProps
 > = ({ organizationId }) => {
+  const [form] = useForm<FormValues>();
   const organization = useOrganization(organizationId);
+  const canUpdateOrganization = usePermission("update", "Organization");
+
+  const updateOrganization = useUpdateOrganization();
+  const updateOrganizationDetail = useUpdateOrganizationDetail();
+
+  const tagIds = useMemo(
+    () => organization?.tags.map((t) => t.id) ?? [],
+    [organization?.tags]
+  );
   const initialValues = useMemo<FormValues>(
     () => ({
       name: organization?.name ?? "",
       tagline: organization?.tagline ?? undefined,
       description: organization?.description ?? undefined,
+      tagIds,
       discord: organization?.details.find((d) => d.type === "discord")?.value,
       twitter: organization?.details.find((d) => d.type === "twitter")?.value,
       website: organization?.details.find((d) => d.type === "website")?.value,
     }),
-    [organization]
+    [organization, tagIds]
   );
 
-  const [form] = useForm<FormValues>();
   const [values, setValues] = useState<FormValues>(initialValues);
+  const [loading, setLoading] = useState(false);
+
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: FormValues) => {
       setValues(values);
@@ -54,12 +68,6 @@ export const OrganizationProfileSettings: FC<
     [form]
   );
 
-  const canUpdateOrganization = usePermission("update", "Organization");
-
-  const updateOrganization = useUpdateOrganization();
-  const updateOrganizationDetail = useUpdateOrganizationDetail();
-
-  const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: FormValues) => {
       try {
@@ -157,27 +165,20 @@ export const OrganizationProfileSettings: FC<
         <Form.Item
           label="Name"
           name="name"
-          initialValue={organization.name}
           rules={[{ required: true, message: "Please enter a display name" }]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label="Tagline"
-          name="tagline"
-          initialValue={organization.tagline}
-        >
+        <Form.Item label="Tagline" name="tagline">
           <Input placeholder="No tagline..." />
         </Form.Item>
 
-        <Form.Item
-          label="Description"
-          name="description"
-          initialValue={organization.description}
-        >
+        <Form.Item label="Description" name="description">
           <Input.TextArea placeholder="No description..." />
         </Form.Item>
+
+        <OrganizationTagSelectField organizationId={organizationId} />
 
         <Form.Item label="Socials" style={{ marginTop: 20, marginBottom: 24 }}>
           <Space direction="vertical" style={{ width: "100%" }}>

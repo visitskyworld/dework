@@ -5,6 +5,9 @@ import {
   CreateOrganizationInput,
   CreateOrganizationMutation,
   CreateOrganizationMutationVariables,
+  CreateOrganizationTagInput,
+  CreateOrganizationTagMutation,
+  CreateOrganizationTagMutationVariables,
   DiscordIntegrationChannel,
   GetFeaturedOrganizationsQuery,
   GetFeaturedOrganizationsQueryVariables,
@@ -14,6 +17,8 @@ import {
   GetOrganizationGithubReposQueryVariables,
   GetOrganizationQuery,
   GetOrganizationQueryVariables,
+  GetOrganizationTagsQuery,
+  GetOrganizationTagsQueryVariables,
   GetOrganizationTasksQuery,
   GetOrganizationTasksQueryVariables,
   GithubRepo,
@@ -21,6 +26,7 @@ import {
   OrganizationDetails,
   OrganizationMember,
   OrganizationRole,
+  OrganizationTag,
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
   RemoveOrganizationMemberMutationVariables,
@@ -99,6 +105,23 @@ export function useUpdateOrganizationDetail(): (
   );
 }
 
+export function useCreateOrganizationTag(): (
+  input: CreateOrganizationTagInput
+) => Promise<OrganizationTag> {
+  const [createOrganizationTag] = useMutation<
+    CreateOrganizationTagMutation,
+    CreateOrganizationTagMutationVariables
+  >(Mutations.createOrganizationTag);
+  return useCallback(
+    async (input) => {
+      const res = await createOrganizationTag({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.organizationTag;
+    },
+    [createOrganizationTag]
+  );
+}
+
 export function useUpdateOrganizationMember(): (
   input: UpdateOrganizationMemberInput
 ) => Promise<OrganizationMember> {
@@ -167,6 +190,19 @@ export function useFeaturedOrganizations(
     GetFeaturedOrganizationsQueryVariables
   >(Queries.featuredOrganizations, { variables: { limit } });
   return data?.featuredOrganizations;
+}
+
+export function useAllOrganizationTags(
+  organizationId: string
+): OrganizationTag[] {
+  const { data } = useQuery<
+    GetOrganizationTagsQuery,
+    GetOrganizationTagsQueryVariables
+  >(Queries.organizationTags, { variables: { organizationId } });
+  return useMemo(
+    () => data?.organization.allTags ?? [],
+    [data?.organization.allTags]
+  );
 }
 
 export function useOrganizationTasks(
