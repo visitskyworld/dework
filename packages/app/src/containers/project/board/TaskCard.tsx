@@ -62,10 +62,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       task.ownerId === currentUserId
     ) {
       return (
-        // <Space>
-        //   <PayButton task={task} onDone={moveToDone}>
-        //     {"Approve & Pay"}
-        //   </PayButton>
         <Button
           size="small"
           onClick={(e) => {
@@ -75,7 +71,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
         >
           Approve
         </Button>
-        // </Space>
       );
     }
 
@@ -94,13 +89,19 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           );
         }
       } else if (canClaimTask) {
-        return <ClaimTaskButton task={task} />;
-      } else {
-        return (
-          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-            Apply
-          </LoginButton>
-        );
+        if (!!currentUserId) {
+          return <ClaimTaskButton task={task} />;
+        } else {
+          return (
+            <LoginButton
+              size="small"
+              icon={<Icons.UnlockOutlined />}
+              onClick={eatClick}
+            >
+              Apply
+            </LoginButton>
+          );
+        }
       }
     }
 

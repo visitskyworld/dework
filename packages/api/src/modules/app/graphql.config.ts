@@ -9,11 +9,12 @@ import { AuthorizableUser } from "nest-casl";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Roles } from "./app.roles";
 
 export interface GQLContext {
   req: Request;
   user?: User;
-  caslUser?: AuthorizableUser;
+  caslUser?: AuthorizableUser<Roles, string | undefined>;
 }
 
 const logger = new Logger("GraphQL");
@@ -79,9 +80,10 @@ export class GraphQLConfig implements GqlOptionsFactory {
           return user;
         })();
 
-        const caslUser: AuthorizableUser | undefined = !!user
-          ? { id: user.id, roles: [] }
-          : undefined;
+        const caslUser: AuthorizableUser<Roles, string | undefined> = {
+          id: user?.id,
+          roles: !!user ? [Roles.authenticated] : [],
+        };
 
         req.user = user;
         req.caslUser = caslUser;

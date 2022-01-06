@@ -16,6 +16,7 @@ import {
   Project,
   ProjectMember,
   Task,
+  TaskApplication,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
@@ -31,7 +32,8 @@ type AbilitySubject =
   | Project
   | Organization
   | AtLeast<OrganizationMember, "__typename" | "role">
-  | AtLeast<ProjectMember, "__typename" | "role">;
+  | AtLeast<ProjectMember, "__typename" | "role">
+  | AtLeast<TaskApplication, "__typename" | "userId">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
 
 const PermissionsContext = createContext<Ability<AbilityType>>(
@@ -46,15 +48,10 @@ export const PermissionsProvider: FC = ({ children }) => {
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
     {
-      variables: {
-        input: {
-          projectId: projId,
-          organizationId: orgId,
-        },
-      },
+      variables: { input: { projectId: projId, organizationId: orgId } },
     }
   );
-  const permissions = data?.me.permissions;
+  const permissions = data?.permissions;
   const ability = useMemo(
     () =>
       new Ability<AbilityType>((permissions as any[]) ?? [], {

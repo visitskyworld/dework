@@ -23,7 +23,6 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
-import { CustomPermissionActions } from "../auth/permissions";
 import { User } from "@dewo/api/models/User";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
@@ -31,6 +30,9 @@ import { GetTasksInput } from "./dto/GetTasksInput";
 import { PermalinkService } from "../permalink/permalink.service";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
+import { CustomPermissionActions } from "../auth/permissions";
 
 @Injectable()
 @Resolver(() => Task)
@@ -45,6 +47,13 @@ export class TaskResolver {
     if (!!task.tags) return _.sortBy(task.tags, (t) => t.createdAt);
     const refetched = await this.taskService.findById(task.id);
     return _.sortBy(refetched!.tags, (t) => t.createdAt);
+  }
+
+  @ResolveField(() => [User])
+  public async assignees(@Parent() task: Task): Promise<User[]> {
+    if (!!task.assignees) return task.assignees;
+    const refetched = await this.taskService.findById(task.id);
+    return refetched!.assignees;
   }
 
   @ResolveField(() => String)
@@ -87,32 +96,31 @@ export class TaskResolver {
     });
   }
 
-  @Mutation(() => Task)
+  @Mutation(() => TaskApplication)
   @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
   @UseAbility(CustomPermissionActions.claimTask, Task, [
     TaskService,
-    (service: TaskService, { params }) => service.findById(params.id),
+    (service: TaskService, { params }) => service.findById(params.input.taskId),
   ])
-  public async claimTask(
-    @Context("user") user: User,
-    @Args("id", { type: () => GraphQLUUID }) id: string,
-    @Args("application") application: CreateTaskApplicationInput
-  ): Promise<Task> {
-    return this.taskService.claim(id, user, application);
+  public async createTaskApplication(
+    @Args("input") input: CreateTaskApplicationInput
+  ): Promise<TaskApplication> {
+    return this.taskService.createTaskApplication(input);
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard)
-  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  // @UseAbility(Actions.update, Task, [
-  //   TaskService,
-  //   (service: TaskService, { params }) => service.findById(params.id),
-  // ])
-  public async unclaimTask(
-    @Context("user") user: User,
-    @Args("id", { type: () => GraphQLUUID }) id: string
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.delete, TaskApplication, [
+    TaskService,
+    async (_service: TaskService, { params }) => ({
+      taskId: params.input.taskId,
+      userId: params.input.userId,
+    }),
+  ])
+  public async deleteTaskApplication(
+    @Args("input") input: DeleteTaskApplicationInput
   ): Promise<Task> {
-    return this.taskService.unclaim(id, user);
+    return this.taskService.deleteTaskApplication(input.taskId, input.userId);
   }
 
   @Mutation(() => Task)

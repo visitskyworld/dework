@@ -47,7 +47,7 @@ export class UserRequests {
   ): GraphQLTestClientRequestBody<{ input: SetUserDetailInput }> {
     return {
       query: `
-        mutation SetUserDetail($input: SetEntityDetailInput!) {
+        mutation SetUserDetail($input: SetUserDetailInput!) {
           setUserDetail(input: $input) { 
             id           
             details {
@@ -79,15 +79,12 @@ export class UserRequests {
     };
   }
 
-  public static me(
-    input?: GetUserPermissionsInput
-  ): GraphQLTestClientRequestBody<{ input?: GetUserPermissionsInput }> {
+  public static me(): GraphQLTestClientRequestBody {
     return {
       query: `
-        query Me($input: GetUserPermissionsInput) {
+        query Me {
           me {
             id
-            permissions(input: $input)
             organizations {
               id
             }
@@ -98,6 +95,18 @@ export class UserRequests {
               }
             }
           }
+        }
+      `,
+    };
+  }
+
+  public static permissions(
+    input: GetUserPermissionsInput
+  ): GraphQLTestClientRequestBody<{ input: GetUserPermissionsInput }> {
+    return {
+      query: `
+        query Permissions($input: GetUserPermissionsInput!) {
+          permissions: getPermissions(input: $input)
         }
       `,
       variables: { input },

@@ -12,6 +12,7 @@ import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskTag } from "@dewo/api/models/TaskTag";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -27,6 +28,14 @@ export const permissions: Permissions<
     can(Actions.read, Project);
     can(Actions.read, Task);
 
+    can(Actions.delete, TaskApplication, { userId: user.id });
+    can(CustomPermissionActions.claimTask, Task, {
+      status: TaskStatus.TODO,
+      assignees: { $exists: true, $size: 0 },
+    });
+  },
+
+  authenticated({ can, user }) {
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
@@ -46,9 +55,6 @@ export const permissions: Permissions<
       status: { $ne: TaskStatus.DONE },
     });
     can(Actions.update, Task, { ownerId: user.id });
-    can(CustomPermissionActions.claimTask, Task, {
-      status: TaskStatus.TODO,
-    });
   },
 
   organizationOwner({ extend, can, user }) {
@@ -91,6 +97,8 @@ export const permissions: Permissions<
     can(Actions.create, Task);
     can(Actions.update, Task);
     can(Actions.delete, Task);
+
+    can(Actions.delete, TaskApplication);
 
     can(Actions.create, TaskTag);
   },
