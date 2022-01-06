@@ -83,7 +83,6 @@ export class TaskResolver {
         ? (input.assigneeIds.map((id) => ({ id })) as any)
         : [],
       creatorId: user.id,
-      ownerId: user.id,
       ...input,
     });
   }

@@ -81,9 +81,7 @@ describe("TaskResolver", () => {
         expect(task.reward.token.id).toEqual(reward.tokenId);
         expect(task.reward.trigger).toEqual(reward.trigger);
         expect(task.creator).not.toEqual(null);
-        expect(task.owner).not.toEqual(null);
         expect(task.creator.id).toEqual(user.id);
-        expect(task.owner.id).toEqual(user.id);
       });
 
       it("should assign correct task numbers", async () => {
