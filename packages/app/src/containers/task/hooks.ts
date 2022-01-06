@@ -363,21 +363,24 @@ export function useTasks(
 }
 
 export function useListenToTasks() {
+  const skip = typeof window === "undefined";
   const addTaskToApolloCache = useAddTaskToApolloCache();
   useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
+    skip,
     onSubscriptionData(options) {
       const task = options.subscriptionData.data?.task;
       if (!!task) addTaskToApolloCache(task);
     },
   });
   useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
+    skip,
     onSubscriptionData(options) {
       const task = options.subscriptionData.data?.task;
       if (!!task) addTaskToApolloCache(task);
     },
   });
-  useSubscription(Subscriptions.paymentUpdated);
-  useSubscription(Subscriptions.taskRewardUpdated);
+  useSubscription(Subscriptions.paymentUpdated, { skip });
+  useSubscription(Subscriptions.taskRewardUpdated, { skip });
 }
 
 export function useTaskFormUserOptions(
