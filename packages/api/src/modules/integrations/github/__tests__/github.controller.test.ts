@@ -10,6 +10,7 @@ import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest"
 import * as Github from "@octokit/webhooks-types";
 import { DeepPartial } from "typeorm";
 import { TaskTagSource } from "@dewo/api/models/TaskTag";
+import _ from "lodash";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -194,6 +195,33 @@ describe("GithubController", () => {
         const githubIssue = await task?.githubIssue;
         expect(githubIssue).toBeTruthy();
         expect(githubIssue!.externalId).toEqual(issueId);
+      });
+
+      it("should not create multiple tasks if called in parallel", async () => {
+        const { project, github } =
+          await fixtures.createProjectWithGithubIntegration();
+
+        const body: DeepPartial<Github.IssuesOpenedEvent> = {
+          action: "opened",
+          issue: {
+            id: faker.datatype.number(100),
+            state: "open",
+            url: faker.internet.url(),
+            title: faker.lorem.sentence(),
+            body: faker.lorem.sentence(),
+            labels: [limeGithubLabel],
+          },
+          installation: { id: github.installationId },
+          repository: {
+            name: github.repo,
+            owner: { login: github.organization },
+          },
+        };
+
+        await Promise.all(_.range(10).map(() => client.request({ app, body })));
+
+        const tasks = await project.tasks;
+        expect(tasks).toHaveLength(1);
       });
     });
 

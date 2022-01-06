@@ -23,6 +23,22 @@ type GithubPullRequestPayload = Pick<
   "title" | "status" | "number" | "branchName" | "link" | "taskId"
 >;
 
+function PreventConcurrency(): MethodDecorator {
+  let promise = Promise.resolve();
+  return function (
+    _target: any,
+    _propertyKey: string | symbol,
+    descriptor: PropertyDescriptor
+  ) {
+    const fn = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+      await promise;
+      promise = promise.finally(() => fn.apply(this, args));
+      return promise;
+    };
+  };
+}
+
 @Controller("github")
 export class GithubController {
   private readonly logger = new Logger("GithubController");
@@ -53,6 +69,7 @@ export class GithubController {
   }
 
   @Post("webhook")
+  @PreventConcurrency()
   async githubWebhook(@Req() request: Request) {
     const event = request.body as WebhookEvent;
     this.log("Incoming Github webhook", event);
