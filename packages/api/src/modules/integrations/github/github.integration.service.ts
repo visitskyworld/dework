@@ -109,11 +109,14 @@ export class GithubIntegrationService {
       this.logger.log(`Updated task: ${JSON.stringify(task)}`);
     } else {
       this.logger.log(`Creating task from GH issue: ${JSON.stringify(issue)}`);
+      const status = project.options?.showBacklogColumn
+        ? TaskStatus.BACKLOG
+        : TaskStatus.TODO;
       const task = await this.taskService.create({
         name: issue.title,
         description,
         tags,
-        status: TaskStatus.TODO,
+        status,
         projectId: integration.projectId,
       });
 
