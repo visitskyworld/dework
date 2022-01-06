@@ -88,9 +88,9 @@ export const OrganizationTabs: FC<Props> = ({
               ))}
             </Space>
             {!!organization?.tags.length && (
-              <Row style={{ marginTop: 16 }}>
+              <Row style={{ marginTop: 16, gap: 8 }}>
                 {organization?.tags.map((tag) => (
-                  <Tag key={tag.id} color={tag.color}>
+                  <Tag key={tag.id} color={tag.color} style={{ margin: 0 }}>
                     {tag.label}
                   </Tag>
                 ))}
