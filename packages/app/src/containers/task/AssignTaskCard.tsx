@@ -1,9 +1,10 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip } from "antd";
 import moment from "moment";
 import React, { FC, useCallback, useState } from "react";
-import { useUpdateTask } from "./hooks";
+import { useDeleteTaskApplication, useUpdateTask } from "./hooks";
 
 interface Props {
   task: Task;
@@ -11,6 +12,9 @@ interface Props {
 
 export const AssignTaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
+
+  const hasPermission = usePermissionFn();
+  const deleteApplication = useDeleteTaskApplication();
 
   const updateTask = useUpdateTask();
   const handleAssign = useCallback(
@@ -57,14 +61,22 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                   >
                     Assign
                   </Button>
-                  <Button
-                    key="remove"
-                    size="small"
-                    type="text"
-                    className="text-secondary"
-                  >
-                    Remove
-                  </Button>
+                  {!!hasPermission("delete", application) && (
+                    <Button
+                      key="remove"
+                      size="small"
+                      type="text"
+                      className="text-secondary"
+                      onClick={() =>
+                        deleteApplication({
+                          taskId: task.id,
+                          userId: application.userId,
+                        })
+                      }
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </Space>,
               ]}
             >
