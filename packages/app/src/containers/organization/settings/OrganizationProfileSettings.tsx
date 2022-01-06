@@ -1,5 +1,15 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Button, Divider, Form, Input, message, Space, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Divider,
+  Form,
+  Input,
+  message,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -130,73 +140,88 @@ export const OrganizationProfileSettings: FC<
         requiredMark={false}
         onFinish={handleSubmit}
         onValuesChange={handleChange}
-        style={{ maxWidth: 480 }}
+        style={{ maxWidth: 550 }}
         initialValues={initialValues}
       >
         <Typography.Title level={4} style={{ marginBottom: 4 }}>
           Organization profile
         </Typography.Title>
+
         <Divider style={{ marginTop: 0 }} />
 
-        <FormSection label="Profile Image" style={{ display: "inline-block" }}>
-          <OrganizationAvatar
-            size={96}
-            organization={{
-              id: organization.id,
-              name: values.name,
-              imageUrl: values.imageUrl ?? null,
-            }}
-          />
-          <Form.Item
-            name="imageUrl"
-            style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
-          >
-            <ImageUploadInput>
-              <Button
-                icon={<Icons.EditOutlined />}
-                shape="circle"
-                type="primary"
-                className="bg-body"
+        <Row gutter={48}>
+          <Col span={18} className="dewo-divider-right">
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                { required: true, message: "Please enter a display name" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item label="Tagline" name="tagline">
+              <Input placeholder="No tagline..." />
+            </Form.Item>
+
+            <Form.Item label="Description" name="description">
+              <Input.TextArea placeholder="No description..." />
+            </Form.Item>
+
+            <OrganizationTagSelectField organizationId={organizationId} />
+
+            <Form.Item
+              label="Socials"
+              style={{ marginTop: 20, marginBottom: 24 }}
+            >
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <OrganizationDetailFormItem type={EntityDetailType.discord} />
+                <OrganizationDetailFormItem type={EntityDetailType.twitter} />
+                <OrganizationDetailFormItem type={EntityDetailType.website} />
+              </Space>
+            </Form.Item>
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="middle"
+              loading={loading}
+              disabled={!canUpdateOrganization}
+            >
+              Update profile
+            </Button>
+          </Col>
+
+          <Col span={6}>
+            <FormSection
+              label="Profile Image"
+              style={{ display: "inline-block" }}
+            >
+              <OrganizationAvatar
+                size={96}
+                organization={{
+                  id: organization.id,
+                  name: values.name,
+                  imageUrl: values.imageUrl ?? null,
+                }}
               />
-            </ImageUploadInput>
-          </Form.Item>
-        </FormSection>
-
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[{ required: true, message: "Please enter a display name" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Tagline" name="tagline">
-          <Input placeholder="No tagline..." />
-        </Form.Item>
-
-        <Form.Item label="Description" name="description">
-          <Input.TextArea placeholder="No description..." />
-        </Form.Item>
-
-        <OrganizationTagSelectField organizationId={organizationId} />
-
-        <Form.Item label="Socials" style={{ marginTop: 20, marginBottom: 24 }}>
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <OrganizationDetailFormItem type={EntityDetailType.discord} />
-            <OrganizationDetailFormItem type={EntityDetailType.twitter} />
-            <OrganizationDetailFormItem type={EntityDetailType.website} />
-          </Space>
-        </Form.Item>
-
-        <Button
-          type="primary"
-          htmlType="submit"
-          size="middle"
-          loading={loading}
-          disabled={!canUpdateOrganization}
-        >
-          Update profile
-        </Button>
+              <Form.Item
+                name="imageUrl"
+                style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
+              >
+                <ImageUploadInput>
+                  <Button
+                    icon={<Icons.EditOutlined />}
+                    shape="circle"
+                    type="primary"
+                    className="bg-body"
+                  />
+                </ImageUploadInput>
+              </Form.Item>
+            </FormSection>
+          </Col>
+        </Row>
       </Form>
     </Space>
   );
