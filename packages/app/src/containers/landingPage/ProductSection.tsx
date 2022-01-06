@@ -51,11 +51,11 @@ export const ProductSection: FC = () => {
                 marginTop: 16,
               }}
             >
-              Pay contributors directly with Metamask, Gnosis Safe or Phantom
-              Wallet
+              Pay contributors directly using your Gnosis Safe, Metamask or
+              Phantom Wallet
             </Typography.Paragraph>
           </Tabs.TabPane>
-          <Tabs.TabPane
+          {/* <Tabs.TabPane
             tab="Review Contributors"
             key="review-contributors"
             style={{ padding: 8 }}
@@ -71,6 +71,40 @@ export const ProductSection: FC = () => {
             >
               Let contributors find and apply to tasks. See their work history
               and assign the task to the most capable.
+            </Typography.Paragraph>
+          </Tabs.TabPane> */}
+          <Tabs.TabPane
+            tab="Profile building"
+            key="profile-building"
+            style={{ padding: 8 }}
+          >
+            <Image width="100%" src="/lp/profile.jpeg" />
+            <Typography.Paragraph
+              type="secondary"
+              style={{
+                textAlign: "center",
+                fontSize: "130%",
+                marginTop: 16,
+              }}
+            >
+              Build your web3 profile & reputation
+            </Typography.Paragraph>
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab="Community voting"
+            key="community-voting"
+            style={{ padding: 8 }}
+          >
+            <Image width="100%" src="/lp/voting.jpeg" />
+            <Typography.Paragraph
+              type="secondary"
+              style={{
+                textAlign: "center",
+                fontSize: "130%",
+                marginTop: 16,
+              }}
+            >
+              Let the community vote on bug fixes and feature requests.
             </Typography.Paragraph>
           </Tabs.TabPane>
         </Tabs>
