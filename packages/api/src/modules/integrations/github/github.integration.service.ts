@@ -58,22 +58,41 @@ export class GithubIntegrationService {
       project.id
     );
 
+    const description = [
+      issue.body,
+      `Originally created from Github issue: ${issue.url}`,
+    ]
+      .filter((s) => !!s)
+      .join("\n\n");
+
     if (!!existingIssue) {
       this.logger.log(`Found existing issue: ${JSON.stringify(existingIssue)}`);
 
-      // const task = await this.taskService.update({
-      //   id: existingIssue.taskId,,
-      // })
+      const updatedStatus =
+        issue.state === "closed" ? TaskStatus.DONE : undefined;
+      if (!!updatedStatus) {
+        this.logger.log(
+          `Will update task status: ${JSON.stringify({
+            issueState: issue.state,
+            updatedStatus,
+          })}`
+        );
+      }
+
+      const task = await this.taskService.update({
+        id: existingIssue.taskId,
+        name: issue.title,
+        description,
+        tags,
+        status: updatedStatus,
+      });
+
+      this.logger.log(`Updated task: ${JSON.stringify(task)}`);
     } else {
       this.logger.log(`Creating task from GH issue: ${JSON.stringify(issue)}`);
       const task = await this.taskService.create({
         name: issue.title,
-        description: [
-          issue.body,
-          `Originally created from Github issue: ${issue.url}`,
-        ]
-          .filter((s) => !!s)
-          .join("\n\n"),
+        description,
         tags,
         status: TaskStatus.TODO,
         projectId: integration.projectId,

@@ -47,6 +47,7 @@ import {
   OrganizationIntegrationType,
 } from "../models/OrganizationIntegration";
 import { ProjectMember } from "../models/ProjectMember";
+import { GithubIssue } from "../models/GithubIssue";
 
 @Injectable()
 export class Fixtures {
@@ -304,6 +305,15 @@ export class Fixtures {
 
   public createAuthToken(user: User): string {
     return this.userService.createAuthToken(user);
+  }
+
+  public async createGithubIssue(
+    partial: AtLeast<GithubIssue, "taskId">
+  ): Promise<GithubIssue> {
+    return this.githubService.createIssue({
+      externalId: faker.datatype.number(100),
+      ...partial,
+    });
   }
 
   public async createUserOrgProject(

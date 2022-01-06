@@ -7,7 +7,7 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestActions } from "../github.controller";
 import { GithubPullRequestStatusEnum } from "@dewo/api/models/GithubPullRequest";
-import { IssuesOpenedEvent } from "@octokit/webhooks-types";
+import * as Github from "@octokit/webhooks-types";
 import { DeepPartial } from "typeorm";
 import { TaskTagSource } from "@dewo/api/models/TaskTag";
 
@@ -23,6 +23,12 @@ describe("GithubController", () => {
   });
 
   afterAll(() => app.close());
+
+  const limeGithubLabel = {
+    id: faker.datatype.number(1000),
+    name: faker.lorem.word(),
+    color: "bada55",
+  };
 
   describe("webhook", () => {
     it("should create a branch in the DB", async () => {
@@ -148,11 +154,7 @@ describe("GithubController", () => {
         const description = faker.lorem.sentence();
         const issueId = faker.datatype.number(100);
 
-        const labelId = faker.datatype.number(1000);
-        const labelName = faker.lorem.word();
-        const labelColor = "bada55";
-
-        await client.request<DeepPartial<IssuesOpenedEvent>>({
+        await client.request<DeepPartial<Github.IssuesOpenedEvent>>({
           app,
           body: {
             action: "opened",
@@ -162,7 +164,7 @@ describe("GithubController", () => {
               url,
               title: name,
               body: description,
-              labels: [{ id: labelId, name: labelName, color: labelColor }],
+              labels: [limeGithubLabel],
             },
             installation: { id: github.installationId },
             repository: {
@@ -182,16 +184,79 @@ describe("GithubController", () => {
         expect(task!.tags).toHaveLength(1);
         expect(task!.tags).toContainEqual(
           expect.objectContaining({
-            label: labelName,
+            label: limeGithubLabel.name,
             color: "lime",
             source: TaskTagSource.GITHUB,
-            externalId: String(labelId),
+            externalId: String(limeGithubLabel.id),
           })
         );
 
         const githubIssue = await task?.githubIssue;
         expect(githubIssue).toBeTruthy();
         expect(githubIssue!.externalId).toEqual(issueId);
+      });
+    });
+
+    describe("issue updated", () => {
+      it("should update task with reference to Github issue", async () => {
+        const { project, github } =
+          await fixtures.createProjectWithGithubIntegration();
+
+        const originalTag = await fixtures.createTaskTag({
+          projectId: project.id,
+        });
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          tags: [originalTag],
+        });
+        const issue = await fixtures.createGithubIssue({ taskId: task.id });
+
+        const url = faker.internet.url();
+        const name = faker.lorem.sentence();
+        const description = faker.lorem.sentence();
+
+        await client.request<DeepPartial<Github.IssuesEditedEvent>>({
+          app,
+          body: {
+            action: "edited",
+            issue: {
+              id: issue.externalId,
+              state: "closed",
+              url,
+              title: name,
+              body: description,
+              labels: [limeGithubLabel],
+            },
+            installation: { id: github.installationId },
+            repository: {
+              name: github.repo,
+              owner: { login: github.organization },
+            },
+          },
+        });
+
+        const updatedTask = await fixtures.getTask(task.id);
+        expect(updatedTask).toBeDefined();
+        expect(updatedTask!.name).toEqual(name);
+        expect(updatedTask!.status).toEqual(TaskStatus.DONE);
+        expect(updatedTask!.description).toContain(description);
+        expect(updatedTask!.description).toContain(url);
+        expect(updatedTask!.tags).toHaveLength(1);
+        expect(updatedTask!.tags).not.toContainEqual(
+          expect.objectContaining({ id: originalTag.id })
+        );
+        expect(updatedTask!.tags).toContainEqual(
+          expect.objectContaining({
+            label: limeGithubLabel.name,
+            color: "lime",
+            source: TaskTagSource.GITHUB,
+            externalId: String(limeGithubLabel.id),
+          })
+        );
+
+        const githubIssue = await task?.githubIssue;
+        expect(githubIssue).toBeTruthy();
+        expect(githubIssue!.id).toEqual(issue.id);
       });
     });
   });
