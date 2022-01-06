@@ -231,7 +231,6 @@ export class GithubController {
     ref: string,
     repository: Github.Repository,
     installationId: number
-    // event: Github.PushEvent | Github.PullRequestEvent
   ): Promise<
     | { branchName: string; task: Task; organization: string; repo: string }
     | undefined
