@@ -216,7 +216,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {!!task && <GithubIntegrationSection task={task} />}
           {!!task && <TaskActivityFeed task={task} />}
-          {mode === "update" && !!task && task.status !== TaskStatusEnum.TODO && (
+          {mode === "update" && !!task && task.status !== TaskStatus.TODO && (
             <>
               <Divider>Submission</Divider>
               <Form.Item

@@ -43,7 +43,7 @@ export const permissions: Permissions<
     );
     can(Actions.update, Task, "submission", {
       assignees: { $elemMatch: { id: user.id } },
-      status: { $ne: TaskStatusEnum.DONE },
+      status: { $ne: TaskStatus.DONE },
     });
     can(Actions.update, Task, { ownerId: user.id });
     can(CustomPermissionActions.claimTask, Task, {
