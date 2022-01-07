@@ -23,7 +23,7 @@ export const MDEditor = dynamic<Props>(
                   className="ant-typography-caption"
                   style={{ opacity: 0.5, flex: 1, textAlign: "left" }}
                 >
-                  Markdown formatting and file drag-and-drop supported
+                  Markdown & any file drag-and-drop supported
                 </Typography.Text>
                 {!!props.onCancel && (
                   <Button
