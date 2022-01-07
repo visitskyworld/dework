@@ -14,8 +14,6 @@ import {
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
-import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
-import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import {
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
@@ -26,10 +24,16 @@ import {
   FormValues as DiscordFormFields,
 } from "../../integrations/CreateDiscordIntegrationForm";
 import { ProjectSettingsFormFields } from "../settings/ProjectSettingsFormFields";
+import {
+  GithubIntegrationFormFields,
+  FormValues as GithubFormFields,
+} from "../../integrations/CreateGithubIntegrationForm";
 
-interface FormValues extends CreateProjectInput, Partial<DiscordFormFields> {
+interface FormValues
+  extends CreateProjectInput,
+    Partial<DiscordFormFields>,
+    Partial<GithubFormFields> {
   type?: "dev" | "non-dev";
-  githubRepoId?: string;
 }
 
 interface ProjectCreateFormProps {
@@ -151,20 +155,19 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           <Input placeholder="Enter a project name..." />
         </Form.Item>
 
-        {!!organization && !hasDiscordIntegration && (
+        {!!organization && (
           <FormSection label="Discord Integration">
-            <ConnectOrganizationToDiscordButton
-              organizationId={organization.id}
-            />
-          </FormSection>
-        )}
-        {!!organization && hasDiscordIntegration && (
-          <FormSection label="Discord Integration">
-            <DiscordIntegrationFormFields
-              values={values}
-              channels={discordChannels}
-              threads={discordThreads}
-            />
+            {hasDiscordIntegration ? (
+              <DiscordIntegrationFormFields
+                values={values}
+                channels={discordChannels}
+                threads={discordThreads}
+              />
+            ) : (
+              <ConnectOrganizationToDiscordButton
+                organizationId={organization.id}
+              />
+            )}
           </FormSection>
         )}
 
@@ -176,21 +179,18 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         </Form.Item>
 
         {values.type === "dev" && !!organization && (
-          <ConnectToGithubFormSection>
-            {hasGithubIntegration ? (
-              <Form.Item name="githubRepoId">
-                <ConnectProjectToGithubSelect
-                  organizationId={organizationId}
-                  repos={githubRepos}
-                  allowClear
-                />
-              </Form.Item>
+          <FormSection label="Github Integration">
+            {hasDiscordIntegration ? (
+              <GithubIntegrationFormFields
+                values={values}
+                repos={githubRepos}
+              />
             ) : (
               <ConnectOrganizationToGithubButton
                 organizationId={organizationId}
               />
             )}
-          </ConnectToGithubFormSection>
+          </FormSection>
         )}
 
         <ProjectSettingsFormFields />

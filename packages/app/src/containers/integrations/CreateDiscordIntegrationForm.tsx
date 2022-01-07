@@ -91,7 +91,11 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
               },
             ]}
           >
-            <Select loading={!channels} placeholder="Select Discord Channel...">
+            <Select
+              loading={!channels}
+              placeholder="Select Discord Channel..."
+              allowClear
+            >
               {channels?.map((channel) => (
                 <Select.Option key={channel.id} value={channel.id}>
                   {`#${channel.name}`}
@@ -112,7 +116,11 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
               },
             ]}
           >
-            <Select loading={!threads} placeholder="Select Discord Thread...">
+            <Select
+              loading={!threads}
+              placeholder="Select Discord Thread..."
+              allowClear
+            >
               {threads?.map((channel) => (
                 <Select.Option key={channel.id} value={channel.id}>
                   {channel.name}
@@ -187,7 +195,7 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
         htmlType="submit"
         block
         loading={submitting.isOn}
-        hidden={!values.discordFeature}
+        hidden={!values.discordFeature || !values.discordChannelId}
       >
         Connect Discord
       </Button>

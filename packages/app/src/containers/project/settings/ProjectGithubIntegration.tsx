@@ -1,24 +1,23 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
-import {
-  useOrganization,
-  useOrganizationGithubRepos,
-} from "../../organization/hooks";
+import React, { FC, useCallback, useMemo } from "react";
+import { useOrganization } from "../../organization/hooks";
 import {
   OrganizationIntegrationType,
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
 import { useProject } from "../hooks";
-import { ConnectProjectToGithubSelect } from "../../integrations/ConnectProjectToGithubSelect";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
-import { Alert, Button, Input, Typography } from "antd";
+import { Alert, Typography } from "antd";
 import {
   useCreateGithubProjectIntegration,
   useUpdateProjectIntegration,
 } from "../../integrations/hooks";
-import { useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
 import Link from "next/link";
+import {
+  CreateGithubIntegrationForm,
+  CreateGithubIntegrationFormValues,
+} from "../../integrations/CreateGithubIntegrationForm";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
@@ -52,30 +51,13 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
     [project?.integrations]
   );
 
-  const githubRepos = useOrganizationGithubRepos(
-    project?.organizationId,
-    !hasOrgInt
-  );
-  const [selectedGithubRepoId, setSelectedGithubRepoId] = useState<string>();
-
-  const loading = useToggle();
   const createIntegration = useCreateGithubProjectIntegration();
-  const handleConnect = useCallback(async () => {
-    loading.toggleOn();
-    try {
-      const repo = githubRepos?.find((r) => r.id === selectedGithubRepoId);
-      if (!repo) return;
-      await createIntegration(projectId, repo);
-    } finally {
-      loading.toggleOff();
-    }
-  }, [
-    loading,
-    createIntegration,
-    selectedGithubRepoId,
-    projectId,
-    githubRepos,
-  ]);
+  const handleSubmit = useCallback(
+    async (values: CreateGithubIntegrationFormValues) => {
+      await createIntegration(projectId, values.repo);
+    },
+    [createIntegration, projectId]
+  );
 
   const updateIntegration = useUpdateProjectIntegration();
   const removeIntegration = useCallback(
@@ -117,25 +99,10 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
 
   if (!!hasOrgInt) {
     return (
-      <ConnectToGithubFormSection>
-        <Input.Group compact style={{ display: "flex" }}>
-          <ConnectProjectToGithubSelect
-            repos={githubRepos}
-            organizationId={project.organizationId}
-            allowClear
-            style={{ flex: 1 }}
-            onChange={setSelectedGithubRepoId}
-          />
-          <Button
-            loading={loading.isOn}
-            disabled={!selectedGithubRepoId}
-            type="primary"
-            onClick={handleConnect}
-          >
-            Connect
-          </Button>
-        </Input.Group>
-      </ConnectToGithubFormSection>
+      <CreateGithubIntegrationForm
+        organizationId={organizationId}
+        onSubmit={handleSubmit}
+      />
     );
   }
 
