@@ -104,8 +104,7 @@ export class GithubController {
       await this.githubIntegrationService.updateIssue(event.issue, project);
     }
 
-    // PushEvent
-    if ("ref" in event && "installation" in event && "commits" in event) {
+    if ("ref" in event && "installation" in event) {
       const result = await this.getBranchAndTask(
         event.ref,
         event.repository,
@@ -122,7 +121,7 @@ export class GithubController {
           organization: branch.organization,
         });
 
-        if (event.deleted) {
+        if ("deleted" in event && event.deleted) {
           await this.githubService.updateBranch({
             id: branch.id,
             deletedAt: new Date(),
