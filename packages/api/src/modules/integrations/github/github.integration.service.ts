@@ -348,7 +348,7 @@ export class GithubIntegrationService {
       repo,
       state: "all",
     });
-    return res.data;
+    return res.data.filter((issue) => !issue.pull_request);
   }
 
   private createClient(installationId?: number): Octokit {
