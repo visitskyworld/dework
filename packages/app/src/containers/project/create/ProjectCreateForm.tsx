@@ -100,7 +100,11 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
         if (!!repo) {
-          await createGithubIntegration(project.id, repo);
+          await createGithubIntegration({
+            repo,
+            projectId: project.id,
+            importIssues: !!values.githubImportIssues,
+          });
         }
 
         const channel = discordChannels?.find(

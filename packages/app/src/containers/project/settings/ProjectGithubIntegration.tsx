@@ -54,7 +54,11 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   const createIntegration = useCreateGithubProjectIntegration();
   const handleSubmit = useCallback(
     async (values: CreateGithubIntegrationFormValues) => {
-      await createIntegration(projectId, values.repo);
+      await createIntegration({
+        projectId,
+        repo: values.repo,
+        importIssues: values.importIssues,
+      });
     },
     [createIntegration, projectId]
   );

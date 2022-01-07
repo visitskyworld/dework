@@ -195,7 +195,8 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
         htmlType="submit"
         block
         loading={submitting.isOn}
-        hidden={!values.discordFeature || !values.discordChannelId}
+        hidden={!values.discordFeature}
+        disabled={!values.discordChannelId}
       >
         Connect Discord
       </Button>

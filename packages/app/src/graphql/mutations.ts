@@ -438,3 +438,16 @@ export const checkWalletConnectSession = gql`
     }
   }
 `;
+
+export const createTasksFromGithubIssues = gql`
+  mutation CreateTasksFromGithubIssuesMutation($projectId: UUID!) {
+    project: createTasksFromGithubIssues(projectId: $projectId) {
+      id
+      tasks {
+        ...Task
+      }
+    }
+  }
+
+  ${Fragments.task}
+`;

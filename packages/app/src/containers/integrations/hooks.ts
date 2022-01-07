@@ -11,6 +11,8 @@ import {
   ProjectIntegration,
   ProjectIntegrationType,
   DiscordIntegrationChannel,
+  CreateTasksFromGithubIssuesMutation,
+  CreateTasksFromGithubIssuesMutationVariables,
 } from "@dewo/app/graphql/types";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
@@ -54,25 +56,49 @@ export function useCreateProjectIntegration(): (
   );
 }
 
-export function useCreateGithubProjectIntegration(): (
-  projectId: string,
-  repo: GithubRepo
-) => Promise<ProjectIntegration> {
-  const createProjectIntegration = useCreateProjectIntegration();
+function useCreateTasksFromGithubIssues(): (
+  projectId: string
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateTasksFromGithubIssuesMutation,
+    CreateTasksFromGithubIssuesMutationVariables
+  >(Mutations.createTasksFromGithubIssues);
   return useCallback(
-    (projectId, repo) => {
-      return createProjectIntegration({
-        projectId,
+    async (projectId) => {
+      const res = await mutation({ variables: { projectId } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useCreateGithubProjectIntegration(): (input: {
+  projectId: string;
+  repo: GithubRepo;
+  importIssues: boolean;
+}) => Promise<ProjectIntegration> {
+  const createProjectIntegration = useCreateProjectIntegration();
+  const createTasksFromGithubIssues = useCreateTasksFromGithubIssues();
+  return useCallback(
+    async (input) => {
+      const integration = await createProjectIntegration({
+        projectId: input.projectId,
         type: ProjectIntegrationType.GITHUB,
-        organizationIntegrationId: repo.integrationId,
+        organizationIntegrationId: input.repo.integrationId,
         config: {
-          repo: repo.name,
-          organization: repo.organization,
+          repo: input.repo.name,
+          organization: input.repo.organization,
           features: [],
         },
       });
+
+      if (input.importIssues) {
+        await createTasksFromGithubIssues(input.projectId);
+      }
+
+      return integration;
     },
-    [createProjectIntegration]
+    [createProjectIntegration, createTasksFromGithubIssues]
   );
 }
 

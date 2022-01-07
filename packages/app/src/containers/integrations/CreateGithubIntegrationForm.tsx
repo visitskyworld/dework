@@ -1,16 +1,18 @@
 import { GithubRepo } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Form, Select, Typography } from "antd";
+import { Button, Checkbox, Form, Select, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useState } from "react";
 import { useOrganizationGithubRepos } from "../organization/hooks";
 
 export interface FormValues {
   githubRepoId: string;
+  githubImportIssues?: boolean;
 }
 
 export interface CreateGithubIntegrationFormValues {
   repo: GithubRepo;
+  importIssues: boolean;
 }
 
 interface Props {
@@ -23,7 +25,14 @@ interface FormFieldProps {
   repos?: GithubRepo[];
 }
 
-export const GithubIntegrationFormFields: FC<FormFieldProps> = ({ repos }) => {
+const initialValues: Partial<FormValues> = {
+  githubImportIssues: true,
+};
+
+export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
+  values,
+  repos,
+}) => {
   return (
     <>
       <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
@@ -45,6 +54,15 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({ repos }) => {
             </Select.Option>
           ))}
         </Select>
+      </Form.Item>
+      <Form.Item
+        name="githubImportIssues"
+        valuePropName="checked"
+        label="Import Issues"
+        tooltip="Easily move all your Github issues into Dework. New issues will be added and updated automatically."
+        hidden={!values.githubRepoId}
+      >
+        <Checkbox>Import existing Github Issues to Dework</Checkbox>
       </Form.Item>
     </>
   );
@@ -73,7 +91,7 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
 
       try {
         submitting.toggleOn();
-        await onSubmit({ repo });
+        await onSubmit({ repo, importIssues: !!values.githubImportIssues });
       } finally {
         submitting.toggleOff();
       }
@@ -86,6 +104,7 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
       form={form}
       layout="vertical"
       requiredMark={false}
+      initialValues={initialValues}
       onValuesChange={handleChange}
       onFinish={handleSubmit}
     >

@@ -1,23 +1,23 @@
 import React, { FC } from "react";
 import {
   GithubPullRequest,
-  GithubPullRequestStatusEnum,
+  GithubPullRequestStatus,
 } from "@dewo/app/graphql/types";
 import { Avatar, Button, Col, Space, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 
-const tagColorByStatus: Record<GithubPullRequestStatusEnum, string> = {
-  [GithubPullRequestStatusEnum.OPEN]: "green",
-  [GithubPullRequestStatusEnum.MERGED]: "purple",
-  [GithubPullRequestStatusEnum.DRAFT]: "gray",
-  [GithubPullRequestStatusEnum.CLOSED]: "red",
+const tagColorByStatus: Record<GithubPullRequestStatus, string> = {
+  [GithubPullRequestStatus.OPEN]: "green",
+  [GithubPullRequestStatus.MERGED]: "purple",
+  [GithubPullRequestStatus.DRAFT]: "gray",
+  [GithubPullRequestStatus.CLOSED]: "red",
 };
 
-const labelByStatus: Record<GithubPullRequestStatusEnum, string> = {
-  [GithubPullRequestStatusEnum.OPEN]: "Open",
-  [GithubPullRequestStatusEnum.MERGED]: "Merged",
-  [GithubPullRequestStatusEnum.DRAFT]: "Draft",
-  [GithubPullRequestStatusEnum.CLOSED]: "Closed",
+const labelByStatus: Record<GithubPullRequestStatus, string> = {
+  [GithubPullRequestStatus.OPEN]: "Open",
+  [GithubPullRequestStatus.MERGED]: "Merged",
+  [GithubPullRequestStatus.DRAFT]: "Draft",
+  [GithubPullRequestStatus.CLOSED]: "Closed",
 };
 
 interface Props {

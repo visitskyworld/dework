@@ -2484,7 +2484,7 @@ export interface CreateTaskPaymentsMutation_tasks_githubPullRequests {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -2577,6 +2577,166 @@ export interface CheckWalletConnectSessionMutation {
 
 export interface CheckWalletConnectSessionMutationVariables {
   sessionId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTasksFromGithubIssuesMutation
+// ====================================================
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod_networks[];
+  tokens: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_paymentMethod;
+  network: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment_network;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: CreateTasksFromGithubIssuesMutation_project_tasks_reward_token;
+  payment: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: CreateTasksFromGithubIssuesMutation_project_tasks_applications_user;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  submission: string | null;
+  status: TaskStatus;
+  sortKey: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
+  assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
+  reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
+  applications: CreateTasksFromGithubIssuesMutation_project_tasks_applications[];
+  review: CreateTasksFromGithubIssuesMutation_project_tasks_review | null;
+  reactions: CreateTasksFromGithubIssuesMutation_project_tasks_reactions[];
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  tasks: CreateTasksFromGithubIssuesMutation_project_tasks[];
+}
+
+export interface CreateTasksFromGithubIssuesMutation {
+  project: CreateTasksFromGithubIssuesMutation_project;
+}
+
+export interface CreateTasksFromGithubIssuesMutationVariables {
+  projectId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -3925,7 +4085,7 @@ export interface GetTaskQuery_task_githubPullRequests {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -4755,7 +4915,7 @@ export interface TaskCreatedSubscription_task_githubPullRequests {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -4971,7 +5131,7 @@ export interface TaskUpdatedSubscription_task_githubPullRequests {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -5693,7 +5853,7 @@ export interface GithubPullRequest {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -6291,7 +6451,7 @@ export interface TaskDetails_githubPullRequests {
   id: Scalar.UUID;
   title: string;
   link: string;
-  status: GithubPullRequestStatusEnum;
+  status: GithubPullRequestStatus;
   number: number;
   branchName: string;
   createdAt: Scalar.DateTime;
@@ -6654,7 +6814,7 @@ export enum EntityDetailType {
   website = "website",
 }
 
-export enum GithubPullRequestStatusEnum {
+export enum GithubPullRequestStatus {
   CLOSED = "CLOSED",
   DRAFT = "DRAFT",
   MERGED = "MERGED",
