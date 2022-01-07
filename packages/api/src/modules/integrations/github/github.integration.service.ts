@@ -1,9 +1,5 @@
-import {
-  ProjectIntegration,
-  ProjectIntegrationType,
-} from "@dewo/api/models/ProjectIntegration";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import * as Github from "@octokit/webhooks-types";
 import * as Colors from "@ant-design/colors";
 import NearestColor from "nearest-color";
@@ -12,7 +8,6 @@ import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
-import { IntegrationService } from "../integration.service";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -46,8 +41,7 @@ export class GithubIntegrationService {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly githubService: GithubService,
-    private readonly integrationService: IntegrationService
+    private readonly githubService: GithubService
   ) {}
 
   public async updateIssue(
@@ -55,17 +49,16 @@ export class GithubIntegrationService {
       Github.Issue,
       "id" | "html_url" | "state" | "title" | "body" | "labels" | "number"
     >,
-    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    project: Project,
     taskOverride: Partial<Task> = {}
   ) {
     this.logger.log(
       `Processing Github issue: ${JSON.stringify({
         issueId: issue.id,
-        integrationId: integration.id,
+        projectId: project.id,
       })}`
     );
 
-    const project = await integration.project;
     const tags = await this.getOrCreateTaskTags(
       [...(issue.labels ?? []), this.githubIssueLabel],
       project
@@ -127,7 +120,7 @@ export class GithubIntegrationService {
         description,
         tags,
         status,
-        projectId: integration.projectId,
+        projectId: project.id,
         ...taskOverride,
       });
 
@@ -149,14 +142,14 @@ export class GithubIntegrationService {
 
   public async createTasksFromGithubIssues(
     projectId: string,
-    userId: string
+    userId: string,
+    github?: { organization: string; repo: string }
   ): Promise<void> {
-    const issues = await this.githubService.getProjectIssues(projectId);
-    const integration = await this.integrationService.findProjectIntegration(
-      projectId,
-      ProjectIntegrationType.GITHUB
-    );
-    if (!integration) return;
+    const project = await this.projectService.findById(projectId);
+    if (!project) throw new NotFoundException();
+    const issues = await (!!github
+      ? this.githubService.getGithubIssues(github.organization, github.repo)
+      : this.githubService.getProjectIssues(projectId));
     for (const issue of issues) {
       await this.updateIssue(
         {
@@ -165,7 +158,7 @@ export class GithubIntegrationService {
           body: issue.body ?? null,
           labels: issue.labels as any as Github.Label[],
         },
-        integration,
+        project,
         { creatorId: userId }
       );
     }

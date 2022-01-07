@@ -33,11 +33,14 @@ export class GithubResolver {
   @UseAbility(Actions.create, Task)
   public async createTasksFromGithubIssues(
     @Context("user") user: User,
-    @Args("projectId", { type: () => GraphQLUUID }) projectId: string
+    @Args("projectId", { type: () => GraphQLUUID }) projectId: string,
+    @Args("organization", { nullable: true }) organization?: string,
+    @Args("repo", { nullable: true }) repo?: string
   ): Promise<Project> {
     await this.githubIntegrationService.createTasksFromGithubIssues(
       projectId,
-      user.id
+      user.id,
+      !!organization && !!repo ? { organization, repo } : undefined
     );
     return this.projectService.findById(projectId) as Promise<Project>;
   }

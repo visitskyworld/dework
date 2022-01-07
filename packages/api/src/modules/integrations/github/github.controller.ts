@@ -100,7 +100,8 @@ export class GithubController {
 
     this.log("Found project integration for Github installation", integration);
     if ("issue" in event) {
-      await this.githubIntegrationService.updateIssue(event.issue, integration);
+      const project = await integration.project;
+      await this.githubIntegrationService.updateIssue(event.issue, project);
     }
 
     // PushEvent

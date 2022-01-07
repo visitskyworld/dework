@@ -203,24 +203,44 @@ export class GithubService {
       throw new NotFoundException("Organization integration not found");
     }
 
-    const client = this.createClient(orgInt.config.installationId);
+    return this.getGithubIssues(
+      projInt.config.organization,
+      projInt.config.repo,
+      orgInt.config.installationId
+    );
+  }
+
+  public async getGithubIssues(
+    organization: string,
+    repo: string,
+    installationId?: number
+  ) {
+    const client = this.createClient(installationId);
     const res = await client.issues.listForRepo({
-      owner: projInt.config.organization,
-      repo: projInt.config.repo,
+      owner: organization,
+      repo,
       state: "all",
     });
     return res.data;
   }
 
-  private createClient(installationId: number): Octokit {
+  private createClient(installationId?: number): Octokit {
     const privateKeyPath = this.config.get("GITHUB_APP_PRIVATE_KEY_PATH");
-    return new Octokit({
-      authStrategy: createAppAuth,
-      auth: {
-        appId: this.config.get("GITHUB_APP_ID"),
-        privateKey: fs.readFileSync(privateKeyPath, "utf8"),
-        installationId,
-      },
-    });
+    // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
+    // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
+    // TODO(fant): figure out how to properly auth with clientId/clientSecret
+    return new Octokit(
+      !!installationId
+        ? {
+            authStrategy: createAppAuth,
+            auth: {
+              appId: this.config.get("GITHUB_APP_ID"),
+              privateKey: fs.readFileSync(privateKeyPath, "utf8"),
+              installationId,
+              // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
+            },
+          }
+        : undefined
+    );
   }
 }
