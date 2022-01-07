@@ -91,9 +91,9 @@ export const OrganizationTabs: FC<Props> = ({
             )}
 
             {!!organization?.tags.length && (
-              <Row style={{ gap: 8, marginBottom: 8 }}>
+              <Row gutter={[8, 8]}>
                 {organization?.tags.map((tag) => (
-                  <Tag key={tag.id} color={tag.color} style={{ margin: 0 }}>
+                  <Tag key={tag.id} color={tag.color}>
                     {tag.label}
                   </Tag>
                 ))}
