@@ -73,7 +73,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
           </Form.Item>
 
           <Button type="primary" htmlType="submit" size="large" block>
-            Apply
+            I'm Interested
           </Button>
         </Form>
       </Modal>

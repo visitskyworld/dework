@@ -158,7 +158,7 @@ export const OrganizationTabs: FC<Props> = ({
           tab={
             <>
               <Icons.SettingOutlined />
-              Settings
+              DAO profile/Settings
             </>
           }
           key="settings"

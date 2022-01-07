@@ -78,7 +78,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
           icon={<Icons.UnlockOutlined />}
           onClick={handleClaimTask}
         >
-          Apply
+          I'm Interested
         </Button>
       )}
       <TaskApplyModal
