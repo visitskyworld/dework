@@ -312,6 +312,7 @@ export class Fixtures {
   ): Promise<GithubIssue> {
     return this.githubService.createIssue({
       externalId: faker.datatype.number(100),
+      number: faker.datatype.number(100),
       ...partial,
     });
   }
@@ -345,7 +346,16 @@ export class Fixtures {
 
   public async createProjectWithGithubIntegration(
     partialProject: Partial<Project> = {},
-    partialProjectIntegration: Partial<ProjectIntegration> = {}
+    partialProjectIntegration: Partial<ProjectIntegration> = {},
+    github: {
+      installationId: number;
+      organization: string;
+      repo: string;
+    } = {
+      installationId: Date.now(),
+      organization: faker.internet.userName(),
+      repo: faker.internet.userName(),
+    }
   ): Promise<{
     project: Project;
     github: {
@@ -354,24 +364,24 @@ export class Fixtures {
       repo: string;
     };
   }> {
-    const installationId = Date.now();
-    const organization = faker.internet.userName();
-    const repo = faker.internet.userName();
-
     const project = await this.createProject(partialProject);
     const organizationIntegration = (await this.createOrganizationIntegration({
       organizationId: project.organizationId,
       type: OrganizationIntegrationType.GITHUB,
-      config: { installationId },
+      config: { installationId: github.installationId },
     })) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
     await this.createProjectIntegration({
       projectId: project.id,
       type: ProjectIntegrationType.GITHUB,
       organizationIntegrationId: organizationIntegration.id,
-      config: { organization, repo, features: [] },
+      config: {
+        organization: github.organization,
+        repo: github.repo,
+        features: [],
+      },
       ...partialProjectIntegration,
     });
-    return { project, github: { installationId, organization, repo } };
+    return { project, github };
   }
 }
 

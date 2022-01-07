@@ -14,6 +14,11 @@ import { GithubIntegrationService } from "./github.integration.service";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { ProjectModule } from "../../project/project.module";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
+import { Project } from "@dewo/api/models/Project";
+import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { CaslModule } from "nest-casl";
+import { permissions } from "../../auth/permissions";
 
 @Module({
   imports: [
@@ -22,12 +27,16 @@ import { GithubIssue } from "@dewo/api/models/GithubIssue";
       GithubBranch,
       GithubIssue,
       Task,
+      Project,
+      ProjectMember,
       ProjectIntegration,
+      OrganizationMember,
       OrganizationIntegration,
     ]),
     TaskModule,
     ProjectModule,
     IntegrationModule,
+    CaslModule.forFeature({ permissions }),
   ],
   providers: [GithubService, GithubResolver, GithubIntegrationService],
   controllers: [GithubController],

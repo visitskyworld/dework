@@ -10,6 +10,10 @@ export class GithubIssue extends Audit {
   @Field(() => Int)
   public externalId!: number;
 
+  @Column({ type: "int" })
+  @Field(() => Int)
+  public number!: number;
+
   @JoinColumn()
   @OneToOne(() => Task)
   @Field(() => Task)

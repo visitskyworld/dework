@@ -12,6 +12,7 @@ import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
+import { IntegrationService } from "../integration.service";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -45,12 +46,17 @@ export class GithubIntegrationService {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly githubService: GithubService
+    private readonly githubService: GithubService,
+    private readonly integrationService: IntegrationService
   ) {}
 
   public async updateIssue(
-    issue: Github.Issue,
-    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>
+    issue: Pick<
+      Github.Issue,
+      "id" | "html_url" | "state" | "title" | "body" | "labels" | "number"
+    >,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    taskOverride: Partial<Task> = {}
   ) {
     this.logger.log(
       `Processing Github issue: ${JSON.stringify({
@@ -72,7 +78,7 @@ export class GithubIntegrationService {
 
     const description = [
       issue.body,
-      `Originally created from Github issue: ${issue.url}`,
+      `Originally created from Github issue: ${issue.html_url}`,
     ]
       .filter((s) => !!s)
       .join("\n\n");
@@ -104,20 +110,25 @@ export class GithubIntegrationService {
         description,
         tags: [...tags, ...nonGithubTags],
         status: updatedStatus,
+        ...taskOverride,
       });
 
       this.logger.log(`Updated task: ${JSON.stringify(task)}`);
     } else {
       this.logger.log(`Creating task from GH issue: ${JSON.stringify(issue)}`);
-      const status = project.options?.showBacklogColumn
-        ? TaskStatus.BACKLOG
-        : TaskStatus.TODO;
+      const status =
+        issue.state === "closed"
+          ? TaskStatus.DONE
+          : project.options?.showBacklogColumn
+          ? TaskStatus.BACKLOG
+          : TaskStatus.TODO;
       const task = await this.taskService.create({
         name: issue.title,
         description,
         tags,
         status,
         projectId: integration.projectId,
+        ...taskOverride,
       });
 
       this.logger.log(
@@ -126,11 +137,36 @@ export class GithubIntegrationService {
 
       const githubIssue = await this.githubService.createIssue({
         externalId: issue.id,
+        number: issue.number,
         taskId: task.id,
       });
 
       this.logger.log(
         `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
+      );
+    }
+  }
+
+  public async createTasksFromGithubIssues(
+    projectId: string,
+    userId: string
+  ): Promise<void> {
+    const issues = await this.githubService.getProjectIssues(projectId);
+    const integration = await this.integrationService.findProjectIntegration(
+      projectId,
+      ProjectIntegrationType.GITHUB
+    );
+    if (!integration) return;
+    for (const issue of issues) {
+      await this.updateIssue(
+        {
+          ...issue,
+          state: issue.state as any,
+          body: issue.body ?? null,
+          labels: issue.labels as any as Github.Label[],
+        },
+        integration,
+        { creatorId: userId }
       );
     }
   }

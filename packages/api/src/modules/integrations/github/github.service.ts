@@ -1,13 +1,16 @@
 import * as fs from "fs";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 import {
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
-import { DeepAtLeast } from "@dewo/api/types/general";
+import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -81,7 +84,7 @@ export class GithubService {
   }
 
   public async createIssue(
-    partial: Partial<GithubIssue>
+    partial: AtLeast<GithubIssue, "taskId" | "number" | "externalId">
   ): Promise<GithubIssue> {
     const created = await this.githubIssueRepo.save(partial);
     return this.githubIssueRepo.findOne(created.id) as Promise<GithubIssue>;
@@ -182,6 +185,31 @@ export class GithubService {
       organization: repo.owner.login,
       integrationId: integration.id,
     }));
+  }
+
+  public async getProjectIssues(projectId: string) {
+    const projInt = await this.integrationService.findProjectIntegration(
+      projectId,
+      ProjectIntegrationType.GITHUB
+    );
+    if (!projInt) {
+      throw new NotFoundException("Project integration not found");
+    }
+
+    const orgInt = (await projInt.organizationIntegration) as
+      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+      | undefined;
+    if (!orgInt) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const client = this.createClient(orgInt.config.installationId);
+    const res = await client.issues.listForRepo({
+      owner: projInt.config.organization,
+      repo: projInt.config.repo,
+      state: "all",
+    });
+    return res.data;
   }
 
   private createClient(installationId: number): Octokit {

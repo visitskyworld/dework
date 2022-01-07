@@ -17,4 +17,33 @@ export class GithubRequests {
       variables: { organizationId },
     };
   }
+
+  public static createTasksFromGithubIssues(
+    projectId: string
+  ): GraphQLTestClientRequestBody<{ projectId: string }> {
+    return {
+      query: `
+        mutation CreateTasksFromGithubIssue($projectId: UUID!) {
+          project: createTasksFromGithubIssues(projectId: $projectId) {
+            id
+            tasks {
+              id
+              name
+              status
+              description
+              creatorId
+              tags {
+                label
+                color
+              }
+              githubIssue {
+                number
+              }
+            }
+          }
+        }
+      `,
+      variables: { projectId },
+    };
+  }
 }
