@@ -192,7 +192,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
         {values.type === "dev" && !!organization && (
           <FormSection label="Github Integration">
-            {hasDiscordIntegration ? (
+            {hasGithubIntegration ? (
               <GithubIntegrationFormFields
                 values={values}
                 repos={githubRepos}
