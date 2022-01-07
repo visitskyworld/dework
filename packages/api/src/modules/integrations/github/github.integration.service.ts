@@ -19,7 +19,10 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
-import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
+import {
+  GithubProjectIntegrationFeature,
+  ProjectIntegrationType,
+} from "@dewo/api/models/ProjectIntegration";
 import { PermalinkService } from "../../permalink/permalink.service";
 
 @Injectable()
@@ -162,6 +165,14 @@ export class GithubIntegrationService {
       ProjectIntegrationType.GITHUB
     );
     if (!projInt) return;
+    if (
+      !projInt.config.features.includes(
+        GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS
+      )
+    ) {
+      return;
+    }
+
     const orgInt = (await projInt.organizationIntegration) as
       | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
       | undefined;

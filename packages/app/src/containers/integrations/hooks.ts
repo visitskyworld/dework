@@ -25,6 +25,13 @@ export enum DiscordProjectIntegrationFeature {
   POST_TASK_UPDATES_TO_THREAD_PER_TASK = "POST_TASK_UPDATES_TO_THREAD_PER_TASK",
 }
 
+// Copied from @dewo/api/models/ProjectIntegration
+export enum GithubProjectIntegrationFeature {
+  SHOW_BRANCHES = "SHOW_BRANCHES",
+  SHOW_PULL_REQUESTS = "SHOW_PULL_REQUESTS",
+  CREATE_ISSUES_FROM_TASKS = "CREATE_ISSUES_FROM_TASKS",
+}
+
 export function useConnectToGithubUrl(organizationId: string): string {
   const { user } = useAuthContext();
   return useMemo(() => {
@@ -76,6 +83,7 @@ export function useCreateGithubProjectIntegration(): (input: {
   projectId: string;
   repo: GithubRepo;
   importIssues: boolean;
+  features: GithubProjectIntegrationFeature[];
 }) => Promise<ProjectIntegration> {
   const createProjectIntegration = useCreateProjectIntegration();
   const createTasksFromGithubIssues = useCreateTasksFromGithubIssues();
@@ -88,7 +96,7 @@ export function useCreateGithubProjectIntegration(): (input: {
         config: {
           repo: input.repo.name,
           organization: input.repo.organization,
-          features: [],
+          features: input.features,
         },
       });
 

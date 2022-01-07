@@ -15,6 +15,7 @@ import {
 } from "../../organization/hooks";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import {
+  GithubProjectIntegrationFeature,
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
@@ -104,6 +105,13 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             repo,
             projectId: project.id,
             importIssues: !!values.githubImportIssues,
+            features: [
+              GithubProjectIntegrationFeature.SHOW_BRANCHES,
+              GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+              ...(values.githubFeatureCreateIssuesFromTasks
+                ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
+                : []),
+            ],
           });
         }
 

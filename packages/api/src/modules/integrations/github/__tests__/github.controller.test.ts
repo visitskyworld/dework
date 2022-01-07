@@ -160,7 +160,7 @@ describe("GithubController", () => {
               id: issueId,
               number: issueNumber,
               state: "open",
-              url,
+              html_url: url,
               title: name,
               body: description,
               labels: [limeGithubLabel],
@@ -212,8 +212,9 @@ describe("GithubController", () => {
           action: "opened",
           issue: {
             id: faker.datatype.number(100),
+            number: faker.datatype.number(100),
             state: "open",
-            url: faker.internet.url(),
+            html_url: faker.internet.url(),
             title: faker.lorem.sentence(),
             body: faker.lorem.sentence(),
             labels: [limeGithubLabel],
@@ -257,7 +258,7 @@ describe("GithubController", () => {
             issue: {
               id: issue.externalId,
               state: "closed",
-              url,
+              html_url: url,
               title: name,
               body: description,
               labels: [limeGithubLabel],

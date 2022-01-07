@@ -58,6 +58,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
         projectId,
         repo: values.repo,
         importIssues: values.importIssues,
+        features: values.features,
       });
     },
     [createIntegration, projectId]

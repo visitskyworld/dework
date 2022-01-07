@@ -13,6 +13,7 @@ import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { GithubIntegrationService } from "./github.integration.service";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 
 // The actions Github's API uses
 export enum GithubPullRequestActions {
@@ -104,7 +105,13 @@ export class GithubController {
       await this.githubIntegrationService.updateIssue(event.issue, project);
     }
 
-    if ("ref" in event && "installation" in event) {
+    if (
+      "ref" in event &&
+      "installation" in event &&
+      integration.config.features.includes(
+        GithubProjectIntegrationFeature.SHOW_BRANCHES
+      )
+    ) {
       const result = await this.getBranchAndTask(
         event.ref,
         event.repository,
@@ -152,7 +159,12 @@ export class GithubController {
       }
     }
 
-    if ("pull_request" in event) {
+    if (
+      "pull_request" in event &&
+      integration.config.features.includes(
+        GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS
+      )
+    ) {
       const result = await this.getBranchAndTask(
         event.pull_request.head.ref,
         event.repository,

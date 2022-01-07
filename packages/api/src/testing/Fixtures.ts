@@ -33,6 +33,7 @@ import { DeepPartial } from "typeorm";
 import { OrganizationMember } from "../models/OrganizationMember";
 import { AtLeast, DeepAtLeast } from "../types/general";
 import {
+  GithubProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationType,
 } from "../models/ProjectIntegration";
@@ -377,7 +378,11 @@ export class Fixtures {
       config: {
         organization: github.organization,
         repo: github.repo,
-        features: [],
+        features: [
+          GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS,
+          GithubProjectIntegrationFeature.SHOW_BRANCHES,
+          GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+        ],
       },
       ...partialProjectIntegration,
     });

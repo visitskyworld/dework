@@ -9,7 +9,7 @@ import {
 import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { IsNull, Repository } from "typeorm";
 
 @Injectable()
 export class IntegrationService {
@@ -66,6 +66,7 @@ export class IntegrationService {
     return this.projectIntegrationRepo.findOne({
       type,
       projectId,
+      deletedAt: IsNull(),
     }) as Promise<ProjectIntegration<T>>;
   }
 }

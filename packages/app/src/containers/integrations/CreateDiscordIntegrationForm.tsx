@@ -5,6 +5,7 @@ import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
+import { FormSection } from "@dewo/app/components/FormSection";
 
 const DiscordProjectIntegrationFeatureLabel: Record<
   DiscordProjectIntegrationFeature,
@@ -185,21 +186,23 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSubmit}
     >
-      <DiscordIntegrationFormFields
-        values={values}
-        channels={discordChannels}
-        threads={discordThreads}
-      />
-      <Button
-        type="primary"
-        htmlType="submit"
-        block
-        loading={submitting.isOn}
-        hidden={!values.discordFeature}
-        disabled={!values.discordChannelId}
-      >
-        Connect Discord
-      </Button>
+      <FormSection label="Discord Integration">
+        <DiscordIntegrationFormFields
+          values={values}
+          channels={discordChannels}
+          threads={discordThreads}
+        />
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          loading={submitting.isOn}
+          hidden={!values.discordFeature}
+          disabled={!values.discordChannelId}
+        >
+          Connect Discord
+        </Button>
+      </FormSection>
     </Form>
   );
 };

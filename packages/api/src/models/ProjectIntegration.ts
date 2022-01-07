@@ -14,7 +14,7 @@ export enum ProjectIntegrationType {
 export enum GithubProjectIntegrationFeature {
   SHOW_BRANCHES = "SHOW_BRANCHES",
   SHOW_PULL_REQUESTS = "SHOW_PULL_REQUESTS",
-  // update status on PR up, PR closed, PR merged
+  CREATE_ISSUES_FROM_TASKS = "CREATE_ISSUES_FROM_TASKS",
 }
 
 export enum DiscordProjectIntegrationFeature {

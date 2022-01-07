@@ -1,17 +1,22 @@
 import { GithubRepo } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Checkbox, Form, Select, Typography } from "antd";
+import { Button, Checkbox, Form, Select, Tooltip, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
 import { useOrganizationGithubRepos } from "../organization/hooks";
+import { GithubProjectIntegrationFeature } from "./hooks";
+import { FormSection } from "@dewo/app/components/FormSection";
 
 export interface FormValues {
   githubRepoId: string;
   githubImportIssues?: boolean;
+  githubFeatureCreateIssuesFromTasks?: boolean;
 }
 
 export interface CreateGithubIntegrationFormValues {
   repo: GithubRepo;
+  features: GithubProjectIntegrationFeature[];
   importIssues: boolean;
 }
 
@@ -35,7 +40,7 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
 }) => {
   return (
     <>
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
+      <Typography.Paragraph type="secondary">
         Want to automatically link Github branches and make pull requests show
         up in tasks? Try out the Github integration for this project!
       </Typography.Paragraph>
@@ -58,11 +63,27 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
       <Form.Item
         name="githubImportIssues"
         valuePropName="checked"
-        label="Import Issues"
-        tooltip="Easily move all your Github issues into Dework. New issues will be added and updated automatically."
+        hidden={!values.githubRepoId}
+        style={{ margin: 0 }}
+      >
+        <Checkbox>
+          Import existing Github Issues to Dework{"  "}
+          <Tooltip title="Easily move all your Github issues into Dework. New issues will be added and updated automatically.">
+            <Icons.QuestionCircleOutlined />
+          </Tooltip>
+        </Checkbox>
+      </Form.Item>
+      <Form.Item
+        name="githubFeatureCreateIssuesFromTasks"
+        valuePropName="checked"
         hidden={!values.githubRepoId}
       >
-        <Checkbox>Import existing Github Issues to Dework</Checkbox>
+        <Checkbox>
+          Create Github Issue when Dework task is created{"  "}
+          <Tooltip title="Automatically post Dework tasks to Github issues.">
+            <Icons.QuestionCircleOutlined />
+          </Tooltip>
+        </Checkbox>
       </Form.Item>
     </>
   );
@@ -91,7 +112,17 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
 
       try {
         submitting.toggleOn();
-        await onSubmit({ repo, importIssues: !!values.githubImportIssues });
+        await onSubmit({
+          repo,
+          importIssues: !!values.githubImportIssues,
+          features: [
+            GithubProjectIntegrationFeature.SHOW_BRANCHES,
+            GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+            ...(values.githubFeatureCreateIssuesFromTasks
+              ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
+              : []),
+          ],
+        });
       } finally {
         submitting.toggleOff();
       }
@@ -108,16 +139,18 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSubmit}
     >
-      <GithubIntegrationFormFields values={values} repos={githubRepos} />
-      <Button
-        type="primary"
-        htmlType="submit"
-        block
-        loading={submitting.isOn}
-        hidden={!values.githubRepoId}
-      >
-        Connect Github
-      </Button>
+      <FormSection label="Github Integration">
+        <GithubIntegrationFormFields values={values} repos={githubRepos} />
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          loading={submitting.isOn}
+          hidden={!values.githubRepoId}
+        >
+          Connect Github
+        </Button>
+      </FormSection>
     </Form>
   );
 };
