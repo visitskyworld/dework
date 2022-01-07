@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from "react";
-import { Button, Col, Form, Row, Select, Typography } from "antd";
+import { Button, Col, Form, Row, Select, Space, Typography } from "antd";
 import { useOrganizationDiscordChannels } from "../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
@@ -45,12 +45,14 @@ interface FormFieldProps {
   values: Partial<FormValues>;
   channels?: DiscordIntegrationChannel[];
   threads?: DiscordIntegrationChannel[];
+  onRefetchChannels(): Promise<void>;
 }
 
 export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
   values,
   channels,
   threads,
+  onRefetchChannels,
 }) => {
   const showThreadSelect =
     values.discordFeature ===
@@ -90,6 +92,31 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
                 required: !!values.discordFeature,
                 message: "Please select a Discord channel",
               },
+              (form) => ({
+                async validator(_rule, value) {
+                  const channel = channels?.find((c) => c.id === value);
+                  if (!channel) return;
+                  if (!channel.hasAccess) throw new Error();
+                },
+                message: (
+                  <Space style={{ marginTop: 2 }}>
+                    Dework bot doesn't have access to this channel. Go to
+                    channel settings and add the 'Dework' role and retry.
+                    <Button
+                      size="small"
+                      type="ghost"
+                      onClick={async () => {
+                        await onRefetchChannels();
+                        form.setFields([
+                          { name: "discordChannelId", errors: undefined },
+                        ]);
+                      }}
+                    >
+                      Retry
+                    </Button>
+                  </Space>
+                ),
+              }),
             ]}
           >
             <Select
@@ -159,10 +186,10 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
   const submitting = useToggle();
   const handleSubmit = useCallback(
     async (values: FormValues) => {
-      const channel = discordChannels?.find(
+      const channel = discordChannels.value?.find(
         (c) => c.id === values.discordChannelId
       );
-      const thread = discordThreads?.find(
+      const thread = discordThreads.value?.find(
         (t) => t.id === values.discordThreadId
       );
       if (!channel) return;
@@ -174,7 +201,7 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
         submitting.toggleOff();
       }
     },
-    [submitting, discordChannels, discordThreads, onSubmit]
+    [submitting, discordChannels.value, discordThreads.value, onSubmit]
   );
 
   return (
@@ -189,8 +216,9 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
       <FormSection label="Discord Integration">
         <DiscordIntegrationFormFields
           values={values}
-          channels={discordChannels}
-          threads={discordThreads}
+          channels={discordChannels.value}
+          threads={discordThreads.value}
+          onRefetchChannels={discordChannels.refetch}
         />
         <Button
           type="primary"

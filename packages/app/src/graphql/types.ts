@@ -4740,6 +4740,7 @@ export interface GetOrganizationDiscordChannelsQuery_channels {
   id: string;
   name: string;
   integrationId: Scalar.UUID;
+  hasAccess: boolean;
 }
 
 export interface GetOrganizationDiscordChannelsQuery {
@@ -5928,6 +5929,7 @@ export interface DiscordIntegrationChannel {
   id: string;
   name: string;
   integrationId: Scalar.UUID;
+  hasAccess: boolean;
 }
 
 /* tslint:disable */

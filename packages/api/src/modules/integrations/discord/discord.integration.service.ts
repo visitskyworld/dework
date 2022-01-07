@@ -62,6 +62,7 @@ export class DiscordIntegrationService {
         integration.config.channelId,
         { force: true }
       )) as Discord.TextChannel;
+
       if (!channel) {
         this.logger.warn(
           `Could not find Discord channel (${JSON.stringify(
@@ -71,6 +72,11 @@ export class DiscordIntegrationService {
         return;
       }
 
+      this.logger.log(
+        `Found connected Discord channel: ${JSON.stringify({
+          channelId: channel.id,
+        })}`
+      );
       const channelToPostTo = await this.getDiscordChannelToPostTo(
         event.task,
         channel,

@@ -234,12 +234,20 @@ export function useOrganizationGithubRepos(
 export function useOrganizationDiscordChannels(
   variables: GetOrganizationDiscordChannelsQueryVariables,
   skip: boolean = false
-): DiscordIntegrationChannel[] | undefined {
-  const { data } = useQuery<
+): {
+  value: DiscordIntegrationChannel[] | undefined;
+  refetch: () => Promise<void>;
+} {
+  const { data, refetch } = useQuery<
     GetOrganizationDiscordChannelsQuery,
     GetOrganizationDiscordChannelsQueryVariables
   >(Queries.organizationDiscordChannels, { variables, skip });
-  return data?.channels ?? undefined;
+  return {
+    value: data?.channels ?? undefined,
+    refetch: useCallback(async () => {
+      await refetch();
+    }, [refetch]),
+  };
 }
 
 export function useOrganizationCoreTeam(

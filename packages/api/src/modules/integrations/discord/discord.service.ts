@@ -58,28 +58,35 @@ export class DiscordService implements OnModuleInit {
       return [];
     }
 
+    const botUserId = this.config.get<string>("DISCORD_OAUTH_CLIENT_ID")!;
+    await guild.roles.fetch(); // makes permissionsFor below work
+    const botUser = await guild.members.fetch({ user: botUserId });
+
     if (!!parentChannelId) {
       const channel = await guild.channels.fetch(parentChannelId, {
         force: true,
       });
       if (!channel?.isText()) return [];
       const fetched = await channel.threads.fetchActive(false);
-      return fetched.threads.map(this.toIntegrationChannel(integration));
+      return fetched.threads.map(
+        this.toIntegrationChannel(integration, botUser)
+      );
     } else {
       const channels = await guild.channels.fetch(undefined, { force: true });
       return channels
         .filter((channel) => channel.isText())
-        .map(this.toIntegrationChannel(integration));
+        .map(this.toIntegrationChannel(integration, botUser));
     }
   }
 
   private toIntegrationChannel =
-    (integration: OrganizationIntegration) =>
+    (integration: OrganizationIntegration, botUser: Discord.GuildMember) =>
     (
       channel: Discord.GuildChannel | Discord.ThreadChannel
     ): DiscordIntegrationChannel => ({
       id: channel.id,
       name: channel.name,
       integrationId: integration.id,
+      hasAccess: !!channel.permissionsFor(botUser)?.has("VIEW_CHANNEL"),
     });
 }

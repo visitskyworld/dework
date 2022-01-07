@@ -115,10 +115,10 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           });
         }
 
-        const channel = discordChannels?.find(
+        const channel = discordChannels.value?.find(
           (c) => c.id === values.discordChannelId
         );
-        const thread = discordThreads?.find(
+        const thread = discordThreads.value?.find(
           (c) => c.id === values.discordThreadId
         );
         if (!!channel && values.discordFeature) {
@@ -141,8 +141,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       createGithubIntegration,
       onCreated,
       githubRepos,
-      discordChannels,
-      discordThreads,
+      discordChannels.value,
+      discordThreads.value,
     ]
   );
 
@@ -172,8 +172,9 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             {hasDiscordIntegration ? (
               <DiscordIntegrationFormFields
                 values={values}
-                channels={discordChannels}
-                threads={discordThreads}
+                channels={discordChannels.value}
+                threads={discordThreads.value}
+                onRefetchChannels={discordChannels.refetch}
               />
             ) : (
               <ConnectOrganizationToDiscordButton
