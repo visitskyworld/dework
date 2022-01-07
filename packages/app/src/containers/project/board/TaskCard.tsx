@@ -84,7 +84,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               icon={<Icons.LockOutlined />}
               onClick={navigateToTask}
             >
-              Pick applicant
+              Choose contributor
             </Button>
           );
         }
@@ -98,7 +98,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               icon={<Icons.UnlockOutlined />}
               onClick={eatClick}
             >
-              Apply
+              I'm interested
             </LoginButton>
           );
         }
