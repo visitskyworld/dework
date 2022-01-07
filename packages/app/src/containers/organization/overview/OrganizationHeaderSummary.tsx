@@ -1,7 +1,9 @@
-import React, { FC } from "react";
-import { List, Skeleton, Typography } from "antd";
+import React, { FC, useMemo } from "react";
+import { Button, List, Skeleton, Typography } from "antd";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { useOrganization } from "../hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import Link from "next/link";
 
 interface Props {
   organizationId: string;
@@ -9,6 +11,32 @@ interface Props {
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   const organization = useOrganization(organizationId);
+  const canUpdate = usePermission("update", "Project");
+
+  const description = useMemo(() => {
+    if (!organization) return null;
+    if (!!organization?.tagline) {
+      return (
+        <Typography.Paragraph type="secondary" style={{ maxWidth: 480 }}>
+          {organization.tagline}
+        </Typography.Paragraph>
+      );
+    }
+
+    if (canUpdate) {
+      return (
+        <Link href={`${organization.permalink}/settings/profile`}>
+          <a>
+            <Button size="small" type="primary">
+              Set up profile
+            </Button>
+          </a>
+        </Link>
+      );
+    }
+
+    return null;
+  }, [organization, canUpdate]);
 
   if (!organization) {
     return (
@@ -29,13 +57,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
           {organization.name}
         </Typography.Title>
       }
-      description={
-        organization.tagline && (
-          <Typography.Paragraph type="secondary" style={{ maxWidth: 480 }}>
-            {organization.tagline}
-          </Typography.Paragraph>
-        )
-      }
+      description={description}
     />
   );
 };

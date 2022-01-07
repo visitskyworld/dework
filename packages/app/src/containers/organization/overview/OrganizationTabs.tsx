@@ -6,7 +6,6 @@ import {
   Divider,
   Row,
   Skeleton,
-  Space,
   Tabs,
   Tag,
   Typography,
@@ -82,13 +81,17 @@ export const OrganizationTabs: FC<Props> = ({
             <Typography.Paragraph type="secondary">
               {organization?.description || "No description..."}
             </Typography.Paragraph>
-            <Space>
-              {organization?.details.map((detail) => (
-                <EntityDetailAvatar entityDetail={detail} key={detail.id} />
-              ))}
-            </Space>
+
+            {!!organization?.details && (
+              <Row style={{ gap: 8, marginBottom: 8 }}>
+                {organization.details.map((detail) => (
+                  <EntityDetailAvatar entityDetail={detail} key={detail.id} />
+                ))}
+              </Row>
+            )}
+
             {!!organization?.tags.length && (
-              <Row style={{ marginTop: 16, gap: 8 }}>
+              <Row style={{ gap: 8, marginBottom: 8 }}>
                 {organization?.tags.map((tag) => (
                   <Tag key={tag.id} color={tag.color} style={{ margin: 0 }}>
                     {tag.label}
@@ -158,7 +161,7 @@ export const OrganizationTabs: FC<Props> = ({
           tab={
             <>
               <Icons.SettingOutlined />
-              DAO profile/Settings
+              Settings
             </>
           }
           key="settings"
