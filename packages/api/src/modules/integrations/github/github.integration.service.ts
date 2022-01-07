@@ -2,12 +2,25 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import * as Github from "@octokit/webhooks-types";
 import * as Colors from "@ant-design/colors";
+import * as fs from "fs";
 import NearestColor from "nearest-color";
 import { TaskService } from "../../task/task.service";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
+import { IntegrationService } from "../integration.service";
+import { ConfigType } from "../../app/config";
+import { ConfigService } from "@nestjs/config";
+import { Octokit } from "@octokit/rest";
+import { createAppAuth } from "@octokit/auth-app";
+import { GithubRepo } from "./dto/GithubRepo";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
+import { ProjectIntegrationType } from "@dewo/api/models/ProjectIntegration";
+import { PermalinkService } from "../../permalink/permalink.service";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -41,7 +54,10 @@ export class GithubIntegrationService {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly githubService: GithubService
+    private readonly githubService: GithubService,
+    private readonly integrationService: IntegrationService,
+    private readonly permalink: PermalinkService,
+    private readonly config: ConfigService<ConfigType>
   ) {}
 
   public async updateIssue(
@@ -140,6 +156,57 @@ export class GithubIntegrationService {
     }
   }
 
+  public async createIssueFromTask(task: Task): Promise<void> {
+    const projInt = await this.integrationService.findProjectIntegration(
+      task.projectId,
+      ProjectIntegrationType.GITHUB
+    );
+    if (!projInt) return;
+    const orgInt = (await projInt.organizationIntegration) as
+      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+      | undefined;
+    if (!orgInt) return;
+
+    this.logger.log(
+      `Creating issue on Github for task: ${JSON.stringify({
+        taskId: task.id,
+      })}`
+    );
+
+    const existingIssue = await task.githubIssue;
+    if (!!existingIssue) {
+      this.logger.warn(
+        "Aborting creation of Github issue for task: issue already exists"
+      );
+      return;
+    }
+
+    const client = this.createClient(orgInt.config.installationId);
+    const res = await client.issues.create({
+      owner: projInt.config.organization,
+      repo: projInt.config.repo,
+      title: task.name,
+      body: [
+        task.description,
+        `[Read more about this task and rewards on Dework.xyz](${await this.permalink.get(
+          task
+        )})`,
+      ]
+        .filter((s): s is string => !!s)
+        .join("\n\n"),
+    });
+
+    const githubIssue = await this.githubService.createIssue({
+      externalId: res.data.id,
+      number: res.data.number,
+      taskId: task.id,
+    });
+
+    this.logger.log(
+      `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
+    );
+  }
+
   public async createTasksFromGithubIssues(
     projectId: string,
     userId: string,
@@ -148,8 +215,8 @@ export class GithubIntegrationService {
     const project = await this.projectService.findById(projectId);
     if (!project) throw new NotFoundException();
     const issues = await (!!github
-      ? this.githubService.getGithubIssues(github.organization, github.repo)
-      : this.githubService.getProjectIssues(projectId));
+      ? this.getGithubIssues(github.organization, github.repo)
+      : this.getProjectIssues(projectId));
     for (const issue of issues) {
       await this.updateIssue(
         {
@@ -212,5 +279,84 @@ export class GithubIntegrationService {
           existingTags.find(matchesLabel(l)) ?? newTags.find(matchesLabel(l))
       )
       .filter((tag): tag is TaskTag => !!tag);
+  }
+
+  public async getOrganizationRepos(
+    organizationId: string
+  ): Promise<GithubRepo[]> {
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.GITHUB
+      );
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const client = this.createClient(integration.config.installationId);
+    const res = await client.apps.listReposAccessibleToInstallation();
+    return res.data.repositories.map((repo) => ({
+      id: repo.node_id,
+      name: repo.name,
+      organization: repo.owner.login,
+      integrationId: integration.id,
+    }));
+  }
+
+  public async getProjectIssues(projectId: string) {
+    const projInt = await this.integrationService.findProjectIntegration(
+      projectId,
+      ProjectIntegrationType.GITHUB
+    );
+    if (!projInt) {
+      throw new NotFoundException("Project integration not found");
+    }
+
+    const orgInt = (await projInt.organizationIntegration) as
+      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+      | undefined;
+    if (!orgInt) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    return this.getGithubIssues(
+      projInt.config.organization,
+      projInt.config.repo,
+      orgInt.config.installationId
+    );
+  }
+
+  public async getGithubIssues(
+    organization: string,
+    repo: string,
+    installationId?: number
+  ) {
+    const client = this.createClient(installationId);
+    const res = await client.issues.listForRepo({
+      owner: organization,
+      repo,
+      state: "all",
+    });
+    return res.data;
+  }
+
+  private createClient(installationId?: number): Octokit {
+    const privateKeyPath = this.config.get("GITHUB_APP_PRIVATE_KEY_PATH");
+    // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
+    // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
+    // TODO(fant): figure out how to properly auth with clientId/clientSecret
+    return new Octokit(
+      !!installationId
+        ? {
+            authStrategy: createAppAuth,
+            auth: {
+              appId: this.config.get("GITHUB_APP_ID"),
+              privateKey: fs.readFileSync(privateKeyPath, "utf8"),
+              installationId,
+              // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
+            },
+          }
+        : undefined
+    );
   }
 }

@@ -1,25 +1,15 @@
-import * as fs from "fs";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
-import {
-  OrganizationIntegration,
-  OrganizationIntegrationType,
-} from "@dewo/api/models/OrganizationIntegration";
+import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import {
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { createAppAuth } from "@octokit/auth-app";
-import { Octokit } from "@octokit/rest";
 import { Repository } from "typeorm";
-import { ConfigType } from "../../app/config";
-import { GithubRepo } from "./dto/GithubRepo";
-import { IntegrationService } from "../integration.service";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
 
 @Injectable()
@@ -34,9 +24,7 @@ export class GithubService {
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
-    private readonly integrationService: IntegrationService,
-    private readonly config: ConfigService<ConfigType>
+    private readonly projectIntegrationRepo: Repository<ProjectIntegration>
   ) {}
 
   public async createPullRequest(
@@ -163,84 +151,5 @@ export class GithubService {
       .getOne() as Promise<
       ProjectIntegration<ProjectIntegrationType.GITHUB> | undefined
     >;
-  }
-
-  public async getOrganizationRepos(
-    organizationId: string
-  ): Promise<GithubRepo[]> {
-    const integration =
-      await this.integrationService.findOrganizationIntegration(
-        organizationId,
-        OrganizationIntegrationType.GITHUB
-      );
-    if (!integration) {
-      throw new NotFoundException("Organization integration not found");
-    }
-
-    const client = this.createClient(integration.config.installationId);
-    const res = await client.apps.listReposAccessibleToInstallation();
-    return res.data.repositories.map((repo) => ({
-      id: repo.node_id,
-      name: repo.name,
-      organization: repo.owner.login,
-      integrationId: integration.id,
-    }));
-  }
-
-  public async getProjectIssues(projectId: string) {
-    const projInt = await this.integrationService.findProjectIntegration(
-      projectId,
-      ProjectIntegrationType.GITHUB
-    );
-    if (!projInt) {
-      throw new NotFoundException("Project integration not found");
-    }
-
-    const orgInt = (await projInt.organizationIntegration) as
-      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
-      | undefined;
-    if (!orgInt) {
-      throw new NotFoundException("Organization integration not found");
-    }
-
-    return this.getGithubIssues(
-      projInt.config.organization,
-      projInt.config.repo,
-      orgInt.config.installationId
-    );
-  }
-
-  public async getGithubIssues(
-    organization: string,
-    repo: string,
-    installationId?: number
-  ) {
-    const client = this.createClient(installationId);
-    const res = await client.issues.listForRepo({
-      owner: organization,
-      repo,
-      state: "all",
-    });
-    return res.data;
-  }
-
-  private createClient(installationId?: number): Octokit {
-    const privateKeyPath = this.config.get("GITHUB_APP_PRIVATE_KEY_PATH");
-    // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
-    // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
-    // TODO(fant): figure out how to properly auth with clientId/clientSecret
-    return new Octokit(
-      !!installationId
-        ? {
-            authStrategy: createAppAuth,
-            auth: {
-              appId: this.config.get("GITHUB_APP_ID"),
-              privateKey: fs.readFileSync(privateKeyPath, "utf8"),
-              installationId,
-              // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
-            },
-          }
-        : undefined
-    );
   }
 }

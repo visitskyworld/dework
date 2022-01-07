@@ -19,6 +19,8 @@ import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../../auth/permissions";
+import { GithubIntegrationTaskCreatedEventHandler } from "./github.eventHandlers";
+import { PermalinkModule } from "../../permalink/permalink.module";
 
 @Module({
   imports: [
@@ -36,9 +38,15 @@ import { permissions } from "../../auth/permissions";
     TaskModule,
     ProjectModule,
     IntegrationModule,
+    PermalinkModule,
     CaslModule.forFeature({ permissions }),
   ],
-  providers: [GithubService, GithubResolver, GithubIntegrationService],
+  providers: [
+    GithubService,
+    GithubResolver,
+    GithubIntegrationService,
+    GithubIntegrationTaskCreatedEventHandler,
+  ],
   controllers: [GithubController],
   exports: [GithubService],
 })

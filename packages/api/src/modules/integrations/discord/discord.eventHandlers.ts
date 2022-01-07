@@ -10,7 +10,7 @@ export class DiscordIntegrationTaskCreatedEventHandler
 {
   constructor(private readonly integration: DiscordIntegrationService) {}
 
-  async handle(event: TaskUpdatedEvent) {
+  async handle(event: TaskCreatedEvent) {
     if (process.env.NODE_ENV === "test") return;
     await this.integration.handle(event);
   }

@@ -1,7 +1,6 @@
 import { Args, Context, Mutation, Query } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
-import { GithubService } from "./github.service";
 import { GithubRepo } from "./dto/GithubRepo";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectRolesGuard } from "../../project/project.roles.guard";
@@ -15,7 +14,6 @@ import { ProjectService } from "../../project/project.service";
 @Injectable()
 export class GithubResolver {
   constructor(
-    private readonly githubService: GithubService,
     private readonly githubIntegrationService: GithubIntegrationService,
     private readonly projectService: ProjectService
   ) {}
@@ -25,7 +23,7 @@ export class GithubResolver {
   public async getGithubRepos(
     @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
   ): Promise<GithubRepo[]> {
-    return this.githubService.getOrganizationRepos(organizationId);
+    return this.githubIntegrationService.getOrganizationRepos(organizationId);
   }
 
   @Mutation(() => Project)
