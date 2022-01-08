@@ -1,16 +1,11 @@
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { Tag, Row, Typography } from "antd";
-import {
-  TaskStatus,
-  TaskRewardTrigger,
-  TaskReward,
-} from "@dewo/app/graphql/types";
+import { TaskStatus, TaskReward } from "@dewo/app/graphql/types";
 import { formatTaskReward } from "./hooks";
 import {
   paymentStatusToColor,
   paymentStatusToString,
-  rewardTriggerToString,
   TaskRewardFormValues,
 } from "./TaskRewardFormFields";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -35,10 +30,7 @@ export const TaskRewardSummary: FC<Props> = ({ reward }) => {
   return (
     <FormSection label="Reward">
       <Row>
-        <Typography.Text>
-          {formatTaskReward(reward)} (
-          {rewardTriggerToString[TaskRewardTrigger.CORE_TEAM_APPROVAL]})
-        </Typography.Text>
+        <Typography.Text>{formatTaskReward(reward)}</Typography.Text>
       </Row>
       {!!reward.payment && (
         <>

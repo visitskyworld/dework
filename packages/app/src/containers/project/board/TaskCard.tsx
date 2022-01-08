@@ -148,7 +148,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               </Tag>
             )}
             {!!task.storyPoints && (
-              <Tag>
+              <Tag style={{ marginBottom: 4 }}>
                 <Icons.FlagOutlined />
                 <span>{task.storyPoints}</span>
               </Tag>

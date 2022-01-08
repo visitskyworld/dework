@@ -1,10 +1,4 @@
-import React, {
-  ComponentType,
-  FC,
-  FocusEventHandler,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { FC, FocusEventHandler, useCallback, useMemo } from "react";
 import {
   PaymentStatus,
   PaymentToken,
@@ -32,11 +26,6 @@ export interface TaskRewardFormValues {
   trigger: TaskRewardTrigger;
 }
 
-export const rewardTriggerToString: Record<TaskRewardTrigger, string> = {
-  [TaskRewardTrigger.CORE_TEAM_APPROVAL]: "Manually by Core Team",
-  [TaskRewardTrigger.PULL_REQUEST_MERGED]: "On PR merged",
-};
-
 export const paymentStatusToString: Record<PaymentStatus, string> = {
   [PaymentStatus.PROCESSING]: "Payment Processing",
   [PaymentStatus.CONFIRMED]: "Payment Completed",
@@ -49,25 +38,6 @@ export const paymentStatusToColor: Record<PaymentStatus, string> = {
   [PaymentStatus.FAILED]: "red",
 };
 
-interface TaskRewardTriggerOption {
-  label: string;
-  value: TaskRewardTrigger;
-  icon: ComponentType;
-}
-
-const rewardTriggerOptions: TaskRewardTriggerOption[] = [
-  {
-    label: rewardTriggerToString[TaskRewardTrigger.CORE_TEAM_APPROVAL],
-    value: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-    icon: Icons.TeamOutlined,
-  },
-  {
-    label: rewardTriggerToString[TaskRewardTrigger.PULL_REQUEST_MERGED],
-    value: TaskRewardTrigger.PULL_REQUEST_MERGED,
-    icon: Icons.GithubOutlined,
-  },
-];
-
 export async function validator(
   _rule: unknown, // RuleObject,
   value: Partial<TaskRewardFormValues> | undefined
@@ -77,7 +47,6 @@ export async function validator(
   if (!value.amount) return;
 
   if (!value.token) throw new Error("Please enter a token");
-  if (!value.trigger) throw new Error("Please enter approval criteria");
 }
 
 interface Props {
@@ -127,21 +96,18 @@ export const TaskRewardFormFields: FC<Props> = ({
   );
   const handleChangeToken = useCallback(
     (tokenId: string) =>
-      onChange?.({ ...value, token: tokens.find((t) => t.id === tokenId) }),
+      onChange?.({
+        ...value,
+        trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+        token: tokens.find((t) => t.id === tokenId),
+      }),
     [onChange, value, tokens]
-  );
-  const handleChangeTrigger = useCallback(
-    (trigger: TaskRewardTrigger) => onChange?.({ ...value, trigger }),
-    [onChange, value]
   );
 
   const handleBlur = useCallback<FocusEventHandler<unknown>>(
     (event) => {
       const allValuesSet =
-        !!value?.networkId &&
-        !!value?.amount &&
-        !!value?.token &&
-        !!value?.trigger;
+        !!value?.networkId && !!value?.amount && !!value?.token;
       if (!allValuesSet) {
         stopPropagation(event);
       }
@@ -242,28 +208,6 @@ export const TaskRewardFormFields: FC<Props> = ({
               </Select>
             }
           />
-        )}
-        {!!value?.amount && !!value?.token && (
-          <Select
-            value={value?.trigger}
-            optionFilterProp="label"
-            placeholder="Select payout trigger"
-            onChange={handleChangeTrigger}
-            onBlur={handleBlur}
-          >
-            {rewardTriggerOptions.map((tag) => (
-              <Select.Option
-                key={tag.value}
-                value={tag.value}
-                label={tag.label}
-              >
-                <Space style={{ alignItems: "center" }}>
-                  <tag.icon />
-                  {tag.label}
-                </Space>
-              </Select.Option>
-            ))}
-          </Select>
         )}
       </Space>
       <AddPaymentMethodModal
