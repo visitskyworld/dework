@@ -1015,6 +1015,7 @@ export interface CreateTaskMutation_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -1169,6 +1170,7 @@ export interface UpdateTaskMutation_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -1323,6 +1325,7 @@ export interface CreateTaskApplicationMutation_application_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -1483,6 +1486,7 @@ export interface DeleteTaskApplicationMutation_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -1637,6 +1641,7 @@ export interface DeleteTaskMutation_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -2511,6 +2516,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -2713,6 +2719,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -3016,6 +3023,7 @@ export interface UserTasksQuery_user_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -3586,6 +3594,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -3855,6 +3864,7 @@ export interface GetProjectTasksQuery_project_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -4112,6 +4122,7 @@ export interface GetTaskQuery_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -4335,6 +4346,7 @@ export interface GetTasksQuery_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -4559,6 +4571,7 @@ export interface GetTasksToPayQuery_tasks {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -4943,6 +4956,7 @@ export interface TaskCreatedSubscription_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -5159,6 +5173,7 @@ export interface TaskUpdatedSubscription_task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -6108,6 +6123,7 @@ export interface Task {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -6276,6 +6292,7 @@ export interface TaskWithOrganization {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;
@@ -6480,6 +6497,7 @@ export interface TaskDetails {
   submission: string | null;
   status: TaskStatus;
   sortKey: string;
+  storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   ownerId: string | null;

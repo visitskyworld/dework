@@ -291,6 +291,7 @@ export const task = gql`
     submission
     status
     sortKey
+    storyPoints
     deletedAt
     projectId
     ownerId

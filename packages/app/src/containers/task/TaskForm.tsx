@@ -41,6 +41,7 @@ export interface TaskFormValues {
   submission: string;
   projectId?: string;
   status: TaskStatus;
+  storyPoints?: number;
   tagIds: string[];
   assigneeIds: string[];
   ownerId?: string | null;
@@ -316,6 +317,21 @@ export const TaskForm: FC<TaskFormProps> = ({
                   <UserSelectOption user={user} />
                 </Select.Option>
               ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="storyPoints" label="Story Points">
+            <Select<number>
+              disabled={!canChange("storyPoints")}
+              allowClear
+              placeholder="Estimate task size..."
+              onClear={handleBlur}
+            >
+              <Select.Option value={1} children="1" />
+              <Select.Option value={2} children="2" />
+              <Select.Option value={3} children="3" />
+              <Select.Option value={5} children="5" />
+              <Select.Option value={8} children="8" />
             </Select>
           </Form.Item>
 

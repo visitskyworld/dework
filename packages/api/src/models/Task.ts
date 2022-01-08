@@ -61,6 +61,10 @@ export class Task extends Audit {
   @Field()
   public sortKey!: string;
 
+  @Column({ type: "int", nullable: true })
+  @Field(() => Int, { nullable: true })
+  public storyPoints?: number;
+
   @JoinColumn()
   @ManyToOne(() => Project)
   @Field(() => Project)

@@ -147,6 +147,12 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
                 <span>{formatTaskReward(task.reward)}</span>
               </Tag>
             )}
+            {!!task.storyPoints && (
+              <Tag>
+                <Icons.FlagOutlined />
+                <span>{task.storyPoints}</span>
+              </Tag>
+            )}
             {"project" in task && (
               <Tag
                 className="bg-component"
