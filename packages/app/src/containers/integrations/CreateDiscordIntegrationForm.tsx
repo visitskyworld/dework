@@ -100,8 +100,8 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
                 },
                 message: (
                   <Space style={{ marginTop: 2 }}>
-                    Dework bot doesn't have access to this channel. Go to
-                    channel settings and add the 'Dework' role and retry.
+                    Dework bot doesn't have access to this channel. Make sure it
+                    has the right roles and retry.
                     <Button
                       size="small"
                       type="ghost"
