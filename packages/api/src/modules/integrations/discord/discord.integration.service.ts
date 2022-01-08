@@ -97,20 +97,20 @@ export class DiscordIntegrationService {
         event.task.status !== event.prevTask.status;
       if (statusChanged) {
         switch (event.task.status) {
-          case TaskStatus.IN_PROGRESS:
-            await this.postInProgress(event.task, channelToPostTo);
-            break;
+          // case TaskStatus.IN_PROGRESS:
+          //   await this.postInProgress(event.task, channelToPostTo);
+          //   break;
           case TaskStatus.IN_REVIEW:
             await this.postMovedIntoReview(event.task, channelToPostTo);
             break;
           case TaskStatus.DONE:
-            await this.postDone(
-              channelToPostTo,
-              event.task,
-              !integration.config.features.includes(
-                DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD
+            if (
+              integration.config.features.includes(
+                DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
               )
-            );
+            ) {
+              await this.postDone(channelToPostTo, event.task);
+            }
 
             const threepids = await this.findTaskUserThreepids(event.task);
             await channel.send({
@@ -227,13 +227,9 @@ export class DiscordIntegrationService {
     return threepid?.threepid;
   }
 
-  private async postDone(
-    channel: Discord.TextBasedChannels,
-    task: Task,
-    shouldArchiveThread: boolean
-  ) {
+  private async postDone(channel: Discord.TextBasedChannels, task: Task) {
     await this.postTaskCard(channel, task, "Task completed!");
-    if (channel.isThread() && shouldArchiveThread) {
+    if (channel.isThread()) {
       await channel.setArchived(true);
     }
   }
