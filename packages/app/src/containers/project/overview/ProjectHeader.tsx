@@ -67,6 +67,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
 
   return (
     <PageHeader
+      style={{ paddingBottom: 0 }}
       title={
         !!project ? (
           !editName.isOn ? (

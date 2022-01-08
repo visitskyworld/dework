@@ -20,14 +20,19 @@ export function useNavigateToUserTaskBoard(): (user: User) => void {
 }
 
 export function useNavigateToTask(taskId: string): () => void {
+  const fn = useNavigateToTaskFn();
+  return useCallback(() => fn(taskId), [fn, taskId]);
+}
+
+export function useNavigateToTaskFn(): (taskId: string) => void {
   const router = useRouter();
   return useCallback(
-    () =>
+    (taskId) =>
       router.push({
         pathname: router.pathname,
         query: { ...router.query, taskId },
       }),
-    [router, taskId]
+    [router]
   );
 }
 

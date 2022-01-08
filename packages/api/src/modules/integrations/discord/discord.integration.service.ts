@@ -301,6 +301,7 @@ export class DiscordIntegrationService {
     );
   }
 
+  /*
   private async postInProgress(task: Task, channel: Discord.TextBasedChannels) {
     const threepids = await this.findTaskUserThreepids(task);
     // const intro = !!threepids.length
@@ -318,6 +319,7 @@ export class DiscordIntegrationService {
     //   `${intro} This task has been moved to the next stage.`.trim()
     // );
   }
+  */
 
   private async postTaskCard(
     channel: Discord.TextBasedChannels,

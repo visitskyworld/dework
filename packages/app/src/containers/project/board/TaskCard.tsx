@@ -4,17 +4,7 @@ import {
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import {
-  Tag,
-  Card,
-  Avatar,
-  Typography,
-  Space,
-  Row,
-  Col,
-  Button,
-  Rate,
-} from "antd";
+import { Card, Avatar, Typography, Space, Row, Col, Button, Rate } from "antd";
 import * as Icons from "@ant-design/icons";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -22,13 +12,13 @@ import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
 import Link from "next/link";
-import { formatTaskReward, useUpdateTask } from "../../task/hooks";
+import { useUpdateTask } from "../../task/hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
-import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TaskReactionPicker } from "./TaskReactionPicker";
+import { TaskTagsRow } from "./TaskTagsRow";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -134,45 +124,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
               {task.name}
             </Typography.Text>
           </Row>
-          <Row>
-            {!!task.reward && (
-              <Tag
-                style={{
-                  marginBottom: 4,
-                  backgroundColor: "white",
-                  color: "black",
-                }}
-              >
-                <Icons.DollarOutlined />
-                <span>{formatTaskReward(task.reward)}</span>
-              </Tag>
-            )}
-            {!!task.storyPoints && (
-              <Tag style={{ marginBottom: 4 }}>
-                <Icons.FlagOutlined />
-                <span>{task.storyPoints}</span>
-              </Tag>
-            )}
-            {"project" in task && (
-              <Tag
-                className="bg-component"
-                style={{ marginBottom: 4, paddingLeft: 0 }}
-              >
-                <OrganizationAvatar
-                  organization={task.project.organization}
-                  size={20}
-                />
-                <Typography.Text style={{ marginLeft: 4 }}>
-                  {task.project.organization.name}
-                </Typography.Text>
-              </Tag>
-            )}
-            {task.tags.map(({ label, color }, index) => (
-              <Tag key={index} color={color} style={{ marginBottom: 4 }}>
-                {label}
-              </Tag>
-            ))}
-          </Row>
+          <TaskTagsRow task={task} />
           <TaskReactionPicker task={task} />
           {button}
         </Space>

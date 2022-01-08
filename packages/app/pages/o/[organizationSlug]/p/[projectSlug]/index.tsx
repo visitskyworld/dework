@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
-import { Layout, Modal } from "antd";
+import { Layout, Modal, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
@@ -9,21 +9,18 @@ import { useProject } from "@dewo/app/containers/project/hooks";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
+import { ProjectList } from "@dewo/app/containers/project/list/ProjectList";
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const projId = useParseIdFromSlug("projectSlug");
-
+  const projectId = useParseIdFromSlug("projectSlug");
+  const project = useProject(projectId);
   const navigateToProject = useCallback(
-    () =>
-      router.push(
-        `/o/${router.query.organizationSlug}/p/${router.query.projectSlug}`
-      ),
-    [router]
+    () => router.push(project?.permalink!),
+    [router, project?.permalink]
   );
-  const project = useProject(projId);
 
-  if (!projId) {
+  if (!projectId) {
     router.replace("/");
     return null;
   }
@@ -32,9 +29,19 @@ const Page: NextPage = () => {
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <ProjectHeader projectId={projId} />
+        <ProjectHeader projectId={projectId} />
         <Layout.Content style={{ flex: 1 }}>
-          <ProjectTaskBoard projectId={projId} />
+          <Tabs
+            defaultActiveKey="list"
+            tabBarStyle={{ paddingLeft: 24, paddingRight: 24 }}
+          >
+            <Tabs.TabPane tab="Board" key="board">
+              <ProjectTaskBoard projectId={projectId} />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="List" key="list">
+              <ProjectList projectId={projectId} />
+            </Tabs.TabPane>
+          </Tabs>
         </Layout.Content>
       </Layout.Content>
 
