@@ -34,7 +34,7 @@ import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { getMainDefinition } from "@apollo/client/utilities";
 
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
   hotjar.initialize(ID, version);
 }
@@ -106,6 +106,15 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         <link
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `UST_CT = [];UST = { s: Date.now(), addTag: function(tag) { UST_CT.push(tag) } };UST.addEvent = UST.addTag;`,
+          }}
+        />
+        <script
+          src="https://analytics.dework.xyz/server/ust.min.js?v=4.2.0"
+          async
         />
       </Head>
       <ApolloProvider client={apollo as any}>
