@@ -275,6 +275,7 @@ export class GithubIntegrationService {
         })
       )
     );
+    existingTags.push(...newTags);
 
     if (!!newGithubLabels.length) {
       this.logger.log(
@@ -285,10 +286,7 @@ export class GithubIntegrationService {
     }
 
     return githubLabels
-      .map(
-        (l) =>
-          existingTags.find(matchesLabel(l)) ?? newTags.find(matchesLabel(l))
-      )
+      .map((l) => existingTags.find(matchesLabel(l)))
       .filter((tag): tag is TaskTag => !!tag);
   }
 

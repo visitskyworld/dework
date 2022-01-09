@@ -113,6 +113,11 @@ describe("GithubResolver", () => {
         expect(closedTask.name).toBe("Closed issue");
         expect(closedTask.status).toEqual(TaskStatus.DONE);
         expect(openTask.creatorId).toEqual(user.id);
+
+        const label = "github issue";
+        const openTag = openTask.tags.find((t: any) => t.label === label);
+        const closedTag = closedTask.tags.find((t: any) => t.label === label);
+        expect(openTag.id).toEqual(closedTag.id);
       });
     });
   });

@@ -33,6 +33,7 @@ export class GithubRequests {
               description
               creatorId
               tags {
+                id
                 label
                 color
               }
