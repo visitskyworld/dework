@@ -1,24 +1,18 @@
-import React, { CSSProperties, FC, useCallback, useMemo } from "react";
+import React, { CSSProperties, FC } from "react";
 import {
   Task,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import { Card, Avatar, Typography, Space, Row, Col, Button, Rate } from "antd";
-import * as Icons from "@ant-design/icons";
+import { Card, Avatar, Typography, Space, Row, Col, Rate } from "antd";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ClaimTaskButton } from "./ClaimTaskButton";
 import Link from "next/link";
-import { useUpdateTask } from "../../task/hooks";
-import { PayButton } from "./PayButton";
-import { useShouldShowInlinePayButton } from "./util";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { LoginButton } from "../../auth/LoginButton";
 import { TaskReactionPicker } from "./TaskReactionPicker";
 import { TaskTagsRow } from "./TaskTagsRow";
+import { TaskActionButton } from "./TaskActionButton";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -28,84 +22,7 @@ interface TaskCardProps {
 
 export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const navigateToTask = useNavigateToTask(task.id);
-  const currentUserId = useAuthContext().user?.id;
-
-  const updateTask = useUpdateTask();
-  const moveToDone = useCallback(
-    () => updateTask({ id: task.id, status: TaskStatus.DONE }, task),
-    [updateTask, task]
-  );
-
-  const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
-  const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
-  const button = useMemo(() => {
-    if (shouldShowInlinePayButton) {
-      return <PayButton task={task}>Pay</PayButton>;
-    }
-
-    if (
-      task.status === TaskStatus.IN_REVIEW &&
-      !!task.reward &&
-      !task.reward.payment &&
-      !!currentUserId &&
-      task.ownerId === currentUserId
-    ) {
-      return (
-        <Button
-          size="small"
-          onClick={(e) => {
-            eatClick(e);
-            moveToDone();
-          }}
-        >
-          Approve
-        </Button>
-      );
-    }
-
-    if (task.status === TaskStatus.TODO) {
-      if (canUpdateTask) {
-        if (!!task.applications.length) {
-          return (
-            <Button
-              size="small"
-              type="primary"
-              icon={<Icons.LockOutlined />}
-              onClick={navigateToTask}
-            >
-              Choose contributor
-            </Button>
-          );
-        }
-      } else if (canClaimTask) {
-        if (!!currentUserId) {
-          return <ClaimTaskButton task={task} />;
-        } else {
-          return (
-            <LoginButton
-              size="small"
-              icon={<Icons.UnlockOutlined />}
-              onClick={eatClick}
-            >
-              I'm interested
-            </LoginButton>
-          );
-        }
-      }
-    }
-
-    return null;
-  }, [
-    task,
-    shouldShowInlinePayButton,
-    navigateToTask,
-    moveToDone,
-    canClaimTask,
-    canUpdateTask,
-    currentUserId,
-  ]);
-
   return (
     <Card
       size="small"
@@ -126,7 +43,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           </Row>
           <TaskTagsRow task={task} />
           <TaskReactionPicker task={task} />
-          {button}
+          <TaskActionButton task={task} />
         </Space>
         <Col
           onClick={eatClick}

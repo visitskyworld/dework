@@ -4,6 +4,7 @@ import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Avatar, Table, Tag, Typography } from "antd";
 import React, { FC } from "react";
+import { TaskActionButton } from "../board/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import { STATUS_LABEL } from "../board/util";
 import { useProjectTasks, useProjectTaskTags } from "../hooks";
@@ -68,20 +69,6 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           })),
           onFilter: (status, task) => task.status === status,
           render: (status: TaskStatus) => STATUS_LABEL[status],
-          // render: (status: TaskStatus) => (
-          //   <Select value={status} style={{ width: "100%" }}>
-          //     <Select.Option value={TaskStatus.TODO} children="Todo" />
-          //     <Select.Option
-          //       value={TaskStatus.IN_PROGRESS}
-          //       children="In Progress"
-          //     />
-          //     <Select.Option
-          //       value={TaskStatus.IN_REVIEW}
-          //       children="In Review"
-          //     />
-          //     <Select.Option value={TaskStatus.DONE} children="Done" />
-          //   </Select>
-          // ),
           defaultSortOrder: "ascend",
           sorter: (a: Task, b: Task) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
@@ -99,6 +86,11 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           render: (_, task) => (
             <TaskTagsRow task={task} style={{ justifyContent: "flex-end" }} />
           ),
+        },
+        {
+          key: "button",
+          width: 1,
+          render: (_, task) => <TaskActionButton task={task} />,
         },
       ]}
     />
