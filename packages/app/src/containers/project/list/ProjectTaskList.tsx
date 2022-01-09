@@ -1,9 +1,13 @@
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
+import { useToggle } from "@dewo/app/util/hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Avatar, Table, Tag, Typography } from "antd";
-import React, { FC } from "react";
+import { Avatar, Button, Row, Table, Tag, Typography } from "antd";
+import React, { FC, useMemo } from "react";
+import { TaskCreateModal } from "../../task/TaskCreateModal";
+import { TaskFormValues } from "../../task/TaskForm";
 import { TaskActionButton } from "../board/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import { STATUS_LABEL } from "../board/util";
@@ -25,15 +29,47 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const tags = useProjectTaskTags(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
   const navigateToTask = useNavigateToTaskFn();
+
+  const status = TaskStatus.TODO;
+  const initialValues = useMemo<Partial<TaskFormValues>>(
+    () => ({ status }),
+    [status]
+  );
+  const createTaskToggle = useToggle();
+  const canCreateTask = usePermission("create", { __typename: "Task", status });
+
   return (
     <Table<Task>
       dataSource={tasks}
-      // size="small"
+      size="small"
       // showHeader={false}
       style={{ marginLeft: 24, marginRight: 24 }}
       rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
       onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}
+      footer={
+        canCreateTask
+          ? () => (
+              <Row align="middle">
+                <Avatar icon={<Icons.PlusOutlined />} />
+                <Button
+                  type="text"
+                  className="text-secondary"
+                  onClick={createTaskToggle.toggleOn}
+                >
+                  Create task
+                </Button>
+                <TaskCreateModal
+                  projectId={projectId}
+                  initialValues={initialValues}
+                  visible={createTaskToggle.isOn}
+                  onCancel={createTaskToggle.toggleOff}
+                  onDone={createTaskToggle.toggleOff}
+                />
+              </Row>
+            )
+          : undefined
+      }
       columns={[
         {
           // title: "Assignee(s)",

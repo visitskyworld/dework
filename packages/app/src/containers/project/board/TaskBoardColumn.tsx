@@ -35,7 +35,7 @@ export const TaskBoardColumn: FC<Props> = ({
   footer,
   empty,
 }) => {
-  const createCardToggle = useToggle();
+  const createTaskToggle = useToggle();
   const hasPermission = usePermissionFn();
   const count = useMemo(
     () =>
@@ -70,7 +70,7 @@ export const TaskBoardColumn: FC<Props> = ({
           <Can I="create" this={{ __typename: "Task", status }}>
             <Button
               type="text"
-              icon={<Icons.PlusOutlined onClick={createCardToggle.toggleOn} />}
+              icon={<Icons.PlusOutlined onClick={createTaskToggle.toggleOn} />}
             />
           </Can>
         )
@@ -82,9 +82,9 @@ export const TaskBoardColumn: FC<Props> = ({
         <TaskCreateModal
           projectId={projectId}
           initialValues={initialValues}
-          visible={createCardToggle.isOn}
-          onCancel={createCardToggle.toggleOff}
-          onDone={createCardToggle.toggleOff}
+          visible={createTaskToggle.isOn}
+          onCancel={createTaskToggle.toggleOff}
+          onDone={createTaskToggle.toggleOff}
         />
       )}
       {taskSections

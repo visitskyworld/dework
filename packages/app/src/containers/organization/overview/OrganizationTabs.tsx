@@ -26,6 +26,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
 import { OrganizationContributorList } from "./OrganizationContributorList";
 import { EntityDetailAvatar } from "../../../components/EntityDetailAvatar";
+import { Tab } from "@dewo/app/components/Tab";
 
 interface Props {
   organizationId: string;
@@ -62,12 +63,7 @@ export const OrganizationTabs: FC<Props> = ({
       onTabClick={navigateToTab}
     >
       <Tabs.TabPane
-        tab={
-          <>
-            <Icons.HomeOutlined />
-            Overview
-          </>
-        }
+        tab={<Tab icon={<Icons.HomeOutlined />} children="Overview" />}
         key="overview"
         className="max-w-lg mx-auto w-full"
       >
@@ -132,24 +128,14 @@ export const OrganizationTabs: FC<Props> = ({
         </Row>
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={
-          <>
-            <Icons.TeamOutlined />
-            Contributors
-          </>
-        }
+        tab={<Tab icon={<Icons.TeamOutlined />} children="Contributors" />}
         key="contributors"
         className="max-w-sm mx-auto w-full"
       >
         <OrganizationContributorList organizationId={organizationId} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={
-          <>
-            <Icons.ProjectOutlined />
-            Full Board
-          </>
-        }
+        tab={<Tab icon={<Icons.ProjectOutlined />} children="Full Board" />}
         key="board"
         className="mx-auto w-full"
         style={{ maxWidth: 300 * 4 + 16 * 3 + 24 * 2 }}
@@ -158,12 +144,7 @@ export const OrganizationTabs: FC<Props> = ({
       </Tabs.TabPane>
       {canUpdateOrganization && (
         <Tabs.TabPane
-          tab={
-            <>
-              <Icons.SettingOutlined />
-              Settings
-            </>
-          }
+          tab={<Tab icon={<Icons.SettingOutlined />} children="Settings" />}
           key="settings"
           className="max-w-lg mx-auto w-full"
         >

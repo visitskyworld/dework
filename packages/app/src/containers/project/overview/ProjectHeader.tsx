@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   Input,
   PageHeader,
   Row,
@@ -12,9 +11,8 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
-import Link from "next/link";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { ProjectVisibility } from "@dewo/app/graphql/types";
@@ -104,35 +102,13 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       subTitle={
         !!project ? (
           <Row align="middle">
-            <Avatar.Group maxCount={3} size="large" style={{ marginRight: 8 }}>
+            <Avatar.Group maxCount={3} size="large" style={{ marginRight: 16 }}>
               {project?.members.map((m) => (
                 <UserAvatar key={m.id} user={m.user} linkToProfile />
               ))}
             </Avatar.Group>
 
             <Space>
-              <Row>
-                <Link href={`${project?.permalink}/about`}>
-                  <a>
-                    <Button
-                      type="text"
-                      size="large"
-                      icon={<Icons.InfoCircleOutlined />}
-                    />
-                  </a>
-                </Link>
-                <Can I="update" a="Project">
-                  <Link href={`${project?.permalink}/settings`}>
-                    <a>
-                      <Button
-                        type="text"
-                        size="large"
-                        icon={<Icons.SettingOutlined />}
-                      />
-                    </a>
-                  </Link>
-                </Can>
-              </Row>
               <ProjectInviteButton projectId={projectId} />
               <FollowOrganizationButton
                 organizationId={project?.organizationId}
