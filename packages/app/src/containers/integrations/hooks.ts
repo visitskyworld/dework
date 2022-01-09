@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useMutation } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
@@ -16,7 +17,6 @@ import {
 } from "@dewo/app/graphql/types";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
-import { useCallback, useMemo } from "react";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
@@ -32,7 +32,10 @@ export enum GithubProjectIntegrationFeature {
   CREATE_ISSUES_FROM_TASKS = "CREATE_ISSUES_FROM_TASKS",
 }
 
-export function useConnectToGithubUrl(organizationId: string): string {
+export function useConnectToGithubUrl(
+  organizationId: string,
+  stateOverride?: unknown
+): string {
   const { user } = useAuthContext();
   return useMemo(() => {
     const appUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -40,10 +43,12 @@ export function useConnectToGithubUrl(organizationId: string): string {
       appUrl,
       creatorId: user?.id,
       organizationId,
+      // @ts-ignore
+      ...stateOverride,
     });
 
     return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
-  }, [organizationId, user?.id]);
+  }, [organizationId, stateOverride, user?.id]);
 }
 
 export function useCreateProjectIntegration(): (

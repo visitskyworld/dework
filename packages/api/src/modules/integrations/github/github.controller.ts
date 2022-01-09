@@ -14,6 +14,7 @@ import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegr
 import { GithubIntegrationService } from "./github.integration.service";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
+import * as qs from "query-string";
 
 // The actions Github's API uses
 export enum GithubPullRequestActions {
@@ -61,7 +62,8 @@ export class GithubController {
   async githubAppCallback(@Req() { query }: Request, @Res() res: Response) {
     const stateString = query.state as string;
     const installationId = Number(query.installation_id);
-    const { creatorId, organizationId } = JSON.parse(stateString);
+    const { creatorId, organizationId, appUrl, ...redirectProps } =
+      JSON.parse(stateString);
 
     await this.integrationService.createOrganizationIntegration({
       creatorId,
@@ -70,7 +72,9 @@ export class GithubController {
       config: { installationId },
     });
 
-    res.redirect(this.getAppUrl(stateString));
+    res.redirect(
+      `${this.getAppUrl(stateString)}?${qs.stringify(redirectProps)}`
+    );
   }
 
   @Post("webhook")

@@ -3,14 +3,19 @@ import { Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useConnectToGithubUrl } from "./hooks";
 
-interface Props {
+export interface ConnectOrganizationToGithubProps {
   organizationId: string;
+  stateOverride?: unknown;
 }
 
-export const ConnectOrganizationToGithubButton: FC<Props> = ({
-  organizationId,
-}) => {
-  const connectToGithubUrl = useConnectToGithubUrl(organizationId);
+export const ConnectOrganizationToGithubButton: FC<
+  ConnectOrganizationToGithubProps
+> = ({ organizationId, stateOverride }) => {
+  const connectToGithubUrl = useConnectToGithubUrl(
+    organizationId,
+    stateOverride
+  );
+
   return (
     <Button
       type="ghost"

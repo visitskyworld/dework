@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { Form, Button, Input, Radio, Space } from "antd";
+import { useRouter } from "next/router";
 import { useCreateProject } from "../hooks";
 import {
   CreateProjectInput,
@@ -29,6 +30,7 @@ import {
   GithubIntegrationFormFields,
   FormValues as GithubFormFields,
 } from "../../integrations/CreateGithubIntegrationForm";
+import _ from "lodash";
 
 interface FormValues
   extends CreateProjectInput,
@@ -36,6 +38,12 @@ interface FormValues
     Partial<GithubFormFields> {
   type?: "dev" | "non-dev";
 }
+
+const formValueFieldsToRememberThroughOauthFlow: (keyof FormValues)[] = [
+  "name",
+  "type",
+  "visibility",
+];
 
 interface ProjectCreateFormProps {
   organizationId: string;
@@ -47,6 +55,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   onCreated,
 }) => {
   const organization = useOrganization(organizationId);
+  const router = useRouter();
 
   const [values, setValues] = useState<Partial<FormValues>>({});
   const handleChange = useCallback(
@@ -146,15 +155,28 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     ]
   );
 
+  const initialValues = useMemo<Partial<FormValues>>(() => {
+    const initialValues: Partial<FormValues> = {
+      organizationId,
+      visibility: ProjectVisibility.PUBLIC,
+      type: "non-dev",
+    };
+
+    try {
+      Object.assign(
+        initialValues,
+        _.pick(router.query, formValueFieldsToRememberThroughOauthFlow)
+      );
+    } finally {
+      return initialValues;
+    }
+  }, [organizationId, router.query]);
+
   return (
     <Form<FormValues>
       layout="vertical"
       requiredMark={false}
-      initialValues={{
-        organizationId,
-        visibility: ProjectVisibility.PUBLIC,
-        type: "non-dev",
-      }}
+      initialValues={initialValues}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
@@ -201,6 +223,10 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             ) : (
               <ConnectOrganizationToGithubButton
                 organizationId={organizationId}
+                stateOverride={_.pick(
+                  values,
+                  formValueFieldsToRememberThroughOauthFlow
+                )}
               />
             )}
           </FormSection>
