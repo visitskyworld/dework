@@ -10,13 +10,13 @@ import {
   Col,
   Divider,
 } from "antd";
-import { STATUS_LABEL } from "./board/util";
-import { useTaskFormUserOptions } from "./hooks";
+import { STATUS_LABEL } from "../board/util";
+import { useTaskFormUserOptions } from "../hooks";
 import {
   usePermission,
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
-import { AssignTaskCard } from "./AssignTaskCard";
+import { AssignTaskCard } from "../AssignTaskCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
   TaskRewardFormFields,
@@ -25,7 +25,7 @@ import {
 } from "./TaskRewardFormFields";
 import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { GithubIntegrationSection } from "./github/GithubIntegrationSection";
+import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";

@@ -8,7 +8,7 @@ import { Avatar, Button, Row, Table, Tag, Typography } from "antd";
 import React, { FC, useMemo } from "react";
 import { formatTaskReward } from "../../task/hooks";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
-import { TaskFormValues } from "../../task/TaskForm";
+import { TaskFormValues } from "../../task/form/TaskForm";
 import { TaskActionButton } from "../../task/board/TaskActionButton";
 import { TaskTagsRow } from "../../task/board/TaskTagsRow";
 import { useProjectTasks, useProjectTaskTags } from "../hooks";

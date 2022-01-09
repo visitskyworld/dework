@@ -56,8 +56,8 @@ import { useCallback, useMemo } from "react";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import { useOrganizationCoreTeam } from "../organization/hooks";
 import { useProject } from "../project/hooks";
-import { TaskRewardFormValues } from "./TaskRewardFormFields";
-import { TaskFormValues } from "./TaskForm";
+import { TaskRewardFormValues } from "./form/TaskRewardFormFields";
+import { TaskFormValues } from "./form/TaskForm";
 
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined

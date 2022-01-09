@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
-import { useDeleteTask } from "./hooks";
+import { useDeleteTask } from "../hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 

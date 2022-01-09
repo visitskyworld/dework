@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import _ from "lodash";
 import { Tag, Form, Select, ConfigProvider, Empty } from "antd";
-import { useCreateTaskTag, useGenerateRandomTagColor } from "./hooks";
-import { useProjectTaskTags } from "../project/hooks";
+import { useCreateTaskTag, useGenerateRandomTagColor } from "../hooks";
+import { useProjectTaskTags } from "../../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {

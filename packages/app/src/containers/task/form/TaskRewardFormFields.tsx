@@ -13,10 +13,10 @@ import {
   Space,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProject } from "../project/hooks";
+import { useProject } from "../../project/hooks";
 import _ from "lodash";
 import { stopPropagation } from "@dewo/app/util/eatClick";
-import { AddPaymentMethodModal } from "../payment/AddPaymentMethodButton";
+import { AddPaymentMethodModal } from "../../payment/AddPaymentMethodButton";
 import { useToggle } from "@dewo/app/util/hooks";
 
 export interface TaskRewardFormValues {

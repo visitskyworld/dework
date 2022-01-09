@@ -4,7 +4,7 @@ import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTask, useCreateTaskReaction } from "./hooks";
-import { TaskForm, TaskFormValues } from "./TaskForm";
+import { TaskForm, TaskFormValues } from "./form/TaskForm";
 
 interface TaskCreateModalProps {
   visible: boolean;

@@ -8,7 +8,7 @@ import {
   useTask,
   useUpdateTask,
 } from "./hooks";
-import { TaskForm, TaskFormValues } from "./TaskForm";
+import { TaskForm, TaskFormValues } from "./form/TaskForm";
 
 interface Props {
   taskId: string;

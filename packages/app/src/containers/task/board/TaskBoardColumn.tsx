@@ -9,7 +9,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
 import { TaskCreateModal } from "../TaskCreateModal";
-import { TaskFormValues } from "../TaskForm";
+import { TaskFormValues } from "../form/TaskForm";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
