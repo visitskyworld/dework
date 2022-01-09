@@ -96,7 +96,6 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   Component,
   pageProps,
   apollo,
-  authenticated,
 }) => {
   return (
     <>
@@ -117,7 +116,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         </script>
       </Head>
       <ApolloProvider client={apollo as any}>
-        <AuthProvider authenticated={authenticated}>
+        <AuthProvider>
           <PermissionsProvider>
             <SidebarProvider>
               <Component {...pageProps} />

@@ -3,8 +3,8 @@ import * as Queries from "@dewo/app/graphql/queries";
 import { useCallback, useMemo, useState } from "react";
 import { MeQuery, UserDetails } from "../graphql/types";
 
-export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
-  const { data } = useQuery<MeQuery>(Queries.me, { skip });
+export function useCurrentUser(): UserDetails | undefined {
+  const { data } = useQuery<MeQuery>(Queries.me);
   return data?.me;
 }
 
