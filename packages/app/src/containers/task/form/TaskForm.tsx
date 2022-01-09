@@ -35,6 +35,7 @@ import { TaskActivityFeed } from "./TaskActivityFeed";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import Link from "next/link";
 import _ from "lodash";
+import { TaskList } from "../list/TaskList";
 
 export interface TaskFormValues {
   name: string;
@@ -212,6 +213,14 @@ export const TaskForm: FC<TaskFormProps> = ({
                 </Typography.Text>
               </Button>
             </FormSection>
+          )}
+
+          {!!task && (
+            <TaskList
+              tasks={task.subtasks}
+              tags={[]}
+              style={{ marginBottom: 16 }}
+            />
           )}
 
           {!!canChange("assigneeIds") &&

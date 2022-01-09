@@ -1076,6 +1076,13 @@ export interface UpdateProjectMutationVariables {
 // GraphQL mutation operation: CreateTaskMutation
 // ====================================================
 
+export interface CreateTaskMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
 export interface CreateTaskMutation_task_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -1206,6 +1213,7 @@ export interface CreateTaskMutation_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: CreateTaskMutation_task_subtasks[];
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
@@ -1230,6 +1238,13 @@ export interface CreateTaskMutationVariables {
 // ====================================================
 // GraphQL mutation operation: UpdateTaskMutation
 // ====================================================
+
+export interface UpdateTaskMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface UpdateTaskMutation_task_tags {
   __typename: "TaskTag";
@@ -1361,6 +1376,7 @@ export interface UpdateTaskMutation_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: UpdateTaskMutation_task_subtasks[];
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
@@ -1385,6 +1401,13 @@ export interface UpdateTaskMutationVariables {
 // ====================================================
 // GraphQL mutation operation: CreateTaskApplicationMutation
 // ====================================================
+
+export interface CreateTaskApplicationMutation_application_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface CreateTaskApplicationMutation_application_task_tags {
   __typename: "TaskTag";
@@ -1516,6 +1539,7 @@ export interface CreateTaskApplicationMutation_application_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
   tags: CreateTaskApplicationMutation_application_task_tags[];
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
   reward: CreateTaskApplicationMutation_application_task_reward | null;
@@ -1546,6 +1570,13 @@ export interface CreateTaskApplicationMutationVariables {
 // ====================================================
 // GraphQL mutation operation: DeleteTaskApplicationMutation
 // ====================================================
+
+export interface DeleteTaskApplicationMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface DeleteTaskApplicationMutation_task_tags {
   __typename: "TaskTag";
@@ -1677,6 +1708,7 @@ export interface DeleteTaskApplicationMutation_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: DeleteTaskApplicationMutation_task_subtasks[];
   tags: DeleteTaskApplicationMutation_task_tags[];
   assignees: DeleteTaskApplicationMutation_task_assignees[];
   reward: DeleteTaskApplicationMutation_task_reward | null;
@@ -1701,6 +1733,13 @@ export interface DeleteTaskApplicationMutationVariables {
 // ====================================================
 // GraphQL mutation operation: DeleteTaskMutation
 // ====================================================
+
+export interface DeleteTaskMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface DeleteTaskMutation_task_tags {
   __typename: "TaskTag";
@@ -1832,6 +1871,7 @@ export interface DeleteTaskMutation_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: DeleteTaskMutation_task_subtasks[];
   tags: DeleteTaskMutation_task_tags[];
   assignees: DeleteTaskMutation_task_assignees[];
   reward: DeleteTaskMutation_task_reward | null;
@@ -2674,6 +2714,152 @@ export interface CreateFileUploadMutationVariables {
 // GraphQL mutation operation: CreateTaskPaymentsMutation
 // ====================================================
 
+export interface CreateTaskPaymentsMutation_tasks_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymentMethod;
+  network: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_network;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: CreateTaskPaymentsMutation_tasks_subtasks_reward_token;
+  payment: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: CreateTaskPaymentsMutation_tasks_subtasks_applications_user;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  description: string | null;
+  submission: string | null;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
+  tags: CreateTaskPaymentsMutation_tasks_subtasks_tags[];
+  assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
+  reward: CreateTaskPaymentsMutation_tasks_subtasks_reward | null;
+  applications: CreateTaskPaymentsMutation_tasks_subtasks_applications[];
+  review: CreateTaskPaymentsMutation_tasks_subtasks_review | null;
+  reactions: CreateTaskPaymentsMutation_tasks_subtasks_reactions[];
+}
+
 export interface CreateTaskPaymentsMutation_tasks_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -2861,6 +3047,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
@@ -2933,6 +3120,13 @@ export interface CheckWalletConnectSessionMutationVariables {
 // ====================================================
 // GraphQL mutation operation: CreateTasksFromGithubIssuesMutation
 // ====================================================
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
   __typename: "TaskTag";
@@ -3064,6 +3258,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
   tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
   reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
@@ -3215,6 +3410,13 @@ export interface UserProfileQueryVariables {
 // ====================================================
 // GraphQL query operation: UserTasksQuery
 // ====================================================
+
+export interface UserTasksQuery_user_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface UserTasksQuery_user_tasks_tags {
   __typename: "TaskTag";
@@ -3368,6 +3570,7 @@ export interface UserTasksQuery_user_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: UserTasksQuery_user_tasks_subtasks[];
   tags: UserTasksQuery_user_tasks_tags[];
   assignees: UserTasksQuery_user_tasks_assignees[];
   reward: UserTasksQuery_user_tasks_reward | null;
@@ -3933,6 +4136,13 @@ export interface GetOrganizationTagsQueryVariables {
 // GraphQL query operation: GetOrganizationTasksQuery
 // ====================================================
 
+export interface GetOrganizationTasksQuery_organization_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -4063,6 +4273,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
@@ -4234,6 +4445,13 @@ export interface GetProjectQueryVariables {
 // GraphQL query operation: GetProjectTasksQuery
 // ====================================================
 
+export interface GetProjectTasksQuery_project_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
 export interface GetProjectTasksQuery_project_tasks_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -4364,6 +4582,7 @@ export interface GetProjectTasksQuery_project_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
   tags: GetProjectTasksQuery_project_tasks_tags[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
@@ -4425,6 +4644,152 @@ export interface GetProjectTaskTagsQueryVariables {
 // ====================================================
 // GraphQL query operation: GetTaskQuery
 // ====================================================
+
+export interface GetTaskQuery_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface GetTaskQuery_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetTaskQuery_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetTaskQuery_task_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetTaskQuery_task_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetTaskQuery_task_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: GetTaskQuery_task_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: GetTaskQuery_task_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface GetTaskQuery_task_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetTaskQuery_task_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: GetTaskQuery_task_subtasks_reward_payment_paymentMethod;
+  network: GetTaskQuery_task_subtasks_reward_payment_network;
+}
+
+export interface GetTaskQuery_task_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: GetTaskQuery_task_subtasks_reward_token;
+  payment: GetTaskQuery_task_subtasks_reward_payment | null;
+}
+
+export interface GetTaskQuery_task_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: GetTaskQuery_task_subtasks_applications_user;
+}
+
+export interface GetTaskQuery_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface GetTaskQuery_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface GetTaskQuery_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  description: string | null;
+  submission: string | null;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  subtasks: GetTaskQuery_task_subtasks_subtasks[];
+  tags: GetTaskQuery_task_subtasks_tags[];
+  assignees: GetTaskQuery_task_subtasks_assignees[];
+  reward: GetTaskQuery_task_subtasks_reward | null;
+  applications: GetTaskQuery_task_subtasks_applications[];
+  review: GetTaskQuery_task_subtasks_review | null;
+  reactions: GetTaskQuery_task_subtasks_reactions[];
+}
 
 export interface GetTaskQuery_task_tags {
   __typename: "TaskTag";
@@ -4622,6 +4987,7 @@ export interface GetTaskQuery_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: GetTaskQuery_task_subtasks[];
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
@@ -4693,6 +5059,13 @@ export interface GetTaskReactionUsersQueryVariables {
 // ====================================================
 // GraphQL query operation: GetTasksQuery
 // ====================================================
+
+export interface GetTasksQuery_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface GetTasksQuery_tasks_tags {
   __typename: "TaskTag";
@@ -4846,6 +5219,7 @@ export interface GetTasksQuery_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: GetTasksQuery_tasks_subtasks[];
   tags: GetTasksQuery_tasks_tags[];
   assignees: GetTasksQuery_tasks_assignees[];
   reward: GetTasksQuery_tasks_reward | null;
@@ -4871,6 +5245,13 @@ export interface GetTasksQueryVariables {
 // ====================================================
 // GraphQL query operation: GetTasksToPayQuery
 // ====================================================
+
+export interface GetTasksToPayQuery_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface GetTasksToPayQuery_tasks_tags {
   __typename: "TaskTag";
@@ -5071,6 +5452,7 @@ export interface GetTasksToPayQuery_tasks {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: GetTasksToPayQuery_tasks_subtasks[];
   tags: GetTasksToPayQuery_tasks_tags[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
   reward: GetTasksToPayQuery_tasks_reward | null;
@@ -5300,6 +5682,152 @@ export interface GetOrganizationDiscordChannelsQueryVariables {
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
+export interface TaskCreatedSubscription_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskCreatedSubscription_task_subtasks_reward_payment_paymentMethod;
+  network: TaskCreatedSubscription_task_subtasks_reward_payment_network;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: TaskCreatedSubscription_task_subtasks_reward_token;
+  payment: TaskCreatedSubscription_task_subtasks_reward_payment | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: TaskCreatedSubscription_task_subtasks_applications_user;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface TaskCreatedSubscription_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  description: string | null;
+  submission: string | null;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
+  tags: TaskCreatedSubscription_task_subtasks_tags[];
+  assignees: TaskCreatedSubscription_task_subtasks_assignees[];
+  reward: TaskCreatedSubscription_task_subtasks_reward | null;
+  applications: TaskCreatedSubscription_task_subtasks_applications[];
+  review: TaskCreatedSubscription_task_subtasks_review | null;
+  reactions: TaskCreatedSubscription_task_subtasks_reactions[];
+}
+
 export interface TaskCreatedSubscription_task_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -5487,6 +6015,7 @@ export interface TaskCreatedSubscription_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: TaskCreatedSubscription_task_subtasks[];
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
@@ -5516,6 +6045,152 @@ export interface TaskCreatedSubscription {
 // ====================================================
 // GraphQL subscription operation: TaskUpdatedSubscription
 // ====================================================
+
+export interface TaskUpdatedSubscription_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMethod;
+  network: TaskUpdatedSubscription_task_subtasks_reward_payment_network;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: TaskUpdatedSubscription_task_subtasks_reward_token;
+  payment: TaskUpdatedSubscription_task_subtasks_reward_payment | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: TaskUpdatedSubscription_task_subtasks_applications_user;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  description: string | null;
+  submission: string | null;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
+  tags: TaskUpdatedSubscription_task_subtasks_tags[];
+  assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
+  reward: TaskUpdatedSubscription_task_subtasks_reward | null;
+  applications: TaskUpdatedSubscription_task_subtasks_applications[];
+  review: TaskUpdatedSubscription_task_subtasks_review | null;
+  reactions: TaskUpdatedSubscription_task_subtasks_reactions[];
+}
 
 export interface TaskUpdatedSubscription_task_tags {
   __typename: "TaskTag";
@@ -5704,6 +6379,7 @@ export interface TaskUpdatedSubscription_task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: TaskUpdatedSubscription_task_subtasks[];
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
@@ -6672,6 +7348,13 @@ export interface TaskReaction {
 // GraphQL fragment: Task
 // ====================================================
 
+export interface Task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
 export interface Task_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -6802,6 +7485,7 @@ export interface Task {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: Task_subtasks[];
   tags: Task_tags[];
   assignees: Task_assignees[];
   reward: Task_reward | null;
@@ -6818,6 +7502,13 @@ export interface Task {
 // ====================================================
 // GraphQL fragment: TaskWithOrganization
 // ====================================================
+
+export interface TaskWithOrganization_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
 
 export interface TaskWithOrganization_tags {
   __typename: "TaskTag";
@@ -6971,6 +7662,7 @@ export interface TaskWithOrganization {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: TaskWithOrganization_subtasks[];
   tags: TaskWithOrganization_tags[];
   assignees: TaskWithOrganization_assignees[];
   reward: TaskWithOrganization_reward | null;
@@ -6988,6 +7680,152 @@ export interface TaskWithOrganization {
 // ====================================================
 // GraphQL fragment: TaskDetails
 // ====================================================
+
+export interface TaskDetails_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface TaskDetails_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface TaskDetails_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskDetails_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskDetails_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskDetails_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskDetails_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: TaskDetails_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface TaskDetails_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskDetails_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskDetails_subtasks_reward_payment_paymentMethod;
+  network: TaskDetails_subtasks_reward_payment_network;
+}
+
+export interface TaskDetails_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: TaskDetails_subtasks_reward_token;
+  payment: TaskDetails_subtasks_reward_payment | null;
+}
+
+export interface TaskDetails_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: TaskDetails_subtasks_applications_user;
+}
+
+export interface TaskDetails_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface TaskDetails_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface TaskDetails_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  description: string | null;
+  submission: string | null;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  ownerId: string | null;
+  number: number;
+  subtasks: TaskDetails_subtasks_subtasks[];
+  tags: TaskDetails_subtasks_tags[];
+  assignees: TaskDetails_subtasks_assignees[];
+  reward: TaskDetails_subtasks_reward | null;
+  applications: TaskDetails_subtasks_applications[];
+  review: TaskDetails_subtasks_review | null;
+  reactions: TaskDetails_subtasks_reactions[];
+}
 
 export interface TaskDetails_tags {
   __typename: "TaskTag";
@@ -7176,6 +8014,7 @@ export interface TaskDetails {
   projectId: string;
   ownerId: string | null;
   number: number;
+  subtasks: TaskDetails_subtasks[];
   tags: TaskDetails_tags[];
   assignees: TaskDetails_assignees[];
   reward: TaskDetails_reward | null;

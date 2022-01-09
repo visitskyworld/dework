@@ -343,6 +343,11 @@ export const task = gql`
     projectId
     ownerId
     number
+    subtasks {
+      id
+      name
+      status
+    }
     tags {
       ...TaskTag
     }
@@ -393,6 +398,9 @@ export const taskDetails = gql`
     gitBranchName
     createdAt
     permalink
+    subtasks {
+      ...Task
+    }
     owner {
       ...User
     }

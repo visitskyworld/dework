@@ -17,34 +17,47 @@ export const TaskTagsRow: FC<Props> = ({
   style,
 }) => (
   <Row style={{ ...style, marginBottom: -4 }}>
-    {showStandardTags && !!task.reward && (
-      <Tag
-        style={{
-          marginBottom: 4,
-          backgroundColor: "white",
-          color: "black",
-        }}
-      >
-        <Icons.DollarOutlined />
-        <span>{formatTaskReward(task.reward)}</span>
-      </Tag>
-    )}
-    {showStandardTags && !!task.storyPoints && (
-      <Tag style={{ marginBottom: 4 }}>
-        <Icons.FlagOutlined />
-        <span>{task.storyPoints}</span>
-      </Tag>
-    )}
-    {showStandardTags && "project" in task && (
-      <Tag className="bg-component" style={{ marginBottom: 4, paddingLeft: 0 }}>
-        <OrganizationAvatar
-          organization={task.project.organization}
-          size={20}
-        />
-        <Typography.Text style={{ marginLeft: 4 }}>
-          {task.project.organization.name}
-        </Typography.Text>
-      </Tag>
+    {showStandardTags && (
+      <>
+        {!!task.reward && (
+          <Tag
+            style={{
+              marginBottom: 4,
+              backgroundColor: "white",
+              color: "black",
+            }}
+          >
+            <Icons.DollarOutlined />
+            <span>{formatTaskReward(task.reward)}</span>
+          </Tag>
+        )}
+        {!!task.storyPoints && (
+          <Tag style={{ marginBottom: 4 }}>
+            <Icons.FlagOutlined />
+            <span>{task.storyPoints}</span>
+          </Tag>
+        )}
+        {!!task.subtasks.length && (
+          <Tag style={{ marginBottom: 4 }}>
+            <Icons.BarsOutlined />
+            <span>{task.subtasks.length}</span>
+          </Tag>
+        )}
+        {"project" in task && (
+          <Tag
+            className="bg-component"
+            style={{ marginBottom: 4, paddingLeft: 0 }}
+          >
+            <OrganizationAvatar
+              organization={task.project.organization}
+              size={20}
+            />
+            <Typography.Text style={{ marginLeft: 4 }}>
+              {task.project.organization.name}
+            </Typography.Text>
+          </Tag>
+        )}
+      </>
     )}
     {task.tags.map(({ label, color }, index) => (
       <Tag key={index} color={color} style={{ marginBottom: 4 }}>
