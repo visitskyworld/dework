@@ -17,7 +17,6 @@ import {
 import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../../task/hooks";
-import { TaskUpdateModalListener } from "../../task/TaskUpdateModal";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 import { ContributorReviewModal } from "../../task/ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -152,7 +151,6 @@ export const TaskBoard: FC<Props> = ({
           />
         )}
       </DragDropContext>
-      <TaskUpdateModalListener />
     </>
   );
 };

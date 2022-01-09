@@ -14,7 +14,6 @@ import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganization } from "../../organization/hooks";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import Link from "next/link";
@@ -146,7 +145,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
           <Skeleton.Avatar active size="large" />
         )
       }
-      breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
+      // breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
     />
   );
 };

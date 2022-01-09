@@ -49,8 +49,20 @@ textarea {
   // background: #191919;
 }
 
-.ant-table-tbody > tr.ant-table-row:hover td.ant-table-cell {
+.ant-table-tbody > tr.ant-table-row:hover td.ant-table-cell,
+.ant-table-thead th.ant-table-column-has-sorters:hover {
   background: @component-background;
+}
+
+.ant-table-thead th.ant-table-column-sort {
+  background: unset;
+}
+
+.ant-table-filter-column, .ant-table-column-sorters {
+  justify-content: unset;
+  .ant-table-column-title {
+    flex: unset;
+  }
 }
 
 .ant-layout-content {

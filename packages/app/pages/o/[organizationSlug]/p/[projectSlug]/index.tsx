@@ -9,7 +9,7 @@ import { useProject } from "@dewo/app/containers/project/hooks";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
-import { ProjectList } from "@dewo/app/containers/project/list/ProjectList";
+import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -39,7 +39,7 @@ const Page: NextPage = () => {
               <ProjectTaskBoard projectId={projectId} />
             </Tabs.TabPane>
             <Tabs.TabPane tab="List" key="list">
-              <ProjectList projectId={projectId} />
+              <ProjectTaskList projectId={projectId} />
             </Tabs.TabPane>
           </Tabs>
         </Layout.Content>
