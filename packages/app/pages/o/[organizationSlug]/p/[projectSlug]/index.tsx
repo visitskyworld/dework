@@ -11,13 +11,11 @@ import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSe
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Tab } from "@dewo/app/components/Tab";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = (router.query.tab as string | undefined) ?? "board";
-  const canUpdateProject = usePermission("update", "Project");
 
   const projectId = useParseIdFromSlug("projectSlug");
   const project = useProject(projectId);
@@ -67,20 +65,12 @@ const Page: NextPage = () => {
             >
               {!!project && <ProjectAbout project={project} />}
             </Tabs.TabPane>
-            {canUpdateProject && (
-              <Tabs.TabPane
-                tab={
-                  <Tab icon={<Icons.SettingOutlined />} children="Settings" />
-                }
-                key="settings"
-              />
-            )}
           </Tabs>
         </Layout.Content>
       </Layout.Content>
 
       <Modal
-        visible={currentTab === "settings"}
+        visible={router.route.endsWith("/settings")}
         title="Project Settings"
         footer={null}
         onCancel={navigateToProject}

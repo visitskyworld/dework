@@ -1,11 +1,12 @@
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
+import { Task, TaskReward, TaskStatus, User } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Avatar, Button, Row, Table, Tag, Typography } from "antd";
 import React, { FC, useMemo } from "react";
+import { formatTaskReward } from "../../task/hooks";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
 import { TaskActionButton } from "../board/TaskActionButton";
@@ -43,7 +44,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
       dataSource={tasks}
       size="small"
       // showHeader={false}
-      style={{ marginLeft: 24, marginRight: 24 }}
+      style={{ marginLeft: 24, marginRight: 24, maxWidth: 960 }}
       rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
       onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}
@@ -96,6 +97,18 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           ),
         },
         {
+          title: "Reward",
+          dataIndex: "reward",
+          width: 100,
+          render: (reward: TaskReward) =>
+            !!reward ? formatTaskReward(reward) : undefined,
+        },
+        {
+          title: "Points",
+          dataIndex: "storyPoints",
+          width: 72,
+        },
+        {
           title: "Status",
           dataIndex: "status",
           width: 120,
@@ -120,10 +133,11 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           })),
           onFilter: (tagId, task) => task.tags.some((t) => t.id === tagId),
           render: (_, task) => (
-            <TaskTagsRow task={task} style={{ justifyContent: "flex-end" }} />
+            <TaskTagsRow task={task} showStandardTags={false} />
           ),
         },
         {
+          title: "Actions",
           key: "button",
           width: 1,
           render: (_, task) => <TaskActionButton task={task} />,

@@ -7,12 +7,17 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface Props {
   task: Task | TaskWithOrganization;
+  showStandardTags?: boolean;
   style?: CSSProperties;
 }
 
-export const TaskTagsRow: FC<Props> = ({ task, style }) => (
-  <Row style={style}>
-    {!!task.reward && (
+export const TaskTagsRow: FC<Props> = ({
+  task,
+  showStandardTags = true,
+  style,
+}) => (
+  <Row style={{ ...style, marginBottom: -4 }}>
+    {showStandardTags && !!task.reward && (
       <Tag
         style={{
           marginBottom: 4,
@@ -24,13 +29,13 @@ export const TaskTagsRow: FC<Props> = ({ task, style }) => (
         <span>{formatTaskReward(task.reward)}</span>
       </Tag>
     )}
-    {!!task.storyPoints && (
+    {showStandardTags && !!task.storyPoints && (
       <Tag style={{ marginBottom: 4 }}>
         <Icons.FlagOutlined />
         <span>{task.storyPoints}</span>
       </Tag>
     )}
-    {"project" in task && (
+    {showStandardTags && "project" in task && (
       <Tag className="bg-component" style={{ marginBottom: 4, paddingLeft: 0 }}>
         <OrganizationAvatar
           organization={task.project.organization}
