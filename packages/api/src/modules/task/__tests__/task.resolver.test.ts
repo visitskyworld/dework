@@ -421,6 +421,28 @@ describe("TaskResolver", () => {
         );
       });
 
+      it("should not return subtasks when querying organization", async () => {
+        const project = await fixtures.createProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+        const subtask = await fixtures.createTask({
+          projectId: project.id,
+          parentTaskId: task.id,
+        });
+
+        const response = await client.request({
+          app,
+          body: TaskRequests.getBatch({
+            organizationIds: [project.organizationId],
+          }),
+        });
+
+        const tasks = response.body.data?.tasks;
+        expect(tasks).toContainEqual(expect.objectContaining({ id: task.id }));
+        expect(tasks).not.toContainEqual(
+          expect.objectContaining({ id: subtask.id })
+        );
+      });
+
       it("should only return tasks with matching ids", async () => {});
     });
   });

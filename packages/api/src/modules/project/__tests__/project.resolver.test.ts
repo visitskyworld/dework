@@ -202,6 +202,28 @@ describe("ProjectResolver", () => {
         );
       });
 
+      it("should not return subtasks", async () => {
+        const project = await fixtures.createProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+        const subtask = await fixtures.createTask({
+          projectId: project.id,
+          parentTaskId: task.id,
+        });
+
+        const response = await client.request({
+          app,
+          body: ProjectRequests.get(project.id),
+        });
+
+        const fetched = response.body.data?.project;
+        expect(fetched.tasks).toContainEqual(
+          expect.objectContaining({ id: task.id })
+        );
+        expect(fetched.tasks).not.toContainEqual(
+          expect.objectContaining({ id: subtask.id })
+        );
+      });
+
       it("should calculate taskCount", async () => {
         const { user, project } = await fixtures.createUserOrgProject();
 

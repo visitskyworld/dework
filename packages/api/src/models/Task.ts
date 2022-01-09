@@ -65,6 +65,22 @@ export class Task extends Audit {
   @Field(() => Int, { nullable: true })
   public storyPoints?: number;
 
+  @Column({ type: "int", nullable: true })
+  @Field(() => Int, { nullable: true })
+  public dueDate?: Date;
+
+  @JoinColumn()
+  @ManyToOne(() => Task)
+  @Field(() => Task)
+  public parentTask?: Promise<Task>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public parentTaskId?: string;
+
+  @OneToMany(() => Task, (x: Task) => x.parentTask)
+  @Field(() => [Task])
+  public subtasks!: Promise<Task[]>;
+
   @JoinColumn()
   @ManyToOne(() => Project)
   @Field(() => Project)
