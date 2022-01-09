@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from "react";
 import { useProject, useProjectTasks } from "../hooks";
-import { TaskBoard } from "./TaskBoard";
+import { TaskBoard } from "../../task/board/TaskBoard";
 import * as Icons from "@ant-design/icons";
 import { TaskStatus } from "@dewo/app/graphql/types";
-import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
+import { TaskBoardColumnEmptyProps } from "../../task/board/TaskBoardColumnEmtpy";
 
 interface Props {
   projectId: string;

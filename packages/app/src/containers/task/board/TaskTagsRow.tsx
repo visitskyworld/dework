@@ -2,7 +2,7 @@ import React, { CSSProperties, FC } from "react";
 import { Task, TaskWithOrganization } from "@dewo/app/graphql/types";
 import { Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { formatTaskReward } from "../../task/hooks";
+import { formatTaskReward } from "../hooks";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface Props {

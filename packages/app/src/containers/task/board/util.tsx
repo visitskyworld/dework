@@ -9,7 +9,7 @@ import {
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { GnosisPayAllButton } from "./GnosisPayAllButton";
-import { useProject } from "../hooks";
+import { useProject } from "../../project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 const Between = inject("0123456789");

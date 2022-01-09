@@ -4,12 +4,12 @@ import { Avatar, Card, Col, List, Row, Space } from "antd";
 import * as Icons from "@ant-design/icons";
 import { OrganizationCard } from "../landingPage/OrganizationCard";
 import { useFeaturedOrganizations } from "../organization/hooks";
-import { TaskBoard } from "../project/board/TaskBoard";
-import { TaskCard } from "../project/board/TaskCard";
-import { TaskSectionTitle } from "../project/board/TaskSectionTitle";
+import { TaskBoard } from "../task/board/TaskBoard";
+import { TaskCard } from "../task/board/TaskCard";
+import { TaskSectionTitle } from "../task/board/TaskSectionTitle";
 import { useTasks } from "../task/hooks";
 import { useUserTasks } from "./hooks";
-import { TaskBoardColumnEmptyProps } from "../project/board/TaskBoardColumnEmtpy";
+import { TaskBoardColumnEmptyProps } from "../task/board/TaskBoardColumnEmtpy";
 import { CreateOrganizationButton } from "../navigation/CreateOrganizationButton";
 
 interface Props {

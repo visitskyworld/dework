@@ -16,9 +16,9 @@ import {
 } from "react-beautiful-dnd";
 import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
-import { useUpdateTask } from "../../task/hooks";
+import { useUpdateTask } from "../hooks";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
-import { ContributorReviewModal } from "../../task/ContributorReviewModal";
+import { ContributorReviewModal } from "../ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 

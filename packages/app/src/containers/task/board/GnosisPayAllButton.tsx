@@ -18,13 +18,13 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Modal, notification, Table, Tag } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useProposeTransaction } from "@dewo/app/util/gnosis";
-import { useProject } from "../hooks";
+import { useProject } from "../../project/hooks";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { formatTaskReward } from "../../task/hooks";
 import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
 import { useERC20Contract, useSwitchChain } from "@dewo/app/util/ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
+import { formatTaskReward } from "../hooks";
 
 interface Props {
   projectId: string;

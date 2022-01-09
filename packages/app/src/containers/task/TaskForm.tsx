@@ -10,7 +10,7 @@ import {
   Col,
   Divider,
 } from "antd";
-import { STATUS_LABEL } from "../project/board/util";
+import { STATUS_LABEL } from "./board/util";
 import { useTaskFormUserOptions } from "./hooks";
 import {
   usePermission,

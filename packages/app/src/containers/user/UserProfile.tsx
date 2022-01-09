@@ -15,7 +15,7 @@ import * as Colors from "@ant-design/colors";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import Link from "next/link";
-import { TaskCard } from "../project/board/TaskCard";
+import { TaskCard } from "../task/board/TaskCard";
 import {
   useUpdateUser,
   useUser,

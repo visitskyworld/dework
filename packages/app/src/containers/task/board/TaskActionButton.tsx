@@ -10,7 +10,7 @@ import { eatClick } from "@dewo/app/util/eatClick";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
-import { useUpdateTask } from "../../task/hooks";
+import { useUpdateTask } from "../hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";

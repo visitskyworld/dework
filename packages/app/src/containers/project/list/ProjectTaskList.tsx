@@ -9,10 +9,10 @@ import React, { FC, useMemo } from "react";
 import { formatTaskReward } from "../../task/hooks";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskFormValues } from "../../task/TaskForm";
-import { TaskActionButton } from "../board/TaskActionButton";
-import { TaskTagsRow } from "../board/TaskTagsRow";
-import { STATUS_LABEL } from "../board/util";
+import { TaskActionButton } from "../../task/board/TaskActionButton";
+import { TaskTagsRow } from "../../task/board/TaskTagsRow";
 import { useProjectTasks, useProjectTaskTags } from "../hooks";
+import { STATUS_LABEL } from "../../task/board/util";
 
 interface Props {
   projectId: string;

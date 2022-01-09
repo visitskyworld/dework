@@ -9,7 +9,7 @@ import {
   useCreateTaskReaction,
   useDeleteTaskReaction,
   useLazyTaskReactionUsers,
-} from "../../task/hooks";
+} from "../hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import Modal from "antd/lib/modal/Modal";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";

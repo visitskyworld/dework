@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { TaskBoard } from "../../project/board/TaskBoard";
+import { TaskBoard } from "../../task/board/TaskBoard";
 import { useOrganizationTasks } from "../hooks";
 
 interface Props {

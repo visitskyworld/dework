@@ -5,8 +5,8 @@ import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useToggle } from "@dewo/app/util/hooks";
-import { TaskApplyModal } from "../../task/TaskApplyModal";
-import { useDeleteTaskApplication } from "../../task/hooks";
+import { TaskApplyModal } from "../TaskApplyModal";
+import { useDeleteTaskApplication } from "../hooks";
 
 interface Props {
   task: Task;

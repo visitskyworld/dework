@@ -8,8 +8,8 @@ import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskSection } from "./util";
-import { TaskCreateModal } from "../../task/TaskCreateModal";
-import { TaskFormValues } from "../../task/TaskForm";
+import { TaskCreateModal } from "../TaskCreateModal";
+import { TaskFormValues } from "../TaskForm";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
