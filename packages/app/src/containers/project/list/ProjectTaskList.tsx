@@ -43,7 +43,6 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
     <Table<Task>
       dataSource={tasks}
       size="small"
-      // showHeader={false}
       style={{ marginLeft: 24, marginRight: 24, maxWidth: 960 }}
       rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
@@ -73,7 +72,6 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
       }
       columns={[
         {
-          // title: "Assignee(s)",
           dataIndex: "assignees",
           width: 1,
           render: (assignees: User[]) => (
