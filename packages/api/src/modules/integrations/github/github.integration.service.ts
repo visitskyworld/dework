@@ -24,6 +24,9 @@ import {
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { PermalinkService } from "../../permalink/permalink.service";
+import { GithubIssue } from "@dewo/api/models/GithubIssue";
+import { Connection } from "typeorm";
+import { InjectConnection } from "@nestjs/typeorm";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -60,7 +63,8 @@ export class GithubIntegrationService {
     private readonly githubService: GithubService,
     private readonly integrationService: IntegrationService,
     private readonly permalink: PermalinkService,
-    private readonly config: ConfigService<ConfigType>
+    private readonly config: ConfigService<ConfigType>,
+    @InjectConnection() public readonly connection: Connection
   ) {}
 
   public async updateIssue(
@@ -139,27 +143,33 @@ export class GithubIntegrationService {
           : project.options?.showBacklogColumn
           ? TaskStatus.BACKLOG
           : TaskStatus.TODO;
-      const task = await this.taskService.create({
-        name: issue.title,
-        description,
-        tags,
-        status,
-        projectId: project.id,
-        ...taskOverride,
+
+      const task = await this.connection.transaction(async (manager) => {
+        const task = await manager.save(Task, {
+          name: issue.title,
+          description,
+          tags,
+          status,
+          projectId: project.id,
+          number: await this.taskService.getNextTaskNumber(project.id),
+          sortKey: Date.now().toString(),
+          ...taskOverride,
+        });
+
+        await manager.save(GithubIssue, {
+          externalId: issue.id,
+          number: issue.number,
+          taskId: task.id,
+        });
+
+        return task;
       });
 
-      this.logger.log(
-        `Creating GithubIssue for task: ${JSON.stringify({ taskId: task.id })}`
-      );
-
-      const githubIssue = await this.githubService.createIssue({
-        externalId: issue.id,
-        number: issue.number,
-        taskId: task.id,
-      });
-
-      this.logger.log(
-        `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
+      this.logger.debug(
+        `Created task from Github Issue: ${JSON.stringify({
+          taskId: task.id,
+          githubIssueId: (await task.githubIssue)?.id,
+        })}`
       );
     }
   }
@@ -345,13 +355,29 @@ export class GithubIntegrationService {
     repo: string,
     installationId?: number
   ) {
+    this.logger.debug(
+      `Getting github issues: ${JSON.stringify({
+        organization,
+        repo,
+        installationId,
+      })}`
+    );
     const client = this.createClient(installationId);
     const res = await client.issues.listForRepo({
       owner: organization,
       repo,
       state: "all",
     });
-    return res.data.filter((issue) => !issue.pull_request);
+    const issues = res.data.filter((issue) => !issue.pull_request);
+    this.logger.debug(
+      `Got github issues: ${JSON.stringify({
+        count: issues.length,
+        organization,
+        repo,
+        installationId,
+      })}`
+    );
+    return issues;
   }
 
   private createClient(installationId?: number): Octokit {

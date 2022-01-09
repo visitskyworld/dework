@@ -216,7 +216,7 @@ export class TaskService {
     return this.taskRepo.count(findCondition);
   }
 
-  private async getNextTaskNumber(projectId: string): Promise<number> {
+  public async getNextTaskNumber(projectId: string): Promise<number> {
     const project = await this.projectService.findById(projectId);
     if (!project) throw new NotFoundException();
     const result = await this.taskRepo
