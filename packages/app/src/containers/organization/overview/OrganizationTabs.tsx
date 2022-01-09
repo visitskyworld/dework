@@ -58,7 +58,7 @@ export const OrganizationTabs: FC<Props> = ({
   return (
     <Tabs
       centered
-      style={{ marginTop: 16, marginBottom: 16 }}
+      style={{ marginTop: 16 }}
       activeKey={currentTab}
       onTabClick={navigateToTab}
     >

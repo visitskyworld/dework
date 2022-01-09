@@ -33,7 +33,7 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
         <UserTaskBoard userId={userId} />
       </Layout.Content>

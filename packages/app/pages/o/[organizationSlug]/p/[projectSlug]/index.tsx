@@ -43,6 +43,7 @@ const Page: NextPage = () => {
         <Layout.Content style={{ flex: 1 }}>
           <Tabs
             activeKey={currentTab}
+            style={{ height: "100%" }}
             tabBarStyle={{ paddingLeft: 24, paddingRight: 24 }}
             onTabClick={navigateToTab}
           >
