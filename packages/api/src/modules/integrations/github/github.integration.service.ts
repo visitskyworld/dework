@@ -127,7 +127,12 @@ export class GithubIntegrationService {
 
       this.logger.log(`Updated task: ${JSON.stringify(task)}`);
     } else {
-      this.logger.log(`Creating task from GH issue: ${JSON.stringify(issue)}`);
+      this.logger.log(
+        `Creating task from GH issue: ${JSON.stringify({
+          issue,
+          taskOverride,
+        })}`
+      );
       const status =
         issue.state === "closed"
           ? TaskStatus.DONE
