@@ -39,6 +39,8 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const createTaskToggle = useToggle();
   const canCreateTask = usePermission("create", { __typename: "Task", status });
 
+  // TODO(fant): SSRing <Table /> gets stuck
+  if (typeof window === "undefined") return null;
   return (
     <Table<Task>
       dataSource={tasks}
@@ -101,11 +103,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           render: (reward: TaskReward) =>
             !!reward ? formatTaskReward(reward) : undefined,
         },
-        {
-          title: "Points",
-          dataIndex: "storyPoints",
-          width: 72,
-        },
+        { title: "Points", dataIndex: "storyPoints", width: 72 },
         {
           title: "Status",
           dataIndex: "status",

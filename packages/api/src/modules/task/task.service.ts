@@ -157,6 +157,7 @@ export class TaskService {
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("task.reactions", "reactions")
+      .leftJoinAndSelect("task.subtasks", "subtasks")
       .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
       .innerJoinAndSelect("task.project", "project")
       .where("1 = 1");
