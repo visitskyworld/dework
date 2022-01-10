@@ -145,7 +145,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               disabled={!canChange("name")}
               autoSize
               autoFocus={mode === "create"}
-              className="dewo-field dewo-field-display ant-typography-h3"
+              className="dewo-field dewo-field-focus-border ant-typography-h3"
               placeholder="Enter a task name..."
             />
           </Form.Item>
