@@ -67,7 +67,7 @@ export function useGroupedTasks(
         _.sortBy(tasksWithStatus, (task) => task.sortKey)
       )
       .mapValues((tasks, status) => {
-        if (status === TaskStatus.TODO && canUpdateTasks) {
+        if (status === TaskStatus.TODO) {
           const [assigned, unassigned] = _.partition(
             tasks,
             (task) => !!task.assignees.length
@@ -76,16 +76,34 @@ export function useGroupedTasks(
             unassigned,
             (task) => !!task.applications.length
           );
-          if (!!assigned.length || !!claimed.length) {
-            return [
-              { title: "Assigned", tasks: assigned, hidden: !assigned.length },
-              {
-                title: "Open applications",
-                tasks: claimed,
-                hidden: !claimed.length,
-              },
-              { title: "Unclaimed", tasks: unclaimed },
-            ];
+
+          if (canUpdateTasks) {
+            if (!!assigned.length || !!claimed.length) {
+              return [
+                {
+                  title: "Open applications",
+                  tasks: claimed,
+                  hidden: !claimed.length,
+                },
+                {
+                  title: "Assigned",
+                  tasks: assigned,
+                  hidden: !assigned.length,
+                },
+                { title: "Unclaimed", tasks: unclaimed },
+              ];
+            }
+          } else {
+            if (!!assigned.length) {
+              return [
+                {
+                  title: "Assigned",
+                  tasks: assigned,
+                  hidden: !assigned.length,
+                },
+                { title: "Unclaimed", tasks: unassigned },
+              ];
+            }
           }
         }
 
