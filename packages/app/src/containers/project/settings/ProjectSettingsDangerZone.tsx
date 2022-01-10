@@ -20,13 +20,16 @@ export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
   const handleDeleteConfirmation = (e: React.FormEvent<HTMLInputElement>) => {
     setConfirmDelete(e.currentTarget.value === project?.name!);
   };
-  const deleteProject = useCallback(() => {
-    updateProject({ id: project?.id!, deletedAt: new Date().toISOString() });
+  const deleteProject = useCallback(async () => {
+    await updateProject({
+      id: project?.id!,
+      deletedAt: new Date().toISOString(),
+    });
     router.push({ pathname: `/o/${uuidToBase62(project?.organizationId!)}` });
   }, [updateProject, project?.id, project?.organizationId, router]);
 
   return (
-    <Can I="delete" a="Task">
+    <Can I="delete" a="Project">
       <Form.Item name="delete" label="Danger Zone">
         <Button danger onClick={deletingProject.toggle}>
           Delete Project
