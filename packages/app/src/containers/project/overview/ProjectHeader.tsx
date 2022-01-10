@@ -12,7 +12,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
@@ -114,15 +114,17 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
             </Avatar.Group>
 
             <Space>
-              <Link href={`${project?.permalink}/settings`}>
-                <a>
-                  <Button
-                    type="text"
-                    size="large"
-                    icon={<Icons.SettingOutlined />}
-                  />
-                </a>
-              </Link>
+              <Can I="update" a="Project">
+                <Link href={`${project?.permalink}/settings`}>
+                  <a>
+                    <Button
+                      type="text"
+                      size="large"
+                      icon={<Icons.SettingOutlined />}
+                    />
+                  </a>
+                </Link>
+              </Can>
               <ProjectInviteButton projectId={projectId} />
               <FollowOrganizationButton
                 organizationId={project?.organizationId}
