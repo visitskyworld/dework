@@ -220,6 +220,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               tasks={task.subtasks}
               tags={[]}
               style={{ marginBottom: 16 }}
+              projectId={task.projectId}
             />
           )}
 

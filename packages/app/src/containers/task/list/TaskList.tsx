@@ -11,7 +11,6 @@ import {
   Input,
   Menu,
   Row,
-  Select,
   Table,
   Typography,
 } from "antd";
@@ -40,6 +39,79 @@ const statuses = [
   TaskStatus.DONE,
 ];
 
+const AssigneePicker: FC<{
+  projectId: string;
+  assignees: User[];
+}> = ({ projectId, assignees }) => {
+  const assigneeOptions = useTaskFormUserOptions(projectId, []);
+  return (
+    <Dropdown
+      placement="bottomLeft"
+      // visible={visible.isOn}
+      trigger={["click"]}
+      overlay={
+        // <Menu style={{ width: 200 }}>
+        <Menu>
+          {assigneeOptions?.map((user) => (
+            <Menu.Item
+              key={user.id}
+              className="ant-select-item-option-selected"
+            >
+              <UserSelectOption user={user} />
+            </Menu.Item>
+          ))}
+          {/* <Menu.Item key="0">
+            <a href="https://www.antgroup.com">1st menu item</a>
+          </Menu.Item>
+          <Menu.Item key="1">
+            <a href="https://www.aliyun.com">2nd menu item</a>
+          </Menu.Item>
+          <Menu.Item key="3">3rd menu item</Menu.Item> */}
+        </Menu>
+        /*
+        <Menu>
+          <Select
+            // mode="multiple"
+            // open
+            // defaultOpen
+            // showSearch
+            className="dewo-select-item-full-width"
+            allowClear
+            style={{ width: 200 }}
+            optionFilterProp="label"
+            optionLabelProp="label" // don't put children inside tagRender
+            placeholder="No task assignee..."
+            tagRender={(props) => {
+              const user = assigneeOptions?.find((u) => u.id === props.value);
+              if (!user) return <div />;
+              return (
+                <UserSelectOption user={user} style={{ paddingRight: 12 }} />
+              );
+            }}
+          >
+            {assigneeOptions?.map((user) => (
+              <Select.Option value={user.id} label={user.username}>
+                <UserSelectOption user={user} />
+              </Select.Option>
+            ))}
+          </Select>
+        </Menu>
+        */
+      }
+    >
+      {/* <div onClick={visible.toggle}> */}
+      <div>
+        <Avatar.Group maxCount={3} style={{ pointerEvents: "none" }}>
+          {assignees.map((user) => (
+            <UserAvatar key={user.id} user={user} />
+          ))}
+          {!assignees.length && <Avatar icon={<Icons.UserAddOutlined />} />}
+        </Avatar.Group>
+      </div>
+    </Dropdown>
+  );
+};
+
 export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   const navigateToTask = useNavigateToTaskFn();
 
@@ -57,8 +129,6 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   }, [canCreateTask, tasks]);
 
   const editing = true;
-
-  const assigneeOptions = useTaskFormUserOptions(projectId!, []);
 
   // TODO(fant): SSRing <Table /> gets stuck
   if (typeof window === "undefined") return null;
@@ -102,63 +172,7 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
           width: 1,
           render: (assignees: User[]) =>
             editing ? (
-              <Dropdown
-                placement="bottomLeft"
-                overlay={
-                  // <Menu>
-                  //   <Menu.Item key="0">
-                  //     <a href="https://www.antgroup.com">1st menu item</a>
-                  //   </Menu.Item>
-                  //   <Menu.Item key="1">
-                  //     <a href="https://www.aliyun.com">2nd menu item</a>
-                  //   </Menu.Item>
-                  //   <Menu.Item key="3">3rd menu item</Menu.Item>
-                  // </Menu>
-                  <Menu>
-                    <Select
-                      // mode="multiple"
-                      autoFocus
-                      // showSearch
-                      className="dewo-select-item-full-width"
-                      allowClear
-                      style={{ width: 200 }}
-                      optionFilterProp="label"
-                      optionLabelProp="label" // don't put children inside tagRender
-                      placeholder="No task assignee..."
-                      tagRender={(props) => {
-                        const user = assigneeOptions?.find(
-                          (u) => u.id === props.value
-                        );
-                        if (!user) return <div />;
-                        return (
-                          <UserSelectOption
-                            user={user}
-                            style={{ paddingRight: 12 }}
-                          />
-                        );
-                      }}
-                    >
-                      {assigneeOptions?.map((user) => (
-                        <Select.Option value={user.id} label={user.username}>
-                          <UserSelectOption user={user} />
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Menu>
-                }
-                trigger={["click"]}
-              >
-                <div>
-                  <Avatar.Group maxCount={3} style={{ pointerEvents: "none" }}>
-                    {assignees.map((user) => (
-                      <UserAvatar key={user.id} user={user} />
-                    ))}
-                    {!assignees.length && (
-                      <Avatar icon={<Icons.UserAddOutlined />} />
-                    )}
-                  </Avatar.Group>
-                </div>
-              </Dropdown>
+              <AssigneePicker projectId={projectId!} assignees={assignees} />
             ) : (
               <Avatar.Group maxCount={3}>
                 {assignees.map((user) => (
