@@ -2,7 +2,7 @@ import { Actions, Permissions } from "nest-casl";
 import { SubjectType } from "@casl/ability";
 import { Roles } from "../app/app.roles";
 import { Organization } from "@dewo/api/models/Organization";
-import { Project } from "@dewo/api/models/Project";
+import { Project, ProjectVisibility } from "@dewo/api/models/Project";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import {
   OrganizationMember,
@@ -25,7 +25,7 @@ export const permissions: Permissions<
 > = {
   everyone({ can, user }) {
     can(Actions.read, Organization);
-    can(Actions.read, Project);
+    can(Actions.read, Project, { visibility: ProjectVisibility.PUBLIC });
     can(Actions.read, Task);
 
     can(Actions.delete, TaskApplication, { userId: user.id });
@@ -104,6 +104,7 @@ export const permissions: Permissions<
   },
 
   projectContributor({ can, cannot, user }) {
+    can(Actions.read, Project, { visibility: ProjectVisibility.PRIVATE });
     can(Actions.create, ProjectMember, { role: ProjectRole.CONTRIBUTOR });
     can(Actions.create, Task, { status: TaskStatus.BACKLOG });
     cannot(Actions.create, Task, [

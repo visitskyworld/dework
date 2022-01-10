@@ -1,3 +1,4 @@
+import { ProjectVisibility } from "@dewo/api/models/Project";
 import {
   DiscordProjectIntegrationFeature,
   ProjectIntegrationType,
@@ -236,6 +237,21 @@ describe("ProjectResolver", () => {
         expect(fetchedProject.taskCount).toEqual(3);
         expect(fetchedProject.doneTaskCount).toEqual(1);
         expect(fetchedProject.todoWithRewardTaskCount).toEqual(1);
+      });
+
+      it("should fail for private projects where caller is not contributor", async () => {
+        const user = await fixtures.createUser();
+        const project = await fixtures.createProject({
+          visibility: ProjectVisibility.PRIVATE,
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.get(project.id),
+        });
+
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
     });
   });
