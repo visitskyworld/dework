@@ -18,6 +18,9 @@ import { TaskFormValues } from "../../task/form/TaskForm";
 import { TaskActionButton } from "../../task/board/TaskActionButton";
 import { TaskTagsRow } from "../../task/board/TaskTagsRow";
 import { STATUS_LABEL } from "../../task/board/util";
+import { AtLeast } from "@dewo/app/types/general";
+
+type RowData = AtLeast<Task, "name" | "status" | "assignees">;
 
 interface Props {
   tasks: Task[];
@@ -45,16 +48,23 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   const createTaskToggle = useToggle();
   const canCreateTask = usePermission("create", { __typename: "Task", status });
 
+  const data = useMemo<RowData[]>(() => {
+    if (!canCreateTask) return tasks;
+    return [...tasks, { name: "", assignees: [], status: TaskStatus.TODO }];
+  }, [canCreateTask, tasks]);
+
   // TODO(fant): SSRing <Table /> gets stuck
   if (typeof window === "undefined") return null;
   return (
-    <Table<Task>
-      dataSource={tasks}
+    <Table<RowData>
+      dataSource={data}
       size="small"
       style={style}
       rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
-      onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}
+      onRow={(t) => ({
+        onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
+      })}
       footer={
         canCreateTask && projectId
           ? () => (
@@ -95,9 +105,13 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
           title: "Name",
           dataIndex: "name",
           showSorterTooltip: false,
-          sorter: (a: Task, b: Task) => a.name.localeCompare(b.name),
+          sorter: (a, b) => a.name.localeCompare(b.name),
           render: (name: string) => (
-            <Typography.Title level={5} style={{ marginBottom: 0 }}>
+            <Typography.Title
+              level={5}
+              style={{ marginBottom: 0 }}
+              editable={{ onChange: () => alert("cheng") }}
+            >
               {name}
             </Typography.Title>
           ),
@@ -121,7 +135,7 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
           onFilter: (status, task) => task.status === status,
           render: (status: TaskStatus) => STATUS_LABEL[status],
           defaultSortOrder: "ascend",
-          sorter: (a: Task, b: Task) =>
+          sorter: (a, b) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
           showSorterTooltip: false,
         },
@@ -133,16 +147,18 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
             value: tag.id,
             text: <Tag color={tag.color}>{tag.label}</Tag>,
           })),
-          onFilter: (tagId, task) => task.tags.some((t) => t.id === tagId),
-          render: (_, task) => (
-            <TaskTagsRow task={task} showStandardTags={false} />
-          ),
+          onFilter: (tagId, task) => !!task.tags?.some((t) => t.id === tagId),
+          render: (_, task) =>
+            !!task.id && (
+              <TaskTagsRow task={task as any} showStandardTags={false} />
+            ),
         },
         {
           title: "Actions",
           key: "button",
           width: 1,
-          render: (_, task) => <TaskActionButton task={task} />,
+          render: (_, task) =>
+            !!task.id && <TaskActionButton task={task as any} />,
         },
       ]}
     />
