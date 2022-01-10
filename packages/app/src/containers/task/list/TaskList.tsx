@@ -2,9 +2,19 @@ import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
+import * as Colors from "@ant-design/colors";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Avatar, Dropdown, Form, Input, Menu, Table, Typography } from "antd";
+import {
+  Avatar,
+  Dropdown,
+  Form,
+  Input,
+  Menu,
+  Row,
+  Table,
+  Typography,
+} from "antd";
 import React, {
   CSSProperties,
   FC,
@@ -15,7 +25,7 @@ import React, {
 import { TaskFormValues } from "../../task/form/TaskForm";
 import { useTaskFormUserOptions } from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
-import { STATUS_LABEL } from "../../task/board/util";
+import { STATUS_ICON, STATUS_LABEL } from "../../task/board/util";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
@@ -183,7 +193,7 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   const users = useTaskFormUserOptions(projectId!, []); // task.assignees);
   const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
 
-  console.log(values);
+  console.log(values, Colors.green);
   // TODO(fant): SSRing <Table /> gets stuck
   if (typeof window === "undefined") return null;
   if (!values.rows.length) return null;
@@ -315,9 +325,43 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
                   mode="default"
                   options={statuses.map((status) => ({
                     value: status,
-                    label: STATUS_LABEL[status],
+                    label: (
+                      <Row>
+                        {STATUS_ICON[status]}
+                        {STATUS_LABEL[status]}
+                      </Row>
+                    ),
                   }))}
-                  children={<div>{STATUS_LABEL[currentStatus]}</div>}
+                  // children={<div>{STATUS_ICON[currentStatus]}</div>}
+                  children={
+                    // <Avatar
+                    //   size="small"
+                    //   icon={<Icons.CheckOutlined />}
+                    //   style={{
+                    //     backgroundColor: `${Colors.green.primary}33`,
+                    //     border: `1px solid ${Colors.green.primary}`,
+                    //     color: Colors.green.primary,
+                    //   }}
+                    // />
+                    // <Avatar
+                    //   size="small"
+                    //   icon={<Icons.ThunderboltOutlined />}
+                    //   style={{
+                    //     backgroundColor: `${Colors.yellow.primary}33`,
+                    //     border: `1px solid ${Colors.yellow.primary}`,
+                    //     color: Colors.yellow.primary,
+                    //   }}
+                    // />
+                    <Avatar
+                      size="small"
+                      icon={<Icons.SyncOutlined />}
+                      style={{
+                        backgroundColor: `${Colors.blue.primary}33`,
+                        border: `1px solid ${Colors.blue.primary}`,
+                        color: Colors.blue.primary,
+                      }}
+                    />
+                  }
                 />
               </Form.Item>
             ),
