@@ -215,7 +215,10 @@ export class GithubController {
             status: TaskStatus.DONE,
           });
         }
-      } else {
+      } else if (
+        event.action === "created" ||
+        event.action === "ready_for_review"
+      ) {
         if (pr) {
           await this.githubService.updatePullRequest({ ...prData, id: pr.id });
           this.log("Updated PR", { title: pr.title, taskId: task.id });
