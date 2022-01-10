@@ -11,6 +11,7 @@ import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { ProjectDiscordIntegration } from "./ProjectDiscordIntegration";
 import { ProjectSettingsFormFields } from "./ProjectSettingsFormFields";
 import { useUpdateProject } from "../hooks";
+import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 
 interface Props {
   project: ProjectDetails;
@@ -83,7 +84,8 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           )}
           onValuesChange={handleUpdateProject}
         >
-          <ProjectSettingsFormFields mode="update" project={project} />
+          <ProjectSettingsFormFields />
+          <ProjectSettingsDangerZone project={project} />
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>

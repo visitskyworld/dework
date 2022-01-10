@@ -1,39 +1,11 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Form,
-  Input,
-  Radio,
-  Typography,
-} from "antd";
+import { Button, Checkbox, Divider, Form, Radio } from "antd";
 import * as Icons from "@ant-design/icons";
-import { ProjectDetails, ProjectVisibility } from "@dewo/app/graphql/types";
-import { useUpdateProject } from "../hooks";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
-import { uuidToBase62 } from "@dewo/app/util/uuid";
-import { useRouter } from "next/router";
+import { ProjectVisibility } from "@dewo/app/graphql/types";
 
-interface Props {
-  mode: "create" | "update";
-  project?: ProjectDetails;
-}
-
-export const ProjectSettingsFormFields: FC<Props> = ({ mode, project }) => {
+export const ProjectSettingsFormFields: FC = () => {
   const advancedOptions = useToggle(true);
-  const updateProject = useUpdateProject();
-  const router = useRouter();
-  const [deletingProject, setDeletingProject] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const handleDeleteConfirmation = (e: React.FormEvent<HTMLInputElement>) => {
-    setConfirmDelete(e.currentTarget.value === project?.name!);
-  };
-  const deleteProject = useCallback(() => {
-    updateProject({ id: project?.id!, deletedAt: new Date().toISOString() });
-    router.push({ pathname: `/o/${uuidToBase62(project?.organizationId!)}` });
-  }, [updateProject, project?.id, project?.organizationId, router]);
 
   return (
     <>
@@ -70,42 +42,6 @@ export const ProjectSettingsFormFields: FC<Props> = ({ mode, project }) => {
           <Checkbox>Enable Suggestions Column</Checkbox>
         </Form.Item>
       </Form.Item>
-
-      {mode === "update" && (
-        <Can I="delete" a="Task">
-          <Form.Item hidden={!advancedOptions.isOn}>
-            <Form.Item name="delete" label="Danger Zone">
-              <Button danger onClick={() => setDeletingProject(true)}>
-                Delete Project
-              </Button>
-
-              {deletingProject && (
-                <>
-                  <Typography.Paragraph
-                    type="secondary"
-                    style={{ marginBottom: 8, marginTop: 8 }}
-                  >
-                    Enter the project name to delete the project. This action is
-                    not reversible.
-                  </Typography.Paragraph>
-                  <Input
-                    placeholder="Type project name to confirm"
-                    onChange={handleDeleteConfirmation}
-                    style={{ marginBottom: 16 }}
-                  />
-                  <Button
-                    danger
-                    disabled={!confirmDelete}
-                    onClick={deleteProject}
-                  >
-                    I understand the consequences, delete this project
-                  </Button>
-                </>
-              )}
-            </Form.Item>
-          </Form.Item>
-        </Can>
-      )}
     </>
   );
 };

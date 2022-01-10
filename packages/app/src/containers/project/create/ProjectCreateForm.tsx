@@ -232,7 +232,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields mode="create" />
+        <ProjectSettingsFormFields />
 
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />
