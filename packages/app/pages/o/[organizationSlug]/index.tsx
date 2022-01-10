@@ -48,8 +48,10 @@ const Page: NextPage = () => {
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <Row className="max-w-lg mx-auto w-full">
-          <OrganizationHeaderSummary organizationId={organizationId} />
+        <Row style={{ marginLeft: 24, marginRight: 24 }}>
+          <Row className="max-w-lg mx-auto w-full">
+            <OrganizationHeaderSummary organizationId={organizationId} />
+          </Row>
         </Row>
         <OrganizationTabs
           organizationId={organizationId}

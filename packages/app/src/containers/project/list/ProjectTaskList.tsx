@@ -43,7 +43,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
     <Table<Task>
       dataSource={tasks}
       size="small"
-      style={{ marginLeft: 24, marginRight: 24, maxWidth: 960 }}
+      style={{ marginLeft: 24, marginRight: 24, minWidth: 480, maxWidth: 960 }}
       rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
       onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}

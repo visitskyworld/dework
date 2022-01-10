@@ -44,7 +44,7 @@ const Page: NextPage = () => {
           <Tabs
             activeKey={currentTab}
             style={{ height: "100%" }}
-            tabBarStyle={{ paddingLeft: 24, paddingRight: 24 }}
+            className="dewo-tabs"
             onTabClick={navigateToTab}
           >
             <Tabs.TabPane
@@ -56,6 +56,7 @@ const Page: NextPage = () => {
             <Tabs.TabPane
               tab={<Tab icon={<Icons.BarsOutlined />} children="List" />}
               key="list"
+              style={{ overflowX: "auto" }}
             >
               <ProjectTaskList projectId={projectId} />
             </Tabs.TabPane>

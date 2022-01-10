@@ -59,6 +59,7 @@ export const OrganizationTabs: FC<Props> = ({
     <Tabs
       centered
       style={{ marginTop: 16 }}
+      className="dewo-tabs"
       activeKey={currentTab}
       onTabClick={navigateToTab}
     >

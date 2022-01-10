@@ -624,3 +624,36 @@ textarea {
     place-items: center;
   }
 }
+
+.dewo-tabs {
+  .ant-tabs-nav-list {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .ant-tabs-nav-operations {
+    display: none;
+  }
+}
+
+.ant-list-item-meta.dewo-list-item-meta {
+  .ant-list-item-meta-avatar {
+    margin-right: 32px;
+  }
+
+  @media (max-width: @screen-sm) {
+    flex-direction: column;
+
+    .ant-list-item-meta-avatar {
+      margin-right: 0;
+      margin-bottom: 16px;
+    }
+
+    .ant-list-item-meta-content {
+      width: unset;
+      align-self: stretch;
+      display: grid;
+      place-items: center;
+    }
+  }
+}

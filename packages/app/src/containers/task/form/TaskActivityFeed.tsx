@@ -15,7 +15,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
     <FormSection label="Activity" className="mb-3">
       <Row align="middle">
         <UserAvatar size="small" user={task.creator} />
-        <Typography.Text style={{ marginLeft: 8 }}>
+        <Typography.Text style={{ marginLeft: 12, flex: 1 }}>
           Created by {task.creator.username} on{" "}
           {moment(task.createdAt).format("lll")}
         </Typography.Text>
