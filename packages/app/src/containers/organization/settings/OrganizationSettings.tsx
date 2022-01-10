@@ -1,5 +1,6 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Card, Modal, Tabs } from "antd";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
 import { useUpdateOrganization } from "../hooks";
@@ -43,15 +44,21 @@ export const OrganizationSettings: FC<Props> = ({
   onTabClick,
 }) => {
   const canDeleteOrganization = usePermission("delete", "Organization");
+  const screens = useBreakpoint();
   return (
     <Tabs
       type="card"
-      tabPosition="left"
+      tabPosition={screens.sm ? "left" : "top"}
       className="dewo-settings-tabs"
       activeKey={currentTab}
       onTabClick={onTabClick}
       renderTabBar={(props, TabBar) => (
-        <Card size="small" title="Settings" bodyStyle={{ padding: 0 }}>
+        <Card
+          size="small"
+          title="Settings"
+          style={{ marginBottom: 24 }}
+          bodyStyle={{ padding: 0 }}
+        >
           <TabBar {...props} tabPosition="left" />
         </Card>
       )}

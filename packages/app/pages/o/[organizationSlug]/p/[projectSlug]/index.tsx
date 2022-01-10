@@ -56,14 +56,14 @@ const Page: NextPage = () => {
             <Tabs.TabPane
               tab={<Tab icon={<Icons.BarsOutlined />} children="List" />}
               key="list"
-              style={{ overflowX: "auto" }}
+              style={{ overflowX: "auto", padding: 12 }}
             >
               <ProjectTaskList projectId={projectId} />
             </Tabs.TabPane>
             <Tabs.TabPane
               tab={<Tab icon={<Icons.InfoCircleOutlined />} children="About" />}
               key="about"
-              style={{ paddingLeft: 24, paddingRight: 24, maxWidth: 480 }}
+              style={{ padding: 12, maxWidth: 480 }}
             >
               {!!project && <ProjectAbout project={project} />}
             </Tabs.TabPane>

@@ -65,10 +65,10 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
             title: "Projects",
             dataIndex: "projects",
             render: (_, user: User) => (
-              <Row>
+              <Row style={{ marginBottom: -4 }}>
                 {projectsByUserId[user.id]?.map((p) => (
                   <Link key={p.id} href={p.permalink}>
-                    <a onClick={stopPropagation}>
+                    <a onClick={stopPropagation} style={{ marginBottom: 4 }}>
                       <Tag color={colorNameFromUuid(p.id)}>{p.name}</Tag>
                     </a>
                   </Link>

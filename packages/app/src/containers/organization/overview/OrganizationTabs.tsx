@@ -4,6 +4,7 @@ import {
   Avatar,
   Col,
   Divider,
+  Grid,
   Row,
   Skeleton,
   Tabs,
@@ -54,6 +55,7 @@ export const OrganizationTabs: FC<Props> = ({
 
   const coreTeam = useOrganizationCoreTeam(organizationId);
   const contributors = useOrganizationContributors(organizationId);
+  const screens = Grid.useBreakpoint();
 
   return (
     <Tabs
@@ -67,13 +69,18 @@ export const OrganizationTabs: FC<Props> = ({
         tab={<Tab icon={<Icons.HomeOutlined />} children="Overview" />}
         key="overview"
         className="max-w-lg mx-auto w-full"
+        style={{ padding: 12 }}
       >
-        <Row gutter={48}>
-          <Col span={18} className="dewo-divider-right">
+        <Row gutter={[24, 24]}>
+          <Col
+            xs={24}
+            md={18}
+            className={!screens.xs ? "dewo-divider-right" : undefined}
+          >
             <Typography.Title level={5}>Projects</Typography.Title>
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
-          <Col span={6}>
+          <Col xs={24} md={6}>
             <Typography.Title level={5}>About</Typography.Title>
             <Typography.Paragraph type="secondary">
               {organization?.description || "No description..."}
@@ -88,9 +95,13 @@ export const OrganizationTabs: FC<Props> = ({
             )}
 
             {!!organization?.tags.length && (
-              <Row gutter={[8, 8]}>
+              <Row gutter={8} style={{ marginBottom: -4 }}>
                 {organization?.tags.map((tag) => (
-                  <Tag key={tag.id} color={tag.color}>
+                  <Tag
+                    key={tag.id}
+                    color={tag.color}
+                    style={{ marginBottom: 4 }}
+                  >
                     {tag.label}
                   </Tag>
                 ))}
@@ -131,7 +142,7 @@ export const OrganizationTabs: FC<Props> = ({
       <Tabs.TabPane
         tab={<Tab icon={<Icons.TeamOutlined />} children="Contributors" />}
         key="contributors"
-        className="max-w-sm mx-auto w-full"
+        className="max-w-lg mx-auto w-full"
       >
         <OrganizationContributorList organizationId={organizationId} />
       </Tabs.TabPane>
@@ -148,6 +159,7 @@ export const OrganizationTabs: FC<Props> = ({
           tab={<Tab icon={<Icons.SettingOutlined />} children="Settings" />}
           key="settings"
           className="max-w-lg mx-auto w-full"
+          style={{ padding: 12 }}
         >
           <OrganizationSettings
             organizationId={organizationId}

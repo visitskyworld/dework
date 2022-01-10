@@ -130,99 +130,92 @@ export const OrganizationProfileSettings: FC<
   if (!organization) return null;
 
   return (
-    <Space
-      direction="vertical"
-      style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
+    <Form<FormValues>
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      onFinish={handleSubmit}
+      onValuesChange={handleChange}
+      style={{ maxWidth: 550 }}
+      initialValues={initialValues}
     >
-      <Form<FormValues>
-        form={form}
-        layout="vertical"
-        requiredMark={false}
-        onFinish={handleSubmit}
-        onValuesChange={handleChange}
-        style={{ maxWidth: 550 }}
-        initialValues={initialValues}
-      >
-        <Typography.Title level={4} style={{ marginBottom: 4 }}>
-          Organization profile
-        </Typography.Title>
+      <Typography.Title level={4} style={{ marginBottom: 4 }}>
+        Organization profile
+      </Typography.Title>
 
-        <Divider style={{ marginTop: 0 }} />
+      <Divider style={{ marginTop: 0 }} />
 
-        <Row gutter={[20, 16]} style={{ flexDirection: "row-reverse" }}>
-          <Col xs={48} md={6} style={{ width: "100%" }}>
-            <FormSection
-              label="Profile Image"
-              style={{ display: "inline-block", padding: 0 }}
-            >
-              <OrganizationAvatar
-                size={96}
-                organization={{
-                  id: organization.id,
-                  name: values.name,
-                  imageUrl: values.imageUrl ?? null,
-                }}
-              />
-              <Form.Item
-                name="imageUrl"
-                style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
-              >
-                <ImageUploadInput>
-                  <Button
-                    icon={<Icons.EditOutlined />}
-                    shape="circle"
-                    type="primary"
-                    className="bg-body"
-                  />
-                </ImageUploadInput>
-              </Form.Item>
-            </FormSection>
-          </Col>
-
-          <Col xs={48} md={18} flex={1}>
+      <Row gutter={[20, 16]} style={{ flexDirection: "row-reverse" }}>
+        <Col xs={48} md={6} style={{ width: "100%" }}>
+          <FormSection
+            label="Profile Image"
+            style={{ display: "inline-block", padding: 0 }}
+          >
+            <OrganizationAvatar
+              size={96}
+              organization={{
+                id: organization.id,
+                name: values.name,
+                imageUrl: values.imageUrl ?? null,
+              }}
+            />
             <Form.Item
-              label="Name"
-              name="name"
-              rules={[
-                { required: true, message: "Please enter a display name" },
-              ]}
+              name="imageUrl"
+              style={{ position: "absolute", right: 0, bottom: 0, margin: 0 }}
             >
-              <Input />
+              <ImageUploadInput>
+                <Button
+                  icon={<Icons.EditOutlined />}
+                  shape="circle"
+                  type="primary"
+                  className="bg-body"
+                />
+              </ImageUploadInput>
             </Form.Item>
+          </FormSection>
+        </Col>
 
-            <Form.Item label="Tagline" name="tagline">
-              <Input placeholder="No tagline..." />
-            </Form.Item>
+        <Col xs={48} md={18} flex={1}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter a display name" }]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Form.Item label="Description" name="description">
-              <Input.TextArea placeholder="No description..." />
-            </Form.Item>
+          <Form.Item label="Tagline" name="tagline">
+            <Input placeholder="No tagline..." />
+          </Form.Item>
 
-            <OrganizationTagSelectField organizationId={organizationId} />
+          <Form.Item label="Description" name="description">
+            <Input.TextArea placeholder="No description..." />
+          </Form.Item>
 
-            <Form.Item
-              label="Socials"
-              style={{ marginTop: 20, marginBottom: 24 }}
-            >
-              <Space direction="vertical" style={{ width: "100%" }}>
-                <OrganizationDetailFormItem type={EntityDetailType.discord} />
-                <OrganizationDetailFormItem type={EntityDetailType.twitter} />
-                <OrganizationDetailFormItem type={EntityDetailType.website} />
-              </Space>
-            </Form.Item>
+          <OrganizationTagSelectField organizationId={organizationId} />
 
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="middle"
-              loading={loading}
-              disabled={!canUpdateOrganization}
-            >
-              Update profile
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </Space>
+          <Form.Item
+            label="Socials"
+            style={{ marginTop: 20, marginBottom: 24 }}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <OrganizationDetailFormItem type={EntityDetailType.discord} />
+              <OrganizationDetailFormItem type={EntityDetailType.twitter} />
+              <OrganizationDetailFormItem type={EntityDetailType.website} />
+            </Space>
+          </Form.Item>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="middle"
+            loading={loading}
+            disabled={!canUpdateOrganization}
+          >
+            Update profile
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };
