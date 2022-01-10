@@ -4,25 +4,32 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  Row,
-  Table,
-  Typography,
-} from "antd";
-import React, { CSSProperties, FC, useMemo } from "react";
-import { TaskCreateModal } from "../../task/TaskCreateModal";
+import { Avatar, Dropdown, Form, Input, Menu, Table, Typography } from "antd";
+import React, {
+  CSSProperties,
+  FC,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { TaskFormValues } from "../../task/form/TaskForm";
-import { STATUS_LABEL } from "../../task/board/util";
-import { AtLeast } from "@dewo/app/types/general";
 import { useTaskFormUserOptions } from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
+import { STATUS_LABEL } from "../../task/board/util";
+import { useForm } from "antd/lib/form/Form";
+import _ from "lodash";
+import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
 
-type RowData = AtLeast<Task, "name" | "status" | "assignees">;
+interface RowData {
+  id?: string;
+  name: string;
+  status: TaskStatus;
+  assigneeIds: string[];
+}
+
+interface FormValues {
+  rows: RowData[];
+}
 
 interface Props {
   tasks: Task[];
@@ -41,67 +48,49 @@ const statuses = [
 
 const AssigneePicker: FC<{
   projectId: string;
-  assignees: User[];
-}> = ({ projectId, assignees }) => {
-  const assigneeOptions = useTaskFormUserOptions(projectId, []);
+  value?: string[];
+  onChange?(value: string[]): void;
+}> = ({ projectId, value: assigneeIds = [], onChange }) => {
+  const users = useTaskFormUserOptions(projectId, []);
+  const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
+  const assignees = useMemo(
+    () => assigneeIds.map((id) => userById[id]).filter((u): u is User => !!u),
+    [userById, assigneeIds]
+  );
+
   return (
     <Dropdown
-      placement="bottomLeft"
-      // visible={visible.isOn}
+      placement="bottomRight"
       trigger={["click"]}
       overlay={
-        // <Menu style={{ width: 200 }}>
         <Menu>
-          {assigneeOptions?.map((user) => (
-            <Menu.Item
-              key={user.id}
-              className="ant-select-item-option-selected"
-            >
-              <UserSelectOption user={user} />
-            </Menu.Item>
-          ))}
-          {/* <Menu.Item key="0">
-            <a href="https://www.antgroup.com">1st menu item</a>
-          </Menu.Item>
-          <Menu.Item key="1">
-            <a href="https://www.aliyun.com">2nd menu item</a>
-          </Menu.Item>
-          <Menu.Item key="3">3rd menu item</Menu.Item> */}
-        </Menu>
-        /*
-        <Menu>
-          <Select
-            // mode="multiple"
-            // open
-            // defaultOpen
-            // showSearch
-            className="dewo-select-item-full-width"
-            allowClear
-            style={{ width: 200 }}
-            optionFilterProp="label"
-            optionLabelProp="label" // don't put children inside tagRender
-            placeholder="No task assignee..."
-            tagRender={(props) => {
-              const user = assigneeOptions?.find((u) => u.id === props.value);
-              if (!user) return <div />;
-              return (
-                <UserSelectOption user={user} style={{ paddingRight: 12 }} />
-              );
-            }}
-          >
-            {assigneeOptions?.map((user) => (
-              <Select.Option value={user.id} label={user.username}>
+          {users?.map((user) => {
+            const selected = !!assigneeIds.includes(user.id);
+            return (
+              <Menu.Item
+                key={user.id}
+                className={
+                  selected ? "ant-select-item-option-selected" : undefined
+                }
+                onClick={() =>
+                  selected
+                    ? onChange?.(assigneeIds.filter((id) => id !== user.id))
+                    : onChange?.([...assigneeIds, user.id])
+                }
+              >
                 <UserSelectOption user={user} />
-              </Select.Option>
-            ))}
-          </Select>
+              </Menu.Item>
+            );
+          })}
         </Menu>
-        */
       }
     >
-      {/* <div onClick={visible.toggle}> */}
       <div>
-        <Avatar.Group maxCount={3} style={{ pointerEvents: "none" }}>
+        <Avatar.Group
+          maxCount={3}
+          size="small"
+          style={{ pointerEvents: "none" }}
+        >
           {assignees.map((user) => (
             <UserAvatar key={user.id} user={user} />
           ))}
@@ -112,6 +101,45 @@ const AssigneePicker: FC<{
   );
 };
 
+/*
+const CustomCell: React.FC<any> = ({
+  // editing,
+  // dataIndex,
+  // title,
+  // inputType,
+  // record,
+  // index,
+  // children,
+  // ...restProps
+  ...props
+}) => {
+  console.log(props);
+  const inputNode = props.inputType === "number" ? <InputNumber /> : <Input />;
+
+  return (
+    <td {...props}>
+      {props.editing ? (
+        <Form.Item
+          name={props.dataIndex}
+          style={{ margin: 0 }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${props.title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        props.children
+      )}
+    </td>
+  );
+};
+*/
+
+// Drag and drop table: https://codesandbox.io/s/react-beautiful-dnd-examples-multi-drag-table-with-antd-gptbl
 export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   const navigateToTask = useNavigateToTaskFn();
 
@@ -123,129 +151,210 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
   const createTaskToggle = useToggle();
   const canCreateTask = usePermission("create", { __typename: "Task", status });
 
-  const data = useMemo<RowData[]>(() => {
-    if (!canCreateTask) return tasks;
-    return [...tasks, { name: "", assignees: [], status: TaskStatus.TODO }];
+  const rows = useMemo<RowData[]>(() => {
+    const toRowData = (task: Task) => ({
+      name: task.name,
+      assigneeIds: task.assignees.map((u) => u.id),
+      status: task.status,
+    });
+    if (!canCreateTask) return tasks.map(toRowData);
+    return [
+      ...tasks.map(toRowData),
+      { name: "", assigneeIds: [], status: TaskStatus.TODO },
+    ];
   }, [canCreateTask, tasks]);
 
   const editing = true;
 
+  const [form] = useForm<FormValues>();
+  const [values, setValues] = useState<FormValues>({ rows });
+  const handleChange = useCallback(
+    (changed: Partial<FormValues>, newValues: FormValues) => {
+      if (!!changed.rows) {
+        newValues.rows[0] = { ...values.rows[0], ...changed.rows[0] };
+      }
+      console.log({ changed, newValues });
+      setValues(newValues);
+      form.setFieldsValue(newValues);
+    },
+    [form, values]
+  );
+
+  const users = useTaskFormUserOptions(projectId!, []); // task.assignees);
+  const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
+
+  console.log(values);
   // TODO(fant): SSRing <Table /> gets stuck
   if (typeof window === "undefined") return null;
-  if (!data.length) return null;
+  if (!values.rows.length) return null;
   return (
-    <Table<RowData>
-      dataSource={data}
-      size="small"
-      style={style}
-      rowClassName="hover:cursor-pointer"
-      pagination={{ hideOnSinglePage: true }}
-      onRow={(t) => ({
-        onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
-      })}
-      footer={
-        canCreateTask && projectId
-          ? () => (
-              <Row align="middle">
-                <Avatar icon={<Icons.PlusOutlined />} />
-                <Button
-                  type="text"
-                  className="text-secondary"
-                  onClick={createTaskToggle.toggleOn}
-                >
-                  Create task
-                </Button>
-                <TaskCreateModal
-                  projectId={projectId}
-                  initialValues={initialValues}
-                  visible={createTaskToggle.isOn}
-                  onCancel={createTaskToggle.toggleOff}
-                  onDone={createTaskToggle.toggleOff}
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      // initialValues={initialValues}
+      onValuesChange={handleChange}
+      onFinish={() => alert("finish sabmit")}
+    >
+      <Table<RowData>
+        dataSource={values.rows}
+        size="small"
+        style={style}
+        rowClassName="hover:cursor-pointer"
+        pagination={{ hideOnSinglePage: true }}
+        // components={{ body: { cell: CustomCell } }}
+        onRow={(t) => ({
+          onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
+        })}
+        // footer={
+        //   canCreateTask && projectId
+        //     ? () => (
+        //         <Row align="middle">
+        //           <Avatar icon={<Icons.PlusOutlined />} />
+        //           <Button
+        //             type="text"
+        //             className="text-secondary"
+        //             onClick={createTaskToggle.toggleOn}
+        //           >
+        //             Create task
+        //           </Button>
+        //           <TaskCreateModal
+        //             projectId={projectId}
+        //             initialValues={initialValues}
+        //             visible={createTaskToggle.isOn}
+        //             onCancel={createTaskToggle.toggleOff}
+        //             onDone={createTaskToggle.toggleOff}
+        //           />
+        //         </Row>
+        //       )
+        //     : undefined
+        // }
+        columns={[
+          {
+            title: "Name",
+            dataIndex: "name",
+            showSorterTooltip: false,
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            render: (name: string, _row: RowData, index: number) =>
+              editing ? (
+                <Form.Item name={["rows", index, "name"]}>
+                  <Input
+                    className="dewo-field dewo-field-focus-border"
+                    placeholder="Add subtask..."
+                    onPressEnter={() => alert("enter")}
+                  />
+                </Form.Item>
+              ) : (
+                <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                  {name}
+                </Typography.Title>
+              ),
+          },
+          {
+            dataIndex: "assigneeIds",
+            width: 1,
+            render: (assigneeIds: string[], _row: RowData, index: number) =>
+              editing ? (
+                <Form.Item name={["rows", index, "assigneeIds"]}>
+                  {/* <AssigneePicker projectId={projectId!} /> */}
+                  <DropdownSelect
+                    mode="multiple"
+                    options={users?.map((user) => ({
+                      value: user.id,
+                      label: <UserSelectOption key={user.id} user={user} />,
+                    }))}
+                  >
+                    <div>
+                      <Avatar.Group
+                        maxCount={3}
+                        size="small"
+                        style={{ pointerEvents: "none" }}
+                      >
+                        {assigneeIds
+                          .map((id) => userById[id])
+                          .filter((u): u is User => !!u)
+                          .map((user) => (
+                            <UserAvatar key={user.id} user={user} />
+                          ))}
+                        {!assigneeIds.length && (
+                          <Avatar icon={<Icons.UserAddOutlined />} />
+                        )}
+                      </Avatar.Group>
+                    </div>
+                  </DropdownSelect>
+                </Form.Item>
+              ) : null,
+            /*
+                <Avatar.Group maxCount={3}>
+                  {assignees.map((user) => (
+                    <UserAvatar key={user.id} user={user} />
+                  ))}
+                  {!assignees.length && (
+                    <Avatar icon={<Icons.UserAddOutlined />} />
+                  )}
+                </Avatar.Group>
+                */
+          },
+          // {
+          //   title: "Reward",
+          //   dataIndex: "reward",
+          //   width: 100,
+          //   render: (reward: TaskReward) =>
+          //     !!reward ? formatTaskReward(reward) : undefined,
+          // },
+          // { title: "Points", dataIndex: "storyPoints", width: 72 },
+          {
+            title: "Status",
+            dataIndex: "status",
+            // width: 120,
+            width: 1,
+            // render: (status: TaskStatus) => STATUS_LABEL[status],
+            render: (currentStatus: TaskStatus) => (
+              <Form.Item name={["rows", 0, "status"]}>
+                <DropdownSelect
+                  mode="default"
+                  options={statuses.map((status) => ({
+                    value: status,
+                    label: STATUS_LABEL[status],
+                  }))}
+                  children={<div>{STATUS_LABEL[currentStatus]}</div>}
                 />
-              </Row>
-            )
-          : undefined
-      }
-      columns={[
-        {
-          dataIndex: "assignees",
-          width: 1,
-          render: (assignees: User[]) =>
-            editing ? (
-              <AssigneePicker projectId={projectId!} assignees={assignees} />
-            ) : (
-              <Avatar.Group maxCount={3}>
-                {assignees.map((user) => (
-                  <UserAvatar key={user.id} user={user} />
-                ))}
-                {!assignees.length && (
-                  <Avatar icon={<Icons.UserAddOutlined />} />
-                )}
-              </Avatar.Group>
+              </Form.Item>
             ),
-        },
-        {
-          title: "Name",
-          dataIndex: "name",
-          showSorterTooltip: false,
-          sorter: (a, b) => a.name.localeCompare(b.name),
-          render: (name: string) =>
-            editing ? (
-              <Input
-                className="dewo-field dewo-field-focus-border"
-                placeholder="Add subtask..."
-              />
-            ) : (
-              <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                {name}
-              </Typography.Title>
-            ),
-        },
-        // {
-        //   title: "Reward",
-        //   dataIndex: "reward",
-        //   width: 100,
-        //   render: (reward: TaskReward) =>
-        //     !!reward ? formatTaskReward(reward) : undefined,
-        // },
-        // { title: "Points", dataIndex: "storyPoints", width: 72 },
-        {
-          title: "Status",
-          dataIndex: "status",
-          width: 120,
-          render: (status: TaskStatus) => STATUS_LABEL[status],
-          // filters: statuses.map((status) => ({
-          //   value: status,
-          //   text: STATUS_LABEL[status],
-          // })),
-          // onFilter: (status, task) => task.status === status,
-          // defaultSortOrder: "ascend",
-          // sorter: (a, b) =>
-          //   statuses.indexOf(a.status) - statuses.indexOf(b.status),
-          // showSorterTooltip: false,
-        },
-        // {
-        //   title: "Tags",
-        //   dataIndex: "tags",
-        //   width: 240,
-        //   filters: tags.map((tag) => ({
-        //     value: tag.id,
-        //     text: <Tag color={tag.color}>{tag.label}</Tag>,
-        //   })),
-        //   onFilter: (tagId, task) => !!task.tags?.some((t) => t.id === tagId),
-        //   render: (_, task) =>
-        //     !!task.id && (
-        //       <TaskTagsRow task={task as any} showStandardTags={false} />
-        //     ),
-        // },
-        // {
-        //   title: "Actions",
-        //   key: "button",
-        //   width: 1,
-        //   render: (_, task) =>
-        //     !!task.id && <TaskActionButton task={task as any} />,
-        // },
-      ]}
-    />
+
+            // filters: statuses.map((status) => ({
+            //   value: status,
+            //   text: STATUS_LABEL[status],
+            // })),
+            // onFilter: (status, task) => task.status === status,
+            // defaultSortOrder: "ascend",
+            // sorter: (a, b) =>
+            //   statuses.indexOf(a.status) - statuses.indexOf(b.status),
+            // showSorterTooltip: false,
+          },
+          // {
+          //   title: "Tags",
+          //   dataIndex: "tags",
+          //   width: 240,
+          //   filters: tags.map((tag) => ({
+          //     value: tag.id,
+          //     text: <Tag color={tag.color}>{tag.label}</Tag>,
+          //   })),
+          //   onFilter: (tagId, task) => !!task.tags?.some((t) => t.id === tagId),
+          //   render: (_, task) =>
+          //     !!task.id && (
+          //       <TaskTagsRow task={task as any} showStandardTags={false} />
+          //     ),
+          // },
+          // {
+          //   title: "Actions",
+          //   key: "button",
+          //   width: 1,
+          //   render: (_, task) =>
+          //     !!task.id && <TaskActionButton task={task as any} />,
+          // },
+        ]}
+      />
+    </Form>
   );
 };
