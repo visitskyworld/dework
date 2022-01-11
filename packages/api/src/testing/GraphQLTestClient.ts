@@ -26,7 +26,7 @@ export class GraphQLTestClient {
   }
 
   expectGqlError(response: Response, status: number): void {
-    expect(response.body.errors?.[0].extensions.response.statusCode).toEqual(
+    expect(response.body.errors?.[0].extensions.exception.status).toEqual(
       status
     );
   }

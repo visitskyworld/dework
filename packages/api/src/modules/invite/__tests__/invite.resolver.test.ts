@@ -202,10 +202,7 @@ describe("InviteResolver", () => {
           const { user: inviter, project } =
             await fixtures.createUserOrgProject();
           const invite = await fixtures.createInvite(
-            {
-              projectId: project.id,
-              projectRole: ProjectRole.ADMIN,
-            },
+            { projectId: project.id, projectRole: ProjectRole.ADMIN },
             inviter
           );
           const invited = await fixtures.createUser();
@@ -231,6 +228,30 @@ describe("InviteResolver", () => {
           expect(user.organizations).toContainEqual(
             expect.objectContaining({ id: project.organizationId })
           );
+        });
+
+        it("should assert that user has access to gated token", async () => {
+          const token = await fixtures.createPaymentToken();
+          const { user: inviter, project } =
+            await fixtures.createUserOrgProject();
+          const invite = await fixtures.createInvite(
+            {
+              projectId: project.id,
+              projectRole: ProjectRole.ADMIN,
+              tokenId: token.id,
+            },
+            inviter
+          );
+
+          const invited = await fixtures.createUser();
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          console.warn(JSON.stringify(response.body, null, 2));
+          client.expectGqlError(response, HttpStatus.FORBIDDEN);
         });
       });
     });

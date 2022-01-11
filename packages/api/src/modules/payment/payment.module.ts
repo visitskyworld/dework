@@ -9,6 +9,7 @@ import { LoggerMiddleware } from "../auth/logger";
 import { PaymentPoller } from "./payment.poller";
 import { PaymentResolver } from "./payment.resolver";
 import { PaymentService } from "./payment.service";
+import { TokenService } from "./token.service";
 
 @Module({
   imports: [
@@ -20,8 +21,8 @@ import { PaymentService } from "./payment.service";
       PaymentToken,
     ]),
   ],
-  providers: [PaymentResolver, PaymentService, PaymentPoller],
-  exports: [PaymentService],
+  providers: [PaymentResolver, PaymentService, PaymentPoller, TokenService],
+  exports: [PaymentService, TokenService],
 })
 export class PaymentModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

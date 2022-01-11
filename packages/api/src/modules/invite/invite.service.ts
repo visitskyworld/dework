@@ -2,10 +2,15 @@ import { Invite } from "@dewo/api/models/Invite";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { OrganizationService } from "../organization/organization.service";
+import { TokenService } from "../payment/token.service";
 import { ProjectService } from "../project/project.service";
 
 @Injectable()
@@ -14,7 +19,8 @@ export class InviteService {
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
     private readonly organizationService: OrganizationService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly tokenService: TokenService
   ) {}
 
   public async create(
@@ -31,6 +37,17 @@ export class InviteService {
   public async accept(inviteId: string, user: User): Promise<Invite> {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
+
+    if (!!invite.tokenId) {
+      const token = await invite.token;
+      const balanceOf = await this.tokenService.balanceOf(token!, user);
+      if (!balanceOf) {
+        throw new ForbiddenException({
+          reason: "MISSING_TOKEN",
+          tokenId: invite.tokenId,
+        });
+      }
+    }
 
     if (!!invite.organizationId && !!invite.organizationRole) {
       await this.organizationService.upsertMember({
