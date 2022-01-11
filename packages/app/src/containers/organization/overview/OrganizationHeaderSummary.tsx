@@ -67,7 +67,14 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
           {organization.name}
         </Typography.Title>
       }
-      description={description}
+      description={
+        <>
+          {description}
+          <Button size="small" type="primary">
+            Join using Gem NFT
+          </Button>
+        </>
+      }
     />
   );
 };

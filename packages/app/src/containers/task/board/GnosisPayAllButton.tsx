@@ -109,7 +109,10 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
             reward.token.type === PaymentTokenType.ERC20 &&
             !!reward.token.address
           ) {
-            const contract = await loadERC20Contract(reward.token.address);
+            const contract = await loadERC20Contract(
+              reward.token.address,
+              network
+            );
             // https://ethereum.stackexchange.com/a/116793/89347
             // https://github.com/ethers-io/ethers.js/issues/478#issuecomment-495814010
             return {

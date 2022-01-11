@@ -2,7 +2,7 @@ import { Col, Row, Typography } from "antd";
 import React, { CSSProperties, FC, ReactNode } from "react";
 
 interface Props {
-  label: string;
+  label: ReactNode;
   children: ReactNode;
   style?: CSSProperties;
   className?: string;

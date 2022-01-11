@@ -168,11 +168,18 @@ export const projectDetails = gql`
     integrations {
       ...ProjectIntegration
     }
+    tokenGatedInvites {
+      id
+      token {
+        ...PaymentToken
+      }
+    }
   }
 
   ${project}
   ${projectMember}
   ${paymentMethod}
+  ${paymentToken}
   ${projectIntegration}
 `;
 
@@ -457,9 +464,15 @@ export const invite = gql`
     project {
       ...Project
     }
+
+    tokenId
+    token {
+      ...PaymentToken
+    }
   }
 
   ${user}
   ${organization}
   ${project}
+  ${paymentToken}
 `;

@@ -287,9 +287,7 @@ export const setOrganizationDetail = gql`
 `;
 
 export const createOrganizationInvite = gql`
-  mutation CreateOrganizationInviteMutation(
-    $input: CreateOrganizationInviteInput!
-  ) {
+  mutation CreateOrganizationInviteMutation($input: OrganizationInviteInput!) {
     invite: createOrganizationInvite(input: $input) {
       id
     }
@@ -297,11 +295,32 @@ export const createOrganizationInvite = gql`
 `;
 
 export const createProjectInvite = gql`
-  mutation CreateProjectInviteMutation($input: CreateProjectInviteInput!) {
+  mutation CreateProjectInviteMutation($input: ProjectInviteInput!) {
     invite: createProjectInvite(input: $input) {
       id
+      project {
+        id
+        tokenGatedInvites {
+          ...Invite
+        }
+      }
     }
   }
+
+  ${Fragments.invite}
+`;
+
+export const deleteProjectInvite = gql`
+  mutation DeleteProjectInviteMutation($input: ProjectInviteInput!) {
+    invite: deleteProjectInvite(input: $input) {
+      id
+      tokenGatedInvites {
+        ...Invite
+      }
+    }
+  }
+
+  ${Fragments.invite}
 `;
 
 export const acceptInvite = gql`

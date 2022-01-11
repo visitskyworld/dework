@@ -1,4 +1,9 @@
-import { ProjectDetails, UpdateProjectInput } from "@dewo/app/graphql/types";
+import {
+  PaymentToken,
+  ProjectDetails,
+  ProjectRole,
+  UpdateProjectInput,
+} from "@dewo/app/graphql/types";
 import { Form, Input, Space } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
@@ -12,6 +17,11 @@ import { ProjectDiscordIntegration } from "./ProjectDiscordIntegration";
 import { ProjectSettingsFormFields } from "./ProjectSettingsFormFields";
 import { useUpdateProject } from "../hooks";
 import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
+import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
+import {
+  useCreateProjectInvite,
+  useDeleteProjectInvite,
+} from "../../invite/hooks";
 
 interface Props {
   project: ProjectDetails;
@@ -20,8 +30,8 @@ interface Props {
 export const ProjectSettings: FC<Props> = ({ project }) => {
   const updateProject = useUpdateProject();
   const handleUpdateProject = useCallback(
-    (values: Partial<UpdateProjectInput>) =>
-      updateProject({ id: project.id, ...values }),
+    (changed: Partial<UpdateProjectInput>) =>
+      updateProject({ id: project.id, ...changed }),
     [updateProject, project.id]
   );
 
@@ -30,6 +40,37 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
     (pm) =>
       updatePaymentMethod({ id: pm.id, deletedAt: new Date().toISOString() }),
     [updatePaymentMethod]
+  );
+
+  const initialValues = useMemo(
+    () => ({
+      id: project.id,
+      visibility: project.visibility,
+      options: project.options,
+    }),
+    [project]
+  );
+
+  const tokenGatedInvite = project.tokenGatedInvites[0];
+  const createProjectInvite = useCreateProjectInvite();
+  const deleteProjectInvite = useDeleteProjectInvite();
+  const handleChangeTokenGating = useCallback(
+    async (token: PaymentToken | undefined) => {
+      if (!!token) {
+        await createProjectInvite({
+          projectId: project.id,
+          tokenId: token.id,
+          role: ProjectRole.CONTRIBUTOR,
+        });
+      } else {
+        await deleteProjectInvite({
+          projectId: project.id,
+          tokenId: tokenGatedInvite.token?.id,
+          role: ProjectRole.CONTRIBUTOR,
+        });
+      }
+    },
+    [createProjectInvite, deleteProjectInvite, tokenGatedInvite, project.id]
   );
 
   return (
@@ -71,17 +112,15 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           </Space>
         </FormSection>
 
+        <ProjectTokenGatingInput
+          value={tokenGatedInvite?.token ?? undefined}
+          onChange={handleChangeTokenGating}
+        />
+
         <Form<UpdateProjectInput>
           layout="vertical"
           requiredMark={false}
-          initialValues={useMemo(
-            () => ({
-              id: project.id,
-              visibility: project.visibility,
-              options: project.options,
-            }),
-            [project]
-          )}
+          initialValues={initialValues}
           onValuesChange={handleUpdateProject}
         >
           <ProjectSettingsFormFields />

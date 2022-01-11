@@ -29,6 +29,7 @@ import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInp
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
+import { Invite } from "@dewo/api/models/Invite";
 
 @Resolver(() => Project)
 @Injectable()
@@ -48,7 +49,7 @@ export class ProjectResolver {
   public async paymentMethods(
     @Parent() project: Project
   ): Promise<PaymentMethod[]> {
-    // TODO(fant): query project PMs and filter by deletedAt directly
+    // TODO(fant): query and filter by deletedAt directly
     const pms = await project.paymentMethods;
     return pms.filter((p) => !p.deletedAt);
   }
@@ -57,9 +58,17 @@ export class ProjectResolver {
   public async integrations(
     @Parent() project: Project
   ): Promise<ProjectIntegration[]> {
-    // TODO(fant): query project PMs and filter by deletedAt directly
+    // TODO(fant): query and filter by deletedAt directly
     const integrations = await project.integrations;
     return integrations.filter((i) => !i.deletedAt);
+  }
+
+  @ResolveField(() => [Invite])
+  public async tokenGatedInvites(
+    @Parent() project: Project
+  ): Promise<Invite[]> {
+    const invites = await project.invites;
+    return invites.filter((i) => !!i.tokenId);
   }
 
   @Mutation(() => Project)

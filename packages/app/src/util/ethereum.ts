@@ -97,12 +97,21 @@ interface ERC20Contract {
   ): Promise<ethers.providers.TransactionResponse>;
 }
 
+interface ERC721Contract {
+  balanceOf(owner: string): Promise<BigNumber>;
+  name(): Promise<string>;
+  symbol(): Promise<string>;
+}
+
 export function useERC20Contract(): (
-  address: string
+  address: string,
+  network: PaymentNetwork
 ) => Promise<ethers.Contract & ERC20Contract> {
   const requestSigner = useRequestSigner();
+  const switchChain = useSwitchChain();
   return useCallback(
-    async (address) => {
+    async (address, network) => {
+      await switchChain(network);
       const signer = await requestSigner();
       // https://gist.github.com/petejkim/72421bc2cb26fad916c84864421773a4
       return new ethers.Contract(
@@ -117,7 +126,31 @@ export function useERC20Contract(): (
         signer
       ) as ethers.Contract & ERC20Contract;
     },
-    [requestSigner]
+    [requestSigner, switchChain]
+  );
+}
+
+export function useERC721Contract(): (
+  address: string,
+  network: PaymentNetwork
+) => Promise<ethers.Contract & ERC721Contract> {
+  const requestSigner = useRequestSigner();
+  const switchChain = useSwitchChain();
+  return useCallback(
+    async (address, network) => {
+      await switchChain(network);
+      const signer = await requestSigner();
+      return new ethers.Contract(
+        address,
+        [
+          "function balanceOf(address owner) public view returns (uint256 balance)",
+          "function name() public view returns (string memory)",
+          "function symbol() public view returns (string memory)",
+        ],
+        signer
+      ) as ethers.Contract & ERC721Contract;
+    },
+    [requestSigner, switchChain]
   );
 }
 
@@ -152,7 +185,7 @@ export function useCreateEthereumTransaction(): (
           return tx.hash;
         }
         case PaymentTokenType.ERC20:
-          const contract = await loadERC20Contract(token.address!);
+          const contract = await loadERC20Contract(token.address!, network);
           const tx = await contract.transfer(toAddress, BigNumber.from(amount));
           return tx.hash;
         default:

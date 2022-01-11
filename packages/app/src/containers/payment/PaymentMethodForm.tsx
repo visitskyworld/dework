@@ -107,7 +107,10 @@ export const PaymentMethodForm: FC<Props> = ({
         case PaymentTokenType.ERC20:
           if (!token.address || !values.address) return false;
           try {
-            const contract = await loadERC20Contract(token.address);
+            const contract = await loadERC20Contract(
+              token.address,
+              selectedNetwork
+            );
             const balance = await contract.balanceOf(values.address);
             setShouldShowToken((prev) => ({
               ...prev,
@@ -123,7 +126,7 @@ export const PaymentMethodForm: FC<Props> = ({
           break;
       }
     });
-  }, [selectedNetwork?.tokens, values.address, loadERC20Contract]);
+  }, [values.address, selectedNetwork, loadERC20Contract]);
   useEffect(() => {
     loadShouldShowToken();
   }, [loadShouldShowToken]);

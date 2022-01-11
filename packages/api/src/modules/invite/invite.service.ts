@@ -34,6 +34,12 @@ export class InviteService {
     return this.findById(created.id) as Promise<Invite>;
   }
 
+  public async delete(
+    partial: Pick<Invite, "projectId" | "projectRole" | "tokenId">
+  ): Promise<void> {
+    await this.inviteRepo.delete(partial);
+  }
+
   public async accept(inviteId: string, user: User): Promise<Invite> {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();

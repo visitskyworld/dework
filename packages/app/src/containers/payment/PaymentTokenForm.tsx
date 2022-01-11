@@ -8,12 +8,14 @@ import {
   PaymentTokenType,
 } from "@dewo/app/graphql/types";
 import { useForm } from "antd/lib/form/Form";
-import { useERC20Contract } from "@dewo/app/util/ethereum";
+import { useERC20Contract, useERC721Contract } from "@dewo/app/util/ethereum";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { useCreatePaymentToken } from "./hooks";
+import { useCreatePaymentToken, usePaymentNetworks } from "./hooks";
 
 interface FormProps {
-  network: PaymentNetwork;
+  network?: PaymentNetwork;
+  type?: PaymentTokenType;
+  submitText?: string;
   onDone(token: PaymentToken): void;
 }
 
@@ -21,8 +23,14 @@ interface FormModalProps extends FormProps {
   toggle: UseToggleHook;
 }
 
-export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
+export const PaymentTokenForm: FC<FormProps> = ({
+  network,
+  type,
+  submitText = "Add Custom Token",
+  onDone,
+}) => {
   const [form] = useForm<CreatePaymentTokenInput>();
+  const networks = usePaymentNetworks();
 
   const submitLoading = useToggle();
   const lookupLoading = useToggle();
@@ -30,30 +38,42 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
   const [values, setValues] = useState<Partial<CreatePaymentTokenInput>>({});
 
   const loadERC20Contract = useERC20Contract();
+  const loadERC721Contract = useERC721Contract();
   const lookupAddress = useCallback(async () => {
     const values = form.getFieldsValue();
+    const network = networks?.find((n) => n.id === values.networkId);
     try {
+      if (!network) throw new Error("No network selected");
+
       lookupLoading.toggleOn();
       switch (values.type) {
-        case PaymentTokenType.ERC20:
-          const contract = await loadERC20Contract(values.address);
-          const [name, symbol, exp] = await Promise.all([
-            contract.name(),
-            contract.symbol(),
-            contract.decimals(),
-          ]);
+        case PaymentTokenType.ERC20: {
+          const contract = await loadERC20Contract(values.address, network);
+          const name = await contract.name();
+          const symbol = await contract.symbol();
+          const exp = await contract.decimals();
           form.setFieldsValue({ name, symbol, exp });
           setValues((prev) => ({ ...prev, name, symbol, exp }));
           break;
+        }
+        case PaymentTokenType.ERC721: {
+          const contract = await loadERC721Contract(values.address, network);
+          const name = await contract.name();
+          const symbol = await contract.symbol();
+          form.setFieldsValue({ name, symbol, exp: 1 });
+          setValues((prev) => ({ ...prev, name, symbol, exp: 1 }));
+          break;
+        }
       }
-    } catch {
+    } catch (error) {
+      console.error(error);
       message.error(
         "Failed to load address. Are you sure the contract address is correct and that you're on the right network?"
       );
     } finally {
       lookupLoading.toggleOff();
     }
-  }, [form, loadERC20Contract, lookupLoading]);
+  }, [form, networks, loadERC20Contract, loadERC721Contract, lookupLoading]);
 
   const handleChange = useCallback(
     (
@@ -82,7 +102,7 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
       form={form}
       layout="vertical"
       requiredMark={false}
-      initialValues={{ networkId: network.id, type: PaymentTokenType.ERC20 }}
+      initialValues={{ networkId: network?.id, type }}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
@@ -94,13 +114,18 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
             rules={[{ required: true }]}
           >
             <Select<string>
-              disabled
+              disabled={!!network}
               style={{ width: "100%" }}
               placeholder="Select network"
+              showSearch
+              optionFilterProp="label"
+              loading={!networks}
             >
-              <Select.Option value={network.id} label={network.name}>
-                {network.name}
-              </Select.Option>
+              {networks?.map((network) => (
+                <Select.Option value={network.id} label={network.name}>
+                  {network.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
@@ -111,13 +136,18 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
             rules={[{ required: true }]}
           >
             <Select<string>
-              disabled
-              value={network.id}
+              disabled={!!type}
+              value={type}
               style={{ width: "100%" }}
               placeholder="Select token type"
+              showSearch
+              optionFilterProp="label"
             >
               <Select.Option value={PaymentTokenType.ERC20} label="ERC20">
                 ERC20
+              </Select.Option>
+              <Select.Option value={PaymentTokenType.ERC721} label="ERC721">
+                ERC721
               </Select.Option>
             </Select>
           </Form.Item>
@@ -179,12 +209,12 @@ export const PaymentTokenForm: FC<FormProps> = ({ network, onDone }) => {
         <Col span={24}>
           <Button
             type="primary"
-            htmlType="submit"
             block
             loading={submitLoading.isOn}
             hidden={!values.name || !values.symbol || !values.exp}
+            onClick={form.submit}
           >
-            Add Custom Token
+            {submitText}
           </Button>
         </Col>
       </Row>

@@ -6,7 +6,6 @@ import { ProjectVisibility } from "@dewo/app/graphql/types";
 
 export const ProjectSettingsFormFields: FC = () => {
   const advancedOptions = useToggle(true);
-
   return (
     <>
       <Form.Item
