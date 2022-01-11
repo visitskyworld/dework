@@ -1,4 +1,6 @@
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
+import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
+import { PaymentTokenType } from "@dewo/api/models/PaymentToken";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -231,7 +233,21 @@ describe("InviteResolver", () => {
         });
 
         it("should assert that user has access to gated token", async () => {
-          const token = await fixtures.createPaymentToken();
+          const network = await fixtures.createPaymentNetwork({
+            type: PaymentNetworkType.ETHEREUM,
+            config: {
+              chainId: -1,
+              explorerUrl: "",
+              rpcUrl: "https://polygon-rpc.com",
+            },
+          });
+          const token = await fixtures.createPaymentToken({
+            type: PaymentTokenType.ERC721,
+            // https://polygonscan.com/address/0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd
+            address: "0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd",
+            networkId: network.id,
+          });
+
           const { user: inviter, project } =
             await fixtures.createUserOrgProject();
           const invite = await fixtures.createInvite(
@@ -244,14 +260,33 @@ describe("InviteResolver", () => {
           );
 
           const invited = await fixtures.createUser();
-          const response = await client.request({
+          const response1 = await client.request({
             app,
             auth: fixtures.createAuthToken(invited),
             body: InviteRequests.accept(invite.id),
           });
 
-          console.warn(JSON.stringify(response.body, null, 2));
-          client.expectGqlError(response, HttpStatus.FORBIDDEN);
+          client.expectGqlError(response1, HttpStatus.FORBIDDEN);
+
+          await fixtures.createPaymentMethod({
+            userId: invited.id,
+            networkId: network.id,
+            // https://opensea.io/0xcedda60f770a23f48960454f173c8e118718321e
+            address: "0xcedda60f770a23f48960454f173c8e118718321e",
+          });
+          const response2 = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response2.status).toEqual(HttpStatus.OK);
+          expect(response2.body.data?.invite.project.members).toContainEqual(
+            expect.objectContaining({
+              userId: invited.id,
+              role: ProjectRole.ADMIN,
+            })
+          );
         });
       });
     });

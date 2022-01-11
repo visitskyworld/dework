@@ -41,7 +41,7 @@ export class InviteService {
     if (!!invite.tokenId) {
       const token = await invite.token;
       const balanceOf = await this.tokenService.balanceOf(token!, user);
-      if (!balanceOf) {
+      if (balanceOf.lte(0)) {
         throw new ForbiddenException({
           reason: "MISSING_TOKEN",
           tokenId: invite.tokenId,

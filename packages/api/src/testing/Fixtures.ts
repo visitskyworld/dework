@@ -275,7 +275,7 @@ export class Fixtures {
   }
 
   public async createPaymentMethod(
-    partial: Partial<PaymentMethod> = {},
+    partial: Partial<PaymentMethod> & { networkId?: string } = {},
     user?: User
   ): Promise<PaymentMethod> {
     return this.paymentService.createPaymentMethod(
