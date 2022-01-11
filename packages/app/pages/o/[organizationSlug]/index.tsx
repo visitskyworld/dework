@@ -17,7 +17,7 @@ const Page: NextPage = () => {
   const currentTab = (router.query.tab as string | undefined) ?? "overview";
   const settingsTab = router.query.settingsTab as string | undefined;
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const routes = useMemo(
     () =>
       !!organization && [

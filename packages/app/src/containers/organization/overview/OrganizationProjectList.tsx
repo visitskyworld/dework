@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const projects = useMemo(
     () => organization?.projects.filter((p) => !p.deletedAt),
     [organization?.projects]

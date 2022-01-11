@@ -15,7 +15,7 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
 
   const { user } = useAuthContext();
 
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const isMember = useMemo(
     () => !!organization?.members.some((m) => m.userId === user?.id),
     [organization, user]

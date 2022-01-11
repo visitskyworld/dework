@@ -21,7 +21,7 @@ export const organizationRoleToString: Partial<
 };
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const removeMember = useRemoveOrganizationMember();
 
   const canDeleteAdmin = usePermission("delete", {

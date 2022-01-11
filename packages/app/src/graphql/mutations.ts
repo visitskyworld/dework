@@ -335,6 +335,7 @@ export const acceptInvite = gql`
       }
       project {
         id
+        name
         members {
           ...ProjectMember
         }

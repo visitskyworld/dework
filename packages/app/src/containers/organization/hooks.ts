@@ -169,17 +169,18 @@ export function useRemoveOrganizationMember(): (
   );
 }
 
-export function useOrganization(
-  organizationId: string | undefined
-): OrganizationDetails | undefined {
-  const { data } = useQuery<
+export function useOrganization(organizationId: string | undefined): {
+  organization: OrganizationDetails | undefined;
+  refetch(): Promise<unknown>;
+} {
+  const { data, refetch } = useQuery<
     GetOrganizationQuery,
     GetOrganizationQueryVariables
   >(Queries.organization, {
     variables: { organizationId: organizationId! },
     skip: !organizationId,
   });
-  return data?.organization ?? undefined;
+  return { organization: data?.organization ?? undefined, refetch };
 }
 
 export function useFeaturedOrganizations(
@@ -253,7 +254,7 @@ export function useOrganizationDiscordChannels(
 export function useOrganizationCoreTeam(
   organizationId: string | undefined
 ): User[] {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   return useMemo(
     () =>
       organization?.members
@@ -268,7 +269,7 @@ export function useOrganizationCoreTeam(
 export function useOrganizationContributors(
   organizationId: string | undefined
 ): User[] {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const coreTeam = useOrganizationCoreTeam(organizationId);
   return useMemo(
     () =>

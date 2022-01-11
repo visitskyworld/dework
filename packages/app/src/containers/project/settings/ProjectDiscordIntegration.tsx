@@ -31,7 +31,7 @@ interface Props {
 function useOrganizationDiscordIntegration(
   organizationId: string | undefined
 ): OrganizationIntegration | undefined {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   return useMemo(
     () =>
       organization?.integrations.find(

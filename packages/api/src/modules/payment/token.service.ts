@@ -28,7 +28,10 @@ export class TokenService {
 
     if (!addresses.length) return BigNumber.from(0);
 
-    if (token.type === PaymentTokenType.ERC721) {
+    if (
+      token.type === PaymentTokenType.ERC721 ||
+      token.type === PaymentTokenType.ERC20
+    ) {
       const network = await token.network;
       const provider = new ethers.providers.JsonRpcProvider(
         network.config.rpcUrl

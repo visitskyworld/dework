@@ -284,6 +284,34 @@ export interface UpdateOrganizationMutation_organization_projects_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -299,6 +327,12 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvi
 export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: UpdateOrganizationMutation_organization_projects_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: UpdateOrganizationMutation_organization_projects_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: UpdateOrganizationMutation_organization_projects_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: UpdateOrganizationMutation_organization_projects_tokenGatedInvites_token | null;
 }
 
@@ -360,6 +394,58 @@ export interface UpdateOrganizationMutation_organization_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: UpdateOrganizationMutation_organization_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: UpdateOrganizationMutation_organization_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: UpdateOrganizationMutation_organization_tokenGatedInvites_project | null;
+  tokenId: string | null;
+  token: UpdateOrganizationMutation_organization_tokenGatedInvites_token | null;
+}
+
 export interface UpdateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -374,6 +460,7 @@ export interface UpdateOrganizationMutation_organization {
   tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
   integrations: UpdateOrganizationMutation_organization_integrations[];
+  tokenGatedInvites: UpdateOrganizationMutation_organization_tokenGatedInvites[];
 }
 
 export interface UpdateOrganizationMutation {
@@ -645,6 +732,34 @@ export interface CreateProjectMutation_project_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface CreateProjectMutation_project_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface CreateProjectMutation_project_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface CreateProjectMutation_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -660,6 +775,12 @@ export interface CreateProjectMutation_project_tokenGatedInvites_token {
 export interface CreateProjectMutation_project_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: CreateProjectMutation_project_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: CreateProjectMutation_project_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: CreateProjectMutation_project_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: CreateProjectMutation_project_tokenGatedInvites_token | null;
 }
 
@@ -722,6 +843,34 @@ export interface CreateProjectMutation_project_organization_projects_integration
   config: Scalar.JSONObject;
 }
 
+export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -737,6 +886,12 @@ export interface CreateProjectMutation_project_organization_projects_tokenGatedI
 export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: CreateProjectMutation_project_organization_projects_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: CreateProjectMutation_project_organization_projects_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: CreateProjectMutation_project_organization_projects_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: CreateProjectMutation_project_organization_projects_tokenGatedInvites_token | null;
 }
 
@@ -798,6 +953,58 @@ export interface CreateProjectMutation_project_organization_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface CreateProjectMutation_project_organization_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectMutation_project_organization_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface CreateProjectMutation_project_organization_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface CreateProjectMutation_project_organization_tokenGatedInvites_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectMutation_project_organization_tokenGatedInvites {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: CreateProjectMutation_project_organization_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: CreateProjectMutation_project_organization_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: CreateProjectMutation_project_organization_tokenGatedInvites_project | null;
+  tokenId: string | null;
+  token: CreateProjectMutation_project_organization_tokenGatedInvites_token | null;
+}
+
 export interface CreateProjectMutation_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -812,6 +1019,7 @@ export interface CreateProjectMutation_project_organization {
   tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
   integrations: CreateProjectMutation_project_organization_integrations[];
+  tokenGatedInvites: CreateProjectMutation_project_organization_tokenGatedInvites[];
 }
 
 export interface CreateProjectMutation_project {
@@ -911,6 +1119,34 @@ export interface UpdateProjectMutation_project_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface UpdateProjectMutation_project_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateProjectMutation_project_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface UpdateProjectMutation_project_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface UpdateProjectMutation_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -926,6 +1162,12 @@ export interface UpdateProjectMutation_project_tokenGatedInvites_token {
 export interface UpdateProjectMutation_project_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: UpdateProjectMutation_project_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: UpdateProjectMutation_project_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: UpdateProjectMutation_project_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: UpdateProjectMutation_project_tokenGatedInvites_token | null;
 }
 
@@ -2192,6 +2434,7 @@ export interface AcceptInviteMutation_invite_project_organization {
 export interface AcceptInviteMutation_invite_project {
   __typename: "Project";
   id: Scalar.UUID;
+  name: string;
   members: AcceptInviteMutation_invite_project_members[];
   organization: AcceptInviteMutation_invite_project_organization;
 }
@@ -3400,6 +3643,34 @@ export interface GetOrganizationQuery_organization_projects_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3415,6 +3686,12 @@ export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_to
 export interface GetOrganizationQuery_organization_projects_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: GetOrganizationQuery_organization_projects_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: GetOrganizationQuery_organization_projects_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetOrganizationQuery_organization_projects_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: GetOrganizationQuery_organization_projects_tokenGatedInvites_token | null;
 }
 
@@ -3476,6 +3753,58 @@ export interface GetOrganizationQuery_organization_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface GetOrganizationQuery_organization_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationQuery_organization_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetOrganizationQuery_organization_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface GetOrganizationQuery_organization_tokenGatedInvites_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetOrganizationQuery_organization_tokenGatedInvites {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: GetOrganizationQuery_organization_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: GetOrganizationQuery_organization_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetOrganizationQuery_organization_tokenGatedInvites_project | null;
+  tokenId: string | null;
+  token: GetOrganizationQuery_organization_tokenGatedInvites_token | null;
+}
+
 export interface GetOrganizationQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3490,6 +3819,7 @@ export interface GetOrganizationQuery_organization {
   tags: GetOrganizationQuery_organization_tags[];
   details: GetOrganizationQuery_organization_details[];
   integrations: GetOrganizationQuery_organization_integrations[];
+  tokenGatedInvites: GetOrganizationQuery_organization_tokenGatedInvites[];
 }
 
 export interface GetOrganizationQuery {
@@ -3568,6 +3898,34 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_in
   config: Scalar.JSONObject;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3583,6 +3941,12 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_to
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_token | null;
 }
 
@@ -3644,6 +4008,58 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_integration
   config: Scalar.JSONObject;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_project | null;
+  tokenId: string | null;
+  token: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_token | null;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3658,6 +4074,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   tags: GetFeaturedOrganizationsQuery_featuredOrganizations_tags[];
   details: GetFeaturedOrganizationsQuery_featuredOrganizations_details[];
   integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_integrations[];
+  tokenGatedInvites: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites[];
 }
 
 export interface GetFeaturedOrganizationsQuery {
@@ -3951,6 +4368,34 @@ export interface GetProjectQuery_project_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface GetProjectQuery_project_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetProjectQuery_project_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface GetProjectQuery_project_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface GetProjectQuery_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3966,6 +4411,12 @@ export interface GetProjectQuery_project_tokenGatedInvites_token {
 export interface GetProjectQuery_project_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: GetProjectQuery_project_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: GetProjectQuery_project_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: GetProjectQuery_project_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: GetProjectQuery_project_tokenGatedInvites_token | null;
 }
 
@@ -5942,6 +6393,67 @@ export interface Project {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Invite
+// ====================================================
+
+export interface Invite_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface Invite_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface Invite_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface Invite_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface Invite {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: Invite_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: Invite_organization | null;
+  projectRole: ProjectRole | null;
+  project: Invite_project | null;
+  tokenId: string | null;
+  token: Invite_token | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectDetails
 // ====================================================
 
@@ -6004,6 +6516,34 @@ export interface ProjectDetails_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface ProjectDetails_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface ProjectDetails_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface ProjectDetails_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface ProjectDetails_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -6019,6 +6559,12 @@ export interface ProjectDetails_tokenGatedInvites_token {
 export interface ProjectDetails_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: ProjectDetails_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: ProjectDetails_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: ProjectDetails_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: ProjectDetails_tokenGatedInvites_token | null;
 }
 
@@ -6996,6 +7542,34 @@ export interface OrganizationDetails_projects_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface OrganizationDetails_projects_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface OrganizationDetails_projects_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface OrganizationDetails_projects_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface OrganizationDetails_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -7011,6 +7585,12 @@ export interface OrganizationDetails_projects_tokenGatedInvites_token {
 export interface OrganizationDetails_projects_tokenGatedInvites {
   __typename: "Invite";
   id: Scalar.UUID;
+  inviter: OrganizationDetails_projects_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: OrganizationDetails_projects_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: OrganizationDetails_projects_tokenGatedInvites_project | null;
+  tokenId: string | null;
   token: OrganizationDetails_projects_tokenGatedInvites_token | null;
 }
 
@@ -7072,6 +7652,58 @@ export interface OrganizationDetails_integrations {
   config: Scalar.JSONObject;
 }
 
+export interface OrganizationDetails_tokenGatedInvites_inviter {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface OrganizationDetails_tokenGatedInvites_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface OrganizationDetails_tokenGatedInvites_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface OrganizationDetails_tokenGatedInvites_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface OrganizationDetails_tokenGatedInvites {
+  __typename: "Invite";
+  id: Scalar.UUID;
+  inviter: OrganizationDetails_tokenGatedInvites_inviter;
+  organizationRole: OrganizationRole | null;
+  organization: OrganizationDetails_tokenGatedInvites_organization | null;
+  projectRole: ProjectRole | null;
+  project: OrganizationDetails_tokenGatedInvites_project | null;
+  tokenId: string | null;
+  token: OrganizationDetails_tokenGatedInvites_token | null;
+}
+
 export interface OrganizationDetails {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -7086,67 +7718,7 @@ export interface OrganizationDetails {
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
   integrations: OrganizationDetails_integrations[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: Invite
-// ====================================================
-
-export interface Invite_inviter {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-}
-
-export interface Invite_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  permalink: string;
-}
-
-export interface Invite_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
-export interface Invite_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface Invite {
-  __typename: "Invite";
-  id: Scalar.UUID;
-  inviter: Invite_inviter;
-  organizationRole: OrganizationRole | null;
-  organization: Invite_organization | null;
-  projectRole: ProjectRole | null;
-  project: Invite_project | null;
-  tokenId: string | null;
-  token: Invite_token | null;
+  tokenGatedInvites: OrganizationDetails_tokenGatedInvites[];
 }
 
 /* tslint:disable */

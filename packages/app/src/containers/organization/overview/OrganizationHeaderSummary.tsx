@@ -4,13 +4,14 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { useOrganization } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
+import { JoinTokenGatedProjectsButton } from "./JoinTokenGatedProjectsButton";
 
 interface Props {
   organizationId: string;
 }
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const canUpdate = usePermission("update", "Project");
   const avatarSize = Grid.useBreakpoint().sm ? 192 : 96;
 
@@ -70,9 +71,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
       description={
         <>
           {description}
-          <Button size="small" type="primary">
-            Join using Gem NFT
-          </Button>
+          <JoinTokenGatedProjectsButton organizationId={organizationId} />
         </>
       }
     />

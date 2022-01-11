@@ -87,17 +87,21 @@ export function useDeleteProjectInvite(): (
   );
 }
 
-export function useAcceptInvite(): (inviteId: string) => Promise<void> {
+export function useAcceptInvite(): (
+  inviteId: string
+) => Promise<AcceptInviteMutation["invite"]> {
   const [mutation] = useMutation<
     AcceptInviteMutation,
     AcceptInviteMutationVariables
   >(Mutations.acceptInvite);
   return useCallback(
     async (inviteId) => {
-      await mutation({
+      const res = await mutation({
         variables: { inviteId },
         refetchQueries: [{ query: Queries.me }],
       });
+      if (!res.data) throw res.errors?.[0];
+      return res.data!.invite;
     },
     [mutation]
   );
@@ -106,6 +110,6 @@ export function useAcceptInvite(): (inviteId: string) => Promise<void> {
 export function useCopyToClipboardAndShowToast(): (textToCopy: string) => void {
   return useCallback((inviteLink: string) => {
     copy(inviteLink);
-    message.success({ content: "Invite link copied", type: "success" });
+    message.success({ content: "Invite link copied" });
   }, []);
 }

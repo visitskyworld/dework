@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
 
   if (!organization) return null;
   return (

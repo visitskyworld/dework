@@ -27,7 +27,7 @@ interface ProjectGithubIntegrationProps {
 function useHasOrganizationGithubIntegration(
   organizationId: string | undefined
 ): boolean {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   return useMemo(
     () =>
       !!organization?.integrations.some(

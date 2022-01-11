@@ -44,7 +44,7 @@ export const OrganizationProfileSettings: FC<
   OrganizationProfileSettingsProps
 > = ({ organizationId }) => {
   const [form] = useForm<FormValues>();
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const updateOrganization = useUpdateOrganization();

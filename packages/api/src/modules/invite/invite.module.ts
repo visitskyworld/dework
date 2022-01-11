@@ -10,7 +10,11 @@ import { permissions } from "../auth/permissions";
 import { OrganizationModule } from "../organization/organization.module";
 import { PaymentModule } from "../payment/payment.module";
 import { ProjectModule } from "../project/project.module";
-import { InviteResolver } from "./invite.resolver";
+import {
+  InviteResolver,
+  OrganizationTokenGatedInvitesResolver,
+  ProjectTokenGatedInvitesResolver,
+} from "./invite.resolver";
 import { InviteService } from "./invite.service";
 
 @Module({
@@ -27,7 +31,12 @@ import { InviteService } from "./invite.service";
     OrganizationModule,
     PaymentModule,
   ],
-  providers: [InviteResolver, InviteService],
+  providers: [
+    InviteResolver,
+    InviteService,
+    ProjectTokenGatedInvitesResolver,
+    OrganizationTokenGatedInvitesResolver,
+  ],
   exports: [InviteService],
 })
 export class InviteModule {}

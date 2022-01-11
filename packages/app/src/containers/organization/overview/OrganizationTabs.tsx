@@ -40,7 +40,7 @@ export const OrganizationTabs: FC<Props> = ({
   currentTab,
   settingsTab,
 }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const router = useRouter();

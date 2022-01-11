@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const contributors = useOrganizationContributors(organizationId);
   const projectsByUserId = useMemo(
     () =>

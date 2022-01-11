@@ -54,7 +54,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   const router = useRouter();
 
   const [values, setValues] = useState<Partial<FormValues>>({});

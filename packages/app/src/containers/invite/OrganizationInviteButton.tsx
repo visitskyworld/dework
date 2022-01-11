@@ -19,7 +19,7 @@ export const OrganizationInviteButton: FC<Props> = ({
   style,
 }) => {
   const [loading, setLoading] = useState(false);
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
 
   const canInviteOrganizationAdmin = usePermission("create", {
     __typename: "OrganizationMember",

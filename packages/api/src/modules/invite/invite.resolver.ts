@@ -1,4 +1,12 @@
-import { Args, Context, Query, Mutation } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Query,
+  Mutation,
+  Resolver,
+  ResolveField,
+  Parent,
+} from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -14,6 +22,9 @@ import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectInviteInput } from "./dto/ProjectInviteInput";
 import { ProjectService } from "../project/project.service";
 import { Project } from "@dewo/api/models/Project";
+import { InjectRepository } from "@nestjs/typeorm";
+import { IsNull, Not, Repository } from "typeorm";
+import { Organization } from "@dewo/api/models/Organization";
 
 @Injectable()
 export class InviteResolver {
@@ -101,5 +112,47 @@ export class InviteResolver {
     @Args("id", { type: () => GraphQLUUID }) inviteId: string
   ): Promise<Invite | undefined> {
     return this.inviteService.findById(inviteId);
+  }
+}
+
+@Injectable()
+@Resolver(() => Project)
+export class ProjectTokenGatedInvitesResolver {
+  constructor(
+    @InjectRepository(Invite)
+    private readonly inviteRepo: Repository<Invite>
+  ) {}
+
+  @ResolveField(() => [Invite])
+  public async tokenGatedInvites(
+    @Parent() project: Project
+  ): Promise<Invite[]> {
+    return this.inviteRepo.find({
+      projectId: project.id,
+      tokenId: Not(IsNull()),
+    });
+  }
+}
+
+@Injectable()
+@Resolver(() => Organization)
+export class OrganizationTokenGatedInvitesResolver {
+  constructor(
+    @InjectRepository(Invite)
+    private readonly inviteRepo: Repository<Invite>
+  ) {}
+
+  @ResolveField(() => [Invite])
+  public async tokenGatedInvites(
+    @Parent() organization: Organization
+  ): Promise<Invite[]> {
+    return this.inviteRepo
+      .createQueryBuilder("invite")
+      .innerJoinAndSelect("invite.project", "project")
+      .where("project.organizationId = :organizationId", {
+        organizationId: organization.id,
+      })
+      .andWhere("invite.tokenId IS NOT NULL")
+      .getMany();
   }
 }

@@ -57,7 +57,7 @@ const SlugReplacer: React.FC = () => {
   const router = useRouter();
   const { organizationSlug, projectSlug } = router.query;
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganization(organizationId);
   useEffect(() => {
     if (
       organization &&

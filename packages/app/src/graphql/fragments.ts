@@ -150,6 +150,34 @@ export const project = gql`
   }
 `;
 
+export const invite = gql`
+  fragment Invite on Invite {
+    id
+    inviter {
+      ...User
+    }
+    organizationRole
+    organization {
+      ...Organization
+    }
+
+    projectRole
+    project {
+      ...Project
+    }
+
+    tokenId
+    token {
+      ...PaymentToken
+    }
+  }
+
+  ${user}
+  ${organization}
+  ${project}
+  ${paymentToken}
+`;
+
 export const projectDetails = gql`
   fragment ProjectDetails on Project {
     ...Project
@@ -169,10 +197,7 @@ export const projectDetails = gql`
       ...ProjectIntegration
     }
     tokenGatedInvites {
-      id
-      token {
-        ...PaymentToken
-      }
+      ...Invite
     }
   }
 
@@ -181,6 +206,7 @@ export const projectDetails = gql`
   ${paymentMethod}
   ${paymentToken}
   ${projectIntegration}
+  ${invite}
 `;
 
 export const taskTag = gql`
@@ -438,6 +464,9 @@ export const organizationDetails = gql`
     integrations {
       ...OrganizationIntegration
     }
+    tokenGatedInvites {
+      ...Invite
+    }
   }
 
   ${organization}
@@ -447,32 +476,5 @@ export const organizationDetails = gql`
   ${organizationTag}
   ${entityDetail}
   ${user}
-`;
-
-export const invite = gql`
-  fragment Invite on Invite {
-    id
-    inviter {
-      ...User
-    }
-    organizationRole
-    organization {
-      ...Organization
-    }
-
-    projectRole
-    project {
-      ...Project
-    }
-
-    tokenId
-    token {
-      ...PaymentToken
-    }
-  }
-
-  ${user}
-  ${organization}
-  ${project}
-  ${paymentToken}
+  ${invite}
 `;
