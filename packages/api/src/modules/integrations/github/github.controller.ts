@@ -192,11 +192,18 @@ export class GithubController {
       };
 
       if (event.action === "closed") {
-        if (!pr) return;
+        if (!pr) {
+          this.log(
+            "Closed PR but no GithubPullRequest registered in Dework",
+            {}
+          );
+          return;
+        }
         const merged = event.pull_request.merged;
         const status = merged
           ? GithubPullRequestStatus.MERGED
           : GithubPullRequestStatus.CLOSED;
+        this.log("Closed PR", { merged, status, prId: pr.id });
         await this.githubService.updatePullRequest({
           ...prData,
           id: pr.id,
@@ -216,7 +223,7 @@ export class GithubController {
           });
         }
       } else if (
-        event.action === "created" ||
+        event.action === "opened" ||
         event.action === "ready_for_review"
       ) {
         if (pr) {
