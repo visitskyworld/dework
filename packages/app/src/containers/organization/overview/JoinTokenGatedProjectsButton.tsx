@@ -9,6 +9,7 @@ import { useAcceptInvite } from "../../invite/hooks";
 import { ApolloError } from "@apollo/client";
 import _ from "lodash";
 import { PaymentToken } from "@dewo/app/graphql/types";
+import { LoginButton } from "../../auth/LoginButton";
 
 interface Props {
   organizationId: string;
@@ -73,16 +74,24 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   );
 
   if (!invites?.length) return null;
+  const buttonText = `Join private projects using ${tokens
+    .map((t) => t.symbol)
+    .join(", ")}`;
   return (
     <>
-      <Button
-        size="small"
-        type="primary"
-        icon={<Icons.KeyOutlined />}
-        onClick={modalVisible.toggleOn}
-      >
-        Join private projects using {tokens.map((t) => t.symbol).join(", ")}
-      </Button>
+      {!!user ? (
+        <Button
+          type="primary"
+          icon={<Icons.SafetyCertificateFilled />}
+          onClick={modalVisible.toggleOn}
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <LoginButton type="primary" icon={<Icons.SafetyCertificateFilled />}>
+          {buttonText}
+        </LoginButton>
+      )}
       <Modal
         visible={modalVisible.isOn}
         footer={null}
