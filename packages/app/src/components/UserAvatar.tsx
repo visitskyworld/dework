@@ -16,6 +16,7 @@ export const UserAvatar: FC<Props> = ({
   user,
   linkToProfile,
   tooltip,
+  className = "",
   ...otherProps
 }) => {
   const navigateToProfile = useNavigateToProfile();
@@ -32,7 +33,7 @@ export const UserAvatar: FC<Props> = ({
       <Avatar
         src={user.imageUrl}
         style={{
-          backgroundColor: colorFromUuid(user.id),
+          backgroundColor: !user.imageUrl ? colorFromUuid(user.id) : undefined,
           cursor: linkToProfile ? "pointer" : undefined,
           ...otherProps.style,
         }}
@@ -40,6 +41,7 @@ export const UserAvatar: FC<Props> = ({
         // @ts-ignore
         onClick={linkToProfile ? handleClick : undefined}
         {...otherProps}
+        className={`bg-component ${className}`}
       />
     </Tooltip>
   );
