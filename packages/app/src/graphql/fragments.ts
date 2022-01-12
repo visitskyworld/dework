@@ -169,6 +169,9 @@ export const invite = gql`
     tokenId
     token {
       ...PaymentToken
+      network {
+        ...PaymentNetwork
+      }
     }
   }
 
@@ -176,6 +179,7 @@ export const invite = gql`
   ${organization}
   ${project}
   ${paymentToken}
+  ${paymentNetwork}
 `;
 
 export const projectDetails = gql`

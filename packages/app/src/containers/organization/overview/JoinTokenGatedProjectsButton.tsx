@@ -1,15 +1,14 @@
-import { Button, Col, message, Modal, Row, Space, Typography } from "antd";
+import { Button, message, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganization } from "../hooks";
 import * as Icons from "@ant-design/icons";
 import { useCurrentUser, useToggle } from "@dewo/app/util/hooks";
-import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
-import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 import { useAcceptInvite } from "../../invite/hooks";
 import { ApolloError } from "@apollo/client";
 import _ from "lodash";
-import { PaymentToken } from "@dewo/app/graphql/types";
 import { LoginButton } from "../../auth/LoginButton";
+import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
+import { shortenedAddress } from "../../payment/hooks";
 
 interface Props {
   organizationId: string;
@@ -18,7 +17,6 @@ interface Props {
 export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const modalVisible = useToggle();
   const user = useCurrentUser();
-  const paymentMethodOverride = useMemo(() => ({ userId: user?.id }), [user]);
 
   const { organization, refetch } = useOrganization(organizationId);
 
@@ -66,10 +64,13 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const tokens = useMemo(
     () =>
       _(invites)
-        .map((i) => i.token)
-        .filter((t): t is PaymentToken => !!t)
+        .map((i) => i.token!)
         .uniqBy((t) => t.id)
         .value(),
+    [invites]
+  );
+  const invitesByTokenId = useMemo(
+    () => _.groupBy(invites, (i) => i.token!.id),
     [invites]
   );
 
@@ -82,25 +83,67 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
       {!!user ? (
         <Button
           type="primary"
-          icon={<Icons.SafetyCertificateFilled />}
+          icon={<Icons.LockOutlined />}
           onClick={modalVisible.toggleOn}
         >
           {buttonText}
         </Button>
       ) : (
-        <LoginButton type="primary" icon={<Icons.SafetyCertificateFilled />}>
+        <LoginButton type="primary" icon={<Icons.LockOutlined />}>
           {buttonText}
         </LoginButton>
       )}
-      <Modal
-        visible={modalVisible.isOn}
-        footer={null}
-        title="Join Private Projects"
-        width={368}
-        onCancel={modalVisible.toggleOff}
-      >
-        <Space direction="vertical" style={{ width: "100%" }}>
-          <Typography.Text>
+      {!!user && (
+        <Modal
+          visible={modalVisible.isOn}
+          footer={null}
+          title="Join Private Projects"
+          width={368}
+          onCancel={modalVisible.toggleOff}
+        >
+          <Space direction="vertical" style={{ width: "100%" }}>
+            {tokens.map((token) => {
+              const invites = invitesByTokenId[token.id];
+              const pms = user.paymentMethods.filter((pm) =>
+                pm.networks.some((n) => n.id === token.networkId)
+              );
+              return (
+                <>
+                  <Typography.Text>
+                    {invites.length === 1
+                      ? "1 project"
+                      : `${invites.length} projects`}{" "}
+                    can be joined with {token.symbol} in your wallet on{" "}
+                    {token.network.name}. Verify that you have the token or
+                    connect a wallet that has it.
+                  </Typography.Text>
+                  {!!pms.length && (
+                    <Typography.Text style={{ whiteSpace: "pre" }}>
+                      Connected wallets on {token.network.name}:{"\n"}
+                      {pms.map((pm) => shortenedAddress(pm.address)).join("\n")}
+                    </Typography.Text>
+                  )}
+                  {!!pms.length && (
+                    <Button
+                      block
+                      type="primary"
+                      loading={loading}
+                      onClick={acceptAllInvites}
+                    >
+                      Verify Tokens
+                    </Button>
+                  )}
+                  <AddPaymentMethodButton
+                    block
+                    inputOverride={{ userId: user.id }}
+                    children={
+                      !!pms.length ? "Connect Other Wallet" : "Connect Wallet"
+                    }
+                  />
+                </>
+              );
+            })}
+            {/* <Typography.Text>
             Make sure you have {tokens.map((t) => t.symbol).join(", ")} in any
             of the connected wallets below, or connect another one.
           </Typography.Text>
@@ -133,9 +176,10 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
                 children="Connect Wallet"
               />
             </Col>
-          </Row>
-        </Space>
-      </Modal>
+          </Row> */}
+          </Space>
+        </Modal>
+      )}
     </>
   );
 };

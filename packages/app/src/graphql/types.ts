@@ -312,6 +312,16 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvi
   permalink: string;
 }
 
+export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -322,6 +332,7 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvi
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: UpdateOrganizationMutation_organization_projects_tokenGatedInvites_token_network;
 }
 
 export interface UpdateOrganizationMutation_organization_projects_tokenGatedInvites {
@@ -422,6 +433,16 @@ export interface UpdateOrganizationMutation_organization_tokenGatedInvites_proje
   permalink: string;
 }
 
+export interface UpdateOrganizationMutation_organization_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface UpdateOrganizationMutation_organization_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -432,6 +453,7 @@ export interface UpdateOrganizationMutation_organization_tokenGatedInvites_token
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: UpdateOrganizationMutation_organization_tokenGatedInvites_token_network;
 }
 
 export interface UpdateOrganizationMutation_organization_tokenGatedInvites {
@@ -760,6 +782,16 @@ export interface CreateProjectMutation_project_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface CreateProjectMutation_project_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface CreateProjectMutation_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -770,6 +802,7 @@ export interface CreateProjectMutation_project_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: CreateProjectMutation_project_tokenGatedInvites_token_network;
 }
 
 export interface CreateProjectMutation_project_tokenGatedInvites {
@@ -871,6 +904,16 @@ export interface CreateProjectMutation_project_organization_projects_tokenGatedI
   permalink: string;
 }
 
+export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -881,6 +924,7 @@ export interface CreateProjectMutation_project_organization_projects_tokenGatedI
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: CreateProjectMutation_project_organization_projects_tokenGatedInvites_token_network;
 }
 
 export interface CreateProjectMutation_project_organization_projects_tokenGatedInvites {
@@ -981,6 +1025,16 @@ export interface CreateProjectMutation_project_organization_tokenGatedInvites_pr
   permalink: string;
 }
 
+export interface CreateProjectMutation_project_organization_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface CreateProjectMutation_project_organization_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -991,6 +1045,7 @@ export interface CreateProjectMutation_project_organization_tokenGatedInvites_to
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: CreateProjectMutation_project_organization_tokenGatedInvites_token_network;
 }
 
 export interface CreateProjectMutation_project_organization_tokenGatedInvites {
@@ -1147,6 +1202,16 @@ export interface UpdateProjectMutation_project_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface UpdateProjectMutation_project_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface UpdateProjectMutation_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -1157,6 +1222,7 @@ export interface UpdateProjectMutation_project_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: UpdateProjectMutation_project_tokenGatedInvites_token_network;
 }
 
 export interface UpdateProjectMutation_project_tokenGatedInvites {
@@ -2243,6 +2309,16 @@ export interface CreateProjectInviteMutation_invite_project_tokenGatedInvites_pr
   permalink: string;
 }
 
+export interface CreateProjectInviteMutation_invite_project_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface CreateProjectInviteMutation_invite_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -2253,6 +2329,7 @@ export interface CreateProjectInviteMutation_invite_project_tokenGatedInvites_to
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: CreateProjectInviteMutation_invite_project_tokenGatedInvites_token_network;
 }
 
 export interface CreateProjectInviteMutation_invite_project_tokenGatedInvites {
@@ -2324,6 +2401,16 @@ export interface DeleteProjectInviteMutation_invite_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface DeleteProjectInviteMutation_invite_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface DeleteProjectInviteMutation_invite_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -2334,6 +2421,7 @@ export interface DeleteProjectInviteMutation_invite_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: DeleteProjectInviteMutation_invite_tokenGatedInvites_token_network;
 }
 
 export interface DeleteProjectInviteMutation_invite_tokenGatedInvites {
@@ -3671,6 +3759,16 @@ export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_pr
   permalink: string;
 }
 
+export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3681,6 +3779,7 @@ export interface GetOrganizationQuery_organization_projects_tokenGatedInvites_to
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetOrganizationQuery_organization_projects_tokenGatedInvites_token_network;
 }
 
 export interface GetOrganizationQuery_organization_projects_tokenGatedInvites {
@@ -3781,6 +3880,16 @@ export interface GetOrganizationQuery_organization_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface GetOrganizationQuery_organization_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetOrganizationQuery_organization_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3791,6 +3900,7 @@ export interface GetOrganizationQuery_organization_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetOrganizationQuery_organization_tokenGatedInvites_token_network;
 }
 
 export interface GetOrganizationQuery_organization_tokenGatedInvites {
@@ -3926,6 +4036,16 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_to
   permalink: string;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3936,6 +4056,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_to
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites_token_network;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGatedInvites {
@@ -4036,6 +4157,16 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedI
   permalink: string;
 }
 
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -4046,6 +4177,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedI
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites_token_network;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_tokenGatedInvites {
@@ -4396,6 +4528,16 @@ export interface GetProjectQuery_project_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface GetProjectQuery_project_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetProjectQuery_project_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -4406,6 +4548,7 @@ export interface GetProjectQuery_project_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetProjectQuery_project_tokenGatedInvites_token_network;
 }
 
 export interface GetProjectQuery_project_tokenGatedInvites {
@@ -5378,6 +5521,16 @@ export interface GetInviteQuery_invite_project {
   permalink: string;
 }
 
+export interface GetInviteQuery_invite_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface GetInviteQuery_invite_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -5388,6 +5541,7 @@ export interface GetInviteQuery_invite_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: GetInviteQuery_invite_token_network;
 }
 
 export interface GetInviteQuery_invite {
@@ -6424,6 +6578,16 @@ export interface Invite_project {
   permalink: string;
 }
 
+export interface Invite_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface Invite_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -6434,6 +6598,7 @@ export interface Invite_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: Invite_token_network;
 }
 
 export interface Invite {
@@ -6544,6 +6709,16 @@ export interface ProjectDetails_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface ProjectDetails_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface ProjectDetails_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -6554,6 +6729,7 @@ export interface ProjectDetails_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: ProjectDetails_tokenGatedInvites_token_network;
 }
 
 export interface ProjectDetails_tokenGatedInvites {
@@ -7570,6 +7746,16 @@ export interface OrganizationDetails_projects_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface OrganizationDetails_projects_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface OrganizationDetails_projects_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -7580,6 +7766,7 @@ export interface OrganizationDetails_projects_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: OrganizationDetails_projects_tokenGatedInvites_token_network;
 }
 
 export interface OrganizationDetails_projects_tokenGatedInvites {
@@ -7680,6 +7867,16 @@ export interface OrganizationDetails_tokenGatedInvites_project {
   permalink: string;
 }
 
+export interface OrganizationDetails_tokenGatedInvites_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
 export interface OrganizationDetails_tokenGatedInvites_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -7690,6 +7887,7 @@ export interface OrganizationDetails_tokenGatedInvites_token {
   address: string | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  network: OrganizationDetails_tokenGatedInvites_token_network;
 }
 
 export interface OrganizationDetails_tokenGatedInvites {

@@ -156,7 +156,12 @@ export const PaymentMethodForm: FC<Props> = ({
       changed: Partial<CreatePaymentMethodInput>,
       values: Partial<CreatePaymentMethodInput>
     ) => {
-      if (!!changed.type) values.networkId = undefined;
+      if (!!changed.type) {
+        const slugs = networkSlugsByPaymentMethodType[changed.type];
+        const supportsSelectedNetwork =
+          !!selectedNetwork && !!slugs && slugs.includes(selectedNetwork.slug);
+        if (!supportsSelectedNetwork) values.networkId = undefined;
+      }
       if (!!changed.networkId) values.address = undefined;
       if (!!changed.networkId) values.tokenIds = [];
 
@@ -167,7 +172,7 @@ export const PaymentMethodForm: FC<Props> = ({
         submitForm(values as CreatePaymentMethodInput);
       }
     },
-    [form, selectTokens, submitForm]
+    [form, selectTokens, selectedNetwork, submitForm]
   );
 
   const clearAddress = useCallback(
