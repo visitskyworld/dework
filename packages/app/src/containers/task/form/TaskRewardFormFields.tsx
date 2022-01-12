@@ -1,4 +1,4 @@
-import React, { FC, FocusEventHandler, useCallback, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import {
   PaymentStatus,
   PaymentToken,
@@ -15,7 +15,6 @@ import {
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../../project/hooks";
 import _ from "lodash";
-import { stopPropagation } from "@dewo/app/util/eatClick";
 import { AddPaymentMethodModal } from "../../payment/AddPaymentMethodButton";
 import { useToggle } from "@dewo/app/util/hooks";
 
@@ -60,7 +59,6 @@ export const TaskRewardFormFields: FC<Props> = ({
   projectId,
   value,
   onChange,
-  onClear,
 }) => {
   const project = useProject(projectId);
   const networks = useMemo(
@@ -104,21 +102,9 @@ export const TaskRewardFormFields: FC<Props> = ({
     [onChange, value, tokens]
   );
 
-  const handleBlur = useCallback<FocusEventHandler<unknown>>(
-    (event) => {
-      const allValuesSet =
-        !!value?.networkId && !!value?.amount && !!value?.token;
-      if (!allValuesSet) {
-        stopPropagation(event);
-      }
-    },
-    [value]
-  );
-
   const handleClear = useCallback(() => {
     onChange?.({});
-    requestAnimationFrame(onClear);
-  }, [onChange, onClear]);
+  }, [onChange]);
 
   const addPaymentMethod = useToggle();
   const paymentMethodInputOverride = useMemo(
@@ -167,7 +153,6 @@ export const TaskRewardFormFields: FC<Props> = ({
               </>
             )}
             onChange={handleChangeNetworkId}
-            onBlur={handleBlur}
             onClear={handleClear}
           >
             {networks.map((network) => (
@@ -186,7 +171,6 @@ export const TaskRewardFormFields: FC<Props> = ({
             placeholder="Enter amount"
             value={value?.amount}
             onChange={handleChangeAmount}
-            onBlur={handleBlur}
             style={{ width: "100%" }}
             addonAfter={
               <Select
@@ -194,7 +178,6 @@ export const TaskRewardFormFields: FC<Props> = ({
                 value={value?.token?.id}
                 placeholder="Token"
                 onChange={handleChangeToken}
-                onBlur={handleBlur}
               >
                 {tokens.map((token) => (
                   <Select.Option

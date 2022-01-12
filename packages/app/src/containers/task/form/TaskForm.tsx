@@ -34,6 +34,7 @@ import { TaskNumberAndSettings } from "./TaskNumberAndSettings";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import Link from "next/link";
+import _ from "lodash";
 
 export interface TaskFormValues {
   name: string;
@@ -103,6 +104,11 @@ export const TaskForm: FC<TaskFormProps> = ({
     [onSubmit, form, mode]
   );
 
+  const debouncedSubmit = useMemo(
+    () => _.debounce(handleSubmit, 500),
+    [handleSubmit]
+  );
+
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
       if ("ownerId" in changed && changed.ownerId === undefined) {
@@ -110,13 +116,13 @@ export const TaskForm: FC<TaskFormProps> = ({
       }
       form.setFieldsValue(values);
       setValues(values);
-    },
-    [form]
-  );
 
-  const handleBlur = useCallback(() => {
-    if (mode === "update") form.submit();
-  }, [mode, form]);
+      if (mode === "update") {
+        debouncedSubmit(changed as TaskFormValues);
+      }
+    },
+    [form, mode, debouncedSubmit]
+  );
 
   return (
     <Form
@@ -126,7 +132,6 @@ export const TaskForm: FC<TaskFormProps> = ({
       requiredMark={false}
       onFinish={handleSubmit}
       onValuesChange={handleChange}
-      onBlur={handleBlur}
     >
       <Row gutter={16}>
         <Col span={24}>
@@ -173,7 +178,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               initialValue={initialValues?.description ?? undefined}
               editable={canChange("description")}
               mode={mode}
-              onSave={handleBlur}
             />
           </Form.Item>
 
@@ -236,7 +240,6 @@ export const TaskForm: FC<TaskFormProps> = ({
                   buttonText="Edit submission"
                   editable={canChange("submission")}
                   mode={mode}
-                  onSave={handleBlur}
                 />
               </Form.Item>
             </>
@@ -310,7 +313,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               allowClear
               optionFilterProp="label"
               placeholder="No task reviewer..."
-              onClear={handleBlur}
             >
               {ownerOptions?.map((user) => (
                 <Select.Option value={user.id} label={user.username}>
@@ -325,7 +327,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               disabled={!canChange("storyPoints")}
               allowClear
               placeholder="Estimate task size..."
-              onClear={handleBlur}
             >
               <Select.Option value={1} children="1" />
               <Select.Option value={2} children="2" />
@@ -348,7 +349,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               <TaskRewardFormFields
                 projectId={projectId}
                 value={values?.reward ?? undefined}
-                onClear={handleBlur}
               />
             </Form.Item>
           ) : (
