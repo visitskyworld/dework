@@ -52,7 +52,6 @@ interface Props {
   projectId: string;
   value?: Partial<TaskRewardFormValues>;
   onChange?(value: Partial<TaskRewardFormValues>): void;
-  onClear(): void;
 }
 
 export const TaskRewardFormFields: FC<Props> = ({
