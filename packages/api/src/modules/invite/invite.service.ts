@@ -35,7 +35,7 @@ export class InviteService {
   }
 
   public async delete(
-    partial: Pick<Invite, "projectId" | "projectRole" | "tokenId">
+    partial: Pick<Invite, "projectId" | "projectRole">
   ): Promise<void> {
     await this.inviteRepo.delete(partial);
   }
@@ -43,17 +43,6 @@ export class InviteService {
   public async accept(inviteId: string, user: User): Promise<Invite> {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
-
-    if (!!invite.tokenId) {
-      const token = await invite.token;
-      const balanceOf = await this.tokenService.balanceOf(token!, user);
-      if (balanceOf.lte(0)) {
-        throw new ForbiddenException({
-          reason: "MISSING_TOKEN",
-          tokenId: invite.tokenId,
-        });
-      }
-    }
 
     if (!!invite.organizationId && !!invite.organizationRole) {
       await this.organizationService.upsertMember({
@@ -64,13 +53,15 @@ export class InviteService {
     }
 
     if (!!invite.projectId && !!invite.projectRole) {
+      const project = (await invite.project) as Project;
+      await this.assertUserPassesTokenGates(project, user);
+
       await this.projectService.upsertMember({
         projectId: invite.projectId,
         userId: user.id,
         role: invite.projectRole,
       });
 
-      const project = (await invite.project) as Project;
       const organizationMember = await this.organizationService.findMember({
         userId: user.id,
         organizationId: project.organizationId,
@@ -85,6 +76,27 @@ export class InviteService {
     }
 
     return invite;
+  }
+
+  private async assertUserPassesTokenGates(
+    project: Project,
+    user: User
+  ): Promise<void> {
+    const gates = await project.tokenGates;
+    const tokens = await Promise.all(gates.map((g) => g.token));
+    if (!tokens.length) return;
+
+    const balances = await Promise.all(
+      tokens.map((t) => this.tokenService.balanceOf(t, user))
+    );
+
+    const hasAnyBalance = balances.some((b) => b.gt(0));
+    if (!hasAnyBalance) {
+      throw new ForbiddenException({
+        reason: "MISSING_TOKENS",
+        tokenIds: tokens.map((t) => t.id),
+      });
+    }
   }
 
   public async findById(id: string): Promise<Invite | undefined> {

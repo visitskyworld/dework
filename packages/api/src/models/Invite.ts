@@ -3,7 +3,6 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { OrganizationRole } from "./OrganizationMember";
-import { PaymentToken } from "./PaymentToken";
 import { Project } from "./Project";
 import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
@@ -34,14 +33,6 @@ export class Invite extends Audit {
   @Column({ enum: ProjectRole, nullable: true })
   @Field(() => ProjectRole, { nullable: true })
   public projectRole?: ProjectRole;
-
-  @JoinColumn()
-  @ManyToOne(() => PaymentToken)
-  @Field(() => PaymentToken, { nullable: true })
-  public token?: Promise<PaymentToken>;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public tokenId?: string;
 
   @JoinColumn()
   @ManyToOne(() => User)

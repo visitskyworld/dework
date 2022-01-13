@@ -1,6 +1,7 @@
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
@@ -17,6 +18,7 @@ import { ProjectService } from "./project.service";
     TypeOrmModule.forFeature([
       Project,
       ProjectMember,
+      ProjectTokenGate,
       User,
       TaskTag,
       OrganizationMember,

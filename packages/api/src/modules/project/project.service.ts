@@ -1,11 +1,13 @@
 import { Project } from "@dewo/api/models/Project";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
+import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 
 @Injectable()
@@ -17,6 +19,8 @@ export class ProjectService {
     private readonly projectRepo: Repository<Project>,
     @InjectRepository(ProjectMember)
     private readonly projectMemberRepo: Repository<ProjectMember>,
+    @InjectRepository(ProjectTokenGate)
+    private readonly projectTokenGateRepo: Repository<ProjectTokenGate>,
     @InjectRepository(TaskTag)
     private readonly taskTagRepo: Repository<TaskTag>
   ) {}
@@ -50,6 +54,19 @@ export class ProjectService {
   ): Promise<TaskTag> {
     const created = await this.taskTagRepo.save(partial);
     return this.taskTagRepo.findOne(created.id) as Promise<TaskTag>;
+  }
+
+  public async createGate(
+    input: ProjectTokenGateInput
+  ): Promise<ProjectTokenGate> {
+    const created = await this.projectTokenGateRepo.save(input);
+    return this.projectTokenGateRepo.findOne(
+      created.id
+    ) as Promise<ProjectTokenGate>;
+  }
+
+  public async deleteGate(input: ProjectTokenGateInput): Promise<void> {
+    await this.projectTokenGateRepo.delete(input);
   }
 
   public async upsertMember(

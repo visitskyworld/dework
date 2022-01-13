@@ -49,6 +49,8 @@ import {
 } from "../models/OrganizationIntegration";
 import { ProjectMember } from "../models/ProjectMember";
 import { GithubIssue } from "../models/GithubIssue";
+import { ProjectTokenGate } from "../models/ProjectTokenGate";
+import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
 
 @Injectable()
 export class Fixtures {
@@ -196,6 +198,12 @@ export class Fixtures {
       projectId: await this.createProject().then((p) => p.id),
       ...partial,
     });
+  }
+
+  public async createProjectTokenGate(
+    input: ProjectTokenGateInput
+  ): Promise<ProjectTokenGate> {
+    return this.projectService.createGate(input);
   }
 
   public async createGithubBranch(

@@ -1,12 +1,11 @@
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class ProjectInviteInput {
+export class ProjectTokenGateInput {
   @Field(() => GraphQLUUID)
   public projectId!: string;
 
-  @Field(() => ProjectRole)
-  public role!: ProjectRole;
+  @Field(() => GraphQLUUID)
+  public tokenId!: string;
 }

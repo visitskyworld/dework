@@ -29,6 +29,8 @@ import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInp
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
+import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -146,6 +148,25 @@ export class ProjectResolver {
     @Args("input") input: CreateTaskTagInput
   ): Promise<TaskTag> {
     return this.projectService.createTag(input);
+  }
+
+  @Mutation(() => ProjectTokenGate)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, ProjectTokenGate)
+  public async createProjectTokenGate(
+    @Args("input") input: ProjectTokenGateInput
+  ): Promise<ProjectTokenGate> {
+    return this.projectService.createGate(input);
+  }
+
+  @Mutation(() => Project)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.delete, ProjectTokenGate)
+  public async deleteProjectTokenGate(
+    @Args("input") input: ProjectTokenGateInput
+  ): Promise<Project> {
+    await this.projectService.deleteGate(input);
+    return this.projectService.findById(input.projectId) as Promise<Project>;
   }
 
   @Query(() => Project)

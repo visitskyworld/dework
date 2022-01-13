@@ -41,7 +41,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
           if (error instanceof ApolloError) {
             const reason =
               error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
-            if (reason === "MISSING_TOKEN") {
+            if (reason === "MISSING_TOKENS") {
               message.error(
                 `Missing ${token.symbol}, so skipped joining project`
               );

@@ -21,7 +21,7 @@ import { TaskTag } from "./TaskTag";
 import slugify from "slugify";
 import encoder from "uuid-base62";
 import { ProjectMember } from "./ProjectMember";
-import { Invite } from "./Invite";
+import { ProjectTokenGate } from "./ProjectTokenGate";
 
 export enum ProjectVisibility {
   PUBLIC = "PUBLIC",
@@ -85,8 +85,9 @@ export class Project extends Audit {
   @Field(() => [PaymentMethod])
   public paymentMethods!: Promise<PaymentMethod[]>;
 
-  @OneToMany(() => Invite, (x: Invite) => x.project)
-  public invites!: Promise<Invite[]>;
+  @OneToMany(() => ProjectTokenGate, (p: ProjectTokenGate) => p.project)
+  @Field(() => [ProjectTokenGate])
+  public tokenGates!: Promise<ProjectTokenGate[]>;
 
   @OneToMany(() => ProjectMember, (om: ProjectMember) => om.project)
   @Field(() => [ProjectMember])
