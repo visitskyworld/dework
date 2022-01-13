@@ -25,7 +25,12 @@ export const InviteMessageToast: FC = () => {
   const router = useRouter();
   const inviteId = router.query.inviteId as string | undefined;
   const invite = useInvite(inviteId);
-  const isTokenGated = !!invite?.project?.tokenGates.length;
+
+  const tokens = useMemo(
+    () => invite?.project?.tokenGates.map((t) => t.token) ?? [],
+    [invite?.project?.tokenGates]
+  );
+  const isTokenGated = !!tokens.length;
 
   const authenticated = !!useAuthContext().user;
   const authModalVisible = useToggle();
@@ -116,10 +121,11 @@ export const InviteMessageToast: FC = () => {
           isTokenGated ? showTokenGateModal() : handleAcceptInvite();
         }}
       />
-      {!!invite && (
+      {isTokenGated && (
         <JoinTokenGatedProjectsModal
-          invites={[invite]}
+          tokens={tokens}
           visible={tokenGatedModalVisible.isOn}
+          onVerify={handleAcceptInvite}
           onClose={tokenGatedModalVisible.toggleOff}
         />
       )}

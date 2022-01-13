@@ -109,11 +109,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           </Space>
         </FormSection>
 
-        <ProjectTokenGatingInput
-          value={tokenGate?.token ?? undefined}
-          onChange={handleChangeTokenGating}
-        />
-
         <Form<UpdateProjectInput>
           layout="vertical"
           requiredMark={false}
@@ -121,6 +116,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           onValuesChange={handleUpdateProject}
         >
           <ProjectSettingsFormFields />
+          <ProjectTokenGatingInput
+            value={tokenGate?.token ?? undefined}
+            onChange={handleChangeTokenGating}
+          />
           <ProjectSettingsDangerZone project={project} />
           <Form.Item name="id" hidden>
             <Input />

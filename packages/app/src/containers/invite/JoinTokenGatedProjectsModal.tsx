@@ -1,34 +1,39 @@
-import { Button, message, Modal, Space, Typography } from "antd";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import { Button, Modal, Space, Typography } from "antd";
+import React, { FC, useCallback, useState } from "react";
 import { useCurrentUser } from "@dewo/app/util/hooks";
-import { ApolloError } from "@apollo/client";
-import _ from "lodash";
 import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { shortenedAddress } from "../payment/hooks";
-import { Invite, PaymentToken } from "@dewo/app/graphql/types";
-import { useAcceptInvite } from "./hooks";
+import { ProjectTokenGate } from "@dewo/app/graphql/types";
 
 interface Props {
-  invites: Invite[];
+  tokens: ProjectTokenGate["token"][];
   visible: boolean;
-  onDone?(): Promise<unknown>;
+  onVerify(token: ProjectTokenGate["token"]): Promise<void>;
   onClose(): void;
 }
 
 export const JoinTokenGatedProjectsModal: FC<Props> = ({
-  invites,
+  tokens,
   visible,
-  onDone,
+  onVerify,
   onClose,
 }) => {
   const user = useCurrentUser();
 
   const [loading, setLoading] = useState(false);
-  const acceptInvite = useAcceptInvite();
-  const acceptInvites = useCallback(
-    async (token: PaymentToken) => {
+  const verifyToken = useCallback(
+    async (token: ProjectTokenGate["token"]) => {
       setLoading(true);
 
+      try {
+        await onVerify(token);
+        onClose();
+      } finally {
+        setLoading(false);
+      }
+
+      /*
+      const acceptInvite = useAcceptInvite();
       const tokenInvites = invites.filter((i) =>
         i.project?.tokenGates.some((tg) => tg.token.id === token.id)
       );
@@ -49,24 +54,25 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
           }
         }
       }
+      */
 
-      await onDone?.();
+      await onVerify(token);
       onClose();
       setLoading(false);
     },
-    [acceptInvite, onDone, onClose, invites]
+    [onVerify, onClose]
   );
 
-  const tokens = useMemo(
-    () =>
-      _(invites)
-        .map((i) => i.project?.tokenGates ?? [])
-        .flatten()
-        .map((tg) => tg.token)
-        .uniqBy((t) => t.id)
-        .value(),
-    [invites]
-  );
+  // const tokens = useMemo(
+  //   () =>
+  //     _(invites)
+  //       .map((i) => i.project?.tokenGates ?? [])
+  //       .flatten()
+  //       .map((tg) => tg.token)
+  //       .uniqBy((t) => t.id)
+  //       .value(),
+  //   [invites]
+  // );
 
   if (!user) return null;
   return (
@@ -100,7 +106,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                   block
                   type="primary"
                   loading={loading}
-                  onClick={() => acceptInvites(token)}
+                  onClick={() => verifyToken(token)}
                 >
                   Verify Tokens
                 </Button>
