@@ -21,6 +21,7 @@ import {
   PaymentNetwork,
   PaymentNetworkType,
 } from "@dewo/api/models/PaymentNetwork";
+import { Interval } from "@nestjs/schedule";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
@@ -56,10 +57,10 @@ export class PaymentPoller {
     readonly config: ConfigService<ConfigType>
   ) {}
 
-  // @Interval(5000)
-  // async cron() {
-  //   await this.poll();
-  // }
+  @Interval(10000)
+  async cron() {
+    await this.poll();
+  }
 
   public async poll(): Promise<void> {
     this.logger.log("Polling for blockchain confirmations");

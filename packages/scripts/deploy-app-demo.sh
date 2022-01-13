@@ -5,10 +5,10 @@ REPO_ROOT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 cd $REPO_ROOT_DIR
 
 ENV_VARS=$(tr '\n' ',' < packages/app/.env.demo)
-PROJECT_ID="dework"
-DEPLOYMENT_NAME="app-demo"
+PROJECT_ID="dework-demo"
+DEPLOYMENT_NAME="app"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/app"
-REGION="europe-west1"
+REGION="us-east1"
 
 docker build --platform linux/amd64 -t $IMAGE_NAME -f packages/app/Dockerfile .
 docker push $IMAGE_NAME

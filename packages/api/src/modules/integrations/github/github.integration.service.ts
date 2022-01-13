@@ -2,7 +2,6 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import * as Github from "@octokit/webhooks-types";
 import * as Colors from "@ant-design/colors";
-import * as fs from "fs";
 import NearestColor from "nearest-color";
 import { TaskService } from "../../task/task.service";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
@@ -381,7 +380,11 @@ export class GithubIntegrationService {
   }
 
   private createClient(installationId?: number): Octokit {
-    const privateKeyPath = this.config.get("GITHUB_APP_PRIVATE_KEY_PATH");
+    const privateKeyBase64 = this.config.get(
+      "GITHUB_APP_PRIVATE_KEY"
+    ) as string;
+    const privateKey = Buffer.from(privateKeyBase64, "base64").toString();
+
     // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
     // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
     // TODO(fant): figure out how to properly auth with clientId/clientSecret
@@ -391,7 +394,7 @@ export class GithubIntegrationService {
             authStrategy: createAppAuth,
             auth: {
               appId: this.config.get("GITHUB_APP_ID"),
-              privateKey: fs.readFileSync(privateKeyPath, "utf8"),
+              privateKey,
               installationId,
               // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
             },

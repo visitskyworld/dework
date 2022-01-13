@@ -1,4 +1,5 @@
 
 build/
 
-.github-app-private-key.pem
+.github-app-private-key.*.pem
+app.*.env.yaml

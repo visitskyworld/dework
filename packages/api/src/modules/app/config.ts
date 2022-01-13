@@ -14,7 +14,7 @@ export interface ConfigType {
   GITHUB_APP_ID: string;
   GITHUB_APP_CLIENT_ID: string;
   GITHUB_APP_CLIENT_SECRET: string;
-  GITHUB_APP_PRIVATE_KEY_PATH: string;
+  GITHUB_APP_PRIVATE_KEY: string;
 
   DISCORD_OAUTH_CLIENT_ID: string;
   DISCORD_OAUTH_CLIENT_SECRET: string;
@@ -39,7 +39,7 @@ export const configSchema = Joi.object<ConfigType>({
   GITHUB_APP_ID: Joi.number().required(),
   GITHUB_APP_CLIENT_ID: Joi.string().required(),
   GITHUB_APP_CLIENT_SECRET: Joi.string().required(),
-  GITHUB_APP_PRIVATE_KEY_PATH: Joi.string().required(),
+  GITHUB_APP_PRIVATE_KEY: Joi.string().required(),
 
   DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
   DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
