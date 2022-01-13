@@ -15,6 +15,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
 import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
+import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 100px)",
@@ -27,6 +28,7 @@ export const InviteMessageToast: FC = () => {
 
   const authenticated = !!useAuthContext().user;
   const authModalVisible = useToggle();
+  const tokenGatedModalVisible = useToggle();
 
   const acceptInvite = useAcceptInvite();
   const handleAcceptInvite = useCallback(async () => {
@@ -66,8 +68,21 @@ export const InviteMessageToast: FC = () => {
     return `${inviter} has invited you to Dework`;
   }, [invite]);
 
+  const showAuthModal = authModalVisible.toggleOn;
+  const showTokenGateModal = tokenGatedModalVisible.toggleOn;
   useEffect(() => {
     if (!invite) return;
+
+    const handleClick = () => {
+      message.destroy();
+      if (!authenticated) {
+        showAuthModal();
+      } else if (invite.tokenId) {
+        showTokenGateModal();
+      } else {
+        handleAcceptInvite();
+      }
+    };
 
     message.destroy();
     message.open({
@@ -78,12 +93,7 @@ export const InviteMessageToast: FC = () => {
             <Typography.Text style={{ marginRight: 16 }}>
               {inviteMessage}
             </Typography.Text>
-            <Button
-              type="primary"
-              onClick={
-                authenticated ? handleAcceptInvite : authModalVisible.toggleOn
-              }
-            >
+            <Button type="primary" onClick={handleClick}>
               Accept invite
             </Button>
           </Space>
@@ -92,7 +102,6 @@ export const InviteMessageToast: FC = () => {
       duration: 0, // forever
       type: undefined as any,
       style: messageBottomStyle,
-      onClick: () => message.destroy(),
     });
   }, [
     invite,
@@ -100,9 +109,21 @@ export const InviteMessageToast: FC = () => {
     inviteMessage,
     router,
     authenticated,
-    authModalVisible.toggleOn,
+    showAuthModal,
+    showTokenGateModal,
     handleAcceptInvite,
   ]);
 
-  return <LoginModal toggle={authModalVisible} />;
+  return (
+    <>
+      <LoginModal toggle={authModalVisible} />
+      {!!invite && (
+        <JoinTokenGatedProjectsModal
+          invites={[invite]}
+          visible={tokenGatedModalVisible.isOn}
+          onClose={tokenGatedModalVisible.toggleOff}
+        />
+      )}
+    </>
+  );
 };

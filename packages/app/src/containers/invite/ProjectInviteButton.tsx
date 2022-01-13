@@ -31,10 +31,12 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
   const createProjectInvite = useCreateProjectInvite();
   const inviteToProject = useCallback(
     async (role: ProjectRole) => {
+      const tokenId = project?.tokenGatedInvites[0]?.tokenId;
       try {
         setLoading(true);
         const inviteId = await createProjectInvite({
           role,
+          tokenId,
           projectId: project!.id,
         });
         const inviteLink = `${project!.permalink}?inviteId=${inviteId}`;
