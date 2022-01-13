@@ -103,20 +103,18 @@ export const InviteMessageToast: FC = () => {
       type: undefined as any,
       style: messageBottomStyle,
     });
-  }, [
-    invite,
-    inviteId,
-    inviteMessage,
-    router,
-    authenticated,
-    showAuthModal,
-    showTokenGateModal,
-    handleAcceptInvite,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!invite]);
 
   return (
     <>
-      <LoginModal toggle={authModalVisible} />
+      <LoginModal
+        toggle={authModalVisible}
+        onDone={() => {
+          authModalVisible.toggleOff();
+          invite?.tokenId ? showTokenGateModal() : handleAcceptInvite();
+        }}
+      />
       {!!invite && (
         <JoinTokenGatedProjectsModal
           invites={[invite]}

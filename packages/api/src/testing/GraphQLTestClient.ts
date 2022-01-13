@@ -18,17 +18,13 @@ export class GraphQLTestClient {
       .set("authorization", !!params.auth ? `Bearer ${params.auth}` : "")
       .send(params.body);
 
-    // if (response.status !== HttpStatus.OK || !!response.body.errors) {
-    //   console.warn(response.status, JSON.stringify(response.body, null, 2));
-    // }
-
     return response;
   }
 
   expectGqlError(response: Response, status: number): void {
-    expect(response.body.errors?.[0].extensions.exception.status).toEqual(
-      status
-    );
+    const ext = response.body.errors?.[0].extensions;
+    const actualStatus = ext.exception?.status ?? ext.response?.statusCode;
+    expect(actualStatus).toEqual(status);
   }
 
   expectGqlErrorMessage(response: Response, message: string): void {

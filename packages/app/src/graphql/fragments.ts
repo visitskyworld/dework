@@ -200,7 +200,7 @@ export const projectDetails = gql`
     integrations {
       ...ProjectIntegration
     }
-    tokenGatedInvites {
+    tokenGatedInvite {
       ...Invite
     }
   }

@@ -51,7 +51,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
     [project]
   );
 
-  const tokenGatedInvite = project.tokenGatedInvites[0];
+  const tokenGatedInvite = project.tokenGatedInvite;
   const createProjectInvite = useCreateProjectInvite();
   const deleteProjectInvite = useDeleteProjectInvite();
   const handleChangeTokenGating = useCallback(
@@ -65,7 +65,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       } else {
         await deleteProjectInvite({
           projectId: project.id,
-          tokenId: tokenGatedInvite.token?.id,
+          tokenId: tokenGatedInvite?.token?.id,
           role: ProjectRole.CONTRIBUTOR,
         });
       }

@@ -6,15 +6,19 @@ import {
   getThreepidName,
   ThreepidAuthButton,
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
-import { useCreateMetamaskThreepid } from "@dewo/app/containers/auth/hooks";
+import {
+  useAuthWithThreepid,
+  useCreateMetamaskThreepid,
+} from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   toggle: UseToggleHook;
+  onDone?(): void;
 }
 
-export const LoginModal: FC<Props> = ({ toggle }) => {
+export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
   const router = useRouter();
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const state = useMemo(
@@ -24,19 +28,22 @@ export const LoginModal: FC<Props> = ({ toggle }) => {
 
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
+  const authWithThreepid = useAuthWithThreepid();
   const authWithMetamask = useCallback(async () => {
     try {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
-      await router.push(
-        `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
-      );
+      await authWithThreepid(threepidId);
+      // await router.push(
+      //   `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
+      // );
+      onDone?.();
     } catch (error) {
       alert((error as Error).message);
     } finally {
       authingWithMetamask.toggleOff();
     }
-  }, [createMetamaskThreepid, router, state, authingWithMetamask]);
+  }, [createMetamaskThreepid, authWithThreepid, onDone, authingWithMetamask]);
 
   const handleCancel = useCallback(
     (e) => {

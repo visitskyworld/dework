@@ -23,7 +23,7 @@ const Auth: NextPage = () => {
       setLoading(true);
       await authWithThreepid(threepidId);
       if (!!state.inviteId) {
-        await acceptInvite(state.inviteId);
+        await acceptInvite(state.inviteId).catch();
       }
       await router.push(state.redirect ?? "/");
     } finally {

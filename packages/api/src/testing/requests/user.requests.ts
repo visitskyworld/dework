@@ -14,6 +14,8 @@ export class UserRequests {
       }
       paymentMethods {
         id
+        type
+        address
       }
       details {
         value

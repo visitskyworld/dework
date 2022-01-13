@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -94,16 +94,15 @@ export function useAcceptInvite(): (
     AcceptInviteMutation,
     AcceptInviteMutationVariables
   >(Mutations.acceptInvite);
+  const apolloClient = useApolloClient();
   return useCallback(
     async (inviteId) => {
-      const res = await mutation({
-        variables: { inviteId },
-        refetchQueries: [{ query: Queries.me }],
-      });
+      const res = await mutation({ variables: { inviteId } });
+      apolloClient.reFetchObservableQueries();
       if (!res.data) throw res.errors?.[0];
       return res.data!.invite;
     },
-    [mutation]
+    [mutation, apolloClient]
   );
 }
 

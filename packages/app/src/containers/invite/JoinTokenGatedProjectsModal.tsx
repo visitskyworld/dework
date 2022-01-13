@@ -1,11 +1,11 @@
 import { Button, message, Modal, Space, Typography } from "antd";
-import React, { FC, Fragment, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import { useCurrentUser } from "@dewo/app/util/hooks";
 import { ApolloError } from "@apollo/client";
 import _ from "lodash";
 import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { shortenedAddress } from "../payment/hooks";
-import { Invite } from "@dewo/app/graphql/types";
+import { Invite, PaymentToken } from "@dewo/app/graphql/types";
 import { useAcceptInvite } from "./hooks";
 
 interface Props {
@@ -25,33 +25,37 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
 
   const [loading, setLoading] = useState(false);
   const acceptInvite = useAcceptInvite();
-  const acceptAllInvites = useCallback(async () => {
-    setLoading(true);
+  const acceptInvites = useCallback(
+    async (token: PaymentToken) => {
+      setLoading(true);
 
-    for (const invite of invites) {
-      const token = invite.token!;
-      try {
-        const acceptedInvite = await acceptInvite(invite.id);
-        message.success(
-          `Joined ${acceptedInvite.project?.name} using ${token.symbol}`
-        );
-      } catch (error) {
-        if (error instanceof ApolloError) {
-          const reason =
-            error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
-          if (reason === "MISSING_TOKEN") {
-            message.error(
-              `Missing ${token.symbol}, so skipped joining project`
-            );
+      const tokenInvites = invites.filter((i) => i.tokenId === token.id);
+      for (const invite of tokenInvites) {
+        const token = invite.token!;
+        try {
+          const acceptedInvite = await acceptInvite(invite.id);
+          message.success(
+            `Joined ${acceptedInvite.project?.name} using ${token.symbol}`
+          );
+        } catch (error) {
+          if (error instanceof ApolloError) {
+            const reason =
+              error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
+            if (reason === "MISSING_TOKEN") {
+              message.error(
+                `Missing ${token.symbol}, so skipped joining project`
+              );
+            }
           }
         }
       }
-    }
 
-    await onDone?.();
-    onClose();
-    setLoading(false);
-  }, [acceptInvite, onDone, onClose, invites]);
+      await onDone?.();
+      onClose();
+      setLoading(false);
+    },
+    [acceptInvite, onDone, onClose, invites]
+  );
 
   const tokens = useMemo(
     () =>
@@ -71,13 +75,13 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
       width={368}
       onCancel={onClose}
     >
-      <Space direction="vertical" style={{ width: "100%" }}>
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
         {tokens.map((token) => {
           const pms = user.paymentMethods.filter((pm) =>
             pm.networks.some((n) => n.id === token.networkId)
           );
           return (
-            <Fragment key={token.id}>
+            <Space key={token.id} direction="vertical">
               <Typography.Text>
                 You need {token.symbol} on {token.network.name} in your wallet
                 to join. Verify that you have the token or connect a wallet that
@@ -94,7 +98,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                   block
                   type="primary"
                   loading={loading}
-                  onClick={acceptAllInvites}
+                  onClick={() => acceptInvites(token)}
                 >
                   Verify Tokens
                 </Button>
@@ -106,7 +110,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                   !!pms.length ? "Connect Other Wallet" : "Connect Wallet"
                 }
               />
-            </Fragment>
+            </Space>
           );
         })}
       </Space>

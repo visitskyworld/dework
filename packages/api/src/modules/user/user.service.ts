@@ -5,6 +5,7 @@ import { DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -12,10 +13,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
+import { PaymentService } from "../payment/payment.service";
+import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
+import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 
 @Injectable()
 export class UserService {
-  // private readonly logger = new Logger("UserService");
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     @InjectRepository(User)
@@ -23,6 +27,7 @@ export class UserService {
     @InjectRepository(EntityDetail)
     private readonly entityDetailRepo: Repository<EntityDetail>,
     private readonly threepidService: ThreepidService,
+    private readonly paymentService: PaymentService,
     private readonly jwtService: JwtService
   ) {}
 
@@ -72,6 +77,29 @@ export class UserService {
     }
     await this.threepidService.update({ ...threepid, userId: user.id });
     threepids.push(threepid);
+
+    if (threepid.source === ThreepidSource.metamask) {
+      this.logger.debug(
+        `Creating Metamask payment method from threepid: ${JSON.stringify({
+          threepidId: threepid.id,
+          userId: user.id,
+        })}`
+      );
+
+      const networks = await this.paymentService.getPaymentNetworks({
+        type: PaymentNetworkType.ETHEREUM,
+      });
+
+      await this.paymentService.createPaymentMethod(
+        {
+          address: threepid.threepid,
+          type: PaymentMethodType.METAMASK,
+          networkIds: networks.map((n) => n.id),
+          userId: user.id,
+        },
+        user
+      );
+    }
   }
 
   public async setDetail(

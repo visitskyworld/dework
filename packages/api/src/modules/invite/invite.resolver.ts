@@ -18,7 +18,7 @@ import { OrganizationRolesGuard } from "../organization/organization.roles.guard
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { ProjectInviteInput } from "./dto/ProjectInviteInput";
 import { ProjectService } from "../project/project.service";
 import { Project } from "@dewo/api/models/Project";
@@ -123,13 +123,14 @@ export class ProjectTokenGatedInvitesResolver {
     private readonly inviteRepo: Repository<Invite>
   ) {}
 
-  @ResolveField(() => [Invite])
-  public async tokenGatedInvites(
+  @ResolveField(() => Invite, { nullable: true })
+  public async tokenGatedInvite(
     @Parent() project: Project
-  ): Promise<Invite[]> {
-    return this.inviteRepo.find({
+  ): Promise<Invite | undefined> {
+    return this.inviteRepo.findOne({
       projectId: project.id,
       tokenId: Not(IsNull()),
+      projectRole: ProjectRole.CONTRIBUTOR,
     });
   }
 }

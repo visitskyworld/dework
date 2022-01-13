@@ -300,7 +300,7 @@ export const createProjectInvite = gql`
       id
       project {
         id
-        tokenGatedInvites {
+        tokenGatedInvite {
           ...Invite
         }
       }
@@ -314,7 +314,7 @@ export const deleteProjectInvite = gql`
   mutation DeleteProjectInviteMutation($input: ProjectInviteInput!) {
     invite: deleteProjectInvite(input: $input) {
       id
-      tokenGatedInvites {
+      tokenGatedInvite {
         ...Invite
       }
     }

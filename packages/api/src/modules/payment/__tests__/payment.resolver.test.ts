@@ -42,7 +42,7 @@ describe("PaymentResolver", () => {
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x123",
-            networkId: network.id,
+            networkIds: [network.id],
             tokenIds: [token.id],
           }),
         });
@@ -60,7 +60,7 @@ describe("PaymentResolver", () => {
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x123",
-            networkId: network.id,
+            networkIds: [network.id],
             tokenIds: [token.id],
             userId: otherUser.id,
           }),
@@ -79,7 +79,7 @@ describe("PaymentResolver", () => {
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x123",
-            networkId: network.id,
+            networkIds: [network.id],
             tokenIds: [token.id],
             userId: user.id,
           }),

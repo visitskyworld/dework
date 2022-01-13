@@ -16,6 +16,7 @@ import { TaskStatus } from "@dewo/api/models/Task";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -71,6 +72,30 @@ describe("UserResolver", () => {
           });
 
           client.expectGqlError(response, HttpStatus.NOT_FOUND);
+        });
+
+        describe("metamask", () => {
+          it("should connect metamask address as payment method on all relevant networks", async () => {
+            const address = faker.datatype.uuid();
+            const threepid = await fixtures.createThreepid({
+              source: ThreepidSource.metamask,
+              threepid: address,
+            });
+            const response = await client.request({
+              app,
+              body: UserRequests.authWithThreepid(threepid.id),
+            });
+
+            expect(response.status).toEqual(HttpStatus.OK);
+            const user = response.body.data?.authWithThreepid.user;
+            expect(user.paymentMethods).toHaveLength(1);
+            expect(user.paymentMethods).toContainEqual(
+              expect.objectContaining({
+                address,
+                type: PaymentMethodType.METAMASK,
+              })
+            );
+          });
         });
 
         describe("unique username", () => {

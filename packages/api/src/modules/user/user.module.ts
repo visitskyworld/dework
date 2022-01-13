@@ -14,6 +14,7 @@ import { TaskModule } from "../task/task.module";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
+import { PaymentModule } from "../payment/payment.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UserService } from "./user.service";
     ThreepidModule,
     TaskModule,
     OrganizationModule,
+    PaymentModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

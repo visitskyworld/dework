@@ -282,7 +282,7 @@ export class Fixtures {
       {
         type: PaymentMethodType.METAMASK,
         address: "0x0000000000000000000000000000000000000000",
-        networkId: await this.createPaymentNetwork().then((n) => n.id),
+        networkIds: await this.createPaymentNetwork().then((n) => [n.id]),
         tokenIds: [],
         ...partial,
       },

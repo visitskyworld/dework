@@ -33,7 +33,7 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
 
       if (!!res.data) {
         setAuthToken(undefined, res.data?.authWithThreepid.authToken);
-        await apolloClient.reFetchObservableQueries();
+        apolloClient.reFetchObservableQueries(); // async
       }
     },
     [authWithThreepid, apolloClient]

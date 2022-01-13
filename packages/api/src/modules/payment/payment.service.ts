@@ -76,7 +76,7 @@ export class PaymentService {
       !!input.tokenIds?.length
         ? this.paymentTokenRepo.find({ id: In(input.tokenIds) })
         : ([] as PaymentToken[]),
-      this.paymentNetworkRepo.find({ id: input.networkId }),
+      this.paymentNetworkRepo.find({ id: In(input.networkIds) }),
     ]);
 
     const pm = new PaymentMethod();
@@ -137,7 +137,12 @@ export class PaymentService {
     return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
   }
 
-  public async getPaymentNetworks(): Promise<PaymentNetwork[]> {
-    return this.paymentNetworkRepo.find({ order: { sortKey: "ASC" } });
+  public async getPaymentNetworks(
+    query: Partial<PaymentNetwork> = {}
+  ): Promise<PaymentNetwork[]> {
+    return this.paymentNetworkRepo.find({
+      where: query,
+      order: { sortKey: "ASC" },
+    });
   }
 }
