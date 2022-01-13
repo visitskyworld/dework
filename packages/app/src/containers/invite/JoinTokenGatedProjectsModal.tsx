@@ -29,9 +29,11 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
     async (token: PaymentToken) => {
       setLoading(true);
 
-      const tokenInvites = invites.filter((i) => i.tokenId === token.id);
+      const tokenInvites = invites.filter((i) =>
+        i.project?.tokenGates.some((tg) => tg.token.id === token.id)
+      );
+
       for (const invite of tokenInvites) {
-        const token = invite.token!;
         try {
           const acceptedInvite = await acceptInvite(invite.id);
           message.success(
@@ -60,7 +62,9 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
   const tokens = useMemo(
     () =>
       _(invites)
-        .map((i) => i.token!)
+        .map((i) => i.project?.tokenGates ?? [])
+        .flatten()
+        .map((tg) => tg.token)
         .uniqBy((t) => t.id)
         .value(),
     [invites]

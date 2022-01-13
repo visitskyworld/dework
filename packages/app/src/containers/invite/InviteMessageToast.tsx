@@ -18,13 +18,14 @@ import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 
 const messageBottomStyle: CSSProperties = {
-  marginTop: "calc(100vh - 100px)",
+  marginTop: "calc(100vh - 140px)",
 };
 
 export const InviteMessageToast: FC = () => {
   const router = useRouter();
   const inviteId = router.query.inviteId as string | undefined;
   const invite = useInvite(inviteId);
+  const isTokenGated = !!invite?.project?.tokenGates.length;
 
   const authenticated = !!useAuthContext().user;
   const authModalVisible = useToggle();
@@ -77,7 +78,7 @@ export const InviteMessageToast: FC = () => {
       message.destroy();
       if (!authenticated) {
         showAuthModal();
-      } else if (invite.tokenId) {
+      } else if (isTokenGated) {
         showTokenGateModal();
       } else {
         handleAcceptInvite();
@@ -112,7 +113,7 @@ export const InviteMessageToast: FC = () => {
         toggle={authModalVisible}
         onDone={() => {
           authModalVisible.toggleOff();
-          invite?.tokenId ? showTokenGateModal() : handleAcceptInvite();
+          isTokenGated ? showTokenGateModal() : handleAcceptInvite();
         }}
       />
       {!!invite && (

@@ -332,8 +332,6 @@ export const createProjectInvite = gql`
       }
     }
   }
-
-  ${Fragments.invite}
 `;
 
 export const acceptInvite = gql`

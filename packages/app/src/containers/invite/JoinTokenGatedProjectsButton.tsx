@@ -18,13 +18,12 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const { organization, refetch } = useOrganization(organizationId);
 
   const invites = useMemo(
-    () =>
-      organization?.tokenGatedInvites
+    () => [] as any[] /*organization?.tokenGatedInvites
         .filter((invite) => !!invite.project)
         .filter(
           (i) => !organization.projects.some((p) => p.id === i.project!.id)
-        ),
-    [organization]
+        ),*/,
+    []
   );
 
   const tokens = useMemo(

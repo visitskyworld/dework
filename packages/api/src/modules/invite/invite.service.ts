@@ -53,6 +53,7 @@ export class InviteService {
     }
 
     if (!!invite.projectId && !!invite.projectRole) {
+      console.warn("dangers... 1");
       const project = (await invite.project) as Project;
       await this.assertUserPassesTokenGates(project, user);
 
@@ -83,14 +84,20 @@ export class InviteService {
     user: User
   ): Promise<void> {
     const gates = await project.tokenGates;
+    console.warn("dangers... 2", gates);
     if (!gates.length) return;
     const tokens = await Promise.all(gates.map((g) => g.token));
+
+    console.warn("dangers... 3", tokens);
 
     const balances = await Promise.all(
       tokens.map((t) => this.tokenService.balanceOf(t, user))
     );
 
+    console.warn("dangers... 4", balances);
+
     const hasAnyBalance = balances.some((b) => b.gt(0));
+    console.warn("dangers... 5");
     if (!hasAnyBalance) {
       throw new ForbiddenException({
         reason: "MISSING_TOKENS",

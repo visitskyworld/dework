@@ -26,6 +26,7 @@ export class TokenService {
       .getMany()
       .then((pms) => pms.map((pm) => pm.address));
 
+    console.warn("balanceOf 1", addresses);
     if (!addresses.length) return BigNumber.from(0);
 
     if (
@@ -36,6 +37,7 @@ export class TokenService {
       const provider = new ethers.providers.JsonRpcProvider(
         network.config.rpcUrl
       );
+      console.warn("balanceOf 2", network);
       const contract = new ethers.Contract(
         token.address!,
         [
@@ -46,6 +48,7 @@ export class TokenService {
       const balances = await Promise.all(
         addresses.map((address) => contract.balanceOf(address))
       );
+      console.warn("balanceOf 3", balances);
       return balances.reduce((acc, cur) => acc.add(cur), BigNumber.from(0));
     }
 
