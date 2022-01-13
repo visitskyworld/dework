@@ -83,8 +83,8 @@ export class InviteService {
     user: User
   ): Promise<void> {
     const gates = await project.tokenGates;
+    if (!gates.length) return;
     const tokens = await Promise.all(gates.map((g) => g.token));
-    if (!tokens.length) return;
 
     const balances = await Promise.all(
       tokens.map((t) => this.tokenService.balanceOf(t, user))

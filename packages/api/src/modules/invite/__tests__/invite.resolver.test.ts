@@ -270,7 +270,7 @@ describe("InviteResolver", () => {
 
           await fixtures.createPaymentMethod({
             userId: invited.id,
-            networkId: network.id,
+            networkIds: [network.id],
             // https://opensea.io/0xcedda60f770a23f48960454f173c8e118718321e
             address: "0xcedda60f770a23f48960454f173c8e118718321e",
           });

@@ -23,7 +23,7 @@ export class GraphQLTestClient {
 
   expectGqlError(response: Response, status: number): void {
     const ext = response.body.errors?.[0].extensions;
-    const actualStatus = ext.exception?.status ?? ext.response?.statusCode;
+    const actualStatus = ext?.exception?.status ?? ext?.response?.statusCode;
     expect(actualStatus).toEqual(status);
   }
 
