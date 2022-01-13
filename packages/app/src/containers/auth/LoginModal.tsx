@@ -34,9 +34,6 @@ export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       await authWithThreepid(threepidId);
-      // await router.push(
-      //   `/auth/3pid/${threepidId}?state=${JSON.stringify(state)}`
-      // );
       onDone?.();
     } catch (error) {
       alert((error as Error).message);
