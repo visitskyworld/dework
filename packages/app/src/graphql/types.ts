@@ -6990,6 +6990,7 @@ export interface CreateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;
+  storyPoints?: number | null;
   status: TaskStatus;
   reward?: UpdateTaskRewardInput | null;
 }
@@ -7106,6 +7107,7 @@ export interface UpdateTaskInput {
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;
+  storyPoints?: number | null;
   status?: TaskStatus | null;
   reward?: UpdateTaskRewardInput | null;
   review?: UpdateTaskReviewInput | null;

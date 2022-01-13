@@ -109,11 +109,11 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
         />
-        <script>
+        <script defer>
           {Constants.ENVIRONMENT === "prod" &&
             `UST_CT = [];UST = { s: Date.now(), addTag: function(tag) { UST_CT.push(tag) } };UST.addEvent = UST.addTag;
             var ust_min_js = document.createElement("script");
-            ust_min_js.src = 'https://analytics.dework.xyz/server/ust-rr.min.js?v=4.2.0';
+            ust_min_js.src = 'https://analytics.dework.xyz/server/ust.min.js?v=4.2.0';
             document.head.appendChild(ust_min_js);`}
         </script>
       </Head>
