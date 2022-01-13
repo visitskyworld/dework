@@ -257,19 +257,6 @@ export class PaymentPoller {
       return { confirmed: false };
     }
 
-    const provider = new ethers.providers.JsonRpcProvider(
-      network.config.rpcUrl
-    );
-    if (!provider) {
-      this.logger.error(
-        `No ethers provider for network ${network.slug} (${JSON.stringify({
-          networkId: network.id,
-          networkSlug: network.slug,
-        })})`
-      );
-      return { confirmed: false };
-    }
-
     const safeTx = await safeService.getTransaction(data.safeTxHash);
     if (!safeTx.transactionHash) {
       this.logger.debug(
