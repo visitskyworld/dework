@@ -15,7 +15,7 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const modalVisible = useToggle();
   const user = useCurrentUser();
 
-  const { organization, refetch } = useOrganization(organizationId);
+  const { refetch } = useOrganization(organizationId);
 
   const invites = useMemo(
     () => [] as any[] /*organization?.tokenGatedInvites

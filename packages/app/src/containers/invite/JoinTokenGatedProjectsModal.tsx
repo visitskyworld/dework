@@ -44,9 +44,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
             const reason =
               error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
             if (reason === "MISSING_TOKENS") {
-              message.error(
-                `Missing ${token.symbol}, so skipped joining project`
-              );
+              message.error(`You don't have ${token.symbol} in any wallet`);
             }
           }
         }
