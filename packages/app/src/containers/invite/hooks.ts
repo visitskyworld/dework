@@ -13,8 +13,6 @@ import {
   ProjectInviteInput,
   CreateProjectInviteMutation,
   CreateProjectInviteMutationVariables,
-  DeleteProjectInviteMutation,
-  DeleteProjectInviteMutationVariables,
 } from "@dewo/app/graphql/types";
 import copy from "copy-to-clipboard";
 import { message } from "antd";
@@ -68,22 +66,6 @@ export function useCreateProjectInvite(): (
       return res.data?.invite.id;
     },
     [createInvite]
-  );
-}
-
-export function useDeleteProjectInvite(): (
-  input: ProjectInviteInput
-) => Promise<void> {
-  const [mutation] = useMutation<
-    DeleteProjectInviteMutation,
-    DeleteProjectInviteMutationVariables
-  >(Mutations.deleteProjectInvite);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-    },
-    [mutation]
   );
 }
 

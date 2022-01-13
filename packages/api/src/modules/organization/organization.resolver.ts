@@ -42,6 +42,7 @@ import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { subject } from "@casl/ability";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -72,6 +73,13 @@ export class OrganizationResolver {
     @Parent() organization: Organization
   ): Promise<Project[]> {
     return this.organizationService.getProjects(organization.id, user?.id);
+  }
+
+  @ResolveField(() => [ProjectTokenGate])
+  public async projectTokenGates(
+    @Parent() organization: Organization
+  ): Promise<ProjectTokenGate[]> {
+    return this.organizationService.findProjectTokenGates(organization.id);
   }
 
   @ResolveField(() => [OrganizationTag])

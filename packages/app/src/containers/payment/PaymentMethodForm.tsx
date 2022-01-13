@@ -19,6 +19,13 @@ import { useForm } from "antd/lib/form/Form";
 import { useToggle } from "@dewo/app/util/hooks";
 import { PaymentTokenFormModal } from "./PaymentTokenForm";
 
+interface FormValues {
+  type: PaymentMethodType;
+  address: string;
+  networkId: string;
+  tokenIds: string[];
+}
+
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
   [PaymentMethodType.GNOSIS_SAFE]: "Gnosis Safe",
@@ -64,8 +71,8 @@ export const PaymentMethodForm: FC<Props> = ({
   selectTokens,
   onDone,
 }) => {
-  const [form] = useForm<CreatePaymentMethodInput>();
-  const [values, setValues] = useState<Partial<CreatePaymentMethodInput>>({});
+  const [form] = useForm<FormValues>();
+  const [values, setValues] = useState<Partial<FormValues>>({});
   const [loading, setLoading] = useState(false);
   const [customTokens, setCustomTokens] = useState<PaymentToken[]>([]);
 
@@ -133,11 +140,14 @@ export const PaymentMethodForm: FC<Props> = ({
 
   const createPaymentMethod = useCreatePaymentMethod();
   const submitForm = useCallback(
-    async (values: CreatePaymentMethodInput) => {
+    async (values: FormValues) => {
       try {
         setLoading(true);
         const paymentMethod = await createPaymentMethod({
-          ...values,
+          type: values.type,
+          address: values.address,
+          tokenIds: values.tokenIds,
+          networkIds: [values.networkId],
           ...inputOverride,
         });
         await onDone(paymentMethod);
@@ -152,24 +162,23 @@ export const PaymentMethodForm: FC<Props> = ({
   );
 
   const handleChange = useCallback(
-    (
-      changed: Partial<CreatePaymentMethodInput>,
-      values: Partial<CreatePaymentMethodInput>
-    ) => {
+    (changed: Partial<FormValues>, values: Partial<FormValues>) => {
       if (!!changed.type) {
         const slugs = networkSlugsByPaymentMethodType[changed.type];
         const supportsSelectedNetwork =
           !!selectedNetwork && !!slugs && slugs.includes(selectedNetwork.slug);
         if (!supportsSelectedNetwork) values.networkId = undefined;
       }
-      if (!!changed.networkId) values.address = undefined;
-      if (!!changed.networkId) values.tokenIds = [];
+      if (!!changed.networkId) {
+        values.address = undefined;
+        values.tokenIds = [];
+      }
 
       setValues(values);
       form.setFieldsValue(values);
 
       if (!!changed.address && !selectTokens) {
-        submitForm(values as CreatePaymentMethodInput);
+        submitForm(values as FormValues);
       }
     },
     [form, selectTokens, selectedNetwork, submitForm]
@@ -184,7 +193,7 @@ export const PaymentMethodForm: FC<Props> = ({
   const addCustomToken = useCallback(
     (token: PaymentToken) => {
       setCustomTokens((prev) => [...prev, token]);
-      const change: Partial<CreatePaymentMethodInput> = {
+      const change: Partial<FormValues> = {
         tokenIds: [...(values.tokenIds ?? []), token.id],
       };
       handleChange(change, { ...values, ...change });

@@ -1,7 +1,6 @@
 import {
   PaymentToken,
   ProjectDetails,
-  ProjectRole,
   UpdateProjectInput,
 } from "@dewo/app/graphql/types";
 import { Form, Input, Space } from "antd";
@@ -15,13 +14,13 @@ import { ProjectMemberList } from "./ProjectMemberList";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { ProjectDiscordIntegration } from "./ProjectDiscordIntegration";
 import { ProjectSettingsFormFields } from "./ProjectSettingsFormFields";
-import { useUpdateProject } from "../hooks";
+import {
+  useCreateProjectTokenGate,
+  useDeleteProjectTokenGate,
+  useUpdateProject,
+} from "../hooks";
 import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
-import {
-  useCreateProjectInvite,
-  useDeleteProjectInvite,
-} from "../../invite/hooks";
 
 interface Props {
   project: ProjectDetails;
@@ -51,26 +50,24 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
     [project]
   );
 
-  const tokenGatedInvite = project.tokenGatedInvite;
-  const createProjectInvite = useCreateProjectInvite();
-  const deleteProjectInvite = useDeleteProjectInvite();
+  const tokenGate = project.tokenGates[0];
+  const createProjectTokenGate = useCreateProjectTokenGate();
+  const deleteProjectTokenGate = useDeleteProjectTokenGate();
   const handleChangeTokenGating = useCallback(
     async (token: PaymentToken | undefined) => {
-      if (!!token) {
-        await createProjectInvite({
+      if (!!token && !tokenGate) {
+        await createProjectTokenGate({
           projectId: project.id,
           tokenId: token.id,
-          role: ProjectRole.CONTRIBUTOR,
         });
       } else {
-        await deleteProjectInvite({
+        await deleteProjectTokenGate({
           projectId: project.id,
-          tokenId: tokenGatedInvite?.token?.id,
-          role: ProjectRole.CONTRIBUTOR,
+          tokenId: tokenGate.token.id,
         });
       }
     },
-    [createProjectInvite, deleteProjectInvite, tokenGatedInvite, project.id]
+    [createProjectTokenGate, deleteProjectTokenGate, tokenGate, project.id]
   );
 
   return (
@@ -113,7 +110,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         </FormSection>
 
         <ProjectTokenGatingInput
-          value={tokenGatedInvite?.token ?? undefined}
+          value={tokenGate?.token ?? undefined}
           onChange={handleChangeTokenGating}
         />
 

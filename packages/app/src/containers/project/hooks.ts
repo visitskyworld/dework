@@ -5,6 +5,10 @@ import {
   CreateProjectInput,
   CreateProjectMutation,
   CreateProjectMutationVariables,
+  CreateProjectTokenGateMutation,
+  CreateProjectTokenGateMutationVariables,
+  DeleteProjectTokenGateMutation,
+  DeleteProjectTokenGateMutationVariables,
   GetProjectIntegrationsQuery,
   GetProjectIntegrationsQueryVariables,
   GetProjectQuery,
@@ -17,6 +21,7 @@ import {
   ProjectDetails,
   ProjectIntegration,
   ProjectMember,
+  ProjectTokenGateInput,
   RemoveProjectMemberInput,
   RemoveProjectMemberMutation,
   RemoveProjectMemberMutationVariables,
@@ -89,6 +94,38 @@ export function useRemoveProjectMember(): (
     RemoveProjectMemberMutation,
     RemoveProjectMemberMutationVariables
   >(Mutations.removeProjectMember);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useCreateProjectTokenGate(): (
+  input: ProjectTokenGateInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateProjectTokenGateMutation,
+    CreateProjectTokenGateMutationVariables
+  >(Mutations.createProjectTokenGate);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteProjectTokenGate(): (
+  input: ProjectTokenGateInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteProjectTokenGateMutation,
+    DeleteProjectTokenGateMutationVariables
+  >(Mutations.deleteProjectTokenGate);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });

@@ -7,6 +7,7 @@ import {
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { Project, ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
@@ -26,6 +27,8 @@ export class OrganizationService {
     private readonly organizationMemberRepo: Repository<OrganizationMember>,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+    @InjectRepository(ProjectTokenGate)
+    private readonly projectTokenGateRepo: Repository<ProjectTokenGate>,
     @InjectRepository(OrganizationTag)
     private readonly organizationTagRepo: Repository<OrganizationTag>,
     @InjectRepository(EntityDetail)
@@ -192,6 +195,17 @@ export class OrganizationService {
       .createQueryBuilder("organization")
       .where("organization.featured = :featured", { featured: true })
       .limit(limit)
+      .getMany();
+  }
+
+  public findProjectTokenGates(
+    organizationId: string
+  ): Promise<ProjectTokenGate[]> {
+    return this.projectTokenGateRepo
+      .createQueryBuilder("projectTokenGate")
+      .innerJoinAndSelect("projectTokenGate.project", "project")
+      .innerJoinAndSelect("project.organization", "organization")
+      .where("project.organizationId = :organizationId", { organizationId })
       .getMany();
   }
 }

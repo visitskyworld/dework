@@ -150,6 +150,22 @@ export const project = gql`
   }
 `;
 
+export const projectTokenGate = gql`
+  fragment ProjectTokenGate on ProjectTokenGate {
+    id
+    projectId
+    token {
+      ...PaymentToken
+      network {
+        ...PaymentNetwork
+      }
+    }
+  }
+
+  ${paymentToken}
+  ${paymentNetwork}
+`;
+
 export const invite = gql`
   fragment Invite on Invite {
     id
@@ -164,13 +180,8 @@ export const invite = gql`
     projectRole
     project {
       ...Project
-    }
-
-    tokenId
-    token {
-      ...PaymentToken
-      network {
-        ...PaymentNetwork
+      tokenGates {
+        ...ProjectTokenGate
       }
     }
   }
@@ -178,8 +189,7 @@ export const invite = gql`
   ${user}
   ${organization}
   ${project}
-  ${paymentToken}
-  ${paymentNetwork}
+  ${projectTokenGate}
 `;
 
 export const projectDetails = gql`
@@ -200,8 +210,8 @@ export const projectDetails = gql`
     integrations {
       ...ProjectIntegration
     }
-    tokenGatedInvite {
-      ...Invite
+    tokenGates {
+      ...ProjectTokenGate
     }
   }
 
@@ -210,7 +220,7 @@ export const projectDetails = gql`
   ${paymentMethod}
   ${paymentToken}
   ${projectIntegration}
-  ${invite}
+  ${projectTokenGate}
 `;
 
 export const taskTag = gql`
@@ -468,8 +478,8 @@ export const organizationDetails = gql`
     integrations {
       ...OrganizationIntegration
     }
-    tokenGatedInvites {
-      ...Invite
+    projectTokenGates {
+      ...ProjectTokenGate
     }
   }
 
@@ -480,5 +490,5 @@ export const organizationDetails = gql`
   ${organizationTag}
   ${entityDetail}
   ${user}
-  ${invite}
+  ${projectTokenGate}
 `;

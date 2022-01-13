@@ -286,6 +286,35 @@ export const setOrganizationDetail = gql`
   ${Fragments.entityDetail}
 `;
 
+export const createProjectTokenGate = gql`
+  mutation CreateProjectTokenGateMutation($input: ProjectTokenGateInput!) {
+    tokenGate: createProjectTokenGate(input: $input) {
+      id
+      project {
+        id
+        tokenGates {
+          ...ProjectTokenGate
+        }
+      }
+    }
+  }
+
+  ${Fragments.projectTokenGate}
+`;
+
+export const deleteProjectTokenGate = gql`
+  mutation DeleteProjectTokenGateMutation($input: ProjectTokenGateInput!) {
+    tokenGate: deleteProjectTokenGate(input: $input) {
+      id
+      tokenGates {
+        ...ProjectTokenGate
+      }
+    }
+  }
+
+  ${Fragments.projectTokenGate}
+`;
+
 export const createOrganizationInvite = gql`
   mutation CreateOrganizationInviteMutation($input: OrganizationInviteInput!) {
     invite: createOrganizationInvite(input: $input) {
@@ -300,22 +329,6 @@ export const createProjectInvite = gql`
       id
       project {
         id
-        tokenGatedInvite {
-          ...Invite
-        }
-      }
-    }
-  }
-
-  ${Fragments.invite}
-`;
-
-export const deleteProjectInvite = gql`
-  mutation DeleteProjectInviteMutation($input: ProjectInviteInput!) {
-    invite: deleteProjectInvite(input: $input) {
-      id
-      tokenGatedInvite {
-        ...Invite
       }
     }
   }

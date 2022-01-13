@@ -11,6 +11,7 @@ import { permissions } from "../auth/permissions";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { OrganizationResolver } from "./organization.resolver";
 import { OrganizationService } from "./organization.service";
+import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OrganizationService } from "./organization.service";
       User,
       OrganizationMember,
       Project,
+      ProjectTokenGate,
       OrganizationTag,
       EntityDetail,
     ]),
