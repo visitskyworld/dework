@@ -9,7 +9,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
 import { IntegrationModule } from "../integrations/integration.module";
+import { PaymentModule } from "../payment/payment.module";
 import { PermalinkModule } from "../permalink/permalink.module";
+import { UserModule } from "../user/user.module";
 import { ProjectResolver } from "./project.resolver";
 import { ProjectService } from "./project.service";
 
@@ -26,6 +28,8 @@ import { ProjectService } from "./project.service";
     CaslModule.forFeature({ permissions }),
     PermalinkModule,
     IntegrationModule,
+    PaymentModule,
+    UserModule,
   ],
   providers: [ProjectResolver, ProjectService],
   exports: [ProjectService],

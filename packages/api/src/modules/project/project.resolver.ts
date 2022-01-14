@@ -7,7 +7,12 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProjectService } from "./project.service";
 import { CreateProjectInput } from "./dto/CreateProjectInput";
@@ -26,7 +31,7 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
 import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
@@ -100,6 +105,23 @@ export class ProjectResolver {
     @Args("input") input: UpdateProjectMemberInput
   ): Promise<ProjectMember> {
     return this.projectService.upsertMember(input);
+  }
+
+  @Mutation(() => ProjectMember)
+  @UseGuards(AuthGuard)
+  public async joinProjectWithToken(
+    @Context("user") user: User,
+    @Args("projectId", { type: () => GraphQLUUID }) projectId: string
+  ): Promise<ProjectMember> {
+    const project = await this.projectService.findById(projectId);
+    if (!project) throw new NotFoundException();
+    const tokenGates = await project.tokenGates;
+    if (!tokenGates.length) throw new ForbiddenException();
+    return this.projectService.upsertMember({
+      projectId,
+      userId: user.id,
+      role: ProjectRole.CONTRIBUTOR,
+    });
   }
 
   @Mutation(() => Project)

@@ -2312,6 +2312,41 @@ export interface AcceptInviteMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: JoinProjectWithTokenMutation
+// ====================================================
+
+export interface JoinProjectWithTokenMutation_member_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface JoinProjectWithTokenMutation_member {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  project: JoinProjectWithTokenMutation_member_project;
+}
+
+export interface JoinProjectWithTokenMutation {
+  member: JoinProjectWithTokenMutation_member;
+}
+
+export interface JoinProjectWithTokenMutationVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreatePaymentMethodMutation
 // ====================================================
 

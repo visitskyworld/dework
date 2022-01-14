@@ -222,3 +222,14 @@ export class OrganizationResolver {
     return organizations;
   }
 }
+
+@Resolver(() => User)
+@Injectable()
+export class UserOrganizationsResolver {
+  constructor(private readonly organizationService: OrganizationService) {}
+
+  @ResolveField(() => [Organization])
+  public async organizations(@Parent() user: User): Promise<Organization[]> {
+    return this.organizationService.findByUser(user.id);
+  }
+}

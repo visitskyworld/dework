@@ -1,11 +1,13 @@
-import { Button } from "antd";
-import React, { FC, useMemo } from "react";
+import { Button, message } from "antd";
+import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../organization/hooks";
 import * as Icons from "@ant-design/icons";
 import { useCurrentUser, useToggle } from "@dewo/app/util/hooks";
-import _ from "lodash";
 import { LoginButton } from "../auth/LoginButton";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
+import { ProjectTokenGate } from "@dewo/app/graphql/types";
+import { useJoinProjectWithToken } from "./hooks";
+import { ApolloError } from "@apollo/client";
 
 interface Props {
   organizationId: string;
@@ -15,27 +17,51 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const modalVisible = useToggle();
   const user = useCurrentUser();
 
-  const { refetch } = useOrganization(organizationId);
+  const { organization, refetch } = useOrganization(organizationId);
 
-  const invites = useMemo(
-    () => [] as any[] /*organization?.tokenGatedInvites
-        .filter((invite) => !!invite.project)
-        .filter(
-          (i) => !organization.projects.some((p) => p.id === i.project!.id)
-        ),*/,
-    []
-  );
-
-  const tokens = useMemo(
+  const tokenGates = useMemo(
     () =>
-      _(invites)
-        .map((i) => i.token!)
-        .uniqBy((t) => t.id)
-        .value(),
-    [invites]
+      organization?.projectTokenGates?.filter(
+        (g) => !organization?.projects.some((p) => p.id === g.projectId)
+      ),
+    [organization?.projectTokenGates, organization?.projects]
+  );
+  const tokens = useMemo(
+    () => tokenGates?.map((t) => t.token) ?? [],
+    [tokenGates]
   );
 
-  if (!invites?.length) return null;
+  const joinProjectWithToken = useJoinProjectWithToken();
+  const verifyProjectsWithToken = useCallback(
+    async (token: ProjectTokenGate["token"]) => {
+      const projectIds =
+        tokenGates
+          ?.filter((t) => t.token.id === token.id)
+          .map((t) => t.projectId) ?? [];
+      try {
+        for (const projectId of projectIds) {
+          const project = await joinProjectWithToken(projectId);
+          message.success(`Joined ${project.name} using ${token.symbol}`);
+        }
+      } catch (error) {
+        if (error instanceof ApolloError) {
+          const reason =
+            error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
+          if (reason === "MISSING_TOKENS") {
+            message.error(
+              `You don't have ${token.symbol} in any connected wallet`
+            );
+          }
+        }
+      }
+
+      await refetch();
+      modalVisible.toggleOff();
+    },
+    [tokenGates, refetch, joinProjectWithToken, modalVisible]
+  );
+
+  if (!tokenGates?.length) return null;
   const buttonText = `Join private projects using ${tokens
     .map((t) => t.symbol)
     .join(", ")}`;
@@ -56,10 +82,10 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
       )}
       {!!user && (
         <JoinTokenGatedProjectsModal
-          invites={invites}
+          tokens={tokens}
           visible={modalVisible.isOn}
           onClose={modalVisible.toggleOff}
-          onDone={refetch}
+          onVerify={verifyProjectsWithToken}
         />
       )}
     </>

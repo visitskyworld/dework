@@ -15,6 +15,7 @@ import {
   OrganizationTasksResolver,
   ProjectTasksResolver,
   TaskResolver,
+  UserTasksResolver,
 } from "./task.resolver";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
@@ -44,6 +45,7 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
     TaskResolver,
     OrganizationTasksResolver,
     ProjectTasksResolver,
+    UserTasksResolver,
     TaskService,
     TaskRolesGuard,
   ],

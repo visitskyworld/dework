@@ -31,48 +31,9 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
       } finally {
         setLoading(false);
       }
-
-      /*
-      const acceptInvite = useAcceptInvite();
-      const tokenInvites = invites.filter((i) =>
-        i.project?.tokenGates.some((tg) => tg.token.id === token.id)
-      );
-
-      for (const invite of tokenInvites) {
-        try {
-          const acceptedInvite = await acceptInvite(invite.id);
-          message.success(
-            `Joined ${acceptedInvite.project?.name} using ${token.symbol}`
-          );
-        } catch (error) {
-          if (error instanceof ApolloError) {
-            const reason =
-              error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
-            if (reason === "MISSING_TOKENS") {
-              message.error(`You don't have ${token.symbol} in any wallet`);
-            }
-          }
-        }
-      }
-      */
-
-      await onVerify(token);
-      onClose();
-      setLoading(false);
     },
     [onVerify, onClose]
   );
-
-  // const tokens = useMemo(
-  //   () =>
-  //     _(invites)
-  //       .map((i) => i.project?.tokenGates ?? [])
-  //       .flatten()
-  //       .map((tg) => tg.token)
-  //       .uniqBy((t) => t.id)
-  //       .value(),
-  //   [invites]
-  // );
 
   if (!user) return null;
   return (

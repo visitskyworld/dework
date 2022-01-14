@@ -13,6 +13,9 @@ import {
   ProjectInviteInput,
   CreateProjectInviteMutation,
   CreateProjectInviteMutationVariables,
+  JoinProjectWithTokenMutation,
+  JoinProjectWithTokenMutationVariables,
+  Project,
 } from "@dewo/app/graphql/types";
 import copy from "copy-to-clipboard";
 import { message } from "antd";
@@ -83,6 +86,25 @@ export function useAcceptInvite(): (
       apolloClient.reFetchObservableQueries();
       if (!res.data) throw res.errors?.[0];
       return res.data!.invite;
+    },
+    [mutation, apolloClient]
+  );
+}
+
+export function useJoinProjectWithToken(): (
+  projectId: string
+) => Promise<Project> {
+  const [mutation] = useMutation<
+    JoinProjectWithTokenMutation,
+    JoinProjectWithTokenMutationVariables
+  >(Mutations.joinProjectWithToken);
+  const apolloClient = useApolloClient();
+  return useCallback(
+    async (projectId) => {
+      const res = await mutation({ variables: { projectId } });
+      apolloClient.reFetchObservableQueries();
+      if (!res.data) throw res.errors?.[0];
+      return res.data.member.project;
     },
     [mutation, apolloClient]
   );

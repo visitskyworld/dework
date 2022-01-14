@@ -9,7 +9,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
 import { PermalinkModule } from "../permalink/permalink.module";
-import { OrganizationResolver } from "./organization.resolver";
+import {
+  OrganizationResolver,
+  UserOrganizationsResolver,
+} from "./organization.resolver";
 import { OrganizationService } from "./organization.service";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 
@@ -27,7 +30,11 @@ import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
     CaslModule.forFeature({ permissions }),
     PermalinkModule,
   ],
-  providers: [OrganizationResolver, OrganizationService],
+  providers: [
+    OrganizationResolver,
+    UserOrganizationsResolver,
+    OrganizationService,
+  ],
   exports: [OrganizationService],
 })
 export class OrganizationModule {}

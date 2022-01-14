@@ -364,6 +364,19 @@ export const acceptInvite = gql`
   ${Fragments.projectMember}
 `;
 
+export const joinProjectWithToken = gql`
+  mutation JoinProjectWithTokenMutation($projectId: UUID!) {
+    member: joinProjectWithToken(projectId: $projectId) {
+      id
+      project {
+        ...Project
+      }
+    }
+  }
+
+  ${Fragments.project}
+`;
+
 export const createPaymentMethod = gql`
   mutation CreatePaymentMethodMutation($input: CreatePaymentMethodInput!) {
     paymentMethod: createPaymentMethod(input: $input) {

@@ -15,8 +15,6 @@ import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
-import { Task } from "@dewo/api/models/Task";
-import { TaskService } from "../task/task.service";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { AuthorizableUser } from "nest-casl";
@@ -24,8 +22,6 @@ import { GetUserPermissionsInput } from "./dto/GetUserPermissionsInput";
 import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
-import { Organization } from "@dewo/api/models/Organization";
-import { OrganizationService } from "../organization/organization.service";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 
@@ -34,20 +30,8 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly taskService: TaskService,
-    private readonly organizationService: OrganizationService,
     private readonly abilityFactory: AbilityFactory
   ) {}
-
-  @ResolveField(() => [Task])
-  public async tasks(@Parent() user: User): Promise<Task[]> {
-    return this.taskService.findWithRelations({ assigneeId: user.id });
-  }
-
-  @ResolveField(() => [Organization])
-  public async organizations(@Parent() user: User): Promise<Organization[]> {
-    return this.organizationService.findByUser(user.id);
-  }
 
   @ResolveField(() => [PaymentMethod])
   public async paymentMethods(@Parent() user: User): Promise<PaymentMethod[]> {

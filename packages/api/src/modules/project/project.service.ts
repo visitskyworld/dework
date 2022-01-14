@@ -4,9 +4,16 @@ import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
+import { TokenService } from "../payment/token.service";
+import { UserService } from "../user/user.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 
@@ -22,7 +29,9 @@ export class ProjectService {
     @InjectRepository(ProjectTokenGate)
     private readonly projectTokenGateRepo: Repository<ProjectTokenGate>,
     @InjectRepository(TaskTag)
-    private readonly taskTagRepo: Repository<TaskTag>
+    private readonly taskTagRepo: Repository<TaskTag>,
+    private readonly tokenService: TokenService,
+    private readonly userService: UserService
   ) {}
 
   public async create(
@@ -82,6 +91,11 @@ export class ProjectService {
         id: member.id,
       }) as Promise<ProjectMember>;
     } else {
+      const project = await this.findById(data.projectId);
+      const user = await this.userService.findById(data.userId);
+      if (!project || !user) throw new BadRequestException();
+      await this.assertUserPassesTokenGates(project, user);
+
       const created = await this.projectMemberRepo.save(data);
       return this.projectMemberRepo.findOne({
         id: created.id,
@@ -101,5 +115,26 @@ export class ProjectService {
 
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
+  }
+
+  private async assertUserPassesTokenGates(
+    project: Project,
+    user: User
+  ): Promise<void> {
+    const gates = await project.tokenGates;
+    if (!gates.length) return;
+    const tokens = await Promise.all(gates.map((g) => g.token));
+
+    const balances = await Promise.all(
+      tokens.map((t) => this.tokenService.balanceOf(t, user))
+    );
+
+    const hasAnyBalance = balances.some((b) => b.gt(0));
+    if (!hasAnyBalance) {
+      throw new ForbiddenException({
+        reason: "MISSING_TOKENS",
+        tokenIds: tokens.map((t) => t.id),
+      });
+    }
   }
 }
