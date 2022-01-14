@@ -12,6 +12,7 @@ import {
   Constants,
   siteDescription,
   siteTitle,
+  siteURL,
 } from "@dewo/app/util/constants";
 import {
   ApolloClient,
@@ -102,7 +103,17 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       <Head>
         <title>{siteTitle}</title>
         <meta name="description" content={siteDescription} />
-        <meta name="og:image" content="https://i.imgur.com/vs0aXnL.png" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={siteURL} />
+        <meta property="og:title" content={siteTitle} />
+        <meta property="og:description" content={siteDescription} />
+        <meta property="og:image" content="https://i.imgur.com/vs0aXnL.png" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={siteURL} />
+        <meta name="twitter:title" content={siteTitle} />
+        <meta name="twitter:description" content={siteDescription} />
         <meta name="twitter:image" content="https://i.imgur.com/vs0aXnL.png" />
         <meta
           name="viewport"
