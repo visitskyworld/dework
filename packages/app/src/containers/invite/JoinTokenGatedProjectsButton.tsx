@@ -22,9 +22,14 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const tokenGates = useMemo(
     () =>
       organization?.projectTokenGates?.filter(
-        (g) => !organization?.projects.some((p) => p.id === g.projectId)
+        (g) =>
+          !organization?.projects.some(
+            (p) =>
+              p.id === g.projectId &&
+              !p.members.some((m) => m.userId === user?.id)
+          )
       ),
-    [organization?.projectTokenGates, organization?.projects]
+    [organization?.projectTokenGates, organization?.projects, user?.id]
   );
   const tokens = useMemo(
     () => tokenGates?.map((t) => t.token) ?? [],
@@ -70,6 +75,7 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
       {!!user ? (
         <Button
           type="primary"
+          size="small"
           icon={<Icons.LockOutlined />}
           onClick={modalVisible.toggleOn}
         >
