@@ -178,7 +178,7 @@ export class ProjectResolver {
   public async createProjectTokenGate(
     @Args("input") input: ProjectTokenGateInput
   ): Promise<ProjectTokenGate> {
-    return this.projectService.createGate(input);
+    return this.projectService.createTokenGate(input);
   }
 
   @Mutation(() => Project)
@@ -187,7 +187,7 @@ export class ProjectResolver {
   public async deleteProjectTokenGate(
     @Args("input") input: ProjectTokenGateInput
   ): Promise<Project> {
-    await this.projectService.deleteGate(input);
+    await this.projectService.deleteTokenGate(input);
     return this.projectService.findById(input.projectId) as Promise<Project>;
   }
 

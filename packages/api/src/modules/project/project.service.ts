@@ -65,7 +65,7 @@ export class ProjectService {
     return this.taskTagRepo.findOne(created.id) as Promise<TaskTag>;
   }
 
-  public async createGate(
+  public async createTokenGate(
     input: ProjectTokenGateInput
   ): Promise<ProjectTokenGate> {
     const created = await this.projectTokenGateRepo.save(input);
@@ -74,7 +74,7 @@ export class ProjectService {
     ) as Promise<ProjectTokenGate>;
   }
 
-  public async deleteGate(input: ProjectTokenGateInput): Promise<void> {
+  public async deleteTokenGate(input: ProjectTokenGateInput): Promise<void> {
     await this.projectTokenGateRepo.delete(input);
   }
 

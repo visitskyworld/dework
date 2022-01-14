@@ -203,7 +203,7 @@ export class Fixtures {
   public async createProjectTokenGate(
     input: ProjectTokenGateInput
   ): Promise<ProjectTokenGate> {
-    return this.projectService.createGate(input);
+    return this.projectService.createTokenGate(input);
   }
 
   public async createGithubBranch(
