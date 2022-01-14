@@ -231,7 +231,9 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
                 canPayTaskAssignee(task) ? (
                   formatTaskReward(reward)
                 ) : (
-                  <Tag color="red">Missing Payment Method</Tag>
+                  <Tag color="red">
+                    Contributor needs to add their payment address
+                  </Tag>
                 ),
             },
           ]}
