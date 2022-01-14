@@ -63,7 +63,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
           overlay={
             <Menu>
               <Menu.Item onClick={inviteProjectContributor}>
-                Invite Contributor(s)
+                Invite Contributors
               </Menu.Item>
               <Menu.Item onClick={inviteProjectAdmin}>
                 Invite Project Admin
@@ -90,7 +90,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
           style={style}
           onClick={inviteProjectContributor}
         >
-          Invite Contributor
+          Invite Contributors
         </Button>
       );
     }

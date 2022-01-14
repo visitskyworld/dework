@@ -8,6 +8,7 @@ import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";
 import { ApolloError } from "@apollo/client";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   organizationId: string;
@@ -66,7 +67,8 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
     [tokenGates, refetch, joinProjectWithToken, modalVisible]
   );
 
-  if (!tokenGates?.length) return null;
+  const canAccessAllProjects = usePermission("update", "Project");
+  if (!tokenGates?.length || canAccessAllProjects) return null;
   const buttonText = `Join private projects using ${tokens
     .map((t) => t.symbol)
     .join(", ")}`;

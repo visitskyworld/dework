@@ -2,8 +2,8 @@ import { Button, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback, useState } from "react";
 import { useCurrentUser } from "@dewo/app/util/hooks";
 import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
-import { shortenedAddress } from "../payment/hooks";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
+import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];
@@ -56,12 +56,15 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                 to join. Verify that you have the token or connect a wallet that
                 has it.
               </Typography.Text>
-              {!!pms.length && (
-                <Typography.Text style={{ whiteSpace: "pre" }}>
-                  Connected wallets on {token.network.name}:{"\n"}
-                  {pms.map((pm) => shortenedAddress(pm.address)).join("\n")}
-                </Typography.Text>
-              )}
+              {pms.map((pm) => (
+                <PaymentMethodSummary
+                  key={pm.id}
+                  type={pm.type}
+                  networkNames={pm.networks.map((n) => n.name).join(", ")}
+                  address={pm.address}
+                />
+              ))}
+
               {!!pms.length && (
                 <Button
                   block
