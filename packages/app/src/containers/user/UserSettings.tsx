@@ -1,21 +1,20 @@
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import { useCurrentUser } from "@dewo/app/util/hooks";
 import { Alert, Col, Space, Typography } from "antd";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback } from "react";
 import {
   getThreepidName,
   renderThreepidIcon,
   ThreepidAuthButton,
 } from "../auth/ThreepidAuthButton";
-import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { useUpdatePaymentMethod } from "../payment/hooks";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
+import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethodButton";
 
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
   const user = useCurrentUser();
-  const paymentMethodOverride = useMemo(() => ({ userId: user?.id }), [user]);
 
   const updatePaymentMethod = useUpdatePaymentMethod();
   const removePaymentMethod = useCallback(
@@ -43,9 +42,9 @@ export const UserSettings: FC<Props> = () => {
           ))}
 
           {!!user && (
-            <AddPaymentMethodButton
-              inputOverride={paymentMethodOverride}
-              children="Add Another Address for Receiving Payments"
+            <AddUserPaymentMethodButton
+              userId={user?.id}
+              children="Connect Wallet for Receiving Payments"
             />
           )}
         </Space>

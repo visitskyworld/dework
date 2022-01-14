@@ -186,7 +186,7 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
           >
             <Select<string>
               style={{ width: "100%" }}
-              placeholder="Payment Method"
+              placeholder="Select wallet type..."
             >
               {paymentMethodTypes.map((type) => (
                 <Select.Option

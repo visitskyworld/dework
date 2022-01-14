@@ -4,7 +4,7 @@ import { useRequestAddress, useSwitchChain } from "@dewo/app/util/ethereum";
 import { PaymentNetwork } from "@dewo/app/graphql/types";
 
 interface Props {
-  network: PaymentNetwork;
+  network?: PaymentNetwork;
   onChange?(address: string): Promise<void>;
 }
 
@@ -15,7 +15,7 @@ export const ConnectMetamaskButton: FC<Props> = ({ network, onChange }) => {
   const connect = useCallback(async () => {
     try {
       setLoading(true);
-      await switchChain(network);
+      if (!!network) await switchChain(network);
       const address = await requestAddress();
       await onChange?.(address);
     } finally {
