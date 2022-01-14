@@ -1,4 +1,12 @@
-import React, { ClipboardEvent, FC, useCallback, useState } from "react";
+import React, {
+  ChangeEvent,
+  ClipboardEvent,
+  FC,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import * as Icons from "@ant-design/icons";
@@ -10,7 +18,7 @@ import { MDEditor } from "./MDEditor";
 import { useToggle } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { MarkdownPreview } from "./MarkdownPreview";
-
+import * as commands from "@uiw/react-md-editor/lib/commands";
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
   placeholder?: string;
@@ -37,7 +45,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const [value, setValue] = useState(initialValue);
   const editing = useToggle(mode === "create");
   const autoSave = mode === "create";
-
+  const fileRef = useRef<HTMLInputElement>();
   const handleSave = useCallback(() => {
     setSavedValue(value);
     editing.toggleOff();
@@ -127,7 +135,29 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     }
     return isLt2M;
   }, []);
-
+  const handleToolbarFile = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (event?.target?.files?.length) {
+        const file = event?.target?.files[0];
+        if (beforeUpload(file)) uploadAndAddFile(file);
+      }
+    },
+    [uploadAndAddFile, beforeUpload]
+  );
+  const newCommands = useMemo(
+    () =>
+      commands.getCommands().map((command) =>
+        command.name === "image"
+          ? {
+              ...commands.image,
+              execute: () => {
+                fileRef?.current?.click();
+              },
+            }
+          : command
+      ),
+    [fileRef]
+  );
   if (editing.isOn) {
     return (
       <Upload.Dragger
@@ -138,12 +168,21 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         className="dewo-md-upload"
         beforeUpload={beforeUpload}
       >
+        {/* input for uploading img from toolbar upload button */}
+        <input
+          type="file"
+          id="file-input"
+          ref={fileRef as React.LegacyRef<HTMLInputElement>}
+          onChange={handleToolbarFile}
+          style={{ display: "none" }}
+        />
         <MDEditor
           value={value}
           onChange={handleChange}
           className="dewo-md-editor"
           highlightEnable={false}
-          hideToolbar
+          commands={newCommands}
+          extraCommands={[]}
           preview="edit"
           enableScroll={false}
           autoFocus={mode === "update"}

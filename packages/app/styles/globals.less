@@ -1,7 +1,9 @@
 @import "~antd/dist/antd.less";
 @import "~antd/lib/style/themes/dark.less";
 
-@font-family: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+@font-family: "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+  "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 @border-radius-base: 4px;
 @primary-color: #8570e4;
 @primary-color-25: #8570e444;
@@ -58,7 +60,8 @@ textarea {
   background: unset;
 }
 
-.ant-table-filter-column, .ant-table-column-sorters {
+.ant-table-filter-column,
+.ant-table-column-sorters {
   justify-content: unset;
   .ant-table-column-title {
     flex: unset;
@@ -158,8 +161,8 @@ textarea {
 
 .ant-page-header {
   // @media (max-width: @screen-sm) {
-    padding-left: 12px;
-    padding-right: 12px;
+  padding-left: 12px;
+  padding-right: 12px;
   // }
 }
 
@@ -218,7 +221,7 @@ textarea {
 }
 
 .ant-tabs-tabpane {
-  overflow-y: auto
+  overflow-y: auto;
 }
 
 .dewo-task-board {
@@ -288,7 +291,6 @@ textarea {
   }
 }
 .dewo-task-board-column.ant-card-small {
-  
   & > .ant-card-head > .ant-card-head-wrapper {
     .ant-card-extra {
       padding: 0;
@@ -487,8 +489,7 @@ textarea {
   .w-md-editor-input {
     border: 1px solid @border-color-base;
     border-radius: 0;
-    border-top-left-radius: @border-radius-base;
-    border-top-right-radius: @border-radius-base;
+
     padding: 12px;
   }
 
@@ -497,7 +498,7 @@ textarea {
     padding-bottom: 18px;
     caret-color: @text-color;
   }
-  
+
   .wmde-markdown-color {
     color: @text-color-secondary;
   }
@@ -530,12 +531,28 @@ textarea {
     display: none;
   }
 
-  &, & .w-md-editor-content {
+  &,
+  & .w-md-editor-content {
     height: unset !important;
 
     & .w-md-editor-preview {
       position: unset;
       padding: unset;
+    }
+  }
+  .w-md-editor-toolbar {
+    justify-content: flex-end;
+    border: 1px solid @border-color-base;
+    border-top-left-radius: @border-radius-base;
+    border-top-right-radius: @border-radius-base;
+    border-bottom: 0;
+    background: transparent;
+    & li button {
+      &:hover,
+      &:focus {
+        background-color: @layout-sider-background;
+        color: @primary-color;
+      }
     }
   }
 }
@@ -562,7 +579,9 @@ textarea {
 }
 
 .dewo-md-upload.ant-upload.ant-upload-drag .ant-upload-btn,
-.dewo-md-upload.ant-upload.ant-upload-drag .ant-upload-btn .ant-upload-drag-container {
+.dewo-md-upload.ant-upload.ant-upload-drag
+  .ant-upload-btn
+  .ant-upload-drag-container {
   display: block;
 }
 
@@ -596,7 +615,7 @@ textarea {
   .ant-tabs-nav-more {
     display: none;
   }
-  
+
   .ant-tabs-tab + .ant-tabs-tab {
     margin-left: 0;
   }
@@ -613,7 +632,7 @@ textarea {
   border: 1px solid @border-color-base;
 
   transition: background, border 0.3s ease-in-out;
-  
+
   &.dewo-task-reaction-selected {
     border: 1px solid @primary-color;
     background: @primary-color-25;
