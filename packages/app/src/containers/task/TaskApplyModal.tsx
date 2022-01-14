@@ -58,11 +58,7 @@ export const TaskApplyModal: FC<TaskApplyModalProps> = ({
               disabledDate={(current) => current <= moment().add(-1, "days")}
             />
           </Form.Item>
-          <Form.Item
-            name="message"
-            label="Message"
-            rules={[{ required: true, message: "Please enter a message" }]}
-          >
+          <Form.Item name="message" label="Message">
             <Input.TextArea
               autoSize
               className="dewo-field"

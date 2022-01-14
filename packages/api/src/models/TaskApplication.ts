@@ -15,9 +15,9 @@ export class TaskApplication extends Audit {
   @Field()
   public userId!: string;
 
-  @Column()
-  @Field()
-  public message!: string;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public message?: string;
 
   @Column()
   @Field()

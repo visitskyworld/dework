@@ -7657,7 +7657,7 @@ export interface CreateProjectIntegrationInput {
 export interface CreateTaskApplicationInput {
   taskId: Scalar.UUID;
   userId: Scalar.UUID;
-  message: string;
+  message?: string;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
 }

@@ -9,8 +9,8 @@ export class CreateTaskApplicationInput {
   @Field(() => GraphQLUUID)
   public userId!: string;
 
-  @Field()
-  public message!: string;
+  @Field({ nullable: true })
+  public message?: string;
 
   @Field()
   public startDate!: Date;
