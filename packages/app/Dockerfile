@@ -28,8 +28,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 COPY packages/app/package.json packages/app/
-COPY packages/app/patches patches
-RUN yarn app install --frozen-lockfile --production && yarn patch-package
+RUN yarn app install --frozen-lockfile --production
 
 COPY --from=builder /builder/packages/app/public ./packages/app/public
 COPY --from=builder /builder/packages/app/.next ./packages/app/.next
