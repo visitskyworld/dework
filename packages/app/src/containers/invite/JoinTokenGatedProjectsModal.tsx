@@ -1,10 +1,10 @@
 import { Button, message, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback, useState } from "react";
 import { useCurrentUser } from "@dewo/app/util/hooks";
-import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
 import { ApolloError } from "@apollo/client";
+import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethodButton";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];
@@ -85,9 +85,9 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                   Verify Tokens
                 </Button>
               )}
-              <AddPaymentMethodButton
+              <AddUserPaymentMethodButton
                 block
-                inputOverride={{ userId: user.id }}
+                userId={user.id}
                 children={
                   !!pms.length ? "Connect Other Wallet" : "Connect Wallet"
                 }
