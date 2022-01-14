@@ -104,7 +104,11 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         <meta name="description" content={siteDescription} />
         <meta name="og:image" content="https://i.imgur.com/vs0aXnL.png" />
         <meta name="twitter:image" content="https://i.imgur.com/vs0aXnL.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+
         <link
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
