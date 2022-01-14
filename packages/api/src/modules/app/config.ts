@@ -48,3 +48,11 @@ export const configSchema = Joi.object<ConfigType>({
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
 });
+
+export const gifs = [
+  "https://media.giphy.com/media/bMJqfOtgVEyI2PLnaW/giphy.gif",
+  "https://media.giphy.com/media/rmi45iyhIPuRG/giphy.gif",
+  "https://media.giphy.com/media/DYH297XiCS2Ck/giphy.gif",
+  "https://media.giphy.com/media/cRe9VhznkdS4ACbDwF/giphy.gif",
+  "https://media.giphy.com/media/gEkOjfxIuFy9lryrT3/giphy.gif",
+];

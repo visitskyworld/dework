@@ -22,6 +22,7 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
+import { gifs } from "../../app/config";
 
 class DiscordChannelNotFoundError extends Error {}
 
@@ -122,6 +123,9 @@ export class DiscordIntegrationService {
                     .map((t) => `<@${t.threepid}>`)
                     .join(" ")}`,
                   url: await this.permalink.get(event.task),
+                  image: {
+                    url: gifs[Math.floor(Math.random() * gifs.length)],
+                  },
                 },
               ],
             });
