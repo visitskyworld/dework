@@ -87,75 +87,76 @@ export const TaskBoardColumn: FC<Props> = ({
           onDone={createTaskToggle.toggleOff}
         />
       )}
-      {taskSections
-        .filter((section) => !section.hidden)
-        .map((section, index) => (
-          <Fragment key={index}>
-            {!!section.title && (
-              <Row align="middle">
-                <TaskSectionTitle
-                  title={section.title}
-                  style={index !== 0 ? { paddingTop: 8 } : undefined}
-                />
-                {section.button}
-              </Row>
-            )}
-            <Droppable
-              droppableId={[status, index].join(":")}
-              isDropDisabled={
-                !currentlyDraggingTask ||
-                !hasPermission(
-                  "update",
-                  currentlyDraggingTask,
-                  `status[${status}]`
-                )
-              }
-            >
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  style={{
-                    ...provided.droppableProps,
-                    // minHeight: 90,
-                    paddingTop: 4,
-                  }}
-                >
-                  {section.tasks.map((task, index) => (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}
-                      isDragDisabled={
-                        !hasPermission("update", task, `status[${status}]`)
-                      }
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            ...provided.draggableProps.style,
-                            cursor: hasPermission("update", task, "status")
-                              ? "grab"
-                              : "pointer",
-                            marginBottom: 8,
-                          }}
-                        >
-                          <TaskCard task={task} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                  {isEmpty && !!empty && <TaskBoardColumnEmpty {...empty} />}
-                </div>
+      {taskSections.map(
+        (section, index) =>
+          !section.hidden && (
+            <Fragment key={index}>
+              {!!section.title && (
+                <Row align="middle">
+                  <TaskSectionTitle
+                    title={section.title}
+                    style={index !== 0 ? { paddingTop: 8 } : undefined}
+                  />
+                  {section.button}
+                </Row>
               )}
-            </Droppable>
-            {footer}
-          </Fragment>
-        ))}
+              <Droppable
+                droppableId={[status, index].join(":")}
+                isDropDisabled={
+                  !currentlyDraggingTask ||
+                  !hasPermission(
+                    "update",
+                    currentlyDraggingTask,
+                    `status[${status}]`
+                  )
+                }
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    style={{
+                      ...provided.droppableProps,
+                      // minHeight: 90,
+                      paddingTop: 4,
+                    }}
+                  >
+                    {section.tasks.map((task, index) => (
+                      <Draggable
+                        key={task.id}
+                        draggableId={task.id}
+                        index={index}
+                        isDragDisabled={
+                          !hasPermission("update", task, `status[${status}]`)
+                        }
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{
+                              ...provided.draggableProps.style,
+                              cursor: hasPermission("update", task, "status")
+                                ? "grab"
+                                : "pointer",
+                              marginBottom: 8,
+                            }}
+                          >
+                            <TaskCard task={task} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    {isEmpty && !!empty && <TaskBoardColumnEmpty {...empty} />}
+                  </div>
+                )}
+              </Droppable>
+              {footer}
+            </Fragment>
+          )
+      )}
     </Card>
   );
 };
