@@ -17,7 +17,7 @@
     "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
     "deploy:api:prod": "./packages/scripts/deploy-api-prod.sh",
     "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh",
-    "postinstall": "patch-package --patch-dir packages/api/patches",
+    "postinstall": "patch-package --patch-dir packages/api/patches && patch-package --patch-dir packages/app/patches",
     "prepare": "husky install"
   },
   "devDependencies": {
