@@ -6,7 +6,8 @@ WORKDIR /builder
 
 COPY package.json yarn.lock ./
 COPY packages/app/package.json packages/app/
-RUN yarn app install --frozen-lockfile
+COPY packages/app/patches patches
+RUN yarn app install --frozen-lockfile && yarn patch-package
 
 COPY tsconfig.base.json ./
 COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
