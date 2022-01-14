@@ -83,6 +83,13 @@ export class DiscordIntegrationService {
         channel,
         integration.config
       );
+      this.logger.log(
+        `Found Discord channel to post to: ${JSON.stringify({
+          channelToPostToId: channelToPostTo?.id,
+          integration: integration.config,
+          isThread: channelToPostTo?.isThread(),
+        })}`
+      );
 
       if (!channelToPostTo) return;
       if (channelToPostTo.isThread()) {
@@ -96,6 +103,12 @@ export class DiscordIntegrationService {
       const statusChanged =
         event instanceof TaskCreatedEvent ||
         event.task.status !== event.prevTask.status;
+      this.logger.log(
+        `Found Discord channel to post to: ${JSON.stringify({
+          statusChanged,
+          status: event.task.status,
+        })}`
+      );
       if (statusChanged) {
         switch (event.task.status) {
           // case TaskStatus.IN_PROGRESS:
