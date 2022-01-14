@@ -7,7 +7,6 @@ import { Form, Input, Space } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { useUpdatePaymentMethod } from "../../payment/hooks";
-import { AddPaymentMethodButton } from "../../payment/AddPaymentMethodButton";
 import { ProjectGithubIntegration } from "./ProjectGithubIntegration";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { ProjectMemberList } from "./ProjectMemberList";
@@ -21,6 +20,7 @@ import {
 } from "../hooks";
 import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
+import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
 
 interface Props {
   project: ProjectDetails;
@@ -96,14 +96,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
                 onClose={() => removePaymentMethod(paymentMethod)}
               />
             ))}
-            <AddPaymentMethodButton
+            <AddProjectPaymentMethodButton
               key={project.paymentMethods.length}
               type="ghost"
-              selectTokens
-              inputOverride={useMemo(
-                () => ({ projectId: project.id }),
-                [project.id]
-              )}
+              projectId={project.id}
               children="Add Payment Method"
             />
           </Space>

@@ -2,7 +2,7 @@ import { PaymentMethodType } from "@dewo/app/graphql/types";
 import { Alert, Typography } from "antd";
 import React, { FC } from "react";
 import { shortenedAddress } from "./hooks";
-import { paymentMethodTypeToString } from "./PaymentMethodForm";
+import { paymentMethodTypeToString } from "./util";
 
 interface PaymentMethodSummaryProps {
   type: PaymentMethodType;

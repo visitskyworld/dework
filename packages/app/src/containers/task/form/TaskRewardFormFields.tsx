@@ -15,8 +15,8 @@ import {
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../../project/hooks";
 import _ from "lodash";
-import { AddPaymentMethodModal } from "../../payment/AddPaymentMethodButton";
 import { useToggle } from "@dewo/app/util/hooks";
+import { AddProjectPaymentMethodModal } from "../../payment/project/AddProjectPaymentMethodModal";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -106,10 +106,6 @@ export const TaskRewardFormFields: FC<Props> = ({
   }, [onChange]);
 
   const addPaymentMethod = useToggle();
-  const paymentMethodInputOverride = useMemo(
-    () => ({ projectId }),
-    [projectId]
-  );
 
   if (!project) return null;
   return (
@@ -192,9 +188,8 @@ export const TaskRewardFormFields: FC<Props> = ({
           />
         )}
       </Space>
-      <AddPaymentMethodModal
-        selectTokens
-        inputOverride={paymentMethodInputOverride}
+      <AddProjectPaymentMethodModal
+        projectId={projectId}
         toggle={addPaymentMethod}
       />
     </>

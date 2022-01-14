@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import {
-  CreatePaymentMethodInput,
   PaymentMethod,
   PaymentMethodType,
   PaymentToken,
@@ -9,15 +8,19 @@ import {
   PaymentTokenVisibility,
 } from "@dewo/app/graphql/types";
 import { Button, Col, Form, message, Row, Select } from "antd";
-import { useCreatePaymentMethod, usePaymentNetworks } from "./hooks";
-import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
-import { PaymentMethodSummary } from "./PaymentMethodSummary";
-import { ConnectPhantomButton } from "./ConnectPhantomButton";
-import { ConnectGnosisSafe } from "./ConnectGnosisSafe";
+import { useCreatePaymentMethod, usePaymentNetworks } from "../hooks";
+import { ConnectMetamaskButton } from "../ConnectMetamaskButton";
+import { PaymentMethodSummary } from "../PaymentMethodSummary";
+import { ConnectPhantomButton } from "../ConnectPhantomButton";
+import { ConnectGnosisSafe } from "../ConnectGnosisSafe";
 import { useERC20Contract } from "@dewo/app/util/ethereum";
 import { useForm } from "antd/lib/form/Form";
 import { useToggle } from "@dewo/app/util/hooks";
-import { PaymentTokenFormModal } from "./PaymentTokenForm";
+import { PaymentTokenFormModal } from "../PaymentTokenForm";
+import {
+  networkSlugsByPaymentMethodType,
+  paymentMethodTypeToString,
+} from "../util";
 
 interface FormValues {
   type: PaymentMethodType;
@@ -26,37 +29,8 @@ interface FormValues {
   tokenIds: string[];
 }
 
-export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
-  [PaymentMethodType.METAMASK]: "Metamask",
-  [PaymentMethodType.GNOSIS_SAFE]: "Gnosis Safe",
-  [PaymentMethodType.PHANTOM]: "Phantom",
-};
-
-export const networkSlugsByPaymentMethodType: Record<
-  PaymentMethodType,
-  string[]
-> = {
-  [PaymentMethodType.METAMASK]: [
-    "ethereum-mainnet",
-    "ethereum-rinkeby",
-    "gnosis-chain",
-    "polygon-mainnet",
-    "sokol-testnet",
-    "avalanche-mainnet",
-    "fantom-mainnet",
-  ],
-  [PaymentMethodType.GNOSIS_SAFE]: [
-    "ethereum-mainnet",
-    "ethereum-rinkeby",
-    "gnosis-chain",
-    "polygon-mainnet",
-  ],
-  [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
-};
-
 interface Props {
-  inputOverride?: Partial<CreatePaymentMethodInput>;
-  selectTokens?: boolean;
+  projectId: string;
   onDone(paymentMethod: PaymentMethod): void;
 }
 
@@ -66,11 +40,7 @@ const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.PHANTOM,
 ];
 
-export const PaymentMethodForm: FC<Props> = ({
-  inputOverride,
-  selectTokens,
-  onDone,
-}) => {
+export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
   const [form] = useForm<FormValues>();
   const [values, setValues] = useState<Partial<FormValues>>({});
   const [loading, setLoading] = useState(false);
@@ -148,7 +118,7 @@ export const PaymentMethodForm: FC<Props> = ({
           address: values.address,
           tokenIds: values.tokenIds,
           networkIds: [values.networkId],
-          ...inputOverride,
+          projectId,
         });
         await onDone(paymentMethod);
         setValues({});
@@ -158,7 +128,7 @@ export const PaymentMethodForm: FC<Props> = ({
         setLoading(false);
       }
     },
-    [createPaymentMethod, onDone, inputOverride, form]
+    [createPaymentMethod, onDone, projectId, form]
   );
 
   const handleChange = useCallback(
@@ -176,12 +146,8 @@ export const PaymentMethodForm: FC<Props> = ({
 
       setValues(values);
       form.setFieldsValue(values);
-
-      if (!!changed.address && !selectTokens) {
-        submitForm(values as FormValues);
-      }
     },
-    [form, selectTokens, selectedNetwork, submitForm]
+    [form, selectedNetwork]
   );
 
   const clearAddress = useCallback(
@@ -275,7 +241,7 @@ export const PaymentMethodForm: FC<Props> = ({
             })()}
           </Form.Item>
         </Col>
-        {!!values.address && !!selectedNetwork && selectTokens && (
+        {!!values.address && !!selectedNetwork && (
           <Col span={24} style={{ marginBottom: 8 }}>
             <PaymentMethodSummary
               type={values.type!}
@@ -286,7 +252,7 @@ export const PaymentMethodForm: FC<Props> = ({
           </Col>
         )}
 
-        {!!values.address && !!selectedNetwork && selectTokens && (
+        {!!values.address && !!selectedNetwork && (
           <Col span={24}>
             <Form.Item
               name="tokenIds"
@@ -346,7 +312,7 @@ export const PaymentMethodForm: FC<Props> = ({
             </Form.Item>
           </Col>
         )}
-        {!!values.address && selectTokens && (
+        {!!values.address && (
           <Col span={24}>
             <Button type="primary" htmlType="submit" block loading={loading}>
               Add Payment Method
