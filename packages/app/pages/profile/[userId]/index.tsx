@@ -31,7 +31,7 @@ const Page: NextPage = () => {
       <Sidebar />
       <Layout.Content>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <UserProfile userId={userId} />
+        <UserProfile key={userId} userId={userId} />
       </Layout.Content>
     </Layout>
   );
