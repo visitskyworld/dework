@@ -53,7 +53,7 @@ export const OrganizationInviteButton: FC<Props> = ({
         <Menu>
           {canInviteOrganizationAdmin && (
             <Menu.Item key="admin" onClick={inviteOrganizationAdmin}>
-              Invite Core Team
+              Invite DAO admins
             </Menu.Item>
           )}
           {hasTokenGatedProjects && (

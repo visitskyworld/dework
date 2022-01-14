@@ -27,7 +27,9 @@ export const UserSettings: FC<Props> = () => {
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Col>
-        <Typography.Title level={5}>Reward Payment Method</Typography.Title>
+        <Typography.Title level={5}>
+          Address to Receive Payments
+        </Typography.Title>
         <Space direction="vertical" style={{ width: "100%" }}>
           {user?.paymentMethods.map((paymentMethod) => (
             <PaymentMethodSummary
@@ -43,7 +45,7 @@ export const UserSettings: FC<Props> = () => {
           {!!user && (
             <AddPaymentMethodButton
               inputOverride={paymentMethodOverride}
-              children="Add Payment Method"
+              children="Add Another Address for Receiving Payments"
             />
           )}
         </Space>

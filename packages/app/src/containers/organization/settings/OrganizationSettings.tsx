@@ -66,7 +66,7 @@ export const OrganizationSettings: FC<Props> = ({
       <Tabs.TabPane tab="Profile" key="profile">
         <OrganizationProfileSettings organizationId={organizationId} />
       </Tabs.TabPane>
-      <Tabs.TabPane tab="Core Team" key="members">
+      <Tabs.TabPane tab="DAO admins" key="members">
         <OrganizationMemberList organizationId={organizationId} />
       </Tabs.TabPane>
       {canDeleteOrganization && (
