@@ -17,6 +17,7 @@ import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
+import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -81,6 +82,14 @@ describe("UserResolver", () => {
               source: ThreepidSource.metamask,
               threepid: address,
             });
+
+            const ethNetwork1 = await fixtures.createPaymentNetwork({
+              type: PaymentNetworkType.ETHEREUM,
+            });
+            const ethNetwork2 = await fixtures.createPaymentNetwork({
+              type: PaymentNetworkType.ETHEREUM,
+            });
+
             const response = await client.request({
               app,
               body: UserRequests.authWithThreepid(threepid.id),
@@ -88,11 +97,18 @@ describe("UserResolver", () => {
 
             expect(response.status).toEqual(HttpStatus.OK);
             const user = response.body.data?.authWithThreepid.user;
-            expect(user.paymentMethods).toHaveLength(1);
             expect(user.paymentMethods).toContainEqual(
               expect.objectContaining({
                 address,
                 type: PaymentMethodType.METAMASK,
+                networks: [{ id: ethNetwork1.id }],
+              })
+            );
+            expect(user.paymentMethods).toContainEqual(
+              expect.objectContaining({
+                address,
+                type: PaymentMethodType.METAMASK,
+                networks: [{ id: ethNetwork2.id }],
               })
             );
           });

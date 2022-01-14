@@ -79,19 +79,25 @@ export class PaymentService {
       this.paymentNetworkRepo.find({ id: In(input.networkIds) }),
     ]);
 
-    const pm = new PaymentMethod();
-    pm.type = input.type;
-    pm.address = input.address;
-    pm.projectId = input.projectId;
-    pm.userId = input.userId;
-    // @ts-ignore
-    pm.tokens = tokens;
-    // @ts-ignore
-    pm.networks = networks;
-    pm.creatorId = user.id;
+    const created = await this.batchCreatePaymentMethods([
+      { ...input, networks, tokens, creatorId: user.id },
+    ]);
+    return created[0];
+  }
 
-    const created = await this.paymentMethodRepo.save(pm);
-    return this.findPaymentMethodById(created.id) as Promise<PaymentMethod>;
+  public async batchCreatePaymentMethods(
+    partials: Partial<
+      Omit<PaymentMethod, "networks" | "tokens"> & {
+        networks: PaymentNetwork[];
+        tokens: PaymentToken[];
+      }
+    >[]
+  ): Promise<PaymentMethod[]> {
+    const processed = partials.map((pm) =>
+      Object.assign(new PaymentMethod(), pm)
+    );
+    const created = await this.paymentMethodRepo.save(processed);
+    return this.paymentMethodRepo.find({ id: In(created.map((c) => c.id)) });
   }
 
   public async updatePaymentMethod(

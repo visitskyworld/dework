@@ -16,6 +16,9 @@ export class UserRequests {
         id
         type
         address
+        networks {
+          id
+        }
       }
       details {
         value

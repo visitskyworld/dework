@@ -90,14 +90,14 @@ export class UserService {
         type: PaymentNetworkType.ETHEREUM,
       });
 
-      await this.paymentService.createPaymentMethod(
-        {
+      await this.paymentService.batchCreatePaymentMethods(
+        networks.map((network) => ({
           address: threepid.threepid,
           type: PaymentMethodType.METAMASK,
-          networkIds: networks.map((n) => n.id),
+          networks: [network],
           userId: user.id,
-        },
-        user
+          creatorId: user.id,
+        }))
       );
     }
   }
