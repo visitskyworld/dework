@@ -54,7 +54,7 @@ interface Props {
   tags?: TaskTag[];
   nameEditable?: boolean;
   showHeader?: boolean;
-  showButtonColumn?: boolean;
+  showActionButtons?: boolean;
   defaultSortByStatus?: boolean;
   projectId?: string;
   style?: CSSProperties;
@@ -83,7 +83,7 @@ export const TaskList: FC<Props> = ({
   projectId,
   nameEditable = true,
   showHeader = true,
-  showButtonColumn = false,
+  showActionButtons = false,
   defaultSortByStatus = false,
   style,
   size,
@@ -287,64 +287,60 @@ export const TaskList: FC<Props> = ({
             </DropdownSelect>
           ),
         },
-        ...(showButtonColumn
-          ? [
-              {
-                title: "Actions",
-                key: "button",
-                width: 1,
-                render: (_: unknown, row: TaskListRow) =>
-                  !!row.task && <TaskActionButton task={row.task} />,
-              },
-            ]
-          : []),
         {
+          title: "Actions",
           key: "actions",
-          width: 1,
+          width: showActionButtons ? 120 : 1,
           render: (_, row, index) => (
-            <Dropdown
-              key="avatar"
-              placement="bottomRight"
-              trigger={["click"]}
-              // @ts-ignore
-              onClick={eatClick}
-              overlay={
-                <Menu onClick={(e) => eatClick(e.domEvent)}>
-                  {!!row.task && (
-                    <Menu.Item
-                      key="details"
-                      icon={<Icons.BarsOutlined />}
-                      children="Details"
-                      onClick={() => navigateToTask(row.task!.id)}
-                    />
-                  )}
-
-                  {!!canDeleteTask && (
-                    <Popconfirm
-                      icon={null}
-                      title="Delete this subtask?"
-                      okType="danger"
-                      okText="Delete"
-                      onConfirm={() => handleDelete(row, index)}
-                    >
+            <Row align="middle" style={{ justifyContent: "space-between" }}>
+              {showActionButtons && !!row.task && (
+                <TaskActionButton task={row.task} />
+              )}
+              <div />
+              <Dropdown
+                key="avatar"
+                placement="bottomRight"
+                trigger={["click"]}
+                // @ts-ignore
+                onClick={eatClick}
+                overlay={
+                  <Menu onClick={(e) => eatClick(e.domEvent)}>
+                    {!!row.task && (
                       <Menu.Item
-                        key="delete"
-                        icon={<Icons.DeleteOutlined />}
-                        danger
-                        children="Delete"
+                        key="details"
+                        icon={<Icons.BarsOutlined />}
+                        children="Details"
+                        onClick={() => navigateToTask(row.task!.id)}
                       />
-                    </Popconfirm>
-                  )}
-                </Menu>
-              }
-            >
-              <Button
-                type="text"
-                size="small"
-                icon={<Icons.MoreOutlined />}
-                style={{ margin: -8 }}
-              />
-            </Dropdown>
+                    )}
+
+                    {!!canDeleteTask && (
+                      <Popconfirm
+                        icon={null}
+                        title="Delete this subtask?"
+                        okType="danger"
+                        okText="Delete"
+                        onConfirm={() => handleDelete(row, index)}
+                      >
+                        <Menu.Item
+                          key="delete"
+                          icon={<Icons.DeleteOutlined />}
+                          danger
+                          children="Delete"
+                        />
+                      </Popconfirm>
+                    )}
+                  </Menu>
+                }
+              >
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<Icons.MoreOutlined />}
+                  style={showActionButtons ? undefined : { margin: -8 }}
+                />
+              </Dropdown>
+            </Row>
           ),
         },
       ]}

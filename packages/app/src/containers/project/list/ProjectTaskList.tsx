@@ -35,7 +35,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
       rows={rows}
       tags={tags}
       nameEditable={false}
-      showButtonColumn={true}
+      showActionButtons={true}
       defaultSortByStatus={true}
       projectId={projectId}
       style={{ marginLeft: 0, marginRight: 0, minWidth: 480, maxWidth: 960 }}

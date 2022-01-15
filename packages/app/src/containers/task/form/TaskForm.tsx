@@ -190,15 +190,15 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           </Form.Item>
 
-          {/* {!!task && ( */}
-          <Form.Item
-            name="subtasks"
-            label="Subtasks"
-            style={{ marginBottom: 16 }}
-          >
-            <SubtaskInput projectId={projectId} taskId={task?.id} />
-          </Form.Item>
-          {/* )} */}
+          {(canChange("subtasks") || !!task?.subtasks.length) && (
+            <Form.Item
+              name="subtasks"
+              label="Subtasks"
+              style={{ marginBottom: 16 }}
+            >
+              <SubtaskInput projectId={projectId} taskId={task?.id} />
+            </Form.Item>
+          )}
 
           {mode === "create" && canSubmit && (
             <Button
@@ -233,7 +233,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             </FormSection>
           )}
 
-          {!!canChange("assigneeIds") &&
+          {canChange("assigneeIds") &&
             !!task &&
             task.status === TaskStatus.TODO &&
             !!task.applications.length && <AssignTaskCard task={task} />}
