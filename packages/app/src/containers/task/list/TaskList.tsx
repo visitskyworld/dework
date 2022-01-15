@@ -1,6 +1,6 @@
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
+import { Task, TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import {
   Avatar,
@@ -14,21 +14,23 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import { useTaskFormUserOptions } from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
 import { STATUS_LABEL } from "../../task/board/util";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
 import { TaskStatusAvatar } from "../TaskStatusAvatar";
+import {
+  usePermission,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 
 export interface TaskListRowData {
-  id?: string;
+  task?: Task;
   name: string;
   status: TaskStatus;
-  // assignees?: User[];
-  assigneeIds?: string[];
-  permalink?: string;
+  assigneeIds: string[];
 }
 
 interface Props {
@@ -64,6 +66,19 @@ export const TaskList: FC<Props> = ({
   // onAddTask,
 }) => {
   const navigateToTask = useNavigateToTaskFn();
+
+  const canDeleteTask = usePermission("delete", "Task");
+  const hasPermission = usePermissionFn();
+  const canChange = useCallback(
+    (task: Task | undefined, field: keyof Task | `status[${TaskStatus}]`) => {
+      if (!!task) {
+        return hasPermission("update", task, field);
+      } else {
+        return hasPermission("create", "Task", field);
+      }
+    },
+    [hasPermission]
+  );
 
   // const rows = useMemo<TaskListRowData[]>(() => {
   //   const toRowData = (task: Task) => ({
@@ -114,12 +129,11 @@ export const TaskList: FC<Props> = ({
       style={style}
       showHeader={false}
       className="dewo-table-xs"
-      rowClassName="hover:cursor-pointer"
       pagination={{ hideOnSinglePage: true }}
       // components={{ body: { cell: CustomCell } }}
-      onRow={(t) => ({
-        // onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
-      })}
+      // onRow={(t) => ({
+      // onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
+      // })}
       // footer={() => (
       //   <Row align="middle" style={{ gap: 16 }}>
       //     <Button
@@ -148,8 +162,9 @@ export const TaskList: FC<Props> = ({
             // <Form.Item name={["rows", 0, "status"]} style={{ marginBottom: 0 }}>
             <DropdownSelect
               value={currentStatus}
-              onChange={(status) => onChange({ status }, row, index)}
               mode="default"
+              disabled={!canChange(row.task, "status")}
+              onChange={(status) => onChange({ status }, row, index)}
               options={statuses.map((status) => ({
                 value: status,
                 label: (
@@ -162,7 +177,7 @@ export const TaskList: FC<Props> = ({
               // children={<div>{STATUS_ICON[currentStatus]}</div>}
               children={
                 <div>
-                  <Tooltip title={STATUS_LABEL[currentStatus]}>
+                  <Tooltip title={STATUS_LABEL[currentStatus]} placement="left">
                     <TaskStatusAvatar size="small" status={currentStatus} />
                   </Tooltip>
                 </div>
@@ -178,13 +193,12 @@ export const TaskList: FC<Props> = ({
           sorter: (a, b) => a.name.localeCompare(b.name),
           render: (name: string, row: TaskListRowData, index: number) =>
             editing ? (
-              // <Form.Item
-              //   name={["rows", index, "name"]}
-              //   style={{ marginBottom: 0 }}
-              // >
-              <Input
+              <Input.TextArea
+                autoSize
                 className="dewo-field dewo-field-focus-border"
+                style={{ paddingTop: 4 }}
                 placeholder="Enter name..."
+                disabled={!canChange(row.task, "name")}
                 defaultValue={name}
                 onPressEnter={(e) => {
                   e.preventDefault();
@@ -197,7 +211,6 @@ export const TaskList: FC<Props> = ({
                 }}
               />
             ) : (
-              // </Form.Item>
               <Typography.Title level={5} style={{ marginBottom: 0 }}>
                 {name}
               </Typography.Title>
@@ -219,6 +232,7 @@ export const TaskList: FC<Props> = ({
               <DropdownSelect
                 mode="multiple"
                 placement="bottomRight"
+                disabled={!canChange(row.task, "assignees")}
                 options={users?.map((user) => ({
                   value: user.id,
                   label: <UserSelectOption key={user.id} user={user} />,
@@ -228,7 +242,7 @@ export const TaskList: FC<Props> = ({
                   onChange({ assigneeIds }, row, index)
                 }
               >
-                <div>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <Avatar.Group
                     maxCount={3}
                     size="small"
@@ -308,27 +322,31 @@ export const TaskList: FC<Props> = ({
               trigger={["click"]}
               overlay={
                 <Menu>
-                  {!!row.id && (
+                  {!!row.task && (
                     <Menu.Item
+                      key="details"
                       icon={<Icons.BarsOutlined />}
                       children="Details"
-                      onClick={() => navigateToTask(row.id!)}
+                      onClick={() => navigateToTask(row.task!.id)}
                     />
                   )}
 
-                  <Popconfirm
-                    icon={null}
-                    title="Delete this subtask?"
-                    okType="danger"
-                    okText="Delete"
-                    onConfirm={() => onDelete(row, index)}
-                  >
-                    <Menu.Item
-                      icon={<Icons.DeleteOutlined />}
-                      danger
-                      children="Delete"
-                    />
-                  </Popconfirm>
+                  {!!canDeleteTask && (
+                    <Popconfirm
+                      icon={null}
+                      title="Delete this subtask?"
+                      okType="danger"
+                      okText="Delete"
+                      onConfirm={() => onDelete(row, index)}
+                    >
+                      <Menu.Item
+                        key="delete"
+                        icon={<Icons.DeleteOutlined />}
+                        danger
+                        children="Delete"
+                      />
+                    </Popconfirm>
+                  )}
                 </Menu>
               }
             >

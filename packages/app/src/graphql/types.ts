@@ -1211,6 +1211,7 @@ export interface CreateTaskMutation_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: CreateTaskMutation_task_subtasks[];
@@ -1374,6 +1375,7 @@ export interface UpdateTaskMutation_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: UpdateTaskMutation_task_subtasks[];
@@ -1537,6 +1539,7 @@ export interface CreateTaskApplicationMutation_application_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
@@ -1706,6 +1709,7 @@ export interface DeleteTaskApplicationMutation_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: DeleteTaskApplicationMutation_task_subtasks[];
@@ -2709,6 +2713,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
@@ -2837,6 +2842,12 @@ export interface CreateTaskPaymentsMutation_tasks_reactions {
   reaction: string;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -2905,6 +2916,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
@@ -2917,6 +2929,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
+  parentTask: CreateTaskPaymentsMutation_tasks_parentTask;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   project: CreateTaskPaymentsMutation_tasks_project;
@@ -3116,6 +3129,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
@@ -3428,6 +3442,7 @@ export interface UserTasksQuery_user_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: UserTasksQuery_user_tasks_subtasks[];
@@ -4131,6 +4146,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
@@ -4440,6 +4456,7 @@ export interface GetProjectTasksQuery_project_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
@@ -4640,6 +4657,7 @@ export interface GetTaskQuery_task_subtasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetTaskQuery_task_subtasks_subtasks[];
@@ -4768,6 +4786,12 @@ export interface GetTaskQuery_task_reactions {
   reaction: string;
 }
 
+export interface GetTaskQuery_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -4845,6 +4869,7 @@ export interface GetTaskQuery_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetTaskQuery_task_subtasks[];
@@ -4857,6 +4882,7 @@ export interface GetTaskQuery_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
+  parentTask: GetTaskQuery_task_parentTask;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   project: GetTaskQuery_task_project;
@@ -5077,6 +5103,7 @@ export interface GetTasksQuery_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetTasksQuery_tasks_subtasks[];
@@ -5310,6 +5337,7 @@ export interface GetTasksToPayQuery_tasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: GetTasksToPayQuery_tasks_subtasks[];
@@ -5677,6 +5705,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
@@ -5805,6 +5834,12 @@ export interface TaskCreatedSubscription_task_reactions {
   reaction: string;
 }
 
+export interface TaskCreatedSubscription_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -5873,6 +5908,7 @@ export interface TaskCreatedSubscription_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskCreatedSubscription_task_subtasks[];
@@ -5885,6 +5921,7 @@ export interface TaskCreatedSubscription_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
+  parentTask: TaskCreatedSubscription_task_parentTask;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   project: TaskCreatedSubscription_task_project;
@@ -6041,6 +6078,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
@@ -6169,6 +6207,12 @@ export interface TaskUpdatedSubscription_task_reactions {
   reaction: string;
 }
 
+export interface TaskUpdatedSubscription_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -6237,6 +6281,7 @@ export interface TaskUpdatedSubscription_task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskUpdatedSubscription_task_subtasks[];
@@ -6249,6 +6294,7 @@ export interface TaskUpdatedSubscription_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
+  parentTask: TaskUpdatedSubscription_task_parentTask;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   project: TaskUpdatedSubscription_task_project;
@@ -7343,6 +7389,7 @@ export interface Task {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: Task_subtasks[];
@@ -7520,6 +7567,7 @@ export interface TaskWithOrganization {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskWithOrganization_subtasks[];
@@ -7676,6 +7724,7 @@ export interface TaskDetails_subtasks {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskDetails_subtasks_subtasks[];
@@ -7804,6 +7853,12 @@ export interface TaskDetails_reactions {
   reaction: string;
 }
 
+export interface TaskDetails_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface TaskDetails_owner {
   __typename: "User";
   id: Scalar.UUID;
@@ -7872,6 +7927,7 @@ export interface TaskDetails {
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+  parentTaskId: string | null;
   ownerId: string | null;
   number: number;
   subtasks: TaskDetails_subtasks[];
@@ -7884,6 +7940,7 @@ export interface TaskDetails {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
+  parentTask: TaskDetails_parentTask;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
   project: TaskDetails_project;

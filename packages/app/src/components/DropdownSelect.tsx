@@ -4,12 +4,14 @@ import React, { ReactNode, useCallback } from "react";
 interface DropdownSelectOption {
   value: string;
   label: ReactNode;
+  disabled?: boolean;
 }
 
 interface DropdownSelectProps<T = string | string[]> {
   value?: T;
   mode: T extends string ? "default" : "multiple";
   placement?: DropDownProps["placement"];
+  disabled?: boolean;
   children: ReactNode;
   options?: DropdownSelectOption[];
   onChange?(value: T): void;
@@ -19,6 +21,7 @@ export function DropdownSelect<T extends string | string[]>({
   value,
   mode,
   options,
+  disabled,
   placement,
   children,
   onChange,
@@ -50,12 +53,14 @@ export function DropdownSelect<T extends string | string[]>({
   return (
     <Dropdown
       placement={placement}
+      disabled={disabled}
       trigger={["click"]}
       overlay={
         <Menu>
           {options?.map((option) => (
             <Menu.Item
               key={option.value}
+              disabled={option.disabled}
               className={
                 isSelected(option.value)
                   ? "ant-select-item-option-selected"

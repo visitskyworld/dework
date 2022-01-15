@@ -341,6 +341,7 @@ export const task = gql`
     storyPoints
     deletedAt
     projectId
+    parentTaskId
     ownerId
     number
     subtasks {
@@ -400,6 +401,10 @@ export const taskDetails = gql`
     permalink
     subtasks {
       ...Task
+    }
+    parentTask {
+      id
+      name
     }
     owner {
       ...User

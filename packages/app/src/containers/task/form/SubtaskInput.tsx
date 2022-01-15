@@ -3,8 +3,9 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Input, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import { TaskList, TaskListRowData } from "../list/TaskList";
-import { TaskStatus } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useCreateTask, useDeleteTask, useUpdateTask } from "../hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   projectId: string;
@@ -22,6 +23,10 @@ export const SubtaskInput: FC<Props> = ({
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
+
+  const canCreateTask = usePermission("create", {
+    __typename: "Task",
+  } as Task);
 
   const adding = useToggle();
   const [newName, setNewName] = useState("");
@@ -44,7 +49,7 @@ export const SubtaskInput: FC<Props> = ({
       onChange?.([
         ...(value ?? []),
         {
-          id: subtask?.id,
+          task: subtask,
           name: newName,
           assigneeIds: [],
           status: TaskStatus.TODO,
@@ -63,8 +68,8 @@ export const SubtaskInput: FC<Props> = ({
       prevValue: TaskListRowData,
       index: number
     ) => {
-      if (!!prevValue.id) {
-        await updateTask({ id: prevValue.id, ...changed });
+      if (!!prevValue.task) {
+        await updateTask({ id: prevValue.task.id, ...changed });
       }
 
       const newValue = [...rows];
@@ -76,7 +81,7 @@ export const SubtaskInput: FC<Props> = ({
 
   const handleDelete = useCallback(
     async (value: TaskListRowData, index: number) => {
-      if (!!value.id) await deleteTask(value.id);
+      if (!!value.task) await deleteTask(value.task.id);
       onChange?.(rows.filter((_v, i) => i !== index));
     },
     [onChange, deleteTask, rows]
@@ -92,25 +97,27 @@ export const SubtaskInput: FC<Props> = ({
         onChange={handleChange}
         onDelete={handleDelete}
       />
-      <Row align="middle" style={{ paddingLeft: 8, gap: 16, marginBottom: 16 }}>
-        <Button
-          icon={<Icons.PlusOutlined />}
-          shape="circle"
-          size="small"
-          type="ghost"
-          loading={adding.isOn}
-          onClick={!!newName ? handleAddTask : undefined}
-        />
-        <Input
-          className="dewo-field dewo-field-focus-border"
-          style={{ flex: 1 }}
-          placeholder="Add subtask..."
-          disabled={adding.isOn}
-          value={newName}
-          onChange={(event) => setNewName(event.target.value)}
-          onPressEnter={handleAddTask}
-        />
-      </Row>
+      {canCreateTask && (
+        <Row align="middle" style={{ gap: 16 }}>
+          <Button
+            icon={<Icons.PlusOutlined />}
+            shape="circle"
+            size="small"
+            type="ghost"
+            loading={adding.isOn}
+            onClick={!!newName ? handleAddTask : undefined}
+          />
+          <Input
+            className="dewo-field dewo-field-focus-border"
+            style={{ flex: 1 }}
+            placeholder="Add subtask..."
+            disabled={adding.isOn}
+            value={newName}
+            onChange={(event) => setNewName(event.target.value)}
+            onPressEnter={handleAddTask}
+          />
+        </Row>
+      )}
     </>
   );
 };

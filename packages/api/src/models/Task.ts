@@ -71,7 +71,7 @@ export class Task extends Audit {
 
   @JoinColumn()
   @ManyToOne(() => Task)
-  @Field(() => Task)
+  @Field(() => Task, { nullable: true })
   public parentTask?: Promise<Task>;
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })

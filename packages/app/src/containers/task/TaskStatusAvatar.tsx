@@ -6,7 +6,7 @@ import { Avatar, AvatarProps } from "antd";
 
 const colorByStatus: Record<TaskStatus, string> = {
   [TaskStatus.BACKLOG]: Colors.orange.primary!,
-  [TaskStatus.TODO]: Colors.magenta.primary!,
+  [TaskStatus.TODO]: Colors.grey.primary!,
   [TaskStatus.IN_PROGRESS]: Colors.yellow.primary!,
   [TaskStatus.IN_REVIEW]: Colors.blue.primary!,
   [TaskStatus.DONE]: Colors.green.primary!,
@@ -14,7 +14,7 @@ const colorByStatus: Record<TaskStatus, string> = {
 
 const iconByStatus: Record<TaskStatus, ReactNode> = {
   [TaskStatus.BACKLOG]: <Icons.BulbOutlined />,
-  [TaskStatus.TODO]: <Icons.ClockCircleOutlined />,
+  [TaskStatus.TODO]: "•",
   [TaskStatus.IN_PROGRESS]: <Icons.ThunderboltOutlined />,
   [TaskStatus.IN_REVIEW]: <Icons.SyncOutlined />,
   [TaskStatus.DONE]: <Icons.CheckOutlined />,

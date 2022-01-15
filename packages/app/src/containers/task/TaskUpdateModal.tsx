@@ -9,6 +9,7 @@ import {
   useUpdateTask,
 } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
+import { TaskListRowData } from "./list/TaskList";
 
 interface Props {
   taskId: string;
@@ -45,12 +46,14 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
       subtasks: _(task?.subtasks)
         .sortBy((s) => s.sortKey)
-        .map((s) => ({
-          id: s.id,
-          assigneeIds: s.assignees.map((a) => a.id),
-          name: s.name,
-          status: s.status,
-        }))
+        .map(
+          (subtask): TaskListRowData => ({
+            task: subtask,
+            assigneeIds: subtask.assignees.map((a) => a.id),
+            name: subtask.name,
+            status: subtask.status,
+          })
+        )
         .value(),
     }),
     [task, taskId, tagIds]
@@ -67,7 +70,6 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
             projectId={task!.projectId}
             initialValues={initialValues}
             assignees={task!.assignees}
-            buttonText="Update"
             onSubmit={handleSubmit}
           />
         )}

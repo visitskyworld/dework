@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
+import * as Icons from "@ant-design/icons";
 import {
   Form,
   Button,
@@ -9,6 +10,7 @@ import {
   Typography,
   Col,
   Divider,
+  Avatar,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -36,6 +38,8 @@ import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import Link from "next/link";
 import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
+import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
+import { TaskListRowData } from "../list/TaskList";
 
 export interface TaskFormValues {
   name: string;
@@ -49,14 +53,14 @@ export interface TaskFormValues {
   assigneeIds: string[];
   ownerId?: string | null;
   reward?: TaskRewardFormValues;
-  subtasks?: TaskFormValues[];
+  subtasks?: TaskListRowData[];
 }
 
 interface TaskFormProps {
   mode: "create" | "update";
   projectId: string;
   task?: TaskDetails;
-  buttonText: string;
+  buttonText?: string;
   initialValues?: Partial<TaskFormValues>;
   assignees?: User[];
   onSubmit(values: TaskFormValues): unknown;
@@ -81,6 +85,7 @@ export const TaskForm: FC<TaskFormProps> = ({
       hasPermission(mode, task ?? "Task", field),
     [hasPermission, mode, task]
   );
+  const navigateToTask = useNavigateToTaskFn();
 
   const ownerOptions = useTaskFormUserOptions(
     projectId,
@@ -186,7 +191,11 @@ export const TaskForm: FC<TaskFormProps> = ({
           </Form.Item>
 
           {/* {!!task && ( */}
-          <Form.Item name="subtasks" label="Subtasks">
+          <Form.Item
+            name="subtasks"
+            label="Subtasks"
+            style={{ marginBottom: 16 }}
+          >
             <SubtaskInput projectId={projectId} taskId={task?.id} />
           </Form.Item>
           {/* )} */}
@@ -366,15 +375,34 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && (
             <FormSection label="Project">
               <Link href={task.project.permalink}>
-                <a>
-                  <Row align="middle">
-                    <ProjectAvatar size="small" project={task.project} />
+                <a style={{ display: "flex" }}>
+                  <Button
+                    type="text"
+                    size="small"
+                    className="dewo-btn-highlight"
+                    icon={<ProjectAvatar size="small" project={task.project} />}
+                  >
                     <Typography.Text style={{ marginLeft: 8 }}>
                       {task.project.name}
                     </Typography.Text>
-                  </Row>
+                  </Button>
                 </a>
               </Link>
+            </FormSection>
+          )}
+          {!!task?.parentTask && (
+            <FormSection label="Parent Task" style={{ display: "flex" }}>
+              <Button
+                type="text"
+                size="small"
+                className="dewo-btn-highlight"
+                icon={<Avatar size="small" icon={<Icons.CheckOutlined />} />}
+                onClick={() => navigateToTask(task.parentTask.id)}
+              >
+                <Typography.Text style={{ marginLeft: 8 }}>
+                  {task.parentTask.name}
+                </Typography.Text>
+              </Button>
             </FormSection>
           )}
         </Col>

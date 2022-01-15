@@ -89,28 +89,30 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
   return useCallback(
     (task: Task) => {
-      try {
-        const data = apolloClient.readQuery<
-          GetProjectTasksQuery,
-          GetProjectTasksQueryVariables
-        >({
-          query: Queries.projectTasks,
-          variables: { projectId: task.projectId },
-        });
-
-        if (!!data && !data.project.tasks.some((t) => t.id === task.id)) {
-          apolloClient.writeQuery({
+      if (!task.parentTaskId) {
+        try {
+          const data = apolloClient.readQuery<
+            GetProjectTasksQuery,
+            GetProjectTasksQueryVariables
+          >({
             query: Queries.projectTasks,
             variables: { projectId: task.projectId },
-            data: {
-              project: {
-                ...data.project,
-                tasks: [task, ...data.project.tasks],
-              },
-            },
           });
-        }
-      } catch {}
+
+          if (!!data && !data.project.tasks.some((t) => t.id === task.id)) {
+            apolloClient.writeQuery({
+              query: Queries.projectTasks,
+              variables: { projectId: task.projectId },
+              data: {
+                project: {
+                  ...data.project,
+                  tasks: [task, ...data.project.tasks],
+                },
+              },
+            });
+          }
+        } catch {}
+      }
 
       task.assignees.forEach((user) => {
         try {
@@ -346,7 +348,9 @@ export function useTask(
     skip: !taskId,
     fetchPolicy,
   });
-  return data?.task ?? undefined;
+  const task = data?.task ?? undefined;
+  if (!task || task.id !== taskId) return undefined;
+  return task;
 }
 
 export function useLazyTaskReactionUsers(taskId: string) {

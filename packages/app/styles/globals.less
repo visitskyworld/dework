@@ -51,9 +51,13 @@ textarea {
   // background: #191919;
 }
 
-.ant-table-tbody > tr.ant-table-row:hover td.ant-table-cell,
-.ant-table-thead th.ant-table-column-has-sorters:hover {
-  background: @component-background;
+// .ant-table-tbody > tr.ant-table-row:hover td.ant-table-cell,
+// .ant-table-thead th.ant-table-column-has-sorters:hover {
+  // background: @component-background;
+// }
+
+.ant-modal .ant-table tbody > tr.ant-table-row:hover > td {
+  background: transparent;
 }
 
 .ant-table-thead th.ant-table-column-sort {
@@ -667,7 +671,22 @@ textarea {
 }
 
 .dewo-table-xs {
+  margin-left: -8px;
+
   .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 2px 8px;
   }
+}
+
+.dewo-btn-highlight {
+  flex: 1;
+  padding: 4px;
+  margin: 0 -4px;
+  height: unset;
+  display: flex;
+  align-items: center;
+}
+
+.ant-dropdown-trigger:not([disabled]):hover {
+  cursor: pointer;
 }
