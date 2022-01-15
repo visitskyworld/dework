@@ -9,7 +9,7 @@ import {
   useUpdateTask,
 } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
-import { TaskListRowData } from "./list/TaskList";
+import { TaskListRow } from "./list/TaskList";
 
 interface Props {
   taskId: string;
@@ -47,7 +47,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       subtasks: _(task?.subtasks)
         .sortBy((s) => s.sortKey)
         .map(
-          (subtask): TaskListRowData => ({
+          (subtask): TaskListRow => ({
             task: subtask,
             assigneeIds: subtask.assignees.map((a) => a.id),
             name: subtask.name,

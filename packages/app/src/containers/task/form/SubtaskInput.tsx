@@ -2,16 +2,16 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Input, Row } from "antd";
 import * as Icons from "@ant-design/icons";
-import { TaskList, TaskListRowData } from "../list/TaskList";
+import { TaskList, TaskListRow } from "../list/TaskList";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
-import { useCreateTask, useDeleteTask, useUpdateTask } from "../hooks";
+import { useCreateTask } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   projectId: string;
   taskId?: string;
-  value?: TaskListRowData[];
-  onChange?(value: TaskListRowData[]): void;
+  value?: TaskListRow[];
+  onChange?(value: TaskListRow[]): void;
 }
 
 export const SubtaskInput: FC<Props> = ({
@@ -21,8 +21,6 @@ export const SubtaskInput: FC<Props> = ({
   onChange,
 }) => {
   const createTask = useCreateTask();
-  const updateTask = useUpdateTask();
-  const deleteTask = useDeleteTask();
 
   const canCreateTask = usePermission("create", {
     __typename: "Task",
@@ -64,27 +62,21 @@ export const SubtaskInput: FC<Props> = ({
   const rows = useMemo(() => value ?? [], [value]);
   const handleChange = useCallback(
     async (
-      changed: Partial<TaskListRowData>,
-      prevValue: TaskListRowData,
+      changed: Partial<TaskListRow>,
+      prevValue: TaskListRow,
       index: number
     ) => {
-      if (!!prevValue.task) {
-        await updateTask({ id: prevValue.task.id, ...changed });
-      }
-
       const newValue = [...rows];
       newValue[index] = { ...prevValue, ...changed };
       onChange?.(newValue);
     },
-    [onChange, updateTask, rows]
+    [onChange, rows]
   );
 
   const handleDelete = useCallback(
-    async (value: TaskListRowData, index: number) => {
-      if (!!value.task) await deleteTask(value.task.id);
-      onChange?.(rows.filter((_v, i) => i !== index));
-    },
-    [onChange, deleteTask, rows]
+    async (_value: TaskListRow, index: number) =>
+      onChange?.(rows.filter((_v, i) => i !== index)),
+    [onChange, rows]
   );
 
   return (

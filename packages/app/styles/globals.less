@@ -51,10 +51,12 @@ textarea {
   // background: #191919;
 }
 
-// .ant-table-tbody > tr.ant-table-row:hover td.ant-table-cell,
-// .ant-table-thead th.ant-table-column-has-sorters:hover {
-  // background: @component-background;
-// }
+.ant-table-thead th.ant-table-column-has-sorters:hover,
+.ant-table-tbody > tr.ant-table-row:hover > td,
+.ant-table-tbody > tr > td.ant-table-cell-row-hover {
+  background: @component-background;
+  // background: transparent;
+}
 
 .ant-modal .ant-table tbody > tr.ant-table-row:hover > td {
   background: transparent;

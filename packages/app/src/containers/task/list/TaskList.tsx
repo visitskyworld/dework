@@ -12,10 +12,13 @@ import {
   Row,
   Table,
   Tooltip,
-  Typography,
 } from "antd";
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
-import { useTaskFormUserOptions } from "../../task/hooks";
+import {
+  useDeleteTask,
+  useTaskFormUserOptions,
+  useUpdateTask,
+} from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
 import { STATUS_LABEL } from "../../task/board/util";
 import _ from "lodash";
@@ -26,7 +29,7 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 
-export interface TaskListRowData {
+export interface TaskListRow {
   task?: Task;
   name: string;
   status: TaskStatus;
@@ -34,21 +37,21 @@ export interface TaskListRowData {
 }
 
 interface Props {
-  rows: TaskListRowData[];
+  rows: TaskListRow[];
   tags: TaskTag[];
   projectId?: string;
   style?: CSSProperties;
   // onAddTask(name: string): void;
-  onChange(
-    changed: Partial<TaskListRowData>,
-    prevValue: TaskListRowData,
+  onChange?(
+    changed: Partial<TaskListRow>,
+    prevValue: TaskListRow,
     index: number
   ): void;
-  onDelete(value: TaskListRowData, index: number): void;
+  onDelete?(value: TaskListRow, index: number): void;
 }
 
 const statuses = [
-  TaskStatus.BACKLOG,
+  // TaskStatus.BACKLOG,
   TaskStatus.TODO,
   TaskStatus.IN_PROGRESS,
   TaskStatus.IN_REVIEW,
@@ -80,50 +83,48 @@ export const TaskList: FC<Props> = ({
     [hasPermission]
   );
 
-  // const rows = useMemo<TaskListRowData[]>(() => {
-  //   const toRowData = (task: Task) => ({
-  //     name: task.name,
-  //     assigneeIds: task.assignees.map((u) => u.id),
-  //     status: task.status,
-  //   });
-  //   return tasks.map(toRowData);
-  // }, [tasks]);
-
-  const editing = true;
-
-  const users = useTaskFormUserOptions(projectId!, []); // task.assignees);
+  const existingAssignees = useMemo(
+    () =>
+      _(rows)
+        .map((r) => r.task?.assignees ?? [])
+        .flatten()
+        .uniqBy((u) => u.id)
+        .value(),
+    [rows]
+  );
+  const users = useTaskFormUserOptions(projectId!, existingAssignees);
   const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
 
-  // const adding = useToggle();
-  // const handleAddTask = useCallback<KeyboardEventHandler<HTMLInputElement>>(
-  //   async (event) => {
-  //     try {
-  //       adding.toggleOn();
-  //       const inputElement = event.target as HTMLInputElement;
-  //       const name = inputElement.value;
-  //       inputElement.blur();
-  //       await onAddTask(name);
-  //       inputElement.value = "";
-  //     } finally {
-  //       adding.toggleOff();
-  //     }
-  //   },
-  //   [onAddTask, adding]
-  // );
+  const updateTask = useUpdateTask();
+  const handleChange = useCallback(
+    async (
+      changed: Partial<TaskListRow>,
+      prevValue: TaskListRow,
+      index: number
+    ) => {
+      if (!!prevValue.task) {
+        await updateTask({ id: prevValue.task.id, ...changed });
+      }
+
+      onChange?.(changed, prevValue, index);
+    },
+    [onChange, updateTask]
+  );
+
+  const deleteTask = useDeleteTask();
+  const handleDelete = useCallback(
+    async (value: TaskListRow, index: number) => {
+      if (!!value.task) await deleteTask(value.task.id);
+      onDelete?.(value, index);
+    },
+    [onDelete, deleteTask]
+  );
 
   // TODO(fant): SSRing <Table /> gets stuck
   if (typeof window === "undefined") return null;
   if (!rows.length) return null;
   return (
-    // <Form
-    //   form={form}
-    //   layout="vertical"
-    //   requiredMark={false}
-    //   // initialValues={initialValues}
-    //   onValuesChange={handleChange}
-    //   onFinish={() => alert("finish sabmit")}
-    // >
-    <Table<TaskListRowData>
+    <Table<TaskListRow>
       dataSource={rows}
       size="small"
       style={style}
@@ -164,7 +165,7 @@ export const TaskList: FC<Props> = ({
               value={currentStatus}
               mode="default"
               disabled={!canChange(row.task, "status")}
-              onChange={(status) => onChange({ status }, row, index)}
+              onChange={(status) => handleChange({ status }, row, index)}
               options={statuses.map((status) => ({
                 value: status,
                 label: (
@@ -191,77 +192,68 @@ export const TaskList: FC<Props> = ({
           dataIndex: "name",
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
-          render: (name: string, row: TaskListRowData, index: number) =>
-            editing ? (
-              <Input.TextArea
-                autoSize
-                className="dewo-field dewo-field-focus-border"
-                style={{ paddingTop: 4 }}
-                placeholder="Enter name..."
-                disabled={!canChange(row.task, "name")}
-                defaultValue={name}
-                onPressEnter={(e) => {
-                  e.preventDefault();
-                  onChange(
-                    { name: (e.target as HTMLInputElement).value },
-                    row,
-                    index
-                  );
-                  (e.target as HTMLInputElement).blur();
-                }}
-              />
-            ) : (
-              <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                {name}
-              </Typography.Title>
-            ),
+          render: (name: string, row: TaskListRow, index: number) => (
+            // editing ? (
+            <Input.TextArea
+              autoSize
+              className="dewo-field dewo-field-focus-border"
+              style={{ paddingTop: 4 }}
+              placeholder="Enter name..."
+              disabled={!canChange(row.task, "name")}
+              defaultValue={name}
+              onPressEnter={(e) => {
+                e.preventDefault();
+                handleChange(
+                  { name: (e.target as HTMLInputElement).value },
+                  row,
+                  index
+                );
+                (e.target as HTMLInputElement).blur();
+              }}
+            />
+          ),
+          // ) : (
+          //   <Typography.Title level={5} style={{ marginBottom: 0 }}>
+          //     {name}
+          //   </Typography.Title>
+          // ),
         },
         {
           dataIndex: "assigneeIds",
           width: 1,
-          render: (
-            assigneeIds: string[],
-            row: TaskListRowData,
-            index: number
-          ) =>
-            editing ? (
-              // <Form.Item
-              //   name={["rows", index, "assigneeIds"]}
-              //   style={{ marginBottom: 0 }}
-              // >
-              <DropdownSelect
-                mode="multiple"
-                placement="bottomRight"
-                disabled={!canChange(row.task, "assignees")}
-                options={users?.map((user) => ({
-                  value: user.id,
-                  label: <UserSelectOption key={user.id} user={user} />,
-                }))}
-                value={assigneeIds}
-                onChange={(assigneeIds) =>
-                  onChange({ assigneeIds }, row, index)
-                }
-              >
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Avatar.Group
-                    maxCount={3}
-                    size="small"
-                    style={{ pointerEvents: "none" }}
-                  >
-                    {assigneeIds
-                      .map((id) => userById[id])
-                      .filter((u): u is User => !!u)
-                      .map((user) => (
-                        <UserAvatar key={user.id} user={user} />
-                      ))}
-                    {!assigneeIds.length && (
-                      <Avatar icon={<Icons.UserAddOutlined />} />
-                    )}
-                  </Avatar.Group>
-                </div>
-              </DropdownSelect>
-            ) : // </Form.Item>
-            null,
+          render: (assigneeIds: string[], row: TaskListRow, index: number) => (
+            <DropdownSelect
+              mode="multiple"
+              placement="bottomRight"
+              disabled={!canChange(row.task, "assignees")}
+              options={users?.map((user) => ({
+                value: user.id,
+                label: <UserSelectOption key={user.id} user={user} />,
+              }))}
+              value={assigneeIds}
+              onChange={(assigneeIds) =>
+                handleChange({ assigneeIds }, row, index)
+              }
+            >
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Avatar.Group
+                  maxCount={3}
+                  size="small"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {assigneeIds
+                    .map((id) => userById[id])
+                    .filter((u): u is User => !!u)
+                    .map((user) => (
+                      <UserAvatar key={user.id} user={user} />
+                    ))}
+                  {!assigneeIds.length && (
+                    <Avatar icon={<Icons.UserAddOutlined />} />
+                  )}
+                </Avatar.Group>
+              </div>
+            </DropdownSelect>
+          ),
           /*
                 <Avatar.Group maxCount={3}>
                   {assignees.map((user) => (
@@ -337,7 +329,7 @@ export const TaskList: FC<Props> = ({
                       title="Delete this subtask?"
                       okType="danger"
                       okText="Delete"
-                      onConfirm={() => onDelete(row, index)}
+                      onConfirm={() => handleDelete(row, index)}
                     >
                       <Menu.Item
                         key="delete"
@@ -361,6 +353,5 @@ export const TaskList: FC<Props> = ({
         },
       ]}
     />
-    // </Form>
   );
 };

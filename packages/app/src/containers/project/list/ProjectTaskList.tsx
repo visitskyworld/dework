@@ -1,4 +1,5 @@
-import { FC } from "react";
+import React, { FC, useMemo } from "react";
+import { TaskList, TaskListRow } from "../../task/list/TaskList";
 import { useProjectTasks } from "../hooks";
 
 interface Props {
@@ -8,14 +9,26 @@ interface Props {
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   // const tags = useProjectTaskTags(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
-  if (!tasks) return null;
-  return null;
-  // return (
-  //   <TaskList
-  //     tasks={tasks}
-  //     tags={tags}
-  //     projectId={projectId}
-  //     style={{ marginLeft: 24, marginRight: 24, minWidth: 480, maxWidth: 960 }}
-  //   />
-  // );
+  const rows = useMemo(
+    () =>
+      tasks?.map(
+        (task): TaskListRow => ({
+          task,
+          assigneeIds: task.assignees.map((u) => u.id),
+          name: task.name,
+          status: task.status,
+        })
+      ),
+    [tasks]
+  );
+  if (!rows) return null;
+  return (
+    <TaskList
+      rows={rows}
+      // tags={tags}
+      tags={[]}
+      projectId={projectId}
+      style={{ marginLeft: 0, marginRight: 0, minWidth: 480, maxWidth: 960 }}
+    />
+  );
 };

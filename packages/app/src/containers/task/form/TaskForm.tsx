@@ -39,7 +39,7 @@ import Link from "next/link";
 import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { TaskListRowData } from "../list/TaskList";
+import { TaskListRow } from "../list/TaskList";
 
 export interface TaskFormValues {
   name: string;
@@ -53,7 +53,7 @@ export interface TaskFormValues {
   assigneeIds: string[];
   ownerId?: string | null;
   reward?: TaskRewardFormValues;
-  subtasks?: TaskListRowData[];
+  subtasks?: TaskListRow[];
 }
 
 interface TaskFormProps {
