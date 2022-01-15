@@ -24,15 +24,13 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
   const verifyToken = useCallback(
     async (token: ProjectTokenGate["token"]) => {
       setLoading(true);
-
       try {
         await onVerify(token);
-        onClose();
       } finally {
         setLoading(false);
       }
     },
-    [onVerify, onClose]
+    [onVerify]
   );
 
   if (!user) return null;
