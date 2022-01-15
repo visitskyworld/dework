@@ -1,6 +1,13 @@
 import * as Icons from "@ant-design/icons";
+import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { Task, TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
+import {
+  Task,
+  TaskReward,
+  TaskStatus,
+  TaskTag,
+  User,
+} from "@dewo/app/graphql/types";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import {
   Avatar,
@@ -11,10 +18,13 @@ import {
   Popconfirm,
   Row,
   Table,
+  Tag,
   Tooltip,
+  Typography,
 } from "antd";
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import {
+  formatTaskReward,
   useDeleteTask,
   useTaskFormUserOptions,
   useUpdateTask,
@@ -28,6 +38,9 @@ import {
   usePermission,
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
+import { AvatarSize } from "antd/lib/avatar/SizeContext";
+import { TaskActionButton } from "../board/TaskActionButton";
+import { TaskTagsRow } from "../board/TaskTagsRow";
 
 export interface TaskListRow {
   task?: Task;
@@ -38,16 +51,21 @@ export interface TaskListRow {
 
 interface Props {
   rows: TaskListRow[];
-  tags: TaskTag[];
+  tags?: TaskTag[];
+  nameEditable?: boolean;
+  showHeader?: boolean;
+  showButtonColumn?: boolean;
+  defaultSortByStatus?: boolean;
   projectId?: string;
   style?: CSSProperties;
-  // onAddTask(name: string): void;
+  size?: AvatarSize;
   onChange?(
     changed: Partial<TaskListRow>,
-    prevValue: TaskListRow,
+    row: TaskListRow,
     index: number
   ): void;
-  onDelete?(value: TaskListRow, index: number): void;
+  onDelete?(row: TaskListRow, index: number): void;
+  onClick?(row: TaskListRow): void;
 }
 
 const statuses = [
@@ -61,12 +79,17 @@ const statuses = [
 // Drag and drop table: https://codesandbox.io/s/react-beautiful-dnd-examples-multi-drag-table-with-antd-gptbl
 export const TaskList: FC<Props> = ({
   rows,
-  // tags,
+  tags,
   projectId,
+  nameEditable = true,
+  showHeader = true,
+  showButtonColumn = false,
+  defaultSortByStatus = false,
   style,
+  size,
   onChange,
   onDelete,
-  // onAddTask,
+  onClick,
 }) => {
   const navigateToTask = useNavigateToTaskFn();
 
@@ -128,39 +151,18 @@ export const TaskList: FC<Props> = ({
       dataSource={rows}
       size="small"
       style={style}
-      showHeader={false}
-      className="dewo-table-xs"
+      showHeader={showHeader}
+      className={size === "small" ? "dewo-table-xs" : undefined}
       pagination={{ hideOnSinglePage: true }}
-      // components={{ body: { cell: CustomCell } }}
-      // onRow={(t) => ({
-      // onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
-      // })}
-      // footer={() => (
-      //   <Row align="middle" style={{ gap: 16 }}>
-      //     <Button
-      //       icon={<Icons.PlusOutlined />}
-      //       shape="circle"
-      //       size="small"
-      //       type="ghost"
-      //       loading={adding.isOn}
-      //     />
-      //     <Input
-      //       className="dewo-field dewo-field-focus-border"
-      //       style={{ flex: 1 }}
-      //       placeholder="Add subtask..."
-      //       disabled={adding.isOn}
-      //       onPressEnter={handleAddTask}
-      //     />
-      //   </Row>
-      // )}
+      rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
+      onRow={(t) => ({
+        onClick: !!onClick ? () => onClick(t) : undefined,
+      })}
       columns={[
         {
           dataIndex: "status",
-          // width: 120,
           width: 1,
-          // render: (status: TaskStatus) => STATUS_LABEL[status],
           render: (currentStatus: TaskStatus, row, index) => (
-            // <Form.Item name={["rows", 0, "status"]} style={{ marginBottom: 0 }}>
             <DropdownSelect
               value={currentStatus}
               mode="default"
@@ -175,50 +177,80 @@ export const TaskList: FC<Props> = ({
                   </Row>
                 ),
               }))}
-              // children={<div>{STATUS_ICON[currentStatus]}</div>}
               children={
                 <div>
                   <Tooltip title={STATUS_LABEL[currentStatus]} placement="left">
-                    <TaskStatusAvatar size="small" status={currentStatus} />
+                    <TaskStatusAvatar size={size} status={currentStatus} />
                   </Tooltip>
                 </div>
               }
             />
-            // </Form.Item>
           ),
+
+          filters: statuses.map((status) => ({
+            value: status,
+            text: STATUS_LABEL[status],
+          })),
+          onFilter: (status, task) => task.status === status,
+          defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
+          sorter: (a, b) =>
+            statuses.indexOf(a.status) - statuses.indexOf(b.status),
+          showSorterTooltip: false,
         },
         {
           title: "Name",
           dataIndex: "name",
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
-          render: (name: string, row: TaskListRow, index: number) => (
-            // editing ? (
-            <Input.TextArea
-              autoSize
-              className="dewo-field dewo-field-focus-border"
-              style={{ paddingTop: 4 }}
-              placeholder="Enter name..."
-              disabled={!canChange(row.task, "name")}
-              defaultValue={name}
-              onPressEnter={(e) => {
-                e.preventDefault();
-                handleChange(
-                  { name: (e.target as HTMLInputElement).value },
-                  row,
-                  index
-                );
-                (e.target as HTMLInputElement).blur();
-              }}
-            />
-          ),
-          // ) : (
-          //   <Typography.Title level={5} style={{ marginBottom: 0 }}>
-          //     {name}
-          //   </Typography.Title>
-          // ),
+          render: (name: string, row: TaskListRow, index: number) =>
+            nameEditable ? (
+              <Input.TextArea
+                autoSize
+                className="dewo-field dewo-field-focus-border"
+                style={{ paddingTop: 4 }}
+                placeholder="Enter name..."
+                disabled={!canChange(row.task, "name") || !nameEditable}
+                defaultValue={name}
+                onPressEnter={(e) => {
+                  e.preventDefault();
+                  handleChange(
+                    { name: (e.target as HTMLInputElement).value },
+                    row,
+                    index
+                  );
+                  (e.target as HTMLInputElement).blur();
+                }}
+              />
+            ) : (
+              <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                {name}
+              </Typography.Title>
+            ),
         },
         {
+          title: "Tags",
+          dataIndex: ["task", "tags"],
+          filters: tags?.map((tag) => ({
+            value: tag.id,
+            text: <Tag color={tag.color}>{tag.label}</Tag>,
+          })),
+          onFilter: (tagId, row) =>
+            !!row.task?.tags.some((t) => t.id === tagId),
+          render: (_, row) =>
+            !!row.task && (
+              <TaskTagsRow task={row.task} showStandardTags={false} />
+            ),
+        },
+        { title: "Points", dataIndex: ["task", "storyPoints"], width: 72 },
+        {
+          title: "Reward",
+          dataIndex: ["task", "reward"],
+          width: 100,
+          render: (reward: TaskReward) =>
+            !!reward ? formatTaskReward(reward) : undefined,
+        },
+        {
+          title: "Assignees",
           dataIndex: "assigneeIds",
           width: 1,
           render: (assigneeIds: string[], row: TaskListRow, index: number) => (
@@ -238,7 +270,7 @@ export const TaskList: FC<Props> = ({
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Avatar.Group
                   maxCount={3}
-                  size="small"
+                  size={size}
                   style={{ pointerEvents: "none" }}
                 >
                   {assigneeIds
@@ -254,56 +286,18 @@ export const TaskList: FC<Props> = ({
               </div>
             </DropdownSelect>
           ),
-          /*
-                <Avatar.Group maxCount={3}>
-                  {assignees.map((user) => (
-                    <UserAvatar key={user.id} user={user} />
-                  ))}
-                  {!assignees.length && (
-                    <Avatar icon={<Icons.UserAddOutlined />} />
-                  )}
-                </Avatar.Group>
-                */
-          // {
-          //   title: "Reward",
-          //   dataIndex: "reward",
-          //   width: 100,
-          //   render: (reward: TaskReward) =>
-          //     !!reward ? formatTaskReward(reward) : undefined,
-          // },
-          // { title: "Points", dataIndex: "storyPoints", width: 72 },
-
-          // filters: statuses.map((status) => ({
-          //   value: status,
-          //   text: STATUS_LABEL[status],
-          // })),
-          // onFilter: (status, task) => task.status === status,
-          // defaultSortOrder: "ascend",
-          // sorter: (a, b) =>
-          //   statuses.indexOf(a.status) - statuses.indexOf(b.status),
-          // showSorterTooltip: false,
         },
-        // {
-        //   title: "Tags",
-        //   dataIndex: "tags",
-        //   width: 240,
-        //   filters: tags.map((tag) => ({
-        //     value: tag.id,
-        //     text: <Tag color={tag.color}>{tag.label}</Tag>,
-        //   })),
-        //   onFilter: (tagId, task) => !!task.tags?.some((t) => t.id === tagId),
-        //   render: (_, task) =>
-        //     !!task.id && (
-        //       <TaskTagsRow task={task as any} showStandardTags={false} />
-        //     ),
-        // },
-        // {
-        //   title: "Actions",
-        //   key: "button",
-        //   width: 1,
-        //   render: (_, task) =>
-        //     !!task.id && <TaskActionButton task={task as any} />,
-        // },
+        ...(showButtonColumn
+          ? [
+              {
+                title: "Actions",
+                key: "button",
+                width: 1,
+                render: (_: unknown, row: TaskListRow) =>
+                  !!row.task && <TaskActionButton task={row.task} />,
+              },
+            ]
+          : []),
         {
           key: "actions",
           width: 1,
@@ -312,8 +306,10 @@ export const TaskList: FC<Props> = ({
               key="avatar"
               placement="bottomRight"
               trigger={["click"]}
+              // @ts-ignore
+              onClick={eatClick}
               overlay={
-                <Menu>
+                <Menu onClick={(e) => eatClick(e.domEvent)}>
                   {!!row.task && (
                     <Menu.Item
                       key="details"

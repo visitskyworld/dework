@@ -84,7 +84,8 @@ export const SubtaskInput: FC<Props> = ({
       <TaskList
         key={rows.length}
         rows={rows}
-        tags={[]}
+        size="small"
+        showHeader={false}
         projectId={projectId}
         onChange={handleChange}
         onDelete={handleDelete}

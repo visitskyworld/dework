@@ -1,5 +1,6 @@
 import { Dropdown, DropDownProps, Menu } from "antd";
 import React, { ReactNode, useCallback } from "react";
+import { eatClick, stopPropagation } from "../util/eatClick";
 
 interface DropdownSelectOption {
   value: string;
@@ -55,6 +56,8 @@ export function DropdownSelect<T extends string | string[]>({
       placement={placement}
       disabled={disabled}
       trigger={["click"]}
+      // @ts-ignore
+      onClick={eatClick}
       overlay={
         <Menu>
           {options?.map((option) => (
@@ -66,7 +69,10 @@ export function DropdownSelect<T extends string | string[]>({
                   ? "ant-select-item-option-selected"
                   : undefined
               }
-              onClick={() => handleSelect(option.value)}
+              onClick={(e) => {
+                stopPropagation(e.domEvent);
+                handleSelect(option.value);
+              }}
             >
               {option.label}
             </Menu.Item>
