@@ -20,13 +20,17 @@ import {
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
-import { FormValues as DiscordFormFields } from "../../integrations/CreateDiscordIntegrationForm";
+import {
+  DiscordIntegrationFormFields,
+  FormValues as DiscordFormFields,
+} from "../../integrations/CreateDiscordIntegrationForm";
 import { ProjectSettingsFormFields } from "../settings/ProjectSettingsFormFields";
 import {
   GithubIntegrationFormFields,
   FormValues as GithubFormFields,
 } from "../../integrations/CreateGithubIntegrationForm";
 import _ from "lodash";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
 
 export interface FormValues
   extends CreateProjectInput,
@@ -211,14 +215,23 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields
-          organization={organization}
-          values={values}
-          discordChannels={discordChannels}
-          discordThreads={discordThreads}
-          hasDiscordIntegration={hasDiscordIntegration}
-        />
-
+        <ProjectSettingsFormFields />
+        {!!organization && (
+          <FormSection label="Discord Integration">
+            {hasDiscordIntegration ? (
+              <DiscordIntegrationFormFields
+                values={values}
+                channels={discordChannels.value}
+                threads={discordThreads.value}
+                onRefetchChannels={discordChannels.refetch}
+              />
+            ) : (
+              <ConnectOrganizationToDiscordButton
+                organizationId={organization.id}
+              />
+            )}
+          </FormSection>
+        )}
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />
         </Form.Item>

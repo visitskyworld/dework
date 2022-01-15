@@ -231,14 +231,13 @@ export function useOrganizationGithubRepos(
   });
   return data?.repos ?? undefined;
 }
-export interface OrganizationDiscordChannels {
-  value: DiscordIntegrationChannel[] | undefined;
-  refetch: () => Promise<void>;
-}
 export function useOrganizationDiscordChannels(
   variables: GetOrganizationDiscordChannelsQueryVariables,
   skip: boolean = false
-): OrganizationDiscordChannels {
+): {
+  value: DiscordIntegrationChannel[] | undefined;
+  refetch: () => Promise<void>;
+} {
   const { data, refetch } = useQuery<
     GetOrganizationDiscordChannelsQuery,
     GetOrganizationDiscordChannelsQueryVariables
