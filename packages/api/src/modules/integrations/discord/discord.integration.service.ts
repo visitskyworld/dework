@@ -41,6 +41,7 @@ export class DiscordIntegrationService {
   ) {}
 
   async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
+    if (!!event.task.parentTaskId) return;
     const integration = await this.getProjectIntegration(event.task.projectId);
     if (!integration) return;
     const organizationIntegration =
