@@ -67,6 +67,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
 
   return (
     <PageHeader
+      className="dewo-project-header"
       style={{ paddingBottom: 0 }}
       title={
         !!project ? (
@@ -112,27 +113,30 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
                 <UserAvatar key={m.id} user={m.user} linkToProfile />
               ))}
             </Avatar.Group>
-
-            <Space>
-              <Can I="update" a="Project">
-                <Link href={`${project?.permalink}/settings`}>
-                  <a>
-                    <Button
-                      type="text"
-                      size="large"
-                      icon={<Icons.SettingOutlined />}
-                    />
-                  </a>
-                </Link>
-              </Can>
-              <ProjectInviteButton projectId={projectId} />
-              <FollowOrganizationButton
-                organizationId={project?.organizationId}
-              />
-            </Space>
           </Row>
         ) : (
           <Skeleton.Avatar active size="large" />
+        )
+      }
+      extra={
+        !!project && (
+          <Space>
+            <Can I="update" a="Project">
+              <Link href={`${project?.permalink}/settings`}>
+                <a>
+                  <Button
+                    type="text"
+                    size="large"
+                    icon={<Icons.SettingOutlined />}
+                  />
+                </a>
+              </Link>
+            </Can>
+            <ProjectInviteButton projectId={projectId} />
+            <FollowOrganizationButton
+              organizationId={project?.organizationId}
+            />
+          </Space>
         )
       }
       breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
