@@ -1,4 +1,4 @@
-import { Dropdown, Menu } from "antd";
+import { Dropdown, DropDownProps, Menu } from "antd";
 import React, { ReactNode, useCallback } from "react";
 
 interface DropdownSelectOption {
@@ -9,6 +9,7 @@ interface DropdownSelectOption {
 interface DropdownSelectProps<T = string | string[]> {
   value?: T;
   mode: T extends string ? "default" : "multiple";
+  placement?: DropDownProps["placement"];
   children: ReactNode;
   options?: DropdownSelectOption[];
   onChange?(value: T): void;
@@ -18,6 +19,7 @@ export function DropdownSelect<T extends string | string[]>({
   value,
   mode,
   options,
+  placement,
   children,
   onChange,
 }: DropdownSelectProps<T>) {
@@ -47,7 +49,7 @@ export function DropdownSelect<T extends string | string[]>({
 
   return (
     <Dropdown
-      placement="bottomRight"
+      placement={placement}
       trigger={["click"]}
       overlay={
         <Menu>

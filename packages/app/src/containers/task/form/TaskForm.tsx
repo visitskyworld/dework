@@ -35,7 +35,7 @@ import { TaskActivityFeed } from "./TaskActivityFeed";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import Link from "next/link";
 import _ from "lodash";
-import { TaskList } from "../list/TaskList";
+import { SubtaskInput } from "./SubtaskInput";
 
 export interface TaskFormValues {
   name: string;
@@ -48,6 +48,7 @@ export interface TaskFormValues {
   assigneeIds: string[];
   ownerId?: string | null;
   reward?: TaskRewardFormValues;
+  subtasks?: TaskFormValues[];
 }
 
 interface TaskFormProps {
@@ -182,6 +183,12 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           </Form.Item>
 
+          {/* {!!task && ( */}
+          <Form.Item name="subtasks" label="Subtasks">
+            <SubtaskInput projectId={projectId} />
+          </Form.Item>
+          {/* )} */}
+
           {mode === "create" && canSubmit && (
             <Button
               type="primary"
@@ -212,17 +219,6 @@ export const TaskForm: FC<TaskFormProps> = ({
                   #{task.discordChannel.name}
                 </Typography.Text>
               </Button>
-            </FormSection>
-          )}
-
-          {!!task && (
-            <FormSection label="Subtasks">
-              <TaskList
-                tasks={task.subtasks}
-                tags={[]}
-                style={{ marginBottom: 16 }}
-                projectId={task.projectId}
-              />
             </FormSection>
           )}
 

@@ -1179,7 +1179,7 @@ export interface CreateTaskMutation_task_applications_user {
 export interface CreateTaskMutation_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -1342,7 +1342,7 @@ export interface UpdateTaskMutation_task_applications_user {
 export interface UpdateTaskMutation_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -1505,7 +1505,7 @@ export interface CreateTaskApplicationMutation_application_task_applications_use
 export interface CreateTaskApplicationMutation_application_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -1674,7 +1674,7 @@ export interface DeleteTaskApplicationMutation_task_applications_user {
 export interface DeleteTaskApplicationMutation_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -1837,7 +1837,7 @@ export interface DeleteTaskMutation_task_applications_user {
 export interface DeleteTaskMutation_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -2817,7 +2817,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_applications_user {
 export interface CreateTaskPaymentsMutation_tasks_subtasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -2956,7 +2956,7 @@ export interface CreateTaskPaymentsMutation_tasks_applications_user {
 export interface CreateTaskPaymentsMutation_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -3224,7 +3224,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications_
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -3514,7 +3514,7 @@ export interface UserTasksQuery_user_tasks_applications_user {
 export interface UserTasksQuery_user_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -4239,7 +4239,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_applications_user 
 export interface GetOrganizationTasksQuery_organization_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -4548,7 +4548,7 @@ export interface GetProjectTasksQuery_project_tasks_applications_user {
 export interface GetProjectTasksQuery_project_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -4748,7 +4748,7 @@ export interface GetTaskQuery_task_subtasks_applications_user {
 export interface GetTaskQuery_task_subtasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -4887,7 +4887,7 @@ export interface GetTaskQuery_task_applications_user {
 export interface GetTaskQuery_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -5163,7 +5163,7 @@ export interface GetTasksQuery_tasks_applications_user {
 export interface GetTasksQuery_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -5381,7 +5381,7 @@ export interface GetTasksToPayQuery_tasks_applications_user {
 export interface GetTasksToPayQuery_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -5785,7 +5785,7 @@ export interface TaskCreatedSubscription_task_subtasks_applications_user {
 export interface TaskCreatedSubscription_task_subtasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -5924,7 +5924,7 @@ export interface TaskCreatedSubscription_task_applications_user {
 export interface TaskCreatedSubscription_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -6149,7 +6149,7 @@ export interface TaskUpdatedSubscription_task_subtasks_applications_user {
 export interface TaskUpdatedSubscription_task_subtasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -6288,7 +6288,7 @@ export interface TaskUpdatedSubscription_task_applications_user {
 export interface TaskUpdatedSubscription_task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -7316,7 +7316,7 @@ export interface TaskApplication_user {
 export interface TaskApplication {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -7451,7 +7451,7 @@ export interface Task_applications_user {
 export interface Task_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -7606,7 +7606,7 @@ export interface TaskWithOrganization_applications_user {
 export interface TaskWithOrganization_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -7784,7 +7784,7 @@ export interface TaskDetails_subtasks_applications_user {
 export interface TaskDetails_subtasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -7923,7 +7923,7 @@ export interface TaskDetails_applications_user {
 export interface TaskDetails_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
-  message: string;
+  message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   userId: string;
@@ -8496,7 +8496,7 @@ export interface CreateProjectIntegrationInput {
 export interface CreateTaskApplicationInput {
   taskId: Scalar.UUID;
   userId: Scalar.UUID;
-  message?: string;
+  message?: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
 }
@@ -8505,6 +8505,7 @@ export interface CreateTaskInput {
   name: string;
   description?: string | null;
   projectId: Scalar.UUID;
+  parentTaskId: Scalar.UUID;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;

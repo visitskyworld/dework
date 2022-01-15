@@ -14,6 +14,9 @@ export class CreateTaskInput {
   @Field(() => GraphQLUUID)
   public projectId!: string;
 
+  @Field(() => GraphQLUUID)
+  public parentTaskId!: string;
+
   @Field(() => [GraphQLUUID], { nullable: true })
   public tagIds?: string[];
 
