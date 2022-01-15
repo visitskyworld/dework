@@ -1,7 +1,5 @@
 import React, { ReactNode, useMemo } from "react";
 import _ from "lodash";
-import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
 import {
   PaymentMethodType,
   PaymentStatus,
@@ -29,30 +27,6 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.IN_PROGRESS]: "In Progress",
   [TaskStatus.IN_REVIEW]: "In Review",
   [TaskStatus.DONE]: "Done",
-};
-
-export const STATUS_ICON: Record<TaskStatus, ReactNode> = {
-  [TaskStatus.BACKLOG]: (
-    <Icons.BulbTwoTone twoToneColor={Colors.grey.primary} />
-  ),
-  [TaskStatus.TODO]: (
-    <Icons.CheckCircleFilled twoToneColor={Colors.grey.primary} />
-  ),
-  [TaskStatus.IN_PROGRESS]: (
-    <Icons.CheckCircleTwoTone
-      style={{ color: "green" }}
-      twoToneColor={"#ff0033"}
-    />
-  ),
-  [TaskStatus.IN_REVIEW]: (
-    <Icons.CheckCircleTwoTone
-      style={{ color: "green" }}
-      twoToneColor={"#ff0033"}
-    />
-  ),
-  [TaskStatus.DONE]: (
-    <Icons.CheckCircleTwoTone twoToneColor={Colors.green.primary} />
-  ),
 };
 
 export function useShouldShowInlinePayButton(task: Task): boolean {

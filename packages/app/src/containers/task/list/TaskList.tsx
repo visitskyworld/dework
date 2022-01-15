@@ -25,10 +25,11 @@ import React, {
 import { TaskFormValues } from "../../task/form/TaskForm";
 import { useTaskFormUserOptions } from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
-import { STATUS_ICON, STATUS_LABEL } from "../../task/board/util";
+import { STATUS_LABEL } from "../../task/board/util";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
+import { TaskStatusAvatar } from "../TaskStatusAvatar";
 
 interface RowData {
   id?: string;
@@ -210,6 +211,7 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
         dataSource={values.rows}
         size="small"
         style={style}
+        showHeader={false}
         rowClassName="hover:cursor-pointer"
         pagination={{ hideOnSinglePage: true }}
         // components={{ body: { cell: CustomCell } }}
@@ -241,13 +243,47 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
         // }
         columns={[
           {
+            dataIndex: "status",
+            // width: 120,
+            width: 1,
+            // render: (status: TaskStatus) => STATUS_LABEL[status],
+            render: (currentStatus: TaskStatus) => (
+              <Form.Item
+                name={["rows", 0, "status"]}
+                style={{ marginBottom: 0 }}
+              >
+                <DropdownSelect
+                  mode="default"
+                  options={statuses.map((status) => ({
+                    value: status,
+                    label: (
+                      <Row style={{ gap: 8 }}>
+                        <TaskStatusAvatar size={20} status={status} />
+                        {STATUS_LABEL[status]}
+                      </Row>
+                    ),
+                  }))}
+                  // children={<div>{STATUS_ICON[currentStatus]}</div>}
+                  children={
+                    <div>
+                      <TaskStatusAvatar size="small" status={currentStatus} />
+                    </div>
+                  }
+                />
+              </Form.Item>
+            ),
+          },
+          {
             title: "Name",
             dataIndex: "name",
             showSorterTooltip: false,
             sorter: (a, b) => a.name.localeCompare(b.name),
             render: (name: string, _row: RowData, index: number) =>
               editing ? (
-                <Form.Item name={["rows", index, "name"]}>
+                <Form.Item
+                  name={["rows", index, "name"]}
+                  style={{ marginBottom: 0 }}
+                >
                   <Input
                     className="dewo-field dewo-field-focus-border"
                     placeholder="Add subtask..."
@@ -265,7 +301,10 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
             width: 1,
             render: (assigneeIds: string[], _row: RowData, index: number) =>
               editing ? (
-                <Form.Item name={["rows", index, "assigneeIds"]}>
+                <Form.Item
+                  name={["rows", index, "assigneeIds"]}
+                  style={{ marginBottom: 0 }}
+                >
                   {/* <AssigneePicker projectId={projectId!} /> */}
                   <DropdownSelect
                     mode="multiple"
@@ -304,67 +343,14 @@ export const TaskList: FC<Props> = ({ tasks, tags, projectId, style }) => {
                   )}
                 </Avatar.Group>
                 */
-          },
-          // {
-          //   title: "Reward",
-          //   dataIndex: "reward",
-          //   width: 100,
-          //   render: (reward: TaskReward) =>
-          //     !!reward ? formatTaskReward(reward) : undefined,
-          // },
-          // { title: "Points", dataIndex: "storyPoints", width: 72 },
-          {
-            title: "Status",
-            dataIndex: "status",
-            // width: 120,
-            width: 1,
-            // render: (status: TaskStatus) => STATUS_LABEL[status],
-            render: (currentStatus: TaskStatus) => (
-              <Form.Item name={["rows", 0, "status"]}>
-                <DropdownSelect
-                  mode="default"
-                  options={statuses.map((status) => ({
-                    value: status,
-                    label: (
-                      <Row>
-                        {STATUS_ICON[status]}
-                        {STATUS_LABEL[status]}
-                      </Row>
-                    ),
-                  }))}
-                  // children={<div>{STATUS_ICON[currentStatus]}</div>}
-                  children={
-                    // <Avatar
-                    //   size="small"
-                    //   icon={<Icons.CheckOutlined />}
-                    //   style={{
-                    //     backgroundColor: `${Colors.green.primary}33`,
-                    //     border: `1px solid ${Colors.green.primary}`,
-                    //     color: Colors.green.primary,
-                    //   }}
-                    // />
-                    // <Avatar
-                    //   size="small"
-                    //   icon={<Icons.ThunderboltOutlined />}
-                    //   style={{
-                    //     backgroundColor: `${Colors.yellow.primary}33`,
-                    //     border: `1px solid ${Colors.yellow.primary}`,
-                    //     color: Colors.yellow.primary,
-                    //   }}
-                    // />
-                    <Avatar
-                      size="small"
-                      icon={<Icons.SyncOutlined />}
-                      style={{
-                        backgroundColor: `${Colors.blue.primary}33`,
-                        border: `1px solid ${Colors.blue.primary}`,
-                        color: Colors.blue.primary,
-                      }}
-                    />
-                  }
-                />
-              </Form.Item>
-            ),
+            // {
+            //   title: "Reward",
+            //   dataIndex: "reward",
+            //   width: 100,
+            //   render: (reward: TaskReward) =>
+            //     !!reward ? formatTaskReward(reward) : undefined,
+            // },
+            // { title: "Points", dataIndex: "storyPoints", width: 72 },
 
             // filters: statuses.map((status) => ({
             //   value: status,

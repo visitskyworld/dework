@@ -216,12 +216,14 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {!!task && (
-            <TaskList
-              tasks={task.subtasks}
-              tags={[]}
-              style={{ marginBottom: 16 }}
-              projectId={task.projectId}
-            />
+            <FormSection label="Subtasks">
+              <TaskList
+                tasks={task.subtasks}
+                tags={[]}
+                style={{ marginBottom: 16 }}
+                projectId={task.projectId}
+              />
+            </FormSection>
           )}
 
           {!!canChange("assigneeIds") &&
