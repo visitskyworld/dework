@@ -191,11 +191,10 @@ export const deleteTaskApplication = gql`
 export const deleteTask = gql`
   mutation DeleteTaskMutation($taskId: UUID!) {
     task: deleteTask(id: $taskId) {
-      ...Task
+      id
+      deletedAt
     }
   }
-
-  ${Fragments.task}
 `;
 
 export const createTaskReaction = gql`

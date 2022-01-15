@@ -29,7 +29,6 @@ export const SubtaskInput: FC<Props> = ({
     try {
       adding.toggleOn();
 
-      // TODO: only do this if taskId is set
       const subtask = !!taskId
         ? await createTask(
             {
@@ -42,7 +41,7 @@ export const SubtaskInput: FC<Props> = ({
           )
         : undefined;
 
-      await onChange?.([
+      onChange?.([
         ...(value ?? []),
         {
           id: subtask?.id,
@@ -59,22 +58,28 @@ export const SubtaskInput: FC<Props> = ({
 
   const rows = useMemo(() => value ?? [], [value]);
   const handleChange = useCallback(
-    (
+    async (
       changed: Partial<TaskListRowData>,
       prevValue: TaskListRowData,
       index: number
     ) => {
+      if (!!prevValue.id) {
+        await updateTask({ id: prevValue.id, ...changed });
+      }
+
       const newValue = [...rows];
       newValue[index] = { ...prevValue, ...changed };
       onChange?.(newValue);
     },
-    [onChange, rows]
+    [onChange, updateTask, rows]
   );
 
   const handleDelete = useCallback(
-    (_value: TaskListRowData, index: number) =>
-      onChange?.(rows.filter((_v, i) => i !== index)),
-    [onChange, rows]
+    async (value: TaskListRowData, index: number) => {
+      if (!!value.id) await deleteTask(value.id);
+      onChange?.(rows.filter((_v, i) => i !== index));
+    },
+    [onChange, deleteTask, rows]
   );
 
   return (
@@ -86,7 +91,6 @@ export const SubtaskInput: FC<Props> = ({
         projectId={projectId}
         onChange={handleChange}
         onDelete={handleDelete}
-        // onAddTask={handleAddTask}
       />
       <Row align="middle" style={{ paddingLeft: 8, gap: 16, marginBottom: 16 }}>
         <Button

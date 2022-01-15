@@ -28,7 +28,7 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
   const router = useRouter();
 
   const handleDeleteTask = useCallback(async () => {
-    await deleteTask(task);
+    await deleteTask(task.id);
     await router.push(
       `/o/${router.query.organizationSlug}/p/${router.query.projectSlug}`
     );

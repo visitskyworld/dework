@@ -172,7 +172,7 @@ export function useCreateTask(): (
 
 export function useUpdateTask(): (
   input: UpdateTaskInput,
-  task: Task
+  task?: Task
 ) => Promise<Task> {
   const [mutation] = useMutation<
     UpdateTaskMutation,
@@ -182,14 +182,16 @@ export function useUpdateTask(): (
     async (input, task) => {
       const res = await mutation({
         variables: { input },
-        optimisticResponse: {
-          // TODO: find a better way to merge optimistic task updates
-          task: _.merge(
-            {},
-            task,
-            _.pickBy(_.omit(input, ["reward"]), _.identity)
-          ),
-        },
+        optimisticResponse: !!task
+          ? {
+              // TODO: find a better way to merge optimistic task updates
+              task: _.merge(
+                {},
+                task,
+                _.pickBy(_.omit(input, ["reward"]), _.identity)
+              ),
+            }
+          : undefined,
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
@@ -265,22 +267,25 @@ export function useDeleteTaskReaction(): (
   );
 }
 
-export function useDeleteTask(): (task: Task) => Promise<Task> {
+export function useDeleteTask(): (taskId: string) => Promise<void> {
   const [deleteTask] = useMutation<
     DeleteTaskMutation,
     DeleteTaskMutationVariables
   >(Mutations.deleteTask);
   return useCallback(
-    async (task) => {
+    async (taskId) => {
       const res = await deleteTask({
-        variables: { taskId: task.id },
+        variables: { taskId },
         optimisticResponse: {
-          task: { ...task, deletedAt: new Date().toISOString() },
+          task: {
+            __typename: "Task",
+            id: taskId,
+            deletedAt: new Date().toISOString(),
+          },
         },
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.task;
     },
     [deleteTask]
   );

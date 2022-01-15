@@ -28,6 +28,7 @@ export interface TaskListRowData {
   status: TaskStatus;
   // assignees?: User[];
   assigneeIds?: string[];
+  permalink?: string;
 }
 
 interface Props {
@@ -307,6 +308,14 @@ export const TaskList: FC<Props> = ({
               trigger={["click"]}
               overlay={
                 <Menu>
+                  {!!row.id && (
+                    <Menu.Item
+                      icon={<Icons.BarsOutlined />}
+                      children="Details"
+                      onClick={() => navigateToTask(row.id!)}
+                    />
+                  )}
+
                   <Popconfirm
                     icon={null}
                     title="Delete this subtask?"

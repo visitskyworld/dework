@@ -338,11 +338,9 @@ export const TaskForm: FC<TaskFormProps> = ({
               allowClear
               placeholder="Estimate task size..."
             >
-              <Select.Option value={1} children="1" />
-              <Select.Option value={2} children="2" />
-              <Select.Option value={3} children="3" />
-              <Select.Option value={5} children="5" />
-              <Select.Option value={8} children="8" />
+              {[1, 2, 3, 5, 8].map((p) => (
+                <Select.Option key={p} value={p} children={String(p)} />
+              ))}
             </Select>
           </Form.Item>
 

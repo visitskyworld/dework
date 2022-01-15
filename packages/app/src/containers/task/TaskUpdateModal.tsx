@@ -43,12 +43,15 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       ownerId: task?.owner?.id,
       status: task?.status!,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
-      subtasks: task?.subtasks.map((s) => ({
-        id: s.id,
-        assigneeIds: s.assignees.map((a) => a.id),
-        name: s.name,
-        status: s.status,
-      })),
+      subtasks: _(task?.subtasks)
+        .sortBy((s) => s.sortKey)
+        .map((s) => ({
+          id: s.id,
+          assigneeIds: s.assignees.map((a) => a.id),
+          name: s.name,
+          status: s.status,
+        }))
+        .value(),
     }),
     [task, taskId, tagIds]
   );
