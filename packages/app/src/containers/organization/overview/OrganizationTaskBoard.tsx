@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { TaskBoard } from "../../task/board/TaskBoard";
 import { useOrganizationTasks } from "../hooks";
+import { SkeletonTaskBoard } from "../../task/board/SkeletonTaskBoard";
 
 interface Props {
   organizationId: string;
@@ -11,6 +12,10 @@ export const OrganizationTaskBoard: FC<Props> = ({ organizationId }) => {
     organizationId,
     "cache-and-network"
   );
-  if (!organization) return null;
-  return <TaskBoard tasks={organization.tasks} />;
+
+  return organization ? (
+    <TaskBoard tasks={organization.tasks} />
+  ) : (
+    <SkeletonTaskBoard />
+  );
 };

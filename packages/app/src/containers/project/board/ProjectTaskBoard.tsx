@@ -4,6 +4,7 @@ import { TaskBoard } from "../../task/board/TaskBoard";
 import * as Icons from "@ant-design/icons";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { TaskBoardColumnEmptyProps } from "../../task/board/TaskBoardColumnEmtpy";
+import { SkeletonTaskBoard } from "../../task/board/SkeletonTaskBoard";
 
 interface Props {
   projectId: string;
@@ -45,13 +46,15 @@ export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
     ],
     [project?.options?.showBacklogColumn]
   );
-  if (!tasks) return null;
-  return (
+
+  return tasks ? (
     <TaskBoard
       tasks={tasks}
       projectId={projectId}
       empty={empty}
       statuses={statuses}
     />
+  ) : (
+    <SkeletonTaskBoard />
   );
 };

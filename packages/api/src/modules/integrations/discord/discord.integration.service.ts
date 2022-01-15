@@ -352,7 +352,7 @@ export class DiscordIntegrationService {
   }
 
   /*
-  private async postInProgress(task: Task, channel: Discord.TextBasedChannels) {
+  private async postInProgress(task: Task, channel: Discord.TextBasedChannelss) {
     const threepids = await this.findTaskUserThreepids(task);
     // const intro = !!threepids.length
     //   ? `Hey ${threepids.map((t) => `<@${t.threepid}>`).join(", ")},`

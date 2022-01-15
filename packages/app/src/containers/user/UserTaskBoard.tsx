@@ -11,6 +11,7 @@ import { useTasks } from "../task/hooks";
 import { useUserTasks } from "./hooks";
 import { TaskBoardColumnEmptyProps } from "../task/board/TaskBoardColumnEmtpy";
 import { CreateOrganizationButton } from "../navigation/CreateOrganizationButton";
+import { SkeletonTaskBoard } from "../task/board/SkeletonTaskBoard";
 
 interface Props {
   userId: string;
@@ -46,8 +47,7 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
     !organizations
   );
 
-  if (!tasks) return null;
-  return (
+  return tasks ? (
     <TaskBoard
       tasks={tasks}
       empty={empty}
@@ -112,5 +112,7 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
         ),
       }}
     />
+  ) : (
+    <SkeletonTaskBoard />
   );
 };
