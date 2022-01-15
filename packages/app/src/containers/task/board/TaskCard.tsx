@@ -33,7 +33,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       <Row>
         <Space
           direction="vertical"
-          size={4}
+          size={6}
           style={{ flex: 1, width: "100%", marginBottom: 4 }}
         >
           <Row>

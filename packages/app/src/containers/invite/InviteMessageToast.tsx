@@ -27,7 +27,7 @@ export const InviteMessageToast: FC = () => {
   const invite = useInvite(inviteId);
 
   const tokens = useMemo(
-    () => invite?.project?.tokenGates.map((t) => t.token) ?? [],
+    () => invite?.project?.tokenGates?.map((t) => t.token) ?? [],
     [invite?.project?.tokenGates]
   );
   const isTokenGated = !!tokens.length;
