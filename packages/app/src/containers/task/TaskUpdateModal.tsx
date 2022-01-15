@@ -20,15 +20,13 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
   const task = useTask(taskId, "cache-and-network");
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
-    async (values: TaskFormValues) =>
-      updateTask(
-        {
-          id: task!.id,
-          ...values,
-          reward: !!values.reward ? toTaskReward(values.reward) : values.reward,
-        },
-        task!
-      ),
+    async ({ subtasks, ...values }: TaskFormValues) => {
+      const reward = !!values.reward
+        ? toTaskReward(values.reward)
+        : values.reward;
+      if (!reward && _.isEmpty(values)) return;
+      await updateTask({ id: task!.id, ...values, reward }, task!);
+    },
     [updateTask, task]
   );
 
@@ -37,14 +35,20 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
     () => ({
       id: taskId,
       name: task?.name ?? "",
-      description: task?.description ?? "",
+      description: task?.description ?? undefined,
       storyPoints: task?.storyPoints ?? undefined,
-      submission: task?.submission ?? "",
+      submission: task?.submission ?? undefined,
       tagIds,
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,
       status: task?.status!,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
+      subtasks: task?.subtasks.map((s) => ({
+        id: s.id,
+        assigneeIds: s.assignees.map((a) => a.id),
+        name: s.name,
+        status: s.status,
+      })),
     }),
     [task, taskId, tagIds]
   );

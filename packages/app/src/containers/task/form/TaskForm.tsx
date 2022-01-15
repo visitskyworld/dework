@@ -39,12 +39,13 @@ import { SubtaskInput } from "./SubtaskInput";
 
 export interface TaskFormValues {
   name: string;
-  description: string;
-  submission: string;
+  description?: string;
+  submission?: string;
   projectId?: string;
+  parentTaskId?: string;
   status: TaskStatus;
   storyPoints?: number;
-  tagIds: string[];
+  tagIds?: string[];
   assigneeIds: string[];
   ownerId?: string | null;
   reward?: TaskRewardFormValues;
@@ -113,6 +114,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
+      console.log({ changed });
       if ("ownerId" in changed && changed.ownerId === undefined) {
         values.ownerId = null;
       }
@@ -185,7 +187,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {/* {!!task && ( */}
           <Form.Item name="subtasks" label="Subtasks">
-            <SubtaskInput projectId={projectId} />
+            <SubtaskInput projectId={projectId} taskId={task?.id} />
           </Form.Item>
           {/* )} */}
 

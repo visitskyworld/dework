@@ -35,7 +35,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   const createTask = useCreateTask();
   const createTaskReaction = useCreateTaskReaction();
   const handleSubmit = useCallback(
-    async (values: TaskFormValues) => {
+    async ({ subtasks, ...values }: TaskFormValues) => {
       const task = await createTask(values, projectId);
       if (values.status === TaskStatus.BACKLOG) {
         await createTaskReaction({
@@ -43,6 +43,22 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
           reaction: ":arrow_up_small:",
         });
       }
+
+      if (!!subtasks?.length) {
+        for (const subtask of subtasks) {
+          await createTask(
+            {
+              parentTaskId: task.id,
+              name: subtask.name,
+              assigneeIds: subtask.assigneeIds,
+              status: subtask.status,
+              tagIds: [],
+            },
+            task.projectId
+          );
+        }
+      }
+
       await onDone(task);
     },
     [createTask, onDone, createTaskReaction, projectId]

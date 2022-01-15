@@ -8505,7 +8505,7 @@ export interface CreateTaskInput {
   name: string;
   description?: string | null;
   projectId: Scalar.UUID;
-  parentTaskId: Scalar.UUID;
+  parentTaskId?: Scalar.UUID | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerId?: Scalar.UUID | null;
@@ -8636,6 +8636,7 @@ export interface UpdateTaskInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
+  parentTaskId?: Scalar.UUID | null;
   submission?: string | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;

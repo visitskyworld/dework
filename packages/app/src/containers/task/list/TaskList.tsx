@@ -1,26 +1,26 @@
 import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
-import { useToggle } from "@dewo/app/util/hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Avatar, Input, Row, Table, Tooltip, Typography } from "antd";
-import React, {
-  CSSProperties,
-  FC,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
-import { TaskFormValues } from "../../task/form/TaskForm";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Input,
+  Menu,
+  Popconfirm,
+  Row,
+  Table,
+  Tooltip,
+  Typography,
+} from "antd";
+import React, { CSSProperties, FC, useMemo } from "react";
 import { useTaskFormUserOptions } from "../../task/hooks";
 import { UserSelectOption } from "../form/UserSelectOption";
 import { STATUS_LABEL } from "../../task/board/util";
-import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
 import { TaskStatusAvatar } from "../TaskStatusAvatar";
-import { eatClick } from "@dewo/app/util/eatClick";
 
 export interface TaskListRowData {
   id?: string;
@@ -28,10 +28,6 @@ export interface TaskListRowData {
   status: TaskStatus;
   // assignees?: User[];
   assigneeIds?: string[];
-}
-
-interface FormValues {
-  rows: TaskListRowData[];
 }
 
 interface Props {
@@ -45,6 +41,7 @@ interface Props {
     prevValue: TaskListRowData,
     index: number
   ): void;
+  onDelete(value: TaskListRowData, index: number): void;
 }
 
 const statuses = [
@@ -58,21 +55,14 @@ const statuses = [
 // Drag and drop table: https://codesandbox.io/s/react-beautiful-dnd-examples-multi-drag-table-with-antd-gptbl
 export const TaskList: FC<Props> = ({
   rows,
-  tags,
+  // tags,
   projectId,
   style,
   onChange,
+  onDelete,
   // onAddTask,
 }) => {
   const navigateToTask = useNavigateToTaskFn();
-
-  const status = TaskStatus.TODO;
-  const initialValues = useMemo<Partial<TaskFormValues>>(
-    () => ({ status }),
-    [status]
-  );
-  const createTaskToggle = useToggle();
-  const canCreateTask = usePermission("create", { __typename: "Task", status });
 
   // const rows = useMemo<TaskListRowData[]>(() => {
   //   const toRowData = (task: Task) => ({
@@ -85,35 +75,10 @@ export const TaskList: FC<Props> = ({
 
   const editing = true;
 
-  const [form] = useForm<FormValues>();
-  const [values, setValues] = useState<FormValues>({ rows });
-  const handleChange = useCallback(
-    (changed: Partial<FormValues>, newValues: FormValues) => {
-      console.log("handle cheng", changed);
-      if (!!changed.rows) {
-        newValues.rows[0] = { ...values.rows[0], ...changed.rows[0] };
-      }
-      console.log({ changed, newValues });
-      setValues(newValues);
-      form.setFieldsValue(newValues);
-    },
-    [form, values]
-  );
-
   const users = useTaskFormUserOptions(projectId!, []); // task.assignees);
   const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
 
-  const handleNameSubmit = useCallback(
-    (e) => {
-      eatClick(e);
-      form.submit();
-    },
-    [form]
-  );
-
-  console.log("rendar", rows);
-
-  const adding = useToggle();
+  // const adding = useToggle();
   // const handleAddTask = useCallback<KeyboardEventHandler<HTMLInputElement>>(
   //   async (event) => {
   //     try {
@@ -152,7 +117,7 @@ export const TaskList: FC<Props> = ({
       pagination={{ hideOnSinglePage: true }}
       // components={{ body: { cell: CustomCell } }}
       onRow={(t) => ({
-        onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
+        // onClick: !!t.id ? () => navigateToTask(t.id!) : undefined,
       })}
       // footer={() => (
       //   <Row align="middle" style={{ gap: 16 }}>
@@ -332,6 +297,41 @@ export const TaskList: FC<Props> = ({
         //   render: (_, task) =>
         //     !!task.id && <TaskActionButton task={task as any} />,
         // },
+        {
+          key: "actions",
+          width: 1,
+          render: (_, row, index) => (
+            <Dropdown
+              key="avatar"
+              placement="bottomRight"
+              trigger={["click"]}
+              overlay={
+                <Menu>
+                  <Popconfirm
+                    icon={null}
+                    title="Delete this subtask?"
+                    okType="danger"
+                    okText="Delete"
+                    onConfirm={() => onDelete(row, index)}
+                  >
+                    <Menu.Item
+                      icon={<Icons.DeleteOutlined />}
+                      danger
+                      children="Delete"
+                    />
+                  </Popconfirm>
+                </Menu>
+              }
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={<Icons.MoreOutlined />}
+                style={{ margin: -8 }}
+              />
+            </Dropdown>
+          ),
+        },
       ]}
     />
     // </Form>
