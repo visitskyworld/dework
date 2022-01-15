@@ -20,11 +20,7 @@ import {
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
-import {
-  DiscordIntegrationFormFields,
-  FormValues as DiscordFormFields,
-} from "../../integrations/CreateDiscordIntegrationForm";
+import { FormValues as DiscordFormFields } from "../../integrations/CreateDiscordIntegrationForm";
 import { ProjectSettingsFormFields } from "../settings/ProjectSettingsFormFields";
 import {
   GithubIntegrationFormFields,
@@ -32,7 +28,7 @@ import {
 } from "../../integrations/CreateGithubIntegrationForm";
 import _ from "lodash";
 
-interface FormValues
+export interface FormValues
   extends CreateProjectInput,
     Partial<DiscordFormFields>,
     Partial<GithubFormFields> {
@@ -189,23 +185,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           <Input placeholder="Enter a project name..." />
         </Form.Item>
 
-        {!!organization && (
-          <FormSection label="Discord Integration">
-            {hasDiscordIntegration ? (
-              <DiscordIntegrationFormFields
-                values={values}
-                channels={discordChannels.value}
-                threads={discordThreads.value}
-                onRefetchChannels={discordChannels.refetch}
-              />
-            ) : (
-              <ConnectOrganizationToDiscordButton
-                organizationId={organization.id}
-              />
-            )}
-          </FormSection>
-        )}
-
         <Form.Item label="Project Type" name="type">
           <Radio.Group>
             <Radio.Button value="non-dev">Non-dev</Radio.Button>
@@ -232,7 +211,13 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields />
+        <ProjectSettingsFormFields
+          organization={organization}
+          values={values}
+          discordChannels={discordChannels}
+          discordThreads={discordThreads}
+          hasDiscordIntegration={hasDiscordIntegration}
+        />
 
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />

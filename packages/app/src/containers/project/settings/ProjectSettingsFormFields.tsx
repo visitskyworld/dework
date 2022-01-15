@@ -2,10 +2,32 @@ import React, { FC } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Checkbox, Divider, Form, Radio } from "antd";
 import * as Icons from "@ant-design/icons";
-import { ProjectVisibility } from "@dewo/app/graphql/types";
+import {
+  OrganizationDetails,
+  ProjectVisibility,
+} from "@dewo/app/graphql/types";
+import { FormSection } from "@dewo/app/components/FormSection";
+import { DiscordIntegrationFormFields } from "../../integrations/CreateDiscordIntegrationForm";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { FormValues } from "../create/ProjectCreateForm";
+import { OrganizationDiscordChannels } from "../../organization/hooks";
 
-export const ProjectSettingsFormFields: FC = () => {
+interface Props {
+  organization: OrganizationDetails | undefined;
+  discordChannels: OrganizationDiscordChannels;
+  discordThreads: OrganizationDiscordChannels;
+  hasDiscordIntegration: boolean;
+  values: Partial<FormValues>;
+}
+export const ProjectSettingsFormFields: FC<Props> = ({
+  organization,
+  discordChannels,
+  discordThreads,
+  hasDiscordIntegration,
+  values,
+}) => {
   const advancedOptions = useToggle(true);
+
   return (
     <>
       <Form.Item
@@ -30,7 +52,26 @@ export const ProjectSettingsFormFields: FC = () => {
           {advancedOptions.isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
         </Button>
       </Divider>
-
+      {advancedOptions.isOn && (
+        <>
+          {!!organization && (
+            <FormSection label="Discord Integration">
+              {hasDiscordIntegration ? (
+                <DiscordIntegrationFormFields
+                  values={values}
+                  channels={discordChannels.value}
+                  threads={discordThreads.value}
+                  onRefetchChannels={discordChannels.refetch}
+                />
+              ) : (
+                <ConnectOrganizationToDiscordButton
+                  organizationId={organization.id}
+                />
+              )}
+            </FormSection>
+          )}
+        </>
+      )}
       <Form.Item hidden={!advancedOptions.isOn}>
         <Form.Item
           name={["options", "showBacklogColumn"]}
