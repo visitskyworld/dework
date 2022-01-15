@@ -7,7 +7,6 @@ import { LoginButton } from "../auth/LoginButton";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";
-import { ApolloError } from "@apollo/client";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
@@ -49,20 +48,10 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
           const project = await joinProjectWithToken(projectId);
           message.success(`Joined ${project.name} using ${token.symbol}`);
         }
-      } catch (error) {
-        if (error instanceof ApolloError) {
-          const reason =
-            error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
-          if (reason === "MISSING_TOKENS") {
-            message.error(
-              `You don't have ${token.symbol} in any connected wallet`
-            );
-          }
-        }
+      } finally {
+        await refetch();
+        modalVisible.toggleOff();
       }
-
-      await refetch();
-      modalVisible.toggleOff();
     },
     [tokenGates, refetch, joinProjectWithToken, modalVisible]
   );

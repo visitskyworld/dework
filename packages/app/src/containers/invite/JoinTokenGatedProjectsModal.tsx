@@ -1,9 +1,10 @@
-import { Button, Modal, Space, Typography } from "antd";
+import { Button, message, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback, useState } from "react";
 import { useCurrentUser } from "@dewo/app/util/hooks";
 import { AddPaymentMethodButton } from "../payment/AddPaymentMethodButton";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
+import { ApolloError } from "@apollo/client";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];
@@ -26,6 +27,16 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
       setLoading(true);
       try {
         await onVerify(token);
+      } catch (error) {
+        if (error instanceof ApolloError) {
+          const reason =
+            error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
+          if (reason === "MISSING_TOKENS") {
+            message.error(
+              `You don't have ${token.symbol} in any connected wallet`
+            );
+          }
+        }
       } finally {
         setLoading(false);
       }
@@ -50,9 +61,10 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
           return (
             <Space key={token.id} direction="vertical">
               <Typography.Text>
-                You need {token.symbol} on {token.network.name} in your wallet
-                to join. Verify that you have the token or connect a wallet that
-                has it.
+                You need{" "}
+                <Typography.Text strong>{token.symbol}</Typography.Text> on{" "}
+                {token.network.name} in your wallet to join. Verify that you
+                have the token or connect a wallet that has it.
               </Typography.Text>
               {pms.map((pm) => (
                 <PaymentMethodSummary

@@ -16,7 +16,6 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
 import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
-import { ApolloError } from "@apollo/client";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -39,33 +38,19 @@ export const InviteMessageToast: FC = () => {
 
   const acceptInvite = useAcceptInvite();
   const handleAcceptInvite = useCallback(async () => {
-    try {
-      await acceptInvite(inviteId!);
-      message.destroy();
-      message.success({
-        content: "Invite accepted!",
-        type: "success",
-        style: messageBottomStyle,
-      });
-      router.push({
-        pathname: router.pathname,
-        query: _.omit(router.query, ["inviteId"]),
-      });
-      tokenGatedModalVisible.toggleOff();
-    } catch (error) {
-      if (error instanceof ApolloError) {
-        const reason =
-          error.graphQLErrors[0]?.extensions?.exception?.response?.reason;
-        if (reason === "MISSING_TOKENS") {
-          message.error(
-            `You don't have ${tokens
-              .map((t) => t.symbol)
-              .join(", ")} in any connected wallet`
-          );
-        }
-      }
-    }
-  }, [acceptInvite, tokenGatedModalVisible, inviteId, tokens, router]);
+    await acceptInvite(inviteId!);
+    message.destroy();
+    message.success({
+      content: "Invite accepted!",
+      type: "success",
+      style: messageBottomStyle,
+    });
+    router.push({
+      pathname: router.pathname,
+      query: _.omit(router.query, ["inviteId"]),
+    });
+    tokenGatedModalVisible.toggleOff();
+  }, [acceptInvite, tokenGatedModalVisible, inviteId, router]);
 
   const inviteMessage = useMemo(() => {
     if (!invite) return undefined;

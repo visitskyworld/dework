@@ -122,7 +122,11 @@ export const PaymentTokenForm: FC<FormProps> = ({
               loading={!networks}
             >
               {networks?.map((network) => (
-                <Select.Option value={network.id} label={network.name}>
+                <Select.Option
+                  key={network.id}
+                  value={network.id}
+                  label={network.name}
+                >
                   {network.name}
                 </Select.Option>
               ))}

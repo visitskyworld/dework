@@ -48,7 +48,35 @@ export class DiscordIntegrationService {
     if (!organizationIntegration) return;
 
     try {
-      this.logger.log(`Handle task event: ${JSON.stringify(event)}`);
+      this.logger.log(
+        `Handle task event: ${JSON.stringify({
+          type: event.constructor.name,
+          ...event,
+        })}`
+      );
+      this.logger.log(
+        `Discord integration: ${JSON.stringify({
+          orgIntId: organizationIntegration.id,
+          orgConfig: organizationIntegration.config,
+          projConfig: integration.config,
+        })}`
+      );
+      if (event instanceof TaskUpdatedEvent) {
+        const changed = _.reduce<Task, string[]>(
+          event.task,
+          (result, value, key) =>
+            _.isEqual(value, event.prevTask[key as keyof Task])
+              ? result
+              : result.concat(key),
+          []
+        );
+        this.logger.log(
+          `Changed fields: ${JSON.stringify({
+            fields: changed,
+            values: _.pick(event.task, changed),
+          })}`
+        );
+      }
 
       const guild = await this.discord.client.guilds.fetch(
         organizationIntegration.config.guildId
@@ -156,6 +184,10 @@ export class DiscordIntegrationService {
           .map((u) => u.id)
           .sort();
         if (!_.isEqual(assigneeIds, prevAssigneeIds)) {
+          await this.postAssigneesChange(event.task, channelToPostTo);
+        }
+      } else if (event instanceof TaskCreatedEvent) {
+        if (!!event.task.assignees.length) {
           await this.postAssigneesChange(event.task, channelToPostTo);
         }
       }
