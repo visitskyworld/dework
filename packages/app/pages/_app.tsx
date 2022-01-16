@@ -35,6 +35,7 @@ import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
+import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -138,6 +139,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
             <SidebarProvider>
               <Component {...pageProps} />
               <InviteMessageToast />
+              <FeedbackButton />
               <SlugReplacer />
               <TaskUpdateModalListener />
             </SidebarProvider>
