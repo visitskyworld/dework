@@ -31,6 +31,7 @@ import {
 } from "../../integrations/CreateGithubIntegrationForm";
 import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { useToggle } from "@dewo/app/util/hooks";
 
 export interface FormValues
   extends CreateProjectInput,
@@ -54,6 +55,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
+  const { isOn, toggle } = useToggle(true);
   const { organization } = useOrganization(organizationId);
   const router = useRouter();
 
@@ -215,22 +217,26 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields />
-        {!!organization && (
-          <FormSection label="Discord Integration">
-            {hasDiscordIntegration ? (
-              <DiscordIntegrationFormFields
-                values={values}
-                channels={discordChannels.value}
-                threads={discordThreads.value}
-                onRefetchChannels={discordChannels.refetch}
-              />
-            ) : (
-              <ConnectOrganizationToDiscordButton
-                organizationId={organization.id}
-              />
+        <ProjectSettingsFormFields isOn={isOn} toggle={toggle} />
+        {isOn && (
+          <>
+            {!!organization && (
+              <FormSection label="Discord Integration">
+                {hasDiscordIntegration ? (
+                  <DiscordIntegrationFormFields
+                    values={values}
+                    channels={discordChannels.value}
+                    threads={discordThreads.value}
+                    onRefetchChannels={discordChannels.refetch}
+                  />
+                ) : (
+                  <ConnectOrganizationToDiscordButton
+                    organizationId={organization.id}
+                  />
+                )}
+              </FormSection>
             )}
-          </FormSection>
+          </>
         )}
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />

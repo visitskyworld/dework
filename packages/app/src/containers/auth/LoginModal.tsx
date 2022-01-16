@@ -60,6 +60,14 @@ export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         <ThreepidAuthButton
+          source={ThreepidSource.discord}
+          children={`${getThreepidName[ThreepidSource.discord]} (recommended)`}
+          size="large"
+          type="ghost"
+          block
+          state={state}
+        />
+        <ThreepidAuthButton
           loading={authingWithMetamask.isOn}
           source={ThreepidSource.metamask}
           children={getThreepidName[ThreepidSource.metamask]}
@@ -70,14 +78,7 @@ export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
           href={undefined}
           onClick={authWithMetamask}
         />
-        <ThreepidAuthButton
-          source={ThreepidSource.discord}
-          children={getThreepidName[ThreepidSource.discord]}
-          size="large"
-          type="ghost"
-          block
-          state={state}
-        />
+
         <ThreepidAuthButton
           source={ThreepidSource.github}
           children={getThreepidName[ThreepidSource.github]}

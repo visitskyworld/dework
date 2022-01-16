@@ -21,12 +21,14 @@ import {
 import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
 import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
+  const { isOn, toggle } = useToggle(true);
   const updateProject = useUpdateProject();
   const handleUpdateProject = useCallback(
     (changed: Partial<UpdateProjectInput>) =>
@@ -111,24 +113,29 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           initialValues={initialValues}
           onValuesChange={handleUpdateProject}
         >
-          <ProjectSettingsFormFields />
-          <ProjectTokenGatingInput
-            value={tokenGate?.token ?? undefined}
-            onChange={handleChangeTokenGating}
-          />
-          <ProjectSettingsDangerZone project={project} />
-          <Form.Item name="id" hidden>
-            <Input />
-          </Form.Item>
+          <ProjectSettingsFormFields isOn={isOn} toggle={toggle} />
+          {isOn && (
+            <>
+              <ProjectTokenGatingInput
+                value={tokenGate?.token ?? undefined}
+                onChange={handleChangeTokenGating}
+              />
+              <ProjectSettingsDangerZone project={project} />
+              <Form.Item name="id" hidden>
+                <Input />
+              </Form.Item>
+            </>
+          )}
         </Form>
-
-        <FormSection label="Members">
-          <ProjectMemberList projectId={project.id} />
-          <ProjectInviteButton
-            projectId={project.id}
-            style={{ marginTop: 8 }}
-          />
-        </FormSection>
+        {isOn && (
+          <FormSection label="Members">
+            <ProjectMemberList projectId={project.id} />
+            <ProjectInviteButton
+              projectId={project.id}
+              style={{ marginTop: 8 }}
+            />
+          </FormSection>
+        )}
       </Space>
     </>
   );
