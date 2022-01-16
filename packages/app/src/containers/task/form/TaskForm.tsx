@@ -380,9 +380,18 @@ export const TaskForm: FC<TaskFormProps> = ({
                     type="text"
                     size="small"
                     className="dewo-btn-highlight"
-                    icon={<ProjectAvatar size="small" project={task.project} />}
+                    icon={
+                      <ProjectAvatar
+                        size="small"
+                        style={{ flexShrink: 0 }}
+                        project={task.project}
+                      />
+                    }
                   >
-                    <Typography.Text style={{ marginLeft: 8 }}>
+                    <Typography.Text
+                      style={{ marginLeft: 8, width: "100%" }}
+                      ellipsis
+                    >
                       {task.project.name}
                     </Typography.Text>
                   </Button>
@@ -396,10 +405,19 @@ export const TaskForm: FC<TaskFormProps> = ({
                 type="text"
                 size="small"
                 className="dewo-btn-highlight"
-                icon={<Avatar size="small" icon={<Icons.CheckOutlined />} />}
+                icon={
+                  <Avatar
+                    size="small"
+                    style={{ flexShrink: 0 }}
+                    icon={<Icons.CheckOutlined />}
+                  />
+                }
                 onClick={() => navigateToTask(task.parentTask.id)}
               >
-                <Typography.Text style={{ marginLeft: 8 }}>
+                <Typography.Text
+                  style={{ marginLeft: 8, width: "100%" }}
+                  ellipsis
+                >
                   {task.parentTask.name}
                 </Typography.Text>
               </Button>
