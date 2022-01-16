@@ -47,7 +47,7 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
     !!task.assignees.length &&
     !!task.reward &&
     !task.reward.payment &&
-    canUpdateTask &&
+    !!canUpdateTask &&
     hasPaymentMethod
   );
 }

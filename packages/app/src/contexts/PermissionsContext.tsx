@@ -71,7 +71,7 @@ export function usePermission(
   action: AbilityAction,
   subject: AbilitySubject,
   field?: string
-): boolean {
+): boolean | undefined {
   const fn = usePermissionFn();
   return useMemo(
     () => fn(action, subject, field),
@@ -83,11 +83,12 @@ export function usePermissionFn(): (
   action: AbilityAction,
   subject: AbilitySubject,
   field?: string
-) => boolean {
+) => boolean | undefined {
   const ability = useContext(PermissionsContext);
   return useCallback(
     (action, subject, field) => {
-      if (!ability) return false;
+      if (!ability) return undefined;
+      if (ability.rules.length === 0) return undefined;
 
       // Inspired by ability.can
       // https://github.com/stalniy/casl/blob/7980e5aa95b88f6903015c58424b37e516de248a/packages/casl-ability/src/PureAbility.ts#L18-L35

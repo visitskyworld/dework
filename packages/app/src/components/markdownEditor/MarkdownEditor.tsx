@@ -23,7 +23,7 @@ interface MarkdownEditorProps {
   initialValue?: string | undefined;
   placeholder?: string;
   buttonText?: string;
-  editable: boolean;
+  editable?: boolean;
   mode: "create" | "update";
   autoSave?: boolean;
   onChange?(description: string | undefined): void;

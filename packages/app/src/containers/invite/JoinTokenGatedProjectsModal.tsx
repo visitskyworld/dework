@@ -44,6 +44,8 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
     [onVerify]
   );
 
+  console.log("tokens...", tokens);
+
   if (!user) return null;
   return (
     <Modal

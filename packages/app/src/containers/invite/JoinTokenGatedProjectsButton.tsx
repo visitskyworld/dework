@@ -69,7 +69,7 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   }, [modalVisible, editingProfile]);
 
   const canAccessAllProjects = usePermission("update", "Project");
-  if (!tokenGates?.length || canAccessAllProjects) return null;
+  if (!tokenGates?.length || canAccessAllProjects !== false) return null;
 
   const tokensString = tokens.map((t) => t.symbol).join(", ");
 
