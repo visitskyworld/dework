@@ -1,3 +1,4 @@
+import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
@@ -118,6 +119,28 @@ describe("TaskResolver", () => {
           createTask(second.project.id, second.user)
         ).resolves.toEqual(expect.objectContaining({ number: 1 }));
       });
+
+      it("should add assignee as project contributor", async () => {
+        const { project, user } = await fixtures.createUserOrgProject();
+        const contributor = await fixtures.createUser();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.create({
+            projectId: project.id,
+            name: faker.lorem.words(5),
+            status: TaskStatus.TODO,
+            assigneeIds: [contributor.id],
+          }),
+        });
+        expect(response.body.data?.task.project.members).toContainEqual(
+          expect.objectContaining({
+            userId: contributor.id,
+            role: ProjectRole.CONTRIBUTOR,
+          })
+        );
+      });
     });
 
     describe("updateTask", () => {
@@ -203,6 +226,27 @@ describe("TaskResolver", () => {
         expect(response.status).toEqual(HttpStatus.OK);
         const updatedTask = response.body.data?.task;
         expect(updatedTask.name).toEqual(task.name);
+      });
+
+      it("should add assignee as project contributor", async () => {
+        const { project, user } = await fixtures.createUserOrgProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+        const contributor = await fixtures.createUser();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.update({
+            id: task.id,
+            assigneeIds: [contributor.id],
+          }),
+        });
+        expect(response.body.data?.task.project.members).toContainEqual(
+          expect.objectContaining({
+            userId: contributor.id,
+            role: ProjectRole.CONTRIBUTOR,
+          })
+        );
       });
     });
 

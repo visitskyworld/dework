@@ -11,7 +11,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { DeepPartial, In, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { UserService } from "../user/user.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
@@ -79,13 +79,15 @@ export class ProjectService {
   }
 
   public async upsertMember(
-    data: UpdateProjectMemberInput
+    data: UpdateProjectMemberInput,
+    updateIfExists: boolean = true
   ): Promise<ProjectMember> {
     const member = await this.findMember({
       projectId: data.projectId,
       userId: data.userId,
     });
     if (!!member) {
+      if (!updateIfExists) return member;
       await this.projectMemberRepo.update({ id: member.id }, data);
       return this.projectMemberRepo.findOne({
         id: member.id,
@@ -101,6 +103,27 @@ export class ProjectService {
         id: created.id,
       }) as Promise<ProjectMember>;
     }
+  }
+
+  public async addMemberIfNotExists(projectId: string, userIds: string[]) {
+    if (!userIds.length) return;
+
+    const members = await this.projectMemberRepo.find({
+      projectId,
+      userId: In(userIds),
+    });
+
+    const nonmemberIds = userIds.filter(
+      (id) => !members.some((m) => m.userId === id)
+    );
+
+    await this.projectMemberRepo.save(
+      nonmemberIds.map((userId) => ({
+        projectId,
+        userId,
+        role: ProjectRole.CONTRIBUTOR,
+      }))
+    );
   }
 
   public async removeMember(projectId: string, userId: string): Promise<void> {

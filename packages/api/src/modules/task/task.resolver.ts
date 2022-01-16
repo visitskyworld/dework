@@ -33,12 +33,14 @@ import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { CustomPermissionActions } from "../auth/permissions";
+import { ProjectService } from "../project/project.service";
 
 @Injectable()
 @Resolver(() => Task)
 export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
+    private readonly projectService: ProjectService,
     private readonly permalinkService: PermalinkService
   ) {}
 
@@ -85,7 +87,7 @@ export class TaskResolver {
     @Context("user") user: User,
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
-    return this.taskService.create({
+    const task = await this.taskService.create({
       tags: !!input.tagIds ? (input.tagIds.map((id) => ({ id })) as any) : [],
       assignees: !!input.assigneeIds
         ? (input.assigneeIds.map((id) => ({ id })) as any)
@@ -93,6 +95,15 @@ export class TaskResolver {
       creatorId: user.id,
       ...input,
     });
+
+    if (!!input.assigneeIds?.length) {
+      await this.projectService.addMemberIfNotExists(
+        input.projectId,
+        input.assigneeIds
+      );
+    }
+
+    return task;
   }
 
   @Mutation(() => TaskApplication)
@@ -140,6 +151,13 @@ export class TaskResolver {
         ? (input.assigneeIds.map((id) => ({ id })) as any)
         : undefined,
     });
+
+    if (!!input.assigneeIds?.length) {
+      await this.projectService.addMemberIfNotExists(
+        task.projectId,
+        input.assigneeIds
+      );
+    }
 
     return task;
   }
