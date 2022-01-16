@@ -389,7 +389,11 @@ export const TaskForm: FC<TaskFormProps> = ({
                     }
                   >
                     <Typography.Text
-                      style={{ marginLeft: 8, width: "100%" }}
+                      style={{
+                        marginLeft: 8,
+                        width: "100%",
+                        textAlign: "left",
+                      }}
                       ellipsis
                     >
                       {task.project.name}
@@ -415,7 +419,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 onClick={() => navigateToTask(task.parentTask.id)}
               >
                 <Typography.Text
-                  style={{ marginLeft: 8, width: "100%" }}
+                  style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
                   ellipsis
                 >
                   {task.parentTask.name}
