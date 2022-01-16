@@ -9,8 +9,8 @@ export const ProductSection: FC = () => {
       <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
         <Space direction="vertical" size="large">
           <Typography.Title level={1}>
-            A web3-native Asana with token payments, credentialing, bounties and
-            more
+            A web3-native Trello with token payments, credentialing, bounties
+            and more
           </Typography.Title>
           <Row>
             <Row style={{ width: 100 }}>
