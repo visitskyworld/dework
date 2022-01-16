@@ -404,7 +404,13 @@ export class DiscordIntegrationService {
     if (channel.isThread() && channel.archived) {
       await channel.setArchived(false);
     }
-    await channel.send(message);
+    const sentMessage = await channel.send(message);
+    this.logger.debug(
+      `Sent message to channel: ${JSON.stringify({
+        channelId: channel.id,
+        sentMessage,
+      })}`
+    );
   }
 
   private async getExistingDiscordThread(
