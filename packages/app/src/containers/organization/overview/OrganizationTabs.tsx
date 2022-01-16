@@ -82,12 +82,12 @@ export const OrganizationTabs: FC<Props> = ({
           </Col>
           <Col xs={24} md={6}>
             <Typography.Title level={5}>About</Typography.Title>
-            <Typography.Paragraph type="secondary">
+            <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
               {organization?.description || "No description..."}
             </Typography.Paragraph>
 
             {!!organization?.details && (
-              <Row style={{ gap: 8, marginBottom: 8 }}>
+              <Row style={{ gap: 8, marginBottom: 16 }}>
                 {organization.details.map((detail) => (
                   <EntityDetailAvatar entityDetail={detail} key={detail.id} />
                 ))}
@@ -95,12 +95,12 @@ export const OrganizationTabs: FC<Props> = ({
             )}
 
             {!!organization?.tags.length && (
-              <Row gutter={8} style={{ marginBottom: -4 }}>
+              <Row style={{ gap: 8 }}>
                 {organization?.tags.map((tag) => (
                   <Tag
                     key={tag.id}
                     color={tag.color}
-                    style={{ marginBottom: 4 }}
+                    style={{ margin: 0, marginBottom: 8 }}
                   >
                     {tag.label}
                   </Tag>
