@@ -2,12 +2,12 @@ import React, { FC } from "react";
 import { Button, Checkbox, Divider, Form, Radio } from "antd";
 import * as Icons from "@ant-design/icons";
 import { ProjectVisibility } from "@dewo/app/graphql/types";
+import { UseToggleHook } from "@dewo/app/util/hooks";
 
 interface Props {
-  isOn: boolean;
-  toggle(): void;
+  toggle: UseToggleHook;
 }
-export const ProjectSettingsFormFields: FC<Props> = ({ isOn, toggle }) => {
+export const ProjectSettingsFormFields: FC<Props> = ({ toggle }) => {
   return (
     <>
       <Form.Item
@@ -26,13 +26,13 @@ export const ProjectSettingsFormFields: FC<Props> = ({ isOn, toggle }) => {
           type="text"
           style={{ padding: "0 8px", height: "unset" }}
           className="text-secondary"
-          onClick={toggle}
+          onClick={toggle.toggle}
         >
           Advanced
-          {isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
+          {toggle.isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
         </Button>
       </Divider>
-      <Form.Item hidden={!isOn}>
+      <Form.Item hidden={!toggle.isOn}>
         <Form.Item
           name={["options", "showBacklogColumn"]}
           valuePropName="checked"

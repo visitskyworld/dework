@@ -55,7 +55,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   organizationId,
   onCreated,
 }) => {
-  const { isOn, toggle } = useToggle(true);
+  const advancedSection = useToggle(true);
   const { organization } = useOrganization(organizationId);
   const router = useRouter();
 
@@ -217,26 +217,22 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields isOn={isOn} toggle={toggle} />
-        {isOn && (
-          <>
-            {!!organization && (
-              <FormSection label="Discord Integration">
-                {hasDiscordIntegration ? (
-                  <DiscordIntegrationFormFields
-                    values={values}
-                    channels={discordChannels.value}
-                    threads={discordThreads.value}
-                    onRefetchChannels={discordChannels.refetch}
-                  />
-                ) : (
-                  <ConnectOrganizationToDiscordButton
-                    organizationId={organization.id}
-                  />
-                )}
-              </FormSection>
+        <ProjectSettingsFormFields toggle={advancedSection} />
+        {!!organization && advancedSection.isOn && (
+          <FormSection label="Discord Integration">
+            {hasDiscordIntegration ? (
+              <DiscordIntegrationFormFields
+                values={values}
+                channels={discordChannels.value}
+                threads={discordThreads.value}
+                onRefetchChannels={discordChannels.refetch}
+              />
+            ) : (
+              <ConnectOrganizationToDiscordButton
+                organizationId={organization.id}
+              />
             )}
-          </>
+          </FormSection>
         )}
         <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
           <Input />

@@ -28,7 +28,7 @@ interface Props {
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
-  const { isOn, toggle } = useToggle(true);
+  const advancedSection = useToggle(true);
   const updateProject = useUpdateProject();
   const handleUpdateProject = useCallback(
     (changed: Partial<UpdateProjectInput>) =>
@@ -113,8 +113,8 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           initialValues={initialValues}
           onValuesChange={handleUpdateProject}
         >
-          <ProjectSettingsFormFields isOn={isOn} toggle={toggle} />
-          {isOn && (
+          <ProjectSettingsFormFields toggle={advancedSection} />
+          {advancedSection.isOn && (
             <>
               <ProjectTokenGatingInput
                 value={tokenGate?.token ?? undefined}
@@ -127,7 +127,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
             </>
           )}
         </Form>
-        {isOn && (
+        {advancedSection.isOn && (
           <FormSection label="Members">
             <ProjectMemberList projectId={project.id} />
             <ProjectInviteButton
