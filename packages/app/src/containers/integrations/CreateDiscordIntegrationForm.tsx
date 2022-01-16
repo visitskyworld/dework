@@ -185,7 +185,11 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           allowClear
         >
           {channels?.map((channel) => (
-            <Select.Option key={channel.id} value={channel.id}>
+            <Select.Option
+              key={channel.id}
+              value={channel.id}
+              label={channel.name}
+            >
               {`#${channel.name}`}
             </Select.Option>
           ))}
@@ -208,7 +212,11 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           allowClear
         >
           {threads?.map((channel) => (
-            <Select.Option key={channel.id} value={channel.id}>
+            <Select.Option
+              key={channel.id}
+              value={channel.id}
+              label={channel.name}
+            >
               {channel.name}
             </Select.Option>
           ))}
