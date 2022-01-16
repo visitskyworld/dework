@@ -32,9 +32,9 @@ export const SubtaskInput: FC<Props> = ({
   const handleAddTask = useCallback(
     async (e) => {
       eatClick(e);
+      if (!newName) return;
       try {
         adding.toggleOn();
-
         const subtask = !!taskId
           ? await createTask(
               {
