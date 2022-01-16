@@ -6,6 +6,7 @@ import { TaskList, TaskListRow } from "../list/TaskList";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useCreateTask } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { eatClick } from "@dewo/app/util/eatClick";
 
 interface Props {
   projectId: string;
@@ -28,36 +29,40 @@ export const SubtaskInput: FC<Props> = ({
 
   const adding = useToggle();
   const [newName, setNewName] = useState("");
-  const handleAddTask = useCallback(async () => {
-    try {
-      adding.toggleOn();
+  const handleAddTask = useCallback(
+    async (e) => {
+      eatClick(e);
+      try {
+        adding.toggleOn();
 
-      const subtask = !!taskId
-        ? await createTask(
-            {
-              name: newName,
-              parentTaskId: taskId,
-              status: TaskStatus.TODO,
-              assigneeIds: [],
-            },
-            projectId
-          )
-        : undefined;
+        const subtask = !!taskId
+          ? await createTask(
+              {
+                name: newName,
+                parentTaskId: taskId,
+                status: TaskStatus.TODO,
+                assigneeIds: [],
+              },
+              projectId
+            )
+          : undefined;
 
-      onChange?.([
-        ...(value ?? []),
-        {
-          task: subtask,
-          name: newName,
-          assigneeIds: [],
-          status: TaskStatus.TODO,
-        },
-      ]);
-      setNewName("");
-    } finally {
-      adding.toggleOff();
-    }
-  }, [adding, onChange, createTask, taskId, projectId, value, newName]);
+        onChange?.([
+          ...(value ?? []),
+          {
+            task: subtask,
+            name: newName,
+            assigneeIds: [],
+            status: TaskStatus.TODO,
+          },
+        ]);
+        setNewName("");
+      } finally {
+        adding.toggleOff();
+      }
+    },
+    [adding, onChange, createTask, taskId, projectId, value, newName]
+  );
 
   const rows = useMemo(() => value ?? [], [value]);
   const handleChange = useCallback(

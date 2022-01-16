@@ -172,13 +172,13 @@ export class TaskService {
 
     if (!!projectIds) {
       query = query
-        .andWhere("task.projectId IN (:...projectIds)", { projectIds })
-        .andWhere("task.parentTaskId IS NULL");
+        .andWhere("task.parentTaskId IS NULL")
+        .andWhere("task.projectId IN (:...projectIds)", { projectIds });
     }
 
     if (!!organizationIds) {
       query = query
-        .andWhere("taskproject.parentTaskId IS NULL")
+        .andWhere("task.parentTaskId IS NULL")
         .andWhere("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })
