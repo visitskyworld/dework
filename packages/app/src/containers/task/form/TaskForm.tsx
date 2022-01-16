@@ -252,11 +252,13 @@ export const TaskForm: FC<TaskFormProps> = ({
                   initialValue={initialValues?.submission ?? undefined}
                   placeholder={
                     "No submission yet." +
-                    (canChange("submission")
-                      ? " Please submit any files to be reviewed and write a short summary of your completed work."
-                      : "")
+                    (canChange("submission") ? "Submit your work here." : "")
                   }
-                  buttonText="Edit submission"
+                  buttonText={
+                    !!initialValues?.submission
+                      ? "Edit submission"
+                      : "Add submission"
+                  }
                   editable={canChange("submission")}
                   mode={mode}
                 />
