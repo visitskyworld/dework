@@ -65,10 +65,6 @@ export class Task extends Audit {
   @Field(() => Int, { nullable: true })
   public storyPoints?: number;
 
-  @Column({ type: "int", nullable: true })
-  @Field(() => Int, { nullable: true })
-  public dueDate?: Date;
-
   @JoinColumn()
   @ManyToOne(() => Task)
   @Field(() => Task, { nullable: true })

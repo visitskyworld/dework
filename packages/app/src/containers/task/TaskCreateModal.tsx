@@ -44,19 +44,17 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
         });
       }
 
-      if (!!subtasks?.length) {
-        for (const subtask of subtasks) {
-          await createTask(
-            {
-              parentTaskId: task.id,
-              name: subtask.name,
-              assigneeIds: subtask.assigneeIds,
-              status: subtask.status,
-              tagIds: [],
-            },
-            task.projectId
-          );
-        }
+      for (const subtask of subtasks ?? []) {
+        await createTask(
+          {
+            parentTaskId: task.id,
+            name: subtask.name,
+            assigneeIds: subtask.assigneeIds,
+            status: subtask.status,
+            tagIds: [],
+          },
+          task.projectId
+        );
       }
 
       await onDone(task);
