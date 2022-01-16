@@ -199,7 +199,10 @@ export const OrganizationProfileSettings: FC<
             style={{ marginTop: 20, marginBottom: 24 }}
           >
             <Space direction="vertical" style={{ width: "100%" }}>
-              <OrganizationDetailFormItem type={EntityDetailType.discord} />
+              <OrganizationDetailFormItem
+                type={EntityDetailType.discord}
+                placeholder="https://discord.gg/invitecode"
+              />
               <OrganizationDetailFormItem type={EntityDetailType.twitter} />
               <OrganizationDetailFormItem type={EntityDetailType.website} />
             </Space>

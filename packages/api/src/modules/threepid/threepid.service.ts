@@ -97,13 +97,13 @@ export class ThreepidService {
     }
   }
 
-  public getProfileUrl(
+  public getProfileDetail(
     threepid: Threepid<ThreepidSource.github | ThreepidSource.discord>
   ): string {
     switch (threepid.source) {
       case ThreepidSource.discord:
         const discordProfile = this.getDiscordThreePidConfig(threepid).profile;
-        return `https://discord.com/users/${discordProfile.id}`;
+        return `${discordProfile.username}#${discordProfile.discriminator}`;
       case ThreepidSource.github:
         return this.getGithubThreePidConfig(threepid).profile.profileUrl;
     }

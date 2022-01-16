@@ -17,10 +17,15 @@ export const UserDetails: FC<EntityDetailsProps> = ({
   isEditMode,
   userDetails,
 }) => {
-  const locationDetailType = useMemo(() => EntityDetailType.location, []);
+  const locationDetailType = EntityDetailType.location;
   const locationDetail = useMemo(
     () => userDetails.find((detail) => detail.type === locationDetailType),
     [userDetails, locationDetailType]
+  );
+  const discordDetailType = EntityDetailType.discord;
+  const discordDetail = useMemo(
+    () => userDetails.find((detail) => detail.type === discordDetailType),
+    [userDetails, discordDetailType]
   );
 
   if (userDetails.length === 0 && !isEditMode) return null;
@@ -30,10 +35,20 @@ export const UserDetails: FC<EntityDetailsProps> = ({
       <Space direction="vertical" style={{ width: "100%" }}>
         {Object.values(EntityDetailType).map(
           (type) =>
-            type !== locationDetailType && (
+            ![locationDetailType, discordDetailType].includes(type) && (
               <Row align="middle">
                 {iconByType[type]}
-                <Form.Item name={type} style={{ flex: 1, margin: "0 0 0 8px" }}>
+                <Form.Item
+                  name={type}
+                  style={{ flex: 1, margin: "0 0 0 8px" }}
+                  rules={[
+                    {
+                      type: "url",
+                      required: false,
+                      message: "Please enter a valid URL.",
+                    },
+                  ]}
+                >
                   <Input
                     placeholder={placeholderByType[type]}
                     className="dewo-field dewo-field-profile ant-typography-p"
@@ -43,10 +58,31 @@ export const UserDetails: FC<EntityDetailsProps> = ({
             )
         )}
         <Row align="middle">
+          {iconByType[discordDetailType]}
+          <Form.Item
+            name={discordDetailType}
+            style={{ flex: 1, margin: "0 0 0 8px" }}
+            rules={[
+              {
+                type: "regexp",
+                required: false,
+                pattern: /.*#[0-9]{4}/,
+                message: "Please enter a valid Discord username.",
+              },
+            ]}
+          >
+            <Input
+              placeholder={placeholderByType[discordDetailType]}
+              className="dewo-field dewo-field-profile ant-typography-p"
+            />
+          </Form.Item>
+        </Row>
+        <Row align="middle">
           {iconByType[locationDetailType]}
           <Form.Item
             name={locationDetailType}
             style={{ flex: 1, margin: "0 0 0 8px" }}
+            rules={[{ required: false, type: "string" }]}
           >
             <Input
               placeholder={placeholderByType[locationDetailType]}
@@ -61,13 +97,25 @@ export const UserDetails: FC<EntityDetailsProps> = ({
   return (
     <Space>
       {userDetails.map(
-        (detail, index) =>
-          detail.type !== locationDetailType && (
-            <EntityDetailAvatar entityDetail={detail} key={index} />
+        (detail) =>
+          ![locationDetailType, discordDetailType].includes(detail.type) && (
+            <EntityDetailAvatar entityDetail={detail} key={detail.id} />
           )
       )}
+      {discordDetail && (
+        <EntityDetailAvatar
+          key={discordDetail.id}
+          entityDetail={discordDetail}
+          copyToClipboard
+        />
+      )}
       {locationDetail && (
-        <Space align="center" size={4} style={{ marginTop: 2 }}>
+        <Space
+          align="center"
+          size={4}
+          style={{ marginTop: 2 }}
+          key={locationDetail.id}
+        >
           {iconByType[locationDetailType]}
           <Typography.Text
             type="secondary"

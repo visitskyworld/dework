@@ -17,8 +17,6 @@ import {
   JoinProjectWithTokenMutationVariables,
   Project,
 } from "@dewo/app/graphql/types";
-import copy from "copy-to-clipboard";
-import { message } from "antd";
 import { useCallback } from "react";
 
 export function useInvite(inviteId: string | undefined): Invite | undefined {
@@ -108,11 +106,4 @@ export function useJoinProjectWithToken(): (
     },
     [mutation, apolloClient]
   );
-}
-
-export function useCopyToClipboardAndShowToast(): (textToCopy: string) => void {
-  return useCallback((inviteLink: string) => {
-    copy(inviteLink);
-    message.success({ content: "Invite link copied" });
-  }, []);
 }

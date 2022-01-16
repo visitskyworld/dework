@@ -137,18 +137,18 @@ export class UserService {
     }
 
     if (threepid.source === ThreepidSource.discord) {
-      const discordProfileUrl = this.threepidService.getProfileUrl(
+      const discordUsername = this.threepidService.getProfileDetail(
         threepid as Threepid<ThreepidSource.discord>
       );
       await this.setDetail(
         {
           type: EntityDetailType.discord,
-          value: discordProfileUrl,
+          value: discordUsername,
         },
         userId
       );
     } else if (threepid.source === ThreepidSource.github) {
-      const githubProfileUrl = this.threepidService.getProfileUrl(
+      const githubProfileUrl = this.threepidService.getProfileDetail(
         threepid as Threepid<ThreepidSource.github>
       );
       await this.setDetail(

@@ -1,10 +1,8 @@
 import { Button, Dropdown, Menu } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback } from "react";
-import {
-  useCopyToClipboardAndShowToast,
-  useCreateOrganizationInvite,
-} from "./hooks";
+import { useCreateOrganizationInvite } from "./hooks";
+import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useOrganization } from "../organization/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { OrganizationRole } from "@dewo/app/graphql/types";
@@ -25,7 +23,8 @@ export const OrganizationInviteButton: FC<Props> = ({
     role: OrganizationRole.ADMIN,
   });
 
-  const copyToClipboardAndShowToast = useCopyToClipboardAndShowToast();
+  const copyToClipboardAndShowToast =
+    useCopyToClipboardAndShowToast("Invite link copied");
   const createOrganizationInvite = useCreateOrganizationInvite();
   const inviteOrganizationAdmin = useCallback(async () => {
     const inviteId = await createOrganizationInvite({

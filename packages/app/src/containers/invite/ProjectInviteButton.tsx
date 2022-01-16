@@ -1,10 +1,8 @@
 import { Button, Dropdown, Menu } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback, useState } from "react";
-import {
-  useCopyToClipboardAndShowToast,
-  useCreateProjectInvite,
-} from "./hooks";
+import { useCreateProjectInvite } from "./hooks";
+import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole } from "@dewo/app/graphql/types";
@@ -27,7 +25,8 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     role: ProjectRole.CONTRIBUTOR,
   });
 
-  const copyToClipboardAndShowToast = useCopyToClipboardAndShowToast();
+  const copyToClipboardAndShowToast =
+    useCopyToClipboardAndShowToast("Invite link copied");
   const createProjectInvite = useCreateProjectInvite();
   const inviteToProject = useCallback(
     async (role: ProjectRole) => {
