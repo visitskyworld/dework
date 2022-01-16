@@ -305,7 +305,7 @@ export const discordIntegrationChannel = gql`
     id
     name
     integrationId
-    hasAccess
+    permissions
   }
 `;
 

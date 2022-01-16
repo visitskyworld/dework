@@ -87,6 +87,6 @@ export class DiscordService implements OnModuleInit {
       id: channel.id,
       name: channel.name,
       integrationId: integration.id,
-      hasAccess: !!channel.permissionsFor(botUser)?.has("VIEW_CHANNEL"),
+      permissions: channel.permissionsFor(botUser)?.toArray() ?? [],
     });
 }

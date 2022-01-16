@@ -2929,7 +2929,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
-  parentTask: CreateTaskPaymentsMutation_tasks_parentTask;
+  parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   project: CreateTaskPaymentsMutation_tasks_project;
@@ -4882,7 +4882,7 @@ export interface GetTaskQuery_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
-  parentTask: GetTaskQuery_task_parentTask;
+  parentTask: GetTaskQuery_task_parentTask | null;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   project: GetTaskQuery_task_project;
@@ -5549,7 +5549,7 @@ export interface GetOrganizationDiscordChannelsQuery_channels {
   id: string;
   name: string;
   integrationId: Scalar.UUID;
-  hasAccess: boolean;
+  permissions: string[];
 }
 
 export interface GetOrganizationDiscordChannelsQuery {
@@ -5921,7 +5921,7 @@ export interface TaskCreatedSubscription_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
-  parentTask: TaskCreatedSubscription_task_parentTask;
+  parentTask: TaskCreatedSubscription_task_parentTask | null;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   project: TaskCreatedSubscription_task_project;
@@ -6294,7 +6294,7 @@ export interface TaskUpdatedSubscription_task {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
-  parentTask: TaskUpdatedSubscription_task_parentTask;
+  parentTask: TaskUpdatedSubscription_task_parentTask | null;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   project: TaskUpdatedSubscription_task_project;
@@ -7200,7 +7200,7 @@ export interface DiscordIntegrationChannel {
   id: string;
   name: string;
   integrationId: Scalar.UUID;
-  hasAccess: boolean;
+  permissions: string[];
 }
 
 /* tslint:disable */
@@ -7940,7 +7940,7 @@ export interface TaskDetails {
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
-  parentTask: TaskDetails_parentTask;
+  parentTask: TaskDetails_parentTask | null;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
   project: TaskDetails_project;

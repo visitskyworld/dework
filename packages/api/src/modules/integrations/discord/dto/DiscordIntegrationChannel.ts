@@ -12,6 +12,6 @@ export class DiscordIntegrationChannel {
   @Field(() => GraphQLUUID)
   public integrationId!: string;
 
-  @Field()
-  public hasAccess!: boolean;
+  @Field(() => [String])
+  public permissions!: string[];
 }

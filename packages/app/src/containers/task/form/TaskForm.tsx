@@ -418,7 +418,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                     icon={<Icons.CheckOutlined />}
                   />
                 }
-                onClick={() => navigateToTask(task.parentTask.id)}
+                onClick={() => navigateToTask(task.parentTask!.id)}
               >
                 <Typography.Text
                   style={{ marginLeft: 8, width: "100%", textAlign: "left" }}

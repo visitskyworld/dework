@@ -1,11 +1,12 @@
-import React, { FC, useCallback, useState } from "react";
-import { Button, Col, Form, Row, Select, Space, Typography } from "antd";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import { Button, Form, Select, Space, Typography } from "antd";
 import { useOrganizationDiscordChannels } from "../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
+import _ from "lodash";
 
 const DiscordProjectIntegrationFeatureLabel: Record<
   DiscordProjectIntegrationFeature,
@@ -17,6 +18,40 @@ const DiscordProjectIntegrationFeatureLabel: Record<
     "Post all task updates in one specific channel thread",
   [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK]:
     "Create a thread per task (good for discussions)",
+};
+
+const DiscordPermissionToString = {
+  VIEW_CHANNEL: "View Channel",
+  SEND_MESSAGES: "Send Messages",
+  SEND_MESSAGES_IN_THREADS: "Send Messages in Threads",
+  CREATE_PUBLIC_THREADS: "Create Public Threads",
+  EMBED_LINKS: "Embed Links",
+};
+
+type DiscordPermission = keyof typeof DiscordPermissionToString;
+
+const DiscordPermissionsForFeature: Record<
+  DiscordProjectIntegrationFeature,
+  DiscordPermission[]
+> = {
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "EMBED_LINKS",
+  ],
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "SEND_MESSAGES_IN_THREADS",
+    "EMBED_LINKS",
+  ],
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "SEND_MESSAGES_IN_THREADS",
+    "CREATE_PUBLIC_THREADS",
+    "EMBED_LINKS",
+  ],
 };
 
 export interface FormValues {
@@ -58,6 +93,26 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
     values.discordFeature ===
     DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
 
+  const requiredPermissions = useMemo(
+    () =>
+      !!values.discordFeature
+        ? DiscordPermissionsForFeature[values.discordFeature]
+        : [],
+    [values.discordFeature]
+  );
+  const channel = useMemo(
+    () => channels?.find((c) => c.id === values.discordChannelId),
+    [channels, values.discordChannelId]
+  );
+  const missingPermissions = useMemo(
+    () =>
+      _.difference(
+        requiredPermissions,
+        channel?.permissions ?? []
+      ) as DiscordPermission[],
+    [requiredPermissions, channel?.permissions]
+  );
+
   return (
     <>
       <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
@@ -81,84 +136,84 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           ))}
         </Select>
       </Form.Item>
-      <Row gutter={8}>
-        <Col span={showThreadSelect ? 12 : 24}>
-          <Form.Item
-            name="discordChannelId"
-            label="Post In"
-            hidden={!values.discordFeature}
-            rules={[
-              {
-                required: !!values.discordFeature,
-                message: "Please select a Discord channel",
-              },
-              (form) => ({
-                async validator(_rule, value) {
-                  const channel = channels?.find((c) => c.id === value);
-                  if (!channel) return;
-                  if (!channel.hasAccess) throw new Error();
-                },
-                message: (
-                  <Space style={{ marginTop: 2 }}>
-                    Dework bot doesn't have access to this channel. Please add
-                    it as a member to the chosen channel in the channel
-                    settings.
-                    <Button
-                      size="small"
-                      type="ghost"
-                      onClick={async () => {
-                        await onRefetchChannels();
-                        form.setFields([
-                          { name: "discordChannelId", errors: undefined },
-                        ]);
-                      }}
-                    >
-                      Retry
-                    </Button>
-                  </Space>
-                ),
-              }),
-            ]}
-          >
-            <Select
-              loading={!channels}
-              placeholder="Select Discord Channel..."
-              allowClear
-            >
-              {channels?.map((channel) => (
-                <Select.Option key={channel.id} value={channel.id}>
-                  {`#${channel.name}`}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            name="discordThreadId"
-            label="Thread"
-            hidden={!showThreadSelect}
-            rules={[
-              {
-                required: showThreadSelect,
-                message: "Please select a Discord thread",
-              },
-            ]}
-          >
-            <Select
-              loading={!threads}
-              placeholder="Select Discord Thread..."
-              allowClear
-            >
-              {threads?.map((channel) => (
-                <Select.Option key={channel.id} value={channel.id}>
-                  {channel.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
+      <Form.Item
+        name="discordChannelId"
+        label="Post In"
+        hidden={!values.discordFeature}
+        rules={[
+          {
+            required: !!values.discordFeature,
+            message: "Please select a Discord channel",
+          },
+          (form) => ({
+            async validator() {
+              if (!channel) return;
+              if (!!missingPermissions.length) {
+                throw new Error();
+              }
+            },
+            message: (
+              <Space style={{ marginTop: 2 }}>
+                <Typography.Text type="secondary">
+                  Dework bot doesn't have the right permissions for this
+                  channel. Please add it as a member to the chosen channel in
+                  the channel settings and add the following permissions:{" "}
+                  {missingPermissions
+                    .map((p) => DiscordPermissionToString[p])
+                    .join(", ")}
+                </Typography.Text>
+                <Button
+                  size="small"
+                  type="ghost"
+                  onClick={async () => {
+                    await onRefetchChannels();
+                    form.setFields([
+                      { name: "discordChannelId", errors: undefined },
+                    ]);
+                  }}
+                >
+                  Retry
+                </Button>
+              </Space>
+            ),
+          }),
+        ]}
+      >
+        <Select
+          loading={!channels}
+          placeholder="Select Discord Channel..."
+          allowClear
+        >
+          {channels?.map((channel) => (
+            <Select.Option key={channel.id} value={channel.id}>
+              {`#${channel.name}`}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="discordThreadId"
+        label="Thread"
+        hidden={!showThreadSelect}
+        rules={[
+          {
+            required: showThreadSelect,
+            message: "Please select a Discord thread",
+          },
+        ]}
+      >
+        <Select
+          loading={!threads}
+          placeholder="Select Discord Thread..."
+          allowClear
+        >
+          {threads?.map((channel) => (
+            <Select.Option key={channel.id} value={channel.id}>
+              {channel.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
     </>
   );
 };
@@ -174,6 +229,7 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
       if (!!changed.discordChannelId) values.discordThreadId = undefined;
       setValues(values);
       form.setFieldsValue(values);
+      form.validateFields();
     },
     [form]
   );

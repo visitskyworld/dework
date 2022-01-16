@@ -121,13 +121,6 @@ export class DiscordIntegrationService {
       );
 
       if (!channelToPostTo) return;
-      if (channelToPostTo.isThread()) {
-        await this.addTaskUsersToDiscordThread(
-          event.task,
-          channelToPostTo,
-          guild
-        );
-      }
 
       const statusChanged =
         event instanceof TaskCreatedEvent ||
@@ -157,7 +150,6 @@ export class DiscordIntegrationService {
 
             const threepids = await this.findTaskUserThreepids(event.task);
             await channel.send({
-              content: "",
               embeds: [
                 {
                   title: event.task.name,
@@ -191,6 +183,14 @@ export class DiscordIntegrationService {
         if (!!event.task.assignees.length) {
           await this.postAssigneesChange(event.task, channelToPostTo);
         }
+      }
+
+      if (channelToPostTo.isThread()) {
+        await this.addTaskUsersToDiscordThread(
+          event.task,
+          channelToPostTo,
+          guild
+        );
       }
 
       // write about task applicant updates (should that be done elsewhere maybe?)
