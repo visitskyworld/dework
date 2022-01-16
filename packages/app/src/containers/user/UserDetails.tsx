@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { Form, Input, Space, Typography, Row } from "antd";
+import { Form, Input, Space, Row, Typography } from "antd";
 
 import { EntityDetailType, EntityDetail } from "../../graphql/types";
 import {
@@ -95,37 +95,34 @@ export const UserDetails: FC<EntityDetailsProps> = ({
   }
 
   return (
-    <Space>
-      {userDetails.map(
-        (detail) =>
-          ![locationDetailType, discordDetailType].includes(detail.type) && (
-            <EntityDetailAvatar entityDetail={detail} key={detail.id} />
-          )
-      )}
-      {discordDetail && (
-        <EntityDetailAvatar
-          key={discordDetail.id}
-          entityDetail={discordDetail}
-          copyToClipboard
-        />
-      )}
+    <>
+      <Space style={{ display: "flex", justifyContent: "center" }}>
+        {userDetails.map(
+          (detail) =>
+            ![locationDetailType, discordDetailType].includes(detail.type) && (
+              <EntityDetailAvatar entityDetail={detail} key={detail.id} />
+            )
+        )}
+        {discordDetail && (
+          <EntityDetailAvatar
+            key={discordDetail.id}
+            entityDetail={discordDetail}
+            copyToClipboard
+          />
+        )}
+      </Space>
       {locationDetail && (
         <Space
           align="center"
           size={4}
-          style={{ marginTop: 2 }}
-          key={locationDetail.id}
+          style={{ marginTop: 4, display: "flex", justifyContent: "center" }}
         >
           {iconByType[locationDetailType]}
-          <Typography.Text
-            type="secondary"
-            ellipsis
-            style={{ maxWidth: "160px" }}
-          >
+          <Typography.Text type="secondary" ellipsis>
             {locationDetail.value}
           </Typography.Text>
         </Space>
       )}
-    </Space>
+    </>
   );
 };

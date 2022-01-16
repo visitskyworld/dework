@@ -117,7 +117,7 @@ export const InviteMessageToast: FC = () => {
     <>
       <LoginModal
         toggle={authModalVisible}
-        onDone={() => {
+        onAuthedWithMetamask={() => {
           authModalVisible.toggleOff();
           isTokenGated ? showTokenGateModal() : handleAcceptInvite();
         }}

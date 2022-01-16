@@ -3,7 +3,12 @@ import { Button, ButtonProps } from "antd";
 import React, { FC, useCallback } from "react";
 import { LoginModal } from "./LoginModal";
 
-export const LoginButton: FC<ButtonProps> = ({
+interface Props extends ButtonProps {
+  onAuthedWithMetamask?(): void;
+}
+
+export const LoginButton: FC<Props> = ({
+  onAuthedWithMetamask,
   className,
   onClick,
   ...props
@@ -19,7 +24,10 @@ export const LoginButton: FC<ButtonProps> = ({
   return (
     <>
       <Button {...props} onClick={handleClick} />
-      <LoginModal toggle={modalVisible} />
+      <LoginModal
+        toggle={modalVisible}
+        onAuthedWithMetamask={onAuthedWithMetamask}
+      />
     </>
   );
 };

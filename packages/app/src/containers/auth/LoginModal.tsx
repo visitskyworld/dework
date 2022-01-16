@@ -15,10 +15,10 @@ import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   toggle: UseToggleHook;
-  onDone?(): void;
+  onAuthedWithMetamask?(): void;
 }
 
-export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
+export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
   const router = useRouter();
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const state = useMemo(
@@ -26,6 +26,7 @@ export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
     [router.query, router.asPath, appUrl]
   );
 
+  const profileModal = useToggle();
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
   const authWithThreepid = useAuthWithThreepid();
@@ -34,13 +35,20 @@ export const LoginModal: FC<Props> = ({ toggle, onDone }) => {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       await authWithThreepid(threepidId);
-      onDone?.();
+      profileModal.toggleOn();
+      onAuthedWithMetamask?.();
     } catch (error) {
       alert((error as Error).message);
     } finally {
       authingWithMetamask.toggleOff();
     }
-  }, [createMetamaskThreepid, authWithThreepid, onDone, authingWithMetamask]);
+  }, [
+    createMetamaskThreepid,
+    authWithThreepid,
+    onAuthedWithMetamask,
+    profileModal,
+    authingWithMetamask,
+  ]);
 
   const handleCancel = useCallback(
     (e) => {

@@ -9,6 +9,7 @@ import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
+import { UserProfileFormModal } from "../user/UserProfileFormModal";
 
 interface Props {
   organizationId: string;
@@ -16,6 +17,7 @@ interface Props {
 
 export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const modalVisible = useToggle();
+  const editingProfile = useToggle();
   const user = useCurrentUser();
 
   const { organization, refetch } = useOrganization(organizationId);
@@ -61,10 +63,16 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
     [tokenGates, refetch, joinProjectWithToken, modalVisible]
   );
 
+  const handleProfileSaved = useCallback(() => {
+    modalVisible.toggleOn();
+    editingProfile.toggleOff();
+  }, [modalVisible, editingProfile]);
+
   const canAccessAllProjects = usePermission("update", "Project");
   if (!tokenGates?.length || canAccessAllProjects) return null;
 
   const tokensString = tokens.map((t) => t.symbol).join(", ");
+
   return (
     <>
       <Alert
@@ -73,7 +81,6 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
         description={
           !!user ? (
             <Button
-              // size="small"
               type="primary"
               icon={<Icons.LockOutlined />}
               onClick={modalVisible.toggleOn}
@@ -82,9 +89,9 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
             </Button>
           ) : (
             <LoginButton
-              // size="small"
               type="primary"
               icon={<Icons.LockOutlined />}
+              onAuthedWithMetamask={editingProfile.toggleOn}
             >
               Join
             </LoginButton>
@@ -98,6 +105,16 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
           visible={modalVisible.isOn}
           onClose={modalVisible.toggleOff}
           onVerify={verifyProjectsWithToken}
+        />
+      )}
+      {!!user && (
+        <UserProfileFormModal
+          userId={user.id}
+          visible={editingProfile.isOn}
+          showDetails={false}
+          defaultEditing={true}
+          onCancel={handleProfileSaved}
+          onSaved={handleProfileSaved}
         />
       )}
     </>
