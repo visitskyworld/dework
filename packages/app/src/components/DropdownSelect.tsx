@@ -59,7 +59,7 @@ export function DropdownSelect<T extends string | string[]>({
       // @ts-ignore
       onClick={eatClick}
       overlay={
-        <Menu>
+        <Menu onClick={(e) => stopPropagation(e.domEvent)}>
           {options?.map((option) => (
             <Menu.Item
               key={option.value}
@@ -69,10 +69,7 @@ export function DropdownSelect<T extends string | string[]>({
                   ? "ant-select-item-option-selected"
                   : undefined
               }
-              onClick={(e) => {
-                stopPropagation(e.domEvent);
-                handleSelect(option.value);
-              }}
+              onClick={() => handleSelect(option.value)}
             >
               {option.label}
             </Menu.Item>

@@ -230,6 +230,7 @@ export const TaskList: FC<Props> = ({
         {
           title: "Tags",
           dataIndex: ["task", "tags"],
+          width: !!tags ? undefined : 1,
           filters: tags?.map((tag) => ({
             value: tag.id,
             text: <Tag color={tag.color}>{tag.label}</Tag>,
@@ -241,11 +242,10 @@ export const TaskList: FC<Props> = ({
               <TaskTagsRow task={row.task} showStandardTags={false} />
             ),
         },
-        { title: "Points", dataIndex: ["task", "storyPoints"], width: 72 },
+        { title: "Points", dataIndex: ["task", "storyPoints"], width: 1 },
         {
           title: "Reward",
           dataIndex: ["task", "reward"],
-          width: 100,
           render: (reward: TaskReward) =>
             !!reward ? formatTaskReward(reward) : undefined,
         },

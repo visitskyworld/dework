@@ -60,15 +60,6 @@ export const PermissionsProvider: FC = ({ children }) => {
     [permissions]
   );
 
-  console.log(
-    "perms",
-    JSON.stringify(
-      permissions?.filter((p) => p.subject === "Task"),
-      null,
-      2
-    )
-  );
-
   return (
     <PermissionsContext.Provider value={ability}>
       {useMemo(() => children, [children])}
