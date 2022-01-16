@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col, Row, Space } from "antd";
 import React, { FC, useMemo } from "react";
 import { useOrganization } from "../hooks";
 import { ProjectCard } from "./ProjectCard";
@@ -17,7 +17,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [organization?.projects]
   );
   return (
-    <>
+    <Space direction="vertical" size={16} style={{ width: "100%" }}>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
       <Row gutter={[16, 16]}>
         {projects?.map((project) => (
@@ -36,6 +36,6 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
           </Col>
         </Can>
       </Row>
-    </>
+    </Space>
   );
 };
