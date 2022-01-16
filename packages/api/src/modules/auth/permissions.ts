@@ -36,7 +36,7 @@ export const permissions: Permissions<
     });
   },
 
-  authenticated({ can, user }) {
+  authenticated({ can, cannot, user }) {
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
@@ -51,11 +51,12 @@ export const permissions: Permissions<
         status: { $ne: TaskStatus.DONE },
       }
     );
+    can(Actions.update, Task, { ownerId: user.id });
+    cannot(Actions.update, Task, "submission");
     can(Actions.update, Task, "submission", {
       assignees: { $elemMatch: { id: user.id } },
       status: { $ne: TaskStatus.DONE },
     });
-    can(Actions.update, Task, { ownerId: user.id });
   },
 
   organizationOwner({ extend, can, user }) {
@@ -103,6 +104,8 @@ export const permissions: Permissions<
 
     can(Actions.create, TaskTag);
     can(Actions.manage, ProjectTokenGate);
+    
+    extend(Roles.authenticated);
   },
 
   projectContributor({ can, cannot, user }) {
