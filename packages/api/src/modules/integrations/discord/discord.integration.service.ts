@@ -157,7 +157,7 @@ export class DiscordIntegrationService {
 
             const threepids = await this.findTaskUserThreepids(event.task);
             await channel.send({
-              content: ":partying_face:",
+              content: "",
               embeds: [
                 {
                   title: event.task.name,
