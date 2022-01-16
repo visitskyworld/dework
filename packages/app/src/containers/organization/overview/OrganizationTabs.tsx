@@ -134,8 +134,10 @@ export const OrganizationTabs: FC<Props> = ({
               </Avatar.Group>
             </Row>
 
-            <OrganizationInviteButton organizationId={organizationId} />
-            <FollowOrganizationButton organizationId={organizationId} />
+            <Row style={{ rowGap: 8, columnGap: 8 }}>
+              <OrganizationInviteButton organizationId={organizationId} />
+              <FollowOrganizationButton organizationId={organizationId} />
+            </Row>
           </Col>
         </Row>
       </Tabs.TabPane>

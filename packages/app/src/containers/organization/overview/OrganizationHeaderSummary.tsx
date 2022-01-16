@@ -4,7 +4,6 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { useOrganization } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
-import { JoinTokenGatedProjectsButton } from "../../invite/JoinTokenGatedProjectsButton";
 
 interface Props {
   organizationId: string;
@@ -68,12 +67,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
           {organization.name}
         </Typography.Title>
       }
-      description={
-        <>
-          {description}
-          <JoinTokenGatedProjectsButton organizationId={organizationId} />
-        </>
-      }
+      description={description}
     />
   );
 };

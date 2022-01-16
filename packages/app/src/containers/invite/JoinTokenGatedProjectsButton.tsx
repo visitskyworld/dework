@@ -1,4 +1,4 @@
-import { Button, message } from "antd";
+import { Alert, Button, message } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../organization/hooks";
 import * as Icons from "@ant-design/icons";
@@ -8,6 +8,7 @@ import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import _ from "lodash";
 
 interface Props {
   organizationId: string;
@@ -32,7 +33,11 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
     [organization?.projectTokenGates, organization?.projects, user?.id]
   );
   const tokens = useMemo(
-    () => tokenGates?.map((t) => t.token) ?? [],
+    () =>
+      _(tokenGates)
+        .map((t) => t.token)
+        .uniqBy((t) => t.id)
+        .value(),
     [tokenGates]
   );
 
@@ -58,25 +63,35 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
 
   const canAccessAllProjects = usePermission("update", "Project");
   if (!tokenGates?.length || canAccessAllProjects) return null;
-  const buttonText = `Join private projects using ${tokens
-    .map((t) => t.symbol)
-    .join(", ")}`;
+
+  const tokensString = tokens.map((t) => t.symbol).join(", ");
   return (
     <>
-      {!!user ? (
-        <Button
-          type="primary"
-          size="small"
-          icon={<Icons.LockOutlined />}
-          onClick={modalVisible.toggleOn}
-        >
-          {buttonText}
-        </Button>
-      ) : (
-        <LoginButton type="primary" icon={<Icons.LockOutlined />}>
-          {buttonText}
-        </LoginButton>
-      )}
+      <Alert
+        message={`There are private projects that you can access by authenticating using ${tokensString}`}
+        type="info"
+        description={
+          !!user ? (
+            <Button
+              // size="small"
+              type="primary"
+              icon={<Icons.LockOutlined />}
+              onClick={modalVisible.toggleOn}
+            >
+              Join
+            </Button>
+          ) : (
+            <LoginButton
+              // size="small"
+              type="primary"
+              icon={<Icons.LockOutlined />}
+            >
+              Join
+            </LoginButton>
+          )
+        }
+        showIcon
+      />
       {!!user && (
         <JoinTokenGatedProjectsModal
           tokens={tokens}

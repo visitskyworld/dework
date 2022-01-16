@@ -8,11 +8,11 @@ services:
     environment:
       TZ: UTC
       PGTZ: UTC
-      POSTGRES_DATABASE: dewo
-      POSTGRES_USER: dewo
-      POSTGRES_PASSWORD: dewo
+      POSTGRES_DATABASE: dework-local
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dework-local
     volumes:
-      - dewo-postgres-data:/var/lib/postgresql/data
+      - dework-postgres-data:/var/lib/postgresql/data
 
   postgres-test:
     image: postgres:13
@@ -21,12 +21,12 @@ services:
     environment:
       TZ: UTC
       PGTZ: UTC
-      POSTGRES_DATABASE: dewo-test
-      POSTGRES_USER: dewo-test
-      POSTGRES_PASSWORD: dewo-test
+      POSTGRES_DATABASE: dework-test
+      POSTGRES_USER: dework-test
+      POSTGRES_PASSWORD: dework-test
 
 # persistant volumes
 # https://docs.docker.com/storage/
 volumes:
-  dewo-postgres-data:
+  dework-postgres-data:
 
