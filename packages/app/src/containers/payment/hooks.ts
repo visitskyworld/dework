@@ -243,7 +243,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           //     },
           //   },
           // });
-          throw new Error("Implement Gnosis Safe pay now");
+          throw new Error('Use the "Pay Now" button to pay with Gnosis Safe');
         }
         default:
           throw new Error(`Unknown payment method: "${from.type}"`);

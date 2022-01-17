@@ -268,11 +268,7 @@ export const TaskList: FC<Props> = ({
               }
             >
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Avatar.Group
-                  maxCount={3}
-                  size={size}
-                  style={{ pointerEvents: "none" }}
-                >
+                <Avatar.Group maxCount={3} size={size}>
                   {assigneeIds
                     .map((id) => userById[id])
                     .filter((u): u is User => !!u)
