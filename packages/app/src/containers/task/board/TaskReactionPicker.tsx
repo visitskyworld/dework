@@ -73,39 +73,37 @@ const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
   const navigateToProfile = useNavigateToProfile();
 
   return (
-    <>
-      <Col>
-        <Tooltip
-          title={
-            <>
-              <Typography.Paragraph
-                style={{ marginBottom: 4, textAlign: "center" }}
-              >
-                {reaction.reactions.length === 1
-                  ? "1 reaction"
-                  : `${reaction.reactions.length} reactions`}
-              </Typography.Paragraph>
-              <Button size="small" type="ghost" onClick={handleShowUsers}>
-                Show users
-              </Button>
-            </>
-          }
+    <Col onClick={stopPropagation}>
+      <Tooltip
+        title={
+          <>
+            <Typography.Paragraph
+              style={{ marginBottom: 4, textAlign: "center" }}
+            >
+              {reaction.reactions.length === 1
+                ? "1 reaction"
+                : `${reaction.reactions.length} reactions`}
+            </Typography.Paragraph>
+            <Button size="small" type="ghost" onClick={handleShowUsers}>
+              Show users
+            </Button>
+          </>
+        }
+      >
+        <Row
+          onClick={handleClick}
+          className={[
+            "dewo-task-reaction",
+            "dewo-task-reaction-selectable",
+            reaction.selected ? "dewo-task-reaction-selected" : "",
+          ]
+            .filter((c) => !!c)
+            .join(" ")}
         >
-          <Row
-            onClick={handleClick}
-            className={[
-              "dewo-task-reaction",
-              "dewo-task-reaction-selectable",
-              reaction.selected ? "dewo-task-reaction-selected" : "",
-            ]
-              .filter((c) => !!c)
-              .join(" ")}
-          >
-            <Emojione svg text={reaction.reaction} className="emojione" />
-            <Badge count={reaction.reactions.length} showZero />
-          </Row>
-        </Tooltip>
-      </Col>
+          <Emojione svg text={reaction.reaction} className="emojione" />
+          <Badge count={reaction.reactions.length} showZero />
+        </Row>
+      </Tooltip>
       <Modal
         visible={showUsers.isOn}
         footer={null}
@@ -128,7 +126,7 @@ const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
           ]}
         />
       </Modal>
-    </>
+    </Col>
   );
 };
 
@@ -155,7 +153,7 @@ export const TaskReactionPicker: FC<Props> = ({ task }) => {
 
   if (!task.reactions.length && task.status !== TaskStatus.BACKLOG) return null;
   return (
-    <Row gutter={8} onClick={stopPropagation}>
+    <Row gutter={8}>
       {grouped.map((group) => (
         <TaskReactionItem
           key={group.reaction}
