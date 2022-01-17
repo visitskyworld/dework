@@ -12,7 +12,6 @@ import {
   StartWalletConnectSessionMutation,
   StartWalletConnectSessionMutationVariables,
 } from "@dewo/app/graphql/types";
-import { setAuthToken } from "@dewo/app/util/authToken";
 import {
   usePersonalSign,
   useProvider,
@@ -20,8 +19,10 @@ import {
 } from "@dewo/app/util/ethereum";
 import { Modal } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
+  const { onAuthenticated } = useAuthContext();
   const apolloClient = useApolloClient();
   const [authWithThreepid] = useMutation<
     AuthWithThreepidMutation,
@@ -32,11 +33,11 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
       const res = await authWithThreepid({ variables: { threepidId } });
 
       if (!!res.data) {
-        setAuthToken(undefined, res.data?.authWithThreepid.authToken);
+        onAuthenticated(res.data.authWithThreepid.authToken);
         apolloClient.reFetchObservableQueries(); // async
       }
     },
-    [authWithThreepid, apolloClient]
+    [authWithThreepid, apolloClient, onAuthenticated]
   );
 }
 

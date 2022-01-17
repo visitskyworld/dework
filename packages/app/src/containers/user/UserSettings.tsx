@@ -1,5 +1,5 @@
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidSource } from "@dewo/app/graphql/types";
-import { useCurrentUser } from "@dewo/app/util/hooks";
 import { Alert, Col, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import {
@@ -14,7 +14,7 @@ import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethod
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
-  const user = useCurrentUser();
+  const { user } = useAuthContext();
 
   const updatePaymentMethod = useUpdatePaymentMethod();
   const removePaymentMethod = useCallback(

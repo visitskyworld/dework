@@ -2,7 +2,7 @@ import { Alert, Button, message } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../organization/hooks";
 import * as Icons from "@ant-design/icons";
-import { useCurrentUser, useToggle } from "@dewo/app/util/hooks";
+import { useToggle } from "@dewo/app/util/hooks";
 import { LoginButton } from "../auth/LoginButton";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
@@ -10,6 +10,7 @@ import { useJoinProjectWithToken } from "./hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
 import { UserProfileFormModal } from "../user/UserProfileFormModal";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   organizationId: string;
@@ -18,8 +19,7 @@ interface Props {
 export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
   const modalVisible = useToggle();
   const editingProfile = useToggle();
-  const user = useCurrentUser();
-
+  const { user } = useAuthContext();
   const { organization, refetch } = useOrganization(organizationId);
 
   const tokenGates = useMemo(

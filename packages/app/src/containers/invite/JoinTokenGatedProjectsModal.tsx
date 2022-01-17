@@ -1,10 +1,10 @@
 import { Button, message, Modal, Space, Typography } from "antd";
 import React, { FC, useCallback, useState } from "react";
-import { useCurrentUser } from "@dewo/app/util/hooks";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
 import { ApolloError } from "@apollo/client";
 import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethodButton";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];
@@ -19,7 +19,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
   onVerify,
   onClose,
 }) => {
-  const user = useCurrentUser();
+  const { user } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const verifyToken = useCallback(

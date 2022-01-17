@@ -63,6 +63,7 @@ export const UserTaskBoard: FC<Props> = ({ userId }) => {
                 >
                   {organizations.map((organization) => (
                     <OrganizationCard
+                      key={organization.id}
                       organization={organization}
                       title={{ level: 5 }}
                     />
