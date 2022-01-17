@@ -26,10 +26,15 @@ export interface MetamaskPaymentData {
   txHash: string;
 }
 
+export interface StacksPaymentData {
+  txId: string;
+}
+
 interface PaymentDataMap extends Record<PaymentMethodType, any> {
   [PaymentMethodType.METAMASK]: MetamaskPaymentData;
   [PaymentMethodType.PHANTOM]: PhantomPaymentData;
   [PaymentMethodType.GNOSIS_SAFE]: GnosisSafePaymentData;
+  [PaymentMethodType.HIRO]: StacksPaymentData;
 }
 
 export type PaymentData = PaymentDataMap[keyof PaymentDataMap];

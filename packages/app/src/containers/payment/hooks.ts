@@ -30,6 +30,7 @@ import {
 import { useCreateEthereumTransaction } from "@dewo/app/util/ethereum";
 import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
 import { useCallback } from "react";
+import { useCreateStacksTransaction } from "@dewo/app/util/hiro";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -144,7 +145,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   >(Mutations.createTaskPayments);
 
   const createSolanaTransaction = useCreateSolanaTransaction();
-  const createEthereuTransaction = useCreateEthereumTransaction();
+  const createEthereumTransaction = useCreateEthereumTransaction();
+  const createStacksTransaction = useCreateStacksTransaction();
 
   return useCallback(
     async (task: Task, user: User) => {
@@ -182,7 +184,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
       switch (from.type) {
         case PaymentMethodType.METAMASK: {
-          const txHash = await createEthereuTransaction(
+          const txHash = await createEthereumTransaction(
             from.address,
             to.address,
             reward.amount,
@@ -225,6 +227,29 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           });
           break;
         }
+        case PaymentMethodType.HIRO: {
+          const network = from.networks.find(
+            (n) => n.id === reward.token.networkId
+          )!;
+          const txId = await createStacksTransaction(
+            from.address,
+            to.address,
+            reward.amount,
+            reward.token,
+            network
+          );
+          await registerTaskPayment({
+            variables: {
+              input: {
+                taskRewardIds: [reward.id],
+                networkId: reward.token.networkId,
+                paymentMethodId: from.id,
+                data: { txId },
+              },
+            },
+          });
+          break;
+        }
         case PaymentMethodType.GNOSIS_SAFE: {
           // const signed = await signGnosisPayout(
           //   fromPaymentMethod.address,
@@ -253,7 +278,8 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       loadProject,
       loadUserPaymentMethod,
       createSolanaTransaction,
-      createEthereuTransaction,
+      createEthereumTransaction,
+      createStacksTransaction,
       registerTaskPayment,
     ]
   );

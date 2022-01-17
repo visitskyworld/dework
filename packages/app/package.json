@@ -24,6 +24,7 @@
     "@solana/web3.js": "^1.31.0",
     "@stacks/connect": "^6.4.0",
     "@stacks/connect-react": "^13.0.0",
+    "@stacks/network": "^3.0.0",
     "@uiw/react-markdown-preview": "^3.4.5",
     "@uiw/react-md-editor": "3.9.0",
     "antd": "^4.17.1",

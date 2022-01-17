@@ -169,7 +169,7 @@ BEGIN
     'stacks-mainnet',
     '020',
     CAST('{
-      "cluster": "mainnet",
+      "chain": "mainnet",
       "rpcUrl": "stacks-node-api.stacks.co"
     }' AS json)
   ), (
@@ -215,7 +215,7 @@ BEGIN
     'stacks-testnet',
     '120',
     CAST('{
-      "cluster": "testnet",
+      "chain": "testnet",
       "rpcUrl": "stacks-node-api.testnet.stacks.co"
     }' AS json)
   );
@@ -248,8 +248,8 @@ BEGIN
     ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
     ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id),
     
-    ('NATIVE', 'Stacks Token', 'STX', 1, 'ALWAYS', NULL, stacks_mainnet_id),
-    ('NATIVE', 'Stacks Token', 'STX', 1, 'ALWAYS', NULL, stacks_testnet_id),
+    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_mainnet_id),
+    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_testnet_id),
     ('STACKS_TOKEN', 'citycoins', 'CYCN', 1, 'ALWAYS', 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A.citycoin-token', stacks_testnet_id);
 END $$;
 ```

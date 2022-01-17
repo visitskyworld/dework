@@ -28,7 +28,7 @@ interface SolanaConfig {
 }
 
 interface StacksConfig {
-  cluster: string;
+  chain: string;
   rpcUrl: string;
 }
 
