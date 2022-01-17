@@ -21,3 +21,8 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --region $REGION                  \
   --platform managed                \
   --allow-unauthenticated
+
+gcloud run services update-traffic $DEPLOYMENT_NAME \
+  --to-latest                                       \
+  --region $REGION                                  \
+  --platform managed
