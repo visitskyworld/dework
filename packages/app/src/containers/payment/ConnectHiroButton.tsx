@@ -1,14 +1,14 @@
 import React, { FC, useCallback, useState } from "react";
 import { Button } from "antd";
-import { useRequestAddress } from "@dewo/app/util/solana";
+import { useRequestAddresses } from "@dewo/app/util/hiro";
 
 interface Props {
-  onChange?(address: string): Promise<void>;
+  onChange?(address: Record<string, string>): Promise<void>;
 }
 
-export const ConnectPhantomButton: FC<Props> = ({ onChange }) => {
+export const ConnectHiroButton: FC<Props> = ({ onChange }) => {
   const [loading, setLoading] = useState(false);
-  const requestAddress = useRequestAddress();
+  const requestAddress = useRequestAddresses();
   const connect = useCallback(async () => {
     try {
       setLoading(true);
@@ -18,9 +18,10 @@ export const ConnectPhantomButton: FC<Props> = ({ onChange }) => {
       setLoading(false);
     }
   }, [onChange, requestAddress]);
+
   return (
     <Button block type="primary" loading={loading} onClick={connect}>
-      Connect Phantom Wallet
+      Connect Hiro Wallet
     </Button>
   );
 };

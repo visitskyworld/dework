@@ -72,10 +72,14 @@ DECLARE
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
 
+  stacks_mainnet_id uuid = uuid_generate_v4();
+  stacks_testnet_id uuid = uuid_generate_v4();
+
   infura_project_id varchar = 'get this project id from the core team';
 BEGIN
   UPDATE task SET "rewardId" = NULL;
   DELETE FROM task_reward;
+  DELETE FROM project_token_gate;
   DELETE FROM payment;
   DELETE FROM payment_method;
   DELETE FROM payment_token;
@@ -159,6 +163,16 @@ BEGIN
       "rpcUrl": "https://api.mainnet-beta.solana.com"
     }' AS json)
   ), (
+    stacks_mainnet_id,
+    'STACKS',
+    'Stacks Mainnet',
+    'stacks-mainnet',
+    '020',
+    CAST('{
+      "cluster": "mainnet",
+      "rpcUrl": "stacks-node-api.stacks.co"
+    }' AS json)
+  ), (
     ethereum_rinkeby_id,
     'ETHEREUM',
     'Ethereum Rinkeby',
@@ -194,6 +208,16 @@ BEGIN
       "cluster": "testnet",
       "rpcUrl": "https://api.testnet.solana.com"
     }' AS json)
+  ), (
+    stacks_testnet_id,
+    'STACKS',
+    'Stacks Testnet',
+    'stacks-testnet',
+    '120',
+    CAST('{
+      "cluster": "testnet",
+      "rpcUrl": "stacks-node-api.testnet.stacks.co"
+    }' AS json)
   );
 
   INSERT INTO "payment_token" ("type", "name", "symbol", "exp", "visibility", "address", "networkId")
@@ -222,6 +246,10 @@ BEGIN
     ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id),
     ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_testnet_id),
     ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
-    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id);
+    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id),
+    
+    ('NATIVE', 'Stacks Token', 'STX', 1, 'ALWAYS', NULL, stacks_mainnet_id),
+    ('NATIVE', 'Stacks Token', 'STX', 1, 'ALWAYS', NULL, stacks_testnet_id),
+    ('STACKS_TOKEN', 'citycoins', 'CYCN', 1, 'ALWAYS', 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A.citycoin-token', stacks_testnet_id);
 END $$;
 ```

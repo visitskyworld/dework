@@ -9376,6 +9376,7 @@ export enum OrganizationRole {
 
 export enum PaymentMethodType {
   GNOSIS_SAFE = "GNOSIS_SAFE",
+  HIRO = "HIRO",
   METAMASK = "METAMASK",
   PHANTOM = "PHANTOM",
 }

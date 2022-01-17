@@ -37,18 +37,21 @@ export class PaymentPoller {
     [PaymentMethodType.METAMASK]: ms.seconds(5),
     [PaymentMethodType.PHANTOM]: ms.seconds(5),
     [PaymentMethodType.GNOSIS_SAFE]: ms.seconds(5),
+    [PaymentMethodType.HIRO]: 0, // ms.seconds(5),
   };
 
   private checkTimeout: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.minutes(30),
     [PaymentMethodType.PHANTOM]: ms.minutes(10),
     [PaymentMethodType.GNOSIS_SAFE]: Number.MAX_SAFE_INTEGER,
+    [PaymentMethodType.HIRO]: 0,
   };
 
   private blockDepthBeforeConfirmed: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: 1,
     [PaymentMethodType.PHANTOM]: 1,
     [PaymentMethodType.GNOSIS_SAFE]: 1,
+    [PaymentMethodType.HIRO]: 0,
   };
 
   constructor(
@@ -169,9 +172,6 @@ export class PaymentPoller {
   private async getNextStatusCheckAt(payment: Payment): Promise<Date> {
     const method = await payment.paymentMethod;
     switch (method.type) {
-      case PaymentMethodType.PHANTOM:
-      case PaymentMethodType.METAMASK:
-        return moment().add(this.checkInterval[method.type]).toDate();
       case PaymentMethodType.GNOSIS_SAFE:
         if (!!(payment.data as GnosisSafePaymentData).txHash) {
           return moment()
@@ -182,6 +182,8 @@ export class PaymentPoller {
         return moment()
           .add(this.checkInterval[PaymentMethodType.GNOSIS_SAFE])
           .toDate();
+      default:
+        return moment().add(this.checkInterval[method.type]).toDate();
     }
   }
 

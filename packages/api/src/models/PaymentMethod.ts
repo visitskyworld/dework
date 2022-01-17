@@ -17,6 +17,7 @@ export enum PaymentMethodType {
   METAMASK = "METAMASK",
   GNOSIS_SAFE = "GNOSIS_SAFE",
   PHANTOM = "PHANTOM",
+  HIRO = "HIRO",
 }
 
 registerEnumType(PaymentMethodType, { name: "PaymentMethodType" });

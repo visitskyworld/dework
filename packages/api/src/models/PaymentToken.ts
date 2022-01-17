@@ -9,6 +9,7 @@ export enum PaymentTokenType {
   ERC721 = "ERC721",
   ERC1155 = "ERC1155",
   SPL_TOKEN = "SPL_TOKEN",
+  STACKS_TOKEN = "STACKS_TOKEN",
 }
 
 export enum PaymentTokenVisibility {

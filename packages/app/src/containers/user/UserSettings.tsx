@@ -32,6 +32,7 @@ export const UserSettings: FC<Props> = () => {
         <Space direction="vertical" style={{ width: "100%" }}>
           {user?.paymentMethods.map((paymentMethod) => (
             <PaymentMethodSummary
+              key={paymentMethod.id}
               type={paymentMethod.type}
               address={paymentMethod.address}
               networkNames={paymentMethod.networks

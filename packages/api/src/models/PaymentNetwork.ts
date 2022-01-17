@@ -7,6 +7,7 @@ import { PaymentToken } from "./PaymentToken";
 export enum PaymentNetworkType {
   ETHEREUM = "ETHEREUM",
   SOLANA = "SOLANA",
+  STACKS = "STACKS",
 }
 
 registerEnumType(PaymentNetworkType, { name: "PaymentNetworkType" });
@@ -26,9 +27,15 @@ interface SolanaConfig {
   rpcUrl: string;
 }
 
+interface StacksConfig {
+  cluster: string;
+  rpcUrl: string;
+}
+
 export interface PaymentNetworkConfig extends Record<PaymentNetworkType, any> {
   [PaymentNetworkType.ETHEREUM]: EthereumConfig;
   [PaymentNetworkType.SOLANA]: SolanaConfig;
+  [PaymentNetworkType.STACKS]: StacksConfig;
 }
 
 @Entity()

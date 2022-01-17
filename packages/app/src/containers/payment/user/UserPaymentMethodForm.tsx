@@ -9,10 +9,12 @@ import {
   networkSlugsByPaymentMethodType,
   paymentMethodTypeToString,
 } from "../util";
+import { ConnectHiroButton } from "../ConnectHiroButton";
 
 interface FormValues {
   type: PaymentMethodType;
-  address: string;
+  address?: string;
+  addressByNetworkSlug?: Record<string, string>;
 }
 
 interface Props {
@@ -23,6 +25,7 @@ interface Props {
 const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.METAMASK,
   PaymentMethodType.PHANTOM,
+  PaymentMethodType.HIRO,
 ];
 
 export const UserPaymentMethodForm: FC<Props> = ({ userId, onDone }) => {
@@ -43,7 +46,8 @@ export const UserPaymentMethodForm: FC<Props> = ({ userId, onDone }) => {
       const ps = networksForPaymentType.map((network) =>
         createPaymentMethod({
           type: values.type,
-          address: values.address,
+          address: (values.address ??
+            values.addressByNetworkSlug?.[network.slug])!,
           networkIds: [network.id],
           userId,
         })
@@ -62,7 +66,7 @@ export const UserPaymentMethodForm: FC<Props> = ({ userId, onDone }) => {
       setValues(values);
       form.setFieldsValue(values);
 
-      if (!!changed.address) {
+      if (!!changed.address || !!changed.addressByNetworkSlug) {
         form.submit();
       }
     },
@@ -93,16 +97,24 @@ export const UserPaymentMethodForm: FC<Props> = ({ userId, onDone }) => {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item name="address" hidden={!values.type}>
-        {(() => {
-          switch (values.type) {
-            case PaymentMethodType.PHANTOM:
-              return <ConnectPhantomButton />;
-            case PaymentMethodType.METAMASK:
-              return <ConnectMetamaskButton />;
-          }
-        })()}
-      </Form.Item>
+      {values.type === PaymentMethodType.HIRO ? (
+        <Form.Item name="addressByNetworkSlug">
+          <ConnectHiroButton />
+        </Form.Item>
+      ) : (
+        <Form.Item name="address" hidden={!values.type}>
+          {(() => {
+            switch (values.type) {
+              case PaymentMethodType.PHANTOM:
+                return <ConnectPhantomButton />;
+              case PaymentMethodType.METAMASK:
+                return <ConnectMetamaskButton />;
+              default:
+                return null;
+            }
+          })()}
+        </Form.Item>
+      )}
     </Form>
   );
 };

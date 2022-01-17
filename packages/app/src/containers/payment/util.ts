@@ -3,7 +3,8 @@ import { PaymentMethodType } from "@dewo/app/graphql/types";
 export const paymentMethodTypeToString: Record<PaymentMethodType, string> = {
   [PaymentMethodType.METAMASK]: "Metamask",
   [PaymentMethodType.GNOSIS_SAFE]: "Gnosis Safe",
-  [PaymentMethodType.PHANTOM]: "Phantom",
+  [PaymentMethodType.PHANTOM]: "Phantom Wallet",
+  [PaymentMethodType.HIRO]: "Hiro Wallet",
 };
 
 export const networkSlugsByPaymentMethodType: Record<
@@ -26,4 +27,5 @@ export const networkSlugsByPaymentMethodType: Record<
     "polygon-mainnet",
   ],
   [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
+  [PaymentMethodType.HIRO]: ["stacks-mainnet", "stacks-testnet"],
 };
