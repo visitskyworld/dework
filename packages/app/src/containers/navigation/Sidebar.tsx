@@ -1,18 +1,15 @@
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Avatar, Col, Divider, Dropdown, Layout, Tooltip } from "antd";
-import { HeaderProfileDropdown } from "./header/HeaderProfileMenu";
+import { Avatar, Col, Divider, Layout, Tooltip } from "antd";
+import { HeaderProfileAvatar } from "./header/HeaderProfileAvatar";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
-import { useToggle } from "@dewo/app/util/hooks";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
-  const showProfileDropdown = useToggle();
   const { isOn, setToggle } = useSidebarContext();
 
   const handleBreakpoint = (changed: boolean) => {
@@ -43,23 +40,7 @@ export const Sidebar: FC = () => {
           className="dewo-sidebar-item"
           clickable={false}
         >
-          <Dropdown
-            key="avatar"
-            placement="bottomLeft"
-            visible={showProfileDropdown.isOn}
-            // @ts-ignore
-            onClick={showProfileDropdown.toggle}
-            overlay={
-              <HeaderProfileDropdown onClose={showProfileDropdown.toggleOff} />
-            }
-          >
-            <UserAvatar
-              user={user}
-              size={48}
-              tooltip={{ visible: false }}
-              style={{ cursor: "pointer" }}
-            />
-          </Dropdown>
+          <HeaderProfileAvatar />
         </SidebarNavLink>
 
         <Divider style={{ margin: "12px 0" }} />
@@ -68,7 +49,7 @@ export const Sidebar: FC = () => {
           {user?.organizations.map((organization) => (
             <SidebarNavLink
               key={organization.id}
-              href={`/o/${organization.slug}`}
+              href={organization.permalink}
               className="dewo-sidebar-item"
             >
               <OrganizationAvatar
