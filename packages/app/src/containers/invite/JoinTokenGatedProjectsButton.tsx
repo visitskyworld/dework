@@ -106,12 +106,8 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
       )}
       {!!user && (
         <UserProfileFormModal
-          userId={user.id}
           visible={editingProfile.isOn}
-          showDetails={false}
-          defaultEditing={true}
-          onCancel={handleProfileSaved}
-          onSaved={handleProfileSaved}
+          onDone={handleProfileSaved}
         />
       )}
     </>

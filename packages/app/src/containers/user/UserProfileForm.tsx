@@ -10,17 +10,10 @@ import { useToggle } from "@dewo/app/util/hooks";
 
 interface Props {
   userId: string;
-  defaultEditing?: boolean;
-  showDetails?: boolean;
   onSaved?(): void;
 }
 
-export const UserProfileForm: FC<Props> = ({
-  userId,
-  defaultEditing = false,
-  showDetails = true,
-  onSaved,
-}) => {
+export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
   const user = useUser(userId);
   const currentUserId = useAuthContext().user?.id;
   const isMe = userId === currentUserId;
@@ -36,7 +29,7 @@ export const UserProfileForm: FC<Props> = ({
   );
 
   const [form] = Form.useForm();
-  const editing = useToggle(defaultEditing);
+  const editing = useToggle();
   const loading = useToggle(false);
 
   type InititalValues = Record<string, string>;
@@ -99,9 +92,7 @@ export const UserProfileForm: FC<Props> = ({
         {!!user.bio ? user.bio : "No bio..."}
       </Typography.Paragraph>
 
-      {showDetails && (
-        <UserDetails isEditMode={editing.isOn} userDetails={user.details} />
-      )}
+      <UserDetails isEditMode={editing.isOn} userDetails={user.details} />
 
       {!!isMe && !!editing.isOn && (
         <Row gutter={8} style={{ marginTop: 16 }}>
