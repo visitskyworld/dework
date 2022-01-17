@@ -251,7 +251,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 <MarkdownEditor
                   initialValue={initialValues?.submission ?? undefined}
                   placeholder={
-                    "No submission yet." +
+                    "No submission yet. " +
                     (canChange("submission") ? "Submit your work here." : "")
                   }
                   buttonText={
