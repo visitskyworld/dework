@@ -37,6 +37,7 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
     useFactory: postgresConfig,
   }),
   CaslModule.forRoot<Roles>({
+    superuserRole: Roles.superadmin,
     getUserFromRequest: (req) => req.caslUser,
   }),
   DatabaseModule,

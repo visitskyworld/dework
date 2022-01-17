@@ -22,6 +22,8 @@ export interface ConfigType {
 
   GOOGLE_CLOUD_CREDENTIALS: string;
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
+
+  SUPERADMIN_USER_IDS: string;
 }
 
 const MAX_PORT = 65535;
@@ -47,6 +49,8 @@ export const configSchema = Joi.object<ConfigType>({
 
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
+
+  SUPERADMIN_USER_IDS: Joi.string(),
 });
 
 export const gifs = [

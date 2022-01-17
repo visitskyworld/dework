@@ -4,5 +4,5 @@ export enum Roles {
   organizationAdmin = "organizationAdmin",
   projectAdmin = "projectAdmin",
   projectContributor = "projectContributor",
-  viewer = "viewer",
+  superadmin = "superadmin",
 }

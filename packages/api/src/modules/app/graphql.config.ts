@@ -56,6 +56,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
   ) {}
 
   createGqlOptions(): GqlModuleOptions {
+    const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
     return {
       autoSchemaFile: true,
       // https://github.com/nestjs/graphql/issues/295#issuecomment-511191060
@@ -80,9 +81,14 @@ export class GraphQLConfig implements GqlOptionsFactory {
           return user;
         })();
 
+        let roles: Roles[] = [];
+        if (!!user) roles.push(Roles.authenticated);
+        if (!!user && superadminIds.includes(user.id)) {
+          roles.push(Roles.superadmin);
+        }
         const caslUser: AuthorizableUser<Roles, string | undefined> = {
           id: user?.id,
-          roles: !!user ? [Roles.authenticated] : [],
+          roles,
         };
 
         req.user = user;

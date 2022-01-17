@@ -13,6 +13,7 @@ import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DeepPartial, Repository } from "typeorm";
+import { Roles } from "../app/app.roles";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 
@@ -155,7 +156,8 @@ export class OrganizationService {
 
   public getProjects(
     organizationId: string,
-    userId: string | undefined
+    userId: string | undefined,
+    caslRoles: Roles[]
   ): Promise<Project[]> {
     return this.projectRepo
       .createQueryBuilder("project")
@@ -175,6 +177,13 @@ export class OrganizationService {
             .orWhere("pm.role IN (:...projectRoles)", {
               projectRoles: [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR],
             });
+
+          if (!!caslRoles.length) {
+            qb.orWhere(":superadmin IN (:...caslRoles)", {
+              superadmin: Roles.superadmin,
+              caslRoles,
+            });
+          }
         })
       )
       .getMany();
