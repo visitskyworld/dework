@@ -41,31 +41,62 @@ export const OrganizationInviteButton: FC<Props> = ({
   if (!organization) return null;
 
   const hasTokenGatedProjects = !!organization.projectTokenGates.length;
-  if (!canInviteOrganizationAdmin && !hasTokenGatedProjects) {
-    return null;
+  if (canInviteOrganizationAdmin && !hasTokenGatedProjects) {
+    return (
+      <Button
+        type="ghost"
+        icon={<Icons.UsergroupAddOutlined />}
+        style={style}
+        onClick={inviteOrganizationAdmin}
+      >
+        Invite DAO admins
+      </Button>
+    );
   }
-  return (
-    <Dropdown
-      placement="topCenter"
-      trigger={["click"]}
-      overlay={
-        <Menu>
-          {canInviteOrganizationAdmin && (
-            <Menu.Item key="admin" onClick={inviteOrganizationAdmin}>
-              Invite DAO admins
-            </Menu.Item>
-          )}
-          {hasTokenGatedProjects && (
-            <Menu.Item key="gated" onClick={inviteToTokenGatedProjects}>
-              Invite to Token Gated Projects
-            </Menu.Item>
-          )}
-        </Menu>
-      }
-    >
-      <Button type="ghost" icon={<Icons.UsergroupAddOutlined />} style={style}>
+
+  if (!canInviteOrganizationAdmin && hasTokenGatedProjects) {
+    return (
+      <Button
+        type="ghost"
+        icon={<Icons.UsergroupAddOutlined />}
+        style={style}
+        onClick={inviteToTokenGatedProjects}
+      >
         Invite
       </Button>
-    </Dropdown>
-  );
+    );
+  }
+
+  if (canInviteOrganizationAdmin && hasTokenGatedProjects) {
+    return (
+      <Dropdown
+        placement="topCenter"
+        trigger={["click"]}
+        overlay={
+          <Menu>
+            {canInviteOrganizationAdmin && (
+              <Menu.Item key="admin" onClick={inviteOrganizationAdmin}>
+                Invite DAO admins
+              </Menu.Item>
+            )}
+            {hasTokenGatedProjects && (
+              <Menu.Item key="gated" onClick={inviteToTokenGatedProjects}>
+                Invite to Token Gated Projects
+              </Menu.Item>
+            )}
+          </Menu>
+        }
+      >
+        <Button
+          type="ghost"
+          icon={<Icons.UsergroupAddOutlined />}
+          style={style}
+        >
+          Invite
+        </Button>
+      </Dropdown>
+    );
+  }
+
+  return null;
 };
