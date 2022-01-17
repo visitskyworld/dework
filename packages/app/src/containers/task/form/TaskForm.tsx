@@ -34,8 +34,6 @@ import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskNumberAndSettings } from "./TaskNumberAndSettings";
 import { TaskActivityFeed } from "./TaskActivityFeed";
-import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
-import Link from "next/link";
 import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
@@ -267,6 +265,31 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
         </Col>
         <Col xs={24} sm={8}>
+          {!!task?.parentTask && (
+            <FormSection label="Parent Task" style={{ display: "flex" }}>
+              <Button
+                type="text"
+                size="small"
+                className="dewo-btn-highlight"
+                icon={
+                  <Avatar
+                    size="small"
+                    style={{ flexShrink: 0 }}
+                    icon={<Icons.CheckOutlined />}
+                  />
+                }
+                onClick={() => navigateToTask(task.parentTask!.id)}
+              >
+                <Typography.Text
+                  style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
+                  ellipsis
+                >
+                  {task.parentTask.name}
+                </Typography.Text>
+              </Button>
+            </FormSection>
+          )}
+
           {!!task && <TaskNumberAndSettings task={task} />}
 
           <Form.Item
@@ -374,7 +397,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
 
-          {!!task && (
+          {/* {!!task && (
             <FormSection label="Project">
               <Link href={task.project.permalink}>
                 <a style={{ display: "flex" }}>
@@ -404,31 +427,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 </a>
               </Link>
             </FormSection>
-          )}
-          {!!task?.parentTask && (
-            <FormSection label="Parent Task" style={{ display: "flex" }}>
-              <Button
-                type="text"
-                size="small"
-                className="dewo-btn-highlight"
-                icon={
-                  <Avatar
-                    size="small"
-                    style={{ flexShrink: 0 }}
-                    icon={<Icons.CheckOutlined />}
-                  />
-                }
-                onClick={() => navigateToTask(task.parentTask!.id)}
-              >
-                <Typography.Text
-                  style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
-                  ellipsis
-                >
-                  {task.parentTask.name}
-                </Typography.Text>
-              </Button>
-            </FormSection>
-          )}
+          )} */}
         </Col>
       </Row>
     </Form>

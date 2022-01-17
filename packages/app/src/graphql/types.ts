@@ -2862,18 +2862,6 @@ export interface CreateTaskPaymentsMutation_tasks_creator {
   imageUrl: string | null;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -2932,7 +2920,6 @@ export interface CreateTaskPaymentsMutation_tasks {
   parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
-  project: CreateTaskPaymentsMutation_tasks_project;
   discordChannel: CreateTaskPaymentsMutation_tasks_discordChannel | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
@@ -4806,27 +4793,6 @@ export interface GetTaskQuery_task_creator {
   imageUrl: string | null;
 }
 
-export interface GetTaskQuery_task_project_taskTags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface GetTaskQuery_task_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-  taskTags: GetTaskQuery_task_project_taskTags[];
-}
-
 export interface GetTaskQuery_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -4858,6 +4824,20 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface GetTaskQuery_task_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetTaskQuery_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskTags: GetTaskQuery_task_project_taskTags[];
+}
+
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4885,10 +4865,10 @@ export interface GetTaskQuery_task {
   parentTask: GetTaskQuery_task_parentTask | null;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
-  project: GetTaskQuery_task_project;
   discordChannel: GetTaskQuery_task_discordChannel | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
+  project: GetTaskQuery_task_project;
 }
 
 export interface GetTaskQuery {
@@ -5854,18 +5834,6 @@ export interface TaskCreatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
 export interface TaskCreatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -5924,7 +5892,6 @@ export interface TaskCreatedSubscription_task {
   parentTask: TaskCreatedSubscription_task_parentTask | null;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
-  project: TaskCreatedSubscription_task_project;
   discordChannel: TaskCreatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
@@ -6227,18 +6194,6 @@ export interface TaskUpdatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
 export interface TaskUpdatedSubscription_task_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -6297,7 +6252,6 @@ export interface TaskUpdatedSubscription_task {
   parentTask: TaskUpdatedSubscription_task_parentTask | null;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
-  project: TaskUpdatedSubscription_task_project;
   discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
@@ -7873,18 +7827,6 @@ export interface TaskDetails_creator {
   imageUrl: string | null;
 }
 
-export interface TaskDetails_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
 export interface TaskDetails_discordChannel {
   __typename: "DiscordChannel";
   id: Scalar.UUID;
@@ -7943,7 +7885,6 @@ export interface TaskDetails {
   parentTask: TaskDetails_parentTask | null;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
-  project: TaskDetails_project;
   discordChannel: TaskDetails_discordChannel | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];

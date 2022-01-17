@@ -412,9 +412,6 @@ export const taskDetails = gql`
     creator {
       ...User
     }
-    project {
-      ...Project
-    }
     discordChannel {
       ...DiscordChannel
     }
@@ -431,7 +428,6 @@ export const taskDetails = gql`
 
   ${task}
   ${user}
-  ${project}
   ${githubPullRequest}
   ${githubBranch}
   ${discordChannel}
