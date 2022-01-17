@@ -50,6 +50,7 @@ import {
   CreateTaskApplicationMutationVariables,
   DeleteTaskApplicationMutation,
   DeleteTaskApplicationMutationVariables,
+  TaskStatus,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -89,7 +90,11 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
   return useCallback(
     (task: Task) => {
-      if (!task.parentTaskId) {
+      const isDoneAssignedAndHasReward =
+        !!task.assignees.length &&
+        !!task.reward &&
+        task.status === TaskStatus.DONE;
+      if (!task.parentTaskId || isDoneAssignedAndHasReward) {
         try {
           const data = apolloClient.readQuery<
             GetProjectTasksQuery,

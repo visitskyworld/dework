@@ -8,6 +8,7 @@ import {
   Not,
   Repository,
   OrderByCondition,
+  Brackets,
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "./task.events";
@@ -170,15 +171,28 @@ export class TaskService {
       query = query.andWhere("task.rewardId IN (:...rewardIds)", { rewardIds });
     }
 
+    if (!!projectIds || !!organizationIds) {
+      query = query.andWhere(
+        new Brackets((qb) => {
+          qb.where("task.parentTaskId IS NULL").orWhere(
+            new Brackets((qb) => {
+              qb.where("task.status = :done", { done: TaskStatus.DONE })
+                .andWhere("task.rewardId IS NOT NULL")
+                .andWhere("assignee.id IS NOT NULL");
+            })
+          );
+        })
+      );
+    }
+
     if (!!projectIds) {
-      query = query
-        .andWhere("task.parentTaskId IS NULL")
-        .andWhere("task.projectId IN (:...projectIds)", { projectIds });
+      query = query.andWhere("task.projectId IN (:...projectIds)", {
+        projectIds,
+      });
     }
 
     if (!!organizationIds) {
       query = query
-        .andWhere("task.parentTaskId IS NULL")
         .andWhere("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })

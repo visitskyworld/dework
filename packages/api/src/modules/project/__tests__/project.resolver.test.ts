@@ -202,12 +202,22 @@ describe("ProjectResolver", () => {
         );
       });
 
-      it("should not return subtasks", async () => {
+      it("should not return subtasks (unless they're done, assigned and have a reward)", async () => {
         const project = await fixtures.createProject();
+        const user = await fixtures.createUser();
         const task = await fixtures.createTask({ projectId: project.id });
         const subtask = await fixtures.createTask({
           projectId: project.id,
           parentTaskId: task.id,
+        });
+        const doneAssignedBountySubtask = await fixtures.createTask({
+          projectId: project.id,
+          parentTaskId: task.id,
+          status: TaskStatus.DONE,
+          assignees: [user],
+          reward: {
+            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
+          },
         });
 
         const response = await client.request({
@@ -221,6 +231,9 @@ describe("ProjectResolver", () => {
         );
         expect(fetched.tasks).not.toContainEqual(
           expect.objectContaining({ id: subtask.id })
+        );
+        expect(fetched.tasks).toContainEqual(
+          expect.objectContaining({ id: doneAssignedBountySubtask.id })
         );
       });
 
