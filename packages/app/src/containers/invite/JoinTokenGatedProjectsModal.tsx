@@ -44,8 +44,6 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
     [onVerify]
   );
 
-  console.log("tokens...", tokens);
-
   if (!user) return null;
   return (
     <Modal
@@ -53,6 +51,7 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
       footer={null}
       title="Token Gate"
       width={368}
+      maskClosable={false}
       onCancel={onClose}
     >
       <Space direction="vertical" size="large" style={{ width: "100%" }}>

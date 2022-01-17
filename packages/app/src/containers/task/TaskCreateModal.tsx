@@ -65,6 +65,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     <Modal
       title="Create Task"
       visible={visible}
+      maskClosable={false}
       onCancel={onCancel}
       footer={null}
       width={768}
