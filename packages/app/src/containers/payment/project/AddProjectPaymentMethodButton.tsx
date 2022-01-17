@@ -16,7 +16,8 @@ export const AddProjectPaymentMethodButton: FC<Props> = ({
     <>
       <Button {...buttonProps} onClick={addPaymentMethod.toggleOn} />
       <AddProjectPaymentMethodModal
-        toggle={addPaymentMethod}
+        visible={addPaymentMethod.isOn}
+        onClose={addPaymentMethod.toggleOff}
         projectId={projectId}
       />
     </>

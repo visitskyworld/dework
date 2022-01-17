@@ -59,6 +59,13 @@ export const TaskRewardFormFields: FC<Props> = ({
   value,
   onChange,
 }) => {
+  const addPaymentMethod = useToggle();
+  const forcefullyShowNetworkSelect = useToggle();
+  const handlePaymentMethodModalClosed = useCallback(() => {
+    addPaymentMethod.toggleOff();
+    forcefullyShowNetworkSelect.toggleOn();
+  }, [addPaymentMethod, forcefullyShowNetworkSelect]);
+
   const project = useProject(projectId);
   const networks = useMemo(
     () =>
@@ -82,9 +89,11 @@ export const TaskRewardFormFields: FC<Props> = ({
   );
 
   const handleChangeNetworkId = useCallback(
-    (networkId: string) =>
-      onChange?.({ ...value, networkId, token: undefined }),
-    [value, onChange]
+    (networkId: string) => {
+      forcefullyShowNetworkSelect.toggleOff();
+      onChange?.({ ...value, networkId, token: undefined });
+    },
+    [value, onChange, forcefullyShowNetworkSelect]
   );
   const handleChangeAmount = useCallback(
     (amount: number | null) =>
@@ -104,8 +113,6 @@ export const TaskRewardFormFields: FC<Props> = ({
   const handleClear = useCallback(() => {
     onChange?.({});
   }, [onChange]);
-
-  const addPaymentMethod = useToggle();
 
   if (!project) return null;
   return (
@@ -131,6 +138,8 @@ export const TaskRewardFormFields: FC<Props> = ({
             placeholder="Select where you'll pay"
             value={value?.networkId}
             allowClear
+            open={forcefullyShowNetworkSelect.isOn || undefined}
+            onBlur={forcefullyShowNetworkSelect.toggleOff}
             dropdownRender={(menu) => (
               <>
                 {menu}
@@ -190,7 +199,8 @@ export const TaskRewardFormFields: FC<Props> = ({
       </Space>
       <AddProjectPaymentMethodModal
         projectId={projectId}
-        toggle={addPaymentMethod}
+        visible={addPaymentMethod.isOn}
+        onClose={handlePaymentMethodModalClosed}
       />
     </>
   );

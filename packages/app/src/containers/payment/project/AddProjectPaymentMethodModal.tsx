@@ -1,23 +1,24 @@
-import { UseToggleHook } from "@dewo/app/util/hooks";
 import { Modal } from "antd";
 import React, { FC } from "react";
 import { ProjectPaymentMethodForm } from "./ProjectPaymentMethodForm";
 
 interface Props {
+  visible: boolean;
   projectId: string;
-  toggle: UseToggleHook;
+  onClose(): void;
 }
 
 export const AddProjectPaymentMethodModal: FC<Props> = ({
   projectId,
-  toggle,
+  visible,
+  onClose,
 }) => (
   <Modal
-    visible={toggle.isOn}
+    visible={visible}
     title="Add Payment Method"
     footer={null}
-    onCancel={toggle.toggleOff}
+    onCancel={onClose}
   >
-    <ProjectPaymentMethodForm projectId={projectId} onDone={toggle.toggleOff} />
+    <ProjectPaymentMethodForm projectId={projectId} onDone={onClose} />
   </Modal>
 );
