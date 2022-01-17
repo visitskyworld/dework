@@ -43,7 +43,7 @@ export interface PaymentNetworkConfig extends Record<PaymentNetworkType, any> {
 export class PaymentNetwork<
   TPaymentNetworkType extends PaymentNetworkType = PaymentNetworkType
 > extends Audit {
-  @Field()
+  @Field(() => PaymentNetworkType)
   @Column("enum", { enum: PaymentNetworkType })
   public type!: TPaymentNetworkType;
 

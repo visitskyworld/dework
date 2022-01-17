@@ -3,6 +3,7 @@ import * as Icons from "@ant-design/icons";
 import {
   PaymentMethod,
   PaymentMethodType,
+  PaymentNetworkType,
   PaymentToken,
   PaymentTokenType,
   PaymentTokenVisibility,
@@ -21,6 +22,7 @@ import {
   networkSlugsByPaymentMethodType,
   paymentMethodTypeToString,
 } from "../util";
+import { ConnectHiroButton } from "../ConnectHiroButton";
 
 interface FormValues {
   type: PaymentMethodType;
@@ -38,6 +40,7 @@ const paymentMethodTypes: PaymentMethodType[] = [
   PaymentMethodType.METAMASK,
   PaymentMethodType.GNOSIS_SAFE,
   PaymentMethodType.PHANTOM,
+  PaymentMethodType.HIRO,
 ];
 
 export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
@@ -237,6 +240,8 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                   return <ConnectGnosisSafe network={selectedNetwork!} />;
                 case PaymentMethodType.METAMASK:
                   return <ConnectMetamaskButton network={selectedNetwork!} />;
+                case PaymentMethodType.HIRO:
+                  return <ConnectHiroButton network={selectedNetwork!} />;
               }
             })()}
           </Form.Item>
@@ -272,14 +277,16 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                 dropdownRender={(menu) => (
                   <>
                     {menu}
-                    <Button
-                      type="ghost"
-                      size="small"
-                      style={{ margin: 8 }}
-                      icon={<Icons.PlusCircleOutlined />}
-                      children="Add your own ERC20 token"
-                      onClick={addPaymentToken.toggleOn}
-                    />
+                    {selectedNetwork.type === PaymentNetworkType.ETHEREUM && (
+                      <Button
+                        type="ghost"
+                        size="small"
+                        style={{ margin: 8 }}
+                        icon={<Icons.PlusCircleOutlined />}
+                        children="Add your own ERC20 token"
+                        onClick={addPaymentToken.toggleOn}
+                      />
+                    )}
                   </>
                 )}
               >
@@ -287,9 +294,9 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                   <Select.Option
                     key={token.id}
                     value={token.id}
-                    label={token.name}
+                    label={`${token.name} (${token.symbol})`}
                   >
-                    {token.name}
+                    {token.name} ({token.symbol})
                   </Select.Option>
                 ))}
                 {customTokens
