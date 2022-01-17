@@ -13,5 +13,5 @@ export const Constants = {
 
 export const siteTitle = "Dework";
 export const siteDescription =
-  "The task manager & platform for DAOs and contributors";
+  "The task manager for DAOs and decentralized work";
 export const siteURL = "https://dework.xyz";

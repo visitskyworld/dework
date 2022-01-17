@@ -9,8 +9,8 @@ export class DiscordMessage {
   public channelId!: string;
 
   @Field()
-  public author?: string;
+  public content!: string;
 
   @Field()
-  public content?: string;
+  public author?: string;
 }

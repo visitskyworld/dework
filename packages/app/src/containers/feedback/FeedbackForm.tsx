@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Input, Typography, Form, Col, Button, message, Row } from "antd";
-import { useCurrentUser, useToggle } from "@dewo/app/util/hooks";
+import { useToggle } from "@dewo/app/util/hooks";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { EntityDetailType } from "../../graphql/types";
 import { useForm } from "antd/lib/form/Form";
 import { usePostFeedbackToDiscord } from "./hooks";
@@ -16,7 +17,7 @@ interface FeedbackFormProps {
 
 export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
   const [form] = useForm<FeedbackFormValues>();
-  const user = useCurrentUser();
+  const { user } = useAuthContext();
   const loading = useToggle();
   const postFeedbackToDiscord = usePostFeedbackToDiscord();
 
