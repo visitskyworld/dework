@@ -95,9 +95,11 @@ export class DiscordService implements OnModuleInit {
     message: string,
     discordUsername?: string
   ): Promise<DiscordMessage> {
-    const deworkGuildId = "918603668935311391";
+    const deworkGuildId = this.config.get<string>("DISCORD_DEWORK_GUILD_ID")!;
     const deworkGuild = await this.client.guilds.fetch(deworkGuildId);
-    const feedbackChannelId = "932376255498686515";
+    const feedbackChannelId = this.config.get<string>(
+      "DISCORD_DEWORK_FEEDBACK_CHANNEL_ID"
+    )!;
     const feedbackChannel = (await deworkGuild.channels.fetch(
       feedbackChannelId,
       {
