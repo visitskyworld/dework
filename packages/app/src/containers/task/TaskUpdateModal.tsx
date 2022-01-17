@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
-  const task = useTask(taskId, "cache-and-network");
+  const task = useTask(taskId, "network-only");
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
     async ({ subtasks, ...values }: TaskFormValues) => {

@@ -105,7 +105,8 @@ export const SubtaskInput: FC<Props> = ({
             loading={adding.isOn}
             onClick={!!newName ? handleAddTask : undefined}
           />
-          <Input
+          <Input.TextArea
+            autoSize
             className="dewo-field dewo-field-focus-border"
             style={{ flex: 1 }}
             placeholder="Add subtask..."

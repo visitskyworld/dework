@@ -34,6 +34,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { CustomPermissionActions } from "../auth/permissions";
 import { ProjectService } from "../project/project.service";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 
 @Injectable()
 @Resolver(() => Task)
@@ -56,6 +57,14 @@ export class TaskResolver {
     if (!!task.assignees) return task.assignees;
     const refetched = await this.taskService.findById(task.id);
     return refetched!.assignees;
+  }
+
+  @ResolveField(() => TaskReward, { nullable: true })
+  public async reward(@Parent() task: Task): Promise<TaskReward | undefined> {
+    if (!task.rewardId) return undefined;
+    if (!!task.reward) return task.reward;
+    const refetched = await this.taskService.findById(task.id);
+    return refetched!.reward;
   }
 
   @ResolveField(() => String)
