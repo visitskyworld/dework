@@ -1,8 +1,9 @@
-import { Args, Query } from "@nestjs/graphql";
+import { Args, Mutation, Query } from "@nestjs/graphql";
 import { Injectable } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
+import { DiscordMessage } from "./dto/DiscordMessage";
 
 @Injectable()
 export class DiscordIntegrationResolver {
@@ -16,5 +17,15 @@ export class DiscordIntegrationResolver {
     parentChannelId: string
   ): Promise<DiscordIntegrationChannel[]> {
     return this.discord.getChannels(organizationId, parentChannelId);
+  }
+
+  @Mutation(() => DiscordMessage, { nullable: true })
+  public async postFeedbackToDiscord(
+    @Args("feedbackContent", { type: () => String })
+    feedbackContent: string,
+    @Args("discordUsername", { type: () => String, nullable: true })
+    discordUsername?: string
+  ): Promise<DiscordMessage> {
+    return this.discord.postFeedback(feedbackContent, discordUsername);
   }
 }

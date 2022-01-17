@@ -494,3 +494,18 @@ export const createTasksFromGithubIssues = gql`
 
   ${Fragments.task}
 `;
+export const postFeedbackToDiscord = gql`
+  mutation PostFeedbackToDiscordMutation(
+    $feedbackContent: String!
+    $discordUsername: String
+  ) {
+    message: postFeedbackToDiscord(
+      feedbackContent: $feedbackContent
+      discordUsername: $discordUsername
+    ) {
+      ...DiscordMessage
+    }
+  }
+
+  ${Fragments.discordMessage}
+`;

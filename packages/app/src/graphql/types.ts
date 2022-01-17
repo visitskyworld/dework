@@ -3148,6 +3148,32 @@ export interface CreateTasksFromGithubIssuesMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: PostFeedbackToDiscordMutation
+// ====================================================
+
+export interface PostFeedbackToDiscordMutation_message {
+  __typename: "DiscordMessage";
+  id: string;
+  author: string;
+  channelId: string;
+  content: string;
+}
+
+export interface PostFeedbackToDiscordMutation {
+  message: PostFeedbackToDiscordMutation_message | null;
+}
+
+export interface PostFeedbackToDiscordMutationVariables {
+  feedbackContent: string;
+  discordUsername?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -7155,6 +7181,23 @@ export interface DiscordIntegrationChannel {
   name: string;
   integrationId: Scalar.UUID;
   permissions: string[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: DiscordMessage
+// ====================================================
+
+export interface DiscordMessage {
+  __typename: "DiscordMessage";
+  id: string;
+  author: string;
+  channelId: string;
+  content: string;
 }
 
 /* tslint:disable */

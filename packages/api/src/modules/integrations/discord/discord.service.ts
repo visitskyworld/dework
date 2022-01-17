@@ -14,6 +14,7 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
+import { DiscordMessage } from "./dto/DiscordMessage";
 
 @Injectable()
 @EventSubscriber()
@@ -89,4 +90,48 @@ export class DiscordService implements OnModuleInit {
       integrationId: integration.id,
       permissions: channel.permissionsFor(botUser)?.toArray() ?? [],
     });
+
+  public async postFeedback(
+    message: string,
+    discordUsername?: string
+  ): Promise<DiscordMessage> {
+    const deworkGuildId = "918603668935311391";
+    const deworkGuild = await this.client.guilds.fetch(deworkGuildId);
+    const feedbackChannelId = "932376255498686515";
+    const feedbackChannel = (await deworkGuild.channels.fetch(
+      feedbackChannelId,
+      {
+        force: true,
+      }
+    )) as Discord.TextChannel;
+
+    this.logger.debug(
+      `Fetched Dework  Discord guild and #feedback channel: ${JSON.stringify({
+        guildId: deworkGuildId,
+        channelId: feedbackChannelId,
+      })}`
+    );
+
+    const sentMessage = await feedbackChannel.send({
+      content: `Feedback posted by ${
+        discordUsername ? `Discord user ${discordUsername}` : "anon"
+      }`,
+      embeds: [
+        {
+          description: message,
+        },
+      ],
+    });
+
+    this.logger.debug(
+      `Sent message to feedback channel: ${JSON.stringify({ sentMessage })}`
+    );
+
+    return {
+      id: sentMessage.id,
+      channelId: sentMessage.channelId,
+      content: sentMessage.content,
+      author: discordUsername,
+    } as DiscordMessage;
+  }
 }

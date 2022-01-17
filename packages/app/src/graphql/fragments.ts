@@ -309,6 +309,15 @@ export const discordIntegrationChannel = gql`
   }
 `;
 
+export const discordMessage = gql`
+  fragment DiscordMessage on DiscordMessage {
+    id
+    author
+    channelId
+    content
+  }
+`;
+
 export const taskApplication = gql`
   fragment TaskApplication on TaskApplication {
     id

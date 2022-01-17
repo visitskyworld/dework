@@ -3,6 +3,7 @@ import { Input, Typography, Form, Col, Button, message, Row } from "antd";
 import { useCurrentUser, useToggle } from "@dewo/app/util/hooks";
 import { EntityDetailType } from "../../graphql/types";
 import { useForm } from "antd/lib/form/Form";
+import { usePostFeedbackToDiscord } from "./hooks";
 
 interface FeedbackFormValues {
   discordUsername?: string;
@@ -17,12 +18,13 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
   const [form] = useForm<FeedbackFormValues>();
   const user = useCurrentUser();
   const loading = useToggle();
+  const postFeedbackToDiscord = usePostFeedbackToDiscord();
 
-  const handleSubmitForm = async () => {
+  const handleSubmitForm = async (values: FeedbackFormValues) => {
     loading.toggleOn();
     try {
-      await form.validateFields();
-      await form.submit();
+      form.validateFields();
+      await postFeedbackToDiscord(values);
       message.success("Feedback submitted successfully!");
     } catch {
       message.error("Feedback submission failed");
@@ -44,6 +46,7 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
           (d) => d.type === EntityDetailType.discord
         )?.value,
       }}
+      onFinish={handleSubmitForm}
     >
       <Col>
         <Typography.Title level={5}>Discord username</Typography.Title>
@@ -70,14 +73,14 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
           type="primary"
           size="middle"
           loading={loading.isOn}
-          onClick={handleSubmitForm}
+          htmlType="submit"
         >
           Submit
         </Button>
         <Button
           type="text"
           size="middle"
-          loading={loading.isOn}
+          disabled={loading.isOn}
           onClick={handleCancelForm}
         >
           Cancel
