@@ -273,10 +273,9 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                   <>
                     {menu}
                     <Button
-                      block
-                      type="text"
-                      style={{ textAlign: "left", marginTop: 4 }}
-                      className="text-secondary"
+                      type="ghost"
+                      size="small"
+                      style={{ margin: 8 }}
                       icon={<Icons.PlusCircleOutlined />}
                       children="Add your own ERC20 token"
                       onClick={addPaymentToken.toggleOn}
