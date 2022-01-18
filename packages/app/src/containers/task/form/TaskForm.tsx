@@ -219,14 +219,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 icon={<DiscordIcon />}
                 size="small"
               >
-                Join discussion in
-                <Typography.Text
-                  strong
-                  ellipsis
-                  style={{ marginLeft: 4, maxWidth: 200 }}
-                >
-                  #{task.discordChannel.name}
-                </Typography.Text>
+                Go to Discord thread
               </Button>
             </FormSection>
           )}
