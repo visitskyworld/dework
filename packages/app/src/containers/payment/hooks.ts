@@ -63,6 +63,10 @@ export function explorerLink(payment: Payment): string | undefined {
     return `https://gnosis-safe.io/app/${prefix}${payment.paymentMethod.address}/transactions/queue`;
   }
 
+  if (!!payment.data?.txId) {
+    return `https://explorer.stacks.co/txid/${payment.data.txId}?chain=${payment.network.config.chain}`;
+  }
+
   return undefined;
 }
 

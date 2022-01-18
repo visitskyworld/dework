@@ -5,6 +5,7 @@ import {
   PaymentData,
   PaymentStatus,
   PhantomPaymentData,
+  StacksPaymentData,
 } from "@dewo/api/models/Payment";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { Injectable, Logger } from "@nestjs/common";
@@ -44,7 +45,7 @@ export class PaymentPoller {
     [PaymentMethodType.METAMASK]: ms.minutes(30),
     [PaymentMethodType.PHANTOM]: ms.minutes(10),
     [PaymentMethodType.GNOSIS_SAFE]: Number.MAX_SAFE_INTEGER,
-    [PaymentMethodType.HIRO]: 0,
+    [PaymentMethodType.HIRO]: ms.hours(2),
   };
 
   private blockDepthBeforeConfirmed: Record<PaymentMethodType, number> = {
@@ -149,6 +150,11 @@ export class PaymentPoller {
           payment.data as PhantomPaymentData,
           network as PaymentNetwork<PaymentNetworkType.SOLANA>
         );
+      case PaymentMethodType.HIRO:
+        return this.isStacksTxConfirmed(
+          payment.data as StacksPaymentData,
+          network as PaymentNetwork<PaymentNetworkType.STACKS>
+        );
       case PaymentMethodType.METAMASK:
       case PaymentMethodType.GNOSIS_SAFE:
         const data = payment.data as
@@ -234,6 +240,13 @@ export class PaymentPoller {
     );
     const confirmed = status.value?.confirmationStatus === "finalized";
     return { confirmed };
+  }
+
+  public async isStacksTxConfirmed(
+    data: StacksPaymentData,
+    network: PaymentNetwork<PaymentNetworkType.STACKS>
+  ): Promise<ConfirmPaymentResponse> {
+    const connection = new stacks.Connection(network.config.rpcUrl);
   }
 
   public async isGnosisSafeTxConfirmed(
