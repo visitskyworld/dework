@@ -107,11 +107,12 @@ export class DiscordIntegrationService {
           channelId: channel.id,
         })}`
       );
-      const channelToPostTo = await this.getDiscordChannelToPostTo(
-        event.task,
-        channel,
-        integration.config
-      );
+      const { channel: channelToPostTo, new: wasChannelToPostToJustCreated } =
+        await this.getDiscordChannelToPostTo(
+          event.task,
+          channel,
+          integration.config
+        );
       this.logger.log(
         `Found Discord channel to post to: ${JSON.stringify({
           channelToPostToId: channelToPostTo?.id,
@@ -131,43 +132,34 @@ export class DiscordIntegrationService {
           status: event.task.status,
         })}`
       );
-      if (statusChanged) {
-        switch (event.task.status) {
-          // case TaskStatus.IN_PROGRESS:
-          //   await this.postInProgress(event.task, channelToPostTo);
-          //   break;
-          case TaskStatus.IN_REVIEW:
-            await this.postMovedIntoReview(event.task, channelToPostTo);
-            break;
-          case TaskStatus.DONE:
-            if (
-              integration.config.features.includes(
-                DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-              )
-            ) {
-              await this.postDone(channelToPostTo, event.task);
-            }
 
-            const threepids = await this.findTaskUserThreepids(event.task);
-            await channel.send({
-              embeds: [
-                {
-                  title: event.task.name,
-                  description: `Task is now done! ${threepids
-                    .map((t) => `<@${t.threepid}>`)
-                    .join(" ")}`,
-                  url: await this.permalink.get(event.task),
-                  image: {
-                    url: gifs[Math.floor(Math.random() * gifs.length)],
-                  },
-                },
-              ],
-            });
-            break;
+      if (statusChanged && event.task.status === TaskStatus.IN_REVIEW) {
+        await this.postMovedIntoReview(event.task, channelToPostTo);
+      } else if (statusChanged && event.task.status === TaskStatus.DONE) {
+        if (
+          integration.config.features.includes(
+            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+          )
+        ) {
+          await this.postDone(channelToPostTo, event.task);
         }
-      }
 
-      if (event instanceof TaskUpdatedEvent) {
+        const threepids = await this.findTaskUserThreepids(event.task);
+        await channel.send({
+          embeds: [
+            {
+              title: event.task.name,
+              description: `Task is now done! ${threepids
+                .map((t) => `<@${t.threepid}>`)
+                .join(" ")}`,
+              url: await this.permalink.get(event.task),
+              image: {
+                url: gifs[Math.floor(Math.random() * gifs.length)],
+              },
+            },
+          ],
+        });
+      } else if (event instanceof TaskUpdatedEvent) {
         if (event.task.ownerId !== event.prevTask.ownerId) {
           await this.postOwnerChange(event.task, channelToPostTo);
         }
@@ -182,6 +174,23 @@ export class DiscordIntegrationService {
       } else if (event instanceof TaskCreatedEvent) {
         if (!!event.task.assignees.length) {
           await this.postAssigneesChange(event.task, channelToPostTo);
+        } else if (wasChannelToPostToJustCreated) {
+          const creator = await event.task.creator;
+          await this.postTaskCard(
+            channelToPostTo,
+            event.task,
+            `Thread for Dework task "${event.task.name}"`,
+            undefined,
+            {
+              author: !!creator
+                ? {
+                    name: creator.username,
+                    iconURL: creator.imageUrl,
+                    url: await this.permalink.get(creator),
+                  }
+                : undefined,
+            }
+          );
         }
       }
 
@@ -216,7 +225,10 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextChannel,
     config: DiscordProjectIntegrationConfig
-  ): Promise<Discord.TextBasedChannels | undefined> {
+  ): Promise<{
+    channel: Discord.TextBasedChannels | undefined;
+    new: boolean;
+  }> {
     const toChannel =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL;
     const toThread =
@@ -224,22 +236,22 @@ export class DiscordIntegrationService {
     const toThreadPerTask =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK;
     if (config.features.includes(toChannel)) {
-      return channel;
+      return { channel, new: false };
     }
 
     if (config.features.includes(toThread) && !!config.threadId) {
       const thread = await channel.threads.fetch(config.threadId, {
         force: true,
       });
-      return thread ?? undefined;
+      return { channel: thread ?? undefined, new: false };
     }
 
     if (config.features.includes(toThreadPerTask)) {
       const discordThread = await task.discordChannel;
-      if (!!discordThread?.deletedAt) return undefined;
+      if (!!discordThread?.deletedAt) return { channel: undefined, new: false };
 
       const existingThread = await this.getExistingDiscordThread(task, channel);
-      if (!!existingThread) return existingThread;
+      if (!!existingThread) return { channel: existingThread, new: false };
 
       const shouldCreate = await this.shouldCreateThread(task);
       if (!shouldCreate) {
@@ -248,13 +260,16 @@ export class DiscordIntegrationService {
             task
           )})`
         );
-        return;
+        return { channel: undefined, new: false };
       }
 
-      return this.createDiscordThread(task, channel);
+      return {
+        channel: await this.createDiscordThread(task, channel),
+        new: true,
+      };
     }
 
-    return undefined;
+    return { channel: undefined, new: false };
   }
 
   private async getProjectIntegration(
@@ -485,23 +500,6 @@ export class DiscordIntegrationService {
       name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
       autoArchiveDuration: 1440,
     });
-
-    const creator = await task.creator;
-    await this.postTaskCard(
-      thread,
-      task,
-      `Thread for Dework task "${task.name}"`,
-      undefined,
-      {
-        author: !!creator
-          ? {
-              name: creator.username,
-              iconURL: creator.imageUrl,
-              url: await this.permalink.get(creator),
-            }
-          : undefined,
-      }
-    );
 
     await this.discordChannelRepo.save({
       taskId: task.id,
