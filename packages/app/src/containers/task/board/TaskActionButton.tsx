@@ -14,7 +14,7 @@ import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
-import { CreateOpenBountySubmissionButton } from "./CreateOpenBountySubmissionButton";
+import { CreateSubmissionButton } from "./CreateSubmissionButton";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -32,7 +32,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
   const canClaimTask = usePermission("claimTask", task);
-  const canUpdateTask = usePermission("update", task);
+  const canUpdateTask = usePermission("update", task, "_");
   const canCreateSubmission = usePermission("update", task, "submissions");
 
   if (shouldShowInlinePayButton) {
@@ -55,7 +55,19 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
 
   if (task.status === TaskStatus.TODO) {
     if (canUpdateTask) {
-      if (!!task.applications.length) {
+      console.log(task);
+      if (!!task.submissions.length) {
+        return (
+          <Button
+            size="small"
+            type="primary"
+            icon={<Icons.LockOutlined />}
+            onClick={navigateToTask}
+          >
+            Choose Submission
+          </Button>
+        );
+      } else if (!!task.applications.length) {
         return (
           <Button
             size="small"
@@ -67,13 +79,19 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
           </Button>
         );
       }
+    } else if (canCreateSubmission) {
+      if (!!currentUserId) {
+        return <CreateSubmissionButton task={task} />;
+      } else {
+        return (
+          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            Create Submission
+          </LoginButton>
+        );
+      }
     } else if (canClaimTask) {
       if (!!currentUserId) {
-        if (canCreateSubmission) {
-          return <CreateOpenBountySubmissionButton task={task} />;
-        } else {
-          return <ClaimTaskButton task={task} />;
-        }
+        return <ClaimTaskButton task={task} />;
       } else {
         return (
           <LoginButton size="small" icon={<Icons.UnlockOutlined />}>

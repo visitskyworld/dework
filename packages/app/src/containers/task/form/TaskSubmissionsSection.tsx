@@ -3,7 +3,7 @@ import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEdit
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskDetails } from "@dewo/app/graphql/types";
-import { Card, Divider, List, Typography } from "antd";
+import { Card, Divider, List } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
 import { TaskSubmissionListItem } from "./TaskSubmissionListItem";
@@ -29,6 +29,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
 
   const showEditor =
     (canCreate && !currentSubmission) || (canUpdate && !!currentSubmission);
+  const showAllSubmissions = !!canRead && !!task.submissions.length;
 
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
@@ -44,6 +45,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     [user, task.id, currentSubmission, createSubmission, updateSubmission]
   );
 
+  if (!showAllSubmissions && !showEditor && !approvedSubmission) return null;
   if (!!approvedSubmission) {
     return (
       <>
@@ -63,7 +65,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   return (
     <>
       <Divider>Submissions</Divider>
-      {!!canRead && !!task.submissions.length && (
+      {showAllSubmissions && (
         <FormSection label="All Submissions">
           <Card size="small" className="dewo-card-highlighted">
             <List
@@ -76,11 +78,8 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
         </FormSection>
       )}
 
-      <FormSection label="Your Submission">
-        {!canCreate && !task.submissions.length && (
-          <Typography.Text type="secondary">No submissions yet</Typography.Text>
-        )}
-        {showEditor && (
+      {showEditor && (
+        <FormSection label="Your Submission">
           <MarkdownEditor
             initialValue={currentSubmission?.content}
             placeholder="No submissions yet. Submit your work here."
@@ -91,8 +90,8 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
             mode="update"
             onSave={handleSave}
           />
-        )}
-      </FormSection>
+        </FormSection>
+      )}
     </>
   );
 };
