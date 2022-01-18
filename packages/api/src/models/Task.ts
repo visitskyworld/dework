@@ -1,4 +1,10 @@
-import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  InputType,
+  Int,
+  ObjectType,
+  registerEnumType,
+} from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -33,6 +39,13 @@ export enum TaskStatus {
 }
 
 registerEnumType(TaskStatus, { name: "TaskStatus" });
+
+@ObjectType()
+@InputType("TaskOptionsInput")
+export class TaskOptions {
+  @Field({ nullable: true })
+  public enableTaskApplicationSubmission?: boolean;
+}
 
 @Entity()
 @ObjectType()
@@ -169,6 +182,10 @@ export class Task extends Audit {
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Column("json", { nullable: true })
+  @Field({ nullable: true })
+  public options?: TaskOptions;
 
   @Field()
   public slug!: string;

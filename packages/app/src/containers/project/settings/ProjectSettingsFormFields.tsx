@@ -1,8 +1,8 @@
 import React, { FC } from "react";
-import { Button, Checkbox, Divider, Form, Radio } from "antd";
-import * as Icons from "@ant-design/icons";
+import { Checkbox, Form, Radio } from "antd";
 import { ProjectVisibility } from "@dewo/app/graphql/types";
 import { UseToggleHook } from "@dewo/app/util/hooks";
+import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 
 interface Props {
   toggle: UseToggleHook;
@@ -21,18 +21,7 @@ export const ProjectSettingsFormFields: FC<Props> = ({ toggle }) => {
         </Radio.Group>
       </Form.Item>
 
-      <Divider plain>
-        <Button
-          type="text"
-          style={{ padding: "0 8px", height: "unset" }}
-          className="text-secondary"
-          onClick={toggle.toggle}
-        >
-          Advanced
-          {toggle.isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
-        </Button>
-      </Divider>
-      <Form.Item hidden={!toggle.isOn}>
+      <AdvancedSectionCollapse toggle={toggle}>
         <Form.Item
           name={["options", "showBacklogColumn"]}
           valuePropName="checked"
@@ -41,7 +30,7 @@ export const ProjectSettingsFormFields: FC<Props> = ({ toggle }) => {
         >
           <Checkbox>Enable Suggestions Column</Checkbox>
         </Form.Item>
-      </Form.Item>
+      </AdvancedSectionCollapse>
     </>
   );
 };

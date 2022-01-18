@@ -367,6 +367,9 @@ export const task = gql`
     reactions {
       ...TaskReaction
     }
+    options {
+      enableTaskApplicationSubmission
+    }
   }
 
   ${taskTag}

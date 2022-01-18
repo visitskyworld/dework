@@ -44,6 +44,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       ownerId: task?.owner?.id,
       status: task?.status!,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
+      options: _.omit(task?.options, "__typename"),
       subtasks: _(task?.subtasks)
         .sortBy((s) => s.sortKey)
         .map(

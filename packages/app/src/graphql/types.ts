@@ -1200,6 +1200,11 @@ export interface CreateTaskMutation_task_reactions {
   reaction: string;
 }
 
+export interface CreateTaskMutation_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1221,6 +1226,7 @@ export interface CreateTaskMutation_task {
   applications: CreateTaskMutation_task_applications[];
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
+  options: CreateTaskMutation_task_options | null;
 }
 
 export interface CreateTaskMutation {
@@ -1364,6 +1370,11 @@ export interface UpdateTaskMutation_task_reactions {
   reaction: string;
 }
 
+export interface UpdateTaskMutation_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1385,6 +1396,7 @@ export interface UpdateTaskMutation_task {
   applications: UpdateTaskMutation_task_applications[];
   review: UpdateTaskMutation_task_review | null;
   reactions: UpdateTaskMutation_task_reactions[];
+  options: UpdateTaskMutation_task_options | null;
 }
 
 export interface UpdateTaskMutation {
@@ -1528,6 +1540,11 @@ export interface CreateTaskApplicationMutation_application_task_reactions {
   reaction: string;
 }
 
+export interface CreateTaskApplicationMutation_application_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface CreateTaskApplicationMutation_application_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1549,6 +1566,7 @@ export interface CreateTaskApplicationMutation_application_task {
   applications: CreateTaskApplicationMutation_application_task_applications[];
   review: CreateTaskApplicationMutation_application_task_review | null;
   reactions: CreateTaskApplicationMutation_application_task_reactions[];
+  options: CreateTaskApplicationMutation_application_task_options | null;
 }
 
 export interface CreateTaskApplicationMutation_application {
@@ -1698,6 +1716,11 @@ export interface DeleteTaskApplicationMutation_task_reactions {
   reaction: string;
 }
 
+export interface DeleteTaskApplicationMutation_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface DeleteTaskApplicationMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1719,6 +1742,7 @@ export interface DeleteTaskApplicationMutation_task {
   applications: DeleteTaskApplicationMutation_task_applications[];
   review: DeleteTaskApplicationMutation_task_review | null;
   reactions: DeleteTaskApplicationMutation_task_reactions[];
+  options: DeleteTaskApplicationMutation_task_options | null;
 }
 
 export interface DeleteTaskApplicationMutation {
@@ -2702,6 +2726,11 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reactions {
   reaction: string;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_subtasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2723,6 +2752,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   applications: CreateTaskPaymentsMutation_tasks_subtasks_applications[];
   review: CreateTaskPaymentsMutation_tasks_subtasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_subtasks_reactions[];
+  options: CreateTaskPaymentsMutation_tasks_subtasks_options | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_tags {
@@ -2842,6 +2872,11 @@ export interface CreateTaskPaymentsMutation_tasks_reactions {
   reaction: string;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2914,6 +2949,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   applications: CreateTaskPaymentsMutation_tasks_applications[];
   review: CreateTaskPaymentsMutation_tasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_reactions[];
+  options: CreateTaskPaymentsMutation_tasks_options | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -3105,6 +3141,11 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reactions {
   reaction: string;
 }
 
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3126,6 +3167,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   applications: CreateTasksFromGithubIssuesMutation_project_tasks_applications[];
   review: CreateTasksFromGithubIssuesMutation_project_tasks_review | null;
   reactions: CreateTasksFromGithubIssuesMutation_project_tasks_reactions[];
+  options: CreateTasksFromGithubIssuesMutation_project_tasks_options | null;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project {
@@ -3414,6 +3456,11 @@ export interface UserTasksQuery_user_tasks_reactions {
   reaction: string;
 }
 
+export interface UserTasksQuery_user_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface UserTasksQuery_user_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3457,6 +3504,7 @@ export interface UserTasksQuery_user_tasks {
   applications: UserTasksQuery_user_tasks_applications[];
   review: UserTasksQuery_user_tasks_review | null;
   reactions: UserTasksQuery_user_tasks_reactions[];
+  options: UserTasksQuery_user_tasks_options | null;
   project: UserTasksQuery_user_tasks_project;
 }
 
@@ -4140,6 +4188,11 @@ export interface GetOrganizationTasksQuery_organization_tasks_reactions {
   reaction: string;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4161,6 +4214,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   applications: GetOrganizationTasksQuery_organization_tasks_applications[];
   review: GetOrganizationTasksQuery_organization_tasks_review | null;
   reactions: GetOrganizationTasksQuery_organization_tasks_reactions[];
+  options: GetOrganizationTasksQuery_organization_tasks_options | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_projects_taskTags {
@@ -4450,6 +4504,11 @@ export interface GetProjectTasksQuery_project_tasks_reactions {
   reaction: string;
 }
 
+export interface GetProjectTasksQuery_project_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetProjectTasksQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4471,6 +4530,7 @@ export interface GetProjectTasksQuery_project_tasks {
   applications: GetProjectTasksQuery_project_tasks_applications[];
   review: GetProjectTasksQuery_project_tasks_review | null;
   reactions: GetProjectTasksQuery_project_tasks_reactions[];
+  options: GetProjectTasksQuery_project_tasks_options | null;
 }
 
 export interface GetProjectTasksQuery_project {
@@ -4651,6 +4711,11 @@ export interface GetTaskQuery_task_subtasks_reactions {
   reaction: string;
 }
 
+export interface GetTaskQuery_task_subtasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetTaskQuery_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4672,6 +4737,7 @@ export interface GetTaskQuery_task_subtasks {
   applications: GetTaskQuery_task_subtasks_applications[];
   review: GetTaskQuery_task_subtasks_review | null;
   reactions: GetTaskQuery_task_subtasks_reactions[];
+  options: GetTaskQuery_task_subtasks_options | null;
 }
 
 export interface GetTaskQuery_task_tags {
@@ -4791,6 +4857,11 @@ export interface GetTaskQuery_task_reactions {
   reaction: string;
 }
 
+export interface GetTaskQuery_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetTaskQuery_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4877,6 +4948,7 @@ export interface GetTaskQuery_task {
   applications: GetTaskQuery_task_applications[];
   review: GetTaskQuery_task_review | null;
   reactions: GetTaskQuery_task_reactions[];
+  options: GetTaskQuery_task_options | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -5068,6 +5140,11 @@ export interface GetTasksQuery_tasks_reactions {
   reaction: string;
 }
 
+export interface GetTasksQuery_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetTasksQuery_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5111,6 +5188,7 @@ export interface GetTasksQuery_tasks {
   applications: GetTasksQuery_tasks_applications[];
   review: GetTasksQuery_tasks_review | null;
   reactions: GetTasksQuery_tasks_reactions[];
+  options: GetTasksQuery_tasks_options | null;
   project: GetTasksQuery_tasks_project;
 }
 
@@ -5287,6 +5365,11 @@ export interface GetTasksToPayQuery_tasks_reactions {
   reaction: string;
 }
 
+export interface GetTasksToPayQuery_tasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -5345,6 +5428,7 @@ export interface GetTasksToPayQuery_tasks {
   applications: GetTasksToPayQuery_tasks_applications[];
   review: GetTasksToPayQuery_tasks_review | null;
   reactions: GetTasksToPayQuery_tasks_reactions[];
+  options: GetTasksToPayQuery_tasks_options | null;
   project: GetTasksToPayQuery_tasks_project;
 }
 
@@ -5692,6 +5776,11 @@ export interface TaskCreatedSubscription_task_subtasks_reactions {
   reaction: string;
 }
 
+export interface TaskCreatedSubscription_task_subtasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskCreatedSubscription_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5713,6 +5802,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   applications: TaskCreatedSubscription_task_subtasks_applications[];
   review: TaskCreatedSubscription_task_subtasks_review | null;
   reactions: TaskCreatedSubscription_task_subtasks_reactions[];
+  options: TaskCreatedSubscription_task_subtasks_options | null;
 }
 
 export interface TaskCreatedSubscription_task_tags {
@@ -5832,6 +5922,11 @@ export interface TaskCreatedSubscription_task_reactions {
   reaction: string;
 }
 
+export interface TaskCreatedSubscription_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskCreatedSubscription_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5904,6 +5999,7 @@ export interface TaskCreatedSubscription_task {
   applications: TaskCreatedSubscription_task_applications[];
   review: TaskCreatedSubscription_task_review | null;
   reactions: TaskCreatedSubscription_task_reactions[];
+  options: TaskCreatedSubscription_task_options | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -6052,6 +6148,11 @@ export interface TaskUpdatedSubscription_task_subtasks_reactions {
   reaction: string;
 }
 
+export interface TaskUpdatedSubscription_task_subtasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskUpdatedSubscription_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -6073,6 +6174,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   applications: TaskUpdatedSubscription_task_subtasks_applications[];
   review: TaskUpdatedSubscription_task_subtasks_review | null;
   reactions: TaskUpdatedSubscription_task_subtasks_reactions[];
+  options: TaskUpdatedSubscription_task_subtasks_options | null;
 }
 
 export interface TaskUpdatedSubscription_task_tags {
@@ -6192,6 +6294,11 @@ export interface TaskUpdatedSubscription_task_reactions {
   reaction: string;
 }
 
+export interface TaskUpdatedSubscription_task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskUpdatedSubscription_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -6264,6 +6371,7 @@ export interface TaskUpdatedSubscription_task {
   applications: TaskUpdatedSubscription_task_applications[];
   review: TaskUpdatedSubscription_task_review | null;
   reactions: TaskUpdatedSubscription_task_reactions[];
+  options: TaskUpdatedSubscription_task_options | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -7350,6 +7458,11 @@ export interface Task_reactions {
   reaction: string;
 }
 
+export interface Task_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7371,6 +7484,7 @@ export interface Task {
   applications: Task_applications[];
   review: Task_review | null;
   reactions: Task_reactions[];
+  options: Task_options | null;
 }
 
 /* tslint:disable */
@@ -7506,6 +7620,11 @@ export interface TaskWithOrganization_reactions {
   reaction: string;
 }
 
+export interface TaskWithOrganization_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskWithOrganization_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -7549,6 +7668,7 @@ export interface TaskWithOrganization {
   applications: TaskWithOrganization_applications[];
   review: TaskWithOrganization_review | null;
   reactions: TaskWithOrganization_reactions[];
+  options: TaskWithOrganization_options | null;
   project: TaskWithOrganization_project;
 }
 
@@ -7685,6 +7805,11 @@ export interface TaskDetails_subtasks_reactions {
   reaction: string;
 }
 
+export interface TaskDetails_subtasks_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskDetails_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7706,6 +7831,7 @@ export interface TaskDetails_subtasks {
   applications: TaskDetails_subtasks_applications[];
   review: TaskDetails_subtasks_review | null;
   reactions: TaskDetails_subtasks_reactions[];
+  options: TaskDetails_subtasks_options | null;
 }
 
 export interface TaskDetails_tags {
@@ -7825,6 +7951,11 @@ export interface TaskDetails_reactions {
   reaction: string;
 }
 
+export interface TaskDetails_options {
+  __typename: "TaskOptions";
+  enableTaskApplicationSubmission: boolean | null;
+}
+
 export interface TaskDetails_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7897,6 +8028,7 @@ export interface TaskDetails {
   applications: TaskDetails_applications[];
   review: TaskDetails_review | null;
   reactions: TaskDetails_reactions[];
+  options: TaskDetails_options | null;
   gitBranchName: string;
   createdAt: Scalar.DateTime;
   permalink: string;
@@ -8388,6 +8520,7 @@ export interface CreateTaskInput {
   storyPoints?: number | null;
   status: TaskStatus;
   reward?: UpdateTaskRewardInput | null;
+  options?: TaskOptionsInput | null;
 }
 
 export interface CreateTaskPaymentsInput {
@@ -8461,6 +8594,10 @@ export interface SetUserDetailInput {
   value?: string | null;
 }
 
+export interface TaskOptionsInput {
+  enableTaskApplicationSubmission?: boolean | null;
+}
+
 export interface TaskReactionInput {
   reaction: string;
   taskId: Scalar.UUID;
@@ -8522,6 +8659,7 @@ export interface UpdateTaskInput {
   status?: TaskStatus | null;
   reward?: UpdateTaskRewardInput | null;
   review?: UpdateTaskReviewInput | null;
+  options?: TaskOptionsInput | null;
 }
 
 export interface UpdateTaskReviewInput {

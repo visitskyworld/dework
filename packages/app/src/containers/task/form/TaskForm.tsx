@@ -1,5 +1,10 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
+import {
+  TaskStatus,
+  User,
+  TaskDetails,
+  TaskOptionsInput,
+} from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
   Form,
@@ -11,6 +16,8 @@ import {
   Col,
   Divider,
   Avatar,
+  Checkbox,
+  Tooltip,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -38,6 +45,7 @@ import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { TaskListRow } from "../list/TaskList";
+import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 
 export interface TaskFormValues {
   name: string;
@@ -52,6 +60,7 @@ export interface TaskFormValues {
   ownerId?: string | null;
   reward?: TaskRewardFormValues;
   subtasks?: TaskListRow[];
+  options?: TaskOptionsInput;
 }
 
 interface TaskFormProps {
@@ -389,6 +398,20 @@ export const TaskForm: FC<TaskFormProps> = ({
           ) : (
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
+
+          <AdvancedSectionCollapse>
+            <Form.Item
+              name={["options", "enableTaskApplicationSubmission"]}
+              valuePropName="checked"
+            >
+              <Checkbox>
+                This is an Open Bounty{"  "}
+                <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
+                  <Icons.QuestionCircleOutlined />
+                </Tooltip>
+              </Checkbox>
+            </Form.Item>
+          </AdvancedSectionCollapse>
 
           {/* {!!task && (
             <FormSection label="Project">
