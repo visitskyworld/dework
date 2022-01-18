@@ -264,13 +264,14 @@ describe("UserResolver", () => {
         );
       });
 
-      it("should auto populate Discord profile-url user detail on 1st Discord auth", async () => {
+      it("should auto populate Discord username detail on 1st Discord auth", async () => {
         const threepid = await fixtures.createThreepid({
           source: ThreepidSource.discord,
           config: {
             profile: {
               id: "123",
               username: "my-username",
+              discriminator: "1234",
               locale: "en_US",
             },
           } as DiscordThreepidConfig,
@@ -288,7 +289,7 @@ describe("UserResolver", () => {
         expect(updatedUser.details).toHaveLength(1);
         expect(updatedUser.details).toContainEqual({
           type: EntityDetailType.discord,
-          value: "https://discord.com/users/123",
+          value: "my-username#1234",
         });
       });
     });
