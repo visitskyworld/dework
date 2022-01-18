@@ -9,6 +9,9 @@ export class UpdateTaskSubmissionInput {
   @Field(() => GraphQLUUID)
   public userId!: string;
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public approverId?: string;
+
   @Field({ nullable: true })
   public content?: string;
 

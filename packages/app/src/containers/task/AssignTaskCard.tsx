@@ -111,7 +111,6 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
             </List.Item>
           );
         }}
-        // ))}
       />
     </Card>
   );

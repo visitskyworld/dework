@@ -25,7 +25,6 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
 import {
   AccessGuard,
-  AccessService,
   Actions,
   CaslUser,
   UseAbility,
@@ -60,7 +59,6 @@ export class TaskResolver {
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
     private readonly permalinkService: PermalinkService,
-    private readonly accessService: AccessService,
     private readonly abilityFactory: AbilityFactory
   ) {}
 
@@ -185,7 +183,7 @@ export class TaskResolver {
 
     const caslUser = await userProxy.get();
     const abilities = this.abilityFactory.createForUser(caslUser!);
-    if (!abilities.can("update", subject(Task as any, task), "submission")) {
+    if (!abilities.can("update", subject(Task as any, task), "submissions")) {
       throw new ForbiddenException();
     }
 
@@ -202,8 +200,12 @@ export class TaskResolver {
     }),
   ])
   public async updateTaskSubmission(
+    @Context("user") user: User,
     @Args("input") input: UpdateTaskSubmissionInput
   ): Promise<TaskSubmission> {
+    if (!!input.approverId && input.approverId !== user.id) {
+      throw new ForbiddenException();
+    }
     return this.taskService.updateSubmission(input);
   }
 

@@ -51,6 +51,12 @@ import {
   DeleteTaskApplicationMutation,
   DeleteTaskApplicationMutationVariables,
   TaskStatus,
+  CreateTaskSubmissionInput,
+  CreateTaskSubmissionMutation,
+  CreateTaskSubmissionMutationVariables,
+  UpdateTaskSubmissionInput,
+  UpdateTaskSubmissionMutation,
+  UpdateTaskSubmissionMutationVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -237,6 +243,38 @@ export function useDeleteTaskApplication(): (
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
+    },
+    [mutation]
+  );
+}
+
+export function useCreateTaskSubmission(): (
+  input: CreateTaskSubmissionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateTaskSubmissionMutation,
+    CreateTaskSubmissionMutationVariables
+  >(Mutations.createTaskSubmission);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateTaskSubmission(): (
+  input: UpdateTaskSubmissionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    UpdateTaskSubmissionMutation,
+    UpdateTaskSubmissionMutationVariables
+  >(Mutations.updateTaskSubmission);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );

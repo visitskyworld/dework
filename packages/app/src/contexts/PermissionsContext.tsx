@@ -17,6 +17,7 @@ import {
   ProjectMember,
   Task,
   TaskApplication,
+  TaskSubmission,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
@@ -28,12 +29,14 @@ type AbilitySubject =
   | "TaskTag"
   | "Project"
   | "Organization"
-  | AtLeast<Task, "__typename" | "status">
+  | "TaskSubmission"
   | Project
   | Organization
+  | AtLeast<Task, "__typename" | "status">
+  | AtLeast<TaskApplication, "__typename" | "userId">
+  | AtLeast<TaskSubmission, "__typename" | "userId">
   | AtLeast<OrganizationMember, "__typename" | "role">
-  | AtLeast<ProjectMember, "__typename" | "role">
-  | AtLeast<TaskApplication, "__typename" | "userId">;
+  | AtLeast<ProjectMember, "__typename" | "role">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
 
 const PermissionsContext = createContext<Ability<AbilityType>>(

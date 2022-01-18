@@ -33,6 +33,8 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
   const canClaimTask = usePermission("claimTask", task);
   const canUpdateTask = usePermission("update", task);
+  const canCreateSubmission = usePermission("update", task, "submissions");
+
   if (shouldShowInlinePayButton) {
     return <PayButton task={task}>Pay</PayButton>;
   }
@@ -67,7 +69,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
       }
     } else if (canClaimTask) {
       if (!!currentUserId) {
-        if (task.options?.enableTaskApplicationSubmission) {
+        if (canCreateSubmission) {
           return <CreateOpenBountySubmissionButton task={task} />;
         } else {
           return <ClaimTaskButton task={task} />;

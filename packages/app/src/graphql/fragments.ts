@@ -320,6 +320,26 @@ export const taskApplication = gql`
       ...User
     }
   }
+
+  ${user}
+`;
+
+export const taskSubmission = gql`
+  fragment TaskSubmission on TaskSubmission {
+    id
+    content
+    createdAt
+    taskId
+    userId
+    user {
+      ...User
+    }
+    approver {
+      ...User
+    }
+  }
+
+  ${user}
 `;
 
 export const taskReaction = gql`
@@ -335,7 +355,6 @@ export const task = gql`
     id
     name
     description
-    submission
     status
     sortKey
     storyPoints
@@ -361,6 +380,9 @@ export const task = gql`
     applications {
       ...TaskApplication
     }
+    submissions {
+      ...TaskSubmission
+    }
     review {
       ...TaskReview
     }
@@ -368,7 +390,7 @@ export const task = gql`
       ...TaskReaction
     }
     options {
-      enableTaskApplicationSubmission
+      allowOpenSubmission
     }
   }
 
@@ -376,6 +398,7 @@ export const task = gql`
   ${taskReward}
   ${user}
   ${taskApplication}
+  ${taskSubmission}
   ${taskReview}
   ${taskReaction}
 `;

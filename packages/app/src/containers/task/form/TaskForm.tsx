@@ -14,7 +14,6 @@ import {
   Row,
   Typography,
   Col,
-  Divider,
   Avatar,
   Checkbox,
   Tooltip,
@@ -46,11 +45,11 @@ import { SubtaskInput } from "./SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { TaskListRow } from "../list/TaskList";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
+import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 
 export interface TaskFormValues {
   name: string;
   description?: string;
-  submission?: string;
   projectId?: string;
   parentTaskId?: string;
   status: TaskStatus;
@@ -240,31 +239,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {!!task && <GithubIntegrationSection task={task} />}
           {!!task && <TaskActivityFeed task={task} />}
-          {mode === "update" && !!task && task.status !== TaskStatus.TODO && (
-            <>
-              <Divider>Submission</Divider>
-              <Form.Item
-                name="submission"
-                label="Completed Work"
-                className="mb-3"
-              >
-                <MarkdownEditor
-                  initialValue={initialValues?.submission ?? undefined}
-                  placeholder={
-                    "No submission yet. " +
-                    (canChange("submission") ? "Submit your work here." : "")
-                  }
-                  buttonText={
-                    !!initialValues?.submission
-                      ? "Edit submission"
-                      : "Add submission"
-                  }
-                  editable={canChange("submission")}
-                  mode={mode}
-                />
-              </Form.Item>
-            </>
-          )}
+          {!!task && <TaskSubmissionsSection task={task} />}
         </Col>
         <Col xs={24} sm={8}>
           {!!task?.parentTask && (
@@ -401,7 +376,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <AdvancedSectionCollapse>
             <Form.Item
-              name={["options", "enableTaskApplicationSubmission"]}
+              name={["options", "allowOpenSubmission"]}
               valuePropName="checked"
             >
               <Checkbox>

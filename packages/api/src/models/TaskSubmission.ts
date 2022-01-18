@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, PrimaryColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { User } from "./User";
 import { Task } from "./Task";
@@ -11,9 +11,17 @@ export class TaskSubmission extends Audit {
   @ManyToOne(() => User)
   @Field(() => User)
   public user!: Promise<User>;
-  @PrimaryColumn({ type: "uuid" })
+  @Column({ type: "uuid" })
   @Field()
   public userId!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  public approver?: Promise<User>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public approverId?: string;
 
   @Column()
   @Field()
@@ -23,7 +31,7 @@ export class TaskSubmission extends Audit {
   @ManyToOne(() => Task)
   @Field(() => Task)
   public task!: Promise<Task>;
-  @PrimaryColumn({ type: "uuid" })
+  @Column({ type: "uuid" })
   @Field()
   public taskId!: string;
 

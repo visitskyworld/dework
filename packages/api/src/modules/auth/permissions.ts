@@ -55,10 +55,10 @@ export const permissions: Permissions<
     );
     can(Actions.update, Task, { ownerId: user.id });
 
-    can(Actions.update, Task, "submission", {
+    can(Actions.update, Task, "submissions", {
       assignees: { $elemMatch: { id: user.id } },
     });
-    can(Actions.update, Task, "submission", {
+    can(Actions.update, Task, "submissions", {
       // @ts-ignore
       "options.allowOpenSubmission": true,
     });
@@ -105,7 +105,7 @@ export const permissions: Permissions<
     can(Actions.delete, Task);
 
     can(Actions.delete, TaskApplication);
-    can(Actions.update, TaskSubmission);
+    can(Actions.manage, TaskSubmission);
 
     can(Actions.create, TaskTag);
     can(Actions.manage, ProjectTokenGate);

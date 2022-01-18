@@ -1186,6 +1186,31 @@ export interface CreateTaskMutation_task_applications {
   user: CreateTaskMutation_task_applications_user;
 }
 
+export interface CreateTaskMutation_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskMutation_task_submissions_user;
+  approver: CreateTaskMutation_task_submissions_approver | null;
+}
+
 export interface CreateTaskMutation_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -1202,7 +1227,7 @@ export interface CreateTaskMutation_task_reactions {
 
 export interface CreateTaskMutation_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface CreateTaskMutation_task {
@@ -1210,7 +1235,6 @@ export interface CreateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -1224,6 +1248,7 @@ export interface CreateTaskMutation_task {
   assignees: CreateTaskMutation_task_assignees[];
   reward: CreateTaskMutation_task_reward | null;
   applications: CreateTaskMutation_task_applications[];
+  submissions: CreateTaskMutation_task_submissions[];
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
   options: CreateTaskMutation_task_options | null;
@@ -1356,6 +1381,31 @@ export interface UpdateTaskMutation_task_applications {
   user: UpdateTaskMutation_task_applications_user;
 }
 
+export interface UpdateTaskMutation_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskMutation_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskMutation_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: UpdateTaskMutation_task_submissions_user;
+  approver: UpdateTaskMutation_task_submissions_approver | null;
+}
+
 export interface UpdateTaskMutation_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -1372,7 +1422,7 @@ export interface UpdateTaskMutation_task_reactions {
 
 export interface UpdateTaskMutation_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface UpdateTaskMutation_task {
@@ -1380,7 +1430,6 @@ export interface UpdateTaskMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -1394,6 +1443,7 @@ export interface UpdateTaskMutation_task {
   assignees: UpdateTaskMutation_task_assignees[];
   reward: UpdateTaskMutation_task_reward | null;
   applications: UpdateTaskMutation_task_applications[];
+  submissions: UpdateTaskMutation_task_submissions[];
   review: UpdateTaskMutation_task_review | null;
   reactions: UpdateTaskMutation_task_reactions[];
   options: UpdateTaskMutation_task_options | null;
@@ -1526,6 +1576,31 @@ export interface CreateTaskApplicationMutation_application_task_applications {
   user: CreateTaskApplicationMutation_application_task_applications_user;
 }
 
+export interface CreateTaskApplicationMutation_application_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskApplicationMutation_application_task_submissions_user;
+  approver: CreateTaskApplicationMutation_application_task_submissions_approver | null;
+}
+
 export interface CreateTaskApplicationMutation_application_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -1542,7 +1617,7 @@ export interface CreateTaskApplicationMutation_application_task_reactions {
 
 export interface CreateTaskApplicationMutation_application_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface CreateTaskApplicationMutation_application_task {
@@ -1550,7 +1625,6 @@ export interface CreateTaskApplicationMutation_application_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -1564,6 +1638,7 @@ export interface CreateTaskApplicationMutation_application_task {
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
   reward: CreateTaskApplicationMutation_application_task_reward | null;
   applications: CreateTaskApplicationMutation_application_task_applications[];
+  submissions: CreateTaskApplicationMutation_application_task_submissions[];
   review: CreateTaskApplicationMutation_application_task_review | null;
   reactions: CreateTaskApplicationMutation_application_task_reactions[];
   options: CreateTaskApplicationMutation_application_task_options | null;
@@ -1702,6 +1777,31 @@ export interface DeleteTaskApplicationMutation_task_applications {
   user: DeleteTaskApplicationMutation_task_applications_user;
 }
 
+export interface DeleteTaskApplicationMutation_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: DeleteTaskApplicationMutation_task_submissions_user;
+  approver: DeleteTaskApplicationMutation_task_submissions_approver | null;
+}
+
 export interface DeleteTaskApplicationMutation_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -1718,7 +1818,7 @@ export interface DeleteTaskApplicationMutation_task_reactions {
 
 export interface DeleteTaskApplicationMutation_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface DeleteTaskApplicationMutation_task {
@@ -1726,7 +1826,6 @@ export interface DeleteTaskApplicationMutation_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -1740,6 +1839,7 @@ export interface DeleteTaskApplicationMutation_task {
   assignees: DeleteTaskApplicationMutation_task_assignees[];
   reward: DeleteTaskApplicationMutation_task_reward | null;
   applications: DeleteTaskApplicationMutation_task_applications[];
+  submissions: DeleteTaskApplicationMutation_task_submissions[];
   review: DeleteTaskApplicationMutation_task_review | null;
   reactions: DeleteTaskApplicationMutation_task_reactions[];
   options: DeleteTaskApplicationMutation_task_options | null;
@@ -1751,6 +1851,408 @@ export interface DeleteTaskApplicationMutation {
 
 export interface DeleteTaskApplicationMutationVariables {
   input: DeleteTaskApplicationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTaskSubmissionMutation
+// ====================================================
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod_networks[];
+  tokens: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod_tokens[];
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_paymentMethod;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment_network;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token;
+  payment: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_user;
+  approver: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_options {
+  __typename: "TaskOptions";
+  allowOpenSubmission: boolean | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  ownerId: string | null;
+  number: number;
+  subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks[];
+  tags: CreateTaskSubmissionMutation_createTaskSubmission_task_tags[];
+  assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_assignees[];
+  reward: CreateTaskSubmissionMutation_createTaskSubmission_task_reward | null;
+  applications: CreateTaskSubmissionMutation_createTaskSubmission_task_applications[];
+  submissions: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions[];
+  review: CreateTaskSubmissionMutation_createTaskSubmission_task_review | null;
+  reactions: CreateTaskSubmissionMutation_createTaskSubmission_task_reactions[];
+  options: CreateTaskSubmissionMutation_createTaskSubmission_task_options | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  task: CreateTaskSubmissionMutation_createTaskSubmission_task;
+}
+
+export interface CreateTaskSubmissionMutation {
+  createTaskSubmission: CreateTaskSubmissionMutation_createTaskSubmission;
+}
+
+export interface CreateTaskSubmissionMutationVariables {
+  input: CreateTaskSubmissionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateTaskSubmissionMutation
+// ====================================================
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod_networks[];
+  tokens: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod_tokens[];
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: string;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_paymentMethod;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment_network;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token;
+  payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_user;
+  approver: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_options {
+  __typename: "TaskOptions";
+  allowOpenSubmission: boolean | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  sortKey: string;
+  storyPoints: number | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  ownerId: string | null;
+  number: number;
+  subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks[];
+  tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags[];
+  assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees[];
+  reward: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward | null;
+  applications: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications[];
+  submissions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions[];
+  review: UpdateTaskSubmissionMutation_updateTaskSubmission_task_review | null;
+  reactions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reactions[];
+  options: UpdateTaskSubmissionMutation_updateTaskSubmission_task_options | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  task: UpdateTaskSubmissionMutation_updateTaskSubmission_task;
+}
+
+export interface UpdateTaskSubmissionMutation {
+  updateTaskSubmission: UpdateTaskSubmissionMutation_updateTaskSubmission;
+}
+
+export interface UpdateTaskSubmissionMutationVariables {
+  input: UpdateTaskSubmissionInput;
 }
 
 /* tslint:disable */
@@ -2712,6 +3214,31 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_applications {
   user: CreateTaskPaymentsMutation_tasks_subtasks_applications_user;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskPaymentsMutation_tasks_subtasks_submissions_user;
+  approver: CreateTaskPaymentsMutation_tasks_subtasks_submissions_approver | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_subtasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -2728,7 +3255,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reactions {
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks {
@@ -2737,7 +3264,6 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
-  submission: string | null;
   sortKey: string;
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
@@ -2750,6 +3276,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_subtasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_subtasks_applications[];
+  submissions: CreateTaskPaymentsMutation_tasks_subtasks_submissions[];
   review: CreateTaskPaymentsMutation_tasks_subtasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_subtasks_reactions[];
   options: CreateTaskPaymentsMutation_tasks_subtasks_options | null;
@@ -2858,6 +3385,31 @@ export interface CreateTaskPaymentsMutation_tasks_applications {
   user: CreateTaskPaymentsMutation_tasks_applications_user;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskPaymentsMutation_tasks_submissions_user;
+  approver: CreateTaskPaymentsMutation_tasks_submissions_approver | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -2874,7 +3426,7 @@ export interface CreateTaskPaymentsMutation_tasks_reactions {
 
 export interface CreateTaskPaymentsMutation_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_parentTask {
@@ -2933,7 +3485,6 @@ export interface CreateTaskPaymentsMutation_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -2947,6 +3498,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
+  submissions: CreateTaskPaymentsMutation_tasks_submissions[];
   review: CreateTaskPaymentsMutation_tasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_reactions[];
   options: CreateTaskPaymentsMutation_tasks_options | null;
@@ -3127,6 +3679,31 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications 
   user: CreateTasksFromGithubIssuesMutation_project_tasks_applications_user;
 }
 
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTasksFromGithubIssuesMutation_project_tasks_submissions_user;
+  approver: CreateTasksFromGithubIssuesMutation_project_tasks_submissions_approver | null;
+}
+
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -3143,7 +3720,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reactions {
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks {
@@ -3151,7 +3728,6 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -3165,6 +3741,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
   reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
   applications: CreateTasksFromGithubIssuesMutation_project_tasks_applications[];
+  submissions: CreateTasksFromGithubIssuesMutation_project_tasks_submissions[];
   review: CreateTasksFromGithubIssuesMutation_project_tasks_review | null;
   reactions: CreateTasksFromGithubIssuesMutation_project_tasks_reactions[];
   options: CreateTasksFromGithubIssuesMutation_project_tasks_options | null;
@@ -3442,6 +4019,31 @@ export interface UserTasksQuery_user_tasks_applications {
   user: UserTasksQuery_user_tasks_applications_user;
 }
 
+export interface UserTasksQuery_user_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UserTasksQuery_user_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UserTasksQuery_user_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: UserTasksQuery_user_tasks_submissions_user;
+  approver: UserTasksQuery_user_tasks_submissions_approver | null;
+}
+
 export interface UserTasksQuery_user_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -3458,7 +4060,7 @@ export interface UserTasksQuery_user_tasks_reactions {
 
 export interface UserTasksQuery_user_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface UserTasksQuery_user_tasks_project_organization {
@@ -3488,7 +4090,6 @@ export interface UserTasksQuery_user_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -3502,6 +4103,7 @@ export interface UserTasksQuery_user_tasks {
   assignees: UserTasksQuery_user_tasks_assignees[];
   reward: UserTasksQuery_user_tasks_reward | null;
   applications: UserTasksQuery_user_tasks_applications[];
+  submissions: UserTasksQuery_user_tasks_submissions[];
   review: UserTasksQuery_user_tasks_review | null;
   reactions: UserTasksQuery_user_tasks_reactions[];
   options: UserTasksQuery_user_tasks_options | null;
@@ -4174,6 +4776,31 @@ export interface GetOrganizationTasksQuery_organization_tasks_applications {
   user: GetOrganizationTasksQuery_organization_tasks_applications_user;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetOrganizationTasksQuery_organization_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetOrganizationTasksQuery_organization_tasks_submissions_user;
+  approver: GetOrganizationTasksQuery_organization_tasks_submissions_approver | null;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -4190,7 +4817,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reactions {
 
 export interface GetOrganizationTasksQuery_organization_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks {
@@ -4198,7 +4825,6 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -4212,6 +4838,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
   applications: GetOrganizationTasksQuery_organization_tasks_applications[];
+  submissions: GetOrganizationTasksQuery_organization_tasks_submissions[];
   review: GetOrganizationTasksQuery_organization_tasks_review | null;
   reactions: GetOrganizationTasksQuery_organization_tasks_reactions[];
   options: GetOrganizationTasksQuery_organization_tasks_options | null;
@@ -4490,6 +5117,31 @@ export interface GetProjectTasksQuery_project_tasks_applications {
   user: GetProjectTasksQuery_project_tasks_applications_user;
 }
 
+export interface GetProjectTasksQuery_project_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetProjectTasksQuery_project_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetProjectTasksQuery_project_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetProjectTasksQuery_project_tasks_submissions_user;
+  approver: GetProjectTasksQuery_project_tasks_submissions_approver | null;
+}
+
 export interface GetProjectTasksQuery_project_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -4506,7 +5158,7 @@ export interface GetProjectTasksQuery_project_tasks_reactions {
 
 export interface GetProjectTasksQuery_project_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetProjectTasksQuery_project_tasks {
@@ -4514,7 +5166,6 @@ export interface GetProjectTasksQuery_project_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -4528,6 +5179,7 @@ export interface GetProjectTasksQuery_project_tasks {
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
   applications: GetProjectTasksQuery_project_tasks_applications[];
+  submissions: GetProjectTasksQuery_project_tasks_submissions[];
   review: GetProjectTasksQuery_project_tasks_review | null;
   reactions: GetProjectTasksQuery_project_tasks_reactions[];
   options: GetProjectTasksQuery_project_tasks_options | null;
@@ -4697,6 +5349,31 @@ export interface GetTaskQuery_task_subtasks_applications {
   user: GetTaskQuery_task_subtasks_applications_user;
 }
 
+export interface GetTaskQuery_task_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetTaskQuery_task_subtasks_submissions_user;
+  approver: GetTaskQuery_task_subtasks_submissions_approver | null;
+}
+
 export interface GetTaskQuery_task_subtasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -4713,7 +5390,7 @@ export interface GetTaskQuery_task_subtasks_reactions {
 
 export interface GetTaskQuery_task_subtasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetTaskQuery_task_subtasks {
@@ -4722,7 +5399,6 @@ export interface GetTaskQuery_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
-  submission: string | null;
   sortKey: string;
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
@@ -4735,6 +5411,7 @@ export interface GetTaskQuery_task_subtasks {
   assignees: GetTaskQuery_task_subtasks_assignees[];
   reward: GetTaskQuery_task_subtasks_reward | null;
   applications: GetTaskQuery_task_subtasks_applications[];
+  submissions: GetTaskQuery_task_subtasks_submissions[];
   review: GetTaskQuery_task_subtasks_review | null;
   reactions: GetTaskQuery_task_subtasks_reactions[];
   options: GetTaskQuery_task_subtasks_options | null;
@@ -4843,6 +5520,31 @@ export interface GetTaskQuery_task_applications {
   user: GetTaskQuery_task_applications_user;
 }
 
+export interface GetTaskQuery_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskQuery_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetTaskQuery_task_submissions_user;
+  approver: GetTaskQuery_task_submissions_approver | null;
+}
+
 export interface GetTaskQuery_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -4859,7 +5561,7 @@ export interface GetTaskQuery_task_reactions {
 
 export interface GetTaskQuery_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetTaskQuery_task_parentTask {
@@ -4932,7 +5634,6 @@ export interface GetTaskQuery_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -4946,6 +5647,7 @@ export interface GetTaskQuery_task {
   assignees: GetTaskQuery_task_assignees[];
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
+  submissions: GetTaskQuery_task_submissions[];
   review: GetTaskQuery_task_review | null;
   reactions: GetTaskQuery_task_reactions[];
   options: GetTaskQuery_task_options | null;
@@ -5126,6 +5828,31 @@ export interface GetTasksQuery_tasks_applications {
   user: GetTasksQuery_tasks_applications_user;
 }
 
+export interface GetTasksQuery_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksQuery_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksQuery_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetTasksQuery_tasks_submissions_user;
+  approver: GetTasksQuery_tasks_submissions_approver | null;
+}
+
 export interface GetTasksQuery_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -5142,7 +5869,7 @@ export interface GetTasksQuery_tasks_reactions {
 
 export interface GetTasksQuery_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetTasksQuery_tasks_project_organization {
@@ -5172,7 +5899,6 @@ export interface GetTasksQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -5186,6 +5912,7 @@ export interface GetTasksQuery_tasks {
   assignees: GetTasksQuery_tasks_assignees[];
   reward: GetTasksQuery_tasks_reward | null;
   applications: GetTasksQuery_tasks_applications[];
+  submissions: GetTasksQuery_tasks_submissions[];
   review: GetTasksQuery_tasks_review | null;
   reactions: GetTasksQuery_tasks_reactions[];
   options: GetTasksQuery_tasks_options | null;
@@ -5351,6 +6078,31 @@ export interface GetTasksToPayQuery_tasks_applications {
   user: GetTasksToPayQuery_tasks_applications_user;
 }
 
+export interface GetTasksToPayQuery_tasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksToPayQuery_tasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface GetTasksToPayQuery_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: GetTasksToPayQuery_tasks_submissions_user;
+  approver: GetTasksToPayQuery_tasks_submissions_approver | null;
+}
+
 export interface GetTasksToPayQuery_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -5367,7 +6119,7 @@ export interface GetTasksToPayQuery_tasks_reactions {
 
 export interface GetTasksToPayQuery_tasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
@@ -5412,7 +6164,6 @@ export interface GetTasksToPayQuery_tasks {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -5426,6 +6177,7 @@ export interface GetTasksToPayQuery_tasks {
   assignees: GetTasksToPayQuery_tasks_assignees[];
   reward: GetTasksToPayQuery_tasks_reward | null;
   applications: GetTasksToPayQuery_tasks_applications[];
+  submissions: GetTasksToPayQuery_tasks_submissions[];
   review: GetTasksToPayQuery_tasks_review | null;
   reactions: GetTasksToPayQuery_tasks_reactions[];
   options: GetTasksToPayQuery_tasks_options | null;
@@ -5762,6 +6514,31 @@ export interface TaskCreatedSubscription_task_subtasks_applications {
   user: TaskCreatedSubscription_task_subtasks_applications_user;
 }
 
+export interface TaskCreatedSubscription_task_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskCreatedSubscription_task_subtasks_submissions_user;
+  approver: TaskCreatedSubscription_task_subtasks_submissions_approver | null;
+}
+
 export interface TaskCreatedSubscription_task_subtasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -5778,7 +6555,7 @@ export interface TaskCreatedSubscription_task_subtasks_reactions {
 
 export interface TaskCreatedSubscription_task_subtasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskCreatedSubscription_task_subtasks {
@@ -5787,7 +6564,6 @@ export interface TaskCreatedSubscription_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
-  submission: string | null;
   sortKey: string;
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
@@ -5800,6 +6576,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   assignees: TaskCreatedSubscription_task_subtasks_assignees[];
   reward: TaskCreatedSubscription_task_subtasks_reward | null;
   applications: TaskCreatedSubscription_task_subtasks_applications[];
+  submissions: TaskCreatedSubscription_task_subtasks_submissions[];
   review: TaskCreatedSubscription_task_subtasks_review | null;
   reactions: TaskCreatedSubscription_task_subtasks_reactions[];
   options: TaskCreatedSubscription_task_subtasks_options | null;
@@ -5908,6 +6685,31 @@ export interface TaskCreatedSubscription_task_applications {
   user: TaskCreatedSubscription_task_applications_user;
 }
 
+export interface TaskCreatedSubscription_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskCreatedSubscription_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskCreatedSubscription_task_submissions_user;
+  approver: TaskCreatedSubscription_task_submissions_approver | null;
+}
+
 export interface TaskCreatedSubscription_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -5924,7 +6726,7 @@ export interface TaskCreatedSubscription_task_reactions {
 
 export interface TaskCreatedSubscription_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskCreatedSubscription_task_parentTask {
@@ -5983,7 +6785,6 @@ export interface TaskCreatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -5997,6 +6798,7 @@ export interface TaskCreatedSubscription_task {
   assignees: TaskCreatedSubscription_task_assignees[];
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
+  submissions: TaskCreatedSubscription_task_submissions[];
   review: TaskCreatedSubscription_task_review | null;
   reactions: TaskCreatedSubscription_task_reactions[];
   options: TaskCreatedSubscription_task_options | null;
@@ -6134,6 +6936,31 @@ export interface TaskUpdatedSubscription_task_subtasks_applications {
   user: TaskUpdatedSubscription_task_subtasks_applications_user;
 }
 
+export interface TaskUpdatedSubscription_task_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskUpdatedSubscription_task_subtasks_submissions_user;
+  approver: TaskUpdatedSubscription_task_subtasks_submissions_approver | null;
+}
+
 export interface TaskUpdatedSubscription_task_subtasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -6150,7 +6977,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reactions {
 
 export interface TaskUpdatedSubscription_task_subtasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks {
@@ -6159,7 +6986,6 @@ export interface TaskUpdatedSubscription_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
-  submission: string | null;
   sortKey: string;
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
@@ -6172,6 +6998,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
   reward: TaskUpdatedSubscription_task_subtasks_reward | null;
   applications: TaskUpdatedSubscription_task_subtasks_applications[];
+  submissions: TaskUpdatedSubscription_task_subtasks_submissions[];
   review: TaskUpdatedSubscription_task_subtasks_review | null;
   reactions: TaskUpdatedSubscription_task_subtasks_reactions[];
   options: TaskUpdatedSubscription_task_subtasks_options | null;
@@ -6280,6 +7107,31 @@ export interface TaskUpdatedSubscription_task_applications {
   user: TaskUpdatedSubscription_task_applications_user;
 }
 
+export interface TaskUpdatedSubscription_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskUpdatedSubscription_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskUpdatedSubscription_task_submissions_user;
+  approver: TaskUpdatedSubscription_task_submissions_approver | null;
+}
+
 export interface TaskUpdatedSubscription_task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -6296,7 +7148,7 @@ export interface TaskUpdatedSubscription_task_reactions {
 
 export interface TaskUpdatedSubscription_task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskUpdatedSubscription_task_parentTask {
@@ -6355,7 +7207,6 @@ export interface TaskUpdatedSubscription_task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -6369,6 +7220,7 @@ export interface TaskUpdatedSubscription_task {
   assignees: TaskUpdatedSubscription_task_assignees[];
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
+  submissions: TaskUpdatedSubscription_task_submissions[];
   review: TaskUpdatedSubscription_task_review | null;
   reactions: TaskUpdatedSubscription_task_reactions[];
   options: TaskUpdatedSubscription_task_options | null;
@@ -7315,6 +8167,40 @@ export interface TaskApplication {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskSubmission
+// ====================================================
+
+export interface TaskSubmission_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskSubmission_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskSubmission {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskSubmission_user;
+  approver: TaskSubmission_approver | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: TaskReaction
 // ====================================================
 
@@ -7444,6 +8330,31 @@ export interface Task_applications {
   user: Task_applications_user;
 }
 
+export interface Task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface Task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface Task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: Task_submissions_user;
+  approver: Task_submissions_approver | null;
+}
+
 export interface Task_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -7460,7 +8371,7 @@ export interface Task_reactions {
 
 export interface Task_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface Task {
@@ -7468,7 +8379,6 @@ export interface Task {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -7482,6 +8392,7 @@ export interface Task {
   assignees: Task_assignees[];
   reward: Task_reward | null;
   applications: Task_applications[];
+  submissions: Task_submissions[];
   review: Task_review | null;
   reactions: Task_reactions[];
   options: Task_options | null;
@@ -7606,6 +8517,31 @@ export interface TaskWithOrganization_applications {
   user: TaskWithOrganization_applications_user;
 }
 
+export interface TaskWithOrganization_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskWithOrganization_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskWithOrganization_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskWithOrganization_submissions_user;
+  approver: TaskWithOrganization_submissions_approver | null;
+}
+
 export interface TaskWithOrganization_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -7622,7 +8558,7 @@ export interface TaskWithOrganization_reactions {
 
 export interface TaskWithOrganization_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskWithOrganization_project_organization {
@@ -7652,7 +8588,6 @@ export interface TaskWithOrganization {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -7666,6 +8601,7 @@ export interface TaskWithOrganization {
   assignees: TaskWithOrganization_assignees[];
   reward: TaskWithOrganization_reward | null;
   applications: TaskWithOrganization_applications[];
+  submissions: TaskWithOrganization_submissions[];
   review: TaskWithOrganization_review | null;
   reactions: TaskWithOrganization_reactions[];
   options: TaskWithOrganization_options | null;
@@ -7791,6 +8727,31 @@ export interface TaskDetails_subtasks_applications {
   user: TaskDetails_subtasks_applications_user;
 }
 
+export interface TaskDetails_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskDetails_subtasks_submissions_user;
+  approver: TaskDetails_subtasks_submissions_approver | null;
+}
+
 export interface TaskDetails_subtasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -7807,7 +8768,7 @@ export interface TaskDetails_subtasks_reactions {
 
 export interface TaskDetails_subtasks_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskDetails_subtasks {
@@ -7816,7 +8777,6 @@ export interface TaskDetails_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
-  submission: string | null;
   sortKey: string;
   storyPoints: number | null;
   deletedAt: Scalar.DateTime | null;
@@ -7829,6 +8789,7 @@ export interface TaskDetails_subtasks {
   assignees: TaskDetails_subtasks_assignees[];
   reward: TaskDetails_subtasks_reward | null;
   applications: TaskDetails_subtasks_applications[];
+  submissions: TaskDetails_subtasks_submissions[];
   review: TaskDetails_subtasks_review | null;
   reactions: TaskDetails_subtasks_reactions[];
   options: TaskDetails_subtasks_options | null;
@@ -7937,6 +8898,31 @@ export interface TaskDetails_applications {
   user: TaskDetails_applications_user;
 }
 
+export interface TaskDetails_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface TaskDetails_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: TaskDetails_submissions_user;
+  approver: TaskDetails_submissions_approver | null;
+}
+
 export interface TaskDetails_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
@@ -7953,7 +8939,7 @@ export interface TaskDetails_reactions {
 
 export interface TaskDetails_options {
   __typename: "TaskOptions";
-  enableTaskApplicationSubmission: boolean | null;
+  allowOpenSubmission: boolean | null;
 }
 
 export interface TaskDetails_parentTask {
@@ -8012,7 +8998,6 @@ export interface TaskDetails {
   id: Scalar.UUID;
   name: string;
   description: string | null;
-  submission: string | null;
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
@@ -8026,6 +9011,7 @@ export interface TaskDetails {
   assignees: TaskDetails_assignees[];
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
+  submissions: TaskDetails_submissions[];
   review: TaskDetails_review | null;
   reactions: TaskDetails_reactions[];
   options: TaskDetails_options | null;
@@ -8530,6 +9516,11 @@ export interface CreateTaskPaymentsInput {
   data?: Scalar.JSONObject | null;
 }
 
+export interface CreateTaskSubmissionInput {
+  taskId: Scalar.UUID;
+  content: string;
+}
+
 export interface CreateTaskTagInput {
   label: string;
   color: string;
@@ -8595,7 +9586,7 @@ export interface SetUserDetailInput {
 }
 
 export interface TaskOptionsInput {
-  enableTaskApplicationSubmission?: boolean | null;
+  allowOpenSubmission?: boolean | null;
 }
 
 export interface TaskReactionInput {
@@ -8650,7 +9641,6 @@ export interface UpdateTaskInput {
   name?: string | null;
   description?: string | null;
   parentTaskId?: Scalar.UUID | null;
-  submission?: string | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
@@ -8672,6 +9662,14 @@ export interface UpdateTaskRewardInput {
   amount: string;
   tokenId: Scalar.UUID;
   trigger: TaskRewardTrigger;
+}
+
+export interface UpdateTaskSubmissionInput {
+  taskId: Scalar.UUID;
+  userId: Scalar.UUID;
+  approverId?: Scalar.UUID | null;
+  content?: string | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateUserInput {

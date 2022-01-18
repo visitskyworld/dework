@@ -95,13 +95,6 @@ export class TaskService {
   public async createSubmission(
     input: AtLeast<TaskSubmission, "userId" | "taskId" | "content">
   ): Promise<TaskSubmission> {
-    const task = await this.findById(input.taskId);
-    if (!task) throw new NotFoundException();
-
-    const submissions = await task.submissions;
-    const existing = submissions.find((s) => s.userId === input.userId);
-    if (!!existing) return existing;
-
     const created = await this.taskSubmissionRepo.save(input);
     return this.taskSubmissionRepo.findOne({
       id: created.id,
@@ -202,6 +195,8 @@ export class TaskService {
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("task.reactions", "reaction")
       .leftJoinAndSelect("task.subtasks", "subtask")
+      .leftJoinAndSelect("task.applications", "application")
+      .leftJoinAndSelect("task.submissions", "submission")
       .innerJoinAndSelect("task.project", "project")
       .where("1 = 1");
 
