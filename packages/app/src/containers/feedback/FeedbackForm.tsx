@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { Input, Typography, Form, Col, Button, message, Row } from "antd";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -20,12 +20,15 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
   const { user } = useAuthContext();
   const loading = useToggle();
   const postFeedbackToDiscord = usePostFeedbackToDiscord();
-  const initialValues: FeedbackFormValues = {
-    discordUsername: user?.details.find(
-      (d) => d.type === EntityDetailType.discord
-    )?.value,
-    feedbackContent: "",
-  };
+  const initialValues: FeedbackFormValues = useMemo(
+    () => ({
+      discordUsername: user?.details.find(
+        (d) => d.type === EntityDetailType.discord
+      )?.value,
+      feedbackContent: "",
+    }),
+    [user?.details]
+  );
 
   const handleSubmitForm = async (values: FeedbackFormValues) => {
     loading.toggleOn();
