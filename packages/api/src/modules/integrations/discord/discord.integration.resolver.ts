@@ -3,7 +3,6 @@ import { Injectable } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
-import { DiscordMessage } from "./dto/DiscordMessage";
 
 @Injectable()
 export class DiscordIntegrationResolver {
@@ -19,13 +18,13 @@ export class DiscordIntegrationResolver {
     return this.discord.getChannels(organizationId, parentChannelId);
   }
 
-  @Mutation(() => DiscordMessage, { nullable: true })
+  @Mutation(() => Boolean)
   public async postFeedbackToDiscord(
     @Args("feedbackContent", { type: () => String })
     feedbackContent: string,
     @Args("discordUsername", { type: () => String, nullable: true })
     discordUsername?: string
-  ): Promise<DiscordMessage> {
+  ): Promise<boolean> {
     return this.discord.postFeedback(feedbackContent, discordUsername);
   }
 }

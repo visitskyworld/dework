@@ -20,16 +20,23 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
   const { user } = useAuthContext();
   const loading = useToggle();
   const postFeedbackToDiscord = usePostFeedbackToDiscord();
+  const initialValues: FeedbackFormValues = {
+    discordUsername: user?.details.find(
+      (d) => d.type === EntityDetailType.discord
+    )?.value,
+    feedbackContent: "",
+  };
 
   const handleSubmitForm = async (values: FeedbackFormValues) => {
     loading.toggleOn();
     try {
-      form.validateFields();
       await postFeedbackToDiscord(values);
       message.success("Feedback submitted successfully!");
     } catch {
       message.error("Feedback submission failed");
     } finally {
+      onClose();
+      form.setFieldsValue(initialValues);
       loading.toggleOff();
     }
   };
@@ -40,15 +47,7 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
   };
 
   return (
-    <Form
-      form={form}
-      initialValues={{
-        discordUsername: user?.details.find(
-          (d) => d.type === EntityDetailType.discord
-        )?.value,
-      }}
-      onFinish={handleSubmitForm}
-    >
+    <Form form={form} initialValues={initialValues} onFinish={handleSubmitForm}>
       <Col>
         <Typography.Title level={5}>Discord username</Typography.Title>
         <Form.Item name="discordUsername">

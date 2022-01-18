@@ -2,14 +2,11 @@ import { useMutation } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { PostFeedbackToDiscordMutationVariables } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
-import {
-  PostFeedbackToDiscordMutation,
-  PostFeedbackToDiscordMutation_message,
-} from "../../graphql/types";
+import { PostFeedbackToDiscordMutation } from "../../graphql/types";
 
 export function usePostFeedbackToDiscord(): (
   input: PostFeedbackToDiscordMutationVariables
-) => Promise<PostFeedbackToDiscordMutation_message | null> {
+) => Promise<boolean> {
   const [postFeedback] = useMutation<
     PostFeedbackToDiscordMutation,
     PostFeedbackToDiscordMutationVariables
@@ -19,7 +16,7 @@ export function usePostFeedbackToDiscord(): (
       const res = await postFeedback({ variables: input });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.message;
+      return res.data?.messageSent;
     },
     [postFeedback]
   );

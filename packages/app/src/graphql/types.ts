@@ -3151,16 +3151,8 @@ export interface CreateTasksFromGithubIssuesMutationVariables {
 // GraphQL mutation operation: PostFeedbackToDiscordMutation
 // ====================================================
 
-export interface PostFeedbackToDiscordMutation_message {
-  __typename: "DiscordMessage";
-  id: string;
-  author: string;
-  channelId: string;
-  content: string;
-}
-
 export interface PostFeedbackToDiscordMutation {
-  message: PostFeedbackToDiscordMutation_message | null;
+  messageSent: boolean;
 }
 
 export interface PostFeedbackToDiscordMutationVariables {
@@ -7181,23 +7173,6 @@ export interface DiscordIntegrationChannel {
   name: string;
   integrationId: Scalar.UUID;
   permissions: string[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: DiscordMessage
-// ====================================================
-
-export interface DiscordMessage {
-  __typename: "DiscordMessage";
-  id: string;
-  author: string;
-  channelId: string;
-  content: string;
 }
 
 /* tslint:disable */

@@ -14,7 +14,6 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
-import { DiscordMessage } from "./dto/DiscordMessage";
 
 @Injectable()
 @EventSubscriber()
@@ -94,7 +93,7 @@ export class DiscordService implements OnModuleInit {
   public async postFeedback(
     message: string,
     discordUsername?: string
-  ): Promise<DiscordMessage> {
+  ): Promise<boolean> {
     const deworkGuildId = this.config.get<string>("DISCORD_DEWORK_GUILD_ID")!;
     const deworkGuild = await this.client.guilds.fetch(deworkGuildId);
     const feedbackChannelId = this.config.get<string>(
@@ -125,15 +124,12 @@ export class DiscordService implements OnModuleInit {
       ],
     });
 
+    if (!sentMessage) return false;
+
     this.logger.debug(
       `Sent message to feedback channel: ${JSON.stringify({ sentMessage })}`
     );
 
-    return {
-      id: sentMessage.id,
-      channelId: sentMessage.channelId,
-      content: sentMessage.content,
-      author: discordUsername,
-    } as DiscordMessage;
+    return true;
   }
 }

@@ -499,13 +499,9 @@ export const postFeedbackToDiscord = gql`
     $feedbackContent: String!
     $discordUsername: String
   ) {
-    message: postFeedbackToDiscord(
+    messageSent: postFeedbackToDiscord(
       feedbackContent: $feedbackContent
       discordUsername: $discordUsername
-    ) {
-      ...DiscordMessage
-    }
+    )
   }
-
-  ${Fragments.discordMessage}
 `;
