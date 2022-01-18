@@ -32,11 +32,11 @@ export const FeedbackForm: FC<FeedbackFormProps> = ({ onClose }) => {
     try {
       await postFeedbackToDiscord(values);
       message.success("Feedback submitted successfully!");
+      onClose();
+      form.setFieldsValue(initialValues);
     } catch {
       message.error("Feedback submission failed");
     } finally {
-      onClose();
-      form.setFieldsValue(initialValues);
       loading.toggleOff();
     }
   };
