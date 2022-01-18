@@ -6,7 +6,6 @@ import {
 } from "@dewo/app/graphql/types";
 import { Button } from "antd";
 import * as Icons from "@ant-design/icons";
-import { eatClick } from "@dewo/app/util/eatClick";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ClaimTaskButton } from "./ClaimTaskButton";
@@ -15,6 +14,7 @@ import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
+import { CreateOpenBountySubmissionButton } from "./CreateOpenBountySubmissionButton";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -45,13 +45,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
     task.ownerId === currentUserId
   ) {
     return (
-      <Button
-        size="small"
-        onClick={(e) => {
-          eatClick(e);
-          moveToDone();
-        }}
-      >
+      <Button size="small" onClick={moveToDone}>
         Approve
       </Button>
     );
@@ -67,21 +61,21 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
             icon={<Icons.LockOutlined />}
             onClick={navigateToTask}
           >
-            Choose contributor
+            Choose Contributor
           </Button>
         );
       }
     } else if (canClaimTask) {
       if (!!currentUserId) {
-        return <ClaimTaskButton task={task} />;
+        if (task.options?.enableTaskApplicationSubmission) {
+          return <CreateOpenBountySubmissionButton task={task} />;
+        } else {
+          return <ClaimTaskButton task={task} />;
+        }
       } else {
         return (
-          <LoginButton
-            size="small"
-            icon={<Icons.UnlockOutlined />}
-            onClick={eatClick}
-          >
-            I'm interested
+          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            I'm Interested
           </LoginButton>
         );
       }

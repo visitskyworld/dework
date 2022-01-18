@@ -32,7 +32,7 @@ interface MarkdownEditorProps {
 
 export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   initialValue,
-  placeholder,
+  placeholder = "Write something or attach files...",
   buttonText = "Edit",
   editable,
   mode,
@@ -186,7 +186,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
           preview="edit"
           enableScroll={false}
           autoFocus={mode === "update"}
-          textareaProps={{ placeholder: "Write something or attach files..." }}
+          textareaProps={{ placeholder }}
           onPaste={handleFilePaste}
           onBlur={stopPropagation}
           onSave={!autoSave ? handleSave : undefined}

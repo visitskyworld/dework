@@ -3,7 +3,6 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
 import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { eatClick } from "@dewo/app/util/eatClick";
 import { useToggle } from "@dewo/app/util/hooks";
 import { TaskApplyModal } from "../TaskApplyModal";
 import { useDeleteTaskApplication } from "../hooks";
@@ -22,26 +21,9 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
   const showClaimEducation = useToggle();
 
   const deleteTaskApplication = useDeleteTaskApplication();
-  const handleClaimTask = useCallback(
-    (event) => {
-      eatClick(event);
-      showClaimEducation.toggleOn();
-    },
-    [showClaimEducation]
-  );
   const handleUnclaimTask = useCallback(
-    async (event) => {
-      eatClick(event);
-      deleteTaskApplication({ taskId: task.id, userId: user!.id });
-    },
+    async () => deleteTaskApplication({ taskId: task.id, userId: user!.id }),
     [deleteTaskApplication, task.id, user]
-  );
-  const hideClaimConfirmation = useCallback(
-    (event) => {
-      eatClick(event);
-      showClaimEducation.toggleOff();
-    },
-    [showClaimEducation]
   );
 
   return (
@@ -76,7 +58,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
         <Button
           size="small"
           icon={<Icons.UnlockOutlined />}
-          onClick={handleClaimTask}
+          onClick={showClaimEducation.toggleOn}
         >
           I'm Interested
         </Button>
@@ -84,7 +66,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
       <TaskApplyModal
         task={task}
         visible={showClaimEducation.isOn}
-        onCancel={hideClaimConfirmation}
+        onCancel={showClaimEducation.toggleOff}
         onDone={showClaimEducation.toggleOff}
       />
     </>
