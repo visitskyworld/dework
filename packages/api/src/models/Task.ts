@@ -29,6 +29,7 @@ import { DiscordChannel } from "./DiscordChannel";
 import { TaskApplication } from "./TaskApplication";
 import { TaskReaction } from "./TaskReaction";
 import { GithubIssue } from "./GithubIssue";
+import { TaskSubmission } from "./TaskSubmission";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -44,7 +45,7 @@ registerEnumType(TaskStatus, { name: "TaskStatus" });
 @InputType("TaskOptionsInput")
 export class TaskOptions {
   @Field({ nullable: true })
-  public enableTaskApplicationSubmission?: boolean;
+  public allowOpenSubmission?: boolean;
 }
 
 @Entity()
@@ -65,10 +66,6 @@ export class Task extends Audit {
   @Column({ enum: TaskStatus })
   @Field(() => TaskStatus)
   public status!: TaskStatus;
-
-  @Column({ nullable: true, length: 4096 })
-  @Field({ nullable: true })
-  public submission?: string;
 
   @Column()
   @Field()
@@ -119,12 +116,13 @@ export class Task extends Audit {
   @Field(() => [User])
   public assignees!: User[];
 
-  @OneToMany(
-    () => TaskApplication,
-    (application: TaskApplication) => application.task
-  )
+  @OneToMany(() => TaskApplication, (x: TaskApplication) => x.task)
   @Field(() => [TaskApplication])
   public applications!: Promise<TaskApplication[]>;
+
+  @OneToMany(() => TaskSubmission, (x: TaskSubmission) => x.task)
+  @Field(() => [TaskSubmission])
+  public submissions!: Promise<TaskSubmission[]>;
 
   @OneToMany(() => TaskReaction, (r: TaskReaction) => r.task)
   @Field(() => [TaskReaction])

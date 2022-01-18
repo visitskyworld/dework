@@ -5,6 +5,8 @@ import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 import { GetTasksInput } from "@dewo/api/modules/task/dto/GetTasksInput";
 import { TaskReactionInput } from "@dewo/api/modules/task/dto/TaskReactionInput";
 import { DeleteTaskApplicationInput } from "@dewo/api/modules/task/dto/DeleteTaskApplicationInput";
+import { CreateTaskSubmissionInput } from "@dewo/api/modules/task/dto/CreateTaskSubmissionInput";
+import { UpdateTaskSubmissionInput } from "@dewo/api/modules/task/dto/UpdateTaskSubmissionInput";
 
 export class TaskRequests {
   private static taskApplicationFragment = `
@@ -69,6 +71,11 @@ export class TaskRequests {
       applications {
         ...TaskApplication
       }
+      submissions {
+        userId
+        content
+        deletedAt
+      }
       reactions {
         reaction
         userId
@@ -76,6 +83,21 @@ export class TaskRequests {
     }
 
     ${TaskRequests.taskApplicationFragment}
+  `;
+
+  private static taskSubmissionFragment = `
+    fragment TaskSubmission on TaskSubmission {
+      id
+      content
+      deletedAt
+      userId
+      taskId
+      task {
+        ...Task
+      }
+    }
+
+    ${TaskRequests.taskFragment}
   `;
 
   public static create(
@@ -180,6 +202,54 @@ export class TaskRequests {
         }
 
         ${this.taskFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static createSubmission(
+    input: CreateTaskSubmissionInput
+  ): GraphQLTestClientRequestBody<{ input: CreateTaskSubmissionInput }> {
+    return {
+      query: `
+      mutation CreateTaskSubmission(
+        $input: CreateTaskSubmissionInput!
+      ) {
+        submission: createTaskSubmission(input: $input) {
+          ...TaskSubmission
+          task {
+            id
+            submissions {
+              ...TaskSubmission
+            }
+          }
+        }
+      }
+
+      ${this.taskSubmissionFragment}
+      `,
+      variables: { input },
+    };
+  }
+
+  public static updateSubmission(
+    input: UpdateTaskSubmissionInput
+  ): GraphQLTestClientRequestBody<{ input: UpdateTaskSubmissionInput }> {
+    return {
+      query: `
+        mutation UpdateTaskSubmission($input: UpdateTaskSubmissionInput!) {
+          submission: updateTaskSubmission(input: $input) {
+            ...TaskSubmission
+            task {
+              id
+              submissions {
+                ...TaskSubmission
+              }
+            }
+          }
+        }
+
+        ${this.taskSubmissionFragment}
       `,
       variables: { input },
     };

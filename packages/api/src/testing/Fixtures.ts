@@ -51,6 +51,7 @@ import { ProjectMember } from "../models/ProjectMember";
 import { GithubIssue } from "../models/GithubIssue";
 import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
+import { TaskSubmission } from "../models/TaskSubmission";
 
 @Injectable()
 export class Fixtures {
@@ -196,6 +197,17 @@ export class Fixtures {
       label: faker.company.companyName(),
       color: "red",
       projectId: await this.createProject().then((p) => p.id),
+      ...partial,
+    });
+  }
+
+  public async createTaskSubmission(
+    partial: Partial<TaskSubmission> = {}
+  ): Promise<TaskSubmission> {
+    return this.taskService.createSubmission({
+      userId: await this.createUser().then((u) => u.id),
+      taskId: await this.createTask().then((t) => t.id),
+      content: faker.lorem.paragraph(),
       ...partial,
     });
   }

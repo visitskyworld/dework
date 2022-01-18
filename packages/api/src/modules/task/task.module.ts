@@ -22,6 +22,7 @@ import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
       Task,
       TaskReward,
       TaskApplication,
+      TaskSubmission,
       TaskReaction,
       Project,
       User,

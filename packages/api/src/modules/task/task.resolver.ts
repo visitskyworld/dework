@@ -9,7 +9,12 @@ import {
   Context,
 } from "@nestjs/graphql";
 import _ from "lodash";
-import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
@@ -18,7 +23,14 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
+import {
+  AccessGuard,
+  AccessService,
+  Actions,
+  CaslUser,
+  UseAbility,
+  UserProxy,
+} from "nest-casl";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
@@ -35,6 +47,11 @@ import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { CustomPermissionActions } from "../auth/permissions";
 import { ProjectService } from "../project/project.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
+import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
+import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
+import { subject } from "@casl/ability";
 
 @Injectable()
 @Resolver(() => Task)
@@ -42,7 +59,9 @@ export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly permalinkService: PermalinkService
+    private readonly permalinkService: PermalinkService,
+    private readonly accessService: AccessService,
+    private readonly abilityFactory: AbilityFactory
   ) {}
 
   @ResolveField(() => [TaskTag])
@@ -57,6 +76,12 @@ export class TaskResolver {
     if (!!task.assignees) return task.assignees;
     const refetched = await this.taskService.findById(task.id);
     return refetched!.assignees;
+  }
+
+  @ResolveField(() => [User])
+  public async submissions(@Parent() task: Task): Promise<TaskSubmission[]> {
+    const submissions = await task.submissions;
+    return submissions.filter((s) => !s.deletedAt);
   }
 
   @ResolveField(() => TaskReward, { nullable: true })
@@ -130,7 +155,7 @@ export class TaskResolver {
   public async createTaskApplication(
     @Args("input") input: CreateTaskApplicationInput
   ): Promise<TaskApplication> {
-    return this.taskService.createTaskApplication(input);
+    return this.taskService.createApplication(input);
   }
 
   @Mutation(() => Task)
@@ -145,7 +170,41 @@ export class TaskResolver {
   public async deleteTaskApplication(
     @Args("input") input: DeleteTaskApplicationInput
   ): Promise<Task> {
-    return this.taskService.deleteTaskApplication(input.taskId, input.userId);
+    return this.taskService.deleteApplication(input.taskId, input.userId);
+  }
+
+  @Mutation(() => TaskSubmission)
+  @UseGuards(AuthGuard)
+  public async createTaskSubmission(
+    @Context("user") user: User,
+    @CaslUser() userProxy: UserProxy,
+    @Args("input") input: CreateTaskSubmissionInput
+  ): Promise<TaskSubmission> {
+    const task = await this.taskService.findById(input.taskId);
+    if (!task) throw new NotFoundException();
+
+    const caslUser = await userProxy.get();
+    const abilities = this.abilityFactory.createForUser(caslUser!);
+    if (!abilities.can("update", subject(Task as any, task), "submission")) {
+      throw new ForbiddenException();
+    }
+
+    return this.taskService.createSubmission({ ...input, userId: user.id });
+  }
+
+  @Mutation(() => TaskSubmission)
+  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, TaskSubmission, [
+    TaskService,
+    async (_service: TaskService, { params }) => ({
+      taskId: params.input.taskId,
+      userId: params.input.userId,
+    }),
+  ])
+  public async updateTaskSubmission(
+    @Args("input") input: UpdateTaskSubmissionInput
+  ): Promise<TaskSubmission> {
+    return this.taskService.updateSubmission(input);
   }
 
   @Mutation(() => Task)

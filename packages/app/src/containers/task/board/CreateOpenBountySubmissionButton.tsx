@@ -20,7 +20,7 @@ export const CreateOpenBountySubmissionButton: FC<Props> = ({ task }) => {
     <>
       <Button
         size="small"
-        icon={<Icons.UnlockOutlined />}
+        icon={<Icons.EditOutlined />}
         onClick={modalVisible.toggleOn}
       >
         Create Submission

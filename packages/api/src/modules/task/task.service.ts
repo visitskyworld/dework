@@ -1,5 +1,5 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
-import { DeepAtLeast } from "@dewo/api/types/general";
+import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
@@ -20,6 +20,8 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { ProjectVisibility } from "@dewo/api/models/Project";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 
 @Injectable()
 export class TaskService {
@@ -36,7 +38,9 @@ export class TaskService {
     private readonly paymentService: PaymentService,
     private readonly projectService: ProjectService,
     @InjectRepository(TaskApplication)
-    private readonly taskApplicationRepo: Repository<TaskApplication>
+    private readonly taskApplicationRepo: Repository<TaskApplication>,
+    @InjectRepository(TaskSubmission)
+    private readonly taskSubmissionRepo: Repository<TaskSubmission>
   ) {}
 
   public async create(
@@ -64,7 +68,7 @@ export class TaskService {
     return refetched;
   }
 
-  public async createTaskApplication(
+  public async createApplication(
     partial: DeepAtLeast<TaskApplication, "userId" | "taskId">
   ): Promise<TaskApplication> {
     const task = await this.taskRepo.findOne(partial.taskId);
@@ -80,12 +84,50 @@ export class TaskService {
     }) as Promise<TaskApplication>;
   }
 
-  public async deleteTaskApplication(
+  public async deleteApplication(
     taskId: string,
     userId: string
   ): Promise<Task> {
     await this.taskApplicationRepo.delete({ taskId, userId });
     return this.findById(taskId) as Promise<Task>;
+  }
+
+  public async createSubmission(
+    input: AtLeast<TaskSubmission, "userId" | "taskId" | "content">
+  ): Promise<TaskSubmission> {
+    const task = await this.findById(input.taskId);
+    if (!task) throw new NotFoundException();
+
+    const submissions = await task.submissions;
+    const existing = submissions.find((s) => s.userId === input.userId);
+    if (!!existing) return existing;
+
+    const created = await this.taskSubmissionRepo.save(input);
+    return this.taskSubmissionRepo.findOne({
+      id: created.id,
+    }) as Promise<TaskSubmission>;
+  }
+
+  public async updateSubmission(
+    input: UpdateTaskSubmissionInput
+  ): Promise<TaskSubmission> {
+    const existing = await this.taskSubmissionRepo.findOne({
+      userId: input.userId,
+      taskId: input.taskId,
+      deletedAt: IsNull(),
+    });
+    if (!existing) throw new NotFoundException();
+    await this.taskSubmissionRepo.update(
+      {
+        userId: input.userId,
+        taskId: input.taskId,
+        deletedAt: IsNull(),
+      },
+      input
+    );
+    return this.taskSubmissionRepo.findOne({
+      id: existing.id,
+    }) as Promise<TaskSubmission>;
   }
 
   public async createPayments(input: CreateTaskPaymentsInput): Promise<Task[]> {

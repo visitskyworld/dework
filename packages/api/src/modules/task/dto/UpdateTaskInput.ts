@@ -19,9 +19,6 @@ export class UpdateTaskInput {
   public parentTaskId?: string;
 
   @Field({ nullable: true })
-  public submission?: string;
-
-  @Field({ nullable: true })
   public sortKey?: string;
 
   @Field(() => [GraphQLUUID], { nullable: true })

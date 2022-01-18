@@ -349,6 +349,133 @@ describe("TaskResolver", () => {
       });
     });
 
+    describe("task submissions", () => {
+      describe("createTaskSubmission", () => {
+        const content = faker.lorem.paragraph();
+
+        it("should fail for anyone on normal task", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask();
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: TaskRequests.createSubmission({ taskId: task.id, content }),
+          });
+
+          client.expectGqlError(response, HttpStatus.FORBIDDEN);
+        });
+
+        it("should succeed for assignee contributor", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({ assignees: [user] });
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: TaskRequests.createSubmission({ taskId: task.id, content }),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const submission = response.body.data?.submission;
+          expect(submission.userId).toEqual(user.id);
+          expect(submission.taskId).toEqual(task.id);
+          expect(submission.content).toEqual(content);
+          expect(submission.task.submissions).toContainEqual(
+            expect.objectContaining({ id: submission.id })
+          );
+        });
+
+        it("should succeed for anyone on open bounty task", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({
+            options: { allowOpenSubmission: true },
+          });
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: TaskRequests.createSubmission({ taskId: task.id, content }),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const submission = response.body.data?.submission;
+          expect(submission.userId).toEqual(user.id);
+        });
+      });
+
+      describe("updateTaskSubmission", () => {
+        it("should fail to update someone elses submission", async () => {
+          const submission = await fixtures.createTaskSubmission();
+          const user = await fixtures.createUser();
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: TaskRequests.updateSubmission({
+              taskId: submission.taskId,
+              userId: submission.userId,
+            }),
+          });
+
+          client.expectGqlError(response, HttpStatus.FORBIDDEN);
+        });
+
+        it("should succeed to update for creator and project admin", async () => {
+          const admin = await fixtures.createUser();
+          const project = await fixtures.createProject({}, admin);
+          const submitter = await fixtures.createUser();
+          const task = await fixtures.createTask({
+            projectId: project.id,
+            assignees: [submitter],
+          });
+          const submission = await fixtures.createTaskSubmission({
+            taskId: task.id,
+            userId: submitter.id,
+          });
+
+          const req = (content: string, user: User) =>
+            client.request({
+              app,
+              auth: fixtures.createAuthToken(user),
+              body: TaskRequests.updateSubmission({
+                taskId: submission.taskId,
+                userId: submission.userId,
+                content,
+              }),
+            });
+
+          const content1 = faker.lorem.paragraph();
+          const res1 = await req(content1, submitter);
+          expect(res1.body.data?.submission.content).toEqual(content1);
+
+          const content2 = faker.lorem.paragraph();
+          const res2 = await req(content2, submitter);
+          expect(res2.body.data?.submission.content).toEqual(content2);
+        });
+
+        it("should not return submission if is deleted", async () => {
+          const user = await fixtures.createUser();
+          const submission = await fixtures.createTaskSubmission({
+            userId: user.id,
+          });
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: TaskRequests.updateSubmission({
+              taskId: submission.taskId,
+              userId: submission.userId,
+              deletedAt: new Date(),
+            }),
+          });
+
+          expect(
+            response.body.data?.submission.task.submissions
+          ).not.toContainEqual(expect.objectContaining({ id: submission.id }));
+        });
+      });
+    });
+
     describe("deleteTask", () => {
       it("should set task.deletedAt", async () => {
         const { user, project } = await fixtures.createUserOrgProject();

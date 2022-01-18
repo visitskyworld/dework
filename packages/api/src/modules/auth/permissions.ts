@@ -14,6 +14,7 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -30,13 +31,14 @@ export const permissions: Permissions<
     can(Actions.read, Task);
 
     can(Actions.delete, TaskApplication, { userId: user.id });
+    can(Actions.update, TaskSubmission, { userId: user.id });
     can(CustomPermissionActions.claimTask, Task, {
       status: TaskStatus.TODO,
       assignees: { $exists: true, $size: 0 },
     });
   },
 
-  authenticated({ can, cannot, user }) {
+  authenticated({ can, user }) {
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
@@ -52,10 +54,13 @@ export const permissions: Permissions<
       }
     );
     can(Actions.update, Task, { ownerId: user.id });
-    cannot(Actions.update, Task, "submission");
+
     can(Actions.update, Task, "submission", {
       assignees: { $elemMatch: { id: user.id } },
-      status: { $ne: TaskStatus.DONE },
+    });
+    can(Actions.update, Task, "submission", {
+      // @ts-ignore
+      "options.allowOpenSubmission": true,
     });
   },
 
@@ -83,7 +88,6 @@ export const permissions: Permissions<
     can(Actions.manage, ProjectMember);
 
     cannot(CustomPermissionActions.claimTask, Task);
-    cannot(Actions.update, Task, "submission");
   },
 
   projectAdmin({ can, extend }) {
@@ -101,10 +105,11 @@ export const permissions: Permissions<
     can(Actions.delete, Task);
 
     can(Actions.delete, TaskApplication);
+    can(Actions.update, TaskSubmission);
 
     can(Actions.create, TaskTag);
     can(Actions.manage, ProjectTokenGate);
-    
+
     extend(Roles.authenticated);
   },
 
