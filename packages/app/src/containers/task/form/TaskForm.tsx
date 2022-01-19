@@ -125,7 +125,6 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
-      console.log({ changed });
       if ("ownerId" in changed && changed.ownerId === undefined) {
         values.ownerId = null;
       }

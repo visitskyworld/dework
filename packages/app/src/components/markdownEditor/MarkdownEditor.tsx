@@ -61,7 +61,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
 
   useEffect(() => {
     if (autoSave) onChange?.(value);
-  }, [autoSave, onChange, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   const replaceMarkdownImgPlaceholder = useCallback(
     (placeholderText: string, url: string) =>
