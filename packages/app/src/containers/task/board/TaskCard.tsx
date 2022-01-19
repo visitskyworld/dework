@@ -43,7 +43,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           </Row>
           <TaskTagsRow task={task} />
           <TaskReactionPicker task={task} />
-          <div onClick={stopPropagation}>
+          <div onClick={stopPropagation} style={{ display: "inline-block" }}>
             <TaskActionButton task={task} />
           </div>
         </Space>
