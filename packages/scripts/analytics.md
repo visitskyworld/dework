@@ -13,3 +13,14 @@ GROUP BY DATE(task."createdAt")
 ORDER BY DATE(task."createdAt") DESC
 ```
 
+## Number of payments per network
+```sql
+SELECT COUNT(*), DATE(payment."createdAt"), payment_network."name"
+FROM payment
+INNER JOIN payment_network ON payment_network.id = payment."networkId"
+WHERE payment_network."name" NOT IN ('Ethereum Rinkeby')
+  -- AND payment.status = 'CONFIRMED'
+GROUP BY DATE(payment."createdAt"), payment_network."name"
+ORDER BY DATE(payment."createdAt") DESC
+```
+
