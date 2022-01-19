@@ -374,19 +374,21 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
 
-          <AdvancedSectionCollapse>
-            <Form.Item
-              name={["options", "allowOpenSubmission"]}
-              valuePropName="checked"
-            >
-              <Checkbox>
-                This is an Open Bounty{"  "}
-                <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
-                  <Icons.QuestionCircleOutlined />
-                </Tooltip>
-              </Checkbox>
-            </Form.Item>
-          </AdvancedSectionCollapse>
+          {canChange("options") && (
+            <AdvancedSectionCollapse>
+              <Form.Item
+                name={["options", "allowOpenSubmission"]}
+                valuePropName="checked"
+              >
+                <Checkbox>
+                  This is an Open Bounty{"  "}
+                  <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
+                    <Icons.QuestionCircleOutlined />
+                  </Tooltip>
+                </Checkbox>
+              </Form.Item>
+            </AdvancedSectionCollapse>
+          )}
 
           {/* {!!task && (
             <FormSection label="Project">
