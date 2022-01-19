@@ -64,7 +64,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
             icon={<Icons.LockOutlined />}
             onClick={navigateToTask}
           >
-            Choose Submission
+            Review Submissions
           </Button>
         );
       } else if (!!task.applications.length) {

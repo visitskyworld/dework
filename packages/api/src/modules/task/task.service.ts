@@ -110,14 +110,7 @@ export class TaskService {
       deletedAt: IsNull(),
     });
     if (!existing) throw new NotFoundException();
-    await this.taskSubmissionRepo.update(
-      {
-        userId: input.userId,
-        taskId: input.taskId,
-        deletedAt: IsNull(),
-      },
-      input
-    );
+    await this.taskSubmissionRepo.save({ ...existing, ...input });
     return this.taskSubmissionRepo.findOne({
       id: existing.id,
     }) as Promise<TaskSubmission>;
