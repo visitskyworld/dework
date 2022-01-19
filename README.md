@@ -170,7 +170,7 @@ BEGIN
     '020',
     CAST('{
       "chain": "mainnet",
-      "rpcUrl": "stacks-node-api.stacks.co"
+      "rpcUrl": "https://stacks-node-api.stacks.co"
     }' AS json)
   ), (
     ethereum_rinkeby_id,
@@ -216,7 +216,7 @@ BEGIN
     '120',
     CAST('{
       "chain": "testnet",
-      "rpcUrl": "stacks-node-api.testnet.stacks.co"
+      "rpcUrl": "https://stacks-node-api.testnet.stacks.co"
     }' AS json)
   );
 

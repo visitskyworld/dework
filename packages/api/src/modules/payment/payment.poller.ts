@@ -23,6 +23,7 @@ import {
   PaymentNetworkType,
 } from "@dewo/api/models/PaymentNetwork";
 import { Interval } from "@nestjs/schedule";
+import * as request from "request-promise";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
@@ -38,7 +39,7 @@ export class PaymentPoller {
     [PaymentMethodType.METAMASK]: ms.seconds(5),
     [PaymentMethodType.PHANTOM]: ms.seconds(5),
     [PaymentMethodType.GNOSIS_SAFE]: ms.seconds(5),
-    [PaymentMethodType.HIRO]: 0, // ms.seconds(5),
+    [PaymentMethodType.HIRO]: ms.minutes(1),
   };
 
   private checkTimeout: Record<PaymentMethodType, number> = {
@@ -246,7 +247,9 @@ export class PaymentPoller {
     data: StacksPaymentData,
     network: PaymentNetwork<PaymentNetworkType.STACKS>
   ): Promise<ConfirmPaymentResponse> {
-    const connection = new stacks.Connection(network.config.rpcUrl);
+    const url = `${network.config.rpcUrl}/extended/v1/tx/${data.txId}`;
+    const res = await request.get({ url, json: true });
+    return { confirmed: res.tx_status === "success" };
   }
 
   public async isGnosisSafeTxConfirmed(
