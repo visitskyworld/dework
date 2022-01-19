@@ -97,6 +97,11 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
       {!!isMe && !!editing.isOn && (
         <Row gutter={8} style={{ marginTop: 16 }}>
           <Col span={12}>
+            <Button block onClick={editing.toggle} disabled={loading.isOn}>
+              Cancel
+            </Button>
+          </Col>
+          <Col span={12}>
             <Button
               block
               type="primary"
@@ -104,11 +109,6 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
               loading={loading.isOn}
             >
               Save
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button block onClick={editing.toggle} disabled={loading.isOn}>
-              Cancel
             </Button>
           </Col>
         </Row>
