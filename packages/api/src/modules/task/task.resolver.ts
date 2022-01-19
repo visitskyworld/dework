@@ -67,6 +67,12 @@ export class TaskResolver {
     return refetched!.reward;
   }
 
+  @ResolveField(() => [Task], { nullable: true })
+  public async subtasks(@Parent() task: Task): Promise<Task[]> {
+    const subtasks = await task.subtasks;
+    return subtasks.filter((t) => !t.deletedAt);
+  }
+
   @ResolveField(() => String)
   public gitBranchName(
     @Context("user") user: User | undefined,
