@@ -53,52 +53,66 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
     );
   }
 
-  if (task.status === TaskStatus.TODO) {
-    if (canUpdateTask) {
-      console.log(task);
-      if (!!task.submissions.length) {
-        return (
-          <Button
-            size="small"
-            type="primary"
-            icon={<Icons.LockOutlined />}
-            onClick={navigateToTask}
-          >
-            Review Submissions
-          </Button>
-        );
-      } else if (!!task.applications.length) {
-        return (
-          <Button
-            size="small"
-            type="primary"
-            icon={<Icons.LockOutlined />}
-            onClick={navigateToTask}
-          >
-            Choose Contributor
-          </Button>
-        );
-      }
-    } else if (canCreateSubmission) {
-      if (!!currentUserId) {
-        return <CreateSubmissionButton task={task} />;
-      } else {
-        return (
-          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-            Create Submission
-          </LoginButton>
-        );
-      }
-    } else if (canClaimTask) {
-      if (!!currentUserId) {
-        return <ClaimTaskButton task={task} />;
-      } else {
-        return (
-          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-            I'm Interested
-          </LoginButton>
-        );
-      }
+  if (
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
+      task.status
+    ) &&
+    canUpdateTask &&
+    !!task.submissions.length
+  ) {
+    return (
+      <Button
+        size="small"
+        type="primary"
+        icon={<Icons.EditOutlined />}
+        onClick={navigateToTask}
+      >
+        Review Submissions
+      </Button>
+    );
+  }
+
+  if (
+    task.status === TaskStatus.TODO &&
+    canUpdateTask &&
+    !!task.applications.length
+  ) {
+    return (
+      <Button
+        size="small"
+        type="primary"
+        icon={<Icons.LockOutlined />}
+        onClick={navigateToTask}
+      >
+        Choose Contributor
+      </Button>
+    );
+  }
+
+  if (
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
+    canCreateSubmission
+  ) {
+    if (!!currentUserId) {
+      return <CreateSubmissionButton task={task} />;
+    } else {
+      return (
+        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+          Create Submission
+        </LoginButton>
+      );
+    }
+  }
+
+  if (task.status === TaskStatus.TODO && canClaimTask) {
+    if (!!currentUserId) {
+      return <ClaimTaskButton task={task} />;
+    } else {
+      return (
+        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+          I'm Interested
+        </LoginButton>
+      );
     }
   }
 
