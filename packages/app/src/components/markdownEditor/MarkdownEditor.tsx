@@ -3,6 +3,7 @@ import React, {
   ClipboardEvent,
   FC,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -58,13 +59,9 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
     editing.toggleOn();
   }, [savedValue, editing]);
 
-  const handleChange = useCallback(
-    (description: string | undefined) => {
-      setValue(description);
-      if (autoSave) onChange?.(value);
-    },
-    [autoSave, onChange, value]
-  );
+  useEffect(() => {
+    if (autoSave) onChange?.(value);
+  }, [autoSave, onChange, value]);
 
   const replaceMarkdownImgPlaceholder = useCallback(
     (placeholderText: string, url: string) =>
@@ -178,7 +175,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         />
         <MDEditor
           value={value}
-          onChange={handleChange}
+          onChange={setValue}
           className="dewo-md-editor"
           highlightEnable={false}
           commands={newCommands}
