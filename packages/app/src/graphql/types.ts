@@ -1505,7 +1505,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_payment_p
   id: Scalar.UUID;
   slug: string;
   name: string;
-  type: string;
+  type: PaymentNetworkType;
   config: Scalar.JSONObject;
   sortKey: string;
 }
@@ -1536,7 +1536,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_payment_n
   id: Scalar.UUID;
   slug: string;
   name: string;
-  type: string;
+  type: PaymentNetworkType;
   config: Scalar.JSONObject;
   sortKey: string;
 }
@@ -1706,7 +1706,7 @@ export interface DeleteTaskApplicationMutation_task_reward_payment_paymentMethod
   id: Scalar.UUID;
   slug: string;
   name: string;
-  type: string;
+  type: PaymentNetworkType;
   config: Scalar.JSONObject;
   sortKey: string;
 }
@@ -1737,7 +1737,7 @@ export interface DeleteTaskApplicationMutation_task_reward_payment_network {
   id: Scalar.UUID;
   slug: string;
   name: string;
-  type: string;
+  type: PaymentNetworkType;
   config: Scalar.JSONObject;
   sortKey: string;
 }
