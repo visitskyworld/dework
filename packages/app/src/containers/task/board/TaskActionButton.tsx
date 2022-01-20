@@ -15,6 +15,7 @@ import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { CreateSubmissionButton } from "./CreateSubmissionButton";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -35,86 +36,94 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
   const canUpdateTask = usePermission("update", task, "_");
   const canCreateSubmission = usePermission("update", task, "submissions");
 
-  if (shouldShowInlinePayButton) {
-    return <PayButton task={task}>Pay</PayButton>;
-  }
+  const button = (() => {
+    if (shouldShowInlinePayButton) {
+      return <PayButton task={task}>Pay</PayButton>;
+    }
 
-  if (
-    task.status === TaskStatus.IN_REVIEW &&
-    !!task.reward &&
-    !task.reward.payment &&
-    !!currentUserId &&
-    task.ownerId === currentUserId
-  ) {
-    return (
-      <Button size="small" onClick={moveToDone}>
-        Approve
-      </Button>
-    );
-  }
-
-  if (
-    [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
-      task.status
-    ) &&
-    canUpdateTask &&
-    !!task.submissions.length
-  ) {
-    return (
-      <Button
-        size="small"
-        type="primary"
-        icon={<Icons.EditOutlined />}
-        onClick={navigateToTask}
-      >
-        Review Submissions
-      </Button>
-    );
-  }
-
-  if (
-    task.status === TaskStatus.TODO &&
-    canUpdateTask &&
-    !!task.applications.length
-  ) {
-    return (
-      <Button
-        size="small"
-        type="primary"
-        icon={<Icons.LockOutlined />}
-        onClick={navigateToTask}
-      >
-        Choose Contributor
-      </Button>
-    );
-  }
-
-  if (
-    [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
-    canCreateSubmission
-  ) {
-    if (!!currentUserId) {
-      return <CreateSubmissionButton task={task} />;
-    } else {
+    if (
+      task.status === TaskStatus.IN_REVIEW &&
+      !!task.reward &&
+      !task.reward.payment &&
+      !!currentUserId &&
+      task.ownerId === currentUserId
+    ) {
       return (
-        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-          Create Submission
-        </LoginButton>
+        <Button size="small" onClick={moveToDone}>
+          Approve
+        </Button>
       );
     }
-  }
 
-  if (task.status === TaskStatus.TODO && canClaimTask) {
-    if (!!currentUserId) {
-      return <ClaimTaskButton task={task} />;
-    } else {
+    if (
+      [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
+        task.status
+      ) &&
+      canUpdateTask &&
+      !!task.submissions.length
+    ) {
       return (
-        <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-          I'm Interested
-        </LoginButton>
+        <Button
+          size="small"
+          type="primary"
+          icon={<Icons.EditOutlined />}
+          onClick={navigateToTask}
+        >
+          Review Submissions
+        </Button>
       );
     }
-  }
 
-  return null;
+    if (
+      task.status === TaskStatus.TODO &&
+      canUpdateTask &&
+      !!task.applications.length
+    ) {
+      return (
+        <Button
+          size="small"
+          type="primary"
+          icon={<Icons.LockOutlined />}
+          onClick={navigateToTask}
+        >
+          Choose Contributor
+        </Button>
+      );
+    }
+
+    if (
+      [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
+      !!task.options?.allowOpenSubmission &&
+      canCreateSubmission
+    ) {
+      if (!!currentUserId) {
+        return <CreateSubmissionButton task={task} />;
+      } else {
+        return (
+          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            Create Submission
+          </LoginButton>
+        );
+      }
+    }
+
+    if (task.status === TaskStatus.TODO && canClaimTask) {
+      if (!!currentUserId) {
+        return <ClaimTaskButton task={task} />;
+      } else {
+        return (
+          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+            I'm Interested
+          </LoginButton>
+        );
+      }
+    }
+  })();
+
+  if (!button) return null;
+  return (
+    <div onClick={stopPropagation} style={{ display: "inline-block" }}>
+      {button}
+    </div>
+  );
 };

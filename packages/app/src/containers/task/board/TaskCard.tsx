@@ -5,7 +5,7 @@ import {
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import { Card, Avatar, Typography, Space, Row, Col, Rate } from "antd";
-import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
+import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -43,9 +43,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           </Row>
           <TaskTagsRow task={task} />
           <TaskReactionPicker task={task} />
-          <div onClick={stopPropagation} style={{ display: "inline-block" }}>
-            <TaskActionButton task={task} />
-          </div>
+          <TaskActionButton task={task} />
         </Space>
         <Col
           onClick={eatClick}
