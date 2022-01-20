@@ -94,6 +94,7 @@ export class PaymentPoller {
         this.logger.log(
           `Checked ${payment.id} of type ${method.type}: ${JSON.stringify({
             expired,
+            expiryTimeout,
             confirmation,
             data: payment.data,
           })}`
