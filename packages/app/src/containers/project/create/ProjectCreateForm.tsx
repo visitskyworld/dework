@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Radio, Space } from "antd";
+import { Form, Button, Input, Space } from "antd";
 import { useRouter } from "next/router";
 import { useCreateProject } from "../hooks";
 import {
@@ -197,12 +197,12 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           <Input placeholder="Enter a project name..." />
         </Form.Item>
 
-        <Form.Item label="Project Type" name="type">
+        {/* <Form.Item label="Project Type" name="type">
           <Radio.Group>
             <Radio.Button value="non-dev">Non-dev</Radio.Button>
             <Radio.Button value="dev">Development</Radio.Button>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
         {values.type === "dev" && !!organization && (
           <FormSection label="Github Integration">
@@ -251,7 +251,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           block
           loading={loading}
         >
-          Create
+          Create (all above settings can be changed later!)
         </Button>
       </Space>
     </Form>
