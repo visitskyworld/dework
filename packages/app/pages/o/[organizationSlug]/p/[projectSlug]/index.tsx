@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Layout, Modal, Tabs } from "antd";
+import { Col, Layout, Modal, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
@@ -63,9 +63,13 @@ const Page: NextPage = () => {
             <Tabs.TabPane
               tab={<Tab icon={<Icons.InfoCircleOutlined />} children="About" />}
               key="about"
-              style={{ padding: 12, maxWidth: 480 }}
+              style={{ padding: "24px 12px" }}
             >
-              {!!project && <ProjectAbout project={project} />}
+              {!!project && (
+                <Col className="mx-auto max-w-sm w-full">
+                  <ProjectAbout project={project} />
+                </Col>
+              )}
             </Tabs.TabPane>
           </Tabs>
         </Layout.Content>
