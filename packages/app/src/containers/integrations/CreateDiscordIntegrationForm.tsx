@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Button, Form, Select, Space, Typography } from "antd";
+import { Button, Checkbox, Form, Select, Space, Typography } from "antd";
 import { useOrganizationDiscordChannels } from "../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
@@ -58,12 +58,13 @@ export interface FormValues {
   discordChannelId: string;
   discordThreadId?: string;
   discordFeature: DiscordProjectIntegrationFeature;
+  discordFeaturePostNewTasksEnabled?: boolean;
 }
 
 export interface CreateDiscordIntegrationFormValues {
   channel: DiscordIntegrationChannel;
   thread?: DiscordIntegrationChannel;
-  feature: DiscordProjectIntegrationFeature;
+  features: DiscordProjectIntegrationFeature[];
 }
 
 interface Props {
@@ -222,6 +223,18 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           ))}
         </Select>
       </Form.Item>
+      <Form.Item
+        name="discordFeaturePostNewTasksEnabled"
+        hidden={!values.discordChannelId}
+        valuePropName="checked"
+        label="Publish New Tasks"
+        tooltip="Post in the selected channel when a new task is created. Good for letting the community know about new tasks."
+      >
+        <Checkbox>
+          Automatically post new tasks to{" "}
+          <Typography.Text strong>{channel?.name}</Typography.Text>
+        </Checkbox>
+      </Form.Item>
     </>
   );
 };
@@ -261,7 +274,16 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
 
       try {
         submitting.toggleOn();
-        await onSubmit({ channel, thread, feature: values.discordFeature });
+        await onSubmit({
+          channel,
+          thread,
+          features: [
+            values.discordFeature,
+            ...(values.discordFeaturePostNewTasksEnabled
+              ? [DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL]
+              : []),
+          ],
+        });
       } finally {
         submitting.toggleOff();
       }

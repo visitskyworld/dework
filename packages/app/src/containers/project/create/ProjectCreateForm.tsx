@@ -16,6 +16,7 @@ import {
 } from "../../organization/hooks";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import {
+  DiscordProjectIntegrationFeature,
   GithubProjectIntegrationFeature,
   useCreateDiscordProjectIntegration,
   useCreateGithubProjectIntegration,
@@ -137,7 +138,12 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             projectId: project.id,
             channel,
             thread,
-            feature: values.discordFeature,
+            features: [
+              values.discordFeature,
+              ...(values.discordFeaturePostNewTasksEnabled
+                ? [DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL]
+                : []),
+            ],
           });
         }
 

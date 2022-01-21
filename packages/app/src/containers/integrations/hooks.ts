@@ -23,6 +23,7 @@ export enum DiscordProjectIntegrationFeature {
   POST_TASK_UPDATES_TO_CHANNEL = "POST_TASK_UPDATES_TO_CHANNEL",
   POST_TASK_UPDATES_TO_THREAD = "POST_TASK_UPDATES_TO_THREAD",
   POST_TASK_UPDATES_TO_THREAD_PER_TASK = "POST_TASK_UPDATES_TO_THREAD_PER_TASK",
+  POST_NEW_TASKS_TO_CHANNEL = "POST_NEW_TASKS_TO_CHANNEL",
 }
 
 // Copied from @dewo/api/models/ProjectIntegration
@@ -117,19 +118,19 @@ export function useCreateGithubProjectIntegration(): (input: {
 
 export function useCreateDiscordProjectIntegration(): (input: {
   projectId: string;
-  feature: DiscordProjectIntegrationFeature;
+  features: DiscordProjectIntegrationFeature[];
   channel: DiscordIntegrationChannel;
   thread?: DiscordIntegrationChannel;
 }) => Promise<ProjectIntegration> {
   const createProjectIntegration = useCreateProjectIntegration();
   return useCallback(
-    ({ projectId, feature, channel, thread }) => {
+    ({ projectId, features, channel, thread }) => {
       return createProjectIntegration({
         projectId,
         type: ProjectIntegrationType.DISCORD,
         organizationIntegrationId: channel.integrationId,
         config: {
-          features: [feature],
+          features,
           channelId: channel.id,
           threadId: thread?.id,
           name: thread?.name ?? channel.name,
