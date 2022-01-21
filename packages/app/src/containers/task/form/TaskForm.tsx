@@ -342,11 +342,11 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <Form.Item name="storyPoints" label="Story Points">
+          <Form.Item name="storyPoints" label="Task Points">
             <Select<number>
               disabled={!canChange("storyPoints")}
               allowClear
-              placeholder="Estimate task size..."
+              placeholder="Estimate task size in hours..."
             >
               {[1, 2, 3, 5, 8].map((p) => (
                 <Select.Option key={p} value={p} children={String(p)} />
