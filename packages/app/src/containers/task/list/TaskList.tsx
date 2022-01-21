@@ -155,6 +155,7 @@ export const TaskList: FC<Props> = ({
       className={size === "small" ? "dewo-table-xs" : undefined}
       pagination={{ hideOnSinglePage: true }}
       rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
+      rowKey={(row) => row.task?.id ?? row.name}
       onRow={(t) => ({
         onClick: !!onClick ? () => onClick(t) : undefined,
       })}
