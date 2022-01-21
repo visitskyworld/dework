@@ -15,12 +15,8 @@ export const SkeletonTaskBoard: FC = () => {
   ];
   const taskCounts = [2, 3, 2, 4];
   const columnWidth = 300;
-  const skeletonCard = (
-    <div
-      style={{
-        marginBottom: 8,
-      }}
-    >
+  const skeletonCard = (key: number) => (
+    <div key={key} style={{ marginBottom: 8 }}>
       <Card size="small">
         <Skeleton active paragraph={{ rows: 1 }} />
       </Card>
@@ -44,7 +40,9 @@ export const SkeletonTaskBoard: FC = () => {
               className="dewo-task-board-column"
             >
               <div style={{ paddingTop: 4 }}>
-                {[...Array(taskCounts[i])].map((_) => skeletonCard)}
+                {[...Array(taskCounts[i])].map((_, index) =>
+                  skeletonCard(index)
+                )}
               </div>
             </Card>
           </div>
