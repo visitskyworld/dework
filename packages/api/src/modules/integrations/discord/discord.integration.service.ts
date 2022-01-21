@@ -134,6 +134,16 @@ export class DiscordIntegrationService {
         })}`
       );
 
+      if (
+        event instanceof TaskCreatedEvent &&
+        event.task.status === TaskStatus.TODO &&
+        integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL
+        )
+      ) {
+        await this.postTaskCard(channel, event.task, "New task created!");
+      }
+
       if (!channelToPostTo) return;
 
       const statusChanged =
