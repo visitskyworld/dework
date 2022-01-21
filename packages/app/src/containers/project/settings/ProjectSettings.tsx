@@ -23,6 +23,7 @@ import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
 import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
 import { useToggle } from "@dewo/app/util/hooks";
+import { ProjectTaskExports } from "./ProjectTaskExports";
 import { useForm } from "antd/lib/form/Form";
 
 interface Props {
@@ -138,6 +139,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           <ProjectSettingsFormFields toggle={advancedSection} />
           {advancedSection.isOn && (
             <>
+              <ProjectTaskExports
+                projectId={project.id}
+                projectName={project.name}
+              />
               <ProjectTokenGatingInput
                 value={tokenGate?.token ?? undefined}
                 onChange={handleChangeTokenGating}
