@@ -20,6 +20,7 @@ import {
 import { Modal } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { useRequestAddresses } from "@dewo/app/util/hiro";
 
 export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
   const { onAuthenticated } = useAuthContext();
@@ -39,6 +40,14 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
     },
     [authWithThreepid, apolloClient, onAuthenticated]
   );
+}
+
+export function useCreateHiroThreepid(): () => Promise<string> {
+  const requestAddresses = useRequestAddresses();
+  return useCallback(async () => {
+    const addresses = await requestAddresses();
+    const address = addresses["stacks-mainnet"];
+  }, [requestAddresses]);
 }
 
 export function useCreateMetamaskThreepid(): () => Promise<string> {

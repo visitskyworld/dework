@@ -11,6 +11,7 @@ export enum ThreepidSource {
   discord = "discord",
   metamask = "metamask",
   notion = "notion",
+  hiro = "hiro",
 }
 
 export interface GithubThreepidConfig {

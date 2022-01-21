@@ -8,6 +8,7 @@ import {
 } from "@dewo/app/containers/auth/ThreepidAuthButton";
 import {
   useAuthWithThreepid,
+  useCreateHiroThreepid,
   useCreateMetamaskThreepid,
 } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
@@ -15,10 +16,10 @@ import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   toggle: UseToggleHook;
-  onAuthedWithMetamask?(): void;
+  onAuthedWithWallet?(): void;
 }
 
-export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
+export const LoginModal: FC<Props> = ({ toggle, onAuthedWithWallet }) => {
   const router = useRouter();
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const state = useMemo(
@@ -26,17 +27,16 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
     [router.query, router.asPath, appUrl]
   );
 
-  const profileModal = useToggle();
+  const authWithThreepid = useAuthWithThreepid();
+
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
-  const authWithThreepid = useAuthWithThreepid();
   const authWithMetamask = useCallback(async () => {
     try {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       await authWithThreepid(threepidId);
-      profileModal.toggleOn();
-      onAuthedWithMetamask?.();
+      onAuthedWithWallet?.();
     } catch (error) {
       alert((error as Error).message);
       throw error;
@@ -46,9 +46,28 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
   }, [
     createMetamaskThreepid,
     authWithThreepid,
-    onAuthedWithMetamask,
-    profileModal,
+    onAuthedWithWallet,
     authingWithMetamask,
+  ]);
+
+  const authingWithHiro = useToggle();
+  const createHiroThreepid = useCreateHiroThreepid();
+  const authWithHiro = useCallback(async () => {
+    try {
+      authingWithHiro.toggleOn();
+      const threepidId = await createHiroThreepid();
+      await authWithThreepid(threepidId);
+      onAuthedWithWallet?.();
+    } catch (error) {
+      alert((error as Error).message);
+    } finally {
+      authingWithHiro.toggleOff();
+    }
+  }, [
+    createHiroThreepid,
+    authWithThreepid,
+    onAuthedWithWallet,
+    authingWithHiro,
   ]);
 
   const handleCancel = useCallback(
@@ -86,6 +105,17 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
           state={state}
           href={undefined}
           onClick={authWithMetamask}
+        />
+        <ThreepidAuthButton
+          loading={authingWithHiro.isOn}
+          source={ThreepidSource.hiro}
+          children={getThreepidName[ThreepidSource.hiro]}
+          size="large"
+          type="ghost"
+          block
+          state={state}
+          href={undefined}
+          onClick={authWithHiro}
         />
 
         <ThreepidAuthButton

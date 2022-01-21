@@ -17,7 +17,7 @@ const DiscordSvg = () => (
     </g>
     <defs>
       <clipPath id="clip0">
-        <rect width="71" height="55" fill="white" />
+        <rect width="71" height="55" fill="currentColor" />
       </clipPath>
     </defs>
   </svg>

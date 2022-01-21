@@ -10028,6 +10028,7 @@ export enum TaskStatus {
 export enum ThreepidSource {
   discord = "discord",
   github = "github",
+  hiro = "hiro",
   metamask = "metamask",
   notion = "notion",
 }

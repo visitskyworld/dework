@@ -6,12 +6,14 @@ import { Constants } from "@dewo/app/util/constants";
 import { Button, ButtonProps } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
+import { HiroIcon } from "@dewo/app/components/icons/Hiro";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
   [ThreepidSource.github]: <Icons.GithubOutlined />,
   [ThreepidSource.metamask]: <MetamaskIcon />,
   [ThreepidSource.notion]: <NotionIcon />,
+  [ThreepidSource.hiro]: <HiroIcon />,
 };
 
 export const getThreepidName: Record<ThreepidSource, string> = {
@@ -19,6 +21,7 @@ export const getThreepidName: Record<ThreepidSource, string> = {
   [ThreepidSource.github]: "GitHub",
   [ThreepidSource.metamask]: "Metamask",
   [ThreepidSource.notion]: "Notion",
+  [ThreepidSource.hiro]: "Hiro Wallet",
 };
 
 interface Props extends ButtonProps {

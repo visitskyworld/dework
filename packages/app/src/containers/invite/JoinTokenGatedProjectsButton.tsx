@@ -88,7 +88,7 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
             <LoginButton
               type="primary"
               icon={<Icons.LockOutlined />}
-              onAuthedWithMetamask={editingProfile.toggleOn}
+              onAuthedWithWallet={editingProfile.toggleOn}
             >
               Join
             </LoginButton>
