@@ -13,7 +13,6 @@ import Link from "next/link";
 import { TaskReactionPicker } from "./TaskReactionPicker";
 import { TaskTagsRow } from "./TaskTagsRow";
 import { TaskActionButton } from "./TaskActionButton";
-
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
   style?: CSSProperties;
@@ -56,7 +55,6 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           }}
         >
           <div style={{ flex: 1 }} />
-
           {task.status === TaskStatus.TODO && !task.assignees.length ? (
             canUpdateTask ? (
               <Avatar.Group maxCount={3} size={22}>

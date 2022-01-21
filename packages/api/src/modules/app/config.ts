@@ -54,7 +54,7 @@ export const configSchema = Joi.object<ConfigType>({
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
 
-  SUPERADMIN_USER_IDS: Joi.string(),
+  SUPERADMIN_USER_IDS: Joi.string().allow(""),
 });
 
 export const gifs = [
