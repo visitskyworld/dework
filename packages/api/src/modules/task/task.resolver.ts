@@ -323,7 +323,10 @@ export class ProjectTasksResolver {
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() project: Project): Promise<Task[]> {
-    return this.taskService.findWithRelations({ projectIds: [project.id] });
+    return this.taskService.findWithRelations({
+      projectIds: [project.id],
+      includePrivateProjects: false,
+    });
   }
 
   @ResolveField(() => Int)
@@ -348,7 +351,13 @@ export class UserTasksResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [Task])
-  public async tasks(@Parent() user: User): Promise<Task[]> {
-    return this.taskService.findWithRelations({ assigneeId: user.id });
+  public async tasks(
+    @Context("user") authenticatedUser: User | undefined,
+    @Parent() user: User
+  ): Promise<Task[]> {
+    return this.taskService.findWithRelations({
+      assigneeId: user.id,
+      includePrivateProjects: authenticatedUser?.id === user.id,
+    });
   }
 }

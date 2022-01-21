@@ -24,6 +24,15 @@ export class UserRequests {
         value
         type
       }
+      organizations {
+        id
+      }
+      tasks {
+        id
+        assignees {
+          id
+        }
+      }
     }
   `;
 
@@ -89,18 +98,11 @@ export class UserRequests {
       query: `
         query Me {
           me {
-            id
-            organizations {
-              id
-            }
-            tasks {
-              id
-              assignees {
-                id
-              }
-            }
+            ...User
           }
         }
+
+        ${this.userFragment}
       `,
     };
   }
@@ -115,6 +117,23 @@ export class UserRequests {
         }
       `,
       variables: { input },
+    };
+  }
+
+  public static getUser(
+    userId: string
+  ): GraphQLTestClientRequestBody<{ userId: string }> {
+    return {
+      query: `
+        query GetUser($userId: UUID!) {
+          user: getUser(id: $userId) {
+            ...User
+          }
+        }
+
+        ${this.userFragment}
+      `,
+      variables: { userId },
     };
   }
 }

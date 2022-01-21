@@ -168,6 +168,7 @@ export class TaskService {
     assigneeId,
     statuses,
     limit,
+    includePrivateProjects = false,
   }: {
     ids?: string[];
     rewardIds?: string[];
@@ -177,6 +178,7 @@ export class TaskService {
     statuses?: TaskStatus[];
     order?: OrderByCondition;
     limit?: number;
+    includePrivateProjects?: boolean;
   }): Promise<Task[]> {
     let query = this.taskRepo
       .createQueryBuilder("task")
@@ -226,10 +228,7 @@ export class TaskService {
         .andWhere("project.organizationId IN (:...organizationIds)", {
           organizationIds,
         })
-        .andWhere("project.deletedAt IS NULL")
-        .andWhere("project.visibility = :public", {
-          public: ProjectVisibility.PUBLIC,
-        });
+        .andWhere("project.deletedAt IS NULL");
     }
 
     if (!!assigneeId) {
@@ -239,6 +238,12 @@ export class TaskService {
 
     if (!!statuses) {
       query = query.andWhere("task.status IN (:...statuses)", { statuses });
+    }
+
+    if (!includePrivateProjects) {
+      query = query.andWhere("project.visibility = :public", {
+        public: ProjectVisibility.PUBLIC,
+      });
     }
 
     return query

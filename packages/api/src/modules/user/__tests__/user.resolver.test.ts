@@ -18,6 +18,7 @@ import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
+import { ProjectVisibility } from "@dewo/api/models/Project";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -570,6 +571,38 @@ describe("UserResolver", () => {
         expect(permissions.can("create", "Task")).toBe(true);
         expect(permissions.can("update", "Task")).toBe(true);
         expect(permissions.can("delete", "Task")).toBe(true);
+      });
+    });
+
+    describe("getUser", () => {
+      it("should return tasks from private project only for authed user", async () => {
+        const assignedUser = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+        const project = await fixtures.createProject({
+          visibility: ProjectVisibility.PRIVATE,
+        });
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          assignees: [assignedUser],
+        });
+
+        const assignedRes = await client.request({
+          app,
+          auth: fixtures.createAuthToken(assignedUser),
+          body: UserRequests.getUser(assignedUser.id),
+        });
+        const otherRes = await client.request({
+          app,
+          auth: fixtures.createAuthToken(otherUser),
+          body: UserRequests.getUser(assignedUser.id),
+        });
+
+        expect(assignedRes.body.data.user.tasks).toContainEqual(
+          expect.objectContaining({ id: task.id })
+        );
+        expect(otherRes.body.data.user.tasks).not.toContainEqual(
+          expect.objectContaining({ id: task.id })
+        );
       });
     });
   });
