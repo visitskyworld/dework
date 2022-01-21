@@ -7,7 +7,9 @@ import { PermalinkModule } from "../../permalink/permalink.module";
 import { ThreepidModule } from "../../threepid/threepid.module";
 import { IntegrationModule } from "../integration.module";
 import {
+  DiscordIntegrationTaskApplicationCreatedEventHandler,
   DiscordIntegrationTaskCreatedEventHandler,
+  DiscordIntegrationTaskSubmissionCreatedEventHandler,
   DiscordIntegrationTaskUpdatedEventHandler,
 } from "./discord.eventHandlers";
 import { DiscordIntegrationResolver } from "./discord.integration.resolver";
@@ -27,6 +29,8 @@ import { DiscordService } from "./discord.service";
     DiscordIntegrationResolver,
     DiscordIntegrationTaskCreatedEventHandler,
     DiscordIntegrationTaskUpdatedEventHandler,
+    DiscordIntegrationTaskApplicationCreatedEventHandler,
+    DiscordIntegrationTaskSubmissionCreatedEventHandler,
   ],
 })
 export class DiscordIntegrationModule {}

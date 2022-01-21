@@ -16,13 +16,20 @@ import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { PermalinkService } from "../../permalink/permalink.service";
-import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+import {
+  TaskApplicationCreatedEvent,
+  TaskCreatedEvent,
+  TaskSubmissionCreatedEvent,
+  TaskUpdatedEvent,
+} from "../../task/task.events";
 import Bluebird from "bluebird";
 import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
 import { gifs } from "../../app/config";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 
 class DiscordChannelNotFoundError extends Error {}
 
@@ -40,7 +47,13 @@ export class DiscordIntegrationService {
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>
   ) {}
 
-  async handle(event: TaskUpdatedEvent | TaskCreatedEvent) {
+  async handle(
+    event:
+      | TaskUpdatedEvent
+      | TaskCreatedEvent
+      | TaskApplicationCreatedEvent
+      | TaskSubmissionCreatedEvent
+  ) {
     if (!!event.task.parentTaskId) return;
     const integration = await this.getProjectIntegration(event.task.projectId);
     if (!integration) return;
@@ -125,7 +138,8 @@ export class DiscordIntegrationService {
 
       const statusChanged =
         event instanceof TaskCreatedEvent ||
-        event.task.status !== event.prevTask.status;
+        (event instanceof TaskUpdatedEvent &&
+          event.task.status !== event.prevTask.status);
       this.logger.log(
         `Found Discord channel to post to: ${JSON.stringify({
           statusChanged,
@@ -192,6 +206,18 @@ export class DiscordIntegrationService {
             }
           );
         }
+      } else if (event instanceof TaskSubmissionCreatedEvent) {
+        await this.postTaskSubmissionCreated(
+          event.task,
+          event.submission,
+          channelToPostTo
+        );
+      } else if (event instanceof TaskApplicationCreatedEvent) {
+        await this.postTaskApplicationCreated(
+          event.task,
+          event.application,
+          channelToPostTo
+        );
       }
 
       if (channelToPostTo.isThread()) {
@@ -360,6 +386,58 @@ export class DiscordIntegrationService {
               name: firstAssignee.username,
               iconURL: firstAssignee.imageUrl,
               url: await this.permalink.get(firstAssignee),
+            },
+          }
+        : undefined
+    );
+  }
+
+  private async postTaskApplicationCreated(
+    task: Task,
+    application: TaskApplication,
+    channel: Discord.TextBasedChannels
+  ) {
+    const owner = !!task.ownerId
+      ? await this.getDiscordId(task.ownerId)
+      : undefined;
+    const applicant = await application.user;
+    await this.postTaskCard(
+      channel,
+      task,
+      "New applicant!",
+      !!owner ? [owner] : undefined,
+      !!applicant
+        ? {
+            author: {
+              name: applicant.username,
+              iconURL: applicant.imageUrl,
+              url: await this.permalink.get(applicant),
+            },
+          }
+        : undefined
+    );
+  }
+
+  private async postTaskSubmissionCreated(
+    task: Task,
+    submission: TaskSubmission,
+    channel: Discord.TextBasedChannels
+  ) {
+    const owner = !!task.ownerId
+      ? await this.getDiscordId(task.ownerId)
+      : undefined;
+    const submitter = await submission.user;
+    await this.postTaskCard(
+      channel,
+      task,
+      "New submission!",
+      !!owner ? [owner] : undefined,
+      !!submitter
+        ? {
+            author: {
+              name: submitter.username,
+              iconURL: submitter.imageUrl,
+              url: await this.permalink.get(submitter),
             },
           }
         : undefined

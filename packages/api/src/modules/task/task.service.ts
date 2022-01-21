@@ -11,7 +11,12 @@ import {
   Brackets,
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
-import { TaskCreatedEvent, TaskUpdatedEvent } from "./task.events";
+import {
+  TaskApplicationCreatedEvent,
+  TaskCreatedEvent,
+  TaskSubmissionCreatedEvent,
+  TaskUpdatedEvent,
+} from "./task.events";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
@@ -79,9 +84,11 @@ export class TaskService {
     if (!!existing) return existing;
 
     const created = await this.taskApplicationRepo.save(partial);
-    return this.taskApplicationRepo.findOne({
+    const refetched = (await this.taskApplicationRepo.findOne({
       id: created.id,
-    }) as Promise<TaskApplication>;
+    })) as TaskApplication;
+    this.eventBus.publish(new TaskApplicationCreatedEvent(task, refetched));
+    return refetched;
   }
 
   public async deleteApplication(
@@ -93,12 +100,17 @@ export class TaskService {
   }
 
   public async createSubmission(
-    input: AtLeast<TaskSubmission, "userId" | "taskId" | "content">
+    partial: AtLeast<TaskSubmission, "userId" | "taskId" | "content">
   ): Promise<TaskSubmission> {
-    const created = await this.taskSubmissionRepo.save(input);
-    return this.taskSubmissionRepo.findOne({
+    const task = await this.taskRepo.findOne(partial.taskId);
+    if (!task) throw new NotFoundException();
+
+    const created = await this.taskSubmissionRepo.save(partial);
+    const refetched = (await this.taskSubmissionRepo.findOne({
       id: created.id,
-    }) as Promise<TaskSubmission>;
+    })) as TaskSubmission;
+    this.eventBus.publish(new TaskSubmissionCreatedEvent(task, refetched));
+    return refetched;
   }
 
   public async updateSubmission(
