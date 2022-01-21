@@ -15,6 +15,7 @@ describe("DiscordIntegrationResolver", () => {
   let fixtures: Fixtures;
   let discord: Discord.Client;
   let client: GraphQLTestClient;
+  let discordGuild: Discord.Guild;
   let discordChannel: Discord.TextChannel;
   let discordThread: Discord.ThreadChannel;
 
@@ -24,8 +25,8 @@ describe("DiscordIntegrationResolver", () => {
     discord = app.get(DiscordService).client;
     client = app.get(GraphQLTestClient);
 
-    const guild = await discord.guilds.fetch(discordGuildId);
-    discordChannel = (await guild.channels.fetch(discordChannelId, {
+    discordGuild = await discord.guilds.fetch(discordGuildId);
+    discordChannel = (await discordGuild.channels.fetch(discordChannelId, {
       force: true,
     })) as Discord.TextChannel;
     discordThread = (await discordChannel.threads.create({
@@ -96,6 +97,44 @@ describe("DiscordIntegrationResolver", () => {
           })
         );
       });
+    });
+  });
+
+  describe("Mutations", () => {
+    describe("createTaskDiscordLink", () => {
+      it("should fail if task's project does not have a discord integration", async () => {
+        const task = await fixtures.createTask();
+        const response = await client.request({
+          app,
+          body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+        });
+
+        client.expectGqlError(response, HttpStatus.NOT_FOUND);
+        client.expectGqlErrorMessage(response, "Project integration not found");
+      });
+
+      it("should create new Discord thread if none exists", async () => {
+        const project = await fixtures.createProjectWithDiscordIntegration(
+          discordGuildId,
+          discordChannelId
+        );
+
+        const task = await fixtures.createTask({ projectId: project.id });
+        const response = await client.request({
+          app,
+          body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+        });
+
+        // const thread =
+
+        console.warn(response.body);
+      });
+
+      it("should return existing Discord thread if exists", async () => {});
+
+      it("should create new Discord thread if exists, but is removed", async () => {});
+
+      it("should unarchive existing Discord thread if exists, but is archived", async () => {});
     });
   });
 });

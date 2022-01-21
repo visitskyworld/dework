@@ -3,10 +3,14 @@ import { Injectable } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
+import { DiscordIntegrationService } from "./discord.integration.service";
 
 @Injectable()
 export class DiscordIntegrationResolver {
-  constructor(private readonly discord: DiscordService) {}
+  constructor(
+    private readonly discord: DiscordService,
+    private readonly discordIntegration: DiscordIntegrationService
+  ) {}
 
   // TODO(fant): do we want to make sure the requesting user is an org admin?
   @Query(() => [DiscordIntegrationChannel], { nullable: true })
@@ -26,5 +30,12 @@ export class DiscordIntegrationResolver {
     discordUsername?: string
   ): Promise<boolean> {
     return this.discord.postFeedback(feedbackContent, discordUsername);
+  }
+
+  @Mutation(() => String)
+  public async createTaskDiscordLink(
+    @Args("taskId", { type: () => GraphQLUUID }) taskId: string
+  ): Promise<string> {
+    return this.discordIntegration.createTaskDiscordLink(taskId);
   }
 }

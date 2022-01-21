@@ -4,6 +4,7 @@ import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PermalinkModule } from "../../permalink/permalink.module";
+import { TaskModule } from "../../task/task.module";
 import { ThreepidModule } from "../../threepid/threepid.module";
 import { IntegrationModule } from "../integration.module";
 import {
@@ -19,6 +20,7 @@ import { DiscordService } from "./discord.service";
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, ProjectIntegration, DiscordChannel]),
+    TaskModule,
     ThreepidModule,
     PermalinkModule,
     IntegrationModule,

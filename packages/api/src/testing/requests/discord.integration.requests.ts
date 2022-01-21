@@ -24,4 +24,17 @@ export class DiscordIntegrationRequests {
       variables: { organizationId, discordParentChannelId },
     };
   }
+
+  public static createTaskDiscordLink(
+    taskId: string
+  ): GraphQLTestClientRequestBody<{ taskId: string }> {
+    return {
+      query: `
+        mutation CreateTaskDiscordLink($taskId: UUID!) {
+          link: createTaskDiscordLink(taskId: $taskId)
+        }
+      `,
+      variables: { taskId },
+    };
+  }
 }

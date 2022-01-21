@@ -33,6 +33,7 @@ import { DeepPartial } from "typeorm";
 import { OrganizationMember } from "../models/OrganizationMember";
 import { AtLeast, DeepAtLeast } from "../types/general";
 import {
+  DiscordProjectIntegrationFeature,
   GithubProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationType,
@@ -407,6 +408,31 @@ export class Fixtures {
       ...partialProjectIntegration,
     });
     return { project, github };
+  }
+
+  async createProjectWithDiscordIntegration(
+    guildId: string,
+    channelId: string
+  ): Promise<Project> {
+    const project = await this.createProject();
+    const orgInt = await this.createOrganizationIntegration({
+      organizationId: project.organizationId,
+      type: OrganizationIntegrationType.DISCORD,
+      config: { guildId, permissions: "" },
+    });
+    await this.createProjectIntegration({
+      projectId: project.id,
+      type: ProjectIntegrationType.DISCORD,
+      config: {
+        channelId,
+        name: "test",
+        features: [
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+        ],
+      },
+      organizationIntegrationId: orgInt.id,
+    });
+    return project;
   }
 }
 

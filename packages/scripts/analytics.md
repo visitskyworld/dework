@@ -24,3 +24,19 @@ GROUP BY DATE(payment."createdAt"), payment_network."name"
 ORDER BY DATE(payment."createdAt") DESC
 ```
 
+## List of payments
+```sql
+SELECT
+	DATE(payment."createdAt"),
+	payment_network."name",
+	payment_token.symbol,
+	task_reward.amount::DECIMAL / POWER(10, payment_token."exp") AS amount
+FROM payment
+INNER JOIN payment_network ON payment_network.id = payment."networkId"
+INNER JOIN task_reward ON task_reward."paymentId" = payment.id
+INNER JOIN payment_token ON payment_token.id = task_reward."tokenId"
+WHERE payment_network."name" NOT IN ('Ethereum Rinkeby', 'Stacks Testnet')
+  AND payment.status = 'CONFIRMED'
+ORDER BY DATE(payment."createdAt") DESC
+```
+

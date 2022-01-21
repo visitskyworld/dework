@@ -1,6 +1,6 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import _ from "lodash";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Repository } from "typeorm";
 import {
@@ -30,6 +30,7 @@ import {
 import { gifs } from "../../app/config";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { TaskService } from "../../task/task.service";
 
 class DiscordChannelNotFoundError extends Error {}
 
@@ -40,6 +41,7 @@ export class DiscordIntegrationService {
   constructor(
     private readonly discord: DiscordService,
     private readonly permalink: PermalinkService,
+    private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService,
     @InjectRepository(DiscordChannel)
     private readonly discordChannelRepo: Repository<DiscordChannel>,
@@ -257,12 +259,61 @@ export class DiscordIntegrationService {
     }
   }
 
+  public async createTaskDiscordLink(taskId: string): Promise<string> {
+    const task = await this.taskService.findById(taskId);
+    if (!task) throw new NotFoundException("Task not found");
+    const integration = await this.getProjectIntegration(task.projectId);
+    if (!integration) {
+      throw new NotFoundException("Project integration not found");
+    }
+    const organizationIntegration =
+      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
+    if (!organizationIntegration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const guild = await this.discord.client.guilds.fetch(
+      organizationIntegration.config.guildId
+    );
+    await guild.roles.fetch();
+
+    const channel = (await guild.channels.fetch(integration.config.channelId, {
+      force: true,
+    })) as Discord.TextChannel;
+
+    if (!channel) {
+      throw new NotFoundException(
+        "Discord channel from project integration not found"
+      );
+    }
+
+    const { channel: channelToPostTo } = await this.getDiscordChannelToPostTo(
+      task,
+      channel,
+      integration.config,
+      true // force create
+    );
+
+    if (!channelToPostTo) {
+      throw new NotFoundException(
+        "Discord channel to post to not found or created"
+      );
+    }
+
+    if (channelToPostTo.isThread() && channelToPostTo.archived) {
+      channelToPostTo.setArchived(false);
+    }
+
+    return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
+  }
+
   private async getDiscordChannelToPostTo(
     task: Task,
     channel: Discord.TextChannel,
-    config: DiscordProjectIntegrationConfig
+    config: DiscordProjectIntegrationConfig,
+    forceCreate: boolean = false
   ): Promise<{
-    channel: Discord.TextBasedChannels | undefined;
+    channel: Discord.TextChannel | Discord.ThreadChannel | undefined;
     new: boolean;
   }> {
     const toChannel =
@@ -290,7 +341,7 @@ export class DiscordIntegrationService {
       if (!!existingThread) return { channel: existingThread, new: false };
 
       const shouldCreate = await this.shouldCreateThread(task);
-      if (!shouldCreate) {
+      if (!shouldCreate && !forceCreate) {
         this.logger.debug(
           `No previous thread exists and should not create a new thread (${JSON.stringify(
             task
