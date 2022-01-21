@@ -1,6 +1,7 @@
 import {
   PaymentToken,
   ProjectDetails,
+  ProjectVisibility,
   UpdateProjectInput,
 } from "@dewo/app/graphql/types";
 import { Form, Input, Space } from "antd";
@@ -22,12 +23,15 @@ import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectTokenGatingInput } from "./ProjectTokenGatingInput";
 import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
 import { useToggle } from "@dewo/app/util/hooks";
+import { useForm } from "antd/lib/form/Form";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettings: FC<Props> = ({ project }) => {
+  const [form] = useForm<UpdateProjectInput>();
+
   const advancedSection = useToggle(true);
   const updateProject = useUpdateProject();
   const handleUpdateProject = useCallback(
@@ -62,6 +66,15 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           projectId: project.id,
           tokenId: token.id,
         });
+        if (project.visibility !== ProjectVisibility.PRIVATE) {
+          form.setFields([
+            { name: "visibility", value: ProjectVisibility.PRIVATE },
+          ]);
+          await updateProject({
+            id: project.id,
+            visibility: ProjectVisibility.PRIVATE,
+          });
+        }
       } else {
         await deleteProjectTokenGate({
           projectId: project.id,
@@ -69,7 +82,15 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         });
       }
     },
-    [createProjectTokenGate, deleteProjectTokenGate, tokenGate, project.id]
+    [
+      createProjectTokenGate,
+      deleteProjectTokenGate,
+      tokenGate,
+      updateProject,
+      project.id,
+      project.visibility,
+      form,
+    ]
   );
 
   return (
@@ -107,7 +128,8 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           </Space>
         </FormSection>
 
-        <Form<UpdateProjectInput>
+        <Form
+          form={form}
           layout="vertical"
           requiredMark={false}
           initialValues={initialValues}
