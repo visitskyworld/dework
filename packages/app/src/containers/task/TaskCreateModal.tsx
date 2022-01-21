@@ -49,6 +49,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
           {
             parentTaskId: task.id,
             name: subtask.name,
+            ownerId: user?.id,
             assigneeIds: subtask.assigneeIds,
             status: subtask.status,
             tagIds: [],
@@ -59,7 +60,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
 
       await onDone(task);
     },
-    [createTask, onDone, createTaskReaction, projectId]
+    [createTask, onDone, createTaskReaction, user?.id, projectId]
   );
   return (
     <Modal

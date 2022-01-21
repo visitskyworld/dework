@@ -62,6 +62,11 @@ export const permissions: Permissions<
       // @ts-ignore
       "options.allowOpenSubmission": true,
     });
+
+    can(Actions.update, Task, "subtasks", {
+      assignees: { $elemMatch: { id: user.id } },
+    });
+    can(Actions.update, Task, "subtasks", { creatorId: user.id });
   },
 
   organizationOwner({ extend, can, user }) {

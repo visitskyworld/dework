@@ -85,6 +85,41 @@ describe("TaskResolver", () => {
         expect(task.creator.id).toEqual(user.id);
       });
 
+      it("should allow task assignee to create subtasks", async () => {
+        const assignee = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+        const task = await fixtures.createTask({ assignees: [assignee] });
+
+        const name = faker.company.companyName();
+        const assigneeRes = await client.request({
+          app,
+          auth: fixtures.createAuthToken(assignee),
+          body: TaskRequests.create({
+            name,
+            status: TaskStatus.TODO,
+            projectId: task.projectId,
+            parentTaskId: task.id,
+          }),
+        });
+        expect(assigneeRes.status).toEqual(HttpStatus.OK);
+        expect(assigneeRes.body.data?.task.parentTask?.id).toEqual(task.id);
+        expect(assigneeRes.body.data?.task.parentTask?.subtasks).toContainEqual(
+          expect.objectContaining({ name })
+        );
+
+        const otherUserRes = await client.request({
+          app,
+          auth: fixtures.createAuthToken(otherUser),
+          body: TaskRequests.create({
+            name: "",
+            status: TaskStatus.TODO,
+            projectId: task.projectId,
+            parentTaskId: task.id,
+          }),
+        });
+        client.expectGqlError(otherUserRes, HttpStatus.FORBIDDEN);
+      });
+
       it("should assign correct task numbers", async () => {
         const first = await fixtures.createUserOrgProject();
         const anotherProjectInFirst = await fixtures.createProject({

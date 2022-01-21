@@ -149,7 +149,10 @@ export class TaskService {
       rewards.map((r) => ({ ...r, payment: undefined, paymentId: payment.id }))
     );
 
-    return this.findWithRelations({ rewardIds: input.taskRewardIds });
+    return this.findWithRelations({
+      rewardIds: input.taskRewardIds,
+      includePrivateProjects: true,
+    });
   }
 
   public async createReaction(

@@ -201,7 +201,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               label="Subtasks"
               style={{ marginBottom: 16 }}
             >
-              <SubtaskInput projectId={projectId} taskId={task?.id} />
+              <SubtaskInput projectId={projectId} task={task} />
             </Form.Item>
           )}
 
@@ -342,17 +342,19 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <Form.Item name="storyPoints" label="Task Points">
-            <Select<number>
-              disabled={!canChange("storyPoints")}
-              allowClear
-              placeholder="Estimate task size in hours..."
-            >
-              {[1, 2, 3, 5, 8].map((p) => (
-                <Select.Option key={p} value={p} children={String(p)} />
-              ))}
-            </Select>
-          </Form.Item>
+          {(canChange("storyPoints") || !!task?.storyPoints) && (
+            <Form.Item name="storyPoints" label="Task Points">
+              <Select<number>
+                disabled={!canChange("storyPoints")}
+                allowClear
+                placeholder="Estimate task size..."
+              >
+                {[1, 2, 3, 5, 8].map((p) => (
+                  <Select.Option key={p} value={p} children={String(p)} />
+                ))}
+              </Select>
+            </Form.Item>
+          )}
 
           {canChange("reward") &&
           !!projectId &&

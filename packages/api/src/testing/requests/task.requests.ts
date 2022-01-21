@@ -80,6 +80,13 @@ export class TaskRequests {
         reaction
         userId
       }
+      parentTask {
+        id
+        subtasks {
+          id
+          name
+        }
+      }
     }
 
     ${TaskRequests.taskApplicationFragment}

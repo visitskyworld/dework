@@ -3,29 +3,30 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Input, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import { TaskList, TaskListRow } from "../list/TaskList";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { TaskDetails, TaskStatus } from "@dewo/app/graphql/types";
 import { useCreateTask } from "../hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { eatClick } from "@dewo/app/util/eatClick";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   projectId: string;
-  taskId?: string;
+  task?: TaskDetails;
   value?: TaskListRow[];
   onChange?(value: TaskListRow[]): void;
 }
 
 export const SubtaskInput: FC<Props> = ({
   projectId,
-  taskId,
+  task,
   value,
   onChange,
 }) => {
+  const { user } = useAuthContext();
   const createTask = useCreateTask();
 
-  const canCreateTask = usePermission("create", {
-    __typename: "Task",
-  } as Task);
+  const hasPermission = usePermissionFn();
+  const canCreateSubtask = !task || hasPermission("update", task, "subtasks");
 
   const adding = useToggle();
   const [newName, setNewName] = useState("");
@@ -35,12 +36,13 @@ export const SubtaskInput: FC<Props> = ({
       if (!newName) return;
       try {
         adding.toggleOn();
-        const subtask = !!taskId
+        const subtask = !!task
           ? await createTask(
               {
                 name: newName,
-                parentTaskId: taskId,
+                parentTaskId: task.id,
                 status: TaskStatus.TODO,
+                ownerId: user?.id,
                 assigneeIds: [],
               },
               projectId
@@ -61,7 +63,7 @@ export const SubtaskInput: FC<Props> = ({
         adding.toggleOff();
       }
     },
-    [adding, onChange, createTask, taskId, projectId, value, newName]
+    [adding, onChange, createTask, task, projectId, value, user?.id, newName]
   );
 
   const rows = useMemo(() => value ?? [], [value]);
@@ -95,7 +97,7 @@ export const SubtaskInput: FC<Props> = ({
         onChange={handleChange}
         onDelete={handleDelete}
       />
-      {canCreateTask && (
+      {canCreateSubtask && (
         <Row align="middle" style={{ gap: 16 }}>
           <Button
             icon={<Icons.PlusOutlined />}
