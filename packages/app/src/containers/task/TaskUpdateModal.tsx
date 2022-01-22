@@ -48,6 +48,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         .sortBy((s) => s.sortKey)
         .map(
           (subtask): TaskListRow => ({
+            key: subtask.id,
             task: subtask,
             assigneeIds: subtask.assignees.map((a) => a.id),
             name: subtask.name,

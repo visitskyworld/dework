@@ -43,6 +43,7 @@ import { TaskActionButton } from "../board/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 
 export interface TaskListRow {
+  key: string;
   task?: Task;
   name: string;
   status: TaskStatus;
@@ -59,12 +60,8 @@ interface Props {
   projectId?: string;
   style?: CSSProperties;
   size?: AvatarSize;
-  onChange?(
-    changed: Partial<TaskListRow>,
-    row: TaskListRow,
-    index: number
-  ): void;
-  onDelete?(row: TaskListRow, index: number): void;
+  onChange?(changed: Partial<TaskListRow>, row: TaskListRow): void;
+  onDelete?(row: TaskListRow): void;
   onClick?(row: TaskListRow): void;
 }
 
@@ -120,25 +117,21 @@ export const TaskList: FC<Props> = ({
 
   const updateTask = useUpdateTask();
   const handleChange = useCallback(
-    async (
-      changed: Partial<TaskListRow>,
-      prevValue: TaskListRow,
-      index: number
-    ) => {
+    async (changed: Partial<TaskListRow>, prevValue: TaskListRow) => {
       if (!!prevValue.task) {
         await updateTask({ id: prevValue.task.id, ...changed });
       }
 
-      onChange?.(changed, prevValue, index);
+      onChange?.(changed, prevValue);
     },
     [onChange, updateTask]
   );
 
   const deleteTask = useDeleteTask();
   const handleDelete = useCallback(
-    async (value: TaskListRow, index: number) => {
+    async (value: TaskListRow) => {
       if (!!value.task) await deleteTask(value.task.id);
-      onDelete?.(value, index);
+      onDelete?.(value);
     },
     [onDelete, deleteTask]
   );
@@ -155,7 +148,6 @@ export const TaskList: FC<Props> = ({
       className={size === "small" ? "dewo-table-xs" : undefined}
       pagination={{ hideOnSinglePage: true }}
       rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
-      rowKey={(row) => row.task?.id ?? row.name}
       onRow={(t) => ({
         onClick: !!onClick ? () => onClick(t) : undefined,
       })}
@@ -163,12 +155,12 @@ export const TaskList: FC<Props> = ({
         {
           dataIndex: "status",
           width: 1,
-          render: (currentStatus: TaskStatus, row, index) => (
+          render: (currentStatus: TaskStatus, row) => (
             <DropdownSelect
               value={currentStatus}
               mode="default"
               disabled={!canChange(row.task, "status")}
-              onChange={(status) => handleChange({ status }, row, index)}
+              onChange={(status) => handleChange({ status }, row)}
               options={statuses.map((status) => ({
                 value: status,
                 label: (
@@ -203,7 +195,7 @@ export const TaskList: FC<Props> = ({
           dataIndex: "name",
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
-          render: (name: string, row: TaskListRow, index: number) =>
+          render: (name: string, row: TaskListRow) =>
             nameEditable ? (
               <Input.TextArea
                 autoSize
@@ -216,8 +208,7 @@ export const TaskList: FC<Props> = ({
                   e.preventDefault();
                   handleChange(
                     { name: (e.target as HTMLInputElement).value },
-                    row,
-                    index
+                    row
                   );
                   (e.target as HTMLInputElement).blur();
                 }}
@@ -254,7 +245,7 @@ export const TaskList: FC<Props> = ({
           title: "Assignees",
           dataIndex: "assigneeIds",
           width: 1,
-          render: (assigneeIds: string[], row: TaskListRow, index: number) => (
+          render: (assigneeIds: string[], row: TaskListRow) => (
             <DropdownSelect
               mode="multiple"
               placement="bottomRight"
@@ -264,9 +255,7 @@ export const TaskList: FC<Props> = ({
                 label: <UserSelectOption key={user.id} user={user} />,
               }))}
               value={assigneeIds}
-              onChange={(assigneeIds) =>
-                handleChange({ assigneeIds }, row, index)
-              }
+              onChange={(assigneeIds) => handleChange({ assigneeIds }, row)}
             >
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Avatar.Group maxCount={3} size={size}>
@@ -288,7 +277,7 @@ export const TaskList: FC<Props> = ({
           title: "Actions",
           key: "actions",
           width: showActionButtons ? 120 : 1,
-          render: (_, row, index) => (
+          render: (_, row) => (
             <Row align="middle" style={{ justifyContent: "space-between" }}>
               {showActionButtons && !!row.task && (
                 <TaskActionButton task={row.task} />
@@ -317,7 +306,7 @@ export const TaskList: FC<Props> = ({
                         title="Delete this subtask?"
                         okType="danger"
                         okText="Delete"
-                        onConfirm={() => handleDelete(row, index)}
+                        onConfirm={() => handleDelete(row)}
                       >
                         <Menu.Item
                           key="delete"

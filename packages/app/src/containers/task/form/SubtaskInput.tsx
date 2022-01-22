@@ -8,6 +8,7 @@ import { useCreateTask } from "../hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import _ from "lodash";
 
 interface Props {
   projectId: string;
@@ -52,6 +53,7 @@ export const SubtaskInput: FC<Props> = ({
         onChange?.([
           ...(value ?? []),
           {
+            key: subtask?.id ?? Date.now().toString(),
             task: subtask,
             name: newName,
             assigneeIds: [],
@@ -66,30 +68,39 @@ export const SubtaskInput: FC<Props> = ({
     [adding, onChange, createTask, task, projectId, value, user?.id, newName]
   );
 
-  const rows = useMemo(() => value ?? [], [value]);
+  const rows = useMemo(() => {
+    if (!task) return value ?? [];
+    return _(task.subtasks)
+      .sortBy((task) => task.sortKey)
+      .map(
+        (task): TaskListRow => ({
+          task,
+          key: task.id,
+          name: task.name,
+          assigneeIds: task.assignees.map((u) => u.id),
+          status: task.status,
+        })
+      )
+      .value();
+  }, [value, task]);
+
   const handleChange = useCallback(
-    async (
-      changed: Partial<TaskListRow>,
-      prevValue: TaskListRow,
-      index: number
-    ) => {
-      const newValue = [...rows];
-      newValue[index] = { ...prevValue, ...changed };
-      onChange?.(newValue);
-    },
+    async (changed: Partial<TaskListRow>, prevRow: TaskListRow) =>
+      onChange?.(
+        rows.map((r) => (r.key === prevRow.key ? { ...r, ...changed } : r))
+      ),
     [onChange, rows]
   );
 
   const handleDelete = useCallback(
-    async (_value: TaskListRow, index: number) =>
-      onChange?.(rows.filter((_v, i) => i !== index)),
+    async (row: TaskListRow) =>
+      onChange?.(rows.filter((r) => r.key !== row.key)),
     [onChange, rows]
   );
 
   return (
     <>
       <TaskList
-        key={rows.length}
         rows={rows}
         size="small"
         showHeader={false}

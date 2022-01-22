@@ -149,6 +149,12 @@ export const createTask = gql`
   mutation CreateTaskMutation($input: CreateTaskInput!) {
     task: createTask(input: $input) {
       ...Task
+      parentTask {
+        id
+        subtasks {
+          ...Task
+        }
+      }
     }
   }
 
