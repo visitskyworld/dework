@@ -8,9 +8,8 @@ import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import _ from "lodash";
 
-const DiscordProjectIntegrationFeatureLabel: Record<
-  DiscordProjectIntegrationFeature,
-  string
+const DiscordProjectIntegrationFeatureLabel: Partial<
+  Record<DiscordProjectIntegrationFeature, string>
 > = {
   [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]:
     "Post all task updates in one channel",
@@ -30,9 +29,8 @@ const DiscordPermissionToString = {
 
 type DiscordPermission = keyof typeof DiscordPermissionToString;
 
-const DiscordPermissionsForFeature: Record<
-  DiscordProjectIntegrationFeature,
-  DiscordPermission[]
+const DiscordPermissionsForFeature: Partial<
+  Record<DiscordProjectIntegrationFeature, DiscordPermission[]>
 > = {
   [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]: [
     "VIEW_CHANNEL",
