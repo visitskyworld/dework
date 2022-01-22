@@ -292,14 +292,6 @@ export const githubRepo = gql`
   }
 `;
 
-export const discordChannel = gql`
-  fragment DiscordChannel on DiscordChannel {
-    id
-    link
-    name
-  }
-`;
-
 export const discordIntegrationChannel = gql`
   fragment DiscordIntegrationChannel on DiscordIntegrationChannel {
     id
@@ -438,9 +430,6 @@ export const taskDetails = gql`
     creator {
       ...User
     }
-    discordChannel {
-      ...DiscordChannel
-    }
     githubPullRequests {
       ...GithubPullRequest
     }
@@ -456,7 +445,6 @@ export const taskDetails = gql`
   ${user}
   ${githubPullRequest}
   ${githubBranch}
-  ${discordChannel}
   ${taskApplication}
 `;
 

@@ -526,6 +526,7 @@ export const createTasksFromGithubIssues = gql`
 
   ${Fragments.task}
 `;
+
 export const postFeedbackToDiscord = gql`
   mutation PostFeedbackToDiscordMutation(
     $feedbackContent: String!
@@ -535,5 +536,11 @@ export const postFeedbackToDiscord = gql`
       feedbackContent: $feedbackContent
       discordUsername: $discordUsername
     )
+  }
+`;
+
+export const createTaskDiscordLink = gql`
+  mutation CreateTaskDiscordLinkMutation($taskId: UUID!) {
+    link: createTaskDiscordLink(taskId: $taskId)
   }
 `;

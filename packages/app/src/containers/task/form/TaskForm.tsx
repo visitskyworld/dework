@@ -25,7 +25,6 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 import { AssignTaskCard } from "../AssignTaskCard";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
   TaskRewardFormFields,
   TaskRewardFormValues,
@@ -46,6 +45,7 @@ import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { TaskListRow } from "../list/TaskList";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
+import { TaskDiscordButton } from "./TaskDiscordButton";
 
 export interface TaskFormValues {
   name: string;
@@ -217,19 +217,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Button>
           )}
 
-          {!!task?.discordChannel && (
-            <FormSection label="Discord" className="mb-3">
-              <Button
-                type="primary"
-                href={task.discordChannel.link}
-                target="_blank"
-                icon={<DiscordIcon />}
-                size="small"
-              >
-                Go to Discord thread
-              </Button>
-            </FormSection>
-          )}
+          {!!task && <TaskDiscordButton task={task} />}
 
           {canChange("assigneeIds") &&
             !!task &&

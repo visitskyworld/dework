@@ -150,7 +150,6 @@ describe("DiscordIntegrationResolver", () => {
         expect(linkWhenThreadExists).toEqual(linkWhenNoThreadExists);
 
         await thread?.setArchived(true);
-        expect(thread?.archived).toEqual(true);
         const linkAfterThreadArchived = await client
           .request({
             app,
@@ -164,7 +163,6 @@ describe("DiscordIntegrationResolver", () => {
         expect(updatedThread?.archived).toEqual(false);
 
         await thread?.delete();
-        await discord.channels.cache.clear();
         const linkAfterThreadDeleted = await client
           .request({
             app,

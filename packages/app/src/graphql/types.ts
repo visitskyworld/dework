@@ -3785,6 +3785,23 @@ export interface PostFeedbackToDiscordMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateTaskDiscordLinkMutation
+// ====================================================
+
+export interface CreateTaskDiscordLinkMutation {
+  link: string;
+}
+
+export interface CreateTaskDiscordLinkMutationVariables {
+  taskId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -9542,6 +9559,7 @@ export interface DeleteTaskApplicationInput {
 
 export interface GetTasksInput {
   ids?: Scalar.UUID[] | null;
+  projectIds?: Scalar.UUID[] | null;
   organizationIds?: Scalar.UUID[] | null;
   statuses?: TaskStatus[] | null;
   limit?: number | null;

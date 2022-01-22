@@ -57,6 +57,8 @@ import {
   UpdateTaskSubmissionInput,
   UpdateTaskSubmissionMutation,
   UpdateTaskSubmissionMutationVariables,
+  CreateTaskDiscordLinkMutation,
+  CreateTaskDiscordLinkMutationVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -209,6 +211,23 @@ export function useUpdateTask(): (
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.task;
+    },
+    [mutation]
+  );
+}
+
+export function useCreateTaskDiscordLink(): (
+  taskId: string
+) => Promise<string> {
+  const [mutation] = useMutation<
+    CreateTaskDiscordLinkMutation,
+    CreateTaskDiscordLinkMutationVariables
+  >(Mutations.createTaskDiscordLink);
+  return useCallback(
+    async (taskId) => {
+      const res = await mutation({ variables: { taskId } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.link;
     },
     [mutation]
   );

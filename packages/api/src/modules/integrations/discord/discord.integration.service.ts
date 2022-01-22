@@ -318,9 +318,8 @@ export class DiscordIntegrationService {
     }
 
     if (config.features.includes(toThread) && !!config.threadId) {
-      const thread = await channel.threads.fetch(config.threadId, {
-        force: true,
-      });
+      this.discord.client.channels.cache.delete(config.threadId);
+      const thread = await channel.threads.fetch(config.threadId);
       return { channel: thread ?? undefined, new: false };
     }
 
@@ -557,9 +556,8 @@ export class DiscordIntegrationService {
     }
 
     try {
-      const thread = await channel.threads.fetch(existing.channelId, {
-        force: true,
-      });
+      this.discord.client.channels.cache.delete(existing.channelId);
+      const thread = await channel.threads.fetch(existing.channelId);
 
       if (!thread) throw new Error("Null channel returned from Discord");
 
