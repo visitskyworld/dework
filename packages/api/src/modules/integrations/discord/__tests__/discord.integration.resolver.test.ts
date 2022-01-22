@@ -5,6 +5,7 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { DiscordIntegrationRequests } from "@dewo/api/testing/requests/discord.integration.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import * as Discord from "discord.js";
+import { DiscordIntegrationService } from "../discord.integration.service";
 import { DiscordService } from "../discord.service";
 
 const discordGuildId = "915593019871342592";
@@ -18,12 +19,14 @@ describe("DiscordIntegrationResolver", () => {
   let discordGuild: Discord.Guild;
   let discordChannel: Discord.TextChannel;
   let discordThread: Discord.ThreadChannel;
+  let discordIntegrationService: DiscordIntegrationService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
     discord = app.get(DiscordService).client;
     client = app.get(GraphQLTestClient);
+    discordIntegrationService = app.get(DiscordIntegrationService);
 
     discordGuild = await discord.guilds.fetch(discordGuildId);
     discordChannel = (await discordGuild.channels.fetch(discordChannelId, {
@@ -120,21 +123,56 @@ describe("DiscordIntegrationResolver", () => {
         );
 
         const task = await fixtures.createTask({ projectId: project.id });
-        const response = await client.request({
-          app,
-          body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
-        });
+        const linkWhenNoThreadExists = await client
+          .request({
+            app,
+            body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+          })
+          .then((res) => res.body.data.link);
 
-        // const thread =
+        const [{}, guildId, threadId] = linkWhenNoThreadExists.match(
+          /\/([0-9]+)\/([0-9]+)$/
+        );
 
-        console.warn(response.body);
+        expect(guildId).toEqual(discordGuild.id);
+        const thread = (await discord.channels.fetch(threadId)) as
+          | Discord.ThreadChannel
+          | undefined;
+        expect(thread).toBeDefined();
+        expect(thread?.isThread()).toBe(true);
+
+        const linkWhenThreadExists = await client
+          .request({
+            app,
+            body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+          })
+          .then((res) => res.body.data.link);
+        expect(linkWhenThreadExists).toEqual(linkWhenNoThreadExists);
+
+        await thread?.setArchived(true);
+        expect(thread?.archived).toEqual(true);
+        const linkAfterThreadArchived = await client
+          .request({
+            app,
+            body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+          })
+          .then((res) => res.body.data.link);
+        expect(linkAfterThreadArchived).toEqual(linkWhenNoThreadExists);
+        const updatedThread = (await discord.channels.fetch(threadId, {
+          force: true,
+        })) as Discord.ThreadChannel | undefined;
+        expect(updatedThread?.archived).toEqual(false);
+
+        await thread?.delete();
+        await discord.channels.cache.clear();
+        const linkAfterThreadDeleted = await client
+          .request({
+            app,
+            body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
+          })
+          .then((res) => res.body.data.link);
+        expect(linkAfterThreadDeleted).not.toEqual(linkWhenNoThreadExists);
       });
-
-      it("should return existing Discord thread if exists", async () => {});
-
-      it("should create new Discord thread if exists, but is removed", async () => {});
-
-      it("should unarchive existing Discord thread if exists, but is archived", async () => {});
     });
   });
 });

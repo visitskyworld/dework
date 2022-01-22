@@ -32,8 +32,6 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskService } from "../../task/task.service";
 
-class DiscordChannelNotFoundError extends Error {}
-
 @Injectable()
 export class DiscordIntegrationService {
   private logger = new Logger(this.constructor.name);
@@ -242,20 +240,13 @@ export class DiscordIntegrationService {
 
       // write about task applicant updates (should that be done elsewhere maybe?)
     } catch (error) {
-      if (error instanceof DiscordChannelNotFoundError) {
-        await this.discordChannelRepo.update(
-          { taskId: event.task.id },
-          { deletedAt: new Date() }
-        );
-      } else {
-        const errorString = JSON.stringify(
-          error,
-          Object.getOwnPropertyNames(error)
-        );
-        this.logger.error(
-          `Unknown error: ${JSON.stringify({ event, errorString })}`
-        );
-      }
+      const errorString = JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      );
+      this.logger.error(
+        `Unknown error: ${JSON.stringify({ event, errorString })}`
+      );
     }
   }
 
@@ -334,9 +325,6 @@ export class DiscordIntegrationService {
     }
 
     if (config.features.includes(toThreadPerTask)) {
-      const discordThread = await task.discordChannel;
-      if (!!discordThread?.deletedAt) return { channel: undefined, new: false };
-
       const existingThread = await this.getExistingDiscordThread(task, channel);
       if (!!existingThread) return { channel: existingThread, new: false };
 
@@ -505,26 +493,6 @@ export class DiscordIntegrationService {
     );
   }
 
-  /*
-  private async postInProgress(task: Task, channel: Discord.TextBasedChannels) {
-    const threepids = await this.findTaskUserThreepids(task);
-    // const intro = !!threepids.length
-    //   ? `Hey ${threepids.map((t) => `<@${t.threepid}>`).join(", ")},`
-    //   : "";
-
-    await this.postTaskCard(
-      channel,
-      task,
-      "Task moved to in progress!",
-      !!threepids.length ? threepids.map((t) => t.threepid) : undefined
-    );
-    // await this.post(
-    //   channel,
-    //   `${intro} This task has been moved to the next stage.`.trim()
-    // );
-  }
-  */
-
   private async postTaskCard(
     channel: Discord.TextBasedChannels,
     task: Task,
@@ -579,11 +547,10 @@ export class DiscordIntegrationService {
     );
 
     const existing = await task.discordChannel;
-    if (!existing || !!existing.deletedAt) {
+    if (!existing) {
       this.logger.debug(
         `No existing Discord thread record found: ${JSON.stringify({
           taskId: task.id,
-          deletedAt: existing?.deletedAt,
         })}`
       );
       return undefined;
@@ -612,7 +579,8 @@ export class DiscordIntegrationService {
           error,
         })}`
       );
-      throw new DiscordChannelNotFoundError();
+      await this.discordChannelRepo.delete({ taskId: task.id });
+      return undefined;
     }
   }
 

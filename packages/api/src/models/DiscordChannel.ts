@@ -29,10 +29,6 @@ export class DiscordChannel extends Audit {
   @Field()
   public link!: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  public deletedAt?: Date;
-
   @AfterLoad()
   loadLink() {
     this.link = `https://discordapp.com/channels/${this.guildId}/${this.channelId}`;

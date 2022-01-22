@@ -266,7 +266,6 @@ describe("DiscordIntegration", () => {
       const updated = await updateTask(task, { name: "deleted" });
       const updatedDiscordChannel = await updated.discordChannel;
       expect(updatedDiscordChannel).not.toBe(null);
-      expect(updatedDiscordChannel!.deletedAt).not.toBe(null);
     });
 
     it("should make Discord channel archived if status is done", async () => {
