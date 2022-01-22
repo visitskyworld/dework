@@ -5,7 +5,6 @@ import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { DiscordIntegrationRequests } from "@dewo/api/testing/requests/discord.integration.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import * as Discord from "discord.js";
-import { DiscordIntegrationService } from "../discord.integration.service";
 import { DiscordService } from "../discord.service";
 
 const discordGuildId = "915593019871342592";
@@ -19,14 +18,12 @@ describe("DiscordIntegrationResolver", () => {
   let discordGuild: Discord.Guild;
   let discordChannel: Discord.TextChannel;
   let discordThread: Discord.ThreadChannel;
-  let discordIntegrationService: DiscordIntegrationService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
     discord = app.get(DiscordService).client;
     client = app.get(GraphQLTestClient);
-    discordIntegrationService = app.get(DiscordIntegrationService);
 
     discordGuild = await discord.guilds.fetch(discordGuildId);
     discordChannel = (await discordGuild.channels.fetch(discordChannelId, {
