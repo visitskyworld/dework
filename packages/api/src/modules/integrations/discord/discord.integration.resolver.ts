@@ -1,9 +1,10 @@
-import { Args, Mutation, Query } from "@nestjs/graphql";
+import { Args, Context, Mutation, Query } from "@nestjs/graphql";
 import { Injectable } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
 import { DiscordIntegrationService } from "./discord.integration.service";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 export class DiscordIntegrationResolver {
@@ -34,8 +35,9 @@ export class DiscordIntegrationResolver {
 
   @Mutation(() => String)
   public async createTaskDiscordLink(
-    @Args("taskId", { type: () => GraphQLUUID }) taskId: string
+    @Args("taskId", { type: () => GraphQLUUID }) taskId: string,
+    @Context("user") user: User | undefined
   ): Promise<string> {
-    return this.discordIntegration.createTaskDiscordLink(taskId);
+    return this.discordIntegration.createTaskDiscordLink(taskId, user);
   }
 }

@@ -199,22 +199,7 @@ export class DiscordIntegrationService {
         if (!!event.task.assignees.length) {
           await this.postAssigneesChange(event.task, channelToPostTo);
         } else if (wasChannelToPostToJustCreated) {
-          const creator = await event.task.creator;
-          await this.postTaskCard(
-            channelToPostTo,
-            event.task,
-            `Thread for Dework task "${event.task.name}"`,
-            undefined,
-            {
-              author: !!creator
-                ? {
-                    name: creator.username,
-                    iconURL: creator.imageUrl,
-                    url: await this.permalink.get(creator),
-                  }
-                : undefined,
-            }
-          );
+          await this.postDefaultInitialMessage(event.task, channelToPostTo);
         }
       } else if (event instanceof TaskSubmissionCreatedEvent) {
         await this.postTaskSubmissionCreated(
@@ -250,7 +235,10 @@ export class DiscordIntegrationService {
     }
   }
 
-  public async createTaskDiscordLink(taskId: string): Promise<string> {
+  public async createTaskDiscordLink(
+    taskId: string,
+    user?: User
+  ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
     const integration = await this.getProjectIntegration(task.projectId);
@@ -278,12 +266,13 @@ export class DiscordIntegrationService {
       );
     }
 
-    const { channel: channelToPostTo } = await this.getDiscordChannelToPostTo(
-      task,
-      channel,
-      integration.config,
-      true // force create
-    );
+    const { channel: channelToPostTo, new: wasChannelToPostToJustCreated } =
+      await this.getDiscordChannelToPostTo(
+        task,
+        channel,
+        integration.config,
+        true // force create
+      );
 
     if (!channelToPostTo) {
       throw new NotFoundException(
@@ -293,6 +282,19 @@ export class DiscordIntegrationService {
 
     if (channelToPostTo.isThread() && channelToPostTo.archived) {
       channelToPostTo.setArchived(false);
+    }
+
+    if (wasChannelToPostToJustCreated) {
+      await this.postDefaultInitialMessage(task, channelToPostTo);
+    }
+
+    const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
+    if (channelToPostTo.isThread() && !!discordId) {
+      const member = await guild.members.fetch({
+        user: discordId,
+        force: true,
+      });
+      await channelToPostTo.members.add(member.user.id);
     }
 
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
@@ -411,6 +413,28 @@ export class DiscordIntegrationService {
       channel,
       task,
       `${assigneesString} assigned to the task`
+    );
+  }
+
+  private async postDefaultInitialMessage(
+    task: Task,
+    channel: Discord.TextBasedChannels
+  ) {
+    const creator = await task.creator;
+    await this.postTaskCard(
+      channel,
+      task,
+      `Thread for Dework task "${task.name}"`,
+      undefined,
+      {
+        author: !!creator
+          ? {
+              name: creator.username,
+              iconURL: creator.imageUrl,
+              url: await this.permalink.get(creator),
+            }
+          : undefined,
+      }
     );
   }
 
