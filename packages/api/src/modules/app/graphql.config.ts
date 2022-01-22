@@ -21,19 +21,20 @@ const logger = new Logger("GraphQL");
 const loggerPlugin: ApolloServerPlugin<GQLContext> = {
   async requestDidStart(requestContext) {
     const startedAt = Date.now();
-    logger.log(
-      `${requestContext.request.operationName} (${JSON.stringify(
-        requestContext.request.variables
-      )}): started`
-    );
+    const metadata = {
+      variables: requestContext.request.variables,
+      caslUser: requestContext.context.caslUser,
+    };
+    const prefix = `${requestContext.request.operationName} (${JSON.stringify(
+      metadata
+    )})`;
+    logger.log(`${prefix}: started`);
     return {
       async willSendResponse(responseContext) {
         const duration = Date.now() - startedAt;
         const size = JSON.stringify(responseContext.response).length * 2;
         logger.log(
-          `${requestContext.request.operationName} (${JSON.stringify(
-            requestContext.request.variables
-          )}): completed in ${duration} ms, returned ${size} bytes`
+          `${prefix}: completed in ${duration} ms, returned ${size} bytes`
         );
       },
     };
