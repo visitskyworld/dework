@@ -22,6 +22,7 @@ export enum GithubPullRequestActions {
   REOPENED = "reopened",
   CLOSED = "closed",
   READY_FOR_REVIEW = "ready_for_review", // When PR is updated from draft -> open
+  REVIEW_REQUESTED = "review_requested", // When a review is re-requested
 }
 
 type GithubPullRequestPayload = Pick<
@@ -191,7 +192,7 @@ export class GithubController {
         taskId: task.id,
       };
 
-      if (event.action === "closed") {
+      if (event.action === GithubPullRequestActions.CLOSED) {
         if (!pr) {
           this.log(
             "Closed PR but no GithubPullRequest registered in Dework",
@@ -235,14 +236,23 @@ export class GithubController {
         }
 
         if (!draft) {
-          await this.taskService.update({
-            id: task.id,
-            status: TaskStatus.IN_REVIEW,
-          });
-          this.log("Updated task status", {
-            taskNumber: task.number,
-            status: TaskStatus.IN_REVIEW,
-          });
+          if (task.status !== TaskStatus.IN_REVIEW) {
+            await this.taskService.update({
+              id: task.id,
+              status: TaskStatus.IN_REVIEW,
+            });
+            this.log("Updated task status", {
+              taskNumber: task.number,
+              status: TaskStatus.IN_REVIEW,
+            });
+          } else if (
+            event.action === GithubPullRequestActions.REVIEW_REQUESTED
+          ) {
+            this.log("A review was re-requested from Github:", {
+              pullRequestTitle: prData.title,
+              taskId: task.id,
+            });
+          }
         }
       }
 
