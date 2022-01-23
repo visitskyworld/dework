@@ -1,7 +1,7 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { User } from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
-import { Row, Typography } from "antd";
+import { Typography } from "antd";
 import Link from "next/link";
 import React, { CSSProperties, FC } from "react";
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const UserSelectOption: FC<Props> = ({ user, style }) => (
-  <Row align="middle" style={style}>
+  <span style={style}>
     <Link href={`/profile/${user.id}`}>
       <a target="_blank" onClick={stopPropagation}>
         <UserAvatar
@@ -22,5 +22,5 @@ export const UserSelectOption: FC<Props> = ({ user, style }) => (
       </a>
     </Link>
     <Typography.Text style={{ marginLeft: 8 }}>{user.username}</Typography.Text>
-  </Row>
+  </span>
 );

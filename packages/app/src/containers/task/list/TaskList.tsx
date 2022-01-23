@@ -245,6 +245,12 @@ export const TaskList: FC<Props> = ({
           title: "Assignees",
           dataIndex: "assigneeIds",
           width: 1,
+          filters: users?.map((user) => ({
+            value: user.id,
+            text: <UserSelectOption key={user.id} user={user} />,
+          })),
+          onFilter: (userId, row) =>
+            !!row.assigneeIds?.some((id) => id === userId),
           render: (assigneeIds: string[], row: TaskListRow) => (
             <DropdownSelect
               mode="multiple"

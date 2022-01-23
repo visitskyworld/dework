@@ -182,6 +182,8 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           loading={!channels}
           placeholder="Select Discord Channel..."
           allowClear
+          showSearch
+          optionFilterProp="label"
         >
           {channels?.map((channel) => (
             <Select.Option
@@ -209,6 +211,8 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           loading={!threads}
           placeholder="Select Discord Thread..."
           allowClear
+          showSearch
+          optionFilterProp="label"
         >
           {threads?.map((channel) => (
             <Select.Option
