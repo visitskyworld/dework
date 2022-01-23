@@ -239,7 +239,11 @@ export const TaskList: FC<Props> = ({
           title: "Reward",
           dataIndex: ["task", "reward"],
           render: (reward: TaskReward) =>
-            !!reward ? formatTaskReward(reward) : undefined,
+            !!reward && (
+              <Typography.Text style={{ whiteSpace: "nowrap" }}>
+                {formatTaskReward(reward)}
+              </Typography.Text>
+            ),
         },
         {
           title: "Assignees",

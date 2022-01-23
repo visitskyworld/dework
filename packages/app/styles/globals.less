@@ -7,6 +7,7 @@
 @border-radius-base: 4px;
 @primary-color: #8570e4;
 @primary-color-25: #8570e444;
+@primary-color-50: #8570e488;
 @body-background: #00042d;
 @component-background: fade(@white, 10%);
 @divider-color: fade(@white, 20%);
@@ -225,6 +226,7 @@ textarea {
 .dewo-task-board {
   height: 100%;
   overflow-x: auto;
+  max-height: 100vh;
 
   padding: 12px;
 
@@ -696,5 +698,49 @@ textarea {
   .ant-page-header-heading-left {
     flex-wrap: wrap;
     flex: unset;
+  }
+}
+
+.dewo-discovery-table {
+
+  .ant-table {
+    background: transparent;
+  }
+  
+  table {
+    border-collapse: separate;
+    border-spacing: 0 16px;
+  }
+
+  .ant-table-row {
+    background: @component-background;
+  }
+
+  /*
+  .ant-table-tbody > tr.ant-table-row {
+    & > td {
+      background: @component-background;
+    }
+    &:hover > td {
+      background: @primary-color-50;
+    }
+  }
+  */
+
+  tr > td {
+    border-top: 2px solid @primary-color;
+    border-bottom: 2px solid @primary-color;
+
+    &:first-child {
+      border-left: 2px solid @primary-color;
+      border-top-left-radius: @border-radius-base * 2;
+      border-bottom-left-radius: @border-radius-base * 2;
+    }
+
+    &:last-child {
+      border-right: 2px solid @primary-color;
+      border-top-right-radius: @border-radius-base * 2;
+      border-bottom-right-radius: @border-radius-base * 2;
+    }
   }
 }

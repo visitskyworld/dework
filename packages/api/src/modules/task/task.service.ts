@@ -183,16 +183,18 @@ export class TaskService {
     assigneeId,
     statuses,
     limit,
+    rewardNotNull = false,
     includePrivateProjects = false,
   }: {
     ids?: string[];
     rewardIds?: string[];
     projectIds?: string[];
     organizationIds?: string[];
-    assigneeId?: string;
+    assigneeId?: string | null;
     statuses?: TaskStatus[];
     order?: OrderByCondition;
     limit?: number;
+    rewardNotNull?: boolean;
     includePrivateProjects?: boolean;
   }): Promise<Task[]> {
     let query = this.taskRepo
@@ -216,6 +218,10 @@ export class TaskService {
 
     if (!!rewardIds) {
       query = query.andWhere("task.rewardId IN (:...rewardIds)", { rewardIds });
+    }
+
+    if (!!rewardNotNull) {
+      query = query.andWhere("task.rewardId IS NOT NULL");
     }
 
     if (!!projectIds || !!organizationIds) {
@@ -249,6 +255,8 @@ export class TaskService {
     if (!!assigneeId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
       query = query.andWhere("assignee.id = :assigneeId", { assigneeId });
+    } else if (assigneeId === null) {
+      query = query.andWhere("assignee.id IS NULL");
     }
 
     if (!!statuses) {

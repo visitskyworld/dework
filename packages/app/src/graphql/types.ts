@@ -1230,6 +1230,191 @@ export interface CreateTaskMutation_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface CreateTaskMutation_task_parentTask_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod_networks[];
+  tokens: CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod_tokens[];
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskMutation_task_parentTask_subtasks_reward_payment_paymentMethod;
+  network: CreateTaskMutation_task_parentTask_subtasks_reward_payment_network;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  token: CreateTaskMutation_task_parentTask_subtasks_reward_token;
+  payment: CreateTaskMutation_task_parentTask_subtasks_reward_payment | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  userId: string;
+  user: CreateTaskMutation_task_parentTask_subtasks_applications_user;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskMutation_task_parentTask_subtasks_submissions_user;
+  approver: CreateTaskMutation_task_parentTask_subtasks_submissions_approver | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_options {
+  __typename: "TaskOptions";
+  allowOpenSubmission: boolean | null;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  sortKey: string;
+  storyPoints: number | null;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  ownerId: string | null;
+  number: number;
+  subtasks: CreateTaskMutation_task_parentTask_subtasks_subtasks[];
+  tags: CreateTaskMutation_task_parentTask_subtasks_tags[];
+  assignees: CreateTaskMutation_task_parentTask_subtasks_assignees[];
+  reward: CreateTaskMutation_task_parentTask_subtasks_reward | null;
+  applications: CreateTaskMutation_task_parentTask_subtasks_applications[];
+  submissions: CreateTaskMutation_task_parentTask_subtasks_submissions[];
+  review: CreateTaskMutation_task_parentTask_subtasks_review | null;
+  reactions: CreateTaskMutation_task_parentTask_subtasks_reactions[];
+  options: CreateTaskMutation_task_parentTask_subtasks_options | null;
+}
+
+export interface CreateTaskMutation_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  subtasks: CreateTaskMutation_task_parentTask_subtasks[];
+}
+
 export interface CreateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1238,6 +1423,7 @@ export interface CreateTaskMutation_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1252,6 +1438,7 @@ export interface CreateTaskMutation_task {
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
   options: CreateTaskMutation_task_options | null;
+  parentTask: CreateTaskMutation_task_parentTask | null;
 }
 
 export interface CreateTaskMutation {
@@ -1433,6 +1620,7 @@ export interface UpdateTaskMutation_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1628,6 +1816,7 @@ export interface CreateTaskApplicationMutation_application_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1829,6 +2018,7 @@ export interface DeleteTaskApplicationMutation_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -2024,6 +2214,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -2225,6 +2416,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3266,6 +3458,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   description: string | null;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3449,13 +3642,6 @@ export interface CreateTaskPaymentsMutation_tasks_creator {
   imageUrl: string | null;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_githubPullRequests {
   __typename: "GithubPullRequest";
   id: Scalar.UUID;
@@ -3488,6 +3674,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3503,12 +3690,10 @@ export interface CreateTaskPaymentsMutation_tasks {
   reactions: CreateTaskPaymentsMutation_tasks_reactions[];
   options: CreateTaskPaymentsMutation_tasks_options | null;
   gitBranchName: string;
-  createdAt: Scalar.DateTime;
   permalink: string;
   parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
-  discordChannel: CreateTaskPaymentsMutation_tasks_discordChannel | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
 }
@@ -3731,6 +3916,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -4110,6 +4296,7 @@ export interface UserTasksQuery_user_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -4845,6 +5032,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5186,6 +5374,7 @@ export interface GetProjectTasksQuery_project_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5418,6 +5607,7 @@ export interface GetTaskQuery_task_subtasks {
   description: string | null;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5601,13 +5791,6 @@ export interface GetTaskQuery_task_creator {
   imageUrl: string | null;
 }
 
-export interface GetTaskQuery_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
 export interface GetTaskQuery_task_githubPullRequests {
   __typename: "GithubPullRequest";
   id: Scalar.UUID;
@@ -5654,6 +5837,7 @@ export interface GetTaskQuery_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5669,12 +5853,10 @@ export interface GetTaskQuery_task {
   reactions: GetTaskQuery_task_reactions[];
   options: GetTaskQuery_task_options | null;
   gitBranchName: string;
-  createdAt: Scalar.DateTime;
   permalink: string;
   parentTask: GetTaskQuery_task_parentTask | null;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
-  discordChannel: GetTaskQuery_task_discordChannel | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
   project: GetTaskQuery_task_project;
@@ -5919,6 +6101,7 @@ export interface GetTasksQuery_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6184,6 +6367,7 @@ export interface GetTasksToPayQuery_tasks {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6583,6 +6767,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   description: string | null;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6766,13 +6951,6 @@ export interface TaskCreatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
 export interface TaskCreatedSubscription_task_githubPullRequests {
   __typename: "GithubPullRequest";
   id: Scalar.UUID;
@@ -6805,6 +6983,7 @@ export interface TaskCreatedSubscription_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6820,12 +6999,10 @@ export interface TaskCreatedSubscription_task {
   reactions: TaskCreatedSubscription_task_reactions[];
   options: TaskCreatedSubscription_task_options | null;
   gitBranchName: string;
-  createdAt: Scalar.DateTime;
   permalink: string;
   parentTask: TaskCreatedSubscription_task_parentTask | null;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
-  discordChannel: TaskCreatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
 }
@@ -7005,6 +7182,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   description: string | null;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -7188,13 +7366,6 @@ export interface TaskUpdatedSubscription_task_creator {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
 export interface TaskUpdatedSubscription_task_githubPullRequests {
   __typename: "GithubPullRequest";
   id: Scalar.UUID;
@@ -7227,6 +7398,7 @@ export interface TaskUpdatedSubscription_task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -7242,12 +7414,10 @@ export interface TaskUpdatedSubscription_task {
   reactions: TaskUpdatedSubscription_task_reactions[];
   options: TaskUpdatedSubscription_task_options | null;
   gitBranchName: string;
-  createdAt: Scalar.DateTime;
   permalink: string;
   parentTask: TaskUpdatedSubscription_task_parentTask | null;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
-  discordChannel: TaskUpdatedSubscription_task_discordChannel | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
 }
@@ -8125,22 +8295,6 @@ export interface GithubRepo {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: DiscordChannel
-// ====================================================
-
-export interface DiscordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: DiscordIntegrationChannel
 // ====================================================
 
@@ -8399,6 +8553,7 @@ export interface Task {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8608,6 +8763,7 @@ export interface TaskWithOrganization {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8796,6 +8952,7 @@ export interface TaskDetails_subtasks {
   description: string | null;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8979,13 +9136,6 @@ export interface TaskDetails_creator {
   imageUrl: string | null;
 }
 
-export interface TaskDetails_discordChannel {
-  __typename: "DiscordChannel";
-  id: Scalar.UUID;
-  link: string;
-  name: string;
-}
-
 export interface TaskDetails_githubPullRequests {
   __typename: "GithubPullRequest";
   id: Scalar.UUID;
@@ -9018,6 +9168,7 @@ export interface TaskDetails {
   status: TaskStatus;
   sortKey: string;
   storyPoints: number | null;
+  createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -9033,12 +9184,10 @@ export interface TaskDetails {
   reactions: TaskDetails_reactions[];
   options: TaskDetails_options | null;
   gitBranchName: string;
-  createdAt: Scalar.DateTime;
   permalink: string;
   parentTask: TaskDetails_parentTask | null;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
-  discordChannel: TaskDetails_discordChannel | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
 }
@@ -9559,9 +9708,11 @@ export interface DeleteTaskApplicationInput {
 
 export interface GetTasksInput {
   ids?: Scalar.UUID[] | null;
+  assigneeId?: Scalar.UUID | null;
   projectIds?: Scalar.UUID[] | null;
   organizationIds?: Scalar.UUID[] | null;
   statuses?: TaskStatus[] | null;
+  rewardNotNull?: boolean | null;
   limit?: number | null;
 }
 

@@ -7,6 +7,9 @@ export class GetTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public ids?: string[];
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public assigneeId?: string;
+
   @Field(() => [GraphQLUUID], { nullable: true })
   public projectIds?: string[];
 
@@ -15,6 +18,9 @@ export class GetTasksInput {
 
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
+
+  @Field({ nullable: true })
+  public rewardNotNull?: boolean;
 
   // TODO(fant): how to prevent this from being very high?
   @Field(() => Int, { nullable: true, defaultValue: 1000 })

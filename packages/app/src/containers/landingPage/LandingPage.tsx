@@ -1,13 +1,15 @@
 import React, { FC } from "react";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { PageHeader } from "antd";
+import { PageHeader, Typography } from "antd";
 import { LoginButton } from "../auth/LoginButton";
 import { ExplorePopularDaosSection } from "./ExplorePopularDaosSection";
 import { LandingPageFooter } from "./Footer";
 import { ProductSection } from "./ProductSection";
-import { UserTaskBoard } from "../user/UserTaskBoard";
 import { PageHeaderBreadcrumbs } from "../navigation/PageHeaderBreadcrumbs";
 import { Logo } from "@dewo/app/components/Logo";
+import { TaskDiscoveryList } from "../discovery/TaskDiscoveryList";
+import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
+import { UserTaskBoard } from "../user/UserTaskBoard";
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
@@ -21,7 +23,19 @@ export const LandingPage: FC = () => {
             />
           }
         />
+        <Typography.Title level={3} style={{ textAlign: "center" }}>
+          🔥 Latest Bounties
+        </Typography.Title>
+        <TaskDiscoveryList />
+
+        <Typography.Title
+          level={3}
+          style={{ textAlign: "center", marginTop: 24 }}
+        >
+          Your Tasks
+        </Typography.Title>
         <UserTaskBoard userId={user.id} />
+        <TaskUpdateModalListener />
       </>
     );
   }

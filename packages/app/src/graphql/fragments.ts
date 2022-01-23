@@ -350,6 +350,7 @@ export const task = gql`
     status
     sortKey
     storyPoints
+    createdAt
     deletedAt
     projectId
     parentTaskId
@@ -415,7 +416,6 @@ export const taskDetails = gql`
   fragment TaskDetails on Task {
     ...Task
     gitBranchName
-    createdAt
     permalink
     subtasks {
       ...Task

@@ -59,6 +59,7 @@ import {
   UpdateTaskSubmissionMutationVariables,
   CreateTaskDiscordLinkMutation,
   CreateTaskDiscordLinkMutationVariables,
+  TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -425,7 +426,7 @@ export function useLazyTaskReactionUsers(taskId: string) {
 export function useTasks(
   input: GetTasksInput,
   skip: boolean = false
-): Task[] | undefined {
+): TaskWithOrganization[] | undefined {
   const { data } = useQuery<GetTasksQuery, GetTasksQueryVariables>(
     Queries.tasks,
     { variables: { input }, skip }
