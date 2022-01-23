@@ -9,7 +9,6 @@ import { PageHeaderBreadcrumbs } from "../navigation/PageHeaderBreadcrumbs";
 import { Logo } from "@dewo/app/components/Logo";
 import { TaskDiscoveryList } from "../discovery/TaskDiscoveryList";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
-import { UserTaskBoard } from "../user/UserTaskBoard";
 
 export const LandingPage: FC = () => {
   const { user } = useAuthContext();
@@ -28,13 +27,13 @@ export const LandingPage: FC = () => {
         </Typography.Title>
         <TaskDiscoveryList />
 
-        <Typography.Title
+        {/* <Typography.Title
           level={3}
           style={{ textAlign: "center", marginTop: 24 }}
         >
           Your Tasks
         </Typography.Title>
-        <UserTaskBoard userId={user.id} />
+        <UserTaskBoard userId={user.id} /> */}
         <TaskUpdateModalListener />
       </>
     );

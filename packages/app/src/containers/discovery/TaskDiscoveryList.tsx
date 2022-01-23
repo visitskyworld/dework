@@ -21,20 +21,16 @@ const tasksQuery: GetTasksInput = {
   assigneeId: null,
 };
 
-interface Props {}
-
 export const TaskDiscoveryList: FC = () => {
   const tasks = useTasks(tasksQuery);
   const navigateToTask = useNavigateToTaskFn();
   const screens = useBreakpoint();
 
-  console.log(screens);
-
   return (
     <Table<TaskWithOrganization>
       dataSource={tasks}
       showHeader={false}
-      pagination={{ hideOnSinglePage: true, pageSize: 4 }}
+      pagination={{ hideOnSinglePage: true }}
       size="small"
       style={{ paddingLeft: 8, paddingRight: 8 }}
       tableLayout={screens.sm ? "auto" : "fixed"}
@@ -120,7 +116,7 @@ export const TaskDiscoveryList: FC = () => {
               {
                 key: "actions",
                 width: 1,
-                render: (_, task: TaskWithOrganization) =>
+                render: (_: unknown, task: TaskWithOrganization) =>
                   screens.sm && <TaskActionButton task={task} />,
               },
             ]
