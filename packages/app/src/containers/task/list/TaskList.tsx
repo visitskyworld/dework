@@ -1,4 +1,5 @@
 import * as Icons from "@ant-design/icons";
+import * as Colors from "@ant-design/colors";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
@@ -41,6 +42,7 @@ import {
 import { AvatarSize } from "antd/lib/avatar/SizeContext";
 import { TaskActionButton } from "../board/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
+import moment from "moment";
 
 export interface TaskListRow {
   key: string;
@@ -238,10 +240,24 @@ export const TaskList: FC<Props> = ({
         {
           title: "Reward",
           dataIndex: ["task", "reward"],
-          render: (reward: TaskReward) =>
+          render: (reward: TaskReward | undefined) =>
             !!reward && (
               <Typography.Text style={{ whiteSpace: "nowrap" }}>
                 {formatTaskReward(reward)}
+              </Typography.Text>
+            ),
+        },
+        {
+          title: "Due Date",
+          dataIndex: ["task", "dueDate"],
+          width: 1,
+          render: (dueDate: string | undefined) =>
+            !!dueDate && (
+              <Typography.Text style={{ whiteSpace: "nowrap" }}>
+                {moment(dueDate).format("D MMM")}
+                <Icons.ExclamationCircleFilled
+                  style={{ color: Colors.red.primary, marginLeft: 4 }}
+                />
               </Typography.Text>
             ),
         },

@@ -2,8 +2,10 @@ import React, { CSSProperties, FC, useMemo } from "react";
 import { Task, TaskWithOrganization } from "@dewo/app/graphql/types";
 import { Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
+import * as Colors from "@ant-design/colors";
 import { formatTaskReward } from "../hooks";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import moment from "moment";
 
 interface Props {
   task: Task | TaskWithOrganization;
@@ -37,6 +39,19 @@ export const TaskTagsRow: FC<Props> = ({
             >
               <Icons.DollarOutlined />
               <span>{formatTaskReward(task.reward)}</span>
+            </Tag>
+          )}
+          {!!task.dueDate && (
+            <Tag
+              style={{ marginBottom: 4 }}
+              color={
+                moment().endOf("day").isAfter(task.dueDate)
+                  ? Colors.red.primary
+                  : undefined
+              }
+            >
+              <Icons.CalendarOutlined />
+              <span>{moment(task.dueDate).format("D MMM")}</span>
             </Tag>
           )}
           {!!attachmentCount && (
