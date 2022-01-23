@@ -8,7 +8,6 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      {/* <Layout.Content style={{ display: "flex", flexDirection: "column" }}> */}
       <Layout.Content>
         <LandingPage />
       </Layout.Content>

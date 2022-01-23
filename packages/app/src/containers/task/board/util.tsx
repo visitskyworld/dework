@@ -101,7 +101,11 @@ export function useGroupedTasks(
                   tasks: assigned,
                   hidden: !assigned.length,
                 },
-                { title: "Unclaimed", tasks: unassigned },
+                {
+                  title: "Unclaimed",
+                  tasks: unassigned,
+                  hidden: !unassigned.length,
+                },
               ];
             }
           }

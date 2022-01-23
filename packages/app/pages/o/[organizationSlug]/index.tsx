@@ -46,7 +46,6 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      {/* <Layout.Content style={{ display: "flex", flexDirection: "column" }}> */}
       <Layout.Content>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
         <Row style={{ marginLeft: 24, marginRight: 24 }}>

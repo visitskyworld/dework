@@ -97,20 +97,11 @@ export const TaskDiscoveryList: FC = () => {
                 render: (reward: TaskReward) =>
                   screens.sm &&
                   !!reward && (
-                    <>
-                      <Typography.Paragraph
-                        style={{ whiteSpace: "nowrap", marginBottom: 0 }}
-                      >
-                        {formatTaskReward(reward)}
-                      </Typography.Paragraph>
-                      {/* <Typography.Text
-                    type="secondary"
-                    className="ant-typography-caption"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    ~$123.3
-                  </Typography.Text> */}
-                    </>
+                    <Typography.Paragraph
+                      style={{ whiteSpace: "nowrap", marginBottom: 0 }}
+                    >
+                      {formatTaskReward(reward)}
+                    </Typography.Paragraph>
                   ),
               },
               {

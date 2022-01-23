@@ -153,10 +153,10 @@ export const TaskBoardColumn: FC<Props> = ({
                   </div>
                 )}
               </Droppable>
-              {footer}
             </Fragment>
           )
       )}
+      {footer}
     </Card>
   );
 };

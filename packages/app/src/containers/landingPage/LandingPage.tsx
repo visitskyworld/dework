@@ -26,14 +26,6 @@ export const LandingPage: FC = () => {
           🔥 Latest Bounties
         </Typography.Title>
         <TaskDiscoveryList />
-
-        {/* <Typography.Title
-          level={3}
-          style={{ textAlign: "center", marginTop: 24 }}
-        >
-          Your Tasks
-        </Typography.Title>
-        <UserTaskBoard userId={user.id} /> */}
         <TaskUpdateModalListener />
       </>
     );
