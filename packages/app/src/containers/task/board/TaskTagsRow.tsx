@@ -1,5 +1,9 @@
 import React, { CSSProperties, FC, useMemo } from "react";
-import { Task, TaskWithOrganization } from "@dewo/app/graphql/types";
+import {
+  Task,
+  TaskStatus,
+  TaskWithOrganization,
+} from "@dewo/app/graphql/types";
 import { Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
@@ -45,6 +49,7 @@ export const TaskTagsRow: FC<Props> = ({
             <Tag
               style={{ marginBottom: 4 }}
               color={
+                task.status !== TaskStatus.DONE &&
                 moment().endOf("day").isAfter(task.dueDate)
                   ? Colors.red.primary
                   : undefined

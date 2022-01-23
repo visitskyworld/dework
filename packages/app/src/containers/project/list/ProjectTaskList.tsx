@@ -25,6 +25,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           assigneeIds: task.assignees.map((u) => u.id),
           name: task.name,
           status: task.status,
+          dueDate: task.dueDate,
         })
       ),
     [tasks]

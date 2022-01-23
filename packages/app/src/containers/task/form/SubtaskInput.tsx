@@ -56,6 +56,7 @@ export const SubtaskInput: FC<Props> = ({
             name: newName,
             assigneeIds: [],
             status: TaskStatus.TODO,
+            dueDate: subtask?.dueDate ?? null,
           },
         ]);
         setNewName("");
@@ -76,6 +77,7 @@ export const SubtaskInput: FC<Props> = ({
           key: task.id,
           name: task.name,
           assigneeIds: task.assignees.map((u) => u.id),
+          dueDate: task.dueDate ?? null,
           status: task.status,
         })
       )

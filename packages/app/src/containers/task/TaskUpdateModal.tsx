@@ -9,7 +9,6 @@ import {
   useUpdateTask,
 } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
-import { TaskListRow } from "./list/TaskList";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
 
@@ -55,18 +54,6 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
       options: _.omit(task?.options, "__typename"),
-      subtasks: _(task?.subtasks)
-        .sortBy((s) => s.sortKey)
-        .map(
-          (subtask): TaskListRow => ({
-            key: subtask.id,
-            task: subtask,
-            assigneeIds: subtask.assignees.map((a) => a.id),
-            name: subtask.name,
-            status: subtask.status,
-          })
-        )
-        .value(),
     }),
     [task, taskId, tagIds]
   );

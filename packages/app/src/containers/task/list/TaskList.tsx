@@ -1,6 +1,6 @@
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
-import { eatClick } from "@dewo/app/util/eatClick";
+import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   Task,
@@ -13,6 +13,7 @@ import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import {
   Avatar,
   Button,
+  DatePicker,
   Dropdown,
   Input,
   Menu,
@@ -49,6 +50,7 @@ export interface TaskListRow {
   task?: Task;
   name: string;
   status: TaskStatus;
+  dueDate: string | null;
   assigneeIds: string[];
 }
 
@@ -248,18 +250,34 @@ export const TaskList: FC<Props> = ({
             ),
         },
         {
-          title: "Due Date",
-          dataIndex: ["task", "dueDate"],
-          width: 1,
-          render: (dueDate: string | undefined) =>
-            !!dueDate && (
-              <Typography.Text style={{ whiteSpace: "nowrap" }}>
-                {moment(dueDate).format("D MMM")}
-                <Icons.ExclamationCircleFilled
-                  style={{ color: Colors.red.primary, marginLeft: 4 }}
-                />
-              </Typography.Text>
-            ),
+          title: "Due",
+          dataIndex: "dueDate",
+          width: 84,
+          render: (dueDate: string | undefined, row) => (
+            <div onClick={stopPropagation}>
+              <DatePicker
+                bordered={false}
+                format="D MMM"
+                value={!!dueDate ? moment(dueDate) : undefined}
+                placeholder=""
+                style={{ padding: 0 }}
+                onChange={(dueDate) =>
+                  handleChange({ dueDate: dueDate?.toISOString() ?? null }, row)
+                }
+                suffixIcon={
+                  row.status !== TaskStatus.DONE &&
+                  !!dueDate &&
+                  moment().endOf("day").isAfter(dueDate) ? (
+                    <Icons.ExclamationCircleFilled
+                      style={{ color: Colors.red.primary, marginLeft: 4 }}
+                    />
+                  ) : (
+                    <Icons.CalendarOutlined />
+                  )
+                }
+              />
+            </div>
+          ),
         },
         {
           title: "Assignees",
