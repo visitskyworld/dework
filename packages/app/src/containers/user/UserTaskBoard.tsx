@@ -37,18 +37,6 @@ const empty: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>> = {
 export const UserTaskBoard: FC<Props> = ({ userId }) => {
   const tasks = useUserTasks(userId, "cache-and-network");
   const organizations = useFeaturedOrganizations(3);
-  // const latestTasks = useTasks(
-  //   useMemo(
-  //     () => ({
-  //       statuses: [TaskStatus.TODO],
-  //       limit: 100,
-  //       organizationIds: organizations?.map((o) => o.id),
-  //     }),
-  //     [organizations]
-  //   ),
-  //   !organizations
-  // );
-
   return tasks ? (
     <TaskBoard
       tasks={tasks}
