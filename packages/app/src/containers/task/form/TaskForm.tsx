@@ -17,6 +17,7 @@ import {
   Avatar,
   Checkbox,
   Tooltip,
+  DatePicker,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -52,6 +53,7 @@ export interface TaskFormValues {
   projectId?: string;
   parentTaskId?: string;
   status: TaskStatus;
+  dueDate?: moment.Moment;
   storyPoints?: number;
   tagIds?: string[];
   assigneeIds: string[];
@@ -323,7 +325,17 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          {(canChange("storyPoints") || !!task?.storyPoints) && (
+          {(canChange("dueDate") || !!values.dueDate) && (
+            <Form.Item name="dueDate" label="Due Date">
+              <DatePicker
+                format="LL"
+                disabled={!canChange("dueDate")}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          )}
+
+          {(canChange("storyPoints") || !!values.storyPoints) && (
             <Form.Item name="storyPoints" label="Task Points">
               <Select<number>
                 disabled={!canChange("storyPoints")}

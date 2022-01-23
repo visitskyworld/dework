@@ -114,7 +114,6 @@ export function useGroupedTasks(
         }
 
         if (status === TaskStatus.DONE && canUpdateTasks) {
-          console.warn(tasks);
           const unpaid: Task[] = [];
           const processing: Task[] = [];
           const paid: Task[] = [];

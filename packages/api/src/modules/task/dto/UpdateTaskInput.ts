@@ -42,6 +42,9 @@ export class UpdateTaskInput {
   @Field(() => UpdateTaskReviewInput, { nullable: true })
   public review?: UpdateTaskReviewInput;
 
+  @Field({ nullable: true })
+  public dueDate?: Date;
+
   @Field(() => TaskOptions, { nullable: true })
   public options?: TaskOptions;
 }

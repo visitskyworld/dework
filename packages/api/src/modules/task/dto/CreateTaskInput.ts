@@ -35,6 +35,9 @@ export class CreateTaskInput {
   @Field(() => UpdateTaskRewardInput, { nullable: true })
   public reward?: UpdateTaskRewardInput;
 
+  @Field({ nullable: true })
+  public dueDate?: Date;
+
   @Field(() => TaskOptions, { nullable: true })
   public options?: TaskOptions;
 }

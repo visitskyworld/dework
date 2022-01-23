@@ -11,6 +11,7 @@ import {
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskListRow } from "./list/TaskList";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
+import moment from "moment";
 
 interface Props {
   taskId: string;
@@ -27,7 +28,15 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         ? toTaskReward(values.reward)
         : values.reward;
       if (!reward && _.isEmpty(values)) return;
-      await updateTask({ id: task!.id, ...values, reward }, task!);
+      await updateTask(
+        {
+          id: task!.id,
+          ...values,
+          reward,
+          dueDate: values.dueDate?.toISOString(),
+        },
+        task!
+      );
     },
     [updateTask, task]
   );
@@ -43,6 +52,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
       ownerId: task?.owner?.id,
       status: task?.status!,
+      dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
       options: _.omit(task?.options, "__typename"),
       subtasks: _(task?.subtasks)

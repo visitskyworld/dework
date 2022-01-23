@@ -350,6 +350,7 @@ export const task = gql`
     status
     sortKey
     storyPoints
+    dueDate
     createdAt
     doneAt
     deletedAt

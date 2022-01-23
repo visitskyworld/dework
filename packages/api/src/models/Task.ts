@@ -185,6 +185,10 @@ export class Task extends Audit {
   @Field(() => Date, { nullable: true })
   public doneAt?: Date | null;
 
+  @Column({ type: "timestamp", nullable: true })
+  @Field(() => Date, { nullable: true })
+  public dueDate?: Date | null;
+
   @Column("json", { nullable: true })
   @Field({ nullable: true })
   public options?: TaskOptions;
