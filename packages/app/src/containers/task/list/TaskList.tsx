@@ -260,6 +260,7 @@ export const TaskList: FC<Props> = ({
                 format="D MMM"
                 value={!!dueDate ? moment(dueDate) : undefined}
                 placeholder=""
+                disabled={!canChange(row.task, "dueDate")}
                 style={{ padding: 0 }}
                 onChange={(dueDate) =>
                   handleChange({ dueDate: dueDate?.toISOString() ?? null }, row)
