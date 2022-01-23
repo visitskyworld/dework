@@ -60,20 +60,22 @@ export function DropdownSelect<T extends string | string[]>({
       onClick={eatClick}
       overlay={
         <Menu onClick={(e) => stopPropagation(e.domEvent)}>
-          {options?.map((option) => (
-            <Menu.Item
-              key={option.value}
-              disabled={option.disabled}
-              className={
-                isSelected(option.value)
-                  ? "ant-select-item-option-selected"
-                  : undefined
-              }
-              onClick={() => handleSelect(option.value)}
-            >
-              {option.label}
-            </Menu.Item>
-          ))}
+          <div style={{ maxHeight: 264, overflowY: "auto" }}>
+            {options?.map((option) => (
+              <Menu.Item
+                key={option.value}
+                disabled={option.disabled}
+                className={
+                  isSelected(option.value)
+                    ? "ant-select-item-option-selected"
+                    : undefined
+                }
+                onClick={() => handleSelect(option.value)}
+              >
+                {option.label}
+              </Menu.Item>
+            ))}
+          </div>
         </Menu>
       }
       children={children}
