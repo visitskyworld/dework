@@ -226,10 +226,10 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
         hidden={!values.discordChannelId}
         valuePropName="checked"
         label="Publish New Tasks"
-        tooltip="Post in the selected channel when a new task is created. Good for letting the community know about new tasks."
+        tooltip="Good for creating awareness about new bounties. If not checked, you'll only get updates from tasks that have at least one assignee"
       >
         <Checkbox>
-          Automatically post new tasks to{" "}
+          Post all newly created tasks to{" "}
           <Typography.Text strong>{channel?.name}</Typography.Text>
         </Checkbox>
       </Form.Item>
