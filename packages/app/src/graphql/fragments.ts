@@ -351,6 +351,7 @@ export const task = gql`
     sortKey
     storyPoints
     createdAt
+    doneAt
     deletedAt
     projectId
     parentTaskId

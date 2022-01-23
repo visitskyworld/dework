@@ -63,8 +63,10 @@ export function useGroupedTasks(
     return _(tasks)
       .filter((task) => !task.deletedAt)
       .groupBy((task) => task.status)
-      .mapValues((tasksWithStatus) =>
-        _.sortBy(tasksWithStatus, (task) => task.sortKey)
+      .mapValues((tasks, status) =>
+        status === TaskStatus.DONE
+          ? _.sortBy(tasks, (t) => t.doneAt).reverse()
+          : _.sortBy(tasks, (t) => t.sortKey)
       )
       .mapValues((tasks, status) => {
         if (status === TaskStatus.TODO) {
@@ -112,6 +114,7 @@ export function useGroupedTasks(
         }
 
         if (status === TaskStatus.DONE && canUpdateTasks) {
+          console.warn(tasks);
           const unpaid: Task[] = [];
           const processing: Task[] = [];
           const paid: Task[] = [];

@@ -1393,6 +1393,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1424,6 +1425,7 @@ export interface CreateTaskMutation_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1621,6 +1623,7 @@ export interface UpdateTaskMutation_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -1817,6 +1820,7 @@ export interface CreateTaskApplicationMutation_application_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -2019,6 +2023,7 @@ export interface DeleteTaskApplicationMutation_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -2215,6 +2220,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -2417,6 +2423,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3459,6 +3466,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3675,6 +3683,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -3917,6 +3926,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -4297,6 +4307,7 @@ export interface UserTasksQuery_user_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5033,6 +5044,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5375,6 +5387,7 @@ export interface GetProjectTasksQuery_project_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5608,6 +5621,7 @@ export interface GetTaskQuery_task_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -5838,6 +5852,7 @@ export interface GetTaskQuery_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6102,6 +6117,7 @@ export interface GetTasksQuery_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6368,6 +6384,7 @@ export interface GetTasksToPayQuery_tasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6768,6 +6785,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -6984,6 +7002,7 @@ export interface TaskCreatedSubscription_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -7183,6 +7202,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -7399,6 +7419,7 @@ export interface TaskUpdatedSubscription_task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8554,6 +8575,7 @@ export interface Task {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8764,6 +8786,7 @@ export interface TaskWithOrganization {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -8953,6 +8976,7 @@ export interface TaskDetails_subtasks {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
@@ -9169,6 +9193,7 @@ export interface TaskDetails {
   sortKey: string;
   storyPoints: number | null;
   createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;

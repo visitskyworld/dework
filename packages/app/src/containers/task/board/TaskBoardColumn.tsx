@@ -104,6 +104,8 @@ export const TaskBoardColumn: FC<Props> = ({
                 droppableId={[status, index].join(":")}
                 isDropDisabled={
                   !currentlyDraggingTask ||
+                  (currentlyDraggingTask.status === TaskStatus.DONE &&
+                    status === TaskStatus.DONE) ||
                   !hasPermission(
                     "update",
                     currentlyDraggingTask,

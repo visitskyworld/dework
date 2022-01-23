@@ -69,9 +69,11 @@ export class TaskService {
       updatedAt: new Date(),
       doneAt: (() => {
         if (partial.status === TaskStatus.DONE) {
-          if (oldTask.status !== TaskStatus.DONE) return new Date();
+          if (oldTask.status !== TaskStatus.DONE) {
+            return new Date().toISOString();
+          }
           return undefined;
-        } else {
+        } else if (!!partial.status) {
           return null;
         }
       })(),
