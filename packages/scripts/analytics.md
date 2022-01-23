@@ -8,6 +8,7 @@ FROM task
 INNER JOIN project ON project.id = task."projectId"
 WHERE project."organizationId" != 'dde641cb-b50e-403f-955a-f83c154e441f'
   AND task."creatorId" != 'c1f5e5fe-4287-412d-a478-6c89e7b1a190'
+  AND task.description NOT LIKE 'Originally created from Github issue%'
 GROUP BY DATE(task."createdAt")
 ORDER BY DATE(task."createdAt") DESC
 ```
@@ -17,7 +18,7 @@ ORDER BY DATE(task."createdAt") DESC
 SELECT COUNT(*), DATE(payment."createdAt"), payment_network."name"
 FROM payment
 INNER JOIN payment_network ON payment_network.id = payment."networkId"
-WHERE payment_network."name" NOT IN ('Ethereum Rinkeby')
+WHERE payment_network."name" NOT IN ('Ethereum Rinkeby', 'Stacks Testnet')
   -- AND payment.status = 'CONFIRMED'
 GROUP BY DATE(payment."createdAt"), payment_network."name"
 ORDER BY DATE(payment."createdAt") DESC
