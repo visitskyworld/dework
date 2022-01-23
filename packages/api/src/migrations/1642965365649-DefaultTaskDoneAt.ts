@@ -10,5 +10,5 @@ export class DefaultTaskDoneAt1642965365649 implements MigrationInterface {
     `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(): Promise<void> {}
 }
