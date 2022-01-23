@@ -9,6 +9,7 @@ import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
 import { TaskReactionInput } from "../dto/TaskReactionInput";
+import { UpdateTaskInput } from "../dto/UpdateTaskInput";
 import { UpdateTaskRewardInput } from "../dto/UpdateTaskRewardInput";
 
 describe("TaskResolver", () => {
@@ -179,19 +180,21 @@ describe("TaskResolver", () => {
     });
 
     describe("updateTask", () => {
+      const req = (user: User, input: UpdateTaskInput) =>
+        client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: TaskRequests.update(input),
+        });
+
       xit("should fail if user is not in project's org", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask();
 
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: TaskRequests.update({
-            id: task.id,
-            name: faker.lorem.words(5),
-          }),
+        const response = await req(user, {
+          id: task.id,
+          name: faker.lorem.words(5),
         });
-
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
       });
 
@@ -207,17 +210,13 @@ describe("TaskResolver", () => {
           });
           const expectedStatus = TaskStatus.IN_REVIEW;
 
-          const response = await client.request({
-            app,
-            auth: fixtures.createAuthToken(user),
-            body: TaskRequests.update({
-              id: task.id,
-              name: expectedName,
-              tagIds: [expectedTag.id],
-              assigneeIds: [user.id],
-              status: expectedStatus,
-              ownerId: otherUser.id,
-            }),
+          const response = await req(user, {
+            id: task.id,
+            name: expectedName,
+            tagIds: [expectedTag.id],
+            assigneeIds: [user.id],
+            status: expectedStatus,
+            ownerId: otherUser.id,
           });
 
           expect(response.status).toEqual(HttpStatus.OK);
@@ -249,13 +248,9 @@ describe("TaskResolver", () => {
         const { user, project } = await fixtures.createUserOrgProject();
         const task = await fixtures.createTask({ projectId: project.id });
 
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: TaskRequests.update({
-            id: task.id,
-            description: faker.lorem.words(5),
-          }),
+        const response = await req(user, {
+          id: task.id,
+          description: faker.lorem.words(5),
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
@@ -268,13 +263,9 @@ describe("TaskResolver", () => {
         const task = await fixtures.createTask({ projectId: project.id });
         const contributor = await fixtures.createUser();
 
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: TaskRequests.update({
-            id: task.id,
-            assigneeIds: [contributor.id],
-          }),
+        const response = await req(user, {
+          id: task.id,
+          assigneeIds: [contributor.id],
         });
         expect(response.body.data?.task.project.members).toContainEqual(
           expect.objectContaining({
@@ -282,6 +273,59 @@ describe("TaskResolver", () => {
             role: ProjectRole.CONTRIBUTOR,
           })
         );
+      });
+
+      describe("doneAt", () => {
+        it("should not set doneAt if not DONE", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({ ownerId: user.id });
+          const response = await req(user, {
+            id: task.id,
+            status: TaskStatus.IN_REVIEW,
+          });
+          expect(response.body.data?.task.doneAt).toBe(null);
+        });
+
+        it("should set doneAt if DONE", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({ ownerId: user.id });
+          const response = await req(user, {
+            id: task.id,
+            status: TaskStatus.DONE,
+          });
+          expect(response.body.data?.task.doneAt).not.toBe(null);
+        });
+
+        it("should not update doneAt if already DONE", async () => {
+          const originalDoneAt = new Date();
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({
+            ownerId: user.id,
+            status: TaskStatus.DONE,
+            doneAt: originalDoneAt,
+          });
+          const response = await req(user, {
+            id: task.id,
+            status: TaskStatus.DONE,
+          });
+          expect(response.body.data?.task.doneAt).toBe(
+            originalDoneAt.toISOString()
+          );
+        });
+
+        it("should set doneAt to null if no longer DONE", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({
+            ownerId: user.id,
+            status: TaskStatus.DONE,
+            doneAt: new Date(),
+          });
+          const response = await req(user, {
+            id: task.id,
+            status: TaskStatus.TODO,
+          });
+          expect(response.body.data?.task.doneAt).toBe(null);
+        });
       });
     });
 

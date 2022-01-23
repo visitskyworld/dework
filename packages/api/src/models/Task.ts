@@ -177,9 +177,13 @@ export class Task extends Audit {
   @Field({ nullable: true })
   public reviewId?: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  public deletedAt?: Date;
+  @Column({ type: "timestamp", nullable: true })
+  @Field(() => Date, { nullable: true })
+  public deletedAt?: Date | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  @Field(() => Date, { nullable: true })
+  public doneAt?: Date | null;
 
   @Column("json", { nullable: true })
   @Field({ nullable: true })

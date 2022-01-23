@@ -27,6 +27,7 @@ export class TaskRequests {
       name
       description
       status
+      doneAt
       deletedAt
       tags {
         id

@@ -63,13 +63,22 @@ export class TaskService {
 
   public async update(partial: DeepAtLeast<Task, "id">): Promise<Task> {
     const oldTask = await this.taskRepo.findOne({ id: partial.id });
+    if (!oldTask) throw new NotFoundException();
     const updated = await this.taskRepo.save({
       ...partial,
       updatedAt: new Date(),
+      doneAt: (() => {
+        if (partial.status === TaskStatus.DONE) {
+          if (oldTask.status !== TaskStatus.DONE) return new Date();
+          return undefined;
+        } else {
+          return null;
+        }
+      })(),
     });
 
     const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
-    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask!));
+    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask));
     return refetched;
   }
 
