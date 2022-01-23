@@ -22,6 +22,7 @@ export const TaskTagsRow: FC<Props> = ({
         ?.length ?? 0,
     [task.description]
   );
+  if (!showStandardTags && !task.tags.length) return null;
   return (
     <Row style={{ ...style, marginBottom: -4 }}>
       {showStandardTags && (
