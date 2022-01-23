@@ -8,7 +8,6 @@ import { postgresConfig } from "./postgres.config";
 import { GraphQLConfig } from "./graphql.config";
 import { AuthModule, GlobalJwtModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
-import { DatabaseModule } from "@dewo/api/testing/Database";
 import { OrganizationModule } from "../organization/organization.module";
 import { ProjectModule } from "../project/project.module";
 import { TaskModule } from "../task/task.module";
@@ -23,6 +22,7 @@ import { FileUploadModule } from "../fileUpload/fileUpload.module";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThreepidModule } from "../threepid/threepid.module";
+import { MigrationModule } from "./migration/migration.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -40,7 +40,7 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
     superuserRole: Roles.superadmin,
     getUserFromRequest: (req) => req.caslUser,
   }),
-  DatabaseModule,
+  MigrationModule,
   ScheduleModule.forRoot(),
 ];
 

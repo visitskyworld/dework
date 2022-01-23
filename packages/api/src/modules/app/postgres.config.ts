@@ -11,7 +11,7 @@ export const postgresConfig = (
   entities: [path.join(__dirname, "../../models/**/*.{js,ts}")],
   // Note(fant): "1*" so that we only grab migrations
   // synchronize: process.env.NODE_ENV === 'test',
-  migrations: [path.join(process.cwd(), "src/migrations/**/1*.ts")],
+  migrations: [path.join(__dirname, "../../migrations/**.{js,ts}")],
   migrationsRun: false,
   logging: process.env.DEBUG === "*" ? "all" : ["error"],
   extra: {

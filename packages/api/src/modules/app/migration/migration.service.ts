@@ -5,7 +5,7 @@ import { Connection, Migration } from "typeorm";
 export class MigrationService {
   private readonly logger = new Logger("MigrationService");
 
-  constructor(@InjectConnection() private readonly connection: Connection) {}
+  constructor(@InjectConnection() public readonly connection: Connection) {}
 
   public async migrate(): Promise<void> {
     const migrationNeeded = await this.connection.showMigrations();
