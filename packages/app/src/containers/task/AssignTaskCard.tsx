@@ -1,6 +1,6 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus, User } from "@dewo/app/graphql/types";
+import { Task, TaskApplication, TaskStatus } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip } from "antd";
 import moment from "moment";
 import React, { FC, useCallback, useState } from "react";
@@ -18,14 +18,15 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
 
   const updateTask = useUpdateTask();
   const handleAssign = useCallback(
-    async (user: User) => {
+    async (application: TaskApplication) => {
       try {
         setLoading(true);
         await updateTask(
           {
             id: task.id,
-            assigneeIds: [user.id],
+            assigneeIds: [application.user.id],
             status: TaskStatus.IN_PROGRESS,
+            dueDate: application.endDate,
           },
           task
         );
@@ -57,7 +58,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                   <Button
                     size="small"
                     loading={loading}
-                    onClick={() => handleAssign(application.user)}
+                    onClick={() => handleAssign(application)}
                   >
                     Assign
                   </Button>

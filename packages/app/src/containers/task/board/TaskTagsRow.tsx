@@ -46,16 +46,15 @@ export const TaskTagsRow: FC<Props> = ({
             </Tag>
           )}
           {!!task.dueDate && (
-            <Tag
-              style={{ marginBottom: 4 }}
-              color={
-                task.status !== TaskStatus.DONE &&
-                moment().endOf("day").isAfter(task.dueDate)
-                  ? Colors.red.primary
-                  : undefined
-              }
-            >
-              <Icons.CalendarOutlined />
+            <Tag style={{ marginBottom: 4 }}>
+              {task.status !== TaskStatus.DONE &&
+              moment().endOf("day").isAfter(task.dueDate) ? (
+                <Icons.ExclamationCircleFilled
+                  style={{ color: Colors.red.primary }}
+                />
+              ) : (
+                <Icons.CalendarOutlined />
+              )}
               <span>{moment(task.dueDate).format("D MMM")}</span>
             </Tag>
           )}
