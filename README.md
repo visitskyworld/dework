@@ -220,36 +220,70 @@ BEGIN
     }' AS json)
   );
 
-  INSERT INTO "payment_token" ("type", "name", "symbol", "exp", "visibility", "address", "networkId")
+  INSERT INTO "payment_token" ("type", "name", "symbol", "exp", "visibility", "address", "networkId", "config")
   VALUES
-    ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, ethereum_mainnet_id),
-    ('ERC20', 'USD Coin', 'USDC', 18, 'ALWAYS', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', ethereum_mainnet_id),
+    ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, ethereum_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin', 'USDC', 18, 'ALWAYS', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', ethereum_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
 
-    ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, ethereum_rinkeby_id),
-    ('ERC20', 'Faucet Token', 'FAU', 18, 'ALWAYS', '0xFab46E002BbF0b4509813474841E0716E6730136', ethereum_rinkeby_id),
+    ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, ethereum_rinkeby_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
+    }' AS JSON)),
+    ('ERC20', 'Faucet Token', 'FAU', 18, 'ALWAYS', '0xFab46E002BbF0b4509813474841E0716E6730136', ethereum_rinkeby_id, NULL),
 
-    ('NATIVE', 'xDAI', 'xDAI', 18, 'ALWAYS', NULL, gnosis_chain_id),
+    ('NATIVE', 'xDAI', 'xDAI', 18, 'ALWAYS', NULL, gnosis_chain_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/xdaistable"
+    }' AS JSON)),
 
-    ('NATIVE', 'Matic', 'MATIC', 18, 'ALWAYS', NULL, polygon_id),
+    ('NATIVE', 'Matic', 'MATIC', 18, 'ALWAYS', NULL, polygon_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/polygon"
+    }' AS JSON)),
 
-    ('NATIVE', 'SPOA', 'SPOA', 18, 'ALWAYS', NULL, sokol_testnet_id),
-    ('ERC20', 'Faucet Token', 'FAU', 18, 'ALWAYS', '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id),
+    ('NATIVE', 'SPOA', 'SPOA', 18, 'ALWAYS', NULL, sokol_testnet_id, NULL),
+    ('ERC20', 'Faucet Token', 'FAU', 18, 'ALWAYS', '0x3B6578D5A24e16010830bf6443bc9223D6B53480', sokol_testnet_id, NULL),
 
-    ('NATIVE', 'Avalanche', 'AVAX', 18, 'ALWAYS', NULL, avalanche_id),
-    ('ERC20', 'USD Coin (Avalanche)', 'USDC.E', 18, 'ALWAYS', '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664', avalanche_id),
-    ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x130966628846BFd36ff31a822705796e8cb8C18D', avalanche_id),
+    ('NATIVE', 'Avalanche', 'AVAX', 18, 'ALWAYS', NULL, avalanche_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/avalanche"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Avalanche)', 'USDC.E', 18, 'ALWAYS', '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664', avalanche_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+    ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x130966628846BFd36ff31a822705796e8cb8C18D', avalanche_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/magic-internet-money"
+    }' AS JSON)),
 
-    ('NATIVE', 'Fantom', 'FTM', 18, 'ALWAYS', NULL, fantom_id),
-    ('ERC20', 'USD Coin (Fantom)', 'USDC', 18, 'ALWAYS', '0x04068da6c83afcfa0e13ba15a6696662335d5b75', fantom_id),
-    ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x82f0b8b456c1a451378467398982d4834b6829c1', fantom_id),
+    ('NATIVE', 'Fantom', 'FTM', 18, 'ALWAYS', NULL, fantom_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/fantom"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Fantom)', 'USDC', 18, 'ALWAYS', '0x04068da6c83afcfa0e13ba15a6696662335d5b75', fantom_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+    ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x82f0b8b456c1a451378467398982d4834b6829c1', fantom_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/magic-internet-money"
+    }' AS JSON)),
 
-    ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id),
-    ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_testnet_id),
-    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id),
-    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id),
+    ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/solana"
+    }' AS JSON)),
+    ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_testnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/solana"
+    }' AS JSON)),
+    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', solana_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+    ('SPL_TOKEN', 'USD Coin', 'USDC', 6, 'ALWAYS', 'CpMah17kQEL2wqyMKt3mZBdTnZbkbfx4nqmQMFDP5vwp', solana_testnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
     
-    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_mainnet_id),
-    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_testnet_id),
-    ('STACKS_TOKEN', 'citycoins', 'CYCN', 1, 'ALWAYS', 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A.citycoin-token', stacks_testnet_id);
+    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/stacks"
+    }' AS JSON)),
+    ('NATIVE', 'Stacks Token', 'STX', 6, 'ALWAYS', NULL, stacks_testnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/stacks"
+    }' AS JSON)),
+    ('STACKS_TOKEN', 'citycoins', 'CYCN', 1, 'ALWAYS', 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A.citycoin-token', stacks_testnet_id, NULL);
 END $$;
 ```

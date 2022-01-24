@@ -30,7 +30,6 @@ interface ConfirmPaymentResponse {
   data?: Partial<PaymentData>;
 }
 
-// @Controller("payment")
 @Injectable()
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);

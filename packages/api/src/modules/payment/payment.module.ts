@@ -9,6 +9,7 @@ import { LoggerMiddleware } from "../auth/logger";
 import { PaymentPoller } from "./payment.poller";
 import { PaymentResolver } from "./payment.resolver";
 import { PaymentService } from "./payment.service";
+import { PricePoller } from "./price.poller";
 import { TokenService } from "./token.service";
 
 @Module({
@@ -21,7 +22,14 @@ import { TokenService } from "./token.service";
       PaymentToken,
     ]),
   ],
-  providers: [PaymentResolver, PaymentService, PaymentPoller, TokenService],
+  providers: [
+    PaymentResolver,
+    PaymentService,
+    PaymentPoller,
+    PricePoller,
+    TokenService,
+  ],
+  controllers: [PricePoller],
   exports: [PaymentService, TokenService],
 })
 export class PaymentModule implements NestModule {

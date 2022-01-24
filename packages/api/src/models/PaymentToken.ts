@@ -21,12 +21,12 @@ export enum PaymentTokenVisibility {
 registerEnumType(PaymentTokenType, { name: "PaymentTokenType" });
 registerEnumType(PaymentTokenVisibility, { name: "PaymentTokenVisibility" });
 
-interface ERC20Config {
+interface CoinMarketCapConfig {
   coinmarketcapUrl: string;
 }
 
 export interface PaymentTokenConfig extends Record<PaymentTokenType, any> {
-  [PaymentTokenType.ERC20]: ERC20Config;
+  [PaymentTokenType.ERC20]: CoinMarketCapConfig;
 }
 
 @Entity()
@@ -75,5 +75,5 @@ export class PaymentToken<
 
   @Column("json", { nullable: true })
   @Field(() => GraphQLJSONObject, { nullable: true })
-  public config?: PaymentTokenConfig[TPaymentTokenType];
+  public config?: CoinMarketCapConfig; // PaymentTokenConfig[TPaymentTokenType];
 }
