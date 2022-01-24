@@ -106,7 +106,7 @@ export const TaskDiscoveryList: FC = () => {
               {
                 title: "Reward",
                 dataIndex: "reward",
-                width: 100,
+                width: 120,
                 render: (reward: TaskReward) =>
                   screens.sm &&
                   !!reward && (
