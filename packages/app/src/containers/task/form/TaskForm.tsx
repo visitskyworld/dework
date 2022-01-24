@@ -37,7 +37,6 @@ import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEdit
 import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
-import { TaskNumberAndSettings } from "./TaskNumberAndSettings";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
@@ -147,8 +146,8 @@ export const TaskForm: FC<TaskFormProps> = ({
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
-      <Row gutter={16}>
-        <Col span={24}>
+      <Row gutter={16} className="dewo-task-form">
+        <Col xs={24} sm={16}>
           <Form.Item
             name="name"
             // label={mode === "create" ? "Task name" : undefined}
@@ -162,10 +161,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Enter a task name..."
             />
           </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16} className="dewo-task-form">
-        <Col xs={24} sm={16}>
           <Form.Item
             name="status"
             label="Status"
@@ -228,7 +223,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && <TaskActivityFeed task={task} />}
           {!!task && <TaskSubmissionsSection task={task} />}
         </Col>
-        <Col xs={24} sm={8}>
+        <Col xs={24} sm={8} style={{ marginTop: 16 }}>
           {!!task?.parentTask && (
             <FormSection label="Parent Task" style={{ display: "flex" }}>
               <Button
@@ -253,8 +248,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               </Button>
             </FormSection>
           )}
-
-          {!!task && <TaskNumberAndSettings task={task} />}
 
           <Form.Item
             name="status"

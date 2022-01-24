@@ -1,15 +1,12 @@
-import { FormSection } from "@dewo/app/components/FormSection";
 import * as Icons from "@ant-design/icons";
 import { TaskDetails } from "@dewo/app/graphql/types";
-import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
+import { eatClick } from "@dewo/app/util/eatClick";
 import {
   Button,
-  Col,
   Dropdown,
   Menu,
   message,
   Popconfirm,
-  Row,
   Space,
   Typography,
 } from "antd";
@@ -28,7 +25,7 @@ interface Props {
   task: TaskDetails;
 }
 
-export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
+export const TaskOptionsButton: FC<Props> = ({ task }) => {
   const canDelete = usePermission("delete", task);
   const canCreate = usePermission("create", task);
   const deleteTask = useDeleteTask();
@@ -88,63 +85,50 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
   }, [navigateToTask, createTask, task]);
 
   return (
-    <FormSection label="Story ID">
-      <Row style={{ justifyContent: "space-between" }} onBlur={stopPropagation}>
-        <Col className="ant-input ant-input-sm" style={{ flex: 1 }}>
-          <Typography.Text copyable type="secondary">
-            {task.number}
-          </Typography.Text>
-        </Col>
-        <Dropdown
-          key="avatar"
-          placement="bottomRight"
-          trigger={["click"]}
-          overlay={
-            <Menu>
-              <Menu.Item
-                icon={<Icons.LinkOutlined />}
-                children={
-                  <CopyToClipboard
-                    text={task.permalink}
-                    onCopy={copiedToClipboard}
-                  >
-                    <Typography.Text>Copy task link</Typography.Text>
-                  </CopyToClipboard>
-                }
-              />
-              {canCreate && (
-                <Menu.Item
-                  icon={<Icons.CopyOutlined />}
-                  children={<Typography.Text>Duplicate</Typography.Text>}
-                  onClick={duplicate}
-                />
-              )}
-              {canDelete && (
-                <Popconfirm
-                  icon={null}
-                  title="Delete this task?"
-                  okType="danger"
-                  okText="Delete"
-                  onConfirm={handleDeleteTask}
-                >
-                  <Menu.Item
-                    icon={<Icons.DeleteOutlined />}
-                    children="Delete"
-                    onClick={(e) => eatClick(e.domEvent)}
-                  />
-                </Popconfirm>
-              )}
-            </Menu>
-          }
-        >
-          <Button
-            type="text"
-            size="small"
-            icon={<Icons.SettingOutlined />}
-            style={{ marginLeft: 8 }}
+    <Dropdown
+      key="avatar"
+      placement="bottomRight"
+      trigger={["click"]}
+      overlay={
+        <Menu>
+          <Menu.Item
+            icon={<Icons.LinkOutlined />}
+            children={
+              <CopyToClipboard text={task.permalink} onCopy={copiedToClipboard}>
+                <Typography.Text>Copy task link</Typography.Text>
+              </CopyToClipboard>
+            }
           />
-        </Dropdown>
-      </Row>
-    </FormSection>
+          {canCreate && (
+            <Menu.Item
+              icon={<Icons.CopyOutlined />}
+              children={<Typography.Text>Duplicate</Typography.Text>}
+              onClick={duplicate}
+            />
+          )}
+          {canDelete && (
+            <Popconfirm
+              icon={null}
+              title="Delete this task?"
+              okType="danger"
+              okText="Delete"
+              onConfirm={handleDeleteTask}
+            >
+              <Menu.Item
+                icon={<Icons.DeleteOutlined />}
+                children="Delete"
+                onClick={(e) => eatClick(e.domEvent)}
+              />
+            </Popconfirm>
+          )}
+        </Menu>
+      }
+    >
+      <Button
+        type="text"
+        icon={<Icons.MoreOutlined />}
+        className="dewo-task-options-button"
+      />
+    </Dropdown>
   );
 };

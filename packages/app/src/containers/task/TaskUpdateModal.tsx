@@ -10,6 +10,7 @@ import {
 } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskListRow } from "./list/TaskList";
+import { TaskOptionsButton } from "./form/TaskOptionsButton";
 
 interface Props {
   taskId: string;
@@ -62,6 +63,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
 
   return (
     <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
+      {!!task && <TaskOptionsButton task={task} />}
       <Skeleton loading={!task} active paragraph={{ rows: 5 }}>
         {!!task && (
           <TaskForm
