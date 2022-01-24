@@ -63,7 +63,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
         icon={<Icons.EditOutlined />}
         onClick={modalVisible.toggleOn}
       >
-        {!!currentSubmission ? "Edit Submission" : "Create Submission"}
+        {!!currentSubmission ? "Edit Submission" : "Submit Work"}
       </Button>
       <Modal
         title="Submission"

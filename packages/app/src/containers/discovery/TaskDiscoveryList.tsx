@@ -46,7 +46,7 @@ export const TaskDiscoveryList: FC = () => {
       pagination={{ hideOnSinglePage: true }}
       size="small"
       style={{ paddingLeft: 8, paddingRight: 8 }}
-      tableLayout={screens.sm ? "auto" : "fixed"}
+      tableLayout="fixed"
       rowClassName="hover:cursor-pointer"
       className="mx-auto max-w-md w-full dewo-discovery-table"
       onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}
@@ -106,7 +106,7 @@ export const TaskDiscoveryList: FC = () => {
               {
                 title: "Reward",
                 dataIndex: "reward",
-                width: 1,
+                width: 80,
                 render: (reward: TaskReward) =>
                   screens.sm &&
                   !!reward && (
@@ -138,7 +138,7 @@ export const TaskDiscoveryList: FC = () => {
               },
               {
                 key: "actions",
-                width: 1,
+                width: 150,
                 render: (_: unknown, task: TaskWithOrganization) =>
                   screens.sm && <TaskActionButton task={task} />,
               },
