@@ -103,7 +103,6 @@ export const formatTaskRewardAsUSD = (
   if (!reward.token.usdPrice) return undefined;
 
   const amount = Number(formatFixed(reward.amount, reward.token.exp));
-  // return new Intl.NumberFormat(undefined, {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

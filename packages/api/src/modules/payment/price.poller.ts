@@ -14,7 +14,6 @@ import { Response } from "express";
 @Controller("prices")
 @Injectable()
 export class PricePoller {
-  // implements OnModuleInit {
   private logger = new Logger(this.constructor.name);
 
   constructor(
@@ -22,10 +21,6 @@ export class PricePoller {
     private readonly tokenRepo: Repository<PaymentToken>,
     readonly config: ConfigService<ConfigType>
   ) {}
-
-  // async onModuleInit() {
-  //   await this.poll();
-  // }
 
   @Post("update")
   public async updatePrices(@Res() res: Response) {
