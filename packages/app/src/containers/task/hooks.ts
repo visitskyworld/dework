@@ -97,6 +97,27 @@ export const toTaskRewardFormValues = (
 export const formatTaskReward = (reward: TaskReward) =>
   [formatFixed(reward.amount, reward.token.exp), reward.token.symbol].join(" ");
 
+export const formatTaskRewardAsUSD = (
+  reward: TaskReward
+): string | undefined => {
+  if (!reward.token.usdPrice) return undefined;
+
+  const amount = Number(formatFixed(reward.amount, reward.token.exp));
+  // return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount * reward.token.usdPrice);
+};
+
+export const calculateTaskRewardAsUSD = (
+  reward: TaskReward | undefined
+): number | undefined => {
+  if (!reward?.token.usdPrice) return undefined;
+  const amount = Number(formatFixed(reward.amount, reward.token.exp));
+  return amount * reward.token.usdPrice;
+};
+
 export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
   return useCallback(

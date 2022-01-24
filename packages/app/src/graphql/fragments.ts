@@ -35,6 +35,7 @@ export const paymentToken = gql`
     name
     symbol
     address
+    usdPrice
     networkId
     visibility
   }

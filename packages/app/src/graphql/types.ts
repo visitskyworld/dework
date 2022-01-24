@@ -47,6 +47,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_t
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -157,6 +158,7 @@ export interface UpdateUserMutation_user_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -264,6 +266,7 @@ export interface UpdateOrganizationMutation_organization_projects_paymentMethods
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -302,6 +305,7 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGates_tok
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: UpdateOrganizationMutation_organization_projects_tokenGates_token_network;
@@ -390,6 +394,7 @@ export interface UpdateOrganizationMutation_organization_projectTokenGates_token
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: UpdateOrganizationMutation_organization_projectTokenGates_token_network;
@@ -668,6 +673,7 @@ export interface CreateProjectMutation_project_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -706,6 +712,7 @@ export interface CreateProjectMutation_project_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: CreateProjectMutation_project_tokenGates_token_network;
@@ -757,6 +764,7 @@ export interface CreateProjectMutation_project_organization_projects_paymentMeth
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -795,6 +803,7 @@ export interface CreateProjectMutation_project_organization_projects_tokenGates_
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: CreateProjectMutation_project_organization_projects_tokenGates_token_network;
@@ -883,6 +892,7 @@ export interface CreateProjectMutation_project_organization_projectTokenGates_to
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: CreateProjectMutation_project_organization_projectTokenGates_token_network;
@@ -989,6 +999,7 @@ export interface UpdateProjectMutation_project_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1027,6 +1038,7 @@ export interface UpdateProjectMutation_project_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: UpdateProjectMutation_project_tokenGates_token_network;
@@ -1106,6 +1118,7 @@ export interface CreateTaskMutation_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1128,6 +1141,7 @@ export interface CreateTaskMutation_task_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1260,6 +1274,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1282,6 +1297,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_payment_paym
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1492,6 +1508,7 @@ export interface UpdateTaskMutation_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1514,6 +1531,7 @@ export interface UpdateTaskMutation_task_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1690,6 +1708,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1712,6 +1731,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_payment_p
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1894,6 +1914,7 @@ export interface DeleteTaskApplicationMutation_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -1916,6 +1937,7 @@ export interface DeleteTaskApplicationMutation_task_reward_payment_paymentMethod
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -2092,6 +2114,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_t
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -2114,6 +2137,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_p
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -2296,6 +2320,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_t
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -2318,6 +2343,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_p
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -2715,6 +2741,7 @@ export interface CreateProjectTokenGateMutation_tokenGate_project_tokenGates_tok
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: CreateProjectTokenGateMutation_tokenGate_project_tokenGates_token_network;
@@ -2774,6 +2801,7 @@ export interface DeleteProjectTokenGateMutation_tokenGate_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: DeleteProjectTokenGateMutation_tokenGate_tokenGates_token_network;
@@ -3004,6 +3032,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3026,6 +3055,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_project_paymentMethod
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3063,6 +3093,7 @@ export interface CreatePaymentMethodMutation_paymentMethod_user_paymentMethods_t
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3118,6 +3149,7 @@ export interface CreatePaymentTokenMutation_token_network_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3141,6 +3173,7 @@ export interface CreatePaymentTokenMutation_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: CreatePaymentTokenMutation_token_network;
@@ -3181,6 +3214,7 @@ export interface UpdatePaymentMethodMutation_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3203,6 +3237,7 @@ export interface UpdatePaymentMethodMutation_paymentMethod_project_paymentMethod
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3340,6 +3375,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3362,6 +3398,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payment_paymen
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3514,6 +3551,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3536,6 +3574,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payment_paymentMethod_t
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3802,6 +3841,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token 
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -3824,6 +3864,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_paymen
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4051,6 +4092,7 @@ export interface MeQuery_me_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4162,6 +4204,7 @@ export interface UserTasksQuery_user_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4184,6 +4227,7 @@ export interface UserTasksQuery_user_tasks_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4377,6 +4421,7 @@ export interface UserPaymentMethodQuery_user_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4469,6 +4514,7 @@ export interface GetOrganizationQuery_organization_projects_paymentMethods_token
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4507,6 +4553,7 @@ export interface GetOrganizationQuery_organization_projects_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetOrganizationQuery_organization_projects_tokenGates_token_network;
@@ -4595,6 +4642,7 @@ export interface GetOrganizationQuery_organization_projectTokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetOrganizationQuery_organization_projectTokenGates_token_network;
@@ -4680,6 +4728,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_pa
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4718,6 +4767,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_to
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGates_token_network;
@@ -4806,6 +4856,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projectToke
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetFeaturedOrganizationsQuery_featuredOrganizations_projectTokenGates_token_network;
@@ -4922,6 +4973,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -4944,6 +4996,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payment_pay
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5149,6 +5202,7 @@ export interface GetProjectQuery_project_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5187,6 +5241,7 @@ export interface GetProjectQuery_project_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetProjectQuery_project_tokenGates_token_network;
@@ -5266,6 +5321,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5288,6 +5344,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_payment_paymentMethod
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5501,6 +5558,7 @@ export interface GetTaskQuery_task_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5523,6 +5581,7 @@ export interface GetTaskQuery_task_subtasks_reward_payment_paymentMethod_tokens 
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5675,6 +5734,7 @@ export interface GetTaskQuery_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5697,6 +5757,7 @@ export interface GetTaskQuery_task_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5977,6 +6038,7 @@ export interface GetTasksQuery_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -5999,6 +6061,7 @@ export interface GetTasksQuery_tasks_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6201,6 +6264,7 @@ export interface GetTasksToPayQuery_tasks_assignees_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6230,6 +6294,7 @@ export interface GetTasksToPayQuery_tasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6252,6 +6317,7 @@ export interface GetTasksToPayQuery_tasks_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6372,6 +6438,7 @@ export interface GetTasksToPayQuery_tasks_project_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6500,6 +6567,7 @@ export interface GetInviteQuery_invite_project_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: GetInviteQuery_invite_project_tokenGates_token_network;
@@ -6560,6 +6628,7 @@ export interface GetPaymentNetworksQuery_networks_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6669,6 +6738,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6691,6 +6761,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward_payment_paymentMet
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6843,6 +6914,7 @@ export interface TaskCreatedSubscription_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -6865,6 +6937,7 @@ export interface TaskCreatedSubscription_task_reward_payment_paymentMethod_token
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7088,6 +7161,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7110,6 +7184,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_payment_paymentMet
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7262,6 +7337,7 @@ export interface TaskUpdatedSubscription_task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7284,6 +7360,7 @@ export interface TaskUpdatedSubscription_task_reward_payment_paymentMethod_token
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7495,6 +7572,7 @@ export interface PaymentUpdatedSubscription_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7548,6 +7626,7 @@ export interface TaskRewardUpdatedSubscription_taskReward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7570,6 +7649,7 @@ export interface TaskRewardUpdatedSubscription_taskReward_payment_paymentMethod_
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7683,6 +7763,7 @@ export interface PaymentToken {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7714,6 +7795,7 @@ export interface PaymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7754,6 +7836,7 @@ export interface Payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -7951,6 +8034,7 @@ export interface ProjectTokenGate_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: ProjectTokenGate_token_network;
@@ -8006,6 +8090,7 @@ export interface Invite_project_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: Invite_project_tokenGates_token_network;
@@ -8089,6 +8174,7 @@ export interface ProjectDetails_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8127,6 +8213,7 @@ export interface ProjectDetails_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: ProjectDetails_tokenGates_token_network;
@@ -8193,6 +8280,7 @@ export interface TaskReward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8215,6 +8303,7 @@ export interface TaskReward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8463,6 +8552,7 @@ export interface Task_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8485,6 +8575,7 @@ export interface Task_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8653,6 +8744,7 @@ export interface TaskWithOrganization_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8675,6 +8767,7 @@ export interface TaskWithOrganization_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8866,6 +8959,7 @@ export interface TaskDetails_subtasks_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -8888,6 +8982,7 @@ export interface TaskDetails_subtasks_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -9040,6 +9135,7 @@ export interface TaskDetails_reward_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -9062,6 +9158,7 @@ export interface TaskDetails_reward_payment_paymentMethod_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -9326,6 +9423,7 @@ export interface UserDetails_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -9399,6 +9497,7 @@ export interface OrganizationDetails_projects_paymentMethods_tokens {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
 }
@@ -9437,6 +9536,7 @@ export interface OrganizationDetails_projects_tokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: OrganizationDetails_projects_tokenGates_token_network;
@@ -9525,6 +9625,7 @@ export interface OrganizationDetails_projectTokenGates_token {
   name: string;
   symbol: string;
   address: string | null;
+  usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
   network: OrganizationDetails_projectTokenGates_token_network;

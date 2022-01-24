@@ -8,12 +8,18 @@ import {
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Table, Typography } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { SortOrder } from "antd/lib/table/interface";
 import moment from "moment";
 import Link from "next/link";
 import React, { FC } from "react";
 import { TaskActionButton } from "../task/board/TaskActionButton";
 import { TaskTagsRow } from "../task/board/TaskTagsRow";
-import { formatTaskReward, useTasks } from "../task/hooks";
+import {
+  calculateTaskRewardAsUSD,
+  formatTaskReward,
+  formatTaskRewardAsUSD,
+  useTasks,
+} from "../task/hooks";
 
 const tasksQuery: GetTasksInput = {
   statuses: [TaskStatus.TODO],
@@ -29,7 +35,7 @@ export const TaskDiscoveryList: FC = () => {
   return (
     <Table<TaskWithOrganization>
       dataSource={tasks}
-      showHeader={false}
+      // showHeader={false}
       pagination={{ hideOnSinglePage: true }}
       size="small"
       style={{ paddingLeft: 8, paddingRight: 8 }}
@@ -97,12 +103,31 @@ export const TaskDiscoveryList: FC = () => {
                 render: (reward: TaskReward) =>
                   screens.sm &&
                   !!reward && (
-                    <Typography.Paragraph
-                      style={{ whiteSpace: "nowrap", marginBottom: 0 }}
-                    >
-                      {formatTaskReward(reward)}
-                    </Typography.Paragraph>
+                    <>
+                      <Typography.Paragraph
+                        style={{
+                          whiteSpace: "nowrap",
+                          marginBottom: 0,
+                          textAlign: "center",
+                        }}
+                      >
+                        {formatTaskReward(reward)}
+                      </Typography.Paragraph>
+                      {!!reward.token.usdPrice && (
+                        <Typography.Paragraph
+                          type="secondary"
+                          className="ant-typography-caption"
+                          style={{ textAlign: "center" }}
+                        >
+                          ~{formatTaskRewardAsUSD(reward)}
+                        </Typography.Paragraph>
+                      )}
+                    </>
                   ),
+                sorter: (a: TaskWithOrganization, b: TaskWithOrganization) =>
+                  (calculateTaskRewardAsUSD(a.reward ?? undefined) ?? 0) -
+                  (calculateTaskRewardAsUSD(b.reward ?? undefined) ?? 0),
+                sortDirections: ["descend"] as SortOrder[],
               },
               {
                 key: "actions",

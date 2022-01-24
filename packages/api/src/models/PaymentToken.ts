@@ -1,4 +1,5 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { GraphQLJSONObject } from "graphql-type-json";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentNetwork } from "./PaymentNetwork";
@@ -20,12 +21,22 @@ export enum PaymentTokenVisibility {
 registerEnumType(PaymentTokenType, { name: "PaymentTokenType" });
 registerEnumType(PaymentTokenVisibility, { name: "PaymentTokenVisibility" });
 
+interface ERC20Config {
+  coinmarketcapUrl: string;
+}
+
+export interface PaymentTokenConfig extends Record<PaymentTokenType, any> {
+  [PaymentTokenType.ERC20]: ERC20Config;
+}
+
 @Entity()
 @ObjectType()
-export class PaymentToken extends Audit {
+export class PaymentToken<
+  TPaymentTokenType extends PaymentTokenType = PaymentTokenType
+> extends Audit {
   @Field(() => PaymentTokenType)
   @Column("enum", { enum: PaymentTokenType })
-  public type!: PaymentTokenType;
+  public type!: TPaymentTokenType;
 
   @Column()
   @Field()
@@ -57,4 +68,12 @@ export class PaymentToken extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public networkId!: string;
+
+  @Column("float", { nullable: true })
+  @Field(() => Float, { nullable: true })
+  public usdPrice?: number;
+
+  @Column("json", { nullable: true })
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  public config?: PaymentTokenConfig[TPaymentTokenType];
 }
