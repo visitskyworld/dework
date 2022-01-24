@@ -60,6 +60,7 @@ import {
   CreateTaskDiscordLinkMutation,
   CreateTaskDiscordLinkMutationVariables,
   TaskWithOrganization,
+  CreateTaskInput,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -68,6 +69,7 @@ import { useOrganizationCoreTeam } from "../organization/hooks";
 import { useProject } from "../project/hooks";
 import { TaskRewardFormValues } from "./form/TaskRewardFormFields";
 import { TaskFormValues } from "./form/TaskForm";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
@@ -157,32 +159,59 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
   );
 }
 
-export function useCreateTask(): (
-  values: TaskFormValues,
-  projectId: string
-) => Promise<Task> {
+export function useCreateTask(): (input: CreateTaskInput) => Promise<Task> {
   const [mutation] = useMutation<
     CreateTaskMutation,
     CreateTaskMutationVariables
   >(Mutations.createTask);
   const addTaskToApolloCache = useAddTaskToApolloCache();
   return useCallback(
-    async (values, projectId) => {
-      const res = await mutation({
-        variables: {
-          input: {
-            projectId,
-            ...values,
-            reward: !!values.reward ? toTaskReward(values.reward) : undefined,
-          },
-        },
-      });
-
+    async (input) => {
+      const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       addTaskToApolloCache(res.data.task);
       return res.data.task;
     },
     [mutation, addTaskToApolloCache]
+  );
+}
+
+export function useCreateTaskFromFormValues(): (
+  values: TaskFormValues,
+  projectId: string
+) => Promise<Task> {
+  const { user } = useAuthContext();
+  const createTask = useCreateTask();
+  const createTaskReaction = useCreateTaskReaction();
+  return useCallback(
+    async ({ subtasks, reward, ...values }, projectId) => {
+      const task = await createTask({
+        ...values,
+        projectId,
+        reward: !!reward ? toTaskReward(reward) : undefined,
+      });
+      if (values.status === TaskStatus.BACKLOG) {
+        await createTaskReaction({
+          taskId: task.id,
+          reaction: ":arrow_up_small:",
+        });
+      }
+
+      for (const subtask of subtasks ?? []) {
+        await createTask({
+          parentTaskId: task.id,
+          name: subtask.name,
+          ownerId: user?.id,
+          assigneeIds: subtask.assigneeIds,
+          status: subtask.status,
+          tagIds: [],
+          projectId: task.projectId,
+        });
+      }
+
+      return task;
+    },
+    [createTask, createTaskReaction, user]
   );
 }
 

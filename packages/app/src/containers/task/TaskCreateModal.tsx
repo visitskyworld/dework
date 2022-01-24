@@ -1,9 +1,9 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { Task } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
-import { useCreateTask, useCreateTaskReaction } from "./hooks";
+import { useCreateTaskFromFormValues } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 
 interface TaskCreateModalProps {
@@ -32,35 +32,10 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     [_initialValues, canCreateTaskOwner, user?.id]
   );
 
-  const createTask = useCreateTask();
-  const createTaskReaction = useCreateTaskReaction();
+  const createTask = useCreateTaskFromFormValues();
   const handleSubmit = useCallback(
-    async ({ subtasks, ...values }: TaskFormValues) => {
-      const task = await createTask(values, projectId);
-      if (values.status === TaskStatus.BACKLOG) {
-        await createTaskReaction({
-          taskId: task.id,
-          reaction: ":arrow_up_small:",
-        });
-      }
-
-      for (const subtask of subtasks ?? []) {
-        await createTask(
-          {
-            parentTaskId: task.id,
-            name: subtask.name,
-            ownerId: user?.id,
-            assigneeIds: subtask.assigneeIds,
-            status: subtask.status,
-            tagIds: [],
-          },
-          task.projectId
-        );
-      }
-
-      await onDone(task);
-    },
-    [createTask, onDone, createTaskReaction, user?.id, projectId]
+    (values: TaskFormValues) => createTask(values, projectId).then(onDone),
+    [createTask, onDone, projectId]
   );
   return (
     <Modal

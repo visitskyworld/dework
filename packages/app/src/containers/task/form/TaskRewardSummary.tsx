@@ -1,26 +1,14 @@
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { Tag, Row, Typography } from "antd";
-import { TaskStatus, TaskReward } from "@dewo/app/graphql/types";
+import { TaskReward } from "@dewo/app/graphql/types";
 import { formatTaskReward } from "../hooks";
 import {
   paymentStatusToColor,
   paymentStatusToString,
-  TaskRewardFormValues,
 } from "./TaskRewardFormFields";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { explorerLink } from "../../payment/hooks";
-
-export interface TaskFormValues {
-  name: string;
-  description: string;
-  projectId?: string;
-  status: TaskStatus;
-  tagIds: string[];
-  assigneeIds: string[];
-  ownerId?: string;
-  reward?: TaskRewardFormValues;
-}
 
 interface Props {
   reward: TaskReward;

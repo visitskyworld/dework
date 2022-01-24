@@ -10,13 +10,19 @@ import {
   message,
   Popconfirm,
   Row,
+  Space,
   Typography,
 } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
-import { useDeleteTask } from "../hooks";
+import {
+  toTaskRewardFormValues,
+  useCreateTaskFromFormValues,
+  useDeleteTask,
+} from "../hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 
 interface Props {
   task: TaskDetails;
@@ -24,6 +30,7 @@ interface Props {
 
 export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
   const canDelete = usePermission("delete", task);
+  const canCreate = usePermission("create", task);
   const deleteTask = useDeleteTask();
   const router = useRouter();
 
@@ -38,6 +45,47 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
     () => message.success({ content: "Copied to clipboard" }),
     []
   );
+
+  const navigateToTask = useNavigateToTaskFn();
+  const createTask = useCreateTaskFromFormValues();
+  const duplicate = useCallback(async () => {
+    const duplicatedTask = await createTask(
+      {
+        name: task.name,
+        description: task.description ?? undefined,
+        parentTaskId: task.parentTaskId ?? undefined,
+        storyPoints: task.storyPoints ?? undefined,
+        status: task.status,
+        tagIds: task.tags.map((t) => t.id),
+        assigneeIds: task.assignees.map((t) => t.id),
+        ownerId: task.ownerId,
+        reward: toTaskRewardFormValues(task.reward ?? undefined),
+        options: task.options ?? undefined,
+        subtasks: task.subtasks.map((s, index) => ({
+          key: String(index),
+          name: s.name,
+          status: s.status,
+          assigneeIds: s.assignees.map((a) => a.id),
+        })),
+      },
+      task.projectId
+    );
+
+    message.success({
+      content: (
+        <Space>
+          <Typography.Text>Task duplicated</Typography.Text>
+          <Button
+            type="ghost"
+            size="small"
+            onClick={() => navigateToTask(duplicatedTask.id)}
+          >
+            View
+          </Button>
+        </Space>
+      ),
+    });
+  }, [navigateToTask, createTask, task]);
 
   return (
     <FormSection label="Story ID">
@@ -64,6 +112,13 @@ export const TaskNumberAndSettings: FC<Props> = ({ task }) => {
                   </CopyToClipboard>
                 }
               />
+              {canCreate && (
+                <Menu.Item
+                  icon={<Icons.CopyOutlined />}
+                  children={<Typography.Text>Duplicate</Typography.Text>}
+                  onClick={duplicate}
+                />
+              )}
               {canDelete && (
                 <Popconfirm
                   icon={null}

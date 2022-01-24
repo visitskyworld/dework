@@ -38,16 +38,14 @@ export const SubtaskInput: FC<Props> = ({
       try {
         adding.toggleOn();
         const subtask = !!task
-          ? await createTask(
-              {
-                name: newName,
-                parentTaskId: task.id,
-                status: TaskStatus.TODO,
-                ownerId: user?.id,
-                assigneeIds: [],
-              },
-              projectId
-            )
+          ? await createTask({
+              name: newName,
+              parentTaskId: task.id,
+              status: TaskStatus.TODO,
+              ownerId: user?.id,
+              assigneeIds: [],
+              projectId,
+            })
           : undefined;
 
         onChange?.([
