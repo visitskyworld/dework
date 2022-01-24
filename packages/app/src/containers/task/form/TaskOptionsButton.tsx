@@ -63,6 +63,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
           name: s.name,
           status: s.status,
           assigneeIds: s.assignees.map((a) => a.id),
+          dueDate: null,
         })),
       },
       task.projectId
@@ -117,6 +118,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
               <Menu.Item
                 icon={<Icons.DeleteOutlined />}
                 children="Delete"
+                danger
                 onClick={(e) => eatClick(e.domEvent)}
               />
             </Popconfirm>
