@@ -12,6 +12,7 @@ import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { GithubIntegrationService } from "./github.integration.service";
+import { DiscordIntegrationService } from "../discord/discord.integration.service";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 import * as qs from "query-string";
@@ -22,6 +23,7 @@ export enum GithubPullRequestActions {
   REOPENED = "reopened",
   CLOSED = "closed",
   READY_FOR_REVIEW = "ready_for_review", // When PR is updated from draft -> open
+  SUBMITTED = "submitted", // When a review is submitted
   REVIEW_REQUESTED = "review_requested", // When a review is re-requested
 }
 
@@ -55,7 +57,8 @@ export class GithubController {
     private readonly integrationService: IntegrationService,
     private readonly taskService: TaskService,
     private readonly githubService: GithubService,
-    private readonly githubIntegrationService: GithubIntegrationService
+    private readonly githubIntegrationService: GithubIntegrationService,
+    private readonly discordIntegrationService: DiscordIntegrationService
   ) {}
 
   // Hit when user finishes the GH app installation
@@ -123,7 +126,12 @@ export class GithubController {
         event.installation.id
       );
       if (!result) return;
-      const { task, branchName, organization, repo } = result;
+      const {
+        task,
+        branchName,
+        organization: githubOrganizationSlug,
+        repo,
+      } = result;
 
       const branch = await this.githubService.findBranchByName(branchName);
       if (branch) {
@@ -150,14 +158,14 @@ export class GithubController {
         await this.githubService.createBranch({
           name: branchName,
           repo,
-          organization,
-          link: `https://github.com/${organization}/${repo}/compare/${branchName}`,
+          organization: githubOrganizationSlug,
+          link: `https://github.com/${githubOrganizationSlug}/${repo}/compare/${branchName}`,
           taskId: task.id,
         });
         this.log("Created a new branch", {
           name: branchName,
           repo,
-          organization,
+          githubOrganizationSlug,
         });
 
         await this.triggerTaskUpdatedSubscription(task.id);
@@ -223,6 +231,15 @@ export class GithubController {
             status: TaskStatus.DONE,
           });
         }
+      } else if (event.action === GithubPullRequestActions.SUBMITTED) {
+        this.discordIntegrationService.postReviewSubmittal(
+          task,
+          event.review?.state ?? "open"
+        );
+        this.log("A review was submitted in Github:", {
+          pullRequestTitle: prData.title,
+          taskId: task.id,
+        });
       } else {
         if (pr) {
           await this.githubService.updatePullRequest({ ...prData, id: pr.id });
@@ -248,7 +265,8 @@ export class GithubController {
           } else if (
             event.action === GithubPullRequestActions.REVIEW_REQUESTED
           ) {
-            this.log("A review was re-requested from Github:", {
+            this.discordIntegrationService.postReviewRequest(task);
+            this.log("Another review was requested from Github:", {
               pullRequestTitle: prData.title,
               taskId: task.id,
             });

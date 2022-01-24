@@ -464,6 +464,100 @@ export class DiscordIntegrationService {
     );
   }
 
+  public async postReviewRequest(task: Task) {
+    const discordChannelToPostTo = await this.findDiscordChannelToPostTo(task);
+    if (!discordChannelToPostTo) return;
+    const owner = !!task.ownerId
+      ? await this.getDiscordId(task.ownerId)
+      : undefined;
+    const firstAssignee = task.assignees?.[0];
+    await this.postTaskCard(
+      discordChannelToPostTo,
+      task,
+      "Ready for another review!",
+      !!owner ? [owner] : undefined,
+      !!firstAssignee
+        ? {
+            author: {
+              name: firstAssignee.username,
+              iconURL: firstAssignee.imageUrl,
+              url: await this.permalink.get(firstAssignee),
+            },
+          }
+        : undefined
+    );
+  }
+
+  public async postReviewSubmittal(task: Task, state: string) {
+    const discordChannelToPostTo = await this.findDiscordChannelToPostTo(task);
+    if (!discordChannelToPostTo) return;
+    const firstAssignee = task.assignees?.[0];
+    const firstAssigneeDiscordId = await this.getDiscordId(firstAssignee?.id);
+    const reviewMessage =
+      state === "approved"
+        ? "Your PR was approved!"
+        : "A review was submitted in Github!";
+    await this.postTaskCard(
+      discordChannelToPostTo,
+      task,
+      reviewMessage,
+      firstAssigneeDiscordId ? [firstAssigneeDiscordId] : undefined,
+      !!firstAssignee
+        ? {
+            author: {
+              name: firstAssignee.username,
+              iconURL: firstAssignee.imageUrl,
+              url: await this.permalink.get(firstAssignee),
+            },
+          }
+        : undefined
+    );
+  }
+
+  private async findDiscordChannelToPostTo(
+    task: Task
+  ): Promise<Discord.TextChannel | Discord.ThreadChannel | undefined> {
+    const integration = await this.getProjectIntegration(task.projectId);
+    if (!integration) return;
+    const organizationIntegration =
+      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
+    if (!organizationIntegration) return;
+
+    const guild = await this.discord.client.guilds.fetch(
+      organizationIntegration.config.guildId
+    );
+    await guild.roles.fetch();
+
+    this.logger.debug(
+      `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
+    );
+
+    const channel = (await guild.channels.fetch(integration.config.channelId, {
+      force: true,
+    })) as Discord.TextChannel;
+
+    if (!channel) {
+      this.logger.warn(
+        `Could not find Discord channel (${JSON.stringify(integration.config)})`
+      );
+      return;
+    }
+
+    const { channel: channelToPostTo } = await this.getDiscordChannelToPostTo(
+      task,
+      channel,
+      integration.config
+    );
+    this.logger.log(
+      `Found Discord channel to post to: ${JSON.stringify({
+        channelToPostToId: channelToPostTo?.id,
+        integration: integration.config,
+        isThread: channelToPostTo?.isThread(),
+      })}`
+    );
+    return channelToPostTo;
+  }
+
   private async postTaskApplicationCreated(
     task: Task,
     application: TaskApplication,
@@ -524,7 +618,7 @@ export class DiscordIntegrationService {
     embedOverride?: Partial<Discord.MessageEmbedOptions>
   ): Promise<void> {
     await this.post(channel, {
-      content: discordIdsToTag?.map((id) => `<@${id}>`).join(" "),
+      content: discordIdsToTag?.map((id) => `<@${id}>`).join(" ") ?? message,
       embeds: [
         {
           title: task.name,

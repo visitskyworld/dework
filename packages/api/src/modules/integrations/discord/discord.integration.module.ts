@@ -34,5 +34,6 @@ import { DiscordService } from "./discord.service";
     DiscordIntegrationTaskApplicationCreatedEventHandler,
     DiscordIntegrationTaskSubmissionCreatedEventHandler,
   ],
+  exports: [DiscordIntegrationService],
 })
 export class DiscordIntegrationModule {}

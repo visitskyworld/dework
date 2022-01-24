@@ -21,6 +21,7 @@ import { CaslModule } from "nest-casl";
 import { permissions } from "../../auth/permissions";
 import { GithubIntegrationTaskCreatedEventHandler } from "./github.eventHandlers";
 import { PermalinkModule } from "../../permalink/permalink.module";
+import { DiscordIntegrationModule } from "../discord/discord.integration.module";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PermalinkModule } from "../../permalink/permalink.module";
     TaskModule,
     ProjectModule,
     IntegrationModule,
+    DiscordIntegrationModule,
     PermalinkModule,
     CaslModule.forFeature({ permissions }),
   ],
