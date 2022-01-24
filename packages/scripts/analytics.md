@@ -53,3 +53,14 @@ WHERE project."organizationId" != 'dde641cb-b50e-403f-955a-f83c154e441f'
   AND description NOT LIKE '%test%'
   AND task."deletedAt" IS NULL
 ```
+
+## List Discord user ids and discriminators (useful for when merging two accounts)
+```sql
+SELECT
+	threepid.id,
+	threepid."userId",
+	threepid.config->'profile'->'username' AS username,
+	threepid.config->'profile'->'discriminator' AS discriminator
+FROM threepid
+WHERE threepid."source" = 'discord'
+```
