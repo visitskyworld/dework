@@ -22,8 +22,8 @@ export const LandingPage: FC = () => {
             />
           }
         />
-        <Typography.Title level={3} style={{ textAlign: "center" }}>
-          🔥 Latest Bounties
+        <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
+          🔥 Latest Tasks
         </Typography.Title>
         <TaskDiscoveryList />
         <TaskUpdateModalListener />

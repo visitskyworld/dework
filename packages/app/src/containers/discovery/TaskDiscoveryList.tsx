@@ -6,7 +6,7 @@ import {
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Table, Typography } from "antd";
+import { Spin, Table, Typography } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { SortOrder } from "antd/lib/table/interface";
 import moment from "moment";
@@ -32,10 +32,17 @@ export const TaskDiscoveryList: FC = () => {
   const navigateToTask = useNavigateToTaskFn();
   const screens = useBreakpoint();
 
+  if (!tasks) {
+    return (
+      <div style={{ display: "grid" }}>
+        <Spin />
+      </div>
+    );
+  }
+
   return (
     <Table<TaskWithOrganization>
       dataSource={tasks}
-      // showHeader={false}
       pagination={{ hideOnSinglePage: true }}
       size="small"
       style={{ paddingLeft: 8, paddingRight: 8 }}
