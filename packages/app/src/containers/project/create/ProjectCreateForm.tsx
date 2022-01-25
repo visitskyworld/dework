@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Space } from "antd";
+import { Form, Button, Input, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import { useCreateProject } from "../hooks";
 import {
@@ -251,8 +251,11 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           block
           loading={loading}
         >
-          Create (all above settings can be changed later!)
+          Create
         </Button>
+        <Typography.Paragraph type="secondary" style={{ textAlign: "center" }}>
+          All settings above can be changed later!
+        </Typography.Paragraph>
       </Space>
     </Form>
   );
