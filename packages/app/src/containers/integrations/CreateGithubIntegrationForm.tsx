@@ -5,7 +5,10 @@ import { useForm } from "antd/lib/form/Form";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
 import { useOrganizationGithubRepos } from "../organization/hooks";
-import { GithubProjectIntegrationFeature } from "./hooks";
+import {
+  GithubProjectIntegrationFeature,
+  useConnectToGithubUrl,
+} from "./hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
 
 export interface FormValues {
@@ -28,6 +31,7 @@ interface Props {
 interface FormFieldProps {
   values: Partial<FormValues>;
   repos?: GithubRepo[];
+  organizationId: string;
 }
 
 const initialValues: Partial<FormValues> = {
@@ -37,13 +41,26 @@ const initialValues: Partial<FormValues> = {
 export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
   values,
   repos,
+  organizationId,
 }) => {
+  const connectToGithubUrl = useConnectToGithubUrl(organizationId);
+
   return (
     <>
-      <Typography.Paragraph type="secondary">
-        Want to automatically link Github branches and make pull requests show
-        up in tasks? Try out the Github integration for this project!
-      </Typography.Paragraph>
+      {repos ? (
+        <Typography.Paragraph type="secondary">
+          Can't find your repository?{" "}
+          <a href={connectToGithubUrl} target="_blank" rel="noreferrer">
+            Add it
+          </a>{" "}
+          to your installation configuration.
+        </Typography.Paragraph>
+      ) : (
+        <Typography.Paragraph type="secondary">
+          Want to automatically link Github branches and make pull requests show
+          up in tasks? Try out the Github integration for this project!
+        </Typography.Paragraph>
+      )}
       <Form.Item
         name="githubRepoId"
         rules={[{ required: true, message: "Please select a Github repo" }]}
@@ -140,7 +157,11 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
       onFinish={handleSubmit}
     >
       <FormSection label="Github Integration">
-        <GithubIntegrationFormFields values={values} repos={githubRepos} />
+        <GithubIntegrationFormFields
+          values={values}
+          repos={githubRepos}
+          organizationId={organizationId}
+        />
         <Button
           type="primary"
           htmlType="submit"

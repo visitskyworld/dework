@@ -210,6 +210,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
               <GithubIntegrationFormFields
                 values={values}
                 repos={githubRepos}
+                organizationId={organization.id}
               />
             ) : (
               <ConnectOrganizationToGithubButton
