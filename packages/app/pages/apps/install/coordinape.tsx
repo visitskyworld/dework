@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback, useState } from "react";
 import {
   Button,
   Card,
@@ -7,6 +7,7 @@ import {
   Layout,
   List,
   Row,
+  Select,
   Typography,
 } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -19,12 +20,25 @@ import { TaskStatus } from "@dewo/app/graphql/types";
 import { Logo } from "@dewo/app/components/Logo";
 import AnimatedBackground from "@dewo/app/assets/animated-background.svg";
 import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
+import { useRouter } from "next/router";
 
 const Page: FC = () => {
   const { user, logout } = useAuthContext();
   const appName = "Coordinape";
   const appImageUrl = "https://avatars.githubusercontent.com/u/80926529";
-  const permissions = ["Read selected project's tasks"];
+  const permissions = ["Read selected organization's tasks"];
+  const [organizationId, setOrganizationId] = useState<string>();
+  const redirectUrl = useRouter().query.redirect as string;
+
+  const cancel = useCallback(
+    () => (window.location.href = redirectUrl),
+    [redirectUrl]
+  );
+  const authorize = useCallback(
+    () =>
+      (window.location.href = `${redirectUrl}?dework_organization_id=${organizationId}`),
+    [organizationId, redirectUrl]
+  );
 
   return (
     <Layout
@@ -43,18 +57,15 @@ const Page: FC = () => {
           style={{ backdropFilter: "blur(10px)" }}
           bodyStyle={{ padding: 48 }}
           actions={[
-            <Button
-              type="text"
-              key="cancel"
-              onClick={() => window.history.back()}
-            >
+            <Button type="text" key="cancel" onClick={cancel}>
               Cancel
             </Button>,
             !!user ? (
               <Button
                 type="primary"
                 key="authorize"
-                onClick={() => window.history.back()}
+                disabled={!organizationId}
+                onClick={authorize}
               >
                 Authorize
               </Button>
@@ -103,18 +114,38 @@ const Page: FC = () => {
             )}
           </Col>
           <Divider />
-          <FormSection label={`This will allow ${appName} to:`}>
-            <List
-              style={{ marginTop: 8 }}
-              dataSource={permissions}
-              renderItem={(item) => (
-                <Row style={{ alignItems: "center", gap: 16 }}>
-                  <TaskStatusAvatar status={TaskStatus.DONE} size="small" />
-                  <Typography.Text>{item}</Typography.Text>
-                </Row>
-              )}
-            />
-          </FormSection>
+          {!!user && (
+            <>
+              <FormSection label="Add to organization:">
+                <Select
+                  className="w-full"
+                  placeholder="Select an organization..."
+                  showSearch
+                  optionLabelProp="label"
+                  value={organizationId}
+                  onChange={setOrganizationId}
+                >
+                  {user.organizations.map((o) => (
+                    <Select.Option key={o.id} value={o.id} label={o.name}>
+                      {o.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </FormSection>
+              <FormSection label={`This will allow ${appName} to:`}>
+                <List
+                  style={{ marginTop: 8 }}
+                  dataSource={permissions}
+                  renderItem={(item) => (
+                    <Row style={{ alignItems: "center", gap: 16 }}>
+                      <TaskStatusAvatar status={TaskStatus.DONE} size="small" />
+                      <Typography.Text>{item}</Typography.Text>
+                    </Row>
+                  )}
+                />
+              </FormSection>
+            </>
+          )}
         </Card>
       </Layout.Content>
     </Layout>
