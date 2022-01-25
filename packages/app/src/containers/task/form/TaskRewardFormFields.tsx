@@ -172,6 +172,7 @@ export const TaskRewardFormFields: FC<Props> = ({
         </ConfigProvider>
         {!!value?.networkId && (
           <InputNumber
+            min={0}
             placeholder="Enter amount"
             value={value?.amount}
             onChange={handleChangeAmount}

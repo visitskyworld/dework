@@ -46,6 +46,7 @@ import { TaskListRow } from "../list/TaskList";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
+import { StoryPointsInput } from "./StoryPointsInput";
 
 export interface TaskFormValues {
   name: string;
@@ -337,15 +338,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           {(canChange("storyPoints") || !!values.storyPoints) && (
             <Form.Item name="storyPoints" label="Task Points">
-              <Select<number>
-                disabled={!canChange("storyPoints")}
-                allowClear
-                placeholder="Estimate task size..."
-              >
-                {[1, 2, 3, 5, 8].map((p) => (
-                  <Select.Option key={p} value={p} children={String(p)} />
-                ))}
-              </Select>
+              <StoryPointsInput disabled={!canChange("storyPoints")} />
             </Form.Item>
           )}
 
