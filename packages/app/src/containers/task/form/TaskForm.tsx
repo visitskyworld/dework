@@ -47,6 +47,8 @@ import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCol
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
 import { StoryPointsInput } from "./StoryPointsInput";
+import Link from "next/link";
+import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 
 export interface TaskFormValues {
   name: string;
@@ -361,23 +363,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
 
-          {canChange("options") && (
-            <AdvancedSectionCollapse>
-              <Form.Item
-                name={["options", "allowOpenSubmission"]}
-                valuePropName="checked"
-              >
-                <Checkbox>
-                  This is an Open Bounty{"  "}
-                  <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
-                    <Icons.QuestionCircleOutlined />
-                  </Tooltip>
-                </Checkbox>
-              </Form.Item>
-            </AdvancedSectionCollapse>
-          )}
-
-          {/* {!!task && (
+          {!!task && (
             <FormSection label="Project">
               <Link href={task.project.permalink}>
                 <a style={{ display: "flex" }}>
@@ -407,7 +393,23 @@ export const TaskForm: FC<TaskFormProps> = ({
                 </a>
               </Link>
             </FormSection>
-          )} */}
+          )}
+
+          {canChange("options") && (
+            <AdvancedSectionCollapse>
+              <Form.Item
+                name={["options", "allowOpenSubmission"]}
+                valuePropName="checked"
+              >
+                <Checkbox>
+                  This is an Open Bounty{"  "}
+                  <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
+                    <Icons.QuestionCircleOutlined />
+                  </Tooltip>
+                </Checkbox>
+              </Form.Item>
+            </AdvancedSectionCollapse>
+          )}
         </Col>
       </Row>
     </Form>

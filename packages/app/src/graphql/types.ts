@@ -3677,6 +3677,18 @@ export interface CreateTaskPaymentsMutation_tasks_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3748,6 +3760,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   options: CreateTaskPaymentsMutation_tasks_options | null;
   gitBranchName: string;
   permalink: string;
+  project: CreateTaskPaymentsMutation_tasks_project;
   parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
@@ -5860,6 +5873,27 @@ export interface GetTaskQuery_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface GetTaskQuery_task_project_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetTaskQuery_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  taskTags: GetTaskQuery_task_project_taskTags[];
+}
+
 export interface GetTaskQuery_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5904,20 +5938,6 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
-export interface GetTaskQuery_task_project_taskTags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface GetTaskQuery_task_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  taskTags: GetTaskQuery_task_project_taskTags[];
-}
-
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5945,12 +5965,12 @@ export interface GetTaskQuery_task {
   options: GetTaskQuery_task_options | null;
   gitBranchName: string;
   permalink: string;
+  project: GetTaskQuery_task_project;
   parentTask: GetTaskQuery_task_parentTask | null;
   owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
-  project: GetTaskQuery_task_project;
 }
 
 export interface GetTaskQuery {
@@ -7040,6 +7060,18 @@ export interface TaskCreatedSubscription_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskCreatedSubscription_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskCreatedSubscription_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7111,6 +7143,7 @@ export interface TaskCreatedSubscription_task {
   options: TaskCreatedSubscription_task_options | null;
   gitBranchName: string;
   permalink: string;
+  project: TaskCreatedSubscription_task_project;
   parentTask: TaskCreatedSubscription_task_parentTask | null;
   owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
@@ -7463,6 +7496,18 @@ export interface TaskUpdatedSubscription_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskUpdatedSubscription_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskUpdatedSubscription_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7534,6 +7579,7 @@ export interface TaskUpdatedSubscription_task {
   options: TaskUpdatedSubscription_task_options | null;
   gitBranchName: string;
   permalink: string;
+  project: TaskUpdatedSubscription_task_project;
   parentTask: TaskUpdatedSubscription_task_parentTask | null;
   owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
@@ -9261,6 +9307,18 @@ export interface TaskDetails_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskDetails_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
 export interface TaskDetails_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
@@ -9332,6 +9390,7 @@ export interface TaskDetails {
   options: TaskDetails_options | null;
   gitBranchName: string;
   permalink: string;
+  project: TaskDetails_project;
   parentTask: TaskDetails_parentTask | null;
   owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;

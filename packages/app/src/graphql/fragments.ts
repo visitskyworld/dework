@@ -423,6 +423,9 @@ export const taskDetails = gql`
     subtasks {
       ...Task
     }
+    project {
+      ...Project
+    }
     parentTask {
       id
       name
@@ -446,6 +449,7 @@ export const taskDetails = gql`
 
   ${task}
   ${user}
+  ${project}
   ${githubPullRequest}
   ${githubBranch}
   ${taskApplication}
