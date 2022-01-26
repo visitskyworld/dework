@@ -39,6 +39,7 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithMetamask }) => {
       onAuthedWithMetamask?.();
     } catch (error) {
       alert((error as Error).message);
+      throw error;
     } finally {
       authingWithMetamask.toggleOff();
     }

@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Button, Checkbox, Form, Select, Space, Typography } from "antd";
+import { Button, Checkbox, Form, Select, Space, Image, Typography } from "antd";
 import { useOrganizationDiscordChannels } from "../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
@@ -152,28 +152,40 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
               }
             },
             message: (
-              <Space style={{ marginTop: 2 }}>
-                <Typography.Text type="secondary">
-                  Dework bot doesn't have the right permissions for this
-                  channel. Please add it as a member to the chosen channel in
-                  the channel settings and add the following permissions:{" "}
-                  {missingPermissions
-                    .map((p) => DiscordPermissionToString[p])
-                    .join(", ")}
-                </Typography.Text>
-                <Button
-                  size="small"
-                  type="ghost"
-                  onClick={async () => {
-                    await onRefetchChannels();
-                    form.setFields([
-                      { name: "discordChannelId", errors: undefined },
-                    ]);
-                  }}
-                >
-                  Retry
-                </Button>
-              </Space>
+              <>
+                <Space style={{ marginTop: 2 }}>
+                  <Typography.Text type="secondary">
+                    Dework bot doesn't have the right permissions for this
+                    channel. To fix this, follow these steps:
+                    <ol>
+                      <li>Go to the channel settings (NOT server settings)</li>
+                      <li>
+                        Add the bot Dework to the channel (not the role
+                        'Dework')
+                      </li>
+                      <li>
+                        Give Dework the following permissions:{" "}
+                        {missingPermissions
+                          .map((p) => DiscordPermissionToString[p])
+                          .join(", ")}
+                      </li>
+                    </ol>
+                  </Typography.Text>
+                  <Button
+                    size="small"
+                    type="ghost"
+                    onClick={async () => {
+                      await onRefetchChannels();
+                      form.setFields([
+                        { name: "discordChannelId", errors: undefined },
+                      ]);
+                    }}
+                  >
+                    Retry
+                  </Button>
+                </Space>
+                <Image width="100%" src="/discord/add-dework-bot.jpeg" />
+              </>
             ),
           }),
         ]}

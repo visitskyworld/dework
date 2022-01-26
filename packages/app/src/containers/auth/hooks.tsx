@@ -103,10 +103,6 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
       throw new Error("Wallet Connect session timed out");
     } else {
       const address = await requestAddress();
-
-      // When doing this immediately, we get stuck in infinite loading.
-      // Note(fant): should we somehow await provider.current to be refreshed?
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const message = "Dework Sign In";
       const signature = await personalSign(message, address);
 
