@@ -283,7 +283,7 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                         size="small"
                         style={{ margin: 8 }}
                         icon={<Icons.PlusCircleOutlined />}
-                        children="Add your own ERC20 token"
+                        children="Add your own ERC20 or ERC721 token"
                         onClick={addPaymentToken.toggleOn}
                       />
                     )}
