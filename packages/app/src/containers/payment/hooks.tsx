@@ -29,8 +29,10 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCreateEthereumTransaction } from "@dewo/app/util/ethereum";
 import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useCreateStacksTransaction } from "@dewo/app/util/hiro";
+import { Modal } from "antd";
+import { SelectPaymentMethodModalContent } from "./SelectPaymentMethodModalContent";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -152,6 +154,32 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const createEthereumTransaction = useCreateEthereumTransaction();
   const createStacksTransaction = useCreateStacksTransaction();
 
+  const selectProjectPaymentMethod = useCallback(
+    async (pms: PaymentMethod[]): Promise<PaymentMethod> => {
+      if (pms.length === 0) throw new NoProjectPaymentMethodError();
+      if (pms.length === 1) return pms[0];
+      return new Promise<PaymentMethod>((resolve, reject) => {
+        const modal = Modal.info({
+          title: "Select Payment Method",
+          content: (
+            <SelectPaymentMethodModalContent
+              methods={pms}
+              onSelect={(pm) => {
+                resolve(pm);
+                modal.destroy();
+              }}
+            />
+          ),
+          okText: "Cancel",
+          okType: "default",
+          autoFocusButton: null,
+          onOk: () => reject(new Error("No payment method selected")),
+        });
+      });
+    },
+    []
+  );
+
   return useCallback(
     async (task: Task, user: User) => {
       const reward = task.reward;
@@ -168,14 +196,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
       if (!project) throw new Error("Project not found");
 
-      const from = project.paymentMethods.find((pm) =>
-        canPaymentMethodSendTaskReward(pm, reward)
-      );
       const to = userPaymentMethods.find((pm) =>
         canPaymentMethodReceiveTaskReward(pm, reward)
       );
-
-      if (!from) throw new NoProjectPaymentMethodError();
+      const matchingSenderPaymentMethods = project.paymentMethods.filter((pm) =>
+        canPaymentMethodSendTaskReward(pm, reward)
+      );
+      const from = await selectProjectPaymentMethod(
+        matchingSenderPaymentMethods
+      );
 
       const network = from.networks.find(
         (n) => n.id === reward.token.networkId
@@ -284,6 +313,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       createSolanaTransaction,
       createEthereumTransaction,
       createStacksTransaction,
+      selectProjectPaymentMethod,
       registerTaskPayment,
     ]
   );
