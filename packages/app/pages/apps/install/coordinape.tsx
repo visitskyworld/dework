@@ -139,7 +139,9 @@ const Page: FC = () => {
                   renderItem={(item) => (
                     <Row style={{ alignItems: "center", gap: 16 }}>
                       <TaskStatusAvatar status={TaskStatus.DONE} size="small" />
-                      <Typography.Text>{item}</Typography.Text>
+                      <Typography.Text style={{ flex: 1 }}>
+                        {item}
+                      </Typography.Text>
                     </Row>
                   )}
                 />

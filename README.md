@@ -67,6 +67,8 @@ DECLARE
   polygon_id uuid = uuid_generate_v4();
   avalanche_id uuid = uuid_generate_v4();
   fantom_id uuid = uuid_generate_v4();
+  harmony_mainnet_id uuid = uuid_generate_v4();
+  harmony_testnet_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
 
   solana_mainnet_id uuid = uuid_generate_v4();
@@ -153,6 +155,17 @@ BEGIN
       "explorerUrl": "https://ftmscan.com"
     }' AS json)
   ), (
+    harmony_mainnet_id,
+    'ETHEREUM',
+    'Harmony Mainnet',
+    'harmony-mainnet',
+    '005',
+    CAST('{
+      "chainId": 1666600000,
+      "rpcUrl": "https://api.harmony.one",
+      "explorerUrl": "https://explorer.harmony.one/"
+    }' AS json)
+  ), (
     solana_mainnet_id,
     'SOLANA',
     'Solana',
@@ -197,6 +210,17 @@ BEGIN
       "chainId": 77,
       "rpcUrl": "https://sokol.poa.network",
       "explorerUrl": "https://blockscout.com/poa/sokol"
+    }' AS json)
+  ), (
+    harmony_testnet_id,
+    'ETHEREUM',
+    'Harmony Testnet',
+    'harmony-testnet',
+    '102',
+    CAST('{
+      "chainId": 1666700000,
+      "rpcUrl": "https://api.s0.b.hmny.io",
+      "explorerUrl": "https://explorer.pops.one"
     }' AS json)
   ), (
     solana_testnet_id,
@@ -263,6 +287,17 @@ BEGIN
     }' AS JSON)),
     ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x82f0b8b456c1a451378467398982d4834b6829c1', fantom_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/magic-internet-money"
+    }' AS JSON)),
+
+    ('NATIVE', 'Harmony', 'ONE', 18, 'ALWAYS', NULL, harmony_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/harmony"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Harmony)', 'USDC', 18, 'ALWAYS', '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa', harmony_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+
+    ('NATIVE', 'Harmony', 'ONE', 18, 'ALWAYS', NULL, harmony_testnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/harmony"
     }' AS JSON)),
 
     ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id, CAST('{
