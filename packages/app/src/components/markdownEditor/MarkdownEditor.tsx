@@ -20,6 +20,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { MarkdownPreview } from "./MarkdownPreview";
 import * as commands from "@uiw/react-md-editor/lib/commands";
+
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
   placeholder?: string;
@@ -84,8 +85,11 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         } ${placeholderText}`
     );
   }, []);
+
+  const [uploading, setUploading] = useState(false);
   const uploadAndAddFile = useCallback(
     async (file: File) => {
+      setUploading(true);
       const placeholderText = getMarkdownImgPlaceholder(file);
       addMarkdownImgPlaceholder(placeholderText);
 
@@ -99,6 +103,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         notification.error({
           message: "Failed to upload",
         });
+      } finally {
+        setUploading(false);
       }
     },
     [
@@ -185,6 +191,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
           enableScroll={false}
           autoFocus={mode === "update"}
           textareaProps={{ placeholder }}
+          disabled={uploading}
           onPaste={handleFilePaste}
           onBlur={stopPropagation}
           onSave={!autoSave ? handleSave : undefined}

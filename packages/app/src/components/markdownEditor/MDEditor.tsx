@@ -4,6 +4,7 @@ import { Button, Row, Skeleton, Typography } from "antd";
 import dynamic from "next/dynamic";
 
 interface Props extends MDEditorProps {
+  disabled?: boolean;
   onSave?(): void;
   onCancel?(): void;
 }
@@ -36,7 +37,12 @@ export const MDEditor = dynamic<Props>(
                   </Button>
                 )}
                 {!!props.onSave && (
-                  <Button size="small" type="primary" onClick={props.onSave}>
+                  <Button
+                    size="small"
+                    type="primary"
+                    disabled={props.disabled}
+                    onClick={props.onSave}
+                  >
                     Save
                   </Button>
                 )}
