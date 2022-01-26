@@ -28,6 +28,10 @@ export const TaskTagsRow: FC<Props> = ({
         ?.length ?? 0,
     [task.description]
   );
+  const doneSubtasks = useMemo(
+    () => task.subtasks.filter((t) => t.status === TaskStatus.DONE),
+    [task.subtasks]
+  );
   if (!showStandardTags && !task.tags.length) return null;
   return (
     <Row style={{ ...style, marginBottom: -4 }}>
@@ -72,8 +76,16 @@ export const TaskTagsRow: FC<Props> = ({
           )}
           {!!task.subtasks.length && (
             <Tag style={{ marginBottom: 4 }}>
-              <Icons.BarsOutlined />
-              <span>{task.subtasks.length}</span>
+              {doneSubtasks.length === task.subtasks.length ? (
+                <Icons.CheckCircleFilled
+                  style={{ color: Colors.green.primary }}
+                />
+              ) : (
+                <Icons.CheckCircleOutlined />
+              )}
+              <span>
+                {doneSubtasks.length}/{task.subtasks.length}
+              </span>
             </Tag>
           )}
           {"project" in task && (
