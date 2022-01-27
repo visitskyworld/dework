@@ -21,12 +21,16 @@ export const LoginButton: FC<Props> = ({
     },
     [onClick, modalVisible]
   );
+  const handleAuthedWithMetamask = useCallback(() => {
+    onAuthedWithMetamask?.();
+    modalVisible.toggleOff();
+  }, [onAuthedWithMetamask, modalVisible]);
   return (
     <>
       <Button {...props} onClick={handleClick} />
       <LoginModal
         toggle={modalVisible}
-        onAuthedWithMetamask={onAuthedWithMetamask}
+        onAuthedWithMetamask={handleAuthedWithMetamask}
       />
     </>
   );

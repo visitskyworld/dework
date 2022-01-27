@@ -34,7 +34,7 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 };
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
   const statuses = useMemo(
     () => [

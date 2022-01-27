@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const TaskDiscordButton: FC<Props> = ({ task }) => {
-  const project = useProject(task.projectId);
+  const { project } = useProject(task.projectId);
   const [loading, setLoading] = useState(false);
 
   const createDiscordLink = useCreateTaskDiscordLink();

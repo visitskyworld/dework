@@ -509,7 +509,7 @@ export function useTaskFormUserOptions(
   projectId: string,
   additionalUsers: User[] | undefined
 ): User[] | undefined {
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const organizationCoreTeam = useOrganizationCoreTeam(project?.organizationId);
 
   return useMemo(() => {

@@ -77,7 +77,7 @@ const SlugReplacer: React.FC = () => {
   }, [organizationSlug, organizationId, organization, router]);
 
   const projectId = useParseIdFromSlug("projectSlug");
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   useEffect(() => {
     if (project && project.id === projectId && projectSlug !== project.slug) {
       router.replace(

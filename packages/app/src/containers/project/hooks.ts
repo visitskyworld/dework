@@ -1,4 +1,9 @@
-import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
+import {
+  ApolloError,
+  useMutation,
+  useQuery,
+  WatchQueryFetchPolicy,
+} from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -135,14 +140,15 @@ export function useDeleteProjectTokenGate(): (
   );
 }
 
-export function useProject(
-  projectId: string | undefined
-): ProjectDetails | undefined {
-  const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
+export function useProject(projectId: string | undefined): {
+  project: ProjectDetails | undefined;
+  error: ApolloError | undefined;
+} {
+  const { data, error } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     Queries.project,
     { variables: { projectId: projectId! }, skip: !projectId }
   );
-  return data?.project ?? undefined;
+  return { project: data?.project ?? undefined, error };
 }
 
 export function useProjectTasks(

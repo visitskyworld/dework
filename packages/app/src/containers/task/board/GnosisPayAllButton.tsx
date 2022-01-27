@@ -63,7 +63,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
     { variables: { input: { ids: taskIds } } }
   ).data?.tasks;
 
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
 
   const modal = useToggle();
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);

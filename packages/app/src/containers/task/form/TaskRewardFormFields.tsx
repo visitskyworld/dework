@@ -66,7 +66,7 @@ export const TaskRewardFormFields: FC<Props> = ({
     forcefullyShowNetworkSelect.toggleOn();
   }, [addPaymentMethod, forcefullyShowNetworkSelect]);
 
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const networks = useMemo(
     () =>
       _(project?.paymentMethods)

@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const ProjectHeader: FC<Props> = ({ projectId }) => {
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const { organization } = useOrganization(project?.organizationId);
   const canEdit = usePermission("update", "Project");
 

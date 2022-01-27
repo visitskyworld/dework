@@ -41,7 +41,7 @@ export const ProjectGithubIntegration: FC<ProjectGithubIntegrationProps> = ({
   projectId,
   organizationId,
 }) => {
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const hasOrgInt = useHasOrganizationGithubIntegration(organizationId);
   const projInt = useMemo(
     () =>

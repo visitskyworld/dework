@@ -12,13 +12,14 @@ import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
 import { Tab } from "@dewo/app/components/Tab";
+import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = (router.query.tab as string | undefined) ?? "board";
 
   const projectId = useParseIdFromSlug("projectSlug");
-  const project = useProject(projectId);
+  const { project, error } = useProject(projectId);
 
   const navigateToProject = useCallback(
     () => router.push(project?.permalink!),
@@ -29,6 +30,8 @@ const Page: NextPage = () => {
     (tab: string) => router.push(`${project!.permalink}/${tab}`),
     [project, router]
   );
+
+  const forbiddenError = error?.message === "Forbidden resource";
 
   if (!projectId) {
     router.replace("/");
@@ -76,13 +79,14 @@ const Page: NextPage = () => {
       </Layout.Content>
 
       <Modal
-        visible={router.route.endsWith("/settings")}
+        visible={!!project && router.route.endsWith("/settings")}
         title="Project Settings"
         footer={null}
         onCancel={navigateToProject}
       >
         {!!project && <ProjectSettings project={project} />}
       </Modal>
+      <ForbiddenResourceModal visible={forbiddenError} />
     </Layout>
   );
 };

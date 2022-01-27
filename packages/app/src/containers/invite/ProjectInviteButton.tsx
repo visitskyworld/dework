@@ -14,7 +14,7 @@ interface Props {
 
 export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
   const [loading, setLoading] = useState(false);
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
 
   const canInviteProjectAdmin = usePermission("create", {
     __typename: "ProjectMember",

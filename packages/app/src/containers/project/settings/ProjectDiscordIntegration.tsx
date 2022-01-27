@@ -48,7 +48,7 @@ export const ProjectDiscordIntegration: FC<Props> = ({
   const { user } = useAuthContext();
   const router = useRouter();
 
-  const project = useProject(projectId);
+  const { project } = useProject(projectId);
   const orgInt = useOrganizationDiscordIntegration(organizationId);
   const projInt = useMemo(
     () =>
