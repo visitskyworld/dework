@@ -1,6 +1,13 @@
 [
   {
-    "origin": ["http://localhost:3000", "https://dework.xyz", "https://demo.dework.xyz", "https://*.vercel.app"],
+    "origin": [
+      "http://localhost:3000",
+      "https://dework.xyz",
+      "https://app.dework.xyz",
+      "https://demo.dework.xyz",
+      "https://app.demo.dework.xyz",
+      "https://*.vercel.app"
+    ],
     "responseHeader": ["Content-Type", "x-goog-acl"],
     "method": ["GET", "HEAD","POST", "PUT", "DELETE"],
     "maxAgeSeconds": 3600
