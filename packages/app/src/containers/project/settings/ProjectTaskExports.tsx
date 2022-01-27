@@ -4,6 +4,7 @@ import React, { FC, useMemo } from "react";
 import { useProjectTasks } from "../hooks";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
+import { formatTaskReward } from "../../task/hooks";
 interface Props {
   projectId: string;
   projectName: string;
@@ -30,7 +31,7 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
         storyPoints: task.storyPoints,
         status: task.status,
         assignees: task.assignees.map((assignee) => assignee.username),
-        reward: task.reward,
+        reward: !!task.reward ? formatTaskReward(task.reward) : "",
       })) || [],
     [tasks]
   );
