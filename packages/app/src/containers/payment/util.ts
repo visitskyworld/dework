@@ -27,6 +27,7 @@ export const networkSlugsByPaymentMethodType: Record<
     "ethereum-rinkeby",
     "gnosis-chain",
     "polygon-mainnet",
+    "harmony-mainnet",
   ],
   [PaymentMethodType.PHANTOM]: ["solana-mainnet", "solana-testnet"],
   [PaymentMethodType.HIRO]: ["stacks-mainnet", "stacks-testnet"],

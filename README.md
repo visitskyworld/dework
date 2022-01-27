@@ -163,7 +163,10 @@ BEGIN
     CAST('{
       "chainId": 1666600000,
       "rpcUrl": "https://api.harmony.one",
-      "explorerUrl": "https://explorer.harmony.one"
+      "explorerUrl": "https://explorer.harmony.one",
+      "gnosisSafe": {
+        "serviceUrl": "https://multisig.harmony.one"
+      }
     }' AS json)
   ), (
     solana_mainnet_id,
