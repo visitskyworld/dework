@@ -1,7 +1,7 @@
 ###
 # Build stage
 ###
-FROM node:12-alpine AS builder
+FROM node:16-alpine AS builder
 WORKDIR /builder
 
 COPY package.json yarn.lock ./
@@ -23,7 +23,7 @@ RUN NODE_OPTIONS="--inspect --max_old_space_size=4096" yarn app build && rm -rf 
 ###
 # Exec Stage
 ###
-FROM node:12-alpine
+FROM node:16-alpine
 WORKDIR /app
 
 COPY package.json yarn.lock ./

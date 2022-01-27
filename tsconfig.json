@@ -2,6 +2,7 @@
   "extends": "./tsconfig.base.json",
   "include": [
     "packages/app",
-    "packages/api"
+    "packages/api",
+    "packages/landing-page"
   ]
 }

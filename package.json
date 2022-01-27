@@ -2,7 +2,8 @@
   "workspaces": [
     "packages/app",
     "packages/contracts",
-    "packages/api"
+    "packages/api",
+    "packages/landing-page"
   ],
   "version": "0.0.0",
   "private": true,
@@ -13,10 +14,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-pattern='!.*' --quiet --fix",
     "app": "yarn workspace @dewo/app",
     "api": "yarn workspace @dewo/api",
+    "lp": "yarn workspace @dewo/landing-page",
     "deploy:api:demo": "./packages/scripts/deploy-api-demo.sh",
     "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
+    "deploy:lp:demo": "./packages/scripts/deploy-lp-demo.sh",
     "deploy:api:prod": "./packages/scripts/deploy-api-prod.sh",
     "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh",
+    "deploy:lp:prod": "./packages/scripts/deploy-lp-prod.sh",
     "postinstall": "patch-package --patch-dir packages/api/patches && patch-package --patch-dir packages/app/patches",
     "prepare": "husky install"
   },

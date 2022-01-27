@@ -1,9 +1,9 @@
 import Link from "next/link";
 import React, { FC, useMemo } from "react";
 import { AvatarProps, Card, List, Row, Tag, Typography } from "antd";
-import { OrganizationDetails } from "../../graphql/types";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TitleProps } from "antd/lib/typography/Title";
+import { OrganizationDetails } from "@dewo/app/graphql/types";
 
 interface Props {
   organization: OrganizationDetails;

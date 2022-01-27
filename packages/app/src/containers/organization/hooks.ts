@@ -9,8 +9,6 @@ import {
   CreateOrganizationTagMutation,
   CreateOrganizationTagMutationVariables,
   DiscordIntegrationChannel,
-  GetFeaturedOrganizationsQuery,
-  GetFeaturedOrganizationsQueryVariables,
   GetOrganizationDiscordChannelsQuery,
   GetOrganizationDiscordChannelsQueryVariables,
   GetOrganizationGithubReposQuery,
@@ -181,16 +179,6 @@ export function useOrganization(organizationId: string | undefined): {
     skip: !organizationId,
   });
   return { organization: data?.organization ?? undefined, refetch };
-}
-
-export function useFeaturedOrganizations(
-  limit: number
-): OrganizationDetails[] | undefined {
-  const { data } = useQuery<
-    GetFeaturedOrganizationsQuery,
-    GetFeaturedOrganizationsQueryVariables
-  >(Queries.featuredOrganizations, { variables: { limit } });
-  return data?.featuredOrganizations;
 }
 
 export function useAllOrganizationTags(

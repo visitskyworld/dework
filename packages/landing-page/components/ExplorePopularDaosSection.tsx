@@ -1,9 +1,25 @@
+import {
+  GetFeaturedOrganizationsQuery,
+  GetFeaturedOrganizationsQueryVariables,
+  OrganizationDetails,
+} from "@dewo/app/graphql/types";
 import { Col, Row, Typography } from "antd";
 import React, { FC } from "react";
-import { useFeaturedOrganizations } from "../organization/hooks";
 import { OrganizationCard } from "./OrganizationCard";
+import { useQuery } from "@apollo/client";
+import * as Queries from "@dewo/app/graphql/queries";
 
 const NUM_COLUMNS = 3;
+
+export function useFeaturedOrganizations(
+  limit: number
+): OrganizationDetails[] | undefined {
+  const { data } = useQuery<
+    GetFeaturedOrganizationsQuery,
+    GetFeaturedOrganizationsQueryVariables
+  >(Queries.featuredOrganizations, { variables: { limit } });
+  return data?.featuredOrganizations;
+}
 
 export const ExplorePopularDaosSection: FC = () => {
   const organizations = useFeaturedOrganizations(9);

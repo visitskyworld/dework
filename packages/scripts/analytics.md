@@ -49,8 +49,8 @@ WHERE project."organizationId" != 'dde641cb-b50e-403f-955a-f83c154e441f'
   AND task."creatorId" != 'c1f5e5fe-4287-412d-a478-6c89e7b1a190'
   AND task."rewardId" IS (NOT) NULL
   AND task.status = 'TODO'
-  AND name NOT LIKE '%test%'
-  AND description NOT LIKE '%test%'
+  AND task.name NOT LIKE '%test%'
+  AND task.description NOT LIKE '%test%'
   AND task."deletedAt" IS NULL
 ```
 

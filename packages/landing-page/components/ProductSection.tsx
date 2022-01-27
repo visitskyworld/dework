@@ -1,9 +1,21 @@
-import { Image, Col, Divider, Row, Space, Typography, Tabs } from "antd";
+import {
+  Image,
+  Col,
+  Button,
+  Divider,
+  Row,
+  Space,
+  Typography,
+  Tabs,
+} from "antd";
 import React, { FC } from "react";
-import { LoginButton } from "../auth/LoginButton";
 import { WatchDemoButton } from "./WatchDemoButton";
 
-export const ProductSection: FC = () => {
+interface Props {
+  appUrl: string;
+}
+
+export const ProductSection: FC<Props> = ({ appUrl }) => {
   return (
     <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
       <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
@@ -24,9 +36,9 @@ export const ProductSection: FC = () => {
           </Row>
 
           <Space>
-            <LoginButton type="primary" size="large">
+            <Button type="primary" size="large" href={appUrl}>
               Get Started
-            </LoginButton>
+            </Button>
             <WatchDemoButton />
           </Space>
         </Space>
@@ -42,7 +54,7 @@ export const ProductSection: FC = () => {
             key="crypto-payments"
             style={{ padding: 8 }}
           >
-            <Image width="100%" src="/lp/crypto-payments.jpeg" />
+            <Image width="100%" src="/crypto-payments.jpeg" />
             <Typography.Paragraph
               type="secondary"
               style={{
@@ -55,30 +67,12 @@ export const ProductSection: FC = () => {
               Phantom Wallet
             </Typography.Paragraph>
           </Tabs.TabPane>
-          {/* <Tabs.TabPane
-            tab="Review Contributors"
-            key="review-contributors"
-            style={{ padding: 8 }}
-          >
-            <Image width="100%" src="/lp/review-contributors.jpeg" />
-            <Typography.Paragraph
-              type="secondary"
-              style={{
-                textAlign: "center",
-                fontSize: "130%",
-                marginTop: 16,
-              }}
-            >
-              Let contributors find and apply to tasks. See their work history
-              and assign the task to the most capable.
-            </Typography.Paragraph>
-          </Tabs.TabPane> */}
           <Tabs.TabPane
             tab="Profile building"
             key="profile-building"
             style={{ padding: 8 }}
           >
-            <Image width="100%" src="/lp/profile.jpeg" />
+            <Image width="100%" src="/profile.jpeg" />
             <Typography.Paragraph
               type="secondary"
               style={{
@@ -95,7 +89,7 @@ export const ProductSection: FC = () => {
             key="community-voting"
             style={{ padding: 8 }}
           >
-            <Image width="100%" src="/lp/voting.jpeg" />
+            <Image width="100%" src="/voting.jpeg" />
             <Typography.Paragraph
               type="secondary"
               style={{
