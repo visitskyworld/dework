@@ -18,7 +18,7 @@ export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
 interface AuthContextValue {
   user: UserDetails | undefined;
   authenticated: boolean;
-  logout(): void;
+  logout(path?: string): void;
   onAuthenticated(authToken: string): void;
 }
 
@@ -36,10 +36,10 @@ export const AuthProvider: FC<{ initialAuthenticated: boolean }> = ({
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const user = useCurrentUser(!authenticated);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((path = "/") => {
     clearAuthToken(undefined);
     setAuthenticated(false);
-    window.location.href = "/";
+    window.location.href = path;
   }, []);
 
   const onAuthenticated = useCallback((authToken: string) => {
