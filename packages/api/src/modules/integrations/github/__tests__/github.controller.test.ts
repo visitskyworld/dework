@@ -5,7 +5,6 @@ import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatus } from "@dewo/api/models/Task";
-import { GithubPullRequestActions } from "../github.controller";
 import { GithubPullRequestStatus } from "@dewo/api/models/GithubPullRequest";
 import * as Github from "@octokit/webhooks-types";
 import { DeepPartial } from "typeorm";
@@ -83,7 +82,7 @@ describe("GithubController", () => {
       >({
         app,
         body: {
-          action: GithubPullRequestActions.OPENED,
+          action: "opened",
           pull_request: {
             title: pullRequest.title,
             state: "open",
@@ -113,7 +112,7 @@ describe("GithubController", () => {
       >({
         app,
         body: {
-          action: GithubPullRequestActions.CLOSED,
+          action: "closed",
           pull_request: {
             title: pullRequest.title,
             state: "closed",

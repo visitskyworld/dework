@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --no-notify --require dotenv/config --require tsconfig-paths/register src/main.ts dotenv_config_path=.env.local",
     "dev:db": "docker compose up",
-    "db:wipe": "docker compose down && docker compose stop && docker volume rm api_dewo-postgres-data",
+    "db:wipe": "docker compose down && docker compose stop && docker volume rm api_dework-postgres-data",
     "migration:create": "typeorm migration:create -d src/migrations -n $@",
     "migration:up:local": "ts-node --require dotenv/config --require tsconfig-paths/register src/modules/app/migration/run up dotenv_config_path=.env.local",
     "test": "jest --runInBand --setupFiles tsconfig-paths/register",

@@ -17,16 +17,6 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 import * as qs from "query-string";
 
-// The actions Github's API uses
-export enum GithubPullRequestActions {
-  OPENED = "opened",
-  REOPENED = "reopened",
-  CLOSED = "closed",
-  READY_FOR_REVIEW = "ready_for_review", // When PR is updated from draft -> open
-  SUBMITTED = "submitted", // When a review is submitted
-  REVIEW_REQUESTED = "review_requested", // When a review is re-requested
-}
-
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
   "title" | "status" | "number" | "branchName" | "link" | "taskId"
@@ -200,7 +190,7 @@ export class GithubController {
         taskId: task.id,
       };
 
-      if (event.action === GithubPullRequestActions.CLOSED) {
+      if (event.action === "closed") {
         if (!pr) {
           this.log(
             "Closed PR but no GithubPullRequest registered in Dework",
@@ -231,7 +221,7 @@ export class GithubController {
             status: TaskStatus.DONE,
           });
         }
-      } else if (event.action === GithubPullRequestActions.SUBMITTED) {
+      } else if (event.action === "submitted") {
         this.discordIntegrationService.postReviewSubmittal(
           task,
           event.review?.state ?? "open"
@@ -262,9 +252,7 @@ export class GithubController {
               taskNumber: task.number,
               status: TaskStatus.IN_REVIEW,
             });
-          } else if (
-            event.action === GithubPullRequestActions.REVIEW_REQUESTED
-          ) {
+          } else if (event.action === "review_requested") {
             this.discordIntegrationService.postReviewRequest(task);
             this.log("Another review was requested from Github:", {
               pullRequestTitle: prData.title,

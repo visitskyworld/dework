@@ -492,16 +492,14 @@ export class DiscordIntegrationService {
     const discordChannelToPostTo = await this.findDiscordChannelToPostTo(task);
     if (!discordChannelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
-    const firstAssigneeDiscordId = await this.getDiscordId(firstAssignee?.id);
+    const assignees = await this.findTaskUserThreepids(task, false);
     const reviewMessage =
-      state === "approved"
-        ? "Your PR was approved!"
-        : "A review was submitted in Github!";
+      state === "approved" ? "PR approved!" : "Review submitted in Github";
     await this.postTaskCard(
       discordChannelToPostTo,
       task,
       reviewMessage,
-      firstAssigneeDiscordId ? [firstAssigneeDiscordId] : undefined,
+      assignees.map((t) => t.threepid),
       !!firstAssignee
         ? {
             author: {
@@ -618,7 +616,9 @@ export class DiscordIntegrationService {
     embedOverride?: Partial<Discord.MessageEmbedOptions>
   ): Promise<void> {
     await this.post(channel, {
-      content: discordIdsToTag?.map((id) => `<@${id}>`).join(" ") ?? message,
+      content: discordIdsToTag?.length
+        ? discordIdsToTag.map((id) => `<@${id}>`).join(" ")
+        : " ",
       embeds: [
         {
           title: task.name,
@@ -777,10 +777,11 @@ export class DiscordIntegrationService {
   }
 
   public async findTaskUserThreepids(
-    task: Task
+    task: Task,
+    includeOwner = true
   ): Promise<Threepid<ThreepidSource.discord>[]> {
-    const userIds = _([await task.owner, ...(await task.assignees)])
-      .filter((u): u is User => !!u)
+    const userIds = _([await task.owner, ...((await task.assignees) ?? [])])
+      .filter((u): u is User => !!u && (u.id !== task.ownerId || includeOwner))
       .map((u) => u.id)
       .uniq()
       .value();
