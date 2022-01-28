@@ -19,6 +19,7 @@ ORDER BY DATE(task."createdAt") DESC
 SELECT COUNT(*), DATE(payment."createdAt"), payment_network."name"
 FROM payment
 INNER JOIN payment_network ON payment_network.id = payment."networkId"
+INNER JOIN task_reward ON task_reward."paymentId" = payment.id
 WHERE payment_network."name" NOT IN ('Ethereum Rinkeby', 'Stacks Testnet')
   -- AND payment.status = 'CONFIRMED'
 GROUP BY DATE(payment."createdAt"), payment_network."name"
@@ -30,10 +31,14 @@ SELECT
 	DATE(payment."createdAt"),
 	payment_network."name",
 	payment_token.symbol,
-	task_reward.amount::DECIMAL / POWER(10, payment_token."exp") AS amount
+	task_reward.amount::DECIMAL / POWER(10, payment_token."exp") AS amount,
+	organization."name"
 FROM payment
 INNER JOIN payment_network ON payment_network.id = payment."networkId"
 INNER JOIN task_reward ON task_reward."paymentId" = payment.id
+INNER JOIN task ON task."rewardId" = task_reward.id
+INNER JOIN project ON project.id = task."projectId"
+INNER JOIN organization ON organization.id = project."organizationId"
 INNER JOIN payment_token ON payment_token.id = task_reward."tokenId"
 WHERE payment_network."name" NOT IN ('Ethereum Rinkeby', 'Stacks Testnet')
   AND payment.status = 'CONFIRMED'

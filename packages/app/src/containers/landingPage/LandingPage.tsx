@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { PageHeader, Typography } from "antd";
+import { PageHeader } from "antd";
 import { PageHeaderBreadcrumbs } from "../navigation/PageHeaderBreadcrumbs";
 import { TaskDiscoveryList } from "../discovery/TaskDiscoveryList";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
@@ -13,9 +13,6 @@ export const LandingPage: FC = () => (
         />
       }
     />
-    <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-      🔥 Latest Tasks
-    </Typography.Title>
     <TaskDiscoveryList />
     <TaskUpdateModalListener />
   </>

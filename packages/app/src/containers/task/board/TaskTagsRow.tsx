@@ -34,23 +34,17 @@ export const TaskTagsRow: FC<Props> = ({
   );
   if (!showStandardTags && !task.tags.length) return null;
   return (
-    <Row style={{ ...style, marginBottom: -4 }}>
+    <Row gutter={[8, 4]} style={{ ...style }}>
       {showStandardTags && (
         <>
           {!!task.reward && (
-            <Tag
-              style={{
-                marginBottom: 4,
-                backgroundColor: "white",
-                color: "black",
-              }}
-            >
+            <Tag style={{ backgroundColor: "white", color: "black" }}>
               <Icons.DollarOutlined />
               <span>{formatTaskReward(task.reward)}</span>
             </Tag>
           )}
           {!!task.dueDate && (
-            <Tag style={{ marginBottom: 4 }}>
+            <Tag>
               {task.status !== TaskStatus.DONE &&
               moment().endOf("day").isAfter(task.dueDate) ? (
                 <Icons.ExclamationCircleFilled
@@ -63,19 +57,19 @@ export const TaskTagsRow: FC<Props> = ({
             </Tag>
           )}
           {!!attachmentCount && (
-            <Tag style={{ marginBottom: 4 }}>
+            <Tag>
               <Icons.LinkOutlined />
               <span>{attachmentCount}</span>
             </Tag>
           )}
           {!!task.storyPoints && (
-            <Tag style={{ marginBottom: 4 }}>
+            <Tag>
               <Icons.FlagOutlined />
               <span>{task.storyPoints}</span>
             </Tag>
           )}
           {!!task.subtasks.length && (
-            <Tag style={{ marginBottom: 4 }}>
+            <Tag>
               {doneSubtasks.length === task.subtasks.length ? (
                 <Icons.CheckCircleFilled
                   style={{ color: Colors.green.primary }}
@@ -89,10 +83,7 @@ export const TaskTagsRow: FC<Props> = ({
             </Tag>
           )}
           {"project" in task && (
-            <Tag
-              className="bg-component"
-              style={{ marginBottom: 4, paddingLeft: 0 }}
-            >
+            <Tag className="bg-component" style={{ paddingLeft: 0 }}>
               <OrganizationAvatar
                 organization={task.project.organization}
                 size={20}
@@ -104,9 +95,9 @@ export const TaskTagsRow: FC<Props> = ({
           )}
         </>
       )}
-      {task.tags.map(({ label, color }, index) => (
-        <Tag key={index} color={color} style={{ marginBottom: 4 }}>
-          {label}
+      {task.tags.map((tag) => (
+        <Tag key={tag.id} color={tag.color}>
+          {tag.label}
         </Tag>
       ))}
     </Row>

@@ -274,6 +274,7 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
                 loading={!networks}
                 mode="multiple"
                 placeholder="Select what tokens this address can pay out"
+                optionFilterProp="label"
                 dropdownRender={(menu) => (
                   <>
                     {menu}
