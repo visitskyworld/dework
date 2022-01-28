@@ -37,7 +37,7 @@ export class PaymentPoller {
   private checkInterval: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.seconds(5),
     [PaymentMethodType.PHANTOM]: ms.seconds(5),
-    [PaymentMethodType.GNOSIS_SAFE]: ms.seconds(5),
+    [PaymentMethodType.GNOSIS_SAFE]: ms.minutes(5),
     [PaymentMethodType.HIRO]: ms.minutes(1),
   };
 
@@ -74,9 +74,9 @@ export class PaymentPoller {
       .leftJoinAndSelect("p.network", "network")
       .leftJoinAndSelect("p.paymentMethod", "paymentMethod")
       .where("p.status = :status", { status: PaymentStatus.PROCESSING })
-      // .andWhere(
-      //   "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
-      // )
+      .andWhere(
+        "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
+      )
       .getMany();
 
     this.logger.log(`Found ${payments.length} payments to check`);
