@@ -22,6 +22,9 @@ export interface ConfigType {
   DISCORD_DEWORK_GUILD_ID: string;
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: string;
 
+  NOTION_OAUTH_CLIENT_ID: string;
+  NOTION_OAUTH_CLIENT_SECRET: string;
+
   GOOGLE_CLOUD_CREDENTIALS: string;
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
 
@@ -50,6 +53,9 @@ export const configSchema = Joi.object<ConfigType>({
   DISCORD_BOT_TOKEN: Joi.string().required(),
   DISCORD_DEWORK_GUILD_ID: Joi.string().required(),
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: Joi.string().required(),
+
+  NOTION_OAUTH_CLIENT_ID: Joi.string().required(),
+  NOTION_OAUTH_CLIENT_SECRET: Joi.string().required(),
 
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),

@@ -111,6 +111,24 @@ export class AuthController {
     }
   }
 
+  @Get("notion")
+  @UseGuards(AuthGuard("notion"))
+  async notion() {}
+
+  @Get("notion/callback")
+  @UseGuards(AuthGuard("notion"))
+  async notionCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
+    console.warn(req.user);
+    /*
+    res.redirect(
+      `${this.getAppUrl(req.user.state)}/auth/3pid/${
+        req.user.threepidId
+      }?state=${req.user.state ?? ""}`
+    );
+    */
+    return req.user;
+  }
+
   private getAppUrl(stateString: unknown): string {
     try {
       if (typeof stateString === "string") {

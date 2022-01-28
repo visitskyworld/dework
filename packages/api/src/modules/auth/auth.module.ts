@@ -14,6 +14,7 @@ import { PermalinkModule } from "../permalink/permalink.module";
 import { IntegrationModule } from "../integrations/integration.module";
 import { ProjectModule } from "../project/project.module";
 import { WalletConnectResolver } from "./walletconnect.resolver";
+import { NotionStrategy } from "./strategies/notion.strategy";
 
 @Global()
 @Module({
@@ -39,7 +40,12 @@ export class GlobalJwtModule {}
     IntegrationModule,
     PermalinkModule,
   ],
-  providers: [GithubStrategy, DiscordStrategy, WalletConnectResolver],
+  providers: [
+    GithubStrategy,
+    DiscordStrategy,
+    NotionStrategy,
+    WalletConnectResolver,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule implements NestModule {

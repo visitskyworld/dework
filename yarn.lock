@@ -1748,6 +1748,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@notionhq/client@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@notionhq/client/-/client-0.4.2.tgz#7e6744cf7bfaa3f82d24cd72f47eadc2b8461173"
+  integrity sha512-OfU587WZ5YzH9f59BJb/+QY74B6rZEPyqZEn3vQB2dOu1EXtzyWDHkfZfakYXYogJ24mvBfS77KjnaCRrEzSKw==
+  dependencies:
+    "@types/node-fetch" "^2.5.10"
+    node-fetch "^2.6.1"
+
+"@notionhq/client@^0.4.13":
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/@notionhq/client/-/client-0.4.13.tgz#b29c2ecc8c25508119f9b2875c2dda6c12f1c889"
+  integrity sha512-tHC95h4JZYteHmIL49xdta0Yb9q0peXySqo9cqTQEVzpPwUdcPNgWQljMqfrSVKqlpGNX+DhXztY0LR6f3Iw6A==
+  dependencies:
+    "@types/node-fetch" "^2.5.10"
+    node-fetch "^2.6.1"
+
 "@nuxtjs/opencollective@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@nuxtjs/opencollective/-/opencollective-0.3.2.tgz#620ce1044f7ac77185e825e1936115bb38e2681c"
@@ -8842,6 +8858,9 @@ is-boolean-object@^1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/is-boolean-object/-/is-boolean-object-1.1.2.tgz#5c6dc200246dd9321ae4b885a114bb1f75f63719"
   integrity sha512-gDYaKHJmnj4aWxyj6YHyXVpdQawtVLHU5cb+eztPGczf6cjuTdwve5ZIEfgXqH4e57An1D1AKf8CZ3kYrQRqYA==
+  dependencies:
+    call-bind "^1.0.2"
+    has-tostringtag "^1.0.0"
 
 is-buffer@^2.0.0:
   version "2.0.5"
@@ -12001,6 +12020,14 @@ passport-github@^1.1.0:
   dependencies:
     passport-oauth2 "1.x.x"
 
+passport-notion@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/passport-notion/-/passport-notion-1.0.2.tgz#7fa45bf9919243bcdb2a3c6ca667fbb9fa5eecee"
+  integrity sha512-8rHf8rvR2A7kowm1YUcdaRsJM6skmp33raZtNq7vg8tFqBhv+/yxZ56Fm/Wt/zDZpXl9NC+TyZq0NvGolApTfQ==
+  dependencies:
+    "@notionhq/client" "0.4.2"
+    passport-strategy "^1.0.0"
+
 passport-oauth2@1.x.x, passport-oauth2@^1.5.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/passport-oauth2/-/passport-oauth2-1.6.1.tgz#c5aee8f849ce8bd436c7f81d904a3cd1666f181b"
@@ -12012,7 +12039,7 @@ passport-oauth2@1.x.x, passport-oauth2@^1.5.0:
     uid2 "0.0.x"
     utils-merge "1.x.x"
 
-passport-strategy@1.x.x:
+passport-strategy@1.x.x, passport-strategy@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
   integrity sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=
