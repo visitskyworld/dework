@@ -241,63 +241,30 @@ export class DiscordIntegrationService {
   ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
-    const integration = await this.getProjectIntegration(task.projectId);
-    if (!integration) {
-      throw new NotFoundException("Project integration not found");
-    }
-    const organizationIntegration =
-      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-    if (!organizationIntegration) {
-      throw new NotFoundException("Organization integration not found");
-    }
-
-    const guild = await this.discord.client.guilds.fetch(
-      organizationIntegration.config.guildId
-    );
-    await guild.roles.fetch();
-
-    const channel = (await guild.channels.fetch(integration.config.channelId, {
-      force: true,
-    })) as Discord.TextChannel;
+    const { channel, guild } = await this.getChannelFromTask(task);
 
     if (!channel) {
-      throw new NotFoundException(
-        "Discord channel from project integration not found"
-      );
-    }
-
-    const { channel: channelToPostTo, new: wasChannelToPostToJustCreated } =
-      await this.getDiscordChannelToPostTo(
-        task,
-        channel,
-        integration.config,
-        true // force create
-      );
-
-    if (!channelToPostTo) {
       throw new NotFoundException(
         "Discord channel to post to not found or created"
       );
     }
 
-    if (channelToPostTo.isThread() && channelToPostTo.archived) {
-      channelToPostTo.setArchived(false);
+    if (channel.isThread() && channel.archived) {
+      channel.setArchived(false);
     }
 
-    if (wasChannelToPostToJustCreated) {
-      await this.postDefaultInitialMessage(task, channelToPostTo);
-    }
+    await this.postDefaultInitialMessage(task, channel);
 
     const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
-    if (channelToPostTo.isThread() && !!discordId) {
-      const member = await guild.members.fetch({
+    if (channel.isThread() && !!discordId) {
+      const member = await guild?.members.fetch({
         user: discordId,
         force: true,
       });
-      await channelToPostTo.members.add(member.user.id);
+      if (!!member) await channel.members.add(member.user.id);
     }
 
-    return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
+    return `https://discord.com/channels/${channel.guildId}/${channel.id}`;
   }
 
   private async getDiscordChannelToPostTo(
@@ -465,14 +432,14 @@ export class DiscordIntegrationService {
   }
 
   public async postReviewRequest(task: Task) {
-    const discordChannelToPostTo = await this.findDiscordChannelToPostTo(task);
-    if (!discordChannelToPostTo) return;
+    const { channel } = await this.getChannelFromTask(task);
+    if (!channel) return;
     const owner = !!task.ownerId
       ? await this.getDiscordId(task.ownerId)
       : undefined;
     const firstAssignee = task.assignees?.[0];
     await this.postTaskCard(
-      discordChannelToPostTo,
+      channel,
       task,
       "Ready for another review!",
       !!owner ? [owner] : undefined,
@@ -489,14 +456,14 @@ export class DiscordIntegrationService {
   }
 
   public async postReviewSubmittal(task: Task, state: string) {
-    const discordChannelToPostTo = await this.findDiscordChannelToPostTo(task);
-    if (!discordChannelToPostTo) return;
+    const { channel } = await this.getChannelFromTask(task);
+    if (!channel) return;
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
     const reviewMessage =
       state === "approved" ? "PR approved!" : "Review submitted in Github";
     await this.postTaskCard(
-      discordChannelToPostTo,
+      channel,
       task,
       reviewMessage,
       assignees.map((t) => t.threepid),
@@ -512,14 +479,16 @@ export class DiscordIntegrationService {
     );
   }
 
-  private async findDiscordChannelToPostTo(
-    task: Task
-  ): Promise<Discord.TextChannel | Discord.ThreadChannel | undefined> {
+  private async getChannelFromTask(task: Task): Promise<{
+    channel: Discord.TextChannel | Discord.ThreadChannel | undefined;
+    guild: Discord.Guild | undefined;
+  }> {
     const integration = await this.getProjectIntegration(task.projectId);
-    if (!integration) return;
+    if (!integration) return { channel: undefined, guild: undefined };
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-    if (!organizationIntegration) return;
+    if (!organizationIntegration)
+      return { channel: undefined, guild: undefined };
 
     const guild = await this.discord.client.guilds.fetch(
       organizationIntegration.config.guildId
@@ -538,7 +507,7 @@ export class DiscordIntegrationService {
       this.logger.warn(
         `Could not find Discord channel (${JSON.stringify(integration.config)})`
       );
-      return;
+      return { channel: undefined, guild };
     }
 
     const { channel: channelToPostTo } = await this.getDiscordChannelToPostTo(
@@ -553,7 +522,7 @@ export class DiscordIntegrationService {
         isThread: channelToPostTo?.isThread(),
       })}`
     );
-    return channelToPostTo;
+    return { channel: channelToPostTo, guild };
   }
 
   private async postTaskApplicationCreated(
