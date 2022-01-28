@@ -223,7 +223,7 @@ export class GithubController {
         }
       } else if (event.action === "submitted") {
         this.discordIntegrationService.postReviewSubmittal(
-          task,
+          task.id,
           event.review?.state === "approved"
         );
         this.log("A review was submitted in Github:", {

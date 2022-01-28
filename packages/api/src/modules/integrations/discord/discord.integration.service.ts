@@ -422,7 +422,9 @@ export class DiscordIntegrationService {
     );
   }
 
-  public async postReviewSubmittal(task: Task, approved: boolean) {
+  public async postReviewSubmittal(taskId: string, approved: boolean) {
+    const task = await this.taskService.findById(taskId);
+    if (!task) return;
     const { channelToPostTo } = await this.getChannelFromTask(task);
     if (!channelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
