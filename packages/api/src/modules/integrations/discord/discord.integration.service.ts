@@ -92,47 +92,14 @@ export class DiscordIntegrationService {
         );
       }
 
-      const guild = await this.discord.client.guilds.fetch(
-        organizationIntegration.config.guildId
-      );
-      await guild.roles.fetch();
+      const {
+        mainChannel,
+        channelToPostTo,
+        wasChannelToPostToJustCreated,
+        guild,
+      } = await this.getChannelFromTask(event.task);
 
-      this.logger.debug(
-        `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
-      );
-
-      const channel = (await guild.channels.fetch(
-        integration.config.channelId,
-        { force: true }
-      )) as Discord.TextChannel;
-
-      if (!channel) {
-        this.logger.warn(
-          `Could not find Discord channel (${JSON.stringify(
-            integration.config
-          )})`
-        );
-        return;
-      }
-
-      this.logger.log(
-        `Found connected Discord channel: ${JSON.stringify({
-          channelId: channel.id,
-        })}`
-      );
-      const { channel: channelToPostTo, new: wasChannelToPostToJustCreated } =
-        await this.getDiscordChannelToPostTo(
-          event.task,
-          channel,
-          integration.config
-        );
-      this.logger.log(
-        `Found Discord channel to post to: ${JSON.stringify({
-          channelToPostToId: channelToPostTo?.id,
-          integration: integration.config,
-          isThread: channelToPostTo?.isThread(),
-        })}`
-      );
+      if (!mainChannel || !guild) return;
 
       if (
         event instanceof TaskCreatedEvent &&
@@ -141,7 +108,7 @@ export class DiscordIntegrationService {
           DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL
         )
       ) {
-        await this.postTaskCard(channel, event.task, "New task created!");
+        await this.postTaskCard(mainChannel, event.task, "New task created!");
       }
 
       if (!channelToPostTo) return;
@@ -169,7 +136,7 @@ export class DiscordIntegrationService {
         }
 
         const threepids = await this.findTaskUserThreepids(event.task);
-        await channel.send({
+        await channelToPostTo.send({
           embeds: [
             {
               title: event.task.name,
@@ -241,30 +208,30 @@ export class DiscordIntegrationService {
   ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
-    const { channel, guild } = await this.getChannelFromTask(task);
+    const { channelToPostTo, guild } = await this.getChannelFromTask(task);
 
-    if (!channel) {
+    if (!channelToPostTo) {
       throw new NotFoundException(
         "Discord channel to post to not found or created"
       );
     }
 
-    if (channel.isThread() && channel.archived) {
-      channel.setArchived(false);
+    if (channelToPostTo.isThread() && channelToPostTo.archived) {
+      channelToPostTo.setArchived(false);
     }
 
-    await this.postDefaultInitialMessage(task, channel);
+    await this.postDefaultInitialMessage(task, channelToPostTo);
 
     const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
-    if (channel.isThread() && !!discordId) {
+    if (channelToPostTo.isThread() && !!discordId) {
       const member = await guild?.members.fetch({
         user: discordId,
         force: true,
       });
-      if (!!member) await channel.members.add(member.user.id);
+      if (!!member) await channelToPostTo.members.add(member.user.id);
     }
 
-    return `https://discord.com/channels/${channel.guildId}/${channel.id}`;
+    return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
   }
 
   private async getDiscordChannelToPostTo(
@@ -432,14 +399,14 @@ export class DiscordIntegrationService {
   }
 
   public async postReviewRequest(task: Task) {
-    const { channel } = await this.getChannelFromTask(task);
-    if (!channel) return;
+    const { channelToPostTo } = await this.getChannelFromTask(task);
+    if (!channelToPostTo) return;
     const owner = !!task.ownerId
       ? await this.getDiscordId(task.ownerId)
       : undefined;
     const firstAssignee = task.assignees?.[0];
     await this.postTaskCard(
-      channel,
+      channelToPostTo,
       task,
       "Ready for another review!",
       !!owner ? [owner] : undefined,
@@ -456,14 +423,14 @@ export class DiscordIntegrationService {
   }
 
   public async postReviewSubmittal(task: Task, state: string) {
-    const { channel } = await this.getChannelFromTask(task);
-    if (!channel) return;
+    const { channelToPostTo } = await this.getChannelFromTask(task);
+    if (!channelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
     const reviewMessage =
-      state === "approved" ? "PR approved!" : "Review submitted in Github";
+      state === "approved" ? "PR approved!" : "PR reviewed in Github";
     await this.postTaskCard(
-      channel,
+      channelToPostTo,
       task,
       reviewMessage,
       assignees.map((t) => t.threepid),
@@ -480,15 +447,28 @@ export class DiscordIntegrationService {
   }
 
   private async getChannelFromTask(task: Task): Promise<{
-    channel: Discord.TextChannel | Discord.ThreadChannel | undefined;
+    mainChannel: Discord.TextChannel | undefined;
+    channelToPostTo: Discord.TextChannel | Discord.ThreadChannel | undefined;
+    wasChannelToPostToJustCreated: boolean;
     guild: Discord.Guild | undefined;
   }> {
     const integration = await this.getProjectIntegration(task.projectId);
-    if (!integration) return { channel: undefined, guild: undefined };
+    if (!integration)
+      return {
+        mainChannel: undefined,
+        channelToPostTo: undefined,
+        wasChannelToPostToJustCreated: false,
+        guild: undefined,
+      };
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
     if (!organizationIntegration)
-      return { channel: undefined, guild: undefined };
+      return {
+        mainChannel: undefined,
+        channelToPostTo: undefined,
+        wasChannelToPostToJustCreated: false,
+        guild: undefined,
+      };
 
     const guild = await this.discord.client.guilds.fetch(
       organizationIntegration.config.guildId
@@ -499,22 +479,31 @@ export class DiscordIntegrationService {
       `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
     );
 
-    const channel = (await guild.channels.fetch(integration.config.channelId, {
-      force: true,
-    })) as Discord.TextChannel;
+    const mainChannel = (await guild.channels.fetch(
+      integration.config.channelId,
+      {
+        force: true,
+      }
+    )) as Discord.TextChannel;
 
-    if (!channel) {
+    if (!mainChannel) {
       this.logger.warn(
         `Could not find Discord channel (${JSON.stringify(integration.config)})`
       );
-      return { channel: undefined, guild };
+      return {
+        mainChannel: undefined,
+        channelToPostTo: undefined,
+        wasChannelToPostToJustCreated: false,
+        guild,
+      };
     }
 
-    const { channel: channelToPostTo } = await this.getDiscordChannelToPostTo(
-      task,
-      channel,
-      integration.config
-    );
+    const { channel: channelToPostTo, new: wasChannelToPostToJustCreated } =
+      await this.getDiscordChannelToPostTo(
+        task,
+        mainChannel,
+        integration.config
+      );
     this.logger.log(
       `Found Discord channel to post to: ${JSON.stringify({
         channelToPostToId: channelToPostTo?.id,
@@ -522,7 +511,12 @@ export class DiscordIntegrationService {
         isThread: channelToPostTo?.isThread(),
       })}`
     );
-    return { channel: channelToPostTo, guild };
+    return {
+      mainChannel,
+      channelToPostTo,
+      wasChannelToPostToJustCreated,
+      guild,
+    };
   }
 
   private async postTaskApplicationCreated(
@@ -749,8 +743,11 @@ export class DiscordIntegrationService {
     task: Task,
     includeOwner = true
   ): Promise<Threepid<ThreepidSource.discord>[]> {
-    const userIds = _([await task.owner, ...((await task.assignees) ?? [])])
-      .filter((u): u is User => !!u && (u.id !== task.ownerId || includeOwner))
+    const userIds = _([
+      ...(includeOwner ? [await task.owner] : []),
+      ...((await task.assignees) ?? []),
+    ])
+      .filter((u): u is User => !!u)
       .map((u) => u.id)
       .uniq()
       .value();
