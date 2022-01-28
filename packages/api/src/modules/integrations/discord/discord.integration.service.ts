@@ -422,13 +422,12 @@ export class DiscordIntegrationService {
     );
   }
 
-  public async postReviewSubmittal(task: Task, state: string) {
+  public async postReviewSubmittal(task: Task, approved: boolean) {
     const { channelToPostTo } = await this.getChannelFromTask(task);
     if (!channelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
-    const reviewMessage =
-      state === "approved" ? "PR approved!" : "PR reviewed in Github";
+    const reviewMessage = approved ? "PR approved!" : "PR reviewed in Github";
     await this.postTaskCard(
       channelToPostTo,
       task,
@@ -745,7 +744,7 @@ export class DiscordIntegrationService {
   ): Promise<Threepid<ThreepidSource.discord>[]> {
     const userIds = _([
       ...(includeOwner ? [await task.owner] : []),
-      ...((await task.assignees) ?? []),
+      ...(task.assignees ?? []),
     ])
       .filter((u): u is User => !!u)
       .map((u) => u.id)
