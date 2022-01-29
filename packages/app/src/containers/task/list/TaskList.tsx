@@ -204,7 +204,6 @@ export const TaskList: FC<Props> = ({
           onFilter: (value, row) =>
             row.name.toLowerCase().includes((value as string).toLowerCase()),
           filterDropdown: ({
-            visible,
             setSelectedKeys,
             confirm,
             selectedKeys,
