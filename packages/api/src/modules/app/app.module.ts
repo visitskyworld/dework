@@ -23,6 +23,7 @@ import { PermalinkModule } from "../permalink/permalink.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { MigrationModule } from "./migration/migration.module";
+import { NotionModule } from "../integrations/notion/notion.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -55,6 +56,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   InviteModule,
   GithubIntegrationModule,
   DiscordIntegrationModule,
+  NotionModule,
   PaymentModule,
   SubscriptionModule,
   FileUploadModule,

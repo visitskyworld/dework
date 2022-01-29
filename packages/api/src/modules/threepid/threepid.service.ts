@@ -55,7 +55,10 @@ export class ThreepidService {
       threepid: partial.threepid,
     });
 
-    if (!!found) return found;
+    if (!!found) {
+      await this.update({ id: found.id, ...partial });
+      return this.findById(found.id) as Promise<Threepid>;
+    }
     return this.create(partial);
   }
 

@@ -1,0 +1,22 @@
+diff --git a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+index 1476d6a..ca62463 100644
+--- a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
++++ b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+@@ -48,7 +48,7 @@ declare type DateResponse = {
+     end: string | null;
+     time_zone: TimeZoneRequest | null;
+ };
+-declare type RichTextItemResponse = {
++export declare type RichTextItemResponse = {
+     type: "text";
+     text: {
+         content: string;
+@@ -117,7 +117,7 @@ declare type RichTextItemResponse = {
+     href: string | null;
+ };
+ declare type StringRequest = string;
+-declare type SelectColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red";
++export declare type SelectColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red";
+ declare type SelectPropertyResponse = {
+     id: StringRequest;
+     name: StringRequest;

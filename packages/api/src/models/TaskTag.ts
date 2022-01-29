@@ -5,6 +5,7 @@ import { Project } from "./Project";
 
 export enum TaskTagSource {
   GITHUB = "GITHUB",
+  NOTION = "NOTION",
 }
 
 registerEnumType(TaskTagSource, { name: "TaskTagSource" });
