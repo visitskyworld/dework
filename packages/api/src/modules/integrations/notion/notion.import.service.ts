@@ -1,8 +1,6 @@
-import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Injectable, Logger } from "@nestjs/common";
 import { Client } from "@notionhq/client";
 import {
   GetBlockResponse,
@@ -13,7 +11,6 @@ import {
   SelectColor,
 } from "@notionhq/client/build/src/api-endpoints";
 import _ from "lodash";
-import { Repository } from "typeorm";
 import * as AntColors from "@ant-design/colors";
 import { ProjectService } from "../../project/project.service";
 import { User } from "@dewo/api/models/User";
@@ -21,9 +18,9 @@ import { TaskService } from "../../task/task.service";
 
 @Injectable()
 export class NotionImportService {
+  private logger = new Logger(this.constructor.name);
+
   constructor(
-    @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
     private readonly projectService: ProjectService,
     private readonly taskService: TaskService
   ) {}
@@ -61,13 +58,30 @@ export class NotionImportService {
     authToken: string,
     user: User
   ) {
+    this.logger.log(
+      `Starting Notion import: ${JSON.stringify({
+        organizationId,
+        userId: user.id,
+      })}`
+    );
     const notion = new Client({ auth: authToken });
 
     const databases = await notion.search({
       filter: { property: "object", value: "database" },
     });
 
+    this.logger.debug(
+      `Found Notion databases: ${JSON.stringify({
+        databaseIds: databases.results.map((d) => d.id),
+      })}`
+    );
     for (const database of databases.results) {
+      this.logger.debug(
+        `Fetching cards in Notion database: ${JSON.stringify({
+          databaseId: database.id,
+        })}`
+      );
+
       let cards: QueryDatabaseResponse["results"] = [];
       let nextCursor: string | null | undefined;
       do {
@@ -78,6 +92,13 @@ export class NotionImportService {
         cards.push(...result.results);
         nextCursor = result.next_cursor;
       } while (!!nextCursor);
+
+      this.logger.debug(
+        `Fetched cards from Notion database: ${JSON.stringify({
+          databaseId: database.id,
+          numCards: cards.length,
+        })}`
+      );
 
       const projectName =
         "title" in database
@@ -90,6 +111,13 @@ export class NotionImportService {
       const tags = await this.createTags(database, project.id);
 
       for (const card of cards) {
+        this.logger.debug(
+          `Fetching Notion card blocks: ${JSON.stringify({
+            databaseId: database.id,
+            cardId: card.id,
+          })}`
+        );
+
         const page = await notion.pages.retrieve({ page_id: card.id });
         const blocks = await notion.blocks.children.list({
           block_id: card.id,
@@ -118,9 +146,19 @@ export class NotionImportService {
           notionTags.find((nt) => nt.id === t.externalId)
         );
 
+        this.logger.debug(
+          `Creating task from Notion card: ${JSON.stringify({
+            databaseId: database.id,
+            cardId: card.id,
+            name,
+            status,
+            tagIds: taskTags.map((t) => t.id),
+          })}`
+        );
+
         await this.taskService.create({
           name,
-          status,
+          status: status ?? TaskStatus.TODO,
           tags: taskTags,
           description: [
             markdown,
@@ -132,22 +170,29 @@ export class NotionImportService {
         });
       }
     }
+
+    this.logger.log(
+      `Finished Notion import: ${JSON.stringify({
+        organizationId,
+        userId: user.id,
+      })}`
+    );
   }
 
-  private guessStatus(page: GetPageResponse): TaskStatus {
-    if (!("properties" in page)) return TaskStatus.TODO;
+  private guessStatus(page: GetPageResponse): TaskStatus | undefined {
+    if (!("properties" in page)) return undefined;
     const status = page.properties.Status;
-    if (!status) return TaskStatus.TODO;
-    if (status.type !== "select") return TaskStatus.TODO;
+    if (!status) return undefined;
+    if (status.type !== "select") return undefined;
     const label = status.select?.name;
-    if (!label) return TaskStatus.TODO;
+    if (!label) return undefined;
     for (const [status, guesses] of Object.entries(this.statusGuesses)) {
       if (guesses.includes(label.toLowerCase())) {
         return status as TaskStatus;
       }
     }
 
-    return TaskStatus.TODO;
+    return undefined;
   }
 
   private textToMarkdown(texts: RichTextItemResponse[]): string {
@@ -217,7 +262,7 @@ export class NotionImportService {
   ): Promise<TaskTag[]> {
     if (!("properties" in database)) return [];
     const notionTags = _(database.properties)
-      .filter((prop, name) => name !== "Status")
+      .filter((_prop, name) => name !== "Status")
       .map((prop) => {
         if ("multi_select" in prop && "options" in prop.multi_select!) {
           return prop.multi_select.options;
@@ -228,6 +273,14 @@ export class NotionImportService {
       })
       .flatten()
       .value();
+
+    this.logger.debug(
+      `Creating tags from Notion database: ${JSON.stringify({
+        databaseId: database.id,
+        notionTags,
+      })}`
+    );
+
     return Promise.all(
       notionTags.map((notionTag) =>
         this.projectService.createTag({

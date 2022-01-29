@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Logger, Req, Res, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 import * as qs from "query-string";
@@ -16,6 +16,8 @@ type RequestFromCallback = Request & { user: StrategyResponse };
 
 @Controller("auth")
 export class AuthController {
+  private logger = new Logger(this.constructor.name);
+
   constructor(
     private readonly config: ConfigService<ConfigType>,
     private readonly integrationService: IntegrationService
@@ -106,7 +108,8 @@ export class AuthController {
       const appUrl = this.getAppUrl(query.state);
       const redirectUrl = `${appUrl}${state.redirect ?? ""}`;
       res.redirect(redirectUrl);
-    } catch {
+    } catch (error) {
+      this.logger.error(error);
       res.redirect(this.config.get("APP_URL") as string);
     }
   }
@@ -118,15 +121,16 @@ export class AuthController {
   @Get("notion/callback")
   @UseGuards(AuthGuard("notion"))
   async notionCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    console.warn(req.user);
-    /*
-    res.redirect(
-      `${this.getAppUrl(req.user.state)}/auth/3pid/${
-        req.user.threepidId
-      }?state=${req.user.state ?? ""}`
-    );
-    */
-    return req.user;
+    console.warn(req.query);
+    try {
+      const state = JSON.parse(req.query.state as string);
+      const appUrl = this.getAppUrl(req.query.state as string);
+      res.redirect(
+        `${appUrl}${state.redirect}?threepidId=${req.user.threepidId}`
+      );
+    } catch {
+      res.redirect(this.config.get("APP_URL") as string);
+    }
   }
 
   private getAppUrl(stateString: unknown): string {

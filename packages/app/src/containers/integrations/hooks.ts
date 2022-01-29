@@ -157,3 +157,19 @@ export function useUpdateProjectIntegration(): (
     [mutation]
   );
 }
+
+export function useCreateProjectsFromNotion(): (
+  input: CreateProjectsFromNotionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateProjectsFromNotionMutation,
+    CreateProjectsFromNotionMutationVariables
+  >(Mutations.createProjectsFromNotion);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}

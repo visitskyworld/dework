@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { NotionImportService } from "./notion.import.service";
 import { ProjectModule } from "../../project/project.module";
 import { TaskModule } from "../../task/task.module";
@@ -13,7 +12,7 @@ import { permissions } from "../../auth/permissions";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProjectIntegration, OrganizationMember]),
+    TypeOrmModule.forFeature([OrganizationMember]),
     OrganizationModule,
     ProjectModule,
     TaskModule,

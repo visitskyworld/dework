@@ -11,6 +11,7 @@ import { OrganizationHeaderSummary } from "@dewo/app/containers/organization/ove
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
 import { Project } from "@dewo/app/graphql/types";
 import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
+import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/ImportProjectsFromNotionModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -65,6 +66,11 @@ const Page: NextPage = () => {
         organizationId={organizationId}
         onCreated={navigateToProject}
         onCancel={router.back}
+      />
+      <ImportProjectsFromNotionModal
+        visible={router.route.endsWith("/notion-import")}
+        organizationId={organizationId}
+        threepidId={router.query.threepidId as string}
       />
     </Layout>
   );

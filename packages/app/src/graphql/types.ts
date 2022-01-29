@@ -4062,6 +4062,220 @@ export interface CreateTaskDiscordLinkMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateProjectsFromNotionMutation
+// ====================================================
+
+export interface CreateProjectsFromNotionMutation_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: CreateProjectsFromNotionMutation_organization_projects_members_user;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateProjectsFromNotionMutation_organization_projects_paymentMethods_networks[];
+  tokens: CreateProjectsFromNotionMutation_organization_projects_paymentMethods_tokens[];
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token_network;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  taskCount: number;
+  options: CreateProjectsFromNotionMutation_organization_projects_options | null;
+  doneTaskCount: number;
+  openBountyTaskCount: number;
+  members: CreateProjectsFromNotionMutation_organization_projects_members[];
+  paymentMethods: CreateProjectsFromNotionMutation_organization_projects_paymentMethods[];
+  integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
+  tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
+}
+
+export interface CreateProjectsFromNotionMutation_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  user: CreateProjectsFromNotionMutation_organization_members_user;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projectTokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projectTokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromNotionMutation_organization_projectTokenGates_token;
+}
+
+export interface CreateProjectsFromNotionMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+  tagline: string | null;
+  description: string | null;
+  projects: CreateProjectsFromNotionMutation_organization_projects[];
+  members: CreateProjectsFromNotionMutation_organization_members[];
+  tags: CreateProjectsFromNotionMutation_organization_tags[];
+  details: CreateProjectsFromNotionMutation_organization_details[];
+  integrations: CreateProjectsFromNotionMutation_organization_integrations[];
+  projectTokenGates: CreateProjectsFromNotionMutation_organization_projectTokenGates[];
+}
+
+export interface CreateProjectsFromNotionMutation {
+  organization: CreateProjectsFromNotionMutation_organization;
+}
+
+export interface CreateProjectsFromNotionMutationVariables {
+  input: CreateProjectsFromNotionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -9815,6 +10029,7 @@ export enum ThreepidSource {
   discord = "discord",
   github = "github",
   metamask = "metamask",
+  notion = "notion",
 }
 
 export interface CreateFileUploadUrlInput {
@@ -9869,6 +10084,11 @@ export interface CreateProjectIntegrationInput {
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
   organizationIntegrationId?: Scalar.UUID | null;
+}
+
+export interface CreateProjectsFromNotionInput {
+  organizationId: Scalar.UUID;
+  threepidId: Scalar.UUID;
 }
 
 export interface CreateTaskApplicationInput {

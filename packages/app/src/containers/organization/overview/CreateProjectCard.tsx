@@ -15,7 +15,10 @@ export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
   return (
     <Link href={`${organization.permalink}/create`}>
       <a>
-        <Card className="dewo-card-create-project hover:component-highlight">
+        <Card
+          size="small"
+          className="dewo-project-card hover:component-highlight"
+        >
           <Space direction="vertical" align="center">
             <Avatar size="large">
               <Icons.PlusOutlined />

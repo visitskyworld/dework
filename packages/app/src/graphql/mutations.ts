@@ -544,3 +544,15 @@ export const createTaskDiscordLink = gql`
     link: createTaskDiscordLink(taskId: $taskId)
   }
 `;
+
+export const createProjectsFromNotion = gql`
+  mutation CreateProjectsFromNotionMutation(
+    $input: CreateProjectsFromNotionInput!
+  ) {
+    organization: createProjectsFromNotion(input: $input) {
+      ...OrganizationDetails
+    }
+  }
+
+  ${Fragments.organizationDetails}
+`;
