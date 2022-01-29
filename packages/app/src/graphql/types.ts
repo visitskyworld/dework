@@ -115,6 +115,28 @@ export interface CreateMetamaskThreepidVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateHiroThreepid
+// ====================================================
+
+export interface CreateHiroThreepid_threepid {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+}
+
+export interface CreateHiroThreepid {
+  threepid: CreateHiroThreepid_threepid;
+}
+
+export interface CreateHiroThreepidVariables {
+  input: CreateHiroThreepidInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: UpdateUserMutation
 // ====================================================
 
@@ -10036,6 +10058,11 @@ export enum ThreepidSource {
 export interface CreateFileUploadUrlInput {
   fileName: string;
   contentType: string;
+}
+
+export interface CreateHiroThreepidInput {
+  mainnetAddress: string;
+  testnetAddress: string;
 }
 
 export interface CreateMetamaskThreepidInput {

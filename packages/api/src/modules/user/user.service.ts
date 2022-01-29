@@ -1,4 +1,8 @@
-import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import {
+  HiroThreepidConfig,
+  Threepid,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { EntityDetail, EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { DeepAtLeast } from "@dewo/api/types/general";
@@ -94,6 +98,33 @@ export class UserService {
         networks.map((network) => ({
           address: threepid.threepid,
           type: PaymentMethodType.METAMASK,
+          networks: [network],
+          userId: user.id,
+          creatorId: user.id,
+        }))
+      );
+    }
+
+    if (threepid.source === ThreepidSource.hiro) {
+      this.logger.debug(
+        `Creating Hiro payment method from threepid: ${JSON.stringify({
+          threepidId: threepid.id,
+          userId: user.id,
+        })}`
+      );
+
+      const networks = await this.paymentService.getPaymentNetworks({
+        type: PaymentNetworkType.STACKS,
+      });
+
+      const config = threepid.config as HiroThreepidConfig;
+      await this.paymentService.batchCreatePaymentMethods(
+        networks.map((network) => ({
+          address:
+            network.slug === "stacks-mainnet"
+              ? config.mainnetAddress
+              : config.testnetAddress,
+          type: PaymentMethodType.HIRO,
           networks: [network],
           userId: user.id,
           creatorId: user.id,

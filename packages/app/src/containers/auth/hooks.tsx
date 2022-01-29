@@ -7,6 +7,8 @@ import {
   AuthWithThreepidMutationVariables,
   CheckWalletConnectSessionMutation,
   CheckWalletConnectSessionMutationVariables,
+  CreateHiroThreepid,
+  CreateHiroThreepidVariables,
   CreateMetamaskThreepid,
   CreateMetamaskThreepidVariables,
   StartWalletConnectSessionMutation,
@@ -44,10 +46,26 @@ export function useAuthWithThreepid(): (threepidId: string) => Promise<void> {
 
 export function useCreateHiroThreepid(): () => Promise<string> {
   const requestAddresses = useRequestAddresses();
+  const [mutation] = useMutation<
+    CreateHiroThreepid,
+    CreateHiroThreepidVariables
+  >(Mutations.createHiroThreepid);
   return useCallback(async () => {
     const addresses = await requestAddresses();
-    const address = addresses["stacks-mainnet"];
-  }, [requestAddresses]);
+
+    const res = await mutation({
+      variables: {
+        input: {
+          mainnetAddress: addresses["stacks-mainnet"],
+          testnetAddress: addresses["stacks-testnet"],
+        },
+      },
+    });
+    if (!res.data) {
+      throw new Error("Failed to create Hiro threepid");
+    }
+    return res.data.threepid.id;
+  }, [requestAddresses, mutation]);
 }
 
 export function useCreateMetamaskThreepid(): () => Promise<string> {

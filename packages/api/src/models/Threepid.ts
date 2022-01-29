@@ -36,11 +36,17 @@ export interface MetamaskThreepidConfig {
   signature: string;
 }
 
+export interface HiroThreepidConfig {
+  mainnetAddress: string;
+  testnetAddress: string;
+}
+
 interface ThreepidConfigMap extends Record<ThreepidSource, any> {
   [ThreepidSource.github]: GithubThreepidConfig;
   [ThreepidSource.discord]: DiscordThreepidConfig;
   [ThreepidSource.metamask]: MetamaskThreepidConfig;
   [ThreepidSource.notion]: NotionThreepidConfig;
+  [ThreepidSource.hiro]: HiroThreepidConfig;
 }
 
 registerEnumType(ThreepidSource, { name: "ThreepidSource" });

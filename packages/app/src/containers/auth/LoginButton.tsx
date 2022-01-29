@@ -4,11 +4,11 @@ import React, { FC, useCallback } from "react";
 import { LoginModal } from "./LoginModal";
 
 interface Props extends ButtonProps {
-  onAuthedWithMetamask?(): void;
+  onAuthedWithWallet?(): void;
 }
 
 export const LoginButton: FC<Props> = ({
-  onAuthedWithMetamask,
+  onAuthedWithWallet,
   className,
   onClick,
   ...props
@@ -21,16 +21,16 @@ export const LoginButton: FC<Props> = ({
     },
     [onClick, modalVisible]
   );
-  const handleAuthedWithMetamask = useCallback(() => {
-    onAuthedWithMetamask?.();
+  const handleAuthedWithWallet = useCallback(() => {
+    onAuthedWithWallet?.();
     modalVisible.toggleOff();
-  }, [onAuthedWithMetamask, modalVisible]);
+  }, [onAuthedWithWallet, modalVisible]);
   return (
     <>
       <Button {...props} onClick={handleClick} />
       <LoginModal
         toggle={modalVisible}
-        onAuthedWithMetamask={handleAuthedWithMetamask}
+        onAuthedWithWallet={handleAuthedWithWallet}
       />
     </>
   );
