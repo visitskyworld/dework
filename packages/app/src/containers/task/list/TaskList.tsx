@@ -201,8 +201,12 @@ export const TaskList: FC<Props> = ({
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
           filterIcon: <Icons.SearchOutlined />,
-          onFilter: (value, row) =>
-            row.name.toLowerCase().includes((value as string).toLowerCase()),
+          onFilter: (value, row) => {
+            console.warn(`"${value}"`);
+            return row.name
+              .toLowerCase()
+              .includes((value as string).toLowerCase());
+          },
           filterDropdown: ({
             setSelectedKeys,
             confirm,
@@ -229,7 +233,14 @@ export const TaskList: FC<Props> = ({
                 >
                   Search
                 </Button>
-                <Button onClick={clearFilters} size="small" style={{ flex: 1 }}>
+                <Button
+                  size="small"
+                  style={{ flex: 1 }}
+                  onClick={() => {
+                    clearFilters?.();
+                    confirm();
+                  }}
+                >
                   Reset
                 </Button>
               </Row>
