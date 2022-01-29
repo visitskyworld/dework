@@ -1,9 +1,9 @@
 import * as Icons from "@ant-design/icons";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { Constants } from "@dewo/app/util/constants";
-import { Avatar, Card, Space, Tooltip, Typography } from "antd";
+import { Avatar, Card, Popconfirm, Space, Tooltip, Typography } from "antd";
 import { useRouter } from "next/router";
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { useOrganization } from "../hooks";
 
 interface Props {
@@ -13,12 +13,21 @@ interface Props {
 export const ImportProjectsFromNotionCard: FC<Props> = ({ organizationId }) => {
   const router = useRouter();
   const { organization } = useOrganization(organizationId);
+  const goToNotionOauthFlow = useCallback(() => {
+    const url = `${
+      Constants.GRAPHQL_API_URL
+    }/auth/notion?state=${JSON.stringify({
+      redirect: `${router.asPath}/notion-import`,
+    })}`;
+    window.location.href = url;
+  }, [router.asPath]);
   if (!organization) return null;
   return (
-    <a
-      href={`${Constants.GRAPHQL_API_URL}/auth/notion?state=${JSON.stringify({
-        redirect: `${router.asPath}/notion-import`,
-      })}`}
+    <Popconfirm
+      title="You will be sent to Notion to select what workspaces you want to import to Dework. After you have selected workspaces, you will be redirected back to this page and the workspaces and Notion cards will be shown as Dework projects and tasks."
+      okText="Go to Notion"
+      icon={<NotionIcon style={{ color: "unset" }} />}
+      onConfirm={goToNotionOauthFlow}
     >
       <Card
         size="small"
@@ -42,6 +51,6 @@ export const ImportProjectsFromNotionCard: FC<Props> = ({ organizationId }) => {
           </Typography.Paragraph>
         </Space>
       </Card>
-    </a>
+    </Popconfirm>
   );
 };
