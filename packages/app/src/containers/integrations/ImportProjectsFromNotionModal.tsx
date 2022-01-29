@@ -19,12 +19,12 @@ export const ImportProjectsFromNotionModal: FC<Props> = ({
   const router = useRouter();
   const createProjectsFromNotion = useCreateProjectsFromNotion();
   useEffect(() => {
-    if (!organization) return;
+    if (!organization || !visible) return;
     createProjectsFromNotion({ threepidId, organizationId }).then(() =>
       router.push(organization.permalink)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [!!organization]);
+  }, [!!organization, visible]);
   return (
     <Modal visible={visible} closable={false} footer={null}>
       <Typography.Title level={4} style={{ textAlign: "center" }}>
