@@ -19,6 +19,7 @@ import {
   Menu,
   Popconfirm,
   Row,
+  Space,
   Table,
   Tag,
   Tooltip,
@@ -199,6 +200,42 @@ export const TaskList: FC<Props> = ({
           dataIndex: "name",
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
+          filterIcon: <Icons.SearchOutlined />,
+          onFilter: (value, row) =>
+            row.name.toLowerCase().includes((value as string).toLowerCase()),
+          filterDropdown: ({
+            visible,
+            setSelectedKeys,
+            confirm,
+            selectedKeys,
+            clearFilters,
+          }) => (
+            <Space direction="vertical" style={{ padding: 8 }}>
+              <Input
+                autoFocus
+                placeholder="Search by name"
+                value={selectedKeys[0]}
+                onChange={(e) =>
+                  setSelectedKeys(e.target.value ? [e.target.value] : [])
+                }
+                onPressEnter={() => confirm()}
+              />
+              <Row style={{ gap: 8 }}>
+                <Button
+                  type="primary"
+                  onClick={() => confirm()}
+                  icon={<Icons.SearchOutlined />}
+                  size="small"
+                  style={{ flex: 1 }}
+                >
+                  Search
+                </Button>
+                <Button onClick={clearFilters} size="small" style={{ flex: 1 }}>
+                  Reset
+                </Button>
+              </Row>
+            </Space>
+          ),
           render: (name: string, row: TaskListRow) =>
             nameEditable ? (
               <Input.TextArea
