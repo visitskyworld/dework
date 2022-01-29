@@ -5,17 +5,20 @@ import * as Icons from "@ant-design/icons";
 import { Constants } from "@dewo/app/util/constants";
 import { Button, ButtonProps } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
+import { NotionIcon } from "@dewo/app/components/icons/Notion";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
   [ThreepidSource.github]: <Icons.GithubOutlined />,
   [ThreepidSource.metamask]: <MetamaskIcon />,
+  [ThreepidSource.notion]: <NotionIcon />,
 };
 
 export const getThreepidName: Record<ThreepidSource, string> = {
   [ThreepidSource.discord]: "Discord",
   [ThreepidSource.github]: "GitHub",
   [ThreepidSource.metamask]: "Metamask",
+  [ThreepidSource.notion]: "Notion",
 };
 
 interface Props extends ButtonProps {

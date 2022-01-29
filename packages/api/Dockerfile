@@ -6,6 +6,7 @@ WORKDIR /builder
 
 COPY package.json yarn.lock ./
 COPY packages/api/package.json packages/api/
+COPY packages/api/patches patches
 
 # https://github.com/docker/getting-started/issues/124#issuecomment-779806159
 RUN apk --no-cache --virtual build-dependencies add \
@@ -13,6 +14,7 @@ RUN apk --no-cache --virtual build-dependencies add \
         make \
         g++ \
 && yarn api install --frozen-lockfile \
+&& yarn patch-package \
 && apk del build-dependencies
 
 COPY tsconfig.base.json .
