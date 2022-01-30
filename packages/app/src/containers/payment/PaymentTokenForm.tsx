@@ -8,7 +8,11 @@ import {
   PaymentTokenType,
 } from "@dewo/app/graphql/types";
 import { useForm } from "antd/lib/form/Form";
-import { useERC20Contract, useERC721Contract } from "@dewo/app/util/ethereum";
+import {
+  useERC1155Contract,
+  useERC20Contract,
+  useERC721Contract,
+} from "@dewo/app/util/ethereum";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { useCreatePaymentToken, usePaymentNetworks } from "./hooks";
 
@@ -39,6 +43,7 @@ export const PaymentTokenForm: FC<FormProps> = ({
 
   const loadERC20Contract = useERC20Contract();
   const loadERC721Contract = useERC721Contract();
+  const loadERC1155Contract = useERC1155Contract();
   const lookupAddress = useCallback(async () => {
     const values = form.getFieldsValue();
     const network = networks?.find((n) => n.id === values.networkId);
@@ -64,6 +69,28 @@ export const PaymentTokenForm: FC<FormProps> = ({
           setValues((prev) => ({ ...prev, name, symbol, exp: 1 }));
           break;
         }
+        case PaymentTokenType.ERC1155: {
+          const contract = await loadERC1155Contract(values.address, network);
+          const uri = await contract.uri(Number(values.identifier));
+
+          interface ERC1155Metadata {
+            name: string;
+            description: string;
+            image: string;
+          }
+
+          const metadata: ERC1155Metadata = await fetch(
+            uri.replace("{id}", values.identifier!)
+          ).then((res) => res.json());
+
+          const name = metadata.name;
+          const symbol = metadata.name;
+          const exp = 1;
+
+          form.setFieldsValue({ name, symbol, exp });
+          setValues((prev) => ({ ...prev, name, symbol, exp }));
+          break;
+        }
       }
     } catch (error) {
       console.error(error);
@@ -73,7 +100,14 @@ export const PaymentTokenForm: FC<FormProps> = ({
     } finally {
       lookupLoading.toggleOff();
     }
-  }, [form, networks, loadERC20Contract, loadERC721Contract, lookupLoading]);
+  }, [
+    form,
+    networks,
+    loadERC20Contract,
+    loadERC721Contract,
+    loadERC1155Contract,
+    lookupLoading,
+  ]);
 
   const handleChange = useCallback(
     (
@@ -147,36 +181,47 @@ export const PaymentTokenForm: FC<FormProps> = ({
               showSearch
               optionFilterProp="label"
             >
-              <Select.Option value={PaymentTokenType.ERC20} label="ERC20">
-                ERC20
-              </Select.Option>
-              <Select.Option value={PaymentTokenType.ERC721} label="ERC721">
-                ERC721
-              </Select.Option>
+              {[
+                PaymentTokenType.ERC20,
+                PaymentTokenType.ERC721,
+                PaymentTokenType.ERC1155,
+              ].map((type) => (
+                <Select.Option key={type} value={type} label={type}>
+                  {type}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
         <Col span={24}>
-          <FormSection label="Contract Address">
-            <Input.Group compact style={{ display: "flex" }}>
-              <Form.Item
-                name="address"
-                rules={[{ required: true }]}
-                style={{ flex: 1 }}
-              >
-                <Input placeholder="Enter Contract Address..." />
-              </Form.Item>
+          <Row style={{ gap: 8 }}>
+            <Form.Item
+              label="Contract Address"
+              name="address"
+              rules={[{ required: true }]}
+              style={{ flex: 3 }}
+            >
+              <Input placeholder="Enter Address..." />
+            </Form.Item>
+            <Form.Item
+              label="Token ID"
+              name="identifier"
+              hidden={values.type !== PaymentTokenType.ERC1155}
+              rules={[{ required: values.type === PaymentTokenType.ERC1155 }]}
+              style={{ flex: 1 }}
+            >
+              <Input placeholder="Token ID" />
+            </Form.Item>
+            <FormSection label={"\u2060"}>
               <Button
                 loading={lookupLoading.isOn}
                 type="ghost"
-                style={{ width: "25%" }}
                 onClick={lookupAddress}
               >
                 Lookup
               </Button>
-              {/* )} */}
-            </Input.Group>
-          </FormSection>
+            </FormSection>
+          </Row>
         </Col>
         <Col span={12}>
           <Form.Item

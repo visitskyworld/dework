@@ -33,6 +33,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
       tableLayout="fixed"
       rowClassName="hover:cursor-pointer"
       className="dewo-discovery-table"
+      rowKey="id"
       onRow={(t) => ({ onClick: () => navigateToTask(t.id) })}
       columns={[
         {

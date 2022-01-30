@@ -10177,6 +10177,7 @@ export interface CreatePaymentMethodInput {
 export interface CreatePaymentTokenInput {
   type: PaymentTokenType;
   address: string;
+  identifier?: string | null;
   name: string;
   symbol: string;
   exp: number;

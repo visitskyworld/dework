@@ -103,6 +103,11 @@ interface ERC721Contract {
   symbol(): Promise<string>;
 }
 
+interface ERC1155Contract {
+  balanceOf(owner: string, id: number): Promise<BigNumber>;
+  uri(id: number): Promise<string>;
+}
+
 export function useERC20Contract(): (
   address: string,
   network: PaymentNetwork
@@ -149,6 +154,29 @@ export function useERC721Contract(): (
         ],
         signer
       ) as ethers.Contract & ERC721Contract;
+    },
+    [requestSigner, switchChain]
+  );
+}
+
+export function useERC1155Contract(): (
+  address: string,
+  network: PaymentNetwork
+) => Promise<ethers.Contract & ERC1155Contract> {
+  const requestSigner = useRequestSigner();
+  const switchChain = useSwitchChain();
+  return useCallback(
+    async (address, network) => {
+      await switchChain(network);
+      const signer = await requestSigner();
+      return new ethers.Contract(
+        address,
+        [
+          "function balanceOf(address owner, uint256 id) public view returns (uint256 balance)",
+          "function uri(uint256 id) public view returns (string memory)",
+        ],
+        signer
+      ) as ethers.Contract & ERC1155Contract;
     },
     [requestSigner, switchChain]
   );
