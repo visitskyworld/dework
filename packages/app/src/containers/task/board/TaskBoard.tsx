@@ -14,7 +14,7 @@ import {
   DragStart,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { orderBetweenTasks, TaskSection, useGroupedTasks } from "./util";
+import { getSortKeyBetween, TaskSection, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../hooks";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
@@ -98,7 +98,7 @@ export const TaskBoard: FC<Props> = ({
       const section = taskSectionsByStatus[status]?.[sectionIndex];
       const taskAbove = section?.tasks[indexExcludingItself - 1];
       const taskBelow = section?.tasks[indexExcludingItself];
-      const sortKey = orderBetweenTasks(taskAbove, taskBelow);
+      const sortKey = getSortKeyBetween(taskAbove, taskBelow, (t) => t.sortKey);
 
       const updatedTask = await updateTask(
         { id: taskId, status, sortKey },

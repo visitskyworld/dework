@@ -1,4 +1,5 @@
 import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -121,29 +122,34 @@ export function useCreateOrganizationTag(): (
 }
 
 export function useUpdateOrganizationMember(): (
-  input: UpdateOrganizationMemberInput
+  input: UpdateOrganizationMemberInput,
+  member?: OrganizationMember
 ) => Promise<OrganizationMember> {
   const [mutation] = useMutation<
     UpdateOrganizationMemberMutation,
     UpdateOrganizationMemberMutationVariables
   >(Mutations.updateOrganizationMember);
+  const { user } = useAuthContext();
   return useCallback(
-    async (input) => {
+    async (input, member) => {
       const res = await mutation({
         variables: { input },
         refetchQueries: [
-          { query: Queries.me },
+          ...(input.userId === user?.id ? [{ query: Queries.me }] : []),
           {
             query: Queries.organization,
             variables: { organizationId: input.organizationId },
           },
         ],
+        optimisticResponse: !!member
+          ? { member: { ...member, ...(input as any) } }
+          : undefined,
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.member;
     },
-    [mutation]
+    [mutation, user?.id]
   );
 }
 

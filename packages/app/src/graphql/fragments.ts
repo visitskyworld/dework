@@ -100,6 +100,7 @@ export const organizationMember = gql`
     role
     organizationId
     userId
+    sortKey
     user {
       ...User
     }
@@ -482,10 +483,18 @@ export const userDetails = gql`
     paymentMethods {
       ...PaymentMethod
     }
+    organizations {
+      ...Organization
+      member {
+        ...OrganizationMember
+      }
+    }
   }
 
   ${userProfile}
   ${paymentMethod}
+  ${organization}
+  ${organizationMember}
 `;
 
 export const organizationDetails = gql`

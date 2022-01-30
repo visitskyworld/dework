@@ -68,6 +68,18 @@ export class OrganizationResolver {
     return this.organizationService.getMembers(organization.id);
   }
 
+  @ResolveField(() => OrganizationMember, { nullable: true })
+  public async member(
+    @Parent() organization: Organization,
+    @Context("user") user: User | undefined
+  ): Promise<OrganizationMember | undefined> {
+    if (!user) return undefined;
+    return this.organizationService.findMember({
+      organizationId: organization.id,
+      userId: user.id,
+    });
+  }
+
   @ResolveField(() => [Project])
   public async projects(
     @Context("user") user: User | undefined,

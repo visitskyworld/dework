@@ -163,13 +163,16 @@ export function useGroupedTasks(
   }, [tasks, projectId, canUpdateTasks]);
 }
 
-export function orderBetweenTasks(
-  taskAbove: Task | undefined,
-  taskBelow: Task | undefined
+export function getSortKeyBetween<T>(
+  itemAbove: T | undefined,
+  itemBelow: T | undefined,
+  getSortKey: (item: T) => string | undefined
 ): string {
   const [a, b] = [
-    taskBelow?.sortKey ?? String(Date.now()),
-    taskAbove?.sortKey ?? Between.lo,
+    !!itemAbove ? getSortKey(itemAbove) ?? Between.lo : Between.lo,
+    !!itemBelow
+      ? getSortKey(itemBelow) ?? String(Date.now())
+      : String(Date.now()),
   ].sort(Between.strord);
 
   if (a === b) return a;

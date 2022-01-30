@@ -7,6 +7,23 @@
 // GraphQL mutation operation: AuthWithThreepidMutation
 // ====================================================
 
+export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_member {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: AuthWithThreepidMutation_authWithThreepid_user_organizations_member_user;
+}
+
 export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -14,6 +31,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  member: AuthWithThreepidMutation_authWithThreepid_user_organizations_member | null;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_details {
@@ -140,6 +158,23 @@ export interface CreateHiroThreepidVariables {
 // GraphQL mutation operation: UpdateUserMutation
 // ====================================================
 
+export interface UpdateUserMutation_user_organizations_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UpdateUserMutation_user_organizations_member {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: UpdateUserMutation_user_organizations_member_user;
+}
+
 export interface UpdateUserMutation_user_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -147,6 +182,7 @@ export interface UpdateUserMutation_user_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  member: UpdateUserMutation_user_organizations_member | null;
 }
 
 export interface UpdateUserMutation_user_details {
@@ -373,6 +409,7 @@ export interface UpdateOrganizationMutation_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: UpdateOrganizationMutation_organization_members_user;
 }
 
@@ -525,6 +562,7 @@ export interface UpdateOrganizationMemberMutation_member {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: UpdateOrganizationMemberMutation_member_user;
 }
 
@@ -558,6 +596,7 @@ export interface RemoveOrganizationMemberMutation_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: RemoveOrganizationMemberMutation_organization_members_user;
 }
 
@@ -871,6 +910,7 @@ export interface CreateProjectMutation_project_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: CreateProjectMutation_project_organization_members_user;
 }
 
@@ -2922,6 +2962,7 @@ export interface AcceptInviteMutation_invite_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: AcceptInviteMutation_invite_organization_members_user;
 }
 
@@ -2960,6 +3001,7 @@ export interface AcceptInviteMutation_invite_project_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: AcceptInviteMutation_invite_project_organization_members_user;
 }
 
@@ -4211,6 +4253,7 @@ export interface CreateProjectsFromNotionMutation_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: CreateProjectsFromNotionMutation_organization_members_user;
 }
 
@@ -4301,6 +4344,23 @@ export interface CreateProjectsFromNotionMutationVariables {
 // GraphQL query operation: MeQuery
 // ====================================================
 
+export interface MeQuery_me_organizations_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface MeQuery_me_organizations_member {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: MeQuery_me_organizations_member_user;
+}
+
 export interface MeQuery_me_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4308,6 +4368,7 @@ export interface MeQuery_me_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  member: MeQuery_me_organizations_member | null;
 }
 
 export interface MeQuery_me_details {
@@ -4848,6 +4909,7 @@ export interface GetOrganizationQuery_organization_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: GetOrganizationQuery_organization_members_user;
 }
 
@@ -5062,6 +5124,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: GetFeaturedOrganizationsQuery_featuredOrganizations_members_user;
 }
 
@@ -8208,6 +8271,7 @@ export interface OrganizationMember {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: OrganizationMember_user;
 }
 
@@ -9678,6 +9742,23 @@ export interface UserProfile {
 // GraphQL fragment: UserDetails
 // ====================================================
 
+export interface UserDetails_organizations_member_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface UserDetails_organizations_member {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: UserDetails_organizations_member_user;
+}
+
 export interface UserDetails_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -9685,6 +9766,7 @@ export interface UserDetails_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  member: UserDetails_organizations_member | null;
 }
 
 export interface UserDetails_details {
@@ -9877,6 +9959,7 @@ export interface OrganizationDetails_members {
   role: OrganizationRole;
   organizationId: string;
   userId: string;
+  sortKey: string;
   user: OrganizationDetails_members_user;
 }
 
