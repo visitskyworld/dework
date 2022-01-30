@@ -81,7 +81,13 @@ export const PaymentTokenForm: FC<FormProps> = ({
 
           const metadata: ERC1155Metadata = await fetch(
             uri.replace("{id}", values.identifier!)
-          ).then((res) => res.json());
+          )
+            .then((res) => res.json())
+            .catch(() => ({
+              name: values.address,
+              description: values.address,
+              image: "",
+            }));
 
           const name = metadata.name;
           const symbol = metadata.name;
