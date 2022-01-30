@@ -136,6 +136,7 @@ export class PaymentService {
       type: partial.type,
       networkId: partial.networkId,
       address: partial.address ?? IsNull(),
+      identifier: partial.identifier ?? IsNull(),
     });
     if (!!existing) return existing;
 

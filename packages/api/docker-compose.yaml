@@ -8,7 +8,7 @@ services:
     environment:
       TZ: UTC
       PGTZ: UTC
-      POSTGRES_DATABASE: dework-local
+      POSTGRES_DB: dework-local
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: dework-local
     volumes:
@@ -21,7 +21,7 @@ services:
     environment:
       TZ: UTC
       PGTZ: UTC
-      POSTGRES_DATABASE: dework-test
+      POSTGRES_DB: dework-test
       POSTGRES_USER: dework-test
       POSTGRES_PASSWORD: dework-test
 

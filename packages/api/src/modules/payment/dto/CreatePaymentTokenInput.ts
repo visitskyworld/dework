@@ -10,6 +10,9 @@ export class CreatePaymentTokenInput {
   @Field()
   public address!: string;
 
+  @Field({ nullable: true })
+  public tokenId?: string;
+
   @Field()
   public name!: string;
 

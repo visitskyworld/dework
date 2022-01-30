@@ -61,6 +61,10 @@ export class PaymentToken<
   @Field({ nullable: true })
   public address?: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public identifier?: string;
+
   @JoinColumn()
   @ManyToOne(() => PaymentNetwork)
   @Field(() => PaymentNetwork)

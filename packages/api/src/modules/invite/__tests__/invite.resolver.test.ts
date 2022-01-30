@@ -1,6 +1,10 @@
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
-import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
+import {
+  PaymentNetwork,
+  PaymentNetworkType,
+} from "@dewo/api/models/PaymentNetwork";
 import { PaymentTokenType } from "@dewo/api/models/PaymentToken";
+
 import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -232,61 +236,108 @@ describe("InviteResolver", () => {
           );
         });
 
-        it("should assert that user has access to gated token", async () => {
-          const network = await fixtures.createPaymentNetwork({
-            type: PaymentNetworkType.ETHEREUM,
-            config: {
-              chainId: -1,
-              explorerUrl: "",
-              rpcUrl: "https://polygon-rpc.com",
-            },
-          });
-          const token = await fixtures.createPaymentToken({
-            type: PaymentTokenType.ERC721,
-            // https://polygonscan.com/address/0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd
-            address: "0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd",
-            networkId: network.id,
+        describe("asserting balances", () => {
+          let polygonNetwork: PaymentNetwork;
+
+          beforeEach(async () => {
+            polygonNetwork = await fixtures.createPaymentNetwork({
+              type: PaymentNetworkType.ETHEREUM,
+              config: {
+                chainId: -1,
+                explorerUrl: "",
+                rpcUrl: "https://polygon-rpc.com",
+              },
+            });
           });
 
-          const { user: inviter, project } =
-            await fixtures.createUserOrgProject();
-          await fixtures.createProjectTokenGate({
-            projectId: project.id,
-            tokenId: token.id,
-          });
-          const invite = await fixtures.createInvite(
-            { projectId: project.id, projectRole: ProjectRole.ADMIN },
-            inviter
-          );
-
-          const invited = await fixtures.createUser();
-          const response1 = await client.request({
-            app,
-            auth: fixtures.createAuthToken(invited),
-            body: InviteRequests.accept(invite.id),
-          });
-
-          client.expectGqlError(response1, HttpStatus.FORBIDDEN);
-
-          await fixtures.createPaymentMethod({
-            userId: invited.id,
-            networkIds: [network.id],
-            // https://opensea.io/0xcedda60f770a23f48960454f173c8e118718321e
-            address: "0xcedda60f770a23f48960454f173c8e118718321e",
-          });
-          const response2 = await client.request({
-            app,
-            auth: fixtures.createAuthToken(invited),
-            body: InviteRequests.accept(invite.id),
-          });
-
-          expect(response2.status).toEqual(HttpStatus.OK);
-          expect(response2.body.data?.invite.project.members).toContainEqual(
-            expect.objectContaining({
+          it("should assert that user has gated ERC721 token", async () => {
+            const token = await fixtures.createPaymentToken({
+              type: PaymentTokenType.ERC721,
+              // https://polygonscan.com/address/0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd
+              address: "0xc1c6a331d4013f40ca830c06ed47564d0d2b21cd",
+              networkId: polygonNetwork.id,
+            });
+            const { user: inviter, project } =
+              await fixtures.createUserOrgProject();
+            await fixtures.createProjectTokenGate({
+              projectId: project.id,
+              tokenId: token.id,
+            });
+            const invite = await fixtures.createInvite(
+              { projectId: project.id, projectRole: ProjectRole.ADMIN },
+              inviter
+            );
+            const invited = await fixtures.createUser();
+            const response1 = await client.request({
+              app,
+              auth: fixtures.createAuthToken(invited),
+              body: InviteRequests.accept(invite.id),
+            });
+            client.expectGqlError(response1, HttpStatus.FORBIDDEN);
+            await fixtures.createPaymentMethod({
               userId: invited.id,
-              role: ProjectRole.ADMIN,
-            })
-          );
+              networkIds: [polygonNetwork.id],
+              // https://opensea.io/0xcedda60f770a23f48960454f173c8e118718321e
+              address: "0xcedda60f770a23f48960454f173c8e118718321e",
+            });
+            const response2 = await client.request({
+              app,
+              auth: fixtures.createAuthToken(invited),
+              body: InviteRequests.accept(invite.id),
+            });
+            expect(response2.status).toEqual(HttpStatus.OK);
+            expect(response2.body.data?.invite.project.members).toContainEqual(
+              expect.objectContaining({
+                userId: invited.id,
+                role: ProjectRole.ADMIN,
+              })
+            );
+          });
+
+          it("should assert that user has gated ERC1155 token", async () => {
+            const token = await fixtures.createPaymentToken({
+              type: PaymentTokenType.ERC1155,
+              // https://polygonscan.com/address/0xc9cccffa96dc0f79661eaa2e72bbbcc82acd06db
+              address: "0xc9cccffa96dc0f79661eaa2e72bbbcc82acd06db",
+              networkId: polygonNetwork.id,
+              identifier: "1",
+            });
+            const { user: inviter, project } =
+              await fixtures.createUserOrgProject();
+            await fixtures.createProjectTokenGate({
+              projectId: project.id,
+              tokenId: token.id,
+            });
+            const invite = await fixtures.createInvite(
+              { projectId: project.id, projectRole: ProjectRole.ADMIN },
+              inviter
+            );
+            const invited = await fixtures.createUser();
+            const response1 = await client.request({
+              app,
+              auth: fixtures.createAuthToken(invited),
+              body: InviteRequests.accept(invite.id),
+            });
+            client.expectGqlError(response1, HttpStatus.FORBIDDEN);
+            await fixtures.createPaymentMethod({
+              userId: invited.id,
+              networkIds: [polygonNetwork.id],
+              // https://polygonscan.com/token/0xc9cccffa96dc0f79661eaa2e72bbbcc82acd06db#balances
+              address: "0x0030c9dd1da63af7d7df6b8332aef5fae99f536b",
+            });
+            const response2 = await client.request({
+              app,
+              auth: fixtures.createAuthToken(invited),
+              body: InviteRequests.accept(invite.id),
+            });
+            expect(response2.status).toEqual(HttpStatus.OK);
+            expect(response2.body.data?.invite.project.members).toContainEqual(
+              expect.objectContaining({
+                userId: invited.id,
+                role: ProjectRole.ADMIN,
+              })
+            );
+          });
         });
       });
     });
