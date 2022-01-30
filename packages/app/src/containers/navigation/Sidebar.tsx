@@ -19,7 +19,7 @@ import _ from "lodash";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
-  const { isOn, toggle } = useSidebarContext();
+  const { isOn, setToggle } = useSidebarContext();
 
   const organizations = useMemo(
     () => _.sortBy(user?.organizations, (o) => o.member?.sortKey).reverse(),
@@ -69,7 +69,7 @@ export const Sidebar: FC = () => {
     <Layout.Sider
       collapsible
       breakpoint="sm"
-      onBreakpoint={toggle}
+      onBreakpoint={setToggle}
       width={72}
       collapsedWidth="0"
       collapsed={isOn}
