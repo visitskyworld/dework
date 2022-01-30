@@ -106,6 +106,13 @@ interface ERC721Contract {
 interface ERC1155Contract {
   balanceOf(owner: string, id: number): Promise<BigNumber>;
   uri(id: number): Promise<string>;
+  safeTransferFrom(
+    from: string,
+    to: string,
+    id: BigNumber,
+    amount: BigNumber,
+    data: BigNumber
+  ): Promise<ethers.providers.TransactionResponse>;
 }
 
 export function useERC20Contract(): (
@@ -174,6 +181,7 @@ export function useERC1155Contract(): (
         [
           "function balanceOf(address owner, uint256 id) public view returns (uint256 balance)",
           "function uri(uint256 id) public view returns (string memory)",
+          "function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data) public",
         ],
         signer
       ) as ethers.Contract & ERC1155Contract;
@@ -193,6 +201,8 @@ export function useCreateEthereumTransaction(): (
   const requestSigner = useRequestSigner();
   const switchChain = useSwitchChain();
   const loadERC20Contract = useERC20Contract();
+  const loadERC721Contract = useERC721Contract();
+  const loadERC1155Contract = useERC1155Contract();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
       const currentAddress = await requestAddress();
@@ -212,16 +222,35 @@ export function useCreateEthereumTransaction(): (
           });
           return tx.hash;
         }
-        case PaymentTokenType.ERC20:
+        case PaymentTokenType.ERC20: {
           const contract = await loadERC20Contract(token.address!, network);
           const tx = await contract.transfer(toAddress, BigNumber.from(amount));
           return tx.hash;
+        }
+        case PaymentTokenType.ERC1155: {
+          const contract = await loadERC1155Contract(token.address!, network);
+          const tx = await contract.safeTransferFrom(
+            fromAddress,
+            toAddress,
+            BigNumber.from(token.identifier!),
+            BigNumber.from(amount),
+            BigNumber.from(0)
+          );
+          return tx.hash;
+        }
         default:
           throw new Error(
             `Ethereum payments for tokens type "${token.type}" not implemented`
           );
       }
     },
-    [requestAddress, requestSigner, switchChain, loadERC20Contract]
+    [
+      requestAddress,
+      requestSigner,
+      switchChain,
+      loadERC20Contract,
+      // loadERC721Contract,
+      loadERC1155Contract,
+    ]
   );
 }
