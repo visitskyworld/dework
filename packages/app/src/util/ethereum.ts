@@ -101,6 +101,11 @@ interface ERC721Contract {
   balanceOf(owner: string): Promise<BigNumber>;
   name(): Promise<string>;
   symbol(): Promise<string>;
+  transfer(
+    from: string,
+    to: string,
+    value: BigNumber
+  ): Promise<ethers.providers.TransactionResponse>;
 }
 
 interface ERC1155Contract {
@@ -158,6 +163,7 @@ export function useERC721Contract(): (
           "function balanceOf(address owner) public view returns (uint256 balance)",
           "function name() public view returns (string memory)",
           "function symbol() public view returns (string memory)",
+          "function transferFrom(address from, address to, uint256 tokenId) public",
         ],
         signer
       ) as ethers.Contract & ERC721Contract;
@@ -227,6 +233,15 @@ export function useCreateEthereumTransaction(): (
           const tx = await contract.transfer(toAddress, BigNumber.from(amount));
           return tx.hash;
         }
+        case PaymentTokenType.ERC721: {
+          const contract = await loadERC721Contract(token.address!, network);
+          const tx = await contract.transferFrom(
+            fromAddress,
+            toAddress,
+            BigNumber.from(amount)
+          );
+          return tx.hash;
+        }
         case PaymentTokenType.ERC1155: {
           const contract = await loadERC1155Contract(token.address!, network);
           const tx = await contract.safeTransferFrom(
@@ -249,7 +264,7 @@ export function useCreateEthereumTransaction(): (
       requestSigner,
       switchChain,
       loadERC20Contract,
-      // loadERC721Contract,
+      loadERC721Contract,
       loadERC1155Contract,
     ]
   );
