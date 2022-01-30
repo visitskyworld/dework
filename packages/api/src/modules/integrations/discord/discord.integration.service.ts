@@ -136,7 +136,7 @@ export class DiscordIntegrationService {
         }
 
         const threepids = await this.findTaskUserThreepids(event.task);
-        await channelToPostTo.send({
+        await mainChannel.send({
           embeds: [
             {
               title: event.task.name,
