@@ -1,13 +1,12 @@
 import { useCallback } from "react";
-import * as solana from "@solana/web3.js";
-import * as spl from "@solana/spl-token";
+import { Signer } from "@solana/web3.js";
 import {
   PaymentNetwork,
   PaymentToken,
   PaymentTokenType,
 } from "../graphql/types";
 
-export function useRequestSigner(): () => Promise<solana.Signer> {
+export function useRequestSigner(): () => Promise<Signer> {
   return useCallback(async () => {
     // @ts-ignore
     const provider = await window.solana;
@@ -35,6 +34,9 @@ export function useCreateSolanaTransaction(): (
   const requestSigner = useRequestSigner();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
+      const solana = await import("@solana/web3.js");
+      const spl = await import("@solana/spl-token");
+
       const currentAddress = await requestAddress();
       if (currentAddress !== fromAddress) {
         throw new Error(`Change Phantom Wallet address to "${fromAddress}"`);
