@@ -1,4 +1,3 @@
-import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { LoginModal } from "@dewo/app/containers/auth/LoginModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Constants } from "@dewo/app/util/constants";
@@ -11,20 +10,20 @@ import {
   Space,
   Typography,
   Tabs,
-  Dropdown,
-  Menu,
-  Tag,
 } from "antd";
 import React, { FC, useState } from "react";
+import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { WatchDemoButton } from "./WatchDemoButton";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
 interface Props {
   appUrl: string;
 }
 
-export const ProductSection: FC<Props> = ({ appUrl }) => {
+export const ProductSection: FC<Props> = () => {
   const loginModal = useToggle();
   const [onboardingFlow, setOnboardingFlow] = useState<string>();
+  const screens = useBreakpoint();
   return (
     <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
       <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
@@ -40,52 +39,50 @@ export const ProductSection: FC<Props> = ({ appUrl }) => {
             <Typography.Paragraph style={{ fontSize: "150%" }}>
               Manage your tasks and bounties in one place. Get contributor
               applicants, sync with Discord, boost the reputation of
-              contributors, and pay with your own DAO's tokens
+              contributors, and pay with your own DAO's tokens.{" "}
+              <WatchDemoButton />
             </Typography.Paragraph>
           </Row>
 
-          <Space align="start">
+          <Space
+            align={screens.xs ? undefined : "start"}
+            style={{ width: "100%", textAlign: "center" }}
+            size={screens.xs ? 0 : 16}
+            direction={screens.xs ? "vertical" : "horizontal"}
+          >
             <Col>
-              <Dropdown
-                trigger={["click"]}
-                placement="bottomLeft"
-                overlay={
-                  <Menu>
-                    <Menu.Item
-                      onClick={() => {
-                        setOnboardingFlow("notion");
-                        loginModal.toggleOn();
-                      }}
-                    >
-                      <Space>
-                        <NotionIcon />
-                        Import tasks from Notion
-                        <Tag color="green">Faster</Tag>
-                      </Space>
-                    </Menu.Item>
-                    <Menu.Item
-                      onClick={() => {
-                        setOnboardingFlow("dao");
-                        loginModal.toggleOn();
-                      }}
-                    >
-                      Continue without importing
-                    </Menu.Item>
-                  </Menu>
-                }
+              <Button
+                type="primary"
+                size="large"
+                block
+                onClick={() => {
+                  setOnboardingFlow("dao");
+                  loginModal.toggleOn();
+                }}
               >
-                <Button type="primary" size="large" href={appUrl}>
-                  Setup your DAO
-                </Button>
-              </Dropdown>
+                Setup DAO
+              </Button>
               <Typography.Paragraph
                 type="secondary"
                 style={{ margin: 0, textAlign: "center", marginTop: 4 }}
               >
-                (1 min setup)
+                (takes 1 min)
               </Typography.Paragraph>
             </Col>
-            <WatchDemoButton />
+            <Typography.Paragraph style={{ marginTop: 8 }}>
+              or
+            </Typography.Paragraph>
+            <Button
+              size="large"
+              block
+              icon={<NotionIcon />}
+              onClick={() => {
+                setOnboardingFlow("notion");
+                loginModal.toggleOn();
+              }}
+            >
+              Import Notion board
+            </Button>
           </Space>
         </Space>
       </Col>

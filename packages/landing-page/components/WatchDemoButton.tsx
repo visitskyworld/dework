@@ -1,5 +1,4 @@
-import * as Icons from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { Typography, Modal } from "antd";
 import React, { FC, useCallback, useRef } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
 import YouTube from "react-youtube";
@@ -14,14 +13,14 @@ export const WatchDemoButton: FC = () => {
 
   return (
     <>
-      <Button
-        type="text"
-        size="large"
-        icon={<Icons.PlayCircleOutlined />}
+      <Typography.Text
+        strong
+        underline
+        className="hover:cursor-pointer"
         onClick={watchVideoDemo.toggleOn}
       >
         Watch Video
-      </Button>
+      </Typography.Text>
       <Modal
         visible={watchVideoDemo.isOn}
         footer={null}
