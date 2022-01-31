@@ -5,7 +5,7 @@ import {
 } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { EntityDetail, EntityDetailType } from "@dewo/api/models/EntityDetail";
-import { DeepAtLeast } from "@dewo/api/types/general";
+import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import {
   ForbiddenException,
   Injectable,
@@ -20,6 +20,7 @@ import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentService } from "../payment/payment.service";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
+import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(UserOnboarding)
+    private readonly userOnboardingRepo: Repository<UserOnboarding>,
     @InjectRepository(EntityDetail)
     private readonly entityDetailRepo: Repository<EntityDetail>,
     private readonly threepidService: ThreepidService,
@@ -199,6 +202,21 @@ export class UserService {
   public async update(partial: DeepAtLeast<User, "id">): Promise<User> {
     const updated = await this.userRepo.save(partial);
     return this.userRepo.findOne(updated.id) as Promise<User>;
+  }
+
+  public async updateOnboarding(
+    partial: AtLeast<UserOnboarding, "userId">
+  ): Promise<UserOnboarding> {
+    const onboarding = await this.userOnboardingRepo.findOne({
+      userId: partial.userId,
+    });
+    const updated = await this.userOnboardingRepo.save({
+      ...onboarding,
+      ...partial,
+    });
+    return this.userOnboardingRepo.findOne(
+      updated.id
+    ) as Promise<UserOnboarding>;
   }
 
   public findById(id: string): Promise<User | undefined> {

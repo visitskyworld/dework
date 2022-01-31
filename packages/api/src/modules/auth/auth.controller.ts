@@ -105,7 +105,9 @@ export class AuthController {
         });
       }
 
-      const appUrl = this.getAppUrl(query.state);
+      const appUrl = !!state.redirect?.startsWith("/")
+        ? this.getAppUrl(query.state)
+        : "";
       const redirectUrl = `${appUrl}${state.redirect ?? ""}`;
       res.redirect(redirectUrl);
     } catch (error) {
@@ -124,7 +126,9 @@ export class AuthController {
     console.warn(req.query);
     try {
       const state = JSON.parse(req.query.state as string);
-      const appUrl = this.getAppUrl(req.query.state as string);
+      const appUrl = !!state.redirect?.startsWith("/")
+        ? this.getAppUrl(req.query.state as string)
+        : "";
       res.redirect(
         `${appUrl}${state.redirect}?threepidId=${req.user.threepidId}`
       );

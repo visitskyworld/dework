@@ -39,7 +39,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
         name="name"
         rules={[{ required: true, message: "Please enter a name" }]}
       >
-        <Input />
+        <Input placeholder="Enter organization name..." />
       </Form.Item>
 
       <Button

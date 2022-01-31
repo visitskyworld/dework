@@ -12,6 +12,10 @@ import {
   UserProfileQuery,
   UserProfileQueryVariables,
   UserProfile,
+  UpdateUserOnboardingInput,
+  UserOnboarding,
+  UpdateUserOnboardingMutation,
+  UpdateUserOnboardingMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -32,6 +36,23 @@ export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.user;
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateUserOnboarding(): (
+  input: UpdateUserOnboardingInput
+) => Promise<UserOnboarding> {
+  const [mutation] = useMutation<
+    UpdateUserOnboardingMutation,
+    UpdateUserOnboardingMutationVariables
+  >(Mutations.updateUserOnboarding);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data.onboarding;
     },
     [mutation]
   );

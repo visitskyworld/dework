@@ -24,6 +24,8 @@ import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "../task/task.roles.guard";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
+import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
+import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 
 @Resolver(() => User)
 @Injectable()
@@ -94,6 +96,15 @@ export class UserResolver {
     @Args("input") input: UpdateUserInput
   ): Promise<User> {
     return this.userService.update({ id: user.id, ...input });
+  }
+
+  @Mutation(() => UserOnboarding)
+  @UseGuards(AuthGuard)
+  public async updateUserOnboarding(
+    @Context("user") user: User,
+    @Args("input") input: UpdateUserOnboardingInput
+  ): Promise<UserOnboarding> {
+    return this.userService.updateOnboarding({ userId: user.id, ...input });
   }
 
   @Query(() => User)

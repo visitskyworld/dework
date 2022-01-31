@@ -13,11 +13,13 @@ import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
 import { PaymentModule } from "../payment/payment.module";
+import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserOnboarding,
       EntityDetail,
       Organization,
       Project,

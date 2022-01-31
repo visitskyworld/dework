@@ -80,6 +80,12 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_paymentMethods {
   tokens: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods_tokens[];
 }
 
+export interface AuthWithThreepidMutation_authWithThreepid_user_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
 export interface AuthWithThreepidMutation_authWithThreepid_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -90,6 +96,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user {
   details: AuthWithThreepidMutation_authWithThreepid_user_details[];
   threepids: AuthWithThreepidMutation_authWithThreepid_user_threepids[];
   paymentMethods: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods[];
+  onboarding: AuthWithThreepidMutation_authWithThreepid_user_onboarding | null;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid {
@@ -232,6 +239,12 @@ export interface UpdateUserMutation_user_paymentMethods {
   tokens: UpdateUserMutation_user_paymentMethods_tokens[];
 }
 
+export interface UpdateUserMutation_user_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
 export interface UpdateUserMutation_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -242,6 +255,7 @@ export interface UpdateUserMutation_user {
   details: UpdateUserMutation_user_details[];
   threepids: UpdateUserMutation_user_threepids[];
   paymentMethods: UpdateUserMutation_user_paymentMethods[];
+  onboarding: UpdateUserMutation_user_onboarding | null;
 }
 
 export interface UpdateUserMutation {
@@ -250,6 +264,42 @@ export interface UpdateUserMutation {
 
 export interface UpdateUserMutationVariables {
   input: UpdateUserInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateUserOnboardingMutation
+// ====================================================
+
+export interface UpdateUserOnboardingMutation_onboarding_user_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
+export interface UpdateUserOnboardingMutation_onboarding_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  onboarding: UpdateUserOnboardingMutation_onboarding_user_onboarding | null;
+}
+
+export interface UpdateUserOnboardingMutation_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+  user: UpdateUserOnboardingMutation_onboarding_user;
+}
+
+export interface UpdateUserOnboardingMutation {
+  onboarding: UpdateUserOnboardingMutation_onboarding;
+}
+
+export interface UpdateUserOnboardingMutationVariables {
+  input: UpdateUserOnboardingInput;
 }
 
 /* tslint:disable */
@@ -4461,6 +4511,12 @@ export interface MeQuery_me_paymentMethods {
   tokens: MeQuery_me_paymentMethods_tokens[];
 }
 
+export interface MeQuery_me_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
 export interface MeQuery_me {
   __typename: "User";
   id: Scalar.UUID;
@@ -4471,6 +4527,7 @@ export interface MeQuery_me {
   details: MeQuery_me_details[];
   threepids: MeQuery_me_threepids[];
   paymentMethods: MeQuery_me_paymentMethods[];
+  onboarding: MeQuery_me_onboarding | null;
 }
 
 export interface MeQuery {
@@ -9839,6 +9896,21 @@ export interface UserProfile {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: UserOnboarding
+// ====================================================
+
+export interface UserOnboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: UserDetails
 // ====================================================
 
@@ -9915,6 +9987,12 @@ export interface UserDetails_paymentMethods {
   tokens: UserDetails_paymentMethods_tokens[];
 }
 
+export interface UserDetails_onboarding {
+  __typename: "UserOnboarding";
+  id: Scalar.UUID;
+  type: UserOnboardingType;
+}
+
 export interface UserDetails {
   __typename: "User";
   id: Scalar.UUID;
@@ -9925,6 +10003,7 @@ export interface UserDetails {
   details: UserDetails_details[];
   threepids: UserDetails_threepids[];
   paymentMethods: UserDetails_paymentMethods[];
+  onboarding: UserDetails_onboarding | null;
 }
 
 /* tslint:disable */
@@ -10242,6 +10321,11 @@ export enum ThreepidSource {
   notion = "notion",
 }
 
+export enum UserOnboardingType {
+  CONTRIBUTOR = "CONTRIBUTOR",
+  DAO_CORE_TEAM = "DAO_CORE_TEAM",
+}
+
 export interface CreateFileUploadUrlInput {
   fileName: string;
   contentType: string;
@@ -10502,6 +10586,10 @@ export interface UpdateUserInput {
   bio?: string | null;
   imageUrl?: string | null;
   paymentMethodId?: Scalar.UUID | null;
+}
+
+export interface UpdateUserOnboardingInput {
+  type: UserOnboardingType;
 }
 
 //==============================================================

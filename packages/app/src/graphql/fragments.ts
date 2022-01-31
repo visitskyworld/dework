@@ -474,6 +474,13 @@ export const userProfile = gql`
   ${entityDetail}
 `;
 
+export const userOnboarding = gql`
+  fragment UserOnboarding on UserOnboarding {
+    id
+    type
+  }
+`;
+
 export const userDetails = gql`
   fragment UserDetails on User {
     ...UserProfile
@@ -490,9 +497,13 @@ export const userDetails = gql`
         ...OrganizationMember
       }
     }
+    onboarding {
+      ...UserOnboarding
+    }
   }
 
   ${userProfile}
+  ${userOnboarding}
   ${paymentMethod}
   ${organization}
   ${organizationMember}
