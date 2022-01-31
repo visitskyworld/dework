@@ -1,18 +1,12 @@
 import { useCallback } from "react";
-import { siteTitle } from "./constants";
-import {
-  FinishedAuthData,
-  FinishedTxData,
-  openSTXTransfer,
-  showConnect,
-  UserSession,
-} from "@stacks/connect";
+import { FinishedAuthData, FinishedTxData, UserSession } from "@stacks/connect";
 import { StacksNetwork, StacksMainnet, StacksTestnet } from "@stacks/network";
 import {
   PaymentNetwork,
   PaymentToken,
   PaymentTokenType,
 } from "../graphql/types";
+import { siteTitle } from "./constants";
 
 const stacksNetworkBySlug: Record<string, StacksNetwork> = {
   "stacks-mainnet": new StacksMainnet(),
@@ -21,6 +15,7 @@ const stacksNetworkBySlug: Record<string, StacksNetwork> = {
 
 export function useRequestUserSession(): () => Promise<UserSession> {
   return useCallback(async () => {
+    const { showConnect } = await import("@stacks/connect");
     const res = await new Promise<FinishedAuthData>((resolve, reject) =>
       showConnect({
         appDetails: { name: siteTitle, icon: "https://dework.xyz/logo.svg" },
@@ -28,7 +23,6 @@ export function useRequestUserSession(): () => Promise<UserSession> {
         onCancel: reject,
       })
     );
-
     return res.userSession;
   }, []);
 }
@@ -66,6 +60,7 @@ export function useCreateStacksTransaction(): (
       switch (token.type) {
         case PaymentTokenType.NATIVE: {
           const userSession = await requestUserSession();
+          const { openSTXTransfer } = await import("@stacks/connect");
           const res = await new Promise<FinishedTxData>((resolve, reject) =>
             openSTXTransfer({
               amount,

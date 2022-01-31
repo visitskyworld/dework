@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 
 const withLess = require("next-with-less");
-const removeImports = require("next-remove-imports")();
-module.exports = withLess(
-  removeImports({
+const withRemoveImports = require("next-remove-imports")();
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = [withLess, withRemoveImports, withBundleAnalyzer].reduce(
+  (config, plugin) => plugin(config),
+  {
     reactStrictMode: true,
     publicRuntimeConfig: {
       GRAPHQL_API_URL: process.env.GRAPHQL_API_URL,
@@ -12,5 +17,5 @@ module.exports = withLess(
       ENVIRONMENT: process.env.ENVIRONMENT,
       SENTRY_DSN: process.env.SENTRY_DSN,
     },
-  })
+  }
 );
