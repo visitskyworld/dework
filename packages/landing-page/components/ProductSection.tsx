@@ -51,9 +51,6 @@ export const ProductSection: FC<Props> = ({ appUrl }) => {
                 placement="bottomLeft"
                 overlay={
                   <Menu>
-                    {/* <Typography.Text type="secondary">
-                      Do you want to move over existing projects and tasks?
-                    </Typography.Text> */}
                     <Menu.Item
                       onClick={() => {
                         setOnboardingFlow("notion");
