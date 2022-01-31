@@ -13,23 +13,26 @@ import {
 } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import { Constants } from "@dewo/app/util/constants";
 
 interface Props {
+  redirectUrl?: string;
   redirectToOnboarding?: boolean;
   toggle: UseToggleHook;
-  onAuthedWithWallet?(): void;
+  onAuthedWithWallet?(threepidId: string): void;
 }
 
 export const LoginModal: FC<Props> = ({
   toggle,
+  redirectUrl,
   redirectToOnboarding = false,
   onAuthedWithWallet,
 }) => {
   const router = useRouter();
-  const appUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const appUrl = Constants.APP_URL;
   const state = useMemo(
-    () => ({ ...router.query, redirect: router.asPath, appUrl }),
-    [router.query, router.asPath, appUrl]
+    () => ({ ...router.query, redirect: redirectUrl ?? router.asPath, appUrl }),
+    [router.query, router.asPath, appUrl, redirectUrl]
   );
 
   const authWithThreepid = useAuthWithThreepid();
@@ -41,7 +44,7 @@ export const LoginModal: FC<Props> = ({
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       const user = await authWithThreepid(threepidId);
-      onAuthedWithWallet?.();
+      onAuthedWithWallet?.(threepidId);
 
       if (!user.onboarding && redirectToOnboarding) {
         await router.push("/onboarding");
@@ -67,8 +70,12 @@ export const LoginModal: FC<Props> = ({
     try {
       authingWithHiro.toggleOn();
       const threepidId = await createHiroThreepid();
-      await authWithThreepid(threepidId);
-      onAuthedWithWallet?.();
+      const user = await authWithThreepid(threepidId);
+      onAuthedWithWallet?.(threepidId);
+
+      if (!user.onboarding && redirectToOnboarding) {
+        await router.push("/onboarding");
+      }
     } catch (error) {
       alert((error as Error).message);
     } finally {
@@ -79,6 +86,8 @@ export const LoginModal: FC<Props> = ({
     authWithThreepid,
     onAuthedWithWallet,
     authingWithHiro,
+    router,
+    redirectToOnboarding,
   ]);
 
   const handleCancel = useCallback(

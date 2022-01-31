@@ -1,3 +1,7 @@
+import { NotionIcon } from "@dewo/app/components/icons/Notion";
+import { LoginModal } from "@dewo/app/containers/auth/LoginModal";
+import { useToggle } from "@dewo/app/util/hooks";
+import { Constants } from "@dewo/app/util/constants";
 import {
   Image,
   Col,
@@ -7,8 +11,11 @@ import {
   Space,
   Typography,
   Tabs,
+  Dropdown,
+  Menu,
+  Tag,
 } from "antd";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { WatchDemoButton } from "./WatchDemoButton";
 
 interface Props {
@@ -16,6 +23,8 @@ interface Props {
 }
 
 export const ProductSection: FC<Props> = ({ appUrl }) => {
+  const loginModal = useToggle();
+  const [onboardingFlow, setOnboardingFlow] = useState<string>();
   return (
     <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
       <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
@@ -35,10 +44,50 @@ export const ProductSection: FC<Props> = ({ appUrl }) => {
             </Typography.Paragraph>
           </Row>
 
-          <Space>
-            <Button type="primary" size="large" href={appUrl}>
-              Get Started
-            </Button>
+          <Space align="start">
+            <Col>
+              <Dropdown
+                trigger={["click"]}
+                placement="bottomLeft"
+                overlay={
+                  <Menu>
+                    {/* <Typography.Text type="secondary">
+                      Do you want to move over existing projects and tasks?
+                    </Typography.Text> */}
+                    <Menu.Item
+                      onClick={() => {
+                        setOnboardingFlow("notion");
+                        loginModal.toggleOn();
+                      }}
+                    >
+                      <Space>
+                        <NotionIcon />
+                        Import tasks from Notion
+                        <Tag color="green">Faster</Tag>
+                      </Space>
+                    </Menu.Item>
+                    <Menu.Item
+                      onClick={() => {
+                        setOnboardingFlow("dao");
+                        loginModal.toggleOn();
+                      }}
+                    >
+                      Continue without importing
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <Button type="primary" size="large" href={appUrl}>
+                  Setup your DAO
+                </Button>
+              </Dropdown>
+              <Typography.Paragraph
+                type="secondary"
+                style={{ margin: 0, textAlign: "center", marginTop: 4 }}
+              >
+                (1 min setup)
+              </Typography.Paragraph>
+            </Col>
             <WatchDemoButton />
           </Space>
         </Space>
@@ -103,6 +152,17 @@ export const ProductSection: FC<Props> = ({ appUrl }) => {
           </Tabs.TabPane>
         </Tabs>
       </Col>
+
+      <LoginModal
+        toggle={loginModal}
+        redirectUrl={`${Constants.APP_URL}/onboarding/${onboardingFlow ?? ""}`}
+        onAuthedWithWallet={(threepidId) => {
+          const state = JSON.stringify({
+            redirect: `/onboarding/${onboardingFlow ?? ""}`,
+          });
+          window.location.href = `${Constants.APP_URL}/auth/3pid/${threepidId}?state=${state}`;
+        }}
+      />
     </Row>
   );
 };

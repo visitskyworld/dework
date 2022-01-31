@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, ReactElement, useCallback, useState } from "react";
 import { Form, Input } from "antd";
 import { useCreateOrganization } from "../hooks";
 import { CreateOrganizationInput, Organization } from "@dewo/app/graphql/types";
@@ -6,12 +6,16 @@ import { useForm } from "antd/lib/form/Form";
 import {
   OrganizationCreateFormSubmitButton,
   OrganizationCreateFormSubmitButtonOptions,
+  OrganizationCreateFormSubmitButtonProps,
 } from "./OrganizationCreateFormSubmitButton";
 import { Constants } from "@dewo/app/util/constants";
 import { useRouter } from "next/router";
 
 interface OrganizationCreateFormProps {
   onCreated(organization: Organization): unknown;
+  renderSubmitButton?(
+    props: OrganizationCreateFormSubmitButtonProps
+  ): ReactElement | undefined;
 }
 
 type FormValues = CreateOrganizationInput &
@@ -19,6 +23,7 @@ type FormValues = CreateOrganizationInput &
 
 export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
   onCreated,
+  renderSubmitButton,
 }) => {
   const [form] = useForm<FormValues>();
   const createOrganization = useCreateOrganization();
@@ -80,6 +85,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
         rules={[{ required: true, message: "Please enter a name" }]}
       >
         <Input
+          autoFocus
           className="ant-typography-h4"
           style={{ textAlign: "center" }}
           placeholder="Enter organization name..."
@@ -87,15 +93,23 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
       </Form.Item>
       <Form.Item name="importFromNotion" hidden />
 
-      <OrganizationCreateFormSubmitButton
-        type="primary"
-        size="large"
-        block
-        loading={loading}
-        onClick={handleClickSubmit}
-      >
-        Create
-      </OrganizationCreateFormSubmitButton>
+      {renderSubmitButton?.({
+        type: "primary",
+        size: "large",
+        block: true,
+        loading,
+        onClick: handleClickSubmit,
+        children: "Create",
+      }) ?? (
+        <OrganizationCreateFormSubmitButton
+          type="primary"
+          size="large"
+          block
+          loading={loading}
+          onClick={handleClickSubmit}
+          children="Create"
+        />
+      )}
     </Form>
   );
 };

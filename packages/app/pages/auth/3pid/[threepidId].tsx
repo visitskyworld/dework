@@ -55,9 +55,9 @@ const Auth: NextPage = () => {
             direction="vertical"
             style={{ width: "100%", alignItems: "center" }}
           >
-            <Typography.Title level={2} style={{ textAlign: "center" }}>
-              Connect account
-            </Typography.Title>
+            <Typography.Paragraph style={{ textAlign: "center" }}>
+              Connecting account
+            </Typography.Paragraph>
             {accountAlreadyConnected ? (
               <>
                 <Typography.Paragraph style={{ textAlign: "center" }}>

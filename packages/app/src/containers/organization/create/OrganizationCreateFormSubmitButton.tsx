@@ -14,11 +14,14 @@ export interface OrganizationCreateFormSubmitButtonOptions {
   importFromNotion?: boolean;
 }
 
-interface Props extends Omit<ButtonProps, "onClick"> {
+export interface OrganizationCreateFormSubmitButtonProps
+  extends Omit<ButtonProps, "onClick"> {
   onClick(options?: OrganizationCreateFormSubmitButtonOptions): void;
 }
 
-export const OrganizationCreateFormSubmitButton: FC<Props> = (props) => (
+export const OrganizationCreateFormSubmitButton: FC<
+  OrganizationCreateFormSubmitButtonProps
+> = (props) => (
   <Dropdown
     trigger={["click"]}
     placement="bottomCenter"
@@ -41,8 +44,6 @@ export const OrganizationCreateFormSubmitButton: FC<Props> = (props) => (
       </Menu>
     }
   >
-    <Button {...props} onClick={undefined}>
-      Create
-    </Button>
+    <Button {...props} onClick={undefined} />
   </Dropdown>
 );

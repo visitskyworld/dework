@@ -1,7 +1,17 @@
 import React, { useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Avatar, Card, Col, Layout, Modal, Row, Space, Typography } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Layout,
+  Modal,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useRouter } from "next/router";
 import { UserOnboardingType } from "@dewo/app/graphql/types";
@@ -11,7 +21,9 @@ import { OrganizationCreateForm } from "@dewo/app/containers/organization/create
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const createOrganizationModal = useToggle();
+  const flow = router.query.flow as "dao" | "notion" | undefined;
+
+  const createOrganizationModal = useToggle(["dao", "notion"].includes(flow!));
 
   const updateOnboarding = useUpdateUserOnboarding();
   const handleDaoCoreTeam = useCallback(async () => {
@@ -77,6 +89,20 @@ const Page: NextPage = () => {
           </Typography.Paragraph>
           <OrganizationCreateForm
             onCreated={createOrganizationModal.toggleOff}
+            renderSubmitButton={(props) => {
+              if (flow === "dao") {
+                return <Button {...props} onClick={() => props.onClick()} />;
+              } else if (flow === "notion") {
+                return (
+                  <Button
+                    {...props}
+                    onClick={() => props.onClick({ importFromNotion: true })}
+                  />
+                );
+              } else {
+                return undefined;
+              }
+            }}
           />
         </Modal>
       </Layout.Content>
