@@ -299,7 +299,7 @@ export const TaskList: FC<Props> = ({
         {
           title: "Due",
           dataIndex: "dueDate",
-          width: 84,
+          width: 82,
           render: (dueDate: string | undefined, row) => (
             <div onClick={stopPropagation}>
               <DatePicker
@@ -415,7 +415,7 @@ export const TaskList: FC<Props> = ({
                   type="text"
                   size="small"
                   icon={<Icons.MoreOutlined />}
-                  style={showActionButtons ? undefined : { margin: -8 }}
+                  style={showActionButtons ? undefined : { margin: -4 }}
                 />
               </Dropdown>
             </Row>

@@ -109,7 +109,7 @@ export const SubtaskInput: FC<Props> = ({
         onDelete={handleDelete}
       />
       {canCreateSubtask && (
-        <Row align="middle" style={{ gap: 16 }}>
+        <Row align="middle" style={{ gap: 4 }}>
           <Button
             icon={<Icons.PlusOutlined />}
             shape="circle"

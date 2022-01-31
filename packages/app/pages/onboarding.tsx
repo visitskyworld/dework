@@ -30,7 +30,7 @@ const Page: NextPage = () => {
       <Layout.Content style={{ display: "grid", placeItems: "center" }}>
         <div className="w-full max-w-xs" style={{ textAlign: "center" }}>
           <Typography.Title level={3}>👋 Welcome to Dework</Typography.Title>
-          <Typography.Paragraph>What best describes you?</Typography.Paragraph>
+          <Typography.Paragraph>What do you want to do?</Typography.Paragraph>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12}>
               <Card

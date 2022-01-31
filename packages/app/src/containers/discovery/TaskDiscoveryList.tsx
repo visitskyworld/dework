@@ -117,7 +117,7 @@ export const TaskDiscoveryList: FC = () => {
       <div className="mx-auto max-w-lg w-full">
         {!!filteredAndSortedTasks ? (
           <Row gutter={16}>
-            <Col xs={24} sm={8}>
+            <Col sm={24} md={8}>
               <Card
                 style={{ marginTop: 16 }}
                 size="small"
@@ -200,7 +200,7 @@ export const TaskDiscoveryList: FC = () => {
                 </Form>
               </Card>
             </Col>
-            <Col xs={24} sm={16}>
+            <Col sm={24} md={16}>
               <TaskDiscoveryTable tasks={filteredAndSortedTasks} />
             </Col>
           </Row>
