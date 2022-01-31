@@ -53,14 +53,14 @@ const Auth: NextPage = () => {
         <Modal visible footer={null} closable={false}>
           <Space
             direction="vertical"
-            style={{ width: "100%", alignItems: "center" }}
+            style={{ width: "100%", alignItems: "center", textAlign: "center" }}
           >
-            <Typography.Paragraph style={{ textAlign: "center" }}>
+            <Typography.Paragraph strong>
               Connecting account
             </Typography.Paragraph>
             {accountAlreadyConnected ? (
               <>
-                <Typography.Paragraph style={{ textAlign: "center" }}>
+                <Typography.Paragraph>
                   This account is already connected to another Dework user.{" "}
                   <a
                     href="https://discord.com/channels/918603668935311391/920039372882051122"
