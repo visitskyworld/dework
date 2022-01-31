@@ -1,14 +1,12 @@
 import { useCallback } from "react";
-import { ethers } from "ethers";
-import Safe, { EthersAdapter } from "@gnosis.pm/safe-core-sdk";
 import {
   useRequestAddress,
   useRequestSigner,
   useSwitchChain,
 } from "./ethereum";
-import SafeServiceClient from "@gnosis.pm/safe-service-client";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { PaymentNetwork } from "../graphql/types";
+import { Signer } from "ethers";
 
 const safeServiceUrlByNetworkSlug: Record<string, string> = {
   "ethereum-mainnet": "https://safe-transaction.gnosis.io",
@@ -17,10 +15,14 @@ const safeServiceUrlByNetworkSlug: Record<string, string> = {
   "polygon-mainnet": "https://safe-transaction.polygon.gnosis.io",
 };
 
-export function useRequestSafe(): (safeAddress: string) => Promise<Safe> {
+export function useRequestSafe() {
   const requestSigner = useRequestSigner();
   return useCallback(
-    async (safeAddress) => {
+    async (safeAddress: string) => {
+      const ethers = await import("ethers");
+      const { EthersAdapter, default: Safe } = await import(
+        "@gnosis.pm/safe-core-sdk"
+      );
       const signer = await requestSigner();
       const ethAdapter = new EthersAdapter({ ethers, signer });
       return Safe.create({ ethAdapter, safeAddress });
@@ -31,7 +33,7 @@ export function useRequestSafe(): (safeAddress: string) => Promise<Safe> {
 
 export function useIsGnosisSafeOwner(): (
   safeAddress: string,
-  signer: ethers.Signer
+  signer: Signer
 ) => Promise<boolean> {
   const requestSafe = useRequestSafe();
   return useCallback(
@@ -109,6 +111,10 @@ export function useProposeTransaction(): (
       if (!safeServiceUrl) {
         throw new Error(`No safe service for ${network.slug}`);
       }
+
+      const { default: SafeServiceClient } = await import(
+        "@gnosis.pm/safe-service-client"
+      );
       const safeService = new SafeServiceClient(safeServiceUrl);
 
       await switchChain(network);

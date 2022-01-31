@@ -1,5 +1,10 @@
 import { MutableRefObject, useCallback, useEffect, useRef } from "react";
-import { BigNumber, ethers } from "ethers";
+import {
+  BigNumber as TBigNumber,
+  Contract as TContract,
+  providers,
+  Signer,
+} from "ethers";
 import {
   PaymentNetwork,
   PaymentToken,
@@ -7,12 +12,12 @@ import {
 } from "../graphql/types";
 import detectEthereumProvider from "@metamask/detect-provider";
 
-export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
-  const provider = useRef<ethers.providers.Web3Provider>();
+export function useProvider(): MutableRefObject<providers.Web3Provider> {
+  const provider = useRef<providers.Web3Provider>();
   const loadProvider = useCallback(async () => {
     const ethereum = await detectEthereumProvider();
     if (!!ethereum) {
-      provider.current = new ethers.providers.Web3Provider(ethereum as any);
+      provider.current = new providers.Web3Provider(ethereum as any);
     }
   }, []);
 
@@ -25,13 +30,15 @@ export function useProvider(): MutableRefObject<ethers.providers.Web3Provider> {
     loadProvider();
   }, [loadProvider]);
 
-  return provider as MutableRefObject<ethers.providers.Web3Provider>;
+  return provider as MutableRefObject<providers.Web3Provider>;
 }
 
 export function useSwitchChain(): (network: PaymentNetwork) => Promise<void> {
   const provider = useProvider();
   return useCallback(
     async (network) => {
+      const { BigNumber } = await import("ethers");
+
       const chainId = network.config.chainId as number;
       const currentNetwork = await provider.current.getNetwork();
       if (currentNetwork.chainId === chainId) {
@@ -57,7 +64,7 @@ export function useSwitchChain(): (network: PaymentNetwork) => Promise<void> {
   );
 }
 
-export function useRequestSigner(): () => Promise<ethers.Signer> {
+export function useRequestSigner(): () => Promise<Signer> {
   const provider = useProvider();
   return useCallback(async () => {
     await provider.current.send("eth_requestAccounts", []);
@@ -87,51 +94,52 @@ export function usePersonalSign(): (
 }
 
 interface ERC20Contract {
-  balanceOf(owner: string): Promise<BigNumber>;
+  balanceOf(owner: string): Promise<TBigNumber>;
   name(): Promise<string>;
   symbol(): Promise<string>;
   decimals(): Promise<number>;
   transfer(
     to: string,
-    value: BigNumber
-  ): Promise<ethers.providers.TransactionResponse>;
+    value: TBigNumber
+  ): Promise<providers.TransactionResponse>;
 }
 
 interface ERC721Contract {
-  balanceOf(owner: string): Promise<BigNumber>;
+  balanceOf(owner: string): Promise<TBigNumber>;
   name(): Promise<string>;
   symbol(): Promise<string>;
-  transfer(
+  transferFrom(
     from: string,
     to: string,
-    value: BigNumber
-  ): Promise<ethers.providers.TransactionResponse>;
+    value: TBigNumber
+  ): Promise<providers.TransactionResponse>;
 }
 
 interface ERC1155Contract {
-  balanceOf(owner: string, id: number): Promise<BigNumber>;
+  balanceOf(owner: string, id: number): Promise<TBigNumber>;
   uri(id: number): Promise<string>;
   safeTransferFrom(
     from: string,
     to: string,
-    id: BigNumber,
-    amount: BigNumber,
-    data: BigNumber
-  ): Promise<ethers.providers.TransactionResponse>;
+    id: TBigNumber,
+    amount: TBigNumber,
+    data: TBigNumber
+  ): Promise<providers.TransactionResponse>;
 }
 
 export function useERC20Contract(): (
   address: string,
   network: PaymentNetwork
-) => Promise<ethers.Contract & ERC20Contract> {
+) => Promise<TContract & ERC20Contract> {
   const requestSigner = useRequestSigner();
   const switchChain = useSwitchChain();
   return useCallback(
     async (address, network) => {
+      const { Contract } = await import("ethers");
       await switchChain(network);
       const signer = await requestSigner();
       // https://gist.github.com/petejkim/72421bc2cb26fad916c84864421773a4
-      return new ethers.Contract(
+      return new Contract(
         address,
         [
           "function balanceOf(address owner) public view returns (uint256 balance)",
@@ -141,7 +149,7 @@ export function useERC20Contract(): (
           "function decimals() public view returns (uint8)",
         ],
         signer
-      ) as ethers.Contract & ERC20Contract;
+      ) as TContract & ERC20Contract;
     },
     [requestSigner, switchChain]
   );
@@ -150,14 +158,15 @@ export function useERC20Contract(): (
 export function useERC721Contract(): (
   address: string,
   network: PaymentNetwork
-) => Promise<ethers.Contract & ERC721Contract> {
+) => Promise<TContract & ERC721Contract> {
   const requestSigner = useRequestSigner();
   const switchChain = useSwitchChain();
   return useCallback(
     async (address, network) => {
+      const { Contract } = await import("ethers");
       await switchChain(network);
       const signer = await requestSigner();
-      return new ethers.Contract(
+      return new Contract(
         address,
         [
           "function balanceOf(address owner) public view returns (uint256 balance)",
@@ -166,7 +175,7 @@ export function useERC721Contract(): (
           "function transferFrom(address from, address to, uint256 tokenId) public",
         ],
         signer
-      ) as ethers.Contract & ERC721Contract;
+      ) as TContract & ERC721Contract;
     },
     [requestSigner, switchChain]
   );
@@ -175,14 +184,15 @@ export function useERC721Contract(): (
 export function useERC1155Contract(): (
   address: string,
   network: PaymentNetwork
-) => Promise<ethers.Contract & ERC1155Contract> {
+) => Promise<TContract & ERC1155Contract> {
   const requestSigner = useRequestSigner();
   const switchChain = useSwitchChain();
   return useCallback(
     async (address, network) => {
+      const { Contract } = await import("ethers");
       await switchChain(network);
       const signer = await requestSigner();
-      return new ethers.Contract(
+      return new Contract(
         address,
         [
           "function balanceOf(address owner, uint256 id) public view returns (uint256 balance)",
@@ -190,7 +200,7 @@ export function useERC1155Contract(): (
           "function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data) public",
         ],
         signer
-      ) as ethers.Contract & ERC1155Contract;
+      ) as TContract & ERC1155Contract;
     },
     [requestSigner, switchChain]
   );
@@ -211,6 +221,7 @@ export function useCreateEthereumTransaction(): (
   const loadERC1155Contract = useERC1155Contract();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
+      const { BigNumber } = await import("ethers");
       const currentAddress = await requestAddress();
       if (currentAddress !== fromAddress) {
         throw new Error(`Change Metamask Wallet address to "${fromAddress}"`);
