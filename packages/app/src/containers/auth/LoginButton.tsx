@@ -4,12 +4,14 @@ import React, { FC, useCallback } from "react";
 import { LoginModal } from "./LoginModal";
 
 interface Props extends ButtonProps {
+  redirectToOnboarding?: boolean;
   onAuthedWithWallet?(): void;
 }
 
 export const LoginButton: FC<Props> = ({
-  onAuthedWithWallet,
   className,
+  redirectToOnboarding,
+  onAuthedWithWallet,
   onClick,
   ...props
 }) => {
@@ -30,6 +32,7 @@ export const LoginButton: FC<Props> = ({
       <Button {...props} onClick={handleClick} />
       <LoginModal
         toggle={modalVisible}
+        redirectToOnboarding={redirectToOnboarding}
         onAuthedWithWallet={handleAuthedWithWallet}
       />
     </>

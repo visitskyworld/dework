@@ -1,61 +1,17 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import {
-  Avatar,
-  Card,
-  Col,
-  Input,
-  Layout,
-  Modal,
-  Row,
-  Space,
-  Typography,
-} from "antd";
+import { Avatar, Card, Col, Layout, Modal, Row, Space, Typography } from "antd";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useRouter } from "next/router";
 import { UserOnboardingType } from "@dewo/app/graphql/types";
 import { useUpdateUserOnboarding } from "@dewo/app/containers/user/hooks";
 import { useToggle } from "@dewo/app/util/hooks";
-import { useCreateOrganization } from "@dewo/app/containers/organization/hooks";
-import { Constants } from "@dewo/app/util/constants";
-import {
-  OrganizationCreateFormSubmitButton,
-  OrganizationCreateFormSubmitButtonOptions,
-} from "@dewo/app/containers/organization/create/OrganizationCreateFormSubmitButton";
+import { OrganizationCreateForm } from "@dewo/app/containers/organization/create/OrganizationCreateForm";
 
 const Page: NextPage = () => {
   const router = useRouter();
-
   const createOrganizationModal = useToggle();
-  const [creatingOrganization, setCreatingOrganization] = useState(false);
-  const [organizationName, setOrganizationName] = useState("");
-
-  const createOrganization = useCreateOrganization();
-  const handleCreateOrganization = useCallback(
-    async (options?: OrganizationCreateFormSubmitButtonOptions) => {
-      setCreatingOrganization(true);
-      try {
-        const organization = await createOrganization({
-          name: organizationName,
-        });
-
-        if (!!options?.importFromNotion) {
-          const url = `${
-            Constants.GRAPHQL_API_URL
-          }/auth/notion?state=${JSON.stringify({
-            redirect: `${organization.permalink}/notion-import`,
-          })}`;
-          window.location.href = url;
-        } else {
-          router.push(organization.permalink);
-        }
-      } finally {
-        setCreatingOrganization(false);
-      }
-    },
-    [createOrganization, organizationName, router]
-  );
 
   const updateOnboarding = useUpdateUserOnboarding();
   const handleDaoCoreTeam = useCallback(async () => {
@@ -84,7 +40,7 @@ const Page: NextPage = () => {
                 <Space direction="vertical">
                   <Avatar icon={<Icons.TeamOutlined />} size="large" />
                   <Typography.Paragraph strong style={{ margin: 0 }}>
-                    DAO core team
+                    Setup your first DAO
                   </Typography.Paragraph>
                 </Space>
               </Card>
@@ -98,7 +54,7 @@ const Page: NextPage = () => {
                 <Space direction="vertical">
                   <Avatar icon={<Icons.UserAddOutlined />} size="large" />
                   <Typography.Paragraph strong style={{ margin: 0 }}>
-                    Contributor
+                    Explore tasks and bounties
                   </Typography.Paragraph>
                 </Space>
               </Card>
@@ -112,7 +68,6 @@ const Page: NextPage = () => {
           style={{ textAlign: "center" }}
           onCancel={createOrganizationModal.toggleOff}
         >
-          {/* <Typography.Title level={2}>Create your first DAO</Typography.Title> */}
           <Typography.Paragraph strong style={{ marginBottom: 0 }}>
             Create your first DAO
           </Typography.Paragraph>
@@ -120,20 +75,8 @@ const Page: NextPage = () => {
             Create a DAO to create projects and tasks. You can also import
             boards and cards from any Notion boards you have.
           </Typography.Paragraph>
-          <Input
-            placeholder="Name your DAO..."
-            className="ant-typography-h4"
-            style={{ textAlign: "center" }}
-            autoFocus
-            onChange={(e) => setOrganizationName(e.target.value)}
-          />
-          <OrganizationCreateFormSubmitButton
-            type="primary"
-            block
-            size="large"
-            style={{ marginTop: 16 }}
-            loading={creatingOrganization}
-            onClick={handleCreateOrganization}
+          <OrganizationCreateForm
+            onCreated={createOrganizationModal.toggleOff}
           />
         </Modal>
       </Layout.Content>

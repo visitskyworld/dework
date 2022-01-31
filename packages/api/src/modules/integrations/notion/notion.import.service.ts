@@ -118,10 +118,10 @@ export class NotionImportService {
           })}`
         );
 
-        const page = await notion.pages.retrieve({ page_id: card.id });
-        const blocks = await notion.blocks.children.list({
-          block_id: card.id,
-        });
+        const [page, blocks] = await Promise.all([
+          notion.pages.retrieve({ page_id: card.id }),
+          notion.blocks.children.list({ block_id: card.id }),
+        ]);
 
         if (!("properties" in page)) continue;
 

@@ -32,7 +32,11 @@ export const PageHeaderBreadcrumbs: FC<PageHeaderBreadcrumbsProps> = ({
           }}
         >
           <Breadcrumb itemRender={itemRender} routes={routes} />
-          {!user && <LoginButton type="primary">Connect</LoginButton>}
+          {!user && (
+            <LoginButton type="primary" redirectToOnboarding={true}>
+              Connect
+            </LoginButton>
+          )}
         </Row>
       </Row>
     </Skeleton>

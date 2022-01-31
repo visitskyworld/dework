@@ -15,11 +15,16 @@ import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
+  redirectToOnboarding?: boolean;
   toggle: UseToggleHook;
   onAuthedWithWallet?(): void;
 }
 
-export const LoginModal: FC<Props> = ({ toggle, onAuthedWithWallet }) => {
+export const LoginModal: FC<Props> = ({
+  toggle,
+  redirectToOnboarding = false,
+  onAuthedWithWallet,
+}) => {
   const router = useRouter();
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const state = useMemo(
@@ -35,8 +40,12 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithWallet }) => {
     try {
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
-      await authWithThreepid(threepidId);
+      const user = await authWithThreepid(threepidId);
       onAuthedWithWallet?.();
+
+      if (!user.onboarding && redirectToOnboarding) {
+        await router.push("/onboarding");
+      }
     } catch (error) {
       alert((error as Error).message);
       throw error;
@@ -48,6 +57,8 @@ export const LoginModal: FC<Props> = ({ toggle, onAuthedWithWallet }) => {
     authWithThreepid,
     onAuthedWithWallet,
     authingWithMetamask,
+    router,
+    redirectToOnboarding,
   ]);
 
   const authingWithHiro = useToggle();

@@ -32,7 +32,7 @@ export const ImportProjectsFromNotionModal: FC<Props> = ({
       </Typography.Title>
       <Typography.Paragraph type="secondary" style={{ textAlign: "center" }}>
         This might take up to 30 seconds, depending on how many projects and
-        cards you have.
+        cards you have. Don't refresh the screen!
       </Typography.Paragraph>
       <div style={{ display: "grid" }}>
         <Spin />
