@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-
+const path = require("path");
 const withLess = require("next-with-less");
 const withRemoveImports = require("next-remove-imports")();
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
@@ -16,6 +16,13 @@ module.exports = [withLess, withRemoveImports, withBundleAnalyzer].reduce(
       GITHUB_APP_URL: process.env.GITHUB_APP_URL,
       ENVIRONMENT: process.env.ENVIRONMENT,
       SENTRY_DSN: process.env.SENTRY_DSN,
+    },
+    webpack(config) {
+      config.resolve.alias["bn.js"] = path.resolve(
+        __dirname,
+        "../../node_modules/bn.js"
+      );
+      return config;
     },
   }
 );
