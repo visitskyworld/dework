@@ -192,6 +192,7 @@ export class DiscordIntegrationService {
 
       // write about task applicant updates (should that be done elsewhere maybe?)
     } catch (error) {
+      console.error(error);
       const errorString = JSON.stringify(
         error,
         Object.getOwnPropertyNames(error)
@@ -685,7 +686,6 @@ export class DiscordIntegrationService {
 
     const thread = await channel.threads.create({
       name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
-      autoArchiveDuration: 1440,
     });
 
     await this.discordChannelRepo.save({
