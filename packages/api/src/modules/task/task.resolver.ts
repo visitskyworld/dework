@@ -308,7 +308,11 @@ export class TaskResolver {
   public async getTasks(@Args("input") input: GetTasksInput): Promise<Task[]> {
     if (input.ids?.length === 0) return [];
     if (input.statuses?.length === 0) return [];
-    return this.taskService.findWithRelations(input);
+    return this.taskService.findWithRelations({
+      ...input,
+      // Note(fant): workaround to make GetTasksToPayQuery return tasks in private projects
+      includePrivateProjects: !!input.ids?.length,
+    });
   }
 }
 

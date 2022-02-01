@@ -133,4 +133,9 @@ export const permissions: Permissions<
 
     can(Actions.manage, TaskReaction, { userId: user.id });
   },
+
+  superadmin({ extend }) {
+    extend(Roles.projectAdmin);
+    extend(Roles.organizationAdmin);
+  },
 };
