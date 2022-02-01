@@ -72,15 +72,25 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
               </Typography.Paragraph>
               <TaskTagsRow task={task} showStandardTags={false} />
               {!screens.sm && !!task.reward && (
-                <Typography.Paragraph
-                  style={{
-                    whiteSpace: "nowrap",
-                    marginBottom: 0,
-                    marginTop: 8,
-                  }}
-                >
-                  {formatTaskReward(task.reward)}
-                </Typography.Paragraph>
+                <>
+                  <Typography.Paragraph
+                    style={{
+                      whiteSpace: "nowrap",
+                      marginBottom: 0,
+                      marginTop: 8,
+                    }}
+                  >
+                    {formatTaskReward(task.reward)}
+                  </Typography.Paragraph>
+                  {!!task.reward.token.usdPrice && (
+                    <Typography.Paragraph
+                      type="secondary"
+                      className="ant-typography-caption"
+                    >
+                      ~{formatTaskRewardAsUSD(task.reward)}
+                    </Typography.Paragraph>
+                  )}
+                </>
               )}
               {!screens.sm && <TaskActionButton task={task} />}
             </>
