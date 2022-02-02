@@ -108,7 +108,29 @@ export class DiscordIntegrationService {
           DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL
         )
       ) {
-        await this.postTaskCard(mainChannel, event.task, "New task created!");
+        const storyPoints = event.task.storyPoints;
+        const dueDate = event.task.dueDate?.toDateString();
+        const rewardAmount = event.task.reward?.amount;
+        const rewardToken = event.task.reward?.token;
+        const noAssignees = event.task.assignees.length < 1;
+        const url = await this.permalink.get(event.task);
+        await this.postTaskCard(
+          mainChannel,
+          event.task,
+          "New task created!",
+          undefined,
+          {
+            description: `_New task created!_
+            ${!!storyPoints ? `- ${storyPoints} storypoints` : ""}
+            ${!!rewardAmount ? `- Reward: ${rewardAmount} ${rewardToken}` : ""}
+            ${!!dueDate ? `- Due: ${dueDate}` : ""}
+            ---
+            ${!!noAssignees ? `👉 [Apply for task](${url})` : ""}`.replace(
+              /^\s*[\r\n]/gm,
+              ""
+            ),
+          }
+        );
       }
 
       if (!channelToPostTo) return;
