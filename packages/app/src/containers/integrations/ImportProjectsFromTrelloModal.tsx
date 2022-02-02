@@ -63,7 +63,7 @@ export const ImportProjectsFromTrelloModal: FC<Props> = ({
           loading={!trelloBoards}
           disabled={importing}
           mode="multiple"
-          optionLabelProp="label"
+          optionFilterProp="label"
           placeholder="Select Trello Boards..."
           style={{ width: "100%" }}
           onChange={(values) => setSelectedBoardIds(values as string[])}
@@ -91,7 +91,7 @@ export const ImportProjectsFromTrelloModal: FC<Props> = ({
             style={{ textAlign: "center" }}
           >
             Trello boards and cards are being imported. This might take up to 30
-            seconds, depending on how many projects and cards you have. Don't
+            seconds, depending on how many boards and cards you have. Don't
             refresh the screen!
           </Typography.Paragraph>
         )}
