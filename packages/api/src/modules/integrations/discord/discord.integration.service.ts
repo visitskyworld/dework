@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Repository } from "typeorm";
+import { formatFixed } from "@ethersproject/bignumber";
 import {
   DiscordProjectIntegrationConfig,
   DiscordProjectIntegrationFeature,
@@ -30,6 +31,7 @@ import {
 import { gifs } from "../../app/config";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
 
 @Injectable()
@@ -110,8 +112,7 @@ export class DiscordIntegrationService {
       ) {
         const storyPoints = event.task.storyPoints;
         const dueDate = event.task.dueDate?.toDateString();
-        const rewardAmount = event.task.reward?.amount;
-        const rewardToken = event.task.reward?.token;
+        const reward = event.task.reward;
         const noAssignees = event.task.assignees.length < 1;
         const url = await this.permalink.get(event.task);
         await this.postTaskCard(
@@ -122,7 +123,9 @@ export class DiscordIntegrationService {
           {
             description: `_New task created!_
             ${!!storyPoints ? `- ${storyPoints} storypoints` : ""}
-            ${!!rewardAmount ? `- Reward: ${rewardAmount} ${rewardToken}` : ""}
+            ${
+              !!reward ? `- Reward: ${await this.formatTaskReward(reward)}` : ""
+            }
             ${!!dueDate ? `- Due: ${dueDate}` : ""}
             ---
             ${!!noAssignees ? `👉 [Apply for task](${url})` : ""}`.replace(
@@ -787,5 +790,10 @@ export class DiscordIntegrationService {
       })}`
     );
     return threepids;
+  }
+
+  private async formatTaskReward(reward: TaskReward): Promise<string> {
+    const token = await reward.token;
+    return [formatFixed(reward.amount, token?.exp), token?.symbol].join(" ");
   }
 }
