@@ -127,7 +127,7 @@ export class DiscordIntegrationService {
           undefined,
           {
             description: `_New task created!_
-            ${!!storyPoints ? `- ${storyPoints} storypoints` : ""}
+            ${!!storyPoints ? `- ${storyPoints} task points` : ""}
             ${
               !!reward ? `- Reward: ${await this.formatTaskReward(reward)}` : ""
             }
