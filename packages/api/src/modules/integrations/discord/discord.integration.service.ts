@@ -111,9 +111,14 @@ export class DiscordIntegrationService {
         )
       ) {
         const storyPoints = event.task.storyPoints;
-        const dueDate = event.task.dueDate?.toDateString();
+        const dueDate = event.task.dueDate?.toLocaleDateString("en-us", {
+          weekday: "long",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
         const reward = event.task.reward;
-        const noAssignees = event.task.assignees.length < 1;
+        const hasAssignees = event.task.assignees.length;
         const url = await this.permalink.get(event.task);
         await this.postTaskCard(
           mainChannel,
@@ -127,11 +132,9 @@ export class DiscordIntegrationService {
               !!reward ? `- Reward: ${await this.formatTaskReward(reward)}` : ""
             }
             ${!!dueDate ? `- Due: ${dueDate}` : ""}
-            ---
-            ${!!noAssignees ? `👉 [Apply for task](${url})` : ""}`.replace(
-              /^\s*[\r\n]/gm,
-              ""
-            ),
+            ${
+              !hasAssignees ? `---\n👉 [Apply or grab task](${url})` : ""
+            }`.replace(/^\s*[\r\n]/gm, ""),
           }
         );
       }
