@@ -12,6 +12,7 @@ import { OrganizationTabs } from "@dewo/app/containers/organization/overview/Org
 import { Project } from "@dewo/app/graphql/types";
 import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
 import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/ImportProjectsFromNotionModal";
+import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/ImportProjectsFromTrelloModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -69,6 +70,11 @@ const Page: NextPage = () => {
       />
       <ImportProjectsFromNotionModal
         visible={router.route.endsWith("/notion-import")}
+        organizationId={organizationId}
+        threepidId={router.query.threepidId as string}
+      />
+      <ImportProjectsFromTrelloModal
+        visible={router.route.endsWith("/trello-import")}
         organizationId={organizationId}
         threepidId={router.query.threepidId as string}
       />

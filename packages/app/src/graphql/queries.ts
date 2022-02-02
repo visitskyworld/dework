@@ -275,3 +275,12 @@ export const organizationDiscordChannels = gql`
 
   ${Fragments.discordIntegrationChannel}
 `;
+
+export const trelloBoards = gql`
+  query GetTrelloBoardsQuery($threepidId: UUID!) {
+    trelloBoards: getTrelloBoards(threepidId: $threepidId) {
+      id
+      name
+    }
+  }
+`;

@@ -580,3 +580,15 @@ export const createProjectsFromNotion = gql`
 
   ${Fragments.organizationDetails}
 `;
+
+export const createProjectsFromTrello = gql`
+  mutation CreateProjectsFromTrelloMutation(
+    $input: CreateProjectsFromTrelloInput!
+  ) {
+    organization: createProjectsFromTrello(input: $input) {
+      ...OrganizationDetails
+    }
+  }
+
+  ${Fragments.organizationDetails}
+`;

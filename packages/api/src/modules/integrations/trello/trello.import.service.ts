@@ -211,7 +211,7 @@ export class TrelloImportService {
   private async createClient(threepidId: string): Promise<Trello> {
     const threepid = await this.threepidService.findOne({
       id: threepidId,
-      source: ThreepidSource.notion,
+      source: ThreepidSource.trello,
     });
     if (!threepid) throw new NotFoundException();
     return new Trello(

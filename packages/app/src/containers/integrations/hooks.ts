@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
   CreateProjectIntegrationInput,
@@ -17,7 +17,13 @@ import {
   CreateProjectsFromNotionInput,
   CreateProjectsFromNotionMutation,
   CreateProjectsFromNotionMutationVariables,
+  CreateProjectsFromTrelloInput,
+  CreateProjectsFromTrelloMutation,
+  CreateProjectsFromTrelloMutationVariables,
+  GetTrelloBoardsQuery,
+  GetTrelloBoardsQueryVariables,
 } from "@dewo/app/graphql/types";
+import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
 
@@ -175,4 +181,28 @@ export function useCreateProjectsFromNotion(): (
     },
     [mutation]
   );
+}
+
+export function useCreateProjectsFromTrello(): (
+  input: CreateProjectsFromTrelloInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateProjectsFromTrelloMutation,
+    CreateProjectsFromTrelloMutationVariables
+  >(Mutations.createProjectsFromTrello);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useTrelloBoards(threepidId: string) {
+  const { data } = useQuery<
+    GetTrelloBoardsQuery,
+    GetTrelloBoardsQueryVariables
+  >(Queries.trelloBoards, { variables: { threepidId } });
+  return data?.trelloBoards;
 }

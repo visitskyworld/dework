@@ -173,7 +173,7 @@ export class AuthController {
     } else {
       const threepid = await this.threepidService.findOrCreate({
         threepid: token,
-        source: ThreepidSource.discord,
+        source: ThreepidSource.trello,
         config: { token },
       });
 

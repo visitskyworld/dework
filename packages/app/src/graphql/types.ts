@@ -4435,6 +4435,224 @@ export interface CreateProjectsFromNotionMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateProjectsFromTrelloMutation
+// ====================================================
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: CreateProjectsFromTrelloMutation_organization_projects_members_user;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_networks[];
+  tokens: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_tokens[];
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token_network;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  taskCount: number;
+  options: CreateProjectsFromTrelloMutation_organization_projects_options | null;
+  doneTaskCount: number;
+  openBountyTaskCount: number;
+  members: CreateProjectsFromTrelloMutation_organization_projects_members[];
+  paymentMethods: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods[];
+  integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
+  tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: CreateProjectsFromTrelloMutation_organization_members_user;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromTrelloMutation_organization_projectTokenGates_token;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+  tagline: string | null;
+  description: string | null;
+  projects: CreateProjectsFromTrelloMutation_organization_projects[];
+  members: CreateProjectsFromTrelloMutation_organization_members[];
+  tags: CreateProjectsFromTrelloMutation_organization_tags[];
+  details: CreateProjectsFromTrelloMutation_organization_details[];
+  integrations: CreateProjectsFromTrelloMutation_organization_integrations[];
+  projectTokenGates: CreateProjectsFromTrelloMutation_organization_projectTokenGates[];
+}
+
+export interface CreateProjectsFromTrelloMutation {
+  organization: CreateProjectsFromTrelloMutation_organization;
+}
+
+export interface CreateProjectsFromTrelloMutationVariables {
+  input: CreateProjectsFromTrelloInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -7145,6 +7363,29 @@ export interface GetOrganizationDiscordChannelsQuery {
 export interface GetOrganizationDiscordChannelsQueryVariables {
   organizationId: Scalar.UUID;
   discordParentChannelId?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetTrelloBoardsQuery
+// ====================================================
+
+export interface GetTrelloBoardsQuery_trelloBoards {
+  __typename: "TrelloBoard";
+  id: string;
+  name: string;
+}
+
+export interface GetTrelloBoardsQuery {
+  trelloBoards: GetTrelloBoardsQuery_trelloBoards[];
+}
+
+export interface GetTrelloBoardsQueryVariables {
+  threepidId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -10319,6 +10560,7 @@ export enum ThreepidSource {
   hiro = "hiro",
   metamask = "metamask",
   notion = "notion",
+  trello = "trello",
 }
 
 export enum UserOnboardingType {
@@ -10389,6 +10631,12 @@ export interface CreateProjectIntegrationInput {
 export interface CreateProjectsFromNotionInput {
   organizationId: Scalar.UUID;
   threepidId: Scalar.UUID;
+}
+
+export interface CreateProjectsFromTrelloInput {
+  organizationId: Scalar.UUID;
+  threepidId: Scalar.UUID;
+  boardIds: string[];
 }
 
 export interface CreateTaskApplicationInput {

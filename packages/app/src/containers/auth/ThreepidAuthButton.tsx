@@ -7,12 +7,14 @@ import { Button, ButtonProps } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { HiroIcon } from "@dewo/app/components/icons/Hiro";
+import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
   [ThreepidSource.github]: <Icons.GithubOutlined />,
   [ThreepidSource.metamask]: <MetamaskIcon />,
   [ThreepidSource.notion]: <NotionIcon />,
+  [ThreepidSource.trello]: <TrelloIcon />,
   [ThreepidSource.hiro]: <HiroIcon />,
 };
 
@@ -21,6 +23,7 @@ export const getThreepidName: Record<ThreepidSource, string> = {
   [ThreepidSource.github]: "GitHub",
   [ThreepidSource.metamask]: "Metamask",
   [ThreepidSource.notion]: "Notion",
+  [ThreepidSource.trello]: "Trello",
   [ThreepidSource.hiro]: "Hiro Wallet",
 };
 
