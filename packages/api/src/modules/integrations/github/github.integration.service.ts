@@ -363,12 +363,11 @@ export class GithubIntegrationService {
       })}`
     );
     const client = this.createClient(installationId);
-    const res = await client.issues.listForRepo({
-      owner: organization,
-      repo,
-      state: "all",
-    });
-    const issues = res.data.filter((issue) => !issue.pull_request);
+    const issues = await client.paginate(
+      client.issues.listForRepo,
+      { owner: organization, repo, state: "all", page_size: 100 },
+      (res) => res.data.filter((issue) => !issue.pull_request)
+    );
     this.logger.debug(
       `Got github issues: ${JSON.stringify({
         count: issues.length,
