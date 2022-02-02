@@ -66,6 +66,7 @@
     "request-promise": "^4.2.6",
     "rxjs": "^7.4.0",
     "slugify": "^1.6.4",
+    "trello-node-api": "^0.0.9",
     "typeorm": "^0.2.41",
     "uuid": "^8.3.2",
     "uuid-base62": "^0.1.0"

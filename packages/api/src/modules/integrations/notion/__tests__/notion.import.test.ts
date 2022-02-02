@@ -23,7 +23,7 @@ describe("NotionImportService", () => {
   afterAll(() => app.close());
 
   describe("createTasksFromNotionPage", () => {
-    it("testing", async () => {
+    it("imports correctly", async () => {
       const user = await fixtures.createUser();
       const organization = await fixtures.createOrganization({}, user);
       const threepid = await fixtures.createThreepid({

@@ -25,6 +25,7 @@ export class NotionImportService {
     private readonly taskService: TaskService
   ) {}
 
+  // Note(fant): this should be kept in sync with the Trello status labels
   private statusGuesses: Record<TaskStatus, string[]> = {
     [TaskStatus.TODO]: [
       "not started",
@@ -33,7 +34,7 @@ export class NotionImportService {
       "to-do",
       "to do",
       "sprint",
-      "Up for grabs",
+      "up for grabs",
     ],
     [TaskStatus.IN_PROGRESS]: ["in progress", "doing", "claimed"],
     [TaskStatus.IN_REVIEW]: ["in review"],

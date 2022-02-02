@@ -148,7 +148,7 @@ export class AuthController {
         scope: "read",
         key: this.config.get("TRELLO_API_KEY"),
         return_url: `${this.config.get("API_URL")}/auth/trello/callback?state=${
-          req.query.state
+          req.query.state ?? ""
         }`,
       })}`
     );

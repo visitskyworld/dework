@@ -1,0 +1,13 @@
+diff --git a/node_modules/trello-node-api/lib/resources/Boards.js b/node_modules/trello-node-api/lib/resources/Boards.js
+index 3e39fc5..1d82898 100644
+--- a/node_modules/trello-node-api/lib/resources/Boards.js
++++ b/node_modules/trello-node-api/lib/resources/Boards.js
+@@ -36,7 +36,7 @@ module.exports = TrelloResource.extend({
+ 
+     searchLabels: trelloMethod({
+         method: 'GET',
+-        path: '/{id}/customLabels',
++        path: '/{id}/labels',
+         urlParams: [ 'id' ]
+     }),
+ 

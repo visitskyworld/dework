@@ -12581,6 +12581,11 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
   integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
 
+qs@~6.9.1:
+  version "6.9.7"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.7.tgz#4610846871485e1e048f44ae3b94033f0e675afe"
+  integrity sha512-IhMFgUmuNpyRfxA90umL7ByLlgRXu6tIfKPpF5TmcfRLlLCckfP/g3IQmju6jjpu+Hh8rA+2p6A27ZSPOOHdKw==
+
 query-string@*, query-string@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-7.0.1.tgz#45bd149cf586aaa582dffc7ec7a8ad97dd02f75d"
@@ -14804,6 +14809,17 @@ treeify@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/treeify/-/treeify-1.1.0.tgz#4e31c6a463accd0943879f30667c4fdaff411bb8"
   integrity sha512-1m4RA7xVAJrSGrrXGs0L3YTwyvBs2S8PbRHaLZAkFw7JR8oIFwYtysxlBZhYIa7xSyiYJKZ3iGrrk55cGA3i9A==
+
+trello-node-api@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/trello-node-api/-/trello-node-api-0.0.9.tgz#94780de053517439f804f004e596565bfd78d71a"
+  integrity sha512-UVkn8rZV427i1tnn/flIkbmIzblEv868poTeOHhMrsblP3ogA6umgy2dh6+1QvjTvBQ1YiVpVUQQp/ZSBZlOMA==
+  dependencies:
+    bluebird "^3.7.2"
+    debug "^4.1.1"
+    lodash.isplainobject "^4.0.6"
+    qs "~6.9.1"
+    safe-buffer "^5.2.0"
 
 trough@^2.0.0:
   version "2.0.2"
