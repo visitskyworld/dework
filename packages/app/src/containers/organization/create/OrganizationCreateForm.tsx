@@ -45,6 +45,13 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
             redirect: `${organization.permalink}/notion-import`,
           })}`;
           window.location.href = url;
+        } else if (!!values.importFromTrello) {
+          const url = `${
+            Constants.GRAPHQL_API_URL
+          }/auth/trello?state=${JSON.stringify({
+            redirect: `${organization.permalink}/trello-import`,
+          })}`;
+          window.location.href = url;
         } else {
           await router.push(organization.permalink);
         }
@@ -92,6 +99,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
         />
       </Form.Item>
       <Form.Item name="importFromNotion" hidden />
+      <Form.Item name="importFromTrello" hidden />
 
       {renderSubmitButton?.({
         type: "primary",

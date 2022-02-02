@@ -12,6 +12,7 @@ export enum ThreepidSource {
   metamask = "metamask",
   notion = "notion",
   hiro = "hiro",
+  trello = "trello",
 }
 
 export interface GithubThreepidConfig {
@@ -41,12 +42,17 @@ export interface HiroThreepidConfig {
   testnetAddress: string;
 }
 
+export interface TrelloThreepidConfig {
+  token: string;
+}
+
 interface ThreepidConfigMap extends Record<ThreepidSource, any> {
   [ThreepidSource.github]: GithubThreepidConfig;
   [ThreepidSource.discord]: DiscordThreepidConfig;
   [ThreepidSource.metamask]: MetamaskThreepidConfig;
   [ThreepidSource.notion]: NotionThreepidConfig;
   [ThreepidSource.hiro]: HiroThreepidConfig;
+  [ThreepidSource.trello]: TrelloThreepidConfig;
 }
 
 registerEnumType(ThreepidSource, { name: "ThreepidSource" });

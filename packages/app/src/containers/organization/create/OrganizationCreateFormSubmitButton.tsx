@@ -9,9 +9,11 @@ import {
   Typography,
 } from "antd";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
+import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 
 export interface OrganizationCreateFormSubmitButtonOptions {
   importFromNotion?: boolean;
+  importFromTrello?: boolean;
 }
 
 export interface OrganizationCreateFormSubmitButtonProps
@@ -35,6 +37,13 @@ export const OrganizationCreateFormSubmitButton: FC<
           <Space>
             <NotionIcon />
             Import tasks from Notion
+            <Tag color="green">New</Tag>
+          </Space>
+        </Menu.Item>
+        <Menu.Item onClick={() => props.onClick({ importFromTrello: true })}>
+          <Space>
+            <TrelloIcon />
+            Import tasks from Trello
             <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>

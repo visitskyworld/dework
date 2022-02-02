@@ -11,6 +11,8 @@ import {
   DiscordOrganizationIntegrationConfig,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
+import { ThreepidService } from "../threepid/threepid.service";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -20,7 +22,8 @@ export class AuthController {
 
   constructor(
     private readonly config: ConfigService<ConfigType>,
-    private readonly integrationService: IntegrationService
+    private readonly integrationService: IntegrationService,
+    private readonly threepidService: ThreepidService
   ) {}
 
   @Get("github")
@@ -123,7 +126,6 @@ export class AuthController {
   @Get("notion/callback")
   @UseGuards(AuthGuard("notion"))
   async notionCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
-    console.warn(req.query);
     try {
       const state = JSON.parse(req.query.state as string);
       const appUrl = !!state.redirect?.startsWith("/")
@@ -134,6 +136,56 @@ export class AuthController {
       );
     } catch {
       res.redirect(this.config.get("APP_URL") as string);
+    }
+  }
+
+  @Get("trello")
+  async trello(@Req() req: Request, @Res() res: Response) {
+    res.redirect(
+      `https://trello.com/1/authorize?${qs.stringify({
+        expiration: "never",
+        name: "Dework",
+        scope: "read",
+        key: this.config.get("TRELLO_API_KEY"),
+        return_url: `${this.config.get("API_URL")}/auth/trello/callback?state=${
+          req.query.state
+        }`,
+      })}`
+    );
+  }
+
+  @Get("trello/callback")
+  async trelloCallback(@Req() req: RequestFromCallback, @Res() res: Response) {
+    const token = req.query.token as string | undefined;
+    if (!token) {
+      res.send(`
+        <script>
+          const loc = window.location;
+          if (!!loc.hash) {
+            const hash = loc.hash.substr(1);
+            loc.hash = '';
+            loc.search = location.search + '&' + hash;
+          } else {
+            loc.href = 'https://dework.xyz';
+          }
+        </script>
+      `);
+    } else {
+      const threepid = await this.threepidService.findOrCreate({
+        threepid: token,
+        source: ThreepidSource.discord,
+        config: { token },
+      });
+
+      try {
+        const state = JSON.parse(req.query.state as string);
+        const appUrl = !!state.redirect?.startsWith("/")
+          ? this.getAppUrl(req.query.state as string)
+          : "";
+        res.redirect(`${appUrl}${state.redirect}?threepidId=${threepid.id}`);
+      } catch {
+        res.redirect(this.config.get("APP_URL") as string);
+      }
     }
   }
 
