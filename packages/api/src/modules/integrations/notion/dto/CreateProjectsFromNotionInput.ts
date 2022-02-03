@@ -8,4 +8,7 @@ export class CreateProjectsFromNotionInput {
 
   @Field(() => GraphQLUUID)
   public threepidId!: string;
+
+  @Field(() => [String])
+  public databaseIds!: string[];
 }

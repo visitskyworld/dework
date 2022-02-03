@@ -2,6 +2,22 @@ import { CreateProjectsFromNotionInput } from "@dewo/api/modules/integrations/no
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class NotionRequests {
+  public static getDatabases(
+    threepidId: string
+  ): GraphQLTestClientRequestBody<{ threepidId: string }> {
+    return {
+      query: `
+        query GetNotionDatabases($threepidId: UUID!) {
+          databases: getNotionDatabases(threepidId: $threepidId) {
+            id
+            name
+          }
+        }
+      `,
+      variables: { threepidId },
+    };
+  }
+
   public static createProjectsFromNotion(
     input: CreateProjectsFromNotionInput
   ): GraphQLTestClientRequestBody<{ input: CreateProjectsFromNotionInput }> {

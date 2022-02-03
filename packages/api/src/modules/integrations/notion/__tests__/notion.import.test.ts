@@ -1,5 +1,5 @@
 import { TaskStatus } from "@dewo/api/models/Task";
-import { ThreepidSource } from "@dewo/api/models/Threepid";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -13,28 +13,57 @@ describe("NotionImportService", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
   let client: GraphQLTestClient;
+  let threepid: Threepid;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
     client = app.get(GraphQLTestClient);
+
+    threepid = await fixtures.createThreepid({
+      source: ThreepidSource.notion,
+      config: { accessToken: notionAccessToken, profile: undefined as any },
+    });
   });
 
   afterAll(() => app.close());
+
+  describe("getNotionDatabases", () => {
+    it("should return correct databases", async () => {
+      const response = await client.request({
+        app,
+        body: NotionRequests.getDatabases(threepid.id),
+      });
+
+      expect(response.body.data.databases).toHaveLength(2);
+      expect(response.body.data.databases).toContainEqual(
+        expect.objectContaining({
+          id: "e25d7a9f-f713-4f47-886e-a7c39850ca3c",
+          name: "Top Level Board",
+        })
+      );
+      expect(response.body.data.databases).toContainEqual(
+        expect.objectContaining({
+          id: "2de835c0-6fd9-4f57-911b-19a571e67755",
+          name: "Nested Table",
+        })
+      );
+    });
+  });
 
   describe("createTasksFromNotionPage", () => {
     it("imports correctly", async () => {
       const user = await fixtures.createUser();
       const organization = await fixtures.createOrganization({}, user);
-      const threepid = await fixtures.createThreepid({
-        source: ThreepidSource.notion,
-        config: { accessToken: notionAccessToken, profile: undefined as any },
-      });
 
+      const databaseIds = await client
+        .request({ app, body: NotionRequests.getDatabases(threepid.id) })
+        .then((res) => res.body.data.databases.map((b: any) => b.id));
       const response = await client.request({
         app,
         auth: fixtures.createAuthToken(user),
         body: NotionRequests.createProjectsFromNotion({
+          databaseIds,
           threepidId: threepid.id,
           organizationId: organization.id,
         }),
@@ -46,7 +75,7 @@ describe("NotionImportService", () => {
       expect(projects.length).toEqual(2);
       expect(projects).toContainEqual(
         expect.objectContaining({
-          name: "Dework 1",
+          name: "Top Level Board",
           tasks: expect.arrayContaining([
             expect.objectContaining({
               name: "Card 1",
@@ -125,7 +154,7 @@ function helloWorld() {
 
       expect(projects).toContainEqual(
         expect.objectContaining({
-          name: "Dework 2",
+          name: "Nested Table",
           tasks: expect.arrayContaining([
             expect.objectContaining({
               name: "Row 1",

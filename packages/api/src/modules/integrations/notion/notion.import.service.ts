@@ -1,6 +1,6 @@
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Client } from "@notionhq/client";
 import {
   GetBlockResponse,
@@ -15,6 +15,12 @@ import * as AntColors from "@ant-design/colors";
 import { ProjectService } from "../../project/project.service";
 import { User } from "@dewo/api/models/User";
 import { TaskService } from "../../task/task.service";
+import { NotionDatabase } from "./dto/NotionDatabase";
+import {
+  NotionThreepidConfig,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
+import { ThreepidService } from "../../threepid/threepid.service";
 
 @Injectable()
 export class NotionImportService {
@@ -22,7 +28,8 @@ export class NotionImportService {
 
   constructor(
     private readonly projectService: ProjectService,
-    private readonly taskService: TaskService
+    private readonly taskService: TaskService,
+    private readonly threepidService: ThreepidService
   ) {}
 
   // Note(fant): this should be kept in sync with the Trello status labels
@@ -55,34 +62,45 @@ export class NotionImportService {
     red: "red",
   };
 
+  public async getDatabases(threepidId: string): Promise<NotionDatabase[]> {
+    const notion = await this.createClient(threepidId);
+    const databases = await notion.search({
+      filter: { property: "object", value: "database" },
+    });
+    return databases.results.map((database) => ({
+      id: database.id,
+      name:
+        "title" in database
+          ? database.title.map((t) => t.plain_text).join("")
+          : "",
+    }));
+  }
+
   public async createProjectsFromNotion(
     organizationId: string,
-    authToken: string,
+    threepidId: string,
+    databaseIds: string[],
     user: User
   ) {
     this.logger.log(
       `Starting Notion import: ${JSON.stringify({
         organizationId,
+        threepidId,
+        databaseIds,
         userId: user.id,
       })}`
     );
-    const notion = new Client({ auth: authToken });
+    const notion = await this.createClient(threepidId);
 
-    const databases = await notion.search({
-      filter: { property: "object", value: "database" },
-    });
-
-    this.logger.debug(
-      `Found Notion databases: ${JSON.stringify({
-        databaseIds: databases.results.map((d) => d.id),
-      })}`
-    );
-    for (const database of databases.results) {
+    for (const databaseId of databaseIds) {
       this.logger.debug(
         `Fetching cards in Notion database: ${JSON.stringify({
-          databaseId: database.id,
+          databaseId,
         })}`
       );
+      const database = await notion.databases.retrieve({
+        database_id: databaseId,
+      });
 
       let cards: QueryDatabaseResponse["results"] = [];
       let nextCursor: string | null | undefined;
@@ -294,5 +312,16 @@ export class NotionImportService {
         })
       )
     );
+  }
+
+  private async createClient(threepidId: string): Promise<Client> {
+    const threepid = await this.threepidService.findOne({
+      id: threepidId,
+      source: ThreepidSource.notion,
+    });
+    if (!threepid) throw new NotFoundException();
+    return new Client({
+      auth: (threepid.config as NotionThreepidConfig).accessToken,
+    });
   }
 }
