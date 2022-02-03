@@ -1,0 +1,13 @@
+diff --git a/node_modules/apollo-link-timeout/lib/timeoutLink.js b/node_modules/apollo-link-timeout/lib/timeoutLink.js
+index d420139..9ca8c16 100644
+--- a/node_modules/apollo-link-timeout/lib/timeoutLink.js
++++ b/node_modules/apollo-link-timeout/lib/timeoutLink.js
+@@ -47,7 +47,7 @@ var TimeoutLink = /** @class */ (function (_super) {
+         }
+         var chainObservable = forward(operation); // observable for remaining link chain
+         var operationType = operation.query.definitions.find(function (def) { return def.kind === 'OperationDefinition'; }).operation;
+-        if (requestTimeout <= 0 || operationType === 'subscription') {
++        if (requestTimeout <= 0 || operationType === 'subscription' || operationType === 'mutation') {
+             return chainObservable; // skip this link if timeout is zero or it's a subscription request
+         }
+         // create local observable with timeout functionality (unsubscibe from chain observable and

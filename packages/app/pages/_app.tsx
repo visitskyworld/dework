@@ -4,7 +4,6 @@ import { AppContextType } from "next-server/dist/lib/utils";
 import Head from "next/head";
 import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
-import { getDataFromTree } from "@apollo/react-ssr";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
@@ -38,6 +37,8 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
+import { getDataFromTree } from "@apollo/react-ssr";
+import ApolloLinkTimeout from "apollo-link-timeout";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -183,13 +184,14 @@ function createApolloLink(
     };
   });
 
-  const errorLink = onError((error) => onErrorRef?.current?.(error));
   const httpLink = createHttpLink({
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
+  const errorLink = onError((error) => onErrorRef?.current?.(error));
+  const timeoutLink = new ApolloLinkTimeout(5000, 504);
 
   if (typeof window === "undefined") {
-    return ApolloLink.from([authLink, errorLink, httpLink]);
+    return ApolloLink.from([authLink, errorLink, timeoutLink, httpLink]);
   }
 
   const wsLink = new WebSocketLink({
@@ -209,7 +211,7 @@ function createApolloLink(
     httpLink
   );
 
-  return ApolloLink.from([authLink, errorLink, splitLink]);
+  return ApolloLink.from([authLink, errorLink, timeoutLink, splitLink]);
 }
 
 export default withApollo(
