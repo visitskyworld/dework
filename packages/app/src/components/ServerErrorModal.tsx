@@ -21,7 +21,6 @@ export const ServerErrorModal: FC<Props> = ({ onErrorRef }) => {
   const reconnect = useCallback(async () => {
     try {
       setReconnecting(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       await apolloClient.reFetchObservableQueries();
       setVisible(false);
     } catch (error) {
