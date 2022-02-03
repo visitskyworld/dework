@@ -69,4 +69,10 @@ export const gifs = [
   "https://media.giphy.com/media/DYH297XiCS2Ck/giphy.gif",
   "https://media.giphy.com/media/cRe9VhznkdS4ACbDwF/giphy.gif",
   "https://media.giphy.com/media/gEkOjfxIuFy9lryrT3/giphy.gif",
+  "https://media.giphy.com/media/S9i8jJxTvAKVHVMvvW/giphy.gif",
+  "https://media.giphy.com/media/azICCwJD3pi1pqimJg/giphy.gif",
+  "https://media.giphy.com/media/aZXRIHxo9saPe/giphy.gif",
+  "https://media.giphy.com/media/YRuFixSNWFVcXaxpmX/giphy.gif",
+  "https://media.giphy.com/media/l2Sq29cFXoF80ADlK/giphy.gif",
+  "https://media.giphy.com/media/UGM8GHOE7lD0LPkvQ4/giphy.gif",
 ];
