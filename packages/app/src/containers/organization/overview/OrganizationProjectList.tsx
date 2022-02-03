@@ -5,7 +5,7 @@ import { ProjectCard } from "./ProjectCard";
 import { CreateProjectCard } from "./CreateProjectCard";
 import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { JoinTokenGatedProjectsButton } from "../../invite/JoinTokenGatedProjectsButton";
-import { ImportProjectsFromNotionCard } from "./ImportProjectsFromNotionCard";
+import { ImportProjectsCard } from "./ImportProjectsCard";
 
 interface Props {
   organizationId: string;
@@ -27,18 +27,16 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
           </Col>
         ))}
         <Can I="create" a="Project">
-          {[CreateProjectCard, ImportProjectsFromNotionCard].map(
-            (Component) => (
-              <Col
-                xs={24}
-                sm={12}
-                md={8}
-                style={{ paddingLeft: 8, paddingRight: 8 }}
-              >
-                <Component organizationId={organizationId} />
-              </Col>
-            )
-          )}
+          {[CreateProjectCard, ImportProjectsCard].map((Component) => (
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
+              style={{ paddingLeft: 8, paddingRight: 8 }}
+            >
+              <Component organizationId={organizationId} />
+            </Col>
+          ))}
         </Can>
       </Row>
     </Space>
