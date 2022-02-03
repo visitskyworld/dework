@@ -56,7 +56,6 @@
     "passport-discord": "^0.1.4",
     "passport-github": "^1.1.0",
     "passport-notion": "^1.0.2",
-    "passport-trello": "^0.1.5",
     "patch-package": "^6.4.7",
     "pg": "^8.7.1",
     "query-string": "^7.0.1",

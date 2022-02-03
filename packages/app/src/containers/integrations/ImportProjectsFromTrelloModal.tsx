@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
 import { useOrganization } from "../organization/hooks";
 import { useCreateProjectsFromTrello, useTrelloBoards } from "./hooks";
-// import { useCreateProjectsFromTrello } from "./hooks";
 
 interface Props {
   threepidId: string;
