@@ -5,7 +5,6 @@ import { AppContextType } from "next-server/dist/lib/utils";
 import Head from "next/head";
 import "../../app/styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
-import { getDataFromTree } from "@apollo/react-ssr";
 import * as Sentry from "@sentry/nextjs";
 import {
   Constants,
@@ -96,7 +95,5 @@ export default withApollo(
       }),
       cache: new InMemoryCache().restore(initialState || {}),
       defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
-    }),
-  // Fetches all Apollo data on the server side
-  { getDataFromTree }
+    })
 )(App as any);
