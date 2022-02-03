@@ -1,5 +1,6 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import _ from "lodash";
+import moment from "moment";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, IsNull, Repository } from "typeorm";
@@ -111,12 +112,9 @@ export class DiscordIntegrationService {
         )
       ) {
         const storyPoints = event.task.storyPoints;
-        const dueDate = event.task.dueDate?.toLocaleDateString("en-us", {
-          weekday: "long",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
+        const dueDateString = !!event.task.dueDate
+          ? moment(event.task.dueDate).format("dddd MMM Do")
+          : undefined;
         const reward = event.task.reward;
         const hasAssignees = event.task.assignees.length;
         const url = await this.permalink.get(event.task);
@@ -126,15 +124,18 @@ export class DiscordIntegrationService {
           "New task created!",
           undefined,
           {
-            description: `_New task created!_
-            ${!!storyPoints ? `- ${storyPoints} task points` : ""}
-            ${
-              !!reward ? `- Reward: ${await this.formatTaskReward(reward)}` : ""
-            }
-            ${!!dueDate ? `- Due: ${dueDate}` : ""}
-            ${
-              !hasAssignees ? `---\n👉 [Apply or grab task](${url})` : ""
-            }`.replace(/^\s*[\r\n]/gm, ""),
+            description: [
+              "_New task created!_",
+              !!storyPoints ? `- ${storyPoints} task points` : undefined,
+              !!reward
+                ? `- Reward: ${await this.formatTaskReward(reward)}`
+                : undefined,
+              !!dueDateString ? `- Due: ${dueDateString}` : undefined,
+              "---",
+              !hasAssignees ? `👉 [Apply or grab task](${url})` : undefined,
+            ]
+              .filter((s) => !!s)
+              .join("\n"),
           }
         );
       }
@@ -181,6 +182,12 @@ export class DiscordIntegrationService {
       } else if (event instanceof TaskUpdatedEvent) {
         if (event.task.ownerId !== event.prevTask.ownerId) {
           await this.postOwnerChange(event.task, channelToPostTo);
+        }
+        if (
+          event.task.dueDate?.toUTCString() !==
+          event.prevTask.dueDate?.toUTCString()
+        ) {
+          await this.postDueDateChange(event.task, channelToPostTo);
         }
 
         const assigneeIds = event.task.assignees.map((u) => u.id).sort();
@@ -349,7 +356,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `${
+      `🧑‍💻 ${
         !!ownerDiscordId ? `<@${ownerDiscordId}>` : owner.username
       } added as the reviewer of the task`,
       !!ownerDiscordId ? [ownerDiscordId] : undefined
@@ -375,7 +382,27 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `${assigneesString} assigned to the task`
+      `🕺 ${assigneesString} assigned to the task`
+    );
+  }
+
+  private async postDueDateChange(
+    task: Task,
+    channel: Discord.TextBasedChannels
+  ) {
+    const owner = await task.owner;
+    if (!owner) return;
+    const ownerDiscordId = await this.getDiscordId(owner.id);
+
+    const message = !!task.dueDate
+      ? `⏳ Due date updated to ${moment(task.dueDate).format("dddd MMM Do")}`
+      : "⌛️ Due date removed";
+
+    await this.postTaskCard(
+      channel,
+      task,
+      message,
+      !!ownerDiscordId ? [ownerDiscordId] : undefined
     );
   }
 
@@ -387,7 +414,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `Thread for Dework task "${task.name}"`,
+      `🧵 Thread for Dework task "${task.name}"`,
       undefined,
       {
         author: !!creator
@@ -413,7 +440,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      "Ready for review!",
+      "🚨 Ready for review",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -437,7 +464,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channelToPostTo,
       task,
-      "Ready for another review!",
+      "🚨 Ready for another review",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -458,7 +485,9 @@ export class DiscordIntegrationService {
     if (!channelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
-    const reviewMessage = approved ? "PR approved!" : "PR reviewed in Github";
+    const reviewMessage = approved
+      ? "☑️ PR approved"
+      : "📬 PR reviewed in Github";
     await this.postTaskCard(
       channelToPostTo,
       task,
@@ -561,7 +590,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      "New applicant!",
+      "🙋 New applicant!",
       !!owner ? [owner] : undefined,
       !!applicant
         ? {
@@ -587,7 +616,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      "New submission!",
+      "✉️ New submission!",
       !!owner ? [owner] : undefined,
       !!submitter
         ? {
@@ -797,6 +826,6 @@ export class DiscordIntegrationService {
 
   private async formatTaskReward(reward: TaskReward): Promise<string> {
     const token = await reward.token;
-    return [formatFixed(reward.amount, token?.exp), token?.symbol].join(" ");
+    return [formatFixed(reward.amount, token.exp), token.symbol].join(" ");
   }
 }
