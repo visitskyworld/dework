@@ -12,7 +12,6 @@ import {
   Tabs,
 } from "antd";
 import React, { FC, useState } from "react";
-import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { WatchDemoButton } from "./WatchDemoButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
@@ -75,13 +74,12 @@ export const ProductSection: FC<Props> = () => {
             <Button
               size="large"
               block
-              icon={<NotionIcon />}
               onClick={() => {
-                setOnboardingFlow("notion");
+                setOnboardingFlow("import");
                 loginModal.toggleOn();
               }}
             >
-              Import Notion board
+              Import Notion/Trello board
             </Button>
           </Space>
         </Space>

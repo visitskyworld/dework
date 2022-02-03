@@ -21,9 +21,9 @@ import { OrganizationCreateForm } from "@dewo/app/containers/organization/create
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const flow = router.query.flow as "dao" | "notion" | undefined;
+  const flow = router.query.flow as "dao" | "import" | undefined;
 
-  const createOrganizationModal = useToggle(["dao", "notion"].includes(flow!));
+  const createOrganizationModal = useToggle(["dao", "import"].includes(flow!));
 
   const updateOnboarding = useUpdateUserOnboarding();
   const handleDaoCoreTeam = useCallback(async () => {
@@ -92,14 +92,7 @@ const Page: NextPage = () => {
             renderSubmitButton={(props) => {
               if (flow === "dao") {
                 return <Button {...props} onClick={() => props.onClick()} />;
-              } else if (flow === "notion") {
-                return (
-                  <Button
-                    {...props}
-                    onClick={() => props.onClick({ importFromNotion: true })}
-                  />
-                );
-              } else {
+              } else if (flow === "import") {
                 return undefined;
               }
             }}
