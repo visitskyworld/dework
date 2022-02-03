@@ -339,7 +339,7 @@ export class DiscordIntegrationService {
   }
 
   private async postDone(channel: Discord.TextBasedChannels, task: Task) {
-    await this.postTaskCard(channel, task, "Task completed!");
+    await this.postTaskCard(channel, task, "☑️ Task completed!");
     if (channel.isThread()) {
       await channel.setArchived(true);
     }
@@ -356,7 +356,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `🧑‍💻 ${
+      `${
         !!ownerDiscordId ? `<@${ownerDiscordId}>` : owner.username
       } added as the reviewer of the task`,
       !!ownerDiscordId ? [ownerDiscordId] : undefined
@@ -382,7 +382,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `🕺 ${assigneesString} assigned to the task`
+      `${assigneesString} assigned to the task`
     );
   }
 
@@ -414,7 +414,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `🧵 Thread for Dework task "${task.name}"`,
+      `Thread for Dework task "${task.name}"`,
       undefined,
       {
         author: !!creator
@@ -440,7 +440,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      "🚨 Ready for review",
+      "🦋 Ready for review!",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -464,7 +464,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channelToPostTo,
       task,
-      "🚨 Ready for another review",
+      "🦋 Ready for another review!",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -486,8 +486,8 @@ export class DiscordIntegrationService {
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
     const reviewMessage = approved
-      ? "☑️ PR approved"
-      : "📬 PR reviewed in Github";
+      ? "PR approved!"
+      : "📬 A review was submitted in Github!";
     await this.postTaskCard(
       channelToPostTo,
       task,
