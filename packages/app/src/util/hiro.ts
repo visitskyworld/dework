@@ -72,7 +72,17 @@ export function useCreateStacksTransaction(): (
             })
           );
 
-          return res.txId;
+          if (typeof res.txId === "string") return res.txId;
+          const txData = res.txId as any as {
+            txid: string;
+            error?: string;
+            reason?: string;
+          };
+          if (!!txData.error && !!txData.reason) {
+            throw new Error(`${txData.error}: ${txData.reason}`);
+          }
+
+          return txData.txid;
         }
         default:
           throw new Error(
