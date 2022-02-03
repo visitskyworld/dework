@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { MutableRefObject, useEffect, useRef } from "react";
 import { AppInitialProps, AppProps } from "next/app";
 import { AppContextType } from "next-server/dist/lib/utils";
 import Head from "next/head";
@@ -23,6 +23,7 @@ import {
   split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { ErrorLink, onError } from "@apollo/client/link/error";
 import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType, NextPageContext } from "next";
 import { hotjar } from "react-hotjar";
@@ -70,9 +71,7 @@ const SlugReplacer: React.FC = () => {
       router.replace(
         { query: { ...router.query, organizationSlug: organization.slug } },
         undefined,
-        {
-          shallow: true,
-        }
+        { shallow: true }
       );
     }
   }, [organizationSlug, organizationId, organization, router]);
@@ -84,9 +83,7 @@ const SlugReplacer: React.FC = () => {
       router.replace(
         { query: { ...router.query, projectSlug: project.slug } },
         undefined,
-        {
-          shallow: true,
-        }
+        { shallow: true }
       );
     }
   }, [projectSlug, projectId, project, router]);
@@ -101,6 +98,8 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   authenticated,
   apollo,
 }) => {
+  const onErrorRef = useRef<ErrorLink.ErrorHandler>();
+  apollo.setLink(createApolloLink(undefined, onErrorRef));
   return (
     <>
       <Head>
@@ -146,7 +145,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
               <FeedbackButton />
               <SlugReplacer />
               <TaskUpdateModalListener />
-              <ServerErrorModal visible />
+              <ServerErrorModal onErrorRef={onErrorRef} />
             </SidebarProvider>
           </PermissionsProvider>
         </AuthProvider>
@@ -170,7 +169,10 @@ App.getInitialProps = async ({
   };
 };
 
-function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
+function createApolloLink(
+  ctx: NextPageContext | undefined,
+  onErrorRef?: MutableRefObject<ErrorLink.ErrorHandler | undefined>
+): ApolloLink {
   const authLink = setContext((_, { headers }) => {
     const token = getAuthToken(ctx);
     return {
@@ -181,12 +183,13 @@ function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
     };
   });
 
+  const errorLink = onError((error) => onErrorRef?.current?.(error));
   const httpLink = createHttpLink({
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
 
   if (typeof window === "undefined") {
-    return authLink.concat(httpLink);
+    return ApolloLink.from([authLink, errorLink, httpLink]);
   }
 
   const wsLink = new WebSocketLink({
@@ -206,7 +209,7 @@ function createApolloLink(ctx: NextPageContext | undefined): ApolloLink {
     httpLink
   );
 
-  return authLink.concat(splitLink);
+  return ApolloLink.from([authLink, errorLink, splitLink]);
 }
 
 export default withApollo(

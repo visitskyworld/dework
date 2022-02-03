@@ -68,16 +68,20 @@ const Page: NextPage = () => {
         onCreated={navigateToProject}
         onCancel={router.back}
       />
-      <ImportProjectsFromNotionModal
-        visible={router.route.endsWith("/notion-import")}
-        organizationId={organizationId}
-        threepidId={router.query.threepidId as string}
-      />
-      <ImportProjectsFromTrelloModal
-        visible={router.route.endsWith("/trello-import")}
-        organizationId={organizationId}
-        threepidId={router.query.threepidId as string}
-      />
+      {!!router.query.threepidId && router.route.endsWith("/notion-import") && (
+        <ImportProjectsFromNotionModal
+          visible
+          organizationId={organizationId}
+          threepidId={router.query.threepidId as string}
+        />
+      )}
+      {!!router.query.threepidId && router.route.endsWith("/trello-import") && (
+        <ImportProjectsFromTrelloModal
+          visible
+          organizationId={organizationId}
+          threepidId={router.query.threepidId as string}
+        />
+      )}
     </Layout>
   );
 };
