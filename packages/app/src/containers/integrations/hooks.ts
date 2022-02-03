@@ -22,6 +22,8 @@ import {
   CreateProjectsFromTrelloMutationVariables,
   GetTrelloBoardsQuery,
   GetTrelloBoardsQueryVariables,
+  GetNotionDatabasesQuery,
+  GetNotionDatabasesQueryVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -205,4 +207,12 @@ export function useTrelloBoards(threepidId: string) {
     GetTrelloBoardsQueryVariables
   >(Queries.trelloBoards, { variables: { threepidId } });
   return data?.trelloBoards;
+}
+
+export function useNotionDatabases(threepidId: string) {
+  const { data } = useQuery<
+    GetNotionDatabasesQuery,
+    GetNotionDatabasesQueryVariables
+  >(Queries.notionDatabases, { variables: { threepidId } });
+  return data?.notionDatabases;
 }

@@ -7,7 +7,6 @@ import { User } from "@dewo/api/models/User";
 import { NotionImportService } from "./notion.import.service";
 import { OrganizationRolesGuard } from "../../organization/organization.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
-import { ThreepidService } from "../../threepid/threepid.service";
 
 import { OrganizationService } from "../../organization/organization.service";
 import { CreateProjectsFromNotionInput } from "./dto/CreateProjectsFromNotionInput";
@@ -18,7 +17,6 @@ import GraphQLUUID from "graphql-type-uuid";
 export class NotionResolver {
   constructor(
     private readonly importService: NotionImportService,
-    private readonly threepidService: ThreepidService,
     private readonly organizationService: OrganizationService
   ) {}
 

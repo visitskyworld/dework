@@ -7394,6 +7394,29 @@ export interface GetTrelloBoardsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetNotionDatabasesQuery
+// ====================================================
+
+export interface GetNotionDatabasesQuery_notionDatabases {
+  __typename: "NotionDatabase";
+  id: string;
+  name: string;
+}
+
+export interface GetNotionDatabasesQuery {
+  notionDatabases: GetNotionDatabasesQuery_notionDatabases[];
+}
+
+export interface GetNotionDatabasesQueryVariables {
+  threepidId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
@@ -10631,6 +10654,7 @@ export interface CreateProjectIntegrationInput {
 export interface CreateProjectsFromNotionInput {
   organizationId: Scalar.UUID;
   threepidId: Scalar.UUID;
+  databaseIds: string[];
 }
 
 export interface CreateProjectsFromTrelloInput {

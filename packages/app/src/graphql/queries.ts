@@ -284,3 +284,12 @@ export const trelloBoards = gql`
     }
   }
 `;
+
+export const notionDatabases = gql`
+  query GetNotionDatabasesQuery($threepidId: UUID!) {
+    notionDatabases: getNotionDatabases(threepidId: $threepidId) {
+      id
+      name
+    }
+  }
+`;
