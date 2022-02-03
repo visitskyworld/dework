@@ -149,6 +149,7 @@ export class NotionImportService {
           page.properties.Name.type === "title"
             ? page.properties.Name.title.map((t) => t.plain_text).join("")
             : "";
+        if (!name) continue;
         const markdown = this.blocksToMarkdown(blocks.results);
         const status = this.guessStatus(page);
         const notionTags = _(page.properties)
