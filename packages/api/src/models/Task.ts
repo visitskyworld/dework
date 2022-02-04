@@ -59,7 +59,7 @@ export class Task extends Audit {
   @Field()
   public name!: string;
 
-  @Column({ nullable: true, length: 4096 })
+  @Column({ nullable: true, length: 16384 })
   @Field({ nullable: true })
   public description?: string;
 

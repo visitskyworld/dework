@@ -2,6 +2,7 @@ import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Client } from "@notionhq/client";
+import Bluebird from "bluebird";
 import {
   GetBlockResponse,
   GetPageResponse,
@@ -130,66 +131,70 @@ export class NotionImportService {
       );
       const tags = await this.createTags(database, project.id);
 
-      for (const card of cards) {
-        this.logger.debug(
-          `Fetching Notion card blocks: ${JSON.stringify({
-            databaseId: database.id,
-            cardId: card.id,
-          })}`
-        );
+      await Bluebird.map(
+        cards,
+        async (card) => {
+          this.logger.debug(
+            `Fetching Notion card blocks: ${JSON.stringify({
+              databaseId: database.id,
+              cardId: card.id,
+            })}`
+          );
 
-        const [page, blocks] = await Promise.all([
-          notion.pages.retrieve({ page_id: card.id }),
-          notion.blocks.children.list({ block_id: card.id }),
-        ]);
+          const [page, blocks] = await Promise.all([
+            notion.pages.retrieve({ page_id: card.id }),
+            notion.blocks.children.list({ block_id: card.id }),
+          ]);
 
-        if (!("properties" in page)) continue;
+          if (!("properties" in page)) return;
 
-        const name =
-          page.properties.Name.type === "title"
-            ? page.properties.Name.title.map((t) => t.plain_text).join("")
-            : "";
-        if (!name) continue;
-        const markdown = this.blocksToMarkdown(blocks.results);
-        const status = this.guessStatus(page);
-        const notionTags = _(page.properties)
-          .map((prop) => {
-            if ("multi_select" in prop && !!prop.multi_select) {
-              return prop.multi_select;
-            } else if ("select" in prop && !!prop.select) {
-              return [prop.select];
-            }
-            return [];
-          })
-          .flatten()
-          .value();
-        const taskTags = tags.filter((t) =>
-          notionTags.find((nt) => nt.id === t.externalId)
-        );
+          const name =
+            page.properties.Name.type === "title"
+              ? page.properties.Name.title.map((t) => t.plain_text).join("")
+              : "";
+          if (!name) return;
+          const markdown = this.blocksToMarkdown(blocks.results);
+          const status = this.guessStatus(page);
+          const notionTags = _(page.properties)
+            .map((prop) => {
+              if ("multi_select" in prop && !!prop.multi_select) {
+                return prop.multi_select;
+              } else if ("select" in prop && !!prop.select) {
+                return [prop.select];
+              }
+              return [];
+            })
+            .flatten()
+            .value();
+          const taskTags = tags.filter((t) =>
+            notionTags.find((nt) => nt.id === t.externalId)
+          );
 
-        this.logger.debug(
-          `Creating task from Notion card: ${JSON.stringify({
-            databaseId: database.id,
-            cardId: card.id,
+          this.logger.debug(
+            `Creating task from Notion card: ${JSON.stringify({
+              databaseId: database.id,
+              cardId: card.id,
+              name,
+              status,
+              tagIds: taskTags.map((t) => t.id),
+            })}`
+          );
+
+          await this.taskService.create({
             name,
-            status,
-            tagIds: taskTags.map((t) => t.id),
-          })}`
-        );
-
-        await this.taskService.create({
-          name,
-          status: status ?? TaskStatus.TODO,
-          tags: taskTags,
-          description: [
-            markdown,
-            `Originally created from Notion task: ${page.url}`,
-          ]
-            .join("\n\n")
-            .trim(),
-          projectId: project.id,
-        });
-      }
+            status: status ?? TaskStatus.TODO,
+            tags: taskTags,
+            description: [
+              markdown,
+              `Originally created from Notion task: ${page.url}`,
+            ]
+              .join("\n\n")
+              .trim(),
+            projectId: project.id,
+          });
+        },
+        { concurrency: 20 }
+      );
     }
 
     this.logger.log(
