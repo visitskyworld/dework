@@ -45,14 +45,12 @@ const PermissionsContext = createContext<Ability<AbilityType>>(
 export const Can = createContextualCan(PermissionsContext.Consumer);
 
 export const PermissionsProvider: FC = ({ children }) => {
-  const orgId = useParseIdFromSlug("organizationSlug");
-  const projId = useParseIdFromSlug("projectSlug");
+  const organizationId = useParseIdFromSlug("organizationSlug");
+  const projectId = useParseIdFromSlug("projectSlug");
 
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
-    {
-      variables: { input: { projectId: projId, organizationId: orgId } },
-    }
+    { variables: { input: { projectId, organizationId } } }
   );
   const permissions = data?.permissions;
   const ability = useMemo(
