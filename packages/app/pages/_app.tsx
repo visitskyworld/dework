@@ -1,6 +1,5 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
 import { AppInitialProps, AppProps } from "next/app";
-import { AppContextType } from "next-server/dist/lib/utils";
 import Head from "next/head";
 import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
@@ -24,7 +23,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { ErrorLink, onError } from "@apollo/client/link/error";
 import { getAuthToken } from "@dewo/app/util/authToken";
-import { NextComponentType, NextPageContext } from "next";
+import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
@@ -39,6 +38,7 @@ import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { getDataFromTree } from "@apollo/react-ssr";
 import ApolloLinkTimeout from "apollo-link-timeout";
+import { AppContextType } from "next/dist/shared/lib/utils";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -54,7 +54,7 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
 Sentry.init({ dsn: Constants.SENTRY_DSN, environment: Constants.ENVIRONMENT });
 
 interface AuthProps {
-  authenticated: boolean;
+  initialAuthToken: string | undefined;
 }
 
 const SlugReplacer: React.FC = () => {
@@ -96,11 +96,16 @@ type Props = AppProps & WithApolloProps<any> & AuthProps;
 const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   Component,
   pageProps,
-  authenticated,
+  initialAuthToken,
   apollo,
 }) => {
   const onErrorRef = useRef<ErrorLink.ErrorHandler>();
-  apollo.setLink(createApolloLink(undefined, onErrorRef));
+  apollo.setLink(
+    createApolloLink(
+      () => initialAuthToken || getAuthToken(undefined),
+      onErrorRef
+    )
+  );
   return (
     <>
       <Head>
@@ -137,7 +142,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       </Head>
       <ApolloProvider client={apollo as any}>
         <AuthProvider
-          initialAuthenticated={authenticated || !!getAuthToken(undefined)}
+          initialAuthenticated={!!initialAuthToken || !!getAuthToken(undefined)}
         >
           <PermissionsProvider>
             <SidebarProvider>
@@ -166,16 +171,16 @@ App.getInitialProps = async ({
 
   return {
     pageProps: await Component.getInitialProps?.(ctx),
-    authenticated: !!getAuthToken(ctx as any),
+    initialAuthToken: getAuthToken(ctx),
   };
 };
 
 function createApolloLink(
-  ctx: NextPageContext | undefined,
+  getAuthToken: () => string | undefined,
   onErrorRef?: MutableRefObject<ErrorLink.ErrorHandler | undefined>
 ): ApolloLink {
   const authLink = setContext((_, { headers }) => {
-    const token = getAuthToken(ctx);
+    const token = getAuthToken();
     return {
       headers: {
         ...headers,
@@ -217,7 +222,7 @@ function createApolloLink(
 export default withApollo(
   ({ ctx, initialState }) => {
     return new ApolloClient({
-      link: createApolloLink(ctx),
+      link: createApolloLink(() => getAuthToken(ctx)),
       cache: new InMemoryCache().restore(initialState || {}),
       // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
       credentials: "same-origin",
