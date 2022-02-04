@@ -61,7 +61,7 @@ export class PaymentPoller {
     readonly config: ConfigService<ConfigType>
   ) {}
 
-  @Interval(10000)
+  @Interval(20000)
   async cron() {
     await this.poll();
   }
