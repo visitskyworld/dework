@@ -188,7 +188,7 @@ function createApolloLink(
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
   const errorLink = onError((error) => onErrorRef?.current?.(error));
-  const timeoutLink = new ApolloLinkTimeout(5000, 504);
+  const timeoutLink = new ApolloLinkTimeout(10000, 504);
 
   if (typeof window === "undefined") {
     return ApolloLink.from([authLink, errorLink, timeoutLink, httpLink]);
