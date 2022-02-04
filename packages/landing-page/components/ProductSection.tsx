@@ -38,8 +38,7 @@ export const ProductSection: FC<Props> = () => {
             <Typography.Paragraph style={{ fontSize: "150%" }}>
               Manage your tasks and bounties in one place. Get contributor
               applicants, sync with Discord, boost the reputation of
-              contributors, and pay with your own DAO's tokens.{" "}
-              <WatchDemoButton />
+              contributors, and pay with your own DAO's tokens.
             </Typography.Paragraph>
           </Row>
 
@@ -89,13 +88,14 @@ export const ProductSection: FC<Props> = () => {
         xs={24}
         style={{ padding: 24, display: "grid", placeItems: "center" }}
       >
-        <Tabs centered type="line" className="dewo-lp-feature-tabs">
-          <Tabs.TabPane
-            tab="Token Payments"
-            key="crypto-payments"
-            style={{ padding: 8 }}
-          >
-            <Image width="100%" src="/crypto-payments.jpeg" />
+        <Tabs
+          centered
+          type="line"
+          className="dewo-lp-feature-tabs"
+          tabBarStyle={{ paddingBottom: 16 }}
+        >
+          <Tabs.TabPane tab="Watch Demo" key="demo">
+            <WatchDemoButton />
             <Typography.Paragraph
               type="secondary"
               style={{
@@ -104,16 +104,28 @@ export const ProductSection: FC<Props> = () => {
                 marginTop: 16,
               }}
             >
-              Pay contributors directly using your Gnosis Safe, Metamask or
-              Phantom Wallet
+              Watch this 5 min walkthrough of the product
             </Typography.Paragraph>
           </Tabs.TabPane>
-          <Tabs.TabPane
-            tab="Profile building"
-            key="profile-building"
-            style={{ padding: 8 }}
-          >
-            <Image width="100%" src="/profile.jpeg" />
+          <Tabs.TabPane tab="Token Payments" key="payments">
+            <Image
+              width="100%"
+              className="highlight"
+              src="/crypto-payments.jpeg"
+            />
+            <Typography.Paragraph
+              type="secondary"
+              style={{
+                textAlign: "center",
+                fontSize: "130%",
+                marginTop: 16,
+              }}
+            >
+              Pay contributors using Gnosis Safe, Metamask or Phantom
+            </Typography.Paragraph>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Profile building" key="profile">
+            <Image width="100%" className="highlight" src="/profile.jpeg" />
             <Typography.Paragraph
               type="secondary"
               style={{
@@ -125,12 +137,8 @@ export const ProductSection: FC<Props> = () => {
               Build your web3 profile & reputation
             </Typography.Paragraph>
           </Tabs.TabPane>
-          <Tabs.TabPane
-            tab="Community voting"
-            key="community-voting"
-            style={{ padding: 8 }}
-          >
-            <Image width="100%" src="/voting.jpeg" />
+          <Tabs.TabPane tab="Community voting" key="voting">
+            <Image width="100%" className="highlight" src="/voting.jpeg" />
             <Typography.Paragraph
               type="secondary"
               style={{

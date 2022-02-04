@@ -1,5 +1,6 @@
-import { Typography, Modal } from "antd";
+import { Modal } from "antd";
 import React, { FC, useCallback, useRef } from "react";
+import * as Icons from "@ant-design/icons";
 import { useToggle } from "@dewo/app/util/hooks";
 import YouTube from "react-youtube";
 
@@ -13,14 +14,32 @@ export const WatchDemoButton: FC = () => {
 
   return (
     <>
-      <Typography.Text
-        strong
-        underline
-        className="hover:cursor-pointer"
+      <div
+        style={{
+          width: "100%",
+          aspectRatio: "5/3",
+          display: "grid",
+          placeItems: "center",
+          position: "relative",
+        }}
+        className="hover:cursor-pointer highlight"
         onClick={watchVideoDemo.toggleOn}
       >
-        Watch Video
-      </Typography.Text>
+        <img
+          style={{
+            position: "absolute",
+            objectFit: "cover",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: -1,
+            opacity: 0.5,
+          }}
+          src="/crypto-payments.jpeg"
+        />
+        <Icons.PlayCircleFilled style={{ fontSize: 100, color: "white" }} />
+      </div>
       <Modal
         visible={watchVideoDemo.isOn}
         footer={null}
