@@ -1,7 +1,7 @@
 import React from "react";
 import getConfig from "next/config";
 import { AppInitialProps, AppProps } from "next/app";
-import { AppContextType } from "next-server/dist/lib/utils";
+import { AppContextType } from "next/dist/shared/lib/utils";
 import Head from "next/head";
 import "../../app/styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
