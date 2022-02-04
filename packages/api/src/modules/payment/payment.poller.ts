@@ -67,7 +67,10 @@ export class PaymentPoller {
   }
 
   public async poll(): Promise<void> {
-    this.logger.log("Polling for blockchain confirmations");
+    const startedAt = new Date();
+    this.logger.log(
+      `Polling for blockchain confirmations: ${JSON.stringify({ startedAt })}`
+    );
 
     const payments = await this.paymentRepo
       .createQueryBuilder("p")
@@ -77,6 +80,7 @@ export class PaymentPoller {
       .andWhere(
         "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
       )
+      .limit(3)
       .getMany();
 
     this.logger.log(`Found ${payments.length} payments to check`);
@@ -137,6 +141,10 @@ export class PaymentPoller {
         );
       }
     }
+
+    this.logger.log(
+      `Polled for blockchain confirmations: ${JSON.stringify({ startedAt })}`
+    );
   }
 
   private async isConfirmed(payment: Payment): Promise<ConfirmPaymentResponse> {
