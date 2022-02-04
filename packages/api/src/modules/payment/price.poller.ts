@@ -1,4 +1,4 @@
-import { Controller, Injectable, Logger, Post, Res } from "@nestjs/common";
+import { Controller, Logger, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
@@ -8,11 +8,9 @@ import { ConfigType } from "../app/config";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import * as RandomUserAgent from "random-useragent";
 import _ from "lodash";
-import { Interval } from "@nestjs/schedule";
 import { Response } from "express";
 
 @Controller("prices")
-@Injectable()
 export class PricePoller {
   private logger = new Logger(this.constructor.name);
 
@@ -28,10 +26,10 @@ export class PricePoller {
     res.json({ ok: true });
   }
 
-  @Interval(1 * 60 * 60 * 1000)
-  async cron() {
-    await this.poll();
-  }
+  // @Interval(1 * 60 * 60 * 1000)
+  // async cron() {
+  //   await this.poll();
+  // }
 
   public async poll(): Promise<void> {
     this.logger.log("Polling for prices");

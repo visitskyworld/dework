@@ -9,9 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
-  const database = app.get(MigrationService);
-  await database.connection.synchronize();
-  await database.migrate();
+  if (!!process.env.RUN_MIGRATIONS) {
+    const database = app.get(MigrationService);
+    await database.connection.synchronize();
+    await database.migrate();
+  }
   await app.listen(port);
 }
 

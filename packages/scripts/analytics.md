@@ -69,3 +69,19 @@ SELECT
 FROM threepid
 WHERE threepid."source" = 'discord'
 ```
+
+## Check `PENDING` payments for an organization
+```sql
+SELECT payment."createdAt", payment.status, payment.id as paymentId, r.amount, t.id as taskId, u.id as userId, pm.address, payment."networkId"
+FROM payment
+INNER JOIN task_reward r ON r."paymentId" = payment.id
+INNER JOIN task t ON t."rewardId" = r.id
+INNER JOIN project p ON p.id = t."projectId"
+INNER JOIN task_assignees ta ON ta."taskId" = t.id
+INNER JOIN "user" u ON u.id = ta."userId"
+INNER JOIN payment_method pm ON pm."userId" = u.id
+INNER JOIN payment_method_network pmn ON pmn."paymentMethodId" = pm.id AND pmn."paymentNetworkId" = payment."networkId"
+-- WHERE p."organizationId" = 'organization id'
+  AND payment.status = 'PROCESSING'
+ORDER BY payment."createdAt" ASC
+```

@@ -8,7 +8,7 @@ import {
   StacksPaymentData,
 } from "@dewo/api/models/Payment";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
-import { Injectable, Logger } from "@nestjs/common";
+import { Controller, Logger, Post, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as ms from "milliseconds";
@@ -22,15 +22,15 @@ import {
   PaymentNetwork,
   PaymentNetworkType,
 } from "@dewo/api/models/PaymentNetwork";
-import { Interval } from "@nestjs/schedule";
 import * as request from "request-promise";
+import { Response } from "express";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
   data?: Partial<PaymentData>;
 }
 
-@Injectable()
+@Controller("payments")
 export class PaymentPoller {
   private logger = new Logger(this.constructor.name);
 
@@ -44,7 +44,7 @@ export class PaymentPoller {
   private checkTimeout: Record<PaymentMethodType, number> = {
     [PaymentMethodType.METAMASK]: ms.minutes(30),
     [PaymentMethodType.PHANTOM]: ms.minutes(10),
-    [PaymentMethodType.GNOSIS_SAFE]: Number.MAX_SAFE_INTEGER,
+    [PaymentMethodType.GNOSIS_SAFE]: ms.days(14),
     [PaymentMethodType.HIRO]: ms.hours(2),
   };
 
@@ -61,10 +61,15 @@ export class PaymentPoller {
     readonly config: ConfigService<ConfigType>
   ) {}
 
-  @Interval(20000)
-  async cron() {
+  @Post("update")
+  public async updatePrices(@Res() res: Response) {
     await this.poll();
+    res.json({ ok: true });
   }
+  // @Interval(20000)
+  // async cron() {
+  //   await this.poll();
+  // }
 
   public async poll(): Promise<void> {
     const startedAt = new Date();
@@ -80,7 +85,6 @@ export class PaymentPoller {
       .andWhere(
         "( p.nextStatusCheckAt IS NULL OR p.nextStatusCheckAt < CURRENT_TIMESTAMP )"
       )
-      .limit(3)
       .getMany();
 
     this.logger.log(`Found ${payments.length} payments to check`);

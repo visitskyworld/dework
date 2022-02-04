@@ -22,18 +22,13 @@ import { TokenService } from "./token.service";
       PaymentToken,
     ]),
   ],
-  providers: [
-    PaymentResolver,
-    PaymentService,
-    PaymentPoller,
-    PricePoller,
-    TokenService,
-  ],
-  controllers: [PricePoller],
+  providers: [PaymentResolver, PaymentService, TokenService],
+  controllers: [PricePoller, PaymentPoller],
   exports: [PaymentService, TokenService],
 })
 export class PaymentModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(LoggerMiddleware).forRoutes(PricePoller);
     consumer.apply(LoggerMiddleware).forRoutes(PaymentPoller);
   }
 }
