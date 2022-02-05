@@ -38,7 +38,7 @@ export const permissions: Permissions<
     });
   },
 
-  authenticated({ can, cannot, user }) {
+  authenticated({ can, user }) {
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
