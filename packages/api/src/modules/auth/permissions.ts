@@ -38,7 +38,7 @@ export const permissions: Permissions<
     });
   },
 
-  authenticated({ can, user }) {
+  authenticated({ can, cannot, user }) {
     can(Actions.create, Organization);
     can(Actions.manage, OrganizationMember, {
       userId: user.id,
@@ -53,7 +53,21 @@ export const permissions: Permissions<
         status: { $ne: TaskStatus.DONE },
       }
     );
-    can(Actions.update, Task, { ownerId: user.id });
+    can(
+      Actions.update,
+      Task,
+      [
+        "name",
+        "description",
+        "status",
+        "tagIds",
+        "assigneeIds",
+        "ownerId",
+        "dueDate",
+        "storyPoints",
+      ],
+      { ownerId: user.id }
+    );
 
     can(Actions.update, Task, "submissions", {
       assignees: { $elemMatch: { id: user.id } },
