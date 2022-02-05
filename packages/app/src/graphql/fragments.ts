@@ -110,6 +110,14 @@ export const organizationMember = gql`
   ${user}
 `;
 
+export const projectSection = gql`
+  fragment ProjectSection on ProjectSection {
+    id
+    name
+    sortKey
+  }
+`;
+
 export const projectMember = gql`
   fragment ProjectMember on ProjectMember {
     id
@@ -198,6 +206,8 @@ export const invite = gql`
 export const projectDetails = gql`
   fragment ProjectDetails on Project {
     ...Project
+    sortKey
+    sectionId
     taskCount
     options {
       showBacklogColumn
@@ -517,6 +527,9 @@ export const organizationDetails = gql`
     projects {
       ...ProjectDetails
     }
+    projectSections {
+      ...ProjectSection
+    }
     members {
       ...OrganizationMember
     }
@@ -538,6 +551,7 @@ export const organizationDetails = gql`
   ${organizationMember}
   ${organizationIntegration}
   ${projectDetails}
+  ${projectSection}
   ${organizationTag}
   ${entityDetail}
   ${user}

@@ -10,6 +10,9 @@ export class CreateProjectInput {
   @Field(() => GraphQLUUID)
   public organizationId!: string;
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public sectionId?: string;
+
   @Field(() => ProjectVisibility, { nullable: true })
   public visibility?: ProjectVisibility;
 

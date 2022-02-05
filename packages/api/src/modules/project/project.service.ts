@@ -1,5 +1,6 @@
 import { Project } from "@dewo/api/models/Project";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
@@ -30,6 +31,8 @@ export class ProjectService {
     private readonly projectTokenGateRepo: Repository<ProjectTokenGate>,
     @InjectRepository(TaskTag)
     private readonly taskTagRepo: Repository<TaskTag>,
+    @InjectRepository(ProjectSection)
+    private readonly projectSectionRepo: Repository<ProjectSection>,
     private readonly tokenService: TokenService,
     private readonly userService: UserService
   ) {}
@@ -76,6 +79,27 @@ export class ProjectService {
 
   public async deleteTokenGate(input: ProjectTokenGateInput): Promise<void> {
     await this.projectTokenGateRepo.delete(input);
+  }
+
+  public async createSection(
+    partial: DeepPartial<ProjectSection>
+  ): Promise<ProjectSection> {
+    const created = await this.projectSectionRepo.save({
+      ...partial,
+      sortKey: Date.now().toString(),
+    });
+    return this.projectSectionRepo.findOne(
+      created.id
+    ) as Promise<ProjectSection>;
+  }
+
+  public async updateSection(
+    partial: DeepAtLeast<ProjectSection, "id">
+  ): Promise<ProjectSection> {
+    await this.projectMemberRepo.update({ id: partial.id }, partial);
+    return this.projectSectionRepo.findOne(
+      partial.id
+    ) as Promise<ProjectSection>;
   }
 
   public async upsertMember(

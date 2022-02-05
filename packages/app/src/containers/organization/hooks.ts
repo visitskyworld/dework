@@ -9,6 +9,8 @@ import {
   CreateOrganizationTagInput,
   CreateOrganizationTagMutation,
   CreateOrganizationTagMutationVariables,
+  CreateProjectSectionInput,
+  CreateProjectSectionMutation,
   DiscordIntegrationChannel,
   GetOrganizationDiscordChannelsQuery,
   GetOrganizationDiscordChannelsQueryVariables,
@@ -26,6 +28,7 @@ import {
   OrganizationMember,
   OrganizationRole,
   OrganizationTag,
+  ProjectSection,
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
   RemoveOrganizationMemberMutationVariables,
@@ -39,6 +42,9 @@ import {
   UpdateOrganizationMemberMutationVariables,
   UpdateOrganizationMutation,
   UpdateOrganizationMutationVariables,
+  UpdateProjectSectionInput,
+  UpdateProjectSectionMutation,
+  UpdateProjectSectionMutationVariables,
   User,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
@@ -98,7 +104,7 @@ export function useUpdateOrganizationDetail(): (
     async (input) => {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.organization;
+      return res.data.organization;
     },
     [mutation]
   );
@@ -115,9 +121,43 @@ export function useCreateOrganizationTag(): (
     async (input) => {
       const res = await createOrganizationTag({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.organizationTag;
+      return res.data.organizationTag;
     },
     [createOrganizationTag]
+  );
+}
+
+export function useCreateProjectSection(): (
+  input: CreateProjectSectionInput
+) => Promise<ProjectSection> {
+  const [mutation] = useMutation<
+    CreateProjectSectionMutation,
+    CreateProjectSectionMutationVariables
+  >(Mutations.createProjectSection);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data.section;
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateProjectSection(): (
+  input: UpdateProjectSectionInput
+) => Promise<ProjectSection> {
+  const [mutation] = useMutation<
+    UpdateProjectSectionMutation,
+    UpdateProjectSectionMutationVariables
+  >(Mutations.createProjectSection);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data.section;
+    },
+    [mutation]
   );
 }
 

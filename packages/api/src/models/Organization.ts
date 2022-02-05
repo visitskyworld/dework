@@ -15,6 +15,7 @@ import { Project } from "./Project";
 import { OrganizationIntegration } from "./OrganizationIntegration";
 import { OrganizationTag } from "./OrganizationTag";
 import { EntityDetail } from "./EntityDetail";
+import { ProjectSection } from "./ProjectSection";
 
 @Entity()
 @ObjectType()
@@ -59,6 +60,10 @@ export class Organization extends Audit {
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
+
+  @OneToMany(() => ProjectSection, (p: ProjectSection) => p.organization)
+  @Field(() => [ProjectSection])
+  public projectSections!: Promise<ProjectSection[]>;
 
   @OneToMany(() => EntityDetail, (d: EntityDetail) => d.organization)
   @Field(() => [EntityDetail])

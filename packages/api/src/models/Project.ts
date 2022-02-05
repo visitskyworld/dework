@@ -22,6 +22,7 @@ import slugify from "slugify";
 import encoder from "uuid-base62";
 import { ProjectMember } from "./ProjectMember";
 import { ProjectTokenGate } from "./ProjectTokenGate";
+import { ProjectSection } from "./ProjectSection";
 
 export enum ProjectVisibility {
   PUBLIC = "PUBLIC",
@@ -59,6 +60,14 @@ export class Project extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public organizationId!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => ProjectSection)
+  @Field(() => ProjectSection)
+  public section!: Promise<ProjectSection>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public sectionId?: string;
 
   @Field()
   public slug!: string;
@@ -100,4 +109,8 @@ export class Project extends Audit {
   @Column("json", { nullable: true })
   @Field({ nullable: true })
   public options?: ProjectOptions;
+
+  @Column()
+  @Field()
+  public sortKey!: string;
 }

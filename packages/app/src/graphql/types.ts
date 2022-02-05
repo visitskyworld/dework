@@ -440,6 +440,8 @@ export interface UpdateOrganizationMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: UpdateOrganizationMutation_organization_projects_options | null;
   doneTaskCount: number;
@@ -448,6 +450,13 @@ export interface UpdateOrganizationMutation_organization_projects {
   paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
   integrations: UpdateOrganizationMutation_organization_projects_integrations[];
   tokenGates: UpdateOrganizationMutation_organization_projects_tokenGates[];
+}
+
+export interface UpdateOrganizationMutation_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface UpdateOrganizationMutation_organization_members_user {
@@ -531,6 +540,7 @@ export interface UpdateOrganizationMutation_organization {
   tagline: string | null;
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
+  projectSections: UpdateOrganizationMutation_organization_projectSections[];
   members: UpdateOrganizationMutation_organization_members[];
   tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
@@ -946,6 +956,8 @@ export interface CreateProjectMutation_project_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: CreateProjectMutation_project_organization_projects_options | null;
   doneTaskCount: number;
@@ -954,6 +966,13 @@ export interface CreateProjectMutation_project_organization_projects {
   paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
   integrations: CreateProjectMutation_project_organization_projects_integrations[];
   tokenGates: CreateProjectMutation_project_organization_projects_tokenGates[];
+}
+
+export interface CreateProjectMutation_project_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface CreateProjectMutation_project_organization_members_user {
@@ -1037,6 +1056,7 @@ export interface CreateProjectMutation_project_organization {
   tagline: string | null;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
+  projectSections: CreateProjectMutation_project_organization_projectSections[];
   members: CreateProjectMutation_project_organization_members[];
   tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
@@ -1054,6 +1074,8 @@ export interface CreateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: CreateProjectMutation_project_options | null;
   doneTaskCount: number;
@@ -1185,6 +1207,8 @@ export interface UpdateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: UpdateProjectMutation_project_options | null;
   doneTaskCount: number;
@@ -1201,6 +1225,82 @@ export interface UpdateProjectMutation {
 
 export interface UpdateProjectMutationVariables {
   input: UpdateProjectInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateProjectSectionMutation
+// ====================================================
+
+export interface CreateProjectSectionMutation_section_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface CreateProjectSectionMutation_section_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  projectSections: CreateProjectSectionMutation_section_organization_projectSections[];
+}
+
+export interface CreateProjectSectionMutation_section {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+  organization: CreateProjectSectionMutation_section_organization;
+}
+
+export interface CreateProjectSectionMutation {
+  section: CreateProjectSectionMutation_section;
+}
+
+export interface CreateProjectSectionMutationVariables {
+  input: CreateProjectSectionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateProjectSectionMutation
+// ====================================================
+
+export interface UpdateProjectSectionMutation_section_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface UpdateProjectSectionMutation_section_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  projectSections: UpdateProjectSectionMutation_section_organization_projectSections[];
+}
+
+export interface UpdateProjectSectionMutation_section {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+  organization: UpdateProjectSectionMutation_section_organization;
+}
+
+export interface UpdateProjectSectionMutation {
+  section: UpdateProjectSectionMutation_section;
+}
+
+export interface UpdateProjectSectionMutationVariables {
+  input: UpdateProjectSectionInput;
 }
 
 /* tslint:disable */
@@ -4323,6 +4423,8 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: CreateProjectsFromNotionMutation_organization_projects_options | null;
   doneTaskCount: number;
@@ -4331,6 +4433,13 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   paymentMethods: CreateProjectsFromNotionMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
+}
+
+export interface CreateProjectsFromNotionMutation_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_members_user {
@@ -4414,6 +4523,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   tagline: string | null;
   description: string | null;
   projects: CreateProjectsFromNotionMutation_organization_projects[];
+  projectSections: CreateProjectsFromNotionMutation_organization_projectSections[];
   members: CreateProjectsFromNotionMutation_organization_members[];
   tags: CreateProjectsFromNotionMutation_organization_tags[];
   details: CreateProjectsFromNotionMutation_organization_details[];
@@ -4541,6 +4651,8 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: CreateProjectsFromTrelloMutation_organization_projects_options | null;
   doneTaskCount: number;
@@ -4549,6 +4661,13 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   paymentMethods: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_members_user {
@@ -4632,6 +4751,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   tagline: string | null;
   description: string | null;
   projects: CreateProjectsFromTrelloMutation_organization_projects[];
+  projectSections: CreateProjectsFromTrelloMutation_organization_projectSections[];
   members: CreateProjectsFromTrelloMutation_organization_members[];
   tags: CreateProjectsFromTrelloMutation_organization_tags[];
   details: CreateProjectsFromTrelloMutation_organization_details[];
@@ -5211,6 +5331,8 @@ export interface GetOrganizationQuery_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: GetOrganizationQuery_organization_projects_options | null;
   doneTaskCount: number;
@@ -5219,6 +5341,13 @@ export interface GetOrganizationQuery_organization_projects {
   paymentMethods: GetOrganizationQuery_organization_projects_paymentMethods[];
   integrations: GetOrganizationQuery_organization_projects_integrations[];
   tokenGates: GetOrganizationQuery_organization_projects_tokenGates[];
+}
+
+export interface GetOrganizationQuery_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface GetOrganizationQuery_organization_members_user {
@@ -5302,6 +5431,7 @@ export interface GetOrganizationQuery_organization {
   tagline: string | null;
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
+  projectSections: GetOrganizationQuery_organization_projectSections[];
   members: GetOrganizationQuery_organization_members[];
   tags: GetOrganizationQuery_organization_tags[];
   details: GetOrganizationQuery_organization_details[];
@@ -5429,6 +5559,8 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_options | null;
   doneTaskCount: number;
@@ -5437,6 +5569,13 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects {
   paymentMethods: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_paymentMethods[];
   integrations: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_integrations[];
   tokenGates: GetFeaturedOrganizationsQuery_featuredOrganizations_projects_tokenGates[];
+}
+
+export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members_user {
@@ -5520,6 +5659,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations {
   tagline: string | null;
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_featuredOrganizations_projects[];
+  projectSections: GetFeaturedOrganizationsQuery_featuredOrganizations_projectSections[];
   members: GetFeaturedOrganizationsQuery_featuredOrganizations_members[];
   tags: GetFeaturedOrganizationsQuery_featuredOrganizations_tags[];
   details: GetFeaturedOrganizationsQuery_featuredOrganizations_details[];
@@ -5909,6 +6049,8 @@ export interface GetProjectQuery_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: GetProjectQuery_project_options | null;
   doneTaskCount: number;
@@ -8688,6 +8830,22 @@ export interface OrganizationMember {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: ProjectSection
+// ====================================================
+
+export interface ProjectSection {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectMember
 // ====================================================
 
@@ -8993,6 +9151,8 @@ export interface ProjectDetails {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: ProjectDetails_options | null;
   doneTaskCount: number;
@@ -10382,6 +10542,8 @@ export interface OrganizationDetails_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sortKey: string;
+  sectionId: string | null;
   taskCount: number;
   options: OrganizationDetails_projects_options | null;
   doneTaskCount: number;
@@ -10390,6 +10552,13 @@ export interface OrganizationDetails_projects {
   paymentMethods: OrganizationDetails_projects_paymentMethods[];
   integrations: OrganizationDetails_projects_integrations[];
   tokenGates: OrganizationDetails_projects_tokenGates[];
+}
+
+export interface OrganizationDetails_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 export interface OrganizationDetails_members_user {
@@ -10473,6 +10642,7 @@ export interface OrganizationDetails {
   tagline: string | null;
   description: string | null;
   projects: OrganizationDetails_projects[];
+  projectSections: OrganizationDetails_projectSections[];
   members: OrganizationDetails_members[];
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
@@ -10640,6 +10810,7 @@ export interface CreatePaymentTokenInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
+  sectionId?: Scalar.UUID | null;
   visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
 }
@@ -10649,6 +10820,11 @@ export interface CreateProjectIntegrationInput {
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
   organizationIntegrationId?: Scalar.UUID | null;
+}
+
+export interface CreateProjectSectionInput {
+  name: string;
+  organizationId: Scalar.UUID;
 }
 
 export interface CreateProjectsFromNotionInput {
@@ -10800,6 +10976,7 @@ export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
+  sectionId?: Scalar.UUID | null;
   visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
@@ -10814,6 +10991,13 @@ export interface UpdateProjectMemberInput {
   projectId: Scalar.UUID;
   userId: Scalar.UUID;
   role: ProjectRole;
+}
+
+export interface UpdateProjectSectionInput {
+  id: Scalar.UUID;
+  name?: string | null;
+  sortKey?: string | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateTaskInput {

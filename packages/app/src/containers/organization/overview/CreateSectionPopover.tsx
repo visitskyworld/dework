@@ -1,22 +1,32 @@
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { Button, Input, Popover } from "antd";
 import React, { FC, useState } from "react";
+import { useCreateProjectSection } from "../hooks";
 
-export const CreateSectionPopover: FC = ({ children }) => {
-  const [visible, setVisible] = useState(false);
+interface Props {
+  organizationId: string;
+}
+
+export const CreateSectionPopover: FC<Props> = ({
+  organizationId,
+  children,
+}) => {
+  // const [visible, setVisible] = useState(false);
   const [name, setName] = useState("");
 
+  const createSection = useCreateProjectSection();
   const [handleCreate, creating] = useRunningCallback(async () => {
-    alert("handle create...");
-  }, []);
+    await createSection({ name, organizationId });
+    setName("");
+  }, [name, organizationId, createSection]);
 
   return (
     <Popover
       trigger="click"
-      onVisibleChange={setVisible}
+      // onVisibleChange={setVisible}
       content={
         // <Input autoFocus placeholder="Enter section name..." />
-        <Input.Group key={String(visible)} compact style={{ display: "flex" }}>
+        <Input.Group compact style={{ display: "flex" }}>
           <Input
             autoFocus
             placeholder="Enter section name..."

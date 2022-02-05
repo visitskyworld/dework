@@ -8,7 +8,6 @@ import {
   Int,
   Context,
 } from "@nestjs/graphql";
-import _ from "lodash";
 import {
   ForbiddenException,
   Injectable,
@@ -65,9 +64,9 @@ export class TaskResolver {
   @ResolveField(() => [TaskTag])
   public async tags(@Parent() task: Task): Promise<TaskTag[]> {
     // needed?
-    if (!!task.tags) return _.sortBy(task.tags, (t) => t.createdAt);
+    if (!!task.tags) return task.tags;
     const refetched = await this.taskService.findById(task.id);
-    return _.sortBy(refetched!.tags, (t) => t.createdAt);
+    return refetched!.tags;
     // return _.sortBy(task.tags, (t) => t.createdAt);
   }
 

@@ -15,6 +15,7 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { ProjectSection } from "@dewo/api/models/ProjectSection";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -105,6 +106,7 @@ export const permissions: Permissions<
     can(Actions.create, Project);
     can(Actions.delete, Project);
     can(Actions.manage, ProjectMember);
+    can(Actions.manage, ProjectSection);
 
     cannot(CustomPermissionActions.claimTask, Task);
   },

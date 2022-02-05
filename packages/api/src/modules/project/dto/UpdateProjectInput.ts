@@ -13,6 +13,9 @@ export class UpdateProjectInput {
   @Field({ nullable: true })
   public description?: string;
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public sectionId?: string;
+
   @Field(() => ProjectVisibility, { nullable: true })
   public visibility?: ProjectVisibility;
 

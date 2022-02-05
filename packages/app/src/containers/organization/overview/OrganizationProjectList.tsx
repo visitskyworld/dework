@@ -4,24 +4,23 @@ import * as Icons from "@ant-design/icons";
 import { useOrganization } from "../hooks";
 import { ProjectCard } from "./ProjectCard";
 import { JoinTokenGatedProjectsButton } from "../../invite/JoinTokenGatedProjectsButton";
-import { ProjectDetails } from "@dewo/app/graphql/types";
+import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
 import { useRouter } from "next/router";
 
 import { CreateSectionPopover } from "./CreateSectionPopover";
+import { NotionIcon } from "@dewo/app/components/icons/Notion";
+import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 
 interface Props {
   organizationId: string;
 }
 
-interface ProjectSection {
-  id: string;
-  title: string;
-}
-
-const sections: ProjectSection[] = [
-  { id: "1", title: "Projects" },
-  { id: "2", title: "Smth else" },
-];
+const defaultProjectSection: ProjectSection = {
+  id: "",
+  name: "Projects",
+  sortKey: "1",
+  __typename: "ProjectSection",
+};
 
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganization(organizationId);
@@ -30,12 +29,18 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [organization?.projects]
   );
 
+  const sections = useMemo(
+    () => [defaultProjectSection, ...(organization?.projectSections ?? [])],
+    [organization?.projectSections]
+  );
+
+  // Note(fant): hide project section if user cannot create channel
+
   const projectsBySectionId = useMemo(
     () =>
       projects?.reduce((acc, p) => {
-        // const section = sections.find((s) => s.id === p.sectionId) ?? sections[sections.length - 1];
-        const section = sections[Math.floor(sections.length * Math.random())];
-        return { ...acc, [section.id]: [...(acc[section.id] ?? []), p] };
+        const sectionId = p.sectionId ?? defaultProjectSection.id;
+        return { ...acc, [sectionId]: [...(acc[sectionId] ?? []), p] };
       }, {} as Record<string, ProjectDetails[]>) ?? {},
     [projects]
   );
@@ -59,22 +64,22 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
 
       {sections.map((section) => (
         <div key={section.id}>
-          <Space size={16} style={{ marginBottom: 4 }}>
+          <Space style={{ marginBottom: 4 }}>
             <Button
               type="text"
               size="large"
-              icon={
-                collapsed[section.id] ? (
-                  <Icons.CaretUpFilled className="text-secondary" />
-                ) : (
-                  <Icons.CaretDownFilled className="text-secondary" />
-                )
-              }
+              // icon={
+              //   collapsed[section.id] ? (
+              //     <Icons.CaretUpFilled className="text-secondary" />
+              //   ) : (
+              //     <Icons.CaretDownFilled className="text-secondary" />
+              //   )
+              // }
               style={{ flex: "unset" }}
               className="dewo-btn-highlight font-bold"
               onClick={() => collapseSection(section.id)}
             >
-              {section.title}
+              {section.name}
             </Button>
             <Dropdown
               trigger={["click"]}
@@ -85,10 +90,14 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                     Create a project
                   </Menu.Item>
                   <Menu.SubMenu title="Import from Notion/Trello">
-                    <Menu.Item>3rd menu item</Menu.Item>
-                    <Menu.Item>4th menu item</Menu.Item>
+                    <Menu.Item icon={<NotionIcon />}>
+                      Import from Notion
+                    </Menu.Item>
+                    <Menu.Item icon={<TrelloIcon />}>
+                      Import from Trello
+                    </Menu.Item>
                   </Menu.SubMenu>
-                  <CreateSectionPopover>
+                  <CreateSectionPopover organizationId={organizationId}>
                     <Menu.Item>Create a section</Menu.Item>
                   </CreateSectionPopover>
                 </Menu>

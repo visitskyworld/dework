@@ -11,7 +11,7 @@ export enum TaskTagSource {
 
 registerEnumType(TaskTagSource, { name: "TaskTagSource" });
 
-@Entity()
+@Entity({ orderBy: { createdAt: "ASC" } })
 @ObjectType()
 export class TaskTag extends Audit {
   @Column()

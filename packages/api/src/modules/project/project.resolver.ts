@@ -36,6 +36,9 @@ import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
+import { ProjectSection } from "@dewo/api/models/ProjectSection";
+import { CreateProjectSectionInput } from "./dto/CreateProjectSectionInput";
+import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -105,6 +108,24 @@ export class ProjectResolver {
     @Args("input") input: UpdateProjectMemberInput
   ): Promise<ProjectMember> {
     return this.projectService.upsertMember(input);
+  }
+
+  @Mutation(() => ProjectSection)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, ProjectSection)
+  public async createProjectSection(
+    @Args("input") input: CreateProjectSectionInput
+  ): Promise<ProjectSection> {
+    return this.projectService.createSection(input);
+  }
+
+  @Mutation(() => ProjectSection)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, ProjectSection)
+  public async updateProjectSection(
+    @Args("input") input: UpdateProjectSectionInput
+  ): Promise<ProjectSection> {
+    return this.projectService.updateSection(input);
   }
 
   @Mutation(() => ProjectMember)
