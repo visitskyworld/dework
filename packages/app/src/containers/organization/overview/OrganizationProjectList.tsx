@@ -1,16 +1,31 @@
-import { Button, Col, Dropdown, Menu, Row, Space } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Dropdown,
+  Menu,
+  Row,
+  Space,
+  Tag,
+  Typography,
+} from "antd";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useOrganization } from "../hooks";
-import { ProjectCard } from "./ProjectCard";
 import { JoinTokenGatedProjectsButton } from "../../invite/JoinTokenGatedProjectsButton";
-import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
+import {
+  ProjectDetails,
+  ProjectSection,
+  ProjectVisibility,
+} from "@dewo/app/graphql/types";
 import { useRouter } from "next/router";
 
 import { CreateSectionPopover } from "./CreateSectionPopover";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import Link from "next/link";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 interface Props {
   organizationId: string;
@@ -128,13 +143,58 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
             )}
           </Space>
           {!collapsed[section.id] && (
-            <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+            // <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+            //   {projectsBySectionId[section.id]?.map((project) => (
+            //     <Col key={project.id} xs={24} sm={12} md={8}>
+            //       <ProjectCard project={project} />
+            //     </Col>
+            //   ))}
+            // </Row>
+            <Space direction="vertical" className="w-full">
               {projectsBySectionId[section.id]?.map((project) => (
-                <Col key={project.id} xs={24} sm={12} md={8}>
-                  <ProjectCard project={project} />
-                </Col>
+                <Link href={project.permalink}>
+                  <a>
+                    <Card
+                      size="small"
+                      className="hover:component-highlight"
+                      style={{ padding: 8 }}
+                    >
+                      <Row style={{ alignItems: "center" }}>
+                        <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                          {project.visibility === ProjectVisibility.PRIVATE && (
+                            <Typography.Text type="secondary">
+                              <Icons.LockOutlined />
+                              {"  "}
+                            </Typography.Text>
+                          )}
+                          {project.name}
+                        </Typography.Title>
+                        {!!project.openBountyTaskCount && (
+                          <Tag
+                            className="bg-primary"
+                            style={{ marginLeft: 16 }}
+                          >
+                            {project.openBountyTaskCount === 1
+                              ? "1 open bounty"
+                              : `${project.openBountyTaskCount} open bounties`}
+                          </Tag>
+                        )}
+                        <div style={{ flex: 1 }} />
+                        <Avatar.Group maxCount={10}>
+                          {project.members.map((member) => (
+                            <UserAvatar
+                              key={member.id}
+                              user={member.user}
+                              linkToProfile
+                            />
+                          ))}
+                        </Avatar.Group>
+                      </Row>
+                    </Card>
+                  </a>
+                </Link>
               ))}
-            </Row>
+            </Space>
           )}
         </div>
       ))}
