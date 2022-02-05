@@ -25,6 +25,12 @@ services:
       POSTGRES_USER: dework-test
       POSTGRES_PASSWORD: dework-test
 
+  #redis:
+  #  image: redis:5-alpine
+  #  ports:
+  #    - 6379:6379
+  #  command: ['redis-server', '--appendonly', 'yes']
+
 # persistant volumes
 # https://docs.docker.com/storage/
 volumes:

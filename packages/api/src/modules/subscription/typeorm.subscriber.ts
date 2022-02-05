@@ -31,7 +31,9 @@ export class SubscriptionTypeormSubscriber
       const entity = await event.manager.findOne(event.metadata.name, {
         id: event.entity.id,
       });
-      this.pubsub.publish(eventName, { [eventName]: entity });
+      if (!!entity) {
+        this.pubsub.client.publish(eventName, { [eventName]: entity });
+      }
     }
   }
 
@@ -42,7 +44,9 @@ export class SubscriptionTypeormSubscriber
       const fetched = await event.manager.findOne(event.metadata.name, {
         id: entity.id,
       });
-      this.pubsub.publish(eventName, { [eventName]: fetched });
+      if (!!fetched) {
+        this.pubsub.client.publish(eventName, { [eventName]: fetched });
+      }
     }
   }
 }

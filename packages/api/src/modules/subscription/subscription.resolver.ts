@@ -11,21 +11,21 @@ export class SubscriptionResolver {
 
   @Subscription(() => Task)
   onTaskCreated() {
-    return this.pubsub.asyncIterator("onTaskCreated");
+    return this.pubsub.client.asyncIterator("onTaskCreated");
   }
 
   @Subscription(() => Task)
   onTaskUpdated() {
-    return this.pubsub.asyncIterator("onTaskUpdated");
+    return this.pubsub.client.asyncIterator("onTaskUpdated");
   }
 
   @Subscription(() => TaskReward)
   onTaskRewardUpdated() {
-    return this.pubsub.asyncIterator("onTaskRewardUpdated");
+    return this.pubsub.client.asyncIterator("onTaskRewardUpdated");
   }
 
   @Subscription(() => Payment)
   onPaymentUpdated() {
-    return this.pubsub.asyncIterator("onPaymentUpdated");
+    return this.pubsub.client.asyncIterator("onPaymentUpdated");
   }
 }

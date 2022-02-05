@@ -10,6 +10,8 @@ export interface ConfigType {
   POSTGRES_URL: string;
   RUN_MIGRATIONS: boolean;
 
+  REDIS_URL: string;
+
   GITHUB_OAUTH_CLIENT_ID: string;
   GITHUB_OAUTH_CLIENT_SECRET: string;
   GITHUB_APP_ID: string;
@@ -44,6 +46,8 @@ export const configSchema = Joi.object<ConfigType>({
 
   POSTGRES_URL: Joi.string().required(),
   RUN_MIGRATIONS: Joi.boolean().default(false),
+
+  REDIS_URL: Joi.string().required(),
 
   GITHUB_OAUTH_CLIENT_ID: Joi.string().required(),
   GITHUB_OAUTH_CLIENT_SECRET: Joi.string().required(),
