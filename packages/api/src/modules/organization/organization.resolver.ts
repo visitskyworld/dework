@@ -60,6 +60,7 @@ export class OrganizationResolver {
     return this.permalinkService.get(organization);
   }
 
+  // needed?
   @ResolveField(() => [OrganizationMember])
   public async members(
     @Parent() organization: Organization
@@ -105,12 +106,14 @@ export class OrganizationResolver {
   public async tags(
     @Parent() organization: Organization
   ): Promise<OrganizationTag[]> {
-    if (!!organization.tags)
+    if (!!organization.tags) {
       return _.sortBy(organization.tags, (t) => t.createdAt);
+    }
     const refetched = await this.organizationService.findById(organization.id);
     return _.sortBy(refetched!.tags, (t) => t.createdAt);
   }
 
+  // needed?
   @ResolveField(() => [OrganizationTag])
   public async allTags(
     @Parent() organization: Organization

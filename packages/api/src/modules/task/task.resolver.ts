@@ -45,12 +45,12 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { CustomPermissionActions } from "../auth/permissions";
 import { ProjectService } from "../project/project.service";
-import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { subject } from "@casl/ability";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 
 @Injectable()
 @Resolver(() => Task)
@@ -64,11 +64,14 @@ export class TaskResolver {
 
   @ResolveField(() => [TaskTag])
   public async tags(@Parent() task: Task): Promise<TaskTag[]> {
+    // needed?
     if (!!task.tags) return _.sortBy(task.tags, (t) => t.createdAt);
     const refetched = await this.taskService.findById(task.id);
     return _.sortBy(refetched!.tags, (t) => t.createdAt);
+    // return _.sortBy(task.tags, (t) => t.createdAt);
   }
 
+  // needed?
   @ResolveField(() => [User])
   public async assignees(@Parent() task: Task): Promise<User[]> {
     if (!!task.assignees) return task.assignees;
@@ -76,12 +79,14 @@ export class TaskResolver {
     return refetched!.assignees;
   }
 
+  // needed?
   @ResolveField(() => [User])
   public async submissions(@Parent() task: Task): Promise<TaskSubmission[]> {
     const submissions = await task.submissions;
     return submissions.filter((s) => !s.deletedAt);
   }
 
+  // needed?
   @ResolveField(() => TaskReward, { nullable: true })
   public async reward(@Parent() task: Task): Promise<TaskReward | undefined> {
     if (!task.rewardId) return undefined;

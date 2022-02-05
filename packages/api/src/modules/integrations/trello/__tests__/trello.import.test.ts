@@ -23,7 +23,7 @@ describe("TrelloImportService", () => {
     client = app.get(GraphQLTestClient);
 
     threepid = await fixtures.createThreepid({
-      source: ThreepidSource.notion,
+      source: ThreepidSource.trello,
       config: { token: trelloToken },
     });
   });

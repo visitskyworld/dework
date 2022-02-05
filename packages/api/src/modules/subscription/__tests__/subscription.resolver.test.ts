@@ -21,7 +21,7 @@ describe("SubscriptionResolver", () => {
   describe("Subscriptions", () => {
     describe("onTaskCreated", () => {
       it("should be called after creating task", async () => {
-        const spy = jest.spyOn(pubsub, "publish");
+        const spy = jest.spyOn(pubsub.client, "publish");
         const task = await fixtures.createTask();
         expect(spy).toHaveBeenCalledWith("onTaskCreated", {
           onTaskCreated: expect.objectContaining({ id: task.id }),
@@ -31,7 +31,7 @@ describe("SubscriptionResolver", () => {
 
     describe("onTaskUpdated", () => {
       it("should be called after updating task", async () => {
-        const spy = jest.spyOn(pubsub, "publish");
+        const spy = jest.spyOn(pubsub.client, "publish");
         const task = await fixtures.createTask();
         const taskService = app.get(TaskService);
 
@@ -47,7 +47,7 @@ describe("SubscriptionResolver", () => {
       });
 
       it("should be called if task relation is updated", async () => {
-        const spy = jest.spyOn(pubsub, "publish");
+        const spy = jest.spyOn(pubsub.client, "publish");
         const task = await fixtures.createTask();
         const taskService = app.get(TaskService);
 
