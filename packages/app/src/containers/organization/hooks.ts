@@ -42,7 +42,7 @@ import {
   User,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
 export function useCreateOrganization(): (
@@ -204,10 +204,16 @@ export function useOrganizationTasks(
   organizationId: string,
   fetchPolicy: WatchQueryFetchPolicy
 ): GetOrganizationTasksQuery["organization"] | undefined {
-  const { data } = useQuery<
+  const { data, refetch } = useQuery<
     GetOrganizationTasksQuery,
     GetOrganizationTasksQueryVariables
-  >(Queries.organizationTasks, { variables: { organizationId }, fetchPolicy });
+  >(Queries.organizationTasks, { variables: { organizationId } });
+  useEffect(() => {
+    if (fetchPolicy === "cache-and-network" && !!data) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useListenToTasks();
   return data?.organization ?? undefined;
 }

@@ -38,7 +38,7 @@ import {
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
 } from "@dewo/app/graphql/types";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
 export function useCreateProject(): (
@@ -155,10 +155,16 @@ export function useProjectTasks(
   projectId: string,
   fetchPolicy?: WatchQueryFetchPolicy
 ): GetProjectTasksQuery["project"] | undefined {
-  const { data } = useQuery<
+  const { data, refetch } = useQuery<
     GetProjectTasksQuery,
     GetProjectTasksQueryVariables
-  >(Queries.projectTasks, { variables: { projectId }, fetchPolicy });
+  >(Queries.projectTasks, { variables: { projectId } });
+  useEffect(() => {
+    if (fetchPolicy === "cache-and-network" && !!data) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useListenToTasks();
   return data?.project ?? undefined;
 }
