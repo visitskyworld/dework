@@ -28,6 +28,7 @@ type AbilitySubject =
   | "Task"
   | "TaskTag"
   | "Project"
+  | "ProjectSection"
   | "Organization"
   | "TaskSubmission"
   | Project

@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { CreateSectionPopover } from "./CreateSectionPopover";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface Props {
   organizationId: string;
@@ -58,11 +59,19 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [router, organization?.permalink]
   );
 
+  const canCreateProject = usePermission("create", "Project");
+  const canCreateProjectSection = usePermission("create", "ProjectSection");
+  const shouldRenderSection = useCallback(
+    (section: ProjectSection) =>
+      !!projectsBySectionId[section.id]?.length || canCreateProject,
+    [projectsBySectionId, canCreateProject]
+  );
+
   return (
     <>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
 
-      {sections.map((section) => (
+      {sections.filter(shouldRenderSection).map((section) => (
         <div key={section.id}>
           <Space style={{ marginBottom: 4 }}>
             <Button
@@ -81,34 +90,42 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
             >
               {section.name}
             </Button>
-            <Dropdown
-              trigger={["click"]}
-              placement="bottomLeft"
-              overlay={
-                <Menu>
-                  <Menu.Item onClick={navigateToProjectCreate}>
-                    Create a project
-                  </Menu.Item>
-                  <Menu.SubMenu title="Import from Notion/Trello">
-                    <Menu.Item icon={<NotionIcon />}>
-                      Import from Notion
-                    </Menu.Item>
-                    <Menu.Item icon={<TrelloIcon />}>
-                      Import from Trello
-                    </Menu.Item>
-                  </Menu.SubMenu>
-                  <CreateSectionPopover organizationId={organizationId}>
-                    <Menu.Item>Create a section</Menu.Item>
-                  </CreateSectionPopover>
-                </Menu>
-              }
-            >
-              <Button
-                type="text"
-                icon={<Icons.PlusOutlined />}
-                className="text-secondary"
-              />
-            </Dropdown>
+            {(canCreateProject || canCreateProjectSection) && (
+              <Dropdown
+                trigger={["click"]}
+                placement="bottomLeft"
+                overlay={
+                  <Menu>
+                    {canCreateProject && (
+                      <>
+                        <Menu.Item onClick={navigateToProjectCreate}>
+                          Create a project
+                        </Menu.Item>
+                        <Menu.SubMenu title="Import from Notion/Trello">
+                          <Menu.Item icon={<NotionIcon />}>
+                            Import from Notion
+                          </Menu.Item>
+                          <Menu.Item icon={<TrelloIcon />}>
+                            Import from Trello
+                          </Menu.Item>
+                        </Menu.SubMenu>
+                      </>
+                    )}
+                    {canCreateProjectSection && (
+                      <CreateSectionPopover organizationId={organizationId}>
+                        <Menu.Item>Create a section</Menu.Item>
+                      </CreateSectionPopover>
+                    )}
+                  </Menu>
+                }
+              >
+                <Button
+                  type="text"
+                  icon={<Icons.PlusOutlined />}
+                  className="text-secondary"
+                />
+              </Dropdown>
+            )}
           </Space>
           {!collapsed[section.id] && (
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
