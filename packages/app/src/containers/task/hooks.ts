@@ -3,12 +3,10 @@ import {
   useLazyQuery,
   useMutation,
   useQuery,
-  useSubscription,
   WatchQueryFetchPolicy,
 } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
-import * as Subscriptions from "@dewo/app/graphql/subscriptions";
 import {
   CreateTaskApplicationInput,
   CreateTaskMutation,
@@ -35,8 +33,6 @@ import {
   GetTasksInput,
   GetTasksQuery,
   GetTasksQueryVariables,
-  TaskCreatedSubscription,
-  TaskUpdatedSubscription,
   TaskReactionInput,
   CreateTaskReactionMutation,
   CreateTaskReactionMutationVariables,
@@ -485,24 +481,24 @@ export function useTasks(
 }
 
 export function useListenToTasks() {
-  const skip = typeof window === "undefined";
-  const addTaskToApolloCache = useAddTaskToApolloCache();
-  useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
-    skip,
-    onSubscriptionData(options) {
-      const task = options.subscriptionData.data?.task;
-      if (!!task) addTaskToApolloCache(task);
-    },
-  });
-  useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
-    skip,
-    onSubscriptionData(options) {
-      const task = options.subscriptionData.data?.task;
-      if (!!task) addTaskToApolloCache(task);
-    },
-  });
-  useSubscription(Subscriptions.paymentUpdated, { skip });
-  useSubscription(Subscriptions.taskRewardUpdated, { skip });
+  // const skip = typeof window === "undefined";
+  // const addTaskToApolloCache = useAddTaskToApolloCache();
+  // useSubscription<TaskCreatedSubscription>(Subscriptions.taskCreated, {
+  //   skip,
+  //   onSubscriptionData(options) {
+  //     const task = options.subscriptionData.data?.task;
+  //     if (!!task) addTaskToApolloCache(task);
+  //   },
+  // });
+  // useSubscription<TaskUpdatedSubscription>(Subscriptions.taskUpdated, {
+  //   skip,
+  //   onSubscriptionData(options) {
+  //     const task = options.subscriptionData.data?.task;
+  //     if (!!task) addTaskToApolloCache(task);
+  //   },
+  // });
+  // useSubscription(Subscriptions.paymentUpdated, { skip });
+  // useSubscription(Subscriptions.taskRewardUpdated, { skip });
 }
 
 export function useTaskFormUserOptions(

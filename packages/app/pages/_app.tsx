@@ -3,7 +3,6 @@ import { AppInitialProps, AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
-import { WebSocketLink } from "@apollo/client/link/ws";
 import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
 import {
@@ -18,7 +17,6 @@ import {
   InMemoryCache,
   ApolloProvider,
   ApolloLink,
-  split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ErrorLink, onError } from "@apollo/client/link/error";
@@ -32,7 +30,6 @@ import { useRouter } from "next/router";
 import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
-import { getMainDefinition } from "@apollo/client/utilities";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
@@ -195,28 +192,28 @@ function createApolloLink(
   const errorLink = onError((error) => onErrorRef?.current?.(error));
   const timeoutLink = new ApolloLinkTimeout(10000, 504);
 
-  if (typeof window === "undefined") {
-    return ApolloLink.from([authLink, errorLink, timeoutLink, httpLink]);
-  }
+  // if (typeof window === "undefined") {
+  return ApolloLink.from([authLink, errorLink, timeoutLink, httpLink]);
+  // }
 
-  const wsLink = new WebSocketLink({
-    uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
-    options: { reconnect: true },
-  });
+  // const wsLink = new WebSocketLink({
+  //   uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
+  //   options: { reconnect: true },
+  // });
 
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
-    },
-    wsLink,
-    httpLink
-  );
+  // const splitLink = split(
+  //   ({ query }) => {
+  //     const definition = getMainDefinition(query);
+  //     return (
+  //       definition.kind === "OperationDefinition" &&
+  //       definition.operation === "subscription"
+  //     );
+  //   },
+  //   wsLink,
+  //   httpLink
+  // );
 
-  return ApolloLink.from([authLink, errorLink, timeoutLink, splitLink]);
+  // return ApolloLink.from([authLink, errorLink, timeoutLink, splitLink]);
 }
 
 export default withApollo(
