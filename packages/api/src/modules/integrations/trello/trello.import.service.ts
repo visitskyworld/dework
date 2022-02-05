@@ -183,7 +183,7 @@ export class TrelloImportService {
   private guessStatus(listName: string | undefined): TaskStatus | undefined {
     if (!listName) return undefined;
     for (const [status, guesses] of Object.entries(this.statusGuesses)) {
-      if (guesses.includes(listName.toLowerCase())) {
+      if (guesses.some((guess) => listName.toLowerCase().includes(guess))) {
         return status as TaskStatus;
       }
     }

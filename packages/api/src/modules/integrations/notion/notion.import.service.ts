@@ -213,7 +213,7 @@ export class NotionImportService {
     const label = status.select?.name;
     if (!label) return undefined;
     for (const [status, guesses] of Object.entries(this.statusGuesses)) {
-      if (guesses.includes(label.toLowerCase())) {
+      if (guesses.some((guess) => label.toLowerCase().includes(guess))) {
         return status as TaskStatus;
       }
     }
