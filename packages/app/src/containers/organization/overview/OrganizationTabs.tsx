@@ -77,7 +77,7 @@ export const OrganizationTabs: FC<Props> = ({
             md={18}
             className={!screens.xs ? "dewo-divider-right" : undefined}
           >
-            <Typography.Title level={5}>Projects</Typography.Title>
+            {/* <Typography.Title level={5}>Projects</Typography.Title> */}
             <OrganizationProjectList organizationId={organizationId} />
           </Col>
           <Col xs={24} md={6}>

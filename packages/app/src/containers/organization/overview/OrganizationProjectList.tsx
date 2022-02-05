@@ -1,10 +1,13 @@
-import { Button, Col, Row, Space } from "antd";
+import { Button, Col, Dropdown, Menu, Row, Space } from "antd";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useOrganization } from "../hooks";
 import { ProjectCard } from "./ProjectCard";
 import { JoinTokenGatedProjectsButton } from "../../invite/JoinTokenGatedProjectsButton";
 import { ProjectDetails } from "@dewo/app/graphql/types";
+import { useRouter } from "next/router";
+
+import { CreateSectionPopover } from "./CreateSectionPopover";
 
 interface Props {
   organizationId: string;
@@ -44,29 +47,62 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     []
   );
 
+  const router = useRouter();
+  const navigateToProjectCreate = useCallback(
+    () => router.push(`${organization?.permalink}/create`),
+    [router, organization?.permalink]
+  );
+
   return (
-    <Space direction="vertical" size={16} style={{ width: "100%" }}>
+    <>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
 
       {sections.map((section) => (
         <div key={section.id}>
-          <Button
-            type="text"
-            size="large"
-            icon={
-              collapsed[section.id] ? (
-                <Icons.CaretUpFilled />
-              ) : (
-                <Icons.CaretDownFilled />
-              )
-            }
-            className="dewo-btn-highlight font-bold"
-            onClick={() => collapseSection(section.id)}
-          >
-            {section.title}
-          </Button>
+          <Space size={16} style={{ marginBottom: 4 }}>
+            <Button
+              type="text"
+              size="large"
+              icon={
+                collapsed[section.id] ? (
+                  <Icons.CaretUpFilled className="text-secondary" />
+                ) : (
+                  <Icons.CaretDownFilled className="text-secondary" />
+                )
+              }
+              style={{ flex: "unset" }}
+              className="dewo-btn-highlight font-bold"
+              onClick={() => collapseSection(section.id)}
+            >
+              {section.title}
+            </Button>
+            <Dropdown
+              trigger={["click"]}
+              placement="bottomLeft"
+              overlay={
+                <Menu>
+                  <Menu.Item onClick={navigateToProjectCreate}>
+                    Create a project
+                  </Menu.Item>
+                  <Menu.SubMenu title="Import from Notion/Trello">
+                    <Menu.Item>3rd menu item</Menu.Item>
+                    <Menu.Item>4th menu item</Menu.Item>
+                  </Menu.SubMenu>
+                  <CreateSectionPopover>
+                    <Menu.Item>Create a section</Menu.Item>
+                  </CreateSectionPopover>
+                </Menu>
+              }
+            >
+              <Button
+                type="text"
+                icon={<Icons.PlusOutlined />}
+                className="text-secondary"
+              />
+            </Dropdown>
+          </Space>
           {!collapsed[section.id] && (
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
               {projectsBySectionId[section.id]?.map((project) => (
                 <Col key={project.id} xs={24} sm={12} md={8}>
                   <ProjectCard project={project} />
@@ -96,6 +132,6 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
           ))}
         </Can>
       </Row> */}
-    </Space>
+    </>
   );
 };
