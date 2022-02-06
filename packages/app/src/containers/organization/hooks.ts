@@ -11,6 +11,7 @@ import {
   CreateOrganizationTagMutationVariables,
   CreateProjectSectionInput,
   CreateProjectSectionMutation,
+  CreateProjectSectionMutationVariables,
   DiscordIntegrationChannel,
   GetOrganizationDiscordChannelsQuery,
   GetOrganizationDiscordChannelsQueryVariables,

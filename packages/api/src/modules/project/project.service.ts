@@ -41,7 +41,10 @@ export class ProjectService {
     partial: DeepPartial<Project>,
     creator: User
   ): Promise<Project> {
-    const created = await this.projectRepo.save(partial);
+    const created = await this.projectRepo.save({
+      ...partial,
+      sortKey: Date.now().toString(),
+    });
     await this.upsertMember({
       projectId: created.id,
       userId: creator.id,
