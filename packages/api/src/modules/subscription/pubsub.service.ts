@@ -5,6 +5,7 @@ import { RedisPubSub } from "graphql-redis-subscriptions";
 import { PubSub } from "graphql-subscriptions";
 import { Connection } from "typeorm";
 import { ConfigType } from "../app/config";
+
 @Injectable()
 export class SubscriptionPubSubService {
   public client: RedisPubSub | PubSub;
