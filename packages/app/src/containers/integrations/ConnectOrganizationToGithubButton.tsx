@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useConnectToGithubUrl } from "./hooks";
 
@@ -17,13 +17,18 @@ export const ConnectOrganizationToGithubButton: FC<
   );
 
   return (
-    <Button
-      type="ghost"
-      style={{ marginTop: 4 }}
-      icon={<Icons.GithubOutlined />}
-      href={connectToGithubUrl}
+    <Tooltip
+      title="You need admin permissions in your Github organization to add the Dework app"
+      placement="bottom"
     >
-      Connect to Github
-    </Button>
+      <Button
+        type="ghost"
+        style={{ marginTop: 4 }}
+        icon={<Icons.GithubOutlined />}
+        href={connectToGithubUrl}
+      >
+        Connect to Github
+      </Button>
+    </Tooltip>
   );
 };
