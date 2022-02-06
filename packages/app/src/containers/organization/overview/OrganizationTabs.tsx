@@ -11,7 +11,7 @@ import {
   Tag,
   Typography,
 } from "antd";
-import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/OrganizationProjectList";
+import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/projectList/OrganizationProjectList";
 import {
   useOrganization,
   useOrganizationContributors,
