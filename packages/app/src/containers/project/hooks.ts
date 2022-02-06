@@ -96,24 +96,6 @@ export function useUpdateProject(): (
   );
 }
 
-/*
-
-const apolloClient = useApolloClient();
-  const readFromCache = useCallback((): TValue | undefined => {
-    if (!fragmentDefinition) return undefined;
-
-    const fragmentName = fragmentDefinition.name.value;
-    const idWithTypename = `${fragmentDefinition.typeCondition.name.value}${id}`;
-
-    try {
-      return apolloClient.readFragment<TValue>({id: idWithTypename, fragment, fragmentName});
-    } catch (error) {
-      return undefined;
-    }
-  }, [id, fragment, fragmentDefinition, apolloClient]);
-
-*/
-
 export function useUpdateProjectMember(): (
   input: UpdateProjectMemberInput
 ) => Promise<ProjectMember> {

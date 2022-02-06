@@ -40,8 +40,6 @@ export function useRunningCallback<T extends (...args: any[]) => any>(
   return [wrappedCallback, running];
 }
 
-// function useCallback<T extends (...args: any[]) => any>(callback: T, deps: DependencyList): T;
-
 export function useRerender() {
   const [, setRerender] = useState(0);
   return useCallback(() => setRerender((r) => r + 1), []);
