@@ -21,7 +21,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { useRouter } from "next/router";
 
-import { CreateSectionPopover } from "./CreateSectionPopover";
+import { CreateSectionModal } from "./CreateSectionModal";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -36,6 +36,7 @@ import {
 import { useUpdateProject } from "../../project/hooks";
 import { getSortKeyBetween } from "../../task/board/util";
 import _ from "lodash";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface Props {
   organizationId: string;
@@ -133,10 +134,18 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [projects, projectsBySectionId, updateProject]
   );
 
+  const createSectionModal = useToggle();
+
   if (typeof window === "undefined") return null;
   return (
     <div style={{ maxHeight: "100vh", height: "100%" }}>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
+
+      <CreateSectionModal
+        organizationId={organizationId}
+        visible={createSectionModal.isOn}
+        onClose={createSectionModal.toggleOff}
+      />
 
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
@@ -180,9 +189,9 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                         </>
                       )}
                       {canCreateProjectSection && (
-                        <CreateSectionPopover organizationId={organizationId}>
-                          <Menu.Item>Create a section</Menu.Item>
-                        </CreateSectionPopover>
+                        <Menu.Item onClick={createSectionModal.toggleOn}>
+                          Create a section
+                        </Menu.Item>
                       )}
                     </Menu>
                   }
@@ -225,15 +234,25 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                                         level={5}
                                         style={{ marginBottom: 0 }}
                                       >
-                                        {project.visibility ===
+                                        {/* {project.visibility ===
                                           ProjectVisibility.PRIVATE && (
                                           <Typography.Text type="secondary">
                                             <Icons.LockOutlined />
                                             {"  "}
                                           </Typography.Text>
-                                        )}
+                                        )} */}
                                         {project.name}
                                       </Typography.Title>
+                                      {project.visibility ===
+                                        ProjectVisibility.PRIVATE && (
+                                        <Tag
+                                          className="bg-component"
+                                          style={{ marginLeft: 16 }}
+                                          icon={<Icons.LockOutlined />}
+                                        >
+                                          Private
+                                        </Tag>
+                                      )}
                                       {!!project.openBountyTaskCount && (
                                         <Tag
                                           className="bg-primary"
