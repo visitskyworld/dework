@@ -21,7 +21,7 @@ export const ProjectListRow: FC<Props> = ({ project }) => {
           style={{ padding: 8 }}
         >
           <Row style={{ alignItems: "center" }}>
-            <Row style={{ flex: 1 }}>
+            <Row style={{ flex: 2 }}>
               <Typography.Title level={5} style={{ marginBottom: 0 }}>
                 {project.name}
               </Typography.Title>

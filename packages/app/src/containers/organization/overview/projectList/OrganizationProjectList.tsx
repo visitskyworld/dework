@@ -1,6 +1,7 @@
-import { Row, Typography } from "antd";
+import { Row, Skeleton, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../../hooks";
+import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsButton } from "../../../invite/JoinTokenGatedProjectsButton";
 import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -17,6 +18,7 @@ import { ProjectListRow } from "./ProjectListRow";
 import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { ProjectListEmpty } from "./ProjectListEmpty";
 
 interface Props {
   organizationId: string;
@@ -99,6 +101,10 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [projects, projectsBySectionId, updateProject]
   );
 
+  if (!organization) return <Skeleton />;
+  if (!projects.length) {
+    return <ProjectListEmpty organizationId={organizationId} />;
+  }
   if (typeof window === "undefined") return null;
   return (
     <div
@@ -124,7 +130,13 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
               {canCreateProject && section.id === defaultProjectSection.id && (
                 <>
                   <div style={{ flex: 1 }} />
-                  <CreateProjectButton organizationId={organizationId} />
+                  <CreateProjectButton
+                    organizationId={organizationId}
+                    type="primary"
+                    icon={<Icons.PlusOutlined />}
+                  >
+                    Create Project
+                  </CreateProjectButton>
                 </>
               )}
             </Row>

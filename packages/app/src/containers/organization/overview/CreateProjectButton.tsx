@@ -1,17 +1,22 @@
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { Constants } from "@dewo/app/util/constants";
-import { Button, Dropdown, Menu, Space, Tag } from "antd";
+import { Button, ButtonProps, Dropdown, Menu, Space, Tag } from "antd";
 import { useRouter } from "next/router";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback } from "react";
 import { useOrganization } from "../hooks";
 
-interface Props {
+interface Props extends ButtonProps {
   organizationId: string;
+  mode?: "import" | "all";
 }
 
-export const CreateProjectButton: FC<Props> = ({ organizationId }) => {
+export const CreateProjectButton: FC<Props> = ({
+  organizationId,
+  mode = "all",
+  ...buttonProps
+}) => {
   const router = useRouter();
   const { organization } = useOrganization(organizationId);
   const goToNotionOauthFlow = useCallback(() => {
@@ -39,15 +44,17 @@ export const CreateProjectButton: FC<Props> = ({ organizationId }) => {
   return (
     <Dropdown
       trigger={["click"]}
-      placement="bottomRight"
+      placement="bottomCenter"
       overlay={
         <Menu>
-          <Menu.Item onClick={handleBlankProject}>
-            <Space>
-              <Icons.PlusOutlined />
-              Create without importing
-            </Space>
-          </Menu.Item>
+          {mode === "all" && (
+            <Menu.Item onClick={handleBlankProject}>
+              <Space>
+                <Icons.PlusOutlined />
+                Create without importing
+              </Space>
+            </Menu.Item>
+          )}
           <Menu.Item onClick={goToNotionOauthFlow}>
             <Space>
               <NotionIcon />
@@ -65,9 +72,7 @@ export const CreateProjectButton: FC<Props> = ({ organizationId }) => {
         </Menu>
       }
     >
-      <Button type="primary" icon={<Icons.PlusOutlined />}>
-        Create Project
-      </Button>
+      <Button {...buttonProps} />
     </Dropdown>
   );
 };
