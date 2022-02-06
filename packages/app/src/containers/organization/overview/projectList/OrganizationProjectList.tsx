@@ -151,13 +151,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  <Row style={{ height: 24 }}>
-                    {!projectsBySectionId[section.id]?.length && (
-                      <Typography.Text type="secondary">
-                        Add project by pressing + or drag and drop
-                      </Typography.Text>
-                    )}
-                  </Row>
+                  <Row style={{ height: 24 }} />
                 </div>
               )}
             </Droppable>
