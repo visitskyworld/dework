@@ -44,6 +44,7 @@ export interface FormValues
 const formValueFieldsToRememberThroughOauthFlow: (keyof FormValues)[] = [
   "name",
   "type",
+  "sectionId",
   "visibility",
 ];
 
@@ -107,6 +108,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         const project = await createProject({
           name: values.name,
           visibility: values.visibility,
+          sectionId: values.sectionId,
           organizationId: values.organizationId,
           options: values.options,
         });
@@ -197,13 +199,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           <Input placeholder="Enter a project name..." />
         </Form.Item>
 
-        {/* <Form.Item label="Project Type" name="type">
-          <Radio.Group>
-            <Radio.Button value="non-dev">Non-dev</Radio.Button>
-            <Radio.Button value="dev">Development</Radio.Button>
-          </Radio.Group>
-        </Form.Item> */}
-
         {values.type === "dev" && !!organization && (
           <FormSection label="Github Integration">
             {hasGithubIntegration ? (
@@ -241,9 +236,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             )}
           </FormSection>
         )}
-        <Form.Item name="organizationId" hidden rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
+        <Form.Item name="sectionId" hidden />
+        <Form.Item name="organizationId" hidden rules={[{ required: true }]} />
         <Button
           type="primary"
           htmlType="submit"

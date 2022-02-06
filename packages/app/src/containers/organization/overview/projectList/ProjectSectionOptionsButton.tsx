@@ -5,7 +5,8 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { CreateSectionModal } from "../CreateSectionModal";
 import { ProjectSection } from "@dewo/app/graphql/types";
-import { useUpdateProjectSection } from "../../hooks";
+import { useOrganization, useUpdateProjectSection } from "../../hooks";
+import { useRouter } from "next/router";
 
 interface Props {
   section: ProjectSection;
@@ -18,11 +19,14 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
   isDefault,
   organizationId,
 }) => {
+  const { organization } = useOrganization(organizationId);
+  const canCreateProject = usePermission("create", "Project");
   const canCreate = usePermission("create", "ProjectSection");
   const canUpdate = usePermission("update", "ProjectSection");
 
   const createSectionModal = useToggle();
 
+  const router = useRouter();
   const updateSection = useUpdateProjectSection();
   const handleDeleteSection = useCallback(async () => {
     await updateSection({
@@ -44,7 +48,21 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
                 icon={<Icons.PlusOutlined />}
                 onClick={createSectionModal.toggleOn}
               >
-                Create a section
+                Create section
+              </Menu.Item>
+            )}
+            {canCreateProject && (
+              <Menu.Item
+                icon={<Icons.PlusOutlined />}
+                onClick={() =>
+                  router.push(
+                    `${organization?.permalink}/create${
+                      isDefault ? "" : `?sectionId=${section.id}`
+                    }`
+                  )
+                }
+              >
+                Create project in section
               </Menu.Item>
             )}
             {canUpdate && !isDefault && (

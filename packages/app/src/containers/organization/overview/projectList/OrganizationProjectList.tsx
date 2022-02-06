@@ -118,7 +118,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
           <>
-            <Row align="middle" style={{ marginBottom: 8 }}>
+            <Row align="middle">
               <Typography.Title level={5} style={{ margin: 0 }}>
                 {section.name}
               </Typography.Title>
@@ -133,6 +133,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                   <CreateProjectButton
                     organizationId={organizationId}
                     type="primary"
+                    size="small"
                     icon={<Icons.PlusOutlined />}
                   >
                     Create Project
@@ -163,7 +164,14 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  <Row style={{ height: 24 }} />
+                  <Row style={{ height: 36 }}>
+                    {!projectsBySectionId[section.id]?.length &&
+                      canCreateProject && (
+                        <Typography.Text type="secondary">
+                          Drag projects into this section
+                        </Typography.Text>
+                      )}
+                  </Row>
                 </div>
               )}
             </Droppable>
