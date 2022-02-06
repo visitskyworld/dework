@@ -440,7 +440,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      "🦋 Ready for review!",
+      "📭 Ready for review!",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -464,7 +464,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channelToPostTo,
       task,
-      "🦋 Ready for another review!",
+      "📭 Review re-requested in Github!",
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
