@@ -26,13 +26,14 @@ import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 interface Props {
   organizationId: string;
 }
 
 const defaultProjectSection: ProjectSection = {
-  id: "",
+  id: "default",
   name: "Projects",
   sortKey: "1",
   __typename: "ProjectSection",
@@ -78,146 +79,186 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const canCreateProjectSection = usePermission("create", "ProjectSection");
   const shouldRenderSection = useCallback(
     (section: ProjectSection) =>
-      !!projectsBySectionId[section.id]?.length || canCreateProject,
+      section.id === defaultProjectSection.id ||
+      !!projectsBySectionId[section.id]?.length ||
+      canCreateProject,
     [projectsBySectionId, canCreateProject]
   );
 
+  if (typeof window === "undefined") return null;
   return (
     <>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
 
-      {sections.filter(shouldRenderSection).map((section) => (
-        <div key={section.id}>
-          <Space style={{ marginBottom: 4 }}>
-            <Button
-              type="text"
-              size="large"
-              // icon={
-              //   collapsed[section.id] ? (
-              //     <Icons.CaretUpFilled className="text-secondary" />
-              //   ) : (
-              //     <Icons.CaretDownFilled className="text-secondary" />
-              //   )
-              // }
-              style={{ flex: "unset" }}
-              className="dewo-btn-highlight font-bold"
-              onClick={() => collapseSection(section.id)}
-            >
-              {section.name}
-            </Button>
-            {(canCreateProject || canCreateProjectSection) && (
-              <Dropdown
-                trigger={["click"]}
-                placement="bottomLeft"
-                overlay={
-                  <Menu>
-                    {canCreateProject && (
-                      <>
-                        <Menu.Item onClick={navigateToProjectCreate}>
-                          Create a project
-                        </Menu.Item>
-                        <Menu.SubMenu title="Import from Notion/Trello">
-                          <Menu.Item icon={<NotionIcon />}>
-                            Import from Notion
-                          </Menu.Item>
-                          <Menu.Item icon={<TrelloIcon />}>
-                            Import from Trello
-                          </Menu.Item>
-                        </Menu.SubMenu>
-                      </>
-                    )}
-                    {canCreateProjectSection && (
-                      <CreateSectionPopover organizationId={organizationId}>
-                        <Menu.Item>Create a section</Menu.Item>
-                      </CreateSectionPopover>
-                    )}
-                  </Menu>
-                }
-              >
-                <Button
-                  type="text"
-                  icon={<Icons.PlusOutlined />}
-                  className="text-secondary"
-                />
-              </Dropdown>
-            )}
-          </Space>
-          {!collapsed[section.id] && (
-            // <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-            //   {projectsBySectionId[section.id]?.map((project) => (
-            //     <Col key={project.id} xs={24} sm={12} md={8}>
-            //       <ProjectCard project={project} />
-            //     </Col>
-            //   ))}
-            // </Row>
-            <Space direction="vertical" className="w-full">
-              {projectsBySectionId[section.id]?.map((project) => (
-                <Link href={project.permalink}>
-                  <a>
-                    <Card
-                      size="small"
-                      className="hover:component-highlight"
-                      style={{ padding: 8 }}
-                    >
-                      <Row style={{ alignItems: "center" }}>
-                        <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                          {project.visibility === ProjectVisibility.PRIVATE && (
-                            <Typography.Text type="secondary">
-                              <Icons.LockOutlined />
-                              {"  "}
-                            </Typography.Text>
-                          )}
-                          {project.name}
-                        </Typography.Title>
-                        {!!project.openBountyTaskCount && (
-                          <Tag
-                            className="bg-primary"
-                            style={{ marginLeft: 16 }}
+      {/* <DragDropContext onDragEnd={() => alert("dragen")}>
+        <Droppable droppableId="123">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              {sections.filter(shouldRenderSection).map((section, iIndex) => (
+                  <>
+                    {["red", "green", "blue", "yellow"].map((j, jIndex) => (
+                      <Draggable
+                        draggableId={[section.id, j].join(":")}
+                        index={iIndex * 4 + jIndex}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
                           >
-                            {project.openBountyTaskCount === 1
-                              ? "1 open bounty"
-                              : `${project.openBountyTaskCount} open bounties`}
-                          </Tag>
+                            <div
+                              style={{
+                                width: 100,
+                                height: 100,
+                                backgroundColor: j,
+                              }}
+                            >
+                              {iIndex * 4 + jIndex}}: {section.id}, {j}
+                            </div>
+                          </div>
                         )}
-                        <div style={{ flex: 1 }} />
-                        <Avatar.Group maxCount={10}>
-                          {project.members.map((member) => (
-                            <UserAvatar
-                              key={member.id}
-                              user={member.user}
-                              linkToProfile
-                            />
-                          ))}
-                        </Avatar.Group>
-                      </Row>
-                    </Card>
-                  </a>
-                </Link>
-              ))}
-            </Space>
+                      </Draggable>
+                    ))}
+                  </>
+                ))}
+              {provided.placeholder}
+            </div>
           )}
-        </div>
-      ))}
+        </Droppable>
+      </DragDropContext> */}
 
-      {/* <Row gutter={[16, 16]}>
-        {projects?.map((project) => (
-          <Col key={project.id} xs={24} sm={12} md={8}>
-            <ProjectCard project={project} />
-          </Col>
+      <DragDropContext onDragEnd={() => alert("dragen")}>
+        {sections.filter(shouldRenderSection).map((section) => (
+          <>
+            <Space style={{ marginBottom: 4 }}>
+              <Button
+                type="text"
+                size="large"
+                // icon={
+                //   collapsed[section.id] ? (
+                //     <Icons.CaretUpFilled className="text-secondary" />
+                //   ) : (
+                //     <Icons.CaretDownFilled className="text-secondary" />
+                //   )
+                // }
+                style={{ flex: "unset" }}
+                className="dewo-btn-highlight font-bold"
+                onClick={() => collapseSection(section.id)}
+              >
+                {section.name}
+              </Button>
+              {(canCreateProject || canCreateProjectSection) && (
+                <Dropdown
+                  trigger={["click"]}
+                  placement="bottomLeft"
+                  overlay={
+                    <Menu>
+                      {canCreateProject && (
+                        <>
+                          <Menu.Item onClick={navigateToProjectCreate}>
+                            Create a project
+                          </Menu.Item>
+                          <Menu.SubMenu title="Import from Notion/Trello">
+                            <Menu.Item icon={<NotionIcon />}>
+                              Import from Notion
+                            </Menu.Item>
+                            <Menu.Item icon={<TrelloIcon />}>
+                              Import from Trello
+                            </Menu.Item>
+                          </Menu.SubMenu>
+                        </>
+                      )}
+                      {canCreateProjectSection && (
+                        <CreateSectionPopover organizationId={organizationId}>
+                          <Menu.Item>Create a section</Menu.Item>
+                        </CreateSectionPopover>
+                      )}
+                    </Menu>
+                  }
+                >
+                  <Button
+                    type="text"
+                    icon={<Icons.PlusOutlined />}
+                    className="text-secondary"
+                  />
+                </Dropdown>
+              )}
+            </Space>
+            <Droppable droppableId={section.id}>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {!collapsed[section.id] &&
+                    projectsBySectionId[section.id]?.map((project, index) => (
+                      <Draggable
+                        key={project.id}
+                        draggableId={project.id}
+                        index={index}
+                        isDragDisabled={!canCreateProject}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Link href={project.permalink}>
+                              <a>
+                                <Card
+                                  size="small"
+                                  className="hover:component-highlight"
+                                  style={{ padding: 8 }}
+                                >
+                                  <Row style={{ alignItems: "center" }}>
+                                    <Typography.Title
+                                      level={5}
+                                      style={{ marginBottom: 0 }}
+                                    >
+                                      {project.visibility ===
+                                        ProjectVisibility.PRIVATE && (
+                                        <Typography.Text type="secondary">
+                                          <Icons.LockOutlined />
+                                          {"  "}
+                                        </Typography.Text>
+                                      )}
+                                      {project.name}
+                                    </Typography.Title>
+                                    {!!project.openBountyTaskCount && (
+                                      <Tag
+                                        className="bg-primary"
+                                        style={{ marginLeft: 16 }}
+                                      >
+                                        {project.openBountyTaskCount === 1
+                                          ? "1 open bounty"
+                                          : `${project.openBountyTaskCount} open bounties`}
+                                      </Tag>
+                                    )}
+                                    <div style={{ flex: 1 }} />
+                                    <Avatar.Group maxCount={10}>
+                                      {project.members.map((member) => (
+                                        <UserAvatar
+                                          key={member.id}
+                                          user={member.user}
+                                          linkToProfile
+                                        />
+                                      ))}
+                                    </Avatar.Group>
+                                  </Row>
+                                </Card>
+                                <div style={{ paddingBottom: 8 }} />
+                              </a>
+                            </Link>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </>
         ))}
-        <Can I="create" a="Project">
-          {[CreateProjectCard, ImportProjectsCard].map((Component) => (
-            <Col
-              xs={24}
-              sm={12}
-              md={8}
-              style={{ paddingLeft: 8, paddingRight: 8 }}
-            >
-              <Component organizationId={organizationId} />
-            </Col>
-          ))}
-        </Can>
-      </Row> */}
+      </DragDropContext>
     </>
   );
 };
