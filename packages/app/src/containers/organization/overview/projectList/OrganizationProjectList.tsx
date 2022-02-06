@@ -16,6 +16,7 @@ import _ from "lodash";
 import { ProjectListRow } from "./ProjectListRow";
 import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
 interface Props {
   organizationId: string;
@@ -29,6 +30,7 @@ const defaultProjectSection: ProjectSection = {
 };
 
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
+  const screens = useBreakpoint();
   const { organization } = useOrganization(organizationId);
   const projects = useMemo(
     () => _.sortBy(organization?.projects, (p) => p.sortKey),
@@ -99,8 +101,13 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
 
   if (typeof window === "undefined") return null;
   return (
-    <div style={{ maxHeight: "100vh", height: "100%" }}>
-      <JoinTokenGatedProjectsButton organizationId={organizationId} />
+    <div
+      style={screens.sm ? { maxHeight: "100vh", height: "100%" } : undefined}
+    >
+      <JoinTokenGatedProjectsButton
+        organizationId={organizationId}
+        style={{ marginBottom: 16 }}
+      />
 
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
@@ -114,7 +121,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                 isDefault={section.id === defaultProjectSection.id}
                 organizationId={organizationId}
               />
-              {section.id === defaultProjectSection.id && (
+              {canCreateProject && section.id === defaultProjectSection.id && (
                 <>
                   <div style={{ flex: 1 }} />
                   <CreateProjectButton organizationId={organizationId} />

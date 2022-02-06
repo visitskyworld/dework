@@ -45,7 +45,7 @@ export const CreateProjectButton: FC<Props> = ({ organizationId }) => {
           <Menu.Item onClick={handleBlankProject}>
             <Space>
               <Icons.PlusOutlined />
-              Create blank project
+              Create without importing
             </Space>
           </Menu.Item>
           <Menu.Item onClick={goToNotionOauthFlow}>

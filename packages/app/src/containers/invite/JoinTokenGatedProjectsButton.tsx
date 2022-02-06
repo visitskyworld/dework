@@ -1,5 +1,5 @@
 import { Alert, Button, message } from "antd";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../organization/hooks";
 import * as Icons from "@ant-design/icons";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -14,9 +14,13 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   organizationId: string;
+  style?: CSSProperties;
 }
 
-export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
+export const JoinTokenGatedProjectsButton: FC<Props> = ({
+  organizationId,
+  style,
+}) => {
   const modalVisible = useToggle();
   const editingProfile = useToggle();
   const { user } = useAuthContext();
@@ -75,6 +79,7 @@ export const JoinTokenGatedProjectsButton: FC<Props> = ({ organizationId }) => {
       <Alert
         message={`There are private projects that you can access by authenticating using ${tokensString}`}
         type="info"
+        style={style}
         description={
           !!user ? (
             <Button
