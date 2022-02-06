@@ -99,7 +99,7 @@ export class ProjectService {
   public async updateSection(
     partial: DeepAtLeast<ProjectSection, "id">
   ): Promise<ProjectSection> {
-    await this.projectMemberRepo.update({ id: partial.id }, partial);
+    await this.projectSectionRepo.update({ id: partial.id }, partial);
     return this.projectSectionRepo.findOne(
       partial.id
     ) as Promise<ProjectSection>;

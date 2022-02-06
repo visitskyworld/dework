@@ -1,16 +1,7 @@
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { Constants } from "@dewo/app/util/constants";
-import {
-  Avatar,
-  Card,
-  Dropdown,
-  Menu,
-  Space,
-  Tag,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Button, Dropdown, Menu, Space, Tag } from "antd";
 import { useRouter } from "next/router";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback } from "react";
@@ -20,7 +11,7 @@ interface Props {
   organizationId: string;
 }
 
-export const ImportProjectsCard: FC<Props> = ({ organizationId }) => {
+export const CreateProjectButton: FC<Props> = ({ organizationId }) => {
   const router = useRouter();
   const { organization } = useOrganization(organizationId);
   const goToNotionOauthFlow = useCallback(() => {
@@ -39,13 +30,24 @@ export const ImportProjectsCard: FC<Props> = ({ organizationId }) => {
     })}`;
     window.location.href = url;
   }, [router.asPath]);
+  const handleBlankProject = useCallback(
+    () => router.push(`${organization?.permalink}/create`),
+    [organization?.permalink, router]
+  );
+
   if (!organization) return null;
   return (
     <Dropdown
       trigger={["click"]}
-      placement="bottomCenter"
+      placement="bottomRight"
       overlay={
-        <Menu style={{ textAlign: "center" }}>
+        <Menu>
+          <Menu.Item onClick={handleBlankProject}>
+            <Space>
+              <Icons.PlusOutlined />
+              Create blank project
+            </Space>
+          </Menu.Item>
           <Menu.Item onClick={goToNotionOauthFlow}>
             <Space>
               <NotionIcon />
@@ -63,31 +65,9 @@ export const ImportProjectsCard: FC<Props> = ({ organizationId }) => {
         </Menu>
       }
     >
-      <Card
-        size="small"
-        className="dewo-project-card hover:component-highlight"
-      >
-        <Space direction="vertical" align="center">
-          <Avatar size="large" icon={<NotionIcon />} />
-          <Typography.Title
-            level={5}
-            style={{ marginBottom: 0, textAlign: "center" }}
-          >
-            Import from Notion/Trello
-          </Typography.Title>
-          <Typography.Paragraph
-            type="secondary"
-            className="ant-typography-caption"
-          >
-            <Tooltip
-              title="Easily move all of your Notion or Trello boards over to Dework. Select which boards you want to import and Dework does the rest!"
-              placement="bottom"
-            >
-              What does this do? <Icons.QuestionCircleOutlined />
-            </Tooltip>
-          </Typography.Paragraph>
-        </Space>
-      </Card>
+      <Button type="primary" icon={<Icons.PlusOutlined />}>
+        Create Project
+      </Button>
     </Dropdown>
   );
 };

@@ -151,7 +151,7 @@ export function useUpdateProjectSection(): (
   const [mutation] = useMutation<
     UpdateProjectSectionMutation,
     UpdateProjectSectionMutationVariables
-  >(Mutations.createProjectSection);
+  >(Mutations.updateProjectSection);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });

@@ -44,6 +44,7 @@ import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { subject } from "@casl/ability";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { Roles } from "../app/app.roles";
+import { ProjectSection } from "@dewo/api/models/ProjectSection";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -67,6 +68,14 @@ export class OrganizationResolver {
   ): Promise<OrganizationMember[]> {
     if (!!organization.members) return organization.members;
     return this.organizationService.getMembers(organization.id);
+  }
+
+  @ResolveField(() => [ProjectSection])
+  public async projectSections(
+    @Parent() organization: Organization
+  ): Promise<ProjectSection[]> {
+    const sections = await organization.projectSections;
+    return sections.filter((s) => !s.deletedAt);
   }
 
   @ResolveField(() => OrganizationMember, { nullable: true })

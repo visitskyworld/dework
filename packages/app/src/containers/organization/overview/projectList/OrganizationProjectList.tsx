@@ -1,4 +1,4 @@
-import { Row, Space, Typography } from "antd";
+import { Row, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../../hooks";
 import { JoinTokenGatedProjectsButton } from "../../../invite/JoinTokenGatedProjectsButton";
@@ -14,7 +14,8 @@ import { useUpdateProject } from "../../../project/hooks";
 import { getSortKeyBetween } from "../../../task/board/util";
 import _ from "lodash";
 import { ProjectListRow } from "./ProjectListRow";
-import { ProjectSectionPlusButton } from "./ProjectSectionPlusButton";
+import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
+import { CreateProjectButton } from "../CreateProjectButton";
 
 interface Props {
   organizationId: string;
@@ -104,12 +105,22 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
           <>
-            <Space>
+            <Row align="middle" style={{ marginBottom: 8 }}>
               <Typography.Title level={5} style={{ margin: 0 }}>
                 {section.name}
               </Typography.Title>
-              <ProjectSectionPlusButton organizationId={organizationId} />
-            </Space>
+              <ProjectSectionOptionsButton
+                section={section}
+                isDefault={section.id === defaultProjectSection.id}
+                organizationId={organizationId}
+              />
+              {section.id === defaultProjectSection.id && (
+                <>
+                  <div style={{ flex: 1 }} />
+                  <CreateProjectButton organizationId={organizationId} />
+                </>
+              )}
+            </Row>
             <Droppable droppableId={section.id}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
