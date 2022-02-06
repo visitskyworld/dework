@@ -102,8 +102,8 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
 
       const projectId = result.draggableId;
       const sectionId = result.destination.droppableId;
-      const org = projects.find((p) => p.id === projectId);
-      if (!org) return;
+      const project = projects.find((p) => p.id === projectId);
+      if (!project) return;
 
       const indexExcludingItself = (() => {
         const newIndex = result.destination.index;
@@ -112,15 +112,17 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         // we need to offset the new index by 1 if the card was dragged
         // from above in the same lane. The card we're dragging from
         // above makes all other items move up one step
-        if (oldIndex < newIndex) return newIndex + 1;
+        if (
+          result.source.droppableId === result.destination.droppableId &&
+          oldIndex < newIndex
+        )
+          return newIndex + 1;
         return newIndex;
       })();
 
-      const orgAbove = projects[indexExcludingItself - 1];
-      const orgBelow = projects[indexExcludingItself];
-      const sortKey = getSortKeyBetween(orgAbove, orgBelow, (p) => p.sortKey);
-
-      console.warn(sortKey);
+      const above = projectsBySectionId[sectionId]?.[indexExcludingItself - 1];
+      const below = projectsBySectionId[sectionId]?.[indexExcludingItself];
+      const sortKey = getSortKeyBetween(above, below, (p) => p.sortKey);
 
       await updateProject({
         sortKey,
@@ -128,56 +130,18 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         sectionId: sectionId === defaultProjectSection.id ? null : sectionId,
       });
     },
-    [projects, updateProject]
+    [projects, projectsBySectionId, updateProject]
   );
 
   if (typeof window === "undefined") return null;
   return (
-    <>
+    <div style={{ maxHeight: "100vh", height: "100%" }}>
       <JoinTokenGatedProjectsButton organizationId={organizationId} />
-
-      {/* <DragDropContext onDragEnd={() => alert("dragen")}>
-        <Droppable droppableId="123">
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {sections.filter(shouldRenderSection).map((section, iIndex) => (
-                  <>
-                    {["red", "green", "blue", "yellow"].map((j, jIndex) => (
-                      <Draggable
-                        draggableId={[section.id, j].join(":")}
-                        index={iIndex * 4 + jIndex}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <div
-                              style={{
-                                width: 100,
-                                height: 100,
-                                backgroundColor: j,
-                              }}
-                            >
-                              {iIndex * 4 + jIndex}}: {section.id}, {j}
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </>
-                ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext> */}
 
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
           <>
-            <Space style={{ marginBottom: 4 }}>
+            <Space>
               <Button
                 type="text"
                 size="large"
@@ -233,14 +197,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
             </Space>
             <Droppable droppableId={section.id}>
               {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  // style={{
-                  //   ...provided.droppableProps,
-                  //   minHeight: 90,
-                  // }}
-                >
+                <div ref={provided.innerRef} {...provided.droppableProps}>
                   {!collapsed[section.id] &&
                     projectsBySectionId[section.id]?.map((project, index) => (
                       <Draggable
@@ -328,19 +285,20 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                       </Draggable>
                     ))}
                   {provided.placeholder}
-                  {/* {!collapsed[section.id] &&
-                    !projectsBySectionId[section.id]?.length && (
-                      <Typography.Text type="secondary">
-                        Add project by pressing + or drag and drop
-                      </Typography.Text>
-                    )} */}
-                  {/* <div style={{ marginBottom: 16 }} /> */}
+                  <Row style={{ height: 24 }}>
+                    {!collapsed[section.id] &&
+                      !projectsBySectionId[section.id]?.length && (
+                        <Typography.Text type="secondary">
+                          Add project by pressing + or drag and drop
+                        </Typography.Text>
+                      )}
+                  </Row>
                 </div>
               )}
             </Droppable>
           </>
         ))}
       </DragDropContext>
-    </>
+    </div>
   );
 };
