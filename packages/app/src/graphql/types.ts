@@ -10980,6 +10980,7 @@ export interface UpdateProjectInput {
   visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
+  sortKey?: string | null;
 }
 
 export interface UpdateProjectIntegrationInput {

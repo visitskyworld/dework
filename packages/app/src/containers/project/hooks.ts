@@ -1,11 +1,13 @@
 import {
   ApolloError,
+  useApolloClient,
   useMutation,
   useQuery,
   WatchQueryFetchPolicy,
 } from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
+import * as Fragments from "@dewo/app/graphql/fragments";
 import {
   CreateProjectInput,
   CreateProjectMutation,
@@ -40,6 +42,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
+import _ from "lodash";
 
 export function useCreateProject(): (
   input: CreateProjectInput
@@ -65,15 +68,51 @@ export function useUpdateProject(): (
     UpdateProjectMutation,
     UpdateProjectMutationVariables
   >(Mutations.updateProject);
+  const apolloClient = useApolloClient();
   return useCallback(
     async (input) => {
-      const res = await mutation({ variables: { input } });
+      const fragment = await (async () => {
+        try {
+          return apolloClient.readFragment<ProjectDetails>({
+            id: `Project:${input.id}`,
+            fragment: Fragments.projectDetails,
+            fragmentName: "ProjectDetails",
+          });
+        } catch {
+          return undefined;
+        }
+      })();
+
+      const res = await mutation({
+        variables: { input },
+        optimisticResponse: !!fragment
+          ? { project: _.merge({}, fragment, input) }
+          : undefined,
+      });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.project;
     },
-    [mutation]
+    [mutation, apolloClient]
   );
 }
+
+/*
+
+const apolloClient = useApolloClient();
+  const readFromCache = useCallback((): TValue | undefined => {
+    if (!fragmentDefinition) return undefined;
+
+    const fragmentName = fragmentDefinition.name.value;
+    const idWithTypename = `${fragmentDefinition.typeCondition.name.value}${id}`;
+
+    try {
+      return apolloClient.readFragment<TValue>({id: idWithTypename, fragment, fragmentName});
+    } catch (error) {
+      return undefined;
+    }
+  }, [id, fragment, fragmentDefinition, apolloClient]);
+
+*/
 
 export function useUpdateProjectMember(): (
   input: UpdateProjectMemberInput

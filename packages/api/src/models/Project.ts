@@ -38,7 +38,7 @@ export class ProjectOptions {
   public showBacklogColumn?: boolean;
 }
 
-@Entity()
+@Entity({ orderBy: { sortKey: "ASC" } })
 @ObjectType()
 export class Project extends Audit {
   @Column()

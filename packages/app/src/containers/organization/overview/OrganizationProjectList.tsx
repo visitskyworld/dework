@@ -4,6 +4,7 @@ import {
   Card,
   Dropdown,
   Menu,
+  Progress,
   Row,
   Space,
   Tag,
@@ -26,7 +27,15 @@ import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  DragDropContextProps,
+  Draggable,
+  Droppable,
+} from "react-beautiful-dnd";
+import { useUpdateProject } from "../../project/hooks";
+import { getSortKeyBetween } from "../../task/board/util";
+import _ from "lodash";
 
 interface Props {
   organizationId: string;
@@ -42,7 +51,7 @@ const defaultProjectSection: ProjectSection = {
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganization(organizationId);
   const projects = useMemo(
-    () => organization?.projects.filter((p) => !p.deletedAt),
+    () => _.sortBy(organization?.projects, (p) => p.sortKey),
     [organization?.projects]
   );
 
@@ -55,7 +64,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
 
   const projectsBySectionId = useMemo(
     () =>
-      projects?.reduce((acc, p) => {
+      projects.reduce((acc, p) => {
         const sectionId = p.sectionId ?? defaultProjectSection.id;
         return { ...acc, [sectionId]: [...(acc[sectionId] ?? []), p] };
       }, {} as Record<string, ProjectDetails[]>) ?? {},
@@ -83,6 +92,43 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
       !!projectsBySectionId[section.id]?.length ||
       canCreateProject,
     [projectsBySectionId, canCreateProject]
+  );
+
+  const updateProject = useUpdateProject();
+  const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
+    async (result) => {
+      if (!projects) return;
+      if (result.reason !== "DROP" || !result.destination) return;
+
+      const projectId = result.draggableId;
+      const sectionId = result.destination.droppableId;
+      const org = projects.find((p) => p.id === projectId);
+      if (!org) return;
+
+      const indexExcludingItself = (() => {
+        const newIndex = result.destination.index;
+        const oldIndex = result.source.index;
+        // To get the items above and below the currently dropped card
+        // we need to offset the new index by 1 if the card was dragged
+        // from above in the same lane. The card we're dragging from
+        // above makes all other items move up one step
+        if (oldIndex < newIndex) return newIndex + 1;
+        return newIndex;
+      })();
+
+      const orgAbove = projects[indexExcludingItself - 1];
+      const orgBelow = projects[indexExcludingItself];
+      const sortKey = getSortKeyBetween(orgAbove, orgBelow, (p) => p.sortKey);
+
+      console.warn(sortKey);
+
+      await updateProject({
+        sortKey,
+        id: projectId,
+        sectionId: sectionId === defaultProjectSection.id ? null : sectionId,
+      });
+    },
+    [projects, updateProject]
   );
 
   if (typeof window === "undefined") return null;
@@ -128,7 +174,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         </Droppable>
       </DragDropContext> */}
 
-      <DragDropContext onDragEnd={() => alert("dragen")}>
+      <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
           <>
             <Space style={{ marginBottom: 4 }}>
@@ -187,7 +233,14 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
             </Space>
             <Droppable droppableId={section.id}>
               {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  // style={{
+                  //   ...provided.droppableProps,
+                  //   minHeight: 90,
+                  // }}
+                >
                   {!collapsed[section.id] &&
                     projectsBySectionId[section.id]?.map((project, index) => (
                       <Draggable
@@ -210,31 +263,53 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                                   style={{ padding: 8 }}
                                 >
                                   <Row style={{ alignItems: "center" }}>
-                                    <Typography.Title
-                                      level={5}
-                                      style={{ marginBottom: 0 }}
-                                    >
-                                      {project.visibility ===
-                                        ProjectVisibility.PRIVATE && (
-                                        <Typography.Text type="secondary">
-                                          <Icons.LockOutlined />
-                                          {"  "}
-                                        </Typography.Text>
-                                      )}
-                                      {project.name}
-                                    </Typography.Title>
-                                    {!!project.openBountyTaskCount && (
-                                      <Tag
-                                        className="bg-primary"
-                                        style={{ marginLeft: 16 }}
+                                    <Row style={{ flex: 1 }}>
+                                      <Typography.Title
+                                        level={5}
+                                        style={{ marginBottom: 0 }}
                                       >
-                                        {project.openBountyTaskCount === 1
-                                          ? "1 open bounty"
-                                          : `${project.openBountyTaskCount} open bounties`}
-                                      </Tag>
-                                    )}
+                                        {project.visibility ===
+                                          ProjectVisibility.PRIVATE && (
+                                          <Typography.Text type="secondary">
+                                            <Icons.LockOutlined />
+                                            {"  "}
+                                          </Typography.Text>
+                                        )}
+                                        {project.name}
+                                      </Typography.Title>
+                                      {!!project.openBountyTaskCount && (
+                                        <Tag
+                                          className="bg-primary"
+                                          style={{ marginLeft: 16 }}
+                                        >
+                                          {project.openBountyTaskCount === 1
+                                            ? "1 open bounty"
+                                            : `${project.openBountyTaskCount} open bounties`}
+                                        </Tag>
+                                      )}
+                                    </Row>
                                     <div style={{ flex: 1 }} />
-                                    <Avatar.Group maxCount={10}>
+                                    <Progress
+                                      size="small"
+                                      percent={
+                                        !!project.taskCount
+                                          ? (project.doneTaskCount /
+                                              project.taskCount) *
+                                            100
+                                          : undefined
+                                      }
+                                      showInfo={false}
+                                      style={{ flex: 1 }}
+                                    />
+                                    <Avatar.Group
+                                      size="small"
+                                      maxCount={5}
+                                      style={{
+                                        width: 104,
+                                        marginLeft: 16,
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
                                       {project.members.map((member) => (
                                         <UserAvatar
                                           key={member.id}
@@ -253,6 +328,13 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                       </Draggable>
                     ))}
                   {provided.placeholder}
+                  {/* {!collapsed[section.id] &&
+                    !projectsBySectionId[section.id]?.length && (
+                      <Typography.Text type="secondary">
+                        Add project by pressing + or drag and drop
+                      </Typography.Text>
+                    )} */}
+                  {/* <div style={{ marginBottom: 16 }} /> */}
                 </div>
               )}
             </Droppable>

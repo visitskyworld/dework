@@ -24,4 +24,7 @@ export class UpdateProjectInput {
 
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Field({ nullable: true })
+  public sortKey?: string;
 }
