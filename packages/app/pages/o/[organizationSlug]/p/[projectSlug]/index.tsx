@@ -1,30 +1,27 @@
 import React, { useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Col, Layout, Modal, Tabs } from "antd";
+import { Col, Layout, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
 import { useProject } from "@dewo/app/containers/project/hooks";
-import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
 import { Tab } from "@dewo/app/components/Tab";
+import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = (router.query.tab as string | undefined) ?? "board";
 
+  const canEditProject = usePermission("update", "Project");
   const projectId = useParseIdFromSlug("projectSlug");
   const { project, error } = useProject(projectId);
-
-  const navigateToProject = useCallback(
-    () => router.push(project?.permalink!),
-    [router, project?.permalink]
-  );
 
   const navigateToTab = useCallback(
     (tab: string) => router.push(`${project!.permalink}/${tab}`),
@@ -74,18 +71,21 @@ const Page: NextPage = () => {
                 </Col>
               )}
             </Tabs.TabPane>
+            {canEditProject && !!project && (
+              <Tabs.TabPane
+                tab={
+                  <Tab icon={<Icons.SettingOutlined />} children="Settings" />
+                }
+                style={{ padding: 12 }}
+                key="settings"
+                className="max-w-lg mx-auto w-full"
+              >
+                <ProjectSettings project={project} />
+              </Tabs.TabPane>
+            )}
           </Tabs>
         </Layout.Content>
       </Layout.Content>
-
-      <Modal
-        visible={!!project && router.route.endsWith("/settings")}
-        title="Project Settings"
-        footer={null}
-        onCancel={navigateToProject}
-      >
-        {!!project && <ProjectSettings project={project} />}
-      </Modal>
       <ForbiddenResourceModal visible={forbiddenError} />
     </Layout>
   );

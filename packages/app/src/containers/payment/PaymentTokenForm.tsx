@@ -141,6 +141,7 @@ export const PaymentTokenForm: FC<FormProps> = ({
     <Form
       form={form}
       layout="vertical"
+      style={{ overflowX: "hidden" }}
       requiredMark={false}
       initialValues={{ networkId: network?.id, type }}
       onFinish={handleSubmit}

@@ -56,7 +56,7 @@ export const OrganizationSettings: FC<Props> = ({
         <Card
           size="small"
           title="Settings"
-          style={{ marginBottom: 24 }}
+          style={{ marginBottom: screens.sm ? 0 : 24 }}
           bodyStyle={{ padding: 0 }}
         >
           <TabBar {...props} tabPosition="left" />

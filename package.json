@@ -15,6 +15,7 @@
     "app": "yarn workspace @dewo/app",
     "api": "yarn workspace @dewo/api",
     "lp": "yarn workspace @dewo/landing-page",
+    "ts-check": "tsc --watch --preserveWatchOutput",
     "deploy:api:demo": "./packages/scripts/deploy-api-demo.sh",
     "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
     "deploy:lp:demo": "./packages/scripts/deploy-lp-demo.sh",

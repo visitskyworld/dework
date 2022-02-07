@@ -41,7 +41,7 @@ function useOrganizationDiscordIntegration(
   );
 }
 
-export const ProjectDiscordIntegration: FC<Props> = ({
+export const ProjectSettingsDiscordIntegration: FC<Props> = ({
   projectId,
   organizationId,
 }) => {

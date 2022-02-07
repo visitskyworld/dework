@@ -25,7 +25,6 @@ import {
   DiscordIntegrationFormFields,
   FormValues as DiscordFormFields,
 } from "../../integrations/CreateDiscordIntegrationForm";
-import { ProjectSettingsFormFields } from "../settings/ProjectSettingsFormFields";
 import {
   GithubIntegrationFormFields,
   FormValues as GithubFormFields,
@@ -33,6 +32,9 @@ import {
 import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
+import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
+import { ProjectSettingsContributorSuggestions } from "../settings/ProjectSettingsContributorSuggestions";
+import { ProjectSettingsVisibility } from "../settings/ProjectSettingsVisibility";
 
 export interface FormValues
   extends CreateProjectInput,
@@ -219,7 +221,10 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </FormSection>
         )}
 
-        <ProjectSettingsFormFields toggle={advancedSection} />
+        <ProjectSettingsVisibility />
+        <AdvancedSectionCollapse toggle={advancedSection}>
+          <ProjectSettingsContributorSuggestions />
+        </AdvancedSectionCollapse>
         {!!organization && advancedSection.isOn && (
           <FormSection label="Discord Integration">
             {hasDiscordIntegration ? (

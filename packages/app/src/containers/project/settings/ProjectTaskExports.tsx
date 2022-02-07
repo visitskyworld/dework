@@ -36,7 +36,7 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
     [tasks]
   );
   return (
-    <FormSection label="Export Tasks" style={{ marginBottom: 16 }}>
+    <FormSection label="Export Tasks">
       <CSVLink
         filename={`${projectName}-tasks-list.csv`}
         data={csvData}

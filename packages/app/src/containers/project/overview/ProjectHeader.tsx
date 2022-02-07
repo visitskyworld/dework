@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   Input,
   PageHeader,
   Row,
@@ -12,7 +11,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
@@ -20,7 +19,6 @@ import { ProjectVisibility } from "@dewo/app/graphql/types";
 import { useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import Link from "next/link";
 
 interface Props {
   projectId: string;
@@ -120,18 +118,7 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
       }
       extra={
         !!project && (
-          <Space>
-            <Can I="update" a="Project">
-              <Link href={`${project?.permalink}/settings`}>
-                <a>
-                  <Button
-                    type="text"
-                    size="large"
-                    icon={<Icons.SettingOutlined />}
-                  />
-                </a>
-              </Link>
-            </Can>
+          <Space align="center" style={{ height: "100%" }}>
             <ProjectInviteButton projectId={projectId} />
             <FollowOrganizationButton
               organizationId={project?.organizationId}

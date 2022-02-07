@@ -24,7 +24,7 @@ export const projectRoleToString: Record<ProjectRole, string> = {
   [ProjectRole.CONTRIBUTOR]: "Contributor",
 };
 
-export const ProjectMemberList: FC<Props> = ({ projectId }) => {
+export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
   const { project } = useProject(projectId);
   const updateMember = useUpdateProjectMember();
   const removeMember = useRemoveProjectMember();
