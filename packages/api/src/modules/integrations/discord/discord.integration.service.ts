@@ -29,7 +29,6 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
-import { gifs } from "../../app/config";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskReward } from "@dewo/api/models/TaskReward";
@@ -49,6 +48,20 @@ export class DiscordIntegrationService {
     @InjectRepository(ProjectIntegration)
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>
   ) {}
+
+  private gifs = [
+    "https://media.giphy.com/media/bMJqfOtgVEyI2PLnaW/giphy.gif",
+    "https://media.giphy.com/media/rmi45iyhIPuRG/giphy.gif",
+    "https://media.giphy.com/media/DYH297XiCS2Ck/giphy.gif",
+    "https://media.giphy.com/media/cRe9VhznkdS4ACbDwF/giphy.gif",
+    "https://media.giphy.com/media/gEkOjfxIuFy9lryrT3/giphy.gif",
+    "https://media.giphy.com/media/S9i8jJxTvAKVHVMvvW/giphy.gif",
+    "https://media.giphy.com/media/azICCwJD3pi1pqimJg/giphy.gif",
+    "https://media.giphy.com/media/aZXRIHxo9saPe/giphy.gif",
+    "https://media.giphy.com/media/YRuFixSNWFVcXaxpmX/giphy.gif",
+    "https://media.giphy.com/media/l2Sq29cFXoF80ADlK/giphy.gif",
+    "https://media.giphy.com/media/UGM8GHOE7lD0LPkvQ4/giphy.gif",
+  ];
 
   async handle(
     event:
@@ -173,9 +186,15 @@ export class DiscordIntegrationService {
                 .map((t) => `<@${t.threepid}>`)
                 .join(" ")}`,
               url: await this.permalink.get(event.task),
-              image: {
-                url: gifs[Math.floor(Math.random() * gifs.length)],
-              },
+              image: !integration.config.features.includes(
+                DiscordProjectIntegrationFeature.DISABLE_GIFS_IN_TASK_DONE_MESSAGE
+              )
+                ? {
+                    url: this.gifs[
+                      Math.floor(Math.random() * this.gifs.length)
+                    ],
+                  }
+                : undefined,
             },
           ],
         });
