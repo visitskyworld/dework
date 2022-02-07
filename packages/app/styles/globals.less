@@ -790,3 +790,29 @@ textarea {
   border: solid 1px @red-6;
   border-radius: 4px;
 }
+
+.dewo-tag-select-option {
+  &.ant-select-item-option-selected {
+    background: unset;
+  }
+
+  &.ant-select-item-option-active {
+    background: @component-background;
+  }
+
+  .dewo-tag-select-option-button {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
+  &:hover {
+    .dewo-tag-select-option-button {
+      display: block;
+    }
+    .ant-select-item-option-state {
+      display: none;
+    }
+  }
+}
