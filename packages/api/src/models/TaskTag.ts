@@ -35,4 +35,8 @@ export class TaskTag extends Audit {
 
   @Column({ nullable: true })
   public externalId?: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public deletedAt?: Date;
 }

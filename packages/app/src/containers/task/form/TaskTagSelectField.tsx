@@ -76,6 +76,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
       value={value}
       disabled={disabled}
       loading={loading}
+      open
       optionFilterProp="label"
       optionLabelProp="label" // don't put children inside tagRender
       placeholder={disabled ? "No tags..." : "Select tags..."}
