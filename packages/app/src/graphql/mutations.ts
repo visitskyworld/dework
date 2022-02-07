@@ -327,6 +327,22 @@ export const createTaskTag = gql`
   ${Fragments.taskTag}
 `;
 
+export const updateTaskTag = gql`
+  mutation UpdateTaskTagMutation($input: UpdateTaskTagInput!) {
+    taskTag: updateTaskTag(input: $input) {
+      ...TaskTag
+      project {
+        id
+        taskTags {
+          ...TaskTag
+        }
+      }
+    }
+  }
+
+  ${Fragments.taskTag}
+`;
+
 export const createProjectIntegration = gql`
   mutation CreateProjectIntegrationMutation(
     $input: CreateProjectIntegrationInput!

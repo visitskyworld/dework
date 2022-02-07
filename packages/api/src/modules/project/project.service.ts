@@ -71,6 +71,21 @@ export class ProjectService {
     return this.taskTagRepo.findOne(created.id) as Promise<TaskTag>;
   }
 
+  public async updateTag(
+    partial: AtLeast<TaskTag, "id" | "projectId">
+  ): Promise<TaskTag> {
+    await this.taskTagRepo.update(
+      { id: partial.id, projectId: partial.projectId },
+      partial
+    );
+    const found = await this.taskTagRepo.findOne({
+      id: partial.id,
+      projectId: partial.projectId,
+    });
+    if (!found) throw new NotFoundException();
+    return found;
+  }
+
   public async createTokenGate(
     input: ProjectTokenGateInput
   ): Promise<ProjectTokenGate> {

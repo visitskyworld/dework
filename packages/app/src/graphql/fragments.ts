@@ -242,6 +242,7 @@ export const taskTag = gql`
     label
     color
     createdAt
+    projectId
   }
 `;
 

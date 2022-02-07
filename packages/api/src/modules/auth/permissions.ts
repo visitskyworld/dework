@@ -128,7 +128,7 @@ export const permissions: Permissions<
     can(Actions.delete, TaskApplication);
     can(Actions.manage, TaskSubmission);
 
-    can(Actions.create, TaskTag);
+    can(Actions.manage, TaskTag);
     can(Actions.manage, ProjectTokenGate);
 
     extend(Roles.authenticated);

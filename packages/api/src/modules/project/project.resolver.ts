@@ -39,6 +39,7 @@ import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { CreateProjectSectionInput } from "./dto/CreateProjectSectionInput";
 import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
+import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -191,6 +192,15 @@ export class ProjectResolver {
     @Args("input") input: CreateTaskTagInput
   ): Promise<TaskTag> {
     return this.projectService.createTag(input);
+  }
+
+  @Mutation(() => TaskTag)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, TaskTag)
+  public async updateTaskTag(
+    @Args("input") input: UpdateTaskTagInput
+  ): Promise<TaskTag> {
+    return this.projectService.updateTag(input);
   }
 
   @Mutation(() => ProjectTokenGate)

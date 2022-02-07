@@ -57,6 +57,9 @@ import {
   CreateTaskDiscordLinkMutationVariables,
   TaskWithOrganization,
   CreateTaskInput,
+  UpdateTaskTagInput,
+  UpdateTaskTagMutation,
+  UpdateTaskTagMutationVariables,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -409,6 +412,23 @@ export function useCreateTaskTag(): (
     CreateTaskTagMutation,
     CreateTaskTagMutationVariables
   >(Mutations.createTaskTag);
+  return useCallback(
+    async (input) => {
+      const res = await createTaskTag({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.taskTag;
+    },
+    [createTaskTag]
+  );
+}
+
+export function useUpdateTaskTag(): (
+  input: UpdateTaskTagInput
+) => Promise<TaskTag> {
+  const [createTaskTag] = useMutation<
+    UpdateTaskTagMutation,
+    UpdateTaskTagMutationVariables
+  >(Mutations.updateTaskTag);
   return useCallback(
     async (input) => {
       const res = await createTaskTag({ variables: { input } });
