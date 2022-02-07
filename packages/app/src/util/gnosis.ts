@@ -112,6 +112,7 @@ export function useProposeTransaction(): (
         throw new Error(`No safe service for ${network.slug}`);
       }
 
+      const { utils } = await import("ethers");
       const { default: SafeServiceClient } = await import(
         "@gnosis.pm/safe-service-client"
       );
@@ -120,7 +121,9 @@ export function useProposeTransaction(): (
       await switchChain(network);
       const senderAddress = await requestAddress();
       const safe = await requestSafe(safeAddress);
-      const safeTransaction = await safe.createTransaction(transactions);
+      const safeTransaction = await safe.createTransaction(
+        transactions.map((tx) => ({ ...tx, to: utils.getAddress(tx.to) }))
+      );
 
       const safeTxHash = await safe.getTransactionHash(safeTransaction);
       await safe.signTransaction(safeTransaction);
