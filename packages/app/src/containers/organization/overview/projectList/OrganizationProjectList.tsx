@@ -118,7 +118,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
       <DragDropContext onDragEnd={handleDragEnd}>
         {sections.filter(shouldRenderSection).map((section) => (
           <>
-            <Row align="middle">
+            <Row align="middle" style={{ marginBottom: 4 }}>
               <Typography.Title level={5} style={{ margin: 0 }}>
                 {section.name}
               </Typography.Title>
