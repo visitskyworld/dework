@@ -1,10 +1,13 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import _ from "lodash";
-import { Tag, Form, Select, ConfigProvider, Empty } from "antd";
+import * as Icons from "@ant-design/icons";
+import { Tag, Form, Select, ConfigProvider, Empty, Button } from "antd";
 import { useCreateTaskTag, useGenerateRandomTagColor } from "../hooks";
 import { useProjectTaskTags } from "../../project/hooks";
 import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { TaskTagOptionsButton } from "./TaskTagOptionsButton";
+import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
+import { TaskTag } from "@dewo/app/graphql/types";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   disabled: boolean;
@@ -27,6 +30,13 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   const tags = useProjectTaskTags(projectId);
   const canCreateTag = usePermission("create", "TaskTag");
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
+
+  const selectedTagIds = useMemo(
+    () => value?.filter((tagId) => tagById[tagId]) ?? [],
+    [value, tagById]
+  );
+
+  const [editingTag, setEditingTag] = useState<TaskTag>();
 
   const [loading, setLoading] = useState(false);
   const createTag = useCreateTaskTag();
@@ -71,39 +81,52 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   );
 
   return (
-    <Select
-      mode={canCreateTag ? "tags" : "multiple"}
-      value={value}
-      disabled={disabled}
-      loading={loading}
-      open
-      optionFilterProp="label"
-      optionLabelProp="label" // don't put children inside tagRender
-      placeholder={disabled ? "No tags..." : "Select tags..."}
-      onChange={handleChange}
-      tagRender={(props) => (
-        <Tag
-          {...props}
-          color={tagById[props.value as string]?.color}
-          children={props.label}
-        />
-      )}
-    >
-      {tags.map((tag) => (
-        <Select.Option
-          key={tag.id}
-          value={tag.id}
-          label={tag.label}
-          style={{ fontWeight: "unset" }}
-          className="dewo-tag-select-option"
-        >
-          <Tag color={tag.color}>{tag.label}</Tag>
-          <Can I="update" a="TaskTag">
-            <TaskTagOptionsButton tag={tag} />
-          </Can>
-        </Select.Option>
-      ))}
-    </Select>
+    <>
+      <Select
+        mode={canCreateTag ? "tags" : "multiple"}
+        value={selectedTagIds}
+        disabled={disabled}
+        loading={loading}
+        optionFilterProp="label"
+        optionLabelProp="label" // don't put children inside tagRender
+        placeholder={disabled ? "No tags..." : "Select tags..."}
+        onChange={handleChange}
+        tagRender={(props) => (
+          <Tag
+            {...props}
+            color={tagById[props.value as string]?.color}
+            children={props.label}
+          />
+        )}
+      >
+        {tags.map((tag) => (
+          <Select.Option
+            key={tag.id}
+            value={tag.id}
+            label={tag.label}
+            style={{ fontWeight: "unset" }}
+            className="dewo-tag-select-option"
+          >
+            <Tag color={tag.color}>{tag.label}</Tag>
+            <Can I="update" a="TaskTag">
+              <Button
+                type="text"
+                icon={<Icons.MoreOutlined />}
+                className="dewo-tag-select-option-button"
+                onClick={(e) => {
+                  setEditingTag(tag);
+                  stopPropagation(e);
+                }}
+              />
+            </Can>
+          </Select.Option>
+        ))}
+      </Select>
+      <TaskTagDetailsModal
+        tag={editingTag}
+        onClose={() => setEditingTag(undefined)}
+      />
+    </>
   );
 };
 

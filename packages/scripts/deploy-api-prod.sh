@@ -24,7 +24,8 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --region $REGION                  \
   --platform managed                \
   --timeout 30s                     \
-  --memory 2Gi                      \
+  --cpu 2                           \
+  --memory 1G                       \
   --allow-unauthenticated
 
 DEPLOYMENT_NAME="polling-runner"

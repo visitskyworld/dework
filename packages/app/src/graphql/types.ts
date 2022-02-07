@@ -1325,6 +1325,7 @@ export interface CreateTaskMutation_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -1484,6 +1485,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -1721,6 +1723,7 @@ export interface UpdateTaskMutation_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -1924,6 +1927,7 @@ export interface CreateTaskApplicationMutation_application_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2133,6 +2137,7 @@ export interface DeleteTaskApplicationMutation_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2336,6 +2341,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2545,6 +2551,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2830,6 +2837,7 @@ export interface CreateTaskTagMutation_taskTag_project_taskTags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2845,6 +2853,7 @@ export interface CreateTaskTagMutation_taskTag {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
   project: CreateTaskTagMutation_taskTag_project;
 }
@@ -2872,6 +2881,7 @@ export interface UpdateTaskTagMutation_taskTag_project_taskTags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -2887,6 +2897,7 @@ export interface UpdateTaskTagMutation_taskTag {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
   project: UpdateTaskTagMutation_taskTag_project;
 }
@@ -3658,6 +3669,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -3837,6 +3849,7 @@ export interface CreateTaskPaymentsMutation_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -4143,6 +4156,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -4991,6 +5005,7 @@ export interface UserTasksQuery_user_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -5792,6 +5807,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -5971,6 +5987,7 @@ export interface GetOrganizationTasksQuery_organization_projects_taskTags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6148,6 +6165,7 @@ export interface GetProjectTasksQuery_project_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6350,6 +6368,7 @@ export interface GetProjectTaskTagsQuery_project_taskTags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6389,6 +6408,7 @@ export interface GetTaskQuery_task_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6568,6 +6588,7 @@ export interface GetTaskQuery_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6720,6 +6741,7 @@ export interface GetTaskQuery_task_project_taskTags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -6883,6 +6905,7 @@ export interface GetTasksQuery_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -7109,6 +7132,7 @@ export interface GetTasksToPayQuery_tasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -7639,6 +7663,7 @@ export interface TaskCreatedSubscription_task_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -7818,6 +7843,7 @@ export interface TaskCreatedSubscription_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -8081,6 +8107,7 @@ export interface TaskUpdatedSubscription_task_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -8260,6 +8287,7 @@ export interface TaskUpdatedSubscription_task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -9246,6 +9274,7 @@ export interface TaskTag {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -9523,6 +9552,7 @@ export interface Task_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -9718,6 +9748,7 @@ export interface TaskWithOrganization_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -9936,6 +9967,7 @@ export interface TaskDetails_subtasks_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 
@@ -10115,6 +10147,7 @@ export interface TaskDetails_tags {
   label: string;
   color: string;
   createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
   projectId: string;
 }
 

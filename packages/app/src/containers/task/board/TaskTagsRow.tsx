@@ -95,11 +95,13 @@ export const TaskTagsRow: FC<Props> = ({
           )}
         </>
       )}
-      {task.tags.map((tag) => (
-        <Tag key={tag.id} color={tag.color}>
-          {tag.label}
-        </Tag>
-      ))}
+      {task.tags
+        .filter((tag) => !tag.deletedAt)
+        .map((tag) => (
+          <Tag key={tag.id} color={tag.color}>
+            {tag.label}
+          </Tag>
+        ))}
     </Row>
   );
 };

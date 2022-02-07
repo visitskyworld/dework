@@ -64,6 +64,13 @@ export class ProjectResolver {
     return pms.filter((p) => !p.deletedAt);
   }
 
+  @ResolveField(() => [TaskTag])
+  public async taskTags(@Parent() project: Project): Promise<TaskTag[]> {
+    // TODO(fant): query and filter by deletedAt directly
+    const tags = await project.taskTags;
+    return tags.filter((t) => !t.deletedAt);
+  }
+
   @ResolveField(() => [ProjectIntegration])
   public async integrations(
     @Parent() project: Project
