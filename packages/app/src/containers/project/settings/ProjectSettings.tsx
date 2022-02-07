@@ -10,6 +10,8 @@ import { ProjectSettingsPaymentMethod } from "./ProjectSettingsPaymentMethod";
 import { ProjectSettingsMembers } from "./ProjectSettingsMembers";
 import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { ProjectSettingsManage } from "./ProjectSettingsManage";
 
 interface Props {
   project: ProjectDetails;
@@ -21,6 +23,8 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
   const router = useRouter();
   const currentTab =
     (router.query.settingsTab as string | undefined) ?? "general";
+
+  const canRemoveProject = usePermission("delete", "Project");
 
   const navigateToSettingsTab = useCallback(
     (tab: string) => router.push(`${project!.permalink}/settings/${tab}`),
@@ -91,6 +95,16 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsTokenGating project={project} />
       </Tabs.TabPane>
+
+      {canRemoveProject ? (
+        <Tabs.TabPane
+          tab={<Tab icon={<Icons.SettingOutlined />} children="Manage" />}
+          key="manage"
+          style={tabStyle}
+        >
+          <ProjectSettingsManage project={project} />
+        </Tabs.TabPane>
+      ) : null}
     </Tabs>
   );
 };

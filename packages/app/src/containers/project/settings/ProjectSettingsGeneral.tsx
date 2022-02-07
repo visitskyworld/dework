@@ -1,11 +1,9 @@
-import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectDetails, UpdateProjectInput } from "@dewo/app/graphql/types";
 import { Typography, Divider, Space, Form } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useMemo } from "react";
 import { useUpdateProject } from "../hooks";
 import { ProjectSettingsContributorSuggestions } from "./ProjectSettingsContributorSuggestions";
-import { ProjectSettingsDangerZone } from "./ProjectSettingsDangerZone";
 import { ProjectSettingsVisibility } from "./ProjectSettingsVisibility";
 import { ProjectTaskExports } from "./ProjectTaskExports";
 
@@ -51,9 +49,6 @@ export const ProjectSettingsGeneral: FC<Props> = ({ project }) => {
         <ProjectSettingsVisibility />
         <ProjectSettingsContributorSuggestions />
         <ProjectTaskExports projectId={project.id} projectName={project.name} />
-        <Can I="delete" a="Project">
-          <ProjectSettingsDangerZone project={project} />
-        </Can>
       </Space>
     </Form>
   );
