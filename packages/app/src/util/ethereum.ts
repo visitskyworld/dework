@@ -76,7 +76,9 @@ export function useRequestAddress(): () => Promise<string> {
   const requestSigner = useRequestSigner();
   return useCallback(async () => {
     const signer = await requestSigner();
-    return signer.getAddress();
+    const address = await signer.getAddress();
+    const { utils } = await import("ethers");
+    return utils.getAddress(address);
   }, [requestSigner]);
 }
 
