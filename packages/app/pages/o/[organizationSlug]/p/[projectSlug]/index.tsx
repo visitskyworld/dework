@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Col, Layout, Tabs, Tooltip } from "antd";
+import { Col, Layout, Tabs, Tag } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
@@ -82,19 +82,19 @@ const Page: NextPage = () => {
             {canEditProject && !!project && (
               <Tabs.TabPane
                 tab={
-                  <Tooltip
-                    visible={hasDiscordIntegration ? undefined : false}
-                    defaultVisible={hasDiscordIntegration}
-                    title="Setup Discord"
-                    placement="right"
-                    overlayInnerStyle={{
-                      paddingTop: 4,
-                      paddingBottom: 4,
-                      minHeight: "unset",
-                    }}
-                  >
-                    <Tab icon={<Icons.SettingOutlined />} children="Settings" />
-                  </Tooltip>
+                  <Tab
+                    icon={<Icons.SettingOutlined />}
+                    children={
+                      <>
+                        Settings
+                        {!hasDiscordIntegration && (
+                          <Tag className="bg-primary" style={{ marginLeft: 8 }}>
+                            Setup Discord
+                          </Tag>
+                        )}
+                      </>
+                    }
+                  />
                 }
                 style={{ padding: 12 }}
                 key="settings"
