@@ -146,8 +146,9 @@ const TaskTagDetailsContent: FC<ContentProps> = ({ tag, onClose }) => {
           <TaskTagColorButton
             color={color}
             selected={color === tag.color}
-            onClick={() => () =>
-              updateTag({ id: tag.id, projectId: tag.projectId, color })}
+            onClick={() =>
+              updateTag({ id: tag.id, projectId: tag.projectId, color })
+            }
           />
         ))}
       </Row>
