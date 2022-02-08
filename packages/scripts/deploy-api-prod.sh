@@ -8,15 +8,16 @@ PROJECT_ID="dework-prod"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/api"
 REGION="us-east1"
 APP_YAML_PATH="packages/api/app.prod.yaml"
+APP_ENV_YAML_PATH="packages/api/app.prod.env.yaml"
 
 docker build --platform linux/amd64 -t $IMAGE_NAME -f packages/api/Dockerfile .
 docker push $IMAGE_NAME
 
 gcloud config set project $PROJECT_ID
-gcloud app deploy --image-url=$IMAGE_NAME --appyaml=$APP_YAML_PATH --quiet
+#gcloud app deploy --image-url=$IMAGE_NAME --appyaml=$APP_YAML_PATH --quiet
 
 DEPLOYMENT_NAME="api"
-ENV_VARS=$(node packages/scripts/get-polling-runner-env.js packages/api/app.prod.env.yaml)
+ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH)
 
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \
@@ -29,7 +30,7 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --allow-unauthenticated
 
 DEPLOYMENT_NAME="polling-runner"
-ENV_VARS=$(node packages/scripts/get-polling-runner-env.js packages/api/app.prod.env.yaml exclude-env)
+ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH exclude-env)
 
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \
