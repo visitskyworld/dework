@@ -59,10 +59,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
             canUpdateTask ? (
               <Avatar.Group maxCount={3} size={22}>
                 {task.applications.map((application) => (
-                  <Link
-                    href={`/profile/${application.user.id}`}
-                    key={application.id}
-                  >
+                  <Link href={application.user.permalink} key={application.id}>
                     <a>
                       <UserAvatar user={application.user} />
                     </a>
@@ -73,7 +70,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           ) : (
             <Avatar.Group maxCount={3} size={22}>
               {task.assignees.map((user) => (
-                <Link href={`/profile/${user.id}`} key={user.id}>
+                <Link href={user.permalink} key={user.id}>
                   <a>
                     <UserAvatar user={user} />
                   </a>

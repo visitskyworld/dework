@@ -81,11 +81,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         <Tooltip title={submission.user.username}>
-          <a
-            href={`/profile/${submission.user.id}`}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={submission.user.permalink} target="_blank" rel="noreferrer">
             <List.Item.Meta
               avatar={
                 <UserAvatar

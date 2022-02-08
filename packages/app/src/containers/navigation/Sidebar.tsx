@@ -85,7 +85,7 @@ export const Sidebar: FC = () => {
         }}
       >
         <SidebarNavLink
-          href={`/profile/${user.id}`}
+          href={user.permalink}
           className="dewo-sidebar-item"
           clickable={false}
         >

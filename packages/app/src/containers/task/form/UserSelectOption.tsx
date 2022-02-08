@@ -12,7 +12,7 @@ interface Props {
 
 export const UserSelectOption: FC<Props> = ({ user, style }) => (
   <span style={style}>
-    <Link href={`/profile/${user.id}`}>
+    <Link href={user.permalink}>
       <a target="_blank" onClick={stopPropagation}>
         <UserAvatar
           user={user}

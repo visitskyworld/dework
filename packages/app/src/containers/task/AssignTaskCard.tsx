@@ -84,7 +84,7 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
               <Space direction="vertical" style={{ width: "100%" }}>
                 <Tooltip title={application.user.username}>
                   <a
-                    href={`/profile/${application.user.id}`}
+                    href={application.user.permalink}
                     target="_blank"
                     rel="noreferrer"
                   >

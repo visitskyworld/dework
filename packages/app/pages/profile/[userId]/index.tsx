@@ -19,7 +19,7 @@ const Page: NextPage = () => {
           breadcrumbName: "Home",
         },
         {
-          path: `/profile/${userId}`,
+          path: user?.permalink,
           breadcrumbName: user?.username ?? "Profile",
         },
       ],

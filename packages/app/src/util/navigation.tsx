@@ -5,16 +5,13 @@ import { uuidToBase62 } from "./uuid";
 
 export function useNavigateToProfile(): (user: User) => void {
   const router = useRouter();
-  return useCallback(
-    (user: User) => router.push(`/profile/${user.id}`),
-    [router]
-  );
+  return useCallback((user: User) => router.push(user.permalink), [router]);
 }
 
 export function useNavigateToUserTaskBoard(): (user: User) => void {
   const router = useRouter();
   return useCallback(
-    (user: User) => router.push(`/profile/${user.id}/board`),
+    (user: User) => router.push(`${user.permalink}/board`),
     [router]
   );
 }
