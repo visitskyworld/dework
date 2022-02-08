@@ -2,7 +2,7 @@ import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Avatar, Col, Divider, Layout, Tooltip } from "antd";
+import { Avatar, Button, Col, Divider, Layout, Tooltip } from "antd";
 import { HeaderProfileAvatar } from "./header/HeaderProfileAvatar";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
@@ -16,6 +16,7 @@ import {
 import { useUpdateOrganizationMember } from "../organization/hooks";
 import { getSortKeyBetween } from "../task/board/util";
 import _ from "lodash";
+import Link from "next/link";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
@@ -63,6 +64,8 @@ export const Sidebar: FC = () => {
     [organizations, updateMember, user]
   );
 
+  const isProfileSetup = !!user?.bio || !!user?.details.length;
+
   if (!user) return null;
   if (typeof window === "undefined") return null;
   return (
@@ -91,6 +94,21 @@ export const Sidebar: FC = () => {
         >
           <HeaderProfileAvatar />
         </SidebarNavLink>
+
+        {!isProfileSetup && (
+          <Link href={user.permalink}>
+            <a>
+              <Button
+                size="small"
+                type="primary"
+                className="ant-typography-caption"
+                style={{ paddingLeft: 2, paddingRight: 2, border: "none" }}
+              >
+                Setup profile
+              </Button>
+            </a>
+          </Link>
+        )}
 
         <Divider style={{ margin: "12px 0" }} />
 
