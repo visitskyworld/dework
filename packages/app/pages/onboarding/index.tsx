@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Col,
+  Divider,
   Layout,
   Modal,
   Row,
@@ -18,6 +19,7 @@ import { UserOnboardingType } from "@dewo/app/graphql/types";
 import { useUpdateUserOnboarding } from "@dewo/app/containers/user/hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { OrganizationCreateForm } from "@dewo/app/containers/organization/create/OrganizationCreateForm";
+import YouTube from "react-youtube";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -42,7 +44,18 @@ const Page: NextPage = () => {
       <Layout.Content style={{ display: "grid", placeItems: "center" }}>
         <div className="w-full max-w-xs" style={{ textAlign: "center" }}>
           <Typography.Title level={3}>👋 Welcome to Dework</Typography.Title>
-          <Typography.Paragraph>What do you want to do?</Typography.Paragraph>
+          <Typography.Paragraph style={{ fontSize: "130%" }}>
+            Watch this short demo video to orient yourself:
+          </Typography.Paragraph>
+          <YouTube
+            videoId="FT74b0dDYAU"
+            opts={{ width: "100%", height: "280" }}
+          />
+
+          <Divider />
+          <Typography.Paragraph style={{ fontSize: "130%" }}>
+            Next, set up your account below:
+          </Typography.Paragraph>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12}>
               <Card
