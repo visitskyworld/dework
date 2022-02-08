@@ -16,3 +16,8 @@ export const siteTitle = "Dework";
 export const siteDescription =
   "The task manager for DAOs and decentralized work";
 export const siteURL = "https://dework.xyz";
+
+export const deworkSocialLinks = {
+  twitter: "https://twitter.com/deworkxyz",
+  discord: "https://discord.gg/rPEsPzShd7",
+};

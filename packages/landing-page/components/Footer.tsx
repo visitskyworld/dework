@@ -2,6 +2,7 @@ import * as Icons from "@ant-design/icons";
 import { Layout, Space, Typography, Avatar } from "antd";
 import React, { FC } from "react";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 export const LandingPageFooter: FC = () => {
   return (
@@ -10,20 +11,12 @@ export const LandingPageFooter: FC = () => {
         Have questions or feedback? Reach out on Twitter or Discord
       </Typography.Paragraph>
       <Space style={{ display: "flex", justifyContent: "center" }}>
-        <a
-          href="https://twitter.com/deworkxyz"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={deworkSocialLinks.twitter} target="_blank" rel="noreferrer">
           <Avatar>
             <Icons.TwitterOutlined />
           </Avatar>
         </a>
-        <a
-          href="https://discord.gg/rPEsPzShd7"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={deworkSocialLinks.discord} target="_blank" rel="noreferrer">
           <Avatar>
             <DiscordIcon />
           </Avatar>
