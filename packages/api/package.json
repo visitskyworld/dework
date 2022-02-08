@@ -13,6 +13,7 @@
     "start": "node build/main.js"
   },
   "dependencies": {
+    "@amplitude/node": "^1.9.2",
     "@ant-design/colors": "^6.0.0",
     "@casl/ability": "^5.4.3",
     "@discordjs/rest": "^0.1.0-canary.0",

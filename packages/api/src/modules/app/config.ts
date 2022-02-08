@@ -29,6 +29,7 @@ export interface ConfigType {
   NOTION_OAUTH_CLIENT_SECRET: string;
 
   TRELLO_API_KEY: string;
+  AMPLITUDE_API_KEY: string | undefined;
 
   GOOGLE_CLOUD_CREDENTIALS: string;
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
@@ -66,6 +67,7 @@ export const configSchema = Joi.object<ConfigType>({
   NOTION_OAUTH_CLIENT_SECRET: Joi.string().required(),
 
   TRELLO_API_KEY: Joi.string().required(),
+  AMPLITUDE_API_KEY: Joi.string(),
 
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
