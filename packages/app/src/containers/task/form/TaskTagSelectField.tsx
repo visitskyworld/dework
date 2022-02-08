@@ -6,7 +6,6 @@ import { useCreateTaskTag, useGenerateRandomTagColor } from "../hooks";
 import { useProjectTaskTags } from "../../project/hooks";
 import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
-import { TaskTag } from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
@@ -36,7 +35,11 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
     [value, tagById]
   );
 
-  const [editingTag, setEditingTag] = useState<TaskTag>();
+  const [editingTagId, setEditingTagId] = useState<string>();
+  const editingTag = useMemo(
+    () => (!!editingTagId ? tagById[editingTagId] : undefined),
+    [editingTagId, tagById]
+  );
 
   const [loading, setLoading] = useState(false);
   const createTag = useCreateTaskTag();
@@ -114,7 +117,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
                 icon={<Icons.MoreOutlined />}
                 className="dewo-tag-select-option-button"
                 onClick={(e) => {
-                  setEditingTag(tag);
+                  setEditingTagId(tag.id);
                   stopPropagation(e);
                 }}
               />
@@ -124,7 +127,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
       </Select>
       <TaskTagDetailsModal
         tag={editingTag}
-        onClose={() => setEditingTag(undefined)}
+        onClose={() => setEditingTagId(undefined)}
       />
     </>
   );

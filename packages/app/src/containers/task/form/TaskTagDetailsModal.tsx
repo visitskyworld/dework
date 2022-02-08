@@ -23,6 +23,38 @@ interface Props {
   onClose(): void;
 }
 
+interface ColorButtonProps {
+  color: string;
+  selected: boolean;
+  onClick(): void;
+}
+
+const TaskTagColorButton: FC<ColorButtonProps> = ({
+  color,
+  selected,
+  onClick,
+}) => (
+  <Col key={color}>
+    <Button
+      type="text"
+      style={{
+        width: 26,
+        height: 26,
+        padding: 0,
+        display: "grid",
+        placeItems: "center",
+      }}
+      onClick={onClick}
+    >
+      <Tag
+        color={color}
+        style={{ width: 20, height: 20, padding: 2, margin: 0 }}
+        icon={selected && <Icons.CheckOutlined style={{ display: "block" }} />}
+      />
+    </Button>
+  </Col>
+);
+
 interface ContentProps {
   tag: TaskTag;
   onClose(): void;
@@ -111,36 +143,12 @@ const TaskTagDetailsContent: FC<ContentProps> = ({ tag, onClose }) => {
           "geekblue",
           "purple",
         ].map((color) => (
-          <Col key={color}>
-            <Button
-              type="text"
-              style={{
-                width: 26,
-                height: 26,
-                padding: 0,
-                display: "grid",
-                placeItems: "center",
-              }}
-              onClick={() =>
-                updateTag({ id: tag.id, projectId: tag.projectId, color })
-              }
-            >
-              <Tag
-                color={color}
-                style={{
-                  width: 20,
-                  height: 20,
-                  padding: 2,
-                  margin: 0,
-                }}
-                icon={
-                  color === tag.color && (
-                    <Icons.CheckOutlined style={{ display: "block" }} />
-                  )
-                }
-              />
-            </Button>
-          </Col>
+          <TaskTagColorButton
+            color={color}
+            selected={color === tag.color}
+            onClick={() => () =>
+              updateTag({ id: tag.id, projectId: tag.projectId, color })}
+          />
         ))}
       </Row>
     </>
@@ -153,8 +161,6 @@ export const TaskTagDetailsModal: FC<Props> = ({ tag, onClose }) => (
       destroyOnClose
       visible={!!tag}
       footer={null}
-      // wrapClassName="z-index-2000"
-      // maskStyle={{ zIndex: 2000 }}
       width={172}
       bodyStyle={{ padding: 0 }}
       closable={false}
