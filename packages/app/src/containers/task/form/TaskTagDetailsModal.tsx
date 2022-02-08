@@ -87,16 +87,23 @@ const TaskTagDetailsContent: FC<ContentProps> = ({ tag, onClose }) => {
 
   return (
     <>
-      <Row style={{ padding: 8 }}>
+      <Input.Group compact style={{ display: "flex", padding: 8 }}>
         <Input
           size="small"
           value={label}
           autoFocus
-          suffix={updatingName && <Icons.LoadingOutlined />}
           onChange={(e) => setLabel(e.target.value)}
           onPressEnter={updateName}
         />
-      </Row>
+        <Button
+          type="primary"
+          loading={updatingName}
+          icon={<Icons.CheckOutlined />}
+          style={{ height: "unset" }}
+          onClick={updateName}
+        />
+      </Input.Group>
+
       <Popconfirm
         title={
           <Typography.Text>
