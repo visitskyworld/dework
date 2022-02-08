@@ -358,7 +358,7 @@ export class DiscordIntegrationService {
   }
 
   private async postDone(channel: Discord.TextBasedChannels, task: Task) {
-    await this.postTaskCard(channel, task, "☑️ Task completed!");
+    await this.postTaskCard(channel, task, "Task completed!");
     if (channel.isThread()) {
       await channel.setArchived(true);
     }
