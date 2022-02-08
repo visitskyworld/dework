@@ -14,6 +14,7 @@ import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
 import { PaymentModule } from "../payment/payment.module";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
+import { PermalinkModule } from "../permalink/permalink.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
     CaslModule.forFeature({ permissions }),
     ThreepidModule,
     PaymentModule,
+    PermalinkModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

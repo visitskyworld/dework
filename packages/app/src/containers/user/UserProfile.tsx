@@ -1,13 +1,15 @@
 import React, { FC, useMemo } from "react";
-import { Card, Col, Row, Space, Tag, Typography } from "antd";
+import { Button, Card, Col, Row, Space, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import Link from "next/link";
-import { TaskCard } from "../task/board/TaskCard";
 import { useUser, useUserTasks } from "./hooks";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { UserProfileForm } from "./UserProfileForm";
+import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { TaskCard } from "../task/board/TaskCard";
 
 interface Props {
   userId: string;
@@ -15,9 +17,10 @@ interface Props {
 
 export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
+  const isMe = useAuthContext().user?.id === userId;
   const tasks = useUserTasks(userId);
   const completedTasks = useMemo(
-    () => tasks?.filter((t) => t.status === TaskStatus.DONE) ?? [],
+    () => tasks?.filter((t) => t.status === TaskStatus.DONE),
     [tasks]
   );
 
@@ -45,10 +48,6 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 <Icons.DollarCircleOutlined />
                 <Typography.Text>0 earned</Typography.Text>
               </Tag>
-              {/* <Tag style={{ backgroundColor: Colors.magenta.primary }}>
-                    <Icons.CheckCircleOutlined />
-                    <Typography.Text>3 tasks completed</Typography.Text>
-                  </Tag> */}
             </Row>
 
             {!!user.organizations.length && (
@@ -61,10 +60,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 </Typography.Text>
                 <Row gutter={[8, 8]} style={{ margin: 0 }}>
                   {user.organizations.map((organization) => (
-                    <Link
-                      key={organization.id}
-                      href={`/o/${organization.slug}`}
-                    >
+                    <Link key={organization.id} href={organization.permalink}>
                       <a>
                         <Tag>{organization.name}</Tag>
                       </a>
@@ -77,8 +73,25 @@ export const UserProfile: FC<Props> = ({ userId }) => {
         </Col>
         <Col xs={24} md={16}>
           <Card size="small" title="Completed tasks">
+            {!!completedTasks && !completedTasks.length && (
+              <TaskBoardColumnEmpty
+                icon={<Icons.CoffeeOutlined />}
+                title={
+                  <>
+                    <Typography.Paragraph>
+                      No tasks completed yet!
+                    </Typography.Paragraph>
+                    {isMe && (
+                      <Button href="/" type="primary">
+                        Explore open bounties
+                      </Button>
+                    )}
+                  </>
+                }
+              />
+            )}
             <Space direction="vertical" style={{ width: "100%" }}>
-              {completedTasks.map((task) => (
+              {completedTasks?.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}

@@ -26,14 +26,21 @@ import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
+import { PermalinkService } from "../permalink/permalink.service";
 
 @Resolver(() => User)
 @Injectable()
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly abilityFactory: AbilityFactory
+    private readonly abilityFactory: AbilityFactory,
+    private readonly permalinkService: PermalinkService
   ) {}
+
+  @ResolveField(() => String)
+  public permalink(@Parent() user: User): Promise<string> {
+    return this.permalinkService.get(user);
+  }
 
   @ResolveField(() => [PaymentMethod])
   public async paymentMethods(@Parent() user: User): Promise<PaymentMethod[]> {

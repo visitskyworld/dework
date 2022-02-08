@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from "react";
 import { Empty, Avatar } from "antd";
 
 export interface TaskBoardColumnEmptyProps {
-  title: string;
+  title: ReactNode;
   icon: ReactNode;
 }
 

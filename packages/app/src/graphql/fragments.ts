@@ -13,6 +13,7 @@ export const user = gql`
     id
     username
     imageUrl
+    permalink
   }
 `;
 

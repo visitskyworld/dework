@@ -20,10 +20,12 @@ import { useUpdateUserOnboarding } from "@dewo/app/containers/user/hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { OrganizationCreateForm } from "@dewo/app/containers/organization/create/OrganizationCreateForm";
 import YouTube from "react-youtube";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const flow = router.query.flow as "dao" | "import" | undefined;
+  const { user } = useAuthContext();
 
   const createOrganizationModal = useToggle(["dao", "import"].includes(flow!));
 
@@ -34,10 +36,14 @@ const Page: NextPage = () => {
       type: UserOnboardingType.DAO_CORE_TEAM,
     });
   }, [updateOnboarding, createOrganizationModal]);
-  const handleContributor = useCallback(async () => {
+  const handleContributorBounties = useCallback(async () => {
     router.replace("/");
     await updateOnboarding({ type: UserOnboardingType.CONTRIBUTOR });
   }, [updateOnboarding, router]);
+  const handleContributorProfile = useCallback(async () => {
+    router.replace(user!.permalink);
+    await updateOnboarding({ type: UserOnboardingType.CONTRIBUTOR });
+  }, [updateOnboarding, router, user]);
   return (
     <Layout>
       <Sidebar />
@@ -57,7 +63,7 @@ const Page: NextPage = () => {
             Next, set up your account below:
           </Typography.Paragraph>
           <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={8}>
               <Card
                 className="hover:component-highlight hover:cursor-pointer"
                 onClick={handleDaoCoreTeam}
@@ -70,14 +76,28 @@ const Page: NextPage = () => {
                 </Space>
               </Card>
             </Col>
-            <Col xs={24} sm={12}>
+            <Col xs={24} sm={8}>
               <Card
                 style={{ flex: 1 }}
                 className="hover:component-highlight hover:cursor-pointer"
-                onClick={handleContributor}
+                onClick={handleContributorProfile}
               >
                 <Space direction="vertical">
-                  <Avatar icon={<Icons.UserAddOutlined />} size="large" />
+                  <Avatar icon={<Icons.SmileOutlined />} size="large" />
+                  <Typography.Paragraph strong style={{ margin: 0 }}>
+                    Setup your profile
+                  </Typography.Paragraph>
+                </Space>
+              </Card>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Card
+                style={{ flex: 1 }}
+                className="hover:component-highlight hover:cursor-pointer"
+                onClick={handleContributorBounties}
+              >
+                <Space direction="vertical">
+                  <Avatar icon={<Icons.TrophyOutlined />} size="large" />
                   <Typography.Paragraph strong style={{ margin: 0 }}>
                     Explore tasks and bounties
                   </Typography.Paragraph>

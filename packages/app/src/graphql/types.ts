@@ -12,6 +12,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_me
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_member {
@@ -91,6 +92,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: AuthWithThreepidMutation_authWithThreepid_user_organizations[];
   details: AuthWithThreepidMutation_authWithThreepid_user_details[];
@@ -171,6 +173,7 @@ export interface UpdateUserMutation_user_organizations_member_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateUserMutation_user_organizations_member {
@@ -250,6 +253,7 @@ export interface UpdateUserMutation_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: UpdateUserMutation_user_organizations[];
   details: UpdateUserMutation_user_details[];
@@ -347,6 +351,7 @@ export interface UpdateOrganizationMutation_organization_projects_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateOrganizationMutation_organization_projects_members {
@@ -464,6 +469,7 @@ export interface UpdateOrganizationMutation_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateOrganizationMutation_organization_members {
@@ -619,6 +625,7 @@ export interface UpdateOrganizationMemberMutation_member_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateOrganizationMemberMutation_member {
@@ -653,6 +660,7 @@ export interface RemoveOrganizationMemberMutation_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface RemoveOrganizationMemberMutation_organization_members {
@@ -693,6 +701,7 @@ export interface UpdateProjectMemberMutation_member_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateProjectMemberMutation_member {
@@ -726,6 +735,7 @@ export interface RemoveProjectMemberMutation_project_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface RemoveProjectMemberMutation_project_members {
@@ -770,6 +780,7 @@ export interface CreateProjectMutation_project_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectMutation_project_members {
@@ -863,6 +874,7 @@ export interface CreateProjectMutation_project_organization_projects_members_use
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectMutation_project_organization_projects_members {
@@ -980,6 +992,7 @@ export interface CreateProjectMutation_project_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectMutation_project_organization_members {
@@ -1114,6 +1127,7 @@ export interface UpdateProjectMutation_project_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateProjectMutation_project_members {
@@ -1334,6 +1348,7 @@ export interface CreateTaskMutation_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_reward_token {
@@ -1416,6 +1431,7 @@ export interface CreateTaskMutation_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_applications {
@@ -1433,6 +1449,7 @@ export interface CreateTaskMutation_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_submissions_approver {
@@ -1440,6 +1457,7 @@ export interface CreateTaskMutation_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_submissions {
@@ -1494,6 +1512,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
@@ -1576,6 +1595,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_applications {
@@ -1593,6 +1613,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_submissions_approver {
@@ -1600,6 +1621,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_submissions_approve
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_submissions {
@@ -1732,6 +1754,7 @@ export interface UpdateTaskMutation_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskMutation_task_reward_token {
@@ -1814,6 +1837,7 @@ export interface UpdateTaskMutation_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskMutation_task_applications {
@@ -1831,6 +1855,7 @@ export interface UpdateTaskMutation_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskMutation_task_submissions_approver {
@@ -1838,6 +1863,7 @@ export interface UpdateTaskMutation_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskMutation_task_submissions {
@@ -1936,6 +1962,7 @@ export interface CreateTaskApplicationMutation_application_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_reward_token {
@@ -2018,6 +2045,7 @@ export interface CreateTaskApplicationMutation_application_task_applications_use
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_applications {
@@ -2035,6 +2063,7 @@ export interface CreateTaskApplicationMutation_application_task_submissions_user
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_submissions_approver {
@@ -2042,6 +2071,7 @@ export interface CreateTaskApplicationMutation_application_task_submissions_appr
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_submissions {
@@ -2146,6 +2176,7 @@ export interface DeleteTaskApplicationMutation_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_reward_token {
@@ -2228,6 +2259,7 @@ export interface DeleteTaskApplicationMutation_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_applications {
@@ -2245,6 +2277,7 @@ export interface DeleteTaskApplicationMutation_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_submissions_approver {
@@ -2252,6 +2285,7 @@ export interface DeleteTaskApplicationMutation_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_submissions {
@@ -2350,6 +2384,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_assignee
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token {
@@ -2432,6 +2467,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applicat
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applications {
@@ -2449,6 +2485,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissi
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver {
@@ -2456,6 +2493,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissi
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions {
@@ -2560,6 +2598,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignee
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token {
@@ -2642,6 +2681,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applicat
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications {
@@ -2659,6 +2699,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissi
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver {
@@ -2666,6 +2707,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissi
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions {
@@ -2969,6 +3011,7 @@ export interface SetUserDetailMutation_organization {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   details: SetUserDetailMutation_organization_details[];
 }
 
@@ -3194,6 +3237,7 @@ export interface AcceptInviteMutation_invite_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface AcceptInviteMutation_invite_organization_members {
@@ -3217,6 +3261,7 @@ export interface AcceptInviteMutation_invite_project_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface AcceptInviteMutation_invite_project_members {
@@ -3233,6 +3278,7 @@ export interface AcceptInviteMutation_invite_project_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface AcceptInviteMutation_invite_project_organization_members {
@@ -3678,6 +3724,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
@@ -3760,6 +3807,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_applications {
@@ -3777,6 +3825,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions_approver {
@@ -3784,6 +3833,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions_approver 
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_submissions {
@@ -3858,6 +3908,7 @@ export interface CreateTaskPaymentsMutation_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_reward_token {
@@ -3940,6 +3991,7 @@ export interface CreateTaskPaymentsMutation_tasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_applications {
@@ -3957,6 +4009,7 @@ export interface CreateTaskPaymentsMutation_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_submissions_approver {
@@ -3964,6 +4017,7 @@ export interface CreateTaskPaymentsMutation_tasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_submissions {
@@ -4019,6 +4073,7 @@ export interface CreateTaskPaymentsMutation_tasks_owner {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_creator {
@@ -4026,6 +4081,7 @@ export interface CreateTaskPaymentsMutation_tasks_creator {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_githubPullRequests {
@@ -4165,6 +4221,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token {
@@ -4247,6 +4304,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications_
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications {
@@ -4264,6 +4322,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions_u
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions_approver {
@@ -4271,6 +4330,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions_a
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_submissions {
@@ -4398,6 +4458,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects_members_
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projects_members {
@@ -4515,6 +4576,7 @@ export interface CreateProjectsFromNotionMutation_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_members {
@@ -4626,6 +4688,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects_members_
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projects_members {
@@ -4743,6 +4806,7 @@ export interface CreateProjectsFromTrelloMutation_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_members {
@@ -4849,6 +4913,7 @@ export interface MeQuery_me_organizations_member_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface MeQuery_me_organizations_member {
@@ -4928,6 +4993,7 @@ export interface MeQuery_me {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: MeQuery_me_organizations[];
   details: MeQuery_me_details[];
@@ -4970,6 +5036,7 @@ export interface UserProfileQuery_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: UserProfileQuery_user_organizations[];
   details: UserProfileQuery_user_details[];
@@ -5014,6 +5081,7 @@ export interface UserTasksQuery_user_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UserTasksQuery_user_tasks_reward_token {
@@ -5096,6 +5164,7 @@ export interface UserTasksQuery_user_tasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UserTasksQuery_user_tasks_applications {
@@ -5113,6 +5182,7 @@ export interface UserTasksQuery_user_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UserTasksQuery_user_tasks_submissions_approver {
@@ -5120,6 +5190,7 @@ export interface UserTasksQuery_user_tasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UserTasksQuery_user_tasks_submissions {
@@ -5308,6 +5379,7 @@ export interface GetOrganizationQuery_organization_projects_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationQuery_organization_projects_members {
@@ -5425,6 +5497,7 @@ export interface GetOrganizationQuery_organization_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationQuery_organization_members {
@@ -5536,6 +5609,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_me
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_projects_members {
@@ -5653,6 +5727,7 @@ export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members_use
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetFeaturedOrganizationsQuery_featuredOrganizations_members {
@@ -5816,6 +5891,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
@@ -5898,6 +5974,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_applications_user 
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_applications {
@@ -5915,6 +5992,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_submissions_approver {
@@ -5922,6 +6000,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_submissions_approv
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_submissions {
@@ -6030,6 +6109,7 @@ export interface GetProjectQuery_project_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetProjectQuery_project_members {
@@ -6174,6 +6254,7 @@ export interface GetProjectTasksQuery_project_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_reward_token {
@@ -6256,6 +6337,7 @@ export interface GetProjectTasksQuery_project_tasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_applications {
@@ -6273,6 +6355,7 @@ export interface GetProjectTasksQuery_project_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_submissions_approver {
@@ -6280,6 +6363,7 @@ export interface GetProjectTasksQuery_project_tasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_submissions {
@@ -6417,6 +6501,7 @@ export interface GetTaskQuery_task_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_subtasks_reward_token {
@@ -6499,6 +6584,7 @@ export interface GetTaskQuery_task_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_subtasks_applications {
@@ -6516,6 +6602,7 @@ export interface GetTaskQuery_task_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_subtasks_submissions_approver {
@@ -6523,6 +6610,7 @@ export interface GetTaskQuery_task_subtasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_subtasks_submissions {
@@ -6597,6 +6685,7 @@ export interface GetTaskQuery_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_reward_token {
@@ -6679,6 +6768,7 @@ export interface GetTaskQuery_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_applications {
@@ -6696,6 +6786,7 @@ export interface GetTaskQuery_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_submissions_approver {
@@ -6703,6 +6794,7 @@ export interface GetTaskQuery_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_submissions {
@@ -6769,6 +6861,7 @@ export interface GetTaskQuery_task_owner {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_creator {
@@ -6776,6 +6869,7 @@ export interface GetTaskQuery_task_creator {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskQuery_task_githubPullRequests {
@@ -6859,6 +6953,7 @@ export interface GetTaskReactionUsersQuery_task_reactions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTaskReactionUsersQuery_task_reactions {
@@ -6914,6 +7009,7 @@ export interface GetTasksQuery_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksQuery_tasks_reward_token {
@@ -6996,6 +7092,7 @@ export interface GetTasksQuery_tasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksQuery_tasks_applications {
@@ -7013,6 +7110,7 @@ export interface GetTasksQuery_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksQuery_tasks_submissions_approver {
@@ -7020,6 +7118,7 @@ export interface GetTasksQuery_tasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksQuery_tasks_submissions {
@@ -7174,6 +7273,7 @@ export interface GetTasksToPayQuery_tasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   paymentMethods: GetTasksToPayQuery_tasks_assignees_paymentMethods[];
 }
 
@@ -7257,6 +7357,7 @@ export interface GetTasksToPayQuery_tasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksToPayQuery_tasks_applications {
@@ -7274,6 +7375,7 @@ export interface GetTasksToPayQuery_tasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksToPayQuery_tasks_submissions_approver {
@@ -7281,6 +7383,7 @@ export interface GetTasksToPayQuery_tasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksToPayQuery_tasks_submissions {
@@ -7432,6 +7535,7 @@ export interface GetInviteQuery_invite_inviter {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetInviteQuery_invite_organization {
@@ -7672,6 +7776,7 @@ export interface TaskCreatedSubscription_task_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_reward_token {
@@ -7754,6 +7859,7 @@ export interface TaskCreatedSubscription_task_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_applications {
@@ -7771,6 +7877,7 @@ export interface TaskCreatedSubscription_task_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_submissions_approver {
@@ -7778,6 +7885,7 @@ export interface TaskCreatedSubscription_task_subtasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_submissions {
@@ -7852,6 +7960,7 @@ export interface TaskCreatedSubscription_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_reward_token {
@@ -7934,6 +8043,7 @@ export interface TaskCreatedSubscription_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_applications {
@@ -7951,6 +8061,7 @@ export interface TaskCreatedSubscription_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_submissions_approver {
@@ -7958,6 +8069,7 @@ export interface TaskCreatedSubscription_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_submissions {
@@ -8013,6 +8125,7 @@ export interface TaskCreatedSubscription_task_owner {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_creator {
@@ -8020,6 +8133,7 @@ export interface TaskCreatedSubscription_task_creator {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskCreatedSubscription_task_githubPullRequests {
@@ -8116,6 +8230,7 @@ export interface TaskUpdatedSubscription_task_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_reward_token {
@@ -8198,6 +8313,7 @@ export interface TaskUpdatedSubscription_task_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_applications {
@@ -8215,6 +8331,7 @@ export interface TaskUpdatedSubscription_task_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_submissions_approver {
@@ -8222,6 +8339,7 @@ export interface TaskUpdatedSubscription_task_subtasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_submissions {
@@ -8296,6 +8414,7 @@ export interface TaskUpdatedSubscription_task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_reward_token {
@@ -8378,6 +8497,7 @@ export interface TaskUpdatedSubscription_task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_applications {
@@ -8395,6 +8515,7 @@ export interface TaskUpdatedSubscription_task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_submissions_approver {
@@ -8402,6 +8523,7 @@ export interface TaskUpdatedSubscription_task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_submissions {
@@ -8457,6 +8579,7 @@ export interface TaskUpdatedSubscription_task_owner {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_creator {
@@ -8464,6 +8587,7 @@ export interface TaskUpdatedSubscription_task_creator {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskUpdatedSubscription_task_githubPullRequests {
@@ -8712,6 +8836,7 @@ export interface User {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 /* tslint:disable */
@@ -8908,6 +9033,7 @@ export interface OrganizationMember_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface OrganizationMember {
@@ -8950,6 +9076,7 @@ export interface ProjectMember_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface ProjectMember {
@@ -9069,6 +9196,7 @@ export interface Invite_inviter {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface Invite_organization {
@@ -9154,6 +9282,7 @@ export interface ProjectDetails_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface ProjectDetails_members {
@@ -9468,6 +9597,7 @@ export interface TaskApplication_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskApplication {
@@ -9494,6 +9624,7 @@ export interface TaskSubmission_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskSubmission_approver {
@@ -9501,6 +9632,7 @@ export interface TaskSubmission_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskSubmission {
@@ -9561,6 +9693,7 @@ export interface Task_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface Task_reward_token {
@@ -9643,6 +9776,7 @@ export interface Task_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface Task_applications {
@@ -9660,6 +9794,7 @@ export interface Task_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface Task_submissions_approver {
@@ -9667,6 +9802,7 @@ export interface Task_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface Task_submissions {
@@ -9757,6 +9893,7 @@ export interface TaskWithOrganization_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskWithOrganization_reward_token {
@@ -9839,6 +9976,7 @@ export interface TaskWithOrganization_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskWithOrganization_applications {
@@ -9856,6 +9994,7 @@ export interface TaskWithOrganization_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskWithOrganization_submissions_approver {
@@ -9863,6 +10002,7 @@ export interface TaskWithOrganization_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskWithOrganization_submissions {
@@ -9976,6 +10116,7 @@ export interface TaskDetails_subtasks_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_subtasks_reward_token {
@@ -10058,6 +10199,7 @@ export interface TaskDetails_subtasks_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_subtasks_applications {
@@ -10075,6 +10217,7 @@ export interface TaskDetails_subtasks_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_subtasks_submissions_approver {
@@ -10082,6 +10225,7 @@ export interface TaskDetails_subtasks_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_subtasks_submissions {
@@ -10156,6 +10300,7 @@ export interface TaskDetails_assignees {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_reward_token {
@@ -10238,6 +10383,7 @@ export interface TaskDetails_applications_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_applications {
@@ -10255,6 +10401,7 @@ export interface TaskDetails_submissions_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_submissions_approver {
@@ -10262,6 +10409,7 @@ export interface TaskDetails_submissions_approver {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_submissions {
@@ -10317,6 +10465,7 @@ export interface TaskDetails_owner {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_creator {
@@ -10324,6 +10473,7 @@ export interface TaskDetails_creator {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface TaskDetails_githubPullRequests {
@@ -10415,6 +10565,7 @@ export interface UserProfile {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: UserProfile_organizations[];
   details: UserProfile_details[];
@@ -10449,6 +10600,7 @@ export interface UserDetails_organizations_member_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface UserDetails_organizations_member {
@@ -10528,6 +10680,7 @@ export interface UserDetails {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
   bio: string | null;
   organizations: UserDetails_organizations[];
   details: UserDetails_details[];
@@ -10555,6 +10708,7 @@ export interface OrganizationDetails_projects_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface OrganizationDetails_projects_members {
@@ -10672,6 +10826,7 @@ export interface OrganizationDetails_members_user {
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
+  permalink: string;
 }
 
 export interface OrganizationDetails_members {
