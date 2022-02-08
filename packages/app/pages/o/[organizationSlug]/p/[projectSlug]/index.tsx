@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Col, Layout, Tabs } from "antd";
+import { Col, Layout, Tabs, Tooltip } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
@@ -14,6 +14,7 @@ import { Tab } from "@dewo/app/components/Tab";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -29,6 +30,13 @@ const Page: NextPage = () => {
   );
 
   const forbiddenError = error?.message === "Forbidden resource";
+  const hasDiscordIntegration = useMemo(
+    () =>
+      !!project?.integrations.some(
+        (i) => i.type === ProjectIntegrationType.DISCORD
+      ),
+    [project]
+  );
 
   if (!projectId) {
     router.replace("/");
@@ -74,7 +82,19 @@ const Page: NextPage = () => {
             {canEditProject && !!project && (
               <Tabs.TabPane
                 tab={
-                  <Tab icon={<Icons.SettingOutlined />} children="Settings" />
+                  <Tooltip
+                    visible={hasDiscordIntegration ? undefined : false}
+                    defaultVisible={hasDiscordIntegration}
+                    title="Setup Discord"
+                    placement="right"
+                    overlayInnerStyle={{
+                      paddingTop: 4,
+                      paddingBottom: 4,
+                      minHeight: "unset",
+                    }}
+                  >
+                    <Tab icon={<Icons.SettingOutlined />} children="Settings" />
+                  </Tooltip>
                 }
                 style={{ padding: 12 }}
                 key="settings"

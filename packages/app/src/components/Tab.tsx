@@ -1,3 +1,4 @@
+import { Row } from "antd";
 import React, { FC, ReactNode } from "react";
 
 interface Props {
@@ -6,8 +7,8 @@ interface Props {
 }
 
 export const Tab: FC<Props> = ({ icon, children }) => (
-  <>
+  <Row align="middle">
     {icon}
     {children}
-  </>
+  </Row>
 );
