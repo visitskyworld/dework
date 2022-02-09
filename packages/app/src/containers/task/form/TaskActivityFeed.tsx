@@ -11,15 +11,18 @@ interface Props {
 }
 
 export const TaskActivityFeed: FC<Props> = ({ task }) => {
-  if (!task.creator) return null;
   return (
     <FormSection label="Activity" className="mb-3">
       <Space direction="vertical">
         <Row align="middle">
-          <UserAvatar size="small" user={task.creator} />
+          {!!task.creator ? (
+            <UserAvatar size="small" user={task.creator} />
+          ) : (
+            <Avatar size="small" icon={<Icons.CalendarOutlined />} />
+          )}
           <Typography.Text style={{ marginLeft: 16, flex: 1 }}>
-            Created by {task.creator.username} on{" "}
-            {moment(task.createdAt).format("lll")}
+            {!!task.creator ? `Created by ${task.creator.username}` : "Created"}
+            on {moment(task.createdAt).format("lll")}
           </Typography.Text>
         </Row>
         {!!task.doneAt && (

@@ -108,12 +108,25 @@ export class DiscordIntegrationService {
         );
       }
 
+      const shouldCreateChannelIfNotExists = await (async () => {
+        if (event instanceof TaskApplicationCreatedEvent) return true;
+        if (event instanceof TaskSubmissionCreatedEvent) return true;
+        if (event.task.status === TaskStatus.IN_PROGRESS) return true;
+        if (event.task.status === TaskStatus.IN_REVIEW) return true;
+        if (!!event.task.assignees.length) return true;
+        if (!!(await event.task.applications).length) return true;
+        return false;
+      })();
+
       const {
         mainChannel,
         channelToPostTo,
         wasChannelToPostToJustCreated,
         guild,
-      } = await this.getChannelFromTask(event.task);
+      } = await this.getChannelFromTask(
+        event.task,
+        shouldCreateChannelIfNotExists
+      );
 
       if (!mainChannel || !guild) return;
 
@@ -263,7 +276,10 @@ export class DiscordIntegrationService {
   ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
-    const { channelToPostTo, guild } = await this.getChannelFromTask(task);
+    const { channelToPostTo, guild } = await this.getChannelFromTask(
+      task,
+      true
+    );
 
     if (!channelToPostTo) {
       throw new NotFoundException(
@@ -293,7 +309,7 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextChannel,
     config: DiscordProjectIntegrationConfig,
-    forceCreate: boolean = false
+    shouldCreateIfNotExists: boolean = false
   ): Promise<{
     channel: Discord.TextChannel | Discord.ThreadChannel | undefined;
     new: boolean;
@@ -318,8 +334,7 @@ export class DiscordIntegrationService {
       const existingThread = await this.getExistingDiscordThread(task, channel);
       if (!!existingThread) return { channel: existingThread, new: false };
 
-      const shouldCreate = await this.shouldCreateThread(task);
-      if (!shouldCreate && !forceCreate) {
+      if (!shouldCreateIfNotExists) {
         this.logger.debug(
           `No previous thread exists and should not create a new thread (${JSON.stringify(
             task
@@ -524,7 +539,10 @@ export class DiscordIntegrationService {
     );
   }
 
-  private async getChannelFromTask(task: Task): Promise<{
+  private async getChannelFromTask(
+    task: Task,
+    shouldCreateIfNotExists?: boolean
+  ): Promise<{
     mainChannel: Discord.TextChannel | undefined;
     channelToPostTo: Discord.TextChannel | Discord.ThreadChannel | undefined;
     wasChannelToPostToJustCreated: boolean;
@@ -580,7 +598,8 @@ export class DiscordIntegrationService {
       await this.getDiscordChannelToPostTo(
         task,
         mainChannel,
-        integration.config
+        integration.config,
+        shouldCreateIfNotExists
       );
     this.logger.log(
       `Found Discord channel to post to: ${JSON.stringify({
@@ -739,14 +758,6 @@ export class DiscordIntegrationService {
       await this.discordChannelRepo.delete({ taskId: task.id });
       return undefined;
     }
-  }
-
-  private async shouldCreateThread(task: Task): Promise<boolean> {
-    if (task.status === TaskStatus.IN_PROGRESS) return true;
-    if (task.status === TaskStatus.IN_REVIEW) return true;
-    if (!!task.assignees.length) return true;
-    if (!!(await task.applications).length) return true;
-    return false;
   }
 
   private async createDiscordThread(
