@@ -125,6 +125,7 @@ export const permissions: Permissions<
     can(Actions.update, Task);
     can(Actions.delete, Task);
 
+    can(Actions.read, TaskApplication);
     can(Actions.delete, TaskApplication);
     can(Actions.manage, TaskSubmission);
 
