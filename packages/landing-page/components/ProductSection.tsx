@@ -91,7 +91,7 @@ export const ProductSection: FC<Props> = () => {
         <Tabs
           centered
           type="line"
-          className="dewo-lp-feature-tabs"
+          className="dewo-tabs dewo-lp-feature-tabs w-full"
           tabBarStyle={{ paddingBottom: 16 }}
         >
           <Tabs.TabPane tab="Watch Demo" key="demo">
