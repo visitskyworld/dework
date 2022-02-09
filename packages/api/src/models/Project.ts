@@ -113,4 +113,6 @@ export class Project extends Audit {
   @Column()
   @Field()
   public sortKey!: string;
+
+  public taskCount?: number;
 }

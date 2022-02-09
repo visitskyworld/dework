@@ -242,4 +242,9 @@ export class ProjectResolver {
     if (!project) throw new NotFoundException();
     return project;
   }
+
+  @Query(() => [Project])
+  public async getFeaturedProjects(): Promise<Project[]> {
+    return this.projectService.findFeatured();
+  }
 }

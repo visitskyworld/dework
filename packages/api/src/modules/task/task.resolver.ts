@@ -354,6 +354,7 @@ export class ProjectTasksResolver {
     @Args("rewardNotNull", { type: () => Boolean, nullable: true })
     rewardNotNull: boolean | undefined
   ): Promise<number> {
+    if (project.taskCount !== undefined) return project.taskCount;
     return this.taskService.count({
       projectId: project.id,
       status,

@@ -86,7 +86,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
           icon={<Icons.LockOutlined />}
           onClick={navigateToTask}
         >
-          Choose Contributor
+          Pick Contributor
         </Button>
       );
     }

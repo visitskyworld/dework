@@ -8,7 +8,7 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ paddingBottom: 40 }}>
         <LandingPage />
       </Layout.Content>
     </Layout>

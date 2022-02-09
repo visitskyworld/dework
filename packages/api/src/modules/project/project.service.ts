@@ -1,4 +1,4 @@
-import { Project } from "@dewo/api/models/Project";
+import { Project, ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
@@ -180,6 +180,36 @@ export class ProjectService {
 
   public findById(id: string): Promise<Project | undefined> {
     return this.projectRepo.findOne(id);
+  }
+
+  public async findFeatured(): Promise<Project[]> {
+    const projectsWithTaskCount = await this.projectRepo
+      .createQueryBuilder("project")
+      .addSelect("COUNT(task.id)", "project_taskCount")
+      .leftJoin("project.tasks", "task")
+      .where("project.visibility = :public", {
+        public: ProjectVisibility.PUBLIC,
+      })
+      .andWhere("project.deletedAt IS NULL")
+      .groupBy("project.id")
+      .having("COUNT(task.id) >= 10")
+      .getRawMany();
+    const projects = await this.projectRepo
+      .createQueryBuilder("project")
+      .innerJoinAndSelect("project.organization", "organization")
+      .innerJoinAndSelect("project.members", "member")
+      .innerJoinAndSelect("member.user", "user")
+      .where("project.id IN (:...projectIds)", {
+        projectIds: projectsWithTaskCount.map((p) => p.project_id),
+      })
+      .getMany();
+    projects.forEach(
+      (project) =>
+        (project.taskCount = projectsWithTaskCount.find(
+          (p) => p.project_id === project.id
+        )?.project_taskCount)
+    );
+    return projects;
   }
 
   private async assertUserPassesTokenGates(
