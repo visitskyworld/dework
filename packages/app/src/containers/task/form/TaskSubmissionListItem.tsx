@@ -56,7 +56,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
     <List.Item
       actions={[
         !submission.approver && (
-          <Space size={4} direction="vertical">
+          <Space size={4} direction="vertical" style={{ marginLeft: 8 }}>
             {canApprove && (
               <Button
                 size="small"
@@ -94,7 +94,10 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
             />
           </a>
         </Tooltip>
-        <MarkdownPreview value={submission.content} />
+        <MarkdownPreview
+          style={{ wordBreak: "break-all" }}
+          value={submission.content}
+        />
       </Space>
     </List.Item>
   );
