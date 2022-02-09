@@ -34,7 +34,7 @@ export const ProjectListEmpty: FC<Props> = ({ organizationId }) => {
   }
   return (
     <Typography.Text type="secondary">
-      This DAO hasn't set up any projects yet!
+      This DAO hasn't set up any public projects yet!
     </Typography.Text>
   );
 };
