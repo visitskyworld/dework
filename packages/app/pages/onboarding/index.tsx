@@ -47,7 +47,9 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content style={{ display: "grid", placeItems: "center" }}>
+      <Layout.Content
+        style={{ display: "grid", placeItems: "center", padding: 8 }}
+      >
         <div className="w-full max-w-xs" style={{ textAlign: "center" }}>
           <Typography.Title level={3}>👋 Welcome to Dework</Typography.Title>
           <Typography.Paragraph style={{ fontSize: "130%" }}>

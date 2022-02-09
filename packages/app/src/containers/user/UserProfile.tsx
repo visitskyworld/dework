@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { Button, Card, Col, Row, Space, Tag, Typography } from "antd";
+import { Button, Card, Col, Row, Space, Spin, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import Link from "next/link";
@@ -73,6 +73,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
         </Col>
         <Col xs={24} md={16}>
           <Card size="small" title="Completed tasks">
+            {!completedTasks && (
+              <div style={{ display: "grid", padding: 16 }}>
+                <Spin />
+              </div>
+            )}
             {!!completedTasks && !completedTasks.length && (
               <TaskBoardColumnEmpty
                 icon={<Icons.CoffeeOutlined />}
