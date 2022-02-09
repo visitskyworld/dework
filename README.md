@@ -325,3 +325,24 @@ BEGIN
     ('STACKS_TOKEN', 'citycoins', 'CYCN', 1, 'ALWAYS', 'ST3CK642B6119EVC6CT550PW5EZZ1AJW6608HK60A.citycoin-token', stacks_testnet_id, NULL);
 END $$;
 ```
+
+# Merging accounts
+```sql
+DO $$
+DECLARE
+  old_user_id uuid = '';
+  new_user_id uuid = '';
+BEGIN
+  UPDATE entity_detail SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE organization_member SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE payment_method SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE project_member SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE task_application SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE task_assignees SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE task_submission SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE task_submission SET "approverId" = new_user_id WHERE "approverId" = old_user_id;
+  UPDATE task_reaction SET "userId" = new_user_id WHERE "userId" = old_user_id;
+  UPDATE task_review SET "reviewerId" = new_user_id WHERE "reviewerId" = old_user_id;
+  UPDATE threepid SET "userId" = new_user_id WHERE "userId" = old_user_id;
+END $$;
+```
