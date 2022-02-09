@@ -18,6 +18,7 @@ import {
   Checkbox,
   Tooltip,
   DatePicker,
+  Divider,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -225,8 +226,9 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task.applications.length && <AssignTaskCard task={task} />}
 
           {!!task && <GithubIntegrationSection task={task} />}
-          {!!task && <TaskActivityFeed task={task} />}
           {!!task && <TaskSubmissionsSection task={task} />}
+          <Divider />
+          {!!task && <TaskActivityFeed task={task} />}
         </Col>
         <Col xs={24} sm={8} style={{ marginTop: 16 }}>
           {!!task?.parentTask && (

@@ -31,6 +31,7 @@ type AbilitySubject =
   | "ProjectSection"
   | "Organization"
   | "TaskSubmission"
+  | "TaskApplication"
   | Project
   | Organization
   | AtLeast<Task, "__typename" | "status">
