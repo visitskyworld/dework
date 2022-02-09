@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Icons from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
@@ -13,11 +13,15 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 type ProjectRow = GetFeaturedProjectsQuery["projects"][number];
 
-export const ProjectDiscoveryList: FC = ({}) => {
+export const ProjectDiscoveryList: FC = () => {
   const projects = useQuery<GetFeaturedProjectsQuery>(Queries.featuredProjects)
     .data?.projects;
   const router = useRouter();
   const screens = useBreakpoint();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
