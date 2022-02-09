@@ -1440,6 +1440,7 @@ export interface CreateTaskMutation_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskMutation_task_applications_user;
 }
@@ -1604,6 +1605,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskMutation_task_parentTask_subtasks_applications_user;
 }
@@ -1846,6 +1848,7 @@ export interface UpdateTaskMutation_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: UpdateTaskMutation_task_applications_user;
 }
@@ -2054,6 +2057,7 @@ export interface CreateTaskApplicationMutation_application_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskApplicationMutation_application_task_applications_user;
 }
@@ -2268,6 +2272,7 @@ export interface DeleteTaskApplicationMutation_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: DeleteTaskApplicationMutation_task_applications_user;
 }
@@ -2476,6 +2481,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applicat
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user;
 }
@@ -2690,6 +2696,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applicat
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user;
 }
@@ -3816,6 +3823,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskPaymentsMutation_tasks_subtasks_applications_user;
 }
@@ -4000,6 +4008,7 @@ export interface CreateTaskPaymentsMutation_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTaskPaymentsMutation_tasks_applications_user;
 }
@@ -4313,6 +4322,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_applications 
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: CreateTasksFromGithubIssuesMutation_project_tasks_applications_user;
 }
@@ -5173,6 +5183,7 @@ export interface UserTasksQuery_user_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: UserTasksQuery_user_tasks_applications_user;
 }
@@ -6034,6 +6045,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetOrganizationTasksQuery_organization_tasks_applications_user;
 }
@@ -6397,6 +6409,7 @@ export interface GetProjectTasksQuery_project_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetProjectTasksQuery_project_tasks_applications_user;
 }
@@ -6644,6 +6657,7 @@ export interface GetTaskQuery_task_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetTaskQuery_task_subtasks_applications_user;
 }
@@ -6828,6 +6842,7 @@ export interface GetTaskQuery_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetTaskQuery_task_applications_user;
 }
@@ -7152,6 +7167,7 @@ export interface GetTasksQuery_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetTasksQuery_tasks_applications_user;
 }
@@ -7417,6 +7433,7 @@ export interface GetTasksToPayQuery_tasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: GetTasksToPayQuery_tasks_applications_user;
 }
@@ -7919,6 +7936,7 @@ export interface TaskCreatedSubscription_task_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskCreatedSubscription_task_subtasks_applications_user;
 }
@@ -8103,6 +8121,7 @@ export interface TaskCreatedSubscription_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskCreatedSubscription_task_applications_user;
 }
@@ -8373,6 +8392,7 @@ export interface TaskUpdatedSubscription_task_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskUpdatedSubscription_task_subtasks_applications_user;
 }
@@ -8557,6 +8577,7 @@ export interface TaskUpdatedSubscription_task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskUpdatedSubscription_task_applications_user;
 }
@@ -9657,6 +9678,7 @@ export interface TaskApplication {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskApplication_user;
 }
@@ -9836,6 +9858,7 @@ export interface Task_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: Task_applications_user;
 }
@@ -10036,6 +10059,7 @@ export interface TaskWithOrganization_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskWithOrganization_applications_user;
 }
@@ -10259,6 +10283,7 @@ export interface TaskDetails_subtasks_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskDetails_subtasks_applications_user;
 }
@@ -10443,6 +10468,7 @@ export interface TaskDetails_applications {
   message: string | null;
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
   userId: string;
   user: TaskDetails_applications_user;
 }
