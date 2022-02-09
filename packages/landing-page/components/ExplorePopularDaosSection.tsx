@@ -18,7 +18,7 @@ export function useFeaturedOrganizations(
     GetFeaturedOrganizationsQuery,
     GetFeaturedOrganizationsQueryVariables
   >(Queries.featuredOrganizations, { variables: { limit } });
-  return data?.featuredOrganizations;
+  return data?.organizations;
 }
 
 export const ExplorePopularDaosSection: FC = () => {
