@@ -5,12 +5,7 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 export const BookDemoSection: FC = () => {
   return (
-    <Row
-      style={{
-        padding: "64px 24px",
-        // backgroundColor: "rgba(255, 255, 255, 0.1)",
-      }}
-    >
+    <Row style={{ padding: "64px 24px" }}>
       <Col className="max-w-sm mx-auto" style={{ width: "100%" }}>
         <Typography.Title
           level={3}
