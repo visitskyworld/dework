@@ -29,7 +29,7 @@ describe("DiscordIntegration", () => {
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
-    discord = app.get(DiscordService).client;
+    discord = app.get(DiscordService).getClient({ config: {} } as any);
     taskService = app.get(TaskService);
     discordIntegrationService = app.get(DiscordIntegrationService);
 

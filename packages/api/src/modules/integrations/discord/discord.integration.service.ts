@@ -309,6 +309,7 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextChannel,
     config: DiscordProjectIntegrationConfig,
+    organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>,
     shouldCreateIfNotExists: boolean = false
   ): Promise<{
     channel: Discord.TextChannel | Discord.ThreadChannel | undefined;
@@ -325,13 +326,19 @@ export class DiscordIntegrationService {
     }
 
     if (config.features.includes(toThread) && !!config.threadId) {
-      this.discord.client.channels.cache.delete(config.threadId);
+      this.discord
+        .getClient(organizationIntegration)
+        .channels.cache.delete(config.threadId);
       const thread = await channel.threads.fetch(config.threadId);
       return { channel: thread ?? undefined, new: false };
     }
 
     if (config.features.includes(toThreadPerTask)) {
-      const existingThread = await this.getExistingDiscordThread(task, channel);
+      const existingThread = await this.getExistingDiscordThread(
+        task,
+        channel,
+        organizationIntegration
+      );
       if (!!existingThread) return { channel: existingThread, new: false };
 
       if (!shouldCreateIfNotExists) {
@@ -558,17 +565,18 @@ export class DiscordIntegrationService {
       };
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-    if (!organizationIntegration)
+    if (!organizationIntegration) {
       return {
         mainChannel: undefined,
         channelToPostTo: undefined,
         wasChannelToPostToJustCreated: false,
         guild: undefined,
       };
+    }
 
-    const guild = await this.discord.client.guilds.fetch(
-      organizationIntegration.config.guildId
-    );
+    const guild = await this.discord
+      .getClient(organizationIntegration)
+      .guilds.fetch(organizationIntegration.config.guildId);
     await guild.roles.fetch();
 
     this.logger.debug(
@@ -599,6 +607,7 @@ export class DiscordIntegrationService {
         task,
         mainChannel,
         integration.config,
+        organizationIntegration,
         shouldCreateIfNotExists
       );
     this.logger.log(
@@ -714,7 +723,8 @@ export class DiscordIntegrationService {
 
   private async getExistingDiscordThread(
     task: Task,
-    channel: Discord.TextChannel
+    channel: Discord.TextChannel,
+    organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
   ): Promise<Discord.ThreadChannel | undefined> {
     this.logger.debug(
       `Get existing Discord thread: ${JSON.stringify({
@@ -734,7 +744,9 @@ export class DiscordIntegrationService {
     }
 
     try {
-      this.discord.client.channels.cache.delete(existing.channelId);
+      this.discord
+        .getClient(organizationIntegration)
+        .channels.cache.delete(existing.channelId);
       const thread = await channel.threads.fetch(existing.channelId);
 
       if (!thread) throw new Error("Null channel returned from Discord");

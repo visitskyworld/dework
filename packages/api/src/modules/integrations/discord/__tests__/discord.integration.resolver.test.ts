@@ -22,7 +22,7 @@ describe("DiscordIntegrationResolver", () => {
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
-    discord = app.get(DiscordService).client;
+    discord = app.get(DiscordService).getClient({ config: {} } as any);
     client = app.get(GraphQLTestClient);
 
     discordGuild = await discord.guilds.fetch(discordGuildId);

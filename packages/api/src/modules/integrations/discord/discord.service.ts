@@ -19,17 +19,20 @@ import {
 @EventSubscriber()
 export class DiscordService implements OnModuleInit {
   private logger = new Logger(this.constructor.name);
-  public client: Discord.Client;
+  private mainClient: Discord.Client;
+  private tempClient: Discord.Client;
 
   constructor(
     private readonly integrationService: IntegrationService,
     private readonly config: ConfigService<ConfigType>
   ) {
-    this.client = new Discord.Client({ intents: [] });
+    this.mainClient = new Discord.Client({ intents: [] });
+    this.tempClient = new Discord.Client({ intents: [] });
   }
 
   async onModuleInit() {
-    await this.client.login(this.config.get("DISCORD_BOT_TOKEN"));
+    await this.mainClient.login(this.config.get("MAIN_DISCORD_BOT_TOKEN"));
+    await this.tempClient.login(this.config.get("TEMP_DISCORD_BOT_TOKEN"));
   }
 
   public async getChannels(
@@ -46,7 +49,14 @@ export class DiscordService implements OnModuleInit {
       throw new NotFoundException("Organization integration not found");
     }
 
-    const guild = await this.client.guilds.fetch(integration.config.guildId);
+    const botUserId = this.config.get<string>(
+      integration.config.useTempDiscordBot
+        ? "TEMP_DISCORD_OAUTH_CLIENT_ID"
+        : "MAIN_DISCORD_OAUTH_CLIENT_ID"
+    )!;
+    const guild = await this.getClient(integration).guilds.fetch(
+      integration.config.guildId
+    );
     if (!guild) {
       this.logger.error(
         `Failed to fetch Discord guild: ${JSON.stringify({
@@ -58,7 +68,6 @@ export class DiscordService implements OnModuleInit {
       return [];
     }
 
-    const botUserId = this.config.get<string>("DISCORD_OAUTH_CLIENT_ID")!;
     await guild.roles.fetch(); // makes permissionsFor below work
     const botUser = await guild.members.fetch({ user: botUserId });
 
@@ -95,7 +104,7 @@ export class DiscordService implements OnModuleInit {
     discordUsername?: string
   ): Promise<boolean> {
     const deworkGuildId = this.config.get<string>("DISCORD_DEWORK_GUILD_ID")!;
-    const deworkGuild = await this.client.guilds.fetch(deworkGuildId);
+    const deworkGuild = await this.mainClient.guilds.fetch(deworkGuildId);
     const feedbackChannelId = this.config.get<string>(
       "DISCORD_DEWORK_FEEDBACK_CHANNEL_ID"
     )!;
@@ -131,5 +140,13 @@ export class DiscordService implements OnModuleInit {
     );
 
     return true;
+  }
+
+  public getClient(
+    integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
+  ): Discord.Client {
+    return integration.config.useTempDiscordBot
+      ? this.tempClient
+      : this.mainClient;
   }
 }

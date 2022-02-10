@@ -19,9 +19,13 @@ export interface ConfigType {
   GITHUB_APP_CLIENT_SECRET: string;
   GITHUB_APP_PRIVATE_KEY: string;
 
-  DISCORD_OAUTH_CLIENT_ID: string;
-  DISCORD_OAUTH_CLIENT_SECRET: string;
-  DISCORD_BOT_TOKEN: string;
+  MAIN_DISCORD_OAUTH_CLIENT_ID: string;
+  MAIN_DISCORD_OAUTH_CLIENT_SECRET: string;
+  MAIN_DISCORD_BOT_TOKEN: string;
+  TEMP_DISCORD_OAUTH_CLIENT_ID: string;
+  TEMP_DISCORD_OAUTH_CLIENT_SECRET: string;
+  TEMP_DISCORD_BOT_TOKEN: string;
+
   DISCORD_DEWORK_GUILD_ID: string;
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: string;
 
@@ -57,9 +61,13 @@ export const configSchema = Joi.object<ConfigType>({
   GITHUB_APP_CLIENT_SECRET: Joi.string().required(),
   GITHUB_APP_PRIVATE_KEY: Joi.string().required(),
 
-  DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
-  DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
-  DISCORD_BOT_TOKEN: Joi.string().required(),
+  MAIN_DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
+  MAIN_DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
+  MAIN_DISCORD_BOT_TOKEN: Joi.string().required(),
+  TEMP_DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
+  TEMP_DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
+  TEMP_DISCORD_BOT_TOKEN: Joi.string().required(),
+
   DISCORD_DEWORK_GUILD_ID: Joi.string().required(),
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: Joi.string().required(),
 

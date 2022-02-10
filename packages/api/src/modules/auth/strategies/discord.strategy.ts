@@ -22,8 +22,8 @@ export class DiscordStrategy extends PassportDiscordStrategy {
     readonly config: ConfigService<ConfigType>
   ) {
     super({
-      clientID: config.get<string>("DISCORD_OAUTH_CLIENT_ID"),
-      clientSecret: config.get<string>("DISCORD_OAUTH_CLIENT_SECRET"),
+      clientID: config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_ID"),
+      clientSecret: config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_SECRET"),
       callbackURL: `${config.get<string>("API_URL")}/auth/discord/callback`,
       scope: ["identify", "guilds"],
       passReqToCallback: true,

@@ -13,6 +13,7 @@ export enum OrganizationIntegrationType {
 export interface DiscordOrganizationIntegrationConfig {
   guildId: string;
   permissions: string;
+  useTempDiscordBot?: boolean;
 }
 
 export interface GithubOrganizationIntegrationConfig {
