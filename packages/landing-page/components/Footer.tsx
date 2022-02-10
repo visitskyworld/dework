@@ -6,7 +6,7 @@ import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 export const LandingPageFooter: FC = () => {
   return (
-    <Layout.Footer style={{ backgroundColor: "transparent" }}>
+    <Layout.Footer className="bg-component">
       <Typography.Paragraph style={{ textAlign: "center" }}>
         Have questions or feedback? Reach out on Twitter or Discord
       </Typography.Paragraph>

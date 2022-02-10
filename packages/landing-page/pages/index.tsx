@@ -5,6 +5,7 @@ import getConfig from "next/config";
 import { ProductSection } from "../components/ProductSection";
 import { ExplorePopularDaosSection } from "../components/ExplorePopularDaosSection";
 import { LandingPageFooter } from "../components/Footer";
+import { BookDemoSection } from "../components/BookDemoSection";
 
 const appUrl = getConfig().publicRuntimeConfig.APP_URL;
 
@@ -22,6 +23,7 @@ const Page = () => (
     />
     <ProductSection appUrl={appUrl} />
     <ExplorePopularDaosSection />
+    <BookDemoSection />
     <LandingPageFooter />
   </>
 );

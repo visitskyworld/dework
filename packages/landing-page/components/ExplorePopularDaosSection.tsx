@@ -32,7 +32,7 @@ export const ExplorePopularDaosSection: FC = () => {
     >
       <Col className="max-w-lg mx-auto" style={{ width: "100%" }}>
         <Typography.Title
-          level={4}
+          level={3}
           style={{ textAlign: "center", width: "100%" }}
         >
           Explore some popular DAOs
