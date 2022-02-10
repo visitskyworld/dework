@@ -34,7 +34,6 @@ import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateMod
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { getDataFromTree } from "@apollo/react-ssr";
-import ApolloLinkTimeout from "apollo-link-timeout";
 import { AppContextType } from "next/dist/shared/lib/utils";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
@@ -190,10 +189,9 @@ function createApolloLink(
     uri: `${Constants.GRAPHQL_API_URL}/graphql`,
   });
   const errorLink = onError((error) => onErrorRef?.current?.(error));
-  const timeoutLink = new ApolloLinkTimeout(10000, 504);
 
   // if (typeof window === "undefined") {
-  return ApolloLink.from([authLink, errorLink, timeoutLink, httpLink]);
+  return ApolloLink.from([authLink, errorLink, httpLink]);
   // }
 
   // const wsLink = new WebSocketLink({
