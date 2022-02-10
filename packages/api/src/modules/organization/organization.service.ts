@@ -192,10 +192,10 @@ export class OrganizationService {
   public async findByUser(userId: string): Promise<Organization[]> {
     return this.organizationRepo
       .createQueryBuilder("organization")
-      .innerJoinAndSelect("organization.members", "members")
-      .where("members.userId = :userId", { userId })
+      .innerJoinAndSelect("organization.members", "member")
+      .where("member.userId = :userId", { userId })
       .andWhere("organization.deletedAt IS NULL")
-      .orderBy("members.sortKey", "DESC")
+      .orderBy("member.sortKey", "DESC")
       .getMany();
   }
 
@@ -203,6 +203,9 @@ export class OrganizationService {
     return this.organizationRepo
       .createQueryBuilder("organization")
       .where("organization.featured = :featured", { featured: true })
+      .leftJoinAndSelect("organization.projects", "project")
+      .leftJoinAndSelect("project.members", "member")
+      .leftJoinAndSelect("member.user", "user")
       .limit(limit)
       .getMany();
   }

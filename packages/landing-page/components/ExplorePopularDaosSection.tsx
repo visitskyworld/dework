@@ -1,7 +1,6 @@
 import {
   GetFeaturedOrganizationsQuery,
   GetFeaturedOrganizationsQueryVariables,
-  OrganizationDetails,
 } from "@dewo/app/graphql/types";
 import { Col, Row, Typography } from "antd";
 import React, { FC } from "react";
@@ -11,9 +10,7 @@ import * as Queries from "@dewo/app/graphql/queries";
 
 const NUM_COLUMNS = 3;
 
-export function useFeaturedOrganizations(
-  limit: number
-): OrganizationDetails[] | undefined {
+export function useFeaturedOrganizations(limit: number) {
   const { data } = useQuery<
     GetFeaturedOrganizationsQuery,
     GetFeaturedOrganizationsQueryVariables

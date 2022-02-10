@@ -66,11 +66,22 @@ export const organization = gql`
 export const featuredOrganizations = gql`
   query GetFeaturedOrganizationsQuery($limit: Int!) {
     organizations: getFeaturedOrganizations(limit: $limit) {
-      ...OrganizationDetails
+      ...Organization
+      description
+      projects {
+        id
+        members {
+          id
+          user {
+            ...User
+          }
+        }
+      }
     }
   }
 
-  ${Fragments.organizationDetails}
+  ${Fragments.organization}
+  ${Fragments.user}
 `;
 
 export const featuredProjects = gql`

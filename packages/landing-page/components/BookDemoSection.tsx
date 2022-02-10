@@ -18,12 +18,19 @@ export const BookDemoSection: FC = () => {
           style={{ textAlign: "center", fontSize: "130%" }}
         >
           Schedule a 30 min demo with our co-founder{" "}
-          <a href="https://calendly.com/lonis_">Lonis</a> or join our Discord.
+          <a
+            href="https://calendly.com/lonis_"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Lonis
+          </a>{" "}
+          or join our Discord.
         </Typography.Paragraph>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12}>
             <Link href="https://calendly.com/lonis_">
-              <a>
+              <a target="_blank">
                 <Button type="primary" size="large" block>
                   Schedule a Demo
                 </Button>
@@ -32,7 +39,7 @@ export const BookDemoSection: FC = () => {
           </Col>
           <Col xs={24} sm={12}>
             <Link href="https://discord.com/channels/918603668935311391/940669659974344704">
-              <a>
+              <a target="_blank">
                 <Button size="large" block icon={<DiscordIcon />}>
                   Join our Discord
                 </Button>

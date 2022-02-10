@@ -5610,11 +5610,6 @@ export interface GetOrganizationQueryVariables {
 // GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
-export interface GetFeaturedOrganizationsQuery_organizations_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
 export interface GetFeaturedOrganizationsQuery_organizations_projects_members_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -5626,183 +5621,13 @@ export interface GetFeaturedOrganizationsQuery_organizations_projects_members_us
 export interface GetFeaturedOrganizationsQuery_organizations_projects_members {
   __typename: "ProjectMember";
   id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
   user: GetFeaturedOrganizationsQuery_organizations_projects_members_user;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods_networks[];
-  tokens: GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods_tokens[];
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: GetFeaturedOrganizationsQuery_organizations_projects_tokenGates_token_network;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  projectId: string;
-  token: GetFeaturedOrganizationsQuery_organizations_projects_tokenGates_token;
 }
 
 export interface GetFeaturedOrganizationsQuery_organizations_projects {
   __typename: "Project";
   id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  visibility: ProjectVisibility;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-  sortKey: string;
-  sectionId: string | null;
-  taskCount: number;
-  options: GetFeaturedOrganizationsQuery_organizations_projects_options | null;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
   members: GetFeaturedOrganizationsQuery_organizations_projects_members[];
-  paymentMethods: GetFeaturedOrganizationsQuery_organizations_projects_paymentMethods[];
-  integrations: GetFeaturedOrganizationsQuery_organizations_projects_integrations[];
-  tokenGates: GetFeaturedOrganizationsQuery_organizations_projects_tokenGates[];
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projectSections {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: GetFeaturedOrganizationsQuery_organizations_members_user;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_tags {
-  __typename: "OrganizationTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_details {
-  __typename: "EntityDetail";
-  id: Scalar.UUID;
-  type: EntityDetailType;
-  value: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projectTokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projectTokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: GetFeaturedOrganizationsQuery_organizations_projectTokenGates_token_network;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projectTokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  projectId: string;
-  token: GetFeaturedOrganizationsQuery_organizations_projectTokenGates_token;
 }
 
 export interface GetFeaturedOrganizationsQuery_organizations {
@@ -5812,15 +5637,8 @@ export interface GetFeaturedOrganizationsQuery_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  tagline: string | null;
   description: string | null;
   projects: GetFeaturedOrganizationsQuery_organizations_projects[];
-  projectSections: GetFeaturedOrganizationsQuery_organizations_projectSections[];
-  members: GetFeaturedOrganizationsQuery_organizations_members[];
-  tags: GetFeaturedOrganizationsQuery_organizations_tags[];
-  details: GetFeaturedOrganizationsQuery_organizations_details[];
-  integrations: GetFeaturedOrganizationsQuery_organizations_integrations[];
-  projectTokenGates: GetFeaturedOrganizationsQuery_organizations_projectTokenGates[];
 }
 
 export interface GetFeaturedOrganizationsQuery {

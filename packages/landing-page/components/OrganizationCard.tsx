@@ -1,12 +1,14 @@
 import Link from "next/link";
-import React, { FC, useMemo } from "react";
-import { AvatarProps, Card, List, Row, Tag, Typography } from "antd";
+import React, { useMemo, FC } from "react";
+import { Avatar, AvatarProps, Card, List, Typography } from "antd";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TitleProps } from "antd/lib/typography/Title";
-import { OrganizationDetails } from "@dewo/app/graphql/types";
+import { GetFeaturedOrganizationsQuery } from "@dewo/app/graphql/types";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import _ from "lodash";
 
 interface Props {
-  organization: OrganizationDetails;
+  organization: GetFeaturedOrganizationsQuery["organizations"][number];
   avatar?: AvatarProps;
   title?: TitleProps;
 }
@@ -16,22 +18,24 @@ export const OrganizationCard: FC<Props> = ({
   avatar,
   title,
 }) => {
-  const openBountiesCount = useMemo(
-    () =>
-      organization.projects
-        .map((p) => p.openBountyTaskCount)
-        .reduce((a, b) => a + b, 0),
-    [organization]
-  );
+  const users = useMemo(() => {
+    const nestedUsers = organization.projects
+      .map((p) => p.members)
+      .flat()
+      .map((m) => m.user);
+    return _.uniqBy(nestedUsers, (u) => u.id);
+  }, [organization]);
   return (
     <Link href={organization.permalink}>
       <a>
         <Card
           size="small"
           style={{ paddingTop: 8, paddingBottom: 8, height: "100%" }}
+          bodyStyle={{ height: "100%" }}
           className="hover:component-highlight"
         >
           <List.Item.Meta
+            style={{ height: "100%" }}
             avatar={
               <OrganizationAvatar {...avatar} organization={organization} />
             }
@@ -53,16 +57,11 @@ export const OrganizationCard: FC<Props> = ({
                 >
                   {organization.description}
                 </Typography.Paragraph>
-                <Row align="middle" gutter={[8, 8]}>
-                  {!!openBountiesCount && (
-                    <Tag color="green">
-                      {`${openBountiesCount} open bounties`}
-                    </Tag>
-                  )}
-                  <Tag color="yellow">
-                    {`${organization.members.length} contributors`}
-                  </Tag>
-                </Row>
+                <Avatar.Group maxCount={5} size="small">
+                  {users.map((u) => (
+                    <UserAvatar key={u.id} user={u} linkToProfile />
+                  ))}
+                </Avatar.Group>
               </>
             }
           />
