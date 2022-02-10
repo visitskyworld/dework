@@ -113,7 +113,8 @@ export const TaskDiscoveryList: FC = () => {
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
         🔥 Explore Bounties {!!tasks && `(${tasks.length})`}
-        <Tooltip title="Only tasks that (1) have a bounty attached to them and (2) is part of a public board">
+        {"   "}
+        <Tooltip title="Only tasks in public boards and with a bounty reward show up here!">
           <Icons.QuestionCircleOutlined />
         </Tooltip>
       </Typography.Title>
