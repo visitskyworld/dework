@@ -112,12 +112,11 @@ export class ProjectService {
   }
 
   public async updateSection(
-    partial: DeepAtLeast<ProjectSection, "id">
+    partial: DeepAtLeast<ProjectSection, "id" | "organizationId">
   ): Promise<ProjectSection> {
-    await this.projectSectionRepo.update({ id: partial.id }, partial);
-    return this.projectSectionRepo.findOne(
-      partial.id
-    ) as Promise<ProjectSection>;
+    const query = { id: partial.id, organizationId: partial.organizationId };
+    await this.projectSectionRepo.update(query, partial);
+    return this.projectSectionRepo.findOne(query) as Promise<ProjectSection>;
   }
 
   public async upsertMember(

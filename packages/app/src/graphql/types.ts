@@ -11334,6 +11334,7 @@ export interface UpdateProjectMemberInput {
 
 export interface UpdateProjectSectionInput {
   id: Scalar.UUID;
+  organizationId: Scalar.UUID;
   name?: string | null;
   sortKey?: string | null;
   deletedAt?: Scalar.DateTime | null;

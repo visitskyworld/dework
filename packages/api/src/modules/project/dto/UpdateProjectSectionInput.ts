@@ -6,6 +6,9 @@ export class UpdateProjectSectionInput {
   @Field(() => GraphQLUUID)
   public id!: string;
 
+  @Field(() => GraphQLUUID)
+  public organizationId!: string;
+
   @Field({ nullable: true })
   public name?: string;
 

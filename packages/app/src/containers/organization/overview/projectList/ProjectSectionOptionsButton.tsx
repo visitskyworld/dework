@@ -31,9 +31,10 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
   const handleDeleteSection = useCallback(async () => {
     await updateSection({
       id: section.id,
+      organizationId,
       deletedAt: new Date().toISOString(),
     });
-  }, [updateSection, section.id]);
+  }, [updateSection, section.id, organizationId]);
 
   if (!canCreate && !canUpdate) return null;
   return (
