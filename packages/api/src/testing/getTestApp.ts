@@ -26,7 +26,7 @@ export async function getTestApp(): Promise<INestApplication> {
   const database = app.get(MigrationService);
   await database.connection.dropDatabase();
   await database.connection.synchronize();
-  await database.migrate();
+  // await database.migrate();
   await app.init();
 
   logger.setLogLevels(["debug"]);
