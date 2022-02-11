@@ -31,7 +31,6 @@ import {
   TaskRewardFormValues,
   validator as validateTaskReward,
 } from "./TaskRewardFormFields";
-import { UserSelectOption } from "./UserSelectOption";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
@@ -49,6 +48,7 @@ import { TaskDiscordButton } from "./TaskDiscordButton";
 import { StoryPointsInput } from "./StoryPointsInput";
 import Link from "next/link";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
+import { UserSelect } from "@dewo/app/components/form/UserSelect";
 
 export interface TaskFormValues {
   name: string;
@@ -89,6 +89,7 @@ export const TaskForm: FC<TaskFormProps> = ({
     initialValues ?? {}
   );
   const canSubmit = usePermission(mode, !!task ? task : "Task");
+  const canCreateTag = usePermission("create", "TaskTag");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
     (field: keyof TaskFormValues | `status[${TaskStatus}]`) =>
@@ -272,6 +273,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <TaskTagSelectField
             disabled={!canChange("tagIds")}
+            allowCreate={canCreateTag}
             projectId={projectId}
           />
 
@@ -280,46 +282,19 @@ export const TaskForm: FC<TaskFormProps> = ({
             label="Assignees"
             rules={[{ type: "array" }]}
           >
-            <Select
-              mode="multiple"
-              showSearch
-              className="dewo-select-item-full-width"
-              loading={!assigneeOptions}
-              disabled={!canChange("assigneeIds")}
-              allowClear
-              optionFilterProp="label"
-              optionLabelProp="label" // don't put children inside tagRender
+            <UserSelect
               placeholder="No task assignee..."
-              tagRender={(props) => {
-                const user = assigneeOptions?.find((u) => u.id === props.value);
-                if (!user) return <div />;
-                return (
-                  <UserSelectOption user={user} style={{ paddingRight: 12 }} />
-                );
-              }}
-            >
-              {assigneeOptions?.map((user) => (
-                <Select.Option value={user.id} label={user.username}>
-                  <UserSelectOption user={user} />
-                </Select.Option>
-              ))}
-            </Select>
+              disabled={!canChange("assigneeIds")}
+              mode="multiple"
+              users={assigneeOptions}
+            />
           </Form.Item>
           <Form.Item name="ownerId" label="Reviewer">
-            <Select
-              showSearch
-              loading={!ownerOptions}
-              disabled={!canChange("ownerId")}
-              allowClear
-              optionFilterProp="label"
+            <UserSelect
               placeholder="No task reviewer..."
-            >
-              {ownerOptions?.map((user) => (
-                <Select.Option value={user.id} label={user.username}>
-                  <UserSelectOption user={user} />
-                </Select.Option>
-              ))}
-            </Select>
+              disabled={!canChange("ownerId")}
+              users={ownerOptions}
+            />
           </Form.Item>
 
           {(canChange("dueDate") || !!values.dueDate) && (

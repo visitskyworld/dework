@@ -32,7 +32,7 @@ import {
   useTaskFormUserOptions,
   useUpdateTask,
 } from "../../task/hooks";
-import { UserSelectOption } from "../form/UserSelectOption";
+import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
 import { STATUS_LABEL } from "../../task/board/util";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";

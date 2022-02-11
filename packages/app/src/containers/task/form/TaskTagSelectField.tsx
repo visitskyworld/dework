@@ -4,17 +4,20 @@ import * as Icons from "@ant-design/icons";
 import { Tag, Form, Select, ConfigProvider, Empty, Button } from "antd";
 import { useCreateTaskTag, useGenerateRandomTagColor } from "../hooks";
 import { useProjectTaskTags } from "../../project/hooks";
-import { Can, usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
-  disabled: boolean;
+  label?: string;
+  disabled?: boolean;
+  allowCreate?: boolean;
   projectId: string;
 }
 
 interface ComponentProps {
-  disabled: boolean;
+  disabled?: boolean;
+  allowCreate?: boolean;
   projectId: string;
   value?: string[];
   onChange?(value: string[]): void;
@@ -22,12 +25,12 @@ interface ComponentProps {
 
 const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   projectId,
+  allowCreate,
   disabled,
   value,
   onChange,
 }) => {
   const tags = useProjectTaskTags(projectId);
-  const canCreateTag = usePermission("create", "TaskTag");
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
   const selectedTagIds = useMemo(
@@ -86,7 +89,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   return (
     <>
       <Select
-        mode={canCreateTag ? "tags" : "multiple"}
+        mode={allowCreate ? "tags" : "multiple"}
         value={selectedTagIds}
         disabled={disabled}
         loading={loading}
@@ -133,14 +136,23 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   );
 };
 
-export const TaskTagSelectField: FC<Props> = ({ disabled, projectId }) => (
+export const TaskTagSelectField: FC<Props> = ({
+  disabled,
+  allowCreate,
+  projectId,
+  label = "Tags",
+}) => (
   <ConfigProvider
     renderEmpty={() => (
       <Empty description="Create your first tag by typing..." />
     )}
   >
-    <Form.Item name="tagIds" label="Tags" rules={[{ type: "array" }]}>
-      <TaskTagSelectFieldComponent disabled={disabled} projectId={projectId} />
+    <Form.Item name="tagIds" label={label} rules={[{ type: "array" }]}>
+      <TaskTagSelectFieldComponent
+        disabled={disabled}
+        allowCreate={allowCreate}
+        projectId={projectId}
+      />
     </Form.Item>
   </ConfigProvider>
 );
