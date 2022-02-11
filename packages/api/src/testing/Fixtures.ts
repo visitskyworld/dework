@@ -72,7 +72,7 @@ export class Fixtures {
     partial: Partial<Threepid> = {}
   ): Promise<Threepid> {
     return this.threepidService.create({
-      source: ThreepidSource.hiro,
+      source: ThreepidSource.discord,
       threepid: faker.datatype.uuid(),
       config: {
         profile: {

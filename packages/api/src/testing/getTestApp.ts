@@ -19,14 +19,13 @@ export async function getTestApp(): Promise<INestApplication> {
     imports: [...AppModuleImports!, FixturesModule, MigrationModule],
     providers: [GraphQLTestClient, WebhookTestClient],
   })
-    .setLogger(logger)
+    // .setLogger(logger)
     .compile();
   const app = module.createNestApplication();
   app.useGlobalPipes(new ValidationPipe());
   const database = app.get(MigrationService);
   await database.connection.dropDatabase();
   await database.connection.synchronize();
-  // await database.migrate();
   await app.init();
 
   logger.setLogLevels(["debug"]);

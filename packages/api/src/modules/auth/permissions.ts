@@ -116,14 +116,22 @@ export const permissions: Permissions<
 
     can(Actions.update, Project);
     can(Actions.manage, ProjectMember);
-
-    can(Actions.create, ProjectIntegration);
-    can(Actions.update, ProjectIntegration);
-    can(Actions.delete, ProjectIntegration);
+    can(Actions.manage, ProjectIntegration);
 
     can(Actions.create, Task);
-    can(Actions.update, Task);
     can(Actions.delete, Task);
+    can(Actions.update, Task, [
+      "name",
+      "description",
+      "status",
+      "tagIds",
+      "assigneeIds",
+      "ownerId",
+      "dueDate",
+      "storyPoints",
+      "reward",
+      "options",
+    ]);
 
     can(Actions.read, TaskApplication);
     can(Actions.delete, TaskApplication);
