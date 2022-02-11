@@ -326,3 +326,9 @@ export const notionDatabases = gql`
     }
   }
 `;
+
+export const getDiscordGuildMembershipState = gql`
+  query GetDiscordGuildMembershipStateQuery($organizationId: UUID!) {
+    state: getDiscordGuildMembershipState(organizationId: $organizationId)
+  }
+`;

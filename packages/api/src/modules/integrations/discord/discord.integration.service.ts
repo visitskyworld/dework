@@ -34,6 +34,12 @@ import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 
+export enum DiscordGuildMembershipState {
+  MEMBER = "MEMBER",
+  HAS_SCOPE = "HAS_SCOPE",
+  MISSING_SCOPE = "MISSING_SCOPE",
+}
+
 @Injectable()
 export class DiscordIntegrationService {
   private logger = new Logger(this.constructor.name);
@@ -307,10 +313,10 @@ export class DiscordIntegrationService {
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
   }
 
-  public async canJoinDiscordGuild(
+  public async getDiscordGuildMembershipState(
     organizationId: string,
     userId: string
-  ): Promise<boolean> {
+  ): Promise<DiscordGuildMembershipState> {
     this.logger.debug(
       `Adding user to Discord guild: ${JSON.stringify({
         userId,
@@ -323,21 +329,33 @@ export class DiscordIntegrationService {
         OrganizationIntegrationType.DISCORD
       );
 
-    if (!integration) return false;
+    if (!integration || integration.config.useTempDiscordBot) {
+      return DiscordGuildMembershipState.MEMBER;
+    }
 
     const discordThreepid = (await this.threepidService.findOne({
       userId,
       source: ThreepidSource.discord,
     })) as Threepid<ThreepidSource.discord>;
-    if (!discordThreepid) return true;
+    if (!discordThreepid) {
+      return DiscordGuildMembershipState.MISSING_SCOPE;
+    }
 
     const guild = await this.discord
       .getClient(integration)
       .guilds.fetch(integration.config.guildId);
-    return guild.members
-      .fetch(discordThreepid.id)
-      .then(() => true)
-      .catch(() => false);
+
+    try {
+      await guild.members.fetch(discordThreepid.threepid);
+      return DiscordGuildMembershipState.MEMBER;
+    } catch (error) {
+      const { scope } = await this.discord.refreshAccessToken(discordThreepid);
+      if (scope.includes("guilds.join")) {
+        return DiscordGuildMembershipState.HAS_SCOPE;
+      }
+
+      return DiscordGuildMembershipState.MISSING_SCOPE;
+    }
   }
 
   public async addUserToDiscordGuild(
@@ -368,19 +386,16 @@ export class DiscordIntegrationService {
       throw new NotFoundException("User has no connected Discord account");
     }
 
-    try {
-      const accessToken = await this.discord.refreshAccessToken(
-        discordThreepid,
-        !!integration.config.useTempDiscordBot
-      );
+    const { accessToken } = await this.discord.refreshAccessToken(
+      discordThreepid
+    );
+    const guild = await this.discord
+      .getClient(integration)
+      .guilds.fetch(integration.config.guildId);
 
-      const guild = await this.discord
-        .getClient(integration)
-        .guilds.fetch(integration.config.guildId);
-      await guild.members.add(discordThreepid.threepid, { accessToken });
-    } catch (e) {
-      this.logger.warn(e);
-    }
+    await guild.members.add(discordThreepid.threepid, {
+      accessToken,
+    });
   }
 
   private async getDiscordChannelToPostTo(

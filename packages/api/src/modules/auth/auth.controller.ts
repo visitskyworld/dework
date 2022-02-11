@@ -44,6 +44,9 @@ export class AuthController {
   @Get("discord")
   @UseGuards(AuthGuard("discord"))
   async discord() {}
+  @Get("discord-join-guild")
+  @UseGuards(AuthGuard("discord-join-guild"))
+  async discordJoinGuild() {}
 
   @Get("discord/callback")
   @UseGuards(AuthGuard("discord"))

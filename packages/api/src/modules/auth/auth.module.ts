@@ -6,7 +6,10 @@ import { PassportModule } from "@nestjs/passport";
 import { GithubStrategy } from "./strategies/github.strategy";
 import { AuthController } from "./auth.controller";
 import { LoggerMiddleware } from "./logger";
-import { DiscordStrategy } from "./strategies/discord.strategy";
+import {
+  DiscordJoinGuildStrategy,
+  DiscordStrategy,
+} from "./strategies/discord.strategy";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
@@ -43,6 +46,7 @@ export class GlobalJwtModule {}
   providers: [
     GithubStrategy,
     DiscordStrategy,
+    DiscordJoinGuildStrategy,
     NotionStrategy,
     WalletConnectResolver,
   ],

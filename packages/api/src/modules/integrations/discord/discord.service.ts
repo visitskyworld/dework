@@ -148,25 +148,19 @@ export class DiscordService implements OnModuleInit {
   }
 
   public async refreshAccessToken(
-    threepid: Threepid<ThreepidSource.discord>,
-    useTempDiscordBot: boolean
-  ): Promise<string> {
+    threepid: Threepid<ThreepidSource.discord>
+  ): Promise<{ accessToken: string; scope: string }> {
     if (process.env.NODE_ENV === "test") {
-      return threepid.config.accessToken;
+      return { accessToken: threepid.config.accessToken, scope: "" };
     }
 
     const res = await request.post({
       url: "https://discord.com/api/oauth2/token",
+      json: true,
       form: {
-        client_id: this.config.get<string>(
-          useTempDiscordBot
-            ? "TEMP_DISCORD_OAUTH_CLIENT_ID"
-            : "MAIN_DISCORD_OAUTH_CLIENT_ID"
-        ),
+        client_id: this.config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_ID"),
         client_secret: this.config.get<string>(
-          useTempDiscordBot
-            ? "TEMP_DISCORD_OAUTH_CLIENT_SECRET"
-            : "MAIN_DISCORD_OAUTH_CLIENT_SECRET"
+          "MAIN_DISCORD_OAUTH_CLIENT_SECRET"
         ),
         grant_type: "refresh_token",
         refresh_token: threepid.config.refreshToken,
@@ -176,12 +170,12 @@ export class DiscordService implements OnModuleInit {
     await this.threepidService.update(
       _.merge({}, threepid, {
         config: {
-          refreshToken: res.body.refresh_token,
-          accessToken: res.body.access_token,
+          refreshToken: res.refresh_token,
+          accessToken: res.access_token,
         },
       })
     );
-    return res.body.access_token;
+    return { accessToken: res.access_token, scope: res.scope };
   }
 
   public getClient(

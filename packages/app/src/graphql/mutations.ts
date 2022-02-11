@@ -640,3 +640,9 @@ export const createProjectsFromTrello = gql`
 
   ${Fragments.organizationDetails}
 `;
+
+export const addUserToDiscordGuild = gql`
+  mutation AddUserToDiscordGuildMutation($organizationId: UUID!) {
+    added: addUserToDiscordGuild(organizationId: $organizationId)
+  }
+`;

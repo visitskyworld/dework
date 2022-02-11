@@ -4915,6 +4915,23 @@ export interface CreateProjectsFromTrelloMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: AddUserToDiscordGuildMutation
+// ====================================================
+
+export interface AddUserToDiscordGuildMutation {
+  added: boolean;
+}
+
+export interface AddUserToDiscordGuildMutationVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -7629,6 +7646,23 @@ export interface GetNotionDatabasesQuery {
 
 export interface GetNotionDatabasesQueryVariables {
   threepidId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetDiscordGuildMembershipStateQuery
+// ====================================================
+
+export interface GetDiscordGuildMembershipStateQuery {
+  state: DiscordGuildMembershipState;
+}
+
+export interface GetDiscordGuildMembershipStateQueryVariables {
+  organizationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -10814,6 +10848,12 @@ export interface OrganizationDetails {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum DiscordGuildMembershipState {
+  HAS_SCOPE = "HAS_SCOPE",
+  MEMBER = "MEMBER",
+  MISSING_SCOPE = "MISSING_SCOPE",
+}
 
 export enum EntityDetailType {
   discord = "discord",

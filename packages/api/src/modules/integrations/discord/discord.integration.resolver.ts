@@ -1,11 +1,24 @@
-import { Args, Context, Mutation, Query } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Mutation,
+  Query,
+  registerEnumType,
+} from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
-import { DiscordIntegrationService } from "./discord.integration.service";
+import {
+  DiscordGuildMembershipState,
+  DiscordIntegrationService,
+} from "./discord.integration.service";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+
+registerEnumType(DiscordGuildMembershipState, {
+  name: "DiscordGuildMembershipState",
+});
 
 @Injectable()
 export class DiscordIntegrationResolver {
@@ -24,12 +37,15 @@ export class DiscordIntegrationResolver {
     return this.discord.getChannels(organizationId, parentChannelId);
   }
 
-  @Query(() => Boolean)
-  public async canJoinDiscordGuild(
+  @Query(() => DiscordGuildMembershipState)
+  public async getDiscordGuildMembershipState(
     @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
     @Context("user") user: User
-  ): Promise<boolean> {
-    return this.discordIntegration.canJoinDiscordGuild(organizationId, user.id);
+  ): Promise<DiscordGuildMembershipState> {
+    return this.discordIntegration.getDiscordGuildMembershipState(
+      organizationId,
+      user.id
+    );
   }
 
   @Mutation(() => Boolean)

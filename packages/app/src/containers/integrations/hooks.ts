@@ -24,6 +24,11 @@ import {
   GetTrelloBoardsQueryVariables,
   GetNotionDatabasesQuery,
   GetNotionDatabasesQueryVariables,
+  AddUserToDiscordGuildMutation,
+  AddUserToDiscordGuildMutationVariables,
+  DiscordGuildMembershipState,
+  GetDiscordGuildMembershipStateQuery,
+  GetDiscordGuildMembershipStateQueryVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -215,4 +220,39 @@ export function useNotionDatabases(threepidId: string) {
     GetNotionDatabasesQueryVariables
   >(Queries.notionDatabases, { variables: { threepidId } });
   return data?.notionDatabases;
+}
+
+export function useDiscordGuildMembershipState(
+  organizationId: string | undefined
+): DiscordGuildMembershipState | undefined {
+  const { data } = useQuery<
+    GetDiscordGuildMembershipStateQuery,
+    GetDiscordGuildMembershipStateQueryVariables
+  >(Queries.getDiscordGuildMembershipState, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return data?.state;
+}
+
+export function useAddUserToDiscordGuild(
+  organizationId: string | undefined
+): () => Promise<void> {
+  const [mutation] = useMutation<
+    AddUserToDiscordGuildMutation,
+    AddUserToDiscordGuildMutationVariables
+  >(Mutations.addUserToDiscordGuild);
+  return useCallback(async () => {
+    const res = await mutation({
+      variables: { organizationId: organizationId! },
+      refetchQueries: [
+        {
+          query: Queries.getDiscordGuildMembershipState,
+          variables: { organizationId: organizationId! },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+    if (!res.data) throw new Error(JSON.stringify(res.errors));
+  }, [mutation, organizationId]);
 }
