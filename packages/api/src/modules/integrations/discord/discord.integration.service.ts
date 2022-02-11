@@ -495,7 +495,7 @@ export class DiscordIntegrationService {
     );
   }
 
-  public async postReviewRequest(task: Task) {
+  public async postReviewRequest(task: Task, githubUrl: string) {
     const { channelToPostTo } = await this.getChannelFromTask(task);
     if (!channelToPostTo) return;
     const owner = !!task.ownerId
@@ -505,7 +505,7 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channelToPostTo,
       task,
-      "📭 Review re-requested in Github!",
+      `📭 Review re-requested in Github!\n\n${githubUrl}`,
       !!owner ? [owner] : undefined,
       !!firstAssignee
         ? {
@@ -519,7 +519,11 @@ export class DiscordIntegrationService {
     );
   }
 
-  public async postReviewSubmittal(taskId: string, approved: boolean) {
+  public async postReviewSubmittal(
+    taskId: string,
+    githubUrl: string,
+    approved: boolean
+  ) {
     const task = await this.taskService.findById(taskId);
     if (!task) return;
     const { channelToPostTo } = await this.getChannelFromTask(task);
@@ -528,7 +532,7 @@ export class DiscordIntegrationService {
     const assignees = await this.findTaskUserThreepids(task, false);
     const reviewMessage = approved
       ? "PR approved!"
-      : "📬 A review was submitted in Github!";
+      : `📬 A review was submitted in Github!\n\n${githubUrl}`;
     await this.postTaskCard(
       channelToPostTo,
       task,

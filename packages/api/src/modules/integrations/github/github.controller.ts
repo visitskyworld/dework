@@ -222,14 +222,18 @@ export class GithubController {
           });
         }
       } else if (event.action === "submitted") {
-        this.discordIntegrationService.postReviewSubmittal(
-          task.id,
-          event.review?.state === "approved"
-        );
-        this.log("A review was submitted in Github:", {
-          pullRequestTitle: prData.title,
-          taskId: task.id,
-        });
+        const wasSingleCommentAdded = event.review.body === null;
+        if (!wasSingleCommentAdded) {
+          this.discordIntegrationService.postReviewSubmittal(
+            task.id,
+            event.review.html_url,
+            event.review?.state === "approved"
+          );
+          this.log("A review was submitted in Github:", {
+            pullRequestTitle: prData.title,
+            taskId: task.id,
+          });
+        }
       } else {
         if (pr) {
           await this.githubService.updatePullRequest({ ...prData, id: pr.id });
@@ -253,7 +257,10 @@ export class GithubController {
               status: TaskStatus.IN_REVIEW,
             });
           } else if (event.action === "review_requested") {
-            this.discordIntegrationService.postReviewRequest(task);
+            this.discordIntegrationService.postReviewRequest(
+              task,
+              event.pull_request.html_url
+            );
             this.log("Another review was requested from Github:", {
               pullRequestTitle: prData.title,
               taskId: task.id,
