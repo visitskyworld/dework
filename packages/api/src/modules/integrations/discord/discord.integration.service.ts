@@ -307,6 +307,39 @@ export class DiscordIntegrationService {
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
   }
 
+  public async canJoinDiscordGuild(
+    organizationId: string,
+    userId: string
+  ): Promise<boolean> {
+    this.logger.debug(
+      `Adding user to Discord guild: ${JSON.stringify({
+        userId,
+        organizationId,
+      })}`
+    );
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.DISCORD
+      );
+
+    if (!integration) return false;
+
+    const discordThreepid = (await this.threepidService.findOne({
+      userId,
+      source: ThreepidSource.discord,
+    })) as Threepid<ThreepidSource.discord>;
+    if (!discordThreepid) return true;
+
+    const guild = await this.discord
+      .getClient(integration)
+      .guilds.fetch(integration.config.guildId);
+    return guild.members
+      .fetch(discordThreepid.id)
+      .then(() => true)
+      .catch(() => false);
+  }
+
   public async addUserToDiscordGuild(
     organizationId: string,
     userId: string

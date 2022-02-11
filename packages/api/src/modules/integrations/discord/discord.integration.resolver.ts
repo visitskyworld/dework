@@ -24,6 +24,14 @@ export class DiscordIntegrationResolver {
     return this.discord.getChannels(organizationId, parentChannelId);
   }
 
+  @Query(() => Boolean)
+  public async canJoinDiscordGuild(
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
+    @Context("user") user: User
+  ): Promise<boolean> {
+    return this.discordIntegration.canJoinDiscordGuild(organizationId, user.id);
+  }
+
   @Mutation(() => Boolean)
   public async postFeedbackToDiscord(
     @Args("feedbackContent", { type: () => String })
