@@ -16,7 +16,7 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { Constants } from "@dewo/app/util/constants";
 
 interface Props {
-  taskId: string;
+  taskId: string | undefined;
   visible: boolean;
   onCancel(event: any): void;
   onDone(task: Task): unknown;
