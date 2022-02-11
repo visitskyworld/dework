@@ -107,7 +107,7 @@ describe("DiscordIntegrationResolver", () => {
 
   describe("Mutations", () => {
     describe("createTaskDiscordLink", () => {
-      fit("should fail if task's project does not have a discord integration", async () => {
+      it("should fail if task's project does not have a discord integration", async () => {
         const task = await fixtures.createTask();
         const response = await client.request({
           app,
