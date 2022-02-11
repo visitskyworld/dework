@@ -69,6 +69,7 @@ DECLARE
   fantom_id uuid = uuid_generate_v4();
   harmony_mainnet_id uuid = uuid_generate_v4();
   harmony_testnet_id uuid = uuid_generate_v4();
+  arbitrum_mainnet_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
 
   solana_mainnet_id uuid = uuid_generate_v4();
@@ -167,6 +168,17 @@ BEGIN
       "gnosisSafe": {
         "serviceUrl": "https://multisig.harmony.one"
       }
+    }' AS json)
+  ), (
+    arbitrum_mainnet_id,
+    'ETHEREUM',
+    'Arbitrum One',
+    'arbitrum-mainnet',
+    '006',
+    CAST('{
+      "chainId": 42161,
+      "rpcUrl": "https://arb1.arbitrum.io/rpc",
+      "explorerUrl": "https://arbiscan.io"
     }' AS json)
   ), (
     solana_mainnet_id,
@@ -301,6 +313,13 @@ BEGIN
 
     ('NATIVE', 'Harmony', 'ONE', 18, 'ALWAYS', NULL, harmony_testnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/harmony"
+    }' AS JSON)),
+
+    ('NATIVE', 'AETH', 'AETH', 18, 'ALWAYS', NULL, arbitrum_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Arbitrum)', 'USDC', 18, 'ALWAYS', '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', arbitrum_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
     ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id, CAST('{

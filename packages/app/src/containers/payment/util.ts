@@ -19,6 +19,7 @@ export const networkSlugsByPaymentMethodType: Record<
     "sokol-testnet",
     "harmony-mainnet",
     "harmony-testnet",
+    "arbitrum-mainnet",
     "avalanche-mainnet",
     "fantom-mainnet",
   ],
