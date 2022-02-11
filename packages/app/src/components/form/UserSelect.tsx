@@ -8,6 +8,8 @@ interface Props {
   placeholder?: string;
   users: User[] | undefined;
   disabled?: boolean;
+  value?: string[];
+  onChange?(value: string[]): void;
 }
 
 export const UserSelect: FC<Props> = ({
@@ -15,6 +17,8 @@ export const UserSelect: FC<Props> = ({
   placeholder,
   users,
   disabled,
+  value,
+  onChange,
 }) => {
   return (
     <Select
@@ -27,6 +31,8 @@ export const UserSelect: FC<Props> = ({
       optionFilterProp="label"
       optionLabelProp="label" // don't put children inside tagRender
       placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       tagRender={(props) => {
         const user = users?.find((u) => u.id === props.value);
         if (!user) return <div />;

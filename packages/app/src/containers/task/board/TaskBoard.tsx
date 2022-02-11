@@ -21,8 +21,7 @@ import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 import { ContributorReviewModal } from "../ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { TaskFilterButton } from "./filters/TaskFilterButton";
-import { TaskFilterProvider } from "./filters/FilterContext";
+import { useFilteredTasks } from "./filters/FilterContext";
 
 const defaultStatuses: TaskStatus[] = [
   TaskStatus.TODO,
@@ -50,7 +49,9 @@ export const TaskBoard: FC<Props> = ({
   statuses = defaultStatuses,
 }) => {
   const { user } = useAuthContext();
-  const taskSectionsByStatus = useGroupedTasks(tasks, projectId);
+
+  const filteredTasks = useFilteredTasks(tasks);
+  const taskSectionsByStatus = useGroupedTasks(filteredTasks, projectId);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
   const currentlyDraggingTask = useMemo(
@@ -124,8 +125,7 @@ export const TaskBoard: FC<Props> = ({
   resetServerContext();
   if (!loaded) return null;
   return (
-    <TaskFilterProvider>
-      {!!projectId && <TaskFilterButton projectId={projectId} />}
+    <>
       <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
         <Row className="dewo-task-board">
           <Space size="middle" align="start">
@@ -154,6 +154,6 @@ export const TaskBoard: FC<Props> = ({
           />
         )}
       </DragDropContext>
-    </TaskFilterProvider>
+    </>
   );
 };

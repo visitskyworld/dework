@@ -15,6 +15,8 @@ import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSe
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectIntegrationType } from "@dewo/app/graphql/types";
+import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/FilterContext";
+import { TaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -49,61 +51,76 @@ const Page: NextPage = () => {
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <ProjectHeader projectId={projectId} />
         <Layout.Content style={{ flex: 1 }}>
-          <Tabs
-            activeKey={currentTab}
-            style={{ height: "100%" }}
-            className="dewo-tabs"
-            onTabClick={navigateToTab}
-          >
-            <Tabs.TabPane
-              tab={<Tab icon={<Icons.ProjectOutlined />} children="Board" />}
-              key="board"
+          <TaskFilterProvider>
+            <Tabs
+              activeKey={currentTab}
+              style={{ height: "100%" }}
+              className="dewo-tabs"
+              tabBarExtraContent={
+                currentTab === "board" && (
+                  <TaskFilterButton
+                    projectId={projectId}
+                    style={{ marginLeft: 8, marginRight: 8 }}
+                  />
+                )
+              }
+              onTabClick={navigateToTab}
             >
-              <ProjectTaskBoard projectId={projectId} />
-            </Tabs.TabPane>
-            <Tabs.TabPane
-              tab={<Tab icon={<Icons.BarsOutlined />} children="List" />}
-              key="list"
-              style={{ overflowX: "auto", padding: 12 }}
-            >
-              <ProjectTaskList projectId={projectId} />
-            </Tabs.TabPane>
-            <Tabs.TabPane
-              tab={<Tab icon={<Icons.InfoCircleOutlined />} children="About" />}
-              key="about"
-              style={{ padding: "24px 12px" }}
-            >
-              {!!project && (
-                <Col className="mx-auto max-w-sm w-full">
-                  <ProjectAbout project={project} />
-                </Col>
-              )}
-            </Tabs.TabPane>
-            {canEditProject && !!project && (
+              <Tabs.TabPane
+                tab={<Tab icon={<Icons.ProjectOutlined />} children="Board" />}
+                key="board"
+              >
+                <ProjectTaskBoard projectId={projectId} />
+              </Tabs.TabPane>
+              <Tabs.TabPane
+                tab={<Tab icon={<Icons.BarsOutlined />} children="List" />}
+                key="list"
+                style={{ overflowX: "auto", padding: 12 }}
+              >
+                <ProjectTaskList projectId={projectId} />
+              </Tabs.TabPane>
               <Tabs.TabPane
                 tab={
-                  <Tab
-                    icon={<Icons.SettingOutlined />}
-                    children={
-                      <>
-                        Settings
-                        {!hasDiscordIntegration && (
-                          <Tag className="bg-primary" style={{ marginLeft: 8 }}>
-                            Setup Discord
-                          </Tag>
-                        )}
-                      </>
-                    }
-                  />
+                  <Tab icon={<Icons.InfoCircleOutlined />} children="About" />
                 }
-                style={{ padding: 12 }}
-                key="settings"
-                className="max-w-lg mx-auto w-full"
+                key="about"
+                style={{ padding: "24px 12px" }}
               >
-                <ProjectSettings project={project} />
+                {!!project && (
+                  <Col className="mx-auto max-w-sm w-full">
+                    <ProjectAbout project={project} />
+                  </Col>
+                )}
               </Tabs.TabPane>
-            )}
-          </Tabs>
+              {canEditProject && !!project && (
+                <Tabs.TabPane
+                  tab={
+                    <Tab
+                      icon={<Icons.SettingOutlined />}
+                      children={
+                        <>
+                          Settings
+                          {!hasDiscordIntegration && (
+                            <Tag
+                              className="bg-primary"
+                              style={{ marginLeft: 8 }}
+                            >
+                              Setup Discord
+                            </Tag>
+                          )}
+                        </>
+                      }
+                    />
+                  }
+                  style={{ padding: 12 }}
+                  key="settings"
+                  className="max-w-lg mx-auto w-full"
+                >
+                  <ProjectSettings project={project} />
+                </Tabs.TabPane>
+              )}
+            </Tabs>
+          </TaskFilterProvider>
         </Layout.Content>
       </Layout.Content>
       <ForbiddenResourceModal visible={forbiddenError} />
