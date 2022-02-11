@@ -14,7 +14,6 @@ import {
   Row,
   Typography,
   Col,
-  Avatar,
   Checkbox,
   Tooltip,
   DatePicker,
@@ -154,6 +153,24 @@ export const TaskForm: FC<TaskFormProps> = ({
     >
       <Row gutter={16} className="dewo-task-form">
         <Col xs={24} sm={16}>
+          {!!task?.parentTask && (
+            <Button
+              type="text"
+              size="small"
+              style={{ marginLeft: -12 }}
+              icon={<Icons.CaretLeftFilled className="text-secondary" />}
+              onClick={() => navigateToTask(task.parentTask!.id)}
+            >
+              <Typography.Text
+                type="secondary"
+                style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
+                ellipsis
+              >
+                {task.parentTask.name}
+              </Typography.Text>
+            </Button>
+          )}
+
           <Form.Item
             name="name"
             // label={mode === "create" ? "Task name" : undefined}
@@ -231,31 +248,6 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && <TaskActivityFeed task={task} />}
         </Col>
         <Col xs={24} sm={8} style={{ marginTop: 16 }}>
-          {!!task?.parentTask && (
-            <FormSection label="Parent Task" style={{ display: "flex" }}>
-              <Button
-                type="text"
-                size="small"
-                className="dewo-btn-highlight"
-                icon={
-                  <Avatar
-                    size="small"
-                    style={{ flexShrink: 0 }}
-                    icon={<Icons.CheckOutlined />}
-                  />
-                }
-                onClick={() => navigateToTask(task.parentTask!.id)}
-              >
-                <Typography.Text
-                  style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
-                  ellipsis
-                >
-                  {task.parentTask.name}
-                </Typography.Text>
-              </Button>
-            </FormSection>
-          )}
-
           <Form.Item
             name="status"
             label="Status"
