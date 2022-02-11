@@ -38,7 +38,7 @@ export const BookDemoSection: FC = () => {
             </Link>
           </Col>
           <Col xs={24} sm={12}>
-            <Link href="https://discord.com/channels/918603668935311391/940669659974344704">
+            <Link href="http://discord.gg/wjSnYC6Q">
               <a target="_blank">
                 <Button size="large" block icon={<DiscordIcon />}>
                   Join our Discord

@@ -203,11 +203,11 @@ export class OrganizationService {
     return this.organizationRepo
       .createQueryBuilder("organization")
       .where("organization.featured = :featured", { featured: true })
-      .leftJoinAndSelect("organization.projects", "project")
-      .leftJoinAndSelect("project.members", "member")
-      .leftJoinAndSelect("member.user", "user")
-      .limit(limit)
-      .getMany();
+      .innerJoinAndSelect("organization.projects", "project")
+      .innerJoinAndSelect("project.members", "member")
+      .innerJoinAndSelect("member.user", "user")
+      .getMany()
+      .then((orgs) => orgs.slice(0, limit));
   }
 
   public findProjectTokenGates(
