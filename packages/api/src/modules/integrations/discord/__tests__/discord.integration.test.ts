@@ -90,7 +90,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should not create Discord channel if not matching requirements", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -109,7 +109,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should create Discord channel if matching requirements", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -136,7 +136,7 @@ describe("DiscordIntegration", () => {
     });
 
     xit("should not give unrelated user Discord channel access", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -147,7 +147,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should add task owner to Discord channel", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -162,7 +162,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should add task assignees to Discord channel", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -179,7 +179,7 @@ describe("DiscordIntegration", () => {
 
   describe("update task", () => {
     it("should create Discord channel if task is no longer TODO", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -196,7 +196,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should add new task owner to Discord channel", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -212,7 +212,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should add new task assignee to Discord channel", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -228,7 +228,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should not remove old owner access to Discord channel", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -247,7 +247,7 @@ describe("DiscordIntegration", () => {
     });
 
     xit("should set internal DiscordChannel.deletedAt if channel has been deleted", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );
@@ -269,7 +269,7 @@ describe("DiscordIntegration", () => {
     });
 
     it("should make Discord channel archived if status is done", async () => {
-      const project = await fixtures.createProjectWithDiscordIntegration(
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
         discordGuildId,
         discordChannelId
       );

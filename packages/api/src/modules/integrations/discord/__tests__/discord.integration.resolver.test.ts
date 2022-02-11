@@ -1,4 +1,5 @@
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -6,9 +7,13 @@ import { DiscordIntegrationRequests } from "@dewo/api/testing/requests/discord.i
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import * as Discord from "discord.js";
 import { DiscordService } from "../discord.service";
+import faker from "faker";
 
 const discordGuildId = "915593019871342592";
 const discordChannelId = "926823781102661652";
+
+const discordUserId = "921849518750838834";
+const discordUserAccessToken = "MIh53yuCgx4CNwQA5tqbIkAiaG98Gc";
 
 describe("DiscordIntegrationResolver", () => {
   let app: INestApplication;
@@ -114,7 +119,7 @@ describe("DiscordIntegrationResolver", () => {
       });
 
       it("should create new Discord thread if none exists", async () => {
-        const project = await fixtures.createProjectWithDiscordIntegration(
+        const { project } = await fixtures.createProjectWithDiscordIntegration(
           discordGuildId,
           discordChannelId
         );
@@ -167,6 +172,84 @@ describe("DiscordIntegrationResolver", () => {
           })
           .then((res) => res.body.data.link);
         expect(linkAfterThreadDeleted).not.toEqual(linkWhenNoThreadExists);
+      });
+    });
+
+    describe("addUserToDiscordGuild", () => {
+      it("should fail if org has no discord integration", async () => {
+        const organization = await fixtures.createOrganization();
+        const user = await fixtures.createUser();
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: DiscordIntegrationRequests.addUserToDiscordGuild(
+            organization.id
+          ),
+        });
+
+        client.expectGqlError(response, HttpStatus.NOT_FOUND);
+        client.expectGqlErrorMessage(
+          response,
+          "Organization integration not found"
+        );
+      });
+
+      it("should fail if user has not authed with discord", async () => {
+        const { organization } =
+          await fixtures.createProjectWithDiscordIntegration(
+            discordGuildId,
+            discordChannelId
+          );
+        const user = await fixtures.createUser();
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: DiscordIntegrationRequests.addUserToDiscordGuild(
+            organization.id
+          ),
+        });
+
+        client.expectGqlError(response, HttpStatus.NOT_FOUND);
+        client.expectGqlErrorMessage(
+          response,
+          "User has no connected Discord account"
+        );
+      });
+
+      it("should add user to Discord guild", async () => {
+        // Dework role in discord was manually given the "Kick Members" permission to get the unit test to work
+        await discordGuild.members.kick(discordUserId).catch();
+        const memberBefore = await discordGuild.members
+          .fetch(discordUserId)
+          .catch(() => undefined);
+        expect(memberBefore).toBeFalsy();
+
+        const { organization } =
+          await fixtures.createProjectWithDiscordIntegration(
+            discordGuildId,
+            discordChannelId
+          );
+        const user = await fixtures.createUser({
+          source: ThreepidSource.discord,
+          threepid: discordUserId,
+          config: {
+            accessToken: discordUserAccessToken,
+            profile: { username: faker.internet.userName() },
+          } as any,
+        });
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: DiscordIntegrationRequests.addUserToDiscordGuild(
+            organization.id
+          ),
+        });
+
+        expect(response.body.data.added).toEqual(true);
+
+        const memberAfter = await discordGuild.members.fetch(discordUserId);
+        expect(memberAfter).toBeFalsy();
       });
     });
   });

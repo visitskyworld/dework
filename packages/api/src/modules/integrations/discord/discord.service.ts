@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { EventSubscriber } from "typeorm";
 import * as Discord from "discord.js";
+import * as request from "request-promise";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
@@ -14,6 +15,9 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import { ThreepidService } from "../../threepid/threepid.service";
+import _ from "lodash";
 
 @Injectable()
 @EventSubscriber()
@@ -24,6 +28,7 @@ export class DiscordService implements OnModuleInit {
 
   constructor(
     private readonly integrationService: IntegrationService,
+    private readonly threepidService: ThreepidService,
     private readonly config: ConfigService<ConfigType>
   ) {
     this.mainClient = new Discord.Client({ intents: [] });
@@ -140,6 +145,43 @@ export class DiscordService implements OnModuleInit {
     );
 
     return true;
+  }
+
+  public async refreshAccessToken(
+    threepid: Threepid<ThreepidSource.discord>,
+    useTempDiscordBot: boolean
+  ): Promise<string> {
+    if (process.env.NODE_ENV === "test") {
+      return threepid.config.accessToken;
+    }
+
+    const res = await request.post({
+      url: "https://discord.com/api/oauth2/token",
+      form: {
+        client_id: this.config.get<string>(
+          useTempDiscordBot
+            ? "TEMP_DISCORD_OAUTH_CLIENT_ID"
+            : "MAIN_DISCORD_OAUTH_CLIENT_ID"
+        ),
+        client_secret: this.config.get<string>(
+          useTempDiscordBot
+            ? "TEMP_DISCORD_OAUTH_CLIENT_SECRET"
+            : "MAIN_DISCORD_OAUTH_CLIENT_SECRET"
+        ),
+        grant_type: "refresh_token",
+        refresh_token: threepid.config.refreshToken,
+      },
+    });
+
+    await this.threepidService.update(
+      _.merge({}, threepid, {
+        config: {
+          refreshToken: res.body.refresh_token,
+          accessToken: res.body.access_token,
+        },
+      })
+    );
+    return res.body.access_token;
   }
 
   public getClient(

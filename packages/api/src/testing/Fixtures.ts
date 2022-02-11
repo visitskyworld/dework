@@ -72,7 +72,7 @@ export class Fixtures {
     partial: Partial<Threepid> = {}
   ): Promise<Threepid> {
     return this.threepidService.create({
-      source: ThreepidSource.discord,
+      source: ThreepidSource.hiro,
       threepid: faker.datatype.uuid(),
       config: {
         profile: {
@@ -413,10 +413,16 @@ export class Fixtures {
   async createProjectWithDiscordIntegration(
     guildId: string,
     channelId: string
-  ): Promise<Project> {
-    const project = await this.createProject();
+  ): Promise<{
+    project: Project;
+    organization: Organization;
+  }> {
+    const organization = await this.createOrganization();
+    const project = await this.createProject({
+      organizationId: organization.id,
+    });
     const orgInt = await this.createOrganizationIntegration({
-      organizationId: project.organizationId,
+      organizationId: organization.id,
       type: OrganizationIntegrationType.DISCORD,
       config: { guildId, permissions: "" },
     });
@@ -432,7 +438,7 @@ export class Fixtures {
       },
       organizationIntegrationId: orgInt.id,
     });
-    return project;
+    return { project, organization };
   }
 }
 

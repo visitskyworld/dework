@@ -1,10 +1,11 @@
 import { Args, Context, Mutation, Query } from "@nestjs/graphql";
-import { Injectable } from "@nestjs/common";
+import { Injectable, UseGuards } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { DiscordIntegrationChannel } from "./dto/DiscordIntegrationChannel";
 import { DiscordService } from "./discord.service";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { User } from "@dewo/api/models/User";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @Injectable()
 export class DiscordIntegrationResolver {
@@ -39,5 +40,18 @@ export class DiscordIntegrationResolver {
     @Context("user") user: User | undefined
   ): Promise<string> {
     return this.discordIntegration.createTaskDiscordLink(taskId, user);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(AuthGuard)
+  public async addUserToDiscordGuild(
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
+    @Context("user") user: User
+  ) {
+    await this.discordIntegration.addUserToDiscordGuild(
+      organizationId,
+      user.id
+    );
+    return true;
   }
 }

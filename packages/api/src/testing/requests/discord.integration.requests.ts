@@ -37,4 +37,17 @@ export class DiscordIntegrationRequests {
       variables: { taskId },
     };
   }
+
+  public static addUserToDiscordGuild(
+    organizationId: string
+  ): GraphQLTestClientRequestBody<{ organizationId: string }> {
+    return {
+      query: `
+        mutation AddUserToDiscordGuild($organizationId: UUID!) {
+          added: addUserToDiscordGuild(organizationId: $organizationId)
+        }
+      `,
+      variables: { organizationId },
+    };
+  }
 }

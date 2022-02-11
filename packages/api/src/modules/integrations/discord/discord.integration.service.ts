@@ -3,12 +3,11 @@ import _ from "lodash";
 import moment from "moment";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, IsNull, Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { formatFixed } from "@ethersproject/bignumber";
 import {
   DiscordProjectIntegrationConfig,
   DiscordProjectIntegrationFeature,
-  ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
@@ -33,6 +32,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
+import { IntegrationService } from "../integration.service";
 
 @Injectable()
 export class DiscordIntegrationService {
@@ -43,10 +43,9 @@ export class DiscordIntegrationService {
     private readonly permalink: PermalinkService,
     private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService,
+    private readonly integrationService: IntegrationService,
     @InjectRepository(DiscordChannel)
-    private readonly discordChannelRepo: Repository<DiscordChannel>,
-    @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>
+    private readonly discordChannelRepo: Repository<DiscordChannel>
   ) {}
 
   private gifs = [
@@ -71,7 +70,10 @@ export class DiscordIntegrationService {
       | TaskSubmissionCreatedEvent
   ) {
     if (!!event.task.parentTaskId) return;
-    const integration = await this.getProjectIntegration(event.task.projectId);
+    const integration = await this.integrationService.findProjectIntegration(
+      event.task.projectId,
+      ProjectIntegrationType.DISCORD
+    );
     if (!integration) return;
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
@@ -305,6 +307,49 @@ export class DiscordIntegrationService {
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
   }
 
+  public async addUserToDiscordGuild(
+    organizationId: string,
+    userId: string
+  ): Promise<void> {
+    this.logger.debug(
+      `Adding user to Discord guild: ${JSON.stringify({
+        userId,
+        organizationId,
+      })}`
+    );
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.DISCORD
+      );
+
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const discordThreepid = (await this.threepidService.findOne({
+      userId,
+      source: ThreepidSource.discord,
+    })) as Threepid<ThreepidSource.discord>;
+    if (!discordThreepid) {
+      throw new NotFoundException("User has no connected Discord account");
+    }
+
+    try {
+      const accessToken = await this.discord.refreshAccessToken(
+        discordThreepid,
+        !!integration.config.useTempDiscordBot
+      );
+
+      const guild = await this.discord
+        .getClient(integration)
+        .guilds.fetch(integration.config.guildId);
+      await guild.members.add(discordThreepid.threepid, { accessToken });
+    } catch (e) {
+      this.logger.warn(e);
+    }
+  }
+
   private async getDiscordChannelToPostTo(
     task: Task,
     channel: Discord.TextChannel,
@@ -357,18 +402,6 @@ export class DiscordIntegrationService {
     }
 
     return { channel: undefined, new: false };
-  }
-
-  private async getProjectIntegration(
-    projectId: string
-  ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>> {
-    const integration = await this.projectIntegrationRepo.findOne({
-      projectId,
-      type: ProjectIntegrationType.DISCORD,
-      deletedAt: IsNull(),
-    });
-
-    return integration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
   }
 
   private async getDiscordId(userId: string): Promise<string | undefined> {
@@ -559,7 +592,10 @@ export class DiscordIntegrationService {
     wasChannelToPostToJustCreated: boolean;
     guild: Discord.Guild | undefined;
   }> {
-    const integration = await this.getProjectIntegration(task.projectId);
+    const integration = await this.integrationService.findProjectIntegration(
+      task.projectId,
+      ProjectIntegrationType.DISCORD
+    );
     if (!integration)
       return {
         mainChannel: undefined,
