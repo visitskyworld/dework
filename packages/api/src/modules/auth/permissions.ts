@@ -131,6 +131,7 @@ export const permissions: Permissions<
       "storyPoints",
       "reward",
       "options",
+      "subtasks",
     ]);
 
     can(Actions.read, TaskApplication);
