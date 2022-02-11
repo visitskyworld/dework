@@ -365,3 +365,8 @@ BEGIN
   UPDATE threepid SET "userId" = new_user_id WHERE "userId" = old_user_id;
 END $$;
 ```
+
+# Get link to org from id list
+```bash
+echo "https://app.dework.xyz/o/$(./packages/scripts/uuid-to-base62.sh <org id>)"
+```
