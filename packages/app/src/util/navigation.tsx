@@ -33,6 +33,20 @@ export function useNavigateToTaskFn(): (taskId: string) => void {
   );
 }
 
+export function useNavigateToTasApplicationkFn(): (
+  applyToTaskId: string
+) => void {
+  const router = useRouter();
+  return useCallback(
+    (applyToTaskId) =>
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, applyToTaskId },
+      }),
+    [router]
+  );
+}
+
 export function useNavigateToOrganization(): (orgId: string) => void {
   const router = useRouter();
   return useCallback(

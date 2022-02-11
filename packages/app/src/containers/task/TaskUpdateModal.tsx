@@ -11,6 +11,7 @@ import {
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
+import { TaskApplyModal } from "./TaskApplyModal";
 
 interface Props {
   taskId: string;
@@ -81,19 +82,28 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
 export const TaskUpdateModalListener: FC = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string | undefined;
-  const closeTaskModal = useCallback(
+  const applyToTaskId = router.query.applyToTaskId as string | undefined;
+  const closeModal = useCallback(
     () =>
       router.push({
         pathname: router.pathname,
-        query: _.omit(router.query, "taskId"),
+        query: _.omit(router.query, ["taskId", "applyToTaskId"]),
       }),
     [router]
   );
   return (
-    <TaskUpdateModal
-      taskId={taskId!}
-      visible={!!taskId}
-      onCancel={closeTaskModal}
-    />
+    <>
+      <TaskUpdateModal
+        taskId={taskId!}
+        visible={!!taskId}
+        onCancel={closeModal}
+      />
+      <TaskApplyModal
+        taskId={applyToTaskId}
+        visible={!!applyToTaskId}
+        onCancel={closeModal}
+        onDone={closeModal}
+      />
+    </>
   );
 };

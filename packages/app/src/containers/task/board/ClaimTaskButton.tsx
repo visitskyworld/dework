@@ -3,9 +3,8 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
 import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useToggle } from "@dewo/app/util/hooks";
-import { TaskApplyModal } from "../TaskApplyModal";
 import { useDeleteTaskApplication } from "../hooks";
+import { useNavigateToTasApplicationkFn } from "@dewo/app/util/navigation";
 
 interface Props {
   task: Task;
@@ -18,7 +17,11 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
     [user, task.applications]
   );
 
-  const showClaimEducation = useToggle();
+  const navigateToTasApplicationk = useNavigateToTasApplicationkFn();
+  const handleInterested = useCallback(
+    () => navigateToTasApplicationk(task.id),
+    [navigateToTasApplicationk, task.id]
+  );
 
   const deleteTaskApplication = useDeleteTaskApplication();
   const handleUnclaimTask = useCallback(
@@ -58,17 +61,11 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
         <Button
           size="small"
           icon={<Icons.UnlockOutlined />}
-          onClick={showClaimEducation.toggleOn}
+          onClick={handleInterested}
         >
           I'm Interested
         </Button>
       )}
-      <TaskApplyModal
-        task={task}
-        visible={showClaimEducation.isOn}
-        onCancel={showClaimEducation.toggleOff}
-        onDone={showClaimEducation.toggleOff}
-      />
     </>
   );
 };

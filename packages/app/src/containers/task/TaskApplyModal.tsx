@@ -1,7 +1,7 @@
 import { DiscordGuildMembershipState, Task } from "@dewo/app/graphql/types";
 import { Modal, Row, Spin, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { useCreateTaskApplication } from "./hooks";
+import { useCreateTaskApplication, useTask } from "./hooks";
 import { Form, Button, Input } from "antd";
 import { DatePicker } from "antd";
 import moment from "moment";
@@ -16,17 +16,18 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { Constants } from "@dewo/app/util/constants";
 
 interface Props {
-  task: Task;
+  taskId: string;
   visible: boolean;
   onCancel(event: any): void;
   onDone(task: Task): unknown;
 }
 
-const ApplyToTaskContent: FC<Props> = ({ task, onDone }) => {
+const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const { user } = useAuthContext();
   const router = useRouter();
 
-  const { project } = useProject(task.projectId);
+  const task = useTask(taskId);
+  const { project } = useProject(task?.projectId);
   const membershipState = useDiscordGuildMembershipState(
     project?.organizationId
   );
@@ -38,7 +39,7 @@ const ApplyToTaskContent: FC<Props> = ({ task, onDone }) => {
   const handleSubmit = useCallback(
     async (input) => {
       const claimedTask = await createTaskApplication({
-        taskId: task.id,
+        taskId: task!.id,
         userId: user!.id,
         message: input.message,
         startDate: input.dates[0],
@@ -54,7 +55,7 @@ const ApplyToTaskContent: FC<Props> = ({ task, onDone }) => {
       onDone,
       addUserToDiscordGuild,
       membershipState,
-      task.id,
+      task,
       user,
     ]
   );
