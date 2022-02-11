@@ -284,10 +284,8 @@ export class DiscordIntegrationService {
   ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
-    const { channelToPostTo, guild } = await this.getChannelFromTask(
-      task,
-      true
-    );
+    const { channelToPostTo, wasChannelToPostToJustCreated, guild } =
+      await this.getChannelFromTask(task, true);
 
     if (!channelToPostTo) {
       throw new NotFoundException(
@@ -299,7 +297,9 @@ export class DiscordIntegrationService {
       channelToPostTo.setArchived(false);
     }
 
-    await this.postDefaultInitialMessage(task, channelToPostTo);
+    if (wasChannelToPostToJustCreated) {
+      await this.postDefaultInitialMessage(task, channelToPostTo);
+    }
 
     const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
     if (channelToPostTo.isThread() && !!discordId) {
