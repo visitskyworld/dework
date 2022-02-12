@@ -75,9 +75,11 @@ const Page: NextPage = () => {
               <Tabs.TabPane
                 tab={<Tab icon={<Icons.BarsOutlined />} children="List" />}
                 key="list"
-                style={{ overflowX: "auto", padding: 12 }}
+                style={{ overflowX: "auto", padding: 12, display: "flex" }}
               >
-                <ProjectTaskList projectId={projectId} />
+                <div className="mx-auto">
+                  <ProjectTaskList projectId={projectId} />
+                </div>
               </Tabs.TabPane>
               <Tabs.TabPane
                 tab={

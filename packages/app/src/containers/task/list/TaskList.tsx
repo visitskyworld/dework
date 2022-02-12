@@ -149,7 +149,7 @@ export const TaskList: FC<Props> = ({
       size="small"
       style={style}
       showHeader={showHeader}
-      className={size === "small" ? "dewo-table-xs" : undefined}
+      className={size === "small" ? "dewo-table-xs" : "dewo-card-table"}
       pagination={{ hideOnSinglePage: true }}
       rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
       onRow={(t) => ({
@@ -186,7 +186,6 @@ export const TaskList: FC<Props> = ({
           defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
           sorter: (a, b) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
-          showSorterTooltip: false,
         },
         {
           title: "Name",
@@ -318,12 +317,6 @@ export const TaskList: FC<Props> = ({
           title: "Assignees",
           dataIndex: "assigneeIds",
           width: 1,
-          filters: users?.map((user) => ({
-            value: user.id,
-            text: <UserSelectOption key={user.id} user={user} />,
-          })),
-          onFilter: (userId, row) =>
-            !!row.assigneeIds?.some((id) => id === userId),
           render: (assigneeIds: string[], row: TaskListRow) => (
             <DropdownSelect
               mode="multiple"

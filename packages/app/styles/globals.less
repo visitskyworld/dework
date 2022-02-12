@@ -774,6 +774,42 @@ textarea {
   }
 }
 
+.dewo-card-table {
+  .ant-table {
+    background: transparent;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+  }
+
+  .ant-table-row {
+    background: @component-background;
+  }
+
+  tr > th {
+    border: none;
+  }
+
+  tr > td {
+    border-top: @border-width-base @border-style-base @border-color-split;
+    border-bottom: @border-width-base @border-style-base @border-color-split;
+
+    &:first-child {
+      border-left: @border-width-base @border-style-base @border-color-split;
+      border-top-left-radius: @border-radius-base;
+      border-bottom-left-radius: @border-radius-base;
+    }
+
+    &:last-child {
+      border-right: @border-width-base @border-style-base @border-color-split;
+      border-top-right-radius: @border-radius-base;
+      border-bottom-right-radius: @border-radius-base;
+    }
+  }
+}
+
 .ant-modal-close {
   padding-right: 12px;
   .ant-modal-close-x {
