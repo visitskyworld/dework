@@ -193,12 +193,8 @@ export const TaskList: FC<Props> = ({
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
           filterIcon: <Icons.SearchOutlined />,
-          onFilter: (value, row) => {
-            console.warn(`"${value}"`);
-            return row.name
-              .toLowerCase()
-              .includes((value as string).toLowerCase());
-          },
+          onFilter: (value, row) =>
+            row.name.toLowerCase().includes((value as string).toLowerCase()),
           filterDropdown: ({
             setSelectedKeys,
             confirm,
@@ -348,7 +344,7 @@ export const TaskList: FC<Props> = ({
         {
           title: "Actions",
           key: "actions",
-          width: showActionButtons ? 120 : 1,
+          width: showActionButtons ? 140 : 1,
           render: (_, row) => (
             <Row align="middle" style={{ justifyContent: "space-between" }}>
               {showActionButtons && !!row.task && (

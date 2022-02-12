@@ -69,7 +69,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
           icon={<Icons.EditOutlined />}
           onClick={navigateToTask}
         >
-          Review Submissions
+          Review
         </Button>
       );
     }

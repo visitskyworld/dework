@@ -50,7 +50,14 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
         showActionButtons={true}
         defaultSortByStatus={true}
         projectId={projectId}
-        style={{ marginLeft: 0, marginRight: 0, minWidth: 480, maxWidth: 960 }}
+        style={{
+          marginLeft: 0,
+          marginRight: 0,
+          minWidth: 480,
+          maxWidth: 960,
+          width: "100%",
+          alignSelf: "stretch",
+        }}
         onClick={handleClick}
       />
       {canCreateTask && (
