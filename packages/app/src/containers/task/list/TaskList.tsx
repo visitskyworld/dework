@@ -97,7 +97,10 @@ export const TaskList: FC<Props> = ({
   const canDeleteTask = usePermission("delete", "Task");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
-    (task: Task | undefined, field: keyof Task | `status[${TaskStatus}]`) => {
+    (
+      task: Task | undefined,
+      field: keyof Task | `status[${TaskStatus}]` | "assigneeIds"
+    ) => {
       if (!!task) {
         return hasPermission("update", task, field);
       } else {
@@ -317,7 +320,7 @@ export const TaskList: FC<Props> = ({
             <DropdownSelect
               mode="multiple"
               placement="bottomRight"
-              disabled={!canChange(row.task, "assignees")}
+              disabled={!canChange(row.task, "assigneeIds")}
               options={users?.map((user) => ({
                 value: user.id,
                 label: <UserSelectOption key={user.id} user={user} />,
