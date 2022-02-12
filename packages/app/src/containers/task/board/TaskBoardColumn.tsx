@@ -1,4 +1,4 @@
-import React, { FC, Fragment, ReactNode, useMemo } from "react";
+import React, { FC, ReactNode, useMemo } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Button, Card, Badge, Space, Row } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -90,7 +90,7 @@ export const TaskBoardColumn: FC<Props> = ({
       {taskSections.map(
         (section, index) =>
           !section.hidden && (
-            <Fragment key={index}>
+            <div key={index}>
               {!!section.title && (
                 <Row align="middle">
                   <TaskSectionTitle
@@ -155,7 +155,7 @@ export const TaskBoardColumn: FC<Props> = ({
                   </div>
                 )}
               </Droppable>
-            </Fragment>
+            </div>
           )
       )}
       {footer}
