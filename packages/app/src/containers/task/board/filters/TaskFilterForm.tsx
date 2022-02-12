@@ -31,6 +31,7 @@ export const TaskFilterForm: FC<Props> = ({ users, tags }) => {
     <Form
       form={form}
       layout="vertical"
+      initialValues={filter}
       onValuesChange={handleChange}
       style={{ width: 320 }}
     >
