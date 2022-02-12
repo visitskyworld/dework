@@ -141,6 +141,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
 export const TaskTagSelectField: FC<Props> = ({
   disabled,
   allowCreate,
+  projectId,
   tags,
   label = "Tags",
 }) => (
@@ -153,6 +154,7 @@ export const TaskTagSelectField: FC<Props> = ({
       <TaskTagSelectFieldComponent
         disabled={disabled}
         allowCreate={allowCreate}
+        projectId={projectId}
         tags={tags}
       />
     </Form.Item>
