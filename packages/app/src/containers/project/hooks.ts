@@ -190,11 +190,14 @@ export function useProjectTasks(
   return data?.project ?? undefined;
 }
 
-export function useProjectTaskTags(projectId: string): TaskTag[] {
+export function useProjectTaskTags(projectId: string | undefined): TaskTag[] {
   const { data } = useQuery<
     GetProjectTaskTagsQuery,
     GetProjectTaskTagsQueryVariables
-  >(Queries.projectTaskTags, { variables: { projectId } });
+  >(Queries.projectTaskTags, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
   return useMemo(
     () => data?.project?.taskTags ?? [],
     [data?.project?.taskTags]

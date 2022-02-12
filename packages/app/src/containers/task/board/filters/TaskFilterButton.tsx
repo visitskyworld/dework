@@ -3,18 +3,31 @@ import * as Icons from "@ant-design/icons";
 import { Button, Form, Popover } from "antd";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 import { TaskFilter, useTaskFilter } from "./FilterContext";
-import { useProject } from "@dewo/app/containers/project/hooks";
+import {
+  useProject,
+  useProjectTaskTags,
+} from "@dewo/app/containers/project/hooks";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import _ from "lodash";
 import { useForm } from "antd/lib/form/Form";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import {
+  useOrganization,
+  useOrganizationTaskTags,
+} from "@dewo/app/containers/organization/hooks";
+import { TaskTag, User } from "@dewo/app/graphql/types";
 
-interface Props {
-  projectId: string;
+interface TaskFilterButtonProps {
+  users?: User[];
+  tags?: TaskTag[];
   style?: CSSProperties;
 }
 
-export const TaskFilterButton: FC<Props> = ({ projectId, style }) => {
+const TaskFilterButton: FC<TaskFilterButtonProps> = ({
+  users,
+  tags,
+  style,
+}) => {
   const [form] = useForm<TaskFilter>();
   const { filter, onChange } = useTaskFilter();
   const handleChange = useCallback(
@@ -38,8 +51,6 @@ export const TaskFilterButton: FC<Props> = ({ projectId, style }) => {
     [filter]
   );
 
-  const { project } = useProject(projectId);
-  const users = useMemo(() => project?.members.map((m) => m.user), [project]);
   return (
     <Popover
       content={
@@ -49,7 +60,7 @@ export const TaskFilterButton: FC<Props> = ({ projectId, style }) => {
           onValuesChange={handleChange}
           style={{ width: 320 }}
         >
-          <TaskTagSelectField label="Filter by Tag" projectId={projectId} />
+          <TaskTagSelectField label="Filter by Tag" tags={tags} />
           <Form.Item name="assigneeIds" label="Filter by Assignee">
             <UserSelect
               mode="multiple"
@@ -89,4 +100,28 @@ export const TaskFilterButton: FC<Props> = ({ projectId, style }) => {
       )}
     </Popover>
   );
+};
+
+export const ProjectTaskFilterButton: FC<{
+  projectId?: string;
+  style?: CSSProperties;
+}> = ({ projectId, style }) => {
+  const { project } = useProject(projectId);
+  const users = useMemo(() => project?.members.map((m) => m.user), [project]);
+  const tags = useProjectTaskTags(projectId);
+  return <TaskFilterButton style={style} users={users} tags={tags} />;
+};
+
+export const OrganizationTaskFilterButton: FC<{
+  organizationId?: string;
+  style?: CSSProperties;
+}> = ({ organizationId, style }) => {
+  const { organization } = useOrganization(organizationId);
+  const users = useMemo(
+    () =>
+      organization?.projects.map((p) => p.members.map((m) => m.user)).flat(),
+    [organization]
+  );
+  const tags = useOrganizationTaskTags(organizationId);
+  return <TaskFilterButton style={style} users={users} tags={tags} />;
 };

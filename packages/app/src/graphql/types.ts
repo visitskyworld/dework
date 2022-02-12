@@ -5958,7 +5958,30 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   options: GetOrganizationTasksQuery_organization_tasks_options | null;
 }
 
-export interface GetOrganizationTasksQuery_organization_projects_taskTags {
+export interface GetOrganizationTasksQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  tasks: GetOrganizationTasksQuery_organization_tasks[];
+}
+
+export interface GetOrganizationTasksQuery {
+  organization: GetOrganizationTasksQuery_organization;
+}
+
+export interface GetOrganizationTasksQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationTaskTagsQuery
+// ====================================================
+
+export interface GetOrganizationTaskTagsQuery_organization_projects_taskTags {
   __typename: "TaskTag";
   id: Scalar.UUID;
   label: string;
@@ -5968,23 +5991,22 @@ export interface GetOrganizationTasksQuery_organization_projects_taskTags {
   projectId: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_projects {
+export interface GetOrganizationTaskTagsQuery_organization_projects {
   __typename: "Project";
-  taskTags: GetOrganizationTasksQuery_organization_projects_taskTags[];
+  taskTags: GetOrganizationTaskTagsQuery_organization_projects_taskTags[];
 }
 
-export interface GetOrganizationTasksQuery_organization {
+export interface GetOrganizationTaskTagsQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
-  tasks: GetOrganizationTasksQuery_organization_tasks[];
-  projects: GetOrganizationTasksQuery_organization_projects[];
+  projects: GetOrganizationTaskTagsQuery_organization_projects[];
 }
 
-export interface GetOrganizationTasksQuery {
-  organization: GetOrganizationTasksQuery_organization;
+export interface GetOrganizationTaskTagsQuery {
+  organization: GetOrganizationTaskTagsQuery_organization;
 }
 
-export interface GetOrganizationTasksQueryVariables {
+export interface GetOrganizationTaskTagsQueryVariables {
   organizationId: Scalar.UUID;
 }
 

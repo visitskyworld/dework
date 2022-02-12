@@ -440,7 +440,7 @@ export function useUpdateTaskTag(): (
 }
 
 export function useGenerateRandomTagColor(
-  existingTags: TaskTag[] | OrganizationTag[]
+  existingTags: TaskTag[] | OrganizationTag[] | undefined
 ): () => string {
   return useCallback(() => {
     const colors = [
@@ -461,7 +461,7 @@ export function useGenerateRandomTagColor(
     ];
 
     const unusedColors = colors.filter(
-      (color) => !existingTags.some((tag) => tag.color === color)
+      (color) => !existingTags?.some((tag) => tag.color === color)
     );
     if (!!unusedColors.length) return unusedColors[0];
     return colors[Math.floor(Math.random() * colors.length)];

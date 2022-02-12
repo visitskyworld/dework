@@ -16,7 +16,7 @@ import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceMo
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/FilterContext";
-import { TaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
+import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -58,7 +58,7 @@ const Page: NextPage = () => {
               className="dewo-tabs"
               tabBarExtraContent={
                 currentTab === "board" && (
-                  <TaskFilterButton
+                  <ProjectTaskFilterButton
                     projectId={projectId}
                     style={{ marginLeft: 8, marginRight: 8 }}
                   />

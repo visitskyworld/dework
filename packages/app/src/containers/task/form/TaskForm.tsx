@@ -49,6 +49,7 @@ import { StoryPointsInput } from "./StoryPointsInput";
 import Link from "next/link";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
+import { useProjectTaskTags } from "../../project/hooks";
 
 export interface TaskFormValues {
   name: string;
@@ -108,6 +109,8 @@ export const TaskForm: FC<TaskFormProps> = ({
     projectId,
     useMemo(() => task?.assignees ?? [], [task?.assignees])
   );
+
+  const tags = useProjectTaskTags(projectId);
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -277,6 +280,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             disabled={!canChange("tagIds")}
             allowCreate={canCreateTag}
             projectId={projectId}
+            tags={tags}
           />
 
           <Form.Item

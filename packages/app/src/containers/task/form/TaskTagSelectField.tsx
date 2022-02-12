@@ -3,34 +3,36 @@ import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import { Tag, Form, Select, ConfigProvider, Empty, Button } from "antd";
 import { useCreateTaskTag, useGenerateRandomTagColor } from "../hooks";
-import { useProjectTaskTags } from "../../project/hooks";
 import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import { TaskTag } from "@dewo/app/graphql/types";
 
 interface Props {
   label?: string;
   disabled?: boolean;
+  projectId?: string;
   allowCreate?: boolean;
-  projectId: string;
+  tags?: TaskTag[];
 }
 
 interface ComponentProps {
   disabled?: boolean;
   allowCreate?: boolean;
-  projectId: string;
+  projectId?: string;
+  tags?: TaskTag[];
   value?: string[];
   onChange?(value: string[]): void;
 }
 
 const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
+  tags,
   projectId,
   allowCreate,
   disabled,
   value,
   onChange,
 }) => {
-  const tags = useProjectTaskTags(projectId);
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
   const selectedTagIds = useMemo(
@@ -66,7 +68,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
         const tagPs = newTagLabels.map((label) =>
           createTag({
             label,
-            projectId,
+            projectId: projectId!,
             color: generateRandomTaskTagColor(),
           })
         );
@@ -89,7 +91,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   return (
     <>
       <Select
-        mode={allowCreate ? "tags" : "multiple"}
+        mode={allowCreate && !!projectId ? "tags" : "multiple"}
         value={selectedTagIds}
         disabled={disabled}
         loading={loading}
@@ -105,7 +107,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
           />
         )}
       >
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <Select.Option
             key={tag.id}
             value={tag.id}
@@ -139,7 +141,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
 export const TaskTagSelectField: FC<Props> = ({
   disabled,
   allowCreate,
-  projectId,
+  tags,
   label = "Tags",
 }) => (
   <ConfigProvider
@@ -151,7 +153,7 @@ export const TaskTagSelectField: FC<Props> = ({
       <TaskTagSelectFieldComponent
         disabled={disabled}
         allowCreate={allowCreate}
-        projectId={projectId}
+        tags={tags}
       />
     </Form.Item>
   </ConfigProvider>

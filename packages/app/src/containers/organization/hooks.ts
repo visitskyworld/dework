@@ -23,6 +23,8 @@ import {
   GetOrganizationTagsQueryVariables,
   GetOrganizationTasksQuery,
   GetOrganizationTasksQueryVariables,
+  GetOrganizationTaskTagsQuery,
+  GetOrganizationTaskTagsQueryVariables,
   GithubRepo,
   Organization,
   OrganizationDetails,
@@ -37,6 +39,7 @@ import {
   SetOrganizationDetailMutation,
   SetOrganizationDetailMutationVariables,
   SetOrganizationDetailMutation_organization,
+  TaskTag,
   UpdateOrganizationInput,
   UpdateOrganizationMemberInput,
   UpdateOrganizationMemberMutation,
@@ -259,6 +262,22 @@ export function useOrganizationTasks(
   return data?.organization ?? undefined;
 }
 
+export function useOrganizationTaskTags(
+  organizationId: string | undefined
+): TaskTag[] {
+  const { data } = useQuery<
+    GetOrganizationTaskTagsQuery,
+    GetOrganizationTaskTagsQueryVariables
+  >(Queries.organizationTaskTags, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return useMemo(
+    () => data?.organization.projects.map((p) => p.taskTags).flat() ?? [],
+    [data?.organization]
+  );
+}
+
 export function useOrganizationGithubRepos(
   organizationId: string | undefined,
   skip: boolean = false
@@ -272,6 +291,7 @@ export function useOrganizationGithubRepos(
   });
   return data?.repos ?? undefined;
 }
+
 export function useOrganizationDiscordChannels(
   variables: GetOrganizationDiscordChannelsQueryVariables,
   skip: boolean = false
