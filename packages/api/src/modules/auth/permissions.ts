@@ -112,8 +112,6 @@ export const permissions: Permissions<
   },
 
   projectAdmin({ can, extend }) {
-    extend(Roles.projectContributor);
-
     can(Actions.update, Project);
     can(Actions.manage, ProjectMember);
     can(Actions.manage, ProjectIntegration);
