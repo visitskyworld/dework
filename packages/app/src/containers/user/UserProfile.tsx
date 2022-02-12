@@ -5,7 +5,6 @@ import * as Colors from "@ant-design/colors";
 import Link from "next/link";
 import { useUser, useUserTasks } from "./hooks";
 import { TaskStatus } from "@dewo/app/graphql/types";
-import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -106,7 +105,6 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               ))}
             </Space>
           </Card>
-          <TaskUpdateModalListener />
         </Col>
       </Row>
     </div>

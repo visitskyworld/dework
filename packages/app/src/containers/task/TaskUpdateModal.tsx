@@ -12,14 +12,21 @@ import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
 import { TaskApplyModal } from "./TaskApplyModal";
+import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 interface Props {
   taskId: string;
   visible: boolean;
+  showProjectLink: boolean;
   onCancel(): void;
 }
 
-export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
+export const TaskUpdateModal: FC<Props> = ({
+  taskId,
+  visible,
+  showProjectLink,
+  onCancel,
+}) => {
   const task = useTask(taskId, "network-only");
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
@@ -71,6 +78,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
             projectId={task!.projectId}
             initialValues={initialValues}
             assignees={task!.assignees}
+            showProjectLink={showProjectLink}
             onSubmit={handleSubmit}
           />
         )}
@@ -83,6 +91,8 @@ export const TaskUpdateModalListener: FC = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string | undefined;
   const applyToTaskId = router.query.applyToTaskId as string | undefined;
+  const isOnProjectPage = !!useParseIdFromSlug("projectSlug");
+
   const closeModal = useCallback(
     () =>
       router.push({
@@ -97,6 +107,7 @@ export const TaskUpdateModalListener: FC = () => {
         taskId={taskId!}
         visible={!!taskId}
         onCancel={closeModal}
+        showProjectLink={!isOnProjectPage}
       />
       <TaskApplyModal
         taskId={applyToTaskId}

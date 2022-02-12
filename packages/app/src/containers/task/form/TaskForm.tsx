@@ -73,6 +73,7 @@ interface TaskFormProps {
   buttonText?: string;
   initialValues?: Partial<TaskFormValues>;
   assignees?: User[];
+  showProjectLink?: boolean;
   onSubmit(values: TaskFormValues): unknown;
 }
 
@@ -82,6 +83,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   projectId,
   buttonText,
   initialValues,
+  showProjectLink,
   onSubmit,
 }) => {
   const [form] = useForm<TaskFormValues>();
@@ -332,7 +334,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
 
-          {!!task && (
+          {!!task && showProjectLink && (
             <FormSection label="Project">
               <Link href={task.project.permalink}>
                 <a style={{ display: "flex" }}>
