@@ -21,7 +21,6 @@ import {
   Row,
   Space,
   Table,
-  Tag,
   Tooltip,
   Typography,
 } from "antd";
@@ -184,12 +183,6 @@ export const TaskList: FC<Props> = ({
               }
             />
           ),
-
-          filters: statuses.map((status) => ({
-            value: status,
-            text: STATUS_LABEL[status],
-          })),
-          onFilter: (status, task) => task.status === status,
           defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
           sorter: (a, b) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
@@ -274,12 +267,6 @@ export const TaskList: FC<Props> = ({
           title: "Tags",
           dataIndex: ["task", "tags"],
           width: !!tags ? undefined : 1,
-          filters: tags?.map((tag) => ({
-            value: tag.id,
-            text: <Tag color={tag.color}>{tag.label}</Tag>,
-          })),
-          onFilter: (tagId, row) =>
-            !!row.task?.tags.some((t) => t.id === tagId),
           render: (_, row) =>
             !!row.task && (
               <TaskTagsRow task={row.task} showStandardTags={false} />

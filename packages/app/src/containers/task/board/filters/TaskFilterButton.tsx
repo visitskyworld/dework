@@ -1,21 +1,19 @@
-import React, { CSSProperties, FC, useCallback, useMemo } from "react";
+import React, { CSSProperties, FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
-import { Button, Form, Popover } from "antd";
-import { TaskTagSelectField } from "../../form/TaskTagSelectField";
-import { TaskFilter, useTaskFilter } from "./FilterContext";
+import { Button, Popover } from "antd";
+import { useTaskFilter } from "./FilterContext";
 import {
   useProject,
   useProjectTaskTags,
 } from "@dewo/app/containers/project/hooks";
-import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import _ from "lodash";
-import { useForm } from "antd/lib/form/Form";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import {
   useOrganization,
   useOrganizationTaskTags,
 } from "@dewo/app/containers/organization/hooks";
 import { TaskTag, User } from "@dewo/app/graphql/types";
+import { TaskFilterForm } from "./TaskFilterForm";
 
 interface TaskFilterButtonProps {
   users?: User[];
@@ -28,19 +26,8 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
   tags,
   style,
 }) => {
-  const [form] = useForm<TaskFilter>();
-  const { filter, onChange } = useTaskFilter();
-  const handleChange = useCallback(
-    (_changed: Partial<TaskFilter>, values: TaskFilter) => onChange(values),
-    [onChange]
-  );
-  const resetFilter = useCallback(() => {
-    form.resetFields();
-    onChange({});
-  }, [form, onChange]);
-
+  const { filter } = useTaskFilter();
   const screens = useBreakpoint();
-
   const filterCount = useMemo(
     () =>
       _.sum([
@@ -53,39 +40,7 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
 
   return (
     <Popover
-      content={
-        <Form
-          form={form}
-          layout="vertical"
-          onValuesChange={handleChange}
-          style={{ width: 320 }}
-        >
-          <TaskTagSelectField label="Filter by Tag" tags={tags} />
-          <Form.Item name="assigneeIds" label="Filter by Assignee">
-            <UserSelect
-              mode="multiple"
-              placeholder="Select assignees..."
-              users={users}
-            />
-          </Form.Item>
-          <Form.Item name="ownerIds" label="Filter by Reviewer">
-            <UserSelect
-              mode="multiple"
-              placeholder="Select reviewers..."
-              users={users}
-            />
-          </Form.Item>
-          {!_.isEmpty(filter) && (
-            <Button
-              type="text"
-              className="dewo-btn-highlight"
-              onClick={resetFilter}
-            >
-              Reset Filters
-            </Button>
-          )}
-        </Form>
-      }
+      content={<TaskFilterForm users={users} tags={tags} />}
       trigger="click"
       placement="bottomRight"
     >

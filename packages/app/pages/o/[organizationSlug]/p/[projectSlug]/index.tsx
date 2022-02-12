@@ -57,7 +57,7 @@ const Page: NextPage = () => {
               style={{ height: "100%" }}
               className="dewo-tabs"
               tabBarExtraContent={
-                currentTab === "board" && (
+                ["board", "list"].includes(currentTab) && (
                   <ProjectTaskFilterButton
                     projectId={projectId}
                     style={{ marginLeft: 8, marginRight: 8 }}

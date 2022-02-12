@@ -1,10 +1,11 @@
-import { Task } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import React, { createContext, FC, useContext, useMemo, useState } from "react";
 
 export interface TaskFilter {
   tagIds?: string[];
   assigneeIds?: string[];
   ownerIds?: string[];
+  statuses?: TaskStatus[];
 }
 
 interface TaskFilterValue {
@@ -49,6 +50,9 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
           (t) =>
             !filter.ownerIds?.length ||
             filter.ownerIds.includes(t.ownerId as any)
+        )
+        .filter(
+          (t) => !filter.statuses?.length || filter.statuses.includes(t.status)
         ),
     [tasks, filter]
   );
