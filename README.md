@@ -70,6 +70,7 @@ DECLARE
   harmony_mainnet_id uuid = uuid_generate_v4();
   harmony_testnet_id uuid = uuid_generate_v4();
   arbitrum_mainnet_id uuid = uuid_generate_v4();
+  optimism_mainnet_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
 
   solana_mainnet_id uuid = uuid_generate_v4();
@@ -179,6 +180,17 @@ BEGIN
       "chainId": 42161,
       "rpcUrl": "https://arb1.arbitrum.io/rpc",
       "explorerUrl": "https://arbiscan.io"
+    }' AS json)
+  ), (
+    optimism_mainnet_id,
+    'ETHEREUM',
+    'Optimistic Ethereum',
+    'optimism-mainnet',
+    '007',
+    CAST('{
+      "chainId": 10,
+      "rpcUrl": "https://mainnet.optimism.io",
+      "explorerUrl": "https://optimistic.etherscan.io"
     }' AS json)
   ), (
     solana_mainnet_id,
@@ -319,6 +331,13 @@ BEGIN
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
     }' AS JSON)),
     ('ERC20', 'USD Coin (Arbitrum)', 'USDC', 18, 'ALWAYS', '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', arbitrum_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+
+    ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, optimism_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Optimism)', 'USDC', 18, 'ALWAYS', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', optimism_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
