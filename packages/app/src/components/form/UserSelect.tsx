@@ -29,7 +29,6 @@ export const UserSelect: FC<Props> = ({
       disabled={disabled}
       allowClear
       optionFilterProp="label"
-      optionLabelProp="label" // don't put children inside tagRender
       placeholder={placeholder}
       value={value}
       onChange={onChange}

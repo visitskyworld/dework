@@ -166,7 +166,6 @@ export const permissions: Permissions<
   },
 
   superadmin({ extend }) {
-    extend(Roles.projectAdmin);
-    extend(Roles.organizationAdmin);
+    extend(Roles.organizationOwner);
   },
 };
