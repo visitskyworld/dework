@@ -40,8 +40,8 @@ export class TrelloImportService {
       "sprint",
       "up for grabs",
     ],
-    [TaskStatus.IN_PROGRESS]: ["in progress", "doing", "claimed"],
-    [TaskStatus.IN_REVIEW]: ["in review"],
+    [TaskStatus.IN_PROGRESS]: ["progress", "doing", "claimed"],
+    [TaskStatus.IN_REVIEW]: ["review"],
     [TaskStatus.DONE]: ["done", "completed", "finished"],
     [TaskStatus.BACKLOG]: [],
   };
