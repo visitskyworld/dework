@@ -56,7 +56,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               </Tag>
               <Tag style={{ backgroundColor: Colors.blue.primary }}>
                 <Icons.DollarCircleOutlined />
-                <Typography.Text>{`${amountEarned} earned`}</Typography.Text>
+                <Typography.Text>{`$${amountEarned} earned`}</Typography.Text>
               </Tag>
             </Row>
 
