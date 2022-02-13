@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from "react";
 import { Button, Card, Col, Row, Space, Spin, Tag, Typography } from "antd";
+import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskCard } from "../task/board/TaskCard";
+import { calculateTaskRewardAsUSD } from "../task/hooks";
 
 interface Props {
   userId: string;
@@ -21,6 +23,13 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const completedTasks = useMemo(
     () => tasks?.filter((t) => t.status === TaskStatus.DONE),
     [tasks]
+  );
+  const amountEarned = useMemo(
+    () =>
+      _.sumBy(completedTasks, (t) =>
+        t.reward?.payment ? calculateTaskRewardAsUSD(t?.reward) ?? 0 : 0
+      ),
+    [completedTasks]
   );
 
   if (!user) return null;
@@ -45,7 +54,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               </Tag>
               <Tag style={{ backgroundColor: Colors.blue.primary }}>
                 <Icons.DollarCircleOutlined />
-                <Typography.Text>0 earned</Typography.Text>
+                <Typography.Text>{`${amountEarned} USD earned`}</Typography.Text>
               </Tag>
             </Row>
 
