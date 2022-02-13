@@ -25,6 +25,7 @@ import { ThreepidModule } from "../threepid/threepid.module";
 import { MigrationModule } from "./migration/migration.module";
 import { NotionModule } from "../integrations/notion/notion.module";
 import { TrelloModule } from "../integrations/trello/trello.module";
+import { CoordinapeModule } from "../integrations/coordinape/coordinape.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -59,6 +60,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   DiscordIntegrationModule,
   NotionModule,
   TrelloModule,
+  CoordinapeModule,
   PaymentModule,
   SubscriptionModule,
   FileUploadModule,
