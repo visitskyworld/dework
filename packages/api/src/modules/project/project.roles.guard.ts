@@ -49,8 +49,8 @@ export class ProjectRolesGuard implements CanActivate {
       throw new ForbiddenException("Project not found");
     }
 
-    await this.addCaslRolesForOrganization(project.organizationId, gqlContext);
     await this.addCaslRolesForProject(projectId, gqlContext);
+    await this.addCaslRolesForOrganization(project.organizationId, gqlContext);
     return true;
   }
 

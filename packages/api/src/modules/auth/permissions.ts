@@ -112,12 +112,13 @@ export const permissions: Permissions<
   },
 
   projectAdmin({ can, extend }) {
+    extend(Roles.projectContributor);
+
     can(Actions.update, Project);
     can(Actions.manage, ProjectMember);
     can(Actions.manage, ProjectIntegration);
 
     can(Actions.create, Task);
-    can(Actions.delete, Task);
     can(Actions.update, Task, [
       "name",
       "description",
@@ -136,6 +137,7 @@ export const permissions: Permissions<
       "options",
       "subtasks",
     ]);
+    can(Actions.delete, Task);
 
     can(Actions.read, TaskApplication);
     can(Actions.delete, TaskApplication);
