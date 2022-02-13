@@ -162,7 +162,9 @@ export const OrganizationTabs: FC<Props> = ({
           <OrganizationContributorList organizationId={organizationId} />
         </Tabs.TabPane>
         <Tabs.TabPane
-          tab={<Tab icon={<Icons.ProjectOutlined />} children="Full Board" />}
+          tab={
+            <Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />
+          }
           key="board"
           className="mx-auto w-full"
           style={{ maxWidth: 300 * 4 + 16 * 3 + 24 * 2 }}
