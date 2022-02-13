@@ -1,13 +1,13 @@
-import { Controller, Get, Logger, Param, Req, Res } from "@nestjs/common";
+import { Controller, Get, Param, Query, Req, Res } from "@nestjs/common";
 import * as request from "request-promise";
-import { ConfigService } from "@nestjs/config";
 import { Request, Response } from "express";
 import { Server } from "http";
 import { AddressInfo } from "net";
-import { ConfigType } from "../../app/config";
 import _ from "lodash";
 import { HttpAdapterHost } from "@nestjs/core";
 import { Coordinape } from "./coordinape.types";
+import { TaskFilterInput } from "../../task/dto/GetTasksInput";
+import { TaskStatus } from "@dewo/api/models/Task";
 
 interface CoordinapeIntegrationProjectTasksQuery {
   data: null | {
@@ -41,19 +41,21 @@ interface CoordinapeIntegrationProjectTasksQuery {
 
 @Controller("integrations/coordinape")
 export class CoordinapeIntegrationController {
-  private logger = new Logger(this.constructor.name);
-
-  constructor(
-    private readonly httpAdapterHost: HttpAdapterHost,
-    private readonly config: ConfigService<ConfigType>
-  ) {}
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   @Get(":projectId")
   async githubCallback(
     @Req() req: Request,
     @Param("projectId") projectId: string,
+    @Query("epoch_start") doneAtAfter: number,
+    @Query("epoch_end") doneAtBefore: number,
     @Res() res: Response
   ) {
+    const filter: TaskFilterInput = {
+      statuses: [TaskStatus.DONE],
+      doneAtAfter: new Date(doneAtAfter * 1000),
+      doneAtBefore: new Date(doneAtBefore * 1000),
+    };
     const response: CoordinapeIntegrationProjectTasksQuery = await request.post(
       {
         url: this.serverGraphQLEndpoint(),
@@ -61,11 +63,14 @@ export class CoordinapeIntegrationController {
         headers: _.pick(req.headers, "authorization"),
         body: {
           query: `
-              query CoordinapeIntegrationProjectTasksQuery($projectId: UUID!) {
+              query CoordinapeIntegrationProjectTasksQuery(
+                $projectId: UUID!
+                $filter: TaskFilterInput!
+              ) {
                 project: getProject(id: $projectId) {
                   id
                   permalink
-                  tasks {
+                  tasks(filter: $filter) {
                     id
                     name
                     permalink
@@ -80,7 +85,7 @@ export class CoordinapeIntegrationController {
                 }
               }
             `,
-          variables: { projectId },
+          variables: { projectId, filter },
         },
       }
     );
@@ -104,7 +109,7 @@ export class CoordinapeIntegrationController {
         users[address] = users[address] ?? {
           address,
           contributions: [],
-          contribution_details_link: `${response.data.project.permalink}?assigneeIds=${assignee.id}`,
+          contribution_details_link: `${response.data.project.permalink}?assigneeIds=${assignee.id}&doneAtBefore=${doneAtBefore}&doneAtAfter=${doneAtAfter}`,
         };
         users[address].contributions.push({
           title: task.name,

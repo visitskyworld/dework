@@ -14,8 +14,9 @@ describe("CoordinapeController", () => {
     let app: INestApplication;
     let fixtures: Fixtures;
     let project: Project;
-    let doneAtAfter: Date;
-    let doneAtBefore: Date;
+    const doneAtAfter = new Date(0);
+    const doneAt = new Date(1000);
+    const doneAtBefore = new Date(2000);
 
     beforeAll(async () => {
       app = await getTestApp();
@@ -29,6 +30,10 @@ describe("CoordinapeController", () => {
     const req = (): Promise<Coordinape.Response> =>
       supertest(app.getHttpServer())
         .get(`/integrations/coordinape/${project.id}`)
+        .query({
+          epoch_start: moment(doneAtAfter).unix(),
+          epoch_end: moment(doneAtBefore).unix(),
+        })
         .send()
         .then((res) => res.body);
 
@@ -45,7 +50,7 @@ describe("CoordinapeController", () => {
       });
       const task = await fixtures.createTask({
         status: TaskStatus.DONE,
-        doneAt: doneAtAfter,
+        doneAt,
         assignees: [assignee1, assignee2],
         projectId: project.id,
       });
@@ -73,7 +78,7 @@ describe("CoordinapeController", () => {
       const user = await fixtures.createUser();
       await fixtures.createTask({
         status: TaskStatus.DONE,
-        doneAt: doneAtAfter,
+        doneAt,
         assignees: [user],
         projectId: project.id,
       });
@@ -85,7 +90,7 @@ describe("CoordinapeController", () => {
     it("should not return unassigned task", async () => {
       await fixtures.createTask({
         status: TaskStatus.DONE,
-        doneAt: doneAtAfter,
+        doneAt,
         projectId: project.id,
       });
 
@@ -104,13 +109,19 @@ describe("CoordinapeController", () => {
     });
 
     it("should not return tasks completed before or after date range", async () => {
+      const user = await fixtures.createUser({
+        source: ThreepidSource.metamask,
+        threepid: `0x${faker.datatype.number()}`,
+      });
       await fixtures.createTask({
         status: TaskStatus.DONE,
+        assignees: [user],
         doneAt: moment(doneAtAfter).subtract(1, "second").toDate(),
         projectId: project.id,
       });
       await fixtures.createTask({
         status: TaskStatus.DONE,
+        assignees: [user],
         doneAt: moment(doneAtBefore).add(1, "second").toDate(),
         projectId: project.id,
       });
@@ -125,7 +136,7 @@ describe("CoordinapeController", () => {
       });
       await fixtures.createTask({
         status: TaskStatus.DONE,
-        doneAt: doneAtAfter,
+        doneAt,
         assignees: [await fixtures.createUser()],
         projectId: project.id,
       });

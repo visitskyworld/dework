@@ -194,6 +194,8 @@ export class TaskService {
     assigneeId,
     statuses,
     limit,
+    doneAtAfter,
+    doneAtBefore,
     rewardNotNull = false,
     includePrivateProjects = false,
   }: {
@@ -204,6 +206,8 @@ export class TaskService {
     assigneeId?: string | null;
     statuses?: TaskStatus[];
     order?: OrderByCondition;
+    doneAtAfter?: Date;
+    doneAtBefore?: Date;
     limit?: number;
     rewardNotNull?: boolean;
     includePrivateProjects?: boolean;
@@ -272,6 +276,14 @@ export class TaskService {
 
     if (!!statuses) {
       query = query.andWhere("task.status IN (:...statuses)", { statuses });
+    }
+
+    if (!!doneAtAfter) {
+      query = query.andWhere("task.doneAt >= :doneAtAfter", { doneAtAfter });
+    }
+
+    if (!!doneAtBefore) {
+      query = query.andWhere("task.doneAt < :doneAtBefore", { doneAtBefore });
     }
 
     if (!includePrivateProjects) {

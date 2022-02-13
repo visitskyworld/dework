@@ -36,7 +36,7 @@ import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
 import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
-import { GetTasksInput } from "./dto/GetTasksInput";
+import { GetTasksInput, TaskFilterInput } from "./dto/GetTasksInput";
 import { PermalinkService } from "../permalink/permalink.service";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
@@ -339,8 +339,12 @@ export class ProjectTasksResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [Task])
-  public async tasks(@Parent() project: Project): Promise<Task[]> {
+  public async tasks(
+    @Parent() project: Project,
+    @Args("filter", { nullable: true }) filter: TaskFilterInput
+  ): Promise<Task[]> {
     return this.taskService.findWithRelations({
+      ...filter,
       projectIds: [project.id],
       includePrivateProjects: true,
     });
