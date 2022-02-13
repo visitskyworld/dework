@@ -71,6 +71,7 @@ DECLARE
   harmony_testnet_id uuid = uuid_generate_v4();
   arbitrum_mainnet_id uuid = uuid_generate_v4();
   optimism_mainnet_id uuid = uuid_generate_v4();
+  fuse_mainnet_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
 
   solana_mainnet_id uuid = uuid_generate_v4();
@@ -191,6 +192,17 @@ BEGIN
       "chainId": 10,
       "rpcUrl": "https://mainnet.optimism.io",
       "explorerUrl": "https://optimistic.etherscan.io"
+    }' AS json)
+  ), (
+    fuse_mainnet_id,
+    'ETHEREUM',
+    'Fuse',
+    'fuse-mainnet',
+    '008',
+    CAST('{
+      "chainId": 122,
+      "rpcUrl": "https://rpc.fuse.io",
+      "explorerUrl": "https://explorer.fuse.io"
     }' AS json)
   ), (
     solana_mainnet_id,
@@ -338,6 +350,13 @@ BEGIN
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
     }' AS JSON)),
     ('ERC20', 'USD Coin (Optimism)', 'USDC', 18, 'ALWAYS', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', optimism_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+
+    ('NATIVE', 'Fuse', 'FUSE', 18, 'ALWAYS', NULL, fuse_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/fuse-network"
+    }' AS JSON)),
+    ('ERC20', 'USD Coin (Fuse)', 'USDC', 18, 'ALWAYS', '0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5', fuse_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
