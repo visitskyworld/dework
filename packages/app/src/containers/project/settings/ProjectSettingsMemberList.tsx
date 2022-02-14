@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const projectRoleToString: Record<ProjectRole, string> = {
-  [ProjectRole.ADMIN]: "Admin",
+  [ProjectRole.ADMIN]: "Steward",
   [ProjectRole.CONTRIBUTOR]: "Contributor",
 };
 
