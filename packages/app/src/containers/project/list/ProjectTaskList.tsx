@@ -8,6 +8,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
+import { useFilteredTasks } from "../../task/board/filters/FilterContext";
 
 interface Props {
   projectId: string;
@@ -16,9 +17,10 @@ interface Props {
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const tags = useProjectTaskTags(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
+  const filteredTasks = useFilteredTasks(useMemo(() => tasks ?? [], [tasks]));
   const rows = useMemo(
     () =>
-      tasks?.map(
+      filteredTasks.map(
         (task): TaskListRow => ({
           task,
           key: task.id,
@@ -28,7 +30,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           dueDate: task.dueDate,
         })
       ),
-    [tasks]
+    [filteredTasks]
   );
 
   const canCreateTask = usePermission("create", { __typename: "Task" } as Task);
@@ -40,7 +42,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
     [navigateToTask]
   );
 
-  if (!rows) return null;
+  if (!tasks) return null;
   return (
     <>
       <TaskList
