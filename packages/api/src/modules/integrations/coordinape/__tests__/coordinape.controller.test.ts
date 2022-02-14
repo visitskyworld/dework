@@ -29,7 +29,7 @@ describe("CoordinapeController", () => {
 
     const req = (): Promise<Coordinape.Response> =>
       supertest(app.getHttpServer())
-        .get(`/integrations/coordinape/${project.id}`)
+        .get(`/integrations/coordinape/${project.organizationId}`)
         .query({
           epoch_start: moment(doneAtAfter).unix(),
           epoch_end: moment(doneAtBefore).unix(),
@@ -142,7 +142,7 @@ describe("CoordinapeController", () => {
       });
 
       const res = await req();
-      expect(res.error).toEqual("Forbidden resource");
+      expect(res.users).toEqual([]);
     });
   });
 });

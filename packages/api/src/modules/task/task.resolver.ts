@@ -326,8 +326,12 @@ export class OrganizationTasksResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [Task])
-  public async tasks(@Parent() organization: Organization): Promise<Task[]> {
+  public async tasks(
+    @Parent() organization: Organization,
+    @Args("filter", { nullable: true }) filter: TaskFilterInput
+  ): Promise<Task[]> {
     return this.taskService.findWithRelations({
+      ...filter,
       organizationIds: [organization.id],
     });
   }

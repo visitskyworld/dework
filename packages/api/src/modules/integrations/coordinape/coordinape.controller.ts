@@ -8,10 +8,11 @@ import { HttpAdapterHost } from "@nestjs/core";
 import { Coordinape } from "./coordinape.types";
 import { TaskFilterInput } from "../../task/dto/GetTasksInput";
 import { TaskStatus } from "@dewo/api/models/Task";
+import moment from "moment";
 
 interface CoordinapeIntegrationProjectTasksQuery {
   data: null | {
-    project: {
+    organization: {
       id: string;
       permalink: string;
       tasks: {
@@ -43,18 +44,18 @@ interface CoordinapeIntegrationProjectTasksQuery {
 export class CoordinapeIntegrationController {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  @Get(":projectId")
+  @Get(":organizationId")
   async githubCallback(
     @Req() req: Request,
-    @Param("projectId") projectId: string,
+    @Param("organizationId") organizationId: string,
     @Query("epoch_start") doneAtAfter: number,
     @Query("epoch_end") doneAtBefore: number,
     @Res() res: Response
   ) {
     const filter: TaskFilterInput = {
       statuses: [TaskStatus.DONE],
-      doneAtAfter: new Date(doneAtAfter * 1000),
-      doneAtBefore: new Date(doneAtBefore * 1000),
+      doneAtAfter: moment(doneAtAfter).toDate(),
+      doneAtBefore: moment(doneAtBefore).toDate(),
     };
     const response: CoordinapeIntegrationProjectTasksQuery = await request.post(
       {
@@ -63,11 +64,11 @@ export class CoordinapeIntegrationController {
         headers: _.pick(req.headers, "authorization"),
         body: {
           query: `
-              query CoordinapeIntegrationProjectTasksQuery(
-                $projectId: UUID!
+              query CoordinapeIntegrationOrganizationTasksQuery(
+                $organizationId: UUID!
                 $filter: TaskFilterInput!
               ) {
-                project: getProject(id: $projectId) {
+                organization: getOrganization(id: $organizationId) {
                   id
                   permalink
                   tasks(filter: $filter) {
@@ -85,7 +86,7 @@ export class CoordinapeIntegrationController {
                 }
               }
             `,
-          variables: { projectId, filter },
+          variables: { organizationId, filter },
         },
       }
     );
@@ -99,7 +100,7 @@ export class CoordinapeIntegrationController {
     }
 
     const users: Record<string, Coordinape.User> = {};
-    for (const task of response.data.project.tasks) {
+    for (const task of response.data.organization.tasks) {
       for (const assignee of task.assignees) {
         const address = assignee.threepids.find(
           (threepid) => threepid.source === "metamask"
@@ -109,7 +110,7 @@ export class CoordinapeIntegrationController {
         users[address] = users[address] ?? {
           address,
           contributions: [],
-          contribution_details_link: `${response.data.project.permalink}?assigneeIds=${assignee.id}&doneAtBefore=${doneAtBefore}&doneAtAfter=${doneAtAfter}`,
+          contribution_details_link: `${response.data.organization.permalink}?assigneeIds=${assignee.id}&doneAtBefore=${doneAtBefore}&doneAtAfter=${doneAtAfter}`,
         };
         users[address].contributions.push({
           title: task.name,

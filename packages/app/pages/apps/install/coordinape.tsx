@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -43,6 +43,10 @@ const Page: FC = () => {
     },
   ];
   const [organizationId, setOrganizationId] = useState<string>();
+  const organization = useMemo(
+    () => user?.organizations.find((o) => o.id === organizationId),
+    [organizationId, user]
+  );
   const redirectUrl = useRouter().query.redirect as string;
 
   const cancel = useCallback(
@@ -51,8 +55,10 @@ const Page: FC = () => {
   );
   const authorize = useCallback(
     () =>
-      (window.location.href = `${redirectUrl}?dework_organization_id=${organizationId}`),
-    [organizationId, redirectUrl]
+      (window.location.href = `${redirectUrl}?dework_organization_id=${organizationId}&dework_organization_name=${
+        organization?.name ?? ""
+      }`),
+    [organizationId, organization, redirectUrl]
   );
 
   return (
