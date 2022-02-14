@@ -26,7 +26,22 @@ const Page: FC = () => {
   const { user, logout } = useAuthContext();
   const appName = "Coordinape";
   const appImageUrl = "https://avatars.githubusercontent.com/u/80926529";
-  const permissions = ["Read selected organization's tasks"];
+  const permissions = [
+    {
+      icon: <TaskStatusAvatar status={TaskStatus.DONE} size="small" />,
+      label: "Read selected organization's tasks in public projects",
+    },
+    {
+      icon: (
+        <TaskStatusAvatar
+          status={TaskStatus.TODO}
+          icon={<Icons.CloseOutlined />}
+          size="small"
+        />
+      ),
+      label: "Read selected organization's tasks in private projects",
+    },
+  ];
   const [organizationId, setOrganizationId] = useState<string>();
   const redirectUrl = useRouter().query.redirect as string;
 
@@ -137,10 +152,12 @@ const Page: FC = () => {
                   style={{ marginTop: 8 }}
                   dataSource={permissions}
                   renderItem={(item) => (
-                    <Row style={{ alignItems: "center", gap: 16 }}>
-                      <TaskStatusAvatar status={TaskStatus.DONE} size="small" />
+                    <Row
+                      style={{ alignItems: "center", gap: 16, marginBottom: 8 }}
+                    >
+                      {item.icon}
                       <Typography.Text style={{ flex: 1 }}>
-                        {item}
+                        {item.label}
                       </Typography.Text>
                     </Row>
                   )}

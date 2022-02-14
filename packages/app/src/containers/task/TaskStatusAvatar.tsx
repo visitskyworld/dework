@@ -22,14 +22,19 @@ const iconByStatus: Record<TaskStatus, ReactNode> = {
 
 interface Props extends AvatarProps {
   status: TaskStatus;
+  icon?: ReactNode;
 }
 
-export const TaskStatusAvatar: FC<Props> = ({ status, ...avatarProps }) => {
+export const TaskStatusAvatar: FC<Props> = ({
+  status,
+  icon = iconByStatus[status],
+  ...avatarProps
+}) => {
   const color = colorByStatus[status];
   return (
     <Avatar
       {...avatarProps}
-      icon={iconByStatus[status]}
+      icon={icon}
       style={{
         backgroundColor: `${color}22`,
         borderWidth: 1,
