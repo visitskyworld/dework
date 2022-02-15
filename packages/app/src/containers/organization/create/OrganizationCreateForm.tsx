@@ -10,6 +10,7 @@ import {
 } from "./OrganizationCreateFormSubmitButton";
 import { Constants } from "@dewo/app/util/constants";
 import { useRouter } from "next/router";
+import { useCreateProject } from "../../project/hooks";
 
 interface OrganizationCreateFormProps {
   onCreated(organization: Organization): unknown;
@@ -27,6 +28,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
 }) => {
   const [form] = useForm<FormValues>();
   const createOrganization = useCreateOrganization();
+  const createProject = useCreateProject();
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,11 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
           })}`;
           window.location.href = url;
         } else {
-          await router.push(organization.permalink);
+          const project = await createProject({
+            name: "Main Project",
+            organizationId: organization.id,
+          });
+          await router.push(project.permalink);
         }
 
         await onCreated(organization);
@@ -61,7 +67,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
         setLoading(false);
       }
     },
-    [createOrganization, onCreated, router]
+    [createOrganization, createProject, onCreated, router]
   );
 
   const handleClickSubmit = useCallback(
