@@ -8,7 +8,7 @@ FROM task
 INNER JOIN project ON project.id = task."projectId"
 WHERE project."organizationId" != 'dde641cb-b50e-403f-955a-f83c154e441f'
   AND task."creatorId" != 'c1f5e5fe-4287-412d-a478-6c89e7b1a190'
-  AND task.description NOT LIKE 'Originally created from Github issue%'
+  AND task.description NOT LIKE 'Originally created from%'
   AND task."parentTaskId" IS NULL
 GROUP BY DATE(task."createdAt")
 ORDER BY DATE(task."createdAt") DESC

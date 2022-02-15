@@ -6,12 +6,14 @@ import { uuidToBase62 } from "@dewo/app/util/uuid";
 import { useRouter } from "next/router";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
+import { useOrganization } from "../../organization/hooks";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
+  const refetchOrganization = useOrganization(project.organizationId).refetch;
   const updateProject = useUpdateProject();
   const deletingProject = useToggle(false);
   const router = useRouter();
@@ -25,8 +27,15 @@ export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
       id: project?.id!,
       deletedAt: new Date().toISOString(),
     });
+    refetchOrganization(); // async
     router.push({ pathname: `/o/${uuidToBase62(project?.organizationId!)}` });
-  }, [updateProject, project?.id, project?.organizationId, router]);
+  }, [
+    updateProject,
+    refetchOrganization,
+    project?.id,
+    project?.organizationId,
+    router,
+  ]);
 
   return (
     <FormSection label="DANGER ZONE">
