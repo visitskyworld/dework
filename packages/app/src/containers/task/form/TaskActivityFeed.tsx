@@ -71,7 +71,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
       {
         date: task.createdAt,
         avatar: !!task.creator ? (
-          <UserAvatar size="small" user={task.creator} />
+          <UserAvatar size="small" user={task.creator} linkToProfile />
         ) : (
           <Avatar size="small" icon={<Icons.CalendarOutlined />} />
         ),
