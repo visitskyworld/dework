@@ -11,7 +11,7 @@ export const FallbackSeo: FC = () => (
       type: "website",
       title: siteTitle,
       description: siteDescription,
-      // images: [{ url: "https://i.imgur.com/vs0aXnL.png" }],
+      // images: "https://i.imgur.com/vs0aXnL.png",
       images: [
         {
           url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
@@ -20,7 +20,7 @@ export const FallbackSeo: FC = () => (
             description: siteDescription,
             md: 1,
             fontSize: "100px",
-            images: [{ url: "https://app.dework.xyz/logo.png" }],
+            images: "https://app.dework.xyz/logo.png",
             widths: 300,
             heights: 300,
           })}`,
