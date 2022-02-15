@@ -63,6 +63,9 @@ export const ProjectDiscoveryList: FC = () => {
                       ellipsis={{ rows: 1 }}
                       style={{ margin: 0 }}
                     >
+                      <span style={{ fontWeight: 400 }}>
+                        {`${project.organization.name} / `}
+                      </span>
                       {project.name}
                     </Typography.Title>
                     {!!project.description && (
