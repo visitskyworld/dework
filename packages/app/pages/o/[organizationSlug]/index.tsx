@@ -13,6 +13,7 @@ import { Project } from "@dewo/app/graphql/types";
 import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
 import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/ImportProjectsFromNotionModal";
 import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/ImportProjectsFromTrelloModal";
+import { OrganizationSeo } from "@dewo/app/containers/seo/OrganizationSeo";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -82,6 +83,8 @@ const Page: NextPage = () => {
           threepidId={router.query.threepidId as string}
         />
       )}
+
+      {!!organization && <OrganizationSeo organization={organization} />}
     </Layout>
   );
 };

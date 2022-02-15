@@ -227,6 +227,9 @@ export const projectDetails = gql`
     tokenGates {
       ...ProjectTokenGate
     }
+    organization {
+      ...Organization
+    }
   }
 
   ${project}
@@ -235,6 +238,7 @@ export const projectDetails = gql`
   ${paymentToken}
   ${projectIntegration}
   ${projectTokenGate}
+  ${organization}
 `;
 
 export const taskTag = gql`
@@ -441,6 +445,9 @@ export const taskDetails = gql`
     }
     project {
       ...Project
+      organization {
+        ...Organization
+      }
     }
     parentTask {
       id
@@ -466,6 +473,7 @@ export const taskDetails = gql`
   ${task}
   ${user}
   ${project}
+  ${organization}
   ${githubPullRequest}
   ${githubBranch}
   ${taskApplication}

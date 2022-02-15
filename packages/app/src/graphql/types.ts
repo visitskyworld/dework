@@ -435,6 +435,15 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGates {
   token: UpdateOrganizationMutation_organization_projects_tokenGates_token;
 }
 
+export interface UpdateOrganizationMutation_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface UpdateOrganizationMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -455,6 +464,7 @@ export interface UpdateOrganizationMutation_organization_projects {
   paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
   integrations: UpdateOrganizationMutation_organization_projects_integrations[];
   tokenGates: UpdateOrganizationMutation_organization_projects_tokenGates[];
+  organization: UpdateOrganizationMutation_organization_projects_organization;
 }
 
 export interface UpdateOrganizationMutation_organization_projectSections {
@@ -958,6 +968,15 @@ export interface CreateProjectMutation_project_organization_projects_tokenGates 
   token: CreateProjectMutation_project_organization_projects_tokenGates_token;
 }
 
+export interface CreateProjectMutation_project_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -978,6 +997,7 @@ export interface CreateProjectMutation_project_organization_projects {
   paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
   integrations: CreateProjectMutation_project_organization_projects_integrations[];
   tokenGates: CreateProjectMutation_project_organization_projects_tokenGates[];
+  organization: CreateProjectMutation_project_organization_projects_organization;
 }
 
 export interface CreateProjectMutation_project_organization_projectSections {
@@ -1211,6 +1231,15 @@ export interface UpdateProjectMutation_project_tokenGates {
   token: UpdateProjectMutation_project_tokenGates_token;
 }
 
+export interface UpdateProjectMutation_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1231,6 +1260,7 @@ export interface UpdateProjectMutation_project {
   paymentMethods: UpdateProjectMutation_project_paymentMethods[];
   integrations: UpdateProjectMutation_project_integrations[];
   tokenGates: UpdateProjectMutation_project_tokenGates[];
+  organization: UpdateProjectMutation_project_organization;
 }
 
 export interface UpdateProjectMutation {
@@ -4059,6 +4089,15 @@ export interface CreateTaskPaymentsMutation_tasks_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4069,6 +4108,7 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  organization: CreateTaskPaymentsMutation_tasks_project_organization;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_parentTask {
@@ -4552,6 +4592,15 @@ export interface CreateProjectsFromNotionMutation_organization_projects_tokenGat
   token: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token;
 }
 
+export interface CreateProjectsFromNotionMutation_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface CreateProjectsFromNotionMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4572,6 +4621,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   paymentMethods: CreateProjectsFromNotionMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
+  organization: CreateProjectsFromNotionMutation_organization_projects_organization;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projectSections {
@@ -4782,6 +4832,15 @@ export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGat
   token: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token;
 }
 
+export interface CreateProjectsFromTrelloMutation_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface CreateProjectsFromTrelloMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4802,6 +4861,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   paymentMethods: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
+  organization: CreateProjectsFromTrelloMutation_organization_projects_organization;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projectSections {
@@ -5491,6 +5551,15 @@ export interface GetOrganizationQuery_organization_projects_tokenGates {
   token: GetOrganizationQuery_organization_projects_tokenGates_token;
 }
 
+export interface GetOrganizationQuery_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -5511,6 +5580,7 @@ export interface GetOrganizationQuery_organization_projects {
   paymentMethods: GetOrganizationQuery_organization_projects_paymentMethods[];
   integrations: GetOrganizationQuery_organization_projects_integrations[];
   tokenGates: GetOrganizationQuery_organization_projects_tokenGates[];
+  organization: GetOrganizationQuery_organization_projects_organization;
 }
 
 export interface GetOrganizationQuery_organization_projectSections {
@@ -6113,6 +6183,15 @@ export interface GetProjectQuery_project_tokenGates {
   token: GetProjectQuery_project_tokenGates_token;
 }
 
+export interface GetProjectQuery_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -6133,6 +6212,7 @@ export interface GetProjectQuery_project {
   paymentMethods: GetProjectQuery_project_paymentMethods[];
   integrations: GetProjectQuery_project_integrations[];
   tokenGates: GetProjectQuery_project_tokenGates[];
+  organization: GetProjectQuery_project_organization;
 }
 
 export interface GetProjectQuery {
@@ -6750,6 +6830,15 @@ export interface GetTaskQuery_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface GetTaskQuery_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface GetTaskQuery_task_project_taskTags {
   __typename: "TaskTag";
   id: Scalar.UUID;
@@ -6770,6 +6859,7 @@ export interface GetTaskQuery_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  organization: GetTaskQuery_task_project_organization;
   taskTags: GetTaskQuery_task_project_taskTags[];
 }
 
@@ -8046,6 +8136,15 @@ export interface TaskCreatedSubscription_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskCreatedSubscription_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface TaskCreatedSubscription_task_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -8056,6 +8155,7 @@ export interface TaskCreatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  organization: TaskCreatedSubscription_task_project_organization;
 }
 
 export interface TaskCreatedSubscription_task_parentTask {
@@ -8502,6 +8602,15 @@ export interface TaskUpdatedSubscription_task_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskUpdatedSubscription_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface TaskUpdatedSubscription_task_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -8512,6 +8621,7 @@ export interface TaskUpdatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  organization: TaskUpdatedSubscription_task_project_organization;
 }
 
 export interface TaskUpdatedSubscription_task_parentTask {
@@ -9312,6 +9422,15 @@ export interface ProjectDetails_tokenGates {
   token: ProjectDetails_tokenGates_token;
 }
 
+export interface ProjectDetails_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
@@ -9332,6 +9451,7 @@ export interface ProjectDetails {
   paymentMethods: ProjectDetails_paymentMethods[];
   integrations: ProjectDetails_integrations[];
   tokenGates: ProjectDetails_tokenGates[];
+  organization: ProjectDetails_organization;
 }
 
 /* tslint:disable */
@@ -10393,6 +10513,15 @@ export interface TaskDetails_options {
   allowOpenSubmission: boolean | null;
 }
 
+export interface TaskDetails_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface TaskDetails_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10403,6 +10532,7 @@ export interface TaskDetails_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  organization: TaskDetails_project_organization;
 }
 
 export interface TaskDetails_parentTask {
@@ -10743,6 +10873,15 @@ export interface OrganizationDetails_projects_tokenGates {
   token: OrganizationDetails_projects_tokenGates_token;
 }
 
+export interface OrganizationDetails_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10763,6 +10902,7 @@ export interface OrganizationDetails_projects {
   paymentMethods: OrganizationDetails_projects_paymentMethods[];
   integrations: OrganizationDetails_projects_integrations[];
   tokenGates: OrganizationDetails_projects_tokenGates[];
+  organization: OrganizationDetails_projects_organization;
 }
 
 export interface OrganizationDetails_projectSections {

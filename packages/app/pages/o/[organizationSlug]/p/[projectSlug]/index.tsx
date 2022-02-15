@@ -17,6 +17,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/FilterContext";
 import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
+import { ProjectSeo } from "@dewo/app/containers/seo/ProjectSeo";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -126,6 +127,7 @@ const Page: NextPage = () => {
         </Layout.Content>
       </Layout.Content>
       <ForbiddenResourceModal visible={forbiddenError} />
+      {!!project && <ProjectSeo project={project} />}
     </Layout>
   );
 };

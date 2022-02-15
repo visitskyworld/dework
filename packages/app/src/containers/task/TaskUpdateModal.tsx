@@ -13,6 +13,7 @@ import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
 import { TaskApplyModal } from "./TaskApplyModal";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { TaskSeo } from "../seo/TaskSeo";
 
 interface Props {
   taskId: string;
@@ -27,7 +28,10 @@ export const TaskUpdateModal: FC<Props> = ({
   showProjectLink,
   onCancel,
 }) => {
-  const task = useTask(taskId, "network-only");
+  const task = useTask(
+    taskId,
+    typeof window === "undefined" ? undefined : "network-only"
+  );
   const updateTask = useUpdateTask();
   const handleSubmit = useCallback(
     async ({ subtasks, ...values }: TaskFormValues) => {
@@ -67,23 +71,26 @@ export const TaskUpdateModal: FC<Props> = ({
   );
 
   return (
-    <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
-      {!!task && <TaskOptionsButton task={task} />}
-      <Skeleton loading={!task} active paragraph={{ rows: 5 }}>
-        {!!task && (
-          <TaskForm
-            key={taskId}
-            mode="update"
-            task={task}
-            projectId={task!.projectId}
-            initialValues={initialValues}
-            assignees={task!.assignees}
-            showProjectLink={showProjectLink}
-            onSubmit={handleSubmit}
-          />
-        )}
-      </Skeleton>
-    </Modal>
+    <>
+      <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
+        {!!task && <TaskOptionsButton task={task} />}
+        <Skeleton loading={!task} active paragraph={{ rows: 5 }}>
+          {!!task && (
+            <TaskForm
+              key={taskId}
+              mode="update"
+              task={task}
+              projectId={task!.projectId}
+              initialValues={initialValues}
+              assignees={task!.assignees}
+              showProjectLink={showProjectLink}
+              onSubmit={handleSubmit}
+            />
+          )}
+        </Skeleton>
+      </Modal>
+      {visible && !!task && <TaskSeo task={task} />}
+    </>
   );
 };
 

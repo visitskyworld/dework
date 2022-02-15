@@ -5,12 +5,7 @@ import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
 import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
-import {
-  Constants,
-  siteDescription,
-  siteTitle,
-  siteURL,
-} from "@dewo/app/util/constants";
+import { Constants } from "@dewo/app/util/constants";
 import {
   ApolloClient,
   createHttpLink,
@@ -35,6 +30,7 @@ import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { AppContextType } from "next/dist/shared/lib/utils";
+import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -105,20 +101,6 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   return (
     <>
       <Head>
-        <title>{siteTitle}</title>
-        <meta name="description" content={siteDescription} />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteURL} />
-        <meta property="og:title" content={siteTitle} />
-        <meta property="og:description" content={siteDescription} />
-        <meta property="og:image" content="https://i.imgur.com/vs0aXnL.png" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content={siteURL} />
-        <meta name="twitter:title" content={siteTitle} />
-        <meta name="twitter:description" content={siteDescription} />
-        <meta name="twitter:image" content="https://i.imgur.com/vs0aXnL.png" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -136,6 +118,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
             document.head.appendChild(ust_min_js);`}
         </script>
       </Head>
+      <FallbackSeo />
       <ApolloProvider client={apollo as any}>
         <AuthProvider
           initialAuthenticated={!!initialAuthToken || !!getAuthToken(undefined)}
