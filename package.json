@@ -5,7 +5,7 @@
     "packages/api",
     "packages/landing-page"
   ],
-  "version": "0.3.15",
+  "version": "0.3.16",
   "private": true,
   "engines": {
     "yarn": "1.22.x"
