@@ -9,6 +9,8 @@
 @primary-color-25: #8570e444;
 @primary-color-50: #8570e488;
 @body-background: #00042d;
+@twitter-color:#1DA1F2;
+@twitter-color-dark:darken(@twitter-color, 10%);
 @component-background: fade(@white, 10%);
 @divider-color: fade(@white, 20%);
 @border-color-base: fade(@white, 40%);
@@ -20,6 +22,7 @@
 @component-background-highlighted: fade(@white, 20%);
 @layout-header-mobile-height: 48px;
 @table-header-bg: transparent;
+
 html {
   background: @body-background;
   background-image: url("/background.png");
@@ -855,5 +858,13 @@ textarea {
     .ant-select-item-option-state {
       display: none;
     }
+  }
+}
+.dewo-twitter-btn{
+  background-color:@twitter-color;
+  border-color: @twitter-color;
+  &:hover{
+    background-color: @twitter-color-dark;
+    border-color: @twitter-color-dark;
   }
 }
