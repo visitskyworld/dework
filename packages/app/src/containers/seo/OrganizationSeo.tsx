@@ -24,7 +24,7 @@ export const OrganizationSeo: FC<Props> = ({ organization }) => {
             url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
               organization.name
             )}**.png?${qs.stringify({
-              description,
+              subtitle: description,
               md: 1,
               fontSize: "100px",
               images:
