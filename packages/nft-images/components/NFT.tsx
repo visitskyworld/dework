@@ -33,9 +33,6 @@ const NFTUserComponent: FC<{ user: NFTUser; label: string }> = ({
   label,
 }) => (
   <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-    <p className="typography-label" style={{ marginBottom: 4 }}>
-      {label}
-    </p>
     <div className="nft-user" style={{ textAlign: "left" }}>
       <img src={user.imageUrl} alt={user.username} className="nft-user-image" />
       <div style={{ position: "relative", flex: 1, height: "100%" }}>
@@ -56,29 +53,33 @@ const NFTUserComponent: FC<{ user: NFTUser; label: string }> = ({
         </div>
       </div>
     </div>
+    {/* <p className="typography-label" style={{ marginBottom: 4 }}> */}
+    <p className="typography-label" style={{ marginTop: 4 }}>
+      {label}
+    </p>
   </div>
 );
 
 export const NFT: FC<Props> = ({ width, height, data }) => {
   const [fontSize, setFontSize] = useState(0);
   useEffect(() => {
-    // if (Math.random()) return;
-
     const container = document.querySelector(".nft-name-container");
     if (!container) return;
     const h1 = container.querySelector("h1");
     if (!h1) return;
+
+    h1.style.fontSize = "0px";
     const initialMaxHeight = container.clientHeight;
 
-    (async () => {
-      let size = 0;
-      while (container.clientHeight <= initialMaxHeight) {
-        h1.style.fontSize = `${size}px`;
-        size++;
-      }
+    let size = 0;
+    while (container.clientHeight <= initialMaxHeight) {
+      size++;
+      h1.style.fontSize = `${size}px`;
+      console.log(size, container.clientHeight);
+    }
 
-      setFontSize(size - 2);
-    })();
+    h1.style.fontSize = `${size - 1}px`;
+    setFontSize(size - 1);
   }, [data]);
 
   return (
@@ -96,7 +97,7 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
           className="nft-name-container"
           style={{
             flex: 1,
-            padding: "16px 8px",
+            padding: 8,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -112,29 +113,18 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
           >
             {data.task.name}
           </h1>
-          {/* <canvas
-            width={100}
-            height={50}
-            style={{ width: 100, height: 50, background: "pink" }}
-            ref={(ref) => {
-              if (!ref) return;
-              const context = ref.getContext("2d");
-              if (!context) return;
-              // context.font = "bold 12pt arial";
-              context.font = getComputedStyle(
-                document.querySelector("h1")!
-              ).font;
-              context.fillText("1234567890", 0, 30);
-
-              const { width } = context.measureText("1234567890");
-              console.warn(width);
-            }}
-          /> */}
           <p className="date">
             {moment(data.task.doneAt).tz("utc").format("ll")}
           </p>
+          <p className="date">{data.task.permalink}</p>
         </div>
-        <div style={{ display: "flex", gap: 8, alignSelf: "stretch" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            ...(!!data.reviewer ? { alignSelf: "stretch" } : { width: "67%" }),
+          }}
+        >
           <NFTUserComponent user={data.user} label="User" />
           {!!data.reviewer && (
             <NFTUserComponent user={data.reviewer} label="Reviewer" />

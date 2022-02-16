@@ -14,9 +14,8 @@ const Page = () => (
         },
         task: {
           name: "Generate Parcel Explorer Images",
-          // name: "Reallylongwordwithoutabreak is cool",
           doneAt: new Date().toISOString(),
-          permalink: "https://fant.io",
+          permalink: "dwrk.xyz/XkMy3",
         },
         user: {
           username: "fant",
