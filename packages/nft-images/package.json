@@ -1,0 +1,10 @@
+{
+  "name": "@dewo/nft-images",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "env-cmd -f .env.local next dev",
+    "build": "next build",
+    "start": "next start"
+  }
+}
