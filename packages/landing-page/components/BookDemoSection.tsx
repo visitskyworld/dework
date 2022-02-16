@@ -13,23 +13,9 @@ export const BookDemoSection: FC = () => {
         >
           See how Dework can help your DAO
         </Typography.Title>
-        <Typography.Paragraph
-          type="secondary"
-          style={{ textAlign: "center", fontSize: "130%" }}
-        >
-          Schedule a 30 min demo with our co-founder{" "}
-          <a
-            href="https://calendly.com/lonis_"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Lonis
-          </a>{" "}
-          or join our Discord.
-        </Typography.Paragraph>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12}>
-            <Link href="https://calendly.com/lonis_">
+            <Link href="https://calendly.com/dework">
               <a target="_blank">
                 <Button type="primary" size="large" block>
                   Schedule a Demo
