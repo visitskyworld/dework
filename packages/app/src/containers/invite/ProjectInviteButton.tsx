@@ -65,7 +65,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
                 Invite Contributors
               </Menu.Item>
               <Menu.Item onClick={inviteProjectAdmin}>
-                Invite Project Steward
+                Invite Project Steward(s)
               </Menu.Item>
             </Menu>
           }
