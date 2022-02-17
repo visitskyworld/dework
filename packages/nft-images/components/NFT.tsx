@@ -125,7 +125,7 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
             ...(!!data.reviewer ? { alignSelf: "stretch" } : { width: "67%" }),
           }}
         >
-          <NFTUserComponent user={data.user} label="User" />
+          <NFTUserComponent user={data.user} label="Assignee" />
           {!!data.reviewer && (
             <NFTUserComponent user={data.reviewer} label="Reviewer" />
           )}

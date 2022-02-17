@@ -15,7 +15,7 @@ const Page = () => (
         task: {
           name: "Generate Parcel Explorer Images",
           doneAt: new Date().toISOString(),
-          permalink: "dwrk.xyz/XkMy3",
+          permalink: "dework.xyz/XkMy3",
         },
         user: {
           username: "fant",
@@ -25,7 +25,7 @@ const Page = () => (
         },
         reviewer: {
           username: "lonis",
-          address: "0x761996F7258A19B6aCcF6f22e9Ca8CdAA92D75A6",
+          address: "0x38c257de76261d0c9376e3ac0bdca18026a41a2e",
           imageUrl: "https://avatars.githubusercontent.com/u/52952537?v=4",
         },
       }}
