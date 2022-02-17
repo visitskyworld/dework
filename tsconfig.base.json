@@ -21,7 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@dewo/app/*": ["./packages/app/src/*"],
-      "@dewo/api/*": ["./packages/api/src/*"]
+      "@dewo/api/*": ["./packages/api/src/*"],
+      "@dewo/nft/*": ["./packages/nft/src/*"]
     },
     "typeRoots": [
       "node_modules/@types",

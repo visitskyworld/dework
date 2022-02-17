@@ -3,6 +3,7 @@
   "include": [
     "packages/app",
     "packages/api",
-    "packages/landing-page"
+    "packages/landing-page",
+    "packages/nft"
   ]
 }

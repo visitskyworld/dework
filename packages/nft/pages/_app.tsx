@@ -4,7 +4,7 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import "../styles/styles.css";
 
-interface ServerSideProps {}
+// interface ServerSideProps {}
 
 // const regular = fs
 //   .readFileSync(`${__dirname}/../styles/fonts/AvenirNextLTPro-Regular.otf`)

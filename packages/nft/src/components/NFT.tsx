@@ -1,34 +1,15 @@
 import React, { FC, useEffect, useState } from "react";
 import moment from "moment-timezone";
 import DeworkLogo from "@dewo/app/public/logo.svg";
-
-interface NFTUser {
-  imageUrl: string;
-  username: string;
-  address: string;
-}
-
-interface NFTData {
-  organization: {
-    imageUrl: string;
-    name: string;
-  };
-  task: {
-    name: string;
-    permalink: string;
-    doneAt: string;
-  };
-  user: NFTUser;
-  reviewer?: NFTUser;
-}
+import { TaskData, TaskUser } from "../utils/types";
 
 interface Props {
   width: number;
   height: number;
-  data: NFTData;
+  data: TaskData;
 }
 
-const NFTUserComponent: FC<{ user: NFTUser; label: string }> = ({
+const NFTUserComponent: FC<{ user: TaskUser; label: string }> = ({
   user,
   label,
 }) => (
@@ -116,7 +97,8 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
           <p className="date">
             {moment(data.task.doneAt).tz("utc").format("ll")}
           </p>
-          <p className="date">{data.task.permalink}</p>
+          {/* <p className="date">{data.task.permalink}</p> */}
+          <p className="date">15 MATIC</p>
         </div>
         <div
           style={{

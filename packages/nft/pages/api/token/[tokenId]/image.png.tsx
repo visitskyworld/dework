@@ -1,3 +1,4 @@
+/*
 import { Response } from "express";
 import * as Puppeteer from "puppeteer-core";
 import absoluteUrl from "next-absolute-url";
@@ -25,4 +26,22 @@ export default async function handler(req: IncomingMessage, res: Response) {
   res.statusCode = 200;
   res.setHeader("Content-Type", "image/png");
   res.send(file);
+}
+*/
+
+import { Request, Response } from "express";
+import * as fs from "fs";
+
+export default async function handler(req: Request, res: Response) {
+  try {
+    const tokenId = parseInt(req.query.tokenId as string);
+    if (tokenId !== 1) throw new Error();
+    res.statusCode = 200;
+    res.setHeader("content-type", "image/png");
+    res.send(fs.readFileSync("./public/sample.png"));
+  } catch (error) {
+    console.log(error);
+    res.status(404);
+    res.json({ error: "Token not found" });
+  }
 }

@@ -4,7 +4,7 @@
     "packages/contracts",
     "packages/api",
     "packages/landing-page",
-    "packages/nft-images"
+    "packages/nft"
   ],
   "version": "0.3.20",
   "private": true,
@@ -16,7 +16,7 @@
     "app": "yarn workspace @dewo/app",
     "api": "yarn workspace @dewo/api",
     "lp": "yarn workspace @dewo/landing-page",
-    "nft": "yarn workspace @dewo/nft-images",
+    "nft": "yarn workspace @dewo/nft",
     "ts-check": "tsc --watch --preserveWatchOutput",
     "deploy:api:demo": "./packages/scripts/deploy-api-demo.sh",
     "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
