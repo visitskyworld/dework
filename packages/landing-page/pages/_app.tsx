@@ -35,6 +35,8 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   pageProps,
   apollo,
 }) => {
+  const imageUrl =
+    "https://dework-og-image-fant.vercel.app/**Dework**.png?fontSize=100px&heights=300&images=https%3A%2F%2Fapp.dework.xyz%2Flogo.png&md=1&subtitle=The%20task%20manager%20for%20DAOs%20and%20decentralized%20work&widths=300";
   return (
     <>
       <Head>
@@ -45,13 +47,13 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         <meta property="og:url" content={siteURL} />
         <meta property="og:title" content={siteTitle} />
         <meta property="og:description" content={siteDescription} />
-        <meta property="og:image" content="https://i.imgur.com/vs0aXnL.png" />
+        <meta property="og:image" content={imageUrl} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={siteURL} />
         <meta name="twitter:title" content={siteTitle} />
         <meta name="twitter:description" content={siteDescription} />
-        <meta name="twitter:image" content="https://i.imgur.com/vs0aXnL.png" />
+        <meta name="twitter:image" content={imageUrl} />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
