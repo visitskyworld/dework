@@ -377,7 +377,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 valuePropName="checked"
               >
                 <Checkbox>
-                  This is an Open Bounty{"  "}
+                  This is a Contest bounty{"  "}
                   <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
                     <Icons.QuestionCircleOutlined />
                   </Tooltip>
