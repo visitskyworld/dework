@@ -71,7 +71,7 @@ const ProfileFill: NextPage = () => {
   );
 
   return (
-    <Layout>
+    <Layout key={userId}>
       <Layout.Content>
         <Modal visible footer={null} closable={false} style={{ maxWidth: 320 }}>
           <Form

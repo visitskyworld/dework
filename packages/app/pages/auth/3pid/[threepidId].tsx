@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
-import { useAuthWithThreepid } from "@dewo/app/containers/auth/hooks";
+import {
+  useAuthWithThreepid,
+  useGetOnboardingPath,
+} from "@dewo/app/containers/auth/hooks";
 import { useAcceptInvite } from "@dewo/app/containers/invite/hooks";
 import { ApolloError } from "@apollo/client";
 import Link from "next/link";
@@ -17,6 +20,7 @@ const Auth: NextPage = () => {
   );
 
   const authWithThreepid = useAuthWithThreepid();
+  const getOnboardingPath = useGetOnboardingPath();
   const acceptInvite = useAcceptInvite();
   const [accountAlreadyConnected, setAccountAlreadyConnected] = useState(false);
 
@@ -27,19 +31,9 @@ const Auth: NextPage = () => {
         await acceptInvite(state.inviteId).catch();
       }
 
-      let nextPagePath = !!user.onboarding ? "/" : "/onboarding";
-      if (!!state.redirect && state.redirect !== "/") {
-        nextPagePath = state.redirect;
-      }
+      const onboardPath = getOnboardingPath(user, state.redirect);
 
-      const hasGenericUsername = user.username.startsWith("deworker");
-      const hasDiscordDetail = user.details.some((d) => d.type === "discord");
-
-      if (hasGenericUsername || !hasDiscordDetail) {
-        await router.push(`/profile/${user.id}/fill?redirect=${nextPagePath}`);
-      } else {
-        await router.push(nextPagePath);
-      }
+      await router.push(onboardPath);
     } catch (error) {
       if (error instanceof ApolloError) {
         if (error.message === "Account already connected") {
@@ -49,7 +43,15 @@ const Auth: NextPage = () => {
         throw error;
       }
     }
-  }, [authWithThreepid, threepidId, router, state, acceptInvite]);
+  }, [
+    router,
+    threepidId,
+    state.inviteId,
+    state.redirect,
+    authWithThreepid,
+    getOnboardingPath,
+    acceptInvite,
+  ]);
 
   useEffect(() => {
     auth();

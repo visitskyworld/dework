@@ -153,3 +153,20 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
     isMetamaskAvailable,
   ]);
 }
+
+export const useGetOnboardingPath = () => {
+  return useCallback((user: UserDetails, redirect?: string) => {
+    let onboardPath = !!user.onboarding ? "/" : "/onboarding";
+    if (!!redirect && redirect !== "/") {
+      onboardPath = redirect;
+    }
+
+    const hasGenericUsername = user.username.includes("deworker");
+    const hasDiscordDetail = user.details.some((d) => d.type === "discord");
+    if (hasGenericUsername || !hasDiscordDetail) {
+      return `/profile/${user.id}/fill?redirect=${onboardPath}`;
+    }
+
+    return onboardPath;
+  }, []);
+};
