@@ -5,6 +5,7 @@ import { Organization } from "@dewo/api/models/Organization";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../app/config";
 import { User } from "@dewo/api/models/User";
+import { TaskNFT } from "@dewo/api/models/TaskNFT";
 
 @Injectable()
 export class PermalinkService {
@@ -12,7 +13,7 @@ export class PermalinkService {
   private logger = new Logger(this.constructor.name);
 
   async get(
-    object: Task | Project | Organization | User,
+    object: Task | TaskNFT | Project | Organization | User,
     appUrl = this.config.get("APP_URL")
   ): Promise<string> {
     if (object instanceof User) {
@@ -28,6 +29,9 @@ export class PermalinkService {
     }
     if (object instanceof Organization) {
       return `${appUrl}/o/${object.slug}`;
+    }
+    if (object instanceof TaskNFT) {
+      return `https://dwrk.xyz/${object.slug}`;
     }
 
     this.logger.error(
