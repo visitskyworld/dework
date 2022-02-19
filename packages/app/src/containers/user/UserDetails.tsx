@@ -115,7 +115,7 @@ export const UserDetails: FC<EntityDetailsProps> = ({
         <Space
           align="center"
           size={4}
-          style={{ marginTop: 4, display: "flex", justifyContent: "center" }}
+          style={{ marginTop: 8, display: "flex", justifyContent: "center" }}
         >
           {iconByType[locationDetailType]}
           <Typography.Text type="secondary" ellipsis>
