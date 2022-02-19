@@ -27,10 +27,18 @@ const Auth: NextPage = () => {
         await acceptInvite(state.inviteId).catch();
       }
 
+      let nextPagePath = !!user.onboarding ? "/" : "/onboarding";
       if (!!state.redirect && state.redirect !== "/") {
-        await router.push(state.redirect);
+        nextPagePath = state.redirect;
+      }
+
+      const hasGenericUsername = user.username.startsWith("deworker");
+      const hasDiscordDetail = user.details.some((d) => d.type === "discord");
+
+      if (hasGenericUsername || !hasDiscordDetail) {
+        await router.push(`/profile/${user.id}/fill?redirect=${nextPagePath}`);
       } else {
-        await router.push(!!user.onboarding ? "/" : "/onboarding");
+        await router.push(nextPagePath);
       }
     } catch (error) {
       if (error instanceof ApolloError) {
@@ -42,6 +50,7 @@ const Auth: NextPage = () => {
       }
     }
   }, [authWithThreepid, threepidId, router, state, acceptInvite]);
+
   useEffect(() => {
     auth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
