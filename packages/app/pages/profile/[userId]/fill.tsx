@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
+  Alert,
   Button,
   Form,
   Input,
@@ -11,29 +12,34 @@ import {
   Row,
   Skeleton,
   Space,
+  Typography,
 } from "antd";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { useToggle } from "@dewo/app/util/hooks";
 import {
   useUpdateUser,
   useUpdateUserDetail,
-  useUser,
 } from "@dewo/app/containers/user/hooks";
-import { EntityDetailType } from "@dewo/app/graphql/types";
-import { OrganizationDetailFormItem } from "@dewo/app/containers/organization/overview/OrganizationDetailFormItem";
+import { EntityDetailType, ThreepidSource } from "@dewo/app/graphql/types";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { EditUserAvatarButton } from "@dewo/app/containers/user/EditUserAvatarButton";
+import {
+  renderThreepidIcon,
+  ThreepidAuthButton,
+} from "@dewo/app/containers/auth/ThreepidAuthButton";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 const ProfileFill: NextPage = () => {
+  const { user } = useAuthContext();
   const router = useRouter();
-  const userId = useRouter().query.userId as string;
   const redirectPath = router.query.redirect as string;
-  const user = useUser(userId);
+
   const updateUser = useUpdateUser();
   const updateUserDetail = useUpdateUserDetail();
 
   const [form] = Form.useForm();
   const loading = useToggle(false);
+
   type InititalValues = Record<string, string>;
   const intitialValues: InititalValues = useMemo(
     () => ({
@@ -44,10 +50,10 @@ const ProfileFill: NextPage = () => {
   );
 
   useEffect(() => {
-    if (!userId || !redirectPath) {
+    if (!user || !redirectPath) {
       router.push("/");
     }
-  }, [router, redirectPath, userId]);
+  }, [router, redirectPath, user]);
 
   const onSubmit = useCallback(
     async (values: InititalValues) => {
@@ -70,18 +76,30 @@ const ProfileFill: NextPage = () => {
     [loading, redirectPath, router, updateUser, updateUserDetail]
   );
 
+  const onCancel = useCallback(async () => {
+    await router.push(redirectPath);
+  }, [redirectPath, router]);
+
   return (
-    <Layout key={userId}>
+    <Layout>
       <Layout.Content>
-        <Modal visible footer={null} closable={false} style={{ maxWidth: 320 }}>
+        <Modal
+          title="Introduce yourself"
+          visible
+          footer={null}
+          style={{ maxWidth: 340 }}
+          onCancel={onCancel}
+        >
           <Form
             form={form}
             layout="vertical"
             initialValues={intitialValues}
             onFinish={onSubmit}
+            key={user?.id}
           >
             <Space
               direction="vertical"
+              size="small"
               style={{
                 width: "100%",
               }}
@@ -102,24 +120,39 @@ const ProfileFill: NextPage = () => {
                   <EditUserAvatarButton />
                 </Row>
               </Row>
-              <div>
-                <FormSection label="Username">
-                  <Form.Item
-                    name="username"
-                    rules={[
-                      { required: true, message: "Username can't be blank" },
-                    ]}
-                  >
-                    <Input placeholder="Enter a username..." />
-                  </Form.Item>
-                </FormSection>
-                <FormSection label="Discord">
-                  <OrganizationDetailFormItem
-                    type={EntityDetailType.discord}
-                    ruleType="string"
-                  />
-                </FormSection>
-              </div>
+              <FormSection label="Username">
+                <Form.Item
+                  name="username"
+                  rules={[
+                    { required: true, message: "Username can't be blank" },
+                  ]}
+                >
+                  <Input placeholder="What should we call you?" />
+                </Form.Item>
+              </FormSection>
+              {user?.threepids.some(
+                (t) => t.source === ThreepidSource.discord
+              ) ? (
+                <Alert
+                  key="discord-connected"
+                  message={`Connected with Discord`}
+                  icon={renderThreepidIcon[ThreepidSource.discord]}
+                  type="success"
+                  showIcon
+                />
+              ) : (
+                <ThreepidAuthButton
+                  key="connect-discord"
+                  source={ThreepidSource.discord}
+                  children="Connect with Discord"
+                  style={{ width: "100%" }}
+                />
+              )}
+
+              <Typography.Paragraph type="secondary">
+                Connecting to Discord helps organization members recognize who
+                you are.
+              </Typography.Paragraph>
               <Button
                 block
                 type="primary"
