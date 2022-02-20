@@ -16,6 +16,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
 import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
+import { needsToFillOutProfile, useGetOnboardingPath } from "../auth/hooks";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -32,9 +33,11 @@ export const InviteMessageToast: FC = () => {
   );
   const isTokenGated = !!tokens.length;
 
-  const authenticated = !!useAuthContext().user;
+  const { user } = useAuthContext();
+  const authenticated = !!user;
   const authModalVisible = useToggle();
   const tokenGatedModalVisible = useToggle();
+  const getOnboardingPath = useGetOnboardingPath();
 
   const acceptInvite = useAcceptInvite();
   const handleAcceptInvite = useCallback(async () => {
@@ -80,12 +83,15 @@ export const InviteMessageToast: FC = () => {
   useEffect(() => {
     if (!invite) return;
 
-    const handleClick = () => {
+    const handleClick = async () => {
       message.destroy();
+
       if (!authenticated) {
         showAuthModal();
       } else if (isTokenGated) {
         showTokenGateModal();
+      } else if (needsToFillOutProfile(user)) {
+        await router.push(getOnboardingPath(user, router.asPath));
       } else {
         handleAcceptInvite();
       }

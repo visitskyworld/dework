@@ -49,8 +49,7 @@ export const LoginModal: FC<Props> = ({
       onAuthedWithWallet?.(threepidId);
 
       if (!user.onboarding && redirectToOnboarding) {
-        const onboardPath = getOnboardingPath(user);
-        await router.push(onboardPath);
+        await router.push(getOnboardingPath(user));
       }
     } catch (error) {
       alert((error as Error).message);
@@ -78,8 +77,7 @@ export const LoginModal: FC<Props> = ({
       onAuthedWithWallet?.(threepidId);
 
       if (!user.onboarding && redirectToOnboarding) {
-        const onboardPath = getOnboardingPath(user);
-        await router.push(onboardPath);
+        await router.push(getOnboardingPath(user));
       }
     } catch (error) {
       alert((error as Error).message);
