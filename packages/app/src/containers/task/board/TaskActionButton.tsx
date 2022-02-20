@@ -33,7 +33,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
   const canClaimTask = usePermission("claimTask", task);
-  const canUpdateTask = usePermission("update", task);
+  const canUpdateTask = usePermission("update", task, "status");
   const canCreateSubmission = usePermission("update", task, "submissions");
 
   const button = (() => {
