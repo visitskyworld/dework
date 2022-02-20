@@ -80,6 +80,10 @@ export class Organization extends Audit {
   @Field()
   public featured!: boolean;
 
+  @Column({ default: false })
+  @Field()
+  public mintTaskNFTs!: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;

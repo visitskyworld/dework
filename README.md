@@ -408,3 +408,49 @@ END $$;
 ```bash
 echo "https://app.dework.xyz/o/$(./packages/scripts/uuid-to-base62.sh <org id>)"
 ```
+
+# Deploying `DeworkTasks` contract and testing locally
+1. Generate random public/private key
+```bash
+node -e "const w = require('ethers').Wallet.createRandom(); console.log({public: w.address, private: w._signingKey().privateKey})"
+```
+
+2. Send funds to public key
+
+3. Deploy contract
+```bash
+cd ../contracts
+npx hardhat compile
+npx hardhat run scripts/deploy-v2.ts --network rinkeby
+npx hardhat verify --network rinkeby <implementationAddress>
+```
+
+4. Add payment method to DB
+```sql
+DO $$
+DECLARE
+  payment_method_id uuid = uuid_generate_v4();
+  payment_network_id uuid = '6e536cc0-7b9c-4836-96e3-41e877ada317';
+  nft_minter_public_key varchar = '';
+  creator_user_id uuid = '01bc1677-3461-42bc-8e17-1e9a1eac631d';
+BEGIN
+  INSERT INTO "public"."payment_method" ("id", "type", "address", "creatorId", "projectId", "deletedAt", "userId")
+  VALUES (payment_method_id, 'METAMASK', nft_minter_public_key, creator_user_id, NULL, NULL, NULL);
+
+  INSERT INTO "public"."payment_method_network" ("paymentMethodId", "paymentNetworkId")
+  VALUES (payment_method_id, payment_network_id);
+END $$;
+```
+
+4. 
+```bash
+NFT_MINTER_PRIVATE_KEY=
+NFT_MINTER_PUBLIC_KEY=
+NFT_MINTER_NETWORK=
+NFT_CONTRACT_ADDRESS=
+```
+
+5. Mark contract as proxy on Etherscan
+```bash
+open "https://rinkeby.etherscan.io/proxyContractChecker?a=$NFT_CONTRACT_ADDRESS"
+```

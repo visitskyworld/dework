@@ -117,6 +117,18 @@ export class PaymentService {
     return this.paymentMethodRepo.findOne(id);
   }
 
+  public async findPaymentMethod(
+    query: DeepPartial<PaymentMethod>
+  ): Promise<PaymentMethod | undefined> {
+    return this.paymentMethodRepo.findOne({ where: query });
+  }
+
+  public async findPaymentNetwork(
+    query: DeepPartial<PaymentNetwork>
+  ): Promise<PaymentNetwork | undefined> {
+    return this.paymentNetworkRepo.findOne({ where: query });
+  }
+
   public async createPaymentNetwork(
     partial: AtLeast<PaymentNetwork, "name" | "type" | "config">
   ): Promise<PaymentNetwork> {

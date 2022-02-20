@@ -15,9 +15,7 @@ import * as ms from "milliseconds";
 import * as solana from "@solana/web3.js";
 import moment from "moment";
 import { ethers } from "ethers";
-import { ConfigService } from "@nestjs/config";
 import SafeServiceClient from "@gnosis.pm/safe-service-client";
-import { ConfigType } from "../app/config";
 import {
   PaymentNetwork,
   PaymentNetworkType,
@@ -57,8 +55,7 @@ export class PaymentPoller {
 
   constructor(
     @InjectRepository(Payment)
-    private readonly paymentRepo: Repository<Payment>,
-    readonly config: ConfigService<ConfigType>
+    private readonly paymentRepo: Repository<Payment>
   ) {}
 
   @Post("update")

@@ -10,8 +10,9 @@
     "outDir": "build",
     "typeRoots": [
       "node_modules/@types",
+      "../../node_modules/@dewo/contracts/typechain",
       "../../node_modules/@types",
-      "../types"
+      "../types",
     ]
   },
   "include": [

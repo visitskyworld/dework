@@ -38,6 +38,10 @@ export interface ConfigType {
   GOOGLE_CLOUD_CREDENTIALS: string;
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: string;
 
+  NFT_MINTER_PRIVATE_KEY: string;
+  NFT_MINTER_NETWORK: string;
+  NFT_CONTRACT_ADDRESS: string;
+
   SUPERADMIN_USER_IDS: string;
 }
 
@@ -79,6 +83,10 @@ export const configSchema = Joi.object<ConfigType>({
 
   GOOGLE_CLOUD_CREDENTIALS: Joi.string().required(),
   GOOGLE_CLOUD_STORAGE_BUCKET_NAME: Joi.string().required(),
+
+  NFT_MINTER_PRIVATE_KEY: Joi.string(),
+  NFT_MINTER_NETWORK: Joi.string(),
+  NFT_CONTRACT_ADDRESS: Joi.string(),
 
   SUPERADMIN_USER_IDS: Joi.string().allow(""),
 });

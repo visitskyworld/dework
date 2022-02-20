@@ -30,6 +30,7 @@ import { TaskApplication } from "./TaskApplication";
 import { TaskReaction } from "./TaskReaction";
 import { GithubIssue } from "./GithubIssue";
 import { TaskSubmission } from "./TaskSubmission";
+import { TaskNFT } from "./TaskNFT";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -127,6 +128,10 @@ export class Task extends Audit {
   @OneToMany(() => TaskReaction, (r: TaskReaction) => r.task)
   @Field(() => [TaskReaction])
   public reactions!: Promise<TaskReaction[]>;
+
+  @OneToMany(() => TaskNFT, (x: TaskNFT) => x.task)
+  @Field(() => [TaskNFT])
+  public nfts!: Promise<TaskNFT[]>;
 
   // @JoinColumn()
   // @ManyToOne(() => TaskStatus)
