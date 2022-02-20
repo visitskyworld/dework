@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   try {
     const tokenId = parseInt(req.query.tokenId as string);
-    const metadata = getTokenMetadata(tokenId);
+    const metadata = await getTokenMetadata(tokenId);
     res.json(metadata);
   } catch {
     res.status(404);

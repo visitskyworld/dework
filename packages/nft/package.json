@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "env-cmd -f .env.local next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gen:types": "source .env.local && apollo client:codegen --endpoint \"${API_URL}/graphql\" --target 'typescript' --passthroughCustomScalars --customScalarsPrefix 'Scalar.'  --includes 'src/graphql/**/*.ts' --outputFlat 'src/graphql/types.ts'"
   },
   "dependencies": {
     "express": "^4.17.3",

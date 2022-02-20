@@ -1,0 +1,114 @@
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetTaskNFTMetadataQuery
+// ====================================================
+
+export interface GetTaskNFTMetadataQuery_nft_assignee_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
+export interface GetTaskNFTMetadataQuery_nft_assignee {
+  __typename: "User";
+  username: string;
+  imageUrl: string | null;
+  threepids: GetTaskNFTMetadataQuery_nft_assignee_threepids[];
+}
+
+export interface GetTaskNFTMetadataQuery_nft_owner_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
+export interface GetTaskNFTMetadataQuery_nft_owner {
+  __typename: "User";
+  username: string;
+  imageUrl: string | null;
+  threepids: GetTaskNFTMetadataQuery_nft_owner_threepids[];
+}
+
+export interface GetTaskNFTMetadataQuery_nft_task_project_organization {
+  __typename: "Organization";
+  name: string;
+  imageUrl: string | null;
+}
+
+export interface GetTaskNFTMetadataQuery_nft_task_project {
+  __typename: "Project";
+  organization: GetTaskNFTMetadataQuery_nft_task_project_organization;
+}
+
+export interface GetTaskNFTMetadataQuery_nft_task {
+  __typename: "Task";
+  name: string;
+  doneAt: Scalar.DateTime | null;
+  project: GetTaskNFTMetadataQuery_nft_task_project;
+}
+
+export interface GetTaskNFTMetadataQuery_nft {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  permalink: string;
+  assignee: GetTaskNFTMetadataQuery_nft_assignee;
+  owner: GetTaskNFTMetadataQuery_nft_owner | null;
+  task: GetTaskNFTMetadataQuery_nft_task;
+}
+
+export interface GetTaskNFTMetadataQuery {
+  nft: GetTaskNFTMetadataQuery_nft;
+}
+
+export interface GetTaskNFTMetadataQueryVariables {
+  tokenId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: User
+// ====================================================
+
+export interface User_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
+export interface User {
+  __typename: "User";
+  username: string;
+  imageUrl: string | null;
+  threepids: User_threepids[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+//==============================================================
+// START Enums and Input Objects
+//==============================================================
+
+export enum ThreepidSource {
+  discord = "discord",
+  github = "github",
+  hiro = "hiro",
+  metamask = "metamask",
+  notion = "notion",
+  trello = "trello",
+}
+
+//==============================================================
+// END Enums and Input Objects
+//==============================================================

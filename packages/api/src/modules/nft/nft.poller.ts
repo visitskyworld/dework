@@ -16,11 +16,11 @@ import { ConfigType } from "../app/config";
 import { PaymentService } from "../payment/payment.service";
 import { NFTService } from "./nft.service";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
-import Bluebird from "bluebird";
 import { DeworkTasksV2 } from "@dewo/contracts/typechain";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { abi as DeworkTasksABI } from "@dewo/contracts/artifacts/contracts/DeworkTasksV2.sol/DeworkTasksV2.json";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 
 @Controller("nfts")
 export class NFTPoller {
@@ -54,16 +54,14 @@ export class NFTPoller {
 
       for (let i = 0; i < task.assignees.length; i++) {
         const assignee = task.assignees[i];
-        const pms = await assignee.paymentMethods;
-        const pm = await Bluebird.filter(pms, (pm) =>
-          pm.networks.then((networks) =>
-            networks.some((n) => n.slug === minter.network.slug)
-          )
-        ).then((pms) => pms[0] as PaymentMethod | undefined);
+        const threepids = await assignee.threepids;
+        const address = threepids.find(
+          (t) => t.source === ThreepidSource.metamask
+        )?.threepid;
 
-        if (!pm) {
+        if (!address) {
           this.logger.warn(
-            `Cannot mint NFT - assignee has no payment method: ${JSON.stringify(
+            `Cannot mint NFT - assignee has no Metamask address: ${JSON.stringify(
               { assigneeId: assignee.id }
             )}`
           );
@@ -79,7 +77,7 @@ export class NFTPoller {
           minter.signer
         ) as ethers.Contract & DeworkTasksV2;
 
-        const tx = await contract.mint(pm.address, tokenId, true);
+        const tx = await contract.mint(address, tokenId, true);
         this.logger.debug(
           `Minted NFT with tx hash: ${JSON.stringify({ txHash: tx.hash })}`
         );

@@ -30,9 +30,9 @@ export interface Metadata {
 }
 
 export interface TaskUser {
-  imageUrl: string;
+  imageUrl?: string;
   username: string;
-  address: string;
+  address?: string;
 }
 
 export interface TaskData {

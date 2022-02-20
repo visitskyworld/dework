@@ -5,6 +5,7 @@ import { Audit } from "./Audit";
 import { Payment } from "./Payment";
 import { PaymentMethodType } from "./PaymentMethod";
 import { Task } from "./Task";
+import { User } from "./User";
 
 @Entity()
 @ObjectType()
@@ -25,6 +26,22 @@ export class TaskNFT extends Audit {
   @Column({ type: "int" })
   @Field(() => Int)
   public tokenId!: number;
+
+  @JoinColumn()
+  @ManyToOne(() => User)
+  @Field(() => User)
+  public assignee!: Promise<User>;
+  @Column({ type: "uuid" })
+  @Field()
+  public assigneeId!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  public owner?: Promise<User>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public ownerId?: string;
 
   @JoinColumn()
   @ManyToOne(() => Payment)

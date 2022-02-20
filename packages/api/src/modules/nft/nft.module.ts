@@ -7,6 +7,7 @@ import { NFTPoller } from "./nft.poller";
 import { Task } from "@dewo/api/models/Task";
 import { PaymentModule } from "../payment/payment.module";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
+import { TaskNFTResolver } from "./nft.resolver";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
     PermalinkModule,
     PaymentModule,
   ],
-  providers: [NFTService],
+  providers: [NFTService, TaskNFTResolver],
   controllers: [NFTPoller],
 })
 export class NFTModule {}

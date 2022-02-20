@@ -1,8 +1,6 @@
-/*
-import { Response } from "express";
+import { Request, Response } from "express";
 import * as Puppeteer from "puppeteer-core";
 import absoluteUrl from "next-absolute-url";
-import { IncomingMessage } from "http";
 
 const exePath =
   process.platform === "win32"
@@ -11,7 +9,10 @@ const exePath =
     ? "/usr/bin/google-chrome"
     : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
-export default async function handler(req: IncomingMessage, res: Response) {
+export default async function handler(req: Request, res: Response) {
+  const tokenId = parseInt(req.query.tokenId as string);
+  // check if image for tokenId is already exists on GCP
+
   const browser = await Puppeteer.launch({
     args: [],
     executablePath: exePath,
@@ -19,7 +20,7 @@ export default async function handler(req: IncomingMessage, res: Response) {
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 318, height: 468, deviceScaleFactor: 2 });
-  await page.goto(`${absoluteUrl(req).origin}/render`);
+  await page.goto(`${absoluteUrl(req).origin}/render/${tokenId}`);
   const file = await page.screenshot({ type: "png", omitBackground: true });
   await page.close();
 
@@ -27,8 +28,8 @@ export default async function handler(req: IncomingMessage, res: Response) {
   res.setHeader("Content-Type", "image/png");
   res.send(file);
 }
-*/
 
+/*
 import { Request, Response } from "express";
 import * as fs from "fs";
 
@@ -45,3 +46,4 @@ export default async function handler(req: Request, res: Response) {
     res.json({ error: "Token not found" });
   }
 }
+*/

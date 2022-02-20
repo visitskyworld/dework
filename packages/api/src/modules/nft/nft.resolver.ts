@@ -7,12 +7,11 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { Organization } from "@dewo/api/models/Organization";
 import { PermalinkService } from "../permalink/permalink.service";
 import { TaskNFT } from "@dewo/api/models/TaskNFT";
 import { NFTService } from "./nft.service";
 
-@Resolver(() => Organization)
+@Resolver(() => TaskNFT)
 @Injectable()
 export class TaskNFTResolver {
   constructor(
