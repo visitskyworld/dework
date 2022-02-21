@@ -41,6 +41,7 @@ export class NFTService {
       })
       .andWhere("assignee.id IS NOT NULL")
       .andWhere("nft.id IS NULL")
+      .andWhere("task.doneAt > '2022-02-21'")
       .orderBy("task.createdAt", "ASC")
       .getOne();
   }
