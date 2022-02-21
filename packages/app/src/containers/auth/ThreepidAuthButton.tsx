@@ -39,6 +39,7 @@ export const ThreepidAuthButton: FC<Props> = ({
 }) => {
   return (
     <Button
+      htmlType="button"
       icon={renderThreepidIcon[source]}
       href={`${Constants.GRAPHQL_API_URL}/auth/${source}?state=${
         !!state ? JSON.stringify(state) : ""
