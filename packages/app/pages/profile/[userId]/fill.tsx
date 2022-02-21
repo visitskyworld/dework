@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import * as qs from "query-string";
 import {
   Alert,
   Button,
@@ -34,7 +33,6 @@ const ProfileFill: NextPage = () => {
   const { user } = useAuthContext();
   const router = useRouter();
   const redirectPath = router.query.redirect as string;
-  const prefilledUsername = router.query.username as string;
 
   const updateUser = useUpdateUser();
   const updateUserDetail = useUpdateUserDetail();
@@ -45,22 +43,17 @@ const ProfileFill: NextPage = () => {
   type InititalValues = Record<string, string>;
   const intitialValues: InititalValues = useMemo(
     () => ({
-      username: prefilledUsername ? prefilledUsername : user?.username ?? "",
+      username: user?.username ?? "",
       discord: user?.details.find((d) => d.type === "discord")?.value ?? "",
     }),
-    [prefilledUsername, user?.username, user?.details]
+    [user?.username, user?.details]
   );
 
   const state = useMemo(
     () => ({
-      redirect: user?.username.startsWith("deworker")
-        ? qs.stringifyUrl({
-            url: router.asPath,
-            query: { username: user?.username },
-          })
-        : redirectPath,
+      redirect: router.asPath,
     }),
-    [redirectPath, router.asPath, user?.username]
+    [router?.asPath]
   );
 
   useEffect(() => {
@@ -73,13 +66,17 @@ const ProfileFill: NextPage = () => {
     async (values: InititalValues) => {
       try {
         loading.toggleOn();
-        await updateUser({
-          username: values.username,
-        });
-        await updateUserDetail({
-          type: EntityDetailType.discord,
-          value: values.discord,
-        });
+        if (intitialValues.username !== values.username) {
+          await updateUser({
+            username: values.username,
+          });
+        }
+        if (intitialValues.discord !== values.discord) {
+          await updateUserDetail({
+            type: EntityDetailType.discord,
+            value: values.discord,
+          });
+        }
         await router.push(redirectPath);
       } catch {
         message.error("Failed to update user details");
@@ -87,7 +84,14 @@ const ProfileFill: NextPage = () => {
         loading.toggleOff();
       }
     },
-    [loading, redirectPath, router, updateUser, updateUserDetail]
+    [
+      router,
+      loading,
+      redirectPath,
+      intitialValues,
+      updateUser,
+      updateUserDetail,
+    ]
   );
 
   const onCancel = useCallback(async () => {

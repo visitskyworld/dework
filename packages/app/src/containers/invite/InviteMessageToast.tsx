@@ -115,6 +115,8 @@ export const InviteMessageToast: FC = () => {
         showAuthModal();
       } else if (isTokenGated) {
         showTokenGateModal();
+      } else if (needsToFillOutProfile(user)) {
+        router.push(getOnboardingPath(user, router.asPath));
       } else {
         handleAcceptInvite();
       }
