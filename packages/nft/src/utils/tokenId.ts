@@ -37,21 +37,23 @@ export async function getTokenMetadata(
     throw new Error("Token not found");
   }
 
+  const nft = res.data.nft;
+  const url = `${nft.task.project.organization.permalink}/board?taskId=${nft.task.id}`;
   return {
-    name: res.data.nft.task.name,
-    description: `Task details: ${res.data.nft.permalink}`,
+    name: nft.task.name,
+    description: `Task details: ${url}`,
     background_color: "00042d",
-    external_url: res.data.nft.permalink,
+    external_url: url,
     image: await getImageUrl(origin, contractId, tokenId),
     attributes: [
       {
         trait_type: "DAO",
-        value: res.data.nft.task.project.organization.name,
+        value: nft.task.project.organization.name,
       },
       {
         trait_type: "Completed At",
         display_type: "date",
-        value: moment(res.data.nft.task.doneAt).unix(),
+        value: moment(nft.task.doneAt).unix(),
       },
     ],
   };

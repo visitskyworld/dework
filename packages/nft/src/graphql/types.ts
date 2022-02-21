@@ -36,6 +36,7 @@ export interface GetTaskNFTMetadataQuery_nft_owner {
 export interface GetTaskNFTMetadataQuery_nft_task_project_organization {
   __typename: "Organization";
   name: string;
+  permalink: string;
   imageUrl: string | null;
 }
 
@@ -46,6 +47,7 @@ export interface GetTaskNFTMetadataQuery_nft_task_project {
 
 export interface GetTaskNFTMetadataQuery_nft_task {
   __typename: "Task";
+  id: Scalar.UUID;
   name: string;
   doneAt: Scalar.DateTime | null;
   project: GetTaskNFTMetadataQuery_nft_task_project;

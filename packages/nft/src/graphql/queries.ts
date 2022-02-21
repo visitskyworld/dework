@@ -13,11 +13,13 @@ export const getTaskNFT = gql`
         ...User
       }
       task {
+        id
         name
         doneAt
         project {
           organization {
             name
+            permalink
             imageUrl
           }
         }
