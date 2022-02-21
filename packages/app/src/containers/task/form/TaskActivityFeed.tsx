@@ -81,10 +81,9 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
       ...task.nfts.map((nft) => ({
         date: nft.createdAt,
         avatar: <Avatar size="small" icon={<Icons.PushpinOutlined />} />,
-        // text: "On-chain proof minted! " + nft.payment.status,
         text: (
           <>
-            On-chain proof minted!
+            On-chain proof minted
             {nft.payment.status === PaymentStatus.CONFIRMED &&
             !!nft.explorerUrl ? (
               <a
