@@ -23,8 +23,9 @@ function createApolloClient() {
 }
 
 export async function getTokenMetadata(
-  tokenId: number,
-  origin: string
+  origin: string,
+  contractId: string,
+  tokenId: number
 ): Promise<Metadata | undefined> {
   const apolloClient = createApolloClient();
   const res = await apolloClient.query<
@@ -41,7 +42,7 @@ export async function getTokenMetadata(
     description: `Task details: ${res.data.nft.permalink}`,
     background_color: "00042d",
     external_url: res.data.nft.permalink,
-    image: await getImageUrl(origin, tokenId),
+    image: await getImageUrl(origin, contractId, tokenId),
     attributes: [
       {
         trait_type: "DAO",
@@ -101,13 +102,14 @@ export async function getTaskData(tokenId: number): Promise<TaskData> {
 
 export async function getImageUrl(
   origin: string,
+  contractId: string,
   tokenId: number
 ): Promise<string> {
   return fetch(screenshotterUrl, {
     method: "POST",
     body: JSON.stringify({
       url: `${origin}/render/${tokenId}`,
-      name: String(tokenId),
+      name: `${contractId}/${tokenId}`,
       viewport: {
         width: 318,
         height: 468,

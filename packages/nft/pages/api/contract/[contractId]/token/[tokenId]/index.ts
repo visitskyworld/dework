@@ -8,9 +8,10 @@ export default async function handler(
   res: Response<Metadata | { error: string }>
 ) {
   try {
-    const tokenId = parseInt(req.query.tokenId as string);
     const origin = absoluteUrl(req).origin;
-    const metadata = await getTokenMetadata(tokenId, origin);
+    const tokenId = parseInt(req.query.tokenId as string);
+    const contractId = req.query.contractId as string;
+    const metadata = await getTokenMetadata(origin, contractId, tokenId);
     res.json(metadata);
   } catch {
     res.status(404);

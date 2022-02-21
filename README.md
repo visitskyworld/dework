@@ -420,9 +420,9 @@ node -e "const w = require('ethers').Wallet.createRandom(); console.log({public:
 3. Deploy contract
 ```bash
 cd ../contracts
-npx hardhat compile
-npx hardhat run scripts/deploy-v2.ts --network rinkeby
-npx hardhat verify --network rinkeby <implementationAddress>
+yarn hardhat compile
+yarn hardhat run scripts/deploy-v2.ts --network rinkeby
+yarn hardhat verify --network rinkeby <implementationAddress>
 ```
 
 4. Add payment method to DB
