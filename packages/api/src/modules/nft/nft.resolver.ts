@@ -30,13 +30,16 @@ export class TaskNFTResolver {
   ): Promise<string | undefined> {
     const payment = await nft.payment;
     const network = await payment.network;
-    if (["ethereum-rinkeby"].includes(network.slug)) {
-      return `https://testnets.opensea.io/assets/${nft.contractAddress}/${nft.tokenId}`;
+    switch (network.slug) {
+      case "ethereum-rinkeby":
+        return `https://testnets.opensea.io/assets/${nft.contractAddress}/${nft.tokenId}`;
+      case "ethereum-mainnet":
+        return `https://opensea.io/assets/${nft.contractAddress}/${nft.tokenId}`;
+      case "polygon-mainnet":
+        return `https://opensea.io/assets/matic/${nft.contractAddress}/${nft.tokenId}`;
+      default:
+        return undefined;
     }
-    if (["ethereum-mainnet", "polygon-mainnet"].includes(network.slug)) {
-      return `https://opensea.io/assets/${nft.contractAddress}/${nft.tokenId}`;
-    }
-    return undefined;
   }
 
   @Query(() => TaskNFT)
