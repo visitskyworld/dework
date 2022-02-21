@@ -4157,6 +4157,68 @@ export interface CreateTaskPaymentsMutation_tasks_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_networks[];
+  tokens: CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_tokens[];
+}
+
+export interface CreateTaskPaymentsMutation_tasks_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod;
+  network: CreateTaskPaymentsMutation_tasks_nfts_payment_network;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: CreateTaskPaymentsMutation_tasks_nfts_payment;
+}
+
 export interface CreateTaskPaymentsMutation_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -4190,6 +4252,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
+  nfts: CreateTaskPaymentsMutation_tasks_nfts[];
 }
 
 export interface CreateTaskPaymentsMutation {
@@ -6909,6 +6972,68 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface GetTaskQuery_task_nfts_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetTaskQuery_task_nfts_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetTaskQuery_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: GetTaskQuery_task_nfts_payment_paymentMethod_networks[];
+  tokens: GetTaskQuery_task_nfts_payment_paymentMethod_tokens[];
+}
+
+export interface GetTaskQuery_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetTaskQuery_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: GetTaskQuery_task_nfts_payment_paymentMethod;
+  network: GetTaskQuery_task_nfts_payment_network;
+}
+
+export interface GetTaskQuery_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: GetTaskQuery_task_nfts_payment;
+}
+
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -6942,6 +7067,7 @@ export interface GetTaskQuery_task {
   creator: GetTaskQuery_task_creator | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
+  nfts: GetTaskQuery_task_nfts[];
 }
 
 export interface GetTaskQuery {
@@ -8204,6 +8330,68 @@ export interface TaskCreatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskCreatedSubscription_task_nfts_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskCreatedSubscription_task_nfts_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskCreatedSubscription_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskCreatedSubscription_task_nfts_payment_paymentMethod_networks[];
+  tokens: TaskCreatedSubscription_task_nfts_payment_paymentMethod_tokens[];
+}
+
+export interface TaskCreatedSubscription_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskCreatedSubscription_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskCreatedSubscription_task_nfts_payment_paymentMethod;
+  network: TaskCreatedSubscription_task_nfts_payment_network;
+}
+
+export interface TaskCreatedSubscription_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: TaskCreatedSubscription_task_nfts_payment;
+}
+
 export interface TaskCreatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -8237,6 +8425,7 @@ export interface TaskCreatedSubscription_task {
   creator: TaskCreatedSubscription_task_creator | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
+  nfts: TaskCreatedSubscription_task_nfts[];
 }
 
 export interface TaskCreatedSubscription {
@@ -8670,6 +8859,68 @@ export interface TaskUpdatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskUpdatedSubscription_task_nfts_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskUpdatedSubscription_task_nfts_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskUpdatedSubscription_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskUpdatedSubscription_task_nfts_payment_paymentMethod_networks[];
+  tokens: TaskUpdatedSubscription_task_nfts_payment_paymentMethod_tokens[];
+}
+
+export interface TaskUpdatedSubscription_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskUpdatedSubscription_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskUpdatedSubscription_task_nfts_payment_paymentMethod;
+  network: TaskUpdatedSubscription_task_nfts_payment_network;
+}
+
+export interface TaskUpdatedSubscription_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: TaskUpdatedSubscription_task_nfts_payment;
+}
+
 export interface TaskUpdatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -8703,6 +8954,7 @@ export interface TaskUpdatedSubscription_task {
   creator: TaskUpdatedSubscription_task_creator | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
+  nfts: TaskUpdatedSubscription_task_nfts[];
 }
 
 export interface TaskUpdatedSubscription {
@@ -10160,6 +10412,77 @@ export interface TaskWithOrganization {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskNFT
+// ====================================================
+
+export interface TaskNFT_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskNFT_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskNFT_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskNFT_payment_paymentMethod_networks[];
+  tokens: TaskNFT_payment_paymentMethod_tokens[];
+}
+
+export interface TaskNFT_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskNFT_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskNFT_payment_paymentMethod;
+  network: TaskNFT_payment_network;
+}
+
+export interface TaskNFT {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: TaskNFT_payment;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: TaskDetails
 // ====================================================
 
@@ -10581,6 +10904,68 @@ export interface TaskDetails_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskDetails_nfts_payment_paymentMethod_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskDetails_nfts_payment_paymentMethod_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface TaskDetails_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: TaskDetails_nfts_payment_paymentMethod_networks[];
+  tokens: TaskDetails_nfts_payment_paymentMethod_tokens[];
+}
+
+export interface TaskDetails_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface TaskDetails_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: TaskDetails_nfts_payment_paymentMethod;
+  network: TaskDetails_nfts_payment_network;
+}
+
+export interface TaskDetails_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: TaskDetails_nfts_payment;
+}
+
 export interface TaskDetails {
   __typename: "Task";
   id: Scalar.UUID;
@@ -10614,6 +10999,7 @@ export interface TaskDetails {
   creator: TaskDetails_creator | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
+  nfts: TaskDetails_nfts[];
 }
 
 /* tslint:disable */
@@ -11244,13 +11630,15 @@ export interface DeleteTaskApplicationInput {
 }
 
 export interface GetTasksInput {
+  doneAtAfter?: Scalar.DateTime | null;
+  doneAtBefore?: Scalar.DateTime | null;
+  statuses?: TaskStatus[] | null;
+  limit?: number | null;
   ids?: Scalar.UUID[] | null;
   assigneeId?: Scalar.UUID | null;
   projectIds?: Scalar.UUID[] | null;
   organizationIds?: Scalar.UUID[] | null;
-  statuses?: TaskStatus[] | null;
   rewardNotNull?: boolean | null;
-  limit?: number | null;
 }
 
 export interface GetUserPermissionsInput {

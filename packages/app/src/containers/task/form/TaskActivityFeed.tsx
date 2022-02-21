@@ -2,18 +2,19 @@ import React, { FC, ReactElement, ReactNode, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { TaskDetails } from "@dewo/app/graphql/types";
+import { PaymentStatus, TaskDetails } from "@dewo/app/graphql/types";
 import { Avatar, Button, Col, Row, Space, Typography } from "antd";
 import moment from "moment";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 
 interface ActivityFeedItem {
   date: string;
   avatar: ReactElement;
-  text: string;
+  text: ReactNode;
   details?: ReactNode;
 }
 
@@ -77,6 +78,30 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
         ),
         text: `${task.creator?.username ?? "Someone"} created this task`,
       },
+      ...task.nfts.map((nft) => ({
+        date: nft.createdAt,
+        avatar: <Avatar size="small" icon={<Icons.PushpinOutlined />} />,
+        // text: "On-chain proof minted! " + nft.payment.status,
+        text: (
+          <>
+            On-chain proof minted!
+            {nft.payment.status === PaymentStatus.CONFIRMED &&
+            !!nft.explorerUrl ? (
+              <a target="_blank" href={nft.explorerUrl} rel="noreferrer">
+                <Typography.Text
+                  type="secondary"
+                  style={{ marginLeft: 8 }}
+                  className="ant-typography-caption"
+                >
+                  View on OpenSea <Icons.ExportOutlined />
+                </Typography.Text>
+              </a>
+            ) : (
+              <PaymentStatusTag status={nft.payment.status} />
+            )}
+          </>
+        ),
+      })),
     ];
 
     if (showApplications) {

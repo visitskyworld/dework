@@ -435,6 +435,21 @@ export const taskWithOrganization = gql`
   ${organization}
 `;
 
+export const taskNft = gql`
+  fragment TaskNFT on TaskNFT {
+    id
+    tokenId
+    createdAt
+    contractAddress
+    explorerUrl
+    payment {
+      ...Payment
+    }
+  }
+
+  ${payment}
+`;
+
 export const taskDetails = gql`
   fragment TaskDetails on Task {
     ...Task
@@ -468,9 +483,13 @@ export const taskDetails = gql`
     applications {
       ...TaskApplication
     }
+    nfts {
+      ...TaskNFT
+    }
   }
 
   ${task}
+  ${taskNft}
   ${user}
   ${project}
   ${organization}

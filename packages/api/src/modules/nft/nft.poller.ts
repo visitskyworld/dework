@@ -94,6 +94,7 @@ export class NFTPoller {
         const nft = await this.service.create({
           paymentId: payment.id,
           tokenId,
+          contractAddress: minter.contractAddress,
           contractId: minter.contractId,
           taskId: task.id,
           slug: String(tokenId),
