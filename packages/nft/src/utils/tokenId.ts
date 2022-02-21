@@ -66,14 +66,17 @@ function getTaskUser(user: User): TaskUser {
   };
 }
 
-export async function getTaskData(tokenId: number): Promise<TaskData> {
+export async function getTaskData(
+  tokenId: number,
+  contractId: string
+): Promise<TaskData> {
   const apolloClient = createApolloClient();
   const res = await apolloClient.query<
     GetTaskNFTMetadataQuery,
     GetTaskNFTMetadataQueryVariables
   >({
     query: Queries.getTaskNFT,
-    variables: { tokenId },
+    variables: { tokenId, contractId },
   });
 
   if (!res.data) {
@@ -109,7 +112,7 @@ export async function getImageUrl(
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
-      url: `${origin}/render/${tokenId}`,
+      url: `${origin}/render/${contractId}/${tokenId}`,
       name: `${contractId}/${tokenId}`,
       viewport: {
         width: 318,
