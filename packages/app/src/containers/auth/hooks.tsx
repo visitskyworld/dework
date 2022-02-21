@@ -155,12 +155,10 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
 }
 
 export const needsToFillOutProfile = (user: UserDetails): boolean => {
-  const hasGenericUsername = user.username.includes("deworker");
+  const hasGenericUsername = user.username.startsWith("deworker");
   const hasDiscordDetail = user.threepids.some((d) => d.source === "discord");
-  if (hasGenericUsername || !hasDiscordDetail) {
-    return true;
-  }
-  return false;
+
+  return hasGenericUsername || !hasDiscordDetail;
 };
 
 export const useGetOnboardingPath = () => {

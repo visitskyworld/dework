@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { Modal, Space } from "antd";
 import { useRouter } from "next/router";
-import { ThreepidSource } from "@dewo/app/graphql/types";
+import { ThreepidSource, UserDetails } from "@dewo/app/graphql/types";
 import {
   getThreepidName,
   ThreepidAuthButton,
@@ -20,7 +20,7 @@ interface Props {
   redirectUrl?: string;
   redirectToOnboarding?: boolean;
   toggle: UseToggleHook;
-  onAuthedWithWallet?(threepidId: string): void;
+  onAuthedWithWallet?(user: UserDetails): void;
 }
 
 export const LoginModal: FC<Props> = ({
@@ -46,7 +46,7 @@ export const LoginModal: FC<Props> = ({
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       const user = await authWithThreepid(threepidId);
-      onAuthedWithWallet?.(threepidId);
+      onAuthedWithWallet?.(user);
 
       if (!user.onboarding && redirectToOnboarding) {
         await router.push(getOnboardingPath(user));
@@ -74,7 +74,7 @@ export const LoginModal: FC<Props> = ({
       authingWithHiro.toggleOn();
       const threepidId = await createHiroThreepid();
       const user = await authWithThreepid(threepidId);
-      onAuthedWithWallet?.(threepidId);
+      onAuthedWithWallet?.(user);
 
       if (!user.onboarding && redirectToOnboarding) {
         await router.push(getOnboardingPath(user));

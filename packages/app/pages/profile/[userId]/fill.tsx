@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import * as qs from "query-string";
 import {
   Alert,
   Button,
@@ -33,6 +34,7 @@ const ProfileFill: NextPage = () => {
   const { user } = useAuthContext();
   const router = useRouter();
   const redirectPath = router.query.redirect as string;
+  const prefilledUsername = router.query.username as string;
 
   const updateUser = useUpdateUser();
   const updateUserDetail = useUpdateUserDetail();
@@ -43,10 +45,22 @@ const ProfileFill: NextPage = () => {
   type InititalValues = Record<string, string>;
   const intitialValues: InititalValues = useMemo(
     () => ({
-      username: user?.username ?? "",
+      username: prefilledUsername ? prefilledUsername : user?.username ?? "",
       discord: user?.details.find((d) => d.type === "discord")?.value ?? "",
     }),
-    [user?.username, user?.details]
+    [prefilledUsername, user?.username, user?.details]
+  );
+
+  const state = useMemo(
+    () => ({
+      redirect: user?.username.startsWith("deworker")
+        ? qs.stringifyUrl({
+            url: router.asPath,
+            query: { username: user?.username },
+          })
+        : redirectPath,
+    }),
+    [redirectPath, router.asPath, user?.username]
   );
 
   useEffect(() => {
@@ -146,6 +160,7 @@ const ProfileFill: NextPage = () => {
                   source={ThreepidSource.discord}
                   children="Connect with Discord"
                   style={{ width: "100%" }}
+                  state={state}
                 />
               )}
 

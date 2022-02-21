@@ -14,9 +14,13 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
-import { OrganizationRole, ProjectRole } from "@dewo/app/graphql/types";
+import {
+  OrganizationRole,
+  ProjectRole,
+  UserDetails,
+} from "@dewo/app/graphql/types";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
-import { needsToFillOutProfile, useGetOnboardingPath } from "../auth/hooks";
+import { useGetOnboardingPath, needsToFillOutProfile } from "../auth/hooks";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -80,6 +84,27 @@ export const InviteMessageToast: FC = () => {
 
   const showAuthModal = authModalVisible.toggleOn;
   const showTokenGateModal = tokenGatedModalVisible.toggleOn;
+
+  const handleAuthedWithWalletSuccess = useCallback(
+    async (userDetails: UserDetails) => {
+      authModalVisible.toggleOff();
+
+      if (userDetails && needsToFillOutProfile(userDetails)) {
+        router.push(getOnboardingPath(userDetails, router.asPath));
+      } else {
+        isTokenGated ? showTokenGateModal() : handleAcceptInvite();
+      }
+    },
+    [
+      router,
+      isTokenGated,
+      authModalVisible,
+      getOnboardingPath,
+      showTokenGateModal,
+      handleAcceptInvite,
+    ]
+  );
+
   useEffect(() => {
     if (!invite) return;
 
@@ -90,8 +115,6 @@ export const InviteMessageToast: FC = () => {
         showAuthModal();
       } else if (isTokenGated) {
         showTokenGateModal();
-      } else if (needsToFillOutProfile(user)) {
-        await router.push(getOnboardingPath(user, router.asPath));
       } else {
         handleAcceptInvite();
       }
@@ -123,10 +146,7 @@ export const InviteMessageToast: FC = () => {
     <>
       <LoginModal
         toggle={authModalVisible}
-        onAuthedWithWallet={() => {
-          authModalVisible.toggleOff();
-          isTokenGated ? showTokenGateModal() : handleAcceptInvite();
-        }}
+        onAuthedWithWallet={handleAuthedWithWalletSuccess}
       />
       {isTokenGated && (
         <JoinTokenGatedProjectsModal

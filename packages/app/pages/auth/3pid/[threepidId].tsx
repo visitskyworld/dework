@@ -31,9 +31,7 @@ const Auth: NextPage = () => {
         await acceptInvite(state.inviteId).catch();
       }
 
-      const onboardPath = getOnboardingPath(user, state.redirect);
-
-      await router.push(onboardPath);
+      await router.push(getOnboardingPath(user, state.redirect));
     } catch (error) {
       if (error instanceof ApolloError) {
         if (error.message === "Account already connected") {
