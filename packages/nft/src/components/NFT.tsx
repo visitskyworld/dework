@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import moment from "moment-timezone";
 import DeworkLogo from "@dewo/app/public/logo.svg";
 import { TaskData, TaskUser } from "../utils/types";
@@ -43,25 +43,39 @@ const NFTUserComponent: FC<{ user: TaskUser; label: string }> = ({
 
 export const NFT: FC<Props> = ({ width, height, data }) => {
   const [fontSize, setFontSize] = useState(0);
-  useEffect(() => {
+
+  const fitFont = useCallback(() => {
     const container = document.querySelector(".nft-name-container");
     if (!container) return;
     const h1 = container.querySelector("h1");
     if (!h1) return;
 
     h1.style.fontSize = "0px";
-    const initialMaxHeight = container.clientHeight;
+    const maxHeight = container.clientHeight;
 
     let size = 0;
-    while (container.clientHeight <= initialMaxHeight) {
+    while (container.clientHeight <= maxHeight) {
       size++;
       h1.style.fontSize = `${size}px`;
-      console.log(size, container.clientHeight);
     }
 
     h1.style.fontSize = `${size - 1}px`;
     setFontSize(size - 1);
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    const container = document.querySelector(".nft-name-container");
+    if (!container) return;
+
+    const maxHeight = container.clientHeight;
+    fitFont();
+
+    new ResizeObserver(() => {
+      if (container.clientHeight > maxHeight) {
+        fitFont();
+      }
+    }).observe(container);
+  }, [fitFont]);
 
   return (
     <div className="nft" style={{ width, height }}>
@@ -97,7 +111,7 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
           <p className="date">
             {moment(data.task.doneAt).tz("utc").format("ll")}
           </p>
-          <p className="date">{data.task.permalink}</p>
+          {/* <p className="date">{data.task.permalink}</p> */}
           {/* <p className="date">15 MATIC</p> */}
         </div>
         <div

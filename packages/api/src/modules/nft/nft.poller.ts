@@ -69,7 +69,12 @@ export class NFTPoller {
         }
 
         const tokenId = await this.service.getNextTokenId();
-        this.logger.debug(`Next tokenId: ${JSON.stringify({ tokenId })}`);
+        this.logger.debug(
+          `Next tokenId: ${JSON.stringify({
+            tokenId,
+            contractAddress: minter.contractAddress,
+          })}`
+        );
 
         const contract = new ethers.Contract(
           minter.contractAddress,
@@ -91,6 +96,8 @@ export class NFTPoller {
           tokenId,
           taskId: task.id,
           slug: String(tokenId),
+          assigneeId: assignee.id,
+          ownerId: task.ownerId,
         });
 
         this.logger.debug(`Stored NFT in DB: ${JSON.stringify(nft)}`);

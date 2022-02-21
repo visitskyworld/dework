@@ -11,7 +11,7 @@ RUN yarn app install --frozen-lockfile
 
 COPY tsconfig.base.json ./
 COPY packages/app/tsconfig.json packages/app/
-COPY packages/nft/tsconfig.json packages/nft/
+COPY packages/nft/tsconfig.json packages/nft/next.config.js packages/nft/
 
 COPY packages/types packages/types
 COPY packages/app/styles packages/app/styles
@@ -35,5 +35,6 @@ RUN yarn app install --frozen-lockfile --production
 
 COPY --from=builder /builder/packages/nft/styles ./packages/nft/styles
 COPY --from=builder /builder/packages/nft/.next ./packages/nft/.next
+COPY --from=builder /builder/packages/nft/next.config.js ./packages/nft/
 
 CMD ["yarn", "nft", "start"]

@@ -13,7 +13,9 @@ export default async function handler(
     const contractId = req.query.contractId as string;
     const metadata = await getTokenMetadata(origin, contractId, tokenId);
     res.json(metadata);
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     res.status(404);
     res.json({ error: "Token not found" });
   }

@@ -107,6 +107,7 @@ export async function getImageUrl(
 ): Promise<string> {
   return fetch(screenshotterUrl, {
     method: "POST",
+    headers: { "content-type": "application/json" },
     body: JSON.stringify({
       url: `${origin}/render/${tokenId}`,
       name: `${contractId}/${tokenId}`,
