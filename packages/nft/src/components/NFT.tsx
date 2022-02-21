@@ -34,7 +34,6 @@ const NFTUserComponent: FC<{ user: TaskUser; label: string }> = ({
         </div>
       </div>
     </div>
-    {/* <p className="typography-label" style={{ marginBottom: 4 }}> */}
     <p className="typography-label" style={{ marginTop: 4 }}>
       {label}
     </p>

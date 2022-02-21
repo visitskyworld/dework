@@ -16,7 +16,7 @@ const Page: NextComponentType<NextPageContext, Props, Props> = ({ data }) => (
       <style>
         {`
           @font-face {
-            font-family: 'Avenir ext';
+            font-family: 'Avenir Next';
             font-weight: normal;
             src: url(data:font/otf;charset=utf-8;base64,${
               getConfig().publicRuntimeConfig.FONT_AVENIR_REGULAR_BASE64
@@ -24,7 +24,7 @@ const Page: NextComponentType<NextPageContext, Props, Props> = ({ data }) => (
           }
           
           @font-face {
-            font-family: 'Avenir ext';
+            font-family: 'Avenir Next';
             font-weight: bold;
             src: url(data:font/otf;charset=utf-8;base64,${
               getConfig().publicRuntimeConfig.FONT_AVENIR_BOLD_BASE64
