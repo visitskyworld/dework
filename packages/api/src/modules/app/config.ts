@@ -41,6 +41,7 @@ export interface ConfigType {
   NFT_MINTER_PRIVATE_KEY: string;
   NFT_MINTER_NETWORK: string;
   NFT_CONTRACT_ADDRESS: string;
+  NFT_CONTRACT_ID: string;
 
   SUPERADMIN_USER_IDS: string;
 }
@@ -87,6 +88,7 @@ export const configSchema = Joi.object<ConfigType>({
   NFT_MINTER_PRIVATE_KEY: Joi.string(),
   NFT_MINTER_NETWORK: Joi.string(),
   NFT_CONTRACT_ADDRESS: Joi.string(),
+  NFT_CONTRACT_ID: Joi.string(),
 
   SUPERADMIN_USER_IDS: Joi.string().allow(""),
 });

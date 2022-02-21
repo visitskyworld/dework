@@ -21,9 +21,11 @@
     "deploy:api:demo": "./packages/scripts/deploy-api-demo.sh",
     "deploy:app:demo": "./packages/scripts/deploy-app-demo.sh",
     "deploy:lp:demo": "./packages/scripts/deploy-lp-demo.sh",
+    "deploy:nft:demo": "./packages/scripts/deploy-nft-demo.sh",
     "deploy:api:prod": "./packages/scripts/deploy-api-prod.sh",
     "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh",
     "deploy:lp:prod": "./packages/scripts/deploy-lp-prod.sh",
+    "deploy:nft:prod": "./packages/scripts/deploy-nft-prod.sh",
     "postinstall": "patch-package --patch-dir packages/api/patches && patch-package --patch-dir packages/app/patches",
     "prepare": "husky install"
   },

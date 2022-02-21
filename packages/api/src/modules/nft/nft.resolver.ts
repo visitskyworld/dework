@@ -26,9 +26,10 @@ export class TaskNFTResolver {
 
   @Query(() => TaskNFT)
   public async getTaskNFT(
-    @Args("tokenId", { type: () => Int }) tokenId: number
+    @Args("tokenId", { type: () => Int }) tokenId: number,
+    @Args("contractId") contractId: string
   ): Promise<TaskNFT | undefined> {
-    const nft = await this.service.findByTokenId(tokenId);
+    const nft = await this.service.findByTokenId(tokenId, contractId);
     if (!nft) throw new NotFoundException();
     return nft;
   }

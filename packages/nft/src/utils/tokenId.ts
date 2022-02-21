@@ -31,7 +31,7 @@ export async function getTokenMetadata(
   const res = await apolloClient.query<
     GetTaskNFTMetadataQuery,
     GetTaskNFTMetadataQueryVariables
-  >({ query: Queries.getTaskNFT, variables: { tokenId } });
+  >({ query: Queries.getTaskNFT, variables: { tokenId, contractId } });
 
   if (!res.data) {
     throw new Error("Token not found");

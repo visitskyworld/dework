@@ -94,6 +94,7 @@ export class NFTPoller {
         const nft = await this.service.create({
           paymentId: payment.id,
           tokenId,
+          contractId: minter.contractId,
           taskId: task.id,
           slug: String(tokenId),
           assigneeId: assignee.id,
@@ -115,11 +116,13 @@ export class NFTPoller {
     network: PaymentNetwork;
     paymentMethod: PaymentMethod;
     contractAddress: string;
+    contractId: string;
     signer: ethers.Signer;
   }> {
     const privateKey = this.config.get("NFT_MINTER_PRIVATE_KEY");
     const networkSlug = this.config.get("NFT_MINTER_NETWORK");
     const contractAddress = this.config.get("NFT_CONTRACT_ADDRESS");
+    const contractId = this.config.get("NFT_CONTRACT_ID");
 
     const network = await this.paymentService.findPaymentNetwork({
       slug: networkSlug,
@@ -150,6 +153,7 @@ export class NFTPoller {
       network,
       paymentMethod,
       contractAddress,
+      contractId,
       signer,
     };
   }

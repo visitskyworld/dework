@@ -23,6 +23,10 @@ export class TaskNFT extends Audit {
   @Length(4, 4)
   public slug!: string;
 
+  @Column()
+  @Field()
+  public contractId!: string;
+
   @Column({ type: "int" })
   @Field(() => Int)
   public tokenId!: number;

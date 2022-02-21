@@ -67,6 +67,7 @@ export interface GetTaskNFTMetadataQuery {
 
 export interface GetTaskNFTMetadataQueryVariables {
   tokenId: number;
+  contractId: string;
 }
 
 /* tslint:disable */

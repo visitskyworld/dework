@@ -22,8 +22,11 @@ export class NFTService {
     return this.taskNftRepo.findOne(id);
   }
 
-  public findByTokenId(tokenId: number): Promise<TaskNFT | undefined> {
-    return this.taskNftRepo.findOne({ tokenId });
+  public findByTokenId(
+    tokenId: number,
+    contractId: string
+  ): Promise<TaskNFT | undefined> {
+    return this.taskNftRepo.findOne({ tokenId, contractId });
   }
 
   public findNextTaskToMint(): Promise<Task | undefined> {

@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const getTaskNFT = gql`
-  query GetTaskNFTMetadataQuery($tokenId: Int!) {
-    nft: getTaskNFT(tokenId: $tokenId) {
+  query GetTaskNFTMetadataQuery($tokenId: Int!, $contractId: String!) {
+    nft: getTaskNFT(tokenId: $tokenId, contractId: $contractId) {
       id
       tokenId
       permalink
