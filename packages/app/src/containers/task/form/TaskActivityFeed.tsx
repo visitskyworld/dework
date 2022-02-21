@@ -97,7 +97,10 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
                 </Tag>
               </a>
             ) : (
-              <PaymentStatusTag status={nft.payment.status} />
+              <PaymentStatusTag
+                status={nft.payment.status}
+                style={{ marginLeft: 8 }}
+              />
             )}
           </>
         ),
