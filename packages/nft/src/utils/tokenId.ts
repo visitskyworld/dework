@@ -13,7 +13,7 @@ import {
 } from "../graphql/types";
 
 const apiUrl = getConfig().serverRuntimeConfig.API_URL;
-const nftUrl = getConfig().serverRuntimeConfig.NFT_URL;
+const screenshotterUrl = getConfig().serverRuntimeConfig.SCREENSHOTTER_URL;
 
 function createApolloClient() {
   return new ApolloClient({
@@ -23,16 +23,14 @@ function createApolloClient() {
 }
 
 export async function getTokenMetadata(
-  tokenId: number
+  tokenId: number,
+  origin: string
 ): Promise<Metadata | undefined> {
   const apolloClient = createApolloClient();
   const res = await apolloClient.query<
     GetTaskNFTMetadataQuery,
     GetTaskNFTMetadataQueryVariables
-  >({
-    query: Queries.getTaskNFT,
-    variables: { tokenId },
-  });
+  >({ query: Queries.getTaskNFT, variables: { tokenId } });
 
   if (!res.data) {
     throw new Error("Token not found");
@@ -43,7 +41,7 @@ export async function getTokenMetadata(
     description: `Task details: ${res.data.nft.permalink}`,
     background_color: "00042d",
     external_url: res.data.nft.permalink,
-    image: `${nftUrl}/api/token/${tokenId}/image.png`,
+    image: await getImageUrl(origin, tokenId),
     attributes: [
       {
         trait_type: "DAO",
@@ -99,4 +97,24 @@ export async function getTaskData(tokenId: number): Promise<TaskData> {
       ? getTaskUser(res.data.nft.owner)
       : undefined,
   };
+}
+
+export async function getImageUrl(
+  origin: string,
+  tokenId: number
+): Promise<string> {
+  return fetch(screenshotterUrl, {
+    method: "POST",
+    body: JSON.stringify({
+      url: `${origin}/render/${tokenId}`,
+      name: String(tokenId),
+      viewport: {
+        width: 318,
+        height: 468,
+        deviceScaleFactor: 2,
+      },
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => res.url);
 }

@@ -16,10 +16,10 @@ import { ConfigType } from "../app/config";
 import { PaymentService } from "../payment/payment.service";
 import { NFTService } from "./nft.service";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
-import { DeworkTasksV2 } from "@dewo/contracts/typechain";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { abi as DeworkTasksABI } from "@dewo/contracts/artifacts/contracts/DeworkTasksV2.sol/DeworkTasksV2.json";
+import { DeworkTasksV2 } from "dework-contracts/typechain";
+import { abi as DeworkTasksABI } from "dework-contracts/artifacts/contracts/DeworkTasksV2.sol/DeworkTasksV2.json";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 
 @Controller("nfts")

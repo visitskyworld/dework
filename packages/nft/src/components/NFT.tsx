@@ -97,8 +97,8 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
           <p className="date">
             {moment(data.task.doneAt).tz("utc").format("ll")}
           </p>
-          {/* <p className="date">{data.task.permalink}</p> */}
-          <p className="date">15 MATIC</p>
+          <p className="date">{data.task.permalink}</p>
+          {/* <p className="date">15 MATIC</p> */}
         </div>
         <div
           style={{
