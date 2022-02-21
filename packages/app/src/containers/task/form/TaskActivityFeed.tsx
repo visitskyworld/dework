@@ -3,7 +3,7 @@ import * as Icons from "@ant-design/icons";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { PaymentStatus, TaskDetails } from "@dewo/app/graphql/types";
-import { Avatar, Button, Col, Row, Space, Typography } from "antd";
+import { Avatar, Button, Col, Row, Space, Tag, Typography } from "antd";
 import moment from "moment";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -87,14 +87,15 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
             On-chain proof minted!
             {nft.payment.status === PaymentStatus.CONFIRMED &&
             !!nft.explorerUrl ? (
-              <a target="_blank" href={nft.explorerUrl} rel="noreferrer">
-                <Typography.Text
-                  type="secondary"
-                  style={{ marginLeft: 8 }}
-                  className="ant-typography-caption"
-                >
-                  View on OpenSea <Icons.ExportOutlined />
-                </Typography.Text>
+              <a
+                target="_blank"
+                href={nft.explorerUrl}
+                rel="noreferrer"
+                style={{ marginLeft: 8 }}
+              >
+                <Tag color="green" icon={<Icons.ExportOutlined />}>
+                  View on OpenSea
+                </Tag>
               </a>
             ) : (
               <PaymentStatusTag status={nft.payment.status} />
