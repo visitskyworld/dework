@@ -67,7 +67,7 @@ export class UserService {
 
     await this.connectThreepidToUser(threepid, user);
     await this.autoPopulateDetails(user.id, threepid);
-    await this.setUsernameAndAvatar(user, threepid);
+    await this.autoPopulateUsernameAndAvatar(user, threepid);
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
 
@@ -196,7 +196,7 @@ export class UserService {
     }
   }
 
-  public async setUsernameAndAvatar(
+  public async autoPopulateUsernameAndAvatar(
     user: User,
     threepid: Threepid
   ): Promise<void> {
