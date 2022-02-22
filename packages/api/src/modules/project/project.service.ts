@@ -193,7 +193,9 @@ export class ProjectService {
       .andWhere("project.deletedAt IS NULL")
       .andWhere("organization.deletedAt IS NULL")
       .andWhere("LOWER(project.name) NOT LIKE '%test%'")
+      .andWhere("LOWER(project.name) NOT LIKE '%demo%'")
       .andWhere("LOWER(organization.name) NOT LIKE '%test%'")
+      .andWhere("LOWER(organization.name) NOT LIKE '%demo%'")
       .groupBy("project.id, organization.id")
       .having("COUNT(task.id) >= 10")
       .getRawMany();
