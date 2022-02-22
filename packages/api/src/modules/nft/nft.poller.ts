@@ -89,9 +89,13 @@ export class NFTPoller {
             config: minter.network.config,
           })}`
         );
-        const tx = await contract.mint(address, tokenId, true);
+        const tx = await contract.mint(address, tokenId, true, {
+          gasLimit: 200000,
+          maxFeePerGas: feeData.gasPrice?.mul(2),
+          maxPriorityFeePerGas: feeData.gasPrice?.mul(2),
+        });
         this.logger.debug(`Minted NFT with tx: ${JSON.stringify(tx)}`);
-        await tx.wait(2);
+        // await tx.wait(2);
         const payment = await this.paymentService.create(
           minter.paymentMethod,
           minter.network.id,
