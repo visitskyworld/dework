@@ -67,6 +67,7 @@ export class UserService {
 
     await this.connectThreepidToUser(threepid, user);
     await this.autoPopulateDetails(user.id, threepid);
+    await this.setUsernameAndAvatar(user, threepid);
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
 
@@ -192,6 +193,25 @@ export class UserService {
         },
         userId
       );
+    }
+  }
+
+  public async setUsernameAndAvatar(
+    user: User,
+    threepid: Threepid
+  ): Promise<void> {
+    if (
+      ![ThreepidSource.discord, ThreepidSource.github].includes(threepid.source)
+    )
+      return;
+
+    if (user.username.startsWith("deworker")) {
+      const betterUsername = this.threepidService.getUsername(threepid);
+      await this.userRepo.update(user.id, { username: betterUsername });
+    }
+    if (!user.imageUrl) {
+      const avatarUrl = this.threepidService.getImageUrl(threepid);
+      await this.userRepo.update(user.id, { imageUrl: avatarUrl });
     }
   }
 
