@@ -12,7 +12,7 @@ export class TaskFilterInput {
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
 
-  @Field(() => Int, { nullable: true, defaultValue: 100 })
+  @Field(() => Int, { nullable: true, defaultValue: 1000 })
   public limit?: number;
 }
 

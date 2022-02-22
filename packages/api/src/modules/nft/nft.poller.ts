@@ -36,11 +36,11 @@ export class NFTPoller {
 
   @Post("update")
   public async updateNfts(@Res() res: Response) {
-    await this.poll();
-    res.json({ ok: true });
+    const result = await this.poll();
+    res.json({ ok: true, result });
   }
 
-  public async poll(): Promise<void> {
+  public async poll(): Promise<{ taskId: string } | undefined> {
     const startedAt = new Date();
     this.logger.log(
       `Polling for tasks to mint: ${JSON.stringify({ startedAt })}`
@@ -128,6 +128,9 @@ export class NFTPoller {
     this.logger.log(
       `Polled for tasks to mint: ${JSON.stringify({ startedAt })}`
     );
+
+    if (!!task) return { taskId: task.id };
+    return undefined;
   }
 
   private async getMinter(): Promise<{
