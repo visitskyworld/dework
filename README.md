@@ -73,6 +73,7 @@ DECLARE
   optimism_mainnet_id uuid = uuid_generate_v4();
   fuse_mainnet_id uuid = uuid_generate_v4();
   sokol_testnet_id uuid = uuid_generate_v4();
+  bsc_mainnet_id uuid = uuid_generate_v4();
 
   solana_mainnet_id uuid = uuid_generate_v4();
   solana_testnet_id uuid = uuid_generate_v4();
@@ -203,6 +204,21 @@ BEGIN
       "chainId": 122,
       "rpcUrl": "https://rpc.fuse.io",
       "explorerUrl": "https://explorer.fuse.io"
+    }' AS json)
+  ), (
+    bsc_mainnet_id,
+    'ETHEREUM',
+    'Smart Chain',
+    'bsc-mainnet',
+    '009',
+    CAST('{
+      "chainId": 56,
+      "rpcUrl": "https://bsc-dataseed.binance.org",
+      "explorerUrl": "https://bscscan.com",
+      "gnosisSafe": {
+        "serviceUrl": "https://safe-transaction.bsc.gnosis.io",
+        "addressPrefix": "bsc"
+      }
     }' AS json)
   ), (
     solana_mainnet_id,
@@ -358,6 +374,10 @@ BEGIN
     }' AS JSON)),
     ('ERC20', 'USD Coin (Fuse)', 'USDC', 18, 'ALWAYS', '0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5', fuse_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
+    }' AS JSON)),
+
+    ('NATIVE', 'BNB', 'BNB', 18, 'ALWAYS', NULL, bsc_mainnet_id, CAST('{
+      "coinmarketcapUrl": "https://coinmarketcap.com/currencies/bnb"
     }' AS JSON)),
 
     ('NATIVE', 'SOL', 'SOL', 9, 'ALWAYS', NULL, solana_mainnet_id, CAST('{
