@@ -42,7 +42,6 @@ export class NFTService {
       .andWhere("assignee.id IS NOT NULL")
       .andWhere("nft.id IS NULL")
       .andWhere("task.doneAt > '2022-02-21 21:00:00'")
-      .andWhere("task.parentTaskId IS NULL")
       .orderBy("task.createdAt", "ASC")
       .getOne();
   }
