@@ -49,6 +49,7 @@ export const ConnectDiscordModal: FC<Props> = ({ visible, onClose }) => {
         />
       ) : (
         <ThreepidAuthButton
+          type="primary"
           key="connect-discord"
           source={ThreepidSource.discord}
           children="Connect with Discord"
