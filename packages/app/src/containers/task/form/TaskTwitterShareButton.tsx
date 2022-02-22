@@ -11,10 +11,11 @@ interface Props {
 }
 
 export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
-  const text = [`🚨 Bounty Call 🚨`, task.name, "Check out the details👇"].join(
-    "\n\n"
-  );
-  const hashtags = task.tags.map((t) => slugify(t.label)).join();
+  const text = `🚨 Bounty Call 🚨\n\n${task.name}\n\nCheck out the details👇\n${task.permalink}\n`;
+  const hashtags = task.tags
+    .map((t) => slugify(t.label))
+    .concat("dework")
+    .join();
   return (
     <FormSection label="Twitter" className="mb-3">
       <Button
@@ -26,7 +27,6 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
         href={`https://twitter.com/intent/tweet?${qs.stringify({
           text,
           hashtags,
-          url: task.permalink,
         })}`}
       >
         Share on Twitter
