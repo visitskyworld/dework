@@ -45,7 +45,9 @@ const NFTUserComponent: FC<{ user: TaskUser; label: string }> = ({
             justifyContent: "center",
           }}
         >
-          <p className="nft-user-username">{user.username}</p>
+          <p className="nft-user-username">
+            <Emojione svg text={user.username} />
+          </p>
           <p className="typography-label">{user.address}</p>
         </div>
       </div>
@@ -121,7 +123,6 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
               fontSize,
             }}
           >
-            {/* {data.task.name} */}
             <Emojione svg text={data.task.name} />
           </h1>
           <p className="date">
