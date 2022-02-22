@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import moment from "moment-timezone";
 import DeworkLogo from "@dewo/app/public/logo.svg";
+import { Emojione } from "react-emoji-render";
 import { TaskData, TaskUser } from "../utils/types";
 
 interface Props {
@@ -15,7 +16,22 @@ const NFTUserComponent: FC<{ user: TaskUser; label: string }> = ({
 }) => (
   <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
     <div className="nft-user" style={{ textAlign: "left" }}>
-      <img src={user.imageUrl} alt={user.username} className="nft-user-image" />
+      {!!user.imageUrl ? (
+        <img
+          src={user.imageUrl}
+          alt={user.username}
+          className="nft-user-image"
+        />
+      ) : (
+        <div
+          style={{ display: "grid", placeItems: "center" }}
+          className="nft-user-image"
+        >
+          <span style={{ lineHeight: "36px" }}>
+            {user.username[0].toUpperCase()}
+          </span>
+        </div>
+      )}
       <div style={{ position: "relative", flex: 1, height: "100%" }}>
         <div
           style={{
@@ -105,7 +121,8 @@ export const NFT: FC<Props> = ({ width, height, data }) => {
               fontSize,
             }}
           >
-            {data.task.name}
+            {/* {data.task.name} */}
+            <Emojione svg text={data.task.name} />
           </h1>
           <p className="date">
             {moment(data.task.doneAt).tz("utc").format("ll")}

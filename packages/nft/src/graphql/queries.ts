@@ -34,5 +34,9 @@ export const getTaskNFT = gql`
       source
       threepid
     }
+    paymentMethods {
+      type
+      address
+    }
   }
 `;

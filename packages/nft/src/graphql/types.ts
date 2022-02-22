@@ -13,11 +13,18 @@ export interface GetTaskNFTMetadataQuery_nft_assignee_threepids {
   threepid: string;
 }
 
+export interface GetTaskNFTMetadataQuery_nft_assignee_paymentMethods {
+  __typename: "PaymentMethod";
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface GetTaskNFTMetadataQuery_nft_assignee {
   __typename: "User";
   username: string;
   imageUrl: string | null;
   threepids: GetTaskNFTMetadataQuery_nft_assignee_threepids[];
+  paymentMethods: GetTaskNFTMetadataQuery_nft_assignee_paymentMethods[];
 }
 
 export interface GetTaskNFTMetadataQuery_nft_owner_threepids {
@@ -26,11 +33,18 @@ export interface GetTaskNFTMetadataQuery_nft_owner_threepids {
   threepid: string;
 }
 
+export interface GetTaskNFTMetadataQuery_nft_owner_paymentMethods {
+  __typename: "PaymentMethod";
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface GetTaskNFTMetadataQuery_nft_owner {
   __typename: "User";
   username: string;
   imageUrl: string | null;
   threepids: GetTaskNFTMetadataQuery_nft_owner_threepids[];
+  paymentMethods: GetTaskNFTMetadataQuery_nft_owner_paymentMethods[];
 }
 
 export interface GetTaskNFTMetadataQuery_nft_task_project_organization {
@@ -87,11 +101,18 @@ export interface User_threepids {
   threepid: string;
 }
 
+export interface User_paymentMethods {
+  __typename: "PaymentMethod";
+  type: PaymentMethodType;
+  address: string;
+}
+
 export interface User {
   __typename: "User";
   username: string;
   imageUrl: string | null;
   threepids: User_threepids[];
+  paymentMethods: User_paymentMethods[];
 }
 
 /* tslint:disable */
@@ -102,6 +123,13 @@ export interface User {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum PaymentMethodType {
+  GNOSIS_SAFE = "GNOSIS_SAFE",
+  HIRO = "HIRO",
+  METAMASK = "METAMASK",
+  PHANTOM = "PHANTOM",
+}
 
 export enum ThreepidSource {
   discord = "discord",

@@ -54,10 +54,17 @@ export class NFTPoller {
 
       for (let i = 0; i < task.assignees.length; i++) {
         const assignee = task.assignees[i];
-        const threepids = await assignee.threepids;
-        const address = threepids.find(
+        const [threepids, pms] = await Promise.all([
+          assignee.threepids,
+          assignee.paymentMethods,
+        ]);
+        const threepidAddress = threepids.find(
           (t) => t.source === ThreepidSource.metamask
         )?.threepid;
+        const paymentMethodAddress = pms.find(
+          (pm) => pm.type === PaymentMethodType.METAMASK
+        )?.address;
+        const address = threepidAddress ?? paymentMethodAddress;
 
         if (!address) {
           this.logger.warn(
