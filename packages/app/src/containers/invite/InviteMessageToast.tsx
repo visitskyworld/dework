@@ -19,8 +19,9 @@ import {
   ProjectRole,
   UserDetails,
 } from "@dewo/app/graphql/types";
+import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
-import { useGetOnboardingPath, needsToFillOutProfile } from "../auth/hooks";
+import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -41,7 +42,7 @@ export const InviteMessageToast: FC = () => {
   const authenticated = !!user;
   const authModalVisible = useToggle();
   const tokenGatedModalVisible = useToggle();
-  const getOnboardingPath = useGetOnboardingPath();
+  const connectDiscordModalVisible = useToggle();
 
   const acceptInvite = useAcceptInvite();
   const handleAcceptInvite = useCallback(async () => {
@@ -84,23 +85,25 @@ export const InviteMessageToast: FC = () => {
 
   const showAuthModal = authModalVisible.toggleOn;
   const showTokenGateModal = tokenGatedModalVisible.toggleOn;
+  const showConnectDiscordModal = connectDiscordModalVisible.toggleOn;
 
   const handleAuthedWithWalletSuccess = useCallback(
     async (userDetails: UserDetails) => {
       authModalVisible.toggleOff();
 
-      if (userDetails && needsToFillOutProfile(userDetails)) {
-        router.push(getOnboardingPath(userDetails, router.asPath));
+      if (!hasDiscordThreepid(userDetails)) {
+        showConnectDiscordModal();
+      } else if (isTokenGated) {
+        showTokenGateModal();
       } else {
-        isTokenGated ? showTokenGateModal() : handleAcceptInvite();
+        handleAcceptInvite();
       }
     },
     [
-      router,
       isTokenGated,
       authModalVisible,
-      getOnboardingPath,
       showTokenGateModal,
+      showConnectDiscordModal,
       handleAcceptInvite,
     ]
   );
@@ -113,10 +116,10 @@ export const InviteMessageToast: FC = () => {
 
       if (!authenticated) {
         showAuthModal();
+      } else if (!hasDiscordThreepid(user)) {
+        showConnectDiscordModal();
       } else if (isTokenGated) {
         showTokenGateModal();
-      } else if (needsToFillOutProfile(user)) {
-        router.push(getOnboardingPath(user, router.asPath));
       } else {
         handleAcceptInvite();
       }
@@ -158,6 +161,10 @@ export const InviteMessageToast: FC = () => {
           onClose={tokenGatedModalVisible.toggleOff}
         />
       )}
+      <ConnectDiscordModal
+        visible={connectDiscordModalVisible.isOn}
+        onClose={connectDiscordModalVisible.toggleOff}
+      />
     </>
   );
 };

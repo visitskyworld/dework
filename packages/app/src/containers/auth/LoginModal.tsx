@@ -10,7 +10,6 @@ import {
   useAuthWithThreepid,
   useCreateHiroThreepid,
   useCreateMetamaskThreepid,
-  useGetOnboardingPath,
 } from "@dewo/app/containers/auth/hooks";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
@@ -37,7 +36,6 @@ export const LoginModal: FC<Props> = ({
   );
 
   const authWithThreepid = useAuthWithThreepid();
-  const getOnboardingPath = useGetOnboardingPath();
 
   const authingWithMetamask = useToggle();
   const createMetamaskThreepid = useCreateMetamaskThreepid();
@@ -49,7 +47,7 @@ export const LoginModal: FC<Props> = ({
       onAuthedWithWallet?.(user);
 
       if (!user.onboarding && redirectToOnboarding) {
-        await router.push(getOnboardingPath(user));
+        await router.push("/onboarding");
       }
     } catch (error) {
       alert((error as Error).message);
@@ -63,7 +61,6 @@ export const LoginModal: FC<Props> = ({
     onAuthedWithWallet,
     authingWithMetamask,
     router,
-    getOnboardingPath,
     redirectToOnboarding,
   ]);
 
@@ -77,7 +74,7 @@ export const LoginModal: FC<Props> = ({
       onAuthedWithWallet?.(user);
 
       if (!user.onboarding && redirectToOnboarding) {
-        await router.push(getOnboardingPath(user));
+        await router.push("/onboarding");
       }
     } catch (error) {
       alert((error as Error).message);
@@ -90,7 +87,6 @@ export const LoginModal: FC<Props> = ({
     onAuthedWithWallet,
     authingWithHiro,
     router,
-    getOnboardingPath,
     redirectToOnboarding,
   ]);
 

@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NextPage } from "next";
 import { Button, Layout, Modal, Space, Typography } from "antd";
 import { useRouter } from "next/router";
-import {
-  useAuthWithThreepid,
-  useGetOnboardingPath,
-} from "@dewo/app/containers/auth/hooks";
+import { useAuthWithThreepid } from "@dewo/app/containers/auth/hooks";
 import { useAcceptInvite } from "@dewo/app/containers/invite/hooks";
 import { ApolloError } from "@apollo/client";
 import Link from "next/link";
@@ -20,7 +17,6 @@ const Auth: NextPage = () => {
   );
 
   const authWithThreepid = useAuthWithThreepid();
-  const getOnboardingPath = useGetOnboardingPath();
   const acceptInvite = useAcceptInvite();
   const [accountAlreadyConnected, setAccountAlreadyConnected] = useState(false);
 
@@ -31,7 +27,11 @@ const Auth: NextPage = () => {
         await acceptInvite(state.inviteId).catch();
       }
 
-      await router.push(getOnboardingPath(user, state.redirect));
+      if (!!state.redirect && state.redirect !== "/") {
+        await router.push(state.redirect);
+      } else {
+        await router.push(!!user.onboarding ? "/" : "/onboarding");
+      }
     } catch (error) {
       if (error instanceof ApolloError) {
         if (error.message === "Account already connected") {
@@ -41,16 +41,7 @@ const Auth: NextPage = () => {
         throw error;
       }
     }
-  }, [
-    router,
-    threepidId,
-    state.inviteId,
-    state.redirect,
-    authWithThreepid,
-    getOnboardingPath,
-    acceptInvite,
-  ]);
-
+  }, [authWithThreepid, threepidId, router, state, acceptInvite]);
   useEffect(() => {
     auth();
     // eslint-disable-next-line react-hooks/exhaustive-deps

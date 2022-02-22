@@ -154,26 +154,5 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
   ]);
 }
 
-export const needsToFillOutProfile = (user: UserDetails): boolean => {
-  const hasGenericUsername = user.username.startsWith("deworker");
-  const hasDiscordDetail = user.threepids.some((d) => d.source === "discord");
-
-  return hasGenericUsername || !hasDiscordDetail;
-};
-
-export const useGetOnboardingPath = () => {
-  return useCallback((user?: UserDetails, redirect?: string) => {
-    if (!user) return "/";
-
-    let onboardPath = !!user.onboarding ? "/" : "/onboarding";
-    if (!!redirect && redirect !== "/") {
-      onboardPath = redirect;
-    }
-
-    if (needsToFillOutProfile(user)) {
-      return `/profile/${user.id}/fill?redirect=${onboardPath}`;
-    }
-
-    return onboardPath;
-  }, []);
-};
+export const hasDiscordThreepid = (user: UserDetails): boolean =>
+  user.threepids.some((d) => d.source === "discord");
