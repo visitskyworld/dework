@@ -14,6 +14,7 @@ export interface DiscordOrganizationIntegrationConfig {
   guildId: string;
   permissions: string;
   useTempDiscordBot?: boolean;
+  useTempDiscordBot2?: boolean;
 }
 
 export interface GithubOrganizationIntegrationConfig {

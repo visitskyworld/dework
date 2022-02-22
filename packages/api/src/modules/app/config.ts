@@ -25,6 +25,9 @@ export interface ConfigType {
   TEMP_DISCORD_OAUTH_CLIENT_ID: string;
   TEMP_DISCORD_OAUTH_CLIENT_SECRET: string;
   TEMP_DISCORD_BOT_TOKEN: string;
+  TEMP2_DISCORD_OAUTH_CLIENT_ID: string;
+  TEMP2_DISCORD_OAUTH_CLIENT_SECRET: string;
+  TEMP2_DISCORD_BOT_TOKEN: string;
 
   DISCORD_DEWORK_GUILD_ID: string;
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: string;
@@ -72,6 +75,9 @@ export const configSchema = Joi.object<ConfigType>({
   TEMP_DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
   TEMP_DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
   TEMP_DISCORD_BOT_TOKEN: Joi.string().required(),
+  TEMP2_DISCORD_OAUTH_CLIENT_ID: Joi.string().required(),
+  TEMP2_DISCORD_OAUTH_CLIENT_SECRET: Joi.string().required(),
+  TEMP2_DISCORD_BOT_TOKEN: Joi.string().required(),
 
   DISCORD_DEWORK_GUILD_ID: Joi.string().required(),
   DISCORD_DEWORK_FEEDBACK_CHANNEL_ID: Joi.string().required(),

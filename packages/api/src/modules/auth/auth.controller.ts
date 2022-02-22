@@ -70,7 +70,7 @@ export class AuthController {
           Discord.Permissions.FLAGS.SEND_MESSAGES,
         ]).bitfield.toString(),
         scope: "bot",
-        client_id: this.config.get<string>("TEMP_DISCORD_OAUTH_CLIENT_ID"),
+        client_id: this.config.get<string>("TEMP2_DISCORD_OAUTH_CLIENT_ID"),
         state: JSON.stringify(req.query),
         redirect_uri: `${this.config.get<string>(
           "API_URL"
@@ -100,7 +100,7 @@ export class AuthController {
         const config: DiscordOrganizationIntegrationConfig = {
           guildId: query.guild_id,
           permissions: query.permissions,
-          useTempDiscordBot: true,
+          useTempDiscordBot2: true,
         };
 
         await this.integrationService.createOrganizationIntegration({

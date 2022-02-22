@@ -329,7 +329,11 @@ export class DiscordIntegrationService {
         OrganizationIntegrationType.DISCORD
       );
 
-    if (!integration || integration.config.useTempDiscordBot) {
+    if (
+      !integration ||
+      integration.config.useTempDiscordBot ||
+      integration.config.useTempDiscordBot2
+    ) {
       return DiscordGuildMembershipState.MEMBER;
     }
 

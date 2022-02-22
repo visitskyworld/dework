@@ -25,6 +25,7 @@ export class DiscordService implements OnModuleInit {
   private logger = new Logger(this.constructor.name);
   private mainClient: Discord.Client;
   private tempClient: Discord.Client;
+  private temp2Client: Discord.Client;
 
   constructor(
     private readonly integrationService: IntegrationService,
@@ -33,11 +34,13 @@ export class DiscordService implements OnModuleInit {
   ) {
     this.mainClient = new Discord.Client({ intents: [] });
     this.tempClient = new Discord.Client({ intents: [] });
+    this.temp2Client = new Discord.Client({ intents: [] });
   }
 
   async onModuleInit() {
     await this.mainClient.login(this.config.get("MAIN_DISCORD_BOT_TOKEN"));
     await this.tempClient.login(this.config.get("TEMP_DISCORD_BOT_TOKEN"));
+    await this.temp2Client.login(this.config.get("TEMP2_DISCORD_BOT_TOKEN"));
   }
 
   public async getChannels(
@@ -57,6 +60,8 @@ export class DiscordService implements OnModuleInit {
     const botUserId = this.config.get<string>(
       integration.config.useTempDiscordBot
         ? "TEMP_DISCORD_OAUTH_CLIENT_ID"
+        : integration.config.useTempDiscordBot2
+        ? "TEMP2_DISCORD_OAUTH_CLIENT_ID"
         : "MAIN_DISCORD_OAUTH_CLIENT_ID"
     )!;
     const guild = await this.getClient(integration).guilds.fetch(
@@ -181,8 +186,8 @@ export class DiscordService implements OnModuleInit {
   public getClient(
     integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
   ): Discord.Client {
-    return integration.config.useTempDiscordBot
-      ? this.tempClient
-      : this.mainClient;
+    if (integration.config.useTempDiscordBot) return this.tempClient;
+    if (integration.config.useTempDiscordBot2) return this.temp2Client;
+    return this.mainClient;
   }
 }
