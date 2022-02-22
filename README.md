@@ -412,7 +412,7 @@ echo "https://app.dework.xyz/o/$(./packages/scripts/uuid-to-base62.sh <org id>)"
 # Deploying `DeworkTasks` contract and testing locally
 1. Generate random public/private key
 ```bash
-node -e "const w = require('ethers').Wallet.createRandom(); console.log({public: w.address, private: w._signingKey().privateKey})"
+node -e "const w = require('ethers').Wallet.createRandom(); console.log({public: w.address, private: w._signingKey().privateKey, mnemonic: w.mnemonic.phrase})"
 ```
 
 2. Send funds to public key
@@ -447,6 +447,7 @@ END $$;
 NFT_MINTER_PRIVATE_KEY=
 NFT_MINTER_PUBLIC_KEY=
 NFT_MINTER_NETWORK=
+NFT_CONTRACT_ADDRESS=
 NFT_CONTRACT_ADDRESS=
 ```
 

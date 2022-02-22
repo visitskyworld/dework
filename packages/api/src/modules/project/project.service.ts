@@ -184,13 +184,17 @@ export class ProjectService {
   public async findFeatured(): Promise<Project[]> {
     const projectsWithTaskCount = await this.projectRepo
       .createQueryBuilder("project")
+      .innerJoinAndSelect("project.organization", "organization")
       .addSelect("COUNT(task.id)", "project_taskCount")
       .leftJoin("project.tasks", "task")
       .where("project.visibility = :public", {
         public: ProjectVisibility.PUBLIC,
       })
       .andWhere("project.deletedAt IS NULL")
-      .groupBy("project.id")
+      .andWhere("organization.deletedAt IS NULL")
+      .andWhere("LOWER(project.name) NOT LIKE '%test%'")
+      .andWhere("LOWER(organization.name) NOT LIKE '%test%'")
+      .groupBy("project.id, organization.id")
       .having("COUNT(task.id) >= 10")
       .getRawMany();
     const projects = await this.projectRepo

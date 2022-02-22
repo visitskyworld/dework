@@ -82,10 +82,16 @@ export class NFTPoller {
           minter.signer
         ) as ethers.Contract & DeworkTasksV2;
 
-        const tx = await contract.mint(address, tokenId, true);
+        const feeData = await minter.signer.provider!.getFeeData();
         this.logger.debug(
-          `Minted NFT with tx hash: ${JSON.stringify({ txHash: tx.hash })}`
+          `Network data: ${JSON.stringify({
+            feeData,
+            config: minter.network.config,
+          })}`
         );
+        const tx = await contract.mint(address, tokenId, true);
+        this.logger.debug(`Minted NFT with tx: ${JSON.stringify(tx)}`);
+        await tx.wait(2);
         const payment = await this.paymentService.create(
           minter.paymentMethod,
           minter.network.id,

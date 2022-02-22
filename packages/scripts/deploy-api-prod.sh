@@ -14,7 +14,7 @@ docker build --platform linux/amd64 -t $IMAGE_NAME -f packages/api/Dockerfile .
 docker push $IMAGE_NAME
 
 gcloud config set project $PROJECT_ID
-#gcloud app deploy --image-url=$IMAGE_NAME --appyaml=$APP_YAML_PATH --quiet
+gcloud app deploy --image-url=$IMAGE_NAME --appyaml=$APP_YAML_PATH --quiet
 
 DEPLOYMENT_NAME="api"
 ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH)
@@ -38,5 +38,5 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --update-env-vars $ENV_VARS       \
   --region $REGION                  \
   --platform managed                \
-  --timeout 1m                      \
+  --timeout 3m                      \
   --allow-unauthenticated
