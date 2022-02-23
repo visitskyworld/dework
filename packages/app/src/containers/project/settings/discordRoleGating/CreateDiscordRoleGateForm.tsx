@@ -1,10 +1,14 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { ProjectRole } from "@dewo/app/graphql/types";
+import { useRunningCallback } from "@dewo/app/util/hooks";
 import { Form, Col, Row, Select, Button } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { useDiscordGuildRoles } from "../../integrations/hooks";
-import { projectRoleToString } from "./ProjectSettingsMemberList";
+import {
+  useCreateDiscordRoleGateProjectIntegration,
+  useDiscordGuildRoles,
+} from "../../../integrations/hooks";
+import { projectRoleToString } from "../ProjectSettingsMemberList";
 
 interface FormValues {
   discordRoleIds?: string[];
@@ -12,11 +16,15 @@ interface FormValues {
 }
 
 interface Props {
+  projectId: string;
   organizationId: string;
+  organizationIntegrationId: string;
 }
 
-export const ProjectSettingsDiscordRoleGatingRow: FC<Props> = ({
+export const CreateDiscordRoleGateForm: FC<Props> = ({
+  projectId,
   organizationId,
+  organizationIntegrationId,
 }) => {
   const [form] = useForm<FormValues>();
   const discordRoles = useDiscordGuildRoles(organizationId);
@@ -32,17 +40,36 @@ export const ProjectSettingsDiscordRoleGatingRow: FC<Props> = ({
     []
   );
 
+  const createIntegration = useCreateDiscordRoleGateProjectIntegration();
+  const [handleSubmit, submitting] = useRunningCallback(
+    async (values: FormValues) => {
+      await createIntegration({
+        projectId,
+        discordRoleIds: values.discordRoleIds!,
+        projectRole: values.projectRole,
+        organizationIntegrationId,
+      });
+    },
+    [createIntegration, projectId, organizationIntegrationId]
+  );
+
   return (
     <Form<FormValues>
       form={form}
       layout="vertical"
-      style={{ overflow: "hidden" }}
+      style={{ overflow: "hidden", width: "100%" }}
       initialValues={{ projectRole: ProjectRole.CONTRIBUTOR }}
+      requiredMark={false}
       onValuesChange={handleChange}
+      onFinish={handleSubmit}
     >
       <Row gutter={8}>
         <Col span={10}>
-          <Form.Item name="discordRoleIds" label="Discord Roles">
+          <Form.Item
+            name="discordRoleIds"
+            label="Discord Roles"
+            rules={[{ required: true }]}
+          >
             <Select
               mode="multiple"
               // style={{ width: "100%" }}
@@ -89,9 +116,10 @@ export const ProjectSettingsDiscordRoleGatingRow: FC<Props> = ({
               htmlType="submit"
               type="primary"
               block
+              loading={submitting}
               disabled={!values.discordRoleIds?.length}
             >
-              Save
+              Add
             </Button>
           </FormSection>
         </Col>

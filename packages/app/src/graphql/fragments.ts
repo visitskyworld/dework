@@ -325,7 +325,6 @@ export const discordIntegrationRole = gql`
   fragment DiscordIntegrationRole on DiscordIntegrationRole {
     id
     name
-    integrationId
   }
 `;
 

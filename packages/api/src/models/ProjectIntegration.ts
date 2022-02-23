@@ -35,8 +35,8 @@ export interface DiscordProjectIntegrationConfig {
 }
 
 export interface DiscordRoleGateProjectIntegrationConfig {
-  role: ProjectRole;
-  discordRoles: string[];
+  projectRole: ProjectRole;
+  discordRoleIds: string[];
 }
 
 export interface GithubProjectIntegrationConfig {

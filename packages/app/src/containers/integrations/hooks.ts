@@ -33,6 +33,7 @@ import {
   GetDiscordGuildRolesQueryVariables,
   OrganizationIntegration,
   OrganizationIntegrationType,
+  ProjectRole,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -157,6 +158,26 @@ export function useCreateDiscordProjectIntegration(): (input: {
           threadId: thread?.id,
           name: thread?.name ?? channel.name,
         },
+      });
+    },
+    [createProjectIntegration]
+  );
+}
+
+export function useCreateDiscordRoleGateProjectIntegration(): (input: {
+  projectId: string;
+  projectRole: ProjectRole;
+  discordRoleIds: string[];
+  organizationIntegrationId: string;
+}) => Promise<ProjectIntegration> {
+  const createProjectIntegration = useCreateProjectIntegration();
+  return useCallback(
+    ({ projectId, projectRole, discordRoleIds, organizationIntegrationId }) => {
+      return createProjectIntegration({
+        projectId,
+        organizationIntegrationId,
+        type: ProjectIntegrationType.DISCORD_ROLE_GATE,
+        config: { projectRole, discordRoleIds },
       });
     },
     [createProjectIntegration]

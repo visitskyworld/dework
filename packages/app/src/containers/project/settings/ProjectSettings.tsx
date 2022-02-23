@@ -12,7 +12,7 @@ import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectSettingsManage } from "./ProjectSettingsManage";
-import { ProjectSettingsDiscordRoleGating } from "./ProjectSettingsDiscordRoleGating";
+import { ProjectSettingsDiscordRoleGating } from "./discordRoleGating/DiscordRoleGating";
 
 interface Props {
   project: ProjectDetails;
