@@ -1,5 +1,7 @@
+import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { Task } from "@dewo/api/models/Task";
 import { TaskNFT } from "@dewo/api/models/TaskNFT";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
@@ -35,11 +37,26 @@ export class NFTService {
       .innerJoin("task.project", "project")
       .innerJoinAndSelect("task.assignees", "assignee")
       .innerJoin("project.organization", "organization")
+      .leftJoin("assignee.threepids", "threepid")
+      .leftJoin("assignee.paymentMethods", "paymentMethod")
       .leftJoin("task.nfts", "nft")
       .where("organization.mintTaskNFTs = :mintTaskNFTs", {
         mintTaskNFTs: true,
       })
       .andWhere("assignee.id IS NOT NULL")
+      .andWhere((qb) =>
+        qb
+          .where("threepid.source = :source", {
+            source: ThreepidSource.metamask,
+          })
+          .orWhere((qb) =>
+            qb
+              .where("paymentMethod.deletedAt IS NULL")
+              .andWhere("paymentMethod.type = :type", {
+                type: PaymentMethodType.METAMASK,
+              })
+          )
+      )
       .andWhere("nft.id IS NULL")
       .andWhere("task.doneAt > '2022-02-21 21:00:00'")
       .orderBy("task.createdAt", "ASC")

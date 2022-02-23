@@ -62,7 +62,7 @@ export class NFTPoller {
           (t) => t.source === ThreepidSource.metamask
         )?.threepid;
         const paymentMethodAddress = pms.find(
-          (pm) => pm.type === PaymentMethodType.METAMASK
+          (pm) => !pm.deletedAt && pm.type === PaymentMethodType.METAMASK
         )?.address;
         const address = threepidAddress ?? paymentMethodAddress;
 
@@ -79,6 +79,8 @@ export class NFTPoller {
         this.logger.debug(
           `Next tokenId: ${JSON.stringify({
             tokenId,
+            threepidAddress,
+            paymentMethodAddress,
             contractAddress: minter.contractAddress,
           })}`
         );
