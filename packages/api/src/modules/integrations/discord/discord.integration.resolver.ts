@@ -15,6 +15,7 @@ import {
 } from "./discord.integration.service";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { DiscordIntegrationRole } from "./dto/DiscordIntegrationRole";
 
 registerEnumType(DiscordGuildMembershipState, {
   name: "DiscordGuildMembershipState",
@@ -35,6 +36,14 @@ export class DiscordIntegrationResolver {
     parentChannelId: string
   ): Promise<DiscordIntegrationChannel[]> {
     return this.discord.getChannels(organizationId, parentChannelId);
+  }
+
+  // TODO(fant): do we want to make sure the requesting user is an org admin?
+  @Query(() => [DiscordIntegrationRole], { nullable: true })
+  public async getDiscordGuildRoles(
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
+  ): Promise<DiscordIntegrationRole[]> {
+    return this.discord.getDiscordGuildRoles(organizationId);
   }
 
   @Query(() => DiscordGuildMembershipState)

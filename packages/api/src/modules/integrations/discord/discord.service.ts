@@ -18,6 +18,7 @@ import {
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { ThreepidService } from "../../threepid/threepid.service";
 import _ from "lodash";
+import { DiscordIntegrationRole } from "./dto/DiscordIntegrationRole";
 
 @Injectable()
 @EventSubscriber()
@@ -96,6 +97,37 @@ export class DiscordService implements OnModuleInit {
         .filter((channel) => channel.isText())
         .map(this.toIntegrationChannel(integration, botUser));
     }
+  }
+
+  public async getDiscordGuildRoles(
+    organizationId: string
+  ): Promise<DiscordIntegrationRole[]> {
+    this.logger.debug(
+      `Getting Discord guild roles: ${JSON.stringify({
+        organizationId,
+      })}`
+    );
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.DISCORD
+      );
+
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const guild = await this.getClient(integration).guilds.fetch(
+      integration.config.guildId
+    );
+    const roles = await guild.roles.fetch();
+    return roles
+      .filter((r) => !r.name.toLowerCase().includes("dework"))
+      .map((role) => ({
+        id: role.id,
+        name: role.name,
+        integrationId: integration.id,
+      }));
   }
 
   private toIntegrationChannel =
