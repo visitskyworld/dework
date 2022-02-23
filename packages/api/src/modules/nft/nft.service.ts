@@ -4,7 +4,7 @@ import { TaskNFT } from "@dewo/api/models/TaskNFT";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { Brackets, DeepPartial, Repository } from "typeorm";
 
 @Injectable()
 export class NFTService {
@@ -44,18 +44,22 @@ export class NFTService {
         mintTaskNFTs: true,
       })
       .andWhere("assignee.id IS NOT NULL")
-      .andWhere((qb) =>
-        qb
-          .where("threepid.source = :source", {
-            source: ThreepidSource.metamask,
-          })
-          .orWhere((qb) =>
-            qb
-              .where("paymentMethod.deletedAt IS NULL")
-              .andWhere("paymentMethod.type = :type", {
-                type: PaymentMethodType.METAMASK,
-              })
-          )
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where("threepid.source = :source", {
+              source: ThreepidSource.metamask,
+            })
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where("paymentMethod.deletedAt IS NULL")
+                  .andWhere("paymentMethod.type = :type", {
+                    type: PaymentMethodType.METAMASK,
+                  })
+              )
+            )
+        )
       )
       .andWhere("nft.id IS NULL")
       .andWhere("task.doneAt > '2022-02-21 21:00:00'")
