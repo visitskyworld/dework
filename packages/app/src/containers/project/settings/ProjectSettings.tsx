@@ -12,6 +12,7 @@ import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectSettingsManage } from "./ProjectSettingsManage";
+import { ProjectSettingsDiscordRoleGating } from "./ProjectSettingsDiscordRoleGating";
 
 interface Props {
   project: ProjectDetails;
@@ -94,6 +95,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         style={tabStyle}
       >
         <ProjectSettingsTokenGating project={project} />
+        <ProjectSettingsDiscordRoleGating project={project} />
       </Tabs.TabPane>
 
       {canRemoveProject ? (

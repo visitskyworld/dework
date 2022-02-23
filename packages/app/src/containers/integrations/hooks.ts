@@ -29,10 +29,13 @@ import {
   DiscordGuildMembershipState,
   GetDiscordGuildMembershipStateQuery,
   GetDiscordGuildMembershipStateQueryVariables,
+  OrganizationIntegration,
+  OrganizationIntegrationType,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
+import { useOrganization } from "../organization/hooks";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
@@ -255,4 +258,17 @@ export function useAddUserToDiscordGuild(
     });
     if (!res.data) throw new Error(JSON.stringify(res.errors));
   }, [mutation, organizationId]);
+}
+
+export function useOrganizationDiscordIntegration(
+  organizationId: string | undefined
+): OrganizationIntegration | undefined {
+  const { organization } = useOrganization(organizationId);
+  return useMemo(
+    () =>
+      organization?.integrations.find(
+        (i) => i.type === OrganizationIntegrationType.DISCORD
+      ),
+    [organization?.integrations]
+  );
 }

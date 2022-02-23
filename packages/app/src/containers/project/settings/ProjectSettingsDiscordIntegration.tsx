@@ -1,13 +1,9 @@
 import React, { FC, useCallback, useMemo } from "react";
-import {
-  OrganizationIntegration,
-  OrganizationIntegrationType,
-  ProjectIntegrationType,
-} from "@dewo/app/graphql/types";
+import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { useProject } from "../hooks";
-import { useOrganization } from "../../organization/hooks";
 import {
   useCreateDiscordProjectIntegration,
+  useOrganizationDiscordIntegration,
   useUpdateProjectIntegration,
 } from "../../integrations/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -26,19 +22,6 @@ import {
 interface Props {
   projectId: string;
   organizationId: string;
-}
-
-function useOrganizationDiscordIntegration(
-  organizationId: string | undefined
-): OrganizationIntegration | undefined {
-  const { organization } = useOrganization(organizationId);
-  return useMemo(
-    () =>
-      organization?.integrations.find(
-        (i) => i.type === OrganizationIntegrationType.DISCORD
-      ),
-    [organization?.integrations]
-  );
 }
 
 export const ProjectSettingsDiscordIntegration: FC<Props> = ({

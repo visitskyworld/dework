@@ -4,10 +4,12 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { OrganizationIntegration } from "./OrganizationIntegration";
 import { Project } from "./Project";
+import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
 
 export enum ProjectIntegrationType {
   DISCORD = "DISCORD",
+  DISCORD_ROLE_GATE = "DISCORD_ROLE_GATE",
   GITHUB = "GITHUB",
 }
 
@@ -32,6 +34,11 @@ export interface DiscordProjectIntegrationConfig {
   features: DiscordProjectIntegrationFeature[];
 }
 
+export interface DiscordRoleGateProjectIntegrationConfig {
+  role: ProjectRole;
+  discordRoles: string[];
+}
+
 export interface GithubProjectIntegrationConfig {
   organization: string;
   repo: string;
@@ -41,6 +48,7 @@ export interface GithubProjectIntegrationConfig {
 export interface ProjectIntegrationConfigMap
   extends Record<ProjectIntegrationType, any> {
   [ProjectIntegrationType.DISCORD]: DiscordProjectIntegrationConfig;
+  [ProjectIntegrationType.DISCORD_ROLE_GATE]: DiscordRoleGateProjectIntegrationConfig;
   [ProjectIntegrationType.GITHUB]: GithubProjectIntegrationConfig;
 }
 
