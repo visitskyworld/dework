@@ -341,3 +341,13 @@ export const getDiscordGuildMembershipState = gql`
     state: getDiscordGuildMembershipState(organizationId: $organizationId)
   }
 `;
+
+export const getDiscordGuildRoles = gql`
+  query GetDiscordGuildRolesQuery($organizationId: UUID!) {
+    roles: getDiscordGuildRoles(organizationId: $organizationId) {
+      ...DiscordIntegrationRole
+    }
+  }
+
+  ${Fragments.discordIntegrationRole}
+`;

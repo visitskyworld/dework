@@ -321,6 +321,14 @@ export const discordIntegrationChannel = gql`
   }
 `;
 
+export const discordIntegrationRole = gql`
+  fragment DiscordIntegrationRole on DiscordIntegrationRole {
+    id
+    name
+    integrationId
+  }
+`;
+
 export const taskApplication = gql`
   fragment TaskApplication on TaskApplication {
     id

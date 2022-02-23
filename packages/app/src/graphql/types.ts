@@ -7909,6 +7909,30 @@ export interface GetDiscordGuildMembershipStateQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetDiscordGuildRolesQuery
+// ====================================================
+
+export interface GetDiscordGuildRolesQuery_roles {
+  __typename: "DiscordIntegrationRole";
+  id: string;
+  name: string;
+  integrationId: Scalar.UUID;
+}
+
+export interface GetDiscordGuildRolesQuery {
+  roles: GetDiscordGuildRolesQuery_roles[] | null;
+}
+
+export interface GetDiscordGuildRolesQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
@@ -9907,6 +9931,22 @@ export interface DiscordIntegrationChannel {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: DiscordIntegrationRole
+// ====================================================
+
+export interface DiscordIntegrationRole {
+  __typename: "DiscordIntegrationRole";
+  id: string;
+  name: string;
+  integrationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: TaskApplication
 // ====================================================
 
@@ -11465,6 +11505,7 @@ export enum PaymentTokenVisibility {
 
 export enum ProjectIntegrationType {
   DISCORD = "DISCORD",
+  DISCORD_ROLE_GATE = "DISCORD_ROLE_GATE",
   GITHUB = "GITHUB",
 }
 
