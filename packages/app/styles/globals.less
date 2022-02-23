@@ -10,7 +10,6 @@
 @primary-color-50: #8570e488;
 @body-background: #00042d;
 @twitter-color:#1DA1F2;
-@twitter-color-dark:darken(@twitter-color, 10%);
 @component-background: fade(@white, 10%);
 @divider-color: fade(@white, 20%);
 @border-color-base: fade(@white, 40%);
@@ -862,10 +861,8 @@ textarea {
 }
 
 .dewo-twitter-btn {
-  background-color: @twitter-color;
-  border-color: @twitter-color;
-  &:hover {
-    background-color: @twitter-color-dark;
-    border-color: @twitter-color-dark;
+  &:hover, &:focus, &:active {
+    color: @twitter-color;
+    border-color: @twitter-color;
   }
 }

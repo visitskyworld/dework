@@ -243,7 +243,6 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {!!task && <TaskDiscordButton task={task} />}
-          {!!task && <TaskTwitterShareButton task={task} />}
 
           {canChange("assigneeIds") &&
             !!task &&
@@ -254,6 +253,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && <TaskSubmissionsSection task={task} />}
           <Divider />
           {!!task && <TaskActivityFeed task={task} />}
+          {!!task && <TaskTwitterShareButton task={task} />}
         </Col>
         <Col xs={24} sm={8} style={{ marginTop: 16 }}>
           <Form.Item

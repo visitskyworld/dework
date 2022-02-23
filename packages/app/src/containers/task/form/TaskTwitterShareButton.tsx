@@ -19,8 +19,8 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
   return (
     <FormSection label="Twitter" className="mb-3">
       <Button
-        type="primary"
         target="_blank"
+        type="ghost"
         className="dewo-twitter-btn"
         size="small"
         icon={<TwitterOutlined />}
