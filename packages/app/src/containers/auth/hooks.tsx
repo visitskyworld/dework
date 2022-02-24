@@ -13,6 +13,7 @@ import {
   CreateMetamaskThreepidVariables,
   StartWalletConnectSessionMutation,
   StartWalletConnectSessionMutationVariables,
+  ThreepidSource,
   UserDetails,
 } from "@dewo/app/graphql/types";
 import {
@@ -155,4 +156,4 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
 }
 
 export const hasDiscordThreepid = (user: UserDetails): boolean =>
-  user.threepids.some((d) => d.source === "discord");
+  user.threepids.some((d) => d.source === ThreepidSource.discord);
