@@ -83,7 +83,16 @@ export const TaskDiscoveryList: FC = () => {
     }),
     [values.includeTasksWithoutReward]
   );
-  const tasks = useTasks(tasksQuery);
+  const _tasks = useTasks(tasksQuery);
+  // hackily filter out tasks created during demos
+  const tasks = useMemo(
+    () =>
+      _tasks?.filter((t) => {
+        const name = t.project.organization.name.toLowerCase();
+        return !name.includes("demo") && !name.includes("test");
+      }),
+    [_tasks]
+  );
 
   const screens = useBreakpoint();
   const filters = useToggle(true);
