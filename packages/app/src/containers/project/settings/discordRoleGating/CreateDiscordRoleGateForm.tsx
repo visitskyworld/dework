@@ -68,11 +68,10 @@ export const CreateDiscordRoleGateForm: FC<Props> = ({
           <Form.Item
             name="discordRoleIds"
             label="Discord Roles"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Please select Discord roles" }]}
           >
             <Select
               mode="multiple"
-              // style={{ width: "100%" }}
               placeholder="Select Discord Roles..."
               showSearch
               optionFilterProp="label"
@@ -93,8 +92,7 @@ export const CreateDiscordRoleGateForm: FC<Props> = ({
         <Col span={10}>
           <Form.Item name="projectRole" label="Can join this project as">
             <Select
-              // style={{ width: "100%" }}
-              placeholder="Select Discord Roles..."
+              placeholder="Select Project Role..."
               showSearch
               optionFilterProp="label"
             >
