@@ -2,7 +2,7 @@ import { Row, Skeleton, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../../hooks";
 import * as Icons from "@ant-design/icons";
-import { JoinTokenGatedProjectsButton } from "../../../invite/JoinTokenGatedProjectsButton";
+import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
 import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import {
@@ -19,6 +19,7 @@ import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { ProjectListEmpty } from "./ProjectListEmpty";
+import { JoinDiscordRoleGatedProjectsAlert } from "@dewo/app/containers/invite/JoinDiscordRoleGatedProjectsAlert";
 
 interface Props {
   organizationId: string;
@@ -110,7 +111,11 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     <div
       style={screens.sm ? { maxHeight: "100vh", height: "100%" } : undefined}
     >
-      <JoinTokenGatedProjectsButton
+      <JoinDiscordRoleGatedProjectsAlert
+        organizationId={organizationId}
+        style={{ marginBottom: 16 }}
+      />
+      <JoinTokenGatedProjectsAlert
         organizationId={organizationId}
         style={{ marginBottom: 16 }}
       />

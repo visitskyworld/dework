@@ -17,7 +17,7 @@ interface Props {
   style?: CSSProperties;
 }
 
-export const JoinTokenGatedProjectsButton: FC<Props> = ({
+export const JoinTokenGatedProjectsAlert: FC<Props> = ({
   organizationId,
   style,
 }) => {
