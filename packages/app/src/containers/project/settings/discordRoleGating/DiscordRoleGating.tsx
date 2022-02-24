@@ -37,7 +37,7 @@ export const ProjectSettingsDiscordRoleGating: FC<Props> = ({ project }) => {
           First, connect with Discord. (TODO connect flow...)
         </Typography.Paragraph>
       ) : (
-        <Row style={{ gap: 16, width: "100%" }}>
+        <Row style={{ rowGap: 16, width: "100%" }}>
           {projectIntegrations.map((integration) => (
             <DiscordRoleGateSummary
               key={integration.id}

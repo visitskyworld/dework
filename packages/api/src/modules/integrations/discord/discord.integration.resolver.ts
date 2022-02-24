@@ -16,6 +16,7 @@ import {
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { DiscordIntegrationRole } from "./dto/DiscordIntegrationRole";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
 
 registerEnumType(DiscordGuildMembershipState, {
   name: "DiscordGuildMembershipState",
@@ -86,5 +87,17 @@ export class DiscordIntegrationResolver {
       user.id
     );
     return true;
+  }
+
+  @Mutation(() => [ProjectMember])
+  @UseGuards(AuthGuard)
+  public async joinProjectsWithDiscordRole(
+    @Context("user") user: User,
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
+  ): Promise<ProjectMember[]> {
+    return this.discordIntegration.joinProjectsWithDiscordRole(
+      user.id,
+      organizationId
+    );
   }
 }

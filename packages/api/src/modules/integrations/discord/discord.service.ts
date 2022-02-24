@@ -79,7 +79,7 @@ export class DiscordService implements OnModuleInit {
       return [];
     }
 
-    await guild.roles.fetch(); // makes permissionsFor below work
+    await guild.roles.fetch(undefined, { force: true }); // makes permissionsFor below work
     const botUser = await guild.members.fetch({ user: botUserId });
 
     if (!!parentChannelId) {

@@ -1,8 +1,9 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
+import { ProjectIntegration } from "./ProjectIntegration";
 import { User } from "./User";
 
 export enum OrganizationIntegrationType {
@@ -59,4 +60,11 @@ export class OrganizationIntegration<
   @Column("json")
   @Field(() => GraphQLJSONObject)
   public config!: OrganizationIntegrationConfigMap[TType];
+
+  @OneToMany(
+    () => ProjectIntegration,
+    (x: ProjectIntegration) => x.organizationIntegration
+  )
+  @Field(() => [ProjectIntegration])
+  public projectIntegrations!: Promise<ProjectIntegration[]>;
 }
