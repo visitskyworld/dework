@@ -480,6 +480,19 @@ export const joinProjectWithToken = gql`
   ${Fragments.project}
 `;
 
+export const joinProjectsWithDiscordRole = gql`
+  mutation JoinProjectsWithDiscordRoleMutation($organizationId: UUID!) {
+    members: joinProjectsWithDiscordRole(organizationId: $organizationId) {
+      id
+      project {
+        ...Project
+      }
+    }
+  }
+
+  ${Fragments.project}
+`;
+
 export const createPaymentMethod = gql`
   mutation CreatePaymentMethodMutation($input: CreatePaymentMethodInput!) {
     paymentMethod: createPaymentMethod(input: $input) {

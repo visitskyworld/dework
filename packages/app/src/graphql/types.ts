@@ -507,11 +507,20 @@ export interface UpdateOrganizationMutation_organization_details {
   value: string;
 }
 
+export interface UpdateOrganizationMutation_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface UpdateOrganizationMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: UpdateOrganizationMutation_organization_integrations_discordRoleGates[];
 }
 
 export interface UpdateOrganizationMutation_organization_projectTokenGates_token_network {
@@ -1040,11 +1049,20 @@ export interface CreateProjectMutation_project_organization_details {
   value: string;
 }
 
+export interface CreateProjectMutation_project_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface CreateProjectMutation_project_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: CreateProjectMutation_project_organization_integrations_discordRoleGates[];
 }
 
 export interface CreateProjectMutation_project_organization_projectTokenGates_token_network {
@@ -3398,6 +3416,41 @@ export interface JoinProjectWithTokenMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: JoinProjectsWithDiscordRoleMutation
+// ====================================================
+
+export interface JoinProjectsWithDiscordRoleMutation_members_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+}
+
+export interface JoinProjectsWithDiscordRoleMutation_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  project: JoinProjectsWithDiscordRoleMutation_members_project;
+}
+
+export interface JoinProjectsWithDiscordRoleMutation {
+  members: JoinProjectsWithDiscordRoleMutation_members[];
+}
+
+export interface JoinProjectsWithDiscordRoleMutationVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreatePaymentMethodMutation
 // ====================================================
 
@@ -4727,11 +4780,20 @@ export interface CreateProjectsFromNotionMutation_organization_details {
   value: string;
 }
 
+export interface CreateProjectsFromNotionMutation_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface CreateProjectsFromNotionMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: CreateProjectsFromNotionMutation_organization_integrations_discordRoleGates[];
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network {
@@ -4967,11 +5029,20 @@ export interface CreateProjectsFromTrelloMutation_organization_details {
   value: string;
 }
 
+export interface CreateProjectsFromTrelloMutation_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface CreateProjectsFromTrelloMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: CreateProjectsFromTrelloMutation_organization_integrations_discordRoleGates[];
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network {
@@ -5686,11 +5757,20 @@ export interface GetOrganizationQuery_organization_details {
   value: string;
 }
 
+export interface GetOrganizationQuery_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface GetOrganizationQuery_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: GetOrganizationQuery_organization_integrations_discordRoleGates[];
 }
 
 export interface GetOrganizationQuery_organization_projectTokenGates_token_network {
@@ -7916,7 +7996,6 @@ export interface GetDiscordGuildRolesQuery_roles {
   __typename: "DiscordIntegrationRole";
   id: string;
   name: string;
-  integrationId: Scalar.UUID;
 }
 
 export interface GetDiscordGuildRolesQuery {
@@ -9520,6 +9599,23 @@ export interface ProjectTokenGate {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: ProjectDiscordRoleGate
+// ====================================================
+
+export interface ProjectDiscordRoleGate {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Invite
 // ====================================================
 
@@ -9938,7 +10034,6 @@ export interface DiscordIntegrationRole {
   __typename: "DiscordIntegrationRole";
   id: string;
   name: string;
-  integrationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -11371,11 +11466,20 @@ export interface OrganizationDetails_details {
   value: string;
 }
 
+export interface OrganizationDetails_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
 export interface OrganizationDetails_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject;
+  discordRoleGates: OrganizationDetails_integrations_discordRoleGates[];
 }
 
 export interface OrganizationDetails_projectTokenGates_token_network {

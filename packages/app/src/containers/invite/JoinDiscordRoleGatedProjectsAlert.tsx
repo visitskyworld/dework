@@ -1,14 +1,18 @@
 import { Alert, Button, message } from "antd";
 import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import { useOrganization } from "../organization/hooks";
-import { useToggle } from "@dewo/app/util/hooks";
 import { LoginButton } from "../auth/LoginButton";
-import { ProjectTokenGate } from "@dewo/app/graphql/types";
-import { useJoinProjectWithToken } from "./hooks";
+import {
+  ProjectIntegrationType,
+  ThreepidSource,
+} from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import _ from "lodash";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { useJoinProjectsWithDiscordRole } from "./hooks";
+import { ThreepidAuthButton } from "../auth/ThreepidAuthButton";
+import _ from "lodash";
+import { useRouter } from "next/router";
 
 interface Props {
   organizationId: string;
@@ -19,100 +23,96 @@ export const JoinDiscordRoleGatedProjectsAlert: FC<Props> = ({
   organizationId,
   style,
 }) => {
-  const modalVisible = useToggle();
-  const editingProfile = useToggle();
+  const router = useRouter();
   const { user } = useAuthContext();
   const { organization, refetch } = useOrganization(organizationId);
 
-  const tokenGates = useMemo(
+  const projectIdsWithDiscordRoleGates = useMemo(
     () =>
-      organization?.projectTokenGates?.filter((g) => {
-        const project = organization.projects.find((p) => p.id === g.projectId);
-        if (!project) return true;
-        return !project.members.some((m) => m.userId === user?.id);
-      }),
-    [organization?.projectTokenGates, organization?.projects, user?.id]
+      organization?.integrations
+        .map((i) => i.discordRoleGates)
+        .flat()
+        .filter(
+          (g) =>
+            g.type === ProjectIntegrationType.DISCORD_ROLE_GATE && !g.deletedAt
+        )
+        .map((g) => g.projectId),
+    [organization?.integrations]
   );
-  const tokens = useMemo(
+  const canJoinProjectWithDiscordRole = useMemo(
     () =>
-      _(tokenGates)
-        .map((t) => t.token)
-        .uniqBy((t) => t.id)
-        .value(),
-    [tokenGates]
+      !!_.difference(
+        projectIdsWithDiscordRoleGates,
+        organization?.projects.map((p) => p.id) ?? []
+      ).length,
+    [projectIdsWithDiscordRoleGates, organization?.projects]
   );
 
-  const joinProjectWithToken = useJoinProjectWithToken();
-  const verifyProjectsWithToken = useCallback(
-    async (token: ProjectTokenGate["token"]) => {
-      const projectIds =
-        tokenGates
-          ?.filter((t) => t.token.id === token.id)
-          .map((t) => t.projectId) ?? [];
-      try {
-        for (const projectId of projectIds) {
-          const project = await joinProjectWithToken(projectId);
-          message.success(`Joined ${project.name} using ${token.symbol}`);
-        }
-      } finally {
-        await refetch();
-        modalVisible.toggleOff();
+  const isConnectedToDiscord = useMemo(
+    () => !!user?.threepids.some((t) => t.source === ThreepidSource.discord),
+    [user?.threepids]
+  );
+
+  const joinProjectsWithDiscordRole = useJoinProjectsWithDiscordRole();
+  const handleJoin = useCallback(async () => {
+    const projects = await joinProjectsWithDiscordRole(organizationId);
+    if (projects.length) {
+      for (const project of projects) {
+        message.success(`Joined ${project.name}`);
       }
-    },
-    [tokenGates, refetch, joinProjectWithToken, modalVisible]
-  );
+    } else {
+      message.warn("No projects available for you to join at this time!");
+    }
 
-  const handleProfileSaved = useCallback(() => {
-    modalVisible.toggleOn();
-    editingProfile.toggleOff();
-  }, [modalVisible, editingProfile]);
+    await refetch();
+  }, [joinProjectsWithDiscordRole, organizationId, refetch]);
 
   const canAccessAllProjects = usePermission("update", "Project");
-  // if (!tokenGates?.length || canAccessAllProjects !== false) return null;
+  if (canAccessAllProjects || !canJoinProjectWithDiscordRole) {
+    return null;
+  }
 
-  const tokensString = tokens.map((t) => t.symbol).join(", ");
+  const button = (() => {
+    if (!user) {
+      return (
+        <LoginButton
+          type="primary"
+          icon={<DiscordIcon />}
+          onAuthedWithWallet={handleJoin}
+        >
+          Join using Discord roles
+        </LoginButton>
+      );
+    }
+
+    if (!isConnectedToDiscord) {
+      return (
+        <ThreepidAuthButton
+          source={ThreepidSource.discord}
+          type="primary"
+          icon={<DiscordIcon />}
+          state={{ redirect: router.asPath }}
+        >
+          {" "}
+          Join using Discord roles
+        </ThreepidAuthButton>
+      );
+    }
+
+    return (
+      <Button type="primary" icon={<DiscordIcon />} onClick={handleJoin}>
+        Join using Discord roles
+      </Button>
+    );
+  })();
 
   return (
-    <>
-      <Alert
-        message="There are projects that you can access by your Discord role in this DAO's server"
-        type="info"
-        style={style}
-        description={
-          !!user ? (
-            <Button
-              type="primary"
-              icon={<DiscordIcon />}
-              onClick={modalVisible.toggleOn}
-            >
-              Join
-            </Button>
-          ) : (
-            <LoginButton
-              type="primary"
-              icon={<DiscordIcon />}
-              onAuthedWithWallet={editingProfile.toggleOn}
-            >
-              Join
-            </LoginButton>
-          )
-        }
-        showIcon
-      />
-      {/* {!!user && (
-        <JoinTokenGatedProjectsModal
-          tokens={tokens}
-          visible={modalVisible.isOn}
-          onClose={modalVisible.toggleOff}
-          onVerify={verifyProjectsWithToken}
-        />
-      )}
-      {!!user && (
-        <UserProfileFormModal
-          visible={editingProfile.isOn}
-          onDone={handleProfileSaved}
-        />
-      )} */}
-    </>
+    <Alert
+      message="There are projects that are gated by Discord roles from this DAO's server"
+      type="info"
+      style={style}
+      description={button}
+      showIcon
+    />
   );
 };

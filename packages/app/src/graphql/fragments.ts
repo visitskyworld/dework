@@ -178,6 +178,15 @@ export const projectTokenGate = gql`
   ${paymentNetwork}
 `;
 
+export const projectDiscordRoleGate = gql`
+  fragment ProjectDiscordRoleGate on ProjectIntegration {
+    id
+    type
+    deletedAt
+    projectId
+  }
+`;
+
 export const invite = gql`
   fragment Invite on Invite {
     id
@@ -579,6 +588,9 @@ export const organizationDetails = gql`
     }
     integrations {
       ...OrganizationIntegration
+      discordRoleGates: projectIntegrations {
+        ...ProjectDiscordRoleGate
+      }
     }
     projectTokenGates {
       ...ProjectTokenGate
@@ -594,4 +606,5 @@ export const organizationDetails = gql`
   ${entityDetail}
   ${user}
   ${projectTokenGate}
+  ${projectDiscordRoleGate}
 `;

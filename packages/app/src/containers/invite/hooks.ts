@@ -16,6 +16,8 @@ import {
   JoinProjectWithTokenMutation,
   JoinProjectWithTokenMutationVariables,
   Project,
+  JoinProjectsWithDiscordRoleMutation,
+  JoinProjectsWithDiscordRoleMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
@@ -103,6 +105,25 @@ export function useJoinProjectWithToken(): (
       apolloClient.reFetchObservableQueries();
       if (!res.data) throw res.errors?.[0];
       return res.data.member.project;
+    },
+    [mutation, apolloClient]
+  );
+}
+
+export function useJoinProjectsWithDiscordRole(): (
+  organizationId: string
+) => Promise<Project[]> {
+  const [mutation] = useMutation<
+    JoinProjectsWithDiscordRoleMutation,
+    JoinProjectsWithDiscordRoleMutationVariables
+  >(Mutations.joinProjectsWithDiscordRole);
+  const apolloClient = useApolloClient();
+  return useCallback(
+    async (organizationId) => {
+      const res = await mutation({ variables: { organizationId } });
+      apolloClient.reFetchObservableQueries();
+      if (!res.data) throw res.errors?.[0];
+      return res.data.members.map((m) => m.project);
     },
     [mutation, apolloClient]
   );

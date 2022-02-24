@@ -1,3 +1,4 @@
+import { ConnectOrganizationToDiscordButton } from "@dewo/app/containers/integrations/ConnectOrganizationToDiscordButton";
 import {
   ProjectDetails,
   ProjectIntegrationType,
@@ -33,9 +34,9 @@ export const ProjectSettingsDiscordRoleGating: FC<Props> = ({ project }) => {
         steward, depending on their Discord role.
       </Typography.Paragraph>
       {!orgInt ? (
-        <Typography.Paragraph type="secondary">
-          First, connect with Discord. (TODO connect flow...)
-        </Typography.Paragraph>
+        <ConnectOrganizationToDiscordButton
+          organizationId={project.organizationId}
+        />
       ) : (
         <Row style={{ rowGap: 16, width: "100%" }}>
           {projectIntegrations.map((integration) => (

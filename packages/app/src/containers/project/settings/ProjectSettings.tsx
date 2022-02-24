@@ -88,7 +88,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         tab={
           <Tab
             icon={<Icons.SafetyCertificateOutlined />}
-            children="Token Gating"
+            children="Token/Role Gating"
           />
         }
         key="token-gating"

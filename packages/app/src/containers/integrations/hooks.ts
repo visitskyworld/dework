@@ -34,12 +34,12 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
   ProjectRole,
+  DiscordIntegrationRole,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
 import { useOrganization } from "../organization/hooks";
-import { DiscordIntegrationRole } from "../../../../api/src/modules/integrations/discord/dto/DiscordIntegrationRole";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
