@@ -108,6 +108,16 @@ export const InviteMessageToast: FC = () => {
     ]
   );
 
+  const handleCloseDiscordModal = () => {
+    connectDiscordModalVisible.toggleOff();
+
+    if (isTokenGated) {
+      showTokenGateModal();
+    } else {
+      handleAcceptInvite();
+    }
+  };
+
   useEffect(() => {
     if (!invite) return;
 
@@ -163,7 +173,7 @@ export const InviteMessageToast: FC = () => {
       )}
       <ConnectDiscordModal
         visible={connectDiscordModalVisible.isOn}
-        onClose={connectDiscordModalVisible.toggleOff}
+        onClose={handleCloseDiscordModal}
       />
     </>
   );
