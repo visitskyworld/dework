@@ -8,10 +8,12 @@ import { Task } from "@dewo/api/models/Task";
 import { PaymentModule } from "../payment/payment.module";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { TaskNFTResolver } from "./nft.resolver";
+import { TaskModule } from "../task/task.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Task, TaskNFT, PaymentMethod]),
+    TaskModule,
     PermalinkModule,
     PaymentModule,
   ],

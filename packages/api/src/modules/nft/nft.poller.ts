@@ -7,6 +7,7 @@ import {
   Logger,
   NotFoundException,
   Post,
+  Query,
   Res,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -21,6 +22,7 @@ import { Repository } from "typeorm";
 import { DeworkTasksV2 } from "dework-contracts/typechain";
 import { abi as DeworkTasksABI } from "dework-contracts/artifacts/contracts/DeworkTasksV2.sol/DeworkTasksV2.json";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
+import { TaskService } from "../task/task.service";
 
 @Controller("nfts")
 export class NFTPoller {
@@ -29,18 +31,22 @@ export class NFTPoller {
   constructor(
     private readonly service: NFTService,
     private readonly paymentService: PaymentService,
+    private readonly taskService: TaskService,
     private readonly config: ConfigService<ConfigType>,
     @InjectRepository(PaymentMethod)
     private readonly paymentMethodRepo: Repository<PaymentMethod>
   ) {}
 
   @Post("update")
-  public async updateNfts(@Res() res: Response) {
-    const result = await this.poll();
+  public async updateNfts(
+    @Query("taskId") taskId: string,
+    @Res() res: Response
+  ) {
+    const result = await this.poll(taskId);
     res.json({ ok: true, result });
   }
 
-  public async poll(): Promise<{ taskId: string } | undefined> {
+  public async poll(taskId?: string): Promise<{ taskId: string } | undefined> {
     const startedAt = new Date();
     this.logger.log(
       `Polling for tasks to mint: ${JSON.stringify({ startedAt })}`
@@ -48,7 +54,9 @@ export class NFTPoller {
 
     const minter = await this.getMinter();
 
-    const task = await this.service.findNextTaskToMint();
+    const task = !!taskId
+      ? await this.taskService.findById(taskId)
+      : await this.service.findNextTaskToMint();
     if (!!task) {
       this.logger.debug(`Minting NFTs for task: ${JSON.stringify(task)}`);
 
