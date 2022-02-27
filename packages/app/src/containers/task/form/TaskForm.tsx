@@ -50,7 +50,6 @@ import Link from "next/link";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { useProjectTaskTags } from "../../project/hooks";
-import { TaskTwitterShareButton } from "@dewo/app/containers/task/form/TaskTwitterShareButton";
 
 export interface TaskFormValues {
   name: string;
@@ -253,7 +252,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           {!!task && <TaskSubmissionsSection task={task} />}
           <Divider />
           {!!task && <TaskActivityFeed task={task} />}
-          {!!task && <TaskTwitterShareButton task={task} />}
+          {/* {!!task && <TaskTwitterShareButton task={task} />} */}
         </Col>
         <Col xs={24} sm={8} style={{ marginTop: 16 }}>
           <Form.Item
