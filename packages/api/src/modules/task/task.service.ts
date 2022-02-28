@@ -212,6 +212,9 @@ export class TaskService {
     rewardNotNull?: boolean;
     includePrivateProjects?: boolean;
   }): Promise<Task[]> {
+    const filterOutSpam =
+      !projectIds && !organizationIds && !includePrivateProjects;
+
     let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
@@ -250,6 +253,12 @@ export class TaskService {
             })
           );
         })
+      );
+    }
+
+    if (filterOutSpam) {
+      query = query.andWhere(
+        "task.createdAt - project.createdAt > '1 day'::interval"
       );
     }
 
