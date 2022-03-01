@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from "react";
-import { Dropdown, Menu, Modal } from "antd";
+import { Button, Dropdown, Menu, Modal } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -59,12 +59,22 @@ export const HeaderProfileAvatar: FC = () => {
           </Menu>
         }
       >
-        <UserAvatar
-          user={user}
-          size={48}
-          tooltip={{ visible: false }}
-          style={{ cursor: "pointer" }}
-        />
+        <div style={{ position: "relative" }}>
+          <UserAvatar
+            user={user}
+            size={48}
+            tooltip={{ visible: false }}
+            style={{ cursor: "pointer" }}
+          />
+          <Button
+            icon={<Icons.SettingOutlined />}
+            style={{ position: "absolute", right: -4, bottom: -4, margin: 0 }}
+            shape="circle"
+            type="primary"
+            size="small"
+            className="bg-body"
+          />
+        </div>
       </Dropdown>
       <Modal
         visible={userSettings.isOn}
