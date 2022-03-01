@@ -258,7 +258,7 @@ export class TaskService {
 
     if (filterOutSpam) {
       query = query.andWhere(
-        "task.createdAt - project.createdAt > '1 day'::interval"
+        "task.createdAt - project.createdAt > '2 hours'::interval"
       );
     }
 
