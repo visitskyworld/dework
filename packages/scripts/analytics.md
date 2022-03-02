@@ -85,3 +85,13 @@ INNER JOIN payment_method_network pmn ON pmn."paymentMethodId" = pm.id AND pmn."
   AND payment.status = 'PROCESSING'
 ORDER BY payment."createdAt" ASC
 ```
+
+## List projects by most recently created task
+```sql
+select max(task."createdAt"), project.id, project.name, organization.id, organization."name"
+from project
+inner join task on project.id = task."projectId"
+inner join organization on organization.id = project."organizationId"
+group by project.id, organization."name"
+order by max(task."createdAt") desc
+```

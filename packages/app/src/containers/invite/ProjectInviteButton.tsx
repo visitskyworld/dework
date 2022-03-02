@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu, Tooltip } from "antd";
+import { Button, Dropdown, Menu, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback, useState } from "react";
 import { useCreateProjectInvite } from "./hooks";
@@ -64,8 +64,19 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
               <Menu.Item onClick={inviteProjectContributor}>
                 Invite Contributors
                 <Tooltip
-                  title="Project Contributors see private projects, can apply to tasks, manage tasks they're assigned to or reviewing, invite other contributors, create and vote on community suggestions"
                   placement="right"
+                  title={
+                    <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                      {[
+                        "Project Contributors can:",
+                        "- see private projects",
+                        "- apply to tasks",
+                        "- manage tasks they're assigned to or reviewing",
+                        "- invite contributors",
+                        "- create and vote on community suggestions",
+                      ].join("\n")}
+                    </Typography.Text>
+                  }
                 >
                   <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
                 </Tooltip>
@@ -73,8 +84,18 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
               <Menu.Item onClick={inviteProjectAdmin}>
                 Invite Project Steward(s)
                 <Tooltip
-                  title="Project Stewards can manage tasks, task applications, task submissions, project settings, and invite other stewards and contributors"
                   placement="right"
+                  title={
+                    <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                      {[
+                        "Project Stewards can:",
+                        "- do everything Contributors can",
+                        "- manage all tasks, applications, submissions",
+                        "- manage project settings",
+                        "- invite stewards and contributors",
+                      ].join("\n")}
+                    </Typography.Text>
+                  }
                 >
                   <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
                 </Tooltip>
