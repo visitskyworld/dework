@@ -25,6 +25,7 @@ const Page: NextPage = () => {
 
   const canEditProject = usePermission("update", "Project");
   const projectId = useParseIdFromSlug("projectSlug");
+  const organizationId = useParseIdFromSlug("organizationSlug");
   const { project, error } = useProject(projectId);
 
   const navigateToTab = useCallback(
@@ -41,7 +42,7 @@ const Page: NextPage = () => {
     [project]
   );
 
-  if (!projectId) {
+  if (!projectId || !organizationId) {
     router.replace("/");
     return null;
   }
@@ -50,7 +51,7 @@ const Page: NextPage = () => {
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <ProjectHeader projectId={projectId} />
+        <ProjectHeader projectId={projectId} organizationId={organizationId} />
         <Layout.Content style={{ flex: 1 }}>
           <TaskFilterProvider>
             <Tabs

@@ -19,12 +19,14 @@ import { ProjectVisibility } from "@dewo/app/graphql/types";
 import { useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
+import { DiscordRoleGatingJoinButton } from "../../invite/DiscordRoleGatingJoinButton";
 
 interface Props {
   projectId: string;
+  organizationId: string;
 }
 
-export const ProjectHeader: FC<Props> = ({ projectId }) => {
+export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const { organization } = useOrganization(project?.organizationId);
   const canEdit = usePermission("update", "Project");
@@ -123,6 +125,13 @@ export const ProjectHeader: FC<Props> = ({ projectId }) => {
             <FollowOrganizationButton
               organizationId={project?.organizationId}
             />
+            <DiscordRoleGatingJoinButton
+              type="ghost"
+              organizationId={organizationId}
+              projectId={projectId}
+            >
+              Join using Discord
+            </DiscordRoleGatingJoinButton>
           </Space>
         )
       }

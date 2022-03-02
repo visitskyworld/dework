@@ -1002,7 +1002,10 @@ export class DiscordIntegrationService {
       .getClient(integration)
       .guilds.fetch(integration.config.guildId);
     await guild.roles.fetch(undefined, { force: true });
-    const discordMember = await guild.members.fetch(discordId);
+    const discordMember = await guild.members.fetch({
+      user: discordId,
+      force: true,
+    });
     this.logger.debug(
       `Found discord member: ${JSON.stringify({ id: discordMember.id })}`
     );
