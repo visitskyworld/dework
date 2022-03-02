@@ -1,5 +1,5 @@
 import { Dropdown, InputNumber, Menu } from "antd";
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 
 interface Props {
   disabled?: boolean;
@@ -35,7 +35,11 @@ export const StoryPointsInput: FC<Props> = ({ disabled, value, onChange }) => (
       style={{ width: "100%" }}
       placeholder="Estimate task size in hours"
       value={value}
-      onChange={onChange}
+      onChange={useCallback(
+        (value) =>
+          onChange?.(typeof value === "number" ? Math.ceil(value) : undefined),
+        [onChange]
+      )}
     />
   </Dropdown>
 );
