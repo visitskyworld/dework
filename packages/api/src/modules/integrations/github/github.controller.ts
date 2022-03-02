@@ -211,7 +211,11 @@ export class GithubController {
 
         this.log("Updated PR's status", { title: pr.title, status });
 
-        if (merged) {
+        const subtasks = await task.subtasks;
+        const everySubtaskDone = subtasks.every(
+          (subTask) => subTask.status === TaskStatus.DONE
+        );
+        if (merged && everySubtaskDone) {
           await this.taskService.update({
             id: task.id,
             status: TaskStatus.DONE,
