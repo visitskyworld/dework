@@ -1,5 +1,7 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import _ from "lodash";
 import faker from "faker";
+import { DeepPartial } from "typeorm";
 
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { WebhookTestClient } from "@dewo/api/testing/WebhookTestClient";
@@ -7,9 +9,7 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestStatus } from "@dewo/api/models/GithubPullRequest";
 import * as Github from "@octokit/webhooks-types";
-import { DeepPartial } from "typeorm";
 import { TaskTagSource } from "@dewo/api/models/TaskTag";
-import _ from "lodash";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -58,7 +58,35 @@ describe("GithubController", () => {
       expect(branchFromDb?.name).toEqual(branchName);
     });
 
-    it("should update a task's status to done when a PR is merged", async () => {
+    it("should update a task's status to IN_PROGRESS when its branch is created", async () => {
+      const { project, github } =
+        await fixtures.createProjectWithGithubIntegration();
+      const task = await fixtures.createTask({
+        projectId: project.id,
+        status: TaskStatus.TODO,
+      });
+      const branchName = `username/dw-${task.number}/feature`;
+
+      await client.request<DeepPartial<Github.PushEvent>>({
+        app,
+        body: {
+          ref: branchName,
+          commits: [],
+          installation: { id: github.installationId },
+          repository: {
+            name: github.repo,
+            owner: { login: github.organization },
+          },
+        },
+      });
+      const branchFromDb = await fixtures.getGithubBranchbyName(branchName);
+      const taskFromDb = await fixtures.getTask(task.id);
+
+      expect(branchFromDb?.name).toEqual(branchName);
+      expect(taskFromDb?.status).toEqual(TaskStatus.IN_PROGRESS);
+    });
+
+    it("should update a task's status to DONE when its PR is merged", async () => {
       const { project, github } =
         await fixtures.createProjectWithGithubIntegration();
       const task = await fixtures.createTask({

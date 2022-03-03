@@ -105,7 +105,6 @@ export class GithubController {
 
     if (
       "ref" in event &&
-      "installation" in event &&
       integration.config.features.includes(
         GithubProjectIntegrationFeature.SHOW_BRANCHES
       )
@@ -142,8 +141,6 @@ export class GithubController {
             deletedAt: null!,
           });
         }
-
-        await this.triggerTaskUpdatedSubscription(task.id);
       } else {
         await this.githubService.createBranch({
           name: branchName,
@@ -157,7 +154,18 @@ export class GithubController {
           repo,
           githubOrganizationSlug,
         });
+      }
 
+      if (task.status === TaskStatus.TODO) {
+        await this.taskService.update({
+          id: task.id,
+          status: TaskStatus.IN_PROGRESS,
+        });
+        this.log("Moving task into IN_PROGRESS", {
+          id: task.id,
+          name: task.name,
+        });
+      } else {
         await this.triggerTaskUpdatedSubscription(task.id);
       }
     }
