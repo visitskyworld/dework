@@ -10,6 +10,7 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import removeMarkdown from "remove-markdown";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 type ProjectRow = GetFeaturedProjectsQuery["projects"][number];
 
@@ -44,7 +45,7 @@ export const ProjectDiscoveryList: FC = () => {
                 width: 64 + 8 * 2,
                 render: (_: unknown, project) => (
                   <Link href={project.organization.permalink}>
-                    <a>
+                    <a onClick={stopPropagation}>
                       <OrganizationAvatar
                         organization={project.organization}
                         size={64}

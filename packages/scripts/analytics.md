@@ -95,3 +95,12 @@ inner join organization on organization.id = project."organizationId"
 group by project.id, organization."name"
 order by max(task."createdAt") desc
 ```
+
+## Manually find a task's payment (e.g. to manually mark it as confirmed)
+```sql
+select payment.*
+from payment
+inner join task_reward on task_reward."paymentId" = payment.id
+inner join task on task."rewardId" = task_reward.id
+where task.id = '87cc9bd0-f887-4840-9de7-e3bdb2672d99'
+```

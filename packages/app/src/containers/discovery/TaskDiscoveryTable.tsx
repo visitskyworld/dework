@@ -1,5 +1,6 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TaskReward, TaskWithOrganization } from "@dewo/app/graphql/types";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Table, Typography } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
@@ -41,7 +42,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
           width: 64 + 8 * 2,
           render: (_: unknown, task: TaskWithOrganization) => (
             <Link href={task.project.organization.permalink}>
-              <a>
+              <a onClick={stopPropagation}>
                 <OrganizationAvatar
                   organization={task.project.organization}
                   size={64}
