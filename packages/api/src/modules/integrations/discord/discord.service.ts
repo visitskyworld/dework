@@ -39,9 +39,23 @@ export class DiscordService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    await this.mainClient.login(this.config.get("MAIN_DISCORD_BOT_TOKEN"));
-    await this.tempClient.login(this.config.get("TEMP_DISCORD_BOT_TOKEN"));
-    await this.temp2Client.login(this.config.get("TEMP2_DISCORD_BOT_TOKEN"));
+    const mainBotToken = this.config.get("MAIN_DISCORD_BOT_TOKEN");
+    const tempBotToken = this.config.get("TEMP_DISCORD_BOT_TOKEN");
+    const temp2BotToken = this.config.get("TEMP2_DISCORD_BOT_TOKEN");
+
+    await this.mainClient.login(mainBotToken);
+
+    if (mainBotToken === tempBotToken) {
+      this.tempClient = this.mainClient;
+    } else {
+      await this.tempClient.login(tempBotToken);
+    }
+
+    if (mainBotToken === temp2BotToken) {
+      this.temp2Client = this.mainClient;
+    } else {
+      await this.temp2Client.login(temp2BotToken);
+    }
   }
 
   public async getChannels(
