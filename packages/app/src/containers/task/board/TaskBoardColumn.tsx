@@ -75,7 +75,7 @@ export const TaskBoardColumn: FC<Props> = ({
           </Can>
         )
       }
-      style={{ width }}
+      style={{ width, backgroundColor: "#1B1D4B" }}
       className="dewo-task-board-column"
     >
       {!!projectId && (
@@ -92,11 +92,17 @@ export const TaskBoardColumn: FC<Props> = ({
           !section.hidden && (
             <div key={index}>
               {!!section.title && (
-                <Row align="middle">
-                  <TaskSectionTitle
-                    title={section.title}
-                    style={index !== 0 ? { paddingTop: 8 } : undefined}
-                  />
+                <Row
+                  align="middle"
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "#1B1D4B",
+                    zIndex: 1,
+                    paddingTop: 8,
+                  }}
+                >
+                  <TaskSectionTitle title={section.title} />
                   {section.button}
                 </Row>
               )}
@@ -120,7 +126,7 @@ export const TaskBoardColumn: FC<Props> = ({
                     style={{
                       ...provided.droppableProps,
                       // minHeight: 90,
-                      paddingTop: 4,
+                      paddingTop: 8,
                     }}
                   >
                     {section.tasks.map((task, index) => (
