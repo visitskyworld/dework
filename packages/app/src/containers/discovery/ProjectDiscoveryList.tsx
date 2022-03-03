@@ -122,8 +122,10 @@ export const ProjectDiscoveryList: FC = () => {
                       title: "Tasks",
                       width: 140,
                       defaultSortOrder: "descend" as "descend",
+                      showSorterTooltip: false,
                       sorter: (a: ProjectRow, b: ProjectRow) =>
-                        a.taskCount - b.taskCount,
+                        5 * (a.members.length - b.members.length) +
+                        1 * (a.taskCount - b.taskCount),
                       render: (_: unknown, project: ProjectRow) => (
                         <Tag color="green" icon={<Icons.CheckOutlined />}>
                           {project.taskCount} tasks

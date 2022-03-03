@@ -185,8 +185,9 @@ export class ProjectService {
     const projectsWithTaskCount = await this.projectRepo
       .createQueryBuilder("project")
       .innerJoinAndSelect("project.organization", "organization")
-      .addSelect("COUNT(task.id)", "project_taskCount")
+      .addSelect("COUNT(DISTINCT task.id)", "project_taskCount")
       .leftJoin("project.tasks", "task")
+      .leftJoin("project.members", "member", "member.projectId = project.id")
       .where("project.visibility = :public", {
         public: ProjectVisibility.PUBLIC,
       })
@@ -198,7 +199,8 @@ export class ProjectService {
       .andWhere("LOWER(organization.name) NOT LIKE '%demo%'")
       .andWhere("LOWER(organization.name) NOT LIKE '%dework%'")
       .groupBy("project.id, organization.id")
-      .having("COUNT(task.id) >= 10")
+      .having("COUNT(DISTINCT task.id) >= 10")
+      .andHaving("COUNT(DISTINCT member.userId) > 1")
       .getRawMany();
     const projects = await this.projectRepo
       .createQueryBuilder("project")

@@ -4,7 +4,7 @@ import React, { FC, useCallback } from "react";
 interface Props {
   disabled?: boolean;
   value?: number;
-  onChange?(value: number | undefined): void;
+  onChange?(value: number | null): void;
 }
 
 export const StoryPointsInput: FC<Props> = ({ disabled, value, onChange }) => (
@@ -37,7 +37,7 @@ export const StoryPointsInput: FC<Props> = ({ disabled, value, onChange }) => (
       value={value}
       onChange={useCallback(
         (value) =>
-          onChange?.(typeof value === "number" ? Math.ceil(value) : undefined),
+          onChange?.(typeof value === "number" ? Math.ceil(value) : null),
         [onChange]
       )}
     />
