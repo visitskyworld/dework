@@ -127,7 +127,7 @@ export class NotionImportService {
           : "";
       const project = await this.projectService.create(
         { organizationId, name: projectName },
-        user
+        user.id
       );
       const tags = await this.createTags(database, project.id);
 

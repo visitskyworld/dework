@@ -87,7 +87,7 @@ export class ProjectResolver {
     @Context("user") user: User,
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
-    return this.projectService.create(input, user);
+    return this.projectService.create(input, user.id);
   }
 
   @Mutation(() => Project)

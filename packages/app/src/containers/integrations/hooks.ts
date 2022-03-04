@@ -35,6 +35,9 @@ import {
   OrganizationIntegrationType,
   ProjectRole,
   DiscordIntegrationRole,
+  CreateProjectsFromGithubInput,
+  CreateProjectsFromGithubMutation,
+  CreateProjectsFromGithubMutationVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -58,21 +61,34 @@ export enum GithubProjectIntegrationFeature {
 
 export function useConnectToGithubUrl(
   organizationId: string,
-  stateOverride?: unknown
+  stateOverride?: object
 ): string {
-  const { user } = useAuthContext();
-  return useMemo(() => {
-    const appUrl = typeof window !== "undefined" ? window.location.href : "";
-    const state = JSON.stringify({
-      appUrl,
-      creatorId: user?.id,
-      organizationId,
-      // @ts-ignore
-      ...stateOverride,
-    });
+  const fn = useConnectToGithubUrlFn();
+  return useMemo(
+    () => fn(organizationId, stateOverride),
+    [fn, organizationId, stateOverride]
+  );
+}
 
-    return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
-  }, [organizationId, stateOverride, user?.id]);
+export function useConnectToGithubUrlFn(): (
+  organizationId: string,
+  stateOverride?: object
+) => string {
+  const { user } = useAuthContext();
+  return useCallback(
+    (organizationId, stateOverride) => {
+      const appUrl = typeof window !== "undefined" ? window.location.href : "";
+      const state = JSON.stringify({
+        appUrl,
+        creatorId: user?.id,
+        organizationId,
+        ...stateOverride,
+      });
+
+      return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
+    },
+    [user?.id]
+  );
 }
 
 export function useCreateProjectIntegration(): (
@@ -224,6 +240,22 @@ export function useCreateProjectsFromTrello(): (
     CreateProjectsFromTrelloMutation,
     CreateProjectsFromTrelloMutationVariables
   >(Mutations.createProjectsFromTrello);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useCreateProjectsFromGithub(): (
+  input: CreateProjectsFromGithubInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateProjectsFromGithubMutation,
+    CreateProjectsFromGithubMutationVariables
+  >(Mutations.createProjectsFromGithub);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });

@@ -10,12 +10,17 @@ import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { GithubIntegrationService } from "./github.integration.service";
 import { ProjectService } from "../../project/project.service";
+import { Organization } from "@dewo/api/models/Organization";
+import { OrganizationRolesGuard } from "../../organization/organization.roles.guard";
+import { CreateProjectsFromGithubInput } from "./dto/CreateProjectsFromGithubInput";
+import { OrganizationService } from "../../organization/organization.service";
 
 @Injectable()
 export class GithubResolver {
   constructor(
     private readonly githubIntegrationService: GithubIntegrationService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly organizationService: OrganizationService
   ) {}
 
   // TODO(fant): do we want to make sure the requesting user is an org admin?
@@ -41,5 +46,22 @@ export class GithubResolver {
       !!organization && !!repo ? { organization, repo } : undefined
     );
     return this.projectService.findById(projectId) as Promise<Project>;
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, Project)
+  public async createProjectsFromGithub(
+    @Context("user") user: User,
+    @Args("input") input: CreateProjectsFromGithubInput
+  ): Promise<Organization> {
+    await this.githubIntegrationService.createProjectsFromRepos(
+      input.organizationId,
+      user.id,
+      input.repoIds
+    );
+    return this.organizationService.findById(
+      input.organizationId
+    ) as Promise<Organization>;
   }
 }

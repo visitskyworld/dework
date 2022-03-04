@@ -78,7 +78,7 @@ export const ProductSection: FC<Props> = () => {
                 loginModal.toggleOn();
               }}
             >
-              Import Notion/Trello board
+              Import from Notion/Trello/Github
             </Button>
           </Space>
         </Space>

@@ -129,7 +129,7 @@ export class Fixtures {
         organizationId: organization.id,
         ...partialProject,
       },
-      creator
+      creator.id
     );
 
     if (!members) return project;

@@ -107,7 +107,7 @@ export class TrelloImportService {
           : ProjectVisibility.PUBLIC;
       const project = await this.projectService.create(
         { organizationId, name, description, visibility },
-        user
+        user.id
       );
       this.logger.debug(
         `Created project: ${JSON.stringify({

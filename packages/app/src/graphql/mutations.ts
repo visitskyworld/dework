@@ -654,6 +654,18 @@ export const createProjectsFromTrello = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const createProjectsFromGithub = gql`
+  mutation CreateProjectsFromGithubMutation(
+    $input: CreateProjectsFromGithubInput!
+  ) {
+    organization: createProjectsFromGithub(input: $input) {
+      ...OrganizationDetails
+    }
+  }
+
+  ${Fragments.organizationDetails}
+`;
+
 export const addUserToDiscordGuild = gql`
   mutation AddUserToDiscordGuildMutation($organizationId: UUID!) {
     added: addUserToDiscordGuild(organizationId: $organizationId)

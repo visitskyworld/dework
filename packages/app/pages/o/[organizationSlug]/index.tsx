@@ -14,10 +14,12 @@ import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectC
 import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/ImportProjectsFromNotionModal";
 import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/ImportProjectsFromTrelloModal";
 import { OrganizationSeo } from "@dewo/app/containers/seo/OrganizationSeo";
+import { ImportProjectsFromGithubModal } from "@dewo/app/containers/integrations/ImportProjectsFromGithubModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = (router.query.tab as string | undefined) ?? "overview";
+  const importSource = router.query.importSource as string | undefined;
   const settingsTab = router.query.settingsTab as string | undefined;
   const organizationId = useParseIdFromSlug("organizationSlug");
   const { organization } = useOrganization(organizationId);
@@ -69,18 +71,24 @@ const Page: NextPage = () => {
         onCreated={navigateToProject}
         onCancel={router.back}
       />
-      {!!router.query.threepidId && router.route.endsWith("/notion-import") && (
+      {!!router.query.threepidId && importSource === "notion" && (
         <ImportProjectsFromNotionModal
           visible
           organizationId={organizationId}
           threepidId={router.query.threepidId as string}
         />
       )}
-      {!!router.query.threepidId && router.route.endsWith("/trello-import") && (
+      {!!router.query.threepidId && importSource === "trello" && (
         <ImportProjectsFromTrelloModal
           visible
           organizationId={organizationId}
           threepidId={router.query.threepidId as string}
+        />
+      )}
+      {importSource === "github" && (
+        <ImportProjectsFromGithubModal
+          visible
+          organizationId={organizationId}
         />
       )}
 

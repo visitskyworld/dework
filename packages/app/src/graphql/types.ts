@@ -5109,6 +5109,255 @@ export interface CreateProjectsFromTrelloMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateProjectsFromGithubMutation
+// ====================================================
+
+export interface CreateProjectsFromGithubMutation_organization_projects_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: CreateProjectsFromGithubMutation_organization_projects_members_user;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: CreateProjectsFromGithubMutation_organization_projects_paymentMethods_networks[];
+  tokens: CreateProjectsFromGithubMutation_organization_projects_paymentMethods_tokens[];
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_integrations {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  config: Scalar.JSONObject;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromGithubMutation_organization_projects_tokenGates_token_network;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromGithubMutation_organization_projects_tokenGates_token;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  visibility: ProjectVisibility;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sortKey: string;
+  sectionId: string | null;
+  taskCount: number;
+  options: CreateProjectsFromGithubMutation_organization_projects_options | null;
+  doneTaskCount: number;
+  openBountyTaskCount: number;
+  members: CreateProjectsFromGithubMutation_organization_projects_members[];
+  paymentMethods: CreateProjectsFromGithubMutation_organization_projects_paymentMethods[];
+  integrations: CreateProjectsFromGithubMutation_organization_projects_integrations[];
+  tokenGates: CreateProjectsFromGithubMutation_organization_projects_tokenGates[];
+  organization: CreateProjectsFromGithubMutation_organization_projects_organization;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: CreateProjectsFromGithubMutation_organization_members_user;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_integrations_discordRoleGates {
+  __typename: "ProjectIntegration";
+  id: Scalar.UUID;
+  type: string;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject;
+  discordRoleGates: CreateProjectsFromGithubMutation_organization_integrations_discordRoleGates[];
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projectTokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projectTokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: CreateProjectsFromGithubMutation_organization_projectTokenGates_token_network;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_projectTokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  projectId: string;
+  token: CreateProjectsFromGithubMutation_organization_projectTokenGates_token;
+}
+
+export interface CreateProjectsFromGithubMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+  tagline: string | null;
+  description: string | null;
+  projects: CreateProjectsFromGithubMutation_organization_projects[];
+  projectSections: CreateProjectsFromGithubMutation_organization_projectSections[];
+  members: CreateProjectsFromGithubMutation_organization_members[];
+  tags: CreateProjectsFromGithubMutation_organization_tags[];
+  details: CreateProjectsFromGithubMutation_organization_details[];
+  integrations: CreateProjectsFromGithubMutation_organization_integrations[];
+  projectTokenGates: CreateProjectsFromGithubMutation_organization_projectTokenGates[];
+}
+
+export interface CreateProjectsFromGithubMutation {
+  organization: CreateProjectsFromGithubMutation_organization;
+}
+
+export interface CreateProjectsFromGithubMutationVariables {
+  input: CreateProjectsFromGithubInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: AddUserToDiscordGuildMutation
 // ====================================================
 
@@ -11714,6 +11963,11 @@ export interface CreateProjectIntegrationInput {
 export interface CreateProjectSectionInput {
   name: string;
   organizationId: Scalar.UUID;
+}
+
+export interface CreateProjectsFromGithubInput {
+  organizationId: Scalar.UUID;
+  repoIds: string[];
 }
 
 export interface CreateProjectsFromNotionInput {

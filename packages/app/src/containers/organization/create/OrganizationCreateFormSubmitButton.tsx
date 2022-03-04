@@ -8,12 +8,12 @@ import {
   Tag,
   Typography,
 } from "antd";
+import * as Icons from "@ant-design/icons";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 
 export interface OrganizationCreateFormSubmitButtonOptions {
-  importFromNotion?: boolean;
-  importFromTrello?: boolean;
+  import?: "notion" | "trello" | "github";
 }
 
 export interface OrganizationCreateFormSubmitButtonProps
@@ -33,17 +33,24 @@ export const OrganizationCreateFormSubmitButton: FC<
         <Typography.Text type="secondary">
           Do you want to move over existing projects and tasks?
         </Typography.Text>
-        <Menu.Item onClick={() => props.onClick({ importFromNotion: true })}>
+        <Menu.Item onClick={() => props.onClick({ import: "notion" })}>
           <Space>
             <NotionIcon />
             Import tasks from Notion
             <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>
-        <Menu.Item onClick={() => props.onClick({ importFromTrello: true })}>
+        <Menu.Item onClick={() => props.onClick({ import: "trello" })}>
           <Space>
             <TrelloIcon />
             Import tasks from Trello
+            <Tag color="green">New</Tag>
+          </Space>
+        </Menu.Item>
+        <Menu.Item onClick={() => props.onClick({ import: "github" })}>
+          <Space>
+            <Icons.GithubOutlined />
+            Import tasks from Github
             <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>

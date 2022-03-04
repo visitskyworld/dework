@@ -25,7 +25,7 @@ export const ProjectListEmpty: FC<Props> = ({ organizationId }) => {
               </a>
             </Link>
             <CreateProjectButton organizationId={organizationId} mode="import">
-              Import from Notion/Trello
+              Import from Notion/Trello/Github
             </CreateProjectButton>
           </Space>
         }

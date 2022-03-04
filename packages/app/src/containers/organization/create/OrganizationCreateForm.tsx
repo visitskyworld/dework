@@ -11,6 +11,7 @@ import {
 import { Constants } from "@dewo/app/util/constants";
 import { useRouter } from "next/router";
 import { useCreateProject } from "../../project/hooks";
+import { useConnectToGithubUrlFn } from "../../integrations/hooks";
 
 interface OrganizationCreateFormProps {
   onCreated(organization: Organization): unknown;
@@ -29,6 +30,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
   const [form] = useForm<FormValues>();
   const createOrganization = useCreateOrganization();
   const createProject = useCreateProject();
+  const createConnectToGithubUrl = useConnectToGithubUrlFn();
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -40,26 +42,37 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
           name: values.name,
         });
 
-        if (!!values.importFromNotion) {
-          const url = `${
-            Constants.GRAPHQL_API_URL
-          }/auth/notion?state=${JSON.stringify({
-            redirect: `${organization.permalink}/notion-import`,
-          })}`;
-          window.location.href = url;
-        } else if (!!values.importFromTrello) {
-          const url = `${
-            Constants.GRAPHQL_API_URL
-          }/auth/trello?state=${JSON.stringify({
-            redirect: `${organization.permalink}/trello-import`,
-          })}`;
-          window.location.href = url;
-        } else {
-          const project = await createProject({
-            name: "Main Project",
-            organizationId: organization.id,
-          });
-          await router.push(project.permalink);
+        switch (values.import) {
+          case "github":
+            window.location.href = createConnectToGithubUrl(organization.id, {
+              appUrl: `${organization.permalink}/import/github`,
+            });
+            break;
+          case "notion": {
+            const url = `${
+              Constants.GRAPHQL_API_URL
+            }/auth/notion?state=${JSON.stringify({
+              redirect: `${organization.permalink}/import/notion`,
+            })}`;
+            window.location.href = url;
+            break;
+          }
+          case "trello": {
+            const url = `${
+              Constants.GRAPHQL_API_URL
+            }/auth/trello?state=${JSON.stringify({
+              redirect: `${organization.permalink}/import/trello`,
+            })}`;
+            window.location.href = url;
+            break;
+          }
+          default:
+            const project = await createProject({
+              name: "Main Project",
+              organizationId: organization.id,
+            });
+            await router.push(project.permalink);
+            break;
         }
 
         await onCreated(organization);
@@ -67,7 +80,13 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
         setLoading(false);
       }
     },
-    [createOrganization, createProject, onCreated, router]
+    [
+      createOrganization,
+      createProject,
+      createConnectToGithubUrl,
+      onCreated,
+      router,
+    ]
   );
 
   const handleClickSubmit = useCallback(
@@ -104,8 +123,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
           placeholder="Enter organization name..."
         />
       </Form.Item>
-      <Form.Item name="importFromNotion" hidden />
-      <Form.Item name="importFromTrello" hidden />
+      <Form.Item name="import" hidden />
 
       {renderSubmitButton?.({
         type: "primary",

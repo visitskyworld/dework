@@ -5,7 +5,7 @@ import * as Colors from "@ant-design/colors";
 import NearestColor from "nearest-color";
 import { TaskService } from "../../task/task.service";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
-import { Project } from "@dewo/api/models/Project";
+import { Project, ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
 import { IntegrationService } from "../integration.service";
@@ -19,6 +19,7 @@ import {
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
 import {
+  GithubProjectIntegrationConfig,
   GithubProjectIntegrationFeature,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
@@ -254,6 +255,71 @@ export class GithubIntegrationService {
         project,
         { creatorId: userId }
       );
+    }
+  }
+
+  public async createProjectsFromRepos(
+    organizationId: string,
+    userId: string,
+    repoIds: string[]
+  ): Promise<void> {
+    this.logger.log(
+      `Starting Github import: ${JSON.stringify({
+        repoIds,
+        organizationId,
+        userId,
+      })}`
+    );
+
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.GITHUB
+      );
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const client = this.createClient(integration.config.installationId);
+    const res = await client.apps.listReposAccessibleToInstallation();
+    const repos = repoIds.map((repoId) =>
+      res.data.repositories.find((r) => r.node_id === repoId)
+    );
+
+    for (const repo of repos) {
+      if (!repo) continue;
+
+      this.logger.debug(`Import Github repo: ${JSON.stringify(repo)}`);
+
+      const project = await this.projectService.create(
+        {
+          organizationId,
+          name: repo.name,
+          description: repo.description ?? undefined,
+          visibility: repo.private
+            ? ProjectVisibility.PRIVATE
+            : ProjectVisibility.PUBLIC,
+        },
+        userId
+      );
+
+      const config: GithubProjectIntegrationConfig = {
+        repo: repo.name,
+        organization: repo.owner.login,
+        features: [
+          GithubProjectIntegrationFeature.SHOW_BRANCHES,
+          GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+        ],
+      };
+      await this.integrationService.createProjectIntegration({
+        projectId: project.id,
+        creatorId: userId,
+        organizationIntegrationId: integration.id,
+        type: ProjectIntegrationType.GITHUB,
+        config,
+      });
+
+      await this.createTasksFromGithubIssues(project.id, userId);
     }
   }
 

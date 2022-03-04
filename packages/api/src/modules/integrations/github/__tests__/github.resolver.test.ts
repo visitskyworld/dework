@@ -1,4 +1,5 @@
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
+import { ProjectVisibility } from "@dewo/api/models/Project";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -118,6 +119,45 @@ describe("GithubResolver", () => {
         const openTag = openTask.tags.find((t: any) => t.label === label);
         const closedTag = closedTask.tags.find((t: any) => t.label === label);
         expect(openTag.id).toEqual(closedTag.id);
+      });
+    });
+
+    describe("createProjectsFromGithub", () => {
+      it("imports correctly", async () => {
+        const user = await fixtures.createUser();
+        const organization = await fixtures.createOrganization({}, user);
+        await fixtures.createOrganizationIntegration({
+          organizationId: organization.id,
+          type: OrganizationIntegrationType.GITHUB,
+          config: { installationId },
+        });
+
+        const repoIds = await client
+          .request({ app, body: GithubRequests.getRepos(organization.id) })
+          .then((res) =>
+            res.body.data.repos
+              .filter((r: any) => r.name === githubRepo)
+              .map((r: any) => r.id)
+          );
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: GithubRequests.createProjectsFromGithub({
+            repoIds,
+            organizationId: organization.id,
+          }),
+        });
+
+        expect(response.statusCode).toEqual(HttpStatus.OK);
+
+        const projects = response.body.data?.organization.projects;
+        expect(projects).toContainEqual(
+          expect.objectContaining({
+            name: githubRepo,
+            description: null,
+            visibility: ProjectVisibility.PRIVATE,
+          })
+        );
       });
     });
   });

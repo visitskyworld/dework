@@ -39,7 +39,7 @@ export class ProjectService {
 
   public async create(
     partial: DeepPartial<Project>,
-    creator: User
+    creatorId: string
   ): Promise<Project> {
     const created = await this.projectRepo.save({
       ...partial,
@@ -47,7 +47,7 @@ export class ProjectService {
     });
     await this.upsertMember({
       projectId: created.id,
-      userId: creator.id,
+      userId: creatorId,
       role: ProjectRole.ADMIN,
     });
     return this.projectRepo.findOne(created.id) as Promise<Project>;

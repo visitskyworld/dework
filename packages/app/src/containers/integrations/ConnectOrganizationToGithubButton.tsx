@@ -5,7 +5,7 @@ import { useConnectToGithubUrl } from "./hooks";
 
 export interface ConnectOrganizationToGithubProps {
   organizationId: string;
-  stateOverride?: unknown;
+  stateOverride?: object;
 }
 
 export const ConnectOrganizationToGithubButton: FC<
