@@ -51,8 +51,11 @@ export class ProjectResolver {
   ) {}
 
   @ResolveField(() => String)
-  public permalink(@Parent() project: Project): Promise<string> {
-    return this.permalinkService.get(project);
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() project: Project
+  ): Promise<string> {
+    return this.permalinkService.get(project, origin);
   }
 
   @ResolveField(() => [PaymentMethod])

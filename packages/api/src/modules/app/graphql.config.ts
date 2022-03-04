@@ -13,6 +13,7 @@ import { Roles } from "./app.roles";
 
 export interface GQLContext {
   req: Request;
+  origin: string;
   user?: User;
   caslUser?: AuthorizableUser<Roles, string | undefined>;
 }
@@ -122,7 +123,8 @@ export class GraphQLConfig implements GqlOptionsFactory {
           },
         },
       ],
-      context: async ({ req }): Promise<Promise<GQLContext>> => {
+      context: async ({ req }): Promise<GQLContext> => {
+        const origin = req.headers.origin;
         const user = await (async () => {
           const authToken = getAuthToken(req);
           if (!authToken) return undefined;
@@ -146,7 +148,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
 
         req.user = user;
         req.caslUser = caslUser;
-        return { req, user, caslUser };
+        return { req, origin, user, caslUser };
       },
       // subscriptions: {
       //   "subscriptions-transport-ws": true,

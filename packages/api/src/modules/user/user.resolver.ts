@@ -38,8 +38,11 @@ export class UserResolver {
   ) {}
 
   @ResolveField(() => String)
-  public permalink(@Parent() user: User): Promise<string> {
-    return this.permalinkService.get(user);
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() user: User
+  ): Promise<string> {
+    return this.permalinkService.get(user, origin);
   }
 
   @ResolveField(() => [PaymentMethod])

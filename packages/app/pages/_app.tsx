@@ -31,6 +31,7 @@ import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
+import absoluteUrl from "next-absolute-url";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -46,6 +47,7 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
 Sentry.init({ dsn: Constants.SENTRY_DSN, environment: Constants.ENVIRONMENT });
 
 interface AuthProps {
+  origin: string;
   initialAuthToken: string | undefined;
 }
 
@@ -88,12 +90,14 @@ type Props = AppProps & WithApolloProps<any> & AuthProps;
 const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   Component,
   pageProps,
+  origin,
   initialAuthToken,
   apollo,
 }) => {
   const onErrorRef = useRef<ErrorLink.ErrorHandler>();
   apollo.setLink(
     createApolloLink(
+      origin,
       () => initialAuthToken || getAuthToken(undefined),
       onErrorRef
     )
@@ -110,13 +114,6 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
         />
-        {/* <script defer>
-          {Constants.ENVIRONMENT === "prod" &&
-            `UST_CT = [];UST = { s: Date.now(), addTag: function(tag) { UST_CT.push(tag) } };UST.addEvent = UST.addTag;
-            var ust_min_js = document.createElement("script");
-            ust_min_js.src = 'https://analytics.dework.xyz/server/ust.min.js?v=4.2.0';
-            document.head.appendChild(ust_min_js);`}
-        </script> */}
       </Head>
       <FallbackSeo />
       <ApolloProvider client={apollo as any}>
@@ -150,11 +147,13 @@ App.getInitialProps = async ({
 
   return {
     pageProps: await Component.getInitialProps?.(ctx),
+    origin: absoluteUrl(ctx?.req).origin,
     initialAuthToken: getAuthToken(ctx),
   };
 };
 
 function createApolloLink(
+  origin: string,
   getAuthToken: () => string | undefined,
   onErrorRef?: MutableRefObject<ErrorLink.ErrorHandler | undefined>
 ): ApolloLink {
@@ -162,6 +161,7 @@ function createApolloLink(
     const token = getAuthToken();
     return {
       headers: {
+        origin,
         ...headers,
         authorization: token ? `Bearer ${token}` : "",
       },
@@ -199,8 +199,9 @@ function createApolloLink(
 
 export default withApollo(
   ({ ctx, initialState }) => {
+    const origin = absoluteUrl(ctx?.req).origin;
     return new ApolloClient({
-      link: createApolloLink(() => getAuthToken(ctx)),
+      link: createApolloLink(origin, () => getAuthToken(ctx)),
       cache: new InMemoryCache().restore(initialState || {}),
       // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
       credentials: "same-origin",

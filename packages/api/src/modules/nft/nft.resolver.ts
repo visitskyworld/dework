@@ -1,5 +1,6 @@
 import {
   Args,
+  Context,
   Int,
   Parent,
   Query,
@@ -20,8 +21,11 @@ export class TaskNFTResolver {
   ) {}
 
   @ResolveField(() => String)
-  public permalink(@Parent() nft: TaskNFT): Promise<string> {
-    return this.permalinkService.get(nft);
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() nft: TaskNFT
+  ): Promise<string> {
+    return this.permalinkService.get(nft, origin);
   }
 
   @ResolveField(() => String)

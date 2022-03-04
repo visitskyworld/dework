@@ -111,8 +111,11 @@ export class TaskResolver {
   }
 
   @ResolveField(() => String)
-  public permalink(@Parent() task: Task): Promise<string> {
-    return this.permalinkService.get(task);
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() task: Task
+  ): Promise<string> {
+    return this.permalinkService.get(task, origin);
   }
 
   @Mutation(() => Task)

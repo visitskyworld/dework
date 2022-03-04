@@ -57,8 +57,11 @@ export class OrganizationResolver {
   ) {}
 
   @ResolveField(() => String)
-  public permalink(@Parent() organization: Organization): Promise<string> {
-    return this.permalinkService.get(organization);
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() organization: Organization
+  ): Promise<string> {
+    return this.permalinkService.get(organization, origin);
   }
 
   // needed?
