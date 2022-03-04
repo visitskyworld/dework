@@ -24,7 +24,7 @@ const Auth: NextPage = () => {
     try {
       const user = await authWithThreepid(threepidId);
       if (!!state.inviteId) {
-        await acceptInvite(state.inviteId).catch();
+        await acceptInvite(state.inviteId).catch(() => {});
       }
 
       if (!!state.redirect && state.redirect !== "/") {
