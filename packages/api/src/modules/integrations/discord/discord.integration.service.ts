@@ -16,7 +16,11 @@ import * as Discord from "discord.js";
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
 import { User } from "@dewo/api/models/User";
 import { ThreepidService } from "../../threepid/threepid.service";
-import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import {
+  DiscordThreepidConfig,
+  Threepid,
+  ThreepidSource,
+} from "@dewo/api/models/Threepid";
 import { PermalinkService } from "../../permalink/permalink.service";
 import {
   TaskApplicationCreatedEvent,
@@ -306,12 +310,21 @@ export class DiscordIntegrationService {
     }
 
     const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
-    if (channelToPostTo.isThread() && !!discordId) {
-      const member = await guild?.members.fetch({
-        user: discordId,
-        force: true,
-      });
-      if (!!member) await channelToPostTo.members.add(member.user.id);
+    guild?.members.add(discordId!, {
+      accessToken: (
+        (await user?.threepids!).find((s) => s.source === "discord")
+          ?.config as DiscordThreepidConfig
+      ).accessToken,
+    });
+
+    if (!!discordId) {
+      if (channelToPostTo.isThread()) {
+        const member = await guild?.members.fetch({
+          user: discordId,
+          force: true,
+        });
+        if (!!member) await channelToPostTo.members.add(member.user.id);
+      }
     }
 
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
