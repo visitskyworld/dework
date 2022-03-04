@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useMemo } from "react";
+import React, { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Button, Card, Badge, Space, Row } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -52,6 +52,12 @@ export const TaskBoardColumn: FC<Props> = ({
     [taskSections]
   );
 
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const toggleCollapsed = useCallback(
+    (id: string) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] })),
+    []
+  );
+
   return (
     <Card
       size="small"
@@ -102,65 +108,81 @@ export const TaskBoardColumn: FC<Props> = ({
                     paddingTop: 8,
                   }}
                 >
-                  <TaskSectionTitle title={section.title} />
+                  <TaskSectionTitle
+                    title={`${section.title} (${section.tasks.length})`}
+                  />
+                  <Button
+                    type="text"
+                    size="small"
+                    className="text-secondary"
+                    icon={
+                      collapsed[section.id] ? (
+                        <Icons.CaretUpOutlined />
+                      ) : (
+                        <Icons.CaretDownOutlined />
+                      )
+                    }
+                    onClick={() => toggleCollapsed(section.id)}
+                  />
+                  <div style={{ flex: 1 }} />
                   {section.button}
                 </Row>
               )}
-              <Droppable
-                droppableId={[status, index].join(":")}
-                isDropDisabled={
-                  !currentlyDraggingTask ||
-                  (currentlyDraggingTask.status === TaskStatus.DONE &&
-                    status === TaskStatus.DONE) ||
-                  !hasPermission(
-                    "update",
-                    currentlyDraggingTask,
-                    `status[${status}]`
-                  )
-                }
-              >
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    style={{
-                      ...provided.droppableProps,
-                      // minHeight: 90,
-                      paddingTop: 8,
-                    }}
-                  >
-                    {section.tasks.map((task, index) => (
-                      <Draggable
-                        key={task.id}
-                        draggableId={task.id}
-                        index={index}
-                        isDragDisabled={
-                          !hasPermission("update", task, `status[${status}]`)
-                        }
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              ...provided.draggableProps.style,
-                              cursor: hasPermission("update", task, "status")
-                                ? "grab"
-                                : "pointer",
-                              marginBottom: 8,
-                            }}
-                          >
-                            <TaskCard task={task} />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    {isEmpty && !!empty && <TaskBoardColumnEmpty {...empty} />}
-                  </div>
-                )}
-              </Droppable>
+              {!collapsed[section.id] && (
+                <Droppable
+                  droppableId={[status, index].join(":")}
+                  isDropDisabled={
+                    !currentlyDraggingTask ||
+                    (currentlyDraggingTask.status === TaskStatus.DONE &&
+                      status === TaskStatus.DONE) ||
+                    !hasPermission(
+                      "update",
+                      currentlyDraggingTask,
+                      `status[${status}]`
+                    )
+                  }
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      style={{ ...provided.droppableProps, paddingTop: 8 }}
+                    >
+                      {section.tasks.map((task, index) => (
+                        <Draggable
+                          key={task.id}
+                          draggableId={task.id}
+                          index={index}
+                          isDragDisabled={
+                            !hasPermission("update", task, `status[${status}]`)
+                          }
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                                cursor: hasPermission("update", task, "status")
+                                  ? "grab"
+                                  : "pointer",
+                                marginBottom: 8,
+                              }}
+                            >
+                              <TaskCard task={task} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                      {isEmpty && !!empty && (
+                        <TaskBoardColumnEmpty {...empty} />
+                      )}
+                    </div>
+                  )}
+                </Droppable>
+              )}
             </div>
           )
       )}

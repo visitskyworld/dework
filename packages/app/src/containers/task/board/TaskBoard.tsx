@@ -39,7 +39,7 @@ interface Props {
 }
 
 const columnWidth = 300;
-const emptySections: TaskSection[] = [{ tasks: [] }];
+const emptySections: TaskSection[] = [{ id: "empty", tasks: [] }];
 
 export const TaskBoard: FC<Props> = ({
   tasks,

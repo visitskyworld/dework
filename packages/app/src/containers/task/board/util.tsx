@@ -15,6 +15,7 @@ import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 const Between = inject("0123456789");
 
 export interface TaskSection {
+  id: string;
   title?: string;
   tasks: Task[];
   hidden?: boolean;
@@ -68,7 +69,7 @@ export function useGroupedTasks(
           ? _.sortBy(tasks, (t) => t.doneAt).reverse()
           : _.sortBy(tasks, (t) => t.sortKey)
       )
-      .mapValues((tasks, status) => {
+      .mapValues((tasks, status): TaskSection[] => {
         if (status === TaskStatus.TODO) {
           const [assigned, unassigned] = _.partition(
             tasks,
@@ -83,27 +84,31 @@ export function useGroupedTasks(
             if (!!assigned.length || !!claimed.length) {
               return [
                 {
+                  id: "open-applications",
                   title: "Open applications",
                   tasks: claimed,
                   hidden: !claimed.length,
                 },
                 {
+                  id: "assigned",
                   title: "Assigned",
                   tasks: assigned,
                   hidden: !assigned.length,
                 },
-                { title: "Unclaimed", tasks: unclaimed },
+                { id: "unclaimed", title: "Unclaimed", tasks: unclaimed },
               ];
             }
           } else {
             if (!!assigned.length) {
               return [
                 {
+                  id: "assigned",
                   title: "Assigned",
                   tasks: assigned,
                   hidden: !assigned.length,
                 },
                 {
+                  id: "unclaimed",
                   title: "Unclaimed",
                   tasks: unassigned,
                   hidden: !unassigned.length,
@@ -137,6 +142,7 @@ export function useGroupedTasks(
           if (!!unpaid.length || !!processing.length) {
             return [
               {
+                id: "needs-payment",
                 title: "Needs payment",
                 tasks: unpaid,
                 hidden: !unpaid.length,
@@ -148,16 +154,17 @@ export function useGroupedTasks(
                 ),
               },
               {
+                id: "processing-payment",
                 title: "Processing payment",
                 tasks: processing,
                 hidden: !processing.length,
               },
-              { title: "Paid", tasks: paid },
+              { id: "paid", title: "Paid", tasks: paid },
             ];
           }
         }
 
-        return [{ tasks }];
+        return [{ id: "all", tasks }];
       })
       .value() as Record<TaskStatus, TaskSection[]>;
   }, [tasks, projectId, canUpdateTasks]);

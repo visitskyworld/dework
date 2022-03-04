@@ -11,7 +11,7 @@ export const TaskSectionTitle: FC<Props> = ({ title, style }) => (
     strong
     type="secondary"
     className="ant-typography-caption"
-    style={{ flex: 1, display: "block", ...style }}
+    style={style}
   >
     {title.toUpperCase()}
   </Typography.Text>
