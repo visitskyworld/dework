@@ -36,7 +36,7 @@ export const TaskFilterForm: FC<Props> = ({ users, tags }) => {
       style={{ width: 320 }}
     >
       <Form.Item name="name" label="Filter by Name">
-        <Input autoFocus placeholder="Search by name" />
+        <Input autoFocus placeholder="Filter by name..." />
       </Form.Item>
       <TaskTagSelectField label="Filter by Tag" tags={tags} />
       <Form.Item name="assigneeIds" label="Filter by Assignee">
