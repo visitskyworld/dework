@@ -107,7 +107,9 @@ export const AssignTaskCard: FC<Props> = ({ task }) => {
                     />
                   </a>
                 </Tooltip>
-                <Typography.Text>{application.message}</Typography.Text>
+                <Typography.Text style={{ wordBreak: "break-all" }}>
+                  {application.message}
+                </Typography.Text>
               </Space>
             </List.Item>
           );
