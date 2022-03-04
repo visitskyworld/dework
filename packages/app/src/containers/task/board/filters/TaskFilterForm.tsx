@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from "react";
-import { Button, Form, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 import { TaskFilter, useTaskFilter } from "./FilterContext";
 
@@ -35,6 +35,9 @@ export const TaskFilterForm: FC<Props> = ({ users, tags }) => {
       onValuesChange={handleChange}
       style={{ width: 320 }}
     >
+      <Form.Item name="name" label="Filter by Name">
+        <Input autoFocus placeholder="Search by name" />
+      </Form.Item>
       <TaskTagSelectField label="Filter by Tag" tags={tags} />
       <Form.Item name="assigneeIds" label="Filter by Assignee">
         <UserSelect

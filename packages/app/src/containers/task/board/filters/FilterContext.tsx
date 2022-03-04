@@ -2,6 +2,7 @@ import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import React, { createContext, FC, useContext, useMemo, useState } from "react";
 
 export interface TaskFilter {
+  name?: string;
   tagIds?: string[];
   assigneeIds?: string[];
   ownerIds?: string[];
@@ -36,6 +37,11 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
   return useMemo(
     () =>
       tasks
+        .filter(
+          (t) =>
+            !filter.name?.length ||
+            t.name.toLowerCase().includes(filter.name.toLowerCase())
+        )
         .filter(
           (t) =>
             !filter.tagIds?.length ||
