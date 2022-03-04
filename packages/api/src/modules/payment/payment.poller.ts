@@ -223,6 +223,15 @@ export class PaymentPoller {
     const blockNumber = await provider.getBlockNumber();
     const receipt = await provider.getTransactionReceipt(data.txHash);
 
+    if (!receipt) {
+      this.logger.debug(
+        `Ethereum transaction receipt not found: ${JSON.stringify({
+          txHash: data.txHash,
+        })}`
+      );
+      return { confirmed: false };
+    }
+
     const depth = blockNumber - receipt.blockNumber;
     const confirmed =
       depth >= this.blockDepthBeforeConfirmed[PaymentMethodType.METAMASK];
