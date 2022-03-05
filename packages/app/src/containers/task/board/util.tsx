@@ -148,7 +148,7 @@ export function useGroupedTasks(
         groups.push({
           id: "default",
           tasks: unsectioned,
-          title: '"Uncategorized"',
+          title: "Uncategorized",
         });
 
         return groups;

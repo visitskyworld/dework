@@ -250,12 +250,7 @@ export function useUpdateTask(): (
         optimisticResponse: !!task
           ? {
               // TODO: find a better way to merge optimistic task updates
-              task: _.merge(
-                {},
-                task,
-                _.omit(input, ["reward"])
-                // _.pickBy(_.omit(input, ["reward"]), _.identity)
-              ),
+              task: _.merge({}, task, _.omit(input, ["reward"])),
             }
           : undefined,
       });
