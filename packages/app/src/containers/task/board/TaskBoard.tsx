@@ -1,4 +1,4 @@
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { Task, TaskSection, TaskStatus } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, {
   FC,
@@ -14,7 +14,7 @@ import {
   DragStart,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { getSortKeyBetween, TaskSection, useGroupedTasks } from "./util";
+import { getSortKeyBetween, TaskGroup, useGroupedTasks } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../hooks";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
@@ -32,6 +32,7 @@ const defaultStatuses: TaskStatus[] = [
 
 interface Props {
   tasks: Task[];
+  sections?: TaskSection[];
   projectId?: string;
   footer?: Partial<Record<TaskStatus, ReactNode>>;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
@@ -39,10 +40,11 @@ interface Props {
 }
 
 const columnWidth = 300;
-const emptySections: TaskSection[] = [{ id: "empty", tasks: [] }];
+const emptyGroups: TaskGroup[] = [{ id: "default", tasks: [] }];
 
 export const TaskBoard: FC<Props> = ({
   tasks,
+  sections,
   projectId,
   footer,
   empty,
@@ -51,7 +53,7 @@ export const TaskBoard: FC<Props> = ({
   const { user } = useAuthContext();
 
   const filteredTasks = useFilteredTasks(tasks);
-  const taskSectionsByStatus = useGroupedTasks(filteredTasks, projectId);
+  const groupedTasks = useGroupedTasks(filteredTasks, sections);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
   const currentlyDraggingTask = useMemo(
@@ -73,10 +75,10 @@ export const TaskBoard: FC<Props> = ({
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
-      const [status, sectionIndexString] = result.destination.droppableId.split(
-        ":"
-      ) as [TaskStatus, string];
-      const sectionIndex = Number(sectionIndexString);
+      const [status, groupId] = result.destination.droppableId.split(":") as [
+        TaskStatus,
+        string
+      ];
 
       const task = tasks.find((t) => t.id === taskId);
       if (!task) return;
@@ -98,13 +100,13 @@ export const TaskBoard: FC<Props> = ({
         return newIndex;
       })();
 
-      const section = taskSectionsByStatus[status]?.[sectionIndex];
-      const taskAbove = section?.tasks[indexExcludingItself - 1];
-      const taskBelow = section?.tasks[indexExcludingItself];
+      const group = groupedTasks[status]?.find((group) => group.id === groupId);
+      const taskAbove = group?.tasks[indexExcludingItself - 1];
+      const taskBelow = group?.tasks[indexExcludingItself];
       const sortKey = getSortKeyBetween(taskAbove, taskBelow, (t) => t.sortKey);
 
       const updatedTask = await updateTask(
-        { id: taskId, status, sortKey },
+        { id: taskId, status, sortKey, sectionId: group?.section?.id ?? null },
         task
       );
 
@@ -113,7 +115,7 @@ export const TaskBoard: FC<Props> = ({
         setTaskInReview(updatedTask);
       }
     },
-    [tasks, taskSectionsByStatus, updateTask, reviewModalToggle, user]
+    [tasks, groupedTasks, updateTask, reviewModalToggle, user]
   );
 
   const [loaded, setLoaded] = useState(false);
@@ -134,7 +136,7 @@ export const TaskBoard: FC<Props> = ({
                 <TaskBoardColumn
                   status={status}
                   width={columnWidth}
-                  taskSections={taskSectionsByStatus[status] ?? emptySections}
+                  groups={groupedTasks[status] ?? emptyGroups}
                   projectId={projectId}
                   currentlyDraggingTask={currentlyDraggingTask}
                   footer={footer?.[status]}

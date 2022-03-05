@@ -119,6 +119,15 @@ export const projectSection = gql`
   }
 `;
 
+export const taskSection = gql`
+  fragment TaskSection on TaskSection {
+    id
+    name
+    status
+    sortKey
+  }
+`;
+
 export const projectMember = gql`
   fragment ProjectMember on ProjectMember {
     id
@@ -239,6 +248,9 @@ export const projectDetails = gql`
     organization {
       ...Organization
     }
+    taskSections {
+      ...TaskSection
+    }
   }
 
   ${project}
@@ -248,6 +260,7 @@ export const projectDetails = gql`
   ${projectIntegration}
   ${projectTokenGate}
   ${organization}
+  ${taskSection}
 `;
 
 export const taskTag = gql`
@@ -394,6 +407,7 @@ export const task = gql`
     projectId
     parentTaskId
     ownerId
+    sectionId
     number
     subtasks {
       id

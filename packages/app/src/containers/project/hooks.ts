@@ -14,6 +14,9 @@ import {
   CreateProjectMutationVariables,
   CreateProjectTokenGateMutation,
   CreateProjectTokenGateMutationVariables,
+  CreateTaskSectionInput,
+  CreateTaskSectionMutation,
+  CreateTaskSectionMutationVariables,
   DeleteProjectTokenGateMutation,
   DeleteProjectTokenGateMutationVariables,
   GetProjectIntegrationsQuery,
@@ -212,4 +215,20 @@ export function useProjectIntegrations(
     GetProjectIntegrationsQueryVariables
   >(Queries.projectIntegrations, { variables: { projectId } });
   return data?.project.integrations ?? undefined;
+}
+
+export function useCreateTaskSection(): (
+  input: CreateTaskSectionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    CreateTaskSectionMutation,
+    CreateTaskSectionMutationVariables
+  >(Mutations.createTaskSection);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
 }

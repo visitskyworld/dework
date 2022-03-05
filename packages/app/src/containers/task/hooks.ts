@@ -253,7 +253,8 @@ export function useUpdateTask(): (
               task: _.merge(
                 {},
                 task,
-                _.pickBy(_.omit(input, ["reward"]), _.identity)
+                _.omit(input, ["reward"])
+                // _.pickBy(_.omit(input, ["reward"]), _.identity)
               ),
             }
           : undefined,

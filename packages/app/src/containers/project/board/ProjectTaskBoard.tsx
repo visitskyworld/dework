@@ -47,9 +47,15 @@ export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
     [project?.options?.showBacklogColumn]
   );
 
+  const sections = useMemo(
+    () => project?.taskSections ?? [],
+    [project?.taskSections]
+  );
+
   return tasks ? (
     <TaskBoard
       tasks={tasks}
+      sections={sections}
       projectId={projectId}
       empty={empty}
       statuses={statuses}

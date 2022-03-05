@@ -9,6 +9,7 @@ import {
   Repository,
   OrderByCondition,
   Brackets,
+  DeepPartial,
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import {
@@ -27,6 +28,7 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 
 @Injectable()
 export class TaskService {
@@ -45,7 +47,9 @@ export class TaskService {
     @InjectRepository(TaskApplication)
     private readonly taskApplicationRepo: Repository<TaskApplication>,
     @InjectRepository(TaskSubmission)
-    private readonly taskSubmissionRepo: Repository<TaskSubmission>
+    private readonly taskSubmissionRepo: Repository<TaskSubmission>,
+    @InjectRepository(TaskSection)
+    private readonly taskSectionRepo: Repository<TaskSection>
   ) {}
 
   public async create(
@@ -180,6 +184,16 @@ export class TaskService {
     userId: string
   ): Promise<void> {
     await this.taskReactionRepo.delete({ ...input, userId });
+  }
+
+  public async createSection(
+    partial: DeepPartial<TaskSection>
+  ): Promise<TaskSection> {
+    const created = await this.taskSectionRepo.save({
+      ...partial,
+      sortKey: Date.now().toString(),
+    });
+    return this.taskSectionRepo.findOne(created.id) as Promise<TaskSection>;
   }
 
   public async findById(id: string): Promise<Task | undefined> {

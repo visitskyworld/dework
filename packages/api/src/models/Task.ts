@@ -31,6 +31,7 @@ import { TaskReaction } from "./TaskReaction";
 import { GithubIssue } from "./GithubIssue";
 import { TaskSubmission } from "./TaskSubmission";
 import { TaskNFT } from "./TaskNFT";
+import { TaskSection } from "./TaskSection";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -133,14 +134,6 @@ export class Task extends Audit {
   @Field(() => [TaskNFT])
   public nfts!: Promise<TaskNFT[]>;
 
-  // @JoinColumn()
-  // @ManyToOne(() => TaskStatus)
-  // @Field(() => TaskStatus)
-  // public status!: Promise<TaskStatus>;
-  // @Column({ type: "uuid" })
-  // @Field()
-  // public statusId!: string;
-
   @ManyToMany(() => TaskTag, { eager: true })
   @JoinTable({ name: "task_tag_map" })
   @Field(() => [TaskTag])
@@ -165,6 +158,14 @@ export class Task extends Audit {
   })
   @Field(() => DiscordChannel, { nullable: true })
   public discordChannel?: Promise<DiscordChannel>;
+
+  @JoinColumn()
+  @ManyToOne(() => TaskSection, { nullable: true })
+  @Field(() => TaskSection, { nullable: true })
+  public section?: Promise<TaskSection>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public sectionId?: string;
 
   @JoinColumn()
   @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })

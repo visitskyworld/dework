@@ -23,6 +23,7 @@ import encoder from "uuid-base62";
 import { ProjectMember } from "./ProjectMember";
 import { ProjectTokenGate } from "./ProjectTokenGate";
 import { ProjectSection } from "./ProjectSection";
+import { TaskSection } from "./TaskSection";
 
 export enum ProjectVisibility {
   PUBLIC = "PUBLIC",
@@ -89,6 +90,10 @@ export class Project extends Audit {
   @OneToMany(() => ProjectIntegration, (p: ProjectIntegration) => p.project)
   @Field(() => [ProjectIntegration])
   public integrations!: Promise<ProjectIntegration[]>;
+
+  @OneToMany(() => TaskSection, (x: TaskSection) => x.project)
+  @Field(() => [TaskSection])
+  public taskSections!: Promise<TaskSection[]>;
 
   @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.project)
   @Field(() => [PaymentMethod])

@@ -1,26 +1,31 @@
-import React, { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 import _ from "lodash";
 import {
   PaymentMethodType,
-  PaymentStatus,
   Task,
+  TaskSection,
   TaskStatus,
 } from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { GnosisPayAllButton } from "./GnosisPayAllButton";
 import { useProject } from "../../project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 
 const Between = inject("0123456789");
 
-export interface TaskSection {
+export interface TaskGroup {
   id: string;
-  title?: string;
   tasks: Task[];
-  hidden?: boolean;
-  button?: ReactNode;
+  section?: TaskSection;
 }
+
+// export interface TaskSection {
+//   id: string;
+//   title?: string;
+//   tasks: Task[];
+//   hidden?: boolean;
+//   button?: ReactNode;
+// }
 
 export const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.BACKLOG]: "Community Suggestions",
@@ -53,6 +58,56 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
   );
 }
 
+export function useGroupedTasks(
+  tasks: Task[],
+  sections?: TaskSection[]
+): Record<TaskStatus, TaskGroup[]> {
+  return useMemo(() => {
+    const sectionsByStatus = _.groupBy(
+      sections,
+      (s) => s.status
+    ) as any as Record<TaskStatus, TaskSection[]>;
+
+    const undeletedTasks = tasks.filter((t) => !t.deletedAt);
+    const tasksByStatus = Object.assign(
+      Object.keys(TaskStatus).reduce(
+        (acc, status) => ({ ...acc, [status]: [] }),
+        {}
+      ),
+      _.groupBy(undeletedTasks, (t) => t.status)
+    );
+
+    return _(tasksByStatus)
+      .mapValues((tasks, status) =>
+        status === TaskStatus.DONE
+          ? _.sortBy(tasks, (t) => t.doneAt).reverse()
+          : _.sortBy(tasks, (t) => t.sortKey)
+      )
+      .mapValues((tasks, status): TaskGroup[] => {
+        const sections = sectionsByStatus[status as TaskStatus] ?? [];
+        const [sectioned, unsectioned] = _.partition(tasks, (t) =>
+          sections.some((s) => s.id === t.sectionId)
+        );
+
+        const groups: TaskGroup[] = [];
+        _.sortBy(sections, (s) => s.sortKey)
+          .reverse()
+          .forEach((section) =>
+            groups.push({
+              section,
+              id: section.id,
+              tasks: sectioned.filter((t) => t.sectionId === section.id),
+            })
+          );
+        groups.push({ tasks: unsectioned, id: "default" });
+
+        return groups;
+      })
+      .value() as Record<TaskStatus, TaskGroup[]>;
+  }, [tasks, sections]);
+}
+
+/*
 export function useGroupedTasks(
   tasks: Task[],
   projectId?: string
@@ -169,6 +224,7 @@ export function useGroupedTasks(
       .value() as Record<TaskStatus, TaskSection[]>;
   }, [tasks, projectId, canUpdateTasks]);
 }
+*/
 
 export function getSortKeyBetween<T>(
   itemAbove: T | undefined,

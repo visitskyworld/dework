@@ -444,6 +444,14 @@ export interface UpdateOrganizationMutation_organization_projects_organization {
   permalink: string;
 }
 
+export interface UpdateOrganizationMutation_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface UpdateOrganizationMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -465,6 +473,7 @@ export interface UpdateOrganizationMutation_organization_projects {
   integrations: UpdateOrganizationMutation_organization_projects_integrations[];
   tokenGates: UpdateOrganizationMutation_organization_projects_tokenGates[];
   organization: UpdateOrganizationMutation_organization_projects_organization;
+  taskSections: UpdateOrganizationMutation_organization_projects_taskSections[];
 }
 
 export interface UpdateOrganizationMutation_organization_projectSections {
@@ -986,6 +995,14 @@ export interface CreateProjectMutation_project_organization_projects_organizatio
   permalink: string;
 }
 
+export interface CreateProjectMutation_project_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1007,6 +1024,7 @@ export interface CreateProjectMutation_project_organization_projects {
   integrations: CreateProjectMutation_project_organization_projects_integrations[];
   tokenGates: CreateProjectMutation_project_organization_projects_tokenGates[];
   organization: CreateProjectMutation_project_organization_projects_organization;
+  taskSections: CreateProjectMutation_project_organization_projects_taskSections[];
 }
 
 export interface CreateProjectMutation_project_organization_projectSections {
@@ -1115,6 +1133,14 @@ export interface CreateProjectMutation_project_organization {
   projectTokenGates: CreateProjectMutation_project_organization_projectTokenGates[];
 }
 
+export interface CreateProjectMutation_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1136,6 +1162,7 @@ export interface CreateProjectMutation_project {
   integrations: CreateProjectMutation_project_integrations[];
   tokenGates: CreateProjectMutation_project_tokenGates[];
   organization: CreateProjectMutation_project_organization;
+  taskSections: CreateProjectMutation_project_taskSections[];
 }
 
 export interface CreateProjectMutation {
@@ -1258,6 +1285,14 @@ export interface UpdateProjectMutation_project_organization {
   permalink: string;
 }
 
+export interface UpdateProjectMutation_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -1279,6 +1314,7 @@ export interface UpdateProjectMutation_project {
   integrations: UpdateProjectMutation_project_integrations[];
   tokenGates: UpdateProjectMutation_project_tokenGates[];
   organization: UpdateProjectMutation_project_organization;
+  taskSections: UpdateProjectMutation_project_taskSections[];
 }
 
 export interface UpdateProjectMutation {
@@ -1363,6 +1399,43 @@ export interface UpdateProjectSectionMutation {
 
 export interface UpdateProjectSectionMutationVariables {
   input: UpdateProjectSectionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTaskSectionMutation
+// ====================================================
+
+export interface CreateTaskSectionMutation_section_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface CreateTaskSectionMutation_section_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskSections: CreateTaskSectionMutation_section_project_taskSections[];
+}
+
+export interface CreateTaskSectionMutation_section {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  project: CreateTaskSectionMutation_section_project;
+}
+
+export interface CreateTaskSectionMutation {
+  section: CreateTaskSectionMutation_section;
+}
+
+export interface CreateTaskSectionMutationVariables {
+  input: CreateTaskSectionInput;
 }
 
 /* tslint:disable */
@@ -1719,6 +1792,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskMutation_task_parentTask_subtasks_subtasks[];
   tags: CreateTaskMutation_task_parentTask_subtasks_tags[];
@@ -1752,6 +1826,7 @@ export interface CreateTaskMutation_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskMutation_task_subtasks[];
   tags: CreateTaskMutation_task_tags[];
@@ -1962,6 +2037,7 @@ export interface UpdateTaskMutation_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: UpdateTaskMutation_task_subtasks[];
   tags: UpdateTaskMutation_task_tags[];
@@ -2171,6 +2247,7 @@ export interface CreateTaskApplicationMutation_application_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
   tags: CreateTaskApplicationMutation_application_task_tags[];
@@ -2386,6 +2463,7 @@ export interface DeleteTaskApplicationMutation_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: DeleteTaskApplicationMutation_task_subtasks[];
   tags: DeleteTaskApplicationMutation_task_tags[];
@@ -2595,6 +2673,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks[];
   tags: CreateTaskSubmissionMutation_createTaskSubmission_task_tags[];
@@ -2810,6 +2889,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks[];
   tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags[];
@@ -3972,6 +4052,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_subtasks_tags[];
@@ -4287,6 +4368,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_tags[];
@@ -4544,6 +4626,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
   tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
@@ -4717,6 +4800,14 @@ export interface CreateProjectsFromNotionMutation_organization_projects_organiza
   permalink: string;
 }
 
+export interface CreateProjectsFromNotionMutation_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface CreateProjectsFromNotionMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4738,6 +4829,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
   organization: CreateProjectsFromNotionMutation_organization_projects_organization;
+  taskSections: CreateProjectsFromNotionMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projectSections {
@@ -4966,6 +5058,14 @@ export interface CreateProjectsFromTrelloMutation_organization_projects_organiza
   permalink: string;
 }
 
+export interface CreateProjectsFromTrelloMutation_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface CreateProjectsFromTrelloMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4987,6 +5087,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
   organization: CreateProjectsFromTrelloMutation_organization_projects_organization;
+  taskSections: CreateProjectsFromTrelloMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projectSections {
@@ -5215,6 +5316,14 @@ export interface CreateProjectsFromGithubMutation_organization_projects_organiza
   permalink: string;
 }
 
+export interface CreateProjectsFromGithubMutation_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface CreateProjectsFromGithubMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -5236,6 +5345,7 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   integrations: CreateProjectsFromGithubMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromGithubMutation_organization_projects_tokenGates[];
   organization: CreateProjectsFromGithubMutation_organization_projects_organization;
+  taskSections: CreateProjectsFromGithubMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromGithubMutation_organization_projectSections {
@@ -5731,6 +5841,7 @@ export interface UserTasksQuery_user_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: UserTasksQuery_user_tasks_subtasks[];
   tags: UserTasksQuery_user_tasks_tags[];
@@ -5943,6 +6054,14 @@ export interface GetOrganizationQuery_organization_projects_organization {
   permalink: string;
 }
 
+export interface GetOrganizationQuery_organization_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface GetOrganizationQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -5964,6 +6083,7 @@ export interface GetOrganizationQuery_organization_projects {
   integrations: GetOrganizationQuery_organization_projects_integrations[];
   tokenGates: GetOrganizationQuery_organization_projects_tokenGates[];
   organization: GetOrganizationQuery_organization_projects_organization;
+  taskSections: GetOrganizationQuery_organization_projects_taskSections[];
 }
 
 export interface GetOrganizationQuery_organization_projectSections {
@@ -6408,6 +6528,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
@@ -6584,6 +6705,14 @@ export interface GetProjectQuery_project_organization {
   permalink: string;
 }
 
+export interface GetProjectQuery_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -6605,6 +6734,7 @@ export interface GetProjectQuery_project {
   integrations: GetProjectQuery_project_integrations[];
   tokenGates: GetProjectQuery_project_tokenGates[];
   organization: GetProjectQuery_project_organization;
+  taskSections: GetProjectQuery_project_taskSections[];
 }
 
 export interface GetProjectQuery {
@@ -6804,6 +6934,7 @@ export interface GetProjectTasksQuery_project_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
   tags: GetProjectTasksQuery_project_tasks_tags[];
@@ -7052,6 +7183,7 @@ export interface GetTaskQuery_task_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetTaskQuery_task_subtasks_subtasks[];
   tags: GetTaskQuery_task_subtasks_tags[];
@@ -7378,6 +7510,7 @@ export interface GetTaskQuery_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetTaskQuery_task_subtasks[];
   tags: GetTaskQuery_task_tags[];
@@ -7657,6 +7790,7 @@ export interface GetTasksQuery_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetTasksQuery_tasks_subtasks[];
   tags: GetTasksQuery_tasks_tags[];
@@ -7940,6 +8074,7 @@ export interface GetTasksToPayQuery_tasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: GetTasksToPayQuery_tasks_subtasks[];
   tags: GetTasksToPayQuery_tasks_tags[];
@@ -8444,6 +8579,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
   tags: TaskCreatedSubscription_task_subtasks_tags[];
@@ -8759,6 +8895,7 @@ export interface TaskCreatedSubscription_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskCreatedSubscription_task_subtasks[];
   tags: TaskCreatedSubscription_task_tags[];
@@ -8973,6 +9110,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
   tags: TaskUpdatedSubscription_task_subtasks_tags[];
@@ -9288,6 +9426,7 @@ export interface TaskUpdatedSubscription_task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskUpdatedSubscription_task_subtasks[];
   tags: TaskUpdatedSubscription_task_tags[];
@@ -9728,6 +9867,23 @@ export interface ProjectSection {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskSection
+// ====================================================
+
+export interface TaskSection {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectMember
 // ====================================================
 
@@ -10052,6 +10208,14 @@ export interface ProjectDetails_organization {
   permalink: string;
 }
 
+export interface ProjectDetails_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10073,6 +10237,7 @@ export interface ProjectDetails {
   integrations: ProjectDetails_integrations[];
   tokenGates: ProjectDetails_tokenGates[];
   organization: ProjectDetails_organization;
+  taskSections: ProjectDetails_taskSections[];
 }
 
 /* tslint:disable */
@@ -10554,6 +10719,7 @@ export interface Task {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: Task_subtasks[];
   tags: Task_tags[];
@@ -10777,6 +10943,7 @@ export interface TaskWithOrganization {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskWithOrganization_subtasks[];
   tags: TaskWithOrganization_tags[];
@@ -11050,6 +11217,7 @@ export interface TaskDetails_subtasks {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskDetails_subtasks_subtasks[];
   tags: TaskDetails_subtasks_tags[];
@@ -11365,6 +11533,7 @@ export interface TaskDetails {
   projectId: string;
   parentTaskId: string | null;
   ownerId: string | null;
+  sectionId: string | null;
   number: number;
   subtasks: TaskDetails_subtasks[];
   tags: TaskDetails_tags[];
@@ -11652,6 +11821,14 @@ export interface OrganizationDetails_projects_organization {
   permalink: string;
 }
 
+export interface OrganizationDetails_projects_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -11673,6 +11850,7 @@ export interface OrganizationDetails_projects {
   integrations: OrganizationDetails_projects_integrations[];
   tokenGates: OrganizationDetails_projects_tokenGates[];
   organization: OrganizationDetails_projects_organization;
+  taskSections: OrganizationDetails_projects_taskSections[];
 }
 
 export interface OrganizationDetails_projectSections {
@@ -12012,6 +12190,12 @@ export interface CreateTaskPaymentsInput {
   data?: Scalar.JSONObject | null;
 }
 
+export interface CreateTaskSectionInput {
+  name: string;
+  projectId: Scalar.UUID;
+  status: TaskStatus;
+}
+
 export interface CreateTaskSubmissionInput {
   taskId: Scalar.UUID;
   content: string;
@@ -12152,6 +12336,7 @@ export interface UpdateTaskInput {
   name?: string | null;
   description?: string | null;
   parentTaskId?: Scalar.UUID | null;
+  sectionId?: Scalar.UUID | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;

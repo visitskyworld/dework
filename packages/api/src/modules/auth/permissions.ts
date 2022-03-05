@@ -16,6 +16,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -130,6 +131,7 @@ export const permissions: Permissions<
       "status[DONE]",
       "tagIds",
       "assigneeIds",
+      "sectionId",
       "ownerId",
       "dueDate",
       "storyPoints",
@@ -144,6 +146,7 @@ export const permissions: Permissions<
     can(Actions.manage, TaskSubmission);
 
     can(Actions.manage, TaskTag);
+    can(Actions.manage, TaskSection);
     can(Actions.manage, ProjectTokenGate);
 
     extend(Roles.authenticated);

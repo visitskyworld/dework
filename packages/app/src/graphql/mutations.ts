@@ -201,6 +201,22 @@ export const updateProjectSection = gql`
   ${Fragments.projectSection}
 `;
 
+export const createTaskSection = gql`
+  mutation CreateTaskSectionMutation($input: CreateTaskSectionInput!) {
+    section: createTaskSection(input: $input) {
+      id
+      project {
+        id
+        taskSections {
+          ...TaskSection
+        }
+      }
+    }
+  }
+
+  ${Fragments.taskSection}
+`;
+
 export const createTask = gql`
   mutation CreateTaskMutation($input: CreateTaskInput!) {
     task: createTask(input: $input) {

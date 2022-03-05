@@ -50,6 +50,8 @@ import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { subject } from "@casl/ability";
 import { TaskReward } from "@dewo/api/models/TaskReward";
+import { TaskSection } from "@dewo/api/models/TaskSection";
+import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -300,6 +302,15 @@ export class TaskResolver {
   ): Promise<Task> {
     await this.taskService.deleteReaction(input, user.id);
     return this.taskService.findById(input.taskId) as Promise<Task>;
+  }
+
+  @Mutation(() => TaskSection)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.create, TaskSection)
+  public async createTaskSection(
+    @Args("input") input: CreateTaskSectionInput
+  ): Promise<TaskSection> {
+    return this.taskService.createSection(input);
   }
 
   @Query(() => Task)

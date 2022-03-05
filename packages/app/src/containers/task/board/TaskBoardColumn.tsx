@@ -7,18 +7,19 @@ import { TaskCard } from "./TaskCard";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { STATUS_LABEL, TaskSection } from "./util";
+import { STATUS_LABEL, TaskGroup } from "./util";
 import { TaskCreateModal } from "../TaskCreateModal";
 import { TaskFormValues } from "../form/TaskForm";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
 } from "./TaskBoardColumnEmtpy";
+import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
 import { TaskSectionTitle } from "./TaskSectionTitle";
 
 interface Props {
   status: TaskStatus;
-  taskSections: TaskSection[];
+  groups: TaskGroup[];
   width: number;
   projectId?: string;
   currentlyDraggingTask?: Task;
@@ -28,7 +29,7 @@ interface Props {
 
 export const TaskBoardColumn: FC<Props> = ({
   status,
-  taskSections,
+  groups,
   width,
   projectId,
   currentlyDraggingTask,
@@ -38,19 +39,15 @@ export const TaskBoardColumn: FC<Props> = ({
   const createTaskToggle = useToggle();
   const hasPermission = usePermissionFn();
   const count = useMemo(
-    () =>
-      taskSections.reduce((count, section) => count + section.tasks.length, 0),
-    [taskSections]
+    () => groups.reduce((count, group) => count + group.tasks.length, 0),
+    [groups]
   );
   const initialValues = useMemo<Partial<TaskFormValues>>(
     () => ({ status }),
     [status]
   );
 
-  const isEmpty = useMemo(
-    () => taskSections.every((s) => !s.tasks.length),
-    [taskSections]
-  );
+  const isEmpty = useMemo(() => groups.every((g) => !g.tasks.length), [groups]);
 
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const toggleCollapsed = useCallback(
@@ -72,14 +69,24 @@ export const TaskBoardColumn: FC<Props> = ({
         </Space>
       }
       extra={
-        !!projectId && (
-          <Can I="create" this={{ __typename: "Task", status }}>
-            <Button
-              type="text"
-              icon={<Icons.PlusOutlined onClick={createTaskToggle.toggleOn} />}
+        <>
+          {!!projectId && status !== TaskStatus.DONE && (
+            <TaskBoardColumnOptionButton
+              status={status}
+              projectId={projectId}
             />
-          </Can>
-        )
+          )}
+          {!!projectId && (
+            <Can I="create" this={{ __typename: "Task", status }}>
+              <Button
+                type="text"
+                icon={
+                  <Icons.PlusOutlined onClick={createTaskToggle.toggleOn} />
+                }
+              />
+            </Can>
+          )}
+        </>
       }
       style={{ width, backgroundColor: "#1B1D4B" }}
       className="dewo-task-board-column"
@@ -93,99 +100,87 @@ export const TaskBoardColumn: FC<Props> = ({
           onDone={createTaskToggle.toggleOff}
         />
       )}
-      {taskSections.map(
-        (section, index) =>
-          !section.hidden && (
-            <div key={index}>
-              {!!section.title && (
-                <Row
-                  align="middle"
-                  style={{
-                    position: "sticky",
-                    top: 0,
-                    backgroundColor: "#1B1D4B",
-                    zIndex: 1,
-                    paddingTop: 8,
-                  }}
+      {groups.map((group, index) => (
+        <div key={index}>
+          {groups.length > 1 && (
+            <Row
+              align="middle"
+              style={{
+                position: "sticky",
+                top: 0,
+                backgroundColor: "#1B1D4B",
+                zIndex: 1,
+                paddingTop: 8,
+              }}
+            >
+              <TaskSectionTitle
+                title={`${group.section?.name ?? "Uncategorized"} (${
+                  group.tasks.length
+                })`}
+                collapsed={collapsed[group.id]}
+                onChangeCollapsed={() => toggleCollapsed(group.id)}
+              />
+              {/* <div style={{ flex: 1 }} /> */}
+              {/* {section.button} */}
+            </Row>
+          )}
+          {!collapsed[group.id] && (
+            <Droppable
+              droppableId={[status, group.id].join(":")}
+              isDropDisabled={
+                !currentlyDraggingTask ||
+                (currentlyDraggingTask.status === TaskStatus.DONE &&
+                  status === TaskStatus.DONE) ||
+                !hasPermission(
+                  "update",
+                  currentlyDraggingTask,
+                  `status[${status}]`
+                )
+              }
+            >
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  style={{ ...provided.droppableProps, paddingTop: 8 }}
                 >
-                  <TaskSectionTitle
-                    title={`${section.title} (${section.tasks.length})`}
-                  />
-                  <Button
-                    type="text"
-                    size="small"
-                    className="text-secondary"
-                    icon={
-                      collapsed[section.id] ? (
-                        <Icons.CaretUpOutlined />
-                      ) : (
-                        <Icons.CaretDownOutlined />
-                      )
-                    }
-                    onClick={() => toggleCollapsed(section.id)}
-                  />
-                  <div style={{ flex: 1 }} />
-                  {section.button}
-                </Row>
-              )}
-              {!collapsed[section.id] && (
-                <Droppable
-                  droppableId={[status, index].join(":")}
-                  isDropDisabled={
-                    !currentlyDraggingTask ||
-                    (currentlyDraggingTask.status === TaskStatus.DONE &&
-                      status === TaskStatus.DONE) ||
-                    !hasPermission(
-                      "update",
-                      currentlyDraggingTask,
-                      `status[${status}]`
-                    )
-                  }
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      style={{ ...provided.droppableProps, paddingTop: 8 }}
+                  {group.tasks.map((task, index) => (
+                    <Draggable
+                      key={task.id}
+                      draggableId={task.id}
+                      index={index}
+                      isDragDisabled={
+                        !hasPermission("update", task, `status[${status}]`)
+                      }
                     >
-                      {section.tasks.map((task, index) => (
-                        <Draggable
-                          key={task.id}
-                          draggableId={task.id}
-                          index={index}
-                          isDragDisabled={
-                            !hasPermission("update", task, `status[${status}]`)
-                          }
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            cursor: hasPermission("update", task, "status")
+                              ? "grab"
+                              : "pointer",
+                            marginBottom: 8,
+                          }}
                         >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={{
-                                ...provided.draggableProps.style,
-                                cursor: hasPermission("update", task, "status")
-                                  ? "grab"
-                                  : "pointer",
-                                marginBottom: 8,
-                              }}
-                            >
-                              <TaskCard task={task} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                      {isEmpty && !!empty && (
-                        <TaskBoardColumnEmpty {...empty} />
+                          <TaskCard task={task} />
+                        </div>
                       )}
-                    </div>
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                  {index === groups.length - 1 && isEmpty && !!empty && (
+                    <TaskBoardColumnEmpty {...empty} />
                   )}
-                </Droppable>
+                </div>
               )}
-            </div>
-          )
-      )}
+            </Droppable>
+          )}
+        </div>
+      ))}
       {footer}
     </Card>
   );

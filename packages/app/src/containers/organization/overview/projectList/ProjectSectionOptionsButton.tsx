@@ -3,7 +3,7 @@ import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
-import { CreateSectionModal } from "../CreateSectionModal";
+import { CreateProjectSectionModal } from "../CreateSectionModal";
 import { ProjectSection } from "@dewo/app/graphql/types";
 import { useOrganization, useUpdateProjectSection } from "../../hooks";
 import { useRouter } from "next/router";
@@ -80,7 +80,7 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
       >
         <Button type="text" icon={<Icons.MoreOutlined />} />
       </Dropdown>
-      <CreateSectionModal
+      <CreateProjectSectionModal
         organizationId={organizationId}
         visible={createSectionModal.isOn}
         onClose={createSectionModal.toggleOff}
