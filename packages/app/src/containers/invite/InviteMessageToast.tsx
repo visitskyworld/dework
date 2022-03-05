@@ -155,7 +155,7 @@ export const InviteMessageToast: FC = () => {
       style: messageBottomStyle,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [!!invite]);
+  }, [!!invite, authenticated]);
 
   return (
     <>
