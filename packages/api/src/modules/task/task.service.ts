@@ -196,6 +196,14 @@ export class TaskService {
     return this.taskSectionRepo.findOne(created.id) as Promise<TaskSection>;
   }
 
+  public async updateSection(
+    partial: DeepAtLeast<TaskSection, "id" | "projectId">
+  ): Promise<TaskSection> {
+    const query = { id: partial.id, projectId: partial.projectId };
+    await this.taskSectionRepo.update(query, partial);
+    return this.taskSectionRepo.findOne(query) as Promise<TaskSection>;
+  }
+
   public async findById(id: string): Promise<Task | undefined> {
     return this.taskRepo.findOne(id);
   }

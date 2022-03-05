@@ -450,6 +450,7 @@ export interface UpdateOrganizationMutation_organization_projects_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface UpdateOrganizationMutation_organization_projects {
@@ -1001,6 +1002,7 @@ export interface CreateProjectMutation_project_organization_projects_taskSection
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateProjectMutation_project_organization_projects {
@@ -1139,6 +1141,7 @@ export interface CreateProjectMutation_project_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateProjectMutation_project {
@@ -1291,6 +1294,7 @@ export interface UpdateProjectMutation_project_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface UpdateProjectMutation_project {
@@ -1416,6 +1420,7 @@ export interface CreateTaskSectionMutation_section_project_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateTaskSectionMutation_section_project {
@@ -1436,6 +1441,44 @@ export interface CreateTaskSectionMutation {
 
 export interface CreateTaskSectionMutationVariables {
   input: CreateTaskSectionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateTaskSectionMutation
+// ====================================================
+
+export interface UpdateTaskSectionMutation_section_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+  projectId: string;
+}
+
+export interface UpdateTaskSectionMutation_section_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskSections: UpdateTaskSectionMutation_section_project_taskSections[];
+}
+
+export interface UpdateTaskSectionMutation_section {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  project: UpdateTaskSectionMutation_section_project;
+}
+
+export interface UpdateTaskSectionMutation {
+  section: UpdateTaskSectionMutation_section;
+}
+
+export interface UpdateTaskSectionMutationVariables {
+  input: UpdateTaskSectionInput;
 }
 
 /* tslint:disable */
@@ -4806,6 +4849,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects_taskSect
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projects {
@@ -5064,6 +5108,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects_taskSect
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projects {
@@ -5322,6 +5367,7 @@ export interface CreateProjectsFromGithubMutation_organization_projects_taskSect
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_projects {
@@ -6060,6 +6106,7 @@ export interface GetOrganizationQuery_organization_projects_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface GetOrganizationQuery_organization_projects {
@@ -6711,6 +6758,7 @@ export interface GetProjectQuery_project_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface GetProjectQuery_project {
@@ -9876,6 +9924,7 @@ export interface TaskSection {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 /* tslint:disable */
@@ -10214,6 +10263,7 @@ export interface ProjectDetails_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface ProjectDetails {
@@ -11827,6 +11877,7 @@ export interface OrganizationDetails_projects_taskSections {
   name: string;
   status: TaskStatus;
   sortKey: string;
+  projectId: string;
 }
 
 export interface OrganizationDetails_projects {
@@ -12359,6 +12410,14 @@ export interface UpdateTaskRewardInput {
   amount: string;
   tokenId: Scalar.UUID;
   trigger: TaskRewardTrigger;
+}
+
+export interface UpdateTaskSectionInput {
+  id: Scalar.UUID;
+  projectId: Scalar.UUID;
+  name?: string | null;
+  sortKey?: string | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateTaskSubmissionInput {

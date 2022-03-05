@@ -40,6 +40,7 @@ import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { CreateProjectSectionInput } from "./dto/CreateProjectSectionInput";
 import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
 import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 
 @Resolver(() => Project)
 @Injectable()
@@ -72,6 +73,15 @@ export class ProjectResolver {
     // TODO(fant): query and filter by deletedAt directly
     const tags = await project.taskTags;
     return tags.filter((t) => !t.deletedAt);
+  }
+
+  @ResolveField(() => [TaskSection])
+  public async taskSections(
+    @Parent() project: Project
+  ): Promise<TaskSection[]> {
+    // TODO(fant): query and filter by deletedAt directly
+    const sections = await project.taskSections;
+    return sections.filter((s) => !s.deletedAt);
   }
 
   @ResolveField(() => [ProjectIntegration])

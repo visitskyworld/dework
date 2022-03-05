@@ -52,6 +52,7 @@ import { subject } from "@casl/ability";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
+import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -311,6 +312,15 @@ export class TaskResolver {
     @Args("input") input: CreateTaskSectionInput
   ): Promise<TaskSection> {
     return this.taskService.createSection(input);
+  }
+
+  @Mutation(() => TaskSection)
+  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  @UseAbility(Actions.update, TaskSection)
+  public async updateTaskSection(
+    @Args("input") input: UpdateTaskSectionInput
+  ): Promise<TaskSection> {
+    return this.taskService.updateSection(input);
   }
 
   @Query(() => Task)

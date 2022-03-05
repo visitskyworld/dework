@@ -125,6 +125,7 @@ export const taskSection = gql`
     name
     status
     sortKey
+    projectId
   }
 `;
 

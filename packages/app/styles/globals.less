@@ -286,6 +286,28 @@ textarea {
       }
     }
   }
+
+  .dewo-task-board-column {
+    background: #1B1D4B;
+    .dewo-task-board-column-section-title {
+      position: sticky;
+      top: 0;
+      background: #1B1D4B;
+      z-index: 1;
+      padding-top: 8px;
+  
+      .dewo-task-board-column-section-options {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+  
+      &:hover .dewo-task-board-column-section-options {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
 }
 
 ::-webkit-scrollbar {
@@ -874,3 +896,5 @@ textarea {
     border-color: @twitter-color;
   }
 }
+
+

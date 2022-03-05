@@ -16,6 +16,7 @@ import {
 } from "./TaskBoardColumnEmtpy";
 import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
 import { TaskSectionTitle } from "./TaskSectionTitle";
+import { TaskSectionOptionButton } from "./TaskSectionOptionButton";
 
 interface Props {
   status: TaskStatus;
@@ -90,7 +91,7 @@ export const TaskBoardColumn: FC<Props> = ({
           )}
         </>
       }
-      style={{ width, backgroundColor: "#1B1D4B" }}
+      style={{ width }}
       className="dewo-task-board-column"
     >
       {!!projectId && (
@@ -107,13 +108,7 @@ export const TaskBoardColumn: FC<Props> = ({
           {groups.length > 1 && (
             <Row
               align="middle"
-              style={{
-                position: "sticky",
-                top: 0,
-                backgroundColor: "#1B1D4B",
-                zIndex: 1,
-                paddingTop: 8,
-              }}
+              className="dewo-task-board-column-section-title"
             >
               <TaskSectionTitle
                 title={`${group.section?.name ?? "Uncategorized"} (${
@@ -122,7 +117,10 @@ export const TaskBoardColumn: FC<Props> = ({
                 collapsed={collapsed[group.id]}
                 onChangeCollapsed={() => toggleCollapsed(group.id)}
               />
-              {/* <div style={{ flex: 1 }} /> */}
+              <div style={{ flex: 1 }} />
+              {!!group.section && (
+                <TaskSectionOptionButton section={group.section} />
+              )}
               {/* {section.button} */}
             </Row>
           )}

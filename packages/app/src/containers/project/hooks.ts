@@ -42,6 +42,9 @@ import {
   UpdateProjectMemberMutationVariables,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
+  UpdateTaskSectionInput,
+  UpdateTaskSectionMutation,
+  UpdateTaskSectionMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -224,6 +227,22 @@ export function useCreateTaskSection(): (
     CreateTaskSectionMutation,
     CreateTaskSectionMutationVariables
   >(Mutations.createTaskSection);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useUpdateTaskSection(): (
+  input: UpdateTaskSectionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    UpdateTaskSectionMutation,
+    UpdateTaskSectionMutationVariables
+  >(Mutations.updateTaskSection);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });
