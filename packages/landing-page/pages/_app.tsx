@@ -27,7 +27,11 @@ if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   hotjar.initialize(ID, version);
 }
 
-Sentry.init({ dsn: Constants.SENTRY_DSN, environment: Constants.ENVIRONMENT });
+Sentry.init({
+  dsn: Constants.SENTRY_DSN,
+  environment: Constants.ENVIRONMENT,
+  ignoreErrors: ["ResizeObserver loop limit exceeded"],
+});
 
 type Props = AppProps & WithApolloProps<any>;
 const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({

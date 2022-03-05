@@ -44,7 +44,11 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
   prod: "/logo.svg",
 };
 
-Sentry.init({ dsn: Constants.SENTRY_DSN, environment: Constants.ENVIRONMENT });
+Sentry.init({
+  dsn: Constants.SENTRY_DSN,
+  environment: Constants.ENVIRONMENT,
+  ignoreErrors: ["ResizeObserver loop limit exceeded"],
+});
 
 interface AuthProps {
   origin: string;
