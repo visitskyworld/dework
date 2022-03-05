@@ -71,10 +71,12 @@ export const TaskBoardColumn: FC<Props> = ({
       extra={
         <>
           {!!projectId && status !== TaskStatus.DONE && (
-            <TaskBoardColumnOptionButton
-              status={status}
-              projectId={projectId}
-            />
+            <Can I="create" a="TaskSection">
+              <TaskBoardColumnOptionButton
+                status={status}
+                projectId={projectId}
+              />
+            </Can>
           )}
           {!!projectId && (
             <Can I="create" this={{ __typename: "Task", status }}>

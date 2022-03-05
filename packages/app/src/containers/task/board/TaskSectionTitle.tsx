@@ -1,4 +1,4 @@
-import { Button, Typography } from "antd";
+import { Button } from "antd";
 import React, { CSSProperties, FC } from "react";
 import * as Icons from "@ant-design/icons";
 
@@ -12,28 +12,18 @@ interface Props {
 export const TaskSectionTitle: FC<Props> = ({
   title,
   collapsed,
-  style,
   onChangeCollapsed,
 }) => {
   return (
-    <>
-      <Typography.Text
-        strong
-        type="secondary"
-        className="ant-typography-caption"
-        style={style}
-      >
-        {title.toUpperCase()}
-      </Typography.Text>
-      <Button
-        type="text"
-        size="small"
-        className="text-secondary"
-        icon={
-          collapsed ? <Icons.CaretUpOutlined /> : <Icons.CaretDownOutlined />
-        }
-        onClick={onChangeCollapsed}
-      />
-    </>
+    <Button
+      type="text"
+      size="small"
+      className="text-secondary font-bold ant-typography-caption"
+      style={{ marginLeft: -8 }}
+      onClick={onChangeCollapsed}
+    >
+      {title.toUpperCase()}
+      {collapsed ? <Icons.CaretUpOutlined /> : <Icons.CaretDownOutlined />}
+    </Button>
   );
 };
