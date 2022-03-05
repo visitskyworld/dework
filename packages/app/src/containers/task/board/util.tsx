@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import _ from "lodash";
 import {
   PaymentMethodType,
+  PaymentStatus,
   Task,
   TaskSection,
   TaskStatus,
@@ -10,22 +11,17 @@ import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useProject } from "../../project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { GnosisPayAllButton } from "./GnosisPayAllButton";
 
 const Between = inject("0123456789");
 
 export interface TaskGroup {
   id: string;
   tasks: Task[];
+  title: string;
   section?: TaskSection;
+  button?: ReactNode;
 }
-
-// export interface TaskSection {
-//   id: string;
-//   title?: string;
-//   tasks: Task[];
-//   hidden?: boolean;
-//   button?: ReactNode;
-// }
 
 export const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.BACKLOG]: "Community Suggestions",
@@ -60,8 +56,13 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
 
 export function useGroupedTasks(
   tasks: Task[],
+  projectId?: string,
   sections?: TaskSection[]
 ): Record<TaskStatus, TaskGroup[]> {
+  const canUpdateTasks = usePermission("update", {
+    __typename: "Task",
+  } as Task);
+
   return useMemo(() => {
     const sectionsByStatus = _.groupBy(
       sections,
@@ -84,95 +85,6 @@ export function useGroupedTasks(
           : _.sortBy(tasks, (t) => t.sortKey)
       )
       .mapValues((tasks, status): TaskGroup[] => {
-        const sections = sectionsByStatus[status as TaskStatus] ?? [];
-        const [sectioned, unsectioned] = _.partition(tasks, (t) =>
-          sections.some((s) => s.id === t.sectionId)
-        );
-
-        const groups: TaskGroup[] = [];
-        _.sortBy(sections, (s) => s.sortKey)
-          .reverse()
-          .forEach((section) =>
-            groups.push({
-              section,
-              id: section.id,
-              tasks: sectioned.filter((t) => t.sectionId === section.id),
-            })
-          );
-        groups.push({ tasks: unsectioned, id: "default" });
-
-        return groups;
-      })
-      .value() as Record<TaskStatus, TaskGroup[]>;
-  }, [tasks, sections]);
-}
-
-/*
-export function useGroupedTasks(
-  tasks: Task[],
-  projectId?: string
-): Record<TaskStatus, TaskSection[]> {
-  const canUpdateTasks = usePermission("update", {
-    __typename: "Task",
-  } as Task);
-  return useMemo(() => {
-    return _(tasks)
-      .filter((task) => !task.deletedAt)
-      .groupBy((task) => task.status)
-      .mapValues((tasks, status) =>
-        status === TaskStatus.DONE
-          ? _.sortBy(tasks, (t) => t.doneAt).reverse()
-          : _.sortBy(tasks, (t) => t.sortKey)
-      )
-      .mapValues((tasks, status): TaskSection[] => {
-        if (status === TaskStatus.TODO) {
-          const [assigned, unassigned] = _.partition(
-            tasks,
-            (task) => !!task.assignees.length
-          );
-          const [claimed, unclaimed] = _.partition(
-            unassigned,
-            (task) => !!task.applications.length
-          );
-
-          if (canUpdateTasks) {
-            if (!!assigned.length || !!claimed.length) {
-              return [
-                {
-                  id: "open-applications",
-                  title: "Open applications",
-                  tasks: claimed,
-                  hidden: !claimed.length,
-                },
-                {
-                  id: "assigned",
-                  title: "Assigned",
-                  tasks: assigned,
-                  hidden: !assigned.length,
-                },
-                { id: "unclaimed", title: "Unclaimed", tasks: unclaimed },
-              ];
-            }
-          } else {
-            if (!!assigned.length) {
-              return [
-                {
-                  id: "assigned",
-                  title: "Assigned",
-                  tasks: assigned,
-                  hidden: !assigned.length,
-                },
-                {
-                  id: "unclaimed",
-                  title: "Unclaimed",
-                  tasks: unassigned,
-                  hidden: !unassigned.length,
-                },
-              ];
-            }
-          }
-        }
-
         if (status === TaskStatus.DONE && canUpdateTasks) {
           const unpaid: Task[] = [];
           const processing: Task[] = [];
@@ -200,7 +112,6 @@ export function useGroupedTasks(
                 id: "needs-payment",
                 title: "Needs payment",
                 tasks: unpaid,
-                hidden: !unpaid.length,
                 button: !!projectId && (
                   <GnosisPayAllButton
                     taskIds={unpaid.map((t) => t.id)}
@@ -212,19 +123,39 @@ export function useGroupedTasks(
                 id: "processing-payment",
                 title: "Processing payment",
                 tasks: processing,
-                hidden: !processing.length,
               },
               { id: "paid", title: "Paid", tasks: paid },
             ];
           }
         }
 
-        return [{ id: "all", tasks }];
+        const sections = sectionsByStatus[status as TaskStatus] ?? [];
+        const [sectioned, unsectioned] = _.partition(tasks, (t) =>
+          sections.some((s) => s.id === t.sectionId)
+        );
+
+        const groups: TaskGroup[] = [];
+        _.sortBy(sections, (s) => s.sortKey)
+          .reverse()
+          .forEach((section) =>
+            groups.push({
+              id: section.id,
+              title: section.name,
+              section,
+              tasks: sectioned.filter((t) => t.sectionId === section.id),
+            })
+          );
+        groups.push({
+          id: "default",
+          tasks: unsectioned,
+          title: '"Uncategorized"',
+        });
+
+        return groups;
       })
-      .value() as Record<TaskStatus, TaskSection[]>;
-  }, [tasks, projectId, canUpdateTasks]);
+      .value() as Record<TaskStatus, TaskGroup[]>;
+  }, [tasks, sections, projectId, canUpdateTasks]);
 }
-*/
 
 export function getSortKeyBetween<T>(
   itemAbove: T | undefined,

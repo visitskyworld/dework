@@ -111,9 +111,7 @@ export const TaskBoardColumn: FC<Props> = ({
               className="dewo-task-board-column-section-title"
             >
               <TaskSectionTitle
-                title={`${group.section?.name ?? "Uncategorized"} (${
-                  group.tasks.length
-                })`}
+                title={`${group.title} (${group.tasks.length})`}
                 collapsed={collapsed[group.id]}
                 onChangeCollapsed={() => toggleCollapsed(group.id)}
               />
@@ -121,7 +119,7 @@ export const TaskBoardColumn: FC<Props> = ({
               {!!group.section && (
                 <TaskSectionOptionButton section={group.section} />
               )}
-              {/* {section.button} */}
+              {group.button}
             </Row>
           )}
           {!collapsed[group.id] && (

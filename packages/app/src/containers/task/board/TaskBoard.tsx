@@ -40,7 +40,7 @@ interface Props {
 }
 
 const columnWidth = 300;
-const emptyGroups: TaskGroup[] = [{ id: "default", tasks: [] }];
+const emptyGroups: TaskGroup[] = [{ id: "default", title: "", tasks: [] }];
 
 export const TaskBoard: FC<Props> = ({
   tasks,
@@ -53,7 +53,7 @@ export const TaskBoard: FC<Props> = ({
   const { user } = useAuthContext();
 
   const filteredTasks = useFilteredTasks(tasks);
-  const groupedTasks = useGroupedTasks(filteredTasks, sections);
+  const groupedTasks = useGroupedTasks(filteredTasks, projectId, sections);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
   const currentlyDraggingTask = useMemo(
