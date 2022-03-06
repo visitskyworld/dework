@@ -27,11 +27,10 @@ export const OrganizationInviteButton: FC<Props> = ({
     useCopyToClipboardAndShowToast("Invite link copied");
   const createOrganizationInvite = useCreateOrganizationInvite();
   const inviteOrganizationAdmin = useCallback(async () => {
-    const inviteId = await createOrganizationInvite({
+    const inviteLink = await createOrganizationInvite({
       organizationId: organization!.id,
       role: OrganizationRole.ADMIN,
     });
-    const inviteLink = `${organization!.permalink}?inviteId=${inviteId}`;
     copyToClipboardAndShowToast(inviteLink);
   }, [createOrganizationInvite, copyToClipboardAndShowToast, organization]);
   const inviteToTokenGatedProjects = useCallback(async () => {

@@ -454,6 +454,7 @@ export const createOrganizationInvite = gql`
   mutation CreateOrganizationInviteMutation($input: OrganizationInviteInput!) {
     invite: createOrganizationInvite(input: $input) {
       id
+      permalink
     }
   }
 `;
@@ -463,9 +464,6 @@ export const createProjectInvite = gql`
     invite: createProjectInvite(input: $input) {
       id
       permalink
-      project {
-        id
-      }
     }
   }
 `;

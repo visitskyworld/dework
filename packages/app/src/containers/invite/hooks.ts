@@ -46,7 +46,7 @@ export function useCreateOrganizationInvite(): (
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.invite.id;
+      return res.data?.invite.permalink;
     },
     [createInvite]
   );
