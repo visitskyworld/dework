@@ -4,7 +4,7 @@ import { Task } from "@dewo/app/graphql/types";
 import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useDeleteTaskApplication } from "../hooks";
-import { useNavigateToTasApplicationkFn } from "@dewo/app/util/navigation";
+import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
 
 interface Props {
   task: Task;
@@ -17,7 +17,7 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
     [user, task.applications]
   );
 
-  const navigateToTasApplicationk = useNavigateToTasApplicationkFn();
+  const navigateToTasApplicationk = useNavigateToTaskApplicationFn();
   const handleInterested = useCallback(
     () => navigateToTasApplicationk(task.id),
     [navigateToTasApplicationk, task.id]

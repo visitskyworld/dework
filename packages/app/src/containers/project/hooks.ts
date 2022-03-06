@@ -35,6 +35,7 @@ import {
   RemoveProjectMemberInput,
   RemoveProjectMemberMutation,
   RemoveProjectMemberMutationVariables,
+  Task,
   TaskTag,
   UpdateProjectInput,
   UpdateProjectMemberInput,
@@ -181,7 +182,7 @@ export function useProject(projectId: string | undefined): {
 export function useProjectTasks(
   projectId: string,
   fetchPolicy?: WatchQueryFetchPolicy
-): GetProjectTasksQuery["project"] | undefined {
+): Task[] | undefined {
   const { data, refetch } = useQuery<
     GetProjectTasksQuery,
     GetProjectTasksQueryVariables
@@ -193,7 +194,12 @@ export function useProjectTasks(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useListenToTasks();
-  return data?.project ?? undefined;
+  const tasks = data?.project.tasks ?? undefined;
+  // filter out tasks that recently have been moved
+  return useMemo(
+    () => tasks?.filter((t) => t.projectId === projectId),
+    [tasks, projectId]
+  );
 }
 
 export function useProjectTaskTags(projectId: string | undefined): TaskTag[] {

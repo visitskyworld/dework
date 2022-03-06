@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { User } from "../graphql/types";
@@ -33,7 +34,19 @@ export function useNavigateToTaskFn(): (taskId: string) => void {
   );
 }
 
-export function useNavigateToTasApplicationkFn(): (
+export function useCloseTaskDetails(): () => void {
+  const router = useRouter();
+  return useCallback(
+    () =>
+      router.push({
+        pathname: router.pathname,
+        query: _.omit(router.query, ["taskId"]),
+      }),
+    [router]
+  );
+}
+
+export function useNavigateToTaskApplicationFn(): (
   applyToTaskId: string
 ) => void {
   const router = useRouter();

@@ -10,7 +10,7 @@ interface Props {
   projectName: string;
 }
 export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
-  const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
+  const tasks = useProjectTasks(projectId, "cache-and-network");
 
   const headers = useMemo(
     () => [

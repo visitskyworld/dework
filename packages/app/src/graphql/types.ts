@@ -12410,6 +12410,7 @@ export interface UpdateTaskInput {
   description?: string | null;
   parentTaskId?: Scalar.UUID | null;
   sectionId?: Scalar.UUID | null;
+  projectId?: Scalar.UUID | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;

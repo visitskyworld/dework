@@ -1,5 +1,10 @@
 import * as Icons from "@ant-design/icons";
-import { TaskDetails } from "@dewo/app/graphql/types";
+import {
+  OrganizationRole,
+  Project,
+  ProjectRole,
+  TaskDetails,
+} from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import {
   Button,
@@ -11,31 +16,102 @@ import {
   Typography,
 } from "antd";
 import { useRouter } from "next/router";
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import {
   toTaskRewardFormValues,
   useCreateTaskFromFormValues,
   useDeleteTask,
+  useUpdateTask,
 } from "../hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
+import {
+  useCloseTaskDetails,
+  useNavigateToTaskFn,
+} from "@dewo/app/util/navigation";
+import { useOrganization } from "../../organization/hooks";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import Link from "next/link";
+import { RouterContext } from "next/dist/shared/lib/router-context";
 
 interface Props {
   task: TaskDetails;
 }
 
+const MoveTaskSubmenu: FC<Props> = ({ task }) => {
+  const { organization } = useOrganization(task.project.organization.id);
+  const { user } = useAuthContext();
+  const isOrgAdmin = useMemo(
+    () =>
+      organization?.members.some(
+        (m) => m.userId === user?.id && m.role === OrganizationRole.ADMIN
+      ),
+    [organization?.members, user?.id]
+  );
+
+  const router = useRouter();
+  const closeTaskDetails = useCloseTaskDetails();
+  const updateTask = useUpdateTask();
+  const handleMoveTask = useCallback(
+    async (project: Project) => {
+      await updateTask({ id: task.id, projectId: project.id });
+      await closeTaskDetails();
+      message.success({
+        content: (
+          <RouterContext.Provider value={router}>
+            <Typography.Text style={{ marginRight: 16 }}>
+              Task moved to {project.name}
+            </Typography.Text>
+            <Link href={`${project.permalink}?taskId=${task.id}`}>
+              <Button type="ghost" size="small">
+                View
+              </Button>
+            </Link>
+          </RouterContext.Provider>
+        ),
+      });
+    },
+    [updateTask, closeTaskDetails, router, task.id]
+  );
+
+  if (!organization?.projects.length) return null;
+  return (
+    <Menu.SubMenu
+      icon={
+        !organization ? <Icons.LoadingOutlined /> : <Icons.ExportOutlined />
+      }
+      title="Move Task"
+    >
+      {organization?.projects
+        .filter((project) => project.id !== task.project.id)
+        .map((project) => (
+          <Menu.Item
+            key={project.id}
+            disabled={
+              !isOrgAdmin &&
+              !project.members.some(
+                (m) => m.userId === user?.id && m.role === ProjectRole.ADMIN
+              )
+            }
+            onClick={() => handleMoveTask(project)}
+          >
+            {project.name}
+          </Menu.Item>
+        ))}
+    </Menu.SubMenu>
+  );
+};
+
 export const TaskOptionsButton: FC<Props> = ({ task }) => {
-  const canDelete = usePermission("delete", task);
   const canCreate = usePermission("create", task);
+  const canUpdate = usePermission("update", task);
+  const canDelete = usePermission("delete", task);
   const deleteTask = useDeleteTask();
   const router = useRouter();
 
   const handleDeleteTask = useCallback(async () => {
     await deleteTask(task.id);
-    await router.push(
-      `/o/${router.query.organizationSlug}/p/${router.query.projectSlug}`
-    );
+    await router.push(task.project.permalink);
   }, [deleteTask, task, router]);
 
   const copiedToClipboard = useCallback(
@@ -107,6 +183,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
               onClick={duplicate}
             />
           )}
+          {canUpdate && <MoveTaskSubmenu task={task} />}
           {canDelete && (
             <Popconfirm
               icon={null}

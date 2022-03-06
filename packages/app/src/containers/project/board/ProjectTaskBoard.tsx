@@ -35,7 +35,7 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
   const { project } = useProject(projectId);
-  const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
+  const tasks = useProjectTasks(projectId, "cache-and-network");
   const statuses = useMemo(
     () => [
       ...(!!project?.options?.showBacklogColumn ? [TaskStatus.BACKLOG] : []),

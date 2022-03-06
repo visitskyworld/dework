@@ -16,7 +16,7 @@ interface Props {
 
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const tags = useProjectTaskTags(projectId);
-  const tasks = useProjectTasks(projectId, "cache-and-network")?.tasks;
+  const tasks = useProjectTasks(projectId, "cache-and-network");
   const filteredTasks = useFilteredTasks(useMemo(() => tasks ?? [], [tasks]));
   const rows = useMemo(
     () =>
