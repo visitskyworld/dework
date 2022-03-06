@@ -27,6 +27,7 @@ export class GithubRequests {
       query: `
         query GetGithubRepos($organizationId: UUID!) {
           repos: getGithubRepos(organizationId: $organizationId) {
+            id
             name
             organization
             integrationId

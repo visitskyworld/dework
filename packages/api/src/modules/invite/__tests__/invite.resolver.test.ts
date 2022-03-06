@@ -262,6 +262,7 @@ describe("InviteResolver", () => {
             await fixtures.createProjectTokenGate({
               projectId: project.id,
               tokenId: token.id,
+              role: ProjectRole.ADMIN,
             });
             const invite = await fixtures.createInvite(
               { projectId: project.id, projectRole: ProjectRole.ADMIN },
@@ -307,6 +308,7 @@ describe("InviteResolver", () => {
             await fixtures.createProjectTokenGate({
               projectId: project.id,
               tokenId: token.id,
+              role: ProjectRole.ADMIN,
             });
             const invite = await fixtures.createInvite(
               { projectId: project.id, projectRole: ProjectRole.ADMIN },

@@ -24,6 +24,24 @@ export const projectRoleToString: Record<ProjectRole, string> = {
   [ProjectRole.CONTRIBUTOR]: "Contributor",
 };
 
+export const projectRoleDescription: Record<ProjectRole, string> = {
+  [ProjectRole.ADMIN]: [
+    "Project Stewards can:",
+    "- do everything Contributors can",
+    "- manage all tasks, applications, submissions",
+    "- manage project settings",
+    "- invite stewards and contributors",
+  ].join("\n"),
+  [ProjectRole.CONTRIBUTOR]: [
+    "Project Contributors can:",
+    "- see private projects",
+    "- apply to tasks",
+    "- manage tasks they're assigned to or reviewing",
+    "- invite contributors",
+    "- create and vote on community suggestions",
+  ].join("\n"),
+};
+
 export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
   const { project } = useProject(projectId);
   const updateMember = useUpdateProjectMember();

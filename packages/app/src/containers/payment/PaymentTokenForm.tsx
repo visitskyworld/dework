@@ -1,6 +1,16 @@
 import React, { FC, useCallback, useState } from "react";
 import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
-import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
+import {
+  Button,
+  ButtonProps,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+} from "antd";
 import {
   CreatePaymentTokenInput,
   PaymentNetwork,
@@ -20,6 +30,7 @@ interface FormProps {
   network?: PaymentNetwork;
   type?: PaymentTokenType;
   submitText?: string;
+  renderSubmitButton?(buttonProps: ButtonProps): JSX.Element;
   onDone(token: PaymentToken): void;
 }
 
@@ -27,10 +38,15 @@ interface FormModalProps extends FormProps {
   toggle: UseToggleHook;
 }
 
+const defaultRenderSubmitButton = (buttonProps: ButtonProps) => (
+  <Button {...buttonProps} />
+);
+
 export const PaymentTokenForm: FC<FormProps> = ({
   network,
   type,
   submitText = "Add Custom Token",
+  renderSubmitButton = defaultRenderSubmitButton,
   onDone,
 }) => {
   const [form] = useForm<CreatePaymentTokenInput>();
@@ -263,15 +279,14 @@ export const PaymentTokenForm: FC<FormProps> = ({
         </Col>
 
         <Col span={24}>
-          <Button
-            type="primary"
-            block
-            loading={submitLoading.isOn}
-            hidden={!values.name || !values.symbol || !values.exp}
-            onClick={form.submit}
-          >
-            {submitText}
-          </Button>
+          {renderSubmitButton?.({
+            type: "primary",
+            block: true,
+            loading: submitLoading.isOn,
+            hidden: !values.name || !values.symbol || !values.exp,
+            children: submitText,
+            onClick: form.submit,
+          })}
         </Col>
       </Row>
     </Form>

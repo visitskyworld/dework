@@ -1,55 +1,25 @@
-import {
-  PaymentToken,
-  ProjectDetails,
-  ProjectVisibility,
-} from "@dewo/app/graphql/types";
-import { Divider, Typography } from "antd";
+import { ProjectDetails, ProjectTokenGate } from "@dewo/app/graphql/types";
+import { Alert, Divider, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import {
-  useCreateProjectTokenGate,
-  useDeleteProjectTokenGate,
-  useUpdateProject,
-} from "../hooks";
-import { ProjectSettingsTokenGatingInput } from "./ProjectSettingsTokenGatingInput";
+import { useDeleteProjectTokenGate } from "../hooks";
+import { CreateProjectTokenGate } from "./CreateProjectTokenGate";
+import { projectRoleToString } from "./ProjectSettingsMemberList";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettingsTokenGating: FC<Props> = ({ project }) => {
-  const tokenGate = project.tokenGates[0];
-  const createProjectTokenGate = useCreateProjectTokenGate();
   const deleteProjectTokenGate = useDeleteProjectTokenGate();
-  const updateProject = useUpdateProject();
-
-  const handleChangeTokenGating = useCallback(
-    async (token: PaymentToken | undefined) => {
-      if (!!token && !tokenGate) {
-        await createProjectTokenGate({
-          projectId: project.id,
-          tokenId: token.id,
-        });
-        if (project.visibility !== ProjectVisibility.PRIVATE) {
-          await updateProject({
-            id: project.id,
-            visibility: ProjectVisibility.PRIVATE,
-          });
-        }
-      } else {
-        await deleteProjectTokenGate({
-          projectId: project.id,
-          tokenId: tokenGate.token.id,
-        });
-      }
+  const handleDeleteTokenGate = useCallback(
+    async (tokenGate: ProjectTokenGate) => {
+      await deleteProjectTokenGate({
+        projectId: project.id,
+        tokenId: tokenGate.token.id,
+        role: tokenGate.role,
+      });
     },
-    [
-      tokenGate,
-      createProjectTokenGate,
-      project.id,
-      project.visibility,
-      updateProject,
-      deleteProjectTokenGate,
-    ]
+    [deleteProjectTokenGate, project.id]
   );
 
   return (
@@ -60,9 +30,25 @@ export const ProjectSettingsTokenGating: FC<Props> = ({ project }) => {
 
       <Divider style={{ marginTop: 0 }} />
 
-      <ProjectSettingsTokenGatingInput
-        value={tokenGate?.token ?? undefined}
-        onChange={handleChangeTokenGating}
+      <Space direction="vertical" style={{ width: "100%", marginBottom: 24 }}>
+        {project.tokenGates.map((tokenGate) => (
+          <Alert
+            message={`Users with ${tokenGate.token.name} (${
+              tokenGate.token.symbol
+            }) in their wallets can join this project as ${
+              projectRoleToString[tokenGate.role]
+            }`}
+            type="success"
+            showIcon
+            closable
+            onClose={() => handleDeleteTokenGate(tokenGate)}
+          />
+        ))}
+      </Space>
+
+      <CreateProjectTokenGate
+        key={project.tokenGates.length}
+        project={project}
       />
     </>
   );

@@ -6,6 +6,7 @@ import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole } from "@dewo/app/graphql/types";
+import { projectRoleDescription } from "../project/settings/ProjectSettingsMemberList";
 
 interface Props {
   projectId: string;
@@ -66,14 +67,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
                   placement="right"
                   title={
                     <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                      {[
-                        "Project Contributors can:",
-                        "- see private projects",
-                        "- apply to tasks",
-                        "- manage tasks they're assigned to or reviewing",
-                        "- invite contributors",
-                        "- create and vote on community suggestions",
-                      ].join("\n")}
+                      {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
                     </Typography.Text>
                   }
                 >
@@ -86,13 +80,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
                   placement="right"
                   title={
                     <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                      {[
-                        "Project Stewards can:",
-                        "- do everything Contributors can",
-                        "- manage all tasks, applications, submissions",
-                        "- manage project settings",
-                        "- invite stewards and contributors",
-                      ].join("\n")}
+                      {projectRoleDescription[ProjectRole.ADMIN]}
                     </Typography.Text>
                   }
                 >

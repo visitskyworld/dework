@@ -31,8 +31,8 @@ describe("CoordinapeController", () => {
       supertest(app.getHttpServer())
         .get(`/integrations/coordinape/${project.organizationId}`)
         .query({
-          epoch_start: moment(doneAtAfter).unix(),
-          epoch_end: moment(doneAtBefore).unix(),
+          epoch_start: moment(doneAtAfter).toISOString(),
+          epoch_end: moment(doneAtBefore).toISOString(),
         })
         .send()
         .then((res) => res.body);

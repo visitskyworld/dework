@@ -431,6 +431,7 @@ export interface UpdateOrganizationMutation_organization_projects_tokenGates_tok
 export interface UpdateOrganizationMutation_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: UpdateOrganizationMutation_organization_projects_tokenGates_token;
 }
@@ -561,6 +562,7 @@ export interface UpdateOrganizationMutation_organization_projectTokenGates_token
 export interface UpdateOrganizationMutation_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: UpdateOrganizationMutation_organization_projectTokenGates_token;
 }
@@ -889,6 +891,7 @@ export interface CreateProjectMutation_project_tokenGates_token {
 export interface CreateProjectMutation_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectMutation_project_tokenGates_token;
 }
@@ -983,6 +986,7 @@ export interface CreateProjectMutation_project_organization_projects_tokenGates_
 export interface CreateProjectMutation_project_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectMutation_project_organization_projects_tokenGates_token;
 }
@@ -1113,6 +1117,7 @@ export interface CreateProjectMutation_project_organization_projectTokenGates_to
 export interface CreateProjectMutation_project_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectMutation_project_organization_projectTokenGates_token;
 }
@@ -1275,6 +1280,7 @@ export interface UpdateProjectMutation_project_tokenGates_token {
 export interface UpdateProjectMutation_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: UpdateProjectMutation_project_tokenGates_token;
 }
@@ -3272,6 +3278,7 @@ export interface CreateProjectTokenGateMutation_tokenGate_project_tokenGates_tok
 export interface CreateProjectTokenGateMutation_tokenGate_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectTokenGateMutation_tokenGate_project_tokenGates_token;
 }
@@ -3333,6 +3340,7 @@ export interface DeleteProjectTokenGateMutation_tokenGate_tokenGates_token {
 export interface DeleteProjectTokenGateMutation_tokenGate_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: DeleteProjectTokenGateMutation_tokenGate_tokenGates_token;
 }
@@ -4826,6 +4834,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects_tokenGat
 export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token;
 }
@@ -4956,6 +4965,7 @@ export interface CreateProjectsFromNotionMutation_organization_projectTokenGates
 export interface CreateProjectsFromNotionMutation_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromNotionMutation_organization_projectTokenGates_token;
 }
@@ -5085,6 +5095,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGat
 export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token;
 }
@@ -5215,6 +5226,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates
 export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromTrelloMutation_organization_projectTokenGates_token;
 }
@@ -5344,6 +5356,7 @@ export interface CreateProjectsFromGithubMutation_organization_projects_tokenGat
 export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromGithubMutation_organization_projects_tokenGates_token;
 }
@@ -5474,6 +5487,7 @@ export interface CreateProjectsFromGithubMutation_organization_projectTokenGates
 export interface CreateProjectsFromGithubMutation_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: CreateProjectsFromGithubMutation_organization_projectTokenGates_token;
 }
@@ -6083,6 +6097,7 @@ export interface GetOrganizationQuery_organization_projects_tokenGates_token {
 export interface GetOrganizationQuery_organization_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: GetOrganizationQuery_organization_projects_tokenGates_token;
 }
@@ -6213,6 +6228,7 @@ export interface GetOrganizationQuery_organization_projectTokenGates_token {
 export interface GetOrganizationQuery_organization_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: GetOrganizationQuery_organization_projectTokenGates_token;
 }
@@ -6735,6 +6751,7 @@ export interface GetProjectQuery_project_tokenGates_token {
 export interface GetProjectQuery_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: GetProjectQuery_project_tokenGates_token;
 }
@@ -8224,6 +8241,7 @@ export interface GetInviteQuery_invite_project_tokenGates_token {
 export interface GetInviteQuery_invite_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: GetInviteQuery_invite_project_tokenGates_token;
 }
@@ -10040,6 +10058,7 @@ export interface ProjectTokenGate_token {
 export interface ProjectTokenGate {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: ProjectTokenGate_token;
 }
@@ -10115,6 +10134,7 @@ export interface Invite_project_tokenGates_token {
 export interface Invite_project_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: Invite_project_tokenGates_token;
 }
@@ -10242,6 +10262,7 @@ export interface ProjectDetails_tokenGates_token {
 export interface ProjectDetails_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: ProjectDetails_tokenGates_token;
 }
@@ -11856,6 +11877,7 @@ export interface OrganizationDetails_projects_tokenGates_token {
 export interface OrganizationDetails_projects_tokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: OrganizationDetails_projects_tokenGates_token;
 }
@@ -11986,6 +12008,7 @@ export interface OrganizationDetails_projectTokenGates_token {
 export interface OrganizationDetails_projectTokenGates {
   __typename: "ProjectTokenGate";
   id: Scalar.UUID;
+  role: ProjectRole;
   projectId: string;
   token: OrganizationDetails_projectTokenGates_token;
 }
@@ -12296,6 +12319,7 @@ export interface ProjectOptionsInput {
 export interface ProjectTokenGateInput {
   projectId: Scalar.UUID;
   tokenId: Scalar.UUID;
+  role: ProjectRole;
 }
 
 export interface RemoveOrganizationMemberInput {

@@ -127,6 +127,12 @@ export class ProjectService {
       projectId: data.projectId,
       userId: data.userId,
     });
+
+    const project = await this.findById(data.projectId);
+    const user = await this.userService.findById(data.userId);
+    if (!project || !user) throw new BadRequestException();
+    await this.assertUserPassesTokenGates(project, user, data.role);
+
     if (!!member) {
       if (!updateIfExists) return member;
       await this.projectMemberRepo.update({ id: member.id }, data);
@@ -134,11 +140,6 @@ export class ProjectService {
         id: member.id,
       }) as Promise<ProjectMember>;
     } else {
-      const project = await this.findById(data.projectId);
-      const user = await this.userService.findById(data.userId);
-      if (!project || !user) throw new BadRequestException();
-      await this.assertUserPassesTokenGates(project, user);
-
       const created = await this.projectMemberRepo.save(data);
       return this.projectMemberRepo.findOne({
         id: created.id,
@@ -222,11 +223,13 @@ export class ProjectService {
 
   private async assertUserPassesTokenGates(
     project: Project,
-    user: User
+    user: User,
+    role: ProjectRole
   ): Promise<void> {
     const gates = await project.tokenGates;
-    if (!gates.length) return;
-    const tokens = await Promise.all(gates.map((g) => g.token));
+    const gatesWithRole = gates.filter((g) => g.role === role);
+    if (!gatesWithRole.length) return;
+    const tokens = await Promise.all(gatesWithRole.map((g) => g.token));
 
     const balances = await Promise.all(
       tokens.map((t) => this.tokenService.balanceOf(t, user))

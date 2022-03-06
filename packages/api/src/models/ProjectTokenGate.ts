@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentToken } from "./PaymentToken";
 import { Project } from "./Project";
+import { ProjectRole } from "./ProjectMember";
 
 @ObjectType()
 @Entity()
@@ -22,4 +23,8 @@ export class ProjectTokenGate extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public tokenId!: string;
+
+  @Column("enum", { enum: ProjectRole, default: ProjectRole.CONTRIBUTOR })
+  @Field(() => ProjectRole)
+  public role!: ProjectRole;
 }

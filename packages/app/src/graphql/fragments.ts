@@ -175,6 +175,7 @@ export const project = gql`
 export const projectTokenGate = gql`
   fragment ProjectTokenGate on ProjectTokenGate {
     id
+    role
     projectId
     token {
       ...PaymentToken

@@ -103,9 +103,6 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   );
 
   if (!organization) return <Skeleton />;
-  if (!projects.length) {
-    return <ProjectListEmpty organizationId={organizationId} />;
-  }
   if (typeof window === "undefined") return null;
   return (
     <div
@@ -120,69 +117,73 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         style={{ marginBottom: 16 }}
       />
 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        {sections.filter(shouldRenderSection).map((section) => (
-          <>
-            <Row align="middle" style={{ marginBottom: 4 }}>
-              <Typography.Title level={5} style={{ margin: 0 }}>
-                {section.name}
-              </Typography.Title>
-              <ProjectSectionOptionsButton
-                section={section}
-                isDefault={section.id === defaultProjectSection.id}
-                organizationId={organizationId}
-              />
-              {canCreateProject && section.id === defaultProjectSection.id && (
-                <>
-                  <div style={{ flex: 1 }} />
-                  <CreateProjectButton
-                    organizationId={organizationId}
-                    type="primary"
-                    size="small"
-                    icon={<Icons.PlusOutlined />}
-                  >
-                    Create Project
-                  </CreateProjectButton>
-                </>
-              )}
-            </Row>
-            <Droppable droppableId={section.id}>
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {projectsBySectionId[section.id]?.map((project, index) => (
-                    <Draggable
-                      key={project.id}
-                      draggableId={project.id}
-                      index={index}
-                      isDragDisabled={!canCreateProject}
+      {!projects.length ? (
+        <ProjectListEmpty organizationId={organizationId} />
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          {sections.filter(shouldRenderSection).map((section) => (
+            <>
+              <Row align="middle" style={{ marginBottom: 4 }}>
+                <Typography.Title level={5} style={{ margin: 0 }}>
+                  {section.name}
+                </Typography.Title>
+                <ProjectSectionOptionsButton
+                  section={section}
+                  isDefault={section.id === defaultProjectSection.id}
+                  organizationId={organizationId}
+                />
+                {canCreateProject && section.id === defaultProjectSection.id && (
+                  <>
+                    <div style={{ flex: 1 }} />
+                    <CreateProjectButton
+                      organizationId={organizationId}
+                      type="primary"
+                      size="small"
+                      icon={<Icons.PlusOutlined />}
                     >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <ProjectListRow project={project} />
-                          <div style={{ paddingBottom: 8 }} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                  <Row style={{ height: 36 }}>
-                    {!projectsBySectionId[section.id]?.length &&
-                      canCreateProject && (
-                        <Typography.Text type="secondary">
-                          Drag projects into this section
-                        </Typography.Text>
-                      )}
-                  </Row>
-                </div>
-              )}
-            </Droppable>
-          </>
-        ))}
-      </DragDropContext>
+                      Create Project
+                    </CreateProjectButton>
+                  </>
+                )}
+              </Row>
+              <Droppable droppableId={section.id}>
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {projectsBySectionId[section.id]?.map((project, index) => (
+                      <Draggable
+                        key={project.id}
+                        draggableId={project.id}
+                        index={index}
+                        isDragDisabled={!canCreateProject}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <ProjectListRow project={project} />
+                            <div style={{ paddingBottom: 8 }} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    <Row style={{ height: 36 }}>
+                      {!projectsBySectionId[section.id]?.length &&
+                        canCreateProject && (
+                          <Typography.Text type="secondary">
+                            Drag projects into this section
+                          </Typography.Text>
+                        )}
+                    </Row>
+                  </div>
+                )}
+              </Droppable>
+            </>
+          ))}
+        </DragDropContext>
+      )}
     </div>
   );
 };

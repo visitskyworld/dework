@@ -157,13 +157,36 @@ export class ProjectResolver {
   ): Promise<ProjectMember> {
     const project = await this.projectService.findById(projectId);
     if (!project) throw new NotFoundException();
+
     const tokenGates = await project.tokenGates;
-    if (!tokenGates.length) throw new ForbiddenException();
-    return this.projectService.upsertMember({
-      projectId,
-      userId: user.id,
-      role: ProjectRole.CONTRIBUTOR,
-    });
+    const adminGates = tokenGates.filter((g) => g.role === ProjectRole.ADMIN);
+    const contributorGates = tokenGates.filter(
+      (g) => g.role === ProjectRole.CONTRIBUTOR
+    );
+
+    if (!!adminGates.length) {
+      const member = await this.projectService
+        .upsertMember({
+          projectId,
+          userId: user.id,
+          role: ProjectRole.ADMIN,
+        })
+        .catch(() => undefined);
+      if (!!member) return member;
+    }
+
+    if (!!contributorGates.length) {
+      const member = await this.projectService
+        .upsertMember({
+          projectId,
+          userId: user.id,
+          role: ProjectRole.CONTRIBUTOR,
+        })
+        .catch(() => undefined);
+      if (!!member) return member;
+    }
+
+    throw new ForbiddenException();
   }
 
   @Mutation(() => Project)
