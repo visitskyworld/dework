@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { AppInitialProps, AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.less";
@@ -6,15 +6,7 @@ import { withApollo, WithApolloProps } from "next-with-apollo";
 import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
 import { Constants } from "@dewo/app/util/constants";
-import {
-  ApolloClient,
-  createHttpLink,
-  InMemoryCache,
-  ApolloProvider,
-  ApolloLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { ErrorLink, onError } from "@apollo/client/link/error";
+import { ErrorLink } from "@apollo/client/link/error";
 import { getAuthToken } from "@dewo/app/util/authToken";
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
@@ -26,12 +18,14 @@ import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
+import absoluteUrl from "next-absolute-url";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
-import absoluteUrl from "next-absolute-url";
+import { createApolloClient, createApolloLink } from "@dewo/app/graphql/apollo";
+import { ApolloProvider } from "@apollo/client";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -156,61 +150,9 @@ App.getInitialProps = async ({
   };
 };
 
-function createApolloLink(
-  origin: string,
-  getAuthToken: () => string | undefined,
-  onErrorRef?: MutableRefObject<ErrorLink.ErrorHandler | undefined>
-): ApolloLink {
-  const authLink = setContext((_, { headers }) => {
-    const token = getAuthToken();
-    return {
-      headers: {
-        origin,
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      },
-    };
-  });
-
-  const httpLink = createHttpLink({
-    uri: `${Constants.GRAPHQL_API_URL}/graphql`,
-  });
-  const errorLink = onError((error) => onErrorRef?.current?.(error));
-
-  // if (typeof window === "undefined") {
-  return ApolloLink.from([authLink, errorLink, httpLink]);
-  // }
-
-  // const wsLink = new WebSocketLink({
-  //   uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
-  //   options: { reconnect: true },
-  // });
-
-  // const splitLink = split(
-  //   ({ query }) => {
-  //     const definition = getMainDefinition(query);
-  //     return (
-  //       definition.kind === "OperationDefinition" &&
-  //       definition.operation === "subscription"
-  //     );
-  //   },
-  //   wsLink,
-  //   httpLink
-  // );
-
-  // return ApolloLink.from([authLink, errorLink, timeoutLink, splitLink]);
-}
-
 export default withApollo(
   ({ ctx, initialState }) => {
-    const origin = absoluteUrl(ctx?.req).origin;
-    return new ApolloClient({
-      link: createApolloLink(origin, () => getAuthToken(ctx)),
-      cache: new InMemoryCache().restore(initialState || {}),
-      // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
-      credentials: "same-origin",
-      defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
-    });
+    return createApolloClient(ctx!, initialState);
   },
   // Fetches all Apollo data on the server side
   { getDataFromTree }

@@ -1,4 +1,4 @@
-import { NextPageContext } from "next";
+import { GetServerSidePropsContext, NextPageContext } from "next";
 import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 const AUTH_TOKEN_KEY = "dewo_auth_token";
@@ -13,7 +13,7 @@ if (!isServer) {
 }
 
 export function getAuthToken(
-  ctx: NextPageContext | undefined
+  ctx: NextPageContext | GetServerSidePropsContext | undefined
 ): string | undefined {
   const fromCookies = parseCookies(ctx)[AUTH_TOKEN_KEY];
   const fromLocalStorage = !isServer

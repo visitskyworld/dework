@@ -8,6 +8,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CaslModule } from "nest-casl";
 import { permissions } from "../auth/permissions";
 import { OrganizationModule } from "../organization/organization.module";
+import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectModule } from "../project/project.module";
 import { InviteResolver } from "./invite.resolver";
 import { InviteService } from "./invite.service";
@@ -24,6 +25,7 @@ import { InviteService } from "./invite.service";
     CaslModule.forFeature({ permissions }),
     ProjectModule,
     OrganizationModule,
+    PermalinkModule,
   ],
   providers: [InviteResolver, InviteService],
   exports: [InviteService],

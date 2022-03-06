@@ -3390,6 +3390,7 @@ export interface CreateProjectInviteMutation_invite_project {
 export interface CreateProjectInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
+  permalink: string;
   project: CreateProjectInviteMutation_invite_project | null;
 }
 
@@ -8232,6 +8233,15 @@ export interface GetInviteQuery_invite_project_tokenGates {
   token: GetInviteQuery_invite_project_tokenGates_token;
 }
 
+export interface GetInviteQuery_invite_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface GetInviteQuery_invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -8243,6 +8253,7 @@ export interface GetInviteQuery_invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
+  organization: GetInviteQuery_invite_project_organization;
 }
 
 export interface GetInviteQuery_invite {
@@ -8253,6 +8264,7 @@ export interface GetInviteQuery_invite {
   organization: GetInviteQuery_invite_organization | null;
   projectRole: ProjectRole | null;
   project: GetInviteQuery_invite_project | null;
+  permalink: string;
 }
 
 export interface GetInviteQuery {
@@ -10122,6 +10134,15 @@ export interface Invite_project_tokenGates {
   token: Invite_project_tokenGates_token;
 }
 
+export interface Invite_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+}
+
 export interface Invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10133,6 +10154,7 @@ export interface Invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: Invite_project_tokenGates[];
+  organization: Invite_project_organization;
 }
 
 export interface Invite {
@@ -10143,6 +10165,7 @@ export interface Invite {
   organization: Invite_organization | null;
   projectRole: ProjectRole | null;
   project: Invite_project | null;
+  permalink: string;
 }
 
 /* tslint:disable */

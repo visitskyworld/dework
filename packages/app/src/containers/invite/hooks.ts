@@ -66,7 +66,7 @@ export function useCreateProjectInvite(): (
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.invite.id;
+      return res.data?.invite.permalink;
     },
     [createInvite]
   );

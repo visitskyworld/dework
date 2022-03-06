@@ -215,6 +215,7 @@ export const invite = gql`
         ...ProjectTokenGate
       }
     }
+    permalink
   }
 
   ${user}

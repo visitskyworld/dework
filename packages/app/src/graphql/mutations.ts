@@ -462,6 +462,7 @@ export const createProjectInvite = gql`
   mutation CreateProjectInviteMutation($input: ProjectInviteInput!) {
     invite: createProjectInvite(input: $input) {
       id
+      permalink
       project {
         id
       }

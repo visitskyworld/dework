@@ -1,4 +1,12 @@
-import { Args, Context, Query, Mutation } from "@nestjs/graphql";
+import {
+  Args,
+  Context,
+  Query,
+  Mutation,
+  ResolveField,
+  Parent,
+  Resolver,
+} from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -14,13 +22,24 @@ import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectInviteInput } from "./dto/ProjectInviteInput";
 import { ProjectService } from "../project/project.service";
 import { Project } from "@dewo/api/models/Project";
+import { PermalinkService } from "../permalink/permalink.service";
 
+@Resolver(() => Invite)
 @Injectable()
 export class InviteResolver {
   constructor(
     private readonly inviteService: InviteService,
+    private readonly permalinkService: PermalinkService,
     private readonly projectService: ProjectService
   ) {}
+
+  @ResolveField(() => String)
+  public permalink(
+    @Context("origin") origin: string,
+    @Parent() invite: Invite
+  ): Promise<string> {
+    return this.permalinkService.get(invite, origin);
+  }
 
   @Mutation(() => Invite)
   @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)

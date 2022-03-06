@@ -32,11 +32,10 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     async (role: ProjectRole) => {
       try {
         setLoading(true);
-        const inviteId = await createProjectInvite({
+        const inviteLink = await createProjectInvite({
           role,
           projectId: project!.id,
         });
-        const inviteLink = `${project!.permalink}?inviteId=${inviteId}`;
         copyToClipboardAndShowToast(inviteLink);
       } finally {
         setLoading(false);

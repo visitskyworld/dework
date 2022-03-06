@@ -1,11 +1,12 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { AfterLoad, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { OrganizationRole } from "./OrganizationMember";
 import { Project } from "./Project";
 import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
+import encoder from "uuid-base62";
 
 @Entity()
 @ObjectType()
@@ -21,6 +22,14 @@ export class Invite extends Audit {
   @Column({ enum: OrganizationRole, nullable: true })
   @Field(() => OrganizationRole, { nullable: true })
   public organizationRole?: OrganizationRole;
+
+  @Field()
+  public slug!: string;
+
+  @AfterLoad()
+  getSlug() {
+    this.slug = encoder.encode(this.id);
+  }
 
   @JoinColumn()
   @ManyToOne(() => Project, { nullable: true })
