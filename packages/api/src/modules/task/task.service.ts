@@ -300,7 +300,13 @@ export class TaskService {
 
     if (!!assigneeId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
-      query = query.andWhere("assignee.id = :assigneeId", { assigneeId });
+      query = query.andWhere(
+        new Brackets((qb) =>
+          qb
+            .where("assignee.id = :assigneeId", { assigneeId })
+            .orWhere("application.userId = :assigneeId", { assigneeId })
+        )
+      );
     } else if (assigneeId === null) {
       query = query.andWhere("assignee.id IS NULL");
     }
