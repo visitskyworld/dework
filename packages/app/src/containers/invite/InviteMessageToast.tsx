@@ -14,14 +14,13 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
-import {
-  OrganizationRole,
-  ProjectRole,
-  UserDetails,
-} from "@dewo/app/graphql/types";
+import { UserDetails } from "@dewo/app/graphql/types";
 import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
+import { projectRoleToString } from "../project/settings/ProjectSettingsMemberList";
+import { organizationRoleToString } from "../organization/overview/OrganizationMemberList";
+import { InviteMessage } from "./InviteMessage";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -64,20 +63,24 @@ export const InviteMessageToast: FC = () => {
     if (!invite) return undefined;
 
     const inviter = invite.inviter.username;
-    if (!!invite.organization) {
-      if (invite.organizationRole === OrganizationRole.ADMIN) {
-        return `${inviter} has invited you as an admin to ${invite.organization.name}`;
-      }
-
-      return `${inviter} has invited you to ${invite.organization.name}`;
+    if (!!invite.organization && !!invite.organizationRole) {
+      return (
+        <InviteMessage
+          inviter={inviter}
+          role={organizationRoleToString[invite.organizationRole].toLowerCase()}
+          to={invite.organization.name}
+        />
+      );
     }
 
-    if (!!invite.project) {
-      if (invite.projectRole === ProjectRole.ADMIN) {
-        return `${inviter} has invited you as an admin to ${invite.project.name}`;
-      }
-
-      return `${inviter} has invited you to ${invite.project.name}`;
+    if (!!invite.project && !!invite.projectRole) {
+      return (
+        <InviteMessage
+          inviter={inviter}
+          role={projectRoleToString[invite.projectRole].toLowerCase()}
+          to={invite.project.name}
+        />
+      );
     }
 
     return `${inviter} has invited you to Dework`;

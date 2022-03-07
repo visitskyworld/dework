@@ -13,11 +13,10 @@ interface Props {
   organizationId: string;
 }
 
-export const organizationRoleToString: Partial<
-  Record<OrganizationRole, string>
-> = {
+export const organizationRoleToString: Record<OrganizationRole, string> = {
   [OrganizationRole.ADMIN]: "Admin",
   [OrganizationRole.OWNER]: "Owner",
+  [OrganizationRole.FOLLOWER]: "Follower",
 };
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
