@@ -4,7 +4,7 @@ import {
   NotFoundException,
   OnModuleInit,
 } from "@nestjs/common";
-import { EventSubscriber } from "typeorm";
+import { EventSubscriber, In } from "typeorm";
 import * as Discord from "discord.js";
 import * as request from "request-promise";
 import { ConfigService } from "@nestjs/config";
@@ -72,13 +72,6 @@ export class DiscordService implements OnModuleInit {
       throw new NotFoundException("Organization integration not found");
     }
 
-    const botUserId = this.config.get<string>(
-      integration.config.useTempDiscordBot
-        ? "TEMP_DISCORD_OAUTH_CLIENT_ID"
-        : integration.config.useTempDiscordBot2
-        ? "TEMP2_DISCORD_OAUTH_CLIENT_ID"
-        : "MAIN_DISCORD_OAUTH_CLIENT_ID"
-    )!;
     const guild = await this.getClient(integration).guilds.fetch(
       integration.config.guildId
     );
@@ -94,6 +87,7 @@ export class DiscordService implements OnModuleInit {
     }
 
     await guild.roles.fetch(undefined, { force: true }); // makes permissionsFor below work
+    const botUserId = this.getBotUserId(integration);
     const botUser = await guild.members.fetch({ user: botUserId });
 
     if (!!parentChannelId) {
@@ -229,11 +223,35 @@ export class DiscordService implements OnModuleInit {
     return { accessToken: res.access_token, scope: res.scope };
   }
 
+  public async getDiscordIds(
+    userIds: string[]
+  ): Promise<(string | undefined)[]> {
+    const threepids = await this.threepidService.find({
+      userId: In(userIds),
+      source: ThreepidSource.discord,
+    });
+    return userIds.map(
+      (userId) => threepids.find((t) => t.userId === userId)?.threepid
+    );
+  }
+
   public getClient(
     integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
   ): Discord.Client {
     if (integration.config.useTempDiscordBot) return this.tempClient;
     if (integration.config.useTempDiscordBot2) return this.temp2Client;
     return this.mainClient;
+  }
+
+  public getBotUserId(
+    integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
+  ): string {
+    if (integration.config.useTempDiscordBot) {
+      return this.config.get("TEMP_DISCORD_OAUTH_CLIENT_ID") as string;
+    }
+    if (integration.config.useTempDiscordBot2) {
+      return this.config.get("TEMP2_DISCORD_OAUTH_CLIENT_ID") as string;
+    }
+    return this.config.get("MAIN_DISCORD_OAUTH_CLIENT_ID") as string;
   }
 }

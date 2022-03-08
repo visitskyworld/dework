@@ -3,7 +3,7 @@ import {
   DiscordProjectIntegrationFeature,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";

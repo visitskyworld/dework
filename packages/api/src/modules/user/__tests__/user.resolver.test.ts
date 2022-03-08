@@ -15,10 +15,10 @@ import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { ProjectVisibility } from "@dewo/api/models/Project";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 
 describe("UserResolver", () => {
   let app: INestApplication;

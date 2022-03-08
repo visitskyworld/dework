@@ -4,9 +4,9 @@ import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { OrganizationRole } from "./OrganizationMember";
 import { Project } from "./Project";
-import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
 import encoder from "uuid-base62";
+import { ProjectRole } from "./enums/ProjectRole";
 
 @Entity()
 @ObjectType()

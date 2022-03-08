@@ -2,9 +2,9 @@ import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
+import { ProjectRole } from "./enums/ProjectRole";
 import { OrganizationIntegration } from "./OrganizationIntegration";
 import { Project } from "./Project";
-import { ProjectRole } from "./ProjectMember";
 import { User } from "./User";
 
 export enum ProjectIntegrationType {

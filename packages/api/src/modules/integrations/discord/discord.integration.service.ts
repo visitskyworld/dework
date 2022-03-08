@@ -34,7 +34,8 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
-import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectService } from "../../project/project.service";
 
 export enum DiscordGuildMembershipState {
@@ -681,9 +682,7 @@ export class DiscordIntegrationService {
 
     const mainChannel = (await guild.channels.fetch(
       integration.config.channelId,
-      {
-        force: true,
-      }
+      { force: true }
     )) as Discord.TextChannel;
 
     if (!mainChannel) {
@@ -914,9 +913,6 @@ export class DiscordIntegrationService {
         });
 
         await thread.members.add(member.user.id);
-        // await channel.permissionOverwrites.edit(member.user.id, {
-        //   VIEW_CHANNEL: true,
-        // });
       } catch (error) {
         this.logger.warn(
           `Failed updating member permissions: ${JSON.stringify({

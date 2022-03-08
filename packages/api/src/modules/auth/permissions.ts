@@ -9,7 +9,8 @@ import {
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
-import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";

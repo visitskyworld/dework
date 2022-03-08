@@ -1,5 +1,6 @@
 import { Project, ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";

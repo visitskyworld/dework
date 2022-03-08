@@ -16,7 +16,7 @@ import {
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
-const discordChannelId = "926823781102661652";
+const discordChannelId = "950769460501958659";
 
 describe("DiscordIntegration", () => {
   let app: INestApplication;

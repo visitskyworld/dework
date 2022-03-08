@@ -7,6 +7,7 @@ import {
   TaskUpdatedEvent,
 } from "../../task/task.events";
 import { DiscordIntegrationService } from "./discord.integration.service";
+import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
 
 @Injectable()
 @EventsHandler(TaskCreatedEvent)
@@ -39,11 +40,19 @@ export class DiscordIntegrationTaskUpdatedEventHandler
 export class DiscordIntegrationTaskApplicationCreatedEventHandler
   implements IEventHandler<TaskApplicationCreatedEvent>
 {
-  constructor(private readonly integration: DiscordIntegrationService) {}
+  constructor(
+    private readonly integration: DiscordIntegrationService,
+    private readonly taskApplicationChannelService: DiscordTaskApplicationThreadService
+  ) {}
 
   async handle(event: TaskApplicationCreatedEvent) {
     if (process.env.NODE_ENV === "test") return;
-    await this.integration.handle(event);
+    await Promise.all([
+      this.integration.handle(event),
+      this.taskApplicationChannelService.createTaskApplicationThread(
+        event.application
+      ),
+    ]);
   }
 }
 

@@ -11,7 +11,7 @@ import {
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
 import { ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { User } from "@dewo/api/models/User";
 
 describe("OrganizationResolver", () => {

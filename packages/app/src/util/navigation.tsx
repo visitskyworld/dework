@@ -22,14 +22,22 @@ export function useNavigateToTask(taskId: string): () => void {
   return useCallback(() => fn(taskId), [fn, taskId]);
 }
 
-export function useNavigateToTaskFn(): (taskId: string) => void {
+export function useNavigateToTaskFn(): (
+  taskId: string,
+  openInNewTab?: boolean
+) => void {
   const router = useRouter();
   return useCallback(
-    (taskId) =>
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, taskId },
-      }),
+    (taskId, openInNewTab = false) => {
+      if (openInNewTab) {
+        window.open(`${window.location.href}?taskId=${taskId}`, "_blank");
+      } else {
+        router.push({
+          pathname: router.pathname,
+          query: { ...router.query, taskId },
+        });
+      }
+    },
     [router]
   );
 }

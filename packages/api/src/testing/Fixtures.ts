@@ -53,6 +53,7 @@ import { GithubIssue } from "../models/GithubIssue";
 import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
 import { TaskSubmission } from "../models/TaskSubmission";
+import { TaskApplication } from "../models/TaskApplication";
 
 @Injectable()
 export class Fixtures {
@@ -209,6 +210,18 @@ export class Fixtures {
       userId: await this.createUser().then((u) => u.id),
       taskId: await this.createTask().then((t) => t.id),
       content: faker.lorem.paragraph(),
+      ...partial,
+    });
+  }
+
+  public async createTaskApplication(
+    partial: Partial<TaskApplication> = {}
+  ): Promise<TaskApplication> {
+    return this.taskService.createApplication({
+      userId: await this.createUser().then((u) => u.id),
+      taskId: await this.createTask().then((t) => t.id),
+      startDate: faker.datatype.datetime(),
+      endDate: faker.datatype.datetime(),
       ...partial,
     });
   }

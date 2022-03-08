@@ -14,7 +14,8 @@ import {
   OrganizationMember,
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
-import { ProjectMember, ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectMember } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 
 @Injectable()
 export class TaskRolesGuard implements CanActivate {

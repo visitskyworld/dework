@@ -1,4 +1,4 @@
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
@@ -629,8 +629,17 @@ describe("TaskResolver", () => {
   describe("Queries", () => {
     describe("getTasks", () => {
       it("should only return tasks with matching statuses", async () => {
-        const todo = await fixtures.createTask({ status: TaskStatus.TODO });
-        const done = await fixtures.createTask({ status: TaskStatus.DONE });
+        const project = await fixtures.createProject({
+          createdAt: new Date(0),
+        });
+        const todo = await fixtures.createTask({
+          status: TaskStatus.TODO,
+          projectId: project.id,
+        });
+        const done = await fixtures.createTask({
+          status: TaskStatus.DONE,
+          projectId: project.id,
+        });
         const response = await client.request({
           app,
           body: TaskRequests.getBatch({ statuses: [TaskStatus.TODO] }),

@@ -4,8 +4,7 @@ import {
   PaymentNetworkType,
 } from "@dewo/api/models/PaymentNetwork";
 import { PaymentTokenType } from "@dewo/api/models/PaymentToken";
-
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";

@@ -6,7 +6,7 @@ import {
 } from "@dewo/api/models/OrganizationMember";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { Project, ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectRole } from "@dewo/api/models/ProjectMember";
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";

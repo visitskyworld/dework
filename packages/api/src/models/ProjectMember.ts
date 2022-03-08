@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -8,15 +8,9 @@ import {
   Index,
 } from "typeorm";
 import { Audit } from "./Audit";
+import { ProjectRole } from "./enums/ProjectRole";
 import { Project } from "./Project";
 import { User } from "./User";
-
-export enum ProjectRole {
-  ADMIN = "ADMIN",
-  CONTRIBUTOR = "CONTRIBUTOR",
-}
-
-registerEnumType(ProjectRole, { name: "ProjectRole" });
 
 @ObjectType()
 @Entity()
