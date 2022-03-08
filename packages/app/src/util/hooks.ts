@@ -21,6 +21,19 @@ export function useToggle(defaultIsOn: boolean = false): UseToggleHook {
   );
 }
 
+export function useRunning(callback: (...args: any[]) => Promise<void>) {
+  const [isRunning, setIsRunning] = useState(false);
+  return [
+    async (...args: any[]) => {
+      setIsRunning(true);
+      const response = callback(...args);
+      response.finally(() => setIsRunning(false));
+      return response;
+    },
+    isRunning,
+  ] as const;
+}
+
 export function useRunningCallback<T extends (...args: any[]) => any>(
   callback: T,
   deps: DependencyList

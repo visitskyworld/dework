@@ -7,6 +7,7 @@ import { CreateProjectSectionModal } from "../CreateSectionModal";
 import { ProjectSection } from "@dewo/app/graphql/types";
 import { useOrganization, useUpdateProjectSection } from "../../hooks";
 import { useRouter } from "next/router";
+import { RenameSectionPopover } from "../RenameSectionPopover";
 
 interface Props {
   section: ProjectSection;
@@ -35,6 +36,8 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
       deletedAt: new Date().toISOString(),
     });
   }, [updateSection, section.id, organizationId]);
+
+  const renameSectionPopover = useToggle();
 
   if (!canCreate && !canUpdate) return null;
   return (
@@ -68,6 +71,14 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
             )}
             {canUpdate && !isDefault && (
               <Menu.Item
+                icon={<Icons.EditOutlined />}
+                onClick={renameSectionPopover.toggleOn}
+              >
+                Rename this section
+              </Menu.Item>
+            )}
+            {canUpdate && !isDefault && (
+              <Menu.Item
                 danger
                 icon={<Icons.DeleteOutlined />}
                 onClick={handleDeleteSection}
@@ -80,6 +91,14 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
       >
         <Button type="text" icon={<Icons.MoreOutlined />} />
       </Dropdown>
+
+      <RenameSectionPopover
+        visible={renameSectionPopover.isOn}
+        onClose={renameSectionPopover.toggleOff}
+        organizationId={organizationId}
+        section={section}
+      />
+
       <CreateProjectSectionModal
         organizationId={organizationId}
         visible={createSectionModal.isOn}
