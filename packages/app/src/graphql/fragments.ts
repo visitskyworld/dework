@@ -207,6 +207,9 @@ export const invite = gql`
     organizationRole
     organization {
       ...Organization
+      members {
+        ...OrganizationMember
+      }
     }
 
     projectRole
@@ -215,14 +218,19 @@ export const invite = gql`
       tokenGates {
         ...ProjectTokenGate
       }
+      members {
+        ...ProjectMember
+      }
     }
     permalink
   }
 
   ${user}
   ${organization}
+  ${organizationMember}
   ${project}
   ${projectTokenGate}
+  ${projectMember}
 `;
 
 export const projectDetails = gql`

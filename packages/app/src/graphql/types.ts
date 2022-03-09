@@ -8230,6 +8230,24 @@ export interface GetInviteQuery_invite_inviter {
   permalink: string;
 }
 
+export interface GetInviteQuery_invite_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetInviteQuery_invite_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: GetInviteQuery_invite_organization_members_user;
+}
+
 export interface GetInviteQuery_invite_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -8237,6 +8255,7 @@ export interface GetInviteQuery_invite_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  members: GetInviteQuery_invite_organization_members[];
 }
 
 export interface GetInviteQuery_invite_project_tokenGates_token_network {
@@ -8272,6 +8291,23 @@ export interface GetInviteQuery_invite_project_tokenGates {
   token: GetInviteQuery_invite_project_tokenGates_token;
 }
 
+export interface GetInviteQuery_invite_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetInviteQuery_invite_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: GetInviteQuery_invite_project_members_user;
+}
+
 export interface GetInviteQuery_invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -8283,6 +8319,7 @@ export interface GetInviteQuery_invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
+  members: GetInviteQuery_invite_project_members[];
 }
 
 export interface GetInviteQuery_invite {
@@ -10123,6 +10160,24 @@ export interface Invite_inviter {
   permalink: string;
 }
 
+export interface Invite_organization_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface Invite_organization_members {
+  __typename: "OrganizationMember";
+  id: Scalar.UUID;
+  role: OrganizationRole;
+  organizationId: string;
+  userId: string;
+  sortKey: string;
+  user: Invite_organization_members_user;
+}
+
 export interface Invite_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -10130,6 +10185,7 @@ export interface Invite_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
+  members: Invite_organization_members[];
 }
 
 export interface Invite_project_tokenGates_token_network {
@@ -10165,6 +10221,23 @@ export interface Invite_project_tokenGates {
   token: Invite_project_tokenGates_token;
 }
 
+export interface Invite_project_members_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface Invite_project_members {
+  __typename: "ProjectMember";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  userId: string;
+  user: Invite_project_members_user;
+}
+
 export interface Invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10176,6 +10249,7 @@ export interface Invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: Invite_project_tokenGates[];
+  members: Invite_project_members[];
 }
 
 export interface Invite {
