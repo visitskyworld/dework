@@ -117,7 +117,10 @@ export const TaskBoardColumn: FC<Props> = ({
               />
               <div style={{ flex: 1 }} />
               {!!group.section && (
-                <TaskSectionOptionButton section={group.section} />
+                <TaskSectionOptionButton
+                  section={group.section}
+                  projectId={projectId}
+                />
               )}
               {group.button}
             </Row>

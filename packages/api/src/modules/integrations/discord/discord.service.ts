@@ -129,13 +129,16 @@ export class DiscordService implements OnModuleInit {
       integration.config.guildId
     );
     const roles = await guild.roles.fetch();
-    return roles
-      .filter((r) => !r.name.toLowerCase().includes("dework"))
-      .map((role) => ({
-        id: role.id,
-        name: role.name,
-        integrationId: integration.id,
-      }));
+    return (
+      roles
+        // filter out Dework bot roles
+        .filter((r) => !["Dework", "Dework Dev"].includes(r.name))
+        .map((role) => ({
+          id: role.id,
+          name: role.name,
+          integrationId: integration.id,
+        }))
+    );
   }
 
   private toIntegrationChannel =

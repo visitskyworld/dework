@@ -46,6 +46,9 @@ import {
   UpdateTaskSectionInput,
   UpdateTaskSectionMutation,
   UpdateTaskSectionMutationVariables,
+  DeleteTaskSectionMutation,
+  DeleteTaskSectionMutationVariables,
+  TaskSection,
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -243,12 +246,32 @@ export function useCreateTaskSection(): (
 }
 
 export function useUpdateTaskSection(): (
-  input: UpdateTaskSectionInput
+  input: UpdateTaskSectionInput,
+  section: TaskSection
 ) => Promise<void> {
   const [mutation] = useMutation<
     UpdateTaskSectionMutation,
     UpdateTaskSectionMutationVariables
   >(Mutations.updateTaskSection);
+  return useCallback(
+    async (input, section) => {
+      const res = await mutation({
+        variables: { input },
+        optimisticResponse: { section: { ...section, ...(input as any) } },
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteTaskSection(): (
+  input: UpdateTaskSectionInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteTaskSectionMutation,
+    DeleteTaskSectionMutationVariables
+  >(Mutations.deleteTaskSection);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });

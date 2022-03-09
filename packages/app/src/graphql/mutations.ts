@@ -220,6 +220,16 @@ export const createTaskSection = gql`
 export const updateTaskSection = gql`
   mutation UpdateTaskSectionMutation($input: UpdateTaskSectionInput!) {
     section: updateTaskSection(input: $input) {
+      ...TaskSection
+    }
+  }
+
+  ${Fragments.taskSection}
+`;
+
+export const deleteTaskSection = gql`
+  mutation DeleteTaskSectionMutation($input: UpdateTaskSectionInput!) {
+    section: updateTaskSection(input: $input) {
       id
       project {
         id

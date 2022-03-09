@@ -1,33 +1,53 @@
 import { Button, Dropdown, Menu } from "antd";
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { TaskSection } from "@dewo/app/graphql/types";
-import { useUpdateTaskSection } from "../../project/hooks";
-import { useRunningCallback } from "@dewo/app/util/hooks";
+import { useDeleteTaskSection } from "../../project/hooks";
+import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
+import { ReorderTaskSectionsModal } from "./ReorderTaskSectionsModal";
 
 interface Props {
   section: TaskSection;
+  projectId?: string;
 }
 
-export const TaskSectionOptionButton: FC<Props> = ({ section }) => {
-  const updateSection = useUpdateTaskSection();
+export const TaskSectionOptionButton: FC<Props> = ({ section, projectId }) => {
+  const deleteSection = useDeleteTaskSection();
   const [handleDelete, isDeleting] = useRunningCallback(
     () =>
-      updateSection({
+      deleteSection({
         id: section.id,
         projectId: section.projectId,
         deletedAt: new Date().toISOString(),
       }),
-    [updateSection, section]
+    [deleteSection, section]
   );
+
+  const managingSections = useToggle();
+
   return (
-    <Can I="update" a="TaskSection">
+    <>
       <Dropdown
         trigger={["click"]}
         placement="bottomLeft"
         overlay={
           <Menu>
+            {!!projectId && (
+              <Menu.Item
+                icon={<Icons.EditOutlined />}
+                onClick={managingSections.toggleOn}
+              >
+                Rename
+              </Menu.Item>
+            )}
+            {!!projectId && (
+              <Menu.Item
+                icon={<Icons.OrderedListOutlined />}
+                onClick={managingSections.toggleOn}
+              >
+                Reorder
+              </Menu.Item>
+            )}
             <Menu.Item
               danger
               icon={<Icons.DeleteOutlined />}
@@ -41,11 +61,19 @@ export const TaskSectionOptionButton: FC<Props> = ({ section }) => {
         <Button
           size="small"
           type="text"
-          icon={<Icons.MoreOutlined />}
+          icon={<Icons.EditOutlined />}
           loading={isDeleting}
           className="dewo-task-board-column-section-options"
         />
       </Dropdown>
-    </Can>
+      {!!projectId && (
+        <ReorderTaskSectionsModal
+          visible={managingSections.isOn}
+          projectId={projectId}
+          status={section.status}
+          onClose={managingSections.toggleOff}
+        />
+      )}
+    </>
   );
 };

@@ -1458,7 +1458,7 @@ export interface CreateTaskSectionMutationVariables {
 // GraphQL mutation operation: UpdateTaskSectionMutation
 // ====================================================
 
-export interface UpdateTaskSectionMutation_section_project_taskSections {
+export interface UpdateTaskSectionMutation_section {
   __typename: "TaskSection";
   id: Scalar.UUID;
   name: string;
@@ -1467,23 +1467,49 @@ export interface UpdateTaskSectionMutation_section_project_taskSections {
   projectId: string;
 }
 
-export interface UpdateTaskSectionMutation_section_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  taskSections: UpdateTaskSectionMutation_section_project_taskSections[];
-}
-
-export interface UpdateTaskSectionMutation_section {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  project: UpdateTaskSectionMutation_section_project;
-}
-
 export interface UpdateTaskSectionMutation {
   section: UpdateTaskSectionMutation_section;
 }
 
 export interface UpdateTaskSectionMutationVariables {
+  input: UpdateTaskSectionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: DeleteTaskSectionMutation
+// ====================================================
+
+export interface DeleteTaskSectionMutation_section_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+  projectId: string;
+}
+
+export interface DeleteTaskSectionMutation_section_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskSections: DeleteTaskSectionMutation_section_project_taskSections[];
+}
+
+export interface DeleteTaskSectionMutation_section {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  project: DeleteTaskSectionMutation_section_project;
+}
+
+export interface DeleteTaskSectionMutation {
+  section: DeleteTaskSectionMutation_section;
+}
+
+export interface DeleteTaskSectionMutationVariables {
   input: UpdateTaskSectionInput;
 }
 

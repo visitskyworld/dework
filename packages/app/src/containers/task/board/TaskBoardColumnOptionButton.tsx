@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { CreateTaskSectionModal } from "../../organization/overview/CreateSectionModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
+import { ReorderTaskSectionsModal } from "./ReorderTaskSectionsModal";
 
 interface Props {
   projectId: string;
@@ -15,6 +16,7 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
   status,
 }) => {
   const createSectionModal = useToggle();
+  const manageSectionsModal = useToggle();
   return (
     <>
       <Dropdown
@@ -28,6 +30,12 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
             >
               Create section
             </Menu.Item>
+            <Menu.Item
+              icon={<Icons.EditOutlined />}
+              onClick={manageSectionsModal.toggleOn}
+            >
+              Manage sections
+            </Menu.Item>
           </Menu>
         }
       >
@@ -38,6 +46,12 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
         status={status}
         visible={createSectionModal.isOn}
         onClose={createSectionModal.toggleOff}
+      />
+      <ReorderTaskSectionsModal
+        visible={manageSectionsModal.isOn}
+        projectId={projectId}
+        status={status}
+        onClose={manageSectionsModal.toggleOff}
       />
     </>
   );

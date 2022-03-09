@@ -19,11 +19,7 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
       type="ghost"
       style={{ marginTop: 4 }}
       icon={<DiscordIcon />}
-      href={`${
-        Constants.GRAPHQL_API_URL
-      }/auth/discord-bot?organizationId=${organizationId}&userId=${
-        user!.id
-      }&redirect=${router.asPath}`}
+      href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?organizationId=${organizationId}&userId=${user?.id}&redirect=${router.asPath}`}
     >
       Connect to Discord
     </Button>
