@@ -76,9 +76,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
         style={style}
-        onClick={() =>
-          copyToClipboardAndShowToast(project.organization.permalink)
-        }
+        onClick={() => copyToClipboardAndShowToast(project.permalink)}
       >
         Invite
       </Button>

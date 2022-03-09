@@ -127,7 +127,11 @@ const Page: NextPage = () => {
           </TaskFilterProvider>
         </Layout.Content>
       </Layout.Content>
-      <ForbiddenResourceModal visible={forbiddenError} />
+      <ForbiddenResourceModal
+        visible={forbiddenError}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
       {!!project && <ProjectSeo project={project} />}
     </Layout>
   );

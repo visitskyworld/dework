@@ -12,6 +12,7 @@ const Page: NextPage = () => {
   const router = useRouter();
 
   const projectId = useParseIdFromSlug("projectSlug");
+  const organizationId = useParseIdFromSlug("organizationSlug");
   const { error } = useProject(projectId);
 
   const forbiddenError = error?.message === "Forbidden resource";
@@ -29,7 +30,11 @@ const Page: NextPage = () => {
       <TaskFilterProvider>
         <ProjectTaskBoard projectId={projectId} />
       </TaskFilterProvider>
-      <ForbiddenResourceModal visible={forbiddenError} />
+      <ForbiddenResourceModal
+        visible={forbiddenError}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
     </Layout.Content>
   );
 };
