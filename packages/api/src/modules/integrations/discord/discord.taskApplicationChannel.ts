@@ -7,6 +7,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { IntegrationService } from "../integration.service";
 import { DiscordService } from "./discord.service";
 import Bluebird from "bluebird";
+import moment from "moment";
 import * as Discord from "discord.js";
 import { PermalinkService } from "../../permalink/permalink.service";
 
@@ -120,6 +121,15 @@ export class DiscordTaskApplicationThreadService {
         {
           title: task.name,
           url: await this.permalink.get(task),
+          description: [
+            taskApplication.message,
+            [
+              moment(taskApplication.startDate).format("YYYY-MM-DD"),
+              moment(taskApplication.endDate).format("YYYY-MM-DD"),
+            ].join(" - "),
+          ]
+            .filter((s) => !!s)
+            .join("\n"),
           author: {
             name: applicant.username,
             iconURL: applicant.imageUrl,
