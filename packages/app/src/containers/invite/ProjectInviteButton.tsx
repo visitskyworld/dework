@@ -1,12 +1,19 @@
-import { Button, Dropdown, Menu, Tooltip, Typography } from "antd";
+import { Button, Dropdown, Menu, Tag, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import React, { CSSProperties, FC, useCallback, useState } from "react";
+import React, {
+  CSSProperties,
+  FC,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useCreateProjectInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ProjectRole } from "@dewo/app/graphql/types";
+import { ProjectIntegrationType, ProjectRole } from "@dewo/app/graphql/types";
 import { projectRoleDescription } from "../project/settings/ProjectSettingsMemberList";
+import Link from "next/link";
 
 interface Props {
   projectId: string;
@@ -53,66 +60,111 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     [inviteToProject]
   );
 
-  if (!!project && canInviteProjectContributor) {
-    if (canInviteProjectAdmin) {
-      return (
-        <Dropdown
-          placement="bottomCenter"
-          trigger={["click"]}
-          overlay={
-            <Menu>
-              <Menu.Item onClick={inviteProjectContributor}>
-                Invite Contributors
-                <Tooltip
-                  placement="right"
-                  title={
-                    <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                      {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
-                    </Typography.Text>
-                  }
-                >
-                  <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </Menu.Item>
-              <Menu.Item onClick={inviteProjectAdmin}>
-                Invite Project Steward(s)
-                <Tooltip
-                  placement="right"
-                  title={
-                    <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                      {projectRoleDescription[ProjectRole.ADMIN]}
-                    </Typography.Text>
-                  }
-                >
-                  <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button
-            type="ghost"
-            loading={loading}
-            icon={<Icons.UsergroupAddOutlined />}
-            style={style}
-          >
-            Invite
-          </Button>
-        </Dropdown>
-      );
-    } else {
-      return (
+  const isDiscordRoleGatingEnabled = useMemo(
+    () =>
+      !!project?.integrations.find(
+        (i) => i.type === ProjectIntegrationType.DISCORD_ROLE_GATE
+      ),
+    [project?.integrations]
+  );
+
+  if (!project) return null;
+  if (isDiscordRoleGatingEnabled) {
+    return (
+      <Button
+        type="ghost"
+        loading={loading}
+        icon={<Icons.UsergroupAddOutlined />}
+        style={style}
+        onClick={() =>
+          copyToClipboardAndShowToast(project.organization.permalink)
+        }
+      >
+        Invite
+      </Button>
+    );
+  }
+
+  if (!canInviteProjectAdmin && canInviteProjectContributor) {
+    return (
+      <Button
+        type="ghost"
+        loading={loading}
+        icon={<Icons.UsergroupAddOutlined />}
+        style={style}
+        onClick={inviteProjectContributor}
+      >
+        Invite
+      </Button>
+    );
+  }
+  if (canInviteProjectAdmin && canInviteProjectContributor) {
+    return (
+      <Dropdown
+        placement="bottomCenter"
+        trigger={["click"]}
+        overlay={
+          <Menu>
+            <Menu.Item onClick={inviteProjectContributor}>
+              Invite Contributors
+              <Tooltip
+                placement="right"
+                title={
+                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                    {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
+                  </Typography.Text>
+                }
+              >
+                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+              </Tooltip>
+            </Menu.Item>
+            <Menu.Item onClick={inviteProjectAdmin}>
+              Invite Project Steward(s)
+              <Tooltip
+                placement="right"
+                title={
+                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                    {projectRoleDescription[ProjectRole.ADMIN]}
+                  </Typography.Text>
+                }
+              >
+                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+              </Tooltip>
+            </Menu.Item>
+            <Link href={`${project.permalink}/settings/token-gating`}>
+              <a>
+                <Menu.Item>
+                  Setup Discord Role Gating
+                  <Tag color="green" style={{ margin: 0, marginLeft: 4 }}>
+                    New
+                  </Tag>
+                  <Tooltip
+                    placement="right"
+                    title={
+                      <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                        Allow your community join this project as project
+                        contributor or steward, depending on their Discord role.
+                      </Typography.Text>
+                    }
+                  >
+                    <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+                  </Tooltip>
+                </Menu.Item>
+              </a>
+            </Link>
+          </Menu>
+        }
+      >
         <Button
           type="ghost"
           loading={loading}
           icon={<Icons.UsergroupAddOutlined />}
           style={style}
-          onClick={inviteProjectContributor}
         >
-          Invite Contributors
+          Invite
         </Button>
-      );
-    }
+      </Dropdown>
+    );
   }
 
   return null;

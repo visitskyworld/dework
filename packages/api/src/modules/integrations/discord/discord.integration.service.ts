@@ -37,6 +37,8 @@ import { IntegrationService } from "../integration.service";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectService } from "../../project/project.service";
+import { OrganizationService } from "../../organization/organization.service";
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -53,6 +55,7 @@ export class DiscordIntegrationService {
     private readonly permalink: PermalinkService,
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
+    private readonly organizationService: OrganizationService,
     private readonly threepidService: ThreepidService,
     private readonly integrationService: IntegrationService,
     @InjectRepository(DiscordChannel)
@@ -1058,6 +1061,19 @@ export class DiscordIntegrationService {
         }
       }
     }
+
+    const organizationMember = await this.organizationService.findMember({
+      userId,
+      organizationId,
+    });
+    if (!organizationMember) {
+      await this.organizationService.upsertMember({
+        organizationId,
+        role: OrganizationRole.FOLLOWER,
+        userId,
+      });
+    }
+
     return projectMembers;
   }
 }

@@ -8,6 +8,7 @@ import React, { FC, useCallback } from "react";
 import { useOrganization } from "../hooks";
 import { useConnectToGithubUrlFn } from "../../integrations/hooks";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
+import Link from "next/link";
 
 interface Props extends ButtonProps {
   organizationId: string;
@@ -53,10 +54,6 @@ export const CreateProjectButton: FC<Props> = ({
       });
     }
   }, [router, organization, createConnectToGithubUrl]);
-  const handleBlankProject = useCallback(
-    () => router.push(`${organization?.permalink}/create`),
-    [organization?.permalink, router]
-  );
 
   if (!organization) return null;
   return (
@@ -66,12 +63,16 @@ export const CreateProjectButton: FC<Props> = ({
       overlay={
         <Menu>
           {mode === "all" && (
-            <Menu.Item onClick={handleBlankProject}>
-              <Space>
-                <Icons.PlusOutlined />
-                Create without importing
-              </Space>
-            </Menu.Item>
+            <Link href={`${organization.permalink}/create`}>
+              <a>
+                <Menu.Item>
+                  <Space>
+                    <Icons.PlusOutlined />
+                    Create without importing
+                  </Space>
+                </Menu.Item>
+              </a>
+            </Link>
           )}
           <Menu.Item onClick={goToNotionOauthFlow}>
             <Space>

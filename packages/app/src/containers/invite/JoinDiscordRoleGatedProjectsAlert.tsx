@@ -5,6 +5,7 @@ import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
 import { DiscordRoleGatingJoinButton } from "./DiscordRoleGatingJoinButton";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   organizationId: string;
@@ -15,6 +16,7 @@ export const JoinDiscordRoleGatedProjectsAlert: FC<Props> = ({
   organizationId,
   style,
 }) => {
+  const { user } = useAuthContext();
   const { organization } = useOrganization(organizationId);
   const projectIdsWithDiscordRoleGates = useMemo(
     () =>
@@ -32,9 +34,11 @@ export const JoinDiscordRoleGatedProjectsAlert: FC<Props> = ({
     () =>
       !!_.difference(
         projectIdsWithDiscordRoleGates,
-        organization?.projects.map((p) => p.id) ?? []
+        organization?.projects
+          .filter((p) => p.members.some((m) => m.userId === user?.id))
+          .map((p) => p.id) ?? []
       ).length,
-    [projectIdsWithDiscordRoleGates, organization?.projects]
+    [projectIdsWithDiscordRoleGates, organization?.projects, user?.id]
   );
 
   const canAccessAllProjects = usePermission("update", "Project");

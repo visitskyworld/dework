@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import { Button, ButtonProps, message } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../auth/LoginButton";
@@ -10,6 +10,7 @@ import { useJoinProjectsWithDiscordRole } from "./hooks";
 import { useOrganization } from "../organization/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useProject } from "../project/hooks";
+import { useRunningCallback } from "@dewo/app/util/hooks";
 
 interface Props extends ButtonProps {
   children: string;
@@ -33,7 +34,7 @@ export const DiscordRoleGatingJoinButton: FC<Props> = ({
   );
 
   const joinProjectsWithDiscordRole = useJoinProjectsWithDiscordRole();
-  const handleJoin = useCallback(async () => {
+  const [handleJoin, joining] = useRunningCallback(async () => {
     const projects = await joinProjectsWithDiscordRole(organizationId);
     if (projects.length) {
       for (const project of projects) {
@@ -83,7 +84,12 @@ export const DiscordRoleGatingJoinButton: FC<Props> = ({
   }
 
   return (
-    <Button {...buttonProps} icon={<DiscordIcon />} onClick={handleJoin}>
+    <Button
+      {...buttonProps}
+      icon={<DiscordIcon />}
+      loading={joining}
+      onClick={handleJoin}
+    >
       {children}
     </Button>
   );
