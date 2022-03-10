@@ -1,10 +1,11 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task } from "@dewo/app/graphql/types";
-import { Modal } from "antd";
+import { Button, message, Modal, Typography } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTaskFromFormValues } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
+import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 
 interface TaskCreateModalProps {
   visible: boolean;
@@ -33,14 +34,31 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   );
 
   const createTask = useCreateTaskFromFormValues();
+  const openTask = useNavigateToTaskFn();
   const handleSubmit = useCallback(
-    (values: TaskFormValues) => createTask(values, projectId).then(onDone),
-    [createTask, onDone, projectId]
+    async (values: TaskFormValues) => {
+      const task = await createTask(values, projectId);
+      onDone(task);
+      message.success({
+        content: (
+          <>
+            <Typography.Text style={{ marginRight: 16 }}>
+              Task created
+            </Typography.Text>
+            <Button type="ghost" size="small" onClick={() => openTask(task.id)}>
+              View
+            </Button>
+          </>
+        ),
+      });
+    },
+    [createTask, onDone, projectId, openTask]
   );
   return (
     <Modal
       title="Create Task"
       visible={visible}
+      destroyOnClose
       maskClosable={false}
       onCancel={onCancel}
       footer={null}
