@@ -145,7 +145,11 @@ BEGIN
     CAST('{
       "chainId": 43114,
       "rpcUrl": "https://api.avax.network/ext/bc/C/rpc",
-      "explorerUrl": "https://cchain.explorer.avax.network"
+      "explorerUrl": "https://cchain.explorer.avax.network",
+      "gnosisSafe": {
+        "serviceUrl": "https://safe-transaction.avalanche.gnosis.io",
+        "addressPrefix": "avalanche"
+      }
     }' AS json)
   ), (
     fantom_id,
@@ -181,7 +185,11 @@ BEGIN
     CAST('{
       "chainId": 42161,
       "rpcUrl": "https://arb1.arbitrum.io/rpc",
-      "explorerUrl": "https://arbiscan.io"
+      "explorerUrl": "https://arbiscan.io",
+      "gnosisSafe": {
+        "serviceUrl": "https://safe-transaction.arbitrum.gnosis.io",
+        "addressPrefix": "aox"
+      }
     }' AS json)
   ), (
     optimism_mainnet_id,
@@ -192,7 +200,11 @@ BEGIN
     CAST('{
       "chainId": 10,
       "rpcUrl": "https://mainnet.optimism.io",
-      "explorerUrl": "https://optimistic.etherscan.io"
+      "explorerUrl": "https://optimistic.etherscan.io",
+      "gnosisSafe": {
+        "serviceUrl": "https://safe-transaction.optimism.gnosis.io",
+        "addressPrefix": "oeth"
+      }
     }' AS json)
   ), (
     fuse_mainnet_id,
@@ -304,7 +316,7 @@ BEGIN
     ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, ethereum_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
     }' AS JSON)),
-    ('ERC20', 'USD Coin', 'USDC', 18, 'ALWAYS', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', ethereum_mainnet_id, CAST('{
+    ('ERC20', 'USD Coin', 'USDC', 6, 'ALWAYS', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', ethereum_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
@@ -327,7 +339,7 @@ BEGIN
     ('NATIVE', 'Avalanche', 'AVAX', 18, 'ALWAYS', NULL, avalanche_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/avalanche"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Avalanche)', 'USDC.E', 18, 'ALWAYS', '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664', avalanche_id, CAST('{
+    ('ERC20', 'USD Coin (Avalanche)', 'USDC.E', 6, 'ALWAYS', '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664', avalanche_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
     ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x130966628846BFd36ff31a822705796e8cb8C18D', avalanche_id, CAST('{
@@ -337,7 +349,7 @@ BEGIN
     ('NATIVE', 'Fantom', 'FTM', 18, 'ALWAYS', NULL, fantom_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/fantom"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Fantom)', 'USDC', 18, 'ALWAYS', '0x04068da6c83afcfa0e13ba15a6696662335d5b75', fantom_id, CAST('{
+    ('ERC20', 'USD Coin (Fantom)', 'USDC', 6, 'ALWAYS', '0x04068da6c83afcfa0e13ba15a6696662335d5b75', fantom_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
     ('ERC20', 'Magic Internet Money', 'MIM', 18, 'ALWAYS', '0x82f0b8b456c1a451378467398982d4834b6829c1', fantom_id, CAST('{
@@ -347,7 +359,7 @@ BEGIN
     ('NATIVE', 'Harmony', 'ONE', 18, 'ALWAYS', NULL, harmony_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/harmony"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Harmony)', 'USDC', 18, 'ALWAYS', '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa', harmony_mainnet_id, CAST('{
+    ('ERC20', 'USD Coin (Harmony)', 'USDC', 6, 'ALWAYS', '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa', harmony_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
@@ -358,21 +370,21 @@ BEGIN
     ('NATIVE', 'AETH', 'AETH', 18, 'ALWAYS', NULL, arbitrum_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Arbitrum)', 'USDC', 18, 'ALWAYS', '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', arbitrum_mainnet_id, CAST('{
+    ('ERC20', 'USD Coin (Arbitrum)', 'USDC', 6, 'ALWAYS', '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', arbitrum_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
     ('NATIVE', 'Ether', 'ETH', 18, 'ALWAYS', NULL, optimism_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/ethereum"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Optimism)', 'USDC', 18, 'ALWAYS', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', optimism_mainnet_id, CAST('{
+    ('ERC20', 'USD Coin (Optimism)', 'USDC', 6, 'ALWAYS', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', optimism_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 
     ('NATIVE', 'Fuse', 'FUSE', 18, 'ALWAYS', NULL, fuse_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/fuse-network"
     }' AS JSON)),
-    ('ERC20', 'USD Coin (Fuse)', 'USDC', 18, 'ALWAYS', '0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5', fuse_mainnet_id, CAST('{
+    ('ERC20', 'USD Coin (Fuse)', 'USDC', 6, 'ALWAYS', '0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5', fuse_mainnet_id, CAST('{
       "coinmarketcapUrl": "https://coinmarketcap.com/currencies/usd-coin"
     }' AS JSON)),
 

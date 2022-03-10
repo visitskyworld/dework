@@ -190,6 +190,8 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
             <Select<string>
               style={{ width: "100%" }}
               placeholder="Select wallet type..."
+              showSearch
+              optionFilterProp="label"
             >
               {paymentMethodTypes.map((type) => (
                 <Select.Option
@@ -213,6 +215,8 @@ export const ProjectPaymentMethodForm: FC<Props> = ({ projectId, onDone }) => {
             <Select
               loading={!networks}
               placeholder="Select what network this payment method is connected to"
+              showSearch
+              optionFilterProp="label"
             >
               {networksForPaymentType.map((network) => (
                 <Select.Option

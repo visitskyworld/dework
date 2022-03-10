@@ -19,7 +19,7 @@ interface Props {
   redirectUrl?: string;
   redirectToOnboarding?: boolean;
   toggle: UseToggleHook;
-  onAuthedWithWallet?(user: UserDetails): void;
+  onAuthedWithWallet?(user: UserDetails, threepidId: string): void;
 }
 
 export const LoginModal: FC<Props> = ({
@@ -44,7 +44,7 @@ export const LoginModal: FC<Props> = ({
       authingWithMetamask.toggleOn();
       const threepidId = await createMetamaskThreepid();
       const user = await authWithThreepid(threepidId);
-      onAuthedWithWallet?.(user);
+      onAuthedWithWallet?.(user, threepidId);
 
       if (!user.onboarding && redirectToOnboarding) {
         await router.push("/onboarding");
@@ -71,7 +71,7 @@ export const LoginModal: FC<Props> = ({
       authingWithHiro.toggleOn();
       const threepidId = await createHiroThreepid();
       const user = await authWithThreepid(threepidId);
-      onAuthedWithWallet?.(user);
+      onAuthedWithWallet?.(user, threepidId);
 
       if (!user.onboarding && redirectToOnboarding) {
         await router.push("/onboarding");

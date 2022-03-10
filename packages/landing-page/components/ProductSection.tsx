@@ -156,7 +156,7 @@ export const ProductSection: FC<Props> = () => {
       <LoginModal
         toggle={loginModal}
         redirectUrl={`${Constants.APP_URL}/onboarding/${onboardingFlow ?? ""}`}
-        onAuthedWithWallet={(threepidId) => {
+        onAuthedWithWallet={(_userDetails, threepidId) => {
           const state = JSON.stringify({
             redirect: `/onboarding/${onboardingFlow ?? ""}`,
           });
