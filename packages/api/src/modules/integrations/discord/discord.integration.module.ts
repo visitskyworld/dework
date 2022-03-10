@@ -17,7 +17,7 @@ import {
 } from "./discord.eventHandlers";
 import { DiscordIntegrationResolver } from "./discord.integration.resolver";
 import { DiscordIntegrationService } from "./discord.integration.service";
-import { DiscordService } from "./discord.service";
+import { DiscordModule } from "./discord.module";
 import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
 
 @Module({
@@ -29,9 +29,9 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
     ThreepidModule,
     PermalinkModule,
     IntegrationModule,
+    DiscordModule,
   ],
   providers: [
-    DiscordService,
     DiscordIntegrationService,
     DiscordIntegrationResolver,
     DiscordIntegrationTaskCreatedEventHandler,

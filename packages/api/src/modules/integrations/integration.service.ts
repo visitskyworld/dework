@@ -69,4 +69,16 @@ export class IntegrationService {
       deletedAt: IsNull(),
     }) as Promise<ProjectIntegration<T>>;
   }
+
+  public async findOrganizationIntegrationById(
+    id: string
+  ): Promise<OrganizationIntegration | undefined> {
+    return this.organizationIntegrationRepo.findOne(id);
+  }
+
+  public async findProjectIntegrationById(
+    id: string
+  ): Promise<ProjectIntegration | undefined> {
+    return this.projectIntegrationRepo.findOne(id);
+  }
 }

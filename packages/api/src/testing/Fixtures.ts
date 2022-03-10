@@ -54,6 +54,13 @@ import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
 import { TaskSubmission } from "../models/TaskSubmission";
 import { TaskApplication } from "../models/TaskApplication";
+import {
+  AccessControl,
+  AccessControlConfigMap,
+  AccessControlType,
+} from "../models/AccessControl";
+import { AccessService } from "../modules/access/access.service";
+import { AccessModule } from "../modules/access/access.module";
 
 @Injectable()
 export class Fixtures {
@@ -66,7 +73,8 @@ export class Fixtures {
     private readonly githubService: GithubService,
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
-    private readonly paymentService: PaymentService
+    private readonly paymentService: PaymentService,
+    private readonly accessService: AccessService
   ) {}
 
   public async createThreepid(
@@ -453,6 +461,19 @@ export class Fixtures {
     });
     return { project, organization };
   }
+
+  async createAccessControl<T extends AccessControlType>(
+    type: T,
+    config: AccessControlConfigMap[T],
+    partial: Partial<AccessControl> = {}
+  ): Promise<AccessControl<T>> {
+    const accessControl = await this.accessService.create({
+      type,
+      config,
+      ...partial,
+    });
+    return accessControl as AccessControl<T>;
+  }
 }
 
 @Module({
@@ -466,6 +487,7 @@ export class Fixtures {
     GithubIntegrationModule,
     InviteModule,
     PaymentModule,
+    AccessModule,
   ],
   providers: [Fixtures],
 })
