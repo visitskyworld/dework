@@ -1,9 +1,5 @@
 import { useCallback } from "react";
-import {
-  useRequestAddress,
-  useRequestSigner,
-  useSwitchChain,
-} from "./ethereum";
+import { useRequestSigner, useSwitchChain } from "./ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { PaymentNetwork } from "../graphql/types";
 import { Signer } from "ethers";
@@ -102,9 +98,10 @@ export function useProposeTransaction(): (
   transactions: MetaTransactionData[],
   network: PaymentNetwork
 ) => Promise<string> {
-  const requestAddress = useRequestAddress();
+  const requestSigner = useRequestSigner();
   const requestSafe = useRequestSafe();
   const switchChain = useSwitchChain();
+  const isSafeOwner = useIsGnosisSafeOwner();
   return useCallback(
     async (safeAddress, transactions, network) => {
       const safeServiceUrl = safeServiceUrlByNetworkSlug[network.slug];
@@ -119,7 +116,13 @@ export function useProposeTransaction(): (
       const safeService = new SafeServiceClient(safeServiceUrl);
 
       await switchChain(network);
-      const senderAddress = await requestAddress();
+      const signer = await requestSigner();
+
+      const isOwner = await isSafeOwner(safeAddress, signer);
+      if (!isOwner) {
+        throw new Error("Only Gnosis Safe owners can sign transactions");
+      }
+
       const safe = await requestSafe(safeAddress);
       const safeTransaction = await safe.createTransaction(
         transactions.map((tx) => ({ ...tx, to: utils.getAddress(tx.to) }))
@@ -131,11 +134,11 @@ export function useProposeTransaction(): (
         safeAddress,
         safeTransaction,
         safeTxHash,
-        senderAddress,
+        senderAddress: await signer.getAddress(),
       });
 
       return safeTxHash;
     },
-    [requestAddress, requestSafe, switchChain]
+    [requestSigner, requestSafe, switchChain, isSafeOwner]
   );
 }

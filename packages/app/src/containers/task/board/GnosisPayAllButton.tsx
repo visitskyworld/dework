@@ -146,6 +146,11 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         data: { safeTxHash },
       });
       modal.toggleOff();
+    } catch (error) {
+      notification.info({
+        message: "Payment failed",
+        description: (error as Error).message,
+      });
     } finally {
       setLoading(false);
     }
