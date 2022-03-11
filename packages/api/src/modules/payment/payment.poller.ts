@@ -234,6 +234,7 @@ export class PaymentPoller {
 
     const depth = blockNumber - receipt.blockNumber;
     const confirmed =
+      receipt.status === 1 &&
       depth >= this.blockDepthBeforeConfirmed[PaymentMethodType.METAMASK];
     this.logger.debug(
       `Ethereum transaction receipt: ${JSON.stringify({
@@ -241,6 +242,7 @@ export class PaymentPoller {
         receipt,
         depth,
         blockNumber,
+        status: receipt.status,
       })}`
     );
     return { confirmed };
