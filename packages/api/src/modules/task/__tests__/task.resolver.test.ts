@@ -702,7 +702,21 @@ describe("TaskResolver", () => {
         );
       });
 
-      it("should only return tasks with matching ids", async () => {});
+      it("should not return tasks from deleted project", async () => {
+        const project = await fixtures.createProject();
+        await fixtures.createTask({ projectId: project.id });
+        await fixtures.updateProject({ id: project.id, deletedAt: new Date() });
+
+        const response = await client.request({
+          app,
+          body: TaskRequests.getBatch({
+            organizationIds: [project.organizationId],
+          }),
+        });
+
+        const tasks = response.body.data?.tasks;
+        expect(tasks).toHaveLength(0);
+      });
     });
   });
 });

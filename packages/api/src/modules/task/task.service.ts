@@ -291,11 +291,10 @@ export class TaskService {
     }
 
     if (!!organizationIds) {
-      query = query
-        .andWhere("project.organizationId IN (:...organizationIds)", {
-          organizationIds,
-        })
-        .andWhere("project.deletedAt IS NULL");
+      query = query.andWhere(
+        "project.organizationId IN (:...organizationIds)",
+        { organizationIds }
+      );
     }
 
     if (!!assigneeId) {
@@ -332,6 +331,7 @@ export class TaskService {
 
     return query
       .andWhere("task.deletedAt IS NULL")
+      .andWhere("project.deletedAt IS NULL")
       .orderBy("task.createdAt", "DESC")
       .limit(limit)
       .getMany();

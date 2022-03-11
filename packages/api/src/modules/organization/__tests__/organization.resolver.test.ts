@@ -339,10 +339,13 @@ describe("OrganizationResolver", () => {
 
         const deletedProject = await fixtures.createProject({
           organizationId: organization.id,
-          deletedAt: new Date(),
         });
         const taskInDeletedProject = await fixtures.createTask({
-          projectId: deletedProject.id,
+          projectId: deletedProject!.id,
+        });
+        await fixtures.updateProject({
+          id: deletedProject.id,
+          deletedAt: new Date(),
         });
 
         const privateProject = await fixtures.createProject({
@@ -380,10 +383,11 @@ describe("OrganizationResolver", () => {
           const project = await fixtures.createProject({
             organizationId: organization.id,
           });
-          const deletedProject = await fixtures.createProject({
-            organizationId: organization.id,
-            deletedAt: new Date(),
-          });
+          const deletedProject = await fixtures
+            .createProject({ organizationId: organization.id })
+            .then((p) =>
+              fixtures.updateProject({ id: p.id, deletedAt: new Date() })
+            );
           const privateProject = await fixtures.createProject({
             organizationId: organization.id,
             visibility: ProjectVisibility.PRIVATE,
@@ -401,7 +405,7 @@ describe("OrganizationResolver", () => {
             expect.objectContaining({ id: project.id })
           );
           expect(fetched.projects).not.toContainEqual(
-            expect.objectContaining({ id: deletedProject.id })
+            expect.objectContaining({ id: deletedProject!.id })
           );
           expect(fetched.projects).not.toContainEqual(
             expect.objectContaining({ id: privateProject.id })

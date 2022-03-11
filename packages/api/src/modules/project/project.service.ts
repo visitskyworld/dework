@@ -13,7 +13,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, In, Repository } from "typeorm";
+import { DeepPartial, In, IsNull, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { UserService } from "../user/user.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
@@ -180,7 +180,7 @@ export class ProjectService {
   }
 
   public findById(id: string): Promise<Project | undefined> {
-    return this.projectRepo.findOne(id);
+    return this.projectRepo.findOne({ id, deletedAt: IsNull() });
   }
 
   public async findFeatured(): Promise<Project[]> {
