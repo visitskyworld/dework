@@ -319,12 +319,11 @@ export class DiscordIntegrationService {
       throw new Error("User is not connected to Discord");
     }
 
-    const member = await guild?.members.fetch({
-      user: discordId,
-      force: true,
-    });
+    const member = await guild?.members
+      .fetch({ user: discordId, force: true })
+      .catch(() => undefined);
     if (!member) {
-      throw new Error("User is not part of the Discord guild");
+      throw new Error("You need to be part of the DAO's Discord server");
     }
 
     // Note(fant): for private channels, this will return false for the Discord guild owner...
