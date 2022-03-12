@@ -1,7 +1,12 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import _ from "lodash";
 import moment from "moment";
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import { formatFixed } from "@ethersproject/bignumber";
@@ -310,12 +315,32 @@ export class DiscordIntegrationService {
     }
 
     const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
-    if (channelToPostTo.isThread() && !!discordId) {
-      const member = await guild?.members.fetch({
-        user: discordId,
-        force: true,
+    if (!discordId) {
+      throw new Error("User is not connected to Discord");
+    }
+
+    const member = await guild?.members.fetch({
+      user: discordId,
+      force: true,
+    });
+    if (!member) {
+      throw new Error("User is not part of the Discord guild");
+    }
+
+    // Note(fant): for private channels, this will return false for the Discord guild owner...
+    const canView = channelToPostTo
+      .permissionsFor(member.user.id)
+      ?.has("VIEW_CHANNEL");
+    if (!canView) {
+      throw new ForbiddenException({
+        reason: "NO_ACCESS_TO_CHANNEL",
+        message:
+          "This task is being discussed in a private Discord thread. To get access, reach out to the DAO's core team.",
       });
-      if (!!member) await channelToPostTo.members.add(member.user.id);
+    }
+
+    if (channelToPostTo.isThread()) {
+      await channelToPostTo.members.add(member.user.id);
     }
 
     return `https://discord.com/channels/${channelToPostTo.guildId}/${channelToPostTo.id}`;
@@ -683,10 +708,9 @@ export class DiscordIntegrationService {
       `Found Discord guild: ${JSON.stringify({ guildId: guild.id })}`
     );
 
-    const mainChannel = (await guild.channels.fetch(
-      integration.config.channelId,
-      { force: true }
-    )) as Discord.TextChannel;
+    const mainChannel = (await guild.channels
+      .fetch(integration.config.channelId, { force: true })
+      .catch(() => null)) as Discord.TextChannel;
 
     if (!mainChannel) {
       this.logger.warn(
