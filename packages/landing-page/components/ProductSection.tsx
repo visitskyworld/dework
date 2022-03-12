@@ -58,7 +58,7 @@ export const ProductSection: FC<Props> = () => {
                   loginModal.toggleOn();
                 }}
               >
-                Setup DAO
+                Setup Project
               </Button>
               <Typography.Paragraph
                 type="secondary"
