@@ -14,9 +14,9 @@ import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
 import { User } from "@dewo/api/models/User";
 
-type Action = "create" | "read" | "update" | "delete";
-type Subject = InferSubjects<
-  typeof Organization | typeof Project | typeof Task
+export type Action = "create" | "read" | "update" | "delete";
+export type Subject = InferSubjects<
+  typeof Organization | typeof Project | typeof Task | typeof Role | typeof Rule
 >;
 
 export class AppAbility extends Ability<[Action, Subject]> {}
@@ -33,7 +33,7 @@ export class RbacService {
   ) {}
 
   public async abilityForUser(
-    userId: string,
+    userId: string | undefined,
     organizationId: string
   ): Promise<AppAbility> {
     const rules = await this.getRules(userId, organizationId);
@@ -89,10 +89,14 @@ export class RbacService {
         id: organizationId,
       };
 
+      const roleConditions: Partial<Role> | undefined = { organizationId };
+
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organizationConditions);
           fn("create", Project, projectCondition);
+          fn(["create", "read", "update", "delete"], Role, roleConditions);
+          fn(["create", "read", "update", "delete"], Rule);
           break;
         case RulePermission.MANAGE_PROJECTS:
           fn(["read", "update", "delete"], Project, projectCondition);
@@ -115,7 +119,7 @@ export class RbacService {
   }
 
   private async getRules(
-    userId: string,
+    userId: string | undefined,
     organizationId: string
     // entity:
     //   | { taskId: string }
@@ -152,5 +156,9 @@ export class RbacService {
     //   new Brackets((qb) => qb.where("member.userId = :userId", { userId }).orWhere('organization.defaultRole = role.id'))
     // );
     // return qb.getMany();
+  }
+
+  public async findRoleById(id: string): Promise<Role | undefined> {
+    return this.roleRepo.findOne(id);
   }
 }

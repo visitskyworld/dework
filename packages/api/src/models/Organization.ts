@@ -16,6 +16,7 @@ import { OrganizationIntegration } from "./OrganizationIntegration";
 import { OrganizationTag } from "./OrganizationTag";
 import { EntityDetail } from "./EntityDetail";
 import { ProjectSection } from "./ProjectSection";
+import { Role } from "./rbac/Role";
 
 @Entity()
 @ObjectType()
@@ -75,6 +76,10 @@ export class Organization extends Audit {
   )
   @Field(() => [OrganizationIntegration])
   public integrations!: Promise<OrganizationIntegration[]>;
+
+  @OneToMany(() => Role, (x: Role) => x.organization)
+  @Field(() => [Role])
+  public roles!: Promise<Role[]>;
 
   @Column({ default: false })
   @Field()
