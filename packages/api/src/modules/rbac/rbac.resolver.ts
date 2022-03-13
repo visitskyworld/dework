@@ -1,4 +1,4 @@
-import { Args, Mutation } from "@nestjs/graphql";
+import { Args, Context, Query, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { RbacService } from "./rbac.service";
@@ -11,6 +11,8 @@ import GraphQLUUID from "graphql-type-uuid";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "@dewo/api/models/User";
 import { Repository } from "typeorm";
+import { GraphQLJSONObject } from "graphql-type-json";
+import _ from "lodash";
 
 @Injectable()
 export class RbacResolver {
@@ -78,7 +80,22 @@ export class RbacResolver {
     @Args("userId", { type: () => GraphQLUUID }) userId: string,
     @Args("roleId", { type: () => GraphQLUUID }) roleId: string
   ): Promise<User> {
-    await this.service.addRole(userId, roleId);
+    await this.service.removeRole(userId, roleId);
     return this.userRepo.findOneOrFail(userId);
+  }
+
+  @Query(() => [GraphQLJSONObject])
+  public async getPermissions(
+    @Context("user") user: User,
+    @Args("organizationId", { type: () => GraphQLUUID })
+    organizationId: string
+  ): Promise<unknown[]> {
+    const ability = await this.service.abilityForUser(user?.id, organizationId);
+    return ability.rules.map((rule) => {
+      if (_.isObject(rule.subject)) {
+        return { ...rule, subject: (rule.subject as any).name };
+      }
+      return rule;
+    });
   }
 }

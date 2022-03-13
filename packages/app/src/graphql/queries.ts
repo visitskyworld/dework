@@ -48,8 +48,8 @@ export const userPaymentMethod = gql`
 `;
 
 export const permissions = gql`
-  query PermissionsQuery($input: GetUserPermissionsInput!) {
-    permissions: getPermissions(input: $input)
+  query PermissionsQuery($organizationId: UUID!) {
+    permissions: getPermissions(organizationId: $organizationId)
   }
 `;
 

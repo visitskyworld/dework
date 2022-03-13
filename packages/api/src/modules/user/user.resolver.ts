@@ -7,7 +7,6 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import _ from "lodash";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { AuthGuard } from "../auth/guards/auth.guard";
@@ -16,12 +15,6 @@ import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
-import { GraphQLJSONObject } from "graphql-type-json";
-import { AuthorizableUser } from "nest-casl";
-import { GetUserPermissionsInput } from "./dto/GetUserPermissionsInput";
-import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
-import { ProjectRolesGuard } from "../project/project.roles.guard";
-import { TaskRolesGuard } from "../task/task.roles.guard";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
@@ -60,22 +53,6 @@ export class UserResolver {
   ): Promise<User> {
     await this.userService.setDetail(input, user.id);
     return this.userService.findById(user.id) as Promise<User>;
-  }
-
-  @Query(() => [GraphQLJSONObject])
-  @UseGuards(OrganizationRolesGuard, ProjectRolesGuard, TaskRolesGuard)
-  public async getPermissions(
-    @Context("caslUser") caslUser: AuthorizableUser,
-    @Args("input", { type: () => GetUserPermissionsInput })
-    _input: GetUserPermissionsInput
-  ): Promise<unknown[]> {
-    const abilities = this.abilityFactory.createForUser(caslUser);
-    return abilities.rules.map((rule) => {
-      if (_.isObject(rule.subject)) {
-        return { ...rule, subject: (rule.subject as any).name };
-      }
-      return rule;
-    });
   }
 
   @Query(() => User)

@@ -132,8 +132,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                   isDefault={section.id === defaultProjectSection.id}
                   organizationId={organizationId}
                 />
-                {/* {canCreateProject && section.id === defaultProjectSection.id && ( */}
-                {section.id === defaultProjectSection.id && (
+                {canCreateProject && section.id === defaultProjectSection.id && (
                   <>
                     <div style={{ flex: 1 }} />
                     <CreateProjectButton

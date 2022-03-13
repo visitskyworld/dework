@@ -6021,7 +6021,7 @@ export interface PermissionsQuery {
 }
 
 export interface PermissionsQueryVariables {
-  input: GetUserPermissionsInput;
+  organizationId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -12394,12 +12394,6 @@ export interface GetTasksInput {
   projectIds?: Scalar.UUID[] | null;
   organizationIds?: Scalar.UUID[] | null;
   rewardNotNull?: boolean | null;
-}
-
-export interface GetUserPermissionsInput {
-  organizationId?: Scalar.UUID | null;
-  projectId?: Scalar.UUID | null;
-  taskId?: Scalar.UUID | null;
 }
 
 export interface OrganizationInviteInput {

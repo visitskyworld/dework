@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 import {
@@ -138,7 +138,13 @@ export class RbacService {
       .createQueryBuilder("rule")
       .innerJoinAndSelect("rule.role", "role")
       .leftJoin("role.users", "user")
-      .where("user.id = :userId OR role.default IS TRUE", { userId })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where("user.id = :userId", { userId })
+            .orWhere("role.default IS TRUE")
+        )
+      )
       .andWhere("role.organizationId = :organizationId", { organizationId })
       .orderBy(
         `
