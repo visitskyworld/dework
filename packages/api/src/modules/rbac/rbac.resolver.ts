@@ -4,18 +4,26 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import { RbacService } from "./rbac.service";
 import { CreateRoleInput } from "./dto/CreateRoleInput";
 import { Role } from "@dewo/api/models/rbac/Role";
-import { createRoleGuard } from "./rbac.guard";
+import { RoleGuard } from "./rbac.guard";
 import { Rule } from "@dewo/api/models/rbac/Rule";
 import { CreateRuleInput } from "./dto/CreateRuleInput";
+import GraphQLUUID from "graphql-type-uuid";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "@dewo/api/models/User";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class RbacResolver {
-  constructor(private readonly service: RbacService) {}
+  constructor(
+    private readonly service: RbacService,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>
+  ) {}
 
   @Mutation(() => Role)
   @UseGuards(
     AuthGuard,
-    createRoleGuard({
+    RoleGuard({
       action: "create",
       subject: Role,
       getOrganizationId: async (params: { input: CreateRoleInput }) =>
@@ -31,7 +39,7 @@ export class RbacResolver {
   @Mutation(() => Rule)
   @UseGuards(
     AuthGuard,
-    createRoleGuard({
+    RoleGuard({
       action: "create",
       subject: Rule,
       inject: [RbacService],
@@ -48,5 +56,29 @@ export class RbacResolver {
     @Args("input") input: CreateRuleInput
   ): Promise<Rule> {
     return this.service.createRule(input);
+  }
+
+  @Mutation(() => User)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: "UserRole",
+      inject: [RbacService],
+      async getOrganizationId(
+        service: RbacService,
+        params: { userId: string; roleId: string }
+      ) {
+        const role = await service.findRoleById(params.roleId);
+        return role?.organizationId;
+      },
+    })
+  )
+  public async addRole(
+    @Args("userId", { type: () => GraphQLUUID }) userId: string,
+    @Args("roleId", { type: () => GraphQLUUID }) roleId: string
+  ): Promise<User> {
+    await this.service.addRole(userId, roleId);
+    return this.userRepo.findOneOrFail(userId);
   }
 }

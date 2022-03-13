@@ -12,11 +12,16 @@ import {
 import { Task } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
-import { User } from "@dewo/api/models/User";
+import { AtLeast } from "@dewo/api/types/general";
 
 export type Action = "create" | "read" | "update" | "delete";
 export type Subject = InferSubjects<
-  typeof Organization | typeof Project | typeof Task | typeof Role | typeof Rule
+  | typeof Organization
+  | typeof Project
+  | typeof Task
+  | typeof Role
+  | typeof Rule
+  | "UserRole"
 >;
 
 export class AppAbility extends Ability<[Action, Subject]> {}
@@ -40,8 +45,10 @@ export class RbacService {
     return this.createAbility(rules, organizationId);
   }
 
-  public async createRole(partial: Partial<Role>): Promise<Role> {
-    const x = await this.roleRepo.save(partial);
+  public async createRole(
+    data: AtLeast<Role, "name" | "color" | "organizationId">
+  ): Promise<Role> {
+    const x = await this.roleRepo.save(Object.assign(new Role(), data));
     return this.roleRepo.findOne(x.id) as Promise<Role>;
   }
 
@@ -50,20 +57,20 @@ export class RbacService {
     return this.ruleRepo.findOne(x.id) as Promise<Rule>;
   }
 
-  public async addRole(user: User, role: Role): Promise<void> {
+  public async addRole(userId: string, roleId: string): Promise<void> {
     await this.roleRepo
       .createQueryBuilder()
       .relation("users")
-      .of(role)
-      .add(user);
+      .of(roleId)
+      .add(userId);
   }
 
-  public async removeRole(user: User, role: Role): Promise<void> {
+  public async removeRole(userId: string, roleId: string): Promise<void> {
     await this.roleRepo
       .createQueryBuilder()
       .relation("users")
-      .of(role)
-      .remove(user);
+      .of(roleId)
+      .remove(userId);
   }
 
   private async createAbility(
@@ -97,6 +104,7 @@ export class RbacService {
           fn("create", Project, projectCondition);
           fn(["create", "read", "update", "delete"], Role, roleConditions);
           fn(["create", "read", "update", "delete"], Rule);
+          fn(["create", "delete"], "UserRole");
           break;
         case RulePermission.MANAGE_PROJECTS:
           fn(["read", "update", "delete"], Project, projectCondition);

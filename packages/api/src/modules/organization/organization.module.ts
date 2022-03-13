@@ -15,6 +15,7 @@ import {
 } from "./organization.resolver";
 import { OrganizationService } from "./organization.service";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
+import { RbacModule } from "../rbac/rbac.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
     ]),
     CaslModule.forFeature({ permissions }),
     PermalinkModule,
+    RbacModule,
   ],
   providers: [
     OrganizationResolver,

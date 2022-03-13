@@ -46,5 +46,5 @@ export class User extends Audit {
 
   @ManyToMany(() => Role)
   @Field(() => [Role])
-  public roles!: Role[];
+  public roles!: Promise<Role[]>;
 }

@@ -16,12 +16,15 @@ import { Brackets, DeepPartial, Repository } from "typeorm";
 import { Roles } from "../app/app.roles";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
+import { RbacService } from "../rbac/rbac.service";
+import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
 export class OrganizationService {
   // private readonly logger = new Logger("UserService");
 
   constructor(
+    private readonly rbacService: RbacService,
     @InjectRepository(Organization)
     private readonly organizationRepo: Repository<Organization>,
     @InjectRepository(OrganizationMember)
@@ -38,15 +41,37 @@ export class OrganizationService {
 
   public async create(
     partial: DeepPartial<Organization>,
-
     creator: User
   ): Promise<Organization> {
     const created = await this.organizationRepo.save(partial);
-    await this.upsertMember({
-      organizationId: created.id,
-      userId: creator.id,
-      role: OrganizationRole.OWNER,
-    });
+    const [coreTeamRole] = await Promise.all([
+      this.rbacService.createRole({
+        color: "pink",
+        name: "core-team",
+        organizationId: created.id,
+        rules: [
+          { permission: RulePermission.MANAGE_ORGANIZATION },
+          { permission: RulePermission.MANAGE_PROJECTS },
+          { permission: RulePermission.MANAGE_TASKS },
+        ] as Partial<Rule>[] as any,
+      }),
+      this.rbacService.createRole({
+        color: "grey",
+        name: "@everyone",
+        default: true,
+        organizationId: created.id,
+        rules: [
+          { permission: RulePermission.VIEW_PROJECTS },
+        ] as Partial<Rule>[] as any,
+      }),
+      this.upsertMember({
+        organizationId: created.id,
+        userId: creator.id,
+        role: OrganizationRole.OWNER,
+      }),
+    ]);
+
+    await this.rbacService.addRole(creator.id, coreTeamRole.id);
     return this.findById(created.id) as Promise<Organization>;
   }
 

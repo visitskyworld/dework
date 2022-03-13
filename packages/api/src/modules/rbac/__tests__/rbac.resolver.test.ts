@@ -36,7 +36,7 @@ describe("RbacResolver", () => {
     for (const rule of rules) {
       await fixtures.createRule({ roleId: role.id, ...rule });
     }
-    await service.addRole(user, role);
+    await service.addRole(user.id, role.id);
   }
 
   describe("Mutations", () => {

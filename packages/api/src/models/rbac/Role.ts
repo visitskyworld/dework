@@ -6,10 +6,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Audit } from "../Audit";
 import { Organization } from "../Organization";
 import { User } from "../User";
+import { Rule } from "./Rule";
 
 @Entity()
 @ObjectType()
@@ -32,7 +34,11 @@ export class Role extends Audit {
   @ManyToMany(() => User)
   @JoinTable({ name: "user_role" })
   @Field(() => [User])
-  public users!: User[];
+  public users!: Promise<User[]>;
+
+  @OneToMany(() => Rule, (r: Rule) => r.role, { cascade: true })
+  @Field(() => [Rule])
+  public rules!: Promise<Rule[]>;
 
   @JoinColumn()
   @ManyToOne(() => Organization)

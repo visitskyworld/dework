@@ -18,10 +18,9 @@ registerEnumType(RulePermission, { name: "RulePermission" });
 @ObjectType()
 export class Rule extends Audit {
   @JoinColumn()
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { onDelete: "CASCADE" })
   @Field(() => Role)
   public role!: Promise<Role>;
-  @Column({ type: "uuid" })
   @Field()
   public roleId!: string;
 
