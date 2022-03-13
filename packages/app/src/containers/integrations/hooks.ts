@@ -284,12 +284,13 @@ export function useNotionDatabases(threepidId: string) {
 export function useDiscordGuildMembershipState(
   organizationId: string | undefined
 ): DiscordGuildMembershipState | undefined {
+  const { user } = useAuthContext();
   const { data } = useQuery<
     GetDiscordGuildMembershipStateQuery,
     GetDiscordGuildMembershipStateQueryVariables
   >(Queries.getDiscordGuildMembershipState, {
     variables: { organizationId: organizationId! },
-    skip: !organizationId,
+    skip: !organizationId || !user,
   });
   return data?.state;
 }
