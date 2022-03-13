@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
@@ -28,7 +28,7 @@ export class AppAbility extends Ability<[Action, Subject]> {}
 
 @Injectable()
 export class RbacService {
-  private readonly logger = new Logger(this.constructor.name);
+  // private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     @InjectRepository(Role)

@@ -14,7 +14,6 @@ import GraphQLUUID from "graphql-type-uuid";
 import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
-import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
@@ -26,7 +25,6 @@ import { PermalinkService } from "../permalink/permalink.service";
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly abilityFactory: AbilityFactory,
     private readonly permalinkService: PermalinkService
   ) {}
 

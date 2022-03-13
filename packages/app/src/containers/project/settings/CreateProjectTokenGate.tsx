@@ -6,9 +6,8 @@ import {
   PaymentToken,
   ProjectDetails,
   ProjectRole,
-  ProjectVisibility,
 } from "@dewo/app/graphql/types";
-import { useCreateProjectTokenGate, useUpdateProject } from "../hooks";
+import { useCreateProjectTokenGate } from "../hooks";
 import {
   projectRoleDescription,
   projectRoleToString,
@@ -20,7 +19,6 @@ interface Props {
 
 export const CreateProjectTokenGate: FC<Props> = ({ project }) => {
   const createProjectTokenGate = useCreateProjectTokenGate();
-  const updateProject = useUpdateProject();
 
   const [projectRole, setProjectRole] = useState<ProjectRole>();
 
@@ -31,14 +29,14 @@ export const CreateProjectTokenGate: FC<Props> = ({ project }) => {
         tokenId: token!.id,
         role: projectRole!,
       });
-      if (project.visibility !== ProjectVisibility.PRIVATE) {
-        await updateProject({
-          id: project.id,
-          visibility: ProjectVisibility.PRIVATE,
-        });
-      }
+      // if (project.visibility !== ProjectVisibility.PRIVATE) {
+      //   await updateProject({
+      //     id: project.id,
+      //     visibility: ProjectVisibility.PRIVATE,
+      //   });
+      // }
     },
-    [projectRole, project, createProjectTokenGate, updateProject]
+    [projectRole, project, createProjectTokenGate]
   );
 
   return (

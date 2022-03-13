@@ -5,14 +5,13 @@ import {
   OrganizationRole,
 } from "@dewo/api/models/OrganizationMember";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
-import { Project, ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
+import { Project } from "@dewo/api/models/Project";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, DeepPartial, Repository } from "typeorm";
+import { DeepPartial, IsNull, Repository } from "typeorm";
 import { Roles } from "../app/app.roles";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
@@ -179,39 +178,49 @@ export class OrganizationService {
       .getMany();
   }
 
-  public getProjects(
+  public async getProjects(
     organizationId: string,
     userId: string | undefined,
     caslRoles: Roles[]
   ): Promise<Project[]> {
-    return this.projectRepo
-      .createQueryBuilder("project")
-      .leftJoin("project.members", "pm", "pm.userId = :userId", { userId })
-      .innerJoin("project.organization", "organization")
-      .leftJoin("organization.members", "om", "om.userId = :userId", { userId })
-      .where("project.deletedAt IS NULL")
-      .andWhere("project.organizationId = :organizationId", { organizationId })
-      .andWhere(
-        new Brackets((qb) => {
-          qb.where("project.visibility = :public", {
-            public: ProjectVisibility.PUBLIC,
-          })
-            .orWhere("om.role IN (:...orgRoles)", {
-              orgRoles: [OrganizationRole.OWNER, OrganizationRole.ADMIN],
-            })
-            .orWhere("pm.role IN (:...projectRoles)", {
-              projectRoles: [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR],
-            });
+    const projects = await this.projectRepo.find({
+      organizationId,
+      deletedAt: IsNull(),
+    });
 
-          if (!!caslRoles.length) {
-            qb.orWhere(":superadmin IN (:...caslRoles)", {
-              superadmin: Roles.superadmin,
-              caslRoles,
-            });
-          }
-        })
-      )
-      .getMany();
+    const ability = await this.rbacService.abilityForUser(
+      userId,
+      organizationId
+    );
+    return projects.filter((project) => ability.can("read", project));
+    // return this.projectRepo
+    //   .createQueryBuilder("project")
+    //   .leftJoin("project.members", "pm", "pm.userId = :userId", { userId })
+    //   .innerJoin("project.organization", "organization")
+    //   .leftJoin("organization.members", "om", "om.userId = :userId", { userId })
+    //   .where("project.deletedAt IS NULL")
+    //   .andWhere("project.organizationId = :organizationId", { organizationId })
+    //   .andWhere(
+    //     new Brackets((qb) => {
+    //       qb.where("project.visibility = :public", {
+    //         public: ProjectVisibility.PUBLIC,
+    //       })
+    //         .orWhere("om.role IN (:...orgRoles)", {
+    //           orgRoles: [OrganizationRole.OWNER, OrganizationRole.ADMIN],
+    //         })
+    //         .orWhere("pm.role IN (:...projectRoles)", {
+    //           projectRoles: [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR],
+    //         });
+
+    //       if (!!caslRoles.length) {
+    //         qb.orWhere(":superadmin IN (:...caslRoles)", {
+    //           superadmin: Roles.superadmin,
+    //           caslRoles,
+    //         });
+    //       }
+    //     })
+    //   )
+    //   .getMany();
   }
 
   public async findByUser(userId: string): Promise<Organization[]> {

@@ -87,10 +87,14 @@ export class RbacResolver {
   @Query(() => [GraphQLJSONObject])
   public async getPermissions(
     @Context("user") user: User,
+    @Args("unauthed", { nullable: true }) unauthed: boolean,
     @Args("organizationId", { type: () => GraphQLUUID })
     organizationId: string
   ): Promise<unknown[]> {
-    const ability = await this.service.abilityForUser(user?.id, organizationId);
+    const ability = await this.service.abilityForUser(
+      unauthed ? undefined : user?.id,
+      organizationId
+    );
     return ability.rules.map((rule) => {
       if (_.isObject(rule.subject)) {
         return { ...rule, subject: (rule.subject as any).name };

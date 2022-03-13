@@ -460,7 +460,6 @@ export interface UpdateOrganizationMutation_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -1015,7 +1014,6 @@ export interface CreateProjectMutation_project_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -1155,7 +1153,6 @@ export interface CreateProjectMutation_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -1309,7 +1306,6 @@ export interface UpdateProjectMutation_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3543,7 +3539,6 @@ export interface JoinProjectWithTokenMutation_member_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -3578,7 +3573,6 @@ export interface JoinProjectsWithDiscordRoleMutation_members_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4311,7 +4305,6 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -4889,7 +4882,6 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5150,7 +5142,6 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5411,7 +5402,6 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -5901,7 +5891,6 @@ export interface UserTasksQuery_user_tasks_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -6022,6 +6011,7 @@ export interface PermissionsQuery {
 
 export interface PermissionsQueryVariables {
   organizationId: Scalar.UUID;
+  unauthed?: boolean | null;
 }
 
 /* tslint:disable */
@@ -6152,7 +6142,6 @@ export interface GetOrganizationQuery_organization_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -6371,7 +6360,6 @@ export interface GetFeaturedProjectsQuery_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -6806,7 +6794,6 @@ export interface GetProjectQuery_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -7466,7 +7453,6 @@ export interface GetTaskQuery_task_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -7855,7 +7841,6 @@ export interface GetTasksQuery_tasks_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -8314,7 +8299,6 @@ export interface GetInviteQuery_invite_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -8891,7 +8875,6 @@ export interface TaskCreatedSubscription_task_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -9422,7 +9405,6 @@ export interface TaskUpdatedSubscription_task_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -10078,7 +10060,6 @@ export interface Project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -10244,7 +10225,6 @@ export interface Invite_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -10391,7 +10371,6 @@ export interface ProjectDetails {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -11090,7 +11069,6 @@ export interface TaskWithOrganization_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -11572,7 +11550,6 @@ export interface TaskDetails_project {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
@@ -12006,7 +11983,6 @@ export interface OrganizationDetails_projects {
   slug: string;
   name: string;
   description: string | null;
-  visibility: ProjectVisibility;
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;

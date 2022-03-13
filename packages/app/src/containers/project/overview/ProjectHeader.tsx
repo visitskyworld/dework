@@ -15,8 +15,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
-import { ProjectVisibility } from "@dewo/app/graphql/types";
-import { useOrganization } from "../../organization/hooks";
+import { useIsProjectPrivate, useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { DiscordRoleGatingJoinButton } from "../../invite/DiscordRoleGatingJoinButton";
@@ -28,6 +27,7 @@ interface Props {
 
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
+  const isPrivate = useIsProjectPrivate(project);
   const { organization } = useOrganization(project?.organizationId);
   const canEdit = usePermission("update", "Project");
 
@@ -77,7 +77,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
               style={{ margin: 0 }}
               onClick={editName.toggleOn}
             >
-              {project.visibility === ProjectVisibility.PRIVATE && (
+              {isPrivate && (
                 <Typography.Text type="secondary">
                   <Icons.LockOutlined />
                   {"  "}

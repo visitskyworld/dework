@@ -53,7 +53,7 @@ export const PermissionsProvider: FC = ({ children }) => {
 
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
-    { variables: { organizationId } }
+    { variables: { organizationId: organizationId! }, skip: !organizationId }
   );
   const permissions = data?.permissions;
   const ability = useMemo(
@@ -72,6 +72,26 @@ export const PermissionsProvider: FC = ({ children }) => {
     </PermissionsContext.Provider>
   );
 };
+
+export function useDefaultAbility(
+  organizationId: string | undefined
+): Ability<AbilityType> {
+  const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
+    Queries.permissions,
+    {
+      variables: { organizationId: organizationId!, unauthed: true },
+      skip: !organizationId,
+    }
+  );
+  const permissions = data?.permissions;
+  return useMemo(
+    () =>
+      new Ability<AbilityType>((permissions as any[]) ?? [], {
+        detectSubjectType: (subject: any) => subject.__typename,
+      }),
+    [permissions]
+  );
+}
 
 export function usePermission(
   action: AbilityAction,

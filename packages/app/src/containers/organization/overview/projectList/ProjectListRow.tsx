@@ -1,10 +1,11 @@
 import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { ProjectDetails, ProjectVisibility } from "@dewo/app/graphql/types";
+import { ProjectDetails } from "@dewo/app/graphql/types";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { useIsProjectPrivate } from "../../hooks";
 
 interface Props {
   project: ProjectDetails;
@@ -12,6 +13,7 @@ interface Props {
 
 export const ProjectListRow: FC<Props> = ({ project }) => {
   const screens = useBreakpoint();
+  const isPrivate = useIsProjectPrivate(project);
   return (
     <Link href={project.permalink}>
       <a>
@@ -25,7 +27,7 @@ export const ProjectListRow: FC<Props> = ({ project }) => {
               <Typography.Title level={5} style={{ marginBottom: 0 }}>
                 {project.name}
               </Typography.Title>
-              {project.visibility === ProjectVisibility.PRIVATE && (
+              {isPrivate && (
                 <Tag
                   className="bg-component"
                   style={{ marginLeft: 16 }}

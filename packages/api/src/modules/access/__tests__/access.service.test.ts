@@ -18,8 +18,6 @@ import _ from "lodash";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
-const discordEveryoneRoleId = discordGuildId;
-const discordUnknownRoleId = Date.now().toString();
 
 describe("AccessService", () => {
   let app: INestApplication;

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { useDefaultAbility } from "@dewo/app/contexts/PermissionsContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -31,6 +32,7 @@ import {
   OrganizationMember,
   OrganizationRole,
   OrganizationTag,
+  Project,
   ProjectSection,
   RemoveOrganizationMemberInput,
   RemoveOrganizationMemberMutation,
@@ -341,5 +343,13 @@ export function useOrganizationContributors(
         .uniqBy((u) => u.id)
         .value(),
     [organization, coreTeam]
+  );
+}
+
+export function useIsProjectPrivate(project: Project | undefined): boolean {
+  const ability = useDefaultAbility(project?.organizationId);
+  return useMemo(
+    () => !!project && !ability.can("read", project),
+    [ability, project]
   );
 }
