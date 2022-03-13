@@ -61,6 +61,10 @@ import {
 } from "../models/AccessControl";
 import { AccessService } from "../modules/access/access.service";
 import { AccessModule } from "../modules/access/access.module";
+import { RbacService } from "../modules/rbac/rbac.service";
+import { Role } from "../models/rbac/Role";
+import { Rule, RulePermission } from "../models/rbac/Rule";
+import { RbacModule } from "../modules/rbac/rbac.module";
 
 @Injectable()
 export class Fixtures {
@@ -74,7 +78,8 @@ export class Fixtures {
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
     private readonly paymentService: PaymentService,
-    private readonly accessService: AccessService
+    private readonly accessService: AccessService,
+    private readonly rbacService: RbacService
   ) {}
 
   public async createThreepid(
@@ -468,6 +473,24 @@ export class Fixtures {
     return { project, organization };
   }
 
+  public async createRole(partial: Partial<Role> = {}): Promise<Role> {
+    return this.rbacService.createRole({
+      organizationId: await this.createOrganization().then((o) => o.id),
+      name: faker.internet.userName(),
+      color: "red",
+      ...partial,
+    });
+  }
+
+  public async createRule(partial: Partial<Rule> = {}): Promise<Rule> {
+    return this.rbacService.createRule({
+      roleId: await this.createRole().then((o) => o.id),
+      permission: RulePermission.VIEW_PROJECTS,
+      inverted: false,
+      ...partial,
+    });
+  }
+
   async createAccessControl<T extends AccessControlType>(
     type: T,
     config: AccessControlConfigMap[T],
@@ -494,6 +517,7 @@ export class Fixtures {
     InviteModule,
     PaymentModule,
     AccessModule,
+    RbacModule,
   ],
   providers: [Fixtures],
 })

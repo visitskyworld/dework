@@ -1,9 +1,9 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Role } from "discord.js";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "../Audit";
 import { Project } from "../Project";
 import { Task } from "../Task";
+import { Role } from "./Role";
 
 export enum RulePermission {
   MANAGE_ORGANIZATION = "MANAGE_ORGANIZATION",

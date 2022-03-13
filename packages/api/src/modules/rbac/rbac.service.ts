@@ -3,19 +3,23 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
-import { Ability, AbilityBuilder } from "@casl/ability";
+import {
+  Ability,
+  AbilityBuilder,
+  ExtractSubjectType,
+  InferSubjects,
+} from "@casl/ability";
 import { Task } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
+import { User } from "@dewo/api/models/User";
 
-type RbacAction = "create" | "read" | "update" | "delete";
-type RbacSubject =
-  | "Organization"
-  | Partial<Organization>
-  | "Project"
-  | Partial<Project>
-  | "Task"
-  | Partial<Task>;
+type Action = "create" | "read" | "update" | "delete";
+type Subject = InferSubjects<
+  typeof Organization | typeof Project | typeof Task
+>;
+
+export class AppAbility extends Ability<[Action, Subject]> {}
 
 @Injectable()
 export class RbacService {
@@ -28,53 +32,95 @@ export class RbacService {
     private readonly ruleRepo: Repository<Rule>
   ) {}
 
+  public async abilityForUser(
+    userId: string,
+    organizationId: string
+  ): Promise<AppAbility> {
+    const rules = await this.getRules(userId, organizationId);
+    return this.createAbility(rules, organizationId);
+  }
+
+  public async createRole(partial: Partial<Role>): Promise<Role> {
+    const x = await this.roleRepo.save(partial);
+    return this.roleRepo.findOne(x.id) as Promise<Role>;
+  }
+
+  public async createRule(partial: Partial<Rule>): Promise<Rule> {
+    const x = await this.ruleRepo.save(partial);
+    return this.ruleRepo.findOne(x.id) as Promise<Rule>;
+  }
+
+  public async addRole(user: User, role: Role): Promise<void> {
+    await this.roleRepo
+      .createQueryBuilder()
+      .relation("users")
+      .of(role)
+      .add(user);
+  }
+
+  public async removeRole(user: User, role: Role): Promise<void> {
+    await this.roleRepo
+      .createQueryBuilder()
+      .relation("users")
+      .of(role)
+      .remove(user);
+  }
+
   private async createAbility(
     rules: Rule[],
     organizationId: string
-  ): Promise<Ability<[RbacAction, RbacSubject]>> {
-    const builder = new AbilityBuilder<Ability<[RbacAction, any]>>(Ability);
+  ): Promise<AppAbility> {
+    const builder = new AbilityBuilder<AppAbility>(AppAbility);
 
     for (const rule of rules) {
       const fn = rule.inverted ? builder.cannot : builder.can;
-      const task: Partial<Task> | "Task" = rule.taskId
+
+      const taskConditions: Partial<Task> | undefined = !!rule.taskId
         ? { id: rule.taskId }
-        : rule.projectId
+        : !!rule.projectId
         ? { projectId: rule.projectId }
-        : "Task";
-      const project: Partial<Project> = rule.projectId
+        : undefined;
+
+      const projectCondition: Partial<Project> | undefined = !!rule.projectId
         ? { id: rule.projectId }
         : { organizationId };
-      const organization: Partial<Organization> = { id: organizationId };
+
+      const organizationConditions: Partial<Organization> | undefined = {
+        id: organizationId,
+      };
 
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
-          fn(["update", "delete"], organization);
-          fn("create", project);
+          fn(["update", "delete"], Organization, organizationConditions);
+          fn("create", Project, projectCondition);
           break;
         case RulePermission.MANAGE_PROJECTS:
-          fn(["read", "update", "delete"], project);
-          fn("create", task);
+          fn(["read", "update", "delete"], Project, projectCondition);
+          fn("create", Task, taskConditions);
           break;
         case RulePermission.MANAGE_TASKS:
-          fn(["read", "update", "delete"], task);
+          fn(["read", "update", "delete"], Task, taskConditions);
           break;
         case RulePermission.VIEW_PROJECTS:
-          fn("read", project);
-          fn("read", task);
+          fn("read", Project, projectCondition);
+          fn("read", Task, taskConditions);
           break;
       }
     }
 
-    return new Ability<[RbacAction, RbacSubject]>(builder.rules);
+    return builder.build({
+      detectSubjectType: (item: Subject): ExtractSubjectType<Subject> =>
+        item.constructor as ExtractSubjectType<Subject>,
+    });
   }
 
   private async getRules(
-    organizationId: string,
+    userId: string,
+    organizationId: string
     // entity:
     //   | { taskId: string }
     //   | { projectId: string }
     //   | { organizationId: string },
-    userId: string
   ): Promise<Rule[]> {
     return this.ruleRepo
       .createQueryBuilder("rule")

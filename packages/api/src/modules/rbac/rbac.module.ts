@@ -7,5 +7,6 @@ import { RbacService } from "./rbac.service";
 @Module({
   imports: [TypeOrmModule.forFeature([Role, Rule])],
   providers: [RbacService],
+  exports: [RbacService],
 })
 export class RbacModule {}
