@@ -1,12 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Length } from "class-validator";
-import { Column, Entity, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany, OneToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
 import { TaskApplication } from "./TaskApplication";
 import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
 import { UserOnboarding } from "./UserOnboarding";
+import { Role } from "./rbac/Role";
 
 @Entity()
 @ObjectType()
@@ -42,4 +43,8 @@ export class User extends Audit {
   @OneToOne(() => UserOnboarding, (x) => x.user, { nullable: true })
   @Field(() => UserOnboarding, { nullable: true })
   public onboarding?: UserOnboarding;
+
+  @ManyToMany(() => Role)
+  @Field(() => [Role])
+  public roles!: Role[];
 }
