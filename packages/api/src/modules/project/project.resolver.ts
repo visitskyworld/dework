@@ -42,6 +42,7 @@ import { CreateProjectSectionInput } from "./dto/CreateProjectSectionInput";
 import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
 import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
 import { TaskSection } from "@dewo/api/models/TaskSection";
+import { RoleGuard } from "../rbac/rbac.guard";
 
 @Resolver(() => Project)
 @Injectable()
@@ -95,8 +96,19 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, Project)
+  // @UseAbility(Actions.create, Project)
+  // @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  @UseGuards(
+    AuthGuard,
+    OrganizationRolesGuard,
+    RoleGuard({
+      action: "create",
+      subject: Project,
+      async getOrganizationId(params: { input: CreateProjectInput }) {
+        return params.input.organizationId;
+      },
+    })
+  )
   public async createProject(
     @Context("user") user: User,
     @Args("input") input: CreateProjectInput
