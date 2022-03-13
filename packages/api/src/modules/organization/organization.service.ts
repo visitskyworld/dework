@@ -12,7 +12,6 @@ import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, IsNull, Repository } from "typeorm";
-import { Roles } from "../app/app.roles";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RbacService } from "../rbac/rbac.service";
@@ -180,8 +179,7 @@ export class OrganizationService {
 
   public async getProjects(
     organizationId: string,
-    userId: string | undefined,
-    caslRoles: Roles[]
+    userId: string | undefined
   ): Promise<Project[]> {
     const projects = await this.projectRepo.find({
       organizationId,
@@ -193,34 +191,6 @@ export class OrganizationService {
       organizationId
     );
     return projects.filter((project) => ability.can("read", project));
-    // return this.projectRepo
-    //   .createQueryBuilder("project")
-    //   .leftJoin("project.members", "pm", "pm.userId = :userId", { userId })
-    //   .innerJoin("project.organization", "organization")
-    //   .leftJoin("organization.members", "om", "om.userId = :userId", { userId })
-    //   .where("project.deletedAt IS NULL")
-    //   .andWhere("project.organizationId = :organizationId", { organizationId })
-    //   .andWhere(
-    //     new Brackets((qb) => {
-    //       qb.where("project.visibility = :public", {
-    //         public: ProjectVisibility.PUBLIC,
-    //       })
-    //         .orWhere("om.role IN (:...orgRoles)", {
-    //           orgRoles: [OrganizationRole.OWNER, OrganizationRole.ADMIN],
-    //         })
-    //         .orWhere("pm.role IN (:...projectRoles)", {
-    //           projectRoles: [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR],
-    //         });
-
-    //       if (!!caslRoles.length) {
-    //         qb.orWhere(":superadmin IN (:...caslRoles)", {
-    //           superadmin: Roles.superadmin,
-    //           caslRoles,
-    //         });
-    //       }
-    //     })
-    //   )
-    //   .getMany();
   }
 
   public async findByUser(userId: string): Promise<Organization[]> {

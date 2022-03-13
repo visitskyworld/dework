@@ -279,11 +279,17 @@ export class ProjectResolver {
   }
 
   @Query(() => Project)
-  @UseGuards(ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.read, Project, [
-    ProjectService,
-    (service: ProjectService, { params }) => service.findById(params.id),
-  ])
+  @UseGuards(
+    RoleGuard({
+      action: "read",
+      subject: Project,
+      inject: [ProjectService],
+      async getOrganizationId(service: ProjectService, params: { id: string }) {
+        const project = await service.findById(params.id);
+        return project?.organizationId;
+      },
+    })
+  )
   public async getProject(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Project> {

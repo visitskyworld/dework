@@ -43,7 +43,6 @@ import { PermalinkService } from "../permalink/permalink.service";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { subject } from "@casl/ability";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
-import { Roles } from "../app/app.roles";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 
 @Resolver(() => Organization)
@@ -96,15 +95,9 @@ export class OrganizationResolver {
   @ResolveField(() => [Project])
   public async projects(
     @Context("user") user: User | undefined,
-    @CaslUser() userProxy: UserProxy,
     @Parent() organization: Organization
   ): Promise<Project[]> {
-    const caslUser = await userProxy.get();
-    return this.organizationService.getProjects(
-      organization.id,
-      user?.id,
-      caslUser?.roles as Roles[]
-    );
+    return this.organizationService.getProjects(organization.id, user?.id);
   }
 
   @ResolveField(() => [ProjectTokenGate])
