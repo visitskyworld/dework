@@ -55,6 +55,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   );
 
   const canCreateProject = usePermission("create", "Project");
+  const canReorderProjects = usePermission("update", "Project", "sortKey");
   const shouldRenderSection = useCallback(
     (section: ProjectSection) =>
       section.id === defaultProjectSection.id ||
@@ -154,7 +155,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                         key={project.id}
                         draggableId={project.id}
                         index={index}
-                        isDragDisabled={!canCreateProject}
+                        isDragDisabled={!canReorderProjects}
                       >
                         {(provided) => (
                           <div
@@ -171,7 +172,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                     {provided.placeholder}
                     <Row style={{ height: 36 }}>
                       {!projectsBySectionId[section.id]?.length &&
-                        canCreateProject && (
+                        canReorderProjects && (
                           <Typography.Text type="secondary">
                             Drag projects into this section
                           </Typography.Text>

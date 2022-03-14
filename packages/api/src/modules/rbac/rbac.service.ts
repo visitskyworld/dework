@@ -15,12 +15,16 @@ import { Organization } from "@dewo/api/models/Organization";
 import { AtLeast } from "@dewo/api/types/general";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
+import { ProjectSection } from "@dewo/api/models/ProjectSection";
+import { TaskTag } from "@dewo/api/models/TaskTag";
 
 export type Action = "create" | "read" | "update" | "delete";
 export type Subject = InferSubjects<
   | typeof Organization
   | typeof Project
+  | typeof ProjectSection
   | typeof Task
+  | typeof TaskTag
   | typeof TaskApplication
   | typeof TaskSubmission
   | typeof Role
@@ -87,17 +91,20 @@ export class RbacService {
     for (const rule of rules) {
       const fn = rule.inverted ? builder.cannot : builder.can;
 
-      const taskConditions: Partial<Task> | undefined = !!rule.taskId
+      const task: Partial<Task> | undefined = !!rule.taskId
         ? { id: rule.taskId }
         : !!rule.projectId
         ? { projectId: rule.projectId }
         : undefined;
+      const taskTag: Partial<TaskTag> | undefined = !!rule.projectId
+        ? { projectId: rule.projectId }
+        : undefined;
 
-      const projectCondition: Partial<Project> | undefined = !!rule.projectId
+      const project: Partial<Project> | undefined = !!rule.projectId
         ? { id: rule.projectId }
         : { organizationId };
 
-      const organizationConditions: Partial<Organization> | undefined = {
+      const organization: Partial<Organization> | undefined = {
         id: organizationId,
       };
 
@@ -105,24 +112,27 @@ export class RbacService {
 
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
-          fn(["update", "delete"], Organization, organizationConditions);
+          fn(["update", "delete"], Organization, organization);
+          fn(["create", "read", "update", "delete"], ProjectSection);
+          fn("update", Project, ["sectionId", "sortKey"], project);
           fn(["create", "read", "update", "delete"], Role, roleConditions);
           fn(["create", "read", "update", "delete"], Rule);
           fn(["create", "delete"], "UserRole");
           break;
         case RulePermission.MANAGE_PROJECTS:
-          fn(["create", "read", "update", "delete"], Project, projectCondition);
+          fn(["create", "read", "update", "delete"], Project, project);
+          fn(["create", "read", "update", "delete"], TaskTag, taskTag);
           break;
         case RulePermission.MANAGE_TASKS:
-          fn(["create", "read", "update", "delete"], Task, taskConditions);
+          fn(["create", "read", "update", "delete"], Task, task);
           // fn(["create", "read", "delete"], TaskApplication);
           // fn(["read", "delete"], TaskSubmission);
           break;
         case RulePermission.VIEW_PROJECTS:
-          fn("read", Project, projectCondition);
-          fn("read", Task, taskConditions);
+          fn("read", Project, project);
+          fn("read", Task, task);
           // Note(fant): this makes ppl with this permission able to create tasks in general...
-          fn(["create"], Task, "applications", taskConditions);
+          fn(["create"], Task, "applications", task);
           fn(["create", "read", "update", "delete"], TaskApplication, {
             userId,
           });

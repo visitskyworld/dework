@@ -367,7 +367,7 @@ export function useOrganizationContributors(
 export function useIsProjectPrivate(project: Project | undefined): boolean {
   const ability = useDefaultAbility(project?.organizationId);
   return useMemo(
-    () => !!project && !ability.can("read", project),
+    () => !!project && !!ability && !ability.can("read", project),
     [ability, project]
   );
 }

@@ -43,6 +43,7 @@ import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
 import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RoleGuard } from "../rbac/rbac.guard";
+import _ from "lodash";
 
 @Resolver(() => Project)
 @Injectable()
@@ -123,6 +124,8 @@ export class ProjectResolver {
       action: "update",
       subject: Project,
       inject: [ProjectService],
+      getFields: (params: { input: UpdateProjectInput }) =>
+        Object.keys(_.omit(params.input, ["id"])),
       getSubject: (
         params: { input: UpdateProjectInput },
         service: ProjectService
@@ -153,8 +156,18 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectSection)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, ProjectSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: ProjectSection,
+      inject: [ProjectService],
+      getOrganizationId: (
+        _subject,
+        params: { input: CreateProjectSectionInput }
+      ) => params.input.organizationId,
+    })
+  )
   public async createProjectSection(
     @Args("input") input: CreateProjectSectionInput
   ): Promise<ProjectSection> {
@@ -162,8 +175,18 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectSection)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, ProjectSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: ProjectSection,
+      inject: [ProjectService],
+      getOrganizationId: (
+        _subject,
+        params: { input: UpdateProjectSectionInput }
+      ) => params.input.organizationId,
+    })
+  )
   public async updateProjectSection(
     @Args("input") input: UpdateProjectSectionInput
   ): Promise<ProjectSection> {
@@ -277,8 +300,22 @@ export class ProjectResolver {
   }
 
   @Mutation(() => TaskTag)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, TaskTag)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: TaskTag,
+      inject: [ProjectService],
+      getOrganizationId: async (
+        _subject,
+        params: { input: CreateTaskTagInput },
+        service
+      ) => {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
   public async createTaskTag(
     @Args("input") input: CreateTaskTagInput
   ): Promise<TaskTag> {
@@ -286,8 +323,22 @@ export class ProjectResolver {
   }
 
   @Mutation(() => TaskTag)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, TaskTag)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: TaskTag,
+      inject: [ProjectService],
+      getOrganizationId: async (
+        _subject,
+        params: { input: UpdateTaskTagInput },
+        service
+      ) => {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
   public async updateTaskTag(
     @Args("input") input: UpdateTaskTagInput
   ): Promise<TaskTag> {
