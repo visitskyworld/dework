@@ -34,7 +34,9 @@ export class OrganizationService {
     @InjectRepository(OrganizationTag)
     private readonly organizationTagRepo: Repository<OrganizationTag>,
     @InjectRepository(EntityDetail)
-    private readonly entityDetailRepo: Repository<EntityDetail>
+    private readonly entityDetailRepo: Repository<EntityDetail>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>
   ) {}
 
   public async create(
@@ -164,6 +166,14 @@ export class OrganizationService {
       .where("member.organizationId = :organizationId", {
         organizationId,
       })
+      .getMany();
+  }
+
+  public getUsers(organizationId: string): Promise<User[]> {
+    return this.userRepo
+      .createQueryBuilder("user")
+      .innerJoinAndSelect("user.roles", "role")
+      .where("role.organizationId = :organizationId", { organizationId })
       .getMany();
   }
 

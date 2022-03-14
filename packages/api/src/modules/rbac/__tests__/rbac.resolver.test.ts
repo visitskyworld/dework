@@ -1,12 +1,9 @@
-import { Organization } from "@dewo/api/models/Organization";
-import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
-import { User } from "@dewo/api/models/User";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { RbacRequests } from "@dewo/api/testing/requests/rbac.requests";
-import { AtLeast } from "@dewo/api/types/general";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
 import { RbacService } from "../rbac.service";
@@ -26,18 +23,6 @@ describe("RbacResolver", () => {
 
   afterAll(() => app.close());
 
-  async function grant(
-    user: User,
-    organization: Organization,
-    rules: AtLeast<Rule, "permission">[]
-  ) {
-    const role = await fixtures.createRole(
-      { organizationId: organization.id },
-      rules
-    );
-    await service.addRole(user.id, role.id);
-  }
-
   describe("Queries", () => {
     describe("getProject", () => {
       it("should return public project if VIEW_PROJECTS is disabled on org level, and enabled on project level", async () => {
@@ -50,7 +35,7 @@ describe("RbacResolver", () => {
         });
 
         const user = await fixtures.createUser();
-        await grant(user, organization, [
+        await fixtures.grantPermissions(user.id, organization.id, [
           { permission: RulePermission.VIEW_PROJECTS, inverted: true },
           {
             permission: RulePermission.VIEW_PROJECTS,
@@ -98,7 +83,7 @@ describe("RbacResolver", () => {
       it("should succeed for user with MANAGE_ORGANIZATION permission", async () => {
         const organization = await fixtures.createOrganization();
         const user = await fixtures.createUser();
-        await grant(user, organization, [
+        await fixtures.grantPermissions(user.id, organization.id, [
           { permission: RulePermission.MANAGE_ORGANIZATION },
         ]);
 
@@ -138,7 +123,7 @@ describe("RbacResolver", () => {
       it("should succeed for user with MANAGE_ORGANIZATION permission", async () => {
         const organization = await fixtures.createOrganization();
         const user = await fixtures.createUser();
-        await grant(user, organization, [
+        await fixtures.grantPermissions(user.id, organization.id, [
           { permission: RulePermission.MANAGE_ORGANIZATION },
         ]);
 

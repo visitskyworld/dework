@@ -13,6 +13,7 @@ import {
 import { ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { User } from "@dewo/api/models/User";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;
@@ -470,6 +471,42 @@ describe("OrganizationResolver", () => {
           );
           expect(fetched.projects).toContainEqual(
             expect.objectContaining({ id: contributorProject.id })
+          );
+        });
+      });
+
+      describe("users", () => {
+        it("should return users with role in org", async () => {
+          const organization = await fixtures.createOrganization();
+          const otherOrganization = await fixtures.createOrganization();
+          const user = await fixtures.createUser();
+
+          await fixtures.grantPermissions(
+            user.id,
+            organization.id,
+            [{ permission: RulePermission.VIEW_PROJECTS }],
+            { name: "role in organization" }
+          );
+          await fixtures.grantPermissions(
+            user.id,
+            otherOrganization.id,
+            [{ permission: RulePermission.VIEW_PROJECTS }],
+            { name: "role in other organization" }
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: OrganizationRequests.get(organization.id),
+          });
+          const fetched = response.body.data.organization;
+          const fetchedUser = fetched.users.find((u: any) => u.id === user.id);
+          expect(fetchedUser).toBeDefined();
+          expect(fetchedUser.roles).toContainEqual(
+            expect.objectContaining({ name: "role in organization" })
+          );
+          expect(fetchedUser.roles).not.toContainEqual(
+            expect.objectContaining({ name: "role in other organization" })
           );
         });
       });

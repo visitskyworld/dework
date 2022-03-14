@@ -507,6 +507,17 @@ export class Fixtures {
     });
     return accessControl as AccessControl<T>;
   }
+
+  async grantPermissions(
+    userId: string,
+    organizationId: string,
+    rules: AtLeast<Rule, "permission">[],
+    override: Partial<Role> = {}
+  ) {
+    const role = await this.createRole({ organizationId, ...override }, rules);
+    await this.rbacService.addRole(userId, role.id);
+    return this.rbacService.abilityForUser(userId, organizationId);
+  }
 }
 
 @Module({

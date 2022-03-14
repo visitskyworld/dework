@@ -1,6 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Length } from "class-validator";
-import { Column, Entity, ManyToMany, OneToMany, OneToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
 import { TaskApplication } from "./TaskApplication";
@@ -45,6 +52,7 @@ export class User extends Audit {
   public onboarding?: UserOnboarding;
 
   @ManyToMany(() => Role)
+  @JoinTable({ name: "user_role" })
   @Field(() => [Role])
   public roles!: Promise<Role[]>;
 }

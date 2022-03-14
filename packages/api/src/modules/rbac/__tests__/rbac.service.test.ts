@@ -1,8 +1,7 @@
 import { Organization } from "@dewo/api/models/Organization";
-import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
-import { AtLeast } from "@dewo/api/types/general";
 import { INestApplication } from "@nestjs/common";
 import { RbacService } from "../rbac.service";
 
@@ -26,23 +25,16 @@ describe("RbacService", () => {
       organization = await fixtures.createOrganization();
     });
 
-    async function grant(rules: AtLeast<Rule, "permission">[]) {
-      const user = await fixtures.createUser();
-      const role = await fixtures.createRole(
-        { organizationId: organization.id },
-        rules
-      );
-      await service.addRole(user.id, role.id);
-      return service.abilityForUser(user.id, organization.id);
-    }
-
     it("MANAGE_ORGANIZATION", async () => {
       const project = await fixtures.createProject({
         organizationId: organization.id,
       });
-      const ability = await grant([
-        { permission: RulePermission.MANAGE_ORGANIZATION },
-      ]);
+      const user = await fixtures.createUser();
+      const ability = await fixtures.grantPermissions(
+        user.id,
+        organization.id,
+        [{ permission: RulePermission.MANAGE_ORGANIZATION }]
+      );
 
       const otherOrganization = await fixtures.createOrganization();
       const otherProject = await fixtures.createProject({
@@ -66,24 +58,37 @@ describe("RbacService", () => {
         organizationId: organization.id,
       });
 
-      const accessNoProjects = await grant([]);
+      const accessNoProjects = await fixtures.grantPermissions(
+        await fixtures.createUser().then((u) => u.id),
+        organization.id,
+        []
+      );
       expect(accessNoProjects.can("read", project1)).toBe(false);
       expect(accessNoProjects.can("read", project2)).toBe(false);
       expect(accessNoProjects.can("update", project1)).toBe(false);
       expect(accessNoProjects.can("update", project2)).toBe(false);
 
-      const accessAllProjects = await grant([
-        { permission: RulePermission.MANAGE_PROJECTS },
-      ]);
+      const accessAllProjects = await fixtures.grantPermissions(
+        await fixtures.createUser().then((u) => u.id),
+        organization.id,
+        [{ permission: RulePermission.MANAGE_PROJECTS }]
+      );
       expect(accessAllProjects.can("read", project1)).toBe(true);
       expect(accessAllProjects.can("read", project2)).toBe(true);
       expect(accessAllProjects.can("update", project1)).toBe(true);
       expect(accessAllProjects.can("update", project2)).toBe(true);
 
-      const accessSpecificProject = await grant([
-        { permission: RulePermission.VIEW_PROJECTS, inverted: true },
-        { permission: RulePermission.MANAGE_PROJECTS, projectId: project2.id },
-      ]);
+      const accessSpecificProject = await fixtures.grantPermissions(
+        await fixtures.createUser().then((u) => u.id),
+        organization.id,
+        [
+          { permission: RulePermission.VIEW_PROJECTS, inverted: true },
+          {
+            permission: RulePermission.MANAGE_PROJECTS,
+            projectId: project2.id,
+          },
+        ]
+      );
       expect(accessSpecificProject.can("read", project1)).toBe(false);
       expect(accessSpecificProject.can("read", project2)).toBe(true);
       // expect(accessSpecificProject.can("update", project1)).toBe(false);

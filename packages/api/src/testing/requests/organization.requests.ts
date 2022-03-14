@@ -23,6 +23,13 @@ export class OrganizationRequests {
       members {
         ...OrganizationMember
       }
+      users {
+        id
+        roles {
+          id
+          name
+        }
+      }
       projects {
         id
       }

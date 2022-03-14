@@ -92,6 +92,11 @@ export class OrganizationResolver {
     });
   }
 
+  @ResolveField(() => [User])
+  public async users(@Parent() organization: Organization): Promise<User[]> {
+    return this.organizationService.getUsers(organization.id);
+  }
+
   @ResolveField(() => [Project])
   public async projects(
     @Context("user") user: User | undefined,
