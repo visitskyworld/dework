@@ -8,6 +8,14 @@ export const entityDetail = gql`
   }
 `;
 
+export const role = gql`
+  fragment Role on Role {
+    id
+    name
+    color
+  }
+`;
+
 export const user = gql`
   fragment User on User {
     id
@@ -15,6 +23,17 @@ export const user = gql`
     imageUrl
     permalink
   }
+`;
+
+export const userWithRoles = gql`
+  fragment UserWithRoles on User {
+    ...User
+    roles {
+      ...Role
+    }
+  }
+  ${user}
+  ${role}
 `;
 
 export const paymentNetwork = gql`

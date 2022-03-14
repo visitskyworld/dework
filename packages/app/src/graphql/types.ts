@@ -6280,6 +6280,45 @@ export interface GetOrganizationQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationUsersQuery
+// ====================================================
+
+export interface GetOrganizationUsersQuery_organization_users_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+}
+
+export interface GetOrganizationUsersQuery_organization_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: GetOrganizationUsersQuery_organization_users_roles[];
+}
+
+export interface GetOrganizationUsersQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  users: GetOrganizationUsersQuery_organization_users[];
+}
+
+export interface GetOrganizationUsersQuery {
+  organization: GetOrganizationUsersQuery_organization;
+}
+
+export interface GetOrganizationUsersQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
@@ -9735,6 +9774,22 @@ export interface EntityDetail {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Role
+// ====================================================
+
+export interface Role {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: User
 // ====================================================
 
@@ -9744,6 +9799,31 @@ export interface User {
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: UserWithRoles
+// ====================================================
+
+export interface UserWithRoles_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+}
+
+export interface UserWithRoles {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: UserWithRoles_roles[];
 }
 
 /* tslint:disable */

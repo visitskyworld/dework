@@ -1,10 +1,10 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
-import { useOrganization, useRemoveOrganizationMember } from "../hooks";
-import { Table, Space, Row, Button } from "antd";
+import { useOrganizationUsers, useRemoveOrganizationMember } from "../hooks";
+import { Table, Space, Row, Button, Tag } from "antd";
 import * as Icons from "@ant-design/icons";
-import { OrganizationMember, OrganizationRole } from "@dewo/app/graphql/types";
+import { OrganizationRole, Role, UserWithRoles } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
@@ -20,7 +20,7 @@ export const organizationRoleToString: Record<OrganizationRole, string> = {
 };
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
-  const { organization } = useOrganization(organizationId);
+  const users = useOrganizationUsers(organizationId);
   const removeMember = useRemoveOrganizationMember();
 
   const canDeleteAdmin = usePermission("delete", {
@@ -34,12 +34,6 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
 
   const navigateToProfile = useNavigateToProfile();
 
-  const members = useMemo(
-    () =>
-      organization?.members.filter((m) => m.role !== OrganizationRole.FOLLOWER),
-    [organization?.members]
-  );
-
   return (
     <Space
       direction="vertical"
@@ -49,38 +43,46 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
         <OrganizationInviteButton organizationId={organizationId} />
       </Row>
 
-      <Table<OrganizationMember>
-        dataSource={members}
+      <Table<UserWithRoles>
+        dataSource={users}
         size="small"
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
-        onRow={(m) => ({ onClick: () => navigateToProfile(m.user) })}
+        onRow={(user) => ({ onClick: () => navigateToProfile(user) })}
         style={{ cursor: "pointer" }}
         columns={[
           {
             key: "avatar",
             width: 1,
-            render: (_, m: OrganizationMember) => <UserAvatar user={m.user} />,
+            render: (_, user: UserWithRoles) => <UserAvatar user={user} />,
           },
-          { title: "Username", dataIndex: ["user", "username"] },
+          { title: "Username", dataIndex: "username" },
           {
-            title: "Role",
-            dataIndex: "role",
+            title: "Roles",
+            dataIndex: "roles",
             width: 1,
-            render: (role: OrganizationRole) => organizationRoleToString[role],
+            render: (roles: Role[]) => (
+              <Row>
+                {roles.map((role) => (
+                  <Tag key={role.id} color={role.color}>
+                    {role.name}
+                  </Tag>
+                ))}
+              </Row>
+            ),
           },
           ...(canDeleteAdmin || canDeleteOwner
             ? [
                 {
                   key: "delete",
                   width: 1,
-                  render: (_: unknown, m: OrganizationMember) => (
+                  render: (_: unknown, user: UserWithRoles) => (
                     <Button
                       type="text"
                       icon={<Icons.DeleteOutlined />}
                       onClick={(event) => {
                         eatClick(event);
-                        removeMember({ userId: m.user.id, organizationId });
+                        removeMember({ userId: user.id, organizationId });
                       }}
                     />
                   ),

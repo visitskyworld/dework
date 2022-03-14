@@ -66,6 +66,19 @@ export const organization = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const organizationUsers = gql`
+  query GetOrganizationUsersQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      id
+      users {
+        ...UserWithRoles
+      }
+    }
+  }
+
+  ${Fragments.userWithRoles}
+`;
+
 export const featuredOrganizations = gql`
   query GetFeaturedOrganizationsQuery($limit: Int!) {
     organizations: getFeaturedOrganizations(limit: $limit) {

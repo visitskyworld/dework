@@ -26,6 +26,8 @@ import {
   GetOrganizationTasksQueryVariables,
   GetOrganizationTaskTagsQuery,
   GetOrganizationTaskTagsQueryVariables,
+  GetOrganizationUsersQuery,
+  GetOrganizationUsersQueryVariables,
   GithubRepo,
   Organization,
   OrganizationDetails,
@@ -52,6 +54,7 @@ import {
   UpdateProjectSectionMutation,
   UpdateProjectSectionMutationVariables,
   User,
+  UserWithRoles,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
@@ -231,6 +234,19 @@ export function useOrganization(organizationId: string | undefined): {
     skip: !organizationId,
   });
   return { organization: data?.organization ?? undefined, refetch };
+}
+
+export function useOrganizationUsers(
+  organizationId: string
+): UserWithRoles[] | undefined {
+  const { data } = useQuery<
+    GetOrganizationUsersQuery,
+    GetOrganizationUsersQueryVariables
+  >(Queries.organizationUsers, {
+    variables: { organizationId },
+    skip: !organizationId,
+  });
+  return data?.organization?.users;
 }
 
 export function useAllOrganizationTags(
