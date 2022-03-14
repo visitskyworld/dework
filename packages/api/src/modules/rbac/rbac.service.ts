@@ -14,6 +14,7 @@ import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
 import { AtLeast } from "@dewo/api/types/general";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 
 export type Action = "create" | "read" | "update" | "delete";
 export type Subject = InferSubjects<
@@ -21,6 +22,7 @@ export type Subject = InferSubjects<
   | typeof Project
   | typeof Task
   | typeof TaskApplication
+  | typeof TaskSubmission
   | typeof Role
   | typeof Rule
   | "UserRole"
@@ -113,13 +115,20 @@ export class RbacService {
           break;
         case RulePermission.MANAGE_TASKS:
           fn(["create", "read", "update", "delete"], Task, taskConditions);
+          // fn(["create", "read", "delete"], TaskApplication);
+          // fn(["read", "delete"], TaskSubmission);
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, projectCondition);
           fn("read", Task, taskConditions);
           // Note(fant): this makes ppl with this permission able to create tasks in general...
-          // fn(["create", "delete"], Task, "applications", taskConditions);
-          fn(["create", "delete"], TaskApplication, { userId });
+          fn(["create"], Task, "applications", taskConditions);
+          fn(["create", "read", "update", "delete"], TaskApplication, {
+            userId,
+          });
+          fn(["create", "read", "update", "delete"], TaskSubmission, {
+            userId,
+          });
           break;
       }
     }
@@ -127,8 +136,11 @@ export class RbacService {
     builder.can("update", Task, ["status", "sectionId", "sortKey"], {
       assignees: { $elemMatch: { id: userId } },
     });
-    builder.can(["update", "delete"], Task, {
+    builder.can(["read", "update", "delete"], Task, {
       ownerId: userId,
+    });
+    builder.can("create", Task, "submissions", {
+      assignees: { $elemMatch: { id: userId } },
     });
 
     return builder.build({

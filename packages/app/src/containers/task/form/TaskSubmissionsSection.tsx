@@ -1,7 +1,10 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import {
+  usePermission,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 import { TaskDetails } from "@dewo/app/graphql/types";
 import { Card, Divider, List } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
@@ -14,22 +17,28 @@ interface Props {
 
 export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
-  const currentSubmission = useMemo(
-    () => task.submissions.find((s) => s.user.id === user?.id),
-    [task.submissions, user?.id]
-  );
-  const approvedSubmission = useMemo(
-    () => task.submissions.find((s) => !!s.approver),
-    [task.submissions]
+  const can = usePermissionFn();
+  const submissions = useMemo(
+    () => task.submissions.filter((s) => can("read", s)),
+    [task.submissions, can]
   );
 
-  const canCreate = usePermission("update", task, "submissions");
+  const currentSubmission = useMemo(
+    () => submissions.find((s) => s.user.id === user?.id),
+    [submissions, user?.id]
+  );
+  const approvedSubmission = useMemo(
+    () => submissions.find((s) => !!s.approver),
+    [submissions]
+  );
+
   const canUpdate = usePermission("update", currentSubmission!);
-  const canRead = usePermission("read", "TaskSubmission");
+  const canCreate = usePermission("create", task, "submissions");
+  // TODO(fant): this isn't working properly... both assignee and owner can see everything
+  const canReadAll = usePermission("read", task, "submissions");
 
   const showEditor =
     (canCreate && !currentSubmission) || (canUpdate && !!currentSubmission);
-  const showAllSubmissions = !!canRead && !!task.submissions.length;
 
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
@@ -45,7 +54,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     [user, task.id, currentSubmission, createSubmission, updateSubmission]
   );
 
-  if (!showAllSubmissions && !showEditor && !approvedSubmission) return null;
+  if (!canReadAll && !showEditor && !approvedSubmission) return null;
   if (!!approvedSubmission) {
     return (
       <>
@@ -65,7 +74,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   return (
     <>
       <Divider>Submissions</Divider>
-      {showAllSubmissions && (
+      {canReadAll && (
         <FormSection label="All Submissions">
           <Card size="small" className="dewo-card-highlighted">
             <List

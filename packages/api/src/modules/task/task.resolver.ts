@@ -22,13 +22,7 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
-import {
-  AccessGuard,
-  Actions,
-  CaslUser,
-  UseAbility,
-  UserProxy,
-} from "nest-casl";
+import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
@@ -47,7 +41,6 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
-import { subject } from "@casl/ability";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
@@ -231,20 +224,34 @@ export class TaskResolver {
   }
 
   @Mutation(() => TaskSubmission)
-  @UseGuards(AuthGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Task,
+      fields: ["submissions"],
+      inject: [TaskService],
+      getSubject: (params: { input: CreateTaskSubmissionInput }, service) =>
+        service.findById(params.input.taskId),
+      async getOrganizationId(subject) {
+        const project = await subject.project;
+        return project?.organizationId;
+      },
+    })
+  )
   public async createTaskSubmission(
     @Context("user") user: User,
-    @CaslUser() userProxy: UserProxy,
+    // @CaslUser() userProxy: UserProxy,
     @Args("input") input: CreateTaskSubmissionInput
   ): Promise<TaskSubmission> {
     const task = await this.taskService.findById(input.taskId);
     if (!task) throw new NotFoundException();
 
-    const caslUser = await userProxy.get();
-    const abilities = this.abilityFactory.createForUser(caslUser!);
-    if (!abilities.can("update", subject(Task as any, task), "submissions")) {
-      throw new ForbiddenException();
-    }
+    // const caslUser = await userProxy.get();
+    // const abilities = this.abilityFactory.createForUser(caslUser!);
+    // if (!abilities.can("update", subject(Task as any, task), "submissions")) {
+    //   throw new ForbiddenException();
+    // }
 
     return this.taskService.createSubmission({ ...input, userId: user.id });
   }

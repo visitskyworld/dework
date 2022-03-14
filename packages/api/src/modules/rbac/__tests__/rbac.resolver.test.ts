@@ -1,5 +1,6 @@
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
-import { TaskStatus } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -59,6 +60,78 @@ describe("RbacResolver", () => {
           body: ProjectRequests.get(publicProject.id),
         });
         expect(publicResponse.body.data?.project).toBeDefined();
+      });
+    });
+
+    describe("getTask", () => {
+      describe("applications and submissions", () => {
+        let admin: User;
+        let owner: User;
+        let contributor: User;
+        let task: Task;
+
+        beforeAll(async () => {
+          const project = await fixtures.createProject();
+
+          admin = await fixtures.createUser();
+          owner = await fixtures.createUser();
+          contributor = await fixtures.createUser();
+          const otherUser = await fixtures.createUser();
+
+          await fixtures.grantPermissions(admin.id, project.organizationId, [
+            { permission: RulePermission.MANAGE_TASKS },
+          ]);
+
+          task = await fixtures.createTask({
+            projectId: project.id,
+            ownerId: owner.id,
+          });
+
+          for (const userId of [contributor.id, otherUser.id]) {
+            await fixtures.createTaskSubmission({ userId, taskId: task.id });
+            await fixtures.createTaskApplication({ userId, taskId: task.id });
+          }
+        });
+
+        it("should return all for admin", async () => {
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(admin),
+            body: TaskRequests.get(task.id),
+          });
+
+          expect(res.body.data?.task.applications).toHaveLength(2);
+          expect(res.body.data?.task.submissions).toHaveLength(2);
+        });
+
+        it("should return all for owner", async () => {
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(owner),
+            body: TaskRequests.get(task.id),
+          });
+
+          expect(res.body.data?.task.applications).toHaveLength(2);
+          expect(res.body.data?.task.submissions).toHaveLength(2);
+        });
+
+        xit("should return your own for contributor", async () => {
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(contributor),
+            body: TaskRequests.get(task.id),
+          });
+
+          expect(res.body.data?.task.applications).toHaveLength(1);
+          expect(res.body.data?.task.applications).toContain(
+            expect.objectContaining({ userId: contributor.id })
+          );
+
+          expect(res.body.data?.task.submissions).toHaveLength(1);
+          expect(res.body.data?.task.submissions).toContain(
+            expect.objectContaining({ userId: contributor.id })
+          );
+        });
       });
     });
 
