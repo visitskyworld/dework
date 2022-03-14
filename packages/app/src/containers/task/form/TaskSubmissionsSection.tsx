@@ -34,8 +34,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
 
   const canUpdate = usePermission("update", currentSubmission!);
   const canCreate = usePermission("create", task, "submissions");
-  // TODO(fant): this isn't working properly... both assignee and owner can see everything
-  const canReadAll = usePermission("read", task, "submissions");
+  const canReadAll = usePermission("update", task, "submissions");
 
   const showEditor =
     (canCreate && !currentSubmission) || (canUpdate && !!currentSubmission);
@@ -74,7 +73,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   return (
     <>
       <Divider>Submissions</Divider>
-      {canReadAll && (
+      {canReadAll && !!submissions.length && (
         <FormSection label="All Submissions">
           <Card size="small" className="dewo-card-highlighted">
             <List

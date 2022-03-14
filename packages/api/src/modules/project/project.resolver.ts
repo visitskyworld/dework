@@ -117,11 +117,19 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Project, [
-    ProjectService,
-    (service: ProjectService, { params }) => service.findById(params.input.id),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: (
+        params: { input: UpdateProjectInput },
+        service: ProjectService
+      ) => service.findById(params.input.id),
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async updateProject(
     @Args("input") input: UpdateProjectInput
   ): Promise<Project> {
