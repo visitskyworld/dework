@@ -3,17 +3,14 @@ import { Injectable, UseGuards } from "@nestjs/common";
 import GraphQLUUID from "graphql-type-uuid";
 import { GithubRepo } from "./dto/GithubRepo";
 import { Project } from "@dewo/api/models/Project";
-import { ProjectRolesGuard } from "../../project/project.roles.guard";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
 import { AuthGuard } from "../../auth/guards/auth.guard";
-import { Task } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { GithubIntegrationService } from "./github.integration.service";
 import { ProjectService } from "../../project/project.service";
 import { Organization } from "@dewo/api/models/Organization";
-import { OrganizationRolesGuard } from "../../organization/organization.roles.guard";
 import { CreateProjectsFromGithubInput } from "./dto/CreateProjectsFromGithubInput";
 import { OrganizationService } from "../../organization/organization.service";
+import { RoleGuard } from "../../rbac/rbac.guard";
 
 @Injectable()
 export class GithubResolver {
@@ -32,8 +29,17 @@ export class GithubResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, Task)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: (params: { projectId: string }, service: ProjectService) =>
+        service.findById(params.projectId),
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async createTasksFromGithubIssues(
     @Context("user") user: User,
     @Args("projectId", { type: () => GraphQLUUID }) projectId: string,
@@ -49,8 +55,18 @@ export class GithubResolver {
   }
 
   @Mutation(() => Organization)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, Project)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Project,
+      inject: [ProjectService],
+      getOrganizationId: async (
+        _subject: Project,
+        params: { input: CreateProjectsFromGithubInput }
+      ) => params.input.organizationId,
+    })
+  )
   public async createProjectsFromGithub(
     @Context("user") user: User,
     @Args("input") input: CreateProjectsFromGithubInput

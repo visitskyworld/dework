@@ -23,6 +23,7 @@ import { GithubIntegrationTaskCreatedEventHandler } from "./github.eventHandlers
 import { PermalinkModule } from "../../permalink/permalink.module";
 import { DiscordIntegrationModule } from "../discord/discord.integration.module";
 import { OrganizationModule } from "../../organization/organization.module";
+import { RbacModule } from "../../rbac/rbac.module";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { OrganizationModule } from "../../organization/organization.module";
     IntegrationModule,
     DiscordIntegrationModule,
     PermalinkModule,
+    RbacModule,
     CaslModule.forFeature({ permissions }),
   ],
   providers: [
