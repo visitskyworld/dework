@@ -48,7 +48,7 @@ export class OrganizationService {
       this.rbacService
         .createRole({
           color: "pink",
-          name: "core-team",
+          name: "owner",
           organizationId: created.id,
           rules: [
             { permission: RulePermission.MANAGE_ORGANIZATION },

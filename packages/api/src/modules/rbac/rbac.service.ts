@@ -13,12 +13,14 @@ import { Task } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
 import { AtLeast } from "@dewo/api/types/general";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
 
 export type Action = "create" | "read" | "update" | "delete";
 export type Subject = InferSubjects<
   | typeof Organization
   | typeof Project
   | typeof Task
+  | typeof TaskApplication
   | typeof Role
   | typeof Rule
   | "UserRole"
@@ -42,7 +44,7 @@ export class RbacService {
     organizationId: string
   ): Promise<AppAbility> {
     const rules = await this.getRules(userId, organizationId);
-    return this.createAbility(rules, organizationId);
+    return this.createAbility(rules, organizationId, userId);
   }
 
   public async createRole(
@@ -75,7 +77,8 @@ export class RbacService {
 
   private async createAbility(
     rules: Rule[],
-    organizationId: string
+    organizationId: string,
+    userId: string | undefined
   ): Promise<AppAbility> {
     const builder = new AbilityBuilder<AppAbility>(AppAbility);
 
@@ -101,21 +104,20 @@ export class RbacService {
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organizationConditions);
-          fn("create", Project, projectCondition);
           fn(["create", "read", "update", "delete"], Role, roleConditions);
           fn(["create", "read", "update", "delete"], Rule);
           fn(["create", "delete"], "UserRole");
           break;
         case RulePermission.MANAGE_PROJECTS:
-          fn(["read", "update", "delete"], Project, projectCondition);
-          fn("create", Task, taskConditions);
+          fn(["create", "read", "update", "delete"], Project, projectCondition);
           break;
         case RulePermission.MANAGE_TASKS:
-          fn(["read", "update", "delete"], Task, taskConditions);
+          fn(["create", "read", "update", "delete"], Task, taskConditions);
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, projectCondition);
           fn("read", Task, taskConditions);
+          fn(["create", "delete"], Task, "applications", taskConditions);
           break;
       }
     }

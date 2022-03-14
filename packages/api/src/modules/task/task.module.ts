@@ -24,6 +24,7 @@ import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskSection } from "@dewo/api/models/TaskSection";
+import { RbacModule } from "../rbac/rbac.module";
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { TaskSection } from "@dewo/api/models/TaskSection";
     PaymentModule,
     ProjectModule,
     PermalinkModule,
+    RbacModule,
   ],
   providers: [
     TaskResolver,

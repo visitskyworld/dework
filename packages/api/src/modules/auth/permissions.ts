@@ -1,23 +1,6 @@
 import { Actions, Permissions } from "nest-casl";
 import { SubjectType } from "@casl/ability";
 import { Roles } from "../app/app.roles";
-import { Organization } from "@dewo/api/models/Organization";
-import { Project, ProjectVisibility } from "@dewo/api/models/Project";
-import { Task, TaskStatus } from "@dewo/api/models/Task";
-import {
-  OrganizationMember,
-  OrganizationRole,
-} from "@dewo/api/models/OrganizationMember";
-import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
-import { TaskReaction } from "@dewo/api/models/TaskReaction";
-import { TaskTag } from "@dewo/api/models/TaskTag";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
-import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
-import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
-import { ProjectSection } from "@dewo/api/models/ProjectSection";
-import { TaskSection } from "@dewo/api/models/TaskSection";
 
 export enum CustomPermissionActions {
   claimTask = "claimTask",
@@ -28,6 +11,7 @@ export const permissions: Permissions<
   SubjectType,
   CustomPermissionActions & Actions
 > = {
+  /*
   everyone({ can, user }) {
     can(Actions.read, Organization);
     can(Actions.read, Project, { visibility: ProjectVisibility.PUBLIC });
@@ -172,4 +156,5 @@ export const permissions: Permissions<
   superadmin({ extend }) {
     extend(Roles.organizationOwner);
   },
+  */
 };

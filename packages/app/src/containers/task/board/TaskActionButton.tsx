@@ -32,7 +32,8 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
   );
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
-  const canClaimTask = usePermission("claimTask", task);
+  const canManage = usePermission("update", task);
+  const canApply = usePermission("create", task, "applications");
   const canUpdateTask = usePermission("update", task, "status");
   const canCreateSubmission = usePermission("update", task, "submissions");
 
@@ -107,7 +108,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
       }
     }
 
-    if (task.status === TaskStatus.TODO && canClaimTask) {
+    if (!canManage && task.status === TaskStatus.TODO && canApply) {
       if (!!currentUserId) {
         return <ClaimTaskButton task={task} />;
       } else {

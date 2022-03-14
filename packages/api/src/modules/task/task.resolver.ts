@@ -42,7 +42,6 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
-import { CustomPermissionActions } from "../auth/permissions";
 import { ProjectService } from "../project/project.service";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
@@ -53,6 +52,7 @@ import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
+import { RoleGuard } from "../rbac/rbac.guard";
 
 @Injectable()
 @Resolver(() => Task)
@@ -122,27 +122,41 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard, ProjectRolesGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Task,
+      inject: [ProjectService],
+      async getOrganizationId(
+        _subject,
+        params: { input: CreateTaskInput },
+        service
+      ) {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
   public async createTask(
     @Context("user") user: User,
-    @CaslUser() userProxy: UserProxy,
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
-    const caslUser = await userProxy.get();
-    const abilities = this.abilityFactory.createForUser(caslUser!);
-    if (input.parentTaskId) {
-      const parentTask = await this.taskService.findById(input.parentTaskId);
-      if (!parentTask) throw new NotFoundException();
-      if (
-        !abilities.can("update", subject(Task as any, parentTask), "subtasks")
-      ) {
-        throw new ForbiddenException();
-      }
-    } else {
-      if (!abilities.can("create", subject(Task as any, input), "tasks")) {
-        throw new ForbiddenException();
-      }
-    }
+    // const caslUser = await userProxy.get();
+    // const abilities = this.abilityFactory.createForUser(caslUser!);
+    // if (input.parentTaskId) {
+    //   const parentTask = await this.taskService.findById(input.parentTaskId);
+    //   if (!parentTask) throw new NotFoundException();
+    //   if (
+    //     !abilities.can("update", subject(Task as any, parentTask), "subtasks")
+    //   ) {
+    //     throw new ForbiddenException();
+    //   }
+    // } else {
+    //   if (!abilities.can("create", subject(Task as any, input), "tasks")) {
+    //     throw new ForbiddenException();
+    //   }
+    // }
 
     const task = await this.taskService.create({
       tags: !!input.tagIds ? (input.tagIds.map((id) => ({ id })) as any) : [],
@@ -164,11 +178,23 @@ export class TaskResolver {
   }
 
   @Mutation(() => TaskApplication)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(CustomPermissionActions.claimTask, Task, [
-    TaskService,
-    (service: TaskService, { params }) => service.findById(params.input.taskId),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Task,
+      field: "applications",
+      inject: [TaskService],
+      getSubject: (
+        params: { input: CreateTaskApplicationInput },
+        service: TaskService
+      ) => service.findById(params.input.taskId),
+      async getOrganizationId(subject: Task) {
+        const project = await subject.project;
+        return project.organizationId;
+      },
+    })
+  )
   public async createTaskApplication(
     @Args("input") input: CreateTaskApplicationInput
   ): Promise<TaskApplication> {
@@ -176,14 +202,14 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.delete, TaskApplication, [
-    TaskService,
-    async (_service: TaskService, { params }) => ({
-      taskId: params.input.taskId,
-      userId: params.input.userId,
-    }),
-  ])
+  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
+  // @UseAbility(Actions.delete, TaskApplication, [
+  //   TaskService,
+  //   async (_service: TaskService, { params }) => ({
+  //     taskId: params.input.taskId,
+  //     userId: params.input.userId,
+  //   }),
+  // ])
   public async deleteTaskApplication(
     @Args("input") input: DeleteTaskApplicationInput
   ): Promise<Task> {
