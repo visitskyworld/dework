@@ -202,14 +202,23 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  // @UseAbility(Actions.delete, TaskApplication, [
-  //   TaskService,
-  //   async (_service: TaskService, { params }) => ({
-  //     taskId: params.input.taskId,
-  //     userId: params.input.userId,
-  //   }),
-  // ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: Task,
+      field: "applications",
+      inject: [TaskService],
+      getSubject: (
+        params: { input: CreateTaskApplicationInput },
+        service: TaskService
+      ) => service.findById(params.input.taskId),
+      async getOrganizationId(subject: Task) {
+        const project = await subject.project;
+        return project.organizationId;
+      },
+    })
+  )
   public async deleteTaskApplication(
     @Args("input") input: DeleteTaskApplicationInput
   ): Promise<Task> {
@@ -255,14 +264,24 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Task, [
-    TaskService,
-    (service: TaskService, { params }) => service.findById(params.input.id),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Task,
+      inject: [TaskService],
+      getSubject: (params: { input: UpdateTaskInput }, service: TaskService) =>
+        service.findById(params.input.id),
+      async getOrganizationId(subject: Task) {
+        const project = await subject.project;
+        return project.organizationId;
+      },
+    })
+  )
   public async updateTask(
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
+    // TODO(fant): make sure the user can update the specific fields
     const task = await this.taskService.update({
       ...input,
       tags: !!input.tagIds
@@ -284,16 +303,24 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.delete, Task, [
-    TaskService,
-    (service: TaskService, { params }) => service.findById(params.id),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: Task,
+      inject: [TaskService],
+      getSubject: (params: { id: string }, service: TaskService) =>
+        service.findById(params.id),
+      async getOrganizationId(subject: Task) {
+        const project = await subject.project;
+        return project.organizationId;
+      },
+    })
+  )
   public async deleteTask(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Task> {
-    const task = await this.taskService.update({ id, deletedAt: new Date() });
-    return task;
+    return this.taskService.update({ id, deletedAt: new Date() });
   }
 
   @Mutation(() => [Task])
