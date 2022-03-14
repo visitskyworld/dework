@@ -228,8 +228,19 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectIntegration)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, ProjectIntegration as any)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: (
+        params: { input: CreateProjectIntegrationInput },
+        service: ProjectService
+      ) => service.findById(params.input.projectId),
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async createProjectIntegration(
     @Args("input") input: CreateProjectIntegrationInput,
     @Context("user") user: User
@@ -241,8 +252,24 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectIntegration)
-  // TODO(fant): auth
-  @UseGuards(AuthGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [IntegrationService],
+      getSubject: async (
+        params: { input: UpdateProjectIntegrationInput },
+        service: IntegrationService
+      ) => {
+        const integration = await service.findProjectIntegrationById(
+          params.input.id
+        );
+        return integration?.project;
+      },
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async updateProjectIntegration(
     @Args("input") input: UpdateProjectIntegrationInput
   ): Promise<ProjectIntegration> {
