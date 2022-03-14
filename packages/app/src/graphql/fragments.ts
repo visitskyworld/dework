@@ -13,6 +13,8 @@ export const role = gql`
     id
     name
     color
+    fallback
+    organizationId
   }
 `;
 
@@ -638,6 +640,9 @@ export const organizationDetails = gql`
     projectTokenGates {
       ...ProjectTokenGate
     }
+    roles {
+      ...Role
+    }
   }
 
   ${organization}
@@ -650,4 +655,5 @@ export const organizationDetails = gql`
   ${user}
   ${projectTokenGate}
   ${projectDiscordRoleGate}
+  ${role}
 `;

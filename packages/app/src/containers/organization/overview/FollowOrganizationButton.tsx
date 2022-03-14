@@ -1,44 +1,43 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { Button } from "antd";
-import { useOrganization, useUpdateOrganizationMember } from "../hooks";
-import { OrganizationRole } from "@dewo/app/graphql/types";
+import { useAddRole, useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
+import { useRunningCallback } from "@dewo/app/util/hooks";
 
 interface Props {
   organizationId: string;
 }
 
 export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
-  const [loading, setLoading] = useState(false);
-
   const { user } = useAuthContext();
 
   const { organization } = useOrganization(organizationId);
-  const isMember = useMemo(
-    () => !!organization?.members.some((m) => m.userId === user?.id),
-    [organization, user]
+  const users = useOrganizationUsers(organizationId);
+  const fallbackRole = useMemo(
+    () => organization?.roles.find((r) => r.fallback),
+    [organization?.roles]
   );
 
-  const updateOrganizationMember = useUpdateOrganizationMember();
-  const followOrganization = useCallback(async () => {
-    try {
-      setLoading(true);
-      await updateOrganizationMember({
-        role: OrganizationRole.FOLLOWER,
-        userId: user!.id,
-        organizationId,
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [user, organizationId, updateOrganizationMember]);
+  const addRole = useAddRole();
+  const isFollowing = useMemo(
+    () =>
+      users?.some(
+        (u) =>
+          u.id === user?.id && u.roles.some((r) => r.id === fallbackRole?.id)
+      ),
+    [users, user, fallbackRole]
+  );
 
-  if (isMember) return null;
+  const [handleAddRole, addingRole] = useRunningCallback(async () => {
+    await addRole(fallbackRole!.id, user!.id);
+  }, [user, fallbackRole, addRole]);
+
+  if (isFollowing || !fallbackRole) return null;
   if (!user) {
     return (
-      <LoginButton type="ghost" loading={loading} icon={<Icons.StarOutlined />}>
+      <LoginButton type="ghost" icon={<Icons.StarOutlined />}>
         Follow {organization?.name}
       </LoginButton>
     );
@@ -47,9 +46,9 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   return (
     <Button
       type="ghost"
-      loading={loading}
+      loading={addingRole}
       icon={<Icons.StarOutlined />}
-      onClick={followOrganization}
+      onClick={handleAddRole}
     >
       Follow {organization?.name}
     </Button>

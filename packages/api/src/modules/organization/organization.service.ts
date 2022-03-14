@@ -44,26 +44,30 @@ export class OrganizationService {
     creator: User
   ): Promise<Organization> {
     const created = await this.organizationRepo.save(partial);
-    const [coreTeamRole] = await Promise.all([
-      this.rbacService.createRole({
-        color: "pink",
-        name: "core-team",
-        organizationId: created.id,
-        rules: [
-          { permission: RulePermission.MANAGE_ORGANIZATION },
-          { permission: RulePermission.MANAGE_PROJECTS },
-          { permission: RulePermission.MANAGE_TASKS },
-        ] as Partial<Rule>[] as any,
-      }),
-      this.rbacService.createRole({
-        color: "grey",
-        name: "@everyone",
-        default: true,
-        organizationId: created.id,
-        rules: [
-          { permission: RulePermission.VIEW_PROJECTS },
-        ] as Partial<Rule>[] as any,
-      }),
+    await Promise.all([
+      this.rbacService
+        .createRole({
+          color: "pink",
+          name: "core-team",
+          organizationId: created.id,
+          rules: [
+            { permission: RulePermission.MANAGE_ORGANIZATION },
+            { permission: RulePermission.MANAGE_PROJECTS },
+            { permission: RulePermission.MANAGE_TASKS },
+          ] as Partial<Rule>[] as any,
+        })
+        .then((role) => this.rbacService.addRole(creator.id, role.id)),
+      this.rbacService
+        .createRole({
+          color: "grey",
+          name: "@everyone",
+          fallback: true,
+          organizationId: created.id,
+          rules: [
+            { permission: RulePermission.VIEW_PROJECTS },
+          ] as Partial<Rule>[] as any,
+        })
+        .then((role) => this.rbacService.addRole(creator.id, role.id)),
       this.upsertMember({
         organizationId: created.id,
         userId: creator.id,
@@ -71,7 +75,6 @@ export class OrganizationService {
       }),
     ]);
 
-    await this.rbacService.addRole(creator.id, coreTeamRole.id);
     return this.findById(created.id) as Promise<Organization>;
   }
 
@@ -172,7 +175,7 @@ export class OrganizationService {
   public getUsers(organizationId: string): Promise<User[]> {
     return this.userRepo
       .createQueryBuilder("user")
-      .innerJoinAndSelect("user.roles", "role")
+      .innerJoin("user.roles", "role")
       .where("role.organizationId = :organizationId", { organizationId })
       .getMany();
   }
@@ -209,6 +212,7 @@ export class OrganizationService {
       .innerJoinAndSelect("organization.roles", "role")
       .innerJoinAndSelect("role.users", "user")
       .where("user.id = :userId", { userId })
+      .andWhere("role.fallback IS TRUE")
       .andWhere("organization.deletedAt IS NULL")
       .getMany();
   }

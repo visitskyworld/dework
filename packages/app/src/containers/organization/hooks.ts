@@ -4,6 +4,8 @@ import { useDefaultAbility } from "@dewo/app/contexts/PermissionsContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
+  AddRoleMutation,
+  AddRoleMutationVariables,
   CreateOrganizationInput,
   CreateOrganizationMutation,
   CreateOrganizationMutationVariables,
@@ -367,5 +369,27 @@ export function useIsProjectPrivate(project: Project | undefined): boolean {
   return useMemo(
     () => !!project && !ability.can("read", project),
     [ability, project]
+  );
+}
+
+export function useAddRole(): (
+  roleId: string,
+  userId: string
+) => Promise<UserWithRoles> {
+  const { user } = useAuthContext();
+  const [mutation] = useMutation<AddRoleMutation, AddRoleMutationVariables>(
+    Mutations.addRole
+  );
+  return useCallback(
+    async (roleId, userId) => {
+      const res = await mutation({
+        variables: { roleId, userId },
+        refetchQueries:
+          user?.id === userId ? [{ query: Queries.me }] : undefined,
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.addRole;
+    },
+    [mutation, user?.id]
   );
 }

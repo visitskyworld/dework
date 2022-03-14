@@ -142,7 +142,7 @@ export class RbacService {
         new Brackets((qb) =>
           qb
             .where("user.id = :userId", { userId })
-            .orWhere("role.default IS TRUE")
+            .orWhere("role.fallback IS TRUE")
         )
       )
       .andWhere("role.organizationId = :organizationId", { organizationId })
@@ -155,7 +155,7 @@ export class RbacService {
         END
         `
       )
-      .addOrderBy("role.default", "DESC") // non-default roles last
+      .addOrderBy("role.fallback", "DESC") // non-fallback roles last
       .getMany();
 
     // if ('taskId' in entity) {

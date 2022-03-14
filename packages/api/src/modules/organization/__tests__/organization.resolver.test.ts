@@ -505,7 +505,7 @@ describe("OrganizationResolver", () => {
           expect(fetchedUser.roles).toContainEqual(
             expect.objectContaining({ name: "role in organization" })
           );
-          expect(fetchedUser.roles).not.toContainEqual(
+          expect(fetchedUser.roles).toContainEqual(
             expect.objectContaining({ name: "role in other organization" })
           );
         });

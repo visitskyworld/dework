@@ -566,6 +566,15 @@ export interface UpdateOrganizationMutation_organization_projectTokenGates {
   token: UpdateOrganizationMutation_organization_projectTokenGates_token;
 }
 
+export interface UpdateOrganizationMutation_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface UpdateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -582,6 +591,7 @@ export interface UpdateOrganizationMutation_organization {
   details: UpdateOrganizationMutation_organization_details[];
   integrations: UpdateOrganizationMutation_organization_integrations[];
   projectTokenGates: UpdateOrganizationMutation_organization_projectTokenGates[];
+  roles: UpdateOrganizationMutation_organization_roles[];
 }
 
 export interface UpdateOrganizationMutation {
@@ -1120,6 +1130,15 @@ export interface CreateProjectMutation_project_organization_projectTokenGates {
   token: CreateProjectMutation_project_organization_projectTokenGates_token;
 }
 
+export interface CreateProjectMutation_project_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface CreateProjectMutation_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -1136,6 +1155,7 @@ export interface CreateProjectMutation_project_organization {
   details: CreateProjectMutation_project_organization_details[];
   integrations: CreateProjectMutation_project_organization_integrations[];
   projectTokenGates: CreateProjectMutation_project_organization_projectTokenGates[];
+  roles: CreateProjectMutation_project_organization_roles[];
 }
 
 export interface CreateProjectMutation_project_taskSections {
@@ -4988,6 +5008,15 @@ export interface CreateProjectsFromNotionMutation_organization_projectTokenGates
   token: CreateProjectsFromNotionMutation_organization_projectTokenGates_token;
 }
 
+export interface CreateProjectsFromNotionMutation_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface CreateProjectsFromNotionMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5004,6 +5033,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   details: CreateProjectsFromNotionMutation_organization_details[];
   integrations: CreateProjectsFromNotionMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromNotionMutation_organization_projectTokenGates[];
+  roles: CreateProjectsFromNotionMutation_organization_roles[];
 }
 
 export interface CreateProjectsFromNotionMutation {
@@ -5248,6 +5278,15 @@ export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates
   token: CreateProjectsFromTrelloMutation_organization_projectTokenGates_token;
 }
 
+export interface CreateProjectsFromTrelloMutation_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface CreateProjectsFromTrelloMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5264,6 +5303,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   details: CreateProjectsFromTrelloMutation_organization_details[];
   integrations: CreateProjectsFromTrelloMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromTrelloMutation_organization_projectTokenGates[];
+  roles: CreateProjectsFromTrelloMutation_organization_roles[];
 }
 
 export interface CreateProjectsFromTrelloMutation {
@@ -5508,6 +5548,15 @@ export interface CreateProjectsFromGithubMutation_organization_projectTokenGates
   token: CreateProjectsFromGithubMutation_organization_projectTokenGates_token;
 }
 
+export interface CreateProjectsFromGithubMutation_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface CreateProjectsFromGithubMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5524,6 +5573,7 @@ export interface CreateProjectsFromGithubMutation_organization {
   details: CreateProjectsFromGithubMutation_organization_details[];
   integrations: CreateProjectsFromGithubMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromGithubMutation_organization_projectTokenGates[];
+  roles: CreateProjectsFromGithubMutation_organization_roles[];
 }
 
 export interface CreateProjectsFromGithubMutation {
@@ -5549,6 +5599,42 @@ export interface AddUserToDiscordGuildMutation {
 
 export interface AddUserToDiscordGuildMutationVariables {
   organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: AddRoleMutation
+// ====================================================
+
+export interface AddRoleMutation_addRole_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
+export interface AddRoleMutation_addRole {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: AddRoleMutation_addRole_roles[];
+}
+
+export interface AddRoleMutation {
+  addRole: AddRoleMutation_addRole;
+}
+
+export interface AddRoleMutationVariables {
+  roleId: Scalar.UUID;
+  userId: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -6248,6 +6334,15 @@ export interface GetOrganizationQuery_organization_projectTokenGates {
   token: GetOrganizationQuery_organization_projectTokenGates_token;
 }
 
+export interface GetOrganizationQuery_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface GetOrganizationQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -6264,6 +6359,7 @@ export interface GetOrganizationQuery_organization {
   details: GetOrganizationQuery_organization_details[];
   integrations: GetOrganizationQuery_organization_integrations[];
   projectTokenGates: GetOrganizationQuery_organization_projectTokenGates[];
+  roles: GetOrganizationQuery_organization_roles[];
 }
 
 export interface GetOrganizationQuery {
@@ -6288,6 +6384,8 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  fallback: boolean;
+  organizationId: string;
 }
 
 export interface GetOrganizationUsersQuery_organization_users {
@@ -9782,6 +9880,8 @@ export interface Role {
   id: Scalar.UUID;
   name: string;
   color: string;
+  fallback: boolean;
+  organizationId: string;
 }
 
 /* tslint:disable */
@@ -9815,6 +9915,8 @@ export interface UserWithRoles_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  fallback: boolean;
+  organizationId: string;
 }
 
 export interface UserWithRoles {
@@ -12169,6 +12271,15 @@ export interface OrganizationDetails_projectTokenGates {
   token: OrganizationDetails_projectTokenGates_token;
 }
 
+export interface OrganizationDetails_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
 export interface OrganizationDetails {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -12185,6 +12296,7 @@ export interface OrganizationDetails {
   details: OrganizationDetails_details[];
   integrations: OrganizationDetails_integrations[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
+  roles: OrganizationDetails_roles[];
 }
 
 /* tslint:disable */

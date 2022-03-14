@@ -712,3 +712,13 @@ export const addUserToDiscordGuild = gql`
     added: addUserToDiscordGuild(organizationId: $organizationId)
   }
 `;
+
+export const addRole = gql`
+  mutation AddRoleMutation($roleId: UUID!, $userId: UUID!) {
+    addRole(roleId: $roleId, userId: $userId) {
+      ...UserWithRoles
+    }
+  }
+
+  ${Fragments.userWithRoles}
+`;

@@ -83,7 +83,7 @@ export class RbacResolver {
     @Args("userId", { type: () => GraphQLUUID }) userId: string,
     @Args("roleId", { type: () => GraphQLUUID }) roleId: string
   ): Promise<User> {
-    await this.service.removeRole(userId, roleId);
+    await this.service.addRole(userId, roleId);
     return this.userRepo.findOneOrFail(userId);
   }
 

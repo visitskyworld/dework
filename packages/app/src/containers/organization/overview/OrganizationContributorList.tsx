@@ -36,11 +36,14 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
             dataIndex: "roles",
             render: (roles: Role[]) => (
               <Row>
-                {roles.map((role) => (
-                  <Tag key={role.id} color={role.color}>
-                    {role.name}
-                  </Tag>
-                ))}
+                {roles.map(
+                  (role) =>
+                    role.organizationId === organizationId && (
+                      <Tag key={role.id} color={role.color}>
+                        {role.name}
+                      </Tag>
+                    )
+                )}
               </Row>
             ),
           },

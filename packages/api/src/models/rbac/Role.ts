@@ -26,7 +26,7 @@ export class Role extends Audit {
 
   @Column({ default: false })
   @Field()
-  public default!: boolean;
+  public fallback!: boolean;
 
   // source?: 'DISCORD';
   // externalId?: string;
