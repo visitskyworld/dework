@@ -206,10 +206,10 @@ export class OrganizationService {
   public async findByUser(userId: string): Promise<Organization[]> {
     return this.organizationRepo
       .createQueryBuilder("organization")
-      .innerJoinAndSelect("organization.members", "member")
-      .where("member.userId = :userId", { userId })
+      .innerJoinAndSelect("organization.roles", "role")
+      .innerJoinAndSelect("role.users", "user")
+      .where("user.id = :userId", { userId })
       .andWhere("organization.deletedAt IS NULL")
-      .orderBy("member.sortKey", "DESC")
       .getMany();
   }
 
