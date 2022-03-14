@@ -182,16 +182,18 @@ export class TaskResolver {
     AuthGuard,
     RoleGuard({
       action: "create",
-      subject: Task,
-      field: "applications",
+      subject: TaskApplication,
       inject: [TaskService],
-      getSubject: (
+      getSubject: (params: { input: CreateTaskApplicationInput }) =>
+        Object.assign(new TaskApplication(), params.input),
+      async getOrganizationId(
+        _subject,
         params: { input: CreateTaskApplicationInput },
-        service: TaskService
-      ) => service.findById(params.input.taskId),
-      async getOrganizationId(subject: Task) {
-        const project = await subject.project;
-        return project.organizationId;
+        service
+      ) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
+        return project?.organizationId;
       },
     })
   )
@@ -206,16 +208,18 @@ export class TaskResolver {
     AuthGuard,
     RoleGuard({
       action: "delete",
-      subject: Task,
-      field: "applications",
+      subject: TaskApplication,
       inject: [TaskService],
-      getSubject: (
+      getSubject: (params: { input: CreateTaskApplicationInput }) =>
+        Object.assign(new TaskApplication(), params.input),
+      async getOrganizationId(
+        _subject,
         params: { input: CreateTaskApplicationInput },
-        service: TaskService
-      ) => service.findById(params.input.taskId),
-      async getOrganizationId(subject: Task) {
-        const project = await subject.project;
-        return project.organizationId;
+        service
+      ) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
+        return project?.organizationId;
       },
     })
   )

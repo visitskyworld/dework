@@ -135,7 +135,8 @@ export const TaskBoardColumn: FC<Props> = ({
                 !hasPermission(
                   "update",
                   currentlyDraggingTask,
-                  `status[${status}]`
+                  // `status[${status}]`
+                  "status"
                 )
               }
             >
@@ -151,7 +152,8 @@ export const TaskBoardColumn: FC<Props> = ({
                       draggableId={task.id}
                       index={index}
                       isDragDisabled={
-                        !hasPermission("update", task, `status[${status}]`)
+                        // !hasPermission("update", task, `status[${status}]`)
+                        !hasPermission("update", task, "status")
                       }
                     >
                       {(provided) => (

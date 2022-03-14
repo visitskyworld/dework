@@ -117,10 +117,19 @@ export class RbacService {
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, projectCondition);
           fn("read", Task, taskConditions);
-          fn(["create", "delete"], Task, "applications", taskConditions);
+          // Note(fant): this makes ppl with this permission able to create tasks in general...
+          // fn(["create", "delete"], Task, "applications", taskConditions);
+          fn(["create", "delete"], TaskApplication, { userId });
           break;
       }
     }
+
+    builder.can("update", Task, "status", {
+      assignees: { $elemMatch: { id: userId } },
+    });
+    builder.can(["update", "delete"], Task, {
+      ownerId: userId,
+    });
 
     return builder.build({
       detectSubjectType: (item: Subject): ExtractSubjectType<Subject> =>
