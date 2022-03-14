@@ -53,6 +53,7 @@ import { TaskSection } from "@dewo/api/models/TaskSection";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { RoleGuard } from "../rbac/rbac.guard";
+import _ from "lodash";
 
 @Injectable()
 @Resolver(() => Task)
@@ -274,6 +275,8 @@ export class TaskResolver {
       action: "update",
       subject: Task,
       inject: [TaskService],
+      getFields: (params: { input: UpdateTaskInput }) =>
+        Object.keys(_.omit(params.input, ["id"])),
       getSubject: (params: { input: UpdateTaskInput }, service: TaskService) =>
         service.findById(params.input.id),
       async getOrganizationId(subject: Task) {

@@ -1,9 +1,11 @@
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { RbacRequests } from "@dewo/api/testing/requests/rbac.requests";
+import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
 import { RbacService } from "../rbac.service";
@@ -57,6 +59,61 @@ describe("RbacResolver", () => {
           body: ProjectRequests.get(publicProject.id),
         });
         expect(publicResponse.body.data?.project).toBeDefined();
+      });
+    });
+
+    describe("updateTask", () => {
+      it("should allow task owner to update all fields", async () => {
+        const owner = await fixtures.createUser();
+        const task = await fixtures.createTask({
+          ownerId: owner.id,
+          status: TaskStatus.TODO,
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(owner),
+          body: TaskRequests.update({
+            id: task.id,
+            status: TaskStatus.DONE,
+            name: "done",
+          }),
+        });
+        const fetchedTask = response.body.data?.task;
+        expect(fetchedTask).toBeDefined();
+        expect(fetchedTask.status).toEqual(TaskStatus.DONE);
+        expect(fetchedTask.name).toEqual("done");
+      });
+
+      it("should allow task assignee update status, but not other fields", async () => {
+        const assignee = await fixtures.createUser();
+        const task = await fixtures.createTask({
+          assignees: [assignee],
+          status: TaskStatus.TODO,
+        });
+
+        const updateAllFieldsResponse = await client.request({
+          app,
+          auth: fixtures.createAuthToken(assignee),
+          body: TaskRequests.update({
+            id: task.id,
+            name: "in review",
+            status: TaskStatus.IN_REVIEW,
+          }),
+        });
+        client.expectGqlError(updateAllFieldsResponse, HttpStatus.FORBIDDEN);
+
+        const updateOnlyStatusResponse = await client.request({
+          app,
+          auth: fixtures.createAuthToken(assignee),
+          body: TaskRequests.update({
+            id: task.id,
+            status: TaskStatus.IN_REVIEW,
+          }),
+        });
+        expect(updateOnlyStatusResponse.body.data?.task.status).toEqual(
+          TaskStatus.IN_REVIEW
+        );
       });
     });
   });

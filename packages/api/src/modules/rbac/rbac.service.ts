@@ -124,7 +124,7 @@ export class RbacService {
       }
     }
 
-    builder.can("update", Task, "status", {
+    builder.can("update", Task, ["status", "sectionId", "sortKey"], {
       assignees: { $elemMatch: { id: userId } },
     });
     builder.can(["update", "delete"], Task, {

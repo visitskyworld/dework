@@ -23,13 +23,14 @@ export function RoleGuard<
   action,
   inject,
   subject,
-  field,
+  fields,
   getSubject,
+  getFields,
   getOrganizationId,
 }: {
   action: Action;
   subject: TSubject;
-  field?: string;
+  fields?: string[];
   inject?: TInject;
   getSubject?(
     params: TParams,
@@ -38,6 +39,7 @@ export function RoleGuard<
     | Promise<InferClass<TSubject> | undefined>
     | InferClass<TSubject>
     | undefined;
+  getFields?(params: TParams): string[];
   getOrganizationId(
     subject: InferClass<TSubject>,
     params: TParams,
@@ -66,9 +68,13 @@ export function RoleGuard<
 
       const actualSubject =
         (await getSubject?.(params, ...injectable)) ?? subject;
+      const actualFields = (await getFields?.(params)) ?? fields ?? [undefined];
 
       this.logger.debug(
-        `Fetched actual subject: ${JSON.stringify(actualSubject)}`
+        `Resolved subject and field(s): ${JSON.stringify({
+          actualSubject,
+          actualFields,
+        })}`
       );
 
       if (!actualSubject) {
@@ -89,15 +95,17 @@ export function RoleGuard<
         gqlContext.user?.id,
         organizationId
       );
-      const granted = ability.can(action, actualSubject, field);
+      const granted = actualFields?.map((field) =>
+        ability.can(action, actualSubject, field)
+      );
       this.logger.debug(
         `Has access: ${JSON.stringify({
           action,
-          field,
           granted,
+          fields: actualFields,
         })}`
       );
-      return granted;
+      return granted.every(Boolean);
     }
   }
 
