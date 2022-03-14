@@ -3,7 +3,10 @@ import { Button, ButtonProps, message } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../auth/LoginButton";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
-import { ThreepidSource } from "@dewo/app/graphql/types";
+import {
+  ProjectIntegrationType,
+  ThreepidSource,
+} from "@dewo/app/graphql/types";
 import { ThreepidAuthButton } from "../auth/ThreepidAuthButton";
 import { useRouter } from "next/router";
 import { useJoinProjectsWithDiscordRole } from "./hooks";
@@ -53,7 +56,22 @@ export const DiscordRoleGatingJoinButton: FC<Props> = ({
     [project, user?.id]
   );
 
-  if (canAccessAllProjects || isMember) {
+  const { organization } = useOrganization(organizationId);
+  const hasDiscordRoleGating = useMemo(
+    () =>
+      !!organization?.integrations
+        .map((i) => i.discordRoleGates)
+        .flat()
+        .some(
+          (g) =>
+            !g.deletedAt &&
+            g.type === ProjectIntegrationType.DISCORD_ROLE_GATE &&
+            g.projectId === projectId
+        ),
+    [organization?.integrations, projectId]
+  );
+
+  if (!hasDiscordRoleGating || canAccessAllProjects || isMember) {
     return null;
   }
 
