@@ -10,6 +10,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -21,7 +22,7 @@ import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 
 @Injectable()
 export class ProjectService {
-  // private readonly logger = new Logger("UserService");
+  private readonly logger = new Logger("ProjectService");
 
   constructor(
     @InjectRepository(Project)
@@ -129,9 +130,18 @@ export class ProjectService {
       userId: data.userId,
     });
 
-    const project = await this.findById(data.projectId);
+    const project = await this.projectRepo.findOne(data.projectId);
     const user = await this.userService.findById(data.userId);
-    if (!project || !user) throw new BadRequestException();
+    if (!project || !user) {
+      this.logger.warn(
+        `Cannot upsert project member without project and user: ${JSON.stringify(
+          { project, user }
+        )}`
+      );
+      throw new BadRequestException(
+        "Trying to upsert project member, but project or user does not exist"
+      );
+    }
     await this.assertUserPassesTokenGates(project, user, data.role);
 
     if (!!member) {

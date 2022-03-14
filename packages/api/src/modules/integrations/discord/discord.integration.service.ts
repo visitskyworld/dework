@@ -1085,11 +1085,23 @@ export class DiscordIntegrationService {
       }
     }
 
+    this.logger.debug(
+      `Checking if user is following organization: ${JSON.stringify({
+        userId,
+        organizationId,
+      })}`
+    );
     const organizationMember = await this.organizationService.findMember({
       userId,
       organizationId,
     });
     if (!organizationMember) {
+      this.logger.debug(
+        `Making user follow organization: ${JSON.stringify({
+          userId,
+          organizationId,
+        })}`
+      );
       await this.organizationService.upsertMember({
         organizationId,
         role: OrganizationRole.FOLLOWER,
