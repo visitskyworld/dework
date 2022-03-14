@@ -28,12 +28,10 @@ describe("RbacService", () => {
 
     async function grant(rules: AtLeast<Rule, "permission">[]) {
       const user = await fixtures.createUser();
-      const role = await fixtures.createRole({
-        organizationId: organization.id,
-      });
-      for (const rule of rules) {
-        await fixtures.createRule({ roleId: role.id, ...rule });
-      }
+      const role = await fixtures.createRole(
+        { organizationId: organization.id },
+        rules
+      );
       await service.addRole(user.id, role.id);
       return service.abilityForUser(user.id, organization.id);
     }

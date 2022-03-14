@@ -28,8 +28,9 @@ export class RbacResolver {
     RoleGuard({
       action: "create",
       subject: Role,
-      getOrganizationId: async (params: { input: CreateRoleInput }) =>
-        params.input.organizationId,
+      async getOrganizationId(_subject, params: { input: CreateRoleInput }) {
+        return params.input.organizationId;
+      },
     })
   )
   public async createRole(
@@ -46,8 +47,9 @@ export class RbacResolver {
       subject: Rule,
       inject: [RbacService],
       async getOrganizationId(
-        service: RbacService,
-        params: { input: CreateRuleInput }
+        _subject,
+        params: { input: CreateRuleInput },
+        service
       ) {
         const role = await service.findRoleById(params.input.roleId);
         return role?.organizationId;
@@ -68,8 +70,9 @@ export class RbacResolver {
       subject: "UserRole",
       inject: [RbacService],
       async getOrganizationId(
-        service: RbacService,
-        params: { userId: string; roleId: string }
+        _subject,
+        params: { userId: string; roleId: string },
+        service: RbacService
       ) {
         const role = await service.findRoleById(params.roleId);
         return role?.organizationId;

@@ -104,7 +104,7 @@ export class ProjectResolver {
     RoleGuard({
       action: "create",
       subject: Project,
-      async getOrganizationId(params: { input: CreateProjectInput }) {
+      async getOrganizationId(_subject, params: { input: CreateProjectInput }) {
         return params.input.organizationId;
       },
     })
@@ -284,10 +284,9 @@ export class ProjectResolver {
       action: "read",
       subject: Project,
       inject: [ProjectService],
-      async getOrganizationId(service: ProjectService, params: { id: string }) {
-        const project = await service.findById(params.id);
-        return project?.organizationId;
-      },
+      getSubject: (params: { id: string }, service: ProjectService) =>
+        service.findById(params.id),
+      getOrganizationId: (subject) => subject.organizationId,
     })
   )
   public async getProject(

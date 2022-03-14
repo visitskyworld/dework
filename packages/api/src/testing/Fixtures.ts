@@ -473,11 +473,15 @@ export class Fixtures {
     return { project, organization };
   }
 
-  public async createRole(partial: Partial<Role> = {}): Promise<Role> {
+  public async createRole(
+    partial: Partial<Role> = {},
+    rules: Partial<Rule>[] = []
+  ): Promise<Role> {
     return this.rbacService.createRole({
       organizationId: await this.createOrganization().then((o) => o.id),
       name: faker.internet.userName(),
       color: "red",
+      rules: rules as any,
       ...partial,
     });
   }

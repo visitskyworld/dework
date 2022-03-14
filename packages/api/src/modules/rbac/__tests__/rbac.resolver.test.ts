@@ -4,6 +4,7 @@ import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
+import { ProjectRequests } from "@dewo/api/testing/requests/project.requests";
 import { RbacRequests } from "@dewo/api/testing/requests/rbac.requests";
 import { AtLeast } from "@dewo/api/types/general";
 import { HttpStatus, INestApplication } from "@nestjs/common";
@@ -30,14 +31,50 @@ describe("RbacResolver", () => {
     organization: Organization,
     rules: AtLeast<Rule, "permission">[]
   ) {
-    const role = await fixtures.createRole({
-      organizationId: organization.id,
-    });
-    for (const rule of rules) {
-      await fixtures.createRule({ roleId: role.id, ...rule });
-    }
+    const role = await fixtures.createRole(
+      { organizationId: organization.id },
+      rules
+    );
     await service.addRole(user.id, role.id);
   }
+
+  describe("Queries", () => {
+    describe("getProject", () => {
+      it("should return public project if VIEW_PROJECTS is disabled on org level, and enabled on project level", async () => {
+        const organization = await fixtures.createOrganization();
+        const privateProject = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+        const publicProject = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+
+        const user = await fixtures.createUser();
+        await grant(user, organization, [
+          { permission: RulePermission.VIEW_PROJECTS, inverted: true },
+          {
+            permission: RulePermission.VIEW_PROJECTS,
+            projectId: publicProject.id,
+          },
+        ]);
+
+        const privateResponse = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.get(privateProject.id),
+        });
+        client.expectGqlError(privateResponse, HttpStatus.FORBIDDEN);
+        expect(privateResponse.body.data?.project).not.toBeDefined();
+
+        const publicResponse = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ProjectRequests.get(publicProject.id),
+        });
+        expect(publicResponse.body.data?.project).toBeDefined();
+      });
+    });
+  });
 
   describe("Mutations", () => {
     describe("createRole", () => {

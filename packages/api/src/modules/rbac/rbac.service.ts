@@ -155,6 +155,7 @@ export class RbacService {
         END
         `
       )
+      .addOrderBy("role.default", "DESC") // non-default roles last
       .getMany();
 
     // if ('taskId' in entity) {
