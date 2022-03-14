@@ -59,7 +59,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsGeneral project={project} />
       </Tabs.TabPane>
-
       <Tabs.TabPane
         tab={<Tab icon={<Icons.ShareAltOutlined />} children="Integrations" />}
         key="integrations"
@@ -67,7 +66,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsIntegrations project={project} />
       </Tabs.TabPane>
-
       <Tabs.TabPane
         tab={<Tab icon={<Icons.CreditCardOutlined />} children="Payments" />}
         key="payment-method"
@@ -75,7 +73,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsPaymentMethod project={project} />
       </Tabs.TabPane>
-
       <Tabs.TabPane
         tab={<Tab icon={<Icons.TeamOutlined />} children="Members" />}
         key="members"
@@ -83,12 +80,18 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsMembers project={project} />
       </Tabs.TabPane>
-
+      <Tabs.TabPane
+        tab={
+          <Tab icon={<Icons.SafetyCertificateOutlined />} children="Access" />
+        }
+        key="access"
+        style={tabStyle}
+      ></Tabs.TabPane>
       <Tabs.TabPane
         tab={
           <Tab
             icon={<Icons.SafetyCertificateOutlined />}
-            children="Token/Role Gating"
+            children="Token/Role Gating (old)"
           />
         }
         key="token-gating"
@@ -97,7 +100,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         <ProjectSettingsTokenGating project={project} />
         <ProjectSettingsDiscordRoleGating project={project} />
       </Tabs.TabPane>
-
       {canRemoveProject ? (
         <Tabs.TabPane
           tab={<Tab icon={<Icons.SettingOutlined />} children="Manage" />}

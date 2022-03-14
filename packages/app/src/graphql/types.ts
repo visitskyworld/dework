@@ -5643,6 +5643,52 @@ export interface AddRoleMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateRuleMutation
+// ====================================================
+
+export interface CreateRuleMutation_rule_role_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface CreateRuleMutation_rule_role {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+  rules: CreateRuleMutation_rule_role_rules[];
+}
+
+export interface CreateRuleMutation_rule {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+  role: CreateRuleMutation_rule_role;
+}
+
+export interface CreateRuleMutation {
+  rule: CreateRuleMutation_rule;
+}
+
+export interface CreateRuleMutationVariables {
+  input: CreateRuleInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -6408,6 +6454,48 @@ export interface GetOrganizationUsersQuery {
 }
 
 export interface GetOrganizationUsersQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationRolesQuery
+// ====================================================
+
+export interface GetOrganizationRolesQuery_organization_roles_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface GetOrganizationRolesQuery_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+  rules: GetOrganizationRolesQuery_organization_roles_rules[];
+}
+
+export interface GetOrganizationRolesQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  roles: GetOrganizationRolesQuery_organization_roles[];
+}
+
+export interface GetOrganizationRolesQuery {
+  organization: GetOrganizationRolesQuery_organization;
+}
+
+export interface GetOrganizationRolesQueryVariables {
   organizationId: Scalar.UUID;
 }
 
@@ -9872,6 +9960,24 @@ export interface EntityDetail {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Rule
+// ====================================================
+
+export interface Rule {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Role
 // ====================================================
 
@@ -9882,6 +9988,34 @@ export interface Role {
   color: string;
   fallback: boolean;
   organizationId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: RoleWithRules
+// ====================================================
+
+export interface RoleWithRules_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface RoleWithRules {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+  rules: RoleWithRules_rules[];
 }
 
 /* tslint:disable */
@@ -12390,6 +12524,13 @@ export enum ProjectVisibility {
   PUBLIC = "PUBLIC",
 }
 
+export enum RulePermission {
+  MANAGE_ORGANIZATION = "MANAGE_ORGANIZATION",
+  MANAGE_PROJECTS = "MANAGE_PROJECTS",
+  MANAGE_TASKS = "MANAGE_TASKS",
+  VIEW_PROJECTS = "VIEW_PROJECTS",
+}
+
 export enum TaskRewardTrigger {
   CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
   PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
@@ -12498,6 +12639,14 @@ export interface CreateProjectsFromTrelloInput {
   organizationId: Scalar.UUID;
   threepidId: Scalar.UUID;
   boardIds: string[];
+}
+
+export interface CreateRuleInput {
+  permission: RulePermission;
+  inverted?: boolean | null;
+  roleId: Scalar.UUID;
+  taskId?: Scalar.UUID | null;
+  projectId?: Scalar.UUID | null;
 }
 
 export interface CreateTaskApplicationInput {

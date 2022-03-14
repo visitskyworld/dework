@@ -9,19 +9,16 @@ import { RbacRequests } from "@dewo/api/testing/requests/rbac.requests";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
-import { RbacService } from "../rbac.service";
 
 describe("RbacResolver", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
   let client: GraphQLTestClient;
-  let service: RbacService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
     client = app.get(GraphQLTestClient);
-    service = app.get(RbacService);
   });
 
   afterAll(() => app.close());

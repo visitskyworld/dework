@@ -34,7 +34,6 @@ import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOr
 import { useToggle } from "@dewo/app/util/hooks";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { ProjectSettingsContributorSuggestions } from "../settings/ProjectSettingsContributorSuggestions";
-import { ProjectSettingsVisibility } from "../settings/ProjectSettingsVisibility";
 
 export interface FormValues
   extends CreateProjectInput,
@@ -200,7 +199,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         >
           <Input placeholder="Enter a project name..." />
         </Form.Item>
-
         {values.type === "dev" && !!organization && (
           <FormSection label="Github Integration">
             {hasGithubIntegration ? (
@@ -220,8 +218,8 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             )}
           </FormSection>
         )}
-
-        <ProjectSettingsVisibility />
+        TODO: toggle if project is private or not :)
+        {/* <ProjectSettingsVisibility /> */}
         <AdvancedSectionCollapse toggle={advancedSection}>
           <ProjectSettingsContributorSuggestions />
         </AdvancedSectionCollapse>

@@ -3,17 +3,14 @@ import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
-import { RbacService } from "../rbac.service";
 
 describe("RbacService", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
-  let service: RbacService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
-    service = app.get(RbacService);
   });
 
   afterAll(() => app.close());

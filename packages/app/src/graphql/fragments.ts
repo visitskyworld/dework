@@ -8,6 +8,16 @@ export const entityDetail = gql`
   }
 `;
 
+export const rule = gql`
+  fragment Rule on Rule {
+    id
+    permission
+    inverted
+    taskId
+    projectId
+  }
+`;
+
 export const role = gql`
   fragment Role on Role {
     id
@@ -16,6 +26,17 @@ export const role = gql`
     fallback
     organizationId
   }
+`;
+
+export const roleWithRules = gql`
+  fragment RoleWithRules on Role {
+    ...Role
+    rules {
+      ...Rule
+    }
+  }
+  ${role}
+  ${rule}
 `;
 
 export const user = gql`

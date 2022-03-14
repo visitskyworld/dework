@@ -40,7 +40,6 @@ import { ProjectService } from "../project/project.service";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
-import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
@@ -54,8 +53,7 @@ export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly permalinkService: PermalinkService,
-    private readonly abilityFactory: AbilityFactory
+    private readonly permalinkService: PermalinkService
   ) {}
 
   @ResolveField(() => [TaskTag])

@@ -4,6 +4,7 @@ import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useMemo } from "react";
 import { useUpdateProject } from "../hooks";
 import { ProjectSettingsContributorSuggestions } from "./ProjectSettingsContributorSuggestions";
+import { ProjectSettingsPrivateToggle } from "./ProjectSettingsPrivateToggle";
 import { ProjectTaskExports } from "./ProjectTaskExports";
 
 type FormValues = Omit<UpdateProjectInput, "id">;
@@ -23,10 +24,7 @@ export const ProjectSettingsGeneral: FC<Props> = ({ project }) => {
   );
 
   const initialValues = useMemo<FormValues>(
-    () => ({
-      // visibility: project.visibility,
-      options: project.options,
-    }),
+    () => ({ options: project.options }),
     [project]
   );
 
@@ -45,7 +43,10 @@ export const ProjectSettingsGeneral: FC<Props> = ({ project }) => {
       <Divider style={{ marginTop: 0 }} />
 
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-        {/* <ProjectSettingsVisibility /> */}
+        <ProjectSettingsPrivateToggle
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
         <ProjectSettingsContributorSuggestions />
         <ProjectTaskExports projectId={project.id} projectName={project.name} />
       </Space>

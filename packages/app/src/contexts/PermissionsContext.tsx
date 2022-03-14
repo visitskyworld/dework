@@ -23,7 +23,7 @@ import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
 import { AtLeast } from "../types/general";
 
-type AbilityAction = "create" | "read" | "update" | "delete" | "claimTask";
+type AbilityAction = "create" | "read" | "update" | "delete"; //  | "claimTask";
 type AbilitySubject =
   | "Task"
   | "TaskTag"
@@ -33,6 +33,8 @@ type AbilitySubject =
   | "TaskSubmission"
   | "TaskApplication"
   | "TaskSection"
+  | "Role"
+  | "Rule"
   | Project
   | Organization
   | AtLeast<Task, "__typename" | "status">

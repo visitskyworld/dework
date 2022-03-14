@@ -21,6 +21,8 @@ export class Rule extends Audit {
   @ManyToOne(() => Role, { onDelete: "CASCADE" })
   @Field(() => Role)
   public role!: Promise<Role>;
+  // inserting role with rules doesn't work when @Column is set here
+  @Column({ type: "uuid" })
   @Field()
   public roleId!: string;
 

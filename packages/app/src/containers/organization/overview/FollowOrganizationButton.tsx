@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { Button } from "antd";
-import { useAddRole, useOrganization, useOrganizationUsers } from "../hooks";
+import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
+import { useAddRole } from "../../rbac/hooks";
 
 interface Props {
   organizationId: string;

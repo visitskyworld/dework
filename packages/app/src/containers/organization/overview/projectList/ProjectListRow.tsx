@@ -5,7 +5,7 @@ import { ProjectDetails } from "@dewo/app/graphql/types";
 import Link from "next/link";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
-import { useIsProjectPrivate } from "../../hooks";
+import { useIsProjectPrivate } from "@dewo/app/containers/rbac/hooks";
 
 interface Props {
   project: ProjectDetails;

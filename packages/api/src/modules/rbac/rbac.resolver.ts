@@ -59,7 +59,8 @@ export class RbacResolver {
   public async createRule(
     @Args("input") input: CreateRuleInput
   ): Promise<Rule> {
-    return this.service.createRule(input);
+    const rule = await this.service.createRule(input);
+    return rule;
   }
 
   @Mutation(() => User)

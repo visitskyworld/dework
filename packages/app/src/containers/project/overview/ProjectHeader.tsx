@@ -15,10 +15,11 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
-import { useIsProjectPrivate, useOrganization } from "../../organization/hooks";
+import { useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { DiscordRoleGatingJoinButton } from "../../invite/DiscordRoleGatingJoinButton";
+import { useIsProjectPrivate } from "../../rbac/hooks";
 
 interface Props {
   projectId: string;

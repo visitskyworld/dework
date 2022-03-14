@@ -60,7 +60,13 @@ export class RbacService {
     return this.roleRepo.findOne(x.id) as Promise<Role>;
   }
 
-  public async createRule(partial: Partial<Rule>): Promise<Rule> {
+  public async createRule(
+    partial: AtLeast<Rule, "permission" | "roleId">
+  ): Promise<Rule> {
+    // const x = await this.ruleRepo.save({
+    //   ...partial,
+    //   role: Object.assign(new Role(), { id: partial.roleId }) as any,
+    // });
     const x = await this.ruleRepo.save(partial);
     return this.ruleRepo.findOne(x.id) as Promise<Rule>;
   }
