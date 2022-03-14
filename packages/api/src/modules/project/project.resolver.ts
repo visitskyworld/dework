@@ -295,8 +295,19 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectTokenGate)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, ProjectTokenGate)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: async (
+        params: { input: ProjectTokenGateInput },
+        service: ProjectService
+      ) => service.findById(params.input.projectId),
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async createProjectTokenGate(
     @Args("input") input: ProjectTokenGateInput
   ): Promise<ProjectTokenGate> {
@@ -304,8 +315,19 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.delete, ProjectTokenGate)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: async (
+        params: { input: ProjectTokenGateInput },
+        service: ProjectService
+      ) => service.findById(params.input.projectId),
+      getOrganizationId: (subject: Project) => subject.organizationId,
+    })
+  )
   public async deleteProjectTokenGate(
     @Args("input") input: ProjectTokenGateInput
   ): Promise<Project> {
