@@ -37,13 +37,7 @@ const TaskActivityFeedRow: FC<RowProps> = ({ item }) => {
           {!!item.details && (
             <Button
               style={{ marginLeft: 8 }}
-              icon={
-                details.isOn ? (
-                  <Icons.CaretUpOutlined />
-                ) : (
-                  <Icons.CaretDownOutlined />
-                )
-              }
+              icon={<Icons.CaretRightOutlined rotate={details.isOn ? 90 : 0} />}
               type="text"
               size="small"
               onClick={details.toggle}

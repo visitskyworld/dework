@@ -71,6 +71,10 @@ export class RbacService {
     return this.ruleRepo.findOne(x.id) as Promise<Rule>;
   }
 
+  public async deleteRule(ruleId: string): Promise<void> {
+    await this.ruleRepo.delete(ruleId);
+  }
+
   public async addRole(userId: string, roleId: string): Promise<void> {
     await this.roleRepo
       .createQueryBuilder()
@@ -214,5 +218,9 @@ export class RbacService {
 
   public async findRoleById(id: string): Promise<Role | undefined> {
     return this.roleRepo.findOne(id);
+  }
+
+  public async findRuleById(id: string): Promise<Rule | undefined> {
+    return this.ruleRepo.findOne(id);
   }
 }

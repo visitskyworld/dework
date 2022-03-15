@@ -63,6 +63,30 @@ export class RbacResolver {
     return rule;
   }
 
+  @Mutation(() => Role)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: Rule,
+      inject: [RbacService],
+      getSubject: (params: { id: string }, service) =>
+        service.findRuleById(params.id),
+      async getOrganizationId(subject) {
+        const role = await subject.role;
+        return role?.organizationId;
+      },
+    })
+  )
+  public async deleteRule(
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<Role> {
+    const rule = await this.service.findRuleById(id);
+    const role = await rule!.role;
+    await this.service.deleteRule(id);
+    return role;
+  }
+
   @Mutation(() => User)
   @UseGuards(
     AuthGuard,

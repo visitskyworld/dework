@@ -9,6 +9,8 @@ import {
   CreateRuleInput,
   CreateRuleMutation,
   CreateRuleMutationVariables,
+  DeleteRuleMutation,
+  DeleteRuleMutationVariables,
   GetOrganizationRolesQuery,
   GetOrganizationRolesQueryVariables,
   Project,
@@ -32,7 +34,7 @@ export function useOrganizationRoles(
 }
 
 export function useIsProjectPrivate(project: Project | undefined): boolean {
-  const ability = useDefaultAbility(project?.organizationId);
+  const { ability } = useDefaultAbility(project?.organizationId);
   return useMemo(
     () => !!project && !!ability && !ability.can("read", project),
     [ability, project]
@@ -68,11 +70,23 @@ export function useCreateRule(): (input: CreateRuleInput) => Promise<Rule> {
   >(Mutations.createRule);
   return useCallback(
     async (input) => {
-      const res = await mutation({
-        variables: { input },
-      });
+      const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.rule;
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteRule(): (id: string) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteRuleMutation,
+    DeleteRuleMutationVariables
+  >(Mutations.deleteRule);
+  return useCallback(
+    async (id) => {
+      const res = await mutation({ variables: { id } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );

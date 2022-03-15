@@ -728,14 +728,21 @@ export const createRule = gql`
     rule: createRule(input: $input) {
       ...Rule
       role {
-        ...Role
-        rules {
-          ...Rule
-        }
+        ...RoleWithRules
       }
     }
   }
 
   ${Fragments.rule}
-  ${Fragments.role}
+  ${Fragments.roleWithRules}
+`;
+
+export const deleteRule = gql`
+  mutation DeleteRuleMutation($id: UUID!) {
+    role: deleteRule(id: $id) {
+      ...RoleWithRules
+    }
+  }
+
+  ${Fragments.roleWithRules}
 `;

@@ -5689,6 +5689,42 @@ export interface CreateRuleMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: DeleteRuleMutation
+// ====================================================
+
+export interface DeleteRuleMutation_role_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface DeleteRuleMutation_role {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+  rules: DeleteRuleMutation_role_rules[];
+}
+
+export interface DeleteRuleMutation {
+  role: DeleteRuleMutation_role;
+}
+
+export interface DeleteRuleMutationVariables {
+  id: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -5832,6 +5868,34 @@ export interface UserProfileQuery {
 
 export interface UserProfileQueryVariables {
   userId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: MyRolesQuery
+// ====================================================
+
+export interface MyRolesQuery_me_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  fallback: boolean;
+  organizationId: string;
+}
+
+export interface MyRolesQuery_me {
+  __typename: "User";
+  id: Scalar.UUID;
+  roles: MyRolesQuery_me_roles[];
+}
+
+export interface MyRolesQuery {
+  me: MyRolesQuery_me;
 }
 
 /* tslint:disable */

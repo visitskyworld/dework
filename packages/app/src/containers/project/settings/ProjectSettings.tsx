@@ -13,6 +13,7 @@ import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectSettingsManage } from "./ProjectSettingsManage";
 import { ProjectSettingsDiscordRoleGating } from "./discordRoleGating/DiscordRoleGating";
+import { ProjectRBAC } from "../../rbac/project/ProjectRBAC";
 
 interface Props {
   project: ProjectDetails;
@@ -86,7 +87,12 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         }
         key="access"
         style={tabStyle}
-      ></Tabs.TabPane>
+      >
+        <ProjectRBAC
+          projectId={project.id}
+          organizationId={project.organizationId}
+        />
+      </Tabs.TabPane>
       <Tabs.TabPane
         tab={
           <Tab
