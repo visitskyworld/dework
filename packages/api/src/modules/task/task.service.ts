@@ -208,6 +208,10 @@ export class TaskService {
     return this.taskRepo.findOne(id);
   }
 
+  public async findSectionById(id: string): Promise<TaskSection | undefined> {
+    return this.taskSectionRepo.findOne(id);
+  }
+
   public async findWithRelations({
     ids,
     rewardIds,

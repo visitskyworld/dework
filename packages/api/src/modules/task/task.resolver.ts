@@ -23,7 +23,6 @@ import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
 import { AccessGuard, Actions, UseAbility } from "nest-casl";
-import { ProjectRolesGuard } from "../project/project.roles.guard";
 import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
@@ -371,8 +370,24 @@ export class TaskResolver {
   }
 
   @Mutation(() => TaskSection)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, TaskSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: TaskSection,
+      inject: [ProjectService],
+      getSubject: (params: { input: CreateTaskSectionInput }) =>
+        Object.assign(new TaskSection(), { projectId: params.input.projectId }),
+      getOrganizationId: async (
+        _subject,
+        params: { input: CreateTaskSectionInput },
+        service
+      ) => {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
   public async createTaskSection(
     @Args("input") input: CreateTaskSectionInput
   ): Promise<TaskSection> {
@@ -380,8 +395,22 @@ export class TaskResolver {
   }
 
   @Mutation(() => TaskSection)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, TaskSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: TaskSection,
+      inject: [TaskService, ProjectService],
+      getSubject: (
+        params: { input: UpdateTaskSectionInput },
+        service: TaskService
+      ) => service.findSectionById(params.input.id),
+      getOrganizationId: async (subject) => {
+        const project = await subject.project;
+        return project?.organizationId;
+      },
+    })
+  )
   public async updateTaskSection(
     @Args("input") input: UpdateTaskSectionInput
   ): Promise<TaskSection> {

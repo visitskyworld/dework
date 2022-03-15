@@ -17,6 +17,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 
 export class UserRole {
   role!: Role;
@@ -33,6 +34,7 @@ export type Subject = InferSubjects<
   | typeof ProjectSection
   | typeof Task
   | typeof TaskTag
+  | typeof TaskSection
   | typeof TaskApplication
   | typeof TaskSubmission
   | typeof Role
@@ -115,11 +117,12 @@ export class RbacService {
       const taskTag: Partial<TaskTag> | undefined = !!rule.projectId
         ? { projectId: rule.projectId }
         : undefined;
-
+      const taskSection: Partial<TaskSection> | undefined = !!rule.projectId
+        ? { projectId: rule.projectId }
+        : undefined;
       const project: Partial<Project> | undefined = !!rule.projectId
         ? { id: rule.projectId }
         : { organizationId };
-
       const organization: Partial<Organization> | undefined = {
         id: organizationId,
       };
@@ -138,6 +141,7 @@ export class RbacService {
         case RulePermission.MANAGE_PROJECTS:
           fn(["create", "read", "update", "delete"], Project, project);
           fn(["create", "read", "update", "delete"], TaskTag, taskTag);
+          fn(["create", "read", "update", "delete"], TaskSection, taskSection);
           break;
         case RulePermission.MANAGE_TASKS:
           fn(["create", "read", "update", "delete"], Task, task);
