@@ -95,9 +95,6 @@ export function RoleGuard<
         gqlContext.user?.id,
         organizationId
       );
-      console.warn(actualSubject);
-      console.warn(gqlContext.user?.id);
-      console.warn(ability.rules);
       const granted = actualFields.map((field) =>
         ability.can(action, actualSubject, field)
       );
