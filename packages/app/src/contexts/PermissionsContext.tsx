@@ -17,6 +17,7 @@ import {
   ProjectMember,
   Task,
   TaskApplication,
+  TaskReaction,
   TaskSubmission,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
@@ -38,6 +39,7 @@ type AbilitySubject =
   | Project
   | Organization
   | AtLeast<Task, "__typename" | "status">
+  | AtLeast<TaskReaction, "__typename" | "userId">
   | AtLeast<TaskApplication, "__typename" | "userId">
   | AtLeast<TaskSubmission, "__typename" | "userId">
   | AtLeast<OrganizationMember, "__typename" | "role">

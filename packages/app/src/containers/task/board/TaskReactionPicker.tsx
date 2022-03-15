@@ -14,6 +14,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import Modal from "antd/lib/modal/Modal";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface GroupedReaction {
   reaction: string;
@@ -31,11 +32,18 @@ interface ReactionProps {
 }
 
 const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
+  const { user } = useAuthContext();
+  const canReact = usePermission("create", {
+    __typename: "TaskReaction",
+    userId: user?.id!,
+  });
+
   const createReaction = useCreateTaskReaction();
   const deleteReaction = useDeleteTaskReaction();
   const handleClick = useCallback(
     async (event) => {
       stopPropagation(event);
+      if (!canReact) return;
       if (reaction.selected) {
         await deleteReaction({ taskId, reaction: reaction.reaction });
       } else {
@@ -44,6 +52,7 @@ const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
     },
     [
       taskId,
+      canReact,
       reaction.selected,
       reaction.reaction,
       createReaction,

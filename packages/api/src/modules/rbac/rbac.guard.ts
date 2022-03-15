@@ -58,7 +58,7 @@ export function RoleGuard<
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const ctx = GqlExecutionContext.create(context);
       const gqlContext = ctx.getContext<GQLContext>();
-      const params = ctx.getArgs();
+      const params = { ...ctx.getArgs(), user: gqlContext.user };
 
       this.logger.debug("Running guard");
 

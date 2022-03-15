@@ -31,7 +31,6 @@ import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import slugify from "slugify";
 import { GetTasksInput, TaskFilterInput } from "./dto/GetTasksInput";
 import { PermalinkService } from "../permalink/permalink.service";
-import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
@@ -45,6 +44,7 @@ import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
 
 @Injectable()
 @Resolver(() => Task)
@@ -349,8 +349,21 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.manage, TaskReaction)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: TaskReaction,
+      inject: [TaskService],
+      getSubject: (params: { input: TaskReactionInput; user: User }) =>
+        Object.assign(new TaskReaction(), { userId: params.user.id }),
+      async getOrganizationId(_subject, params, service) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
+        return project?.organizationId;
+      },
+    })
+  )
   public async createTaskReaction(
     @Context("user") user: User,
     @Args("input") input: TaskReactionInput
@@ -360,7 +373,21 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
-  @UseGuards(AuthGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: TaskReaction,
+      inject: [TaskService],
+      getSubject: (params: { input: TaskReactionInput; user: User }) =>
+        Object.assign(new TaskReaction(), { userId: params.user.id }),
+      async getOrganizationId(_subject, params, service) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
+        return project?.organizationId;
+      },
+    })
+  )
   public async deleteTaskReaction(
     @Context("user") user: User,
     @Args("input") input: TaskReactionInput

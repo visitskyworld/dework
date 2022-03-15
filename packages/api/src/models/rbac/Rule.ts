@@ -10,6 +10,7 @@ export enum RulePermission {
   MANAGE_PROJECTS = "MANAGE_PROJECTS",
   MANAGE_TASKS = "MANAGE_TASKS",
   VIEW_PROJECTS = "VIEW_PROJECTS",
+  SUGGEST_AND_VOTE = "SUGGEST_AND_VOTE",
 }
 
 registerEnumType(RulePermission, { name: "RulePermission" });

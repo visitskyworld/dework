@@ -18,6 +18,7 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskSection } from "@dewo/api/models/TaskSection";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
 
 export class UserRole {
   role!: Role;
@@ -35,6 +36,7 @@ export type Subject = InferSubjects<
   | typeof Task
   | typeof TaskTag
   | typeof TaskSection
+  | typeof TaskReaction
   | typeof TaskApplication
   | typeof TaskSubmission
   | typeof Role
@@ -144,9 +146,13 @@ export class RbacService {
           fn(["create", "read", "update", "delete"], TaskSection, taskSection);
           break;
         case RulePermission.MANAGE_TASKS:
-          fn(["create", "read", "update", "delete"], Task, task);
           // fn(["create", "read", "delete"], TaskApplication);
           // fn(["read", "delete"], TaskSubmission);
+          fn(["create", "read", "update", "delete"], Task, task);
+        // eslint-disable-next-line no-fallthrough
+        case RulePermission.SUGGEST_AND_VOTE:
+          // TODO(fant): add task in community suggestions
+          fn(["create", "update", "delete"], TaskReaction, { userId });
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
