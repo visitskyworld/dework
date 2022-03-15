@@ -1,10 +1,7 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import {
-  usePermission,
-  usePermissionFn,
-} from "@dewo/app/contexts/PermissionsContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskDetails } from "@dewo/app/graphql/types";
 import { Card, Divider, List } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
@@ -17,8 +14,6 @@ interface Props {
 
 export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
-  const can = usePermissionFn();
-
   const currentSubmission = useMemo(
     () => task.submissions.find((s) => s.user.id === user?.id),
     [task.submissions, user?.id]

@@ -58,7 +58,7 @@ const TaskActivityFeedRow: FC<RowProps> = ({ item }) => {
 };
 
 export const TaskActivityFeed: FC<Props> = ({ task }) => {
-  const showSubmissions = usePermission("read", "TaskSubmission");
+  const showSubmissions = usePermission("update", task, "submissions");
   const showApplications = usePermission("read", "TaskApplication");
 
   const items = useMemo<ActivityFeedItem[]>(() => {
