@@ -28,7 +28,7 @@ export class UserRole {
   }
 }
 
-export type Action = "create" | "read" | "update" | "delete";
+export type Action = "create" | "read" | "update" | "delete" | "submit";
 export type Subject = InferSubjects<
   | typeof Organization
   | typeof Project
@@ -147,7 +147,9 @@ export class RbacService {
           break;
         case RulePermission.MANAGE_TASKS:
           // fn(["create", "read", "delete"], TaskApplication);
-          // fn(["read", "delete"], TaskSubmission);
+          fn("submit", Task);
+          fn(["create", "update", "delete"], TaskSubmission);
+
           fn(["create", "read", "update", "delete"], Task, task);
         // eslint-disable-next-line no-fallthrough
         case RulePermission.SUGGEST_AND_VOTE:
@@ -180,9 +182,12 @@ export class RbacService {
     builder.can(["read", "update", "delete"], Task, {
       ownerId: userId,
     });
-    builder.can("create", Task, "submissions", {
-      assignees: { $elemMatch: { id: userId } },
-    });
+
+    // this is currently only used UI-wise to determine if all task submissions should be shown
+    builder.can("update", Task, "submissions", { ownerId: userId });
+    builder.can("submit", Task, { ownerId: userId });
+    builder.can("submit", Task, { assignees: { $elemMatch: { id: userId } } });
+    builder.can(["create", "update", "delete"], TaskSubmission, { userId });
 
     return builder.build({
       detectSubjectType: (item: Subject): ExtractSubjectType<Subject> =>

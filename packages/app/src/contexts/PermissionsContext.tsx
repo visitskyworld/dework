@@ -24,14 +24,13 @@ import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
 import { AtLeast } from "../types/general";
 
-type AbilityAction = "create" | "read" | "update" | "delete"; //  | "claimTask";
+type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "claimTask";
 type AbilitySubject =
   | "Task"
   | "TaskTag"
   | "Project"
   | "ProjectSection"
   | "Organization"
-  | "TaskSubmission"
   | "TaskApplication"
   | "TaskSection"
   | "Role"

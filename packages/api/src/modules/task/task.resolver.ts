@@ -22,8 +22,6 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
-import { TaskRolesGuard } from "./task.roles.guard";
 import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
@@ -224,14 +222,25 @@ export class TaskResolver {
   @UseGuards(
     AuthGuard,
     RoleGuard({
-      action: "create",
+      action: "submit",
       subject: Task,
-      fields: ["submissions"],
       inject: [TaskService],
       getSubject: (params: { input: CreateTaskSubmissionInput }, service) =>
         service.findById(params.input.taskId),
       async getOrganizationId(subject) {
         const project = await subject.project;
+        return project?.organizationId;
+      },
+    }),
+    RoleGuard({
+      action: "create",
+      subject: TaskSubmission,
+      inject: [TaskService],
+      getSubject: (params: { input: CreateTaskSubmissionInput; user: User }) =>
+        Object.assign(new TaskSubmission(), { userId: params.user.id }),
+      async getOrganizationId(_subject, params, service) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
         return project?.organizationId;
       },
     })
@@ -254,14 +263,32 @@ export class TaskResolver {
   }
 
   @Mutation(() => TaskSubmission)
-  @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, TaskSubmission, [
-    TaskService,
-    async (_service: TaskService, { params }) => ({
-      taskId: params.input.taskId,
-      userId: params.input.userId,
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "submit",
+      subject: Task,
+      inject: [TaskService],
+      getSubject: (params: { input: UpdateTaskSubmissionInput }, service) =>
+        service.findById(params.input.taskId),
+      async getOrganizationId(subject) {
+        const project = await subject.project;
+        return project?.organizationId;
+      },
     }),
-  ])
+    RoleGuard({
+      action: "update",
+      subject: TaskSubmission,
+      inject: [TaskService],
+      getSubject: (params: { input: UpdateTaskSubmissionInput; user: User }) =>
+        Object.assign(new TaskSubmission(), { userId: params.user.id }),
+      async getOrganizationId(_subject, params, service) {
+        const task = await service.findById(params.input.taskId);
+        const project = await task?.project;
+        return project?.organizationId;
+      },
+    })
+  )
   public async updateTaskSubmission(
     @Context("user") user: User,
     @Args("input") input: UpdateTaskSubmissionInput
@@ -336,11 +363,6 @@ export class TaskResolver {
 
   @Mutation(() => [Task])
   @UseGuards(AuthGuard)
-  // @UseGuards(AuthGuard, TaskRolesGuard, AccessGuard)
-  // @UseAbility(Actions.update, Task, [
-  //   TaskService,
-  //   (service: TaskService, { params }) => service.findById(params.input.taskId),
-  // ])
   public async createTaskPayments(
     @Args("input") input: CreateTaskPaymentsInput
   ): Promise<Task[]> {

@@ -18,26 +18,18 @@ interface Props {
 export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
   const can = usePermissionFn();
-  const submissions = useMemo(
-    () => task.submissions.filter((s) => can("read", s)),
-    [task.submissions, can]
-  );
 
   const currentSubmission = useMemo(
-    () => submissions.find((s) => s.user.id === user?.id),
-    [submissions, user?.id]
+    () => task.submissions.find((s) => s.user.id === user?.id),
+    [task.submissions, user?.id]
   );
   const approvedSubmission = useMemo(
-    () => submissions.find((s) => !!s.approver),
-    [submissions]
+    () => task.submissions.find((s) => !!s.approver),
+    [task.submissions]
   );
 
-  const canUpdate = usePermission("update", currentSubmission!);
-  const canCreate = usePermission("create", task, "submissions");
-  const canReadAll = usePermission("update", task, "submissions");
-
-  const showEditor =
-    (canCreate && !currentSubmission) || (canUpdate && !!currentSubmission);
+  const canSubmit = usePermission("submit", task);
+  const canManageSubmissions = usePermission("update", task, "submissions");
 
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
@@ -53,7 +45,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     [user, task.id, currentSubmission, createSubmission, updateSubmission]
   );
 
-  if (!canReadAll && !showEditor && !approvedSubmission) return null;
+  if (!canSubmit && !approvedSubmission) return null;
   if (!!approvedSubmission) {
     return (
       <>
@@ -73,7 +65,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   return (
     <>
       <Divider>Submissions</Divider>
-      {canReadAll && !!submissions.length && (
+      {canManageSubmissions && !!task.submissions.length && (
         <FormSection label="All Submissions">
           <Card size="small" className="dewo-card-highlighted">
             <List
@@ -86,7 +78,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
         </FormSection>
       )}
 
-      {showEditor && (
+      {canSubmit && (
         <FormSection label="Your Submission">
           <MarkdownEditor
             initialValue={currentSubmission?.content}
