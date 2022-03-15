@@ -1,4 +1,8 @@
-import { useMutation, useQuery } from "@apollo/client";
+import {
+  InternalRefetchQueriesInclude,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useDefaultAbility } from "@dewo/app/contexts/PermissionsContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -14,6 +18,7 @@ import {
   GetOrganizationRolesQuery,
   GetOrganizationRolesQueryVariables,
   Project,
+  Role,
   RoleWithRules,
   Rule,
   UserWithRoles,
@@ -42,7 +47,7 @@ export function useIsProjectPrivate(project: Project | undefined): boolean {
 }
 
 export function useAddRole(): (
-  roleId: string,
+  role: Role,
   userId: string
 ) => Promise<UserWithRoles> {
   const { user } = useAuthContext();
@@ -50,11 +55,18 @@ export function useAddRole(): (
     Mutations.addRole
   );
   return useCallback(
-    async (roleId, userId) => {
+    async (role, userId) => {
+      const refetchQueries: InternalRefetchQueriesInclude = [];
+      if (user?.id === userId) {
+        refetchQueries.push({ query: Queries.me });
+        refetchQueries.push({
+          query: Queries.permissions,
+          variables: { organizationId: role.organizationId },
+        });
+      }
       const res = await mutation({
-        variables: { roleId, userId },
-        refetchQueries:
-          user?.id === userId ? [{ query: Queries.me }] : undefined,
+        variables: { roleId: role.id, userId },
+        refetchQueries,
       });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.addRole;

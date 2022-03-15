@@ -15,7 +15,7 @@ import { DeepPartial, IsNull, Repository } from "typeorm";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RbacService } from "../rbac/rbac.service";
-import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
 export class OrganizationService {
@@ -50,24 +50,31 @@ export class OrganizationService {
           color: "pink",
           name: "owner",
           organizationId: created.id,
-          rules: [
-            { permission: RulePermission.MANAGE_ORGANIZATION },
-            { permission: RulePermission.MANAGE_PROJECTS },
-            { permission: RulePermission.MANAGE_TASKS },
-          ] as Partial<Rule>[] as any,
         })
-        .then((role) => this.rbacService.addRole(creator.id, role.id)),
+        .then(async (role) => {
+          for (const permission of [
+            RulePermission.MANAGE_ORGANIZATION,
+            RulePermission.MANAGE_PROJECTS,
+            RulePermission.MANAGE_TASKS,
+          ]) {
+            await this.rbacService.createRule({ roleId: role.id, permission });
+          }
+          await this.rbacService.addRole(creator.id, role.id);
+        }),
       this.rbacService
         .createRole({
           color: "grey",
           name: "@everyone",
           fallback: true,
           organizationId: created.id,
-          rules: [
-            { permission: RulePermission.VIEW_PROJECTS },
-          ] as Partial<Rule>[] as any,
         })
-        .then((role) => this.rbacService.addRole(creator.id, role.id)),
+        .then(async (role) => {
+          await this.rbacService.createRule({
+            roleId: role.id,
+            permission: RulePermission.VIEW_PROJECTS,
+          });
+          await this.rbacService.addRole(creator.id, role.id);
+        }),
       this.upsertMember({
         organizationId: created.id,
         userId: creator.id,

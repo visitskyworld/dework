@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
-  const users = useOrganizationUsers(organizationId);
+  const { users } = useOrganizationUsers(organizationId);
   const navigateToProfile = useNavigateToProfile();
 
   return (

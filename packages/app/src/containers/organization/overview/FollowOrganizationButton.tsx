@@ -15,7 +15,8 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   const { user } = useAuthContext();
 
   const { organization } = useOrganization(organizationId);
-  const users = useOrganizationUsers(organizationId);
+  const { users, refetch: refetchOrganizationUsers } =
+    useOrganizationUsers(organizationId);
   const fallbackRole = useMemo(
     () => organization?.roles.find((r) => r.fallback),
     [organization?.roles]
@@ -32,7 +33,8 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   );
 
   const [handleAddRole, addingRole] = useRunningCallback(async () => {
-    await addRole(fallbackRole!.id, user!.id);
+    await addRole(fallbackRole!, user!.id);
+    await refetchOrganizationUsers();
   }, [user, fallbackRole, addRole]);
 
   if (isFollowing || !fallbackRole) return null;

@@ -18,6 +18,14 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 
+export class UserRole {
+  role!: Role;
+  userId!: string;
+  constructor(data: UserRole) {
+    Object.assign(this, data);
+  }
+}
+
 export type Action = "create" | "read" | "update" | "delete";
 export type Subject = InferSubjects<
   | typeof Organization
@@ -29,7 +37,7 @@ export type Subject = InferSubjects<
   | typeof TaskSubmission
   | typeof Role
   | typeof Rule
-  | "UserRole"
+  | typeof UserRole
 >;
 
 export class AppAbility extends Ability<[Action, Subject]> {}
@@ -127,7 +135,7 @@ export class RbacService {
           fn("update", Project, ["sectionId", "sortKey"], project);
           fn(["create", "read", "update", "delete"], Role, roleConditions);
           fn(["create", "read", "update", "delete"], Rule);
-          fn(["create", "delete"], "UserRole");
+          fn(["create", "delete"], UserRole);
           break;
         case RulePermission.MANAGE_PROJECTS:
           fn(["create", "read", "update", "delete"], Project, project);
@@ -153,6 +161,11 @@ export class RbacService {
       }
     }
 
+    builder.can(["create", "delete"], UserRole, {
+      // @ts-expect-error
+      "role.fallback": true,
+      userId,
+    });
     builder.can("update", Task, ["status", "sectionId", "sortKey"], {
       assignees: { $elemMatch: { id: userId } },
     });

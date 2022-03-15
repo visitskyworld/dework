@@ -1,7 +1,7 @@
 import { Args, Context, Query, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
-import { RbacService } from "./rbac.service";
+import { RbacService, UserRole } from "./rbac.service";
 import { CreateRoleInput } from "./dto/CreateRoleInput";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { RoleGuard } from "./rbac.guard";
@@ -91,17 +91,15 @@ export class RbacResolver {
   @UseGuards(
     AuthGuard,
     RoleGuard({
-      action: "delete",
-      subject: "UserRole",
+      action: "create",
+      subject: UserRole,
       inject: [RbacService],
-      async getOrganizationId(
-        _subject,
-        params: { userId: string; roleId: string },
-        service: RbacService
-      ) {
+      async getSubject(params: { userId: string; roleId: string }, service) {
         const role = await service.findRoleById(params.roleId);
-        return role?.organizationId;
+        if (!role) return undefined;
+        return new UserRole({ role, userId: params.userId });
       },
+      getOrganizationId: (subject) => subject.role.organizationId,
     })
   )
   public async addRole(

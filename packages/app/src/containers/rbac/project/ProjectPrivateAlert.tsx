@@ -53,10 +53,11 @@ export const ProjectPrivateAlert: FC<Props> = ({
         setShowPrivateOptions(false);
         if (!!privateRule) {
           await deleteRule(privateRule.id);
+          await refetchDefaultAbility();
         }
       }
     },
-    [deleteRule, privateRule]
+    [deleteRule, refetchDefaultAbility, privateRule]
   );
 
   const handleViewProjectsPermissionSaved = useCallback(

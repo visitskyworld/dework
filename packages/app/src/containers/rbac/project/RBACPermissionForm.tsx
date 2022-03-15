@@ -2,7 +2,6 @@ import { RoleWithRules, Rule, RulePermission } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { Button, message, Select, Space, Tooltip } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
-import Bluebird from "bluebird";
 import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
 
 interface Props {
@@ -64,14 +63,14 @@ export const RBACPermissionForm: FC<Props> = ({
         selectedRoleIds?.includes(role.id)
     );
 
-    await Bluebird.mapSeries(removedRoles ?? [], async (role) => {
+    for (const role of removedRoles ?? []) {
       const rule = getRule(role, permission, projectId);
       await deleteRule(rule!.id);
-    });
+    }
 
-    await Bluebird.mapSeries(addedRoles ?? [], async (role) =>
-      createRule({ permission, projectId, roleId: role.id })
-    );
+    for (const role of addedRoles ?? []) {
+      await createRule({ permission, projectId, roleId: role.id });
+    }
 
     const hasFallbackRolePermission = selectedRoleIds?.some(
       (roleId) => roles?.find((r) => r.id === roleId)?.fallback

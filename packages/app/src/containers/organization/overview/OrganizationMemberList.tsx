@@ -20,7 +20,7 @@ export const organizationRoleToString: Record<OrganizationRole, string> = {
 };
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
-  const users = useOrganizationUsers(organizationId);
+  const { users } = useOrganizationUsers(organizationId);
   const removeMember = useRemoveOrganizationMember();
 
   const canDeleteAdmin = usePermission("delete", {

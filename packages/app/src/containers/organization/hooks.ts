@@ -234,17 +234,18 @@ export function useOrganization(organizationId: string | undefined): {
   return { organization: data?.organization ?? undefined, refetch };
 }
 
-export function useOrganizationUsers(
-  organizationId: string
-): UserWithRoles[] | undefined {
-  const { data } = useQuery<
+export function useOrganizationUsers(organizationId: string): {
+  users: UserWithRoles[] | undefined;
+  refetch(): Promise<unknown>;
+} {
+  const { data, refetch } = useQuery<
     GetOrganizationUsersQuery,
     GetOrganizationUsersQueryVariables
   >(Queries.organizationUsers, {
     variables: { organizationId },
     skip: !organizationId,
   });
-  return data?.organization?.users;
+  return { users: data?.organization?.users, refetch };
 }
 
 export function useAllOrganizationTags(
