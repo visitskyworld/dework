@@ -23,9 +23,6 @@ describe("RbacService", () => {
     });
 
     it("MANAGE_ORGANIZATION", async () => {
-      const project = await fixtures.createProject({
-        organizationId: organization.id,
-      });
       const user = await fixtures.createUser();
       const ability = await fixtures.grantPermissions(
         user.id,
@@ -40,7 +37,6 @@ describe("RbacService", () => {
 
       expect(ability.can("update", organization)).toBe(true);
       expect(ability.can("delete", organization)).toBe(true);
-      expect(ability.can("create", project)).toBe(true);
 
       expect(ability.can("update", otherOrganization)).toBe(false);
       expect(ability.can("delete", otherOrganization)).toBe(false);
@@ -54,14 +50,18 @@ describe("RbacService", () => {
       const project2 = await fixtures.createProject({
         organizationId: organization.id,
       });
+      const projectToCreate = await fixtures.createProject({
+        organizationId: organization.id,
+      });
 
       const accessNoProjects = await fixtures.grantPermissions(
         await fixtures.createUser().then((u) => u.id),
         organization.id,
         []
       );
-      expect(accessNoProjects.can("read", project1)).toBe(false);
-      expect(accessNoProjects.can("read", project2)).toBe(false);
+      expect(accessNoProjects.can("create", projectToCreate)).toBe(false);
+      expect(accessNoProjects.can("read", project1)).toBe(true);
+      expect(accessNoProjects.can("read", project2)).toBe(true);
       expect(accessNoProjects.can("update", project1)).toBe(false);
       expect(accessNoProjects.can("update", project2)).toBe(false);
 
@@ -70,6 +70,7 @@ describe("RbacService", () => {
         organization.id,
         [{ permission: RulePermission.MANAGE_PROJECTS }]
       );
+      expect(accessAllProjects.can("create", projectToCreate)).toBe(true);
       expect(accessAllProjects.can("read", project1)).toBe(true);
       expect(accessAllProjects.can("read", project2)).toBe(true);
       expect(accessAllProjects.can("update", project1)).toBe(true);
@@ -86,9 +87,9 @@ describe("RbacService", () => {
           },
         ]
       );
+      expect(accessSpecificProject.can("create", projectToCreate)).toBe(false);
       expect(accessSpecificProject.can("read", project1)).toBe(false);
       expect(accessSpecificProject.can("read", project2)).toBe(true);
-      // expect(accessSpecificProject.can("update", project1)).toBe(false);
       expect(accessSpecificProject.can("update", project2)).toBe(true);
     });
   });

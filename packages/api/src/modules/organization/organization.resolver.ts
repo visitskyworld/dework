@@ -7,12 +7,7 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-  UseGuards,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import _ from "lodash";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "./organization.service";
@@ -22,28 +17,17 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import { GraphQLInt } from "graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import { UpdateOrganizationInput } from "./dto/UpdateOrganizationInput";
-import {
-  AccessGuard,
-  AccessService,
-  Actions,
-  AuthorizableUser,
-  CaslUser,
-  UseAbility,
-  UserProxy,
-} from "nest-casl";
-import { OrganizationRolesGuard } from "./organization.roles.guard";
+import { AccessService, Actions, CaslUser, UserProxy } from "nest-casl";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { CreateOrganizationTagInput } from "./dto/CreateOrganizationTagInput";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
-import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
-import { RemoveOrganizationMemberInput } from "./dto/RemoveOrganizationMemberInput";
 import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
 import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
-import { subject } from "@casl/ability";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
+import { RoleGuard } from "../rbac/rbac.guard";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -134,8 +118,6 @@ export class OrganizationResolver {
 
   @Mutation(() => Organization)
   @UseGuards(AuthGuard)
-  // @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  // @UseAbility(Actions.create, Organization)
   public async createOrganization(
     @Context("user") user: User,
     @Args("input") input: CreateOrganizationInput
@@ -144,12 +126,19 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => Organization)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Organization, [
-    OrganizationService,
-    (service: OrganizationService, { params }) =>
-      service.findById(params.input.id),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Organization,
+      inject: [OrganizationService],
+      getSubject: (
+        params: { input: UpdateOrganizationInput },
+        service: OrganizationService
+      ) => service.findById(params.input.id),
+      getOrganizationId: (subject) => subject.id,
+    })
+  )
   public async updateOrganization(
     @Args("input") input: UpdateOrganizationInput,
     @CaslUser() userProxy: UserProxy
@@ -167,12 +156,19 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => Organization)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Organization, [
-    OrganizationService,
-    (service: OrganizationService, { params }) =>
-      service.findById(params.input.id),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Organization,
+      inject: [OrganizationService],
+      getSubject: (
+        params: { input: SetOrganizationDetailInput },
+        service: OrganizationService
+      ) => service.findById(params.input.organizationId),
+      getOrganizationId: (subject) => subject.id,
+    })
+  )
   public async setOrganizationDetail(
     @Args("input") input: SetOrganizationDetailInput
   ): Promise<Organization> {
@@ -186,57 +182,68 @@ export class OrganizationResolver {
   }
 
   @Mutation(() => OrganizationTag)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.update, Organization)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: Organization,
+      inject: [OrganizationService],
+      getSubject: (
+        params: { input: CreateOrganizationTagInput },
+        service: OrganizationService
+      ) => service.findById(params.input.organizationId),
+      getOrganizationId: (subject) => subject.id,
+    })
+  )
   public async createOrganizationTag(
     @Args("input") input: CreateOrganizationTagInput
   ): Promise<OrganizationTag> {
     return this.organizationService.createTag(input);
   }
 
-  @Mutation(() => OrganizationMember)
-  @UseGuards(AuthGuard, OrganizationRolesGuard)
-  public async updateOrganizationMember(
-    @Args("input") input: UpdateOrganizationMemberInput,
-    @Context("caslUser") caslUser: AuthorizableUser
-  ): Promise<OrganizationMember> {
-    if (!!input.role) {
-      const abilities = this.abilityFactory.createForUser(caslUser);
-      const can = abilities.can(
-        Actions.update,
-        subject(OrganizationMember as any, {
-          role: input.role,
-          userId: input.userId,
-          organizationId: input.organizationId,
-        })
-      );
-      if (!can) throw new ForbiddenException();
-    }
+  // @Mutation(() => OrganizationMember)
+  // @UseGuards(AuthGuard, OrganizationRolesGuard)
+  // public async updateOrganizationMember(
+  //   @Args("input") input: UpdateOrganizationMemberInput,
+  //   @Context("caslUser") caslUser: AuthorizableUser
+  // ): Promise<OrganizationMember> {
+  //   if (!!input.role) {
+  //     const abilities = this.abilityFactory.createForUser(caslUser);
+  //     const can = abilities.can(
+  //       Actions.update,
+  //       subject(OrganizationMember as any, {
+  //         role: input.role,
+  //         userId: input.userId,
+  //         organizationId: input.organizationId,
+  //       })
+  //     );
+  //     if (!can) throw new ForbiddenException();
+  //   }
 
-    return this.organizationService.upsertMember(input);
-  }
+  //   return this.organizationService.upsertMember(input);
+  // }
 
-  @Mutation(() => Organization)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.delete, OrganizationMember, [
-    OrganizationService,
-    (service: OrganizationService, { params }) =>
-      service.findMember({
-        userId: params.input.userId,
-        organizationId: params.input.organizationId,
-      }),
-  ])
-  public async removeOrganizationMember(
-    @Args("input") input: RemoveOrganizationMemberInput
-  ): Promise<Organization> {
-    await this.organizationService.removeMember(
-      input.organizationId,
-      input.userId
-    );
-    return this.organizationService.findById(
-      input.organizationId
-    ) as Promise<Organization>;
-  }
+  // @Mutation(() => Organization)
+  // @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
+  // @UseAbility(Actions.delete, OrganizationMember, [
+  //   OrganizationService,
+  //   (service: OrganizationService, { params }) =>
+  //     service.findMember({
+  //       userId: params.input.userId,
+  //       organizationId: params.input.organizationId,
+  //     }),
+  // ])
+  // public async removeOrganizationMember(
+  //   @Args("input") input: RemoveOrganizationMemberInput
+  // ): Promise<Organization> {
+  //   await this.organizationService.removeMember(
+  //     input.organizationId,
+  //     input.userId
+  //   );
+  //   return this.organizationService.findById(
+  //     input.organizationId
+  //   ) as Promise<Organization>;
+  // }
 
   @Query(() => Organization)
   public async getOrganization(

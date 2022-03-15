@@ -25,16 +25,12 @@ import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInp
 import { User } from "@dewo/api/models/User";
 import { UpdateProjectInput } from "./dto/UpdateProjectInput";
 import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
-import { ProjectRolesGuard } from "./project.roles.guard";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
 import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
-import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
-import { RemoveProjectMemberInput } from "./dto/RemoveProjectMemberInput";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
@@ -139,21 +135,21 @@ export class ProjectResolver {
     return this.projectService.update(input);
   }
 
-  @Mutation(() => ProjectMember)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.manage, ProjectMember, [
-    ProjectService,
-    async (_service: ProjectService, { params }) => ({
-      role: params.input.role,
-      userId: params.input.userId,
-      projectId: params.input.projectId,
-    }),
-  ])
-  public async updateProjectMember(
-    @Args("input") input: UpdateProjectMemberInput
-  ): Promise<ProjectMember> {
-    return this.projectService.upsertMember(input);
-  }
+  // @Mutation(() => ProjectMember)
+  // @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  // @UseAbility(Actions.manage, ProjectMember, [
+  //   ProjectService,
+  //   async (_service: ProjectService, { params }) => ({
+  //     role: params.input.role,
+  //     userId: params.input.userId,
+  //     projectId: params.input.projectId,
+  //   }),
+  // ])
+  // public async updateProjectMember(
+  //   @Args("input") input: UpdateProjectMemberInput
+  // ): Promise<ProjectMember> {
+  //   return this.projectService.upsertMember(input);
+  // }
 
   @Mutation(() => ProjectSection)
   @UseGuards(
@@ -233,22 +229,22 @@ export class ProjectResolver {
     throw new ForbiddenException();
   }
 
-  @Mutation(() => Project)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.delete, ProjectMember, [
-    ProjectService,
-    (service: ProjectService, { params }) =>
-      service.findMember({
-        userId: params.input.userId,
-        projectId: params.input.projectId,
-      }),
-  ])
-  public async removeProjectMember(
-    @Args("input") input: RemoveProjectMemberInput
-  ): Promise<Project> {
-    await this.projectService.removeMember(input.projectId, input.userId);
-    return this.projectService.findById(input.projectId) as Promise<Project>;
-  }
+  // @Mutation(() => Project)
+  // @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
+  // @UseAbility(Actions.delete, ProjectMember, [
+  //   ProjectService,
+  //   (service: ProjectService, { params }) =>
+  //     service.findMember({
+  //       userId: params.input.userId,
+  //       projectId: params.input.projectId,
+  //     }),
+  // ])
+  // public async removeProjectMember(
+  //   @Args("input") input: RemoveProjectMemberInput
+  // ): Promise<Project> {
+  //   await this.projectService.removeMember(input.projectId, input.userId);
+  //   return this.projectService.findById(input.projectId) as Promise<Project>;
+  // }
 
   @Mutation(() => ProjectIntegration)
   @UseGuards(
