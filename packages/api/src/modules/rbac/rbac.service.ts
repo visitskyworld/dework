@@ -71,10 +71,6 @@ export class RbacService {
   public async createRule(
     partial: AtLeast<Rule, "permission" | "roleId">
   ): Promise<Rule> {
-    // const x = await this.ruleRepo.save({
-    //   ...partial,
-    //   role: Object.assign(new Role(), { id: partial.roleId }) as any,
-    // });
     const x = await this.ruleRepo.save(partial);
     return this.ruleRepo.findOne(x.id) as Promise<Rule>;
   }
@@ -84,6 +80,8 @@ export class RbacService {
   }
 
   public async addRole(userId: string, roleId: string): Promise<void> {
+    // hack: remove the role mapping first to prevent getting errors with duplicate entries
+    await this.removeRole(userId, roleId);
     await this.roleRepo
       .createQueryBuilder()
       .relation("users")
@@ -185,10 +183,6 @@ export class RbacService {
   private async getRules(
     userId: string | undefined,
     organizationId: string
-    // entity:
-    //   | { taskId: string }
-    //   | { projectId: string }
-    //   | { organizationId: string },
   ): Promise<Rule[]> {
     return this.ruleRepo
       .createQueryBuilder("rule")
@@ -213,20 +207,6 @@ export class RbacService {
       )
       .addOrderBy("role.fallback", "DESC") // non-fallback roles last
       .getMany();
-
-    // if ('taskId' in entity) {
-    //   // rule.taskId matches, task's projectId matches rule.projectId, taskId and projectId are null
-    //   // qb = qb.andWhere('rule.taskId = :taskId', { taskId: entity.taskId });
-    // } else if ('projectId' in entity) {
-
-    // } else {
-
-    // }
-
-    // .where(
-    //   new Brackets((qb) => qb.where("member.userId = :userId", { userId }).orWhere('organization.defaultRole = role.id'))
-    // );
-    // return qb.getMany();
   }
 
   public async findRoleById(id: string): Promise<Role | undefined> {

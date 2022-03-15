@@ -218,8 +218,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             )}
           </FormSection>
         )}
-        TODO: toggle if project is private or not :)
-        {/* <ProjectSettingsVisibility /> */}
         <AdvancedSectionCollapse toggle={advancedSection}>
           <ProjectSettingsContributorSuggestions />
         </AdvancedSectionCollapse>

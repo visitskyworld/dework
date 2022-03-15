@@ -40,4 +40,23 @@ export class RbacRequests {
       variables: { input },
     };
   }
+
+  public static addRole(
+    userId: string,
+    roleId: string
+  ): GraphQLTestClientRequestBody<{ userId: string; roleId: string }> {
+    return {
+      query: `
+        mutation AddRole($userId: UUID!, $roleId: UUID!) {
+          user: addRole(userId: $userId, roleId: $roleId) {
+            id
+            roles {
+              id
+            }
+          }
+        }
+      `,
+      variables: { userId, roleId },
+    };
+  }
 }

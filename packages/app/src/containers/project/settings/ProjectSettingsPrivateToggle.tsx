@@ -1,19 +1,18 @@
-import React, { FC, useCallback, useMemo } from "react";
-import { Radio } from "antd";
-import { RulePermission } from "@dewo/app/graphql/types";
-import { FormSection } from "@dewo/app/components/FormSection";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useCreateRule, useOrganizationRoles } from "../../rbac/hooks";
+import { FC } from "react";
 
 interface Props {
   projectId: string;
   organizationId: string;
 }
 
-export const ProjectSettingsPrivateToggle: FC<Props> = ({
-  projectId,
-  organizationId,
-}) => {
+export const ProjectSettingsPrivateToggle: FC<Props> = (
+  {
+    // projectId,
+    // organizationId,
+  }
+) => {
+  return null;
+  /*
   const canCreateRoles = usePermission("create", "Rule");
   const canDeleteRoles = usePermission("delete", "Rule");
   const canManageRoles = canCreateRoles && canDeleteRoles;
@@ -67,4 +66,5 @@ export const ProjectSettingsPrivateToggle: FC<Props> = ({
       </Radio.Group>
     </FormSection>
   );
+  */
 };

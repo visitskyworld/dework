@@ -273,5 +273,37 @@ describe("RbacResolver", () => {
         expect(rule!.permission).toEqual(RulePermission.VIEW_PROJECTS);
       });
     });
+
+    describe("addRole", () => {
+      it("should not fail when adding the same role twice to a user", async () => {
+        const organization = await fixtures.createOrganization();
+        const user = await fixtures.createUser();
+        await fixtures.grantPermissions(user.id, organization.id, [
+          { permission: RulePermission.MANAGE_ORGANIZATION },
+        ]);
+
+        const role = await fixtures.createRole({
+          organizationId: organization.id,
+        });
+
+        const res1 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: RbacRequests.addRole(user.id, role.id),
+        });
+        expect(res1.body.data?.user.roles).toContainEqual(
+          expect.objectContaining({ id: role.id })
+        );
+
+        const res2 = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: RbacRequests.addRole(user.id, role.id),
+        });
+        expect(res2.body.data?.user.roles).toContainEqual(
+          expect.objectContaining({ id: role.id })
+        );
+      });
+    });
   });
 });

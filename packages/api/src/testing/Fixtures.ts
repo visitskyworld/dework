@@ -475,15 +475,20 @@ export class Fixtures {
 
   public async createRole(
     partial: Partial<Role> = {},
-    rules: Partial<Rule>[] = []
+    rules: AtLeast<Rule, "permission">[] = []
   ): Promise<Role> {
-    return this.rbacService.createRole({
+    const role = await this.rbacService.createRole({
       organizationId: await this.createOrganization().then((o) => o.id),
       name: faker.internet.userName(),
       color: "red",
-      rules: rules as any,
       ...partial,
     });
+
+    for (const rule of rules) {
+      await this.rbacService.createRule({ ...rule, roleId: role.id });
+    }
+
+    return role;
   }
 
   public async createRule(partial: Partial<Rule> = {}): Promise<Rule> {
