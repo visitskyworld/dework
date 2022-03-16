@@ -72,6 +72,26 @@ export class RbacService {
     return this.roleRepo.findOne(x.id) as Promise<Role>;
   }
 
+  public async getOrCreatePersonalRole(
+    userId: string,
+    organizationId: string
+  ): Promise<Role> {
+    const role = await this.roleRepo.findOne({ userId, organizationId });
+    if (!!role) {
+      await this.addRole(userId, role.id);
+      return role;
+    }
+
+    const newRole = await this.createRole({
+      name: "",
+      color: "",
+      userId,
+      organizationId,
+    });
+    await this.addRole(userId, newRole.id);
+    return newRole;
+  }
+
   public async createRule(
     partial: AtLeast<Rule, "permission" | "roleId">
   ): Promise<Rule> {

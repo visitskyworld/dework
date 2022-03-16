@@ -37,17 +37,19 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
             dataIndex: "roles",
             render: (roles: Role[]) => (
               <Row>
-                {roles.map(
-                  (role) =>
-                    role.organizationId === organizationId && (
-                      <Tag key={role.id} color={role.color}>
-                        {role.source === RoleSource.DISCORD && (
-                          <DiscordIcon style={{ marginRight: 4 }} />
-                        )}
-                        {role.name}
-                      </Tag>
-                    )
-                )}
+                {roles
+                  .filter((role) => !role.userId)
+                  .map(
+                    (role) =>
+                      role.organizationId === organizationId && (
+                        <Tag key={role.id} color={role.color}>
+                          {role.source === RoleSource.DISCORD && (
+                            <DiscordIcon style={{ marginRight: 4 }} />
+                          )}
+                          {role.name}
+                        </Tag>
+                      )
+                  )}
               </Row>
             ),
           },

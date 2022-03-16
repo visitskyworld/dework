@@ -25,6 +25,7 @@ export const role = gql`
     color
     source
     fallback
+    userId
     organizationId
   }
 `;

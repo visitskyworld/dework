@@ -573,6 +573,7 @@ export interface UpdateOrganizationMutation_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -988,6 +989,7 @@ export interface CreateProjectMutation_project_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -4867,6 +4869,7 @@ export interface CreateProjectsFromNotionMutation_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -5138,6 +5141,7 @@ export interface CreateProjectsFromTrelloMutation_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -5409,6 +5413,7 @@ export interface CreateProjectsFromGithubMutation_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -5472,6 +5477,7 @@ export interface AddRoleMutation_addRole_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -5518,6 +5524,7 @@ export interface CreateRuleMutation_rule_role {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
   rules: CreateRuleMutation_rule_role_rules[];
 }
@@ -5565,6 +5572,7 @@ export interface DeleteRuleMutation_role {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
   rules: DeleteRuleMutation_role_rules[];
 }
@@ -5744,6 +5752,7 @@ export interface MyRolesQuery_me_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -6310,6 +6319,7 @@ export interface GetOrganizationQuery_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -6356,6 +6366,7 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -6407,6 +6418,7 @@ export interface GetOrganizationRolesQuery_organization_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
   rules: GetOrganizationRolesQuery_organization_roles_rules[];
 }
@@ -9914,6 +9926,7 @@ export interface Role {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -9942,6 +9955,7 @@ export interface RoleWithRules {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
   rules: RoleWithRules_rules[];
 }
@@ -9979,6 +9993,7 @@ export interface UserWithRoles_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
@@ -12341,6 +12356,7 @@ export interface OrganizationDetails_roles {
   color: string;
   source: RoleSource | null;
   fallback: boolean;
+  userId: string | null;
   organizationId: string;
 }
 
