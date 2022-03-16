@@ -66,7 +66,7 @@ export const DiscordRoleGatingJoinButton: FC<Props> = ({
           (g) =>
             !g.deletedAt &&
             g.type === ProjectIntegrationType.DISCORD_ROLE_GATE &&
-            g.projectId === projectId
+            (!projectId || g.projectId === projectId)
         ),
     [organization?.integrations, projectId]
   );
