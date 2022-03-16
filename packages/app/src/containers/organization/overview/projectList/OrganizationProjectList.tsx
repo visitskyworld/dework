@@ -54,8 +54,15 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [projects]
   );
 
-  const canCreateProject = usePermission("create", "Project");
-  const canReorderProjects = usePermission("update", "Project", "sortKey");
+  const canCreateProject = usePermission("create", {
+    __typename: "Project",
+    organizationId,
+  });
+  const canReorderProjects = usePermission(
+    "update",
+    { __typename: "Project", organizationId },
+    "sortKey"
+  );
   const shouldRenderSection = useCallback(
     (section: ProjectSection) =>
       section.id === defaultProjectSection.id ||

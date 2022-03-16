@@ -5,7 +5,6 @@ import { useCreateOrganizationInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useOrganization } from "../organization/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { OrganizationRole } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId: string;
@@ -18,10 +17,7 @@ export const OrganizationInviteButton: FC<Props> = ({
 }) => {
   const { organization } = useOrganization(organizationId);
 
-  const canInviteOrganizationAdmin = usePermission("create", {
-    __typename: "OrganizationMember",
-    role: OrganizationRole.ADMIN,
-  });
+  const canInvite = usePermission("create", "Role");
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
@@ -29,7 +25,6 @@ export const OrganizationInviteButton: FC<Props> = ({
   const inviteOrganizationAdmin = useCallback(async () => {
     const inviteLink = await createOrganizationInvite({
       organizationId: organization!.id,
-      role: OrganizationRole.ADMIN,
     });
     copyToClipboardAndShowToast(inviteLink);
   }, [createOrganizationInvite, copyToClipboardAndShowToast, organization]);
@@ -40,7 +35,7 @@ export const OrganizationInviteButton: FC<Props> = ({
   if (!organization) return null;
 
   const hasTokenGatedProjects = !!organization.projectTokenGates.length;
-  if (canInviteOrganizationAdmin && !hasTokenGatedProjects) {
+  if (canInvite && !hasTokenGatedProjects) {
     return (
       <Button
         type="ghost"
@@ -53,7 +48,7 @@ export const OrganizationInviteButton: FC<Props> = ({
     );
   }
 
-  if (!canInviteOrganizationAdmin && hasTokenGatedProjects) {
+  if (!canInvite && hasTokenGatedProjects) {
     return (
       <Button
         type="ghost"
@@ -66,14 +61,14 @@ export const OrganizationInviteButton: FC<Props> = ({
     );
   }
 
-  if (canInviteOrganizationAdmin && hasTokenGatedProjects) {
+  if (canInvite && hasTokenGatedProjects) {
     return (
       <Dropdown
         placement="topCenter"
         trigger={["click"]}
         overlay={
           <Menu>
-            {canInviteOrganizationAdmin && (
+            {canInvite && (
               <Menu.Item key="admin" onClick={inviteOrganizationAdmin}>
                 Invite DAO admins
               </Menu.Item>

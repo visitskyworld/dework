@@ -12666,7 +12666,6 @@ export interface GetTasksInput {
 
 export interface OrganizationInviteInput {
   organizationId: Scalar.UUID;
-  role: OrganizationRole;
 }
 
 export interface ProjectInviteInput {

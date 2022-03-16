@@ -28,7 +28,6 @@ type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "
 type AbilitySubject =
   | "Task"
   | "TaskTag"
-  | "Project"
   | "ProjectSection"
   | "Organization"
   | "TaskApplication"
@@ -37,6 +36,7 @@ type AbilitySubject =
   | "Rule"
   | Project
   | Organization
+  | AtLeast<Project, "__typename" | "organizationId">
   | AtLeast<Task, "__typename" | "status">
   | AtLeast<TaskReaction, "__typename" | "userId">
   | AtLeast<TaskApplication, "__typename" | "userId">
