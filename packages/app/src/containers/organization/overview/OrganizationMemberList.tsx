@@ -1,13 +1,16 @@
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
 import { useOrganizationUsers } from "../hooks";
-import { Table, Space, Row, Button, Tag } from "antd";
-import * as Icons from "@ant-design/icons";
-import { OrganizationRole, Role, UserWithRoles } from "@dewo/app/graphql/types";
+import { Table, Space, Row, Tag } from "antd";
+import {
+  OrganizationRole,
+  Role,
+  RulePermission,
+  UserWithRoles,
+} from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { eatClick } from "@dewo/app/util/eatClick";
+import { useOrganizationRoles } from "../../rbac/hooks";
 
 interface Props {
   organizationId: string;
@@ -21,18 +24,28 @@ export const organizationRoleToString: Record<OrganizationRole, string> = {
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const { users } = useOrganizationUsers(organizationId);
+  const roles = useOrganizationRoles(organizationId);
 
-  const canDeleteAdmin = usePermission("delete", {
-    __typename: "OrganizationMember",
-    role: OrganizationRole.ADMIN,
-  });
-  const canDeleteOwner = usePermission("delete", {
-    __typename: "OrganizationMember",
-    role: OrganizationRole.OWNER,
-  });
+  const adminRoleIds = useMemo(
+    () =>
+      roles
+        ?.filter((role) =>
+          role.rules.some(
+            (rule) =>
+              rule.permission === RulePermission.MANAGE_ORGANIZATION &&
+              !rule.inverted
+          )
+        )
+        .map((role) => role.id),
+    [roles]
+  );
+  const adminUsers = useMemo(
+    () =>
+      users?.filter((u) => u.roles.some((r) => adminRoleIds?.includes(r.id))),
+    [users, adminRoleIds]
+  );
 
   const navigateToProfile = useNavigateToProfile();
-
   return (
     <Space
       direction="vertical"
@@ -43,7 +56,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
       </Row>
 
       <Table<UserWithRoles>
-        dataSource={users}
+        dataSource={adminUsers}
         size="small"
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
@@ -59,38 +72,39 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
           {
             title: "Roles",
             dataIndex: "roles",
-            width: 1,
             render: (roles: Role[]) => (
-              <Row>
-                {roles.map(
-                  (role) =>
-                    role.organizationId === organizationId && (
-                      <Tag key={role.id} color={role.color}>
-                        {role.name}
-                      </Tag>
-                    )
-                )}
+              <Row style={{ justifyContent: "flex-end" }}>
+                {roles
+                  .filter((role) => !role.userId)
+                  .map(
+                    (role) =>
+                      role.organizationId === organizationId && (
+                        <Tag key={role.id} color={role.color}>
+                          {role.name}
+                        </Tag>
+                      )
+                  )}
               </Row>
             ),
           },
-          ...(canDeleteAdmin || canDeleteOwner
-            ? [
-                {
-                  key: "delete",
-                  width: 1,
-                  render: (_: unknown, user: UserWithRoles) => (
-                    <Button
-                      type="text"
-                      icon={<Icons.DeleteOutlined />}
-                      onClick={(event) => {
-                        eatClick(event);
-                        alert("TODO: remove member! " + JSON.stringify(user));
-                      }}
-                    />
-                  ),
-                },
-              ]
-            : []),
+          // ...(canDeleteAdmin || canDeleteOwner
+          //   ? [
+          //       {
+          //         key: "delete",
+          //         width: 1,
+          //         render: (_: unknown, user: UserWithRoles) => (
+          //           <Button
+          //             type="text"
+          //             icon={<Icons.DeleteOutlined />}
+          //             onClick={(event) => {
+          //               eatClick(event);
+          //               alert("TODO: remove member! " + JSON.stringify(user));
+          //             }}
+          //           />
+          //         ),
+          //       },
+          //     ]
+          //   : []),
         ]}
       />
     </Space>
