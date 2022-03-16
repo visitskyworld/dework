@@ -122,6 +122,8 @@ export const Sidebar: FC = () => {
                       key={organization.id}
                       draggableId={organization.id}
                       index={index}
+                      // TODO(fant): re-add support for reordering organization list
+                      isDragDisabled={true}
                     >
                       {(provided) => (
                         <div

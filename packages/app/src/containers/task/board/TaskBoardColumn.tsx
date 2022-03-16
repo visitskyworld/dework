@@ -80,7 +80,7 @@ export const TaskBoardColumn: FC<Props> = ({
             </Can>
           )}
           {!!projectId && (
-            <Can I="create" this={{ __typename: "Task", status }}>
+            <Can I="create" this={{ __typename: "Task", status, projectId }}>
               <Button
                 type="text"
                 icon={
