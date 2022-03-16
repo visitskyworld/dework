@@ -24,7 +24,6 @@ import { CreateOrganizationTagInput } from "./dto/CreateOrganizationTagInput";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
-import { AbilityFactory } from "nest-casl/dist/factories/ability.factory";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { RoleGuard } from "../rbac/rbac.guard";
@@ -35,8 +34,7 @@ export class OrganizationResolver {
   constructor(
     private readonly organizationService: OrganizationService,
     private readonly permalinkService: PermalinkService,
-    private readonly accessService: AccessService,
-    private readonly abilityFactory: AbilityFactory
+    private readonly accessService: AccessService
   ) {}
 
   @ResolveField(() => String)

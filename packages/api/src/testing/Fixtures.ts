@@ -54,13 +54,7 @@ import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
 import { TaskSubmission } from "../models/TaskSubmission";
 import { TaskApplication } from "../models/TaskApplication";
-import {
-  AccessControl,
-  AccessControlConfigMap,
-  AccessControlType,
-} from "../models/AccessControl";
-import { AccessService } from "../modules/access/access.service";
-import { AccessModule } from "../modules/access/access.module";
+
 import { RbacService } from "../modules/rbac/rbac.service";
 import { Role } from "../models/rbac/Role";
 import { Rule, RulePermission } from "../models/rbac/Rule";
@@ -78,7 +72,6 @@ export class Fixtures {
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
     private readonly paymentService: PaymentService,
-    private readonly accessService: AccessService,
     private readonly rbacService: RbacService
   ) {}
 
@@ -164,16 +157,20 @@ export class Fixtures {
     });
   }
 
-  public async createOrganizationIntegration(
+  public async createOrganizationIntegration<
+    T extends OrganizationIntegrationType
+  >(
     partial: AtLeast<
-      OrganizationIntegration,
+      OrganizationIntegration<T>,
       "organizationId" | "type" | "config"
     >
-  ): Promise<OrganizationIntegration> {
-    return this.integrationService.createOrganizationIntegration({
-      creatorId: await this.createUser().then((u) => u.id),
-      ...partial,
-    });
+  ): Promise<OrganizationIntegration<T>> {
+    const integration =
+      await this.integrationService.createOrganizationIntegration({
+        creatorId: await this.createUser().then((u) => u.id),
+        ...partial,
+      });
+    return integration as OrganizationIntegration<T>;
   }
 
   public async createTask(partial: DeepPartial<Task> = {}): Promise<Task> {
@@ -199,6 +196,20 @@ export class Fixtures {
 
   public async getTask(id: string): Promise<Task | undefined> {
     return this.taskService.findById(id);
+  }
+
+  public async getUser(id: string): Promise<User | undefined> {
+    return this.userService.findById(id);
+  }
+
+  public async getOrganization(id: string): Promise<Organization | undefined> {
+    return this.organizationService.findById(id);
+  }
+
+  public async getOrganizationIntegration(
+    id: string
+  ): Promise<OrganizationIntegration | undefined> {
+    return this.integrationService.findOrganizationIntegrationById(id);
   }
 
   public async updateTask(
@@ -500,19 +511,6 @@ export class Fixtures {
     });
   }
 
-  async createAccessControl<T extends AccessControlType>(
-    type: T,
-    config: AccessControlConfigMap[T],
-    partial: Partial<AccessControl> = {}
-  ): Promise<AccessControl<T>> {
-    const accessControl = await this.accessService.create({
-      type,
-      config,
-      ...partial,
-    });
-    return accessControl as AccessControl<T>;
-  }
-
   async grantPermissions(
     userId: string,
     organizationId: string,
@@ -522,6 +520,10 @@ export class Fixtures {
     const role = await this.createRole({ organizationId, ...override }, rules);
     await this.rbacService.addRole(userId, role.id);
     return this.rbacService.abilityForUser(userId, organizationId);
+  }
+
+  async addRole(userId: string, roleId: string) {
+    await this.rbacService.addRole(userId, roleId);
   }
 }
 
@@ -536,7 +538,6 @@ export class Fixtures {
     GithubIntegrationModule,
     InviteModule,
     PaymentModule,
-    AccessModule,
     RbacModule,
   ],
   providers: [Fixtures],

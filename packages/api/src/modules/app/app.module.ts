@@ -27,8 +27,8 @@ import { NotionModule } from "../integrations/notion/notion.module";
 import { TrelloModule } from "../integrations/trello/trello.module";
 import { CoordinapeModule } from "../integrations/coordinape/coordinape.module";
 import { NFTModule } from "../nft/nft.module";
-import { AccessModule } from "../access/access.module";
 import { RbacModule } from "../rbac/rbac.module";
+import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -69,8 +69,8 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   FileUploadModule,
   PermalinkModule,
   NFTModule,
-  AccessModule,
   RbacModule,
+  DiscordRolesModule,
 ];
 
 @Module({

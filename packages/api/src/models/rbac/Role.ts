@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -12,6 +12,12 @@ import { Audit } from "../Audit";
 import { Organization } from "../Organization";
 import { User } from "../User";
 import { Rule } from "./Rule";
+
+export enum RoleSource {
+  DISCORD = "DISCORD",
+}
+
+registerEnumType(RoleSource, { name: "RoleSource" });
 
 @Entity()
 @ObjectType()
@@ -28,8 +34,13 @@ export class Role extends Audit {
   @Field()
   public fallback!: boolean;
 
-  // source?: 'DISCORD';
-  // externalId?: string;
+  @Field({ nullable: true })
+  @Column("enum", { enum: RoleSource, nullable: true })
+  public source?: RoleSource;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  public externalId?: string;
 
   @ManyToMany(() => User)
   @JoinTable({ name: "user_role" })

@@ -4,7 +4,8 @@ import {
   NotFoundException,
   OnModuleInit,
 } from "@nestjs/common";
-import { EventSubscriber, In } from "typeorm";
+import { EventSubscriber, In, Repository } from "typeorm";
+import Bluebird from "bluebird";
 import * as Discord from "discord.js";
 import * as request from "request-promise";
 import { ConfigService } from "@nestjs/config";
@@ -19,6 +20,8 @@ import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { ThreepidService } from "../../threepid/threepid.service";
 import _ from "lodash";
 import { DiscordIntegrationRole } from "./dto/DiscordIntegrationRole";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 @EventSubscriber()
@@ -31,11 +34,13 @@ export class DiscordService implements OnModuleInit {
   constructor(
     private readonly integrationService: IntegrationService,
     private readonly threepidService: ThreepidService,
-    private readonly config: ConfigService<ConfigType>
+    private readonly config: ConfigService<ConfigType>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>
   ) {
-    this.mainClient = new Discord.Client({ intents: [] });
-    this.tempClient = new Discord.Client({ intents: [] });
-    this.temp2Client = new Discord.Client({ intents: [] });
+    this.mainClient = new Discord.Client({ intents: ["GUILD_MEMBERS"] });
+    this.tempClient = new Discord.Client({ intents: ["GUILD_MEMBERS"] });
+    this.temp2Client = new Discord.Client({ intents: ["GUILD_MEMBERS"] });
   }
 
   async onModuleInit() {
@@ -235,6 +240,29 @@ export class DiscordService implements OnModuleInit {
     });
     return userIds.map(
       (userId) => threepids.find((t) => t.userId === userId)?.threepid
+    );
+  }
+
+  public async getUsersFromDiscordIds(
+    discordIds: string[]
+  ): Promise<Record<string, User>> {
+    const users = await this.userRepo
+      .createQueryBuilder("user")
+      .innerJoinAndSelect("user.threepids", "threepid")
+      .where("threepid.source = :source", { source: ThreepidSource.discord })
+      .andWhere("threepid.threepid IN (:...discordIds)", { discordIds })
+      .getMany();
+    return Bluebird.reduce<User, Record<string, User>>(
+      users,
+      async (acc, user) => {
+        const threepids = await user.threepids;
+        const discordId = threepids.find(
+          (t) => t.source === ThreepidSource.discord
+        )?.threepid;
+        if (!discordId) return acc;
+        return { ...acc, [discordId]: user };
+      },
+      {}
     );
   }
 
