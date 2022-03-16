@@ -30,17 +30,10 @@ import {
   Project,
   ProjectDetails,
   ProjectIntegration,
-  ProjectMember,
   ProjectTokenGateInput,
-  RemoveProjectMemberInput,
-  RemoveProjectMemberMutation,
-  RemoveProjectMemberMutationVariables,
   Task,
   TaskTag,
   UpdateProjectInput,
-  UpdateProjectMemberInput,
-  UpdateProjectMemberMutation,
-  UpdateProjectMemberMutationVariables,
   UpdateProjectMutation,
   UpdateProjectMutationVariables,
   UpdateTaskSectionInput,
@@ -103,39 +96,6 @@ export function useUpdateProject(): (
       return res.data?.project;
     },
     [mutation, apolloClient]
-  );
-}
-
-export function useUpdateProjectMember(): (
-  input: UpdateProjectMemberInput
-) => Promise<ProjectMember> {
-  const [mutation] = useMutation<
-    UpdateProjectMemberMutation,
-    UpdateProjectMemberMutationVariables
-  >(Mutations.updateProjectMember);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.member;
-    },
-    [mutation]
-  );
-}
-
-export function useRemoveProjectMember(): (
-  input: RemoveProjectMemberInput
-) => Promise<void> {
-  const [mutation] = useMutation<
-    RemoveProjectMemberMutation,
-    RemoveProjectMemberMutationVariables
-  >(Mutations.removeProjectMember);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-    },
-    [mutation]
   );
 }
 

@@ -23,6 +23,7 @@ export const role = gql`
     id
     name
     color
+    source
     fallback
     organizationId
   }

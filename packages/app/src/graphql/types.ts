@@ -571,6 +571,7 @@ export interface UpdateOrganizationMutation_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -649,156 +650,6 @@ export interface CreateOrganizationTagMutation {
 
 export interface CreateOrganizationTagMutationVariables {
   input: CreateOrganizationTagInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: UpdateOrganizationMemberMutation
-// ====================================================
-
-export interface UpdateOrganizationMemberMutation_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UpdateOrganizationMemberMutation_member {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: UpdateOrganizationMemberMutation_member_user;
-}
-
-export interface UpdateOrganizationMemberMutation {
-  member: UpdateOrganizationMemberMutation_member;
-}
-
-export interface UpdateOrganizationMemberMutationVariables {
-  input: UpdateOrganizationMemberInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: RemoveOrganizationMemberMutation
-// ====================================================
-
-export interface RemoveOrganizationMemberMutation_organization_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface RemoveOrganizationMemberMutation_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: RemoveOrganizationMemberMutation_organization_members_user;
-}
-
-export interface RemoveOrganizationMemberMutation_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  members: RemoveOrganizationMemberMutation_organization_members[];
-}
-
-export interface RemoveOrganizationMemberMutation {
-  organization: RemoveOrganizationMemberMutation_organization;
-}
-
-export interface RemoveOrganizationMemberMutationVariables {
-  input: RemoveOrganizationMemberInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: UpdateProjectMemberMutation
-// ====================================================
-
-export interface UpdateProjectMemberMutation_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UpdateProjectMemberMutation_member {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: UpdateProjectMemberMutation_member_user;
-}
-
-export interface UpdateProjectMemberMutation {
-  member: UpdateProjectMemberMutation_member;
-}
-
-export interface UpdateProjectMemberMutationVariables {
-  input: UpdateProjectMemberInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: RemoveProjectMemberMutation
-// ====================================================
-
-export interface RemoveProjectMemberMutation_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface RemoveProjectMemberMutation_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: RemoveProjectMemberMutation_project_members_user;
-}
-
-export interface RemoveProjectMemberMutation_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  members: RemoveProjectMemberMutation_project_members[];
-}
-
-export interface RemoveProjectMemberMutation {
-  project: RemoveProjectMemberMutation_project;
-}
-
-export interface RemoveProjectMemberMutationVariables {
-  input: RemoveProjectMemberInput;
 }
 
 /* tslint:disable */
@@ -1135,6 +986,7 @@ export interface CreateProjectMutation_project_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -5013,6 +4865,7 @@ export interface CreateProjectsFromNotionMutation_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -5283,6 +5136,7 @@ export interface CreateProjectsFromTrelloMutation_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -5553,6 +5407,7 @@ export interface CreateProjectsFromGithubMutation_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -5615,6 +5470,7 @@ export interface AddRoleMutation_addRole_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -5660,6 +5516,7 @@ export interface CreateRuleMutation_rule_role {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
   rules: CreateRuleMutation_rule_role_rules[];
@@ -5706,6 +5563,7 @@ export interface DeleteRuleMutation_role {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
   rules: DeleteRuleMutation_role_rules[];
@@ -5884,6 +5742,7 @@ export interface MyRolesQuery_me_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -6449,6 +6308,7 @@ export interface GetOrganizationQuery_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -6494,6 +6354,7 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -6544,6 +6405,7 @@ export interface GetOrganizationRolesQuery_organization_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
   rules: GetOrganizationRolesQuery_organization_roles_rules[];
@@ -10050,6 +9912,7 @@ export interface Role {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -10077,6 +9940,7 @@ export interface RoleWithRules {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
   rules: RoleWithRules_rules[];
@@ -10113,6 +9977,7 @@ export interface UserWithRoles_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -12474,6 +12339,7 @@ export interface OrganizationDetails_roles {
   id: Scalar.UUID;
   name: string;
   color: string;
+  source: RoleSource | null;
   fallback: boolean;
   organizationId: string;
 }
@@ -12588,10 +12454,15 @@ export enum ProjectVisibility {
   PUBLIC = "PUBLIC",
 }
 
+export enum RoleSource {
+  DISCORD = "DISCORD",
+}
+
 export enum RulePermission {
   MANAGE_ORGANIZATION = "MANAGE_ORGANIZATION",
   MANAGE_PROJECTS = "MANAGE_PROJECTS",
   MANAGE_TASKS = "MANAGE_TASKS",
+  SUGGEST_AND_VOTE = "SUGGEST_AND_VOTE",
   VIEW_PROJECTS = "VIEW_PROJECTS",
 }
 
@@ -12797,16 +12668,6 @@ export interface ProjectTokenGateInput {
   role: ProjectRole;
 }
 
-export interface RemoveOrganizationMemberInput {
-  organizationId: Scalar.UUID;
-  userId: Scalar.UUID;
-}
-
-export interface RemoveProjectMemberInput {
-  projectId: Scalar.UUID;
-  userId: Scalar.UUID;
-}
-
 export interface SetOrganizationDetailInput {
   type: EntityDetailType;
   value?: string | null;
@@ -12837,13 +12698,6 @@ export interface UpdateOrganizationInput {
   deletedAt?: Scalar.DateTime | null;
 }
 
-export interface UpdateOrganizationMemberInput {
-  organizationId: Scalar.UUID;
-  userId: Scalar.UUID;
-  role?: OrganizationRole | null;
-  sortKey?: string | null;
-}
-
 export interface UpdatePaymentMethodInput {
   id: Scalar.UUID;
   deletedAt: Scalar.DateTime;
@@ -12863,12 +12717,6 @@ export interface UpdateProjectInput {
 export interface UpdateProjectIntegrationInput {
   id: Scalar.UUID;
   deletedAt?: Scalar.DateTime | null;
-}
-
-export interface UpdateProjectMemberInput {
-  projectId: Scalar.UUID;
-  userId: Scalar.UUID;
-  role: ProjectRole;
 }
 
 export interface UpdateProjectSectionInput {

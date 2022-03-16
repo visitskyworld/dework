@@ -34,7 +34,7 @@ export class Role extends Audit {
   @Field()
   public fallback!: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => RoleSource, { nullable: true })
   @Column("enum", { enum: RoleSource, nullable: true })
   public source?: RoleSource;
 

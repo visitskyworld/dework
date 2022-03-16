@@ -1,6 +1,12 @@
-import { RoleWithRules, Rule, RulePermission } from "@dewo/app/graphql/types";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import {
+  RoleSource,
+  RoleWithRules,
+  Rule,
+  RulePermission,
+} from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { Button, message, Select, Space, Tooltip } from "antd";
+import { Button, message, Row, Select, Space, Tooltip } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
 
@@ -111,7 +117,12 @@ export const RBACPermissionForm: FC<Props> = ({
       >
         {roles?.map((role) => (
           <Select.Option key={role.id} value={role.id} label={role.name}>
-            {role.name}
+            <Row align="middle">
+              {role.source === RoleSource.DISCORD && (
+                <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
+              )}
+              {role.name}
+            </Row>
           </Select.Option>
         ))}
       </Select>

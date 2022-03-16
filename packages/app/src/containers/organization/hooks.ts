@@ -1,5 +1,4 @@
 import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -30,22 +29,15 @@ import {
   GithubRepo,
   Organization,
   OrganizationDetails,
-  OrganizationMember,
   OrganizationRole,
   OrganizationTag,
   ProjectSection,
-  RemoveOrganizationMemberInput,
-  RemoveOrganizationMemberMutation,
-  RemoveOrganizationMemberMutationVariables,
   SetOrganizationDetailInput,
   SetOrganizationDetailMutation,
   SetOrganizationDetailMutationVariables,
   SetOrganizationDetailMutation_organization,
   TaskTag,
   UpdateOrganizationInput,
-  UpdateOrganizationMemberInput,
-  UpdateOrganizationMemberMutation,
-  UpdateOrganizationMemberMutationVariables,
   UpdateOrganizationMutation,
   UpdateOrganizationMutationVariables,
   UpdateProjectSectionInput,
@@ -163,58 +155,6 @@ export function useUpdateProjectSection(): (
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data.section;
-    },
-    [mutation]
-  );
-}
-
-export function useUpdateOrganizationMember(): (
-  input: UpdateOrganizationMemberInput,
-  member?: OrganizationMember
-) => Promise<OrganizationMember> {
-  const [mutation] = useMutation<
-    UpdateOrganizationMemberMutation,
-    UpdateOrganizationMemberMutationVariables
-  >(Mutations.updateOrganizationMember);
-  const { user } = useAuthContext();
-  return useCallback(
-    async (input, member) => {
-      const res = await mutation({
-        variables: { input },
-        refetchQueries: [
-          ...(input.userId === user?.id ? [{ query: Queries.me }] : []),
-          {
-            query: Queries.organization,
-            variables: { organizationId: input.organizationId },
-          },
-        ],
-        optimisticResponse: !!member
-          ? { member: { ...member, ...(input as any) } }
-          : undefined,
-      });
-
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.member;
-    },
-    [mutation, user?.id]
-  );
-}
-
-export function useRemoveOrganizationMember(): (
-  input: RemoveOrganizationMemberInput
-) => Promise<void> {
-  const [mutation] = useMutation<
-    RemoveOrganizationMemberMutation,
-    RemoveOrganizationMemberMutationVariables
-  >(Mutations.removeOrganizationMember);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({
-        variables: { input },
-        refetchQueries: [{ query: Queries.me }],
-      });
-
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );

@@ -6,13 +6,9 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
-import {
-  OrganizationMember,
-  OrganizationRole,
-} from "@dewo/api/models/OrganizationMember";
+import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { ProjectVisibility } from "@dewo/api/models/Project";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
-import { User } from "@dewo/api/models/User";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("OrganizationResolver", () => {
@@ -135,6 +131,7 @@ describe("OrganizationResolver", () => {
       });
     });
 
+    /*
     xdescribe("updateOrganizationMember", () => {
       async function fn(
         requesterRole: OrganizationRole | undefined,
@@ -282,7 +279,7 @@ describe("OrganizationResolver", () => {
       });
     });
 
-    describe("removeOrganizationMember", () => {
+    xdescribe("removeOrganizationMember", () => {
       it("should succeed if is organization admin", async () => {
         const adminUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
@@ -325,6 +322,7 @@ describe("OrganizationResolver", () => {
         client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
     });
+    */
   });
 
   describe("Queries", () => {

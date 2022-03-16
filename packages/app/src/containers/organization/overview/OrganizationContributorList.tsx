@@ -1,9 +1,10 @@
 import React, { FC } from "react";
 import { useOrganizationUsers } from "../hooks";
 import { Table, Space, Row, Tag } from "antd";
-import { Role, UserWithRoles } from "@dewo/app/graphql/types";
+import { Role, RoleSource, UserWithRoles } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 interface Props {
   organizationId: string;
@@ -40,6 +41,9 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
                   (role) =>
                     role.organizationId === organizationId && (
                       <Tag key={role.id} color={role.color}>
+                        {role.source === RoleSource.DISCORD && (
+                          <DiscordIcon style={{ marginRight: 4 }} />
+                        )}
                         {role.name}
                       </Tag>
                     )

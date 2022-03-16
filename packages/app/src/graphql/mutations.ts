@@ -95,56 +95,6 @@ export const createOrganizationTag = gql`
   ${Fragments.organizationTag}
 `;
 
-export const updateOrganizationMember = gql`
-  mutation UpdateOrganizationMemberMutation(
-    $input: UpdateOrganizationMemberInput!
-  ) {
-    member: updateOrganizationMember(input: $input) {
-      ...OrganizationMember
-    }
-  }
-
-  ${Fragments.organizationMember}
-`;
-
-export const removeOrganizationMember = gql`
-  mutation RemoveOrganizationMemberMutation(
-    $input: RemoveOrganizationMemberInput!
-  ) {
-    organization: removeOrganizationMember(input: $input) {
-      id
-      members {
-        ...OrganizationMember
-      }
-    }
-  }
-
-  ${Fragments.organizationMember}
-`;
-
-export const updateProjectMember = gql`
-  mutation UpdateProjectMemberMutation($input: UpdateProjectMemberInput!) {
-    member: updateProjectMember(input: $input) {
-      ...ProjectMember
-    }
-  }
-
-  ${Fragments.projectMember}
-`;
-
-export const removeProjectMember = gql`
-  mutation RemoveProjectMemberMutation($input: RemoveProjectMemberInput!) {
-    project: removeProjectMember(input: $input) {
-      id
-      members {
-        ...ProjectMember
-      }
-    }
-  }
-
-  ${Fragments.projectMember}
-`;
-
 export const createProject = gql`
   mutation CreateProjectMutation($input: CreateProjectInput!) {
     project: createProject(input: $input) {

@@ -1,7 +1,7 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
-import { useOrganizationUsers, useRemoveOrganizationMember } from "../hooks";
+import { useOrganizationUsers } from "../hooks";
 import { Table, Space, Row, Button, Tag } from "antd";
 import * as Icons from "@ant-design/icons";
 import { OrganizationRole, Role, UserWithRoles } from "@dewo/app/graphql/types";
@@ -21,7 +21,6 @@ export const organizationRoleToString: Record<OrganizationRole, string> = {
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const { users } = useOrganizationUsers(organizationId);
-  const removeMember = useRemoveOrganizationMember();
 
   const canDeleteAdmin = usePermission("delete", {
     __typename: "OrganizationMember",
@@ -85,7 +84,7 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
                       icon={<Icons.DeleteOutlined />}
                       onClick={(event) => {
                         eatClick(event);
-                        removeMember({ userId: user.id, organizationId });
+                        alert("TODO: remove member! " + JSON.stringify(user));
                       }}
                     />
                   ),

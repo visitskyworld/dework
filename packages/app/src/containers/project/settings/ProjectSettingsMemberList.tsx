@@ -3,11 +3,7 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 import React, { FC } from "react";
-import {
-  useProject,
-  useRemoveProjectMember,
-  useUpdateProjectMember,
-} from "../hooks";
+import { useProject } from "../hooks";
 import { Table, Button, Select } from "antd";
 import * as Icons from "@ant-design/icons";
 import { ProjectMember, ProjectRole } from "@dewo/app/graphql/types";
@@ -44,8 +40,6 @@ export const projectRoleDescription: Record<ProjectRole, string> = {
 
 export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
   const { project } = useProject(projectId);
-  const updateMember = useUpdateProjectMember();
-  const removeMember = useRemoveProjectMember();
 
   const hasPermission = usePermissionFn();
   const canDeleteAdmin = usePermission("delete", {
@@ -90,11 +84,14 @@ export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
                 style={{ width: "100%" }}
                 onClick={eatClick}
                 onChange={(role) =>
-                  updateMember({
-                    projectId,
-                    userId: member.user.id,
-                    role,
-                  })
+                  alert(
+                    "TODO: update: " +
+                      JSON.stringify({
+                        projectId,
+                        userId: member.user.id,
+                        role,
+                      })
+                  )
                 }
               >
                 {[ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR].map((role) => (
@@ -117,7 +114,10 @@ export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
                     icon={<Icons.DeleteOutlined />}
                     onClick={(event) => {
                       eatClick(event);
-                      removeMember({ userId: m.user.id, projectId });
+                      alert(
+                        "TODO: remove: " +
+                          JSON.stringify({ userId: m.user.id, projectId })
+                      );
                     }}
                   />
                 ),
