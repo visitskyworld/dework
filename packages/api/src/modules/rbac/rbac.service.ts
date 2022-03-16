@@ -9,7 +9,7 @@ import {
   ExtractSubjectType,
   InferSubjects,
 } from "@casl/ability";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
 import { AtLeast } from "@dewo/api/types/general";
@@ -180,7 +180,7 @@ export class RbacService {
           fn(["create", "read", "update", "delete"], Task, task);
         // eslint-disable-next-line no-fallthrough
         case RulePermission.SUGGEST_AND_VOTE:
-          // TODO(fant): add task in community suggestions
+          fn("create", Task, { ...task, status: TaskStatus.BACKLOG });
           fn(["create", "update", "delete"], TaskReaction, { userId });
           break;
         case RulePermission.VIEW_PROJECTS:

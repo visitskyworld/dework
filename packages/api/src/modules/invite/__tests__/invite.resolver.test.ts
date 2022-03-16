@@ -1,15 +1,13 @@
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
-import {
-  PaymentNetwork,
-  PaymentNetworkType,
-} from "@dewo/api/models/PaymentNetwork";
-import { PaymentTokenType } from "@dewo/api/models/PaymentToken";
+
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { InviteRequests } from "@dewo/api/testing/requests/invite.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { Project } from "@dewo/api/models/Project";
 
 describe("InviteResolver", () => {
   let app: INestApplication;
@@ -173,6 +171,77 @@ describe("InviteResolver", () => {
       });
 
       describe("project", () => {
+        it("should give CONTRIBUTORs the right access", async () => {
+          const {
+            user: inviter,
+            project,
+            organization,
+          } = await fixtures.createUserOrgProject();
+          const invited = await fixtures.createUser();
+
+          const invite = await fixtures.createInvite(
+            { projectId: project.id, projectRole: ProjectRole.CONTRIBUTOR },
+            inviter
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetchedInvite = response.body.data?.invite;
+          expect(fetchedInvite.project.organization.users).toContainEqual(
+            expect.objectContaining({ id: invited.id })
+          );
+
+          const ability = await fixtures.grantPermissions(
+            invited.id,
+            organization.id,
+            []
+          );
+          expect(ability.can("update", Project)).toBe(false);
+          expect(ability.can("create", TaskReaction)).toBe(true);
+        });
+
+        it("should give ADMINs the right access", async () => {
+          const {
+            user: inviter,
+            project,
+            organization,
+          } = await fixtures.createUserOrgProject();
+          const invited = await fixtures.createUser();
+
+          const invite = await fixtures.createInvite(
+            { projectId: project.id, projectRole: ProjectRole.ADMIN },
+            inviter
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetchedInvite = response.body.data?.invite;
+          expect(fetchedInvite.project.organization.users).toContainEqual(
+            expect.objectContaining({ id: invited.id })
+          );
+
+          const ability = await fixtures.grantPermissions(
+            invited.id,
+            organization.id,
+            []
+          );
+          expect(ability.can("update", Project)).toBe(true);
+          expect(ability.can("create", TaskReaction)).toBe(true);
+        });
+      });
+
+      /*
+      describe("project", () => {
         it("should connect user to project", async () => {
           const { user: inviter, project } =
             await fixtures.createUserOrgProject();
@@ -311,6 +380,7 @@ describe("InviteResolver", () => {
           });
         });
       });
+      */
     });
   });
 });

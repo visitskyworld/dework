@@ -55,15 +55,10 @@ export class InviteRequests {
             }
             project {
               id
-              members {
+              organization {
                 id
-                role
-                userId
-                user {
+                users {
                   id
-                  organizations {
-                    id
-                  }
                 }
               }
             }

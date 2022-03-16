@@ -1,5 +1,6 @@
+import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Invite } from "@dewo/api/models/Invite";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
+import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { User } from "@dewo/api/models/User";
@@ -42,18 +43,18 @@ export class InviteService {
     if (!invite) throw new NotFoundException();
 
     if (!!invite.organizationId) {
-      const organization = await invite.organization;
-      const roles = await organization?.roles;
-      const fallbackRole = roles?.find((r) => r.fallback);
-
-      const role = await this.rbacService.getOrCreatePersonalRole(
-        user.id,
-        invite.organizationId
-      );
+      const organization = (await invite.organization) as Organization;
+      const roles = await organization.roles;
+      const fallbackRole = roles.find((r) => r.fallback);
 
       if (!!fallbackRole) {
         await this.rbacService.addRole(user.id, fallbackRole.id);
       }
+
+      const role = await this.rbacService.getOrCreatePersonalRole(
+        user.id,
+        organization.id
+      );
       await this.rbacService.createRules(
         [
           RulePermission.MANAGE_ORGANIZATION,
@@ -65,22 +66,42 @@ export class InviteService {
 
     if (!!invite.projectId && !!invite.projectRole) {
       const project = (await invite.project) as Project;
-      await this.projectService.upsertMember({
-        projectId: invite.projectId,
-        userId: user.id,
-        role: invite.projectRole,
-      });
+      const organization = await project.organization;
+      const roles = await organization.roles;
+      const fallbackRole = roles.find((r) => r.fallback);
 
-      const organizationMember = await this.organizationService.findMember({
-        userId: user.id,
-        organizationId: project.organizationId,
-      });
-      if (!organizationMember) {
-        await this.organizationService.upsertMember({
-          organizationId: project.organizationId,
-          role: OrganizationRole.FOLLOWER,
-          userId: user.id,
-        });
+      if (!!fallbackRole) {
+        await this.rbacService.addRole(user.id, fallbackRole.id);
+      }
+
+      const role = await this.rbacService.getOrCreatePersonalRole(
+        user.id,
+        organization.id
+      );
+      if (invite.projectRole === ProjectRole.ADMIN) {
+        await this.rbacService.createRules(
+          [
+            RulePermission.MANAGE_ORGANIZATION,
+            RulePermission.MANAGE_PROJECTS,
+            RulePermission.MANAGE_TASKS,
+            RulePermission.VIEW_PROJECTS,
+            RulePermission.SUGGEST_AND_VOTE,
+          ].map((permission) => ({
+            roleId: role.id,
+            permission,
+            projectId: project.id,
+          }))
+        );
+      } else if (invite.projectRole === ProjectRole.CONTRIBUTOR) {
+        await this.rbacService.createRules(
+          [RulePermission.VIEW_PROJECTS, RulePermission.SUGGEST_AND_VOTE].map(
+            (permission) => ({
+              roleId: role.id,
+              permission,
+              projectId: project.id,
+            })
+          )
+        );
       }
     }
 

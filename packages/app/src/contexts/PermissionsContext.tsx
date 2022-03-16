@@ -34,6 +34,7 @@ type AbilitySubject =
   | "TaskSection"
   | "Role"
   | "Rule"
+  | "Project"
   | Project
   | Organization
   | AtLeast<Project, "__typename" | "organizationId">

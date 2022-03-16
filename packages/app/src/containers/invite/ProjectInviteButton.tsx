@@ -24,14 +24,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
   const [loading, setLoading] = useState(false);
   const { project } = useProject(projectId);
 
-  const canInviteProjectAdmin = usePermission("create", {
-    __typename: "ProjectMember",
-    role: ProjectRole.ADMIN,
-  });
-  const canInviteProjectContributor = usePermission("create", {
-    __typename: "ProjectMember",
-    role: ProjectRole.CONTRIBUTOR,
-  });
+  const canInvite = usePermission("create", "Role");
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
@@ -83,20 +76,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     );
   }
 
-  if (!canInviteProjectAdmin && canInviteProjectContributor) {
-    return (
-      <Button
-        type="ghost"
-        loading={loading}
-        icon={<Icons.UsergroupAddOutlined />}
-        style={style}
-        onClick={inviteProjectContributor}
-      >
-        Invite
-      </Button>
-    );
-  }
-  if (canInviteProjectAdmin && canInviteProjectContributor) {
+  if (canInvite) {
     return (
       <Dropdown
         placement="bottomCenter"

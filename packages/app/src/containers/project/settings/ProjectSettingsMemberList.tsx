@@ -33,7 +33,6 @@ export const projectRoleDescription: Record<ProjectRole, string> = {
     "- see private projects",
     "- apply to tasks",
     "- manage tasks they're assigned to or reviewing",
-    "- invite contributors",
     "- create and vote on community suggestions",
   ].join("\n"),
 };
