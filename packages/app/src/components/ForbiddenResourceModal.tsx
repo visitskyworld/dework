@@ -73,6 +73,7 @@ export const ForbiddenResourceModal: FC<Props> = ({
           hasDiscordRoleGating && (
             <DiscordRoleGatingJoinButton
               type="primary"
+              projectId={projectId}
               organizationId={organizationId!}
             >
               Join using Discord role
