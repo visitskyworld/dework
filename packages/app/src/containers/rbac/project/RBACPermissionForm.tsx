@@ -115,16 +115,18 @@ export const RBACPermissionForm: FC<Props> = ({
         value={selectedRoleIds}
         onChange={setSelectedRoleIds}
       >
-        {roles?.map((role) => (
-          <Select.Option key={role.id} value={role.id} label={role.name}>
-            <Row align="middle">
-              {role.source === RoleSource.DISCORD && (
-                <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
-              )}
-              {role.name}
-            </Row>
-          </Select.Option>
-        ))}
+        {roles
+          ?.filter((role) => !role.userId)
+          .map((role) => (
+            <Select.Option key={role.id} value={role.id} label={role.name}>
+              <Row align="middle">
+                {role.source === RoleSource.DISCORD && (
+                  <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
+                )}
+                {role.name}
+              </Row>
+            </Select.Option>
+          ))}
       </Select>
 
       {!disabled &&

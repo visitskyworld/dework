@@ -184,6 +184,7 @@ export class OrganizationService {
       .createQueryBuilder("user")
       .innerJoin("user.roles", "role")
       .where("role.organizationId = :organizationId", { organizationId })
+      .andWhere("role.fallback IS TRUE")
       .getMany();
   }
 

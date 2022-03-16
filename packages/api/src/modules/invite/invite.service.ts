@@ -1,12 +1,14 @@
 import { Invite } from "@dewo/api/models/Invite";
 import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { User } from "@dewo/api/models/User";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { OrganizationService } from "../organization/organization.service";
 import { ProjectService } from "../project/project.service";
+import { RbacService } from "../rbac/rbac.service";
 
 @Injectable()
 export class InviteService {
@@ -14,7 +16,8 @@ export class InviteService {
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
     private readonly organizationService: OrganizationService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly rbacService: RbacService
   ) {}
 
   public async create(
@@ -38,12 +41,26 @@ export class InviteService {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
 
-    if (!!invite.organizationId && !!invite.organizationRole) {
-      await this.organizationService.upsertMember({
-        organizationId: invite.organizationId,
-        role: invite.organizationRole,
-        userId: user.id,
-      });
+    if (!!invite.organizationId) {
+      const organization = await invite.organization;
+      const roles = await organization?.roles;
+      const fallbackRole = roles?.find((r) => r.fallback);
+
+      const role = await this.rbacService.getOrCreatePersonalRole(
+        user.id,
+        invite.organizationId
+      );
+
+      if (!!fallbackRole) {
+        await this.rbacService.addRole(user.id, fallbackRole.id);
+      }
+      await this.rbacService.createRules(
+        [
+          RulePermission.MANAGE_ORGANIZATION,
+          RulePermission.MANAGE_PROJECTS,
+          RulePermission.MANAGE_TASKS,
+        ].map((permission) => ({ roleId: role.id, permission }))
+      );
     }
 
     if (!!invite.projectId && !!invite.projectRole) {

@@ -95,8 +95,15 @@ export class RbacService {
   public async createRule(
     partial: AtLeast<Rule, "permission" | "roleId">
   ): Promise<Rule> {
-    const x = await this.ruleRepo.save(partial);
-    return this.ruleRepo.findOne(x.id) as Promise<Rule>;
+    const [rule] = await this.createRules([partial]);
+    return rule;
+  }
+
+  public async createRules(
+    partial: AtLeast<Rule, "permission" | "roleId">[]
+  ): Promise<Rule[]> {
+    const rules = await this.ruleRepo.save(partial);
+    return this.ruleRepo.findByIds(rules.map((r) => r.id));
   }
 
   public async deleteRule(ruleId: string): Promise<void> {

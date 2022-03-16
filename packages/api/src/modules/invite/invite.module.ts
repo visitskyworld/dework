@@ -10,6 +10,7 @@ import { permissions } from "../auth/permissions";
 import { OrganizationModule } from "../organization/organization.module";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectModule } from "../project/project.module";
+import { RbacModule } from "../rbac/rbac.module";
 import { InviteResolver } from "./invite.resolver";
 import { InviteService } from "./invite.service";
 
@@ -26,6 +27,7 @@ import { InviteService } from "./invite.service";
     ProjectModule,
     OrganizationModule,
     PermalinkModule,
+    RbacModule,
   ],
   providers: [InviteResolver, InviteService],
   exports: [InviteService],

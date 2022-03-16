@@ -14,15 +14,11 @@ import GraphQLUUID from "graphql-type-uuid";
 import { InviteService } from "./invite.service";
 import { Invite } from "@dewo/api/models/Invite";
 import { OrganizationInviteInput } from "./dto/OrganizationInviteInput";
-import { OrganizationRolesGuard } from "../organization/organization.roles.guard";
-import { AccessGuard, Actions, UseAbility } from "nest-casl";
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
-import { ProjectRolesGuard } from "../project/project.roles.guard";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectInviteInput } from "./dto/ProjectInviteInput";
 import { ProjectService } from "../project/project.service";
-import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
+import { RoleGuard } from "../rbac/rbac.guard";
+import { Role } from "@dewo/api/models/rbac/Role";
 
 @Resolver(() => Invite)
 @Injectable()
@@ -42,35 +38,45 @@ export class InviteResolver {
   }
 
   @Mutation(() => Invite)
-  @UseGuards(AuthGuard, OrganizationRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, OrganizationMember, [
-    InviteService,
-    async (_service: InviteService, { params }) => ({
-      userId: "",
-      role: params.input.role,
-      organizationId: params.input.organizationId,
-    }),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Role,
+      inject: [ProjectService],
+      getOrganizationId: (
+        _subject,
+        params: { input: OrganizationInviteInput }
+      ) => params.input.organizationId,
+    })
+  )
   public async createOrganizationInvite(
     @Context("user") user: User,
     @Args("input") input: OrganizationInviteInput
   ): Promise<Invite> {
     return this.inviteService.create(
-      { organizationId: input.organizationId, organizationRole: input.role },
+      { organizationId: input.organizationId },
       user
     );
   }
 
   @Mutation(() => Invite)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, ProjectMember, [
-    InviteService,
-    async (_service: InviteService, { params }) => ({
-      userId: "",
-      role: params.input.role,
-      projectId: params.input.projectId,
-    }),
-  ])
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: Role,
+      inject: [ProjectService],
+      async getOrganizationId(
+        _subject,
+        params: { input: ProjectInviteInput },
+        service
+      ) {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
   public async createProjectInvite(
     @Context("user") user: User,
     @Args("input") input: ProjectInviteInput
@@ -82,26 +88,6 @@ export class InviteResolver {
       },
       user
     );
-  }
-
-  @Mutation(() => Project)
-  @UseGuards(AuthGuard, ProjectRolesGuard, AccessGuard)
-  @UseAbility(Actions.create, ProjectMember, [
-    InviteService,
-    async (_service: InviteService, { params }) => ({
-      userId: "",
-      role: params.input.role,
-      projectId: params.input.projectId,
-    }),
-  ])
-  public async deleteProjectInvite(
-    @Args("input") input: ProjectInviteInput
-  ): Promise<Project> {
-    await this.inviteService.delete({
-      projectId: input.projectId,
-      projectRole: input.role,
-    });
-    return this.projectService.findById(input.projectId) as Promise<Project>;
   }
 
   @Mutation(() => Invite)
