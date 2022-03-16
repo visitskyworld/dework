@@ -58,4 +58,12 @@ export class Role extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public organizationId!: string;
+
+  @JoinColumn()
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  public user?: Promise<User>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public userId?: string;
 }

@@ -92,5 +92,29 @@ describe("RbacService", () => {
       expect(accessSpecificProject.can("read", project2)).toBe(true);
       expect(accessSpecificProject.can("update", project2)).toBe(true);
     });
+
+    it("should use roles attached to specific user correctly", async () => {
+      const project = await fixtures.createProject({
+        organizationId: organization.id,
+      });
+
+      const user = await fixtures.createUser();
+      const userAccess = await fixtures.grantPermissions(
+        user.id,
+        organization.id,
+        [{ permission: RulePermission.MANAGE_PROJECTS, projectId: project.id }],
+        { userId: user.id }
+      );
+      expect(userAccess.can("update", project)).toBe(true);
+
+      const otherUser = await fixtures.createUser();
+      const otherUserAccess = await fixtures.grantPermissions(
+        otherUser.id,
+        organization.id,
+        [{ permission: RulePermission.MANAGE_PROJECTS, projectId: project.id }],
+        { userId: user.id } // the role points to "user", not "otherUser"
+      );
+      expect(otherUserAccess.can("update", project)).toBe(false);
+    });
   });
 });

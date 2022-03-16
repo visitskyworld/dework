@@ -209,6 +209,13 @@ export class RbacService {
         )
       )
       .andWhere("role.organizationId = :organizationId", { organizationId })
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where("role.userId IS NULL")
+            .orWhere("role.userId = :userId", { userId })
+        )
+      )
       .orderBy(
         `
         CASE
