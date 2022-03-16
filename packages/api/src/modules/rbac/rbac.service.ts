@@ -159,8 +159,6 @@ export class RbacService {
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
           fn("read", Task, task);
-          // Note(fant): this makes ppl with this permission able to create tasks in general...
-          fn(["create"], Task, "applications", task);
           fn(["create", "read", "update", "delete"], TaskApplication, {
             userId,
           });
