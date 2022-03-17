@@ -1,4 +1,4 @@
-import { Project, ProjectVisibility } from "@dewo/api/models/Project";
+import { Project } from "@dewo/api/models/Project";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
@@ -200,9 +200,6 @@ export class ProjectService {
       .addSelect("COUNT(DISTINCT task.id)", "project_taskCount")
       .leftJoin("project.tasks", "task")
       .leftJoin("project.members", "member", "member.projectId = project.id")
-      .where("project.visibility = :public", {
-        public: ProjectVisibility.PUBLIC,
-      })
       .andWhere("project.deletedAt IS NULL")
       .andWhere("organization.deletedAt IS NULL")
       .andWhere("LOWER(project.name) NOT LIKE '%test%'")
@@ -214,6 +211,7 @@ export class ProjectService {
       .having("COUNT(DISTINCT task.id) >= 10")
       .andHaving("COUNT(DISTINCT member.userId) > 1")
       .getRawMany();
+    // TODO(fant): make sure this joins the right data
     const projects = await this.projectRepo
       .createQueryBuilder("project")
       .innerJoinAndSelect("project.organization", "organization")

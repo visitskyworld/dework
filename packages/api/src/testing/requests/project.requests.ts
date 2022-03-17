@@ -19,11 +19,6 @@ export class ProjectRequests {
         id
         type
       }
-      members {
-        id
-        role
-        userId
-      }
       taskCount
       doneTaskCount: taskCount(status: DONE)
       todoWithRewardTaskCount: taskCount(status: TODO, rewardNotNull: true)

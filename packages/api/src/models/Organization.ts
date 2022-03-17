@@ -55,7 +55,7 @@ export class Organization extends Audit {
     () => OrganizationMember,
     (om: OrganizationMember) => om.organization
   )
-  @Field(() => [OrganizationMember])
+  // @Field(() => [OrganizationMember])
   public members!: Promise<OrganizationMember[]>;
 
   @OneToMany(() => Project, (p: Project) => p.organization)

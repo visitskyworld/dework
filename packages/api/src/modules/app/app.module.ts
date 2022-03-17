@@ -2,7 +2,6 @@ import { Module, ModuleMetadata } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CaslModule } from "nest-casl";
 import { configSchema } from "./config";
 import { postgresConfig } from "./postgres.config";
 import { GraphQLConfig } from "./graphql.config";
@@ -14,7 +13,6 @@ import { TaskModule } from "../task/task.module";
 import { DiscordIntegrationModule } from "../integrations/discord/discord.integration.module";
 import { InviteModule } from "../invite/invite.module";
 import { PaymentModule } from "../payment/payment.module";
-import { Roles } from "./app.roles";
 import { User } from "@dewo/api/models/User";
 import { SubscriptionModule } from "../subscription/subscription.module";
 import { GithubIntegrationModule } from "../integrations/github/github.module";
@@ -41,10 +39,6 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: postgresConfig,
-  }),
-  CaslModule.forRoot<Roles>({
-    superuserRole: Roles.superadmin,
-    getUserFromRequest: (req) => req.caslUser,
   }),
   MigrationModule,
   ScheduleModule.forRoot(),

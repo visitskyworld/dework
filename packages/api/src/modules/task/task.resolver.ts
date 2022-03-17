@@ -43,6 +43,7 @@ import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { RbacService } from "../rbac/rbac.service";
 
 @Injectable()
 @Resolver(() => Task)
@@ -50,7 +51,8 @@ export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
     private readonly projectService: ProjectService,
-    private readonly permalinkService: PermalinkService
+    private readonly permalinkService: PermalinkService,
+    private readonly rbacService: RbacService
   ) {}
 
   @ResolveField(() => [TaskTag])
@@ -157,9 +159,10 @@ export class TaskResolver {
     });
 
     if (!!input.assigneeIds?.length) {
-      await this.projectService.addMemberIfNotExists(
-        input.projectId,
-        input.assigneeIds
+      const project = await task.project;
+      await this.rbacService.addToOrganization(
+        input.assigneeIds,
+        project.organizationId
       );
     }
 
@@ -247,18 +250,10 @@ export class TaskResolver {
   )
   public async createTaskSubmission(
     @Context("user") user: User,
-    // @CaslUser() userProxy: UserProxy,
     @Args("input") input: CreateTaskSubmissionInput
   ): Promise<TaskSubmission> {
     const task = await this.taskService.findById(input.taskId);
     if (!task) throw new NotFoundException();
-
-    // const caslUser = await userProxy.get();
-    // const abilities = this.abilityFactory.createForUser(caslUser!);
-    // if (!abilities.can("update", subject(Task as any, task), "submissions")) {
-    //   throw new ForbiddenException();
-    // }
-
     return this.taskService.createSubmission({ ...input, userId: user.id });
   }
 
@@ -319,7 +314,6 @@ export class TaskResolver {
   public async updateTask(
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
-    // TODO(fant): make sure the user can update the specific fields
     const task = await this.taskService.update({
       ...input,
       tags: !!input.tagIds
@@ -331,9 +325,10 @@ export class TaskResolver {
     });
 
     if (!!input.assigneeIds?.length) {
-      await this.projectService.addMemberIfNotExists(
-        task.projectId,
-        input.assigneeIds
+      const project = await task.project;
+      await this.rbacService.addToOrganization(
+        input.assigneeIds,
+        project.organizationId
       );
     }
 

@@ -6,8 +6,6 @@ import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../auth/permissions";
 import { PermalinkModule } from "../permalink/permalink.module";
 import {
   OrganizationResolver,
@@ -28,7 +26,6 @@ import { RbacModule } from "../rbac/rbac.module";
       OrganizationTag,
       EntityDetail,
     ]),
-    CaslModule.forFeature({ permissions }),
     PermalinkModule,
     RbacModule,
   ],

@@ -7,8 +7,6 @@ import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../auth/permissions";
 import { PaymentModule } from "../payment/payment.module";
 import { ProjectModule } from "../project/project.module";
 import {
@@ -17,7 +15,6 @@ import {
   TaskResolver,
   UserTasksResolver,
 } from "./task.resolver";
-import { TaskRolesGuard } from "./task.roles.guard";
 import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
@@ -40,7 +37,6 @@ import { RbacModule } from "../rbac/rbac.module";
       ProjectMember,
       OrganizationMember,
     ]),
-    CaslModule.forFeature({ permissions }),
     CqrsModule,
     PaymentModule,
     ProjectModule,
@@ -53,7 +49,6 @@ import { RbacModule } from "../rbac/rbac.module";
     ProjectTasksResolver,
     UserTasksResolver,
     TaskService,
-    TaskRolesGuard,
   ],
   exports: [TaskService],
 })

@@ -34,9 +34,11 @@ export class TaskRequests {
       }
       project {
         id
-        members {
-          userId
-          role
+        organization {
+          id
+          users {
+            id
+          }
         }
       }
       assignees {

@@ -7,8 +7,6 @@ import { User } from "@dewo/api/models/User";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
-import { OrganizationService } from "../organization/organization.service";
-import { ProjectService } from "../project/project.service";
 import { RbacService } from "../rbac/rbac.service";
 
 @Injectable()
@@ -16,8 +14,6 @@ export class InviteService {
   constructor(
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
-    private readonly organizationService: OrganizationService,
-    private readonly projectService: ProjectService,
     private readonly rbacService: RbacService
   ) {}
 

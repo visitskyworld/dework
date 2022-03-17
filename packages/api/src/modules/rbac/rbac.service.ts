@@ -19,6 +19,7 @@ import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 
 export class UserRole {
   role!: Role;
@@ -34,6 +35,7 @@ export type Subject = InferSubjects<
   | typeof Project
   | typeof ProjectSection
   | typeof Task
+  | typeof TaskReward
   | typeof TaskTag
   | typeof TaskSection
   | typeof TaskReaction
@@ -72,6 +74,12 @@ export class RbacService {
     return this.roleRepo.findOne(x.id) as Promise<Role>;
   }
 
+  public async getFallbackRole(
+    organizationId: string
+  ): Promise<Role | undefined> {
+    return this.roleRepo.findOne({ fallback: true, organizationId });
+  }
+
   public async getOrCreatePersonalRole(
     userId: string,
     organizationId: string
@@ -108,6 +116,21 @@ export class RbacService {
 
   public async deleteRule(ruleId: string): Promise<void> {
     await this.ruleRepo.delete(ruleId);
+  }
+
+  public async addToOrganization(
+    userIds: string[],
+    organizationId: string
+  ): Promise<void> {
+    const fallbackRole = await this.roleRepo.findOne({
+      fallback: true,
+      organizationId,
+    });
+    if (!fallbackRole) {
+      throw new Error("Cannot add to organization without fallback role");
+    }
+
+    await Promise.all(userIds.map((id) => this.addRole(id, fallbackRole.id)));
   }
 
   public async addRole(userId: string, roleId: string): Promise<void> {
@@ -158,36 +181,39 @@ export class RbacService {
 
       const roleConditions: Partial<Role> | undefined = { organizationId };
 
+      const CRUD: Action[] = ["create", "read", "update", "delete"];
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organization);
-          fn(["create", "read", "update", "delete"], ProjectSection);
+          fn(CRUD, ProjectSection);
           fn("update", Project, ["sectionId", "sortKey"], project);
-          fn(["create", "read", "update", "delete"], Role, roleConditions);
-          fn(["create", "read", "update", "delete"], Rule);
+          fn(CRUD, Role, roleConditions);
+          fn(CRUD, Rule);
           fn(["create", "delete"], UserRole);
           break;
         case RulePermission.MANAGE_PROJECTS:
-          fn(["create", "read", "update", "delete"], Project, project);
-          fn(["create", "read", "update", "delete"], TaskTag, taskTag);
-          fn(["create", "read", "update", "delete"], TaskSection, taskSection);
+          fn(CRUD, Project, project);
+          fn(CRUD, TaskTag, taskTag);
+          fn(CRUD, TaskSection, taskSection);
           fn("submit", Task);
-          fn(["create", "update", "delete"], TaskSubmission);
+          fn(CRUD, TaskSubmission);
+          fn("delete", TaskApplication);
 
-          fn(["create", "read", "update", "delete"], Task, task);
+          fn(CRUD, Task, task);
         // eslint-disable-next-line no-fallthrough
         case RulePermission.SUGGEST_AND_VOTE:
           fn("create", Task, { ...task, status: TaskStatus.BACKLOG });
-          fn(["create", "update", "delete"], TaskReaction, { userId });
+          fn(CRUD, TaskReaction, { userId });
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
           fn("read", Task, task);
-          fn(["create", "read", "update", "delete"], TaskApplication, {
-            userId,
-          });
-          fn(["create", "read", "update", "delete"], TaskSubmission, {
-            userId,
+          fn(CRUD, TaskApplication, { userId });
+          fn(CRUD, TaskSubmission, { userId });
+
+          fn("submit", Task, {
+            ...task,
+            "options.allowOpenSubmission": true,
           });
           break;
       }
@@ -209,7 +235,9 @@ export class RbacService {
     builder.can("update", Task, "submissions", { ownerId: userId });
     builder.can("submit", Task, { ownerId: userId });
     builder.can("submit", Task, { assignees: { $elemMatch: { id: userId } } });
-    builder.can(["create", "update", "delete"], TaskSubmission, { userId });
+
+    // TODO(fant): make sure these users can do everything
+    // const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
 
     return builder.build({
       detectSubjectType: (item: Subject): ExtractSubjectType<Subject> =>

@@ -4,18 +4,15 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "./config";
 import { Request } from "express";
 import { User } from "@dewo/api/models/User";
-import { AuthorizableUser } from "nest-casl";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as Amplitude from "@amplitude/node";
-import { Roles } from "./app.roles";
 
 export interface GQLContext {
   req: Request;
   origin: string;
   user?: User;
-  caslUser?: AuthorizableUser<Roles, string | undefined>;
 }
 
 function getAuthToken(req: Request): string | undefined {
@@ -57,7 +54,6 @@ export class GraphQLConfig implements GqlOptionsFactory {
   }
 
   createGqlOptions(): GqlModuleOptions {
-    const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
     const that = this;
     return {
       autoSchemaFile: true,
@@ -136,19 +132,8 @@ export class GraphQLConfig implements GqlOptionsFactory {
           return user;
         })();
 
-        let roles: Roles[] = [];
-        if (!!user) roles.push(Roles.authenticated);
-        if (!!user && superadminIds.includes(user.id)) {
-          roles.push(Roles.superadmin);
-        }
-        const caslUser: AuthorizableUser<Roles, string | undefined> = {
-          id: user?.id,
-          roles,
-        };
-
         req.user = user;
-        req.caslUser = caslUser;
-        return { req, origin, user, caslUser };
+        return { req, origin, user };
       },
       // subscriptions: {
       //   "subscriptions-transport-ws": true,

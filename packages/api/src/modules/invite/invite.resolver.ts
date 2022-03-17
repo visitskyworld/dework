@@ -25,8 +25,7 @@ import { Role } from "@dewo/api/models/rbac/Role";
 export class InviteResolver {
   constructor(
     private readonly inviteService: InviteService,
-    private readonly permalinkService: PermalinkService,
-    private readonly projectService: ProjectService
+    private readonly permalinkService: PermalinkService
   ) {}
 
   @ResolveField(() => String)

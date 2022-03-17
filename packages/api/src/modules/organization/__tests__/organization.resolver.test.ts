@@ -50,12 +50,9 @@ describe("OrganizationResolver", () => {
         expect(organization).toBeDefined();
         expect(organization.name).toEqual(name);
         expect(organization.imageUrl).toEqual(imageUrl);
-        expect(organization.members).toHaveLength(1);
-        expect(organization.members).toContainEqual(
-          expect.objectContaining({
-            userId: user.id,
-            role: OrganizationRole.OWNER,
-          })
+        expect(organization.users).toHaveLength(1);
+        expect(organization.users).toContainEqual(
+          expect.objectContaining({ id: user.id })
         );
       });
     });
@@ -93,41 +90,20 @@ describe("OrganizationResolver", () => {
         expect(updated.name).toEqual(expectedName);
       });
 
-      describe("deletedAt", () => {
-        it("should set deletedAt if is owner", async () => {
-          const { user: owner, organization } =
-            await fixtures.createUserOrgProject();
-          const response = await client.request({
-            app,
-            auth: fixtures.createAuthToken(owner),
-            body: OrganizationRequests.update({
-              id: organization.id,
-              deletedAt: new Date(),
-            }),
-          });
-          expect(response.status).toEqual(HttpStatus.OK);
-          const updated = response.body.data?.organization;
-          expect(updated.deletedAt).not.toBe(null);
+      it("should set deletedAt if is owner", async () => {
+        const { user: owner, organization } =
+          await fixtures.createUserOrgProject();
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(owner),
+          body: OrganizationRequests.update({
+            id: organization.id,
+            deletedAt: new Date(),
+          }),
         });
-
-        it("should fail to set deletedAt if is admin", async () => {
-          const admin = await fixtures.createUser();
-          const organization = await fixtures.createOrganization(
-            {},
-            undefined,
-            [{ userId: admin.id, role: OrganizationRole.ADMIN }]
-          );
-
-          const response = await client.request({
-            app,
-            auth: fixtures.createAuthToken(admin),
-            body: OrganizationRequests.update({
-              id: organization.id,
-              deletedAt: new Date(),
-            }),
-          });
-          client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
-        });
+        expect(response.status).toEqual(HttpStatus.OK);
+        const updated = response.body.data?.organization;
+        expect(updated.deletedAt).not.toBe(null);
       });
     });
 
@@ -389,7 +365,15 @@ describe("OrganizationResolver", () => {
             );
           const privateProject = await fixtures.createProject({
             organizationId: organization.id,
-            visibility: ProjectVisibility.PRIVATE,
+          });
+          const everyoneRole = await organization.roles.then((r) =>
+            r.find((r) => r.fallback)
+          );
+          await fixtures.createRule({
+            roleId: everyoneRole!.id,
+            projectId: privateProject.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            inverted: true,
           });
 
           const response = await client.request({
@@ -420,7 +404,7 @@ describe("OrganizationResolver", () => {
           );
           const project = await fixtures.createProject({
             organizationId: organization.id,
-            visibility: ProjectVisibility.PRIVATE,
+            // visibility: ProjectVisibility.PRIVATE,
           });
 
           const response = await client.request({
@@ -442,7 +426,7 @@ describe("OrganizationResolver", () => {
           const adminProject = await fixtures.createProject(
             {
               organizationId: organization.id,
-              visibility: ProjectVisibility.PRIVATE,
+              // visibility: ProjectVisibility.PRIVATE,
             },
             undefined,
             [{ userId: user.id, role: ProjectRole.ADMIN }]
@@ -450,7 +434,7 @@ describe("OrganizationResolver", () => {
           const contributorProject = await fixtures.createProject(
             {
               organizationId: organization.id,
-              visibility: ProjectVisibility.PRIVATE,
+              // visibility: ProjectVisibility.PRIVATE,
             },
             undefined,
             [{ userId: user.id, role: ProjectRole.CONTRIBUTOR }]
@@ -483,13 +467,13 @@ describe("OrganizationResolver", () => {
             user.id,
             organization.id,
             [{ permission: RulePermission.VIEW_PROJECTS }],
-            { name: "role in organization" }
+            { name: "role in organization", fallback: true }
           );
           await fixtures.grantPermissions(
             user.id,
             otherOrganization.id,
             [{ permission: RulePermission.VIEW_PROJECTS }],
-            { name: "role in other organization" }
+            { name: "role in other organization", fallback: true }
           );
 
           const response = await client.request({

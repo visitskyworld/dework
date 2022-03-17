@@ -7,8 +7,6 @@ import { TrelloResolver } from "./trello.resolver";
 import { ThreepidModule } from "../../threepid/threepid.module";
 import { OrganizationModule } from "../../organization/organization.module";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../../auth/permissions";
 import { RbacModule } from "../../rbac/rbac.module";
 
 @Module({
@@ -19,7 +17,6 @@ import { RbacModule } from "../../rbac/rbac.module";
     TaskModule,
     ThreepidModule,
     RbacModule,
-    CaslModule.forFeature({ permissions }),
   ],
   providers: [TrelloImportService, TrelloResolver],
 })

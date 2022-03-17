@@ -30,7 +30,6 @@ export class TrelloRequests {
               id
               name
               description
-              visibility
               tasks {
                 id
                 name

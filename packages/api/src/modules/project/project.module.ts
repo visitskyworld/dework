@@ -7,8 +7,6 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../auth/permissions";
 import { IntegrationModule } from "../integrations/integration.module";
 import { PaymentModule } from "../payment/payment.module";
 import { PermalinkModule } from "../permalink/permalink.module";
@@ -28,7 +26,6 @@ import { ProjectService } from "./project.service";
       TaskTag,
       OrganizationMember,
     ]),
-    CaslModule.forFeature({ permissions }),
     PermalinkModule,
     IntegrationModule,
     PaymentModule,

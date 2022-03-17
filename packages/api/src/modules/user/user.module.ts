@@ -7,8 +7,6 @@ import { User } from "@dewo/api/models/User";
 import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../auth/permissions";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
@@ -28,7 +26,6 @@ import { PermalinkModule } from "../permalink/permalink.module";
       ProjectMember,
       OrganizationMember,
     ]),
-    CaslModule.forFeature({ permissions }),
     ThreepidModule,
     PaymentModule,
     PermalinkModule,

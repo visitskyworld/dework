@@ -70,7 +70,6 @@ export class GithubRequests {
               id
               name
               description
-              visibility
               tasks {
                 ...Task
               }

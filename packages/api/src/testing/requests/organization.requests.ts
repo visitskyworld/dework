@@ -3,24 +3,12 @@ import { UpdateOrganizationInput } from "@dewo/api/modules/organization/dto/Upda
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class OrganizationRequests {
-  private static organizationMemberFragment = `
-    fragment OrganizationMember on OrganizationMember {
-      id
-      role
-      userId
-      sortKey
-    }
-  `;
-
   private static organizationFragment = `
     fragment Organization on Organization {
       id
       name
       imageUrl
       deletedAt
-      members {
-        ...OrganizationMember
-      }
       users {
         id
         roles {
@@ -36,8 +24,6 @@ export class OrganizationRequests {
         projectId
       }
     }
-
-    ${OrganizationRequests.organizationMemberFragment}
   `;
 
   public static create(

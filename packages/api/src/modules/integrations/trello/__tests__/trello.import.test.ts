@@ -1,4 +1,4 @@
-import { ProjectVisibility } from "@dewo/api/models/Project";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -77,7 +77,6 @@ describe("TrelloImportService", () => {
       expect(projects).toContainEqual(
         expect.objectContaining({
           name: "Unit Test Private",
-          visibility: ProjectVisibility.PRIVATE,
           tasks: expect.arrayContaining([
             expect.objectContaining({
               name: "Task that needs to be done",
@@ -113,7 +112,6 @@ This is a description. It supports **markdown** and _italic_ text
       expect(projects).toContainEqual(
         expect.objectContaining({
           name: "Unit Test Public",
-          visibility: ProjectVisibility.PUBLIC,
           tasks: expect.arrayContaining([
             expect.objectContaining({
               name: "Task in public board",
@@ -121,6 +119,30 @@ This is a description. It supports **markdown** and _italic_ text
               tags: [],
             }),
           ]),
+        })
+      );
+
+      const privateProject = projects.find(
+        (p: any) => p.name === "Unit Test Private"
+      );
+      const publicProject = projects.find(
+        (p: any) => p.name === "Unit Test Public"
+      );
+      const fallbackRole = await organization.roles.then((r) =>
+        r.find((r) => r.fallback)
+      );
+      await expect(fallbackRole?.rules).resolves.toContainEqual(
+        expect.objectContaining({
+          permission: RulePermission.VIEW_PROJECTS,
+          inverted: true,
+          projectId: privateProject.id,
+        })
+      );
+      await expect(fallbackRole?.rules).resolves.not.toContainEqual(
+        expect.objectContaining({
+          permission: RulePermission.VIEW_PROJECTS,
+          inverted: true,
+          projectId: publicProject.id,
         })
       );
     });

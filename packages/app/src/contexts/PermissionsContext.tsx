@@ -32,6 +32,7 @@ type AbilitySubject =
   | "Organization"
   | "TaskApplication"
   | "TaskSection"
+  | "TaskReward"
   | "Role"
   | "Rule"
   | "Project"

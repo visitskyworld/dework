@@ -123,10 +123,15 @@ describe("DiscordIntegrationResolver", () => {
           discordChannelId
         );
 
+        const user = await fixtures.createUser({
+          source: ThreepidSource.discord,
+          threepid: discordUserId,
+        });
         const task = await fixtures.createTask({ projectId: project.id });
         const linkWhenNoThreadExists = await client
           .request({
             app,
+            auth: fixtures.createAuthToken(user),
             body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
           })
           .then((res) => res.body.data.link);
@@ -145,6 +150,7 @@ describe("DiscordIntegrationResolver", () => {
         const linkWhenThreadExists = await client
           .request({
             app,
+            auth: fixtures.createAuthToken(user),
             body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
           })
           .then((res) => res.body.data.link);
@@ -154,6 +160,7 @@ describe("DiscordIntegrationResolver", () => {
         const linkAfterThreadArchived = await client
           .request({
             app,
+            auth: fixtures.createAuthToken(user),
             body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
           })
           .then((res) => res.body.data.link);
@@ -167,6 +174,7 @@ describe("DiscordIntegrationResolver", () => {
         const linkAfterThreadDeleted = await client
           .request({
             app,
+            auth: fixtures.createAuthToken(user),
             body: DiscordIntegrationRequests.createTaskDiscordLink(task.id),
           })
           .then((res) => res.body.data.link);

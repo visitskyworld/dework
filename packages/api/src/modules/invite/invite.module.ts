@@ -5,11 +5,7 @@ import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../auth/permissions";
-import { OrganizationModule } from "../organization/organization.module";
 import { PermalinkModule } from "../permalink/permalink.module";
-import { ProjectModule } from "../project/project.module";
 import { RbacModule } from "../rbac/rbac.module";
 import { InviteResolver } from "./invite.resolver";
 import { InviteService } from "./invite.service";
@@ -23,9 +19,6 @@ import { InviteService } from "./invite.service";
       ProjectMember,
       Project,
     ]),
-    CaslModule.forFeature({ permissions }),
-    ProjectModule,
-    OrganizationModule,
     PermalinkModule,
     RbacModule,
   ],

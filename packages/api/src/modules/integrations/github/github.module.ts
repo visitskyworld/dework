@@ -17,8 +17,6 @@ import { GithubIssue } from "@dewo/api/models/GithubIssue";
 import { Project } from "@dewo/api/models/Project";
 import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
-import { CaslModule } from "nest-casl";
-import { permissions } from "../../auth/permissions";
 import { GithubIntegrationTaskCreatedEventHandler } from "./github.eventHandlers";
 import { PermalinkModule } from "../../permalink/permalink.module";
 import { DiscordIntegrationModule } from "../discord/discord.integration.module";
@@ -45,7 +43,6 @@ import { RbacModule } from "../../rbac/rbac.module";
     DiscordIntegrationModule,
     PermalinkModule,
     RbacModule,
-    CaslModule.forFeature({ permissions }),
   ],
   providers: [
     GithubService,

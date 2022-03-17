@@ -3422,7 +3422,7 @@
     "@typescript-eslint/types" "5.8.0"
     eslint-visitor-keys "^3.0.0"
 
-"@ucast/core@^1.0.0", "@ucast/core@^1.10.1", "@ucast/core@^1.4.1", "@ucast/core@^1.6.1":
+"@ucast/core@^1.0.0", "@ucast/core@^1.4.1", "@ucast/core@^1.6.1":
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/@ucast/core/-/core-1.10.1.tgz#03a77a7804bcb5002a5cad3681e86cd1897e2e1f"
   integrity sha512-sXKbvQiagjFh2JCpaHUa64P4UdJbOxYeC5xiZFn8y6iYdb0WkismduE+RmiJrIjw/eLDYmIEXiQeIYYowmkcAw==
@@ -3443,19 +3443,12 @@
     "@ucast/js" "^3.0.0"
     "@ucast/mongo" "^2.4.0"
 
-"@ucast/mongo@^2.4.0", "@ucast/mongo@^2.4.2":
+"@ucast/mongo@^2.4.0":
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/@ucast/mongo/-/mongo-2.4.2.tgz#a8a1c32e65ccab623be023e6cedb11d136d50f19"
   integrity sha512-/zH1TdBJlYGKKD+Wh0oyD+aBvDSWrwHcD8b4tUL9UgHLhzHtkEnMVFuxbw3SRIRsAa01wmy06+LWt+WoZdj1Bw==
   dependencies:
     "@ucast/core" "^1.4.1"
-
-"@ucast/sql@^1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@ucast/sql/-/sql-1.0.0-alpha.1.tgz#575bf0e74252b05e87ec3c988e66533e6b7e245e"
-  integrity sha512-0XqQ5hskjO0FjCc259MxelpdAdKbx7rg3ZbS4NAudG6HB/ddnle1RtSlO/I+z/Y4viOmJgGDCC9NVIKm+5BG5g==
-  dependencies:
-    "@ucast/core" "^1.0.0"
 
 "@uiw/copy-to-clipboard@1.0.12":
   version "1.0.12"
@@ -11403,16 +11396,6 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
-
-nest-casl@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/nest-casl/-/nest-casl-1.4.1.tgz#e50a47ecb58f096a8598eacb949eee49a59cbafe"
-  integrity sha512-7DpFvOdSjM9nwxnpQmzZNqgxulqzsKwctsIiKtuRruyXA08HadMTojeYbQpfNaqsClzAJ/Q9jV7FFIWyvuFTRw==
-  dependencies:
-    "@casl/ability" "^5.4.3"
-    "@ucast/core" "^1.10.1"
-    "@ucast/mongo" "^2.4.2"
-    "@ucast/sql" "^1.0.0-alpha.1"
 
 next-absolute-url@^1.2.2:
   version "1.2.2"

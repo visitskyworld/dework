@@ -16,7 +16,8 @@ import {
   TrelloThreepidConfig,
 } from "@dewo/api/models/Threepid";
 import { TrelloBoard } from "./dto/TrelloBoard";
-import { ProjectVisibility } from "@dewo/api/models/Project";
+import { RbacService } from "../../rbac/rbac.service";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
 export class TrelloImportService {
@@ -26,6 +27,7 @@ export class TrelloImportService {
     private readonly projectService: ProjectService,
     private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService,
+    private readonly rbacService: RbacService,
     private readonly config: ConfigService<ConfigType>
   ) {}
 
@@ -79,6 +81,12 @@ export class TrelloImportService {
       })}`
     );
     const trello = await this.createClient(threepidId);
+    const fallbackRole = await this.rbacService.getFallbackRole(organizationId);
+    const personalRole = await this.rbacService.getOrCreatePersonalRole(
+      user.id,
+      organizationId
+    );
+    if (!fallbackRole) throw new Error("Organization is missing fallback role");
 
     for (const boardId of boardIds) {
       this.logger.debug(`Import Trello board: ${JSON.stringify({ boardId })}`);
@@ -101,20 +109,33 @@ export class TrelloImportService {
 
       const name = board.name;
       const description = board.desc;
-      const visibility =
-        board.prefs.permissionLevel === "private"
-          ? ProjectVisibility.PRIVATE
-          : ProjectVisibility.PUBLIC;
+      const isPrivate = board.prefs.permissionLevel === "private";
       const project = await this.projectService.create(
-        { organizationId, name, description, visibility },
+        { organizationId, name, description },
         user.id
       );
+      if (isPrivate) {
+        await this.rbacService.createRules([
+          {
+            roleId: fallbackRole.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            inverted: true,
+            projectId: project.id,
+          },
+          {
+            roleId: personalRole.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            projectId: project.id,
+          },
+        ]);
+      }
+
       this.logger.debug(
         `Created project: ${JSON.stringify({
           id: project.id,
           name,
           description,
-          visibility,
+          isPrivate,
         })}`
       );
 

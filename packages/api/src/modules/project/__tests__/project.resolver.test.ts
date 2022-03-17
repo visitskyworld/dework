@@ -1,9 +1,8 @@
-import { ProjectVisibility } from "@dewo/api/models/Project";
 import {
   DiscordProjectIntegrationFeature,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -62,12 +61,6 @@ describe("ProjectResolver", () => {
         expect(project).toBeDefined();
         expect(project.name).toEqual(name);
         expect(project.organization.id).toEqual(organization.id);
-        expect(project.members).toContainEqual(
-          expect.objectContaining({
-            userId: user.id,
-            role: ProjectRole.ADMIN,
-          })
-        );
       });
     });
 
@@ -276,9 +269,10 @@ describe("ProjectResolver", () => {
 
       it("should fail for private projects where caller is not contributor", async () => {
         const user = await fixtures.createUser();
-        const project = await fixtures.createProject({
-          visibility: ProjectVisibility.PRIVATE,
-        });
+        const project = await fixtures.createProject();
+        await fixtures.grantPermissions(user.id, project.organizationId, [
+          { permission: RulePermission.VIEW_PROJECTS, inverted: true },
+        ]);
 
         const response = await client.request({
           app,

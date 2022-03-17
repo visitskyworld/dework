@@ -1,5 +1,3 @@
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
-
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -55,86 +53,50 @@ describe("InviteResolver", () => {
     });
 
     describe("createProjectInvite", () => {
-      async function fn(
-        invitedRole: ProjectRole,
-        inviterProjectRole?: ProjectRole,
-        inviterOrganizationRole?: OrganizationRole
-      ) {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization(
-          {},
-          undefined,
-          !!inviterOrganizationRole
-            ? [{ userId: user.id, role: inviterOrganizationRole }]
-            : []
-        );
-
-        const project = await fixtures.createProject(
-          { organizationId: organization.id },
-          undefined,
-          !!inviterProjectRole
-            ? [{ userId: user.id, role: inviterProjectRole }]
-            : []
-        );
-
-        return client.request({
+      it("owner can invite CONTRIBUTOR", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const res = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
           body: InviteRequests.createProjectInvite({
             projectId: project.id,
-            role: invitedRole,
+            role: ProjectRole.CONTRIBUTOR,
           }),
         });
-      }
 
-      it("non-member cannot invite CONTRIBUTOR", async () => {
-        const res = await fn(ProjectRole.CONTRIBUTOR);
-        client.expectGqlError(res, HttpStatus.FORBIDDEN);
-      });
-
-      it("CONTRIBUTOR can invite CONTRIBUTOR", async () => {
-        const res = await fn(ProjectRole.CONTRIBUTOR, ProjectRole.CONTRIBUTOR);
         expect(res.body.data.invite).toEqual(
           expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
         );
       });
 
-      it("ADMIN can invite CONTRIBUTOR", async () => {
-        const res = await fn(ProjectRole.CONTRIBUTOR, ProjectRole.ADMIN);
-        expect(res.body.data.invite).toEqual(
-          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
-        );
-      });
+      it("owner can invite ADMIN", async () => {
+        const { user, project } = await fixtures.createUserOrgProject();
+        const res = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: InviteRequests.createProjectInvite({
+            projectId: project.id,
+            role: ProjectRole.ADMIN,
+          }),
+        });
 
-      it("org FOLLOWER cannot invite CONTRIBUTOR", async () => {
-        const res = await fn(
-          ProjectRole.CONTRIBUTOR,
-          undefined,
-          OrganizationRole.FOLLOWER
-        );
-        client.expectGqlError(res, HttpStatus.FORBIDDEN);
-      });
-
-      it("org ADMIN can invite CONTRIBUTOR", async () => {
-        const res = await fn(
-          ProjectRole.CONTRIBUTOR,
-          undefined,
-          OrganizationRole.ADMIN
-        );
-        expect(res.body.data.invite).toEqual(
-          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
-        );
-      });
-
-      it("org ADMIN can invite ADMIN", async () => {
-        const res = await fn(
-          ProjectRole.ADMIN,
-          undefined,
-          OrganizationRole.ADMIN
-        );
         expect(res.body.data.invite).toEqual(
           expect.objectContaining({ projectRole: ProjectRole.ADMIN })
         );
+      });
+
+      it("org member cannot invite CONTRIBUTOR", async () => {
+        const user = await fixtures.createUser();
+        const project = await fixtures.createProject();
+        const res = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: InviteRequests.createProjectInvite({
+            projectId: project.id,
+            role: ProjectRole.ADMIN,
+          }),
+        });
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
     });
 

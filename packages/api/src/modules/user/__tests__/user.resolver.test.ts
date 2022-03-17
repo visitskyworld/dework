@@ -8,17 +8,13 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { UserRequests } from "@dewo/api/testing/requests/user.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
-import { Ability } from "@casl/ability";
 import faker from "faker";
 import { User } from "@dewo/api/models/User";
-import { GetUserPermissionsInput } from "../dto/GetUserPermissionsInput";
-import { TaskStatus } from "@dewo/api/models/Task";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -483,94 +479,6 @@ describe("UserResolver", () => {
         expect(me.organizations).not.toContainEqual(
           expect.objectContaining({ id: deletedOrg.id })
         );
-      });
-    });
-
-    describe("permissions", () => {
-      const getPermissions = async (
-        user: User | undefined,
-        input: GetUserPermissionsInput = {}
-      ) => {
-        const response = await client.request({
-          app,
-          auth: !!user ? fixtures.createAuthToken(user) : undefined,
-          body: UserRequests.permissions(input),
-        });
-
-        expect(response.status).toEqual(HttpStatus.OK);
-        const permissions = response.body.data?.permissions;
-        return new Ability(permissions, {
-          detectSubjectType: (object) => object.constructor.name,
-        });
-      };
-
-      it("everyone", async () => {
-        const { organization, project } = await fixtures.createUserOrgProject();
-        const user = await fixtures.createUser();
-        const assignedTask = await fixtures.createTask({
-          assignees: [user],
-          status: TaskStatus.IN_PROGRESS,
-          projectId: project.id,
-        });
-        const unassignedTask = await fixtures.createTask({
-          projectId: project.id,
-        });
-        const ownedTask = await fixtures.createTask({
-          projectId: project.id,
-          ownerId: user.id,
-        });
-
-        const permissions = await getPermissions(user, {
-          organizationId: organization.id,
-          projectId: project.id,
-        });
-        expect(permissions.can("read", "Organization")).toBe(true);
-        expect(permissions.can("read", "Project")).toBe(true);
-        expect(permissions.can("read", "Task")).toBe(true);
-
-        expect(permissions.can("create", "Organization")).toBe(true);
-        expect(permissions.can("create", "Project")).toBe(false);
-        expect(permissions.can("create", "Task")).toBe(false);
-
-        expect(permissions.can("update", ownedTask)).toBe(true);
-        expect(permissions.can("update", assignedTask)).toBe(true);
-        expect(permissions.can("update", unassignedTask)).toBe(false);
-      });
-
-      it("organizationAdmin", async () => {
-        const { user, organization } = await fixtures.createUserOrgProject();
-
-        const permissions = await getPermissions(user, {
-          organizationId: organization.id,
-        });
-        expect(permissions.can("update", "Organization")).toBe(true);
-        expect(permissions.can("delete", "Organization")).toBe(true);
-        expect(permissions.can("create", "Project")).toBe(true);
-        expect(permissions.can("update", "Project")).toBe(true);
-        expect(permissions.can("delete", "Project")).toBe(true);
-        expect(permissions.can("create", "Task")).toBe(true);
-        expect(permissions.can("update", "Task")).toBe(true);
-        expect(permissions.can("delete", "Task")).toBe(true);
-      });
-
-      it("projectAdmin", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization();
-        const project = await fixtures.createProject(
-          { organizationId: organization.id },
-          undefined,
-          [{ userId: user.id, role: ProjectRole.ADMIN }]
-        );
-
-        const permissions = await getPermissions(user, {
-          projectId: project.id,
-        });
-        expect(permissions.can("create", "Project")).toBe(false);
-        expect(permissions.can("delete", "Project")).toBe(false);
-        expect(permissions.can("update", "Project")).toBe(true);
-        expect(permissions.can("create", "Task")).toBe(true);
-        expect(permissions.can("update", "Task")).toBe(true);
-        expect(permissions.can("delete", "Task")).toBe(true);
       });
     });
 
