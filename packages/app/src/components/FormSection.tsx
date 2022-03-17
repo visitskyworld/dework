@@ -4,7 +4,7 @@ import * as Icons from "@ant-design/icons";
 
 interface Props {
   label: ReactNode;
-  tooltip?: string;
+  tooltip?: ReactNode;
   children: ReactNode;
   style?: CSSProperties;
   className?: string;

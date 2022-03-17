@@ -1,8 +1,9 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { RulePermission } from "@dewo/app/graphql/types";
+import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
 import { Card, Divider, Space, Spin, Typography } from "antd";
 import React, { FC } from "react";
+import { projectRoleDescription } from "../../project/settings/ProjectSettingsMemberList";
 import { useOrganizationRoles } from "../hooks";
 import { ProjectPrivateAlert } from "./ProjectPrivateAlert";
 import { RBACPermissionForm } from "./RBACPermissionForm";
@@ -27,12 +28,11 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         <Typography.Title level={5}>Permissions</Typography.Title>
         <FormSection
           label="Project Steward"
-          tooltip={[
-            "Users with this permission can:",
-            "- Manage project settings and integrations",
-            "- Create, update, delete tasks",
-            "- See, approve and deny task applications and submissions",
-          ].join("\n")}
+          tooltip={
+            <Typography.Text style={{ whiteSpace: "pre-line" }}>
+              {projectRoleDescription[ProjectRole.ADMIN]}
+            </Typography.Text>
+          }
         >
           <RBACPermissionForm
             disabled={!canManagePermissions}
@@ -45,11 +45,11 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         <Divider />
         <FormSection
           label="Contributor"
-          tooltip={[
-            "Users with this permission can:",
-            '- Create Community Suggestions (note: enable "Contributor Suggestions" in the General tab)',
-            "- Vote on tasks in Community Suggestions",
-          ].join("\n")}
+          tooltip={
+            <Typography.Text style={{ whiteSpace: "pre-line" }}>
+              {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
+            </Typography.Text>
+          }
         >
           <RBACPermissionForm
             disabled={!canManagePermissions}

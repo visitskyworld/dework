@@ -16,7 +16,6 @@ export const projectRoleDescription: Record<ProjectRole, string> = {
     "- do everything Contributors can",
     "- manage all tasks, applications, submissions",
     "- manage project settings",
-    "- invite stewards and contributors",
   ].join("\n"),
   [ProjectRole.CONTRIBUTOR]: [
     "Project Contributors can:",
