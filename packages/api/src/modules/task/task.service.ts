@@ -8,8 +8,8 @@ import {
   Not,
   Repository,
   OrderByCondition,
-  Brackets,
   DeepPartial,
+  Brackets,
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import {
@@ -212,27 +212,23 @@ export class TaskService {
     ids,
     rewardIds,
     projectIds,
-    organizationIds,
     assigneeId,
     statuses,
     limit,
     doneAtAfter,
     doneAtBefore,
-    rewardNotNull = false,
   }: {
     ids?: string[];
     rewardIds?: string[];
     projectIds?: string[];
-    organizationIds?: string[];
     assigneeId?: string | null;
     statuses?: TaskStatus[];
     order?: OrderByCondition;
     doneAtAfter?: Date;
     doneAtBefore?: Date;
     limit?: number;
-    rewardNotNull?: boolean;
   }): Promise<Task[]> {
-    const filterOutSpam = !projectIds && !organizationIds;
+    const filterOutSpam = !projectIds && !assigneeId;
 
     let query = this.taskRepo
       .createQueryBuilder("task")
@@ -246,8 +242,45 @@ export class TaskService {
       .leftJoinAndSelect("task.subtasks", "subtask")
       .leftJoinAndSelect("task.applications", "application")
       .leftJoinAndSelect("task.submissions", "submission")
-      .innerJoinAndSelect("task.project", "project")
-      .where("1 = 1");
+      .innerJoinAndSelect("task.project", "project");
+
+    // for access, making lots of assumptions (e.g. that VIEW_PROJECTS is enabled for fallback role)
+    // which tasks can someone see?
+    // 1. tasks where the org's fallback role has VIEW_PROJECTS permission AND the task's project does _not_ have inverted VIEW_PROJECTS permission
+    // 2. tasks where the user has a role that has VIEW_PROJECTS permission for the specific project
+    /*
+      .leftJoin(
+        Rule,
+        "blockingRule",
+        "blockingRule.projectId = task.projectId AND blockingRule.permission = :permission AND blockingRule.inverted IS TRUE",
+        { permission: RulePermission.VIEW_PROJECTS }
+      )
+      .leftJoin(
+        "blockingRule.role",
+        "blockingRole",
+        "blockingRole.fallback IS TRUE"
+      )
+      .leftJoin(
+        Rule,
+        "allowingRule",
+        "allowingRule.projectId = task.projectId AND allowingRule.permission = :permission AND allowingRule.inverted IS FALSE",
+        {
+          permission: RulePermission.VIEW_PROJECTS,
+        }
+      )
+      .leftJoin("allowingRule.role", "allowingRole")
+      .leftJoin("allowingRole.users", "user", "user.id = :userId", {
+        userId: requesterId,
+      })
+      .where("1 = 1")
+      .andWhere(
+        new Brackets((qb) =>
+          qb
+            .where("blockingRule.id IS NULL")
+            .orWhere("allowingRule.id IS NOT NULL")
+        )
+      );
+      */
 
     if (!!ids) {
       query = query.andWhere("task.id IN (:...ids)", { ids });
@@ -255,57 +288,6 @@ export class TaskService {
 
     if (!!rewardIds) {
       query = query.andWhere("task.rewardId IN (:...rewardIds)", { rewardIds });
-    }
-
-    if (!!rewardNotNull) {
-      query = query.andWhere("task.rewardId IS NOT NULL");
-    }
-
-    if (!!projectIds || !!organizationIds) {
-      query = query.andWhere(
-        new Brackets((qb) => {
-          qb.where("task.parentTaskId IS NULL").orWhere(
-            new Brackets((qb) => {
-              qb.where("task.status = :done", { done: TaskStatus.DONE })
-                .andWhere("task.rewardId IS NOT NULL")
-                .andWhere("assignee.id IS NOT NULL");
-            })
-          );
-        })
-      );
-    }
-
-    if (filterOutSpam) {
-      query = query.andWhere(
-        "task.createdAt - project.createdAt > '2 hours'::interval"
-      );
-    }
-
-    if (!!projectIds) {
-      query = query.andWhere("task.projectId IN (:...projectIds)", {
-        projectIds,
-      });
-    }
-
-    if (!!organizationIds) {
-      query = query.andWhere(
-        "project.organizationId IN (:...organizationIds)",
-        { organizationIds }
-      );
-    }
-
-    if (!!assigneeId) {
-      // TODO(fant): this will filter out other task assignees, which is a bug
-      query = query.andWhere(
-        new Brackets((qb) =>
-          qb
-            .where("assignee.id = :assigneeId", { assigneeId })
-            .orWhere("task.ownerId = :assigneeId", { assigneeId })
-            .orWhere("application.userId = :assigneeId", { assigneeId })
-        )
-      );
-    } else if (assigneeId === null) {
-      query = query.andWhere("assignee.id IS NULL");
     }
 
     if (!!statuses) {
@@ -318,6 +300,28 @@ export class TaskService {
 
     if (!!doneAtBefore) {
       query = query.andWhere("task.doneAt < :doneAtBefore", { doneAtBefore });
+    }
+
+    if (filterOutSpam) {
+      query = query.andWhere(
+        "task.createdAt - project.createdAt > '2 hours'::interval"
+      );
+    }
+
+    if (!!projectIds) {
+      query = query
+        .andWhere("task.projectId IN (:...projectIds)", { projectIds })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where("task.parentTaskId IS NULL").orWhere(
+              new Brackets((qb) => {
+                qb.where("task.status = :done", { done: TaskStatus.DONE })
+                  .andWhere("task.rewardId IS NOT NULL")
+                  .andWhere("assignee.id IS NOT NULL");
+              })
+            );
+          })
+        );
     }
 
     return query

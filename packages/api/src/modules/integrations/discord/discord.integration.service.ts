@@ -13,7 +13,6 @@ import { formatFixed } from "@ethersproject/bignumber";
 import {
   DiscordProjectIntegrationConfig,
   DiscordProjectIntegrationFeature,
-  ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
@@ -39,11 +38,6 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
-import { ProjectService } from "../../project/project.service";
-import { OrganizationService } from "../../organization/organization.service";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -59,8 +53,6 @@ export class DiscordIntegrationService {
     private readonly discord: DiscordService,
     private readonly permalink: PermalinkService,
     private readonly taskService: TaskService,
-    private readonly projectService: ProjectService,
-    private readonly organizationService: OrganizationService,
     private readonly threepidService: ThreepidService,
     private readonly integrationService: IntegrationService,
     @InjectRepository(DiscordChannel)
@@ -987,128 +979,5 @@ export class DiscordIntegrationService {
   private async formatTaskReward(reward: TaskReward): Promise<string> {
     const token = await reward.token;
     return [formatFixed(reward.amount, token.exp), token.symbol].join(" ");
-  }
-
-  public async joinProjectsWithDiscordRole(
-    userId: string,
-    organizationId: string
-  ): Promise<ProjectMember[]> {
-    this.logger.debug(
-      `Join projects with Discord role: ${JSON.stringify({
-        userId,
-        organizationId,
-      })}`
-    );
-    // 1. fetch user discord id
-    const discordId = await this.getDiscordId(userId);
-    if (!discordId) {
-      throw new NotFoundException("User has no Discord account connected");
-    }
-    this.logger.debug(
-      `Found Discord id: ${JSON.stringify({ userId, discordId })}`
-    );
-
-    // 2. fetch organization discord integration
-    const integration =
-      await this.integrationService.findOrganizationIntegration(
-        organizationId,
-        OrganizationIntegrationType.DISCORD
-      );
-
-    if (!integration) {
-      throw new NotFoundException("Organization integration not found");
-    }
-
-    // 3. get list of user roles
-    const guild = await this.discord
-      .getClient(integration)
-      .guilds.fetch(integration.config.guildId);
-    await guild.roles.fetch(undefined, { force: true });
-    const discordMember = await guild.members.fetch({
-      user: discordId,
-      force: true,
-    });
-    this.logger.debug(
-      `Found discord member: ${JSON.stringify({ id: discordMember.id })}`
-    );
-
-    // 4. get project integrations
-    const projectIntegrations = await integration.projectIntegrations;
-    const roleGates = projectIntegrations.filter(
-      (i): i is ProjectIntegration<ProjectIntegrationType.DISCORD_ROLE_GATE> =>
-        i.type === ProjectIntegrationType.DISCORD_ROLE_GATE && !i.deletedAt
-    );
-
-    const projectMembers: ProjectMember[] = [];
-    for (const projectRole of [ProjectRole.ADMIN, ProjectRole.CONTRIBUTOR]) {
-      this.logger.debug(
-        `Checking if can join projects with role: ${JSON.stringify({
-          projectRole,
-        })}`
-      );
-
-      const gates = roleGates.filter(
-        (i) => i.config.projectRole === projectRole
-      );
-
-      for (const gate of gates) {
-        if (projectMembers.some((pm) => pm.projectId === gate.projectId)) {
-          this.logger.warn(
-            `Already joined project from previous role gate: ${JSON.stringify({
-              userId,
-              organizationId,
-            })}`
-          );
-          continue;
-        }
-
-        const hasRole = gate.config.discordRoleIds.some((roleId) =>
-          discordMember.roles.cache.find((r) => r.id === roleId)
-        );
-
-        this.logger.debug(
-          `Checking if has matching role: ${JSON.stringify({
-            hasRole,
-            projectRole,
-            projectId: gate.projectId,
-            roleIds: gate.config.discordRoleIds,
-          })}`
-        );
-        if (hasRole) {
-          const pm = await this.projectService.upsertMember({
-            role: projectRole,
-            projectId: gate.projectId,
-            userId,
-          });
-          projectMembers.push(pm);
-        }
-      }
-    }
-
-    this.logger.debug(
-      `Checking if user is following organization: ${JSON.stringify({
-        userId,
-        organizationId,
-      })}`
-    );
-    const organizationMember = await this.organizationService.findMember({
-      userId,
-      organizationId,
-    });
-    if (!organizationMember) {
-      this.logger.debug(
-        `Making user follow organization: ${JSON.stringify({
-          userId,
-          organizationId,
-        })}`
-      );
-      await this.organizationService.upsertMember({
-        organizationId,
-        role: OrganizationRole.FOLLOWER,
-        userId,
-      });
-    }
-
-    return projectMembers;
   }
 }

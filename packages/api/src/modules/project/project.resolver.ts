@@ -28,7 +28,6 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
 import { IntegrationService } from "../integrations/integration.service";
 import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
@@ -39,6 +38,8 @@ import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
+import { RbacService } from "../rbac/rbac.service";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Resolver(() => Project)
 @Injectable()
@@ -46,7 +47,8 @@ export class ProjectResolver {
   constructor(
     private readonly projectService: ProjectService,
     private readonly permalinkService: PermalinkService,
-    private readonly integrationService: IntegrationService
+    private readonly integrationService: IntegrationService,
+    private readonly rbacService: RbacService
   ) {}
 
   @ResolveField(() => String)
@@ -103,10 +105,9 @@ export class ProjectResolver {
     })
   )
   public async createProject(
-    @Context("user") user: User,
     @Args("input") input: CreateProjectInput
   ): Promise<Project> {
-    return this.projectService.create(input, user.id);
+    return this.projectService.create(input);
   }
 
   @Mutation(() => Project)
@@ -169,41 +170,71 @@ export class ProjectResolver {
     return this.projectService.updateSection(input);
   }
 
-  @Mutation(() => ProjectMember)
+  @Mutation(() => Project)
   @UseGuards(AuthGuard)
   public async joinProjectWithToken(
     @Context("user") user: User,
     @Args("projectId", { type: () => GraphQLUUID }) projectId: string
-  ): Promise<ProjectMember> {
+  ): Promise<Project> {
     const project = await this.projectService.findById(projectId);
     if (!project) throw new NotFoundException();
 
     const tokenGates = await project.tokenGates;
+    if (!tokenGates.length) return project;
     const adminGates = tokenGates.filter((g) => g.role === ProjectRole.ADMIN);
     const contributorGates = tokenGates.filter(
       (g) => g.role === ProjectRole.CONTRIBUTOR
     );
 
+    const fallbackRole = await this.rbacService.getFallbackRole(
+      project.organizationId
+    );
+    if (!!fallbackRole) {
+      await this.rbacService.addRole(user.id, fallbackRole.id);
+    }
+
+    const personalRole = await this.rbacService.getOrCreatePersonalRole(
+      user.id,
+      project.organizationId
+    );
     if (!!adminGates.length) {
-      const member = await this.projectService
-        .upsertMember({
-          projectId,
-          userId: user.id,
-          role: ProjectRole.ADMIN,
-        })
-        .catch(() => undefined);
-      if (!!member) return member;
+      const passes = await this.projectService
+        .assertUserPassesTokenGates(project, user, ProjectRole.CONTRIBUTOR)
+        .then(() => true)
+        .catch(() => false);
+      if (passes) {
+        await this.rbacService.createRules(
+          [
+            RulePermission.MANAGE_PROJECTS,
+            RulePermission.VIEW_PROJECTS,
+            RulePermission.SUGGEST_AND_VOTE,
+          ].map((permission) => ({
+            roleId: personalRole.id,
+            permission,
+            projectId: project.id,
+          }))
+        );
+        return project;
+      }
     }
 
     if (!!contributorGates.length) {
-      const member = await this.projectService
-        .upsertMember({
-          projectId,
-          userId: user.id,
-          role: ProjectRole.CONTRIBUTOR,
-        })
-        .catch(() => undefined);
-      if (!!member) return member;
+      const passes = await this.projectService
+        .assertUserPassesTokenGates(project, user, ProjectRole.CONTRIBUTOR)
+        .then(() => true)
+        .catch(() => false);
+      if (passes) {
+        await this.rbacService.createRules(
+          [RulePermission.VIEW_PROJECTS, RulePermission.SUGGEST_AND_VOTE].map(
+            (permission) => ({
+              roleId: personalRole.id,
+              permission,
+              projectId: project.id,
+            })
+          )
+        );
+        return project;
+      }
     }
 
     throw new ForbiddenException();

@@ -7,23 +7,17 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
-  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, In, IsNull, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
-import { UserService } from "../user/user.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
-import { UpdateProjectMemberInput } from "./dto/UpdateProjectMemberInput";
 
 @Injectable()
 export class ProjectService {
-  private readonly logger = new Logger("ProjectService");
-
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
@@ -35,22 +29,13 @@ export class ProjectService {
     private readonly taskTagRepo: Repository<TaskTag>,
     @InjectRepository(ProjectSection)
     private readonly projectSectionRepo: Repository<ProjectSection>,
-    private readonly tokenService: TokenService,
-    private readonly userService: UserService
+    private readonly tokenService: TokenService
   ) {}
 
-  public async create(
-    partial: DeepPartial<Project>,
-    creatorId: string
-  ): Promise<Project> {
+  public async create(partial: DeepPartial<Project>): Promise<Project> {
     const created = await this.projectRepo.save({
       ...partial,
       sortKey: Date.now().toString(),
-    });
-    await this.upsertMember({
-      projectId: created.id,
-      userId: creatorId,
-      role: ProjectRole.ADMIN,
     });
     return this.projectRepo.findOne(created.id) as Promise<Project>;
   }
@@ -119,43 +104,6 @@ export class ProjectService {
     const query = { id: partial.id, organizationId: partial.organizationId };
     await this.projectSectionRepo.update(query, partial);
     return this.projectSectionRepo.findOne(query) as Promise<ProjectSection>;
-  }
-
-  public async upsertMember(
-    data: UpdateProjectMemberInput,
-    updateIfExists: boolean = true
-  ): Promise<ProjectMember> {
-    const member = await this.findMember({
-      projectId: data.projectId,
-      userId: data.userId,
-    });
-
-    const project = await this.projectRepo.findOne(data.projectId);
-    const user = await this.userService.findById(data.userId);
-    if (!project || !user) {
-      this.logger.warn(
-        `Cannot upsert project member without project and user: ${JSON.stringify(
-          { project, user }
-        )}`
-      );
-      throw new BadRequestException(
-        "Trying to upsert project member, but project or user does not exist"
-      );
-    }
-    await this.assertUserPassesTokenGates(project, user, data.role);
-
-    if (!!member) {
-      if (!updateIfExists) return member;
-      await this.projectMemberRepo.update({ id: member.id }, data);
-      return this.projectMemberRepo.findOne({
-        id: member.id,
-      }) as Promise<ProjectMember>;
-    } else {
-      const created = await this.projectMemberRepo.save(data);
-      return this.projectMemberRepo.findOne({
-        id: created.id,
-      }) as Promise<ProjectMember>;
-    }
   }
 
   public async addMemberIfNotExists(projectId: string, userIds: string[]) {
@@ -230,7 +178,7 @@ export class ProjectService {
     return projects;
   }
 
-  private async assertUserPassesTokenGates(
+  public async assertUserPassesTokenGates(
     project: Project,
     user: User,
     role: ProjectRole

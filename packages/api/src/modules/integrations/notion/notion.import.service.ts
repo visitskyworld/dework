@@ -125,10 +125,10 @@ export class NotionImportService {
         "title" in database
           ? database.title.map((t) => t.plain_text).join("")
           : "";
-      const project = await this.projectService.create(
-        { organizationId, name: projectName },
-        user.id
-      );
+      const project = await this.projectService.create({
+        organizationId,
+        name: projectName,
+      });
       const tags = await this.createTags(database, project.id);
 
       await Bluebird.map(

@@ -11,7 +11,6 @@ import { IntegrationModule } from "../integrations/integration.module";
 import { PaymentModule } from "../payment/payment.module";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { RbacModule } from "../rbac/rbac.module";
-import { UserModule } from "../user/user.module";
 import { ProjectResolver } from "./project.resolver";
 import { ProjectService } from "./project.service";
 
@@ -29,7 +28,6 @@ import { ProjectService } from "./project.service";
     PermalinkModule,
     IntegrationModule,
     PaymentModule,
-    UserModule,
     RbacModule,
   ],
   providers: [ProjectResolver, ProjectService],

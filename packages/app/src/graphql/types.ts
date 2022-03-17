@@ -3239,7 +3239,7 @@ export interface AcceptInviteMutationVariables {
 // GraphQL mutation operation: JoinProjectWithTokenMutation
 // ====================================================
 
-export interface JoinProjectWithTokenMutation_member_project {
+export interface JoinProjectWithTokenMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
   slug: string;
@@ -3250,52 +3250,12 @@ export interface JoinProjectWithTokenMutation_member_project {
   permalink: string;
 }
 
-export interface JoinProjectWithTokenMutation_member {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  project: JoinProjectWithTokenMutation_member_project;
-}
-
 export interface JoinProjectWithTokenMutation {
-  member: JoinProjectWithTokenMutation_member;
+  project: JoinProjectWithTokenMutation_project;
 }
 
 export interface JoinProjectWithTokenMutationVariables {
   projectId: Scalar.UUID;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: JoinProjectsWithDiscordRoleMutation
-// ====================================================
-
-export interface JoinProjectsWithDiscordRoleMutation_members_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-}
-
-export interface JoinProjectsWithDiscordRoleMutation_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  project: JoinProjectsWithDiscordRoleMutation_members_project;
-}
-
-export interface JoinProjectsWithDiscordRoleMutation {
-  members: JoinProjectsWithDiscordRoleMutation_members[];
-}
-
-export interface JoinProjectsWithDiscordRoleMutationVariables {
-  organizationId: Scalar.UUID;
 }
 
 /* tslint:disable */

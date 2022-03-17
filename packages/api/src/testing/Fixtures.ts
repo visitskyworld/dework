@@ -30,7 +30,6 @@ import { PaymentModule } from "../modules/payment/payment.module";
 import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
 import { DeepPartial } from "typeorm";
-import { OrganizationMember } from "../models/OrganizationMember";
 import { AtLeast, DeepAtLeast } from "../types/general";
 import {
   DiscordProjectIntegrationFeature,
@@ -48,7 +47,6 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "../models/OrganizationIntegration";
-import { ProjectMember } from "../models/ProjectMember";
 import { GithubIssue } from "../models/GithubIssue";
 import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
@@ -98,8 +96,7 @@ export class Fixtures {
 
   public async createOrganization(
     partial: DeepPartial<Organization> = {},
-    creator?: User,
-    members?: Pick<OrganizationMember, "userId" | "role">[]
+    creator?: User
   ): Promise<Organization> {
     const organization = await this.organizationService.create(
       {
@@ -109,15 +106,6 @@ export class Fixtures {
       creator ?? (await this.createUser())
     );
 
-    if (!members) return organization;
-    await Promise.all(
-      members.map((member) =>
-        this.organizationService.upsertMember({
-          ...member,
-          organizationId: organization.id,
-        })
-      )
-    );
     return this.organizationService.findById(
       organization.id
     ) as Promise<Organization>;
@@ -125,27 +113,14 @@ export class Fixtures {
 
   public async createProject(
     partialProject: Partial<Project> = {},
-    _creator?: User,
-    members?: Pick<ProjectMember, "userId" | "role">[]
+    creator?: User
   ): Promise<Project> {
-    const creator = _creator ?? (await this.createUser());
     const organization = await this.createOrganization({}, creator);
-    const project = await this.projectService.create(
-      {
-        name: faker.company.companyName(),
-        organizationId: organization.id,
-        ...partialProject,
-      },
-      creator.id
-    );
-
-    if (!members) return project;
-    await Promise.all(
-      members.map((member) =>
-        this.projectService.upsertMember({ ...member, projectId: project.id })
-      )
-    );
-    return this.projectService.findById(project.id) as Promise<Project>;
+    return this.projectService.create({
+      name: faker.company.companyName(),
+      organizationId: organization.id,
+      ...partialProject,
+    });
   }
 
   public async createProjectIntegration(

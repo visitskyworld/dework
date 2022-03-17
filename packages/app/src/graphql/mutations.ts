@@ -456,24 +456,8 @@ export const acceptInvite = gql`
 
 export const joinProjectWithToken = gql`
   mutation JoinProjectWithTokenMutation($projectId: UUID!) {
-    member: joinProjectWithToken(projectId: $projectId) {
-      id
-      project {
-        ...Project
-      }
-    }
-  }
-
-  ${Fragments.project}
-`;
-
-export const joinProjectsWithDiscordRole = gql`
-  mutation JoinProjectsWithDiscordRoleMutation($organizationId: UUID!) {
-    members: joinProjectsWithDiscordRole(organizationId: $organizationId) {
-      id
-      project {
-        ...Project
-      }
+    project: joinProjectWithToken(projectId: $projectId) {
+      ...Project
     }
   }
 

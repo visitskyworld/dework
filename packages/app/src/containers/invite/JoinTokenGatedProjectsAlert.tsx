@@ -7,7 +7,6 @@ import { LoginButton } from "../auth/LoginButton";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import _ from "lodash";
 import { UserProfileFormModal } from "../user/UserProfileFormModal";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -67,8 +66,7 @@ export const JoinTokenGatedProjectsAlert: FC<Props> = ({
     editingProfile.toggleOff();
   }, [modalVisible, editingProfile]);
 
-  const canAccessAllProjects = usePermission("update", "Project");
-  if (!tokenGates?.length || canAccessAllProjects !== false) return null;
+  if (!tokenGates?.length) return null;
 
   const tokensString = tokens.map((t) => t.symbol).join(", ");
 

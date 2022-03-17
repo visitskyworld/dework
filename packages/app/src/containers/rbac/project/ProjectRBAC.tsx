@@ -25,18 +25,15 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
       />
       <Card size="small">
         <Typography.Title level={5}>Permissions</Typography.Title>
-        <FormSection label="Manage Project">
-          <Typography.Paragraph
-            type="secondary"
-            className="ant-typography-caption"
-          >
-            Users with this permission can:
-            <ul>
-              <li>Manage project settings and integrations</li>
-              <li>Create, update, delete tasks</li>
-              <li>See, approve and deny task applications and submissions</li>
-            </ul>
-          </Typography.Paragraph>
+        <FormSection
+          label="Project Steward"
+          tooltip={[
+            "Users with this permission can:",
+            "- Manage project settings and integrations",
+            "- Create, update, delete tasks",
+            "- See, approve and deny task applications and submissions",
+          ].join("\n")}
+        >
           <RBACPermissionForm
             disabled={!canManagePermissions}
             permission={RulePermission.MANAGE_PROJECTS}
@@ -46,20 +43,14 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           />
         </FormSection>
         <Divider />
-        <FormSection label="Suggest/Vote">
-          <Typography.Paragraph
-            type="secondary"
-            className="ant-typography-caption"
-          >
-            Users with this permission can:
-            <ul>
-              <li>
-                Create Community Suggestions (note: enable "Contributor
-                Suggestions" in the General tab)
-              </li>
-              <li>Vote on tasks in Community Suggestions</li>
-            </ul>
-          </Typography.Paragraph>
+        <FormSection
+          label="Contributor"
+          tooltip={[
+            "Users with this permission can:",
+            '- Create Community Suggestions (note: enable "Contributor Suggestions" in the General tab)',
+            "- Vote on tasks in Community Suggestions",
+          ].join("\n")}
+        >
           <RBACPermissionForm
             disabled={!canManagePermissions}
             permission={RulePermission.SUGGEST_AND_VOTE}

@@ -11,7 +11,6 @@ import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectSettingsManage } from "./ProjectSettingsManage";
-import { ProjectSettingsDiscordRoleGating } from "./discordRoleGating/DiscordRoleGating";
 import { ProjectRBAC } from "../../rbac/project/ProjectRBAC";
 
 interface Props {
@@ -81,9 +80,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         <ProjectSettingsMembers project={project} />
       </Tabs.TabPane> */}
       <Tabs.TabPane
-        tab={
-          <Tab icon={<Icons.SafetyCertificateOutlined />} children="Access" />
-        }
+        tab={<Tab icon={<Icons.LockOutlined />} children="Access" />}
         key="access"
         style={tabStyle}
       >
@@ -96,14 +93,13 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         tab={
           <Tab
             icon={<Icons.SafetyCertificateOutlined />}
-            children="Token/Role Gating (old)"
+            children="Token Gating"
           />
         }
         key="token-gating"
         style={tabStyle}
       >
         <ProjectSettingsTokenGating project={project} />
-        <ProjectSettingsDiscordRoleGating project={project} />
       </Tabs.TabPane>
       {canRemoveProject ? (
         <Tabs.TabPane

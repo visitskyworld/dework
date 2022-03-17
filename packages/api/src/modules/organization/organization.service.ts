@@ -1,9 +1,6 @@
 import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Organization } from "@dewo/api/models/Organization";
-import {
-  OrganizationMember,
-  OrganizationRole,
-} from "@dewo/api/models/OrganizationMember";
+import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
@@ -13,7 +10,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, IsNull, Repository } from "typeorm";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
-import { UpdateOrganizationMemberInput } from "./dto/UpdateOrganizationMemberInput";
 import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
@@ -46,11 +42,7 @@ export class OrganizationService {
     const created = await this.organizationRepo.save(partial);
     await Promise.all([
       this.rbacService
-        .createRole({
-          color: "pink",
-          name: "owner",
-          organizationId: created.id,
-        })
+        .getOrCreatePersonalRole(creator.id, created.id)
         .then(async (role) => {
           for (const permission of [
             RulePermission.MANAGE_ORGANIZATION,
@@ -74,11 +66,6 @@ export class OrganizationService {
           });
           await this.rbacService.addRole(creator.id, role.id);
         }),
-      this.upsertMember({
-        organizationId: created.id,
-        userId: creator.id,
-        role: OrganizationRole.OWNER,
-      }),
     ]);
 
     return this.findById(created.id) as Promise<Organization>;
@@ -135,30 +122,6 @@ export class OrganizationService {
     >
   ): Promise<OrganizationMember | undefined> {
     return this.organizationMemberRepo.findOne(partial);
-  }
-
-  public async upsertMember(
-    data: UpdateOrganizationMemberInput
-  ): Promise<OrganizationMember> {
-    const member = await this.findMember({
-      organizationId: data.organizationId,
-      userId: data.userId,
-    });
-    if (!!member) {
-      await this.organizationMemberRepo.update({ id: member.id }, data);
-      return this.organizationMemberRepo.findOne({
-        id: member.id,
-      }) as Promise<OrganizationMember>;
-    } else {
-      const created = await this.organizationMemberRepo.save({
-        sortKey: Date.now().toString(),
-        role: OrganizationRole.FOLLOWER,
-        ...data,
-      });
-      return this.organizationMemberRepo.findOne({
-        id: created.id,
-      }) as Promise<OrganizationMember>;
-    }
   }
 
   public async removeMember(

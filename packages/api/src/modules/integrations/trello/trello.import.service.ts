@@ -110,10 +110,11 @@ export class TrelloImportService {
       const name = board.name;
       const description = board.desc;
       const isPrivate = board.prefs.permissionLevel === "private";
-      const project = await this.projectService.create(
-        { organizationId, name, description },
-        user.id
-      );
+      const project = await this.projectService.create({
+        organizationId,
+        name,
+        description,
+      });
       if (isPrivate) {
         await this.rbacService.createRules([
           {

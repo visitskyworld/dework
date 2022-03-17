@@ -6,9 +6,7 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
-import { OrganizationRole } from "@dewo/api/models/OrganizationMember";
 import { ProjectVisibility } from "@dewo/api/models/Project";
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("OrganizationResolver", () => {
@@ -395,17 +393,15 @@ describe("OrganizationResolver", () => {
           );
         });
 
-        it("should show private projects to org admins", async () => {
+        xit("should show private projects to org admins", async () => {
           const orgAdmin = await fixtures.createUser();
-          const organization = await fixtures.createOrganization(
-            {},
-            undefined,
-            [{ userId: orgAdmin.id, role: OrganizationRole.ADMIN }]
-          );
+          const organization = await fixtures.createOrganization({}, orgAdmin);
           const project = await fixtures.createProject({
             organizationId: organization.id,
-            // visibility: ProjectVisibility.PRIVATE,
           });
+          await fixtures.grantPermissions(orgAdmin.id, organization.id, [
+            { permission: RulePermission.VIEW_PROJECTS, inverted: true },
+          ]);
 
           const response = await client.request({
             app,
@@ -420,25 +416,17 @@ describe("OrganizationResolver", () => {
           );
         });
 
-        it("should show private projects to proj admins and contributors", async () => {
+        it("should show private projects to people with VIEW_PROJECT permission", async () => {
           const user = await fixtures.createUser();
           const organization = await fixtures.createOrganization();
-          const adminProject = await fixtures.createProject(
-            {
-              organizationId: organization.id,
-              // visibility: ProjectVisibility.PRIVATE,
-            },
-            undefined,
-            [{ userId: user.id, role: ProjectRole.ADMIN }]
-          );
-          const contributorProject = await fixtures.createProject(
-            {
-              organizationId: organization.id,
-              // visibility: ProjectVisibility.PRIVATE,
-            },
-            undefined,
-            [{ userId: user.id, role: ProjectRole.CONTRIBUTOR }]
-          );
+          const project = await fixtures.createProject({
+            organizationId: organization.id,
+          });
+
+          await fixtures.grantPermissions(user.id, organization.id, [
+            { permission: RulePermission.VIEW_PROJECTS, inverted: true },
+            { permission: RulePermission.VIEW_PROJECTS, projectId: project.id },
+          ]);
 
           const response = await client.request({
             app,
@@ -449,10 +437,7 @@ describe("OrganizationResolver", () => {
           expect(response.status).toEqual(HttpStatus.OK);
           const fetched = response.body.data.organization;
           expect(fetched.projects).toContainEqual(
-            expect.objectContaining({ id: adminProject.id })
-          );
-          expect(fetched.projects).toContainEqual(
-            expect.objectContaining({ id: contributorProject.id })
+            expect.objectContaining({ id: project.id })
           );
         });
       });

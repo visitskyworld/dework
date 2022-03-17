@@ -44,6 +44,7 @@ import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { RbacService } from "../rbac/rbac.service";
+import { OrganizationService } from "../organization/organization.service";
 
 @Injectable()
 @Resolver(() => Task)
@@ -480,16 +481,24 @@ export class TaskResolver {
 @Injectable()
 @Resolver(() => Organization)
 export class OrganizationTasksResolver {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly organizationService: OrganizationService
+  ) {}
 
   @ResolveField(() => [Task])
   public async tasks(
+    @Context("user") user: User | undefined,
     @Parent() organization: Organization,
     @Args("filter", { nullable: true }) filter: TaskFilterInput
   ): Promise<Task[]> {
+    const projects = await this.organizationService.getProjects(
+      organization.id,
+      user?.id
+    );
     return this.taskService.findWithRelations({
       ...filter,
-      organizationIds: [organization.id],
+      projectIds: projects.map((p) => p.id),
     });
   }
 }

@@ -22,6 +22,7 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RbacModule } from "../rbac/rbac.module";
+import { OrganizationModule } from "../organization/organization.module";
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { RbacModule } from "../rbac/rbac.module";
     CqrsModule,
     PaymentModule,
     ProjectModule,
+    OrganizationModule,
     PermalinkModule,
     RbacModule,
   ],

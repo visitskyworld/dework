@@ -5,7 +5,7 @@ import * as Colors from "@ant-design/colors";
 import NearestColor from "nearest-color";
 import { TaskService } from "../../task/task.service";
 import { TaskTag, TaskTagSource } from "@dewo/api/models/TaskTag";
-import { Project, ProjectVisibility } from "@dewo/api/models/Project";
+import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
 import { IntegrationService } from "../integration.service";
@@ -27,6 +27,8 @@ import { PermalinkService } from "../../permalink/permalink.service";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
 import { Connection } from "typeorm";
 import { InjectConnection } from "@nestjs/typeorm";
+import { RbacService } from "../../rbac/rbac.service";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -62,6 +64,7 @@ export class GithubIntegrationService {
     private readonly projectService: ProjectService,
     private readonly githubService: GithubService,
     private readonly integrationService: IntegrationService,
+    private readonly rbacService: RbacService,
     private readonly permalink: PermalinkService,
     private readonly config: ConfigService<ConfigType>,
     @InjectConnection() public readonly connection: Connection
@@ -280,6 +283,13 @@ export class GithubIntegrationService {
       throw new NotFoundException("Organization integration not found");
     }
 
+    const fallbackRole = await this.rbacService.getFallbackRole(organizationId);
+    const personalRole = await this.rbacService.getOrCreatePersonalRole(
+      userId,
+      organizationId
+    );
+    if (!fallbackRole) throw new Error("Organization is missing fallback role");
+
     const client = this.createClient(integration.config.installationId);
     const res = await client.apps.listReposAccessibleToInstallation();
     const repos = repoIds.map((repoId) =>
@@ -291,17 +301,26 @@ export class GithubIntegrationService {
 
       this.logger.debug(`Import Github repo: ${JSON.stringify(repo)}`);
 
-      const project = await this.projectService.create(
-        {
-          organizationId,
-          name: repo.name,
-          description: repo.description ?? undefined,
-          visibility: repo.private
-            ? ProjectVisibility.PRIVATE
-            : ProjectVisibility.PUBLIC,
-        },
-        userId
-      );
+      const project = await this.projectService.create({
+        organizationId,
+        name: repo.name,
+        description: repo.description ?? undefined,
+      });
+      if (repo.private) {
+        await this.rbacService.createRules([
+          {
+            roleId: fallbackRole.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            inverted: true,
+            projectId: project.id,
+          },
+          {
+            roleId: personalRole.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            projectId: project.id,
+          },
+        ]);
+      }
 
       const config: GithubProjectIntegrationConfig = {
         repo: repo.name,

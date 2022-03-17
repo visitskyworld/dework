@@ -209,10 +209,10 @@ export const RBACPermissionForm: FC<Props> = ({
         </Form.Item>
       )}
       {(!disabled || !!values.userIds.length) && (
-        <Form.Item label="Specific Users" name="userIds">
+        <Form.Item label="Users" name="userIds">
           <UserSelect
             mode="multiple"
-            placeholder="Select Specific Users..."
+            placeholder="Select Users..."
             disabled={disabled}
             users={users}
           >

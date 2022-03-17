@@ -1,6 +1,5 @@
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Invite } from "@dewo/api/models/Invite";
-import { Organization } from "@dewo/api/models/Organization";
 import { Project } from "@dewo/api/models/Project";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { User } from "@dewo/api/models/User";
@@ -39,9 +38,9 @@ export class InviteService {
     if (!invite) throw new NotFoundException();
 
     if (!!invite.organizationId) {
-      const organization = (await invite.organization) as Organization;
-      const roles = await organization.roles;
-      const fallbackRole = roles.find((r) => r.fallback);
+      const fallbackRole = await this.rbacService.getFallbackRole(
+        invite.organizationId
+      );
 
       if (!!fallbackRole) {
         await this.rbacService.addRole(user.id, fallbackRole.id);
@@ -49,7 +48,7 @@ export class InviteService {
 
       const role = await this.rbacService.getOrCreatePersonalRole(
         user.id,
-        organization.id
+        invite.organizationId
       );
       await this.rbacService.createRules(
         [
@@ -61,9 +60,9 @@ export class InviteService {
 
     if (!!invite.projectId && !!invite.projectRole) {
       const project = (await invite.project) as Project;
-      const organization = await project.organization;
-      const roles = await organization.roles;
-      const fallbackRole = roles.find((r) => r.fallback);
+      const fallbackRole = await this.rbacService.getFallbackRole(
+        project.organizationId
+      );
 
       if (!!fallbackRole) {
         await this.rbacService.addRole(user.id, fallbackRole.id);
@@ -71,7 +70,7 @@ export class InviteService {
 
       const role = await this.rbacService.getOrCreatePersonalRole(
         user.id,
-        organization.id
+        project.organizationId
       );
       if (invite.projectRole === ProjectRole.ADMIN) {
         await this.rbacService.createRules(
