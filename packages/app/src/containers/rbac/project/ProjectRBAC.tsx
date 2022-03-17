@@ -1,8 +1,9 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { RulePermission } from "@dewo/app/graphql/types";
-import { Card, Divider, Space, Typography } from "antd";
+import { Card, Divider, Space, Spin, Typography } from "antd";
 import React, { FC } from "react";
+import { useOrganizationRoles } from "../hooks";
 import { ProjectPrivateAlert } from "./ProjectPrivateAlert";
 import { RBACPermissionForm } from "./RBACPermissionForm";
 
@@ -13,6 +14,9 @@ interface Props {
 
 export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
   const canManagePermissions = usePermission("create", "Rule");
+  const roles = useOrganizationRoles(organizationId);
+
+  if (!roles) return <Spin />;
   return (
     <Space direction="vertical" size="large">
       <ProjectPrivateAlert
@@ -20,7 +24,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         organizationId={organizationId}
       />
       <Card size="small">
-        <Typography.Title level={5}>Other Permissions</Typography.Title>
+        <Typography.Title level={5}>Permissions</Typography.Title>
         <FormSection label="Manage Project">
           <Typography.Paragraph
             type="secondary"
@@ -28,33 +32,15 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           >
             Users with this permission can:
             <ul>
-              <li>Update the project name and description</li>
-              <li>Add and remove integrations</li>
+              <li>Manage project settings and integrations</li>
+              <li>Create, update, delete tasks</li>
+              <li>See, approve and deny task applications and submissions</li>
             </ul>
           </Typography.Paragraph>
           <RBACPermissionForm
             disabled={!canManagePermissions}
             permission={RulePermission.MANAGE_PROJECTS}
-            projectId={projectId}
-            organizationId={organizationId}
-          />
-        </FormSection>
-        <Divider />
-        <FormSection label="Manage Tasks">
-          <Typography.Paragraph
-            type="secondary"
-            className="ant-typography-caption"
-          >
-            Users with this permission can:
-            <ul>
-              <li>Create, update, delete tasks</li>
-              <li>See, approve and deny task applications</li>
-              <li>See, approve and deny task submissions</li>
-            </ul>
-          </Typography.Paragraph>
-          <RBACPermissionForm
-            disabled={!canManagePermissions}
-            permission={RulePermission.MANAGE_TASKS}
+            roles={roles}
             projectId={projectId}
             organizationId={organizationId}
           />
@@ -76,7 +62,8 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           </Typography.Paragraph>
           <RBACPermissionForm
             disabled={!canManagePermissions}
-            permission={RulePermission.MANAGE_TASKS}
+            permission={RulePermission.SUGGEST_AND_VOTE}
+            roles={roles}
             projectId={projectId}
             organizationId={organizationId}
           />

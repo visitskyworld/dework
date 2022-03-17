@@ -55,7 +55,6 @@ export class OrganizationService {
           for (const permission of [
             RulePermission.MANAGE_ORGANIZATION,
             RulePermission.MANAGE_PROJECTS,
-            RulePermission.MANAGE_TASKS,
           ]) {
             await this.rbacService.createRule({ roleId: role.id, permission });
           }

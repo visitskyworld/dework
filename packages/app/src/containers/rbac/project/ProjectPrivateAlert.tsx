@@ -3,8 +3,6 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
 import { RulePermission } from "@dewo/app/graphql/types";
-import { FormSection } from "@dewo/app/components/FormSection";
-import { useMyRoles } from "../../user/hooks";
 import { RBACPermissionForm } from "./RBACPermissionForm";
 import {
   useDefaultAbility,
@@ -20,9 +18,7 @@ export const ProjectPrivateAlert: FC<Props> = ({
   projectId,
   organizationId,
 }) => {
-  const myRoles = useMyRoles();
   const roles = useOrganizationRoles(organizationId);
-
   const canManagePermissions = usePermission("create", "Rule");
 
   const refetchDefaultAbility = useDefaultAbility(organizationId).refetch;
@@ -89,11 +85,6 @@ export const ProjectPrivateAlert: FC<Props> = ({
     ]
   );
 
-  const doesCurrentUserHaveAtLeastOneMatchingRole = useCallback(
-    (roleIds: string[]) => !myRoles?.some((role) => roleIds.includes(role.id)),
-    [myRoles]
-  );
-
   return (
     <>
       <Alert
@@ -121,22 +112,20 @@ export const ProjectPrivateAlert: FC<Props> = ({
           </>
         }
         description={
-          toggled ? (
-            <FormSection
-              label="Who can access this project?"
-              style={{ margin: 0 }}
-            >
+          toggled && !!roles ? (
+            <>
               <RBACPermissionForm
                 disabled={!canManagePermissions}
                 permission={RulePermission.VIEW_PROJECTS}
+                roles={roles}
                 projectId={projectId}
                 organizationId={organizationId}
-                defaultOpen
+                defaultOpen={showPrivateOptions}
                 saveButtonTooltip="You need to select at least one role you have"
-                isSubmitDisabled={doesCurrentUserHaveAtLeastOneMatchingRole}
+                // requiresCurrentUserToHaveRole
                 onSaved={handleViewProjectsPermissionSaved}
               />
-            </FormSection>
+            </>
           ) : (
             <div />
           )

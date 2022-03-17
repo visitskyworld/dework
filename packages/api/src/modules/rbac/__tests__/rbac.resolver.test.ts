@@ -76,7 +76,7 @@ describe("RbacResolver", () => {
           const otherUser = await fixtures.createUser();
 
           await fixtures.grantPermissions(admin.id, project.organizationId, [
-            { permission: RulePermission.MANAGE_TASKS },
+            { permission: RulePermission.MANAGE_PROJECTS },
           ]);
 
           task = await fixtures.createTask({

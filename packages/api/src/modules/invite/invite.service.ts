@@ -59,7 +59,6 @@ export class InviteService {
         [
           RulePermission.MANAGE_ORGANIZATION,
           RulePermission.MANAGE_PROJECTS,
-          RulePermission.MANAGE_TASKS,
         ].map((permission) => ({ roleId: role.id, permission }))
       );
     }
@@ -83,7 +82,6 @@ export class InviteService {
           [
             RulePermission.MANAGE_ORGANIZATION,
             RulePermission.MANAGE_PROJECTS,
-            RulePermission.MANAGE_TASKS,
             RulePermission.VIEW_PROJECTS,
             RulePermission.SUGGEST_AND_VOTE,
           ].map((permission) => ({

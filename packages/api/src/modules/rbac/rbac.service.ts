@@ -171,9 +171,6 @@ export class RbacService {
           fn(["create", "read", "update", "delete"], Project, project);
           fn(["create", "read", "update", "delete"], TaskTag, taskTag);
           fn(["create", "read", "update", "delete"], TaskSection, taskSection);
-          break;
-        case RulePermission.MANAGE_TASKS:
-          // fn(["create", "read", "delete"], TaskApplication);
           fn("submit", Task);
           fn(["create", "update", "delete"], TaskSubmission);
 

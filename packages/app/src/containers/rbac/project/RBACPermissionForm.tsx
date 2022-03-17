@@ -1,4 +1,7 @@
+import { UserSelect } from "@dewo/app/components/form/UserSelect";
+import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
   RoleSource,
   RoleWithRules,
@@ -6,18 +9,28 @@ import {
   RulePermission,
 } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { Button, message, Row, Select, Space, Tooltip } from "antd";
-import React, { FC, useEffect, useMemo, useState } from "react";
-import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
+import { Button, Form, message, Row, Select, Tooltip } from "antd";
+import { useForm } from "antd/lib/form/Form";
+import _ from "lodash";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import { useOrganizationUsers } from "../../organization/hooks";
+import { useMyRoles } from "../../user/hooks";
+import { useCreateRule, useDeleteRule } from "../hooks";
+
+interface FormValues {
+  roleIds: string[];
+  userIds: string[];
+}
 
 interface Props {
   projectId: string;
   organizationId: string;
+  roles: RoleWithRules[];
   permission: RulePermission;
   defaultOpen?: boolean;
   disabled?: boolean;
   saveButtonTooltip?: string;
-  isSubmitDisabled?(selectedRoleIds: string[]): boolean;
+  requiresCurrentUserToHaveRole?: boolean;
   onSaved?(hasFallbackRolePermission: boolean): void;
 }
 
@@ -32,92 +45,156 @@ function getRule(
   );
 }
 
+function hasRule(
+  role: RoleWithRules,
+  permission: RulePermission,
+  projectId: string
+): boolean {
+  return !!getRule(role, permission, projectId);
+}
+
+function useSubmitEnabled(
+  values: FormValues,
+  requiresCurrentUserToHaveRole: boolean
+): boolean {
+  const { user } = useAuthContext();
+  const myRoles = useMyRoles();
+  const hasCurrentUserRole = useMemo(
+    () =>
+      values.userIds.includes(user?.id!) ||
+      !!myRoles?.some((role) => values.roleIds.includes(role.id)),
+    [values, user, myRoles]
+  );
+
+  return !requiresCurrentUserToHaveRole || hasCurrentUserRole;
+}
+
 export const RBACPermissionForm: FC<Props> = ({
   projectId,
   organizationId,
+  roles,
   permission,
   defaultOpen,
   disabled,
   saveButtonTooltip,
-  isSubmitDisabled,
+  requiresCurrentUserToHaveRole = false,
   onSaved,
 }) => {
-  const roles = useOrganizationRoles(organizationId);
-  const currentRoles = useMemo(
-    () => roles?.filter((role) => !!getRule(role, permission, projectId)),
-    [roles, projectId, permission]
+  const { users } = useOrganizationUsers(organizationId);
+  const organizationRoles = useMemo(
+    () => roles?.filter((role) => !role.userId),
+    [roles]
+  );
+  const userRoles = useMemo(
+    () => roles?.filter((role) => !!role.userId),
+    [roles]
   );
 
-  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>();
-  useEffect(() => {
-    setSelectedRoleIds(currentRoles?.map((r) => r.id));
-  }, [currentRoles]);
+  const [form] = useForm<FormValues>();
+  const initialValues = useMemo(
+    () => ({
+      roleIds: roles
+        .filter((r) => hasRule(r, permission, projectId) && !r.userId)
+        .map((r) => r.id),
+      userIds: roles
+        .filter((r) => hasRule(r, permission, projectId) && !!r.userId)
+        .map((r) => r.userId!),
+    }),
+    [roles, permission, projectId]
+  );
+  const [values, setValues] = useState<FormValues>(initialValues);
+  const handleChange = useCallback(
+    (_changed: Partial<FormValues>, values: FormValues) => setValues(values),
+    []
+  );
 
   const createRule = useCreateRule();
   const deleteRule = useDeleteRule();
-  const [handleSave, saving] = useRunningCallback(async () => {
-    if (!selectedRoleIds) return;
+  const [handleSave, saving] = useRunningCallback(
+    async (values: FormValues) => {
+      const removedOrganizationRoles = organizationRoles?.filter(
+        (role) =>
+          hasRule(role, permission, projectId) &&
+          !values.roleIds.includes(role.id)
+      );
+      const addedOrganizationRoles = organizationRoles?.filter(
+        (role) =>
+          !hasRule(role, permission, projectId) &&
+          values.roleIds.includes(role.id)
+      );
 
-    const removedRoles = roles?.filter(
-      (role) =>
-        !!getRule(role, permission, projectId) &&
-        !selectedRoleIds?.includes(role.id)
-    );
-    const addedRoles = roles?.filter(
-      (role) =>
-        !getRule(role, permission, projectId) &&
-        selectedRoleIds?.includes(role.id)
-    );
+      const removedUserRoles = userRoles?.filter(
+        (role) =>
+          hasRule(role, permission, projectId) &&
+          !values.userIds.includes(role.userId!)
+      );
+      const addedUserRoles = userRoles?.filter(
+        (role) =>
+          !hasRule(role, permission, projectId) &&
+          values.userIds.includes(role.userId!)
+      );
 
-    for (const role of removedRoles ?? []) {
-      const rule = getRule(role, permission, projectId);
-      await deleteRule(rule!.id);
-    }
+      const removedRoles = [...removedOrganizationRoles, ...removedUserRoles];
+      const addedRoles = [...addedOrganizationRoles, ...addedUserRoles];
 
-    for (const role of addedRoles ?? []) {
-      await createRule({ permission, projectId, roleId: role.id });
-    }
+      for (const role of removedRoles) {
+        const rule = getRule(role, permission, projectId);
+        await deleteRule(rule!.id);
+      }
 
-    const hasFallbackRolePermission = selectedRoleIds?.some(
-      (roleId) => roles?.find((r) => r.id === roleId)?.fallback
-    );
+      for (const role of addedRoles) {
+        await createRule({ permission, projectId, roleId: role.id });
+      }
 
-    await onSaved?.(hasFallbackRolePermission);
-    message.success("Permissions updated!");
-  }, [selectedRoleIds, onSaved, createRule]);
+      const hasFallbackRolePermission = values.roleIds.some(
+        (roleId) => organizationRoles?.find((r) => r.id === roleId)?.fallback
+      );
 
-  const buttonDisabled = useMemo(
-    () => !!isSubmitDisabled?.(selectedRoleIds ?? []),
-    [selectedRoleIds, isSubmitDisabled]
+      await onSaved?.(hasFallbackRolePermission);
+      message.success("Permissions updated!");
+    },
+    [onSaved, createRule, deleteRule, organizationRoles, userRoles]
+  );
+
+  const dirty = useMemo(
+    () => !_.isEqual(initialValues, values),
+    [initialValues, values]
+  );
+  const buttonDisabled = !useSubmitEnabled(
+    values,
+    requiresCurrentUserToHaveRole
   );
   const button = (
     <Button
       type="primary"
+      htmlType="submit"
       disabled={buttonDisabled}
       loading={saving}
-      onClick={handleSave}
     >
       Save
     </Button>
   );
 
   return (
-    <Space style={{ width: "100%" }}>
-      <Select
-        mode="multiple"
-        defaultOpen={defaultOpen}
-        placeholder="Select Roles..."
-        style={{ minWidth: 240 }}
-        showSearch
-        disabled={disabled}
-        optionFilterProp="label"
-        loading={!roles}
-        value={selectedRoleIds}
-        onChange={setSelectedRoleIds}
-      >
-        {roles
-          ?.filter((role) => !role.userId)
-          .map((role) => (
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      initialValues={initialValues}
+      onValuesChange={handleChange}
+      onFinish={handleSave}
+    >
+      <Form.Item label="Roles" name="roleIds">
+        <Select
+          mode="multiple"
+          defaultOpen={defaultOpen}
+          placeholder="Select Roles..."
+          showSearch
+          disabled={disabled}
+          optionFilterProp="label"
+          loading={!organizationRoles}
+        >
+          {organizationRoles?.map((role) => (
             <Select.Option key={role.id} value={role.id} label={role.name}>
               <Row align="middle">
                 {role.source === RoleSource.DISCORD && (
@@ -127,9 +204,25 @@ export const RBACPermissionForm: FC<Props> = ({
               </Row>
             </Select.Option>
           ))}
-      </Select>
+        </Select>
+      </Form.Item>
+      <Form.Item label="Specific Users" name="userIds">
+        <UserSelect
+          mode="multiple"
+          placeholder="Select Specific Users..."
+          disabled={disabled}
+          users={users}
+        >
+          {users?.map((user) => (
+            <Select.Option key={user.id} value={user.id} label={user.username}>
+              <UserSelectOption user={user} />
+            </Select.Option>
+          ))}
+        </UserSelect>
+      </Form.Item>
 
       {!disabled &&
+        dirty &&
         (!!saveButtonTooltip ? (
           <Tooltip title={saveButtonTooltip} placement="bottom">
             {button}
@@ -137,6 +230,6 @@ export const RBACPermissionForm: FC<Props> = ({
         ) : (
           button
         ))}
-    </Space>
+    </Form>
   );
 };
