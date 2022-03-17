@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import {
   Avatar,
@@ -14,8 +14,7 @@ import {
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/projectList/OrganizationProjectList";
 import {
   useOrganization,
-  useOrganizationContributors,
-  useOrganizationCoreTeam,
+  useOrganizationUsers,
 } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { OrganizationInviteButton } from "@dewo/app/containers/invite/OrganizationInviteButton";
@@ -30,6 +29,8 @@ import { EntityDetailAvatar } from "../../../components/EntityDetailAvatar";
 import { Tab } from "@dewo/app/components/Tab";
 import { OrganizationTaskFilterButton } from "../../task/board/filters/TaskFilterButton";
 import { TaskFilterProvider } from "../../task/board/filters/FilterContext";
+import { useOrganizationRoles } from "../../rbac/hooks";
+import { RulePermission } from "@dewo/app/graphql/types";
 
 interface Props {
   organizationId: string;
@@ -55,9 +56,28 @@ export const OrganizationTabs: FC<Props> = ({
     [organization, router]
   );
 
-  const coreTeam = useOrganizationCoreTeam(organizationId);
-  const contributors = useOrganizationContributors(organizationId);
   const screens = Grid.useBreakpoint();
+  const { users } = useOrganizationUsers(organizationId);
+  const roles = useOrganizationRoles(organizationId);
+
+  const adminRoleIds = useMemo(
+    () =>
+      roles
+        ?.filter((role) =>
+          role.rules.some(
+            (rule) =>
+              rule.permission === RulePermission.MANAGE_ORGANIZATION &&
+              !rule.inverted
+          )
+        )
+        .map((role) => role.id),
+    [roles]
+  );
+  const adminUsers = useMemo(
+    () =>
+      users?.filter((u) => u.roles.some((r) => adminRoleIds?.includes(r.id))),
+    [users, adminRoleIds]
+  );
 
   return (
     <TaskFilterProvider>
@@ -128,7 +148,7 @@ export const OrganizationTabs: FC<Props> = ({
                 <Avatar.Group maxCount={6} size="large">
                   {!organization &&
                     _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
-                  {contributors.map((user) => (
+                  {users?.map((user) => (
                     <UserAvatar key={user.id} user={user} linkToProfile />
                   ))}
                 </Avatar.Group>
@@ -141,7 +161,7 @@ export const OrganizationTabs: FC<Props> = ({
                 <Avatar.Group maxCount={3} size="large">
                   {!organization &&
                     _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
-                  {coreTeam?.map((user) => (
+                  {adminUsers?.map((user) => (
                     <UserAvatar key={user.id} user={user} linkToProfile />
                   ))}
                 </Avatar.Group>

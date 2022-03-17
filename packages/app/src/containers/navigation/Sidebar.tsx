@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -7,18 +7,11 @@ import { HeaderProfileAvatar } from "./header/HeaderProfileAvatar";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
-import _ from "lodash";
 import Link from "next/link";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
   const { isOn, setToggle } = useSidebarContext();
-
-  const organizations = useMemo(
-    () => _.sortBy(user?.organizations, (o) => o.member?.sortKey).reverse(),
-    [user?.organizations]
-  );
-
   const isProfileSetup = !!user?.bio || !!user?.details.length;
 
   if (!user) return null;
@@ -68,7 +61,7 @@ export const Sidebar: FC = () => {
         <Divider style={{ margin: "12px 0" }} />
 
         <Col style={{ flex: 1, overflowX: "hidden", overflowY: "auto" }}>
-          {organizations.map((organization) => (
+          {user?.organizations.map((organization) => (
             <SidebarNavLink
               key={organization.id}
               href={organization.permalink}

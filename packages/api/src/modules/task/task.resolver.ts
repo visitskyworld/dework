@@ -50,7 +50,6 @@ import { RbacService } from "../rbac/rbac.service";
 export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
-    private readonly projectService: ProjectService,
     private readonly permalinkService: PermalinkService,
     private readonly rbacService: RbacService
   ) {}
@@ -474,11 +473,7 @@ export class TaskResolver {
   public async getTasks(@Args("input") input: GetTasksInput): Promise<Task[]> {
     if (input.ids?.length === 0) return [];
     if (input.statuses?.length === 0) return [];
-    return this.taskService.findWithRelations({
-      ...input,
-      // Note(fant): workaround to make GetTasksToPayQuery return tasks in private projects
-      includePrivateProjects: !!input.ids?.length,
-    });
+    return this.taskService.findWithRelations(input);
   }
 }
 
@@ -512,7 +507,6 @@ export class ProjectTasksResolver {
     return this.taskService.findWithRelations({
       ...filter,
       projectIds: [project.id],
-      includePrivateProjects: true,
     });
   }
 
@@ -539,13 +533,7 @@ export class UserTasksResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [Task])
-  public async tasks(
-    @Context("user") authenticatedUser: User | undefined,
-    @Parent() user: User
-  ): Promise<Task[]> {
-    return this.taskService.findWithRelations({
-      assigneeId: user.id,
-      includePrivateProjects: authenticatedUser?.id === user.id,
-    });
+  public async tasks(@Parent() user: User): Promise<Task[]> {
+    return this.taskService.findWithRelations({ assigneeId: user.id });
   }
 }

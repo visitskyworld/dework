@@ -434,28 +434,24 @@ export const acceptInvite = gql`
       id
       organization {
         id
-        members {
-          ...OrganizationMember
+        users {
+          ...User
         }
       }
       project {
         id
         name
-        members {
-          ...ProjectMember
-        }
         organization {
           id
-          members {
-            ...OrganizationMember
+          users {
+            ...User
           }
         }
       }
     }
   }
 
-  ${Fragments.organizationMember}
-  ${Fragments.projectMember}
+  ${Fragments.user}
 `;
 
 export const joinProjectWithToken = gql`

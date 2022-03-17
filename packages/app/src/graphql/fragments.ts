@@ -140,21 +140,6 @@ export const organizationTag = gql`
   }
 `;
 
-export const organizationMember = gql`
-  fragment OrganizationMember on OrganizationMember {
-    id
-    role
-    organizationId
-    userId
-    sortKey
-    user {
-      ...User
-    }
-  }
-
-  ${user}
-`;
-
 export const projectSection = gql`
   fragment ProjectSection on ProjectSection {
     id
@@ -171,20 +156,6 @@ export const taskSection = gql`
     sortKey
     projectId
   }
-`;
-
-export const projectMember = gql`
-  fragment ProjectMember on ProjectMember {
-    id
-    role
-    projectId
-    userId
-    user {
-      ...User
-    }
-  }
-
-  ${user}
 `;
 
 export const organizationIntegration = gql`
@@ -244,36 +215,26 @@ export const projectDiscordRoleGate = gql`
 export const invite = gql`
   fragment Invite on Invite {
     id
+    permalink
     inviter {
       ...User
     }
-    organizationRole
     organization {
       ...Organization
-      members {
-        ...OrganizationMember
-      }
     }
-
-    projectRole
     project {
       ...Project
       tokenGates {
         ...ProjectTokenGate
       }
-      members {
-        ...ProjectMember
-      }
     }
-    permalink
+    projectRole
   }
 
   ${user}
   ${organization}
-  ${organizationMember}
   ${project}
   ${projectTokenGate}
-  ${projectMember}
 `;
 
 export const projectDetails = gql`
@@ -287,9 +248,6 @@ export const projectDetails = gql`
     }
     doneTaskCount: taskCount(status: DONE)
     openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
-    members {
-      ...ProjectMember
-    }
     paymentMethods {
       ...PaymentMethod
     }
@@ -308,7 +266,6 @@ export const projectDetails = gql`
   }
 
   ${project}
-  ${projectMember}
   ${paymentMethod}
   ${paymentToken}
   ${projectIntegration}
@@ -618,9 +575,6 @@ export const userDetails = gql`
     }
     organizations {
       ...Organization
-      member {
-        ...OrganizationMember
-      }
     }
     onboarding {
       ...UserOnboarding
@@ -631,7 +585,6 @@ export const userDetails = gql`
   ${userOnboarding}
   ${paymentMethod}
   ${organization}
-  ${organizationMember}
 `;
 
 export const organizationDetails = gql`
@@ -645,8 +598,8 @@ export const organizationDetails = gql`
     projectSections {
       ...ProjectSection
     }
-    members {
-      ...OrganizationMember
+    users {
+      ...User
     }
     tags {
       ...OrganizationTag
@@ -669,7 +622,6 @@ export const organizationDetails = gql`
   }
 
   ${organization}
-  ${organizationMember}
   ${organizationIntegration}
   ${projectDetails}
   ${projectSection}
@@ -679,4 +631,5 @@ export const organizationDetails = gql`
   ${projectTokenGate}
   ${projectDiscordRoleGate}
   ${role}
+  ${user}
 `;

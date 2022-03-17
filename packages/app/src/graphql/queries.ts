@@ -110,14 +110,8 @@ export const featuredOrganizations = gql`
     organizations: getFeaturedOrganizations(limit: $limit) {
       ...Organization
       description
-      projects {
-        id
-        members {
-          id
-          user {
-            ...User
-          }
-        }
+      users {
+        ...User
       }
     }
   }
@@ -133,10 +127,7 @@ export const featuredProjects = gql`
       taskCount
       organization {
         ...Organization
-      }
-      members {
-        id
-        user {
+        users {
           ...User
         }
       }

@@ -1,10 +1,5 @@
 import * as Icons from "@ant-design/icons";
-import {
-  OrganizationRole,
-  Project,
-  ProjectRole,
-  TaskDetails,
-} from "@dewo/app/graphql/types";
+import { Project, TaskDetails } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import {
   Button,
@@ -16,7 +11,7 @@ import {
   Typography,
 } from "antd";
 import { useRouter } from "next/router";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback } from "react";
 import {
   toTaskRewardFormValues,
   useCreateTaskFromFormValues,
@@ -30,7 +25,6 @@ import {
   useNavigateToTaskFn,
 } from "@dewo/app/util/navigation";
 import { useOrganization } from "../../organization/hooks";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import Link from "next/link";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 
@@ -40,15 +34,6 @@ interface Props {
 
 const MoveTaskSubmenu: FC<Props> = ({ task }) => {
   const { organization } = useOrganization(task.project.organization.id);
-  const { user } = useAuthContext();
-  const isOrgAdmin = useMemo(
-    () =>
-      organization?.members.some(
-        (m) => m.userId === user?.id && m.role === OrganizationRole.ADMIN
-      ),
-    [organization?.members, user?.id]
-  );
-
   const router = useRouter();
   const closeTaskDetails = useCloseTaskDetails();
   const updateTask = useUpdateTask();
@@ -85,16 +70,7 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
       {organization?.projects
         .filter((project) => project.id !== task.project.id)
         .map((project) => (
-          <Menu.Item
-            key={project.id}
-            disabled={
-              !isOrgAdmin &&
-              !project.members.some(
-                (m) => m.userId === user?.id && m.role === ProjectRole.ADMIN
-              )
-            }
-            onClick={() => handleMoveTask(project)}
-          >
+          <Menu.Item key={project.id} onClick={() => handleMoveTask(project)}>
             {project.name}
           </Menu.Item>
         ))}

@@ -29,7 +29,6 @@ import {
   GithubRepo,
   Organization,
   OrganizationDetails,
-  OrganizationRole,
   OrganizationTag,
   ProjectSection,
   SetOrganizationDetailInput,
@@ -43,10 +42,8 @@ import {
   UpdateProjectSectionInput,
   UpdateProjectSectionMutation,
   UpdateProjectSectionMutationVariables,
-  User,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
-import _ from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
@@ -174,7 +171,7 @@ export function useOrganization(organizationId: string | undefined): {
   return { organization: data?.organization ?? undefined, refetch };
 }
 
-export function useOrganizationUsers(organizationId: string): {
+export function useOrganizationUsers(organizationId: string | undefined): {
   users: UserWithRoles[] | undefined;
   refetch(): Promise<unknown>;
 } {
@@ -182,7 +179,7 @@ export function useOrganizationUsers(organizationId: string): {
     GetOrganizationUsersQuery,
     GetOrganizationUsersQueryVariables
   >(Queries.organizationUsers, {
-    variables: { organizationId },
+    variables: { organizationId: organizationId! },
     skip: !organizationId,
   });
   return { users: data?.organization?.users, refetch };
@@ -266,37 +263,4 @@ export function useOrganizationDiscordChannels(
       await refetch();
     }, [refetch]),
   };
-}
-
-export function useOrganizationCoreTeam(
-  organizationId: string | undefined
-): User[] {
-  const { organization } = useOrganization(organizationId);
-  return useMemo(
-    () =>
-      organization?.members
-        .filter((m) =>
-          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(m.role)
-        )
-        .map((m) => m.user) ?? [],
-    [organization?.members]
-  );
-}
-
-export function useOrganizationContributors(
-  organizationId: string | undefined
-): User[] {
-  const { organization } = useOrganization(organizationId);
-  const coreTeam = useOrganizationCoreTeam(organizationId);
-  return useMemo(
-    () =>
-      _(organization?.projects)
-        .map((p) => p.members)
-        .flatten()
-        .map((m) => m.user)
-        .concat(coreTeam)
-        .uniqBy((u) => u.id)
-        .value(),
-    [organization, coreTeam]
-  );
 }

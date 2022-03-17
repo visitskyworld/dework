@@ -1,16 +1,7 @@
-import {
-  Avatar,
-  Input,
-  PageHeader,
-  Row,
-  Skeleton,
-  Space,
-  Typography,
-} from "antd";
+import { Input, PageHeader, Skeleton, Space, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
@@ -18,7 +9,6 @@ import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { DiscordRoleGatingJoinButton } from "../../invite/DiscordRoleGatingJoinButton";
 import { useIsProjectPrivate } from "../../rbac/hooks";
 
 interface Props {
@@ -29,7 +19,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project);
-  const { organization } = useOrganization(project?.organizationId);
+  const { organization } = useOrganization(organizationId);
   const canEdit = usePermission("update", "Project");
 
   const routes = useMemo<Route[] | undefined>(() => {
@@ -106,19 +96,19 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
-      subTitle={
-        !!project ? (
-          <Row align="middle">
-            <Avatar.Group maxCount={3} size="large" style={{ marginRight: 16 }}>
-              {project?.members.map((m) => (
-                <UserAvatar key={m.id} user={m.user} linkToProfile />
-              ))}
-            </Avatar.Group>
-          </Row>
-        ) : (
-          <Skeleton.Avatar active size="large" />
-        )
-      }
+      // subTitle={
+      //   !!project ? (
+      //     <Row align="middle">
+      //       <Avatar.Group maxCount={3} size="large" style={{ marginRight: 16 }}>
+      //         {project?.members.map((m) => (
+      //           <UserAvatar key={m.id} user={m.user} linkToProfile />
+      //         ))}
+      //       </Avatar.Group>
+      //     </Row>
+      //   ) : (
+      //     <Skeleton.Avatar active size="large" />
+      //   )
+      // }
       extra={
         !!project && (
           <Space align="center" style={{ height: "100%" }}>
@@ -126,13 +116,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             <FollowOrganizationButton
               organizationId={project?.organizationId}
             />
-            <DiscordRoleGatingJoinButton
-              type="ghost"
-              organizationId={organizationId}
-              projectId={projectId}
-            >
-              Join using Discord
-            </DiscordRoleGatingJoinButton>
           </Space>
         )
       }

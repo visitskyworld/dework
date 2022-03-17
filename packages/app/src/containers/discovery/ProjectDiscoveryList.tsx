@@ -54,6 +54,13 @@ export const ProjectDiscoveryList: FC = () => {
                     </a>
                   </Link>
                 ),
+                defaultSortOrder: "descend" as "descend",
+                showSorterTooltip: false,
+                sorter: (a: ProjectRow, b: ProjectRow) =>
+                  5 *
+                    (a.organization.users.length -
+                      b.organization.users.length) +
+                  1 * (a.taskCount - b.taskCount),
               },
               {
                 key: "name",
@@ -84,12 +91,8 @@ export const ProjectDiscoveryList: FC = () => {
                           {project.taskCount} tasks
                         </Tag>
                         <Avatar.Group maxCount={5} size="small">
-                          {project.members.map((m) => (
-                            <UserAvatar
-                              key={m.id}
-                              user={m.user}
-                              linkToProfile
-                            />
+                          {project.organization.users.map((u) => (
+                            <UserAvatar key={u.id} user={u} linkToProfile />
                           ))}
                         </Avatar.Group>
                       </Row>
@@ -104,15 +107,12 @@ export const ProjectDiscoveryList: FC = () => {
                       title: "Contributors",
                       width: 140,
                       sorter: (a: ProjectRow, b: ProjectRow) =>
-                        a.members.length - b.members.length,
+                        a.organization.users.length -
+                        b.organization.users.length,
                       render: (_: unknown, project: ProjectRow) => (
                         <Avatar.Group maxCount={5} size="small">
-                          {project.members.map((m) => (
-                            <UserAvatar
-                              key={m.id}
-                              user={m.user}
-                              linkToProfile
-                            />
+                          {project.organization.users.map((u) => (
+                            <UserAvatar key={u.id} user={u} linkToProfile />
                           ))}
                         </Avatar.Group>
                       ),
@@ -121,11 +121,6 @@ export const ProjectDiscoveryList: FC = () => {
                       key: "tasks",
                       title: "Tasks",
                       width: 140,
-                      defaultSortOrder: "descend" as "descend",
-                      showSorterTooltip: false,
-                      sorter: (a: ProjectRow, b: ProjectRow) =>
-                        5 * (a.members.length - b.members.length) +
-                        1 * (a.taskCount - b.taskCount),
                       render: (_: unknown, project: ProjectRow) => (
                         <Tag color="green" icon={<Icons.CheckOutlined />}>
                           {project.taskCount} tasks

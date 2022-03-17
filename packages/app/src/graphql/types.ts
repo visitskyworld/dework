@@ -7,24 +7,6 @@
 // GraphQL mutation operation: AuthWithThreepidMutation
 // ====================================================
 
-export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface AuthWithThreepidMutation_authWithThreepid_user_organizations_member {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: AuthWithThreepidMutation_authWithThreepid_user_organizations_member_user;
-}
-
 export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -32,7 +14,6 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  member: AuthWithThreepidMutation_authWithThreepid_user_organizations_member | null;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_details {
@@ -168,24 +149,6 @@ export interface CreateHiroThreepidVariables {
 // GraphQL mutation operation: UpdateUserMutation
 // ====================================================
 
-export interface UpdateUserMutation_user_organizations_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UpdateUserMutation_user_organizations_member {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: UpdateUserMutation_user_organizations_member_user;
-}
-
 export interface UpdateUserMutation_user_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -193,7 +156,6 @@ export interface UpdateUserMutation_user_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  member: UpdateUserMutation_user_organizations_member | null;
 }
 
 export interface UpdateUserMutation_user_details {
@@ -346,23 +308,6 @@ export interface UpdateOrganizationMutation_organization_projects_options {
   showBacklogColumn: boolean | null;
 }
 
-export interface UpdateOrganizationMutation_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: UpdateOrganizationMutation_organization_projects_members_user;
-}
-
 export interface UpdateOrganizationMutation_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -469,7 +414,6 @@ export interface UpdateOrganizationMutation_organization_projects {
   options: UpdateOrganizationMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: UpdateOrganizationMutation_organization_projects_members[];
   paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
   integrations: UpdateOrganizationMutation_organization_projects_integrations[];
   tokenGates: UpdateOrganizationMutation_organization_projects_tokenGates[];
@@ -484,22 +428,12 @@ export interface UpdateOrganizationMutation_organization_projectSections {
   sortKey: string;
 }
 
-export interface UpdateOrganizationMutation_organization_members_user {
+export interface UpdateOrganizationMutation_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface UpdateOrganizationMutation_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: UpdateOrganizationMutation_organization_members_user;
 }
 
 export interface UpdateOrganizationMutation_organization_tags {
@@ -588,7 +522,7 @@ export interface UpdateOrganizationMutation_organization {
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
   projectSections: UpdateOrganizationMutation_organization_projectSections[];
-  members: UpdateOrganizationMutation_organization_members[];
+  users: UpdateOrganizationMutation_organization_users[];
   tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
   integrations: UpdateOrganizationMutation_organization_integrations[];
@@ -667,23 +601,6 @@ export interface CreateProjectMutation_project_options {
   showBacklogColumn: boolean | null;
 }
 
-export interface CreateProjectMutation_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectMutation_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: CreateProjectMutation_project_members_user;
-}
-
 export interface CreateProjectMutation_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -760,23 +677,6 @@ export interface CreateProjectMutation_project_tokenGates {
 export interface CreateProjectMutation_project_organization_projects_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectMutation_project_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectMutation_project_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: CreateProjectMutation_project_organization_projects_members_user;
 }
 
 export interface CreateProjectMutation_project_organization_projects_paymentMethods_networks {
@@ -885,7 +785,6 @@ export interface CreateProjectMutation_project_organization_projects {
   options: CreateProjectMutation_project_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: CreateProjectMutation_project_organization_projects_members[];
   paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
   integrations: CreateProjectMutation_project_organization_projects_integrations[];
   tokenGates: CreateProjectMutation_project_organization_projects_tokenGates[];
@@ -900,22 +799,12 @@ export interface CreateProjectMutation_project_organization_projectSections {
   sortKey: string;
 }
 
-export interface CreateProjectMutation_project_organization_members_user {
+export interface CreateProjectMutation_project_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface CreateProjectMutation_project_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: CreateProjectMutation_project_organization_members_user;
 }
 
 export interface CreateProjectMutation_project_organization_tags {
@@ -1004,7 +893,7 @@ export interface CreateProjectMutation_project_organization {
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
   projectSections: CreateProjectMutation_project_organization_projectSections[];
-  members: CreateProjectMutation_project_organization_members[];
+  users: CreateProjectMutation_project_organization_users[];
   tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
   integrations: CreateProjectMutation_project_organization_integrations[];
@@ -1036,7 +925,6 @@ export interface CreateProjectMutation_project {
   options: CreateProjectMutation_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: CreateProjectMutation_project_members[];
   paymentMethods: CreateProjectMutation_project_paymentMethods[];
   integrations: CreateProjectMutation_project_integrations[];
   tokenGates: CreateProjectMutation_project_tokenGates[];
@@ -1064,23 +952,6 @@ export interface CreateProjectMutationVariables {
 export interface UpdateProjectMutation_project_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface UpdateProjectMutation_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UpdateProjectMutation_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: UpdateProjectMutation_project_members_user;
 }
 
 export interface UpdateProjectMutation_project_paymentMethods_networks {
@@ -1189,7 +1060,6 @@ export interface UpdateProjectMutation_project {
   options: UpdateProjectMutation_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: UpdateProjectMutation_project_members[];
   paymentMethods: UpdateProjectMutation_project_paymentMethods[];
   integrations: UpdateProjectMutation_project_integrations[];
   tokenGates: UpdateProjectMutation_project_tokenGates[];
@@ -3310,76 +3180,38 @@ export interface CreateProjectInviteMutationVariables {
 // GraphQL mutation operation: AcceptInviteMutation
 // ====================================================
 
-export interface AcceptInviteMutation_invite_organization_members_user {
+export interface AcceptInviteMutation_invite_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface AcceptInviteMutation_invite_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: AcceptInviteMutation_invite_organization_members_user;
 }
 
 export interface AcceptInviteMutation_invite_organization {
   __typename: "Organization";
   id: Scalar.UUID;
-  members: AcceptInviteMutation_invite_organization_members[];
+  users: AcceptInviteMutation_invite_organization_users[];
 }
 
-export interface AcceptInviteMutation_invite_project_members_user {
+export interface AcceptInviteMutation_invite_project_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface AcceptInviteMutation_invite_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: AcceptInviteMutation_invite_project_members_user;
-}
-
-export interface AcceptInviteMutation_invite_project_organization_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface AcceptInviteMutation_invite_project_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: AcceptInviteMutation_invite_project_organization_members_user;
 }
 
 export interface AcceptInviteMutation_invite_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
-  members: AcceptInviteMutation_invite_project_organization_members[];
+  users: AcceptInviteMutation_invite_project_organization_users[];
 }
 
 export interface AcceptInviteMutation_invite_project {
   __typename: "Project";
   id: Scalar.UUID;
   name: string;
-  members: AcceptInviteMutation_invite_project_members[];
   organization: AcceptInviteMutation_invite_project_organization;
 }
 
@@ -4642,23 +4474,6 @@ export interface CreateProjectsFromNotionMutation_organization_projects_options 
   showBacklogColumn: boolean | null;
 }
 
-export interface CreateProjectsFromNotionMutation_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: CreateProjectsFromNotionMutation_organization_projects_members_user;
-}
-
 export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4765,7 +4580,6 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   options: CreateProjectsFromNotionMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: CreateProjectsFromNotionMutation_organization_projects_members[];
   paymentMethods: CreateProjectsFromNotionMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
@@ -4780,22 +4594,12 @@ export interface CreateProjectsFromNotionMutation_organization_projectSections {
   sortKey: string;
 }
 
-export interface CreateProjectsFromNotionMutation_organization_members_user {
+export interface CreateProjectsFromNotionMutation_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: CreateProjectsFromNotionMutation_organization_members_user;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_tags {
@@ -4884,7 +4688,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   description: string | null;
   projects: CreateProjectsFromNotionMutation_organization_projects[];
   projectSections: CreateProjectsFromNotionMutation_organization_projectSections[];
-  members: CreateProjectsFromNotionMutation_organization_members[];
+  users: CreateProjectsFromNotionMutation_organization_users[];
   tags: CreateProjectsFromNotionMutation_organization_tags[];
   details: CreateProjectsFromNotionMutation_organization_details[];
   integrations: CreateProjectsFromNotionMutation_organization_integrations[];
@@ -4912,23 +4716,6 @@ export interface CreateProjectsFromNotionMutationVariables {
 export interface CreateProjectsFromTrelloMutation_organization_projects_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: CreateProjectsFromTrelloMutation_organization_projects_members_user;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_networks {
@@ -5037,7 +4824,6 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   options: CreateProjectsFromTrelloMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: CreateProjectsFromTrelloMutation_organization_projects_members[];
   paymentMethods: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
@@ -5052,22 +4838,12 @@ export interface CreateProjectsFromTrelloMutation_organization_projectSections {
   sortKey: string;
 }
 
-export interface CreateProjectsFromTrelloMutation_organization_members_user {
+export interface CreateProjectsFromTrelloMutation_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: CreateProjectsFromTrelloMutation_organization_members_user;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_tags {
@@ -5156,7 +4932,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   description: string | null;
   projects: CreateProjectsFromTrelloMutation_organization_projects[];
   projectSections: CreateProjectsFromTrelloMutation_organization_projectSections[];
-  members: CreateProjectsFromTrelloMutation_organization_members[];
+  users: CreateProjectsFromTrelloMutation_organization_users[];
   tags: CreateProjectsFromTrelloMutation_organization_tags[];
   details: CreateProjectsFromTrelloMutation_organization_details[];
   integrations: CreateProjectsFromTrelloMutation_organization_integrations[];
@@ -5184,23 +4960,6 @@ export interface CreateProjectsFromTrelloMutationVariables {
 export interface CreateProjectsFromGithubMutation_organization_projects_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: CreateProjectsFromGithubMutation_organization_projects_members_user;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods_networks {
@@ -5309,7 +5068,6 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   options: CreateProjectsFromGithubMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: CreateProjectsFromGithubMutation_organization_projects_members[];
   paymentMethods: CreateProjectsFromGithubMutation_organization_projects_paymentMethods[];
   integrations: CreateProjectsFromGithubMutation_organization_projects_integrations[];
   tokenGates: CreateProjectsFromGithubMutation_organization_projects_tokenGates[];
@@ -5324,22 +5082,12 @@ export interface CreateProjectsFromGithubMutation_organization_projectSections {
   sortKey: string;
 }
 
-export interface CreateProjectsFromGithubMutation_organization_members_user {
+export interface CreateProjectsFromGithubMutation_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: CreateProjectsFromGithubMutation_organization_members_user;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_tags {
@@ -5428,7 +5176,7 @@ export interface CreateProjectsFromGithubMutation_organization {
   description: string | null;
   projects: CreateProjectsFromGithubMutation_organization_projects[];
   projectSections: CreateProjectsFromGithubMutation_organization_projectSections[];
-  members: CreateProjectsFromGithubMutation_organization_members[];
+  users: CreateProjectsFromGithubMutation_organization_users[];
   tags: CreateProjectsFromGithubMutation_organization_tags[];
   details: CreateProjectsFromGithubMutation_organization_details[];
   integrations: CreateProjectsFromGithubMutation_organization_integrations[];
@@ -5594,24 +5342,6 @@ export interface DeleteRuleMutationVariables {
 // GraphQL query operation: MeQuery
 // ====================================================
 
-export interface MeQuery_me_organizations_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface MeQuery_me_organizations_member {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: MeQuery_me_organizations_member_user;
-}
-
 export interface MeQuery_me_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -5619,7 +5349,6 @@ export interface MeQuery_me_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  member: MeQuery_me_organizations_member | null;
 }
 
 export interface MeQuery_me_details {
@@ -6092,23 +5821,6 @@ export interface GetOrganizationQuery_organization_projects_options {
   showBacklogColumn: boolean | null;
 }
 
-export interface GetOrganizationQuery_organization_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface GetOrganizationQuery_organization_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: GetOrganizationQuery_organization_projects_members_user;
-}
-
 export interface GetOrganizationQuery_organization_projects_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -6215,7 +5927,6 @@ export interface GetOrganizationQuery_organization_projects {
   options: GetOrganizationQuery_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: GetOrganizationQuery_organization_projects_members[];
   paymentMethods: GetOrganizationQuery_organization_projects_paymentMethods[];
   integrations: GetOrganizationQuery_organization_projects_integrations[];
   tokenGates: GetOrganizationQuery_organization_projects_tokenGates[];
@@ -6230,22 +5941,12 @@ export interface GetOrganizationQuery_organization_projectSections {
   sortKey: string;
 }
 
-export interface GetOrganizationQuery_organization_members_user {
+export interface GetOrganizationQuery_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface GetOrganizationQuery_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: GetOrganizationQuery_organization_members_user;
 }
 
 export interface GetOrganizationQuery_organization_tags {
@@ -6334,7 +6035,7 @@ export interface GetOrganizationQuery_organization {
   description: string | null;
   projects: GetOrganizationQuery_organization_projects[];
   projectSections: GetOrganizationQuery_organization_projectSections[];
-  members: GetOrganizationQuery_organization_members[];
+  users: GetOrganizationQuery_organization_users[];
   tags: GetOrganizationQuery_organization_tags[];
   details: GetOrganizationQuery_organization_details[];
   integrations: GetOrganizationQuery_organization_integrations[];
@@ -6446,24 +6147,12 @@ export interface GetOrganizationRolesQueryVariables {
 // GraphQL query operation: GetFeaturedOrganizationsQuery
 // ====================================================
 
-export interface GetFeaturedOrganizationsQuery_organizations_projects_members_user {
+export interface GetFeaturedOrganizationsQuery_organizations_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  user: GetFeaturedOrganizationsQuery_organizations_projects_members_user;
-}
-
-export interface GetFeaturedOrganizationsQuery_organizations_projects {
-  __typename: "Project";
-  id: Scalar.UUID;
-  members: GetFeaturedOrganizationsQuery_organizations_projects_members[];
 }
 
 export interface GetFeaturedOrganizationsQuery_organizations {
@@ -6474,7 +6163,7 @@ export interface GetFeaturedOrganizationsQuery_organizations {
   slug: string;
   permalink: string;
   description: string | null;
-  projects: GetFeaturedOrganizationsQuery_organizations_projects[];
+  users: GetFeaturedOrganizationsQuery_organizations_users[];
 }
 
 export interface GetFeaturedOrganizationsQuery {
@@ -6494,16 +6183,7 @@ export interface GetFeaturedOrganizationsQueryVariables {
 // GraphQL query operation: GetFeaturedProjectsQuery
 // ====================================================
 
-export interface GetFeaturedProjectsQuery_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  permalink: string;
-}
-
-export interface GetFeaturedProjectsQuery_projects_members_user {
+export interface GetFeaturedProjectsQuery_projects_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -6511,10 +6191,14 @@ export interface GetFeaturedProjectsQuery_projects_members_user {
   permalink: string;
 }
 
-export interface GetFeaturedProjectsQuery_projects_members {
-  __typename: "ProjectMember";
+export interface GetFeaturedProjectsQuery_projects_organization {
+  __typename: "Organization";
   id: Scalar.UUID;
-  user: GetFeaturedProjectsQuery_projects_members_user;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  permalink: string;
+  users: GetFeaturedProjectsQuery_projects_organization_users[];
 }
 
 export interface GetFeaturedProjectsQuery_projects {
@@ -6528,7 +6212,6 @@ export interface GetFeaturedProjectsQuery_projects {
   permalink: string;
   taskCount: number;
   organization: GetFeaturedProjectsQuery_projects_organization;
-  members: GetFeaturedProjectsQuery_projects_members[];
 }
 
 export interface GetFeaturedProjectsQuery {
@@ -6843,23 +6526,6 @@ export interface GetProjectQuery_project_options {
   showBacklogColumn: boolean | null;
 }
 
-export interface GetProjectQuery_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface GetProjectQuery_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: GetProjectQuery_project_members_user;
-}
-
 export interface GetProjectQuery_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -6966,7 +6632,6 @@ export interface GetProjectQuery_project {
   options: GetProjectQuery_project_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: GetProjectQuery_project_members[];
   paymentMethods: GetProjectQuery_project_paymentMethods[];
   integrations: GetProjectQuery_project_integrations[];
   tokenGates: GetProjectQuery_project_tokenGates[];
@@ -8378,24 +8043,6 @@ export interface GetInviteQuery_invite_inviter {
   permalink: string;
 }
 
-export interface GetInviteQuery_invite_organization_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface GetInviteQuery_invite_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: GetInviteQuery_invite_organization_members_user;
-}
-
 export interface GetInviteQuery_invite_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -8403,7 +8050,6 @@ export interface GetInviteQuery_invite_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  members: GetInviteQuery_invite_organization_members[];
 }
 
 export interface GetInviteQuery_invite_project_tokenGates_token_network {
@@ -8439,23 +8085,6 @@ export interface GetInviteQuery_invite_project_tokenGates {
   token: GetInviteQuery_invite_project_tokenGates_token;
 }
 
-export interface GetInviteQuery_invite_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface GetInviteQuery_invite_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: GetInviteQuery_invite_project_members_user;
-}
-
 export interface GetInviteQuery_invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -8466,18 +8095,16 @@ export interface GetInviteQuery_invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
-  members: GetInviteQuery_invite_project_members[];
 }
 
 export interface GetInviteQuery_invite {
   __typename: "Invite";
   id: Scalar.UUID;
-  inviter: GetInviteQuery_invite_inviter;
-  organizationRole: OrganizationRole | null;
-  organization: GetInviteQuery_invite_organization | null;
-  projectRole: ProjectRole | null;
-  project: GetInviteQuery_invite_project | null;
   permalink: string;
+  inviter: GetInviteQuery_invite_inviter;
+  organization: GetInviteQuery_invite_organization | null;
+  project: GetInviteQuery_invite_project | null;
+  projectRole: ProjectRole | null;
 }
 
 export interface GetInviteQuery {
@@ -10192,33 +9819,6 @@ export interface OrganizationTag {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: OrganizationMember
-// ====================================================
-
-export interface OrganizationMember_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface OrganizationMember {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: OrganizationMember_user;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: ProjectSection
 // ====================================================
 
@@ -10245,32 +9845,6 @@ export interface TaskSection {
   status: TaskStatus;
   sortKey: string;
   projectId: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: ProjectMember
-// ====================================================
-
-export interface ProjectMember_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface ProjectMember {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: ProjectMember_user;
 }
 
 /* tslint:disable */
@@ -10401,24 +9975,6 @@ export interface Invite_inviter {
   permalink: string;
 }
 
-export interface Invite_organization_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface Invite_organization_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: Invite_organization_members_user;
-}
-
 export interface Invite_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -10426,7 +9982,6 @@ export interface Invite_organization {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  members: Invite_organization_members[];
 }
 
 export interface Invite_project_tokenGates_token_network {
@@ -10462,23 +10017,6 @@ export interface Invite_project_tokenGates {
   token: Invite_project_tokenGates_token;
 }
 
-export interface Invite_project_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface Invite_project_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: Invite_project_members_user;
-}
-
 export interface Invite_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -10489,18 +10027,16 @@ export interface Invite_project {
   organizationId: string;
   permalink: string;
   tokenGates: Invite_project_tokenGates[];
-  members: Invite_project_members[];
 }
 
 export interface Invite {
   __typename: "Invite";
   id: Scalar.UUID;
-  inviter: Invite_inviter;
-  organizationRole: OrganizationRole | null;
-  organization: Invite_organization | null;
-  projectRole: ProjectRole | null;
-  project: Invite_project | null;
   permalink: string;
+  inviter: Invite_inviter;
+  organization: Invite_organization | null;
+  project: Invite_project | null;
+  projectRole: ProjectRole | null;
 }
 
 /* tslint:disable */
@@ -10515,23 +10051,6 @@ export interface Invite {
 export interface ProjectDetails_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface ProjectDetails_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface ProjectDetails_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: ProjectDetails_members_user;
 }
 
 export interface ProjectDetails_paymentMethods_networks {
@@ -10640,7 +10159,6 @@ export interface ProjectDetails {
   options: ProjectDetails_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: ProjectDetails_members[];
   paymentMethods: ProjectDetails_paymentMethods[];
   integrations: ProjectDetails_integrations[];
   tokenGates: ProjectDetails_tokenGates[];
@@ -12021,24 +11539,6 @@ export interface UserOnboarding {
 // GraphQL fragment: UserDetails
 // ====================================================
 
-export interface UserDetails_organizations_member_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface UserDetails_organizations_member {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: UserDetails_organizations_member_user;
-}
-
 export interface UserDetails_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -12046,7 +11546,6 @@ export interface UserDetails_organizations {
   imageUrl: string | null;
   slug: string;
   permalink: string;
-  member: UserDetails_organizations_member | null;
 }
 
 export interface UserDetails_details {
@@ -12127,23 +11626,6 @@ export interface UserDetails {
 export interface OrganizationDetails_projects_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface OrganizationDetails_projects_members_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface OrganizationDetails_projects_members {
-  __typename: "ProjectMember";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  userId: string;
-  user: OrganizationDetails_projects_members_user;
 }
 
 export interface OrganizationDetails_projects_paymentMethods_networks {
@@ -12252,7 +11734,6 @@ export interface OrganizationDetails_projects {
   options: OrganizationDetails_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  members: OrganizationDetails_projects_members[];
   paymentMethods: OrganizationDetails_projects_paymentMethods[];
   integrations: OrganizationDetails_projects_integrations[];
   tokenGates: OrganizationDetails_projects_tokenGates[];
@@ -12267,22 +11748,12 @@ export interface OrganizationDetails_projectSections {
   sortKey: string;
 }
 
-export interface OrganizationDetails_members_user {
+export interface OrganizationDetails_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-}
-
-export interface OrganizationDetails_members {
-  __typename: "OrganizationMember";
-  id: Scalar.UUID;
-  role: OrganizationRole;
-  organizationId: string;
-  userId: string;
-  sortKey: string;
-  user: OrganizationDetails_members_user;
 }
 
 export interface OrganizationDetails_tags {
@@ -12371,7 +11842,7 @@ export interface OrganizationDetails {
   description: string | null;
   projects: OrganizationDetails_projects[];
   projectSections: OrganizationDetails_projectSections[];
-  members: OrganizationDetails_members[];
+  users: OrganizationDetails_users[];
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
   integrations: OrganizationDetails_integrations[];
@@ -12413,12 +11884,6 @@ export enum GithubPullRequestStatus {
 export enum OrganizationIntegrationType {
   DISCORD = "DISCORD",
   GITHUB = "GITHUB",
-}
-
-export enum OrganizationRole {
-  ADMIN = "ADMIN",
-  FOLLOWER = "FOLLOWER",
-  OWNER = "OWNER",
 }
 
 export enum PaymentMethodType {

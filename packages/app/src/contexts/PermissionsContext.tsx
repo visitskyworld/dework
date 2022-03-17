@@ -10,11 +10,9 @@ import { Ability, AbilityTuple } from "@casl/ability";
 import { createContextualCan } from "@casl/react";
 import {
   Organization,
-  OrganizationMember,
   PermissionsQuery,
   PermissionsQueryVariables,
   Project,
-  ProjectMember,
   Task,
   TaskApplication,
   TaskReaction,
@@ -42,9 +40,7 @@ type AbilitySubject =
   | AtLeast<Task, "__typename" | "status">
   | AtLeast<TaskReaction, "__typename" | "userId">
   | AtLeast<TaskApplication, "__typename" | "userId">
-  | AtLeast<TaskSubmission, "__typename" | "userId">
-  | AtLeast<OrganizationMember, "__typename" | "role">
-  | AtLeast<ProjectMember, "__typename" | "role">;
+  | AtLeast<TaskSubmission, "__typename" | "userId">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
 
 const PermissionsContext = createContext<Ability<AbilityType>>(

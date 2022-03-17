@@ -1,15 +1,5 @@
-import {
-  usePermission,
-  usePermissionFn,
-} from "@dewo/app/contexts/PermissionsContext";
-import React, { FC } from "react";
-import { useProject } from "../hooks";
-import { Table, Button, Select } from "antd";
-import * as Icons from "@ant-design/icons";
-import { ProjectMember, ProjectRole } from "@dewo/app/graphql/types";
-import { useNavigateToProfile } from "@dewo/app/util/navigation";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { eatClick } from "@dewo/app/util/eatClick";
+import { FC } from "react";
+import { ProjectRole } from "@dewo/app/graphql/types";
 
 interface Props {
   projectId: string;
@@ -37,7 +27,9 @@ export const projectRoleDescription: Record<ProjectRole, string> = {
   ].join("\n"),
 };
 
-export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
+export const ProjectSettingsMemberList: FC<Props> = () => {
+  return null;
+  /*
   const { project } = useProject(projectId);
 
   const hasPermission = usePermissionFn();
@@ -126,4 +118,5 @@ export const ProjectSettingsMemberList: FC<Props> = ({ projectId }) => {
       ]}
     />
   );
+  */
 };

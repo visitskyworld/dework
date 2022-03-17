@@ -14,18 +14,12 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
-import { ProjectRole, UserDetails } from "@dewo/app/graphql/types";
+import { UserDetails } from "@dewo/app/graphql/types";
 import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 import { projectRoleToString } from "../project/settings/ProjectSettingsMemberList";
-import { organizationRoleToString } from "../organization/overview/OrganizationMemberList";
-import { AlreadyInvitedMessage, InviteMessage } from "./InviteMessage";
-import { OrganizationRole } from "../../graphql/types";
-import {
-  isOrganizationInviteDownGrade,
-  isProjectInviteDownGrade,
-} from "./isInviteDownGrade";
+import { InviteMessage } from "./InviteMessage";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
@@ -68,11 +62,11 @@ export const InviteMessageToast: FC = () => {
     if (!invite) return undefined;
 
     const inviter = invite.inviter.username;
-    if (!!invite.organization && !!invite.organizationRole) {
+    if (!!invite.organization) {
       return (
         <InviteMessage
           inviter={inviter}
-          role={organizationRoleToString[invite.organizationRole].toLowerCase()}
+          role="core team"
           to={invite.organization.name}
         />
       );
@@ -90,45 +84,6 @@ export const InviteMessageToast: FC = () => {
 
     return `${inviter} has invited you to Dework`;
   }, [invite]);
-
-  const alreadyInvitedMessage = useMemo(() => {
-    if (!!invite?.organization && !!invite?.organizationRole) {
-      if (
-        invite.organization.members.some(
-          (m) =>
-            m.userId === user?.id &&
-            isOrganizationInviteDownGrade(
-              m.role,
-              invite.organizationRole as OrganizationRole
-            )
-        )
-      ) {
-        return (
-          <AlreadyInvitedMessage
-            role={organizationRoleToString[
-              invite.organizationRole
-            ].toLowerCase()}
-            to={invite.organization.name}
-          />
-        );
-      }
-    } else if (!!invite?.project && !!invite?.projectRole) {
-      if (
-        invite.project.members.some(
-          (m) =>
-            m.userId === user?.id &&
-            isProjectInviteDownGrade(m.role, invite.projectRole as ProjectRole)
-        )
-      ) {
-        return (
-          <AlreadyInvitedMessage
-            role={projectRoleToString[invite.projectRole].toLowerCase()}
-            to={invite.project.name}
-          />
-        );
-      }
-    }
-  }, [invite, user]);
 
   const showAuthModal = authModalVisible.toggleOn;
   const showTokenGateModal = tokenGatedModalVisible.toggleOn;
@@ -183,44 +138,24 @@ export const InviteMessageToast: FC = () => {
     };
 
     message.destroy();
-    if (!!alreadyInvitedMessage) {
-      message.open({
-        content: (
-          <RouterContext.Provider value={router}>
-            <Space>
-              <Typography.Text style={{ marginRight: 16 }}>
-                {alreadyInvitedMessage}
-              </Typography.Text>
-              <Button type="primary" onClick={() => message.destroy()}>
-                OK
-              </Button>
-            </Space>
-          </RouterContext.Provider>
-        ),
-        duration: 0, // forever
-        type: undefined as any,
-        style: messageBottomStyle,
-      });
-    } else {
-      message.open({
-        content: (
-          <RouterContext.Provider value={router}>
-            <Space>
-              <UserAvatar user={invite.inviter} />
-              <Typography.Text style={{ marginRight: 16 }}>
-                {inviteMessage}
-              </Typography.Text>
-              <Button type="primary" onClick={handleClick}>
-                Accept invite
-              </Button>
-            </Space>
-          </RouterContext.Provider>
-        ),
-        duration: 0, // forever
-        type: undefined as any,
-        style: messageBottomStyle,
-      });
-    }
+    message.open({
+      content: (
+        <RouterContext.Provider value={router}>
+          <Space>
+            <UserAvatar user={invite.inviter} />
+            <Typography.Text style={{ marginRight: 16 }}>
+              {inviteMessage}
+            </Typography.Text>
+            <Button type="primary" onClick={handleClick}>
+              Accept invite
+            </Button>
+          </Space>
+        </RouterContext.Provider>
+      ),
+      duration: 0, // forever
+      type: undefined as any,
+      style: messageBottomStyle,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [!!invite, authenticated]);
 

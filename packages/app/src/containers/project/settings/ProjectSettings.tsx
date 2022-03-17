@@ -7,7 +7,6 @@ import { Tab } from "@dewo/app/components/Tab";
 import * as Icons from "@ant-design/icons";
 import { ProjectSettingsIntegrations } from "./ProjectSettingsIntegrations";
 import { ProjectSettingsPaymentMethod } from "./ProjectSettingsPaymentMethod";
-import { ProjectSettingsMembers } from "./ProjectSettingsMembers";
 import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -74,13 +73,13 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsPaymentMethod project={project} />
       </Tabs.TabPane>
-      <Tabs.TabPane
+      {/* <Tabs.TabPane
         tab={<Tab icon={<Icons.TeamOutlined />} children="Members" />}
         key="members"
         style={tabStyle}
       >
         <ProjectSettingsMembers project={project} />
-      </Tabs.TabPane>
+      </Tabs.TabPane> */}
       <Tabs.TabPane
         tab={
           <Tab icon={<Icons.SafetyCertificateOutlined />} children="Access" />

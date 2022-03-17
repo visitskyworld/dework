@@ -19,7 +19,6 @@ import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { ProjectListEmpty } from "./ProjectListEmpty";
-import { JoinDiscordRoleGatedProjectsAlert } from "@dewo/app/containers/invite/JoinDiscordRoleGatedProjectsAlert";
 
 interface Props {
   organizationId: string;
@@ -116,10 +115,6 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     <div
       style={screens.sm ? { maxHeight: "100vh", height: "100%" } : undefined}
     >
-      <JoinDiscordRoleGatedProjectsAlert
-        organizationId={organizationId}
-        style={{ marginBottom: 16 }}
-      />
       <JoinTokenGatedProjectsAlert
         organizationId={organizationId}
         style={{ marginBottom: 16 }}

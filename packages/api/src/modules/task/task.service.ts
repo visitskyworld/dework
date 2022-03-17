@@ -23,7 +23,6 @@ import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { ProjectService } from "../project/project.service";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
-import { ProjectVisibility } from "@dewo/api/models/Project";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
@@ -164,10 +163,7 @@ export class TaskService {
       rewards.map((r) => ({ ...r, payment: undefined, paymentId: payment.id }))
     );
 
-    return this.findWithRelations({
-      rewardIds: input.taskRewardIds,
-      includePrivateProjects: true,
-    });
+    return this.findWithRelations({ rewardIds: input.taskRewardIds });
   }
 
   public async createReaction(
@@ -223,7 +219,6 @@ export class TaskService {
     doneAtAfter,
     doneAtBefore,
     rewardNotNull = false,
-    includePrivateProjects = false,
   }: {
     ids?: string[];
     rewardIds?: string[];
@@ -236,10 +231,8 @@ export class TaskService {
     doneAtBefore?: Date;
     limit?: number;
     rewardNotNull?: boolean;
-    includePrivateProjects?: boolean;
   }): Promise<Task[]> {
-    const filterOutSpam =
-      !projectIds && !organizationIds && !includePrivateProjects;
+    const filterOutSpam = !projectIds && !organizationIds;
 
     let query = this.taskRepo
       .createQueryBuilder("task")
@@ -325,12 +318,6 @@ export class TaskService {
 
     if (!!doneAtBefore) {
       query = query.andWhere("task.doneAt < :doneAtBefore", { doneAtBefore });
-    }
-
-    if (!includePrivateProjects) {
-      query = query.andWhere("project.visibility = :public", {
-        public: ProjectVisibility.PUBLIC,
-      });
     }
 
     return query

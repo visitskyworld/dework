@@ -1,9 +1,8 @@
-import { Avatar, Card, Progress, Row, Tag, Typography } from "antd";
+import { Card, Progress, Row, Tag, Typography } from "antd";
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { ProjectDetails } from "@dewo/app/graphql/types";
 import Link from "next/link";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useIsProjectPrivate } from "@dewo/app/containers/rbac/hooks";
 
@@ -56,7 +55,7 @@ export const ProjectListRow: FC<Props> = ({ project }) => {
                 style={{ flex: 1 }}
               />
             )}
-            <Avatar.Group
+            {/* <Avatar.Group
               size="small"
               maxCount={5}
               style={{
@@ -68,7 +67,7 @@ export const ProjectListRow: FC<Props> = ({ project }) => {
               {project.members.map((member) => (
                 <UserAvatar key={member.id} user={member.user} linkToProfile />
               ))}
-            </Avatar.Group>
+            </Avatar.Group> */}
           </Row>
         </Card>
       </a>

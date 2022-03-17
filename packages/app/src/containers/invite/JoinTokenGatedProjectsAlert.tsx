@@ -28,12 +28,10 @@ export const JoinTokenGatedProjectsAlert: FC<Props> = ({
 
   const tokenGates = useMemo(
     () =>
-      organization?.projectTokenGates?.filter((g) => {
-        const project = organization.projects.find((p) => p.id === g.projectId);
-        if (!project) return true;
-        return !project.members.some((m) => m.userId === user?.id);
-      }),
-    [organization?.projectTokenGates, organization?.projects, user?.id]
+      organization?.projectTokenGates?.filter(
+        (g) => !organization.projects.some((p) => p.id === g.projectId)
+      ),
+    [organization?.projectTokenGates, organization?.projects]
   );
   const tokens = useMemo(
     () =>

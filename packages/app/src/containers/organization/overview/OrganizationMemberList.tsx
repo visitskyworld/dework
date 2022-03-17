@@ -2,12 +2,7 @@ import React, { FC, useMemo } from "react";
 import { OrganizationInviteButton } from "../../invite/OrganizationInviteButton";
 import { useOrganizationUsers } from "../hooks";
 import { Table, Space, Row, Tag } from "antd";
-import {
-  OrganizationRole,
-  Role,
-  RulePermission,
-  UserWithRoles,
-} from "@dewo/app/graphql/types";
+import { Role, RulePermission, UserWithRoles } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useOrganizationRoles } from "../../rbac/hooks";
@@ -15,12 +10,6 @@ import { useOrganizationRoles } from "../../rbac/hooks";
 interface Props {
   organizationId: string;
 }
-
-export const organizationRoleToString: Record<OrganizationRole, string> = {
-  [OrganizationRole.ADMIN]: "Admin",
-  [OrganizationRole.OWNER]: "Owner",
-  [OrganizationRole.FOLLOWER]: "Follower",
-};
 
 export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
   const { users } = useOrganizationUsers(organizationId);
@@ -87,24 +76,6 @@ export const OrganizationMemberList: FC<Props> = ({ organizationId }) => {
               </Row>
             ),
           },
-          // ...(canDeleteAdmin || canDeleteOwner
-          //   ? [
-          //       {
-          //         key: "delete",
-          //         width: 1,
-          //         render: (_: unknown, user: UserWithRoles) => (
-          //           <Button
-          //             type="text"
-          //             icon={<Icons.DeleteOutlined />}
-          //             onClick={(event) => {
-          //               eatClick(event);
-          //               alert("TODO: remove member! " + JSON.stringify(user));
-          //             }}
-          //           />
-          //         ),
-          //       },
-          //     ]
-          //   : []),
         ]}
       />
     </Space>

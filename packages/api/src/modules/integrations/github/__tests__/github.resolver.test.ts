@@ -1,5 +1,5 @@
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
-import { ProjectVisibility } from "@dewo/api/models/Project";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -152,10 +152,16 @@ describe("GithubResolver", () => {
 
         const projects = response.body.data?.organization.projects;
         expect(projects).toContainEqual(
+          expect.objectContaining({ name: githubRepo, description: null })
+        );
+        const fallbackRole = await organization.roles.then((r) =>
+          r.find((r) => r.fallback)
+        );
+        await expect(fallbackRole?.rules).resolves.toContainEqual(
           expect.objectContaining({
-            name: githubRepo,
-            description: null,
-            visibility: ProjectVisibility.PRIVATE,
+            permission: RulePermission.VIEW_PROJECTS,
+            inverted: true,
+            projectId: projects[0].id,
           })
         );
       });

@@ -9,8 +9,8 @@ import {
 import _ from "lodash";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import {
-  useOrganization,
   useOrganizationTaskTags,
+  useOrganizationUsers,
 } from "@dewo/app/containers/organization/hooks";
 import { TaskTag, User } from "@dewo/app/graphql/types";
 import { TaskFilterForm } from "./TaskFilterForm";
@@ -62,7 +62,7 @@ export const ProjectTaskFilterButton: FC<{
   style?: CSSProperties;
 }> = ({ projectId, style }) => {
   const { project } = useProject(projectId);
-  const users = useMemo(() => project?.members.map((m) => m.user), [project]);
+  const { users } = useOrganizationUsers(project?.organizationId);
   const tags = useProjectTaskTags(projectId);
   return <TaskFilterButton style={style} users={users} tags={tags} />;
 };
@@ -71,12 +71,7 @@ export const OrganizationTaskFilterButton: FC<{
   organizationId?: string;
   style?: CSSProperties;
 }> = ({ organizationId, style }) => {
-  const { organization } = useOrganization(organizationId);
-  const users = useMemo(
-    () =>
-      organization?.projects.map((p) => p.members.map((m) => m.user)).flat(),
-    [organization]
-  );
+  const { users } = useOrganizationUsers(organizationId);
   const tags = useOrganizationTaskTags(organizationId);
   return <TaskFilterButton style={style} users={users} tags={tags} />;
 };

@@ -1,40 +1,22 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import { Avatar, Button, Modal, Row, Typography } from "antd";
 import { IncognitoIcon } from "@dewo/app/components/icons/Incognito";
 import Link from "next/link";
 import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useOrganization } from "../containers/organization/hooks";
-import { ProjectIntegrationType } from "../graphql/types";
-import { DiscordRoleGatingJoinButton } from "../containers/invite/DiscordRoleGatingJoinButton";
 
 interface Props {
   visible: boolean;
-  projectId?: string;
   organizationId?: string;
 }
 
 export const ForbiddenResourceModal: FC<Props> = ({
   visible,
-  projectId,
   organizationId,
 }) => {
   const { user } = useAuthContext();
   const { organization } = useOrganization(organizationId);
-  const hasDiscordRoleGating = useMemo(
-    () =>
-      !!organization?.integrations
-        .map((i) => i.discordRoleGates)
-        .flat()
-        .some(
-          (g) =>
-            !g.deletedAt &&
-            g.type === ProjectIntegrationType.DISCORD_ROLE_GATE &&
-            g.projectId === projectId
-        ),
-    [organization?.integrations, projectId]
-  );
-
   return (
     <Modal
       visible={visible}
@@ -69,19 +51,7 @@ export const ForbiddenResourceModal: FC<Props> = ({
             </a>
           </Link>
         )}
-        {!!user ? (
-          hasDiscordRoleGating && (
-            <DiscordRoleGatingJoinButton
-              type="primary"
-              projectId={projectId}
-              organizationId={organizationId!}
-            >
-              Join using Discord role
-            </DiscordRoleGatingJoinButton>
-          )
-        ) : (
-          <LoginButton type="primary">Connect</LoginButton>
-        )}
+        {!user && <LoginButton type="primary">Connect</LoginButton>}
       </Row>
     </Modal>
   );
