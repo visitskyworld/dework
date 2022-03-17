@@ -148,9 +148,12 @@ export class NotionImportService {
 
           if (!("properties" in page)) return;
 
+          const titleProperty = Object.values(page.properties).find(
+            (property) => property.type === "title"
+          );
           const name =
-            page.properties.Name.type === "title"
-              ? page.properties.Name.title.map((t) => t.plain_text).join("")
+            !!titleProperty && "title" in titleProperty
+              ? titleProperty.title.map((t) => t.plain_text).join("")
               : "";
           if (!name) return;
           const markdown = this.blocksToMarkdown(blocks.results);
