@@ -184,42 +184,50 @@ export const RBACPermissionForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSave}
     >
-      <Form.Item label="Roles" name="roleIds">
-        <Select
-          mode="multiple"
-          defaultOpen={defaultOpen}
-          placeholder="Select Roles..."
-          showSearch
-          disabled={disabled}
-          optionFilterProp="label"
-          loading={!organizationRoles}
-        >
-          {organizationRoles?.map((role) => (
-            <Select.Option key={role.id} value={role.id} label={role.name}>
-              <Row align="middle">
-                {role.source === RoleSource.DISCORD && (
-                  <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
-                )}
-                {role.name}
-              </Row>
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item label="Specific Users" name="userIds">
-        <UserSelect
-          mode="multiple"
-          placeholder="Select Specific Users..."
-          disabled={disabled}
-          users={users}
-        >
-          {users?.map((user) => (
-            <Select.Option key={user.id} value={user.id} label={user.username}>
-              <UserSelectOption user={user} />
-            </Select.Option>
-          ))}
-        </UserSelect>
-      </Form.Item>
+      {(!disabled || !!values.roleIds.length) && (
+        <Form.Item label="Roles" name="roleIds">
+          <Select
+            mode="multiple"
+            defaultOpen={defaultOpen}
+            placeholder="Select Roles..."
+            showSearch
+            disabled={disabled}
+            optionFilterProp="label"
+            loading={!organizationRoles}
+          >
+            {organizationRoles?.map((role) => (
+              <Select.Option key={role.id} value={role.id} label={role.name}>
+                <Row align="middle">
+                  {role.source === RoleSource.DISCORD && (
+                    <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
+                  )}
+                  {role.name}
+                </Row>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
+      {(!disabled || !!values.userIds.length) && (
+        <Form.Item label="Specific Users" name="userIds">
+          <UserSelect
+            mode="multiple"
+            placeholder="Select Specific Users..."
+            disabled={disabled}
+            users={users}
+          >
+            {users?.map((user) => (
+              <Select.Option
+                key={user.id}
+                value={user.id}
+                label={user.username}
+              >
+                <UserSelectOption user={user} />
+              </Select.Option>
+            ))}
+          </UserSelect>
+        </Form.Item>
+      )}
 
       {!disabled &&
         dirty &&

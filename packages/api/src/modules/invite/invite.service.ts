@@ -76,7 +76,6 @@ export class InviteService {
       if (invite.projectRole === ProjectRole.ADMIN) {
         await this.rbacService.createRules(
           [
-            RulePermission.MANAGE_ORGANIZATION,
             RulePermission.MANAGE_PROJECTS,
             RulePermission.VIEW_PROJECTS,
             RulePermission.SUGGEST_AND_VOTE,

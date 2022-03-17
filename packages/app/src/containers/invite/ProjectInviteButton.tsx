@@ -109,7 +109,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
                 <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
               </Tooltip>
             </Menu.Item>
-            <Link href={`${project.permalink}/settings/token-gating`}>
+            <Link href={`${project.permalink}/settings/access`}>
               <a>
                 <Menu.Item>
                   Setup Discord Role Gating
