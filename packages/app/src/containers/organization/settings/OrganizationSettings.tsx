@@ -3,8 +3,8 @@ import { Card, Modal, Tabs } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
+import { OrganizationRBAC } from "../../rbac/organization/OrganizationRBAC";
 import { useUpdateOrganization } from "../hooks";
-import { OrganizationMemberList } from "../overview/OrganizationMemberList";
 import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
 
 interface Props {
@@ -66,8 +66,8 @@ export const OrganizationSettings: FC<Props> = ({
       <Tabs.TabPane tab="Profile" key="profile">
         <OrganizationProfileSettings organizationId={organizationId} />
       </Tabs.TabPane>
-      <Tabs.TabPane tab="DAO admins" key="members">
-        <OrganizationMemberList organizationId={organizationId} />
+      <Tabs.TabPane tab="Permissions" key="members">
+        <OrganizationRBAC organizationId={organizationId} />
       </Tabs.TabPane>
       {canDeleteOrganization && (
         <Tabs.TabPane tab="Delete Organization" key="delete">

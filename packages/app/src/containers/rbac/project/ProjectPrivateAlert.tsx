@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
 import { RulePermission } from "@dewo/app/graphql/types";
-import { RBACPermissionForm } from "./RBACPermissionForm";
+import { RBACPermissionForm } from "../RBACPermissionForm";
 import {
   useDefaultAbility,
   usePermission,

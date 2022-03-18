@@ -13,9 +13,9 @@ import { Button, Form, message, Row, Select, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { useOrganizationUsers } from "../../organization/hooks";
-import { useMyRoles } from "../../user/hooks";
-import { useCreateRule, useDeleteRule } from "../hooks";
+import { useOrganizationUsers } from "../organization/hooks";
+import { useMyRoles } from "../user/hooks";
+import { useCreateRule, useDeleteRule } from "./hooks";
 
 interface FormValues {
   roleIds: string[];
@@ -23,7 +23,7 @@ interface FormValues {
 }
 
 interface Props {
-  projectId: string;
+  projectId?: string;
   organizationId: string;
   roles: RoleWithRules[];
   permission: RulePermission;
@@ -37,18 +37,20 @@ interface Props {
 function getRule(
   role: RoleWithRules,
   permission: RulePermission,
-  projectId: string
+  projectId?: string
 ): Rule | undefined {
   return role.rules.find(
     (r) =>
-      r.projectId === projectId && r.permission === permission && !r.inverted
+      (r.projectId ?? undefined) === projectId &&
+      r.permission === permission &&
+      !r.inverted
   );
 }
 
 function hasRule(
   role: RoleWithRules,
   permission: RulePermission,
-  projectId: string
+  projectId?: string
 ): boolean {
   return !!getRule(role, permission, projectId);
 }
@@ -98,7 +100,8 @@ export const RBACPermissionForm: FC<Props> = ({
         .map((r) => r.id),
       userIds: roles
         .filter((r) => hasRule(r, permission, projectId) && !!r.userId)
-        .map((r) => r.userId!),
+        .map((r) => r.userId!)
+        .filter((userId, index, array) => array.indexOf(userId) === index),
     }),
     [roles, permission, projectId]
   );

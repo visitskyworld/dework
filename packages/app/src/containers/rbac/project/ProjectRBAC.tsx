@@ -3,10 +3,10 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
 import { Card, Divider, Space, Spin, Typography } from "antd";
 import React, { FC } from "react";
-import { projectRoleDescription } from "../../project/settings/ProjectSettingsMemberList";
+import { projectRoleDescription } from "../../project/settings/strings";
 import { useOrganizationRoles } from "../hooks";
 import { ProjectPrivateAlert } from "./ProjectPrivateAlert";
-import { RBACPermissionForm } from "./RBACPermissionForm";
+import { RBACPermissionForm } from "../RBACPermissionForm";
 
 interface Props {
   projectId: string;

@@ -72,15 +72,8 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
       >
         <ProjectSettingsPaymentMethod project={project} />
       </Tabs.TabPane>
-      {/* <Tabs.TabPane
-        tab={<Tab icon={<Icons.TeamOutlined />} children="Members" />}
-        key="members"
-        style={tabStyle}
-      >
-        <ProjectSettingsMembers project={project} />
-      </Tabs.TabPane> */}
       <Tabs.TabPane
-        tab={<Tab icon={<Icons.LockOutlined />} children="Access" />}
+        tab={<Tab icon={<Icons.LockOutlined />} children="Permissions" />}
         key="access"
         style={tabStyle}
       >

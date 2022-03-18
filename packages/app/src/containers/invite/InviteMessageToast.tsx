@@ -18,7 +18,7 @@ import { UserDetails } from "@dewo/app/graphql/types";
 import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
-import { projectRoleToString } from "../project/settings/ProjectSettingsMemberList";
+import { projectRoleToString } from "../project/settings/strings";
 import { InviteMessage } from "./InviteMessage";
 
 const messageBottomStyle: CSSProperties = {

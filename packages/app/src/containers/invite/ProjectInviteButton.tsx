@@ -12,7 +12,7 @@ import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectIntegrationType, ProjectRole } from "@dewo/app/graphql/types";
-import { projectRoleDescription } from "../project/settings/ProjectSettingsMemberList";
+import { projectRoleDescription } from "../project/settings/strings";
 import Link from "next/link";
 
 interface Props {

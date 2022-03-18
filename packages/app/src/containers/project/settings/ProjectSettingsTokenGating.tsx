@@ -3,7 +3,7 @@ import { Alert, Divider, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import { useDeleteProjectTokenGate } from "../hooks";
 import { CreateProjectTokenGate } from "./CreateProjectTokenGate";
-import { projectRoleToString } from "./ProjectSettingsMemberList";
+import { projectRoleToString } from "./strings";
 
 interface Props {
   project: ProjectDetails;

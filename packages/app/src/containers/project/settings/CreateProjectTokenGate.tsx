@@ -8,10 +8,7 @@ import {
   ProjectRole,
 } from "@dewo/app/graphql/types";
 import { useCreateProjectTokenGate } from "../hooks";
-import {
-  projectRoleDescription,
-  projectRoleToString,
-} from "./ProjectSettingsMemberList";
+import { projectRoleDescription, projectRoleToString } from "./strings";
 
 interface Props {
   project: ProjectDetails;
