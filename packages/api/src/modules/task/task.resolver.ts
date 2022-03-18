@@ -133,22 +133,6 @@ export class TaskResolver {
     @Context("user") user: User,
     @Args("input") input: CreateTaskInput
   ): Promise<Task> {
-    // const caslUser = await userProxy.get();
-    // const abilities = this.abilityFactory.createForUser(caslUser!);
-    // if (input.parentTaskId) {
-    //   const parentTask = await this.taskService.findById(input.parentTaskId);
-    //   if (!parentTask) throw new NotFoundException();
-    //   if (
-    //     !abilities.can("update", subject(Task as any, parentTask), "subtasks")
-    //   ) {
-    //     throw new ForbiddenException();
-    //   }
-    // } else {
-    //   if (!abilities.can("create", subject(Task as any, input), "tasks")) {
-    //     throw new ForbiddenException();
-    //   }
-    // }
-
     const task = await this.taskService.create({
       tags: !!input.tagIds ? (input.tagIds.map((id) => ({ id })) as any) : [],
       assignees: !!input.assigneeIds

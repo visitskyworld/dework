@@ -65,10 +65,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
         {
           async requestDidStart(requestContext) {
             const startedAt = Date.now();
-            const metadata = {
-              variables: requestContext.request.variables,
-              caslUser: requestContext.context.caslUser,
-            };
+            const metadata = { variables: requestContext.request.variables };
             const prefix = `${
               requestContext.request.operationName
             } (${JSON.stringify(metadata)})`;
