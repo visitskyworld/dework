@@ -34,6 +34,12 @@ export class RbacRequests {
             roleId
             taskId
             projectId
+            role {
+              id
+              rules {
+                id
+              }
+            }
           }
         }
       `,

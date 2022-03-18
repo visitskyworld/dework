@@ -9,6 +9,7 @@ import { RbacRequests } from "@dewo/api/testing/requests/rbac.requests";
 import { TaskRequests } from "@dewo/api/testing/requests/task.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import faker from "faker";
+import { CreateRuleInput } from "../dto/CreateRuleInput";
 
 describe("RbacResolver", () => {
   let app: INestApplication;
@@ -271,6 +272,36 @@ describe("RbacResolver", () => {
         expect(rule).toBeDefined();
         expect(rule!.roleId).toEqual(role.id);
         expect(rule!.permission).toEqual(RulePermission.VIEW_PROJECTS);
+      });
+
+      it("should return existing rule if matches", async () => {
+        const { user, organization } = await fixtures.createUserOrgProject();
+        const role = await fixtures.createRole({
+          organizationId: organization.id,
+        });
+
+        const req = (input: CreateRuleInput) =>
+          client
+            .request({
+              app,
+              auth: fixtures.createAuthToken(user),
+              body: RbacRequests.createRule(input),
+            })
+            .then((res) => res.body.data.rule);
+
+        const firstRule = await req({
+          roleId: role.id,
+          permission: RulePermission.VIEW_PROJECTS,
+        });
+        expect(firstRule.role.id).toEqual(role.id);
+        expect(firstRule.role.rules).toHaveLength(1);
+
+        const duplicateRule = await req({
+          roleId: role.id,
+          permission: RulePermission.VIEW_PROJECTS,
+        });
+        expect(duplicateRule.id).toEqual(firstRule.id);
+        expect(duplicateRule.role.rules).toHaveLength(1);
       });
     });
 

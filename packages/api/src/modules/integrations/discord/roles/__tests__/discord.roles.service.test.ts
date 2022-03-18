@@ -47,10 +47,9 @@ describe("DiscordRolesService", () => {
         expect(roles).not.toContainEqual(
           expect.objectContaining({
             name: "@everyone",
-            // color: "grey",
-            // fallback: true,
-            // source: RoleSource.DISCORD,
-            // externalId: discordGuildId,
+            fallback: true,
+            source: RoleSource.DISCORD,
+            externalId: discordGuildId,
             organizationId: organization.id,
           })
         );

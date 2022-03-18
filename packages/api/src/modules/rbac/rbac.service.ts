@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, Repository } from "typeorm";
+import { Brackets, In, Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 import {
@@ -110,7 +110,24 @@ export class RbacService {
   public async createRules(
     partial: AtLeast<Rule, "permission" | "roleId">[]
   ): Promise<Rule[]> {
-    const rules = await this.ruleRepo.save(partial);
+    const currentRules = await this.ruleRepo.find({
+      roleId: In(partial.map((x) => x.roleId)),
+    });
+
+    const matches = (
+      partial: AtLeast<Rule, "permission" | "roleId">,
+      rule: Rule
+    ) =>
+      partial.roleId === rule.roleId &&
+      partial.permission === rule.permission &&
+      !!partial.inverted === rule.inverted &&
+      partial.projectId === (rule.projectId ?? undefined) &&
+      partial.taskId === (rule.taskId ?? undefined);
+
+    const rules = await this.ruleRepo.save(
+      partial.map((p) => currentRules.find((r) => matches(p, r)) ?? p)
+    );
+
     return this.ruleRepo.findByIds(rules.map((r) => r.id));
   }
 
