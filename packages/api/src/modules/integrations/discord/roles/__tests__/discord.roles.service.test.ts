@@ -44,13 +44,13 @@ describe("DiscordRolesService", () => {
         await service.syncRoles(integration);
         const roles = await organization.roles;
 
-        expect(roles).toContainEqual(
+        expect(roles).not.toContainEqual(
           expect.objectContaining({
             name: "@everyone",
-            color: "grey",
-            fallback: true,
-            source: RoleSource.DISCORD,
-            externalId: discordGuildId,
+            // color: "grey",
+            // fallback: true,
+            // source: RoleSource.DISCORD,
+            // externalId: discordGuildId,
             organizationId: organization.id,
           })
         );
@@ -118,7 +118,7 @@ describe("DiscordRolesService", () => {
     });
 
     describe("user/role mapping", () => {
-      it("should sadd user/role mapping", async () => {
+      it("should add user/role mapping", async () => {
         const user = await fixtures.createUser({
           source: ThreepidSource.discord,
           threepid: discordUserId,
@@ -126,7 +126,7 @@ describe("DiscordRolesService", () => {
 
         await service.syncRoles(integration);
         const roles = await user.roles;
-        expect(roles).toContainEqual(
+        expect(roles).not.toContainEqual(
           expect.objectContaining({
             name: "@everyone",
             organizationId: organization.id,

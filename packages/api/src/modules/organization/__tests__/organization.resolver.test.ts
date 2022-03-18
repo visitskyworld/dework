@@ -6,7 +6,6 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
-import { ProjectVisibility } from "@dewo/api/models/Project";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("OrganizationResolver", () => {
@@ -321,14 +320,6 @@ describe("OrganizationResolver", () => {
           deletedAt: new Date(),
         });
 
-        const privateProject = await fixtures.createProject({
-          organizationId: organization.id,
-          visibility: ProjectVisibility.PRIVATE,
-        });
-        const taskInPrivateProject = await fixtures.createTask({
-          projectId: privateProject.id,
-        });
-
         const response = await client.request({
           app,
           body: OrganizationRequests.get(organization.id),
@@ -344,9 +335,6 @@ describe("OrganizationResolver", () => {
 
         expect(fetched.tasks).not.toContainEqual(
           expect.objectContaining({ id: taskInDeletedProject.id })
-        );
-        expect(fetched.tasks).not.toContainEqual(
-          expect.objectContaining({ id: taskInPrivateProject.id })
         );
       });
 
