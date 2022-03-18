@@ -244,7 +244,8 @@ export class TaskService {
       .leftJoinAndSelect("task.subtasks", "subtask")
       .leftJoinAndSelect("task.applications", "application")
       .leftJoinAndSelect("task.submissions", "submission")
-      .innerJoinAndSelect("task.project", "project");
+      .innerJoinAndSelect("task.project", "project")
+      .where("1 = 1");
 
     if (!!ids) {
       query = query.andWhere("task.id IN (:...ids)", { ids });
@@ -290,7 +291,7 @@ export class TaskService {
       query = query.andWhere("assignee.id IS NULL");
     }
 
-    if (!!projectIds) {
+    if (!!projectIds?.length) {
       query = query
         .andWhere("task.projectId IN (:...projectIds)", { projectIds })
         .andWhere(
