@@ -527,6 +527,6 @@ export class UserTasksResolver {
 
   @ResolveField(() => [Task])
   public async tasks(@Parent() user: User): Promise<Task[]> {
-    return this.taskService.findWithRelations({ assigneeId: user.id });
+    return this.taskService.findWithRelations({ userId: user.id });
   }
 }

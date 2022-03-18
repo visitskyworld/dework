@@ -28,6 +28,7 @@ import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { TaskSection } from "@dewo/api/models/TaskSection";
+import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
 export class TaskService {
@@ -212,7 +213,7 @@ export class TaskService {
     ids,
     rewardIds,
     projectIds,
-    assigneeId,
+    userId,
     statuses,
     limit,
     doneAtAfter,
@@ -222,7 +223,7 @@ export class TaskService {
     ids?: string[];
     rewardIds?: string[];
     projectIds?: string[];
-    assigneeId?: string | null;
+    userId?: string | null;
     statuses?: TaskStatus[];
     order?: OrderByCondition;
     doneAtAfter?: Date;
@@ -230,7 +231,7 @@ export class TaskService {
     rewardNotNull?: boolean;
     limit?: number;
   }): Promise<Task[]> {
-    const filterOutSpam = !projectIds && !assigneeId;
+    const filterOutSpam = !projectIds && !userId;
 
     let query = this.taskRepo
       .createQueryBuilder("task")
@@ -277,17 +278,17 @@ export class TaskService {
       query = query.andWhere("task.rewardId IS NOT NULL");
     }
 
-    if (!!assigneeId) {
+    if (!!userId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
       query = query.andWhere(
         new Brackets((qb) =>
           qb
-            .where("assignee.id = :assigneeId", { assigneeId })
-            .orWhere("task.ownerId = :assigneeId", { assigneeId })
-            .orWhere("application.userId = :assigneeId", { assigneeId })
+            .where("assignee.id = :userId", { userId })
+            .orWhere("task.ownerId = :userId", { userId })
+            .orWhere("application.userId = :userId", { userId })
         )
       );
-    } else if (assigneeId === null) {
+    } else if (userId === null) {
       query = query.andWhere("assignee.id IS NULL");
     }
 
@@ -305,6 +306,17 @@ export class TaskService {
             );
           })
         );
+    }
+
+    if (!projectIds?.length && !ids?.length) {
+      query = query
+        .leftJoin(
+          Rule,
+          "rule",
+          `rule."projectId" = task."projectId" AND rule.permission = :viewProject AND rule.inverted IS TRUE`,
+          { viewProject: RulePermission.VIEW_PROJECTS }
+        )
+        .andWhere("rule.id IS NULL");
     }
 
     return query

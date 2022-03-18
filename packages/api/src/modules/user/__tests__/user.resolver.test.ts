@@ -14,7 +14,7 @@ import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
-import { ProjectVisibility } from "@dewo/api/models/Project";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -483,12 +483,21 @@ describe("UserResolver", () => {
     });
 
     describe("getUser", () => {
-      it("should return tasks from private project only for authed user", async () => {
+      it("should not return tasks from private projects", async () => {
         const assignedUser = await fixtures.createUser();
         const otherUser = await fixtures.createUser();
-        const project = await fixtures.createProject({
-          visibility: ProjectVisibility.PRIVATE,
-        });
+        const project = await fixtures.createProject();
+        await fixtures.createRole(
+          { organizationId: project.organizationId, fallback: true },
+          [
+            {
+              projectId: project.id,
+              permission: RulePermission.VIEW_PROJECTS,
+              inverted: true,
+            },
+          ]
+        );
+
         const task = await fixtures.createTask({
           projectId: project.id,
           assignees: [assignedUser],
@@ -505,7 +514,7 @@ describe("UserResolver", () => {
           body: UserRequests.getUser(assignedUser.id),
         });
 
-        expect(assignedRes.body.data.user.tasks).toContainEqual(
+        expect(assignedRes.body.data.user.tasks).not.toContainEqual(
           expect.objectContaining({ id: task.id })
         );
         expect(otherRes.body.data.user.tasks).not.toContainEqual(

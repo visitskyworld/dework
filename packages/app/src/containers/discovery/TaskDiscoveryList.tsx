@@ -75,11 +75,11 @@ export const TaskDiscoveryList: FC = () => {
     []
   );
 
-  const tasksQuery = useMemo<GetTasksInput>(
-    () => ({
+  const tasksQuery = useMemo(
+    (): GetTasksInput => ({
       statuses: [TaskStatus.TODO],
       rewardNotNull: !values.includeTasksWithoutReward,
-      assigneeId: null,
+      userId: null,
     }),
     [values.includeTasksWithoutReward]
   );

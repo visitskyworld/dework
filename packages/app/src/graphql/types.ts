@@ -12082,9 +12082,7 @@ export interface GetTasksInput {
   statuses?: TaskStatus[] | null;
   limit?: number | null;
   ids?: Scalar.UUID[] | null;
-  assigneeId?: Scalar.UUID | null;
-  projectIds?: Scalar.UUID[] | null;
-  organizationIds?: Scalar.UUID[] | null;
+  userId?: Scalar.UUID | null;
   rewardNotNull?: boolean | null;
 }
 

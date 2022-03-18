@@ -22,13 +22,7 @@ export class GetTasksInput extends TaskFilterInput {
   public ids?: string[];
 
   @Field(() => GraphQLUUID, { nullable: true })
-  public assigneeId?: string;
-
-  @Field(() => [GraphQLUUID], { nullable: true })
-  public projectIds?: string[];
-
-  @Field(() => [GraphQLUUID], { nullable: true })
-  public organizationIds?: string[];
+  public userId?: string;
 
   @Field({ nullable: true })
   public rewardNotNull?: boolean;
