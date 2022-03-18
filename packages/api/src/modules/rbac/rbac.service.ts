@@ -211,6 +211,7 @@ export class RbacService {
         case RulePermission.MANAGE_PROJECTS:
           fn(CRUD, Project, project);
           fn(CRUD, TaskTag, taskTag);
+          fn(CRUD, TaskReward, taskSection);
           fn(CRUD, TaskSection, taskSection);
           fn("submit", Task);
           fn(CRUD, TaskSubmission);
