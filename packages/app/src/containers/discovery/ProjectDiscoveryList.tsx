@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Icons from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
@@ -11,12 +11,26 @@ import removeMarkdown from "remove-markdown";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import _ from "lodash";
 
 type ProjectRow = GetFeaturedProjectsQuery["projects"][number];
 
+function useFeaturedProjects():
+  | GetFeaturedProjectsQuery["projects"]
+  | undefined {
+  const { data } = useQuery<GetFeaturedProjectsQuery>(Queries.featuredProjects);
+  return useMemo(() => {
+    if (!data) return undefined;
+    const sorted = _.sortBy(
+      data?.projects,
+      (p) => p.organization.users.length * 5 + p.taskCount
+    ).reverse();
+    return _.uniqBy(sorted, (p) => p.organizationId);
+  }, [data]);
+}
+
 export const ProjectDiscoveryList: FC = () => {
-  const projects = useQuery<GetFeaturedProjectsQuery>(Queries.featuredProjects)
-    .data?.projects;
+  const projects = useFeaturedProjects();
   const router = useRouter();
   const screens = useBreakpoint();
 
@@ -54,13 +68,6 @@ export const ProjectDiscoveryList: FC = () => {
                     </a>
                   </Link>
                 ),
-                defaultSortOrder: "descend" as "descend",
-                showSorterTooltip: false,
-                sorter: (a: ProjectRow, b: ProjectRow) =>
-                  5 *
-                    (a.organization.users.length -
-                      b.organization.users.length) +
-                  1 * (a.taskCount - b.taskCount),
               },
               {
                 key: "name",
@@ -99,6 +106,11 @@ export const ProjectDiscoveryList: FC = () => {
                     )}
                   </>
                 ),
+                showSorterTooltip: false,
+                sorter: (a: ProjectRow, b: ProjectRow) =>
+                  a.organization.name
+                    .toLowerCase()
+                    .localeCompare(b.organization.name.toLowerCase()),
               },
               ...(screens.sm
                 ? [

@@ -9,9 +9,6 @@ export class CreateRoleInput {
   @Field()
   public color!: string;
 
-  // @Field({ nullable: true })
-  // public default?: boolean;
-
   @Field(() => GraphQLUUID)
   public organizationId!: string;
 }

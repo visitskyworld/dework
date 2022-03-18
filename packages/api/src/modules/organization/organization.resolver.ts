@@ -42,15 +42,6 @@ export class OrganizationResolver {
     return this.permalinkService.get(organization, origin);
   }
 
-  // needed?
-  // @ResolveField(() => [OrganizationMember])
-  // public async members(
-  //   @Parent() organization: Organization
-  // ): Promise<OrganizationMember[]> {
-  //   if (!!organization.members) return organization.members;
-  //   return this.organizationService.getMembers(organization.id);
-  // }
-
   @ResolveField(() => [ProjectSection])
   public async projectSections(
     @Parent() organization: Organization
@@ -58,18 +49,6 @@ export class OrganizationResolver {
     const sections = await organization.projectSections;
     return sections.filter((s) => !s.deletedAt);
   }
-
-  // @ResolveField(() => OrganizationMember, { nullable: true })
-  // public async member(
-  //   @Parent() organization: Organization,
-  //   @Context("user") user: User | undefined
-  // ): Promise<OrganizationMember | undefined> {
-  //   if (!user) return undefined;
-  //   return this.organizationService.findMember({
-  //     organizationId: organization.id,
-  //     userId: user.id,
-  //   });
-  // }
 
   @ResolveField(() => [User])
   public async users(@Parent() organization: Organization): Promise<User[]> {

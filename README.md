@@ -103,7 +103,8 @@ BEGIN
       "rpcUrl": "https://mainnet.infura.io/v3/' || infura_project_id || '",
       "explorerUrl": "https://etherscan.io",
       "gnosisSafe": {
-        "serviceUrl": "https://safe-transaction.gnosis.io"
+        "serviceUrl": "https://safe-transaction.gnosis.io",
+        "addressPrefix": "eth"
       }
     }' AS json)
   ), (

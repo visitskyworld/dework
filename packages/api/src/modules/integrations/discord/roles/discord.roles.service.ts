@@ -57,8 +57,8 @@ export class DiscordRolesService {
     const guild = await client.guilds.fetch(integration.config.guildId);
     const discordRoles = await guild.roles.fetch(undefined, { force: true });
 
-    const fallbackRole = existingRoles.find((r) => r.fallback);
-    const discordEveryoneRole = discordRoles.find(isEveryoneRole);
+    // const fallbackRole = existingRoles.find((r) => r.fallback);
+    // const discordEveryoneRole = discordRoles.find(isEveryoneRole);
 
     const members = await guild.members.fetch();
     const discordUserIds = members.map((m) => m.user.id);
@@ -113,15 +113,15 @@ export class DiscordRolesService {
           ...r,
           ...this.extractDiscordRoleFields(discordRoles.get(r.externalId!)!),
         })),
-        ...(!!discordEveryoneRole && !!fallbackRole
-          ? [
-              {
-                ...fallbackRole,
-                ...this.extractDiscordRoleFields(discordEveryoneRole),
-                organizationId: integration.organizationId,
-              },
-            ]
-          : []),
+        // ...(!!discordEveryoneRole && !!fallbackRole
+        //   ? [
+        //       {
+        //         ...fallbackRole,
+        //         ...this.extractDiscordRoleFields(discordEveryoneRole),
+        //         organizationId: integration.organizationId,
+        //       },
+        //     ]
+        //   : []),
       ]);
 
       const updatedRoles = await manager

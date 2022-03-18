@@ -47,6 +47,7 @@ export class OrganizationService {
           for (const permission of [
             RulePermission.MANAGE_ORGANIZATION,
             RulePermission.MANAGE_PROJECTS,
+            RulePermission.SUGGEST_AND_VOTE,
           ]) {
             await this.rbacService.createRule({ roleId: role.id, permission });
           }
