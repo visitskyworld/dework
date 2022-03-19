@@ -9,9 +9,11 @@ import {
 import { Organization } from "@dewo/api/models/Organization";
 import { RoleSource } from "@dewo/api/models/rbac/Role";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
+import faker from "faker";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
+const discordUserAccessToken = "MIh53yuCgx4CNwQA5tqbIkAiaG98Gc";
 
 describe("DiscordRolesService", () => {
   let app: INestApplication;
@@ -26,7 +28,7 @@ describe("DiscordRolesService", () => {
 
   afterAll(() => app.close());
 
-  describe("syncRoles", () => {
+  describe("syncOrganizationRoles", () => {
     let organization: Organization;
     let integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
 
@@ -41,7 +43,7 @@ describe("DiscordRolesService", () => {
 
     describe("roles", () => {
       it("should store correct discord roles", async () => {
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles = await organization.roles;
 
         expect(roles).not.toContainEqual(
@@ -64,7 +66,7 @@ describe("DiscordRolesService", () => {
       });
 
       it("should not import Dework bot roles", async () => {
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles = await organization.roles;
 
         expect(roles).not.toContainEqual(
@@ -79,7 +81,7 @@ describe("DiscordRolesService", () => {
       });
 
       it("should not create new roles when scraping again", async () => {
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles1 = await fixtures
           .getOrganization(organization.id)
           .then((o) => o?.roles);
@@ -87,7 +89,7 @@ describe("DiscordRolesService", () => {
         const updatedIntegration = (await fixtures.getOrganizationIntegration(
           integration.id
         )) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-        await service.syncRoles(updatedIntegration);
+        await service.syncOrganizationRoles(updatedIntegration);
         const roles2 = await fixtures
           .getOrganization(organization.id)
           .then((o) => o?.roles);
@@ -104,7 +106,7 @@ describe("DiscordRolesService", () => {
         const customRole = await fixtures.createRole({
           organizationId: organization.id,
         });
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles = await organization.roles;
 
         expect(roles).not.toContainEqual(
@@ -123,7 +125,7 @@ describe("DiscordRolesService", () => {
           threepid: discordUserId,
         });
 
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles = await user.roles;
         expect(roles).not.toContainEqual(
           expect.objectContaining({
@@ -140,7 +142,7 @@ describe("DiscordRolesService", () => {
       });
 
       it("should remove user/role mapping (but not fallback role mapping)", async () => {
-        await service.syncRoles(integration);
+        await service.syncOrganizationRoles(integration);
         const roles = await organization.roles;
         const fallbackRole = roles.find((r) => r.fallback);
         const discordRole = roles.find(
@@ -148,8 +150,7 @@ describe("DiscordRolesService", () => {
         );
 
         const user = await fixtures.createUser();
-        await fixtures.addRole(user.id, fallbackRole!.id);
-        await fixtures.addRole(user.id, discordRole!.id);
+        await fixtures.addRoles(user.id, [fallbackRole!.id, discordRole!.id]);
 
         const userRolesBefore = await fixtures
           .getUser(user.id)
@@ -164,7 +165,7 @@ describe("DiscordRolesService", () => {
         const updatedIntegration = (await fixtures.getOrganizationIntegration(
           integration.id
         )) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-        await service.syncRoles(updatedIntegration);
+        await service.syncOrganizationRoles(updatedIntegration);
 
         const userRolesAfter = await fixtures
           .getUser(user.id)
@@ -176,6 +177,50 @@ describe("DiscordRolesService", () => {
           expect.objectContaining(discordRole)
         );
       });
+    });
+  });
+
+  describe("syncUserRoles", () => {
+    let organization: Organization;
+    let integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
+
+    beforeEach(async () => {
+      organization = await fixtures.createOrganization();
+      integration = await fixtures.createOrganizationIntegration({
+        organizationId: organization.id,
+        type: OrganizationIntegrationType.DISCORD,
+        config: { guildId: discordGuildId, permissions: "" },
+      });
+    });
+
+    it("should give user the correct roles", async () => {
+      await service.syncOrganizationRoles(integration);
+
+      const user = await fixtures.createUser({
+        source: ThreepidSource.discord,
+        threepid: discordUserId,
+        config: {
+          accessToken: discordUserAccessToken,
+          profile: {
+            username: faker.internet.userName(),
+            guilds: [{ id: discordGuildId }],
+          },
+        } as any,
+      });
+
+      const rolesBefore = await fixtures.getUser(user.id).then((u) => u?.roles);
+      expect(rolesBefore).toHaveLength(0);
+
+      await service.syncUserRoles(user);
+      const rolesAfter = await fixtures.getUser(user.id).then((u) => u?.roles);
+      expect(rolesAfter).toContainEqual(
+        expect.objectContaining({
+          name: "discord-tester-role",
+          color: "orange",
+          fallback: false,
+          organizationId: organization.id,
+        })
+      );
     });
   });
 });

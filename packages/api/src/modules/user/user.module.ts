@@ -13,6 +13,7 @@ import { UserService } from "./user.service";
 import { PaymentModule } from "../payment/payment.module";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkModule } from "../permalink/permalink.module";
+import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PermalinkModule } from "../permalink/permalink.module";
     ThreepidModule,
     PaymentModule,
     PermalinkModule,
+    DiscordRolesModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

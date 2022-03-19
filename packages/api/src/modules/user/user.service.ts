@@ -21,6 +21,7 @@ import { PaymentService } from "../payment/payment.service";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
+import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
 
 @Injectable()
 export class UserService {
@@ -34,6 +35,7 @@ export class UserService {
     @InjectRepository(EntityDetail)
     private readonly entityDetailRepo: Repository<EntityDetail>,
     private readonly threepidService: ThreepidService,
+    private readonly discordRolesService: DiscordRolesService,
     private readonly paymentService: PaymentService,
     private readonly jwtService: JwtService
   ) {}
@@ -136,6 +138,10 @@ export class UserService {
           creatorId: user.id,
         }))
       );
+    }
+
+    if (threepid.source === ThreepidSource.discord) {
+      await this.discordRolesService.syncUserRoles(user);
     }
   }
 

@@ -30,7 +30,7 @@ export class DiscordRolesPoller {
 
     for (const integration of integrations) {
       try {
-        await this.service.syncRoles(integration);
+        await this.service.syncOrganizationRoles(integration);
       } catch (error) {
         const errorString = JSON.stringify(
           error,

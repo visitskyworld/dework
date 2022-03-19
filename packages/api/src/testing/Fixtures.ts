@@ -493,12 +493,12 @@ export class Fixtures {
     override: Partial<Role> = {}
   ) {
     const role = await this.createRole({ organizationId, ...override }, rules);
-    await this.rbacService.addRole(userId, role.id);
+    await this.rbacService.addRoles(userId, [role.id]);
     return this.rbacService.abilityForUser(userId, organizationId);
   }
 
-  async addRole(userId: string, roleId: string) {
-    await this.rbacService.addRole(userId, roleId);
+  async addRoles(userId: string, roleIds: string[]) {
+    await this.rbacService.addRoles(userId, roleIds);
   }
 }
 

@@ -43,7 +43,7 @@ export class InviteService {
       );
 
       if (!!fallbackRole) {
-        await this.rbacService.addRole(user.id, fallbackRole.id);
+        await this.rbacService.addRoles(user.id, [fallbackRole.id]);
       }
 
       const role = await this.rbacService.getOrCreatePersonalRole(
@@ -65,7 +65,7 @@ export class InviteService {
       );
 
       if (!!fallbackRole) {
-        await this.rbacService.addRole(user.id, fallbackRole.id);
+        await this.rbacService.addRoles(user.id, [fallbackRole.id]);
       }
 
       const role = await this.rbacService.getOrCreatePersonalRole(

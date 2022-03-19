@@ -50,7 +50,7 @@ export class OrganizationService {
           ]) {
             await this.rbacService.createRule({ roleId: role.id, permission });
           }
-          await this.rbacService.addRole(creator.id, role.id);
+          await this.rbacService.addRoles(creator.id, [role.id]);
         }),
       this.rbacService
         .createRole({
@@ -64,7 +64,7 @@ export class OrganizationService {
             roleId: role.id,
             permission: RulePermission.VIEW_PROJECTS,
           });
-          await this.rbacService.addRole(creator.id, role.id);
+          await this.rbacService.addRoles(creator.id, [role.id]);
         }),
     ]);
 

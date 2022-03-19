@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, In, Repository } from "typeorm";
+import { Brackets, FindConditions, In, Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 import {
@@ -20,6 +20,7 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReward } from "@dewo/api/models/TaskReward";
+import { User } from "@dewo/api/models/User";
 
 export class UserRole {
   role!: Role;
@@ -56,7 +57,9 @@ export class RbacService {
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>,
     @InjectRepository(Rule)
-    private readonly ruleRepo: Repository<Rule>
+    private readonly ruleRepo: Repository<Rule>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>
   ) {}
 
   public async abilityForUser(
@@ -65,6 +68,10 @@ export class RbacService {
   ): Promise<AppAbility> {
     const rules = await this.getRules(userId, organizationId);
     return this.createAbility(rules, organizationId, userId);
+  }
+
+  public async findRoles(query: FindConditions<Role>): Promise<Role[]> {
+    return this.roleRepo.find(query);
   }
 
   public async createRole(
@@ -86,7 +93,7 @@ export class RbacService {
   ): Promise<Role> {
     const role = await this.roleRepo.findOne({ userId, organizationId });
     if (!!role) {
-      await this.addRole(userId, role.id);
+      await this.addRoles(userId, [role.id]);
       return role;
     }
 
@@ -96,7 +103,7 @@ export class RbacService {
       userId,
       organizationId,
     });
-    await this.addRole(userId, newRole.id);
+    await this.addRoles(userId, [newRole.id]);
     return newRole;
   }
 
@@ -147,25 +154,27 @@ export class RbacService {
       throw new Error("Cannot add to organization without fallback role");
     }
 
-    await Promise.all(userIds.map((id) => this.addRole(id, fallbackRole.id)));
+    await Promise.all(
+      userIds.map((id) => this.addRoles(id, [fallbackRole.id]))
+    );
   }
 
-  public async addRole(userId: string, roleId: string): Promise<void> {
+  public async addRoles(userId: string, roleIds: string[]): Promise<void> {
     // hack: remove the role mapping first to prevent getting errors with duplicate entries
-    await this.removeRole(userId, roleId);
-    await this.roleRepo
+    await this.removeRoles(userId, roleIds);
+    await this.userRepo
       .createQueryBuilder()
-      .relation("users")
-      .of(roleId)
-      .add(userId);
+      .relation("roles")
+      .of(userId)
+      .add(roleIds);
   }
 
-  public async removeRole(userId: string, roleId: string): Promise<void> {
-    await this.roleRepo
+  public async removeRoles(userId: string, roleIds: string[]): Promise<void> {
+    await this.userRepo
       .createQueryBuilder()
-      .relation("users")
-      .of(roleId)
-      .remove(userId);
+      .relation("roles")
+      .of(userId)
+      .remove(roleIds);
   }
 
   private async createAbility(

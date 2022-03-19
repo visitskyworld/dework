@@ -190,7 +190,7 @@ export class ProjectResolver {
       project.organizationId
     );
     if (!!fallbackRole) {
-      await this.rbacService.addRole(user.id, fallbackRole.id);
+      await this.rbacService.addRoles(user.id, [fallbackRole.id]);
     }
 
     const personalRole = await this.rbacService.getOrCreatePersonalRole(

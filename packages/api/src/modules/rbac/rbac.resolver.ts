@@ -106,7 +106,7 @@ export class RbacResolver {
     @Args("userId", { type: () => GraphQLUUID }) userId: string,
     @Args("roleId", { type: () => GraphQLUUID }) roleId: string
   ): Promise<User> {
-    await this.service.addRole(userId, roleId);
+    await this.service.addRoles(userId, [roleId]);
     return this.userRepo.findOneOrFail(userId);
   }
 

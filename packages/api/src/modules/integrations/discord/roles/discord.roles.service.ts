@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectConnection } from "@nestjs/typeorm";
-import { Connection } from "typeorm";
+import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
+import { Connection, In, Repository } from "typeorm";
 import * as Colors from "@ant-design/colors";
 import NearestColor from "nearest-color";
 import * as Discord from "discord.js";
@@ -11,6 +11,8 @@ import {
 } from "@dewo/api/models/OrganizationIntegration";
 import { DiscordService } from "../discord.service";
 import { User } from "@dewo/api/models/User";
+import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 
 const isEveryoneRole = (role: Discord.Role) => role.id === role.guild.id;
 
@@ -36,15 +38,78 @@ export class DiscordRolesService {
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
-    private readonly discord: DiscordService
+    @InjectRepository(OrganizationIntegration)
+    private readonly organizationIntegrationRepo: Repository<OrganizationIntegration>,
+    private readonly discord: DiscordService,
+    private readonly rbacService: RbacService
   ) {}
 
+  public async syncUserRoles(user: User): Promise<void> {
+    const threepid = (await user.threepids).find(
+      (t) => t.source === ThreepidSource.discord
+    ) as Threepid<ThreepidSource.discord> | undefined;
+
+    this.logger.log(
+      `Scraping user Discord roles: ${JSON.stringify({
+        userId: user.id,
+        threepid,
+      })}`
+    );
+
+    const guildIds = threepid?.config.profile.guilds?.map((g) => g.id) ?? [];
+    if (!threepid) {
+      this.logger.warn(
+        `Tried syncing Discord roles, but nothing to scape: ${JSON.stringify({
+          userId: user.id,
+          guildIds,
+        })}`
+      );
+      return;
+    }
+
+    const integrations = (await this.organizationIntegrationRepo
+      .createQueryBuilder("integration")
+      .where("integration.type = :type", {
+        type: OrganizationIntegrationType.DISCORD,
+      })
+      .andWhere(`integration."config"->>'guildId' IN (:...guildIds)`, {
+        guildIds,
+      })
+      .getMany()) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>[];
+
+    const discordRoleIds: string[] = [];
+    for (const integration of integrations) {
+      const client = this.discord.getClient(integration);
+      const guild = await client.guilds.fetch(integration.config.guildId);
+      const member = await guild.members.fetch(threepid.threepid);
+      // @ts-expect-error
+      discordRoleIds.push(...member._roles);
+    }
+
+    const roles = await this.rbacService.findRoles({
+      source: RoleSource.DISCORD,
+      externalId: In(discordRoleIds),
+    });
+    const roleIds = roles.map((r) => r.id);
+    this.logger.debug(
+      `Adding roles to user: ${JSON.stringify({
+        userId: user.id,
+        discordRoleIds,
+        roleIds,
+      })}`
+    );
+
+    if (!!roles.length) {
+      await this.rbacService.addRoles(user.id, roleIds);
+    }
+  }
+
   // TODO(fant): look into SQL merge
-  public async syncRoles(
+  public async syncOrganizationRoles(
     integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
   ): Promise<void> {
     this.logger.log(
-      `Scraping Discord roles: ${JSON.stringify({
+      `Scraping organization Discord roles and rules: ${JSON.stringify({
         organizationId: integration.organizationId,
       })}`
     );

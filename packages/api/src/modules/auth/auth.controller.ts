@@ -116,7 +116,7 @@ export class AuthController {
             config,
           });
 
-        await this.discordRolesService.syncRoles(
+        await this.discordRolesService.syncOrganizationRoles(
           integration as OrganizationIntegration<OrganizationIntegrationType.DISCORD>
         );
       }
