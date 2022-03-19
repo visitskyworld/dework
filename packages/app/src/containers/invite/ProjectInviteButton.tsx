@@ -11,9 +11,10 @@ import { useCreateProjectInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ProjectIntegrationType, ProjectRole } from "@dewo/app/graphql/types";
+import { ProjectRole, RoleSource } from "@dewo/app/graphql/types";
 import { projectRoleDescription } from "../project/settings/strings";
 import Link from "next/link";
+import { useOrganizationRoles } from "../rbac/hooks";
 
 interface Props {
   projectId: string;
@@ -53,62 +54,58 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
     [inviteToProject]
   );
 
-  const isDiscordRoleGatingEnabled = useMemo(
+  const roles = useOrganizationRoles(project?.organizationId);
+  const discordRoleGatingEnabled = useMemo(
     () =>
-      !!project?.integrations.find(
-        (i) => i.type === ProjectIntegrationType.DISCORD_ROLE_GATE
+      !!roles?.some(
+        (role) =>
+          role.source === RoleSource.DISCORD &&
+          role.rules.some((rule) => rule.projectId === projectId)
       ),
-    [project?.integrations]
+    [roles, projectId]
   );
 
   if (!project) return null;
-  if (isDiscordRoleGatingEnabled) {
-    return (
-      <Button
-        type="ghost"
-        loading={loading}
-        icon={<Icons.UsergroupAddOutlined />}
-        style={style}
-        onClick={() => copyToClipboardAndShowToast(project.permalink)}
-      >
-        Invite
-      </Button>
-    );
-  }
-
-  if (canInvite) {
-    return (
-      <Dropdown
-        placement="bottomCenter"
-        trigger={["click"]}
-        overlay={
-          <Menu>
-            <Menu.Item onClick={inviteProjectContributor}>
-              Invite to View Project
-              <Tooltip
-                placement="right"
-                title={
-                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                    {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
-                  </Typography.Text>
-                }
-              >
-                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-              </Tooltip>
+  if (!canInvite) return null;
+  return (
+    <Dropdown
+      placement="bottomCenter"
+      trigger={["click"]}
+      overlay={
+        <Menu>
+          <Menu.Item onClick={inviteProjectContributor}>
+            Invite to View Project
+            <Tooltip
+              placement="right"
+              title={
+                <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                  {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
+                </Typography.Text>
+              }
+            >
+              <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+            </Tooltip>
+          </Menu.Item>
+          <Menu.Item onClick={inviteProjectAdmin}>
+            Invite to Manage Project
+            <Tooltip
+              placement="right"
+              title={
+                <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                  {projectRoleDescription[ProjectRole.ADMIN]}
+                </Typography.Text>
+              }
+            >
+              <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+            </Tooltip>
+          </Menu.Item>
+          {discordRoleGatingEnabled ? (
+            <Menu.Item
+              onClick={() => copyToClipboardAndShowToast(project.permalink)}
+            >
+              Invite with Discord role
             </Menu.Item>
-            <Menu.Item onClick={inviteProjectAdmin}>
-              Invite to Manage Project
-              <Tooltip
-                placement="right"
-                title={
-                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                    {projectRoleDescription[ProjectRole.ADMIN]}
-                  </Typography.Text>
-                }
-              >
-                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-              </Tooltip>
-            </Menu.Item>
+          ) : (
             <Link href={`${project.permalink}/settings/access`}>
               <a>
                 <Menu.Item>
@@ -130,20 +127,18 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
                 </Menu.Item>
               </a>
             </Link>
-          </Menu>
-        }
+          )}
+        </Menu>
+      }
+    >
+      <Button
+        type="ghost"
+        loading={loading}
+        icon={<Icons.UsergroupAddOutlined />}
+        style={style}
       >
-        <Button
-          type="ghost"
-          loading={loading}
-          icon={<Icons.UsergroupAddOutlined />}
-          style={style}
-        >
-          Invite
-        </Button>
-      </Dropdown>
-    );
-  }
-
-  return null;
+        Invite
+      </Button>
+    </Dropdown>
+  );
 };
