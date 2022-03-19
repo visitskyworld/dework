@@ -1,16 +1,16 @@
 import React, { FC, useMemo } from "react";
 import { Button, Grid, List, Skeleton, Typography } from "antd";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import { useOrganization } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
+import { useOrganizationDetails } from "../hooks";
 
 interface Props {
   organizationId: string;
 }
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const canUpdate = usePermission("update", organization);
   const avatarSize = Grid.useBreakpoint().sm ? 192 : 96;
 

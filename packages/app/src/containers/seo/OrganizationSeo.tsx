@@ -1,10 +1,10 @@
-import { OrganizationDetails } from "@dewo/app/graphql/types";
+import { Organization } from "@dewo/app/graphql/types";
 import { NextSeo } from "next-seo";
 import React, { FC } from "react";
 import * as qs from "query-string";
 
 interface Props {
-  organization: OrganizationDetails;
+  organization: Organization;
 }
 
 export const OrganizationSeo: FC<Props> = ({ organization }) => {

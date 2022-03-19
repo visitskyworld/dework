@@ -42,7 +42,7 @@ import {
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
-import { useOrganization } from "../organization/hooks";
+import { useOrganizationDetails } from "../organization/hooks";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
@@ -333,7 +333,7 @@ export function useAddUserToDiscordGuild(
 export function useOrganizationDiscordIntegration(
   organizationId: string | undefined
 ): OrganizationIntegration | undefined {
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   return useMemo(
     () =>
       organization?.integrations.find(

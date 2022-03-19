@@ -129,6 +129,7 @@ const Page: NextPage = () => {
       </Layout.Content>
       <ForbiddenResourceModal
         visible={forbiddenError}
+        projectId={projectId}
         organizationId={organizationId}
       />
       {!!project && <ProjectSeo project={project} />}

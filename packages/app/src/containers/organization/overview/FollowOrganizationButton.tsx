@@ -5,7 +5,7 @@ import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { useFollowOrganization } from "../../rbac/hooks";
+import { useFollowOrganization, useOrganizationRoles } from "../../rbac/hooks";
 
 interface Props {
   organizationId: string;
@@ -19,12 +19,10 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
 
   const { user } = useAuthContext();
 
-  const { organization } = useOrganization(organizationId);
+  const roles = useOrganizationRoles(organizationId);
+  const organization = useOrganization(organizationId);
   const { users } = useOrganizationUsers(organizationId);
-  const fallbackRole = useMemo(
-    () => organization?.roles.find((r) => r.fallback),
-    [organization?.roles]
-  );
+  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
 
   const isFollowing = useMemo(
     () =>

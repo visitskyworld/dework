@@ -1,6 +1,5 @@
 import { Row, Skeleton, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
-import { useOrganization } from "../../hooks";
 import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
 import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
@@ -19,6 +18,7 @@ import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { ProjectListEmpty } from "./ProjectListEmpty";
+import { useOrganizationDetails } from "../../hooks";
 
 interface Props {
   organizationId: string;
@@ -33,7 +33,7 @@ const defaultProjectSection: ProjectSection = {
 
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const screens = useBreakpoint();
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const projects = useMemo(
     () => _.sortBy(organization?.projects, (p) => p.sortKey),
     [organization?.projects]

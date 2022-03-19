@@ -6,14 +6,16 @@ import { uuidToBase62 } from "@dewo/app/util/uuid";
 import { useRouter } from "next/router";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { useOrganization } from "../../organization/hooks";
+import { useOrganizationDetails } from "../../organization/hooks";
 
 interface Props {
   project: ProjectDetails;
 }
 
 export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
-  const refetchOrganization = useOrganization(project.organizationId).refetch;
+  const refetchOrganization = useOrganizationDetails(
+    project.organizationId
+  ).refetch;
   const updateProject = useUpdateProject();
   const deletingProject = useToggle(false);
   const router = useRouter();

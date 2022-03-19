@@ -32,6 +32,7 @@ const Page: NextPage = () => {
       </TaskFilterProvider>
       <ForbiddenResourceModal
         visible={forbiddenError}
+        projectId={projectId}
         organizationId={organizationId}
       />
     </Layout.Content>

@@ -24,16 +24,16 @@ import {
   useCloseTaskDetails,
   useNavigateToTaskFn,
 } from "@dewo/app/util/navigation";
-import { useOrganization } from "../../organization/hooks";
 import Link from "next/link";
 import { RouterContext } from "next/dist/shared/lib/router-context";
+import { useOrganizationDetails } from "../../organization/hooks";
 
 interface Props {
   task: TaskDetails;
 }
 
 const MoveTaskSubmenu: FC<Props> = ({ task }) => {
-  const { organization } = useOrganization(task.project.organization.id);
+  const { organization } = useOrganizationDetails(task.project.organization.id);
   const router = useRouter();
   const closeTaskDetails = useCloseTaskDetails();
   const updateTask = useUpdateTask();

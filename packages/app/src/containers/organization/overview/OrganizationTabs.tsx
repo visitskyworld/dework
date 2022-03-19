@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/projectList/OrganizationProjectList";
 import {
-  useOrganization,
+  useOrganizationDetails,
   useOrganizationUsers,
 } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -43,7 +43,7 @@ export const OrganizationTabs: FC<Props> = ({
   currentTab,
   settingsTab,
 }) => {
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const router = useRouter();

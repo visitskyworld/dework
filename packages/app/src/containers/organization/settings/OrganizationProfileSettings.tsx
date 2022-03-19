@@ -15,7 +15,7 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { FormSection } from "@dewo/app/components/FormSection";
 import * as Icons from "@ant-design/icons";
 import {
-  useOrganization,
+  useOrganizationDetails,
   useUpdateOrganization,
   useUpdateOrganizationDetail,
 } from "../hooks";
@@ -44,7 +44,7 @@ export const OrganizationProfileSettings: FC<
   OrganizationProfileSettingsProps
 > = ({ organizationId }) => {
   const [form] = useForm<FormValues>();
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
   const updateOrganization = useUpdateOrganization();

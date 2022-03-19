@@ -3,8 +3,8 @@ import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback } from "react";
 import { useCreateOrganizationInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
-import { useOrganization } from "../organization/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useOrganizationDetails } from "../organization/hooks";
 
 interface Props {
   organizationId: string;
@@ -15,8 +15,7 @@ export const OrganizationInviteButton: FC<Props> = ({
   organizationId,
   style,
 }) => {
-  const { organization } = useOrganization(organizationId);
-
+  const { organization } = useOrganizationDetails(organizationId);
   const canInvite = usePermission("create", "Role");
 
   const copyToClipboardAndShowToast =

@@ -127,6 +127,7 @@ export const organization = gql`
     name
     imageUrl
     slug
+    tagline
     permalink
   }
 `;
@@ -598,9 +599,6 @@ export const organizationDetails = gql`
     projectSections {
       ...ProjectSection
     }
-    users {
-      ...User
-    }
     tags {
       ...OrganizationTag
     }
@@ -609,15 +607,9 @@ export const organizationDetails = gql`
     }
     integrations {
       ...OrganizationIntegration
-      discordRoleGates: projectIntegrations {
-        ...ProjectDiscordRoleGate
-      }
     }
     projectTokenGates {
       ...ProjectTokenGate
-    }
-    roles {
-      ...Role
     }
   }
 
@@ -630,6 +622,4 @@ export const organizationDetails = gql`
   ${user}
   ${projectTokenGate}
   ${projectDiscordRoleGate}
-  ${role}
-  ${user}
 `;

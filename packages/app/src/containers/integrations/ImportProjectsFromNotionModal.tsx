@@ -2,7 +2,7 @@ import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { Button, Modal, Select, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
-import { useOrganization } from "../organization/hooks";
+import { useOrganizationDetails } from "../organization/hooks";
 import { useCreateProjectsFromNotion, useNotionDatabases } from "./hooks";
 
 interface Props {
@@ -19,7 +19,7 @@ export const ImportProjectsFromNotionModal: FC<Props> = ({
   const notionDatabases = useNotionDatabases(threepidId);
   const [selectedDatabaseIds, setSelectedDatabaseIds] = useState<string[]>([]);
 
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const router = useRouter();
   const createProjectsFromNotion = useCreateProjectsFromNotion();
 

@@ -1,16 +1,15 @@
 import * as Icons from "@ant-design/icons";
 import { Avatar, Card, Space, Typography } from "antd";
 import React, { FC } from "react";
-import { useOrganization } from "../hooks";
 import Link from "next/link";
+import { useOrganization } from "../hooks";
 
 interface Props {
   organizationId: string;
 }
 
 export const CreateProjectCard: FC<Props> = ({ organizationId }) => {
-  const { organization } = useOrganization(organizationId);
-
+  const organization = useOrganization(organizationId);
   if (!organization) return null;
   return (
     <Link href={`${organization.permalink}/create`}>

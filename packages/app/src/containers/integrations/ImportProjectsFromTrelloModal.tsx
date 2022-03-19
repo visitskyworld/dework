@@ -19,7 +19,7 @@ export const ImportProjectsFromTrelloModal: FC<Props> = ({
   const trelloBoards = useTrelloBoards(threepidId);
   const [selectedBoardIds, setSelectedBoardIds] = useState<string[]>([]);
 
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   const router = useRouter();
   const createProjectsFromTrello = useCreateProjectsFromTrello();
 

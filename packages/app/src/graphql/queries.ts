@@ -72,6 +72,16 @@ export const permissions = gql`
 export const organization = gql`
   query GetOrganizationQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {
+      ...Organization
+    }
+  }
+
+  ${Fragments.organization}
+`;
+
+export const organizationDetails = gql`
+  query GetOrganizationDetailsQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
       ...OrganizationDetails
     }
   }

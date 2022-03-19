@@ -10,7 +10,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import {
-  useOrganization,
+  useOrganizationDetails,
   useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
@@ -59,7 +59,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   onCreated,
 }) => {
   const advancedSection = useToggle(true);
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const router = useRouter();
 
   const [values, setValues] = useState<Partial<FormValues>>({});

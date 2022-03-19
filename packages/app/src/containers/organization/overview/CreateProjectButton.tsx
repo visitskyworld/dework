@@ -5,10 +5,10 @@ import { Button, ButtonProps, Dropdown, Menu, Space, Tag } from "antd";
 import { useRouter } from "next/router";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback } from "react";
-import { useOrganization } from "../hooks";
 import { useConnectToGithubUrlFn } from "../../integrations/hooks";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import Link from "next/link";
+import { useOrganizationDetails } from "../hooks";
 
 interface Props extends ButtonProps {
   organizationId: string;
@@ -21,7 +21,7 @@ export const CreateProjectButton: FC<Props> = ({
   ...buttonProps
 }) => {
   const router = useRouter();
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const goToNotionOauthFlow = useCallback(() => {
     const url = `${
       Constants.GRAPHQL_API_URL

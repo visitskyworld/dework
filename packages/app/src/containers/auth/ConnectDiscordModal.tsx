@@ -12,14 +12,7 @@ interface Props {
 
 export const ConnectDiscordModal: FC<Props> = ({ visible, onClose }) => {
   const router = useRouter();
-
-  const state = useMemo(
-    () => ({
-      redirect: router.asPath,
-    }),
-    [router?.asPath]
-  );
-
+  const state = useMemo(() => ({ redirect: router.asPath }), [router?.asPath]);
   return (
     <Modal
       visible={visible}
@@ -36,7 +29,6 @@ export const ConnectDiscordModal: FC<Props> = ({ visible, onClose }) => {
       </Typography.Paragraph>
       <ThreepidAuthButton
         type="primary"
-        key="connect-discord"
         source={ThreepidSource.discord}
         children="Connect with Discord"
         style={{ width: "100%" }}

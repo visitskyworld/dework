@@ -5,7 +5,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { CreateProjectSectionModal } from "../CreateSectionModal";
 import { ProjectSection } from "@dewo/app/graphql/types";
-import { useOrganization, useUpdateProjectSection } from "../../hooks";
+import { useOrganizationDetails, useUpdateProjectSection } from "../../hooks";
 import { useRouter } from "next/router";
 import { RenameSectionPopover } from "../RenameSectionPopover";
 
@@ -20,8 +20,11 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
   isDefault,
   organizationId,
 }) => {
-  const { organization } = useOrganization(organizationId);
-  const canCreateProject = usePermission("create", "Project");
+  const { organization } = useOrganizationDetails(organizationId);
+  const canCreateProject = usePermission("create", {
+    __typename: "Project",
+    organizationId,
+  });
   const canCreate = usePermission("create", "ProjectSection");
   const canUpdate = usePermission("update", "ProjectSection");
 

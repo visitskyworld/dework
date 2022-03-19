@@ -14,7 +14,6 @@ import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
 import { SidebarProvider } from "@dewo/app/contexts/sidebarContext";
 import { useRouter } from "next/router";
-import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
@@ -26,6 +25,7 @@ import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
 import { createApolloClient, createApolloLink } from "@dewo/app/graphql/apollo";
 import { ApolloProvider } from "@apollo/client";
+import { useOrganization } from "@dewo/app/containers/organization/hooks";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -54,7 +54,7 @@ const SlugReplacer: React.FC = () => {
   const router = useRouter();
   const { organizationSlug, projectSlug } = router.query;
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   useEffect(() => {
     if (
       organization &&

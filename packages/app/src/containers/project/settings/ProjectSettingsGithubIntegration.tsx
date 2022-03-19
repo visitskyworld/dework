@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { useOrganization } from "../../organization/hooks";
 import {
   OrganizationIntegrationType,
   ProjectIntegrationType,
@@ -18,6 +17,7 @@ import {
   CreateGithubIntegrationForm,
   CreateGithubIntegrationFormValues,
 } from "../../integrations/CreateGithubIntegrationForm";
+import { useOrganizationDetails } from "../../organization/hooks";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
@@ -27,7 +27,7 @@ interface ProjectGithubIntegrationProps {
 function useHasOrganizationGithubIntegration(
   organizationId: string | undefined
 ): boolean {
-  const { organization } = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   return useMemo(
     () =>
       !!organization?.integrations.some(

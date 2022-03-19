@@ -20,7 +20,7 @@ export const ImportProjectsFromGithubModal: FC<Props> = ({
   const githubRepos = useOrganizationGithubRepos(organizationId);
   const [selectedRepoIds, setSelectedRepoIds] = useState<string[]>([]);
 
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   const router = useRouter();
   const createProjectsFromGithub = useCreateProjectsFromGithub();
 

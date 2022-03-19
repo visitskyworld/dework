@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const ProjectListEmpty: FC<Props> = ({ organizationId }) => {
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   const canCreateProject = usePermission("create", "Project");
   if (canCreateProject) {
     return (

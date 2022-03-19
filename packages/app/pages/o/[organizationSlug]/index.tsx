@@ -5,7 +5,6 @@ import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { useRouter } from "next/router";
 import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
-import { useOrganization } from "@dewo/app/containers/organization/hooks";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { OrganizationHeaderSummary } from "@dewo/app/containers/organization/overview/OrganizationHeaderSummary";
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
@@ -15,6 +14,7 @@ import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations
 import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/ImportProjectsFromTrelloModal";
 import { OrganizationSeo } from "@dewo/app/containers/seo/OrganizationSeo";
 import { ImportProjectsFromGithubModal } from "@dewo/app/containers/integrations/ImportProjectsFromGithubModal";
+import { useOrganization } from "@dewo/app/containers/organization/hooks";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -22,7 +22,7 @@ const Page: NextPage = () => {
   const importSource = router.query.importSource as string | undefined;
   const settingsTab = router.query.settingsTab as string | undefined;
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   const routes = useMemo(
     () =>
       !!organization && [

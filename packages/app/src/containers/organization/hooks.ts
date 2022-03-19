@@ -12,6 +12,8 @@ import {
   CreateProjectSectionMutation,
   CreateProjectSectionMutationVariables,
   DiscordIntegrationChannel,
+  GetOrganizationDetailsQuery,
+  GetOrganizationDetailsQueryVariables,
   GetOrganizationDiscordChannelsQuery,
   GetOrganizationDiscordChannelsQueryVariables,
   GetOrganizationGithubReposQuery,
@@ -157,14 +159,27 @@ export function useUpdateProjectSection(): (
   );
 }
 
-export function useOrganization(organizationId: string | undefined): {
+export function useOrganization(
+  organizationId: string | undefined
+): Organization | undefined {
+  const { data } = useQuery<
+    GetOrganizationQuery,
+    GetOrganizationQueryVariables
+  >(Queries.organization, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return data?.organization;
+}
+
+export function useOrganizationDetails(organizationId: string | undefined): {
   organization: OrganizationDetails | undefined;
   refetch(): Promise<unknown>;
 } {
   const { data, refetch } = useQuery<
-    GetOrganizationQuery,
-    GetOrganizationQueryVariables
-  >(Queries.organization, {
+    GetOrganizationDetailsQuery,
+    GetOrganizationDetailsQueryVariables
+  >(Queries.organizationDetails, {
     variables: { organizationId: organizationId! },
     skip: !organizationId,
   });

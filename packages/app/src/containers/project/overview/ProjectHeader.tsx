@@ -6,10 +6,10 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
-import { useOrganization } from "../../organization/hooks";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { useIsProjectPrivate } from "../../rbac/hooks";
+import { useOrganization } from "../../organization/hooks";
 
 interface Props {
   projectId: string;
@@ -19,7 +19,7 @@ interface Props {
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project);
-  const { organization } = useOrganization(organizationId);
+  const organization = useOrganization(organizationId);
   const canEdit = usePermission("update", project);
 
   const routes = useMemo<Route[] | undefined>(() => {
