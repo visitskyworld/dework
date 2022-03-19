@@ -92,7 +92,10 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
 
   return (
     <ConnectToDiscordFormSection>
-      <ConnectOrganizationToDiscordButton organizationId={organizationId} />
+      <ConnectOrganizationToDiscordButton
+        organizationId={organizationId}
+        type="ghost"
+      />
     </ConnectToDiscordFormSection>
   );
 };

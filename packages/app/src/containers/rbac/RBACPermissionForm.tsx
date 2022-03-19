@@ -2,6 +2,7 @@ import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import * as Icons from "@ant-design/icons";
 import {
   RoleSource,
   RoleWithRules,
@@ -16,6 +17,8 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganizationUsers } from "../organization/hooks";
 import { useMyRoles } from "../user/hooks";
 import { useCreateRule, useDeleteRule } from "./hooks";
+import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
+import { useOrganizationDiscordIntegration } from "../integrations/hooks";
 
 interface FormValues {
   roleIds: string[];
@@ -82,6 +85,8 @@ export const RBACPermissionForm: FC<Props> = ({
   requiresCurrentUserToHaveRole = false,
   onSaved,
 }) => {
+  const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
+
   const { users } = useOrganizationUsers(organizationId);
   const organizationRoles = useMemo(
     () => roles?.filter((role) => !role.userId),
@@ -197,6 +202,20 @@ export const RBACPermissionForm: FC<Props> = ({
             disabled={disabled}
             optionFilterProp="label"
             loading={!organizationRoles}
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                {!discordConnected && (
+                  <ConnectOrganizationToDiscordButton
+                    size="small"
+                    type="text"
+                    icon={<Icons.PlusCircleOutlined />}
+                    organizationId={organizationId}
+                    style={{ marginTop: 4, marginLeft: 4 }}
+                  />
+                )}
+              </>
+            )}
           >
             {organizationRoles?.map((role) => (
               <Select.Option key={role.id} value={role.id} label={role.name}>

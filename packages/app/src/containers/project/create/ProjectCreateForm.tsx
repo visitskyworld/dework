@@ -233,6 +233,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             ) : (
               <ConnectOrganizationToDiscordButton
                 organizationId={organization.id}
+                type="ghost"
               />
             )}
           </FormSection>
