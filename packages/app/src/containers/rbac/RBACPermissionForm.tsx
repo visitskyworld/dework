@@ -1,5 +1,4 @@
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
-import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Icons from "@ant-design/icons";
@@ -30,10 +29,10 @@ interface Props {
   organizationId: string;
   roles: RoleWithRules[];
   permission: RulePermission;
-  defaultOpen?: boolean;
   disabled?: boolean;
   saveButtonTooltip?: string;
   requiresCurrentUserToHaveRole?: boolean;
+  onInviteUser?(): Promise<void>;
   onSaved?(hasFallbackRolePermission: boolean): void;
 }
 
@@ -79,10 +78,10 @@ export const RBACPermissionForm: FC<Props> = ({
   organizationId,
   roles,
   permission,
-  defaultOpen,
   disabled,
   saveButtonTooltip,
   requiresCurrentUserToHaveRole = false,
+  onInviteUser,
   onSaved,
 }) => {
   const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
@@ -164,6 +163,11 @@ export const RBACPermissionForm: FC<Props> = ({
     [onSaved, createRule, deleteRule, organizationRoles, userRoles]
   );
 
+  const [handleInviteUser, invitingUser] = useRunningCallback(
+    () => onInviteUser?.(),
+    [onInviteUser]
+  );
+
   const dirty = useMemo(
     () => !_.isEqual(initialValues, values),
     [initialValues, values]
@@ -196,7 +200,6 @@ export const RBACPermissionForm: FC<Props> = ({
         <Form.Item label="Roles" name="roleIds">
           <Select
             mode="multiple"
-            defaultOpen={defaultOpen}
             placeholder="Select Roles..."
             showSearch
             disabled={disabled}
@@ -231,24 +234,25 @@ export const RBACPermissionForm: FC<Props> = ({
         </Form.Item>
       )}
       {(!disabled || !!values.userIds.length) && (
-        <Form.Item label="Users" name="userIds">
-          <UserSelect
-            mode="multiple"
-            placeholder="Select Users..."
-            disabled={disabled}
-            users={users}
+        <Row align="bottom" style={{ gap: 8 }}>
+          <Form.Item label="Users" name="userIds" style={{ flex: 1 }}>
+            <UserSelect
+              mode="multiple"
+              placeholder="Select Users..."
+              disabled={disabled}
+              users={users}
+            />
+          </Form.Item>
+          <Button
+            type="ghost"
+            loading={invitingUser}
+            icon={<Icons.UsergroupAddOutlined />}
+            style={{ marginBottom: 12 }}
+            onClick={handleInviteUser}
           >
-            {users?.map((user) => (
-              <Select.Option
-                key={user.id}
-                value={user.id}
-                label={user.username}
-              >
-                <UserSelectOption user={user} />
-              </Select.Option>
-            ))}
-          </UserSelect>
-        </Form.Item>
+            Invite
+          </Button>
+        </Row>
       )}
 
       {!disabled &&

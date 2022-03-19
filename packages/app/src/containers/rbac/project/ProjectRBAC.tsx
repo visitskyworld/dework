@@ -1,12 +1,14 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
 import { Divider, Spin, Tooltip, Typography } from "antd";
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { projectRoleDescription } from "../../project/settings/strings";
 import { useOrganizationRoles } from "../hooks";
 import { RBACPermissionForm } from "../RBACPermissionForm";
 import { ProjectPrivatePermissionForm } from "./ProjectPrivatePermissionForm";
+import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
+import { useCreateProjectInvite } from "../../invite/hooks";
 
 interface Props {
   projectId: string;
@@ -16,6 +18,17 @@ interface Props {
 export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
   const canManagePermissions = usePermission("create", "Rule");
   const roles = useOrganizationRoles(organizationId);
+
+  const copyToClipboardAndShowToast =
+    useCopyToClipboardAndShowToast("Invite link copied");
+  const createProjectInvite = useCreateProjectInvite();
+  const inviteToProject = useCallback(
+    async (role: ProjectRole) => {
+      const inviteLink = await createProjectInvite({ role, projectId });
+      copyToClipboardAndShowToast(inviteLink);
+    },
+    [createProjectInvite, copyToClipboardAndShowToast, projectId]
+  );
 
   if (!roles) return <Spin />;
   return (
@@ -38,6 +51,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         roles={roles}
         projectId={projectId}
         organizationId={organizationId}
+        onInviteUser={() => inviteToProject(ProjectRole.ADMIN)}
       />
       <Divider />
 
@@ -56,6 +70,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
       <ProjectPrivatePermissionForm
         projectId={projectId}
         organizationId={organizationId}
+        onInviteUser={() => inviteToProject(ProjectRole.CONTRIBUTOR)}
       />
     </>
   );
