@@ -20,7 +20,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project);
   const { organization } = useOrganization(organizationId);
-  const canEdit = usePermission("update", "Project");
+  const canEdit = usePermission("update", project);
 
   const routes = useMemo<Route[] | undefined>(() => {
     if (!organization || !project) return undefined;

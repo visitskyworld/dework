@@ -24,7 +24,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
   const currentTab =
     (router.query.settingsTab as string | undefined) ?? "general";
 
-  const canRemoveProject = usePermission("delete", "Project");
+  const canRemoveProject = usePermission("delete", project);
 
   const navigateToSettingsTab = useCallback(
     (tab: string) => router.push(`${project!.permalink}/settings/${tab}`),

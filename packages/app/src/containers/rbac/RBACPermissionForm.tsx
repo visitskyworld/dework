@@ -193,6 +193,7 @@ export const RBACPermissionForm: FC<Props> = ({
       layout="vertical"
       requiredMark={false}
       initialValues={initialValues}
+      style={{ overflow: "hidden" }}
       onValuesChange={handleChange}
       onFinish={handleSave}
     >
@@ -243,15 +244,17 @@ export const RBACPermissionForm: FC<Props> = ({
               users={users}
             />
           </Form.Item>
-          <Button
-            type="ghost"
-            loading={invitingUser}
-            icon={<Icons.UsergroupAddOutlined />}
-            style={{ marginBottom: 12 }}
-            onClick={handleInviteUser}
-          >
-            Invite
-          </Button>
+          {!disabled && (
+            <Button
+              type="ghost"
+              loading={invitingUser}
+              icon={<Icons.UsergroupAddOutlined />}
+              style={{ marginBottom: 12 }}
+              onClick={handleInviteUser}
+            >
+              Invite
+            </Button>
+          )}
         </Row>
       )}
 

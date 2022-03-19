@@ -13,20 +13,20 @@ import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskLi
 import { Tab } from "@dewo/app/components/Tab";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/FilterContext";
 import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
 import { ProjectSeo } from "@dewo/app/containers/seo/ProjectSeo";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = (router.query.tab as string | undefined) ?? "board";
 
-  const canEditProject = usePermission("update", "Project");
   const projectId = useParseIdFromSlug("projectSlug");
   const organizationId = useParseIdFromSlug("organizationSlug");
   const { project, error } = useProject(projectId);
+  const canEditProject = usePermission("update", project);
 
   const navigateToTab = useCallback(
     (tab: string) => router.push(`${project!.permalink}/${tab}`),
@@ -96,7 +96,7 @@ const Page: NextPage = () => {
                   </Col>
                 )}
               </Tabs.TabPane>
-              {canEditProject && !!project && (
+              {!!project && canEditProject && (
                 <Tabs.TabPane
                   tab={
                     <Tab

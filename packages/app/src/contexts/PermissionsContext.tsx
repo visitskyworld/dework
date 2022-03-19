@@ -16,6 +16,7 @@ import {
   Task,
   TaskApplication,
   TaskReaction,
+  TaskSection,
   TaskSubmission,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
@@ -29,7 +30,6 @@ type AbilitySubject =
   | "ProjectSection"
   | "Organization"
   | "TaskApplication"
-  | "TaskSection"
   | "TaskReward"
   | "Role"
   | "Rule"
@@ -39,6 +39,7 @@ type AbilitySubject =
   | AtLeast<Project, "__typename" | "organizationId">
   | AtLeast<Task, "__typename" | "status">
   | AtLeast<TaskReaction, "__typename" | "userId">
+  | AtLeast<TaskSection, "__typename" | "projectId">
   | AtLeast<TaskApplication, "__typename" | "userId">
   | AtLeast<TaskSubmission, "__typename" | "userId">;
 type AbilityType = AbilityTuple<AbilityAction, AbilitySubject>;
@@ -100,12 +101,12 @@ export function useDefaultAbility(organizationId: string | undefined): {
 
 export function usePermission(
   action: AbilityAction,
-  subject: AbilitySubject,
+  subject: AbilitySubject | undefined,
   field?: string
 ): boolean | undefined {
   const fn = usePermissionFn();
   return useMemo(
-    () => fn(action, subject, field),
+    () => !!subject && fn(action, subject, field),
     [fn, action, subject, field]
   );
 }

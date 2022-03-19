@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const ProjectAbout: FC<Props> = ({ project }) => {
-  const canUpdateProject = usePermission("update", "Project");
+  const canUpdateProject = usePermission("update", project);
   const updateProject = useUpdateProject();
   const handleSave = useCallback(
     (description: string) => updateProject({ id: project.id, description }),

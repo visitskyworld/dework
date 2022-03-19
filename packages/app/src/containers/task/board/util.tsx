@@ -32,9 +32,9 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
 };
 
 export function useShouldShowInlinePayButton(task: Task): boolean {
-  const canManageProject = usePermission("update", "Project");
   const projectId = useParseIdFromSlug("projectSlug");
   const { project } = useProject(projectId);
+  const canManageProject = usePermission("update", project);
   const hasPaymentMethod = useMemo(
     () =>
       !!project?.paymentMethods.some(

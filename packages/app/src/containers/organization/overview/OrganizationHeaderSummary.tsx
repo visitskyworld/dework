@@ -11,7 +11,7 @@ interface Props {
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganization(organizationId);
-  const canUpdate = usePermission("update", "Project");
+  const canUpdate = usePermission("update", organization);
   const avatarSize = Grid.useBreakpoint().sm ? 192 : 96;
 
   const description = useMemo(() => {
