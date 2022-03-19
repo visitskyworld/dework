@@ -9,7 +9,7 @@ import {
   RulePermission,
 } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { Button, Form, message, Row, Select, Tooltip } from "antd";
+import { Button, Form, message, Row, Select, Tooltip, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
@@ -18,6 +18,7 @@ import { useMyRoles } from "../user/hooks";
 import { useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
+import { FormSection } from "@dewo/app/components/FormSection";
 
 interface FormValues {
   roleIds: string[];
@@ -88,7 +89,7 @@ export const RBACPermissionForm: FC<Props> = ({
 
   const { users } = useOrganizationUsers(organizationId);
   const organizationRoles = useMemo(
-    () => roles?.filter((role) => !role.userId),
+    () => roles?.filter((role) => !role.userId && !role.fallback),
     [roles]
   );
   const userRoles = useMemo(
@@ -197,43 +198,41 @@ export const RBACPermissionForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSave}
     >
-      {(!disabled || !!values.roleIds.length) && (
-        <Form.Item label="Roles" name="roleIds">
-          <Select
-            mode="multiple"
-            placeholder="Select Roles..."
-            showSearch
-            disabled={disabled}
-            optionFilterProp="label"
-            loading={!organizationRoles}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                {!discordConnected && (
-                  <ConnectOrganizationToDiscordButton
-                    size="small"
-                    type="text"
-                    icon={<Icons.PlusCircleOutlined />}
-                    organizationId={organizationId}
-                    style={{ marginTop: 4, marginLeft: 4 }}
-                  />
-                )}
-              </>
-            )}
-          >
-            {organizationRoles?.map((role) => (
-              <Select.Option key={role.id} value={role.id} label={role.name}>
-                <Row align="middle">
-                  {role.source === RoleSource.DISCORD && (
-                    <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
-                  )}
-                  {role.name}
-                </Row>
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      )}
+      {(!disabled || !!values.roleIds.length) &&
+        (!discordConnected ? (
+          <FormSection label="Roles">
+            <Typography.Paragraph type="secondary" style={{ marginBottom: 4 }}>
+              Connect Discord to manage access using roles from your server
+            </Typography.Paragraph>
+            <ConnectOrganizationToDiscordButton
+              type="ghost"
+              icon={<DiscordIcon />}
+              organizationId={organizationId}
+            />
+          </FormSection>
+        ) : (
+          <Form.Item label="Roles" name="roleIds">
+            <Select
+              mode="multiple"
+              placeholder="Select Roles..."
+              showSearch
+              disabled={disabled}
+              optionFilterProp="label"
+              loading={!organizationRoles}
+            >
+              {organizationRoles?.map((role) => (
+                <Select.Option key={role.id} value={role.id} label={role.name}>
+                  <Row align="middle">
+                    {role.source === RoleSource.DISCORD && (
+                      <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
+                    )}
+                    {role.name}
+                  </Row>
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        ))}
       {(!disabled || !!values.userIds.length) && (
         <Row align="bottom" style={{ gap: 8 }}>
           <Form.Item label="Users" name="userIds" style={{ flex: 1 }}>

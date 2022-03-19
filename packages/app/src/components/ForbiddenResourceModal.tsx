@@ -8,7 +8,6 @@ import { useOrganization } from "../containers/organization/hooks";
 import { RoleSource, RulePermission, ThreepidSource } from "../graphql/types";
 import { RoleTag } from "./RoleTag";
 import { ThreepidAuthButton } from "../containers/auth/ThreepidAuthButton";
-import { useRouter } from "next/router";
 import { LoginButton } from "../containers/auth/LoginButton";
 
 interface Props {
@@ -22,7 +21,6 @@ export const ForbiddenResourceModal: FC<Props> = ({
   projectId,
   organizationId,
 }) => {
-  const router = useRouter();
   const { user } = useAuthContext();
   const organization = useOrganization(organizationId);
   const roles = useOrganizationRoles(organizationId);
@@ -97,7 +95,6 @@ export const ForbiddenResourceModal: FC<Props> = ({
               type="primary"
               source={ThreepidSource.discord}
               children="Connect with Discord"
-              state={{ redirect: router.asPath }}
             />
           )
         )}

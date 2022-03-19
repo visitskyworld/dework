@@ -204,15 +204,6 @@ export const projectTokenGate = gql`
   ${paymentNetwork}
 `;
 
-export const projectDiscordRoleGate = gql`
-  fragment ProjectDiscordRoleGate on ProjectIntegration {
-    id
-    type
-    deletedAt
-    projectId
-  }
-`;
-
 export const invite = gql`
   fragment Invite on Invite {
     id
@@ -619,7 +610,5 @@ export const organizationDetails = gql`
   ${projectSection}
   ${organizationTag}
   ${entityDetail}
-  ${user}
   ${projectTokenGate}
-  ${projectDiscordRoleGate}
 `;

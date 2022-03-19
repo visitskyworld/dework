@@ -1,4 +1,4 @@
-import { Row, Skeleton, Typography } from "antd";
+import { Row, Skeleton, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
@@ -19,6 +19,7 @@ import { CreateProjectButton } from "../CreateProjectButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { ProjectListEmpty } from "./ProjectListEmpty";
 import { useOrganizationDetails } from "../../hooks";
+import { DiscordRoleGateAlert } from "@dewo/app/containers/invite/DiscordRoleGateAlert";
 
 interface Props {
   organizationId: string;
@@ -112,13 +113,17 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   if (!organization) return <Skeleton />;
   if (typeof window === "undefined") return null;
   return (
-    <div
-      style={screens.sm ? { maxHeight: "100vh", height: "100%" } : undefined}
+    <Space
+      direction="vertical"
+      size="large"
+      style={
+        screens.sm
+          ? { maxHeight: "100vh", height: "100%", width: "100%" }
+          : { width: "100%" }
+      }
     >
-      <JoinTokenGatedProjectsAlert
-        organizationId={organizationId}
-        style={{ marginBottom: 16 }}
-      />
+      <DiscordRoleGateAlert organizationId={organizationId} />
+      <JoinTokenGatedProjectsAlert organizationId={organizationId} />
 
       {!projects.length ? (
         <ProjectListEmpty organizationId={organizationId} />
@@ -187,6 +192,6 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
           ))}
         </DragDropContext>
       )}
-    </div>
+    </Space>
   );
 };

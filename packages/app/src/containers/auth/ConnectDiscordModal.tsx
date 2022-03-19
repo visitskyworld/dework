@@ -1,5 +1,4 @@
-import React, { FC, useMemo } from "react";
-import { useRouter } from "next/router";
+import React, { FC } from "react";
 import { Modal, Typography } from "antd";
 
 import { ThreepidSource } from "@dewo/app/graphql/types";
@@ -11,8 +10,6 @@ interface Props {
 }
 
 export const ConnectDiscordModal: FC<Props> = ({ visible, onClose }) => {
-  const router = useRouter();
-  const state = useMemo(() => ({ redirect: router.asPath }), [router?.asPath]);
   return (
     <Modal
       visible={visible}
@@ -32,7 +29,6 @@ export const ConnectDiscordModal: FC<Props> = ({ visible, onClose }) => {
         source={ThreepidSource.discord}
         children="Connect with Discord"
         style={{ width: "100%" }}
-        state={state}
       />
     </Modal>
   );

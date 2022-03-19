@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode, useMemo } from "react";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
@@ -8,6 +8,7 @@ import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { HiroIcon } from "@dewo/app/components/icons/Hiro";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
+import { useRouter } from "next/router";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
@@ -37,13 +38,18 @@ export const ThreepidAuthButton: FC<Props> = ({
   state,
   ...buttonProps
 }) => {
+  const router = useRouter();
+  const stateWithRedirect = useMemo(
+    () => ({ redirect: router.asPath, ...state }),
+    [router.asPath, state]
+  );
   return (
     <Button
       htmlType="button"
       icon={renderThreepidIcon[source]}
-      href={`${Constants.GRAPHQL_API_URL}/auth/${source}?state=${
-        !!state ? JSON.stringify(state) : ""
-      }`}
+      href={`${Constants.GRAPHQL_API_URL}/auth/${source}?state=${JSON.stringify(
+        stateWithRedirect
+      )}`}
       {...buttonProps}
     />
   );
