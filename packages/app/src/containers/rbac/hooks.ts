@@ -24,9 +24,10 @@ import {
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { useCallback, useMemo } from "react";
+import { useOrganizationUsers } from "../organization/hooks";
 
 export function useOrganizationRoles(
-  organizationId: string
+  organizationId: string | undefined
 ): RoleWithRules[] | undefined {
   const { data } = useQuery<
     GetOrganizationRolesQuery,
@@ -102,4 +103,22 @@ export function useDeleteRule(): (id: string) => Promise<void> {
     },
     [mutation]
   );
+}
+
+export function useFollowOrganization(
+  organizationId: string | undefined
+): () => Promise<void> {
+  const { user } = useAuthContext();
+  const addRole = useAddRole();
+
+  const roles = useOrganizationRoles(organizationId);
+  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
+
+  const { refetch: refetchOrganizationUsers } =
+    useOrganizationUsers(organizationId);
+  return useCallback(async () => {
+    if (!fallbackRole || !user) return;
+    await addRole(fallbackRole, user.id);
+    await refetchOrganizationUsers();
+  }, [addRole, refetchOrganizationUsers, user, fallbackRole]);
 }

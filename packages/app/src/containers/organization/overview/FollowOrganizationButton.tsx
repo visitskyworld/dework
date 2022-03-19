@@ -5,24 +5,27 @@ import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { useAddRole } from "../../rbac/hooks";
+import { useFollowOrganization } from "../../rbac/hooks";
 
 interface Props {
   organizationId: string;
 }
 
 export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
+  const followOrganization = useFollowOrganization(organizationId);
+  const [handleFollow, loading] = useRunningCallback(followOrganization, [
+    followOrganization,
+  ]);
+
   const { user } = useAuthContext();
 
   const { organization } = useOrganization(organizationId);
-  const { users, refetch: refetchOrganizationUsers } =
-    useOrganizationUsers(organizationId);
+  const { users } = useOrganizationUsers(organizationId);
   const fallbackRole = useMemo(
     () => organization?.roles.find((r) => r.fallback),
     [organization?.roles]
   );
 
-  const addRole = useAddRole();
   const isFollowing = useMemo(
     () =>
       users?.some(
@@ -31,11 +34,6 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
       ),
     [users, user, fallbackRole]
   );
-
-  const [handleAddRole, addingRole] = useRunningCallback(async () => {
-    await addRole(fallbackRole!, user!.id);
-    await refetchOrganizationUsers();
-  }, [user, fallbackRole, addRole]);
 
   if (isFollowing || !fallbackRole) return null;
   if (!user) {
@@ -49,9 +47,9 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   return (
     <Button
       type="ghost"
-      loading={addingRole}
+      loading={loading}
       icon={<Icons.StarOutlined />}
-      onClick={handleAddRole}
+      onClick={handleFollow}
     >
       Follow {organization?.name}
     </Button>

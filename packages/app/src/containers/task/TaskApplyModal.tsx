@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/router";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { Constants } from "@dewo/app/util/constants";
+import { useFollowOrganization } from "../rbac/hooks";
 
 interface Props {
   taskId: string | undefined;
@@ -34,6 +35,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const addUserToDiscordGuild = useAddUserToDiscordGuild(
     project?.organizationId
   );
+  const followOrganization = useFollowOrganization(project?.organizationId);
 
   const createTaskApplication = useCreateTaskApplication();
   const handleSubmit = useCallback(
@@ -48,11 +50,13 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
         await addUserToDiscordGuild().catch();
       }
+      await followOrganization();
       await onDone(claimedTask);
     },
     [
       createTaskApplication,
       onDone,
+      followOrganization,
       addUserToDiscordGuild,
       membershipState,
       task,
