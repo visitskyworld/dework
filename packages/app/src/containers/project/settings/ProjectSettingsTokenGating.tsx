@@ -27,7 +27,6 @@ export const ProjectSettingsTokenGating: FC<Props> = ({ project }) => {
       <Typography.Title level={4} style={{ marginBottom: 4 }}>
         Token Gating
       </Typography.Title>
-
       <Divider style={{ marginTop: 0 }} />
 
       <Space direction="vertical" style={{ width: "100%", marginBottom: 24 }}>

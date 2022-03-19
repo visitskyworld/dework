@@ -204,15 +204,13 @@ export class ProjectResolver {
         .catch(() => false);
       if (passes) {
         await this.rbacService.createRules(
-          [
-            RulePermission.MANAGE_PROJECTS,
-            RulePermission.VIEW_PROJECTS,
-            RulePermission.SUGGEST_AND_VOTE,
-          ].map((permission) => ({
-            roleId: personalRole.id,
-            permission,
-            projectId: project.id,
-          }))
+          [RulePermission.MANAGE_PROJECTS, RulePermission.VIEW_PROJECTS].map(
+            (permission) => ({
+              roleId: personalRole.id,
+              permission,
+              projectId: project.id,
+            })
+          )
         );
         return project;
       }
@@ -225,13 +223,11 @@ export class ProjectResolver {
         .catch(() => false);
       if (passes) {
         await this.rbacService.createRules(
-          [RulePermission.VIEW_PROJECTS, RulePermission.SUGGEST_AND_VOTE].map(
-            (permission) => ({
-              roleId: personalRole.id,
-              permission,
-              projectId: project.id,
-            })
-          )
+          [RulePermission.VIEW_PROJECTS].map((permission) => ({
+            roleId: personalRole.id,
+            permission,
+            projectId: project.id,
+          }))
         );
         return project;
       }

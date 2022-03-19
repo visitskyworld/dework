@@ -218,16 +218,15 @@ export class RbacService {
           fn("delete", TaskApplication);
 
           fn(CRUD, Task, task);
-        // eslint-disable-next-line no-fallthrough
-        case RulePermission.SUGGEST_AND_VOTE:
-          fn("create", Task, { ...task, status: TaskStatus.BACKLOG });
-          fn(CRUD, TaskReaction, { userId });
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
           fn("read", Task, task);
           fn(CRUD, TaskApplication, { userId });
           fn(CRUD, TaskSubmission, { userId });
+
+          fn("create", Task, { ...task, status: TaskStatus.BACKLOG });
+          fn(CRUD, TaskReaction, { userId });
 
           fn("submit", Task, {
             ...task,

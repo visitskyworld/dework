@@ -13,8 +13,8 @@ export class RBAC1647556947349 implements MigrationInterface {
     - [X] Create fallback/@everyone role for each organization
     - [X] OrganizationMember.ADMIN => grant personal permissions MANAGE_ORGANIZATION, MANAGE_PROJECTS
     - [X] OrganizationMember.FOLLOWER => grant fallback/@everyone role
-    - [X] ProjectMember.ADMIN => grant personal permissions for project: MANAGE_PROJECTS, VIEW_PROJECTS, SUGGEST_AND_VOTE
-    - [X] ProjectMember.CONTRIBUTOR => grant personal permissions for project: VIEW_PROJECTS, SUGGEST_AND_VOTE
+    - [X] ProjectMember.ADMIN => grant personal permissions for project: MANAGE_PROJECTS, VIEW_PROJECTS
+    - [X] ProjectMember.CONTRIBUTOR => grant personal permissions for project: VIEW_PROJECTS
     needs Discord roles to be synced first
     - [X] Project.visibility => if private, add VIEW_PROJECTS inverted true
     - [X] Make sure OrganizationMember.ADMIN/OWNER can see private projects, even if not added as project member
@@ -98,7 +98,6 @@ export class RBAC1647556947349 implements MigrationInterface {
                 personalRoleMapping[member.userId]
               }', 'MANAGE_ORGANIZATION')`,
               `('${personalRoleMapping[member.userId]}', 'MANAGE_PROJECTS')`,
-              `('${personalRoleMapping[member.userId]}', 'SUGGEST_AND_VOTE')`,
             ])
             .flat()
             .join(",\n")}
@@ -247,10 +246,7 @@ export class RBAC1647556947349 implements MigrationInterface {
     const permissions: string[] = [];
     if (isPrivate) permissions.push("VIEW_PROJECTS");
     if (projectRole === "ADMIN") {
-      permissions.push("MANAGE_PROJECTS", "SUGGEST_AND_VOTE");
-    }
-    if (projectRole === "CONTRIBUTOR") {
-      permissions.push("SUGGEST_AND_VOTE");
+      permissions.push("MANAGE_PROJECTS");
     }
     return permissions;
   }

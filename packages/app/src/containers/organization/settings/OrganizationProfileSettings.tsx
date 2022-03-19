@@ -142,7 +142,6 @@ export const OrganizationProfileSettings: FC<
       <Typography.Title level={4} style={{ marginBottom: 4 }}>
         Organization profile
       </Typography.Title>
-
       <Divider style={{ marginTop: 0 }} />
 
       <Row gutter={[20, 16]} style={{ flexDirection: "row-reverse" }}>

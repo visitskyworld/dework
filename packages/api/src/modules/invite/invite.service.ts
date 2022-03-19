@@ -74,25 +74,21 @@ export class InviteService {
       );
       if (invite.projectRole === ProjectRole.ADMIN) {
         await this.rbacService.createRules(
-          [
-            RulePermission.MANAGE_PROJECTS,
-            RulePermission.VIEW_PROJECTS,
-            RulePermission.SUGGEST_AND_VOTE,
-          ].map((permission) => ({
-            roleId: role.id,
-            permission,
-            projectId: project.id,
-          }))
-        );
-      } else if (invite.projectRole === ProjectRole.CONTRIBUTOR) {
-        await this.rbacService.createRules(
-          [RulePermission.VIEW_PROJECTS, RulePermission.SUGGEST_AND_VOTE].map(
+          [RulePermission.MANAGE_PROJECTS, RulePermission.VIEW_PROJECTS].map(
             (permission) => ({
               roleId: role.id,
               permission,
               projectId: project.id,
             })
           )
+        );
+      } else if (invite.projectRole === ProjectRole.CONTRIBUTOR) {
+        await this.rbacService.createRules(
+          [RulePermission.VIEW_PROJECTS].map((permission) => ({
+            roleId: role.id,
+            permission,
+            projectId: project.id,
+          }))
         );
       }
     }

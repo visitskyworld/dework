@@ -1,5 +1,5 @@
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Card, Modal, Tabs } from "antd";
+import { Card, Divider, Modal, Tabs, Typography } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
@@ -67,6 +67,10 @@ export const OrganizationSettings: FC<Props> = ({
         <OrganizationProfileSettings organizationId={organizationId} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Permissions" key="members">
+        <Typography.Title level={4} style={{ marginBottom: 4 }}>
+          Permissions
+        </Typography.Title>
+        <Divider style={{ marginTop: 0 }} />
         <OrganizationRBAC organizationId={organizationId} />
       </Tabs.TabPane>
       {canDeleteOrganization && (

@@ -1,5 +1,5 @@
 import { ProjectDetails } from "@dewo/app/graphql/types";
-import { Card, Tabs } from "antd";
+import { Card, Divider, Tabs, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
@@ -77,6 +77,10 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         key="access"
         style={tabStyle}
       >
+        <Typography.Title level={4} style={{ marginBottom: 4 }}>
+          Permissions
+        </Typography.Title>
+        <Divider style={{ marginTop: 0 }} />
         <ProjectRBAC
           projectId={project.id}
           organizationId={project.organizationId}

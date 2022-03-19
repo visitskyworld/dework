@@ -33,7 +33,7 @@ export function useOrganizationRoles(
     GetOrganizationRolesQuery,
     GetOrganizationRolesQueryVariables
   >(Queries.organizationRoles, {
-    variables: { organizationId },
+    variables: { organizationId: organizationId! },
     skip: !organizationId,
   });
   return data?.organization?.roles;

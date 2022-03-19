@@ -1,12 +1,12 @@
-import { FormSection } from "@dewo/app/components/FormSection";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
-import { Card, Divider, Space, Spin, Typography } from "antd";
+import { Divider, Spin, Tooltip, Typography } from "antd";
 import React, { FC } from "react";
+import * as Icons from "@ant-design/icons";
 import { projectRoleDescription } from "../../project/settings/strings";
 import { useOrganizationRoles } from "../hooks";
-import { ProjectPrivateAlert } from "./ProjectPrivateAlert";
 import { RBACPermissionForm } from "../RBACPermissionForm";
+import { ProjectPrivatePermissionForm } from "./ProjectPrivatePermissionForm";
 
 interface Props {
   projectId: string;
@@ -19,47 +19,44 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
 
   if (!roles) return <Spin />;
   return (
-    <Space direction="vertical" size="large">
-      <ProjectPrivateAlert
-        projectId={projectId}
-        organizationId={organizationId}
-      />
-      <Card size="small">
-        <Typography.Title level={5}>Permissions</Typography.Title>
-        <FormSection
-          label="Project Steward"
-          tooltip={
+    <>
+      <Typography.Title level={5}>
+        Manage Project
+        <Tooltip
+          title={
             <Typography.Text style={{ whiteSpace: "pre-line" }}>
               {projectRoleDescription[ProjectRole.ADMIN]}
             </Typography.Text>
           }
         >
-          <RBACPermissionForm
-            disabled={!canManagePermissions}
-            permission={RulePermission.MANAGE_PROJECTS}
-            roles={roles}
-            projectId={projectId}
-            organizationId={organizationId}
-          />
-        </FormSection>
-        <Divider />
-        <FormSection
-          label="Contributor"
-          tooltip={
+          <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+        </Tooltip>
+      </Typography.Title>
+      <RBACPermissionForm
+        disabled={!canManagePermissions}
+        permission={RulePermission.MANAGE_PROJECTS}
+        roles={roles}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
+      <Divider />
+
+      <Typography.Title level={5}>
+        View Project
+        <Tooltip
+          title={
             <Typography.Text style={{ whiteSpace: "pre-line" }}>
               {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
             </Typography.Text>
           }
         >
-          <RBACPermissionForm
-            disabled={!canManagePermissions}
-            permission={RulePermission.SUGGEST_AND_VOTE}
-            roles={roles}
-            projectId={projectId}
-            organizationId={organizationId}
-          />
-        </FormSection>
-      </Card>
-    </Space>
+          <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+        </Tooltip>
+      </Typography.Title>
+      <ProjectPrivatePermissionForm
+        projectId={projectId}
+        organizationId={organizationId}
+      />
+    </>
   );
 };

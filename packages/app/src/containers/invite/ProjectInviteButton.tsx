@@ -84,7 +84,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
         overlay={
           <Menu>
             <Menu.Item onClick={inviteProjectContributor}>
-              Invite Contributors
+              Invite to View Project
               <Tooltip
                 placement="right"
                 title={
@@ -97,7 +97,7 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
               </Tooltip>
             </Menu.Item>
             <Menu.Item onClick={inviteProjectAdmin}>
-              Invite Project Steward(s)
+              Invite to Manage Project
               <Tooltip
                 placement="right"
                 title={
