@@ -18,6 +18,7 @@ import { IntegrationModule } from "../integrations/integration.module";
 import { ProjectModule } from "../project/project.module";
 import { WalletConnectResolver } from "./walletconnect.resolver";
 import { NotionStrategy } from "./strategies/notion.strategy";
+import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 
 @Global()
 @Module({
@@ -42,6 +43,7 @@ export class GlobalJwtModule {}
     ProjectModule,
     IntegrationModule,
     PermalinkModule,
+    DiscordRolesModule,
   ],
   providers: [
     GithubStrategy,

@@ -9,10 +9,12 @@ import { StrategyResponse } from "./strategies/types";
 import { IntegrationService } from "../integrations/integration.service";
 import {
   DiscordOrganizationIntegrationConfig,
+  OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
 import { ThreepidService } from "../threepid/threepid.service";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
+import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -23,6 +25,7 @@ export class AuthController {
   constructor(
     private readonly config: ConfigService<ConfigType>,
     private readonly integrationService: IntegrationService,
+    private readonly discordRolesService: DiscordRolesService,
     private readonly threepidService: ThreepidService
   ) {}
 
@@ -104,13 +107,18 @@ export class AuthController {
           permissions: query.permissions,
         };
 
-        await this.integrationService.createOrganizationIntegration({
-          // TODO(fant): we need to somehow verify that this was the user that initiated the connection
-          creatorId: state.userId,
-          organizationId: state.organizationId,
-          type: OrganizationIntegrationType.DISCORD,
-          config,
-        });
+        const integration =
+          await this.integrationService.createOrganizationIntegration({
+            // TODO(fant): we need to somehow verify that this was the user that initiated the connection
+            creatorId: state.userId,
+            organizationId: state.organizationId,
+            type: OrganizationIntegrationType.DISCORD,
+            config,
+          });
+
+        await this.discordRolesService.syncRoles(
+          integration as OrganizationIntegration<OrganizationIntegrationType.DISCORD>
+        );
       }
 
       const appUrl = !!state.redirect?.startsWith("/")
