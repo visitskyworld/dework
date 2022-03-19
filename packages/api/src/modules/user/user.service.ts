@@ -57,17 +57,19 @@ export class UserService {
     }
 
     const user = await this.userRepo.save({
-      imageUrl: this.threepidService.getImageUrl(threepid),
-      threepids: existingUser?.threepids ?? Promise.resolve([]),
-      username: await this.generateUsername(
-        this.threepidService.getUsername(threepid)
-      ),
       ...existingUser,
+      threepids: existingUser?.threepids ?? Promise.resolve([]),
+      imageUrl:
+        existingUser?.imageUrl ?? this.threepidService.getImageUrl(threepid),
+      username:
+        existingUser?.username ??
+        (await this.generateUsername(
+          this.threepidService.getUsername(threepid)
+        )),
     });
 
     await this.connectThreepidToUser(threepid, user);
     await this.autoPopulateDetails(user.id, threepid);
-    await this.autoPopulateUsernameAndAvatar(user, threepid);
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
 
@@ -159,7 +161,7 @@ export class UserService {
     });
   }
 
-  public async autoPopulateDetails(
+  private async autoPopulateDetails(
     userId: string,
     threepid: Threepid
   ): Promise<void> {
@@ -193,25 +195,6 @@ export class UserService {
         },
         userId
       );
-    }
-  }
-
-  public async autoPopulateUsernameAndAvatar(
-    user: User,
-    threepid: Threepid
-  ): Promise<void> {
-    if (
-      ![ThreepidSource.discord, ThreepidSource.github].includes(threepid.source)
-    )
-      return;
-
-    if (user.username.startsWith("deworker")) {
-      const betterUsername = this.threepidService.getUsername(threepid);
-      await this.userRepo.update(user.id, { username: betterUsername });
-    }
-    if (!user.imageUrl) {
-      const avatarUrl = this.threepidService.getImageUrl(threepid);
-      await this.userRepo.update(user.id, { imageUrl: avatarUrl });
     }
   }
 

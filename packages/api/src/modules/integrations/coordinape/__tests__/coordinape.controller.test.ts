@@ -1,4 +1,4 @@
-import { Project, ProjectVisibility } from "@dewo/api/models/Project";
+import { Project } from "@dewo/api/models/Project";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -8,6 +8,7 @@ import supertest from "supertest";
 import faker from "faker";
 import moment from "moment";
 import { Coordinape } from "../coordinape.types";
+import { RulePermission } from "@dewo/api/models/rbac/Rule";
 
 describe("CoordinapeController", () => {
   describe("integrations/coordinape", () => {
@@ -99,7 +100,12 @@ describe("CoordinapeController", () => {
     });
 
     it("should not return uncompleted task", async () => {
+      const user = await fixtures.createUser({
+        source: ThreepidSource.metamask,
+        threepid: `0x${faker.datatype.number()}`,
+      });
       await fixtures.createTask({
+        assignees: [user],
         status: TaskStatus.TODO,
         projectId: project.id,
       });
@@ -131,13 +137,25 @@ describe("CoordinapeController", () => {
     });
 
     it("should not return tasks from private project", async () => {
-      project = await fixtures.createProject({
-        visibility: ProjectVisibility.PRIVATE,
+      const user = await fixtures.createUser({
+        source: ThreepidSource.metamask,
+        threepid: `0x${faker.datatype.number()}`,
       });
+      await fixtures.createRole(
+        { organizationId: project.organizationId, fallback: true },
+        [
+          {
+            projectId: project.id,
+            permission: RulePermission.VIEW_PROJECTS,
+            inverted: true,
+          },
+        ]
+      );
+
       await fixtures.createTask({
         status: TaskStatus.DONE,
         doneAt,
-        assignees: [await fixtures.createUser()],
+        assignees: [user],
         projectId: project.id,
       });
 
