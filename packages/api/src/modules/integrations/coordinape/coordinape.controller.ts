@@ -45,7 +45,7 @@ export class CoordinapeIntegrationController {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   @Get(":organizationId")
-  async githubCallback(
+  async getContributions(
     @Req() req: Request,
     @Param("organizationId") organizationId: string,
     @Query("epoch_start") doneAtAfter: number,

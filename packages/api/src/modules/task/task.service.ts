@@ -231,8 +231,10 @@ export class TaskService {
     rewardNotNull?: boolean;
     limit?: number;
   }): Promise<Task[]> {
-    const filterOutSpam = !projectIds && !userId;
+    if (ids?.length === 0) return [];
+    if (projectIds?.length === 0) return [];
 
+    const filterOutSpam = !projectIds && !userId;
     let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
@@ -292,7 +294,7 @@ export class TaskService {
       query = query.andWhere("assignee.id IS NULL");
     }
 
-    if (!!projectIds?.length) {
+    if (!!projectIds) {
       query = query
         .andWhere("task.projectId IN (:...projectIds)", { projectIds })
         .andWhere(
@@ -308,7 +310,7 @@ export class TaskService {
         );
     }
 
-    if (!projectIds?.length && !ids?.length) {
+    if (!projectIds && !ids) {
       query = query
         .leftJoin(
           Rule,

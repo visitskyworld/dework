@@ -76,7 +76,12 @@ export class Fixtures {
   public async createThreepid(
     partial: Partial<Threepid> = {}
   ): Promise<Threepid> {
+    const existing = await this.threepidService.findOne({
+      source: partial.source,
+      threepid: partial.threepid,
+    });
     return this.threepidService.create({
+      ...existing,
       source: ThreepidSource.discord,
       threepid: faker.datatype.uuid(),
       config: {
@@ -86,6 +91,7 @@ export class Fixtures {
         },
       } as any,
       ...partial,
+      userId: null as any,
     });
   }
 
