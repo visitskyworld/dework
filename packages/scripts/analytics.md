@@ -104,3 +104,15 @@ inner join task_reward on task_reward."paymentId" = payment.id
 inner join task on task."rewardId" = task_reward.id
 where task.id = '87cc9bd0-f887-4840-9de7-e3bdb2672d99'
 ```
+
+## Projects over 2 weeks old where tasks were updated the last 3 days
+```sql
+SELECT project.name as projectName, organization.name as organizationName, project."createdAt", MAX(task."updatedAt") as lastTaskUpdated
+FROM project
+INNER JOIN organization ON organization.id = project."organizationId"
+INNER JOIN task on task."projectId" = project.id
+WHERE project."createdAt" <= NOW() - INTERVAL '2 WEEKS'
+  AND task."updatedAt" >= NOW() - INTERVAL '3 DAYS'
+GROUP BY project.id, organization.id
+ORDER BY lastTaskUpdated DESC
+```

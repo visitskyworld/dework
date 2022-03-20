@@ -21,6 +21,8 @@ import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
+import { ConfigService } from "@nestjs/config";
+import { ConfigType } from "../app/config";
 
 export class UserRole {
   role!: Role;
@@ -59,7 +61,8 @@ export class RbacService {
     @InjectRepository(Rule)
     private readonly ruleRepo: Repository<Rule>,
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly userRepo: Repository<User>,
+    private readonly config: ConfigService<ConfigType>
   ) {}
 
   public async abilityForUser(
@@ -184,6 +187,7 @@ export class RbacService {
   ): Promise<AppAbility> {
     const builder = new AbilityBuilder<AppAbility>(AppAbility);
 
+    const CRUD: Action[] = ["create", "read", "update", "delete"];
     for (const rule of rules) {
       const fn = rule.inverted ? builder.cannot : builder.can;
 
@@ -206,8 +210,6 @@ export class RbacService {
       };
 
       const roleConditions: Partial<Role> | undefined = { organizationId };
-
-      const CRUD: Action[] = ["create", "read", "update", "delete"];
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organization);
@@ -263,7 +265,13 @@ export class RbacService {
     builder.can("submit", Task, { assignees: { $elemMatch: { id: userId } } });
 
     // TODO(fant): make sure these users can do everything
-    // const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
+    const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
+    const isSuperadmin = !!userId && superadminIds.includes(userId);
+    if (isSuperadmin) {
+      builder.can(CRUD, Organization);
+      builder.can(CRUD, Project);
+      builder.can(CRUD, Task);
+    }
 
     return builder.build({
       detectSubjectType: (item: Subject): ExtractSubjectType<Subject> =>
