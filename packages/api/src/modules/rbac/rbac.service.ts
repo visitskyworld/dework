@@ -222,7 +222,7 @@ export class RbacService {
           fn(CRUD, TaskTag, taskTag);
           fn(CRUD, TaskReward, taskSection);
           fn(CRUD, TaskSection, taskSection);
-          fn("submit", Task);
+          fn("submit", Task, task);
           fn(CRUD, TaskSubmission);
           fn("delete", TaskApplication);
 

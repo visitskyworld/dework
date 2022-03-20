@@ -653,6 +653,16 @@ export const addRole = gql`
   ${Fragments.userWithRoles}
 `;
 
+export const createRole = gql`
+  mutation CreateRoleMutation($input: CreateRoleInput!) {
+    role: createRole(input: $input) {
+      ...RoleWithRules
+    }
+  }
+
+  ${Fragments.roleWithRules}
+`;
+
 export const createRule = gql`
   mutation CreateRuleMutation($input: CreateRuleInput!) {
     rule: createRule(input: $input) {

@@ -15,10 +15,9 @@ import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganizationUsers } from "../organization/hooks";
 import { useMyRoles } from "../user/hooks";
-import { useCreateRule, useDeleteRule } from "./hooks";
+import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
-import { FormSection } from "@dewo/app/components/FormSection";
 
 interface FormValues {
   roleIds: string[];
@@ -34,10 +33,9 @@ interface Props {
   saveButtonTooltip?: string;
   requiresCurrentUserToHaveRole?: boolean;
   onInviteUser?(): Promise<void>;
-  onSaved?(hasFallbackRolePermission: boolean): void;
 }
 
-function getRule(
+export function getRule(
   role: RoleWithRules,
   permission: RulePermission,
   projectId?: string
@@ -83,7 +81,6 @@ export const RBACPermissionForm: FC<Props> = ({
   saveButtonTooltip,
   requiresCurrentUserToHaveRole = false,
   onInviteUser,
-  onSaved,
 }) => {
   const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
 
@@ -117,6 +114,7 @@ export const RBACPermissionForm: FC<Props> = ({
   );
 
   const createRule = useCreateRule();
+  const createRole = useCreateRole();
   const deleteRule = useDeleteRule();
   const [handleSave, saving] = useRunningCallback(
     async (values: FormValues) => {
@@ -136,7 +134,21 @@ export const RBACPermissionForm: FC<Props> = ({
           hasRule(role, permission, projectId) &&
           !values.userIds.includes(role.userId!)
       );
-      const addedUserRoles = userRoles?.filter(
+
+      const selectedUserRoles = await Promise.all(
+        values.userIds.map(async (userId) => {
+          const userRole = userRoles?.find((r) => r.userId === userId);
+          if (userRole) return userRole;
+          return createRole({
+            name: "",
+            color: "",
+            organizationId,
+            userId,
+          });
+        })
+      );
+
+      const addedUserRoles = selectedUserRoles.filter(
         (role) =>
           !hasRule(role, permission, projectId) &&
           values.userIds.includes(role.userId!)
@@ -154,14 +166,9 @@ export const RBACPermissionForm: FC<Props> = ({
         await createRule({ permission, projectId, roleId: role.id });
       }
 
-      const hasFallbackRolePermission = values.roleIds.some(
-        (roleId) => organizationRoles?.find((r) => r.id === roleId)?.fallback
-      );
-
-      await onSaved?.(hasFallbackRolePermission);
       message.success("Permissions updated!");
     },
-    [onSaved, createRule, deleteRule, organizationRoles, userRoles]
+    [createRule, deleteRule, organizationRoles, userRoles]
   );
 
   const [handleInviteUser, invitingUser] = useRunningCallback(
@@ -200,7 +207,7 @@ export const RBACPermissionForm: FC<Props> = ({
     >
       {(!disabled || !!values.roleIds.length) &&
         (!discordConnected ? (
-          <FormSection label="Roles">
+          <Form.Item label="Roles" name="roleIds">
             <Typography.Paragraph type="secondary" style={{ marginBottom: 4 }}>
               Connect Discord to manage access using roles from your server
             </Typography.Paragraph>
@@ -209,7 +216,7 @@ export const RBACPermissionForm: FC<Props> = ({
               icon={<DiscordIcon />}
               organizationId={organizationId}
             />
-          </FormSection>
+          </Form.Item>
         ) : (
           <Form.Item label="Roles" name="roleIds">
             <Select

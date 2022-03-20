@@ -93,7 +93,10 @@ export const TaskForm: FC<TaskFormProps> = ({
     initialValues ?? {}
   );
   const canSubmit = usePermission(mode, !!task ? task : "Task");
-  const canCreateTag = usePermission("create", "TaskTag");
+  const canCreateTag = usePermission("create", {
+    __typename: "TaskTag",
+    projectId,
+  });
   const canCreateReward = usePermission("create", "TaskReward");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(

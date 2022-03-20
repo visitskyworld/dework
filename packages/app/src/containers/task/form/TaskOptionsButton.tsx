@@ -80,7 +80,7 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
 
 export const TaskOptionsButton: FC<Props> = ({ task }) => {
   const canCreate = usePermission("create", task);
-  const canUpdate = usePermission("update", task);
+  const canUpdate = usePermission("update", task, "projectId");
   const canDelete = usePermission("delete", task);
   const deleteTask = useDeleteTask();
   const router = useRouter();

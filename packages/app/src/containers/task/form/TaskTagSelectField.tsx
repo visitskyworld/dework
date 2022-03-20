@@ -116,7 +116,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
             className="dewo-tag-select-option"
           >
             <Tag color={tag.color}>{tag.label}</Tag>
-            <Can I="update" a="TaskTag">
+            <Can I="update" this={tag}>
               <Button
                 type="text"
                 icon={<Icons.MoreOutlined />}

@@ -119,6 +119,8 @@ export class TaskResolver {
       action: "create",
       subject: Task,
       inject: [ProjectService],
+      getSubject: (params: { input: CreateTaskInput }) =>
+        Object.assign(new Task(), params.input),
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskInput },

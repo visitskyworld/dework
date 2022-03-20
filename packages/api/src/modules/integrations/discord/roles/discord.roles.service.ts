@@ -57,10 +57,11 @@ export class DiscordRolesService {
     );
 
     const guildIds = threepid?.config.profile.guilds?.map((g) => g.id) ?? [];
-    if (!threepid) {
+    if (!threepid || !guildIds.length) {
       this.logger.warn(
         `Tried syncing Discord roles, but nothing to scape: ${JSON.stringify({
           userId: user.id,
+          threepidId: threepid?.id,
           guildIds,
         })}`
       );

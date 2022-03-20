@@ -292,6 +292,8 @@ export class ProjectResolver {
       action: "create",
       subject: TaskTag,
       inject: [ProjectService],
+      getSubject: async (params: { input: CreateTaskTagInput }) =>
+        Object.assign(new TaskTag(), params.input),
       getOrganizationId: async (
         _subject,
         params: { input: CreateTaskTagInput },
@@ -315,6 +317,8 @@ export class ProjectResolver {
       action: "update",
       subject: TaskTag,
       inject: [ProjectService],
+      getSubject: async (params: { input: UpdateTaskTagInput }) =>
+        Object.assign(new TaskTag(), params.input),
       getOrganizationId: async (
         _subject,
         params: { input: UpdateTaskTagInput },

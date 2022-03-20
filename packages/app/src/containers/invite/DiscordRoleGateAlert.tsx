@@ -34,9 +34,11 @@ export const DiscordRoleGateAlert: FC<Props> = ({ organizationId }) => {
       description={
         <>
           <Row style={{ marginBottom: 16, rowGap: 4 }}>
-            {rolesFromDiscordWithRules?.map((role) => (
-              <RoleTag key={role.id} role={role} />
-            ))}
+            {rolesFromDiscordWithRules
+              ?.filter((role) => role.source === RoleSource.DISCORD)
+              .map((role) => (
+                <RoleTag key={role.id} role={role} />
+              ))}
           </Row>
           {!!user ? (
             <ThreepidAuthButton

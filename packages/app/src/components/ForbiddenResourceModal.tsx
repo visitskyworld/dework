@@ -67,9 +67,11 @@ export const ForbiddenResourceModal: FC<Props> = ({
       </Typography.Paragraph>
       {!!rolesWithAccess?.length && (
         <Row style={{ justifyContent: "center", marginBottom: 16, rowGap: 4 }}>
-          {rolesWithAccess?.map((role) => (
-            <RoleTag key={role.id} role={role} />
-          ))}
+          {rolesWithAccess
+            ?.filter((role) => !role.userId)
+            .map((role) => (
+              <RoleTag key={role.id} role={role} />
+            ))}
         </Row>
       )}
       <Row style={{ gap: 8, justifyContent: "center" }}>

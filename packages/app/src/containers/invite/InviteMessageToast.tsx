@@ -66,7 +66,7 @@ export const InviteMessageToast: FC = () => {
       return (
         <InviteMessage
           inviter={inviter}
-          role="core team"
+          role="DAO admin"
           to={invite.organization.name}
         />
       );

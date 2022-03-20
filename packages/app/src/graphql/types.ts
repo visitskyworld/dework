@@ -5074,6 +5074,44 @@ export interface AddRoleMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateRoleMutation
+// ====================================================
+
+export interface CreateRoleMutation_role_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface CreateRoleMutation_role {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+  rules: CreateRoleMutation_role_rules[];
+}
+
+export interface CreateRoleMutation {
+  role: CreateRoleMutation_role;
+}
+
+export interface CreateRoleMutationVariables {
+  input: CreateRoleInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateRuleMutation
 // ====================================================
 
@@ -9778,23 +9816,6 @@ export interface ProjectTokenGate {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: ProjectDiscordRoleGate
-// ====================================================
-
-export interface ProjectDiscordRoleGate {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  deletedAt: Scalar.DateTime | null;
-  projectId: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: Invite
 // ====================================================
 
@@ -11861,6 +11882,13 @@ export interface CreateProjectsFromTrelloInput {
   organizationId: Scalar.UUID;
   threepidId: Scalar.UUID;
   boardIds: string[];
+}
+
+export interface CreateRoleInput {
+  name: string;
+  color: string;
+  organizationId: Scalar.UUID;
+  userId?: Scalar.UUID | null;
 }
 
 export interface CreateRuleInput {

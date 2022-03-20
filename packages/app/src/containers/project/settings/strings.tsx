@@ -1,8 +1,8 @@
 import { ProjectRole } from "@dewo/app/graphql/types";
 
 export const projectRoleToString: Record<ProjectRole, string> = {
-  [ProjectRole.ADMIN]: "Steward",
-  [ProjectRole.CONTRIBUTOR]: "Contributor",
+  [ProjectRole.ADMIN]: "Manage Project",
+  [ProjectRole.CONTRIBUTOR]: "View Project",
 };
 
 export const projectRoleDescription: Record<ProjectRole, string> = {

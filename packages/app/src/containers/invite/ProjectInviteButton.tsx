@@ -14,7 +14,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RoleSource } from "@dewo/app/graphql/types";
 import { projectRoleDescription } from "../project/settings/strings";
 import Link from "next/link";
-import { useOrganizationRoles } from "../rbac/hooks";
+import { useIsProjectPrivate, useOrganizationRoles } from "../rbac/hooks";
 
 interface Props {
   projectId: string;
@@ -24,6 +24,7 @@ interface Props {
 export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
   const [loading, setLoading] = useState(false);
   const { project } = useProject(projectId);
+  const isPrivate = useIsProjectPrivate(project);
 
   const canInvite = usePermission("create", "Role");
 
@@ -73,19 +74,21 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
       trigger={["click"]}
       overlay={
         <Menu>
-          <Menu.Item onClick={inviteProjectContributor}>
-            Invite to View Project
-            <Tooltip
-              placement="right"
-              title={
-                <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                  {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
-                </Typography.Text>
-              }
-            >
-              <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-            </Tooltip>
-          </Menu.Item>
+          {isPrivate && (
+            <Menu.Item onClick={inviteProjectContributor}>
+              Invite to View Project
+              <Tooltip
+                placement="right"
+                title={
+                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                    {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
+                  </Typography.Text>
+                }
+              >
+                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+              </Tooltip>
+            </Menu.Item>
+          )}
           <Menu.Item onClick={inviteProjectAdmin}>
             Invite to Manage Project
             <Tooltip

@@ -35,6 +35,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
   const canManage = usePermission("update", task);
   const canApply = usePermission("create", "TaskApplication");
   const canUpdateTask = usePermission("update", task, "status");
+  const canAssignTask = usePermission("update", task, "assigneeIds");
   const canCreateSubmission = usePermission("submit", task);
 
   const button = (() => {
@@ -77,7 +78,7 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
 
     if (
       task.status === TaskStatus.TODO &&
-      canUpdateTask &&
+      canAssignTask &&
       !!task.applications.length
     ) {
       return (

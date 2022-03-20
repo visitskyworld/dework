@@ -11,4 +11,7 @@ export class CreateRoleInput {
 
   @Field(() => GraphQLUUID)
   public organizationId!: string;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public userId?: string;
 }

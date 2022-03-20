@@ -36,7 +36,11 @@ export class RbacResolver {
   public async createRole(
     @Args("input") input: CreateRoleInput
   ): Promise<Role> {
-    return this.service.createRole(input);
+    const role = await this.service.createRole(input);
+    if (input.userId) {
+      await this.service.addRoles(input.userId, [role.id]);
+    }
+    return role;
   }
 
   @Mutation(() => Rule)

@@ -573,15 +573,17 @@ describe("TaskResolver", () => {
           body: TaskRequests.deleteReaction(input),
         });
 
-      it("should fail for non-contributors", async () => {
+      it("should work for non-contributors", async () => {
         const user = await fixtures.createUser();
         const task = await fixtures.createTask();
 
-        const response = await create(user, {
+        const res = await create(user, {
           taskId: task.id,
           reaction: "like",
         });
-        client.expectGqlError(response, HttpStatus.FORBIDDEN);
+        expect(res.body.data.task.reactions).toEqual([
+          expect.objectContaining({ reaction: "like", userId: user.id }),
+        ]);
       });
 
       it("should add and remove reactions properly", async () => {

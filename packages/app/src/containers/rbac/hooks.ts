@@ -10,6 +10,9 @@ import * as Queries from "@dewo/app/graphql/queries";
 import {
   AddRoleMutation,
   AddRoleMutationVariables,
+  CreateRoleInput,
+  CreateRoleMutation,
+  CreateRoleMutationVariables,
   CreateRuleInput,
   CreateRuleMutation,
   CreateRuleMutationVariables,
@@ -73,6 +76,31 @@ export function useAddRole(): (
       return res.data?.addRole;
     },
     [mutation, user?.id]
+  );
+}
+
+export function useCreateRole(): (
+  input: CreateRoleInput
+) => Promise<RoleWithRules> {
+  const [mutation] = useMutation<
+    CreateRoleMutation,
+    CreateRoleMutationVariables
+  >(Mutations.createRole);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({
+        variables: { input },
+        refetchQueries: [
+          {
+            query: Queries.organizationRoles,
+            variables: { organizationId: input.organizationId },
+          },
+        ],
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.role;
+    },
+    [mutation]
   );
 }
 

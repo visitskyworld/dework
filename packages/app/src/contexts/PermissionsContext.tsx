@@ -18,6 +18,7 @@ import {
   TaskReaction,
   TaskSection,
   TaskSubmission,
+  TaskTag,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 import { useParseIdFromSlug } from "../util/uuid";
@@ -26,7 +27,6 @@ import { AtLeast } from "../types/general";
 type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "claimTask";
 type AbilitySubject =
   | "Task"
-  | "TaskTag"
   | "ProjectSection"
   | "Organization"
   | "TaskApplication"
@@ -38,6 +38,7 @@ type AbilitySubject =
   | Organization
   | AtLeast<Project, "__typename" | "organizationId">
   | AtLeast<Task, "__typename" | "status">
+  | AtLeast<TaskTag, "__typename" | "projectId">
   | AtLeast<TaskReaction, "__typename" | "userId">
   | AtLeast<TaskSection, "__typename" | "projectId">
   | AtLeast<TaskApplication, "__typename" | "userId">

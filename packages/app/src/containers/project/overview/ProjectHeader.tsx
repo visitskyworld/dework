@@ -66,7 +66,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             <Typography.Title
               level={3}
               style={{ margin: 0 }}
-              onClick={editName.toggleOn}
+              onClick={canEdit ? editName.toggleOn : undefined}
             >
               {isPrivate && (
                 <Typography.Text type="secondary">

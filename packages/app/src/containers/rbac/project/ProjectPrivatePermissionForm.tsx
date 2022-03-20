@@ -1,12 +1,18 @@
 import { Row, Switch, Typography } from "antd";
-import React, { FC, useCallback, useMemo, useState } from "react";
-import { useCreateRule, useDeleteRule, useOrganizationRoles } from "../hooks";
-import { RulePermission } from "@dewo/app/graphql/types";
-import { RBACPermissionForm } from "../RBACPermissionForm";
+import React, { FC, useCallback, useMemo } from "react";
+import {
+  useCreateRole,
+  useCreateRule,
+  useDeleteRule,
+  useOrganizationRoles,
+} from "../hooks";
+import { Rule, RulePermission } from "@dewo/app/graphql/types";
+import { getRule, RBACPermissionForm } from "../RBACPermissionForm";
 import {
   useDefaultAbility,
   usePermission,
 } from "@dewo/app/contexts/PermissionsContext";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   projectId: string;
@@ -19,6 +25,7 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
   organizationId,
   onInviteUser,
 }) => {
+  const { user } = useAuthContext();
   const roles = useOrganizationRoles(organizationId);
   const canManagePermissions = usePermission("create", "Rule");
 
@@ -36,72 +43,78 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
     [fallbackRole, projectId]
   );
 
+  const createRole = useCreateRole();
   const createRule = useCreateRule();
   const deleteRule = useDeleteRule();
-
-  const [showPrivateOptions, setShowPrivateOptions] = useState(false);
-  const toggled = showPrivateOptions || !!privateRule;
 
   const handleChangePrivate = useCallback(
     async (toggled: boolean) => {
       if (toggled) {
-        setShowPrivateOptions(true);
-      } else {
-        setShowPrivateOptions(false);
-        if (!!privateRule) {
-          await deleteRule(privateRule.id);
-          await refetchDefaultAbility();
-        }
-      }
-    },
-    [deleteRule, refetchDefaultAbility, privateRule]
-  );
+        const personalRole =
+          roles?.find((r) => r.userId === user!.id) ??
+          (await createRole({
+            name: "",
+            color: "",
+            organizationId,
+            userId: user!.id,
+          }));
+        await createRule({
+          permission: RulePermission.VIEW_PROJECTS,
+          projectId,
+          roleId: personalRole.id,
+        });
 
-  const handleViewProjectsPermissionSaved = useCallback(
-    async (hasFallbackRolePermission: boolean) => {
-      if (hasFallbackRolePermission) {
+        await createRule({
+          permission: RulePermission.VIEW_PROJECTS,
+          projectId,
+          inverted: true,
+          roleId: fallbackRole!.id,
+        });
+      } else {
         if (!!privateRule) {
           await deleteRule(privateRule.id);
         }
-      } else {
-        if (!privateRule) {
-          await createRule({
-            permission: RulePermission.VIEW_PROJECTS,
-            projectId,
-            inverted: true,
-            roleId: fallbackRole!.id,
-          });
+
+        const enablingRules = roles
+          ?.map((r) => getRule(r, RulePermission.VIEW_PROJECTS, projectId))
+          .filter((rule): rule is Rule => !!rule);
+        for (const rule of enablingRules ?? []) {
+          await deleteRule(rule.id);
         }
       }
 
       await refetchDefaultAbility();
     },
     [
-      createRule,
       deleteRule,
-      projectId,
-      fallbackRole,
-      privateRule,
       refetchDefaultAbility,
+      privateRule,
+      roles,
+      projectId,
+      createRule,
+      createRole,
+      organizationId,
+      fallbackRole,
+      user,
     ]
   );
 
   return (
     <>
       <Typography.Paragraph type="secondary">
-        {toggled
+        {!!privateRule
           ? "Only the below roles and users can view this project and its tasks"
           : "Anyone can view this project and its tasks"}
       </Typography.Paragraph>
       <Row align="middle" style={{ gap: 8, marginBottom: 8 }}>
         <Typography.Text>Private Project</Typography.Text>
         <Switch
-          checked={toggled}
+          checked={!!privateRule}
           onChange={handleChangePrivate}
           disabled={!canManagePermissions}
         />
       </Row>
-      {toggled && !!roles && (
+      {!!privateRule && !!roles && (
         <RBACPermissionForm
           disabled={!canManagePermissions}
           permission={RulePermission.VIEW_PROJECTS}
@@ -110,7 +123,6 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
           organizationId={organizationId}
           saveButtonTooltip="To make a project private, you need to select at least one role you have. Otherwise you will no longer be able to access the project."
           requiresCurrentUserToHaveRole
-          onSaved={handleViewProjectsPermissionSaved}
           onInviteUser={onInviteUser}
         />
       )}

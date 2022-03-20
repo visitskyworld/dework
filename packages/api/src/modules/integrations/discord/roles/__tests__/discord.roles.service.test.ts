@@ -13,7 +13,6 @@ import faker from "faker";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
-const discordUserAccessToken = "MIh53yuCgx4CNwQA5tqbIkAiaG98Gc";
 
 describe("DiscordRolesService", () => {
   let app: INestApplication;
@@ -200,7 +199,6 @@ describe("DiscordRolesService", () => {
         source: ThreepidSource.discord,
         threepid: discordUserId,
         config: {
-          accessToken: discordUserAccessToken,
           profile: {
             username: faker.internet.userName(),
             guilds: [{ id: discordGuildId }],
@@ -208,12 +206,9 @@ describe("DiscordRolesService", () => {
         } as any,
       });
 
-      const rolesBefore = await fixtures.getUser(user.id).then((u) => u?.roles);
-      expect(rolesBefore).toHaveLength(0);
-
       await service.syncUserRoles(user);
-      const rolesAfter = await fixtures.getUser(user.id).then((u) => u?.roles);
-      expect(rolesAfter).toContainEqual(
+      const roles = await fixtures.getUser(user.id).then((u) => u?.roles);
+      expect(roles).toContainEqual(
         expect.objectContaining({
           name: "discord-tester-role",
           color: "orange",
