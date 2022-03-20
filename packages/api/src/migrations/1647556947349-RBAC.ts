@@ -26,8 +26,6 @@ export class RBAC1647556947349 implements MigrationInterface {
       SELECT id
       FROM organization
       `);
-    // WHERE id = '09bb512d-0641-4b11-be7d-cef5490698e8' -- metaguild
-    // WHERE id = 'dde641cb-b50e-403f-955a-f83c154e441f' -- dework
     await Bluebird.map(
       organizations,
       (organization, index) => {
@@ -275,7 +273,6 @@ export class RBAC1647556947349 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // no going back :)
-    // await queryRunner.query(`DELETE FROM role where "fallback" IS TRUE`);
     await queryRunner.query(`DELETE FROM role`);
   }
 }

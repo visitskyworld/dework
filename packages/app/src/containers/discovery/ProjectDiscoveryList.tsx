@@ -90,9 +90,6 @@ export const ProjectDiscoveryList: FC = () => {
                     )}
                     {!screens.sm && (
                       <Row style={{ marginTop: 8, marginBottom: 8 }}>
-                        {/* <Tag color="green" icon={<Icons.CheckOutlined />}>
-                          {project.taskCount} tasks
-                        </Tag> */}
                         <Avatar.Group maxCount={5} size="small">
                           {organization.users.map((u) => (
                             <UserAvatar key={u.id} user={u} linkToProfile />
@@ -122,16 +119,6 @@ export const ProjectDiscoveryList: FC = () => {
                         </Avatar.Group>
                       ),
                     },
-                    // {
-                    //   key: "tasks",
-                    //   title: "Tasks",
-                    //   width: 140,
-                    //   render: (_: unknown, project: ProjectRow) => (
-                    //     <Tag color="green" icon={<Icons.CheckOutlined />}>
-                    //       {project.taskCount} tasks
-                    //     </Tag>
-                    //   ),
-                    // },
                   ]
                 : []),
             ]}

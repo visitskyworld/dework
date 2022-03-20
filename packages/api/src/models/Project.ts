@@ -51,7 +51,6 @@ export class Project extends Audit {
   public description!: string;
 
   @Column({ enum: ProjectVisibility, default: ProjectVisibility.PUBLIC })
-  // @Field(() => ProjectVisibility)
   public visibility!: ProjectVisibility;
 
   @JoinColumn()
@@ -104,7 +103,6 @@ export class Project extends Audit {
   public tokenGates!: Promise<ProjectTokenGate[]>;
 
   @OneToMany(() => ProjectMember, (om: ProjectMember) => om.project)
-  // @Field(() => [ProjectMember])
   public members!: Promise<ProjectMember[]>;
 
   @Column({ nullable: true })

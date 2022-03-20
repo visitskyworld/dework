@@ -14,8 +14,6 @@ import { User } from "@dewo/api/models/User";
 import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 
-const isEveryoneRole = (role: Discord.Role) => role.id === role.guild.id;
-
 @Injectable()
 export class DiscordRolesService {
   private logger = new Logger(this.constructor.name);
@@ -142,7 +140,7 @@ export class DiscordRolesService {
           (r) => r.source === RoleSource.DISCORD && r.externalId === dr.id
         ) &&
         !["Dework", "Dework Demo", "Dework Dev"].includes(dr.name) &&
-        !isEveryoneRole(dr)
+        !this.isEveryoneRole(dr)
     );
     const rolesToUpdate = existingRoles.filter(
       (r) =>
@@ -255,7 +253,11 @@ export class DiscordRolesService {
       color: this.nearestColor(
         `#${discordRole.color.toString(16).padStart(6, "0")}`
       ).name,
-      fallback: isEveryoneRole(discordRole),
+      fallback: this.isEveryoneRole(discordRole),
     };
+  }
+
+  private isEveryoneRole(role: Discord.Role) {
+    return role.id === role.guild.id;
   }
 }

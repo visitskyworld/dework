@@ -60,40 +60,6 @@ export class OrganizationRequests {
     };
   }
 
-  // public static updateMember(
-  //   input: UpdateOrganizationMemberInput
-  // ): GraphQLTestClientRequestBody<{ input: UpdateOrganizationMemberInput }> {
-  //   return {
-  //     query: `
-  //       mutation UpdateOrganizationMember($input: UpdateOrganizationMemberInput!) {
-  //         member: updateOrganizationMember(input: $input) {
-  //           ...OrganizationMember
-  //         }
-  //       }
-
-  //       ${this.organizationMemberFragment}
-  //     `,
-  //     variables: { input },
-  //   };
-  // }
-
-  // public static removeMember(
-  //   input: RemoveOrganizationMemberInput
-  // ): GraphQLTestClientRequestBody<{ input: RemoveOrganizationMemberInput }> {
-  //   return {
-  //     query: `
-  //       mutation RemoveOrganizationMember($input: RemoveOrganizationMemberInput!) {
-  //         organization: removeOrganizationMember(input: $input) {
-  //           ...Organization
-  //         }
-  //       }
-
-  //       ${this.organizationFragment}
-  //     `,
-  //     variables: { input },
-  //   };
-  // }
-
   public static get(
     organizationId: string
   ): GraphQLTestClientRequestBody<{ organizationId: string }> {
