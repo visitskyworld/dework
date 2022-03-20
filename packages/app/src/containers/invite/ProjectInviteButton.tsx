@@ -107,6 +107,16 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
               onClick={() => copyToClipboardAndShowToast(project.permalink)}
             >
               Invite with Discord role
+              <Tooltip
+                placement="right"
+                title={
+                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                    Let users join this project using their Discord server roles
+                  </Typography.Text>
+                }
+              >
+                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+              </Tooltip>
             </Menu.Item>
           ) : (
             <Link href={`${project.permalink}/settings/access`}>

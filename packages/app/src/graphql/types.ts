@@ -306,103 +306,6 @@ export interface CreateOrganizationMutationVariables {
 // GraphQL mutation operation: UpdateOrganizationMutation
 // ====================================================
 
-export interface UpdateOrganizationMutation_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: UpdateOrganizationMutation_organization_projects_paymentMethods_networks[];
-  tokens: UpdateOrganizationMutation_organization_projects_paymentMethods_tokens[];
-}
-
-export interface UpdateOrganizationMutation_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: UpdateOrganizationMutation_organization_projects_tokenGates_token_network;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: UpdateOrganizationMutation_organization_projects_tokenGates_token;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface UpdateOrganizationMutation_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface UpdateOrganizationMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -412,17 +315,11 @@ export interface UpdateOrganizationMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: UpdateOrganizationMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: UpdateOrganizationMutation_organization_projects_paymentMethods[];
-  integrations: UpdateOrganizationMutation_organization_projects_integrations[];
-  tokenGates: UpdateOrganizationMutation_organization_projects_tokenGates[];
-  organization: UpdateOrganizationMutation_organization_projects_organization;
-  taskSections: UpdateOrganizationMutation_organization_projects_taskSections[];
 }
 
 export interface UpdateOrganizationMutation_organization_projectSections {
@@ -575,46 +472,6 @@ export interface CreateProjectMutation_project_options {
   showBacklogColumn: boolean | null;
 }
 
-export interface CreateProjectMutation_project_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectMutation_project_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateProjectMutation_project_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: CreateProjectMutation_project_paymentMethods_networks[];
-  tokens: CreateProjectMutation_project_paymentMethods_tokens[];
-}
-
-export interface CreateProjectMutation_project_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
 export interface CreateProjectMutation_project_tokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -648,103 +505,6 @@ export interface CreateProjectMutation_project_tokenGates {
   token: CreateProjectMutation_project_tokenGates_token;
 }
 
-export interface CreateProjectMutation_project_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectMutation_project_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectMutation_project_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateProjectMutation_project_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: CreateProjectMutation_project_organization_projects_paymentMethods_networks[];
-  tokens: CreateProjectMutation_project_organization_projects_paymentMethods_tokens[];
-}
-
-export interface CreateProjectMutation_project_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface CreateProjectMutation_project_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectMutation_project_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: CreateProjectMutation_project_organization_projects_tokenGates_token_network;
-}
-
-export interface CreateProjectMutation_project_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: CreateProjectMutation_project_organization_projects_tokenGates_token;
-}
-
-export interface CreateProjectMutation_project_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectMutation_project_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface CreateProjectMutation_project_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -754,17 +514,11 @@ export interface CreateProjectMutation_project_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: CreateProjectMutation_project_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: CreateProjectMutation_project_organization_projects_paymentMethods[];
-  integrations: CreateProjectMutation_project_organization_projects_integrations[];
-  tokenGates: CreateProjectMutation_project_organization_projects_tokenGates[];
-  organization: CreateProjectMutation_project_organization_projects_organization;
-  taskSections: CreateProjectMutation_project_organization_projects_taskSections[];
 }
 
 export interface CreateProjectMutation_project_organization_projectSections {
@@ -864,14 +618,9 @@ export interface CreateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
-  taskCount: number;
+  sortKey: string;
   options: CreateProjectMutation_project_options | null;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
-  paymentMethods: CreateProjectMutation_project_paymentMethods[];
-  integrations: CreateProjectMutation_project_integrations[];
   tokenGates: CreateProjectMutation_project_tokenGates[];
   organization: CreateProjectMutation_project_organization;
   taskSections: CreateProjectMutation_project_taskSections[];
@@ -897,46 +646,6 @@ export interface CreateProjectMutationVariables {
 export interface UpdateProjectMutation_project_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface UpdateProjectMutation_project_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface UpdateProjectMutation_project_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface UpdateProjectMutation_project_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: UpdateProjectMutation_project_paymentMethods_networks[];
-  tokens: UpdateProjectMutation_project_paymentMethods_tokens[];
-}
-
-export interface UpdateProjectMutation_project_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
 }
 
 export interface UpdateProjectMutation_project_tokenGates_token_network {
@@ -1000,14 +709,9 @@ export interface UpdateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
-  taskCount: number;
+  sortKey: string;
   options: UpdateProjectMutation_project_options | null;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
-  paymentMethods: UpdateProjectMutation_project_paymentMethods[];
-  integrations: UpdateProjectMutation_project_integrations[];
   tokenGates: UpdateProjectMutation_project_tokenGates[];
   organization: UpdateProjectMutation_project_organization;
   taskSections: UpdateProjectMutation_project_taskSections[];
@@ -3195,6 +2899,8 @@ export interface JoinProjectWithTokenMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
 }
 
 export interface JoinProjectWithTokenMutation {
@@ -3922,6 +3628,8 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: CreateTaskPaymentsMutation_tasks_project_organization;
 }
 
@@ -4377,103 +4085,6 @@ export interface CreateTaskDiscordLinkMutationVariables {
 // GraphQL mutation operation: CreateProjectsFromNotionMutation
 // ====================================================
 
-export interface CreateProjectsFromNotionMutation_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: CreateProjectsFromNotionMutation_organization_projects_paymentMethods_networks[];
-  tokens: CreateProjectsFromNotionMutation_organization_projects_paymentMethods_tokens[];
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token_network;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: CreateProjectsFromNotionMutation_organization_projects_tokenGates_token;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromNotionMutation_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface CreateProjectsFromNotionMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4483,17 +4094,11 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: CreateProjectsFromNotionMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: CreateProjectsFromNotionMutation_organization_projects_paymentMethods[];
-  integrations: CreateProjectsFromNotionMutation_organization_projects_integrations[];
-  tokenGates: CreateProjectsFromNotionMutation_organization_projects_tokenGates[];
-  organization: CreateProjectsFromNotionMutation_organization_projects_organization;
-  taskSections: CreateProjectsFromNotionMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projectSections {
@@ -4592,103 +4197,6 @@ export interface CreateProjectsFromNotionMutationVariables {
 // GraphQL mutation operation: CreateProjectsFromTrelloMutation
 // ====================================================
 
-export interface CreateProjectsFromTrelloMutation_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_networks[];
-  tokens: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods_tokens[];
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token_network;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: CreateProjectsFromTrelloMutation_organization_projects_tokenGates_token;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromTrelloMutation_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface CreateProjectsFromTrelloMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4698,17 +4206,11 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: CreateProjectsFromTrelloMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: CreateProjectsFromTrelloMutation_organization_projects_paymentMethods[];
-  integrations: CreateProjectsFromTrelloMutation_organization_projects_integrations[];
-  tokenGates: CreateProjectsFromTrelloMutation_organization_projects_tokenGates[];
-  organization: CreateProjectsFromTrelloMutation_organization_projects_organization;
-  taskSections: CreateProjectsFromTrelloMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projectSections {
@@ -4807,103 +4309,6 @@ export interface CreateProjectsFromTrelloMutationVariables {
 // GraphQL mutation operation: CreateProjectsFromGithubMutation
 // ====================================================
 
-export interface CreateProjectsFromGithubMutation_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: CreateProjectsFromGithubMutation_organization_projects_paymentMethods_networks[];
-  tokens: CreateProjectsFromGithubMutation_organization_projects_paymentMethods_tokens[];
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: CreateProjectsFromGithubMutation_organization_projects_tokenGates_token_network;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: CreateProjectsFromGithubMutation_organization_projects_tokenGates_token;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface CreateProjectsFromGithubMutation_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface CreateProjectsFromGithubMutation_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -4913,17 +4318,11 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: CreateProjectsFromGithubMutation_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: CreateProjectsFromGithubMutation_organization_projects_paymentMethods[];
-  integrations: CreateProjectsFromGithubMutation_organization_projects_integrations[];
-  tokenGates: CreateProjectsFromGithubMutation_organization_projects_tokenGates[];
-  organization: CreateProjectsFromGithubMutation_organization_projects_organization;
-  taskSections: CreateProjectsFromGithubMutation_organization_projects_taskSections[];
 }
 
 export interface CreateProjectsFromGithubMutation_organization_projectSections {
@@ -5549,6 +4948,8 @@ export interface UserTasksQuery_user_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: UserTasksQuery_user_tasks_project_organization;
 }
 
@@ -5705,103 +5106,6 @@ export interface GetOrganizationQueryVariables {
 // GraphQL query operation: GetOrganizationDetailsQuery
 // ====================================================
 
-export interface GetOrganizationDetailsQuery_organization_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: GetOrganizationDetailsQuery_organization_projects_paymentMethods_networks[];
-  tokens: GetOrganizationDetailsQuery_organization_projects_paymentMethods_tokens[];
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: GetOrganizationDetailsQuery_organization_projects_tokenGates_token_network;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: GetOrganizationDetailsQuery_organization_projects_tokenGates_token;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface GetOrganizationDetailsQuery_organization_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface GetOrganizationDetailsQuery_organization_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -5811,17 +5115,11 @@ export interface GetOrganizationDetailsQuery_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: GetOrganizationDetailsQuery_organization_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: GetOrganizationDetailsQuery_organization_projects_paymentMethods[];
-  integrations: GetOrganizationDetailsQuery_organization_projects_integrations[];
-  tokenGates: GetOrganizationDetailsQuery_organization_projects_tokenGates[];
-  organization: GetOrganizationDetailsQuery_organization_projects_organization;
-  taskSections: GetOrganizationDetailsQuery_organization_projects_taskSections[];
 }
 
 export interface GetOrganizationDetailsQuery_organization_projectSections {
@@ -6041,10 +5339,10 @@ export interface GetFeaturedOrganizationsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetFeaturedProjectsQuery
+// GraphQL query operation: GetPopularOrganizationsQuery
 // ====================================================
 
-export interface GetFeaturedProjectsQuery_projects_organization_users {
+export interface GetPopularOrganizationsQuery_organizations_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -6052,7 +5350,7 @@ export interface GetFeaturedProjectsQuery_projects_organization_users {
   permalink: string;
 }
 
-export interface GetFeaturedProjectsQuery_projects_organization {
+export interface GetPopularOrganizationsQuery_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
@@ -6060,24 +5358,11 @@ export interface GetFeaturedProjectsQuery_projects_organization {
   slug: string;
   tagline: string | null;
   permalink: string;
-  users: GetFeaturedProjectsQuery_projects_organization_users[];
+  users: GetPopularOrganizationsQuery_organizations_users[];
 }
 
-export interface GetFeaturedProjectsQuery_projects {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-  taskCount: number;
-  organization: GetFeaturedProjectsQuery_projects_organization;
-}
-
-export interface GetFeaturedProjectsQuery {
-  projects: GetFeaturedProjectsQuery_projects[];
+export interface GetPopularOrganizationsQuery {
+  organizations: GetPopularOrganizationsQuery_organizations[];
 }
 
 /* tslint:disable */
@@ -6383,103 +5668,6 @@ export interface GetOrganizationTaskTagsQueryVariables {
 // GraphQL query operation: GetProjectQuery
 // ====================================================
 
-export interface GetProjectQuery_project_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface GetProjectQuery_project_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetProjectQuery_project_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface GetProjectQuery_project_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: GetProjectQuery_project_paymentMethods_networks[];
-  tokens: GetProjectQuery_project_paymentMethods_tokens[];
-}
-
-export interface GetProjectQuery_project_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface GetProjectQuery_project_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetProjectQuery_project_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: GetProjectQuery_project_tokenGates_token_network;
-}
-
-export interface GetProjectQuery_project_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: GetProjectQuery_project_tokenGates_token;
-}
-
-export interface GetProjectQuery_project_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface GetProjectQuery_project_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface GetProjectQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -6489,17 +5677,8 @@ export interface GetProjectQuery_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
-  taskCount: number;
-  options: GetProjectQuery_project_options | null;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
-  paymentMethods: GetProjectQuery_project_paymentMethods[];
-  integrations: GetProjectQuery_project_integrations[];
-  tokenGates: GetProjectQuery_project_tokenGates[];
-  organization: GetProjectQuery_project_organization;
-  taskSections: GetProjectQuery_project_taskSections[];
+  sortKey: string;
 }
 
 export interface GetProjectQuery {
@@ -6507,6 +5686,97 @@ export interface GetProjectQuery {
 }
 
 export interface GetProjectQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectDetailsQuery
+// ====================================================
+
+export interface GetProjectDetailsQuery_project_options {
+  __typename: "ProjectOptions";
+  showBacklogColumn: boolean | null;
+}
+
+export interface GetProjectDetailsQuery_project_tokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetProjectDetailsQuery_project_tokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: GetProjectDetailsQuery_project_tokenGates_token_network;
+}
+
+export interface GetProjectDetailsQuery_project_tokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  token: GetProjectDetailsQuery_project_tokenGates_token;
+}
+
+export interface GetProjectDetailsQuery_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface GetProjectDetailsQuery_project_taskSections {
+  __typename: "TaskSection";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+  projectId: string;
+}
+
+export interface GetProjectDetailsQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  options: GetProjectDetailsQuery_project_options | null;
+  tokenGates: GetProjectDetailsQuery_project_tokenGates[];
+  organization: GetProjectDetailsQuery_project_organization;
+  taskSections: GetProjectDetailsQuery_project_taskSections[];
+}
+
+export interface GetProjectDetailsQuery {
+  project: GetProjectDetailsQuery_project;
+}
+
+export interface GetProjectDetailsQueryVariables {
   projectId: Scalar.UUID;
 }
 
@@ -7148,6 +6418,8 @@ export interface GetTaskQuery_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: GetTaskQuery_task_project_organization;
   taskTags: GetTaskQuery_task_project_taskTags[];
 }
@@ -7537,6 +6809,8 @@ export interface GetTasksQuery_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: GetTasksQuery_tasks_project_organization;
 }
 
@@ -7897,6 +7171,62 @@ export interface GetProjectIntegrationsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetProjectPaymentMethodsQuery
+// ====================================================
+
+export interface GetProjectPaymentMethodsQuery_project_paymentMethods_networks {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetProjectPaymentMethodsQuery_project_paymentMethods_tokens {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetProjectPaymentMethodsQuery_project_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  networks: GetProjectPaymentMethodsQuery_project_paymentMethods_networks[];
+  tokens: GetProjectPaymentMethodsQuery_project_paymentMethods_tokens[];
+}
+
+export interface GetProjectPaymentMethodsQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  paymentMethods: GetProjectPaymentMethodsQuery_project_paymentMethods[];
+}
+
+export interface GetProjectPaymentMethodsQuery {
+  project: GetProjectPaymentMethodsQuery_project;
+}
+
+export interface GetProjectPaymentMethodsQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetInviteQuery
 // ====================================================
 
@@ -7960,6 +7290,8 @@ export interface GetInviteQuery_invite_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
 }
 
@@ -8535,6 +7867,8 @@ export interface TaskCreatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: TaskCreatedSubscription_task_project_organization;
 }
 
@@ -9066,6 +8400,8 @@ export interface TaskUpdatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: TaskUpdatedSubscription_task_project_organization;
 }
 
@@ -9766,6 +9102,8 @@ export interface Project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
 }
 
 /* tslint:disable */
@@ -9879,6 +9217,8 @@ export interface Invite_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   tokenGates: Invite_project_tokenGates[];
 }
 
@@ -9904,46 +9244,6 @@ export interface Invite {
 export interface ProjectDetails_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
-}
-
-export interface ProjectDetails_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface ProjectDetails_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface ProjectDetails_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: ProjectDetails_paymentMethods_networks[];
-  tokens: ProjectDetails_paymentMethods_tokens[];
-}
-
-export interface ProjectDetails_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
 }
 
 export interface ProjectDetails_tokenGates_token_network {
@@ -10007,14 +9307,9 @@ export interface ProjectDetails {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
-  taskCount: number;
+  sortKey: string;
   options: ProjectDetails_options | null;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
-  paymentMethods: ProjectDetails_paymentMethods[];
-  integrations: ProjectDetails_integrations[];
   tokenGates: ProjectDetails_tokenGates[];
   organization: ProjectDetails_organization;
   taskSections: ProjectDetails_taskSections[];
@@ -10705,6 +10000,8 @@ export interface TaskWithOrganization_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: TaskWithOrganization_project_organization;
 }
 
@@ -11187,6 +10484,8 @@ export interface TaskDetails_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
+  sectionId: string | null;
+  sortKey: string;
   organization: TaskDetails_project_organization;
 }
 
@@ -11481,103 +10780,6 @@ export interface UserDetails {
 // GraphQL fragment: OrganizationDetails
 // ====================================================
 
-export interface OrganizationDetails_projects_options {
-  __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
-}
-
-export interface OrganizationDetails_projects_paymentMethods_networks {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface OrganizationDetails_projects_paymentMethods_tokens {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface OrganizationDetails_projects_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  networks: OrganizationDetails_projects_paymentMethods_networks[];
-  tokens: OrganizationDetails_projects_paymentMethods_tokens[];
-}
-
-export interface OrganizationDetails_projects_integrations {
-  __typename: "ProjectIntegration";
-  id: Scalar.UUID;
-  type: string;
-  config: Scalar.JSONObject;
-}
-
-export interface OrganizationDetails_projects_tokenGates_token_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface OrganizationDetails_projects_tokenGates_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-  network: OrganizationDetails_projects_tokenGates_token_network;
-}
-
-export interface OrganizationDetails_projects_tokenGates {
-  __typename: "ProjectTokenGate";
-  id: Scalar.UUID;
-  role: ProjectRole;
-  projectId: string;
-  token: OrganizationDetails_projects_tokenGates_token;
-}
-
-export interface OrganizationDetails_projects_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface OrganizationDetails_projects_taskSections {
-  __typename: "TaskSection";
-  id: Scalar.UUID;
-  name: string;
-  status: TaskStatus;
-  sortKey: string;
-  projectId: string;
-}
-
 export interface OrganizationDetails_projects {
   __typename: "Project";
   id: Scalar.UUID;
@@ -11587,17 +10789,11 @@ export interface OrganizationDetails_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sortKey: string;
   sectionId: string | null;
+  sortKey: string;
   taskCount: number;
-  options: OrganizationDetails_projects_options | null;
   doneTaskCount: number;
   openBountyTaskCount: number;
-  paymentMethods: OrganizationDetails_projects_paymentMethods[];
-  integrations: OrganizationDetails_projects_integrations[];
-  tokenGates: OrganizationDetails_projects_tokenGates[];
-  organization: OrganizationDetails_projects_organization;
-  taskSections: OrganizationDetails_projects_taskSections[];
 }
 
 export interface OrganizationDetails_projectSections {

@@ -9,8 +9,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useProject } from "../../project/hooks";
-import { useParseIdFromSlug } from "@dewo/app/util/uuid";
+import { useProject, useProjectPaymentMethods } from "../../project/hooks";
 import { GnosisPayAllButton } from "./GnosisPayAllButton";
 
 const Between = inject("0123456789");
@@ -32,17 +31,17 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
 };
 
 export function useShouldShowInlinePayButton(task: Task): boolean {
-  const projectId = useParseIdFromSlug("projectSlug");
-  const { project } = useProject(projectId);
+  const { project } = useProject(task.projectId);
+  const paymentMethods = useProjectPaymentMethods(task.projectId);
   const canManageProject = usePermission("update", project);
   const hasPaymentMethod = useMemo(
     () =>
-      !!project?.paymentMethods.some(
+      !!paymentMethods?.some(
         (pm) =>
           pm.type !== PaymentMethodType.GNOSIS_SAFE &&
           pm.networks.some((n) => n.id === task.reward?.token.networkId)
       ),
-    [project?.paymentMethods, task.reward?.token.networkId]
+    [paymentMethods, task.reward?.token.networkId]
   );
   return (
     task.status === TaskStatus.DONE &&

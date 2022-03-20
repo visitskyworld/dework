@@ -2,7 +2,7 @@ import { Row, Skeleton, Space, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
-import { ProjectDetails, ProjectSection } from "@dewo/app/graphql/types";
+import { OrganizationDetails, ProjectSection } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import {
   DragDropContext,
@@ -50,7 +50,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
       projects.reduce((acc, p) => {
         const sectionId = p.sectionId ?? defaultProjectSection.id;
         return { ...acc, [sectionId]: [...(acc[sectionId] ?? []), p] };
-      }, {} as Record<string, ProjectDetails[]>) ?? {},
+      }, {} as Record<string, OrganizationDetails["projects"]>) ?? {},
     [projects]
   );
 

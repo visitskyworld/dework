@@ -13,7 +13,7 @@ import {
   useAddUserToDiscordGuild,
   useDiscordGuildMembershipState,
 } from "../../integrations/hooks";
-import { useProject } from "../../project/hooks";
+import { useProjectIntegrations } from "../../project/hooks";
 import { useCreateTaskDiscordLink } from "../hooks";
 
 interface Props {
@@ -22,11 +22,11 @@ interface Props {
 
 export const TaskDiscordButton: FC<Props> = ({ task }) => {
   const router = useRouter();
-  const { project } = useProject(task.projectId);
   const [loading, setLoading] = useState(false);
 
+  const integrations = useProjectIntegrations(task.projectId);
   const membershipState = useDiscordGuildMembershipState(
-    project?.organizationId
+    task.project.organizationId
   );
   const addUserToDiscordGuild = useAddUserToDiscordGuild(
     task.project.organizationId
@@ -51,10 +51,8 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
     }
   }, [createDiscordLink, task.id, addUserToDiscordGuild, membershipState]);
 
-  if (!project || !membershipState) return null;
-  if (
-    !project.integrations.some((i) => i.type === ProjectIntegrationType.DISCORD)
-  ) {
+  if (!membershipState) return null;
+  if (!integrations?.some((i) => i.type === ProjectIntegrationType.DISCORD)) {
     return null;
   }
   return (

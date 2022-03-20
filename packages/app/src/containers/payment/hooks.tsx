@@ -12,8 +12,8 @@ import {
   CreateTaskPaymentsMutation,
   CreateTaskPaymentsMutationVariables,
   GetPaymentNetworksQuery,
-  GetProjectQuery,
-  GetProjectQueryVariables,
+  GetProjectPaymentMethodsQuery,
+  GetProjectPaymentMethodsQueryVariables,
   Payment,
   PaymentMethod,
   PaymentMethodType,
@@ -142,9 +142,10 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     UserPaymentMethodQuery,
     UserPaymentMethodQueryVariables
   >(Queries.userPaymentMethod);
-  const [loadProject] = useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(
-    Queries.project
-  );
+  const [loadProjectPaymentMethods] = useLazyQuery<
+    GetProjectPaymentMethodsQuery,
+    GetProjectPaymentMethodsQueryVariables
+  >(Queries.projectPaymentMethods);
   const [registerTaskPayment] = useMutation<
     CreateTaskPaymentsMutation,
     CreateTaskPaymentsMutationVariables
@@ -185,21 +186,21 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const reward = task.reward;
       if (!reward) throw new Error("Task has no reward, so cannot pay");
 
-      const [project, userPaymentMethods] = await Promise.all([
-        loadProject({
+      const [paymentMethods, userPaymentMethods] = await Promise.all([
+        loadProjectPaymentMethods({
           variables: { projectId: task.projectId },
-        }).then((res) => res.data?.project),
+        }).then((res) => res.data?.project.paymentMethods),
         loadUserPaymentMethod({ variables: { id: user.id } }).then(
           (res) => res.data?.user.paymentMethods ?? []
         ),
       ]);
 
-      if (!project) throw new Error("Project not found");
+      if (!paymentMethods) throw new Error("Project not found");
 
       const to = userPaymentMethods.find((pm) =>
         canPaymentMethodReceiveTaskReward(pm, reward)
       );
-      const matchingSenderPaymentMethods = project.paymentMethods.filter((pm) =>
+      const matchingSenderPaymentMethods = paymentMethods.filter((pm) =>
         canPaymentMethodSendTaskReward(pm, reward)
       );
       const from = await selectProjectPaymentMethod(
@@ -308,7 +309,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       }
     },
     [
-      loadProject,
+      loadProjectPaymentMethods,
       loadUserPaymentMethod,
       createSolanaTransaction,
       createEthereumTransaction,

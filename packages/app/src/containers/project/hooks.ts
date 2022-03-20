@@ -41,7 +41,11 @@ import {
   UpdateTaskSectionMutationVariables,
   DeleteTaskSectionMutation,
   DeleteTaskSectionMutationVariables,
+  GetProjectPaymentMethodsQuery,
   TaskSection,
+  PaymentMethod,
+  GetProjectDetailsQuery,
+  GetProjectDetailsQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -132,7 +136,7 @@ export function useDeleteProjectTokenGate(): (
 }
 
 export function useProject(projectId: string | undefined): {
-  project: ProjectDetails | undefined;
+  project: Project | undefined;
   error: ApolloError | undefined;
 } {
   const { data, error } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
@@ -140,6 +144,46 @@ export function useProject(projectId: string | undefined): {
     { variables: { projectId: projectId! }, skip: !projectId }
   );
   return { project: data?.project ?? undefined, error };
+}
+
+export function useProjectDetails(projectId: string | undefined): {
+  project: ProjectDetails | undefined;
+  error: ApolloError | undefined;
+} {
+  const { data, error } = useQuery<
+    GetProjectDetailsQuery,
+    GetProjectDetailsQueryVariables
+  >(Queries.projectDetails, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
+  return { project: data?.project ?? undefined, error };
+}
+
+export function useProjectIntegrations(
+  projectId: string | undefined
+): ProjectIntegration[] | undefined {
+  const { data } = useQuery<
+    GetProjectIntegrationsQuery,
+    GetProjectIntegrationsQueryVariables
+  >(Queries.projectIntegrations, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
+  return data?.project.integrations;
+}
+
+export function useProjectPaymentMethods(
+  projectId: string | undefined
+): PaymentMethod[] | undefined {
+  const { data } = useQuery<
+    GetProjectPaymentMethodsQuery,
+    GetProjectIntegrationsQueryVariables
+  >(Queries.projectPaymentMethods, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
+  return data?.project.paymentMethods;
 }
 
 export function useProjectTasks(
@@ -177,16 +221,6 @@ export function useProjectTaskTags(projectId: string | undefined): TaskTag[] {
     () => data?.project?.taskTags ?? [],
     [data?.project?.taskTags]
   );
-}
-
-export function useProjectIntegrations(
-  projectId: string
-): ProjectIntegration[] | undefined {
-  const { data } = useQuery<
-    GetProjectIntegrationsQuery,
-    GetProjectIntegrationsQueryVariables
-  >(Queries.projectIntegrations, { variables: { projectId } });
-  return data?.project.integrations ?? undefined;
 }
 
 export function useCreateTaskSection(): (

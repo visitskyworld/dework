@@ -184,6 +184,8 @@ export const project = gql`
     deletedAt
     organizationId
     permalink
+    sectionId
+    sortKey
   }
 `;
 
@@ -232,19 +234,8 @@ export const invite = gql`
 export const projectDetails = gql`
   fragment ProjectDetails on Project {
     ...Project
-    sortKey
-    sectionId
-    taskCount
     options {
       showBacklogColumn
-    }
-    doneTaskCount: taskCount(status: DONE)
-    openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
-    paymentMethods {
-      ...PaymentMethod
-    }
-    integrations {
-      ...ProjectIntegration
     }
     tokenGates {
       ...ProjectTokenGate
@@ -258,9 +249,7 @@ export const projectDetails = gql`
   }
 
   ${project}
-  ${paymentMethod}
   ${paymentToken}
-  ${projectIntegration}
   ${projectTokenGate}
   ${organization}
   ${taskSection}
@@ -585,7 +574,10 @@ export const organizationDetails = gql`
     tagline
     description
     projects {
-      ...ProjectDetails
+      ...Project
+      taskCount
+      doneTaskCount: taskCount(status: DONE)
+      openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
     }
     projectSections {
       ...ProjectSection
@@ -606,7 +598,7 @@ export const organizationDetails = gql`
 
   ${organization}
   ${organizationIntegration}
-  ${projectDetails}
+  ${project}
   ${projectSection}
   ${organizationTag}
   ${entityDetail}

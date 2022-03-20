@@ -18,7 +18,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Modal, notification, Table, Tag } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useProposeTransaction } from "@dewo/app/util/gnosis";
-import { useProject } from "../../project/hooks";
+import { useProject, useProjectPaymentMethods } from "../../project/hooks";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
@@ -73,12 +73,11 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
       setSelectedTaskIds(tasks.filter(canPayTaskAssignee).map((t) => t.id));
   }, [tasks]);
 
+  const paymentMethods = useProjectPaymentMethods(projectId);
   const gnosisPaymentMethod = useMemo(
     () =>
-      project?.paymentMethods.find(
-        (pm) => pm.type === PaymentMethodType.GNOSIS_SAFE
-      ),
-    [project?.paymentMethods]
+      paymentMethods?.find((pm) => pm.type === PaymentMethodType.GNOSIS_SAFE),
+    [paymentMethods]
   );
 
   const [loading, setLoading] = useState(false);

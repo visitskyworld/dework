@@ -14,7 +14,7 @@ export const projectRoleDescription: Record<ProjectRole, string> = {
   ].join("\n"),
   [ProjectRole.CONTRIBUTOR]: [
     "View Project permission can:",
-    "- view private projects and its",
+    "- view private projects and its tasks",
     "- apply to tasks",
     "- manage tasks they're assigned to or reviewing",
     "- create and vote on community suggestions",

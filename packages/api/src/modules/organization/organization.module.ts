@@ -14,6 +14,7 @@ import {
 import { OrganizationService } from "./organization.service";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { RbacModule } from "../rbac/rbac.module";
+import { Role } from "@dewo/api/models/rbac/Role";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RbacModule } from "../rbac/rbac.module";
       Project,
       ProjectTokenGate,
       OrganizationTag,
+      Role,
       EntityDetail,
     ]),
     PermalinkModule,

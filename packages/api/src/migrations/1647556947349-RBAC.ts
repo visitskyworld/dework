@@ -149,7 +149,8 @@ export class RBAC1647556947349 implements MigrationInterface {
               .flat()
               .join(",\n")}
           `),
-        !!contributors.length &&
+        isPrivate &&
+          !!contributors.length &&
           queryRunner.query(`
             INSERT INTO "rule" ("roleId", "permission", "projectId")
             VALUES ${contributors

@@ -6,7 +6,10 @@ import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
-import { useProject } from "@dewo/app/containers/project/hooks";
+import {
+  useProjectDetails,
+  useProjectIntegrations,
+} from "@dewo/app/containers/project/hooks";
 import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
@@ -25,7 +28,7 @@ const Page: NextPage = () => {
 
   const projectId = useParseIdFromSlug("projectSlug");
   const organizationId = useParseIdFromSlug("organizationSlug");
-  const { project, error } = useProject(projectId);
+  const { project, error } = useProjectDetails(projectId);
   const canEditProject = usePermission("update", project);
 
   const navigateToTab = useCallback(
@@ -34,12 +37,11 @@ const Page: NextPage = () => {
   );
 
   const forbiddenError = error?.message === "Forbidden resource";
+  const integrations = useProjectIntegrations(projectId);
   const hasDiscordIntegration = useMemo(
     () =>
-      !!project?.integrations.some(
-        (i) => i.type === ProjectIntegrationType.DISCORD
-      ),
-    [project]
+      !!integrations?.some((i) => i.type === ProjectIntegrationType.DISCORD),
+    [integrations]
   );
 
   if (!projectId || !organizationId) {

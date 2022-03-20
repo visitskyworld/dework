@@ -3,7 +3,7 @@ import {
   OrganizationIntegrationType,
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
-import { useProject } from "../hooks";
+import { useProjectIntegrations } from "../hooks";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import { Alert, Typography } from "antd";
@@ -40,14 +40,11 @@ function useHasOrganizationGithubIntegration(
 export const ProjectSettingsGithubIntegration: FC<
   ProjectGithubIntegrationProps
 > = ({ projectId, organizationId }) => {
-  const { project } = useProject(projectId);
+  const integrations = useProjectIntegrations(projectId);
   const hasOrgInt = useHasOrganizationGithubIntegration(organizationId);
   const projInt = useMemo(
-    () =>
-      project?.integrations.find(
-        (i) => i.type === ProjectIntegrationType.GITHUB
-      ),
-    [project?.integrations]
+    () => integrations?.find((i) => i.type === ProjectIntegrationType.GITHUB),
+    [integrations]
   );
 
   const createIntegration = useCreateGithubProjectIntegration();
@@ -73,7 +70,7 @@ export const ProjectSettingsGithubIntegration: FC<
     [projInt, updateIntegration]
   );
 
-  if (!project) return null;
+  if (!integrations) return null;
   if (!!projInt) {
     return (
       <FormSection label="Github Integration">
@@ -112,9 +109,7 @@ export const ProjectSettingsGithubIntegration: FC<
 
   return (
     <ConnectToGithubFormSection>
-      <ConnectOrganizationToGithubButton
-        organizationId={project.organizationId}
-      />
+      <ConnectOrganizationToGithubButton organizationId={organizationId} />
     </ConnectToGithubFormSection>
   );
 };

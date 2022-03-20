@@ -9,7 +9,7 @@ import {
   Space,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProject } from "../../project/hooks";
+import { useProjectPaymentMethods } from "../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AddProjectPaymentMethodModal } from "../../payment/project/AddProjectPaymentMethodModal";
@@ -50,26 +50,26 @@ export const TaskRewardFormFields: FC<Props> = ({
     forcefullyShowNetworkSelect.toggleOn();
   }, [addPaymentMethod, forcefullyShowNetworkSelect]);
 
-  const { project } = useProject(projectId);
+  const paymentMethods = useProjectPaymentMethods(projectId);
   const networks = useMemo(
     () =>
-      _(project?.paymentMethods)
+      _(paymentMethods)
         .map((pm) => pm.networks)
         .flatten()
         .uniqBy((n) => n.id)
         .value(),
-    [project?.paymentMethods]
+    [paymentMethods]
   );
 
   const tokens = useMemo(
     () =>
-      _(project?.paymentMethods)
+      _(paymentMethods)
         .map((pm) => pm.tokens)
         .flatten()
         .filter((t) => t.networkId === value?.networkId)
         .uniqBy((t) => t.id)
         .value(),
-    [project?.paymentMethods, value?.networkId]
+    [paymentMethods, value?.networkId]
   );
 
   const handleChangeNetworkId = useCallback(
@@ -98,7 +98,7 @@ export const TaskRewardFormFields: FC<Props> = ({
     onChange?.({});
   }, [onChange]);
 
-  if (!project) return null;
+  if (!paymentMethods) return null;
   return (
     <>
       <Space direction="vertical" style={{ width: "100%" }}>
@@ -118,7 +118,6 @@ export const TaskRewardFormFields: FC<Props> = ({
           )}
         >
           <Select
-            loading={!project}
             placeholder="Select where you'll pay"
             value={value?.networkId}
             allowClear

@@ -1,36 +1,32 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 import * as Queries from "@dewo/app/graphql/queries";
-import * as Icons from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
-import { GetFeaturedProjectsQuery } from "@dewo/app/graphql/types";
-import { Avatar, Row, Spin, Table, Tag, Typography } from "antd";
+import { GetPopularOrganizationsQuery } from "@dewo/app/graphql/types";
+import { Avatar, Row, Spin, Table, Typography } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import removeMarkdown from "remove-markdown";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import _ from "lodash";
 
-type ProjectRow = GetFeaturedProjectsQuery["projects"][number];
+type OrganizationRow = GetPopularOrganizationsQuery["organizations"][number];
 
-function useFeaturedProjects():
-  | GetFeaturedProjectsQuery["projects"]
+function usePopularOrganizations():
+  | GetPopularOrganizationsQuery["organizations"]
   | undefined {
-  const { data } = useQuery<GetFeaturedProjectsQuery>(Queries.featuredProjects);
+  const { data } = useQuery<GetPopularOrganizationsQuery>(
+    Queries.popularOrganizations
+  );
   return useMemo(() => {
     if (!data) return undefined;
-    const sorted = _.sortBy(
-      data?.projects,
-      (p) => p.organization.users.length * 5 + p.taskCount
-    ).reverse();
-    return _.uniqBy(sorted, (p) => p.organizationId);
+    return _.sortBy(data?.organizations, (o) => o.users.length).reverse();
   }, [data]);
 }
 
 export const ProjectDiscoveryList: FC = () => {
-  const projects = useFeaturedProjects();
+  const organizations = usePopularOrganizations();
   const router = useRouter();
   const screens = useBreakpoint();
 
@@ -40,28 +36,28 @@ export const ProjectDiscoveryList: FC = () => {
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        Popular DAOs and projects {!!projects && `(${projects.length})`}
+        Popular DAOs {!!organizations && `(${organizations.length})`}
       </Typography.Title>
-      {!!projects ? (
+      {!!organizations ? (
         <div className="mx-auto max-w-md w-full">
           <Table
-            dataSource={projects}
+            dataSource={organizations}
             pagination={{ hideOnSinglePage: true }}
             size="small"
             tableLayout="fixed"
             rowClassName="hover:cursor-pointer"
             className="dewo-discovery-table"
             rowKey="id"
-            onRow={(p) => ({ onClick: () => router.push(p.permalink) })}
+            onRow={(o) => ({ onClick: () => router.push(o.permalink) })}
             columns={[
               {
                 key: "organization",
                 width: 64 + 8 * 2,
-                render: (_: unknown, project) => (
-                  <Link href={project.organization.permalink}>
+                render: (_: unknown, organization) => (
+                  <Link href={organization.permalink}>
                     <a onClick={stopPropagation}>
                       <OrganizationAvatar
-                        organization={project.organization}
+                        organization={organization}
                         size={64}
                         tooltip={{ title: "View DAO profile" }}
                       />
@@ -71,7 +67,7 @@ export const ProjectDiscoveryList: FC = () => {
               },
               {
                 key: "name",
-                render: (_: unknown, project: ProjectRow) => (
+                render: (_: unknown, organization) => (
                   <>
                     <Typography.Title
                       level={5}
@@ -79,26 +75,26 @@ export const ProjectDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <span style={{ fontWeight: 400 }}>
-                        {`${project.organization.name} / `}
+                        {`${organization.name} / `}
                       </span>
-                      {project.name}
+                      {organization.name}
                     </Typography.Title>
-                    {!!project.description && (
+                    {!!organization.tagline && (
                       <Typography.Paragraph
                         type="secondary"
                         ellipsis={{ rows: 3 }}
                         style={{ margin: 0 }}
                       >
-                        {removeMarkdown(project.description)}
+                        {organization.tagline}
                       </Typography.Paragraph>
                     )}
                     {!screens.sm && (
                       <Row style={{ marginTop: 8, marginBottom: 8 }}>
-                        <Tag color="green" icon={<Icons.CheckOutlined />}>
+                        {/* <Tag color="green" icon={<Icons.CheckOutlined />}>
                           {project.taskCount} tasks
-                        </Tag>
+                        </Tag> */}
                         <Avatar.Group maxCount={5} size="small">
-                          {project.organization.users.map((u) => (
+                          {organization.users.map((u) => (
                             <UserAvatar key={u.id} user={u} linkToProfile />
                           ))}
                         </Avatar.Group>
@@ -107,10 +103,8 @@ export const ProjectDiscoveryList: FC = () => {
                   </>
                 ),
                 showSorterTooltip: false,
-                sorter: (a: ProjectRow, b: ProjectRow) =>
-                  a.organization.name
-                    .toLowerCase()
-                    .localeCompare(b.organization.name.toLowerCase()),
+                sorter: (a: OrganizationRow, b: OrganizationRow) =>
+                  a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
               },
               ...(screens.sm
                 ? [
@@ -118,27 +112,26 @@ export const ProjectDiscoveryList: FC = () => {
                       key: "contributors",
                       title: "Contributors",
                       width: 140,
-                      sorter: (a: ProjectRow, b: ProjectRow) =>
-                        a.organization.users.length -
-                        b.organization.users.length,
-                      render: (_: unknown, project: ProjectRow) => (
+                      sorter: (a: OrganizationRow, b: OrganizationRow) =>
+                        a.users.length - b.users.length,
+                      render: (_: unknown, organization: OrganizationRow) => (
                         <Avatar.Group maxCount={5} size="small">
-                          {project.organization.users.map((u) => (
+                          {organization.users.map((u) => (
                             <UserAvatar key={u.id} user={u} linkToProfile />
                           ))}
                         </Avatar.Group>
                       ),
                     },
-                    {
-                      key: "tasks",
-                      title: "Tasks",
-                      width: 140,
-                      render: (_: unknown, project: ProjectRow) => (
-                        <Tag color="green" icon={<Icons.CheckOutlined />}>
-                          {project.taskCount} tasks
-                        </Tag>
-                      ),
-                    },
+                    // {
+                    //   key: "tasks",
+                    //   title: "Tasks",
+                    //   width: 140,
+                    //   render: (_: unknown, project: ProjectRow) => (
+                    //     <Tag color="green" icon={<Icons.CheckOutlined />}>
+                    //       {project.taskCount} tasks
+                    //     </Tag>
+                    //   ),
+                    // },
                   ]
                 : []),
             ]}

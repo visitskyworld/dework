@@ -131,20 +131,10 @@ export class OrganizationService {
     await this.organizationMemberRepo.delete({ userId, organizationId });
   }
 
-  public getMembers(organizationId: string): Promise<OrganizationMember[]> {
-    return this.organizationMemberRepo
-      .createQueryBuilder("member")
-      .leftJoinAndSelect("member.user", "user")
-      .where("member.organizationId = :organizationId", {
-        organizationId,
-      })
-      .getMany();
-  }
-
   public getUsers(organizationId: string): Promise<User[]> {
     return this.userRepo
       .createQueryBuilder("user")
-      .innerJoin("user.roles", "role")
+      .innerJoinAndSelect("user.roles", "role")
       .where("role.organizationId = :organizationId", { organizationId })
       .andWhere("role.fallback IS TRUE")
       .getMany();
@@ -190,12 +180,24 @@ export class OrganizationService {
   public findFeatured(limit: number): Promise<Organization[]> {
     return this.organizationRepo
       .createQueryBuilder("organization")
-      .where("organization.featured = :featured", { featured: true })
-      .innerJoinAndSelect("organization.projects", "project")
-      .innerJoinAndSelect("project.members", "member")
-      .innerJoinAndSelect("member.user", "user")
-      .getMany()
-      .then((orgs) => orgs.slice(0, limit));
+      .where("organization.featured IS TRUE")
+      .limit(limit)
+      .getMany();
+  }
+
+  public findPopular(): Promise<Organization[]> {
+    return this.organizationRepo
+      .createQueryBuilder("organization")
+      .innerJoin("organization.roles", "role", "role.fallback IS TRUE")
+      .innerJoin("role.users", "user")
+      .where("organization.deletedAt IS NULL")
+      .andWhere("LOWER(organization.name) NOT LIKE '%test%'")
+      .andWhere("LOWER(organization.name) NOT LIKE '%demo%'")
+      .andWhere("LOWER(organization.name) NOT LIKE '%dework%'")
+      .groupBy("organization.id")
+      .having("COUNT(DISTINCT user.id) >= 20")
+      .orderBy("COUNT(DISTINCT user.id)", "DESC")
+      .getMany();
   }
 
   public findProjectTokenGates(

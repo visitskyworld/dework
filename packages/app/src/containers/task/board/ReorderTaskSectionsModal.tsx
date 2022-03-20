@@ -2,10 +2,10 @@ import { Button, Input, Modal, Row, Typography } from "antd";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import {
-  useProject,
   useUpdateTaskSection,
   useCreateTaskSection,
   useDeleteTaskSection,
+  useProjectDetails,
 } from "../../project/hooks";
 import {
   DragDropContext,
@@ -80,7 +80,7 @@ export const ReorderTaskSectionsModal: FC<Props> = ({
   status,
   onClose,
 }) => {
-  const { project } = useProject(projectId);
+  const { project } = useProjectDetails(projectId);
   const sections = useMemo(
     () =>
       _.sortBy(

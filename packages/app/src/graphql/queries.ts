@@ -130,21 +130,16 @@ export const featuredOrganizations = gql`
   ${Fragments.user}
 `;
 
-export const featuredProjects = gql`
-  query GetFeaturedProjectsQuery {
-    projects: getFeaturedProjects {
-      ...Project
-      taskCount
-      organization {
-        ...Organization
-        users {
-          ...User
-        }
+export const popularOrganizations = gql`
+  query GetPopularOrganizationsQuery {
+    organizations: getPopularOrganizations {
+      ...Organization
+      users {
+        ...User
       }
     }
   }
 
-  ${Fragments.project}
   ${Fragments.organization}
   ${Fragments.user}
 `;
@@ -195,6 +190,16 @@ export const organizationTaskTags = gql`
 
 export const project = gql`
   query GetProjectQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      ...Project
+    }
+  }
+
+  ${Fragments.project}
+`;
+
+export const projectDetails = gql`
+  query GetProjectDetailsQuery($projectId: UUID!) {
     project: getProject(id: $projectId) {
       ...ProjectDetails
     }
@@ -309,6 +314,19 @@ export const projectIntegrations = gql`
   }
 
   ${Fragments.projectIntegration}
+`;
+
+export const projectPaymentMethods = gql`
+  query GetProjectPaymentMethodsQuery($projectId: UUID!) {
+    project: getProject(id: $projectId) {
+      id
+      paymentMethods {
+        ...PaymentMethod
+      }
+    }
+  }
+
+  ${Fragments.paymentMethod}
 `;
 
 export const invite = gql`

@@ -87,6 +87,10 @@ export class DiscordRolesService {
       discordRoleIds.push(...member._roles);
     }
 
+    if (!discordRoleIds.length) {
+      return;
+    }
+
     const roles = await this.rbacService.findRoles({
       source: RoleSource.DISCORD,
       externalId: In(discordRoleIds),

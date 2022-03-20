@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { ProjectIntegrationType } from "@dewo/app/graphql/types";
-import { useProject } from "../hooks";
+import { useProjectIntegrations } from "../hooks";
 import {
   useCreateDiscordProjectIntegration,
   useOrganizationDiscordIntegration,
@@ -25,14 +25,11 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
   projectId,
   organizationId,
 }) => {
-  const { project } = useProject(projectId);
   const orgInt = useOrganizationDiscordIntegration(organizationId);
+  const integrations = useProjectIntegrations(projectId);
   const projInt = useMemo(
-    () =>
-      project?.integrations.find(
-        (i) => i.type === ProjectIntegrationType.DISCORD
-      ),
-    [project?.integrations]
+    () => integrations?.find((i) => i.type === ProjectIntegrationType.DISCORD),
+    [integrations]
   );
 
   const createIntegration = useCreateDiscordProjectIntegration();
@@ -53,7 +50,6 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
     [projInt, updateIntegration]
   );
 
-  if (!project) return null;
   if (!!projInt && !!orgInt) {
     return (
       <FormSection label="Discord Integration">

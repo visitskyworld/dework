@@ -25,13 +25,18 @@ import { PermalinkService } from "../permalink/permalink.service";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { RoleGuard } from "../rbac/rbac.guard";
+import { Repository } from "typeorm";
+import { Role } from "@dewo/api/models/rbac/Role";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Resolver(() => Organization)
 @Injectable()
 export class OrganizationResolver {
   constructor(
     private readonly organizationService: OrganizationService,
-    private readonly permalinkService: PermalinkService
+    private readonly permalinkService: PermalinkService,
+    @InjectRepository(Role)
+    private readonly roleRepo: Repository<Role>
   ) {}
 
   @ResolveField(() => String)
@@ -53,6 +58,17 @@ export class OrganizationResolver {
   @ResolveField(() => [User])
   public async users(@Parent() organization: Organization): Promise<User[]> {
     return this.organizationService.getUsers(organization.id);
+  }
+
+  @ResolveField(() => [Role])
+  public async roles(@Parent() organization: Organization): Promise<Role[]> {
+    return this.roleRepo
+      .createQueryBuilder("role")
+      .leftJoinAndSelect("role.rules", "rule")
+      .where("role.organizationId = :organizationId", {
+        organizationId: organization.id,
+      })
+      .getMany();
   }
 
   @ResolveField(() => [Project])
@@ -184,6 +200,12 @@ export class OrganizationResolver {
     @Args("limit", { type: () => GraphQLInt }) limit: number
   ): Promise<Organization[]> {
     const organizations = await this.organizationService.findFeatured(limit);
+    return organizations;
+  }
+
+  @Query(() => [Organization])
+  public async getPopularOrganizations(): Promise<Organization[]> {
+    const organizations = await this.organizationService.findPopular();
     return organizations;
   }
 }

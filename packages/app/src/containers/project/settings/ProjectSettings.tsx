@@ -66,13 +66,6 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         <ProjectSettingsIntegrations project={project} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={<Tab icon={<Icons.CreditCardOutlined />} children="Payments" />}
-        key="payment-method"
-        style={tabStyle}
-      >
-        <ProjectSettingsPaymentMethod project={project} />
-      </Tabs.TabPane>
-      <Tabs.TabPane
         tab={<Tab icon={<Icons.LockOutlined />} children="Permissions" />}
         key="access"
         style={tabStyle}
@@ -85,6 +78,13 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
           projectId={project.id}
           organizationId={project.organizationId}
         />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={<Tab icon={<Icons.CreditCardOutlined />} children="Payments" />}
+        key="payment-method"
+        style={tabStyle}
+      >
+        <ProjectSettingsPaymentMethod projectId={project.id} />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={

@@ -1,13 +1,13 @@
 import { Card, Progress, Row, Tag, Typography } from "antd";
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { ProjectDetails } from "@dewo/app/graphql/types";
+import { OrganizationDetails } from "@dewo/app/graphql/types";
 import Link from "next/link";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useIsProjectPrivate } from "@dewo/app/containers/rbac/hooks";
 
 interface Props {
-  project: ProjectDetails;
+  project: OrganizationDetails["projects"][number];
 }
 
 export const ProjectListRow: FC<Props> = ({ project }) => {
