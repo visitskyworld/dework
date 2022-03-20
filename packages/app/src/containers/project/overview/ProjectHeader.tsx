@@ -10,6 +10,7 @@ import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { useIsProjectPrivate } from "../../rbac/hooks";
 import { useOrganization } from "../../organization/hooks";
+import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
 
 interface Props {
   projectId: string;
@@ -115,6 +116,12 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             <ProjectInviteButton projectId={projectId} />
             <FollowOrganizationButton
               organizationId={project?.organizationId}
+            />
+            <ConnectUsingDiscordRolesButton
+              type="ghost"
+              projectId={projectId}
+              organizationId={organizationId}
+              children="Connect with Discord"
             />
           </Space>
         )

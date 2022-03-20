@@ -3,8 +3,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { RoleSource, ThreepidSource } from "@dewo/app/graphql/types";
 import { Alert, Row } from "antd";
 import React, { FC, useMemo } from "react";
-import { LoginButton } from "../auth/LoginButton";
-import { ThreepidAuthButton } from "../auth/ThreepidAuthButton";
+import { ConnectUsingDiscordRolesButton } from "../auth/ConnectUsingDiscordRolesButton";
 import { useOrganizationRoles } from "../rbac/hooks";
 
 interface Props {
@@ -40,15 +39,11 @@ export const DiscordRoleGateAlert: FC<Props> = ({ organizationId }) => {
                 <RoleTag key={role.id} role={role} />
               ))}
           </Row>
-          {!!user ? (
-            <ThreepidAuthButton
-              type="primary"
-              source={ThreepidSource.discord}
-              children="Connect Discord"
-            />
-          ) : (
-            <LoginButton type="primary">Connect</LoginButton>
-          )}
+          <ConnectUsingDiscordRolesButton
+            type="primary"
+            organizationId={organizationId}
+            children="Connect with Discord"
+          />
         </>
       }
       showIcon

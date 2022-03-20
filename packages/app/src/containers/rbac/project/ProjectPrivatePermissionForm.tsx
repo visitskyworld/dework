@@ -6,8 +6,8 @@ import {
   useDeleteRule,
   useOrganizationRoles,
 } from "../hooks";
-import { Rule, RulePermission } from "@dewo/app/graphql/types";
-import { getRule, RBACPermissionForm } from "../RBACPermissionForm";
+import { RulePermission } from "@dewo/app/graphql/types";
+import { RBACPermissionForm } from "../RBACPermissionForm";
 import {
   useDefaultAbility,
   usePermission,
@@ -73,13 +73,6 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
       } else {
         if (!!privateRule) {
           await deleteRule(privateRule.id);
-        }
-
-        const enablingRules = roles
-          ?.map((r) => getRule(r, RulePermission.VIEW_PROJECTS, projectId))
-          .filter((rule): rule is Rule => !!rule);
-        for (const rule of enablingRules ?? []) {
-          await deleteRule(rule.id);
         }
       }
 

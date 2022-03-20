@@ -1,14 +1,11 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import { Avatar, Button, Modal, Row, Typography } from "antd";
 import { IncognitoIcon } from "@dewo/app/components/icons/Incognito";
 import Link from "next/link";
-import { useAuthContext } from "../contexts/AuthContext";
-import { useOrganizationRoles } from "../containers/rbac/hooks";
+import { useRolesWithAccess } from "../containers/rbac/hooks";
 import { useOrganization } from "../containers/organization/hooks";
-import { RoleSource, RulePermission, ThreepidSource } from "../graphql/types";
 import { RoleTag } from "./RoleTag";
-import { ThreepidAuthButton } from "../containers/auth/ThreepidAuthButton";
-import { LoginButton } from "../containers/auth/LoginButton";
+import { ConnectUsingDiscordRolesButton } from "../containers/auth/ConnectUsingDiscordRolesButton";
 
 interface Props {
   visible: boolean;
@@ -21,29 +18,8 @@ export const ForbiddenResourceModal: FC<Props> = ({
   projectId,
   organizationId,
 }) => {
-  const { user } = useAuthContext();
   const organization = useOrganization(organizationId);
-  const roles = useOrganizationRoles(organizationId);
-  const rolesWithAccess = useMemo(
-    () =>
-      roles?.filter((r) =>
-        r.rules.some(
-          (rule) =>
-            rule.permission === RulePermission.VIEW_PROJECTS &&
-            rule.projectId === projectId &&
-            !rule.inverted
-        )
-      ),
-    [roles, projectId]
-  );
-  const isConnectedToDiscord = useMemo(
-    () => user?.threepids.some((t) => t.source === ThreepidSource.discord),
-    [user]
-  );
-  const isDiscordRoleAllowedAccess = useMemo(
-    () => !!rolesWithAccess?.some((r) => r.source === RoleSource.DISCORD),
-    [rolesWithAccess]
-  );
+  const roles = useRolesWithAccess(organizationId, projectId);
   return (
     <Modal
       visible={visible}
@@ -62,12 +38,11 @@ export const ForbiddenResourceModal: FC<Props> = ({
       </Typography.Title>
       <Typography.Paragraph type="secondary">
         You don't have access to this project.
-        {!!rolesWithAccess?.length &&
-          " The following roles can access this project:"}
+        {!!roles?.length && " The following roles can access this project:"}
       </Typography.Paragraph>
-      {!!rolesWithAccess?.length && (
+      {!!roles?.length && (
         <Row style={{ justifyContent: "center", marginBottom: 16, rowGap: 4 }}>
-          {rolesWithAccess
+          {roles
             ?.filter((role) => !role.userId)
             .map((role) => (
               <RoleTag key={role.id} role={role} />
@@ -88,17 +63,13 @@ export const ForbiddenResourceModal: FC<Props> = ({
             </a>
           </Link>
         )}
-        {!user ? (
-          <LoginButton type="primary">Connect</LoginButton>
-        ) : (
-          !isConnectedToDiscord &&
-          isDiscordRoleAllowedAccess && (
-            <ThreepidAuthButton
-              type="primary"
-              source={ThreepidSource.discord}
-              children="Connect with Discord"
-            />
-          )
+        {!!organizationId && (
+          <ConnectUsingDiscordRolesButton
+            type="primary"
+            projectId={projectId}
+            organizationId={organizationId}
+            children="Connect with Discord"
+          />
         )}
       </Row>
     </Modal>

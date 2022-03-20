@@ -24,6 +24,7 @@ import {
   Role,
   RoleWithRules,
   Rule,
+  RulePermission,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { useCallback, useMemo } from "react";
@@ -149,4 +150,23 @@ export function useFollowOrganization(
     await addRole(fallbackRole, user.id);
     await refetchOrganizationUsers();
   }, [addRole, refetchOrganizationUsers, user, fallbackRole]);
+}
+
+export function useRolesWithAccess(
+  organizationId: string | undefined,
+  projectId?: string
+): RoleWithRules[] | undefined {
+  const roles = useOrganizationRoles(organizationId);
+  return useMemo(
+    () =>
+      roles?.filter((r) =>
+        r.rules.some(
+          (rule) =>
+            rule.permission === RulePermission.VIEW_PROJECTS &&
+            !rule.inverted &&
+            (!projectId || rule.projectId === projectId)
+        )
+      ),
+    [roles, projectId]
+  );
 }
