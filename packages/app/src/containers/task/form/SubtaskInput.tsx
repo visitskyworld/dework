@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Input, Row } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -9,6 +9,7 @@ import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import _ from "lodash";
+import { TextAreaRef } from "antd/lib/input/TextArea";
 
 interface Props {
   projectId: string;
@@ -25,12 +26,17 @@ export const SubtaskInput: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
   const createTask = useCreateTask();
-
+  const subTaskInputRef = useRef<TextAreaRef>(null);
   const hasPermission = usePermissionFn();
   const canCreateSubtask = !task || hasPermission("update", task, "subtasks");
 
   const adding = useToggle();
   const [newName, setNewName] = useState("");
+
+  const focusInput = useCallback(
+    () => subTaskInputRef.current?.focus(),
+    [subTaskInputRef]
+  );
   const handleAddTask = useCallback(
     async (e) => {
       eatClick(e);
@@ -116,10 +122,11 @@ export const SubtaskInput: FC<Props> = ({
             size="small"
             type="ghost"
             loading={adding.isOn}
-            onClick={!!newName ? handleAddTask : undefined}
+            onClick={!!newName ? handleAddTask : focusInput}
           />
           <Input.TextArea
             autoSize
+            ref={subTaskInputRef}
             className="dewo-field dewo-field-focus-border"
             style={{ flex: 1 }}
             placeholder="Add subtask..."
