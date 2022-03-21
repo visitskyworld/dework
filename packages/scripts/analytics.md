@@ -102,7 +102,18 @@ select payment.*
 from payment
 inner join task_reward on task_reward."paymentId" = payment.id
 inner join task on task."rewardId" = task_reward.id
-where task.id = '87cc9bd0-f887-4840-9de7-e3bdb2672d99'
+where task.id = '<task id>'
+```
+
+## Clear payment for task
+```sql
+UPDATE task_reward
+SET "paymentId" = NULL
+WHERE task_reward.id IN (
+	SELECT task."rewardId"
+	FROM task
+	WHERE task.id = '<task id>'
+);
 ```
 
 ## Projects over 2 weeks old where tasks were updated the last 3 days
