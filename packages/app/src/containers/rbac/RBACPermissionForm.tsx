@@ -177,7 +177,9 @@ export const RBACPermissionForm: FC<Props> = ({
   );
 
   const dirty = useMemo(
-    () => !_.isEqual(initialValues, values),
+    () =>
+      !_.isEqual(_.sortBy(values.userIds), _.sortBy(initialValues.userIds)) ||
+      !_.isEqual(_.sortBy(values.roleIds), _.sortBy(initialValues.roleIds)),
     [initialValues, values]
   );
   const buttonDisabled = !useSubmitEnabled(

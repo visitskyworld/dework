@@ -194,7 +194,7 @@ export class OrganizationService {
       .andWhere("LOWER(organization.name) NOT LIKE '%demo%'")
       .andWhere("LOWER(organization.name) NOT LIKE '%dework%'")
       .groupBy("organization.id")
-      .having("COUNT(DISTINCT user.id) >= 20")
+      .having("COUNT(DISTINCT user.id) >= 10")
       .orderBy("COUNT(DISTINCT user.id)", "DESC")
       .getMany();
   }

@@ -24,7 +24,6 @@ import {
   Role,
   RoleWithRules,
   Rule,
-  RulePermission,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { useCallback, useMemo } from "react";
@@ -162,9 +161,7 @@ export function useRolesWithAccess(
       roles?.filter((r) =>
         r.rules.some(
           (rule) =>
-            rule.permission === RulePermission.VIEW_PROJECTS &&
-            !rule.inverted &&
-            (!projectId || rule.projectId === projectId)
+            !rule.inverted && (!projectId || rule.projectId === projectId)
         )
       ),
     [roles, projectId]

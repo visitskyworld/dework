@@ -25,12 +25,8 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
 
   const isFollowing = useMemo(
-    () =>
-      users?.some(
-        (u) =>
-          u.id === user?.id && u.roles.some((r) => r.id === fallbackRole?.id)
-      ),
-    [users, user, fallbackRole]
+    () => users?.some((u) => u.id === user?.id),
+    [users, user]
   );
 
   if (isFollowing || !fallbackRole) return null;
