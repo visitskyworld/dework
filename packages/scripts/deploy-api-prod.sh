@@ -38,5 +38,6 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --update-env-vars $ENV_VARS       \
   --region $REGION                  \
   --platform managed                \
+  --memory 1G                       \
   --timeout 10m                     \
   --allow-unauthenticated

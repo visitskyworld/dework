@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const RoleTag: FC<Props> = ({ role }) => (
-  <Tag color={role.color}>
+  <Tag color={role.color === "grey" ? undefined : role.color}>
     {role.source === RoleSource.DISCORD && (
       <DiscordIcon style={{ marginRight: 4 }} />
     )}
