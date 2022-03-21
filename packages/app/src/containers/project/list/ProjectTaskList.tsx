@@ -6,7 +6,7 @@ import { TaskList, TaskListRow } from "../../task/list/TaskList";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useFilteredTasks } from "../../task/board/filters/FilterContext";
 
@@ -33,7 +33,11 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
     [filteredTasks]
   );
 
-  const canCreateTask = usePermission("create", { __typename: "Task" } as Task);
+  const canCreateTask = usePermission("create", {
+    __typename: "Task",
+    projectId,
+    status: TaskStatus.TODO,
+  });
   const createTaskToggle = useToggle();
 
   const navigateToTask = useNavigateToTaskFn();

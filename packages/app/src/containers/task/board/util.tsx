@@ -60,6 +60,7 @@ export function useGroupedTasks(
 ): Record<TaskStatus, TaskGroup[]> {
   const canUpdateTasks = usePermission("update", {
     __typename: "Task",
+    projectId,
   } as Task);
 
   return useMemo(() => {

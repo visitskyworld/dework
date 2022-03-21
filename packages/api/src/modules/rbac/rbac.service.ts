@@ -32,7 +32,13 @@ export class UserRole {
   }
 }
 
-export type Action = "create" | "read" | "update" | "delete" | "submit";
+export type Action =
+  | "create"
+  | "read"
+  | "update"
+  | "delete"
+  | "submit"
+  | "apply";
 export type Subject = InferSubjects<
   | typeof Organization
   | typeof Project
@@ -233,7 +239,12 @@ export class RbacService {
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
           fn("read", Task, task);
-          fn(CRUD, TaskApplication, { userId });
+          fn("apply", Task, task);
+          fn(CRUD, TaskApplication, {
+            userId,
+            // @ts-ignore
+            ...(rule.projectId ? { projectId: rule.projectId } : undefined),
+          });
           fn(CRUD, TaskSubmission, { userId });
 
           fn("create", Task, { ...task, status: TaskStatus.BACKLOG });

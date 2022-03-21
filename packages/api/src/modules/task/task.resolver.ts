@@ -162,8 +162,16 @@ export class TaskResolver {
       action: "create",
       subject: TaskApplication,
       inject: [TaskService],
-      getSubject: (params: { input: CreateTaskApplicationInput }) =>
-        Object.assign(new TaskApplication(), params.input),
+      getSubject: async (
+        params: { input: CreateTaskApplicationInput },
+        service
+      ) => {
+        const task = await service.findById(params.input.taskId);
+        if (!task) return undefined;
+        return Object.assign(new TaskApplication(), params.input, {
+          projectId: task.projectId,
+        });
+      },
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskApplicationInput },
@@ -188,8 +196,16 @@ export class TaskResolver {
       action: "delete",
       subject: TaskApplication,
       inject: [TaskService],
-      getSubject: (params: { input: CreateTaskApplicationInput }) =>
-        Object.assign(new TaskApplication(), params.input),
+      getSubject: async (
+        params: { input: DeleteTaskApplicationInput },
+        service
+      ) => {
+        const task = await service.findById(params.input.taskId);
+        if (!task) return undefined;
+        return Object.assign(new TaskApplication(), params.input, {
+          projectId: task.projectId,
+        });
+      },
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskApplicationInput },

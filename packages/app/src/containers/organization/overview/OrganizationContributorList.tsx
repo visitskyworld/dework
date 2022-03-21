@@ -36,7 +36,7 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
             title: "Roles",
             dataIndex: "roles",
             render: (roles: Role[]) => (
-              <Row>
+              <Row style={{ rowGap: 4 }}>
                 {roles
                   .filter((role) => !role.userId)
                   .map(
