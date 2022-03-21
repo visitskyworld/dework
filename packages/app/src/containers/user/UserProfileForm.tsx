@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { Button, Col, Form, message, Row, Typography } from "antd";
+import { Button, Col, Form, message, Row, Typography, Space } from "antd";
+import { InputWithLabel } from "./InputWithLabel";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useUpdateUser, useUser, useUpdateUserDetail } from "./hooks";
@@ -19,14 +20,6 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
   const isMe = userId === currentUserId;
   const updateUser = useUpdateUser();
   const updateUserDetail = useUpdateUserDetail();
-  const updateUsername = useCallback(
-    (username: string) => updateUser({ username }),
-    [updateUser]
-  );
-  const updateBio = useCallback(
-    (bio: string) => updateUser({ bio }),
-    [updateUser]
-  );
 
   const [form] = Form.useForm();
   const editing = useToggle();
@@ -35,22 +28,38 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
   type InititalValues = Record<string, string>;
 
   const intitialValues: InititalValues = useMemo(
-    () =>
-      user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ?? {},
-    [user?.details]
+    () => ({
+      username: user?.username ?? "",
+      bio: user?.bio ?? "",
+      ...(user?.details.reduce((a, v) => ({ ...a, [v.type]: v.value }), {}) ??
+        {}),
+    }),
+    [user?.username, user?.bio, user?.details]
   );
 
   const onSubmit = useCallback(
     async (values: InititalValues) => {
       try {
         loading.toggleOn();
-        await Promise.all(
-          Object.entries(values).map(([type, value]) =>
-            updateUserDetail({ type: type as EntityDetailType, value })
-          )
+        const changedUsername = values.username !== intitialValues.username;
+        const changedBio = values.bio !== intitialValues.bio;
+        const changedDetails = Object.entries(values).filter(
+          ([t, v]) => t !== "bio" && t !== "username" && v !== intitialValues[t]
         );
-        message.success("Profile updated!");
-        onSaved?.();
+        if (changedUsername || changedBio) {
+          await updateUser({ username: values.username, bio: values.bio });
+        }
+        if (changedDetails) {
+          await Promise.all(
+            Object.values(changedDetails).map(([type, value]) =>
+              updateUserDetail({ type: type as EntityDetailType, value })
+            )
+          );
+        }
+        if (changedUsername || changedBio || changedDetails.length) {
+          message.success("Profile updated!");
+          onSaved?.();
+        }
       } catch {
         message.error("Failed to update user details");
       } finally {
@@ -58,7 +67,7 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         loading.toggleOff();
       }
     },
-    [editing, loading, updateUserDetail, onSaved]
+    [editing, loading, intitialValues, onSaved, updateUser, updateUserDetail]
   );
 
   if (!user) return null;
@@ -76,21 +85,34 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         </Row>
       </Row>
 
-      <Typography.Title
-        level={3}
-        style={{ marginTop: 8, marginBottom: 0, textAlign: "center" }}
-        editable={editing.isOn ? { onChange: updateUsername } : undefined}
-      >
-        {user.username}
-      </Typography.Title>
-
-      <Typography.Paragraph
-        type="secondary"
-        style={{ textAlign: "center" }}
-        editable={editing.isOn ? { onChange: updateBio } : undefined}
-      >
-        {!!user.bio ? user.bio : "No bio..."}
-      </Typography.Paragraph>
+      {editing.isOn ? (
+        <Space
+          direction="vertical"
+          style={{ width: "100%", marginTop: 12, marginBottom: 16 }}
+        >
+          <InputWithLabel
+            name="username"
+            label="Username"
+            placeholder="Type your username..."
+          />
+          <InputWithLabel name="bio" label="Bio" placeholder="Add a bio..." />
+        </Space>
+      ) : (
+        <>
+          <Typography.Title
+            level={3}
+            style={{ marginTop: 8, marginBottom: 0, textAlign: "center" }}
+          >
+            {user.username}
+          </Typography.Title>
+          <Typography.Paragraph
+            type="secondary"
+            style={{ textAlign: "center" }}
+          >
+            {!!user.bio ? user.bio : "No bio..."}
+          </Typography.Paragraph>
+        </>
+      )}
 
       <UserDetails isEditMode={editing.isOn} userDetails={user.details} />
 
