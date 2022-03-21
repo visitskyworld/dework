@@ -13,7 +13,6 @@ import { useUpdateTask } from "../hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { LoginButton } from "../../auth/LoginButton";
 import { CreateSubmissionButton } from "./CreateSubmissionButton";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 
@@ -98,27 +97,11 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
       !!task.options?.allowOpenSubmission &&
       canCreateSubmission
     ) {
-      if (!!currentUserId) {
-        return <CreateSubmissionButton task={task} />;
-      } else {
-        return (
-          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-            Create Submission
-          </LoginButton>
-        );
-      }
+      return <CreateSubmissionButton task={task} />;
     }
 
     if (!canManage && task.status === TaskStatus.TODO && canApply) {
-      if (!!currentUserId) {
-        return <ClaimTaskButton task={task} />;
-      } else {
-        return (
-          <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-            I'm Interested
-          </LoginButton>
-        );
-      }
+      return <ClaimTaskButton task={task} />;
     }
   })();
 

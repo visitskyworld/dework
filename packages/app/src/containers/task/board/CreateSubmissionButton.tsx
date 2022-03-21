@@ -7,6 +7,7 @@ import Modal from "antd/lib/modal/Modal";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { LoginButton } from "../../auth/LoginButton";
 
 interface Props {
   task: Task;
@@ -56,6 +57,13 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
     task.id,
   ]);
 
+  if (!user) {
+    return (
+      <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+        Create Submission
+      </LoginButton>
+    );
+  }
   return (
     <>
       <Button

@@ -5,6 +5,7 @@ import { Button, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useDeleteTaskApplication } from "../hooks";
 import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
+import { LoginButton } from "../../auth/LoginButton";
 
 interface Props {
   task: Task;
@@ -25,10 +26,17 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
 
   const deleteTaskApplication = useDeleteTaskApplication();
   const handleUnclaimTask = useCallback(
-    async () => deleteTaskApplication({ taskId: task.id, userId: user!.id }),
+    () => deleteTaskApplication({ taskId: task.id, userId: user!.id }),
     [deleteTaskApplication, task.id, user]
   );
 
+  if (!user) {
+    return (
+      <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+        I'm Interested
+      </LoginButton>
+    );
+  }
   return (
     <>
       {hasClaimedTask ? (

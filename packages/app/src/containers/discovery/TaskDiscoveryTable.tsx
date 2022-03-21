@@ -8,7 +8,8 @@ import { SortOrder } from "antd/lib/table/interface";
 import moment from "moment";
 import Link from "next/link";
 import React, { FC } from "react";
-import { TaskActionButton } from "../task/board/TaskActionButton";
+import { ClaimTaskButton } from "../task/board/ClaimTaskButton";
+import { CreateSubmissionButton } from "../task/board/CreateSubmissionButton";
 import { TaskTagsRow } from "../task/board/TaskTagsRow";
 import {
   calculateTaskRewardAsUSD,
@@ -30,7 +31,6 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
       pagination={{ hideOnSinglePage: true }}
       size="small"
       showHeader={false}
-      // style={{ paddingLeft: 8, paddingRight: 8 }}
       tableLayout="fixed"
       rowClassName="hover:cursor-pointer"
       className="dewo-discovery-table"
@@ -95,7 +95,15 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                   )}
                 </>
               )}
-              {!screens.sm && <TaskActionButton task={task} />}
+              {!screens.sm && (
+                <div onClick={stopPropagation}>
+                  {task.options?.allowOpenSubmission ? (
+                    <CreateSubmissionButton task={task} />
+                  ) : (
+                    <ClaimTaskButton task={task} />
+                  )}
+                </div>
+              )}
             </>
           ),
         },
@@ -138,7 +146,15 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                 key: "actions",
                 width: 150,
                 render: (_: unknown, task: TaskWithOrganization) =>
-                  screens.sm && <TaskActionButton task={task} />,
+                  screens.sm && (
+                    <div onClick={stopPropagation}>
+                      {task.options?.allowOpenSubmission ? (
+                        <CreateSubmissionButton task={task} />
+                      ) : (
+                        <ClaimTaskButton task={task} />
+                      )}
+                    </div>
+                  ),
               },
             ]
           : []),
