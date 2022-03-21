@@ -282,6 +282,8 @@ export class RbacService {
       builder.can(CRUD, Organization);
       builder.can(CRUD, Project);
       builder.can(CRUD, Task);
+      builder.can(CRUD, Role);
+      builder.can(CRUD, Rule);
     }
 
     return builder.build({
