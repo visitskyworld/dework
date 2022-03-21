@@ -7,15 +7,21 @@ import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import _ from "lodash";
 import { useForm } from "antd/lib/form/Form";
 
-import { TaskStatus, TaskTag, User } from "@dewo/app/graphql/types";
+import {
+  OrganizationDetails_projects,
+  TaskStatus,
+  TaskTag,
+  User,
+} from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../util";
 
 interface Props {
   users?: User[];
   tags?: TaskTag[];
+  projects?: OrganizationDetails_projects[];
 }
 
-export const TaskFilterForm: FC<Props> = ({ users, tags }) => {
+export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
   const [form] = useForm<TaskFilter>();
   const { filter, onChange } = useTaskFilter();
   const handleChange = useCallback(
@@ -62,6 +68,26 @@ export const TaskFilterForm: FC<Props> = ({ users, tags }) => {
           ))}
         </Select>
       </Form.Item>
+      {projects?.length && (
+        <Form.Item name="projects" label="Filter by Project">
+          <Select
+            mode="multiple"
+            placeholder="Select projects..."
+            allowClear
+            optionFilterProp="label"
+          >
+            {projects.map((project) => (
+              <Select.Option
+                key={project.id}
+                value={project.id}
+                label={project.name}
+              >
+                {project.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
       {!_.isEmpty(filter) && (
         <Button
           type="text"

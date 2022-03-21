@@ -14,6 +14,7 @@ export interface TaskFilter {
   assigneeIds?: string[];
   ownerIds?: string[];
   statuses?: TaskStatus[];
+  projects?: string[];
 }
 
 interface TaskFilterValue {
@@ -83,6 +84,11 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
           (t) =>
             !debouncedFilter.statuses?.length ||
             debouncedFilter.statuses.includes(t.status)
+        )
+        .filter(
+          (t) =>
+            !debouncedFilter.projects?.length ||
+            debouncedFilter.projects.includes(t.projectId)
         ),
     [tasks, debouncedFilter]
   );

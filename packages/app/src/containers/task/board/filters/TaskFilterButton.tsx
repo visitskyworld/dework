@@ -11,20 +11,27 @@ import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import {
   useOrganizationTaskTags,
   useOrganizationUsers,
+  useOrganizationDetails,
 } from "@dewo/app/containers/organization/hooks";
-import { TaskTag, User } from "@dewo/app/graphql/types";
+import {
+  TaskTag,
+  User,
+  OrganizationDetails_projects,
+} from "@dewo/app/graphql/types";
 import { TaskFilterForm } from "./TaskFilterForm";
 
 interface TaskFilterButtonProps {
   users?: User[];
   tags?: TaskTag[];
   style?: CSSProperties;
+  projects?: OrganizationDetails_projects[];
 }
 
 const TaskFilterButton: FC<TaskFilterButtonProps> = ({
   users,
   tags,
   style,
+  projects,
 }) => {
   const { filter } = useTaskFilter();
   const screens = useBreakpoint();
@@ -34,13 +41,14 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
         filter.tagIds?.length,
         filter.assigneeIds?.length,
         filter.ownerIds?.length,
+        filter.projects?.length,
       ]),
     [filter]
   );
 
   return (
     <Popover
-      content={<TaskFilterForm users={users} tags={tags} />}
+      content={<TaskFilterForm users={users} tags={tags} projects={projects} />}
       trigger="click"
       placement="bottomRight"
     >
@@ -73,5 +81,13 @@ export const OrganizationTaskFilterButton: FC<{
 }> = ({ organizationId, style }) => {
   const { users } = useOrganizationUsers(organizationId);
   const tags = useOrganizationTaskTags(organizationId);
-  return <TaskFilterButton style={style} users={users} tags={tags} />;
+  const { organization } = useOrganizationDetails(organizationId);
+  return (
+    <TaskFilterButton
+      style={style}
+      users={users}
+      tags={tags}
+      projects={organization?.projects}
+    />
+  );
 };
