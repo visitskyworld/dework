@@ -302,6 +302,37 @@ describe("TaskResolver", () => {
           expect(response.body.data?.task.doneAt).toBe(null);
         });
       });
+
+      describe("status", () => {
+        it("should allow assignee to update task to IN_REVIEW and IN_PROGRESS", async () => {
+          const user = await fixtures.createUser();
+          const task = await fixtures.createTask({ assignees: [user] });
+
+          const todo = await req(user, {
+            id: task.id,
+            status: TaskStatus.TODO,
+          });
+          const inProgress = await req(user, {
+            id: task.id,
+            status: TaskStatus.IN_PROGRESS,
+          });
+          const inReview = await req(user, {
+            id: task.id,
+            status: TaskStatus.IN_REVIEW,
+          });
+          const done = await req(user, {
+            id: task.id,
+            status: TaskStatus.DONE,
+          });
+
+          client.expectGqlError(todo, HttpStatus.FORBIDDEN);
+          client.expectGqlError(done, HttpStatus.FORBIDDEN);
+          expect(inProgress.body.data?.task.status).toEqual(
+            TaskStatus.IN_PROGRESS
+          );
+          expect(inReview.body.data?.task.status).toEqual(TaskStatus.IN_REVIEW);
+        });
+      });
     });
 
     describe("createTaskApplication", () => {

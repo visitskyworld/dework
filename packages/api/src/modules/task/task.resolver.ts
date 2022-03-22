@@ -303,8 +303,13 @@ export class TaskResolver {
       action: "update",
       subject: Task,
       inject: [TaskService],
-      getFields: (params: { input: UpdateTaskInput }) =>
-        Object.keys(_.omit(params.input, ["id"])),
+      getFields: (params: { input: UpdateTaskInput }) => {
+        const fields = Object.keys(_.omit(params.input, ["id"]));
+        if (!!params.input.status) {
+          fields.push(`status[${params.input.status}]`);
+        }
+        return fields;
+      },
       getSubject: (params: { input: UpdateTaskInput }, service: TaskService) =>
         service.findById(params.input.id),
       async getOrganizationId(subject: Task) {

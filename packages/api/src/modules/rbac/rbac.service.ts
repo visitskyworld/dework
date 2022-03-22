@@ -263,9 +263,20 @@ export class RbacService {
       "role.fallback": true,
       userId,
     });
-    builder.can("update", Task, ["status", "sectionId", "sortKey"], {
-      assignees: { $elemMatch: { id: userId } },
-    });
+    builder.can(
+      "update",
+      Task,
+      [
+        "status",
+        "status[IN_PROGRESS]",
+        "status[IN_REVIEW]",
+        "sectionId",
+        "sortKey",
+      ],
+      {
+        assignees: { $elemMatch: { id: userId } },
+      }
+    );
     builder.can(["read", "update", "delete"], Task, {
       ownerId: userId,
     });

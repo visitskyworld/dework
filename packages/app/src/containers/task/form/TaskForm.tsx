@@ -4,6 +4,7 @@ import {
   User,
   TaskDetails,
   TaskOptionsInput,
+  RoleSource,
 } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
@@ -18,6 +19,7 @@ import {
   Tooltip,
   DatePicker,
   Divider,
+  Tag,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -49,8 +51,10 @@ import { StoryPointsInput } from "./StoryPointsInput";
 import Link from "next/link";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
-import { useProjectTaskTags } from "../../project/hooks";
+import { useProject, useProjectTaskTags } from "../../project/hooks";
 import { TaskTwitterShareButton } from "./TaskTwitterShareButton";
+import { useOrganizationRoles } from "../../rbac/hooks";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 export interface TaskFormValues {
   name: string;
@@ -116,6 +120,13 @@ export const TaskForm: FC<TaskFormProps> = ({
   );
 
   const tags = useProjectTaskTags(projectId);
+
+  const { project } = useProject(projectId);
+  const roles = useOrganizationRoles(project?.organizationId);
+  const organizationRoles = useMemo(
+    () => roles?.filter((role) => !role.userId && !role.fallback),
+    [roles]
+  );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -343,6 +354,47 @@ export const TaskForm: FC<TaskFormProps> = ({
           ) : (
             !!task?.reward && <TaskRewardSummary reward={task.reward} />
           )}
+
+          {/* TODO(fant): only show this if Discord is connected */}
+          <Form.Item
+            name="roleIds"
+            label={
+              <>
+                Gating
+                <Tag
+                  color="green"
+                  style={{
+                    marginLeft: 4,
+                    fontWeight: "normal",
+                    textTransform: "none",
+                  }}
+                >
+                  New
+                </Tag>
+              </>
+            }
+            tooltip="Let contributors with certain roles assign themselves to this task. Anyone can still apply to claim this task, but the selected roles can claim and start working on this without an application."
+          >
+            <Select
+              mode="multiple"
+              placeholder="Select Roles..."
+              showSearch
+              // disabled={disabled}
+              optionFilterProp="label"
+              loading={!organizationRoles}
+            >
+              {organizationRoles?.map((role) => (
+                <Select.Option key={role.id} value={role.id} label={role.name}>
+                  <Row align="middle">
+                    {role.source === RoleSource.DISCORD && (
+                      <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
+                    )}
+                    {role.name}
+                  </Row>
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
           {!!task && showProjectLink && (
             <FormSection label="Project">
