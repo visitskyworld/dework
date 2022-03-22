@@ -21,6 +21,9 @@
 @component-background-highlighted: fade(@white, 20%);
 @layout-header-mobile-height: 48px;
 @table-header-bg: transparent;
+@tag-default-bg: @component-background;
+
+@purple-base: #833bff;
 
 html {
   background: @body-background;
@@ -36,10 +39,6 @@ body,
 
 textarea {
   resize: none;
-}
-
-.ant-tag {
-  border-radius: 99999px;
 }
 
 .ant-menu {
@@ -902,4 +901,6 @@ textarea {
   }
 }
 
-
+.ant-tag {
+  border: none;
+}

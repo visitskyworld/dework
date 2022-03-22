@@ -16,6 +16,7 @@ import {
   toTaskRewardFormValues,
   useCreateTaskFromFormValues,
   useDeleteTask,
+  useTaskRoles,
   useUpdateTask,
 } from "../hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -95,6 +96,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
     []
   );
 
+  const taskRoles = useTaskRoles(task);
   const navigateToTask = useNavigateToTaskFn();
   const createTask = useCreateTaskFromFormValues();
   const duplicate = useCallback(async () => {
@@ -117,6 +119,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
           assigneeIds: s.assignees.map((a) => a.id),
           dueDate: null,
         })),
+        roleIds: taskRoles?.map((r) => r.id) ?? [],
       },
       task.projectId
     );
@@ -135,7 +138,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
         </Space>
       ),
     });
-  }, [navigateToTask, createTask, task]);
+  }, [navigateToTask, createTask, taskRoles, task]);
 
   return (
     <Dropdown

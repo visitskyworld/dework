@@ -2,12 +2,7 @@ import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Icons from "@ant-design/icons";
-import {
-  RoleSource,
-  RoleWithRules,
-  Rule,
-  RulePermission,
-} from "@dewo/app/graphql/types";
+import { RoleWithRules, RulePermission } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { Button, Form, message, Row, Select, Tooltip, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
@@ -18,6 +13,8 @@ import { useMyRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
+import { getRule, hasRule } from "./util";
+import { RoleTag } from "@dewo/app/components/RoleTag";
 
 interface FormValues {
   roleIds: string[];
@@ -33,27 +30,6 @@ interface Props {
   saveButtonTooltip?: string;
   requiresCurrentUserToHaveRole?: boolean;
   onInviteUser?(): Promise<void>;
-}
-
-export function getRule(
-  role: RoleWithRules,
-  permission: RulePermission,
-  projectId?: string
-): Rule | undefined {
-  return role.rules.find(
-    (r) =>
-      (r.projectId ?? undefined) === projectId &&
-      r.permission === permission &&
-      !r.inverted
-  );
-}
-
-function hasRule(
-  role: RoleWithRules,
-  permission: RulePermission,
-  projectId?: string
-): boolean {
-  return !!getRule(role, permission, projectId);
 }
 
 function useSubmitEnabled(
@@ -82,6 +58,7 @@ export const RBACPermissionForm: FC<Props> = ({
   requiresCurrentUserToHaveRole = false,
   onInviteUser,
 }) => {
+  const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
   const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
 
   const { users } = useOrganizationUsers(organizationId);
@@ -98,10 +75,10 @@ export const RBACPermissionForm: FC<Props> = ({
   const initialValues = useMemo(
     () => ({
       roleIds: roles
-        .filter((r) => hasRule(r, permission, projectId) && !r.userId)
+        .filter((r) => hasRule(r, permission, { projectId }) && !r.userId)
         .map((r) => r.id),
       userIds: roles
-        .filter((r) => hasRule(r, permission, projectId) && !!r.userId)
+        .filter((r) => hasRule(r, permission, { projectId }) && !!r.userId)
         .map((r) => r.userId!)
         .filter((userId, index, array) => array.indexOf(userId) === index),
     }),
@@ -113,25 +90,25 @@ export const RBACPermissionForm: FC<Props> = ({
     []
   );
 
-  const createRule = useCreateRule();
   const createRole = useCreateRole();
+  const createRule = useCreateRule();
   const deleteRule = useDeleteRule();
   const [handleSave, saving] = useRunningCallback(
     async (values: FormValues) => {
       const removedOrganizationRoles = organizationRoles?.filter(
         (role) =>
-          hasRule(role, permission, projectId) &&
+          hasRule(role, permission, { projectId }) &&
           !values.roleIds.includes(role.id)
       );
       const addedOrganizationRoles = organizationRoles?.filter(
         (role) =>
-          !hasRule(role, permission, projectId) &&
+          !hasRule(role, permission, { projectId }) &&
           values.roleIds.includes(role.id)
       );
 
       const removedUserRoles = userRoles?.filter(
         (role) =>
-          hasRule(role, permission, projectId) &&
+          hasRule(role, permission, { projectId }) &&
           !values.userIds.includes(role.userId!)
       );
 
@@ -150,7 +127,7 @@ export const RBACPermissionForm: FC<Props> = ({
 
       const addedUserRoles = selectedUserRoles.filter(
         (role) =>
-          !hasRule(role, permission, projectId) &&
+          !hasRule(role, permission, { projectId }) &&
           values.userIds.includes(role.userId!)
       );
 
@@ -162,7 +139,7 @@ export const RBACPermissionForm: FC<Props> = ({
       }
 
       for (const role of removedRoles) {
-        const rule = getRule(role, permission, projectId);
+        const rule = getRule(role, permission, { projectId });
         await deleteRule(rule!.id);
       }
 
@@ -228,15 +205,13 @@ export const RBACPermissionForm: FC<Props> = ({
               disabled={disabled}
               optionFilterProp="label"
               loading={!organizationRoles}
+              tagRender={(props) => (
+                <RoleTag {...props} role={roleById[props.value]} />
+              )}
             >
               {organizationRoles?.map((role) => (
                 <Select.Option key={role.id} value={role.id} label={role.name}>
-                  <Row align="middle">
-                    {role.source === RoleSource.DISCORD && (
-                      <DiscordIcon style={{ marginRight: 4, opacity: 0.5 }} />
-                    )}
-                    {role.name}
-                  </Row>
+                  <RoleTag role={role} />
                 </Select.Option>
               ))}
             </Select>

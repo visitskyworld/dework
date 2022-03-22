@@ -228,12 +228,13 @@ export class RbacService {
         case RulePermission.MANAGE_PROJECTS:
           fn(CRUD, Project, project);
           fn(CRUD, TaskTag, taskTag);
-          fn(CRUD, TaskReward, taskSection);
+          fn(CRUD, TaskReward);
           fn(CRUD, TaskSection, taskSection);
           fn("submit", Task, task);
           fn(CRUD, TaskSubmission);
           fn("delete", TaskApplication);
-
+        // eslint-disable-next-line no-fallthrough
+        case RulePermission.MANAGE_TASKS:
           fn(CRUD, Task, task);
           break;
         case RulePermission.VIEW_PROJECTS:

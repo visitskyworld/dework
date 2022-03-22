@@ -60,6 +60,12 @@ import {
   UpdateTaskTagInput,
   UpdateTaskTagMutation,
   UpdateTaskTagMutationVariables,
+  GetProjectQuery,
+  GetProjectQueryVariables,
+  GetOrganizationRolesQuery,
+  GetOrganizationRolesQueryVariables,
+  RulePermission,
+  RoleWithRules,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -69,6 +75,12 @@ import { useProject } from "../project/hooks";
 import { TaskRewardFormValues } from "./form/TaskRewardFormFields";
 import { TaskFormValues } from "./form/TaskForm";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import {
+  useCreateRule,
+  useDeleteRule,
+  useOrganizationRoles,
+} from "../rbac/hooks";
+import { getRule, hasRule } from "../rbac/util";
 
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
@@ -202,8 +214,9 @@ export function useCreateTaskFromFormValues(): (
   const { user } = useAuthContext();
   const createTask = useCreateTask();
   const createTaskReaction = useCreateTaskReaction();
+  const updateTaskRoles = useUpdateTaskRoles();
   return useCallback(
-    async ({ subtasks, reward, ...values }, projectId) => {
+    async ({ subtasks, reward, roleIds, ...values }, projectId) => {
       const task = await createTask({
         ...values,
         projectId,
@@ -215,6 +228,10 @@ export function useCreateTaskFromFormValues(): (
           taskId: task.id,
           reaction: ":arrow_up_small:",
         });
+      }
+
+      if (!!roleIds) {
+        await updateTaskRoles(task, roleIds);
       }
 
       for (const subtask of subtasks ?? []) {
@@ -231,7 +248,7 @@ export function useCreateTaskFromFormValues(): (
 
       return task;
     },
-    [createTask, createTaskReaction, user]
+    [createTask, createTaskReaction, updateTaskRoles, user]
   );
 }
 
@@ -529,4 +546,65 @@ export function useTaskFormUserOptions(
       (u) => u.id
     );
   }, [users, additionalUsers]);
+}
+
+export function useTaskRoles(
+  task: Task | undefined
+): RoleWithRules[] | undefined {
+  const { project } = useProject(task?.projectId);
+  const roles = useOrganizationRoles(project?.organizationId);
+  return useMemo(
+    () =>
+      roles?.filter(
+        (r) =>
+          !!task && hasRule(r, RulePermission.MANAGE_TASKS, { taskId: task.id })
+      ),
+    [roles, task]
+  );
+}
+
+export function useUpdateTaskRoles(): (
+  task: Task,
+  roleIds: string[]
+) => Promise<void> {
+  const apolloClient = useApolloClient();
+  const createRule = useCreateRule();
+  const deleteRule = useDeleteRule();
+  return useCallback(
+    async (task, roleIds) => {
+      const taskId = task.id;
+      const organizationId = await apolloClient
+        .query<GetProjectQuery, GetProjectQueryVariables>({
+          query: Queries.project,
+          fetchPolicy: "cache-first",
+          variables: { projectId: task.projectId },
+        })
+        .then((res) => res.data.project.organizationId);
+      const roles = await apolloClient
+        .query<GetOrganizationRolesQuery, GetOrganizationRolesQueryVariables>({
+          query: Queries.organizationRoles,
+          fetchPolicy: "cache-first",
+          variables: { organizationId },
+        })
+        .then((res) => res.data.organization.roles);
+
+      const permission = RulePermission.MANAGE_TASKS;
+      const removedRoles = roles.filter(
+        (r) => hasRule(r, permission, { taskId }) && !roleIds.includes(r.id)
+      );
+      const addedRoles = roles.filter(
+        (r) => !hasRule(r, permission, { taskId }) && roleIds.includes(r.id)
+      );
+
+      for (const role of addedRoles) {
+        await createRule({ permission, taskId, roleId: role.id });
+      }
+
+      for (const role of removedRoles) {
+        const rule = getRule(role, permission, { taskId });
+        await deleteRule(rule!.id);
+      }
+    },
+    [createRule, deleteRule, apolloClient]
+  );
 }

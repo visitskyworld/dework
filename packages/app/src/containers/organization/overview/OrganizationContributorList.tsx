@@ -38,13 +38,15 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
             render: (roles: Role[]) => (
               <Row style={{ rowGap: 4 }}>
                 {roles
-                  .filter((role) => !role.userId)
-                  .map(
+                  .filter(
                     (role) =>
-                      role.organizationId === organizationId && (
-                        <RoleTag key={role.id} role={role} />
-                      )
-                  )}
+                      !role.userId &&
+                      role.organizationId === organizationId &&
+                      !role.fallback
+                  )
+                  .map((role) => (
+                    <RoleTag key={role.id} role={role} />
+                  ))}
               </Row>
             ),
           },
