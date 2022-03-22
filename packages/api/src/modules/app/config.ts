@@ -47,6 +47,7 @@ export interface ConfigType {
   NFT_CONTRACT_ID: string;
 
   SUPERADMIN_USER_IDS: string;
+  COORDINAPE_INTEGRATION_USER_ID: string;
 }
 
 const MAX_PORT = 65535;
@@ -97,4 +98,5 @@ export const configSchema = Joi.object<ConfigType>({
   NFT_CONTRACT_ID: Joi.string(),
 
   SUPERADMIN_USER_IDS: Joi.string().allow(""),
+  COORDINAPE_INTEGRATION_USER_ID: Joi.string().allow(""),
 });

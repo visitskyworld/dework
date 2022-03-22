@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Query, Req, Res } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  OnModuleInit,
+  Param,
+  Query,
+  Req,
+  Res,
+} from "@nestjs/common";
 import * as request from "request-promise";
 import { Request, Response } from "express";
 import { Server } from "http";
@@ -9,6 +17,9 @@ import { Coordinape } from "./coordinape.types";
 import { TaskFilterInput } from "../../task/dto/GetTasksInput";
 import { TaskStatus } from "@dewo/api/models/Task";
 import moment from "moment";
+import { ConfigService } from "@nestjs/config";
+import { ConfigType } from "../../app/config";
+import { UserService } from "../../user/user.service";
 
 interface CoordinapeIntegrationProjectTasksQuery {
   data: null | {
@@ -41,8 +52,28 @@ interface CoordinapeIntegrationProjectTasksQuery {
 }
 
 @Controller("integrations/coordinape")
-export class CoordinapeIntegrationController {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+export class CoordinapeIntegrationController implements OnModuleInit {
+  private authToken?: string;
+
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly config: ConfigService<ConfigType>,
+    private readonly userService: UserService
+  ) {}
+
+  async onModuleInit() {
+    const integrationUserId = this.config.get(
+      "COORDINAPE_INTEGRATION_USER_ID"
+    ) as string | undefined;
+    if (!!integrationUserId) {
+      const integrationUser = await this.userService.findById(
+        integrationUserId
+      );
+      if (!!integrationUser) {
+        this.authToken = this.userService.createAuthToken(integrationUser);
+      }
+    }
+  }
 
   @Get(":organizationId")
   async getContributions(
@@ -61,31 +92,36 @@ export class CoordinapeIntegrationController {
       {
         url: this.serverGraphQLEndpoint(),
         json: true,
-        headers: _.pick(req.headers, "authorization"),
+        headers: {
+          ..._.pick(req.headers, "authorization"),
+          authorization: !!this.authToken
+            ? `Bearer ${this.authToken}`
+            : undefined,
+        },
         body: {
           query: `
-              query CoordinapeIntegrationOrganizationTasksQuery(
-                $organizationId: UUID!
-                $filter: TaskFilterInput!
-              ) {
-                organization: getOrganization(id: $organizationId) {
+            query CoordinapeIntegrationOrganizationTasksQuery(
+              $organizationId: UUID!
+              $filter: TaskFilterInput!
+            ) {
+              organization: getOrganization(id: $organizationId) {
+                id
+                permalink
+                tasks(filter: $filter) {
                   id
+                  name
                   permalink
-                  tasks(filter: $filter) {
+                  assignees {
                     id
-                    name
-                    permalink
-                    assignees {
-                      id
-                      threepids {
-                        source
-                        address: threepid
-                      }
+                    threepids {
+                      source
+                      address: threepid
                     }
                   }
                 }
               }
-            `,
+            }
+          `,
           variables: { organizationId, filter },
         },
       }
