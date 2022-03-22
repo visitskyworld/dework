@@ -29,11 +29,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const amountEarned = useMemo(
     () =>
       _.sumBy(completedTasks, (t) =>
-        t.reward?.payment
+        t.assignees.some((a) => a.id === userId) && !!t.reward?.payment
           ? _.round(calculateTaskRewardAsUSD(t?.reward) ?? 0)
           : 0
       ),
-    [completedTasks]
+    [completedTasks, userId]
   );
 
   const roles = useUserRoles(userId);
