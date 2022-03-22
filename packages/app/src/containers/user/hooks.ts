@@ -17,7 +17,8 @@ import {
   UpdateUserOnboardingMutation,
   UpdateUserOnboardingMutationVariables,
   Role,
-  MyRolesQuery,
+  UserRolesQuery,
+  UserRolesQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -85,9 +86,12 @@ export function useUser(userId: string): UserProfile | undefined {
   return data?.user;
 }
 
-export function useMyRoles(): Role[] | undefined {
-  const { data } = useQuery<MyRolesQuery>(Queries.myRoles);
-  return data?.me.roles;
+export function useUserRoles(userId: string): Role[] | undefined {
+  const { data } = useQuery<UserRolesQuery, UserRolesQueryVariables>(
+    Queries.userRoles,
+    { variables: { userId } }
+  );
+  return data?.user.roles;
 }
 
 export function useUserTasks(

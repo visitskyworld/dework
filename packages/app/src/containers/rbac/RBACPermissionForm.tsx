@@ -9,7 +9,7 @@ import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganizationUsers } from "../organization/hooks";
-import { useMyRoles } from "../user/hooks";
+import { useUserRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
@@ -37,12 +37,12 @@ function useSubmitEnabled(
   requiresCurrentUserToHaveRole: boolean
 ): boolean {
   const { user } = useAuthContext();
-  const myRoles = useMyRoles();
+  const roles = useUserRoles(user?.id!);
   const hasCurrentUserRole = useMemo(
     () =>
       values.userIds.includes(user?.id!) ||
-      !!myRoles?.some((role) => values.roleIds.includes(role.id)),
-    [values, user, myRoles]
+      !!roles?.some((role) => values.roleIds.includes(role.id)),
+    [values, user, roles]
   );
 
   return !requiresCurrentUserToHaveRole || hasCurrentUserRole;

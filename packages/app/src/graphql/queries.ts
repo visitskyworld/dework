@@ -21,9 +21,9 @@ export const userProfile = gql`
   ${Fragments.userProfile}
 `;
 
-export const myRoles = gql`
-  query MyRolesQuery {
-    me {
+export const userRoles = gql`
+  query UserRolesQuery($userId: UUID!) {
+    user: getUser(id: $userId) {
       id
       roles {
         ...Role

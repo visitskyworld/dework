@@ -30,11 +30,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       onClick={navigateToTask}
     >
       <Row>
-        <Space
-          direction="vertical"
-          size={6}
-          style={{ flex: 1, width: "100%", marginBottom: 4 }}
-        >
+        <Space direction="vertical" size={6} style={{ flex: 1, width: "100%" }}>
           <Row>
             <Typography.Text strong style={{ maxWidth: "100%" }}>
               {task.name}

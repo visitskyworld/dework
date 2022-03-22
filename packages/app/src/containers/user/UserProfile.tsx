@@ -3,14 +3,16 @@ import { Button, Card, Col, Row, Space, Spin, Tag, Typography } from "antd";
 import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
-import Link from "next/link";
-import { useUser, useUserTasks } from "./hooks";
+import { useUser, useUserRoles, useUserTasks } from "./hooks";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskCard } from "../task/board/TaskCard";
 import { calculateTaskRewardAsUSD } from "../task/hooks";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { RoleTag } from "@dewo/app/components/RoleTag";
+import Link from "next/link";
 
 interface Props {
   userId: string;
@@ -33,6 +35,21 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       ),
     [completedTasks]
   );
+
+  const roles = useUserRoles(userId);
+  const rolesByOrganization = useMemo(() => {
+    const filtered = roles?.filter((r) => !r.fallback);
+    return _.groupBy(filtered, (role) => role.organizationId);
+  }, [roles]);
+  const organizations = useMemo(() => {
+    const filtered = user?.organizations.filter(
+      (o) => !!rolesByOrganization[o.id]?.length
+    );
+    return _.sortBy(
+      filtered,
+      (o) => rolesByOrganization[o.id]?.length
+    ).reverse();
+  }, [user?.organizations, rolesByOrganization]);
 
   if (!user) return null;
   return (
@@ -60,7 +77,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               </Tag>
             </Row>
 
-            {!!user.organizations.length && (
+            {!!organizations.length && (
               <>
                 <Typography.Text
                   className="dewo-label"
@@ -68,15 +85,35 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 >
                   Organizations
                 </Typography.Text>
-                <Row gutter={[8, 8]} style={{ margin: 0 }}>
-                  {user.organizations.map((organization) => (
-                    <Link key={organization.id} href={organization.permalink}>
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  {organizations.map((o) => (
+                    <Link key={o.id} href={o.permalink}>
                       <a>
-                        <Tag>{organization.name}</Tag>
+                        <Card
+                          size="small"
+                          bodyStyle={{ padding: 8 }}
+                          className="hover:component-highlight hover:cursor-pointer"
+                        >
+                          <Row align="middle">
+                            <OrganizationAvatar size={20} organization={o} />
+                            <Typography.Text strong style={{ marginLeft: 8 }}>
+                              {o.name}
+                            </Typography.Text>
+                          </Row>
+                          {rolesByOrganization[o.id]?.length && (
+                            <Row style={{ rowGap: 4, marginTop: 4 }}>
+                              {rolesByOrganization[o.id]
+                                ?.filter((role) => !role.userId)
+                                .map((role) => (
+                                  <RoleTag key={role.id} dot role={role} />
+                                ))}
+                            </Row>
+                          )}
+                        </Card>
                       </a>
                     </Link>
                   ))}
-                </Row>
+                </Space>
               </>
             )}
           </Card>

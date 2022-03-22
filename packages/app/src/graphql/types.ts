@@ -4731,10 +4731,10 @@ export interface UserProfileQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: MyRolesQuery
+// GraphQL query operation: UserRolesQuery
 // ====================================================
 
-export interface MyRolesQuery_me_roles {
+export interface UserRolesQuery_user_roles {
   __typename: "Role";
   id: Scalar.UUID;
   name: string;
@@ -4745,14 +4745,18 @@ export interface MyRolesQuery_me_roles {
   organizationId: string;
 }
 
-export interface MyRolesQuery_me {
+export interface UserRolesQuery_user {
   __typename: "User";
   id: Scalar.UUID;
-  roles: MyRolesQuery_me_roles[];
+  roles: UserRolesQuery_user_roles[];
 }
 
-export interface MyRolesQuery {
-  me: MyRolesQuery_me;
+export interface UserRolesQuery {
+  user: UserRolesQuery_user;
+}
+
+export interface UserRolesQueryVariables {
+  userId: Scalar.UUID;
 }
 
 /* tslint:disable */
