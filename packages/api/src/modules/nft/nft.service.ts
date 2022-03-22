@@ -34,6 +34,13 @@ export class NFTService {
   public findNextTaskToMint(): Promise<Task | undefined> {
     return this.taskRepo
       .createQueryBuilder("task")
+      .innerJoinAndSelect("task.owner", "owner")
+      .andWhere("owner.username NOT LIKE '%deworker%'")
+      .andWhere("assignee.username NOT LIKE '%deworker%'")
+      .andWhere("task.name NOT LIKE '%test%'")
+      .andWhere("task.name NOT LIKE '%demo%'")
+      .andWhere("project.name NOT LIKE '%test%'")
+      .andWhere("project.name NOT LIKE '%demo%'")
       .innerJoin("task.project", "project")
       .innerJoinAndSelect("task.assignees", "assignee")
       .innerJoin("project.organization", "organization")
