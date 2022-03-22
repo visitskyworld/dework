@@ -157,13 +157,13 @@ export const RBACPermissionForm: FC<Props> = ({
       const removedRoles = [...removedOrganizationRoles, ...removedUserRoles];
       const addedRoles = [...addedOrganizationRoles, ...addedUserRoles];
 
+      for (const role of addedRoles) {
+        await createRule({ permission, projectId, roleId: role.id });
+      }
+
       for (const role of removedRoles) {
         const rule = getRule(role, permission, projectId);
         await deleteRule(rule!.id);
-      }
-
-      for (const role of addedRoles) {
-        await createRule({ permission, projectId, roleId: role.id });
       }
 
       message.success("Permissions updated!");

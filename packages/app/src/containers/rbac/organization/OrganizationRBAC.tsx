@@ -34,6 +34,8 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
         permission={RulePermission.MANAGE_ORGANIZATION}
         roles={roles}
         organizationId={organizationId}
+        saveButtonTooltip="Organization Managers can add and remove permissions. You need to select at least one role you have, otherwise you will lock yourself out of managing permissions for this organization."
+        requiresCurrentUserToHaveRole
       />
       <Divider />
 

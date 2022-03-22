@@ -4,7 +4,6 @@ import {
   User,
   TaskDetails,
   TaskOptionsInput,
-  RoleSource,
 } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
@@ -19,7 +18,6 @@ import {
   Tooltip,
   DatePicker,
   Divider,
-  Tag,
 } from "antd";
 import { STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
@@ -51,10 +49,8 @@ import { StoryPointsInput } from "./StoryPointsInput";
 import Link from "next/link";
 import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
-import { useProject, useProjectTaskTags } from "../../project/hooks";
+import { useProjectTaskTags } from "../../project/hooks";
 import { TaskTwitterShareButton } from "./TaskTwitterShareButton";
-import { useOrganizationRoles } from "../../rbac/hooks";
-import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 export interface TaskFormValues {
   name: string;
@@ -121,12 +117,12 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const tags = useProjectTaskTags(projectId);
 
-  const { project } = useProject(projectId);
-  const roles = useOrganizationRoles(project?.organizationId);
-  const organizationRoles = useMemo(
-    () => roles?.filter((role) => !role.userId && !role.fallback),
-    [roles]
-  );
+  // const { project } = useProject(projectId);
+  // const roles = useOrganizationRoles(project?.organizationId);
+  // const organizationRoles = useMemo(
+  //   () => roles?.filter((role) => !role.userId && !role.fallback),
+  //   [roles]
+  // );
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
@@ -356,7 +352,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {/* TODO(fant): only show this if Discord is connected */}
-          <Form.Item
+          {/* <Form.Item
             name="roleIds"
             label={
               <>
@@ -394,7 +390,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                 </Select.Option>
               ))}
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           {!!task && showProjectLink && (
             <FormSection label="Project">

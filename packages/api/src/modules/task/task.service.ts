@@ -287,7 +287,13 @@ export class TaskService {
           qb
             .where("assignee.id = :userId", { userId })
             .orWhere("task.ownerId = :userId", { userId })
-            .orWhere("application.userId = :userId", { userId })
+            .orWhere(
+              new Brackets((qb) =>
+                qb
+                  .where("application.userId = :userId", { userId })
+                  .andWhere("task.status = :todo", { todo: TaskStatus.TODO })
+              )
+            )
         )
       );
     } else if (userId === null) {

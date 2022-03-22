@@ -11,10 +11,13 @@ const Auth: NextPage = () => {
   const router = useRouter();
   const threepidId = router.query.threepidId as string;
   const stateString = router.query.state as string;
-  const state = useMemo(
-    () => (!!stateString ? JSON.parse(stateString) : {}),
-    [stateString]
-  );
+  const state = useMemo(() => {
+    try {
+      return JSON.parse(stateString) || {};
+    } catch {
+      return {};
+    }
+  }, [stateString]);
 
   const authWithThreepid = useAuthWithThreepid();
   const acceptInvite = useAcceptInvite();

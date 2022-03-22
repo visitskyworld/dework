@@ -258,33 +258,33 @@ export class RbacService {
       }
     }
 
-    builder.can(["create", "delete"], UserRole, {
-      // @ts-expect-error
-      "role.fallback": true,
-      userId,
-    });
-    builder.can(
-      "update",
-      Task,
-      [
-        "status",
-        "status[IN_PROGRESS]",
-        "status[IN_REVIEW]",
-        "sectionId",
-        "sortKey",
-      ],
-      {
-        assignees: { $elemMatch: { id: userId } },
-      }
-    );
-    builder.can(["read", "update", "delete"], Task, {
-      ownerId: userId,
-    });
+    if (!!userId) {
+      builder.can(["create", "delete"], UserRole, {
+        // @ts-expect-error
+        "role.fallback": true,
+        userId,
+      });
+      builder.can(
+        "update",
+        Task,
+        [
+          "status",
+          "status[IN_PROGRESS]",
+          "status[IN_REVIEW]",
+          "sectionId",
+          "sortKey",
+        ],
+        { assignees: { $elemMatch: { id: userId } } }
+      );
+      builder.can(["read", "update", "delete"], Task, { ownerId: userId });
 
-    // this is currently only used UI-wise to determine if all task submissions should be shown
-    builder.can("update", Task, "submissions", { ownerId: userId });
-    builder.can("submit", Task, { ownerId: userId });
-    builder.can("submit", Task, { assignees: { $elemMatch: { id: userId } } });
+      // this is currently only used UI-wise to determine if all task submissions should be shown
+      builder.can("update", Task, "submissions", { ownerId: userId });
+      builder.can("submit", Task, { ownerId: userId });
+      builder.can("submit", Task, {
+        assignees: { $elemMatch: { id: userId } },
+      });
+    }
 
     // TODO(fant): make sure these users can do everything
     const superadminIds = this.config.get<string>("SUPERADMIN_USER_IDS") ?? "";
