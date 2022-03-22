@@ -48,14 +48,14 @@ export class CoordinapeIntegrationController {
   async getContributions(
     @Req() req: Request,
     @Param("organizationId") organizationId: string,
-    @Query("epoch_start") doneAtAfter: number,
-    @Query("epoch_end") doneAtBefore: number,
+    @Query("epoch_start") doneAtAfter: string | undefined,
+    @Query("epoch_end") doneAtBefore: string | undefined,
     @Res() res: Response
   ) {
     const filter: TaskFilterInput = {
       statuses: [TaskStatus.DONE],
-      doneAtAfter: moment(doneAtAfter).toDate(),
-      doneAtBefore: moment(doneAtBefore).toDate(),
+      doneAtAfter: !!doneAtAfter ? moment(doneAtAfter).toDate() : undefined,
+      doneAtBefore: !!doneAtBefore ? moment(doneAtBefore).toDate() : undefined,
     };
     const response: CoordinapeIntegrationProjectTasksQuery = await request.post(
       {

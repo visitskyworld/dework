@@ -28,8 +28,7 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --cpu 2                           \
   --memory 1G                       \
   --timeout 1m                      \
-  --min-instances 1                 \
-  --max-instances 3                 \
+  --max-instances 4                 \
   --allow-unauthenticated
 
 DEPLOYMENT_NAME="polling-runner"
