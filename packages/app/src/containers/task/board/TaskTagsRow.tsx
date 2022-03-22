@@ -34,7 +34,7 @@ export const TaskTagsRow: FC<Props> = ({
   );
   if (!showStandardTags && !task.tags.length) return null;
   return (
-    <Row gutter={[8, 4]} style={{ ...style }}>
+    <Row gutter={[8, 4]} style={{ ...style, margin: 0 }}>
       {showStandardTags && (
         <>
           {!!task.reward && (
