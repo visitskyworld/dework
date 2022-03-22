@@ -127,7 +127,14 @@ export class AuthController {
       const redirectUrl = `${appUrl}${state.redirect ?? ""}`;
       res.redirect(redirectUrl);
     } catch (error) {
-      this.logger.error(error);
+      console.error(error);
+      const errorString = JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      );
+      this.logger.error(
+        `Unknown error: ${JSON.stringify({ errorString, query })}`
+      );
       res.redirect(this.config.get("APP_URL") as string);
     }
   }
