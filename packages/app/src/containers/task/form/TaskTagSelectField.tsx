@@ -25,6 +25,28 @@ interface ComponentProps {
   onChange?(value: string[]): void;
 }
 
+const suggestedTags: readonly { label: string; color: string }[] = [
+  { label: "Bug", color: "volcano" },
+  { label: "Good First Issue", color: "yellow" },
+  { label: "Design", color: "purple" },
+  { label: "Frontend", color: "orange" },
+  { label: "Backend", color: "blue" },
+  { label: "Product", color: "lime" },
+  { label: "Community", color: "magenta" },
+  { label: "Marketing", color: "gold" },
+  { label: "Legal", color: "blue" },
+  { label: "Sales", color: "orange" },
+  { label: "Art", color: "volcano" },
+  { label: "Video", color: "geekblue" },
+  { label: "Research", color: "yellow" },
+  { label: "Writing", color: "purple" },
+  { label: "Operations", color: "volcano" },
+  { label: "Admin", color: "magenta" },
+  { label: "HR", color: "magenta" },
+  { label: "Data", color: "blue" },
+];
+const suggestedTagMap = _.keyBy(suggestedTags, "label");
+
 const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   tags,
   projectId,
@@ -69,7 +91,8 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
           createTag({
             label,
             projectId: projectId!,
-            color: generateRandomTaskTagColor(),
+            color:
+              suggestedTagMap[label]?.color ?? generateRandomTaskTagColor(),
           })
         );
         const tags = await Promise.all(tagPs);
@@ -86,6 +109,12 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
       projectId,
       onChange,
     ]
+  );
+
+  const displayedSuggestions = useMemo(
+    () =>
+      suggestedTags.filter((tag) => !tags?.some((t) => t.label === tag.label)),
+    [tags]
   );
 
   return (
@@ -129,6 +158,21 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
             </Can>
           </Select.Option>
         ))}
+        {displayedSuggestions.length > 0 && (
+          <>
+            <Select.OptGroup label="Suggested tags" />
+            {displayedSuggestions.map((tag) => (
+              <Select.Option
+                key={tag.label}
+                label={tag.label}
+                style={{ fontWeight: "unset" }}
+                className="dewo-tag-select-option"
+              >
+                <Tag color={tag.color}>{tag.label}</Tag>
+              </Select.Option>
+            ))}
+          </>
+        )}
       </Select>
       <TaskTagDetailsModal
         tag={editingTag}
