@@ -5,6 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { Storage, Bucket } from "@google-cloud/storage";
 import { ConfigType } from "../app/config";
 import { CreateFileUploadResponse } from "./dto/CreateFileUploadResponse";
+import request from "request";
 
 @Injectable()
 export class FileUploadService {
@@ -26,6 +27,27 @@ export class FileUploadService {
       credentials: JSON.parse(credentialsJsonString),
     });
     this.bucket = this.storage.bucket(bucketName);
+  }
+
+  // Upload a copy of the image at `fileUrl` to Google Cloud Storage
+  public async uploadFileFromUrl(fileUrl: string): Promise<string> {
+    const req = request(fileUrl);
+    return new Promise((resolve, reject) =>
+      req
+        .on("response", (response) => {
+          const file = this.bucket.file(
+            `uploads/${uuid.v4()}/${fileUrl.split("/").pop()}`
+          );
+          const fileStream = file.createWriteStream({
+            contentType: response.headers["content-type"],
+          });
+          response
+            .pipe(fileStream)
+            .on("finish", () => resolve(file.publicUrl()))
+            .on("error", (err) => reject(err));
+        })
+        .on("error", (err) => reject(err))
+    );
   }
 
   public async createSignedUrl(

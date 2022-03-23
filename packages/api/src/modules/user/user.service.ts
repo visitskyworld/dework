@@ -22,6 +22,7 @@ import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
+import { FileUploadService } from "../fileUpload/fileUpload.service";
 
 @Injectable()
 export class UserService {
@@ -37,7 +38,8 @@ export class UserService {
     private readonly threepidService: ThreepidService,
     private readonly discordRolesService: DiscordRolesService,
     private readonly paymentService: PaymentService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly fileUploadService: FileUploadService
   ) {}
 
   public async authWithThreepid(
@@ -58,11 +60,15 @@ export class UserService {
       return this.userRepo.findOne(threepid.userId) as Promise<User>;
     }
 
+    const threepidImage = this.threepidService.getImageUrl(threepid);
+
     const user = await this.userRepo.save({
       ...existingUser,
       threepids: existingUser?.threepids ?? Promise.resolve([]),
       imageUrl:
-        existingUser?.imageUrl ?? this.threepidService.getImageUrl(threepid),
+        existingUser?.imageUrl ??
+        (threepidImage &&
+          (await this.fileUploadService.uploadFileFromUrl(threepidImage))),
       username:
         existingUser?.username ??
         (await this.generateUsername(

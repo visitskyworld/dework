@@ -4,5 +4,6 @@ import { FileUploadService } from "./fileUpload.service";
 
 @Module({
   providers: [FileUploadResolver, FileUploadService],
+  exports: [FileUploadService],
 })
 export class FileUploadModule {}

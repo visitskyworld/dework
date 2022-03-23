@@ -14,6 +14,7 @@ import { PaymentModule } from "../payment/payment.module";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
+import { FileUploadModule } from "../fileUpload/fileUpload.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.
       ProjectMember,
       OrganizationMember,
     ]),
+    FileUploadModule,
     ThreepidModule,
     PaymentModule,
     PermalinkModule,
