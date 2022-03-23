@@ -67,8 +67,9 @@ export class UserService {
       threepids: existingUser?.threepids ?? Promise.resolve([]),
       imageUrl:
         existingUser?.imageUrl ??
-        (threepidImage &&
-          (await this.fileUploadService.uploadFileFromUrl(threepidImage))),
+        (threepidImage && process.env.NODE_ENV !== "test"
+          ? await this.fileUploadService.uploadFileFromUrl(threepidImage)
+          : undefined),
       username:
         existingUser?.username ??
         (await this.generateUsername(

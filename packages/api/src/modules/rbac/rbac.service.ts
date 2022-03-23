@@ -215,12 +215,12 @@ export class RbacService {
         id: organizationId,
       };
 
-      const roleConditions: Partial<Role> | undefined = { organizationId };
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organization);
           fn(CRUD, ProjectSection);
           fn("update", Project, ["sectionId", "sortKey"], project);
+          const roleConditions: Partial<Role> | undefined = { organizationId };
           fn(CRUD, Role, roleConditions);
           fn(CRUD, Rule);
           fn(["create", "delete"], UserRole);
@@ -233,6 +233,12 @@ export class RbacService {
           fn("submit", Task, task);
           fn(CRUD, TaskSubmission);
           fn("delete", TaskApplication);
+          fn(CRUD, Rule, {
+            ...(!!rule.projectId
+              ? { "task.projectId": rule.projectId }
+              : { task: { $exists: true } }),
+            permission: RulePermission.MANAGE_TASKS,
+          });
         // eslint-disable-next-line no-fallthrough
         case RulePermission.MANAGE_TASKS:
           fn(CRUD, Task, task);

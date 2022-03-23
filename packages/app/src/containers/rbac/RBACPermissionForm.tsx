@@ -15,6 +15,7 @@ import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrgan
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
 import { getRule, hasRule } from "./util";
 import { RoleTag } from "@dewo/app/components/RoleTag";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 
 interface FormValues {
   roleIds: string[];
@@ -53,11 +54,16 @@ export const RBACPermissionForm: FC<Props> = ({
   organizationId,
   roles,
   permission,
-  disabled,
   saveButtonTooltip,
   requiresCurrentUserToHaveRole = false,
   onInviteUser,
 }) => {
+  const hasPermission = usePermission("update", {
+    __typename: "Rule",
+    permission,
+    projectId,
+  });
+
   const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
   const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
 
@@ -184,7 +190,7 @@ export const RBACPermissionForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSave}
     >
-      {(!disabled || !!values.roleIds.length) &&
+      {(hasPermission || !!values.roleIds.length) &&
         (!discordConnected ? (
           <Form.Item label="Roles" name="roleIds">
             <Typography.Paragraph type="secondary" style={{ marginBottom: 4 }}>
@@ -202,7 +208,7 @@ export const RBACPermissionForm: FC<Props> = ({
               mode="multiple"
               placeholder="Select Roles..."
               showSearch
-              disabled={disabled}
+              disabled={!hasPermission}
               optionFilterProp="label"
               loading={!organizationRoles}
               tagRender={(props) => (
@@ -217,17 +223,17 @@ export const RBACPermissionForm: FC<Props> = ({
             </Select>
           </Form.Item>
         ))}
-      {(!disabled || !!values.userIds.length) && (
+      {(hasPermission || !!values.userIds.length) && (
         <Row align="bottom" style={{ gap: 8 }}>
           <Form.Item label="Users" name="userIds" style={{ flex: 1 }}>
             <UserSelect
               mode="multiple"
               placeholder="Select Users..."
-              disabled={disabled}
+              disabled={!hasPermission}
               users={users}
             />
           </Form.Item>
-          {!disabled && (
+          {hasPermission && (
             <Button
               type="ghost"
               loading={invitingUser}
@@ -241,7 +247,7 @@ export const RBACPermissionForm: FC<Props> = ({
         </Row>
       )}
 
-      {!disabled &&
+      {hasPermission &&
         dirty &&
         (!!saveButtonTooltip ? (
           <Tooltip title={saveButtonTooltip} placement="bottom">

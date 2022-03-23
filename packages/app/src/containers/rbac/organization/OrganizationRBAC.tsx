@@ -1,4 +1,3 @@
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { RulePermission } from "@dewo/app/graphql/types";
 import { Divider, Spin, Tooltip, Typography } from "antd";
 import React, { FC } from "react";
@@ -11,9 +10,7 @@ interface Props {
 }
 
 export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
-  const canManagePermissions = usePermission("create", "Rule");
   const roles = useOrganizationRoles(organizationId);
-
   if (!roles) return <Spin />;
   return (
     <>
@@ -30,7 +27,6 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
         </Tooltip>
       </Typography.Title>
       <RBACPermissionForm
-        disabled={!canManagePermissions}
         permission={RulePermission.MANAGE_ORGANIZATION}
         roles={roles}
         organizationId={organizationId}
@@ -52,7 +48,6 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
         </Tooltip>
       </Typography.Title>
       <RBACPermissionForm
-        disabled={!canManagePermissions}
         permission={RulePermission.MANAGE_PROJECTS}
         roles={roles}
         organizationId={organizationId}

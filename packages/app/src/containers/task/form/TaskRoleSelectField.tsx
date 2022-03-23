@@ -1,5 +1,6 @@
 import { RoleTag } from "@dewo/app/components/RoleTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { RulePermission } from "@dewo/app/graphql/types";
 import { Form, Select, Tag } from "antd";
 import _ from "lodash";
 import React, { FC, useMemo } from "react";
@@ -12,7 +13,12 @@ interface Props {
 }
 
 export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
-  const canManageRoles = usePermission("create", "Rule");
+  const canManageRoles = usePermission("create", {
+    __typename: "Rule",
+    permission: RulePermission.MANAGE_TASKS,
+    // @ts-ignore
+    task: { projectId },
+  });
   const { project } = useProject(projectId);
   const roles = useOrganizationRoles(project?.organizationId);
   const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);

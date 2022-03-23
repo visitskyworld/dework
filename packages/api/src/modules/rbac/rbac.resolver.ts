@@ -13,6 +13,7 @@ import { User } from "@dewo/api/models/User";
 import { Repository } from "typeorm";
 import { GraphQLJSONObject } from "graphql-type-json";
 import _ from "lodash";
+import { TaskService } from "../task/task.service";
 
 @Injectable()
 export class RbacResolver {
@@ -49,11 +50,21 @@ export class RbacResolver {
     RoleGuard({
       action: "create",
       subject: Rule,
-      inject: [RbacService],
+      inject: [RbacService, TaskService],
+      async getSubject(
+        params: { input: CreateRuleInput },
+        _service: RbacService,
+        taskService: TaskService
+      ) {
+        const task = !!params.input.taskId
+          ? await taskService.findById(params.input.taskId)
+          : undefined;
+        return Object.assign(new Rule(), params.input, { task });
+      },
       async getOrganizationId(
         _subject,
         params: { input: CreateRuleInput },
-        service
+        service: RbacService
       ) {
         const role = await service.findRoleById(params.input.roleId);
         return role?.organizationId;

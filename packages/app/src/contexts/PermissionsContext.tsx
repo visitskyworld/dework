@@ -13,6 +13,7 @@ import {
   PermissionsQuery,
   PermissionsQueryVariables,
   Project,
+  Rule,
   Task,
   TaskApplication,
   TaskReaction,
@@ -32,11 +33,11 @@ type AbilitySubject =
   | "TaskApplication"
   | "TaskReward"
   | "Role"
-  | "Rule"
   | "Project"
   | Project
   | Organization
   | AtLeast<Project, "__typename" | "organizationId">
+  | AtLeast<Rule, "__typename" | "permission">
   | AtLeast<Task, "__typename" | "status">
   | AtLeast<TaskTag, "__typename" | "projectId">
   | AtLeast<TaskReaction, "__typename" | "userId">

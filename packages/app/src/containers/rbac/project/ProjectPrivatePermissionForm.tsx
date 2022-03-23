@@ -27,7 +27,11 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
   const roles = useOrganizationRoles(organizationId);
-  const canManagePermissions = usePermission("create", "Rule");
+  const canManagePermissions = usePermission("create", {
+    __typename: "Rule",
+    permission: RulePermission.VIEW_PROJECTS,
+    projectId,
+  });
 
   const refetchDefaultAbility = useDefaultAbility(organizationId).refetch;
 
@@ -109,7 +113,6 @@ export const ProjectPrivatePermissionForm: FC<Props> = ({
       </Row>
       {!!privateRule && !!roles && (
         <RBACPermissionForm
-          disabled={!canManagePermissions}
           permission={RulePermission.VIEW_PROJECTS}
           roles={roles}
           projectId={projectId}

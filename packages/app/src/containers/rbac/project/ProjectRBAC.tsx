@@ -1,4 +1,3 @@
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
 import { Divider, Spin, Tooltip, Typography } from "antd";
 import React, { FC, useCallback } from "react";
@@ -16,7 +15,6 @@ interface Props {
 }
 
 export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
-  const canManagePermissions = usePermission("create", "Rule");
   const roles = useOrganizationRoles(organizationId);
 
   const copyToClipboardAndShowToast =
@@ -46,7 +44,6 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         </Tooltip>
       </Typography.Title>
       <RBACPermissionForm
-        disabled={!canManagePermissions}
         permission={RulePermission.MANAGE_PROJECTS}
         roles={roles}
         projectId={projectId}
