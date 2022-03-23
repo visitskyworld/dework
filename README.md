@@ -1,10 +1,10 @@
 
-# Dewo
+# Dework
 
 ## Installation
 ```bash
-git clone https://github.com/davidfant/dewo
-cd dewo
+git clone https://github.com/deworkxyz/dework.git
+cd dework
 yarn
 ```
 
