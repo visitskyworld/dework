@@ -220,6 +220,7 @@ export function useCreateTaskFromFormValues(): (
       const task = await createTask({
         ...values,
         projectId,
+        ownerId: values.ownerId ?? null,
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
       });

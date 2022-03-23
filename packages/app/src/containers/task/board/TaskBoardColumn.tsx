@@ -17,6 +17,7 @@ import {
 import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
 import { TaskSectionTitle } from "./TaskSectionTitle";
 import { TaskSectionOptionButton } from "./TaskSectionOptionButton";
+import { AtLeast } from "@dewo/app/types/general";
 
 interface Props {
   status: TaskStatus;
@@ -43,7 +44,7 @@ export const TaskBoardColumn: FC<Props> = ({
     () => groups.reduce((count, group) => count + group.tasks.length, 0),
     [groups]
   );
-  const initialValues = useMemo<Partial<TaskFormValues>>(
+  const initialValues = useMemo<AtLeast<TaskFormValues, "status">>(
     () => ({ status }),
     [status]
   );
@@ -80,7 +81,10 @@ export const TaskBoardColumn: FC<Props> = ({
             </Can>
           )}
           {!!projectId && (
-            <Can I="create" this={{ __typename: "Task", status, projectId }}>
+            <Can
+              I="create"
+              this={{ __typename: "Task", status, projectId, ownerId: null }}
+            >
               <Button
                 type="text"
                 icon={

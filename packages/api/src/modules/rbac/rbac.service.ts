@@ -254,7 +254,11 @@ export class RbacService {
           });
           fn(CRUD, TaskSubmission, { userId });
 
-          fn("create", Task, { ...task, status: TaskStatus.BACKLOG });
+          fn("create", Task, {
+            ...task,
+            status: TaskStatus.BACKLOG,
+            ownerId: null,
+          });
           fn(CRUD, TaskReaction, { userId });
 
           fn("submit", Task, {

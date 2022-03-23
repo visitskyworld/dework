@@ -6,11 +6,12 @@ import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTaskFromFormValues } from "./hooks";
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
+import { AtLeast } from "@dewo/app/types/general";
 
 interface TaskCreateModalProps {
   visible: boolean;
   projectId: string;
-  initialValues: Partial<TaskFormValues>;
+  initialValues: AtLeast<TaskFormValues, "status">;
   onCancel(): void;
   onDone(task: Task): unknown;
 }
@@ -18,19 +19,24 @@ interface TaskCreateModalProps {
 export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   projectId,
   visible,
-  initialValues: _initialValues,
+  initialValues,
   onCancel,
   onDone,
 }) => {
   const { user } = useAuthContext();
 
-  const canCreateTaskOwner = usePermission("create", "Task", "ownerId");
-  const initialValues = useMemo<Partial<TaskFormValues>>(
+  const canCreateTaskOwner = usePermission("create", {
+    __typename: "Task",
+    projectId,
+    status: initialValues.status,
+    ownerId: user?.id,
+  });
+  const initialValuesWithOwner = useMemo<Partial<TaskFormValues>>(
     () =>
       canCreateTaskOwner
-        ? { ownerId: user?.id, ..._initialValues }
-        : _initialValues,
-    [_initialValues, canCreateTaskOwner, user?.id]
+        ? { ownerId: user?.id, ...initialValues }
+        : initialValues,
+    [initialValues, canCreateTaskOwner, user?.id]
   );
 
   const createTask = useCreateTaskFromFormValues();
@@ -67,7 +73,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       <TaskForm
         mode="create"
         projectId={projectId}
-        initialValues={initialValues}
+        initialValues={initialValuesWithOwner}
         buttonText="Create"
         onSubmit={handleSubmit}
       />
