@@ -17,6 +17,8 @@ const DiscordProjectIntegrationFeatureLabel: Partial<
     "Post all task updates in one specific channel thread",
   [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK]:
     "Create a thread per task (good for discussions)",
+  [DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE]:
+    "Post a status board message with all currently open tasks",
 };
 
 const DiscordPermissionToString = {
@@ -128,6 +130,7 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD,
+            DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
           ].map((type) => (
             <Select.Option key={type} value={type}>
               {DiscordProjectIntegrationFeatureLabel[type]}

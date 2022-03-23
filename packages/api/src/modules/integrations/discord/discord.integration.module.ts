@@ -16,6 +16,7 @@ import {
 import { DiscordIntegrationResolver } from "./discord.integration.resolver";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordModule } from "./discord.module";
+import { DiscordStatusboardService } from "./discord.statusboard.service";
 import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
 
 @Module({
@@ -35,6 +36,7 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
     DiscordIntegrationTaskApplicationCreatedEventHandler,
     DiscordIntegrationTaskSubmissionCreatedEventHandler,
     DiscordTaskApplicationThreadService,
+    DiscordStatusboardService,
   ],
   exports: [DiscordIntegrationService],
 })

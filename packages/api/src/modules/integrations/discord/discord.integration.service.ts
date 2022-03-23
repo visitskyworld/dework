@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
-import { formatFixed } from "@ethersproject/bignumber";
 import {
   DiscordProjectIntegrationConfig,
   DiscordProjectIntegrationFeature,
@@ -35,9 +34,9 @@ import {
 } from "@dewo/api/models/OrganizationIntegration";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
-import { TaskReward } from "@dewo/api/models/TaskReward";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
+import { DiscordStatusboardService } from "./discord.statusboard.service";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -56,7 +55,8 @@ export class DiscordIntegrationService {
     private readonly threepidService: ThreepidService,
     private readonly integrationService: IntegrationService,
     @InjectRepository(DiscordChannel)
-    private readonly discordChannelRepo: Repository<DiscordChannel>
+    private readonly discordChannelRepo: Repository<DiscordChannel>,
+    private readonly discordStatusboardService: DiscordStatusboardService
   ) {}
 
   private gifs = [
@@ -167,7 +167,7 @@ export class DiscordIntegrationService {
               "_New task created!_",
               !!storyPoints ? `- ${storyPoints} task points` : undefined,
               !!reward
-                ? `- Reward: ${await this.formatTaskReward(reward)}`
+                ? `- Reward: ${await this.taskService.formatTaskReward(reward)}`
                 : undefined,
               !!dueDateString ? `- Due: ${dueDateString}` : undefined,
               "---",
@@ -179,18 +179,28 @@ export class DiscordIntegrationService {
         );
       }
 
+      if (
+        (event instanceof TaskCreatedEvent ||
+          event instanceof TaskUpdatedEvent) &&
+        event.task.status === TaskStatus.TODO &&
+        event.task.assignees.length === 0 &&
+        integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+        )
+      ) {
+        this.discordStatusboardService.postStatusboardMessage(
+          event.task,
+          integration,
+          mainChannel
+        );
+      }
+
       if (!channelToPostTo) return;
 
       const statusChanged =
         event instanceof TaskCreatedEvent ||
         (event instanceof TaskUpdatedEvent &&
           event.task.status !== event.prevTask.status);
-      this.logger.log(
-        `Found Discord channel to post to: ${JSON.stringify({
-          statusChanged,
-          status: event.task.status,
-        })}`
-      );
 
       if (statusChanged && event.task.status === TaskStatus.IN_REVIEW) {
         await this.postMovedIntoReview(event.task, channelToPostTo);
@@ -974,10 +984,5 @@ export class DiscordIntegrationService {
       })}`
     );
     return threepids;
-  }
-
-  private async formatTaskReward(reward: TaskReward): Promise<string> {
-    const token = await reward.token;
-    return [formatFixed(reward.amount, token.exp), token.symbol].join(" ");
   }
 }

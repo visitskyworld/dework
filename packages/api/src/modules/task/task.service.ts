@@ -2,6 +2,7 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { formatFixed } from "@ethersproject/bignumber";
 import {
   FindConditions,
   IsNull,
@@ -361,5 +362,10 @@ export class TaskService {
       })
       .getRawOne();
     return result.max ? result.max + 1 : 1;
+  }
+
+  public async formatTaskReward(reward: TaskReward): Promise<string> {
+    const token = await reward.token;
+    return [formatFixed(reward.amount, token.exp), token.symbol].join(" ");
   }
 }
