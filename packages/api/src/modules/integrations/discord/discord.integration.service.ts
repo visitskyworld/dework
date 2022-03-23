@@ -188,8 +188,8 @@ export class DiscordIntegrationService {
           DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
         )
       ) {
-        this.discordStatusboardService.postStatusboardMessage(
-          event.task,
+        await this.discordStatusboardService.postStatusboardMessage(
+          await event.task.project,
           integration,
           mainChannel
         );

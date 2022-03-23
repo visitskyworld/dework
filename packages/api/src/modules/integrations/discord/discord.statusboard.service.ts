@@ -2,6 +2,7 @@ import _ from "lodash";
 import * as Discord from "discord.js";
 import { Injectable } from "@nestjs/common";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { Project } from "@dewo/api/models/Project";
 import { IntegrationService } from "../integration.service";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskService } from "../../task/task.service";
@@ -19,14 +20,14 @@ export class DiscordStatusboardService {
   ) {}
 
   public async postStatusboardMessage(
-    task: Task,
+    project: Project,
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>,
     channel: Discord.TextChannel
   ) {
     const discordFieldLimit = 25;
     let tasks = (
       await this.taskService.findWithRelations({
-        projectIds: [task.projectId],
+        projectIds: [project.id],
         statuses: [TaskStatus.TODO],
         userId: null,
         rewardNotNull: true,
@@ -37,7 +38,7 @@ export class DiscordStatusboardService {
     if (tasks.length < discordFieldLimit) {
       const tasksWithoutReward = (
         await this.taskService.findWithRelations({
-          projectIds: [task.projectId],
+          projectIds: [project.id],
           statuses: [TaskStatus.TODO],
           userId: null,
           limit: discordFieldLimit,
@@ -48,32 +49,31 @@ export class DiscordStatusboardService {
         .sort((a, b) => b.tags.length - a.tags.length);
       tasks = [...tasks, ...tasksWithoutReward];
     }
+    if (tasks.length === 0) return;
     // Chunk tasks into rows of three, with a space in the middle for grid-like effect in Discord
-    const nSpaces = Math.floor(tasks.length / 2);
-    const nFields = tasks.length + nSpaces;
+    const numberOfRows = Math.ceil(tasks.length / 2);
     const tasksWithSpaces = _.flatten(
-      _.chunk(tasks, 2).map((taskRow, index) => {
-        const isFullRow = !!taskRow[1];
-        const addVerticalSpace = index < nFields - 3;
+      _.chunk(tasks, 2).map((row, rowIndex) => {
+        const isFullRow = !!row[1];
+        const addVerticalSpace = rowIndex < numberOfRows - 1;
         if (isFullRow) {
           return [
-            this.getTaskDiscordEmbedField(taskRow[0], addVerticalSpace),
+            this.getTaskDiscordEmbedField(row[0], addVerticalSpace),
             {
               name: "\u200b",
               value: "\u200b",
               inline: true,
             },
-            this.getTaskDiscordEmbedField(taskRow[1], addVerticalSpace),
+            this.getTaskDiscordEmbedField(row[1], addVerticalSpace),
           ];
         }
-        return this.getTaskDiscordEmbedField(taskRow[0], false);
+        return this.getTaskDiscordEmbedField(row[0], false);
       })
     );
     const messageContent = {
-      content: `**${(await task.project).name} Task Board**`,
+      content: `**${project.name} Task Board**`,
       embeds: [
         {
-          url: await this.permalink.get(await task.project),
           fields: await Promise.all(tasksWithSpaces),
         },
       ],
