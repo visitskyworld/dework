@@ -252,7 +252,6 @@ export class RbacService {
             // @ts-ignore
             ...(rule.projectId ? { projectId: rule.projectId } : undefined),
           });
-          fn(CRUD, TaskSubmission, { userId });
 
           fn("create", Task, {
             ...task,
@@ -295,6 +294,8 @@ export class RbacService {
       builder.can("submit", Task, {
         assignees: { $elemMatch: { id: userId } },
       });
+      // note that Task.submit also needs to be true
+      builder.can(CRUD, TaskSubmission, { userId });
     }
 
     // TODO(fant): make sure these users can do everything

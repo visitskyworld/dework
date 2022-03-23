@@ -17,9 +17,18 @@ import { Coordinape } from "./coordinape.types";
 import { TaskFilterInput } from "../../task/dto/GetTasksInput";
 import { TaskStatus } from "@dewo/api/models/Task";
 import moment from "moment";
+import * as qs from "query-string";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../../app/config";
 import { UserService } from "../../user/user.service";
+
+interface UserFragment {
+  id: string;
+  threepids: {
+    source: "metamask" | unknown;
+    address: string;
+  }[];
+}
 
 interface CoordinapeIntegrationProjectTasksQuery {
   data: null | {
@@ -30,13 +39,8 @@ interface CoordinapeIntegrationProjectTasksQuery {
         id: string;
         name: string;
         permalink: string;
-        assignees: {
-          id: string;
-          threepids: {
-            source: "metamask" | unknown;
-            address: string;
-          }[];
-        }[];
+        assignees: UserFragment[];
+        owner: UserFragment | null;
       }[];
     };
   };
@@ -112,13 +116,20 @@ export class CoordinapeIntegrationController implements OnModuleInit {
                   name
                   permalink
                   assignees {
-                    id
-                    threepids {
-                      source
-                      address: threepid
-                    }
+                    ...User
+                  }
+                  owner {
+                    ...User
                   }
                 }
+              }
+            }
+
+            fragment User on User {
+              id
+              threepids {
+                source
+                address: threepid
               }
             }
           `,
@@ -138,24 +149,70 @@ export class CoordinapeIntegrationController implements OnModuleInit {
     const users: Record<string, Coordinape.User> = {};
     for (const task of response.data.organization.tasks) {
       for (const assignee of task.assignees) {
-        const address = assignee.threepids.find(
-          (threepid) => threepid.source === "metamask"
-        )?.address;
+        const address = this.getAddress(assignee);
         if (!address) continue;
 
         users[address] = users[address] ?? {
           address,
           contributions: [],
-          contribution_details_link: `${response.data.organization.permalink}?assigneeIds=${assignee.id}&doneAtBefore=${doneAtBefore}&doneAtAfter=${doneAtAfter}`,
+          contribution_details_link: this.getContributionDetailsLink({
+            response,
+            doneAtAfter,
+            doneAtBefore,
+            userId: assignee.id,
+          }),
         };
         users[address].contributions.push({
           title: task.name,
           link: task.permalink,
         });
       }
+
+      const owner = task.owner;
+      if (!!owner && !task.assignees.some((u) => u.id === owner?.id)) {
+        const address = this.getAddress(owner);
+        if (!address) continue;
+
+        users[address] = users[address] ?? {
+          address,
+          contributions: [],
+          contribution_details_link: this.getContributionDetailsLink({
+            response,
+            doneAtAfter,
+            doneAtBefore,
+            userId: owner.id,
+          }),
+        };
+        users[address].contributions.push({
+          title: `${task.name} (reviewer)`,
+          link: task.permalink,
+        });
+      }
     }
 
     return res.json({ users: Object.values(users) });
+  }
+
+  private getAddress(user: UserFragment): string | undefined {
+    return user.threepids.find((t) => t.source === "metamask")?.address;
+  }
+
+  private getContributionDetailsLink({
+    response,
+    doneAtAfter,
+    doneAtBefore,
+    userId,
+  }: {
+    response: CoordinapeIntegrationProjectTasksQuery;
+    doneAtAfter: string | undefined;
+    doneAtBefore: string | undefined;
+    userId: string;
+  }): string {
+    return `${response.data!.organization.permalink}/board?${qs.stringify({
+      assigneeIds: [userId],
+      doneAtBefore,
+      doneAtAfter,
+    })}`;
   }
 
   private serverGraphQLEndpoint() {

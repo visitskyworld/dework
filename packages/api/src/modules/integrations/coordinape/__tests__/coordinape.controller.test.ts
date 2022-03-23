@@ -41,6 +41,7 @@ describe("CoordinapeController", () => {
     it("should return task completed within given date range", async () => {
       const address1 = `0x${faker.datatype.number()}`;
       const address2 = `0x${faker.datatype.number()}`;
+      const address3 = `0x${faker.datatype.number()}`;
       const assignee1 = await fixtures.createUser({
         source: ThreepidSource.metamask,
         threepid: address1,
@@ -49,10 +50,15 @@ describe("CoordinapeController", () => {
         source: ThreepidSource.metamask,
         threepid: address2,
       });
+      const owner = await fixtures.createUser({
+        source: ThreepidSource.metamask,
+        threepid: address3,
+      });
       const task = await fixtures.createTask({
         status: TaskStatus.DONE,
         doneAt,
         assignees: [assignee1, assignee2],
+        ownerId: owner.id,
         projectId: project.id,
       });
 
@@ -70,6 +76,14 @@ describe("CoordinapeController", () => {
           address: address2,
           contributions: expect.arrayContaining([
             expect.objectContaining({ title: task.name }),
+          ]),
+        })
+      );
+      expect(res.users).toContainEqual(
+        expect.objectContaining({
+          address: address3,
+          contributions: expect.arrayContaining([
+            expect.objectContaining({ title: `${task.name} (reviewer)` }),
           ]),
         })
       );
