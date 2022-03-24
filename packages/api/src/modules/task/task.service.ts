@@ -235,7 +235,7 @@ export class TaskService {
     if (ids?.length === 0) return [];
     if (projectIds?.length === 0) return [];
 
-    const filterOutSpam = !projectIds && !userId;
+    const filterOutSpam = !projectIds && !userId && !ids && !rewardIds;
     let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
