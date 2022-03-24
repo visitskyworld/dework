@@ -2,7 +2,6 @@ import React, { FC, useCallback, useState } from "react";
 import { Button, Card, Form, Input, Typography } from "antd";
 import { ProjectDetails } from "@dewo/app/graphql/types";
 import { useUpdateProject } from "../hooks";
-import { uuidToBase62 } from "@dewo/app/util/uuid";
 import { useRouter } from "next/router";
 import { useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -30,12 +29,12 @@ export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
       deletedAt: new Date().toISOString(),
     });
     refetchOrganization(); // async
-    router.push({ pathname: `/o/${uuidToBase62(project?.organizationId!)}` });
+    router.push({ pathname: project?.permalink });
   }, [
     updateProject,
     refetchOrganization,
     project?.id,
-    project?.organizationId,
+    project?.permalink,
     router,
   ]);
 

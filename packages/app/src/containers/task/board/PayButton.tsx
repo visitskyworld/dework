@@ -10,7 +10,7 @@ import {
   NoUserPaymentMethodError,
   usePayTaskReward,
 } from "../../payment/hooks";
-import { uuidToBase62 } from "@dewo/app/util/uuid";
+import { useProject } from "../../project/hooks";
 
 interface Props {
   task: Task;
@@ -21,6 +21,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const { project } = useProject(task.projectId);
 
   const payTaskReward = usePayTaskReward();
   const handlePayAndClose = useCallback(
@@ -40,11 +41,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
               "Set up a payment method to pay contributors in this project.",
             btn: (
               <RouterContext.Provider value={router}>
-                <Link
-                  href={`/o/${router.query.organizationSlug}/p/${uuidToBase62(
-                    task.projectId
-                  )}/settings`}
-                >
+                <Link href={`${project!.permalink}/settings`}>
                   <a>
                     <Button type="primary" onClick={notification.destroy}>
                       Setup payment
@@ -69,7 +66,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
         setLoading(false);
       }
     },
-    [task, router, onDone, payTaskReward]
+    [task, router, onDone, payTaskReward, project]
   );
   return (
     <Button

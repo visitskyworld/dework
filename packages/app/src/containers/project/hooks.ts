@@ -19,6 +19,8 @@ import {
   CreateTaskSectionMutationVariables,
   DeleteProjectTokenGateMutation,
   DeleteProjectTokenGateMutationVariables,
+  GetProjectBySlugQuery,
+  GetProjectBySlugQueryVariables,
   GetProjectIntegrationsQuery,
   GetProjectIntegrationsQueryVariables,
   GetProjectQuery,
@@ -160,6 +162,20 @@ export function useProjectDetails(projectId: string | undefined): {
   return { project: data?.project ?? undefined, error };
 }
 
+export function useProjectBySlug(projectSlug: string | undefined): {
+  project: Project | undefined;
+  error: ApolloError | undefined;
+} {
+  const { data, error } = useQuery<
+    GetProjectBySlugQuery,
+    GetProjectBySlugQueryVariables
+  >(Queries.projectBySlug, {
+    variables: { projectSlug: projectSlug! },
+    skip: !projectSlug,
+  });
+  return { project: data?.project ?? undefined, error };
+}
+
 export function useProjectIntegrations(
   projectId: string | undefined
 ): ProjectIntegration[] | undefined {
@@ -187,13 +203,16 @@ export function useProjectPaymentMethods(
 }
 
 export function useProjectTasks(
-  projectId: string,
+  projectId: string | undefined,
   fetchPolicy?: WatchQueryFetchPolicy
 ): Task[] | undefined {
   const { data, refetch } = useQuery<
     GetProjectTasksQuery,
     GetProjectTasksQueryVariables
-  >(Queries.projectTasks, { variables: { projectId } });
+  >(Queries.projectTasks, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
   useEffect(() => {
     if (fetchPolicy === "cache-and-network" && !!data) {
       refetch();

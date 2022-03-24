@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useOrganizationDetails } from "../hooks";
 
 interface Props {
-  organizationId: string;
+  organizationId: string | undefined;
 }
 
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {

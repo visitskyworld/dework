@@ -11,9 +11,19 @@ export const me = gql`
   ${Fragments.userDetails}
 `;
 
+export const userProfileByUsername = gql`
+  query UserProfileByUsernameQuery($username: String!) {
+    user: getUserByUsername(username: $username) {
+      ...UserProfile
+    }
+  }
+
+  ${Fragments.userProfile}
+`;
+
 export const userProfile = gql`
-  query UserProfileQuery($userId: UUID!) {
-    user: getUser(id: $userId) {
+  query UserProfileQuery($id: UUID!) {
+    user: getUser(id: $id) {
       ...UserProfile
     }
   }
@@ -35,8 +45,8 @@ export const userRoles = gql`
 `;
 
 export const userTasks = gql`
-  query UserTasksQuery($userId: UUID!) {
-    user: getUser(id: $userId) {
+  query UserTasksQuery($id: UUID!) {
+    user: getUser(id: $id) {
       id
       tasks {
         ...TaskWithOrganization
@@ -87,6 +97,16 @@ export const organizationDetails = gql`
   }
 
   ${Fragments.organizationDetails}
+`;
+
+export const organizationBySlug = gql`
+  query GetOrganizationBySlugQuery($organizationSlug: String!) {
+    organization: getOrganizationBySlug(slug: $organizationSlug) {
+      ...Organization
+    }
+  }
+
+  ${Fragments.organization}
 `;
 
 export const organizationUsers = gql`
@@ -206,6 +226,16 @@ export const projectDetails = gql`
   }
 
   ${Fragments.projectDetails}
+`;
+
+export const projectBySlug = gql`
+  query GetProjectBySlugQuery($projectSlug: String!) {
+    project: getProjectBySlug(slug: $projectSlug) {
+      ...Project
+    }
+  }
+
+  ${Fragments.project}
 `;
 
 export const projectTasks = gql`

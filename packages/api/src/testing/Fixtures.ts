@@ -101,7 +101,7 @@ export class Fixtures {
   }
 
   public async createOrganization(
-    partial: DeepPartial<Organization> = {},
+    partial: Partial<Organization> = {},
     creator?: User
   ): Promise<Organization> {
     const organization = await this.organizationService.create(
@@ -366,7 +366,7 @@ export class Fixtures {
   public async createUserOrgProject(
     partial: {
       user?: Partial<User>;
-      organization?: DeepPartial<Organization>;
+      organization?: Partial<Organization>;
       project?: Partial<Project>;
     } = {}
   ): Promise<{

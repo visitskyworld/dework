@@ -4686,6 +4686,51 @@ export interface MeQuery {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: UserProfileByUsernameQuery
+// ====================================================
+
+export interface UserProfileByUsernameQuery_user_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface UserProfileByUsernameQuery_user_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface UserProfileByUsernameQuery_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  bio: string | null;
+  organizations: UserProfileByUsernameQuery_user_organizations[];
+  details: UserProfileByUsernameQuery_user_details[];
+}
+
+export interface UserProfileByUsernameQuery {
+  user: UserProfileByUsernameQuery_user;
+}
+
+export interface UserProfileByUsernameQueryVariables {
+  username: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: UserProfileQuery
 // ====================================================
 
@@ -4722,7 +4767,7 @@ export interface UserProfileQuery {
 }
 
 export interface UserProfileQueryVariables {
-  userId: Scalar.UUID;
+  id: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -4997,7 +5042,7 @@ export interface UserTasksQuery {
 }
 
 export interface UserTasksQueryVariables {
-  userId: Scalar.UUID;
+  id: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -5211,6 +5256,33 @@ export interface GetOrganizationDetailsQuery {
 
 export interface GetOrganizationDetailsQueryVariables {
   organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationBySlugQuery
+// ====================================================
+
+export interface GetOrganizationBySlugQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface GetOrganizationBySlugQuery {
+  organization: GetOrganizationBySlugQuery_organization;
+}
+
+export interface GetOrganizationBySlugQueryVariables {
+  organizationSlug: string;
 }
 
 /* tslint:disable */
@@ -5782,6 +5854,36 @@ export interface GetProjectDetailsQuery {
 
 export interface GetProjectDetailsQueryVariables {
   projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectBySlugQuery
+// ====================================================
+
+export interface GetProjectBySlugQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+}
+
+export interface GetProjectBySlugQuery {
+  project: GetProjectBySlugQuery_project;
+}
+
+export interface GetProjectBySlugQueryVariables {
+  projectSlug: string;
 }
 
 /* tslint:disable */

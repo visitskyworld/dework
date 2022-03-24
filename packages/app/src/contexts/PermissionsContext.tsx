@@ -22,8 +22,9 @@ import {
   TaskTag,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
-import { useParseIdFromSlug } from "../util/uuid";
 import { AtLeast } from "../types/general";
+import { useOrganizationBySlug } from "../containers/organization/hooks";
+import { useRouter } from "next/router";
 
 type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "claimTask";
 type AbilitySubject =
@@ -52,7 +53,9 @@ const PermissionsContext = createContext<Ability<AbilityType>>(
 export const Can = createContextualCan(PermissionsContext.Consumer);
 
 export const PermissionsProvider: FC = ({ children }) => {
-  const organizationId = useParseIdFromSlug("organizationSlug");
+  const organizationSlug = useRouter().query.organizationSlug as string;
+  const { organization } = useOrganizationBySlug(organizationSlug);
+  const organizationId = organization?.id;
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
     { variables: { organizationId: organizationId! }, skip: !organizationId }

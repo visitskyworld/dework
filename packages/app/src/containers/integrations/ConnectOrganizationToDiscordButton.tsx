@@ -11,6 +11,7 @@ interface Props extends ButtonProps {
 
 export const ConnectOrganizationToDiscordButton: FC<Props> = ({
   organizationId,
+  children = "Connect to Discord",
   icon = <DiscordIcon />,
   ...buttonProps
 }) => {
@@ -22,7 +23,7 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
       icon={icon}
       href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?organizationId=${organizationId}&userId=${user?.id}&redirect=${router.asPath}`}
     >
-      Connect to Discord
+      {children}
     </Button>
   );
 };

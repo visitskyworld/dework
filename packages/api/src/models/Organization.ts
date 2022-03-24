@@ -1,14 +1,5 @@
-import encoder from "uuid-base62";
 import { Field, ObjectType } from "@nestjs/graphql";
-import slugify from "slugify";
-import {
-  AfterLoad,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-} from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
@@ -37,14 +28,9 @@ export class Organization extends Audit {
   @Field({ nullable: true })
   public imageUrl?: string;
 
+  @Column({ unique: true })
   @Field()
   public slug!: string;
-
-  @AfterLoad()
-  getSlug() {
-    const slug = slugify(this.name.slice(0, 12), { lower: true, strict: true });
-    this.slug = `${slug}-${encoder.encode(this.id)}`;
-  }
 
   @ManyToMany(() => OrganizationTag, { eager: true })
   @JoinTable({ name: "organization_tag_map" })

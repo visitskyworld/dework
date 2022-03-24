@@ -6,14 +6,16 @@ import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { UserProfile } from "@dewo/app/containers/user/UserProfile";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
-import { useUser } from "@dewo/app/containers/user/hooks";
+import { useUserByUsername } from "@dewo/app/containers/user/hooks";
+import { UserSeo } from "@dewo/app/containers/seo/UserSeo";
 
 const Page: NextPage = () => {
-  const userId = useRouter().query.userId as string;
-  const user = useUser(userId);
+  const router = useRouter();
+  const username = router.query.username as string;
+  const user = useUserByUsername(username);
   const routes = useMemo(
     () =>
-      !!userId && [
+      !!username && [
         {
           path: "../",
           breadcrumbName: "Home",
@@ -23,7 +25,7 @@ const Page: NextPage = () => {
           breadcrumbName: user?.username ?? "Profile",
         },
       ],
-    [userId, user]
+    [username, user]
   ) as Route[];
 
   return (
@@ -31,8 +33,10 @@ const Page: NextPage = () => {
       <Sidebar />
       <Layout.Content>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <UserProfile key={userId} userId={userId} />
+        {!!user && <UserProfile key={username} userId={user?.id} />}
       </Layout.Content>
+
+      {!!user && <UserSeo user={user} />}
     </Layout>
   );
 };

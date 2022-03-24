@@ -195,6 +195,15 @@ export class OrganizationResolver {
     return organization;
   }
 
+  @Query(() => Organization)
+  public async getOrganizationBySlug(
+    @Args("slug") slug: string
+  ): Promise<Organization> {
+    const organization = await this.organizationService.findBySlug(slug);
+    if (!organization) throw new NotFoundException();
+    return organization;
+  }
+
   @Query(() => [Organization])
   public async getFeaturedOrganizations(
     @Args("limit", { type: () => GraphQLInt }) limit: number

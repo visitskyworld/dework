@@ -11,7 +11,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { useFilteredTasks } from "../../task/board/filters/FilterContext";
 
 interface Props {
-  projectId: string;
+  projectId?: string;
 }
 
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
@@ -66,7 +66,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
         }}
         onClick={handleClick}
       />
-      {canCreateTask && (
+      {canCreateTask && projectId && (
         <>
           <Button
             icon={<Icons.PlusOutlined />}

@@ -168,7 +168,7 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
             UserTasksQueryVariables
           >({
             query: Queries.userTasks,
-            variables: { userId: user.id },
+            variables: { id: user.id },
           });
 
           if (!!data && !data.user.tasks.some((t) => t.id === task.id)) {

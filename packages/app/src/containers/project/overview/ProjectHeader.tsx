@@ -13,8 +13,8 @@ import { useOrganization } from "../../organization/hooks";
 import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
 
 interface Props {
-  projectId: string;
-  organizationId: string;
+  projectId?: string;
+  organizationId?: string;
 }
 
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
@@ -31,11 +31,11 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
         breadcrumbName: "Home",
       },
       {
-        path: `o/${organization.slug}`,
+        path: organization.slug,
         breadcrumbName: organization.name,
       },
       {
-        path: `p/${project.slug}`,
+        path: project.slug,
         breadcrumbName: project.name,
       },
     ];
@@ -45,7 +45,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const [projectName, setProjectName] = useState("");
   const updateProject = useUpdateProject();
   const submitProjectName = useCallback(async () => {
-    await updateProject({ id: projectId, name: projectName });
+    await updateProject({ id: projectId!, name: projectName });
     editName.toggleOff();
   }, [editName, updateProject, projectId, projectName]);
 
@@ -111,9 +111,10 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
       //   )
       // }
       extra={
-        !!project && (
+        !!project &&
+        organizationId && (
           <Space align="center" style={{ height: "100%" }}>
-            <ProjectInviteButton projectId={projectId} />
+            <ProjectInviteButton projectId={project.id} />
             <FollowOrganizationButton
               organizationId={project?.organizationId}
             />

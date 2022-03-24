@@ -1,4 +1,9 @@
-import { useMutation, useQuery, WatchQueryFetchPolicy } from "@apollo/client";
+import {
+  ApolloError,
+  useMutation,
+  useQuery,
+  WatchQueryFetchPolicy,
+} from "@apollo/client";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -12,6 +17,8 @@ import {
   CreateProjectSectionMutation,
   CreateProjectSectionMutationVariables,
   DiscordIntegrationChannel,
+  GetOrganizationBySlugQuery,
+  GetOrganizationBySlugQueryVariables,
   GetOrganizationDetailsQuery,
   GetOrganizationDetailsQueryVariables,
   GetOrganizationDiscordChannelsQuery,
@@ -184,6 +191,21 @@ export function useOrganizationDetails(organizationId: string | undefined): {
     skip: !organizationId,
   });
   return { organization: data?.organization ?? undefined, refetch };
+}
+
+export function useOrganizationBySlug(organizationSlug: string | undefined): {
+  organization: Organization | undefined;
+  refetch(): Promise<unknown>;
+  error: ApolloError | undefined;
+} {
+  const { data, error, refetch } = useQuery<
+    GetOrganizationBySlugQuery,
+    GetOrganizationBySlugQueryVariables
+  >(Queries.organizationBySlug, {
+    variables: { organizationSlug: organizationSlug! },
+    skip: !organizationSlug,
+  });
+  return { error, organization: data?.organization ?? undefined, refetch };
 }
 
 export function useOrganizationUsers(organizationId: string | undefined): {

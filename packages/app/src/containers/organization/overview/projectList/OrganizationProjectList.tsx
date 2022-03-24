@@ -110,7 +110,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [projects, projectsBySectionId, updateProject]
   );
 
-  if (!organization) return <Skeleton />;
+  if (!organization || !organizationId) return <Skeleton />;
   if (typeof window === "undefined") return null;
   return (
     <Space

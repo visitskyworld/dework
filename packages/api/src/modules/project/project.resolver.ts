@@ -395,6 +395,23 @@ export class ProjectResolver {
     return project;
   }
 
+  @Query(() => Project)
+  @UseGuards(
+    RoleGuard({
+      action: "read",
+      subject: Project,
+      inject: [ProjectService],
+      getSubject: (params: { slug: string }, service: ProjectService) =>
+        service.findBySlug(params.slug),
+      getOrganizationId: (subject) => subject.organizationId,
+    })
+  )
+  public async getProjectBySlug(@Args("slug") slug: string): Promise<Project> {
+    const project = await this.projectService.findBySlug(slug);
+    if (!project) throw new NotFoundException();
+    return project;
+  }
+
   @Query(() => [Project])
   public async getFeaturedProjects(): Promise<Project[]> {
     return this.projectService.findFeatured();

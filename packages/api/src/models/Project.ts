@@ -4,22 +4,13 @@ import {
   ObjectType,
   registerEnumType,
 } from "@nestjs/graphql";
-import {
-  AfterLoad,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { PaymentMethod } from "./PaymentMethod";
 import { ProjectIntegration } from "./ProjectIntegration";
 import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
-import slugify from "slugify";
-import encoder from "uuid-base62";
 import { ProjectMember } from "./ProjectMember";
 import { ProjectTokenGate } from "./ProjectTokenGate";
 import { ProjectSection } from "./ProjectSection";
@@ -69,14 +60,9 @@ export class Project extends Audit {
   @Field({ nullable: true })
   public sectionId?: string;
 
+  @Column({ unique: true })
   @Field()
   public slug!: string;
-
-  @AfterLoad()
-  getSlug() {
-    const slug = slugify(this.name.slice(0, 12), { lower: true, strict: true });
-    this.slug = `${slug}-${encoder.encode(this.id)}`;
-  }
 
   @OneToMany(() => Task, (t: Task) => t.project)
   @Field(() => [Task])

@@ -3,11 +3,12 @@ import { Button, Col, Form, message, Row, Typography, Space } from "antd";
 import { InputWithLabel } from "./InputWithLabel";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { useUpdateUser, useUser, useUpdateUserDetail } from "./hooks";
+import { useUpdateUser, useUpdateUserDetail, useUser } from "./hooks";
 import { EntityDetailType } from "@dewo/app/graphql/types";
 import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
 import { useToggle } from "@dewo/app/util/hooks";
+import router from "next/router";
 
 interface Props {
   userId: string;
@@ -46,6 +47,7 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         const changedDetails = Object.entries(values).filter(
           ([t, v]) => t !== "bio" && t !== "username" && v !== intitialValues[t]
         );
+
         if (changedUsername || changedBio) {
           await updateUser({ username: values.username, bio: values.bio });
         }
@@ -59,6 +61,10 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         if (changedUsername || changedBio || changedDetails.length) {
           message.success("Profile updated!");
           onSaved?.();
+        }
+
+        if (changedUsername) {
+          router.replace({ query: { username: values.username } });
         }
       } catch {
         message.error("Failed to update user details");

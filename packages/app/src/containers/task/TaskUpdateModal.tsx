@@ -14,7 +14,6 @@ import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
 import { TaskApplyModal } from "./TaskApplyModal";
-import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { TaskSeo } from "../seo/TaskSeo";
 
 interface Props {
@@ -102,7 +101,7 @@ export const TaskUpdateModalListener: FC = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string | undefined;
   const applyToTaskId = router.query.applyToTaskId as string | undefined;
-  const isOnProjectPage = !!useParseIdFromSlug("projectSlug");
+  const isOnProjectPage = !!router.query.projectName;
 
   const closeModal = useCallback(
     () =>

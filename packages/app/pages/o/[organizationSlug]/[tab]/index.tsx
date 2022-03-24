@@ -1,3 +1,1 @@
-import Page from "../index";
-
-export default Page;
+export { default, getServerSideProps } from "../index";

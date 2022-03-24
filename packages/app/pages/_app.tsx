@@ -14,8 +14,6 @@ import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
 import { SidebarProvider } from "@dewo/app/contexts/sidebarContext";
 import { useRouter } from "next/router";
-import { useProject } from "@dewo/app/containers/project/hooks";
-import { useParseIdFromSlug } from "@dewo/app/util/uuid";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
 import absoluteUrl from "next-absolute-url";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
@@ -24,8 +22,12 @@ import { getDataFromTree } from "@apollo/react-ssr";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
 import { createApolloClient, createApolloLink } from "@dewo/app/graphql/apollo";
-import { ApolloProvider } from "@apollo/client";
-import { useOrganization } from "@dewo/app/containers/organization/hooks";
+import { ApolloProvider, useLazyQuery } from "@apollo/client";
+import {
+  UserProfileQuery,
+  UserProfileQueryVariables,
+} from "@dewo/app/graphql/types";
+import * as Queries from "../src/graphql/queries";
 
 if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -49,37 +51,37 @@ interface AuthProps {
   initialAuthToken: string | undefined;
 }
 
-const SlugReplacer: React.FC = () => {
-  // Replace slugs if wrong
-  const router = useRouter();
-  const { organizationSlug, projectSlug } = router.query;
-  const organizationId = useParseIdFromSlug("organizationSlug");
-  const organization = useOrganization(organizationId);
-  useEffect(() => {
-    if (
-      organization &&
-      organization.id === organizationId &&
-      organizationSlug !== organization.slug
-    ) {
-      router.replace(
-        { query: { ...router.query, organizationSlug: organization.slug } },
-        undefined,
-        { shallow: true }
-      );
-    }
-  }, [organizationSlug, organizationId, organization, router]);
+const isUUID = (str: string) => {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    str
+  );
+};
 
-  const projectId = useParseIdFromSlug("projectSlug");
-  const { project } = useProject(projectId);
+// Redirects old profile URLs to new one
+const Redirector: React.FC = () => {
+  const router = useRouter();
+
+  // If userId is a UUID, redirect to use username instead
+  const { username: maybeUsername } = router.query as { username: string };
+  const [getUser] = useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(
+    Queries.userProfile,
+    // Required to avoid infinite render-loop
+    { ssr: false }
+  );
+
   useEffect(() => {
-    if (project && project.id === projectId && projectSlug !== project.slug) {
-      router.replace(
-        { query: { ...router.query, projectSlug: project.slug } },
-        undefined,
-        { shallow: true }
-      );
-    }
-  }, [projectSlug, projectId, project, router]);
+    const fn = async () => {
+      if (maybeUsername && isUUID(maybeUsername)) {
+        const { data } = await getUser({ variables: { id: maybeUsername } });
+        const username = data?.user?.username;
+        if (!username) return;
+        router.replace({
+          query: { ...router.query, username },
+        });
+      }
+    };
+    fn();
+  }, [maybeUsername, router, getUser]);
 
   return null;
 };
@@ -120,10 +122,10 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         >
           <PermissionsProvider>
             <SidebarProvider>
+              <Redirector />
               <Component {...pageProps} />
               <InviteMessageToast />
               <FeedbackButton />
-              <SlugReplacer />
               <TaskUpdateModalListener />
               <ServerErrorModal onErrorRef={onErrorRef} />
             </SidebarProvider>

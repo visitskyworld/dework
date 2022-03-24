@@ -2,7 +2,6 @@ import _ from "lodash";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { User } from "../graphql/types";
-import { uuidToBase62 } from "./uuid";
 
 export function useNavigateToProfile(): (user: User) => void {
   const router = useRouter();
@@ -63,27 +62,6 @@ export function useNavigateToTaskApplicationFn(): (
       router.push({
         pathname: router.pathname,
         query: { ...router.query, applyToTaskId },
-      }),
-    [router]
-  );
-}
-
-export function useNavigateToOrganization(): (orgId: string) => void {
-  const router = useRouter();
-  return useCallback(
-    (orgId) => router.push({ pathname: `/o/${uuidToBase62(orgId)}` }),
-    [router]
-  );
-}
-export function useNavigateToProject(): (
-  orgId: string,
-  projId: string
-) => void {
-  const router = useRouter();
-  return useCallback(
-    (orgId, projId) =>
-      router.push({
-        pathname: `/o/${uuidToBase62(orgId)}/p/${uuidToBase62(projId)}`,
       }),
     [router]
   );

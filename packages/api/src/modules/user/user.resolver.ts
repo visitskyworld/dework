@@ -80,7 +80,14 @@ export class UserResolver {
     @Context("user") user: User,
     @Args("input") input: UpdateUserInput
   ): Promise<User> {
-    return this.userService.update({ id: user.id, ...input });
+    const username =
+      input.username &&
+      (await this.userService.generateUsername(input.username, user.id));
+    return this.userService.update({
+      id: user.id,
+      ...input,
+      ...(input.username ? { username } : {}),
+    });
   }
 
   @Mutation(() => UserOnboarding)
@@ -97,6 +104,15 @@ export class UserResolver {
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<User> {
     const user = await this.userService.findById(id);
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
+  @Query(() => User)
+  public async getUserByUsername(
+    @Args("username") username: string
+  ): Promise<User> {
+    const user = await this.userService.findByUsername(username);
     if (!user) throw new NotFoundException();
     return user;
   }

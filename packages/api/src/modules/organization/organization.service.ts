@@ -6,9 +6,11 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
+import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, IsNull, Repository } from "typeorm";
+import slugify from "slugify";
+import { IsNull, Raw, Repository } from "typeorm";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
@@ -36,10 +38,13 @@ export class OrganizationService {
   ) {}
 
   public async create(
-    partial: DeepPartial<Organization>,
+    partial: AtLeast<Organization, "name">,
     creator: User
   ): Promise<Organization> {
-    const created = await this.organizationRepo.save(partial);
+    const created = await this.organizationRepo.save({
+      ...partial,
+      slug: await this.generateSlug(partial.name),
+    });
     await Promise.all([
       this.rbacService
         .getOrCreatePersonalRole(creator.id, created.id)
@@ -80,6 +85,10 @@ export class OrganizationService {
 
   public findById(id: string): Promise<Organization | undefined> {
     return this.organizationRepo.findOne(id);
+  }
+
+  public findBySlug(slug: string): Promise<Organization | undefined> {
+    return this.organizationRepo.findOne({ slug });
   }
 
   public async upsertDetail(
@@ -208,5 +217,23 @@ export class OrganizationService {
       .innerJoinAndSelect("project.organization", "organization")
       .where("project.organizationId = :organizationId", { organizationId })
       .getMany();
+  }
+
+  public async generateSlug(name: string): Promise<string> {
+    const slug = slugify(name.slice(0, 20), { lower: true, strict: true });
+    const orgsMatchingSlugs = await this.organizationRepo.find({
+      where: {
+        slug: Raw((alias) => `${alias} ~ '^${slug}(-\\d+)?$'`),
+      },
+    });
+
+    if (!orgsMatchingSlugs.length && !slugBlacklist.has(slug)) return slug;
+    const matchingSlugs = orgsMatchingSlugs.map((u) => u.slug);
+    const set = new Set(matchingSlugs);
+    for (let i = 1; i < matchingSlugs.length + 2; i++) {
+      const candidate = `${slug}-${i}`;
+      if (!set.has(candidate)) return candidate;
+    }
+    throw new Error("Could not generate slug");
   }
 }

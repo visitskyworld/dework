@@ -21,7 +21,7 @@ export class PermalinkService {
       return `${appUrl}/i/${object.slug}`;
     }
     if (object instanceof User) {
-      return `${appUrl}/profile/${object.id}`;
+      return `${appUrl}/profile/${object.username}`;
     }
     if (object instanceof Task) {
       const p = await object.project;
@@ -29,10 +29,10 @@ export class PermalinkService {
     }
     if (object instanceof Project) {
       const o = await object.organization;
-      return `${await this.get(o, appUrl)}/p/${object.slug}`;
+      return `${await this.get(o, appUrl)}/${object.slug}`;
     }
     if (object instanceof Organization) {
-      return `${appUrl}/o/${object.slug}`;
+      return `${appUrl}/${object.slug}`;
     }
     if (object instanceof TaskNFT) {
       return `https://dwrk.xyz/${object.slug}`;

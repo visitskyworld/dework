@@ -16,6 +16,8 @@ import {
   UserOnboarding,
   UpdateUserOnboardingMutation,
   UpdateUserOnboardingMutationVariables,
+  UserProfileByUsernameQuery,
+  UserProfileByUsernameQueryVariables,
   Role,
   UserRolesQuery,
   UserRolesQueryVariables,
@@ -81,8 +83,18 @@ export function useUpdateUserDetail(): (
 export function useUser(userId: string): UserProfile | undefined {
   const { data } = useQuery<UserProfileQuery, UserProfileQueryVariables>(
     Queries.userProfile,
-    { variables: { userId } }
+    { variables: { id: userId } }
   );
+  return data?.user;
+}
+
+export function useUserByUsername(username: string): UserProfile | undefined {
+  const { data } = useQuery<
+    UserProfileByUsernameQuery,
+    UserProfileByUsernameQueryVariables
+  >(Queries.userProfileByUsername, {
+    variables: { username },
+  });
   return data?.user;
 }
 
@@ -100,7 +112,7 @@ export function useUserTasks(
 ): Task[] | undefined {
   const { data } = useQuery<UserTasksQuery, UserTasksQueryVariables>(
     Queries.userTasks,
-    { variables: { userId }, fetchPolicy }
+    { variables: { id: userId }, fetchPolicy }
   );
   useListenToTasks();
   return data?.user.tasks;

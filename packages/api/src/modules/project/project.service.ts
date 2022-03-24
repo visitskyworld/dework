@@ -6,13 +6,15 @@ import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
+import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, In, IsNull, Repository } from "typeorm";
+import slugify from "slugify";
+import { DeepPartial, In, IsNull, Raw, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 
@@ -36,6 +38,7 @@ export class ProjectService {
     const created = await this.projectRepo.save({
       ...partial,
       sortKey: Date.now().toString(),
+      slug: await this.generateSlug(partial.name ?? "Project"),
     });
     return this.projectRepo.findOne(created.id) as Promise<Project>;
   }
@@ -141,6 +144,10 @@ export class ProjectService {
     return this.projectRepo.findOne({ id, deletedAt: IsNull() });
   }
 
+  public findBySlug(slug: string): Promise<Project | undefined> {
+    return this.projectRepo.findOne({ slug });
+  }
+
   public async findFeatured(): Promise<Project[]> {
     const projectsWithTaskCount = await this.projectRepo
       .createQueryBuilder("project")
@@ -199,5 +206,22 @@ export class ProjectService {
         tokenIds: tokens.map((t) => t.id),
       });
     }
+  }
+
+  public async generateSlug(name: string): Promise<string> {
+    const slug = slugify(name.slice(0, 20), { lower: true, strict: true });
+    const matchingSlugs = await this.projectRepo
+      .find({
+        where: { slug: Raw((alias) => `${alias} ~ '^${slug}(-\\d+)?$'`) },
+      })
+      .then((projects) => projects.map((p) => p.slug));
+
+    if (!matchingSlugs.length && !slugBlacklist.has(slug)) return slug;
+    const set = new Set(matchingSlugs);
+    for (let i = 1; i < matchingSlugs.length + 2; i++) {
+      const candidate = `${slug}-${i}`;
+      if (!set.has(candidate)) return candidate;
+    }
+    throw new Error("Could not generate slug");
   }
 }
