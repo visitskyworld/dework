@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { Emojione } from "react-emoji-render";
-import { Task, TaskReaction, TaskStatus, User } from "@dewo/app/graphql/types";
+import { Task, TaskReaction, User } from "@dewo/app/graphql/types";
 import { Badge, Button, Col, Row, Table, Tooltip, Typography } from "antd";
 import _ from "lodash";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -160,7 +160,6 @@ export const TaskReactionPicker: FC<Props> = ({ task }) => {
     [grouped]
   );
 
-  if (!task.reactions.length && task.status !== TaskStatus.BACKLOG) return null;
   return (
     <Row gutter={8}>
       {grouped.map((group) => (

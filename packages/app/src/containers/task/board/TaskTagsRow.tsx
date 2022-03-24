@@ -7,7 +7,6 @@ import {
 import { Row, Tag, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
-import { formatTaskReward } from "../hooks";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import moment from "moment";
 
@@ -37,12 +36,6 @@ export const TaskTagsRow: FC<Props> = ({
     <Row gutter={[8, 4]} style={{ ...style, margin: 0 }}>
       {showStandardTags && (
         <>
-          {!!task.reward && (
-            <Tag style={{ backgroundColor: "white", color: "black" }}>
-              <Icons.DollarOutlined />
-              <span>{formatTaskReward(task.reward)}</span>
-            </Tag>
-          )}
           {!!task.dueDate && (
             <Tag>
               {task.status !== TaskStatus.DONE &&

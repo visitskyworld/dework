@@ -24,6 +24,7 @@
 @tag-default-bg: @component-background;
 
 @purple-base: #833bff;
+@blue-base: #78C6FF;
 
 html {
   background: @body-background;
@@ -76,12 +77,18 @@ textarea {
   text-align: center;
 }
 
-.ant-card.ant-card-small .ant-card-body {
-  padding-top: 4px;
-  padding-bottom: 4px;
+.ant-card.ant-card-small {
+  .ant-card-body {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  
+  .ant-card-actions > li {
+    margin: 4px 0;
+  }
 }
 
-.ant-btn:not(.ant-btn-text) {
+.ant-btn {
   font-weight: 600;
 }
 
@@ -173,6 +180,7 @@ textarea {
   margin: 0;
 }
 
+// .ant-typography-caption, .ant-btn-sm {
 .ant-typography-caption {
   font-size: 11px;
 }
@@ -905,4 +913,25 @@ textarea {
   border: none;
   display: inline-flex;
   align-items: center;
+}
+
+.ant-avatar {
+  &-blue {
+    background: pink;
+  }
+  .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
+    .make-color-classes(@i - 1);
+      @color: extract(@preset-colors, @i);
+      @colorValue: '@{color}-6';
+      &-@{color} {
+        color: @@colorValue;
+        background: fade(@@colorValue, 20%);
+        border: 1.5px solid fade(@@colorValue, 20%);
+      }
+  }
+  .make-color-classes();
+}
+
+.ant-avatar-group > *:not(:first-child) {
+  margin-left: -8px;
 }

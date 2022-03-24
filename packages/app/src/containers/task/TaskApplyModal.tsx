@@ -125,7 +125,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
 export const TaskApplyModal: FC<Props> = (props) => {
   return (
     <Modal
-      title="Apply for Task"
+      title="Apply to Task"
       visible={props.visible}
       destroyOnClose
       onCancel={props.onCancel}

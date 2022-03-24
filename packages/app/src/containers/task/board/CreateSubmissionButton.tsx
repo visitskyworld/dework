@@ -68,6 +68,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
     <>
       <Button
         size="small"
+        type="text"
         icon={<Icons.EditOutlined />}
         onClick={modalVisible.toggleOn}
       >

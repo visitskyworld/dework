@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Button, Card, Col, Row, Space, Spin, Tag, Typography } from "antd";
 import _ from "lodash";
 import * as Icons from "@ant-design/icons";
@@ -50,6 +50,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
       (o) => rolesByOrganization[o.id]?.length
     ).reverse();
   }, [user?.organizations, rolesByOrganization]);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   if (!user) return null;
   return (
@@ -120,12 +123,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
         </Col>
         <Col xs={24} md={16}>
           <Card size="small" title="Completed tasks">
-            {!completedTasks && (
+            {!mounted || !completedTasks ? (
               <div style={{ display: "grid", padding: 16 }}>
                 <Spin />
               </div>
-            )}
-            {!!completedTasks && !completedTasks.length && (
+            ) : !completedTasks.length ? (
               <TaskBoardColumnEmpty
                 icon={<Icons.CoffeeOutlined />}
                 title={
@@ -141,17 +143,18 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                   </>
                 }
               />
+            ) : (
+              <Space direction="vertical" style={{ width: "100%" }}>
+                {completedTasks?.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    style={{ cursor: "pointer" }}
+                    showReview
+                  />
+                ))}
+              </Space>
             )}
-            <Space direction="vertical" style={{ width: "100%" }}>
-              {completedTasks?.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  style={{ cursor: "pointer" }}
-                  showReview
-                />
-              ))}
-            </Space>
           </Card>
         </Col>
       </Row>

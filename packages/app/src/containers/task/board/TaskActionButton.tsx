@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, ReactElement, useCallback } from "react";
 import {
   Task,
   TaskStatus,
@@ -20,7 +20,7 @@ interface TaskCardProps {
   task: Task | TaskWithOrganization;
 }
 
-export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
+export function useTaskActionButton(task: Task): ReactElement | undefined {
   const navigateToTask = useNavigateToTask(task.id);
   const currentUserId = useAuthContext().user?.id;
 
@@ -37,74 +37,79 @@ export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canCreateSubmission = usePermission("submit", task);
 
-  const button = (() => {
-    if (shouldShowInlinePayButton) {
-      return <PayButton task={task}>Pay</PayButton>;
-    }
+  if (shouldShowInlinePayButton) {
+    return <PayButton task={task}>Pay</PayButton>;
+  }
 
-    if (
-      task.status === TaskStatus.IN_REVIEW &&
-      !!task.reward &&
-      !task.reward.payment &&
-      !!currentUserId &&
-      task.ownerId === currentUserId
-    ) {
-      return (
-        <Button size="small" onClick={moveToDone}>
-          Approve
-        </Button>
-      );
-    }
+  if (
+    task.status === TaskStatus.IN_REVIEW &&
+    !!task.reward &&
+    !task.reward.payment &&
+    !!currentUserId &&
+    task.ownerId === currentUserId
+  ) {
+    return (
+      <Button size="small" onClick={moveToDone}>
+        Approve
+      </Button>
+    );
+  }
 
-    if (
-      [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
-        task.status
-      ) &&
-      canUpdateTask &&
-      !!task.submissions.length
-    ) {
-      return (
-        <Button
-          size="small"
-          type="primary"
-          icon={<Icons.EditOutlined />}
-          onClick={navigateToTask}
-        >
-          Review
-        </Button>
-      );
-    }
+  if (
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
+      task.status
+    ) &&
+    canUpdateTask &&
+    !!task.submissions.length
+  ) {
+    return (
+      <Button
+        size="small"
+        type="primary"
+        icon={<Icons.EditOutlined />}
+        onClick={navigateToTask}
+      >
+        {task.submissions.length === 1
+          ? "1 Submission"
+          : `${task.submissions.length} Submissions`}
+      </Button>
+    );
+  }
 
-    if (
-      task.status === TaskStatus.TODO &&
-      canAssignTask &&
-      !!task.applications.length
-    ) {
-      return (
-        <Button
-          size="small"
-          type="primary"
-          icon={<Icons.LockOutlined />}
-          onClick={navigateToTask}
-        >
-          Pick Contributor
-        </Button>
-      );
-    }
+  if (
+    task.status === TaskStatus.TODO &&
+    canAssignTask &&
+    !!task.applications.length
+  ) {
+    return (
+      <Button
+        size="small"
+        type="primary"
+        icon={<Icons.LockOutlined />}
+        onClick={navigateToTask}
+      >
+        {task.applications.length === 1
+          ? "1 Applicant"
+          : `${task.applications.length} Applicants`}
+      </Button>
+    );
+  }
 
-    if (
-      [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
-      !!task.options?.allowOpenSubmission &&
-      canCreateSubmission
-    ) {
-      return <CreateSubmissionButton task={task} />;
-    }
+  if (
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
+    !!task.options?.allowOpenSubmission &&
+    canCreateSubmission
+  ) {
+    return <CreateSubmissionButton task={task} />;
+  }
 
-    if (!canManage && task.status === TaskStatus.TODO && canApply) {
-      return <ClaimTaskButton task={task} />;
-    }
-  })();
+  if (!canManage && task.status === TaskStatus.TODO && canApply) {
+    return <ClaimTaskButton task={task} />;
+  }
+}
 
+export const TaskActionButton: FC<TaskCardProps> = ({ task }) => {
+  const button = useTaskActionButton(task);
   if (!button) return null;
   return (
     <div onClick={stopPropagation} style={{ display: "inline-block" }}>

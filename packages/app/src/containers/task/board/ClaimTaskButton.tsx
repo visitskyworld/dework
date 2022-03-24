@@ -32,8 +32,8 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
 
   if (!user) {
     return (
-      <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
-        I'm Interested
+      <LoginButton size="small" type="text" icon={<Icons.UnlockOutlined />}>
+        Apply to task
       </LoginButton>
     );
   }
@@ -68,10 +68,11 @@ export const ClaimTaskButton: FC<Props> = ({ task }) => {
       ) : (
         <Button
           size="small"
+          type="text"
           icon={<Icons.UnlockOutlined />}
           onClick={handleInterested}
         >
-          I'm Interested
+          Apply to task
         </Button>
       )}
     </>

@@ -24,7 +24,7 @@ const RainbowBucketSvg = () => (
         dur="1s"
       ></animateTransform>
     </path>
-    <g id="lds-bucket-rainbow" clip-path="url(#lds-cp-bucket)">
+    <g id="lds-bucket-rainbow" clipPath="url(#lds-cp-bucket)">
       <path
         fill="#ff6565"
         stroke-width="0"

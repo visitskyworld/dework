@@ -1,18 +1,18 @@
 import React, { CSSProperties, FC } from "react";
+import * as Icons from "@ant-design/icons";
 import {
   Task,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import { Card, Avatar, Typography, Space, Row, Col, Rate } from "antd";
-import { eatClick } from "@dewo/app/util/eatClick";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { Card, Typography, Space, Row, Rate, Tag, Tooltip } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import Link from "next/link";
 import { TaskReactionPicker } from "./TaskReactionPicker";
 import { TaskTagsRow } from "./TaskTagsRow";
-import { TaskActionButton } from "./TaskActionButton";
+import { TaskActionButton, useTaskActionButton } from "./TaskActionButton";
+import { TaskCardAvatars } from "./TaskCardAvatars";
+import { formatTaskReward } from "../hooks";
+
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
   style?: CSSProperties;
@@ -21,61 +21,74 @@ interface TaskCardProps {
 
 export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const navigateToTask = useNavigateToTask(task.id);
-  const canUpdateTask = usePermission("update", task);
+
+  const shouldRenderReward = !!task.reward;
+  const shouldRenderReactions =
+    !!task.reactions.length || task.status === TaskStatus.BACKLOG;
+  const shouldRenderTaskActionButton = !!useTaskActionButton(task);
   return (
     <Card
       size="small"
       style={style}
+      bodyStyle={{ padding: 8 }}
       className="hover:component-highlight"
+      actions={
+        shouldRenderReward ||
+        shouldRenderReactions ||
+        shouldRenderTaskActionButton
+          ? [
+              <Row
+                key="footer"
+                style={{
+                  paddingLeft: 8,
+                  paddingRight: 8,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "nowrap",
+                }}
+              >
+                {shouldRenderReward && (
+                  <Tooltip title={formatTaskReward(task.reward!)}>
+                    <Tag
+                      key="reward"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        maxWidth: 100,
+                      }}
+                    >
+                      <Icons.DollarOutlined />
+                      <span
+                        style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                      >
+                        {formatTaskReward(task.reward!)}
+                      </span>
+                    </Tag>
+                  </Tooltip>
+                )}
+                {/* make reactions/button right-aligned */}
+                {!shouldRenderReactions && <div />}
+                {shouldRenderReactions && (
+                  <TaskReactionPicker key="reaction" task={task} />
+                )}
+                {shouldRenderTaskActionButton && (
+                  <TaskActionButton key="action" task={task} />
+                )}
+              </Row>,
+            ]
+          : undefined
+      }
       onClick={navigateToTask}
     >
-      <Row>
-        <Space direction="vertical" size={6} style={{ flex: 1, width: "100%" }}>
-          <Row>
-            <Typography.Text strong style={{ maxWidth: "100%" }}>
-              {task.name}
-            </Typography.Text>
-          </Row>
-          <TaskTagsRow task={task} />
-          <TaskReactionPicker task={task} />
-          <TaskActionButton task={task} />
-        </Space>
-        <Col
-          onClick={eatClick}
-          style={{
-            marginRight: -4,
-            marginBottom: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-          }}
-        >
-          <div style={{ flex: 1 }} />
-          {task.status === TaskStatus.TODO && !task.assignees.length ? (
-            canUpdateTask ? (
-              <Avatar.Group maxCount={3} size={22}>
-                {task.applications.map((application) => (
-                  <Link href={application.user.permalink} key={application.id}>
-                    <a>
-                      <UserAvatar user={application.user} />
-                    </a>
-                  </Link>
-                ))}
-              </Avatar.Group>
-            ) : null
-          ) : (
-            <Avatar.Group maxCount={3} size={22}>
-              {task.assignees.map((user) => (
-                <Link href={user.permalink} key={user.id}>
-                  <a>
-                    <UserAvatar user={user} />
-                  </a>
-                </Link>
-              ))}
-            </Avatar.Group>
-          )}
-        </Col>
-      </Row>
+      <Space direction="vertical" size={4} style={{ width: "100%" }}>
+        <Row>
+          <Typography.Text strong style={{ flex: 1 }}>
+            {task.name}
+          </Typography.Text>
+          <TaskCardAvatars task={task} />
+        </Row>
+        <TaskTagsRow task={task} />
+      </Space>
       {showReview && (
         <>
           <Row style={{ marginBottom: 4 }}>
