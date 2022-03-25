@@ -6,7 +6,7 @@ import {
 import { useProjectIntegrations } from "../hooks";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
 import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
-import { Alert, Typography } from "antd";
+import { Alert, Space, Typography } from "antd";
 import {
   useCreateGithubProjectIntegration,
   useUpdateProjectIntegration,
@@ -42,8 +42,8 @@ export const ProjectSettingsGithubIntegration: FC<
 > = ({ projectId, organizationId }) => {
   const integrations = useProjectIntegrations(projectId);
   const hasOrgInt = useHasOrganizationGithubIntegration(organizationId);
-  const projInt = useMemo(
-    () => integrations?.find((i) => i.type === ProjectIntegrationType.GITHUB),
+  const projInts = useMemo(
+    () => integrations?.filter((i) => i.type === ProjectIntegrationType.GITHUB),
     [integrations]
   );
 
@@ -61,55 +61,53 @@ export const ProjectSettingsGithubIntegration: FC<
   );
 
   const updateIntegration = useUpdateProjectIntegration();
-  const removeIntegration = useCallback(
-    () =>
-      updateIntegration({
-        id: projInt!.id,
-        deletedAt: new Date().toISOString(),
-      }),
-    [projInt, updateIntegration]
-  );
 
   if (!integrations) return null;
-  if (!!projInt) {
+  if (!hasOrgInt) {
     return (
-      <FormSection label="Github Integration">
-        <Alert
-          message={
-            <Typography.Text>
-              Connected to{" "}
-              <Link
-                href={`https://github.com/${projInt.config.organization}/${projInt.config.repo}`}
-              >
-                <a target="_blank">
-                  <Typography.Text strong>
-                    {projInt.config.organization}/{projInt.config.repo}
-                  </Typography.Text>
-                </a>
-              </Link>
-            </Typography.Text>
-          }
-          type="success"
-          showIcon
-          closable
-          onClose={removeIntegration}
-        />
-      </FormSection>
-    );
-  }
-
-  if (!!hasOrgInt) {
-    return (
-      <CreateGithubIntegrationForm
-        organizationId={organizationId}
-        onSubmit={handleSubmit}
-      />
+      <ConnectToGithubFormSection>
+        <ConnectOrganizationToGithubButton organizationId={organizationId} />
+      </ConnectToGithubFormSection>
     );
   }
 
   return (
-    <ConnectToGithubFormSection>
-      <ConnectOrganizationToGithubButton organizationId={organizationId} />
-    </ConnectToGithubFormSection>
+    <FormSection label="Github Integration">
+      <Space direction="vertical" style={{ width: "100%" }}>
+        {projInts?.map((integration) => (
+          <Alert
+            message={
+              <Typography.Text>
+                Connected to{" "}
+                <Link
+                  href={`https://github.com/${integration.config.organization}/${integration.config.repo}`}
+                >
+                  <a target="_blank">
+                    <Typography.Text strong>
+                      {integration.config.organization}/
+                      {integration.config.repo}
+                    </Typography.Text>
+                  </a>
+                </Link>
+              </Typography.Text>
+            }
+            type="success"
+            showIcon
+            closable
+            onClose={() =>
+              updateIntegration({
+                id: integration!.id,
+                deletedAt: new Date().toISOString(),
+              })
+            }
+          />
+        ))}
+        <CreateGithubIntegrationForm
+          key={projInts?.length}
+          organizationId={organizationId}
+          onSubmit={handleSubmit}
+        />
+      </Space>
+    </FormSection>
   );
 };

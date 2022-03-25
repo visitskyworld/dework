@@ -514,7 +514,7 @@ describe("UserResolver", () => {
           body: UserRequests.getUser(assignedUser.id),
         });
 
-        expect(assignedRes.body.data.user.tasks).not.toContainEqual(
+        expect(assignedRes.body.data.user.tasks).toContainEqual(
           expect.objectContaining({ id: task.id })
         );
         expect(otherRes.body.data.user.tasks).not.toContainEqual(

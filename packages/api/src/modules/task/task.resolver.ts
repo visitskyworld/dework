@@ -549,7 +549,13 @@ export class UserTasksResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @ResolveField(() => [Task])
-  public async tasks(@Parent() user: User): Promise<Task[]> {
-    return this.taskService.findWithRelations({ userId: user.id });
+  public async tasks(
+    @Context("user") requestingUser: User | undefined,
+    @Parent() user: User
+  ): Promise<Task[]> {
+    return this.taskService.findWithRelations({
+      userId: user.id,
+      requestingUserId: requestingUser?.id,
+    });
   }
 }

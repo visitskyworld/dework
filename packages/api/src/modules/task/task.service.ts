@@ -220,6 +220,7 @@ export class TaskService {
     doneAtAfter,
     doneAtBefore,
     rewardNotNull,
+    requestingUserId,
   }: {
     ids?: string[];
     rewardIds?: string[];
@@ -231,6 +232,7 @@ export class TaskService {
     doneAtBefore?: Date;
     rewardNotNull?: boolean;
     limit?: number;
+    requestingUserId?: string;
   }): Promise<Task[]> {
     if (ids?.length === 0) return [];
     if (projectIds?.length === 0) return [];
@@ -317,7 +319,7 @@ export class TaskService {
         );
     }
 
-    if (!projectIds && !ids) {
+    if (!projectIds && !ids && (!userId || userId !== requestingUserId)) {
       query = query
         .leftJoin(
           Rule,

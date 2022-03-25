@@ -74,9 +74,6 @@ export const ProjectDiscoveryList: FC = () => {
                       ellipsis={{ rows: 1 }}
                       style={{ margin: 0 }}
                     >
-                      <span style={{ fontWeight: 400 }}>
-                        {`${organization.name} / `}
-                      </span>
                       {organization.name}
                     </Typography.Title>
                     {!!organization.tagline && (

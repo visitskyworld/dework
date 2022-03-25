@@ -9,7 +9,6 @@ import {
   GithubProjectIntegrationFeature,
   useConnectToGithubUrl,
 } from "./hooks";
-import { FormSection } from "@dewo/app/components/FormSection";
 
 export interface FormValues {
   githubRepoId: string;
@@ -57,8 +56,8 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
         </Typography.Paragraph>
       ) : (
         <Typography.Paragraph type="secondary">
-          Want to automatically link Github branches and make pull requests show
-          up in tasks? Try out the Github integration for this project!
+          Link a Github repo to automatically make pull requests show up in
+          tasks.
         </Typography.Paragraph>
       )}
       <Form.Item
@@ -156,22 +155,20 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
       onValuesChange={handleChange}
       onFinish={handleSubmit}
     >
-      <FormSection label="Github Integration">
-        <GithubIntegrationFormFields
-          values={values}
-          repos={githubRepos}
-          organizationId={organizationId}
-        />
-        <Button
-          type="primary"
-          htmlType="submit"
-          block
-          loading={submitting.isOn}
-          hidden={!values.githubRepoId}
-        >
-          Connect Github
-        </Button>
-      </FormSection>
+      <GithubIntegrationFormFields
+        values={values}
+        repos={githubRepos}
+        organizationId={organizationId}
+      />
+      <Button
+        type="primary"
+        htmlType="submit"
+        block
+        loading={submitting.isOn}
+        hidden={!values.githubRepoId}
+      >
+        Connect Github
+      </Button>
     </Form>
   );
 };
