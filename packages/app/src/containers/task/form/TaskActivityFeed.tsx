@@ -136,7 +136,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
           text: `${submission.user.username} created a submission`,
           details: (
             <MarkdownPreview
-              style={{ wordBreak: "break-all" }}
+              style={{ wordBreak: "break-word" }}
               value={submission.content}
             />
           ),

@@ -95,7 +95,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
           </a>
         </Tooltip>
         <MarkdownPreview
-          style={{ wordBreak: "break-all" }}
+          style={{ wordBreak: "break-word" }}
           value={submission.content}
         />
       </Space>

@@ -58,6 +58,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     __typename: "Project",
     organizationId,
   });
+  const canCreateProjectSection = usePermission("create", "ProjectSection");
   const canReorderProjects = usePermission(
     "update",
     { __typename: "Project", organizationId },
@@ -67,8 +68,8 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     (section: ProjectSection) =>
       section.id === defaultProjectSection.id ||
       !!projectsBySectionId[section.id]?.length ||
-      canCreateProject,
-    [projectsBySectionId, canCreateProject]
+      canCreateProjectSection,
+    [projectsBySectionId, canCreateProjectSection]
   );
 
   const updateProject = useUpdateProject();

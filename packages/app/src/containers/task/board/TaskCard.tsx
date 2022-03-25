@@ -82,7 +82,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
     >
       <Space direction="vertical" size={4} style={{ width: "100%" }}>
         <Row>
-          <Typography.Text strong style={{ flex: 1 }}>
+          <Typography.Text strong style={{ flex: 1, wordBreak: "break-word" }}>
             {task.name}
           </Typography.Text>
           <TaskCardAvatars task={task} />
