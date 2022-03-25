@@ -15,6 +15,7 @@ import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
 import { UserOnboarding } from "./UserOnboarding";
 import { Role } from "./rbac/Role";
+import { UserRole } from "./rbac/UserRole";
 
 @Entity()
 @ObjectType()
@@ -51,8 +52,16 @@ export class User extends Audit {
   @Field(() => UserOnboarding, { nullable: true })
   public onboarding?: UserOnboarding;
 
-  @ManyToMany(() => Role)
-  @JoinTable({ name: "user_role" })
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: "user_role",
+    joinColumn: { name: "userId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "roleId", referencedColumnName: "id" },
+  })
   @Field(() => [Role])
   public roles!: Promise<Role[]>;
+
+  @OneToMany(() => UserRole, (x) => x.user)
+  @Field(() => [UserRole])
+  public userRoles!: Promise<UserRole[]>;
 }

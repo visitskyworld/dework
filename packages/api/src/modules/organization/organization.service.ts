@@ -14,6 +14,7 @@ import { IsNull, Raw, Repository } from "typeorm";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { UserRole } from "@dewo/api/models/rbac/UserRole";
 
 @Injectable()
 export class OrganizationService {
@@ -144,7 +145,8 @@ export class OrganizationService {
     return this.userRepo
       .createQueryBuilder("user")
       .innerJoinAndSelect("user.roles", "role")
-      .where("role.organizationId = :organizationId", { organizationId })
+      .innerJoin("user.roles", "orgRoles")
+      .where("orgRoles.organizationId = :organizationId", { organizationId })
       .getMany();
   }
 
@@ -174,15 +176,28 @@ export class OrganizationService {
     return projects.filter((project) => ability.can("read", project));
   }
 
-  public async findByUser(userId: string): Promise<Organization[]> {
-    return this.organizationRepo
+  public async findByUser(
+    userId: string,
+    { excludeHidden = true }: { excludeHidden?: boolean } = {}
+  ): Promise<Organization[]> {
+    let qb = this.organizationRepo
       .createQueryBuilder("organization")
       .innerJoinAndSelect("organization.roles", "role")
       .innerJoinAndSelect("role.users", "user")
+      .innerJoin(
+        UserRole,
+        "userRole",
+        "userRole.roleId = role.id AND userRole.userId = :userId",
+        { userId }
+      )
       .where("user.id = :userId", { userId })
       .andWhere("role.fallback IS TRUE")
-      .andWhere("organization.deletedAt IS NULL")
-      .getMany();
+      .andWhere("organization.deletedAt IS NULL");
+
+    if (excludeHidden) {
+      qb = qb.andWhere("userRole.hidden IS FALSE");
+    }
+    return qb.getMany();
   }
 
   public findFeatured(limit: number): Promise<Organization[]> {

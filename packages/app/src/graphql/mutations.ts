@@ -56,6 +56,16 @@ export const updateUserOnboarding = gql`
   ${Fragments.userOnboarding}
 `;
 
+export const updateUserRole = gql`
+  mutation UpdateUserRoleMutation($input: UpdateUserRoleInput!) {
+    user: updateUserRole(input: $input) {
+      ...UserWithRoles
+    }
+  }
+
+  ${Fragments.userWithRoles}
+`;
+
 export const createOrganization = gql`
   mutation CreateOrganizationMutation($input: CreateOrganizationInput!) {
     organization: createOrganization(input: $input) {

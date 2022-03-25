@@ -1,7 +1,7 @@
 import { Args, Context, Query, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
-import { RbacService, UserRole } from "./rbac.service";
+import { RbacService } from "./rbac.service";
 import { CreateRoleInput } from "./dto/CreateRoleInput";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { RoleGuard } from "./rbac.guard";
@@ -14,6 +14,8 @@ import { Repository } from "typeorm";
 import { GraphQLJSONObject } from "graphql-type-json";
 import _ from "lodash";
 import { TaskService } from "../task/task.service";
+import { UserRole } from "@dewo/api/models/rbac/UserRole";
+import { UpdateUserRoleInput } from "./dto/UpdateUserRoleInput";
 
 @Injectable()
 export class RbacResolver {
@@ -112,9 +114,9 @@ export class RbacResolver {
       async getSubject(params: { userId: string; roleId: string }, service) {
         const role = await service.findRoleById(params.roleId);
         if (!role) return undefined;
-        return new UserRole({ role, userId: params.userId });
+        return Object.assign(new UserRole(), { role, userId: params.userId });
       },
-      getOrganizationId: (subject) => subject.role.organizationId,
+      getOrganizationId: async (subject) => (await subject.role).organizationId,
     })
   )
   public async addRole(
@@ -123,6 +125,31 @@ export class RbacResolver {
   ): Promise<User> {
     await this.service.addRoles(userId, [roleId]);
     return this.userRepo.findOneOrFail(userId);
+  }
+
+  @Mutation(() => User)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: UserRole,
+      inject: [RbacService],
+      async getSubject(params: { input: UpdateUserRoleInput }, service) {
+        const role = await service.findRoleById(params.input.roleId);
+        if (!role) return undefined;
+        return Object.assign(new UserRole(), {
+          role,
+          userId: params.input.userId,
+        });
+      },
+      getOrganizationId: async (subject) => (await subject.role).organizationId,
+    })
+  )
+  public async updateUserRole(
+    @Args("input") input: UpdateUserRoleInput
+  ): Promise<User> {
+    await this.service.updateUserRole(input);
+    return this.userRepo.findOneOrFail(input.userId);
   }
 
   @Query(() => [GraphQLJSONObject])

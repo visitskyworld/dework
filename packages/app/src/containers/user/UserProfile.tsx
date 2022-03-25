@@ -10,9 +10,7 @@ import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskCard } from "../task/board/TaskCard";
 import { calculateTaskRewardAsUSD } from "../task/hooks";
-import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import { RoleTag } from "@dewo/app/components/RoleTag";
-import Link from "next/link";
+import { UserOrganizationCard } from "./UserOrganizationCard";
 
 interface Props {
   userId: string;
@@ -36,7 +34,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     [completedTasks, userId]
   );
 
-  const roles = useUserRoles(userId);
+  const roles = useUserRoles(userId)?.roles;
   const rolesByOrganization = useMemo(() => {
     const filtered = roles?.filter((r) => !r.fallback);
     return _.groupBy(filtered, (role) => role.organizationId);
@@ -90,31 +88,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 </Typography.Text>
                 <Space direction="vertical" style={{ width: "100%" }}>
                   {organizations.map((o) => (
-                    <Link key={o.id} href={o.permalink}>
-                      <a>
-                        <Card
-                          size="small"
-                          bodyStyle={{ padding: 8 }}
-                          className="hover:component-highlight hover:cursor-pointer"
-                        >
-                          <Row align="middle">
-                            <OrganizationAvatar size={20} organization={o} />
-                            <Typography.Text strong style={{ marginLeft: 8 }}>
-                              {o.name}
-                            </Typography.Text>
-                          </Row>
-                          {rolesByOrganization[o.id]?.length && (
-                            <Row style={{ rowGap: 4, marginTop: 4 }}>
-                              {rolesByOrganization[o.id]
-                                ?.filter((role) => !role.userId)
-                                .map((role) => (
-                                  <RoleTag key={role.id} dot role={role} />
-                                ))}
-                            </Row>
-                          )}
-                        </Card>
-                      </a>
-                    </Link>
+                    <UserOrganizationCard
+                      key={o.id}
+                      userId={userId}
+                      organization={o}
+                    />
                   ))}
                 </Space>
               </>

@@ -14,7 +14,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Not, Repository } from "typeorm";
+import { Not, Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PaymentService } from "../payment/payment.service";
@@ -249,12 +249,18 @@ export class UserService {
   ): Promise<string> {
     const usersMatchingUsername = await this.userRepo.find({
       where: {
-        username: threepidUsername,
-        id: Not(id),
+        ...(id ? { id: Not(id) } : {}),
+        username: Raw((alias) => `${alias} ~ '^${threepidUsername}(\\d+)?$'`),
       },
     });
 
     if (!usersMatchingUsername.length) return threepidUsername;
+    const matchingUsernames = usersMatchingUsername.map((u) => u.username);
+    const set = new Set(matchingUsernames);
+    for (let i = 1; i < matchingUsernames.length + 1; i++) {
+      const candidate = `${threepidUsername}${i}`;
+      if (!set.has(candidate)) return candidate;
+    }
 
     throw new Error("Could not generate username");
   }

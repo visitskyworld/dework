@@ -38,7 +38,7 @@ function useSubmitEnabled(
   requiresCurrentUserToHaveRole: boolean
 ): boolean {
   const { user } = useAuthContext();
-  const roles = useUserRoles(user?.id!);
+  const roles = useUserRoles(user?.id!)?.roles;
   const hasCurrentUserRole = useMemo(
     () =>
       values.userIds.includes(user?.id!) ||

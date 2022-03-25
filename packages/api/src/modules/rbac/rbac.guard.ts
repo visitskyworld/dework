@@ -98,6 +98,11 @@ export function RoleGuard<
       const granted = actualFields.map((field) =>
         ability.can(action, actualSubject, field)
       );
+      // const appliedRules = ability.rulesFor(
+      //   action,
+      //   ability.detectSubjectType(actualSubject)
+      // );
+      // console.log(appliedRules);
       this.logger.debug(
         `Has access: ${JSON.stringify({
           action,

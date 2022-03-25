@@ -18,9 +18,12 @@ import {
   UpdateUserOnboardingMutationVariables,
   UserProfileByUsernameQuery,
   UserProfileByUsernameQueryVariables,
-  Role,
   UserRolesQuery,
   UserRolesQueryVariables,
+  UserWithRoles,
+  UpdateUserRoleInput,
+  UpdateUserRoleMutation,
+  UpdateUserRoleMutationVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -98,12 +101,12 @@ export function useUserByUsername(username: string): UserProfile | undefined {
   return data?.user;
 }
 
-export function useUserRoles(userId: string): Role[] | undefined {
+export function useUserRoles(userId: string): UserWithRoles | undefined {
   const { data } = useQuery<UserRolesQuery, UserRolesQueryVariables>(
     Queries.userRoles,
     { variables: { userId } }
   );
-  return data?.user.roles;
+  return data?.user;
 }
 
 export function useUserTasks(
@@ -116,4 +119,20 @@ export function useUserTasks(
   );
   useListenToTasks();
   return data?.user.tasks;
+}
+
+export function useUpdateOrganizationHidden(): (
+  input: UpdateUserRoleInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    UpdateUserRoleMutation,
+    UpdateUserRoleMutationVariables
+  >(Mutations.updateUserRole);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
 }

@@ -225,7 +225,12 @@ export class UserOrganizationsResolver {
   constructor(private readonly organizationService: OrganizationService) {}
 
   @ResolveField(() => [Organization])
-  public async organizations(@Parent() user: User): Promise<Organization[]> {
-    return this.organizationService.findByUser(user.id);
+  public async organizations(
+    @Context("user") requestingUser: User | undefined,
+    @Parent() user: User
+  ): Promise<Organization[]> {
+    return this.organizationService.findByUser(user.id, {
+      excludeHidden: requestingUser?.id !== user.id,
+    });
   }
 }

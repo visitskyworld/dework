@@ -15,6 +15,7 @@ import { SetUserDetailInput } from "../dto/SetUserDetailInput";
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RbacService } from "../../rbac/rbac.service";
 
 describe("UserResolver", () => {
   let app: INestApplication;
@@ -519,6 +520,39 @@ describe("UserResolver", () => {
         );
         expect(otherRes.body.data.user.tasks).not.toContainEqual(
           expect.objectContaining({ id: task.id })
+        );
+      });
+
+      it("should not return hidden organizations for other users", async () => {
+        const user = await fixtures.createUser();
+        const otherUser = await fixtures.createUser();
+
+        const organization = await fixtures.createOrganization({}, user);
+        const fallbackRole = await organization.roles.then((r) =>
+          r.find((r) => r.fallback)
+        );
+        await app.get(RbacService).updateUserRole({
+          userId: user.id,
+          roleId: fallbackRole!.id,
+          hidden: true,
+        });
+
+        const res = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: UserRequests.getUser(user.id),
+        });
+        const otherRes = await client.request({
+          app,
+          auth: fixtures.createAuthToken(otherUser),
+          body: UserRequests.getUser(user.id),
+        });
+
+        expect(res.body.data.user.organizations).toContainEqual(
+          expect.objectContaining({ id: organization.id })
+        );
+        expect(otherRes.body.data.user.organizations).not.toContainEqual(
+          expect.objectContaining({ id: organization.id })
         );
       });
     });

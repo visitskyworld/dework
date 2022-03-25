@@ -23,14 +23,7 @@ import { TaskReward } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../app/config";
-
-export class UserRole {
-  role!: Role;
-  userId!: string;
-  constructor(data: UserRole) {
-    Object.assign(this, data);
-  }
-}
+import { UserRole } from "@dewo/api/models/rbac/UserRole";
 
 export type Action =
   | "create"
@@ -68,6 +61,8 @@ export class RbacService {
     private readonly ruleRepo: Repository<Rule>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepo: Repository<UserRole>,
     private readonly config: ConfigService<ConfigType>
   ) {}
 
@@ -88,6 +83,14 @@ export class RbacService {
   ): Promise<Role> {
     const x = await this.roleRepo.save(Object.assign(new Role(), data));
     return this.roleRepo.findOne(x.id) as Promise<Role>;
+  }
+
+  public async updateUserRole(
+    partial: AtLeast<UserRole, "userId" | "roleId">
+  ): Promise<void> {
+    await this.userRoleRepo.upsert(partial, {
+      conflictPaths: ["userId", "roleId"],
+    });
   }
 
   public async getFallbackRole(
@@ -169,13 +172,10 @@ export class RbacService {
   }
 
   public async addRoles(userId: string, roleIds: string[]): Promise<void> {
-    // hack: remove the role mapping first to prevent getting errors with duplicate entries
-    await this.removeRoles(userId, roleIds);
-    await this.userRepo
-      .createQueryBuilder()
-      .relation("roles")
-      .of(userId)
-      .add(roleIds);
+    await this.userRoleRepo.upsert(
+      roleIds.map((roleId) => ({ userId, roleId })),
+      { conflictPaths: ["userId", "roleId"] }
+    );
   }
 
   public async removeRoles(userId: string, roleIds: string[]): Promise<void> {
@@ -269,9 +269,9 @@ export class RbacService {
     }
 
     if (!!userId) {
-      builder.can(["create", "delete"], UserRole, {
+      builder.can(CRUD, UserRole, {
         // @ts-expect-error
-        "role.fallback": true,
+        "__role__.fallback": true,
         userId,
       });
       builder.can(

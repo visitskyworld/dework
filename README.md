@@ -221,7 +221,7 @@ BEGIN
   ), (
     bsc_mainnet_id,
     'ETHEREUM',
-    'Smart Chain',
+    'Binance Smart Chain',
     'bsc-mainnet',
     '009',
     CAST('{

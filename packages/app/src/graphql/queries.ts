@@ -34,14 +34,11 @@ export const userProfile = gql`
 export const userRoles = gql`
   query UserRolesQuery($userId: UUID!) {
     user: getUser(id: $userId) {
-      id
-      roles {
-        ...Role
-      }
+      ...UserWithRoles
     }
   }
 
-  ${Fragments.role}
+  ${Fragments.userWithRoles}
 `;
 
 export const userTasks = gql`

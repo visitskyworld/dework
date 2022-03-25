@@ -43,7 +43,11 @@ export class Role extends Audit {
   public externalId?: string;
 
   @ManyToMany(() => User)
-  @JoinTable({ name: "user_role" })
+  @JoinTable({
+    name: "user_role",
+    joinColumn: { name: "roleId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "userId", referencedColumnName: "id" },
+  })
   @Field(() => [User])
   public users!: Promise<User[]>;
 

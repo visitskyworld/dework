@@ -276,6 +276,50 @@ export interface UpdateUserOnboardingMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateUserRoleMutation
+// ====================================================
+
+export interface UpdateUserRoleMutation_user_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+}
+
+export interface UpdateUserRoleMutation_user_userRoles {
+  __typename: "UserRole";
+  roleId: string;
+  hidden: boolean;
+}
+
+export interface UpdateUserRoleMutation_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: UpdateUserRoleMutation_user_roles[];
+  userRoles: UpdateUserRoleMutation_user_userRoles[];
+}
+
+export interface UpdateUserRoleMutation {
+  user: UpdateUserRoleMutation_user;
+}
+
+export interface UpdateUserRoleMutationVariables {
+  input: UpdateUserRoleInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateOrganizationMutation
 // ====================================================
 
@@ -4449,6 +4493,12 @@ export interface AddRoleMutation_addRole_roles {
   organizationId: string;
 }
 
+export interface AddRoleMutation_addRole_userRoles {
+  __typename: "UserRole";
+  roleId: string;
+  hidden: boolean;
+}
+
 export interface AddRoleMutation_addRole {
   __typename: "User";
   id: Scalar.UUID;
@@ -4456,6 +4506,7 @@ export interface AddRoleMutation_addRole {
   imageUrl: string | null;
   permalink: string;
   roles: AddRoleMutation_addRole_roles[];
+  userRoles: AddRoleMutation_addRole_userRoles[];
 }
 
 export interface AddRoleMutation {
@@ -4790,10 +4841,20 @@ export interface UserRolesQuery_user_roles {
   organizationId: string;
 }
 
+export interface UserRolesQuery_user_userRoles {
+  __typename: "UserRole";
+  roleId: string;
+  hidden: boolean;
+}
+
 export interface UserRolesQuery_user {
   __typename: "User";
   id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
   roles: UserRolesQuery_user_roles[];
+  userRoles: UserRolesQuery_user_userRoles[];
 }
 
 export interface UserRolesQuery {
@@ -5305,6 +5366,12 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   organizationId: string;
 }
 
+export interface GetOrganizationUsersQuery_organization_users_userRoles {
+  __typename: "UserRole";
+  roleId: string;
+  hidden: boolean;
+}
+
 export interface GetOrganizationUsersQuery_organization_users {
   __typename: "User";
   id: Scalar.UUID;
@@ -5312,6 +5379,7 @@ export interface GetOrganizationUsersQuery_organization_users {
   imageUrl: string | null;
   permalink: string;
   roles: GetOrganizationUsersQuery_organization_users_roles[];
+  userRoles: GetOrganizationUsersQuery_organization_users_userRoles[];
 }
 
 export interface GetOrganizationUsersQuery_organization {
@@ -8934,6 +9002,12 @@ export interface UserWithRoles_roles {
   organizationId: string;
 }
 
+export interface UserWithRoles_userRoles {
+  __typename: "UserRole";
+  roleId: string;
+  hidden: boolean;
+}
+
 export interface UserWithRoles {
   __typename: "User";
   id: Scalar.UUID;
@@ -8941,6 +9015,7 @@ export interface UserWithRoles {
   imageUrl: string | null;
   permalink: string;
   roles: UserWithRoles_roles[];
+  userRoles: UserWithRoles_userRoles[];
 }
 
 /* tslint:disable */
@@ -11406,6 +11481,12 @@ export interface UpdateUserInput {
 
 export interface UpdateUserOnboardingInput {
   type: UserOnboardingType;
+}
+
+export interface UpdateUserRoleInput {
+  userId: Scalar.UUID;
+  roleId: Scalar.UUID;
+  hidden?: boolean | null;
 }
 
 //==============================================================

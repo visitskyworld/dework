@@ -13,6 +13,7 @@ import { DiscordService } from "../discord.service";
 import { User } from "@dewo/api/models/User";
 import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import { UserRole } from "@dewo/api/models/rbac/UserRole";
 
 @Injectable()
 export class DiscordRolesService {
@@ -229,17 +230,17 @@ export class DiscordRolesService {
         );
 
         await Promise.all([
-          manager
-            .createQueryBuilder()
-            .relation(Role, "users")
-            .of(role)
-            .add(usersToAdd),
+          manager.upsert(
+            UserRole,
+            usersToAdd.map((u) => ({ roleId: role.id, userId: u.id })),
+            { conflictPaths: ["userId", "roleId"] }
+          ),
           !role.fallback &&
-            manager
-              .createQueryBuilder()
-              .relation(Role, "users")
-              .of(role)
-              .remove(usersToRemove),
+            usersToRemove.length &&
+            manager.delete(
+              UserRole,
+              usersToRemove.map((u) => ({ roleId: role.id, userId: u.id }))
+            ),
         ]);
       }
     });
