@@ -126,6 +126,28 @@ export class RbacResolver {
     await this.service.addRoles(userId, [roleId]);
     return this.userRepo.findOneOrFail(userId);
   }
+  @Mutation(() => User)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: UserRole,
+      inject: [RbacService],
+      async getSubject(params: { userId: string; roleId: string }, service) {
+        const role = await service.findRoleById(params.roleId);
+        if (!role) return undefined;
+        return Object.assign(new UserRole(), { role, userId: params.userId });
+      },
+      getOrganizationId: async (subject) => (await subject.role).organizationId,
+    })
+  )
+  public async removeRole(
+    @Args("userId", { type: () => GraphQLUUID }) userId: string,
+    @Args("roleId", { type: () => GraphQLUUID }) roleId: string
+  ): Promise<User> {
+    await this.service.removeRoles(userId, [roleId]);
+    return this.userRepo.findOneOrFail(userId);
+  }
 
   @Mutation(() => User)
   @UseGuards(

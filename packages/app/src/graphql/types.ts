@@ -4502,6 +4502,44 @@ export interface AddRoleMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: RemoveRoleMutation
+// ====================================================
+
+export interface RemoveRoleMutation_removeRole_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+}
+
+export interface RemoveRoleMutation_removeRole {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: RemoveRoleMutation_removeRole_roles[];
+}
+
+export interface RemoveRoleMutation {
+  removeRole: RemoveRoleMutation_removeRole;
+}
+
+export interface RemoveRoleMutationVariables {
+  roleId: Scalar.UUID;
+  userId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateRoleMutation
 // ====================================================
 

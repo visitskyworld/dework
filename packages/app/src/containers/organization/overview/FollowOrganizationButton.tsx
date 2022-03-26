@@ -5,7 +5,10 @@ import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { useFollowOrganization, useOrganizationRoles } from "../../rbac/hooks";
+import {
+  useFollowOrganization,
+  useUnfollowOrganization,
+} from "../../rbac/hooks";
 
 interface Props {
   organizationId: string;
@@ -13,23 +16,24 @@ interface Props {
 
 export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   const followOrganization = useFollowOrganization(organizationId);
-  const [handleFollow, loading] = useRunningCallback(followOrganization, [
+  const [handleFollow, loadingFollow] = useRunningCallback(followOrganization, [
     followOrganization,
   ]);
+  const unfollowOrganization = useUnfollowOrganization(organizationId);
+  const [handleUnfollow, loadingUnfollow] = useRunningCallback(
+    unfollowOrganization,
+    [unfollowOrganization]
+  );
 
   const { user } = useAuthContext();
-
-  const roles = useOrganizationRoles(organizationId);
   const organization = useOrganization(organizationId);
   const { users } = useOrganizationUsers(organizationId);
-  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
 
   const isFollowing = useMemo(
     () => users?.some((u) => u.id === user?.id),
     [users, user]
   );
 
-  if (isFollowing || !fallbackRole) return null;
   if (!user) {
     return (
       <LoginButton type="ghost" icon={<Icons.StarOutlined />}>
@@ -38,10 +42,23 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
     );
   }
 
+  if (isFollowing) {
+    return (
+      <Button
+        type="ghost"
+        loading={loadingUnfollow}
+        icon={<Icons.MinusCircleOutlined />}
+        onClick={handleUnfollow}
+      >
+        Unfollow {organization?.name}
+      </Button>
+    );
+  }
+
   return (
     <Button
       type="ghost"
-      loading={loading}
+      loading={loadingFollow}
       icon={<Icons.StarOutlined />}
       onClick={handleFollow}
     >

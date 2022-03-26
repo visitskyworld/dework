@@ -21,6 +21,8 @@ import {
   GetOrganizationRolesQuery,
   GetOrganizationRolesQueryVariables,
   Project,
+  RemoveRoleMutation,
+  RemoveRoleMutationVariables,
   Role,
   RoleWithRules,
   Rule,
@@ -74,6 +76,36 @@ export function useAddRole(): (
       });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.addRole;
+    },
+    [mutation, user?.id]
+  );
+}
+
+export function useRemoveRole(): (
+  role: Role,
+  userId: string
+) => Promise<UserWithRoles> {
+  const { user } = useAuthContext();
+  const [mutation] = useMutation<
+    RemoveRoleMutation,
+    RemoveRoleMutationVariables
+  >(Mutations.removeRole);
+  return useCallback(
+    async (role, userId) => {
+      const refetchQueries: InternalRefetchQueriesInclude = [];
+      if (user?.id === userId) {
+        refetchQueries.push({ query: Queries.me });
+        refetchQueries.push({
+          query: Queries.permissions,
+          variables: { organizationId: role.organizationId },
+        });
+      }
+      const res = await mutation({
+        variables: { roleId: role.id, userId },
+        refetchQueries,
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.removeRole;
     },
     [mutation, user?.id]
   );
@@ -149,6 +181,24 @@ export function useFollowOrganization(
     await addRole(fallbackRole, user.id);
     await refetchOrganizationUsers();
   }, [addRole, refetchOrganizationUsers, user, fallbackRole]);
+}
+
+export function useUnfollowOrganization(
+  organizationId: string | undefined
+): () => Promise<void> {
+  const { user } = useAuthContext();
+  const removeRole = useRemoveRole();
+
+  const roles = useOrganizationRoles(organizationId);
+  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
+
+  const { refetch: refetchOrganizationUsers } =
+    useOrganizationUsers(organizationId);
+  return useCallback(async () => {
+    if (!fallbackRole || !user) return;
+    await removeRole(fallbackRole, user.id);
+    await refetchOrganizationUsers();
+  }, [removeRole, refetchOrganizationUsers, user, fallbackRole]);
 }
 
 export function useRolesWithAccess(

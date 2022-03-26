@@ -665,6 +665,16 @@ export const addRole = gql`
   ${Fragments.userWithRoles}
 `;
 
+export const removeRole = gql`
+  mutation RemoveRoleMutation($roleId: UUID!, $userId: UUID!) {
+    removeRole(roleId: $roleId, userId: $userId) {
+      ...UserWithRoles
+    }
+  }
+
+  ${Fragments.userWithRoles}
+`;
+
 export const createRole = gql`
   mutation CreateRoleMutation($input: CreateRoleInput!) {
     role: createRole(input: $input) {

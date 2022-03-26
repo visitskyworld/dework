@@ -151,6 +151,7 @@ export class OrganizationService {
         .innerJoinAndSelect("user.roles", "role")
         .innerJoin("user.roles", "orgRoles")
         .where("orgRoles.organizationId = :organizationId", { organizationId })
+        .andWhere("orgRoles.fallback IS TRUE")
         .getMany();
     }
 

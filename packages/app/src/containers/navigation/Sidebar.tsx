@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { SidebarOrganizationAvatar } from "./SidebarOrganizationAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Avatar, Button, Col, Divider, Layout, Tooltip } from "antd";
 import { HeaderProfileAvatar } from "./header/HeaderProfileAvatar";
@@ -67,11 +67,7 @@ export const Sidebar: FC = () => {
               href={organization.permalink}
               className="dewo-sidebar-item"
             >
-              <OrganizationAvatar
-                size={48}
-                organization={organization}
-                tooltip={{ placement: "right" }}
-              />
+              <SidebarOrganizationAvatar organization={organization} />
             </SidebarNavLink>
           ))}
 
