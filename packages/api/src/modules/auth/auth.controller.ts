@@ -108,7 +108,7 @@ export class AuthController {
         };
 
         const integration =
-          await this.integrationService.createOrganizationIntegration({
+          await this.integrationService.upsertOrganizationIntegration({
             // TODO(fant): we need to somehow verify that this was the user that initiated the connection
             creatorId: state.userId,
             organizationId: state.organizationId,

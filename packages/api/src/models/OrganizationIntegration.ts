@@ -1,6 +1,13 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Unique,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 import { ProjectIntegration } from "./ProjectIntegration";
@@ -34,6 +41,7 @@ registerEnumType(OrganizationIntegrationType, {
 
 @Entity()
 @ObjectType()
+@Unique(["type", "organizationId"])
 export class OrganizationIntegration<
   TType extends OrganizationIntegrationType = OrganizationIntegrationType
 > extends Audit {

@@ -147,7 +147,7 @@ export class Fixtures {
     >
   ): Promise<OrganizationIntegration<T>> {
     const integration =
-      await this.integrationService.createOrganizationIntegration({
+      await this.integrationService.upsertOrganizationIntegration({
         creatorId: await this.createUser().then((u) => u.id),
         ...partial,
       });

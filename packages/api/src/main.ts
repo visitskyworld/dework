@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./modules/app/app.module";
+import { MigrationService } from "./modules/app/migration/migration.service";
 
 async function bootstrap() {
   const port = process.env.PORT || 8080;
@@ -9,8 +10,8 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   if (!!process.env.RUN_MIGRATIONS) {
-    // const database = app.get(MigrationService);
-    // await database.migrate();
+    const database = app.get(MigrationService);
+    await database.migrate();
     // await database.connection.synchronize();
   }
   await app.listen(port);

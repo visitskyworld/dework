@@ -9,19 +9,49 @@ import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { useIsProjectPrivate } from "../../rbac/hooks";
-import { useOrganization } from "../../organization/hooks";
+import { useOrganizationDetails } from "../../organization/hooks";
 import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 
 interface Props {
   projectId?: string;
   organizationId?: string;
 }
 
+// Hardcoded discord permissions. TODO: maybe move to an API route?
+const MANAGE_CHANNELS = BigInt(0x10),
+  MANAGE_ROLES = BigInt(0x10000000),
+  SEND_MESSAGES = BigInt(0x800),
+  MANAGE_THREADS = BigInt(0x400000000);
+
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project);
-  const organization = useOrganization(organizationId);
+  const { organization } = useOrganizationDetails(organizationId);
   const canEdit = usePermission("update", project);
+  const canEditOrg = usePermission("update", "Organization");
+
+  const discordIntegration = useMemo(
+    () =>
+      organization?.integrations.find(
+        (i) => i.type === OrganizationIntegrationType.DISCORD
+      ),
+    [organization]
+  );
+  const discordPermissions = useMemo(
+    () =>
+      discordIntegration?.config?.permissions
+        ? BigInt(discordIntegration.config.permissions)
+        : undefined,
+    [discordIntegration]
+  );
+  const hasCorrectPermissions =
+    discordPermissions &&
+    discordPermissions & MANAGE_CHANNELS &&
+    discordPermissions & SEND_MESSAGES &&
+    discordPermissions & MANAGE_THREADS &&
+    discordPermissions & MANAGE_ROLES;
 
   const routes = useMemo<Route[] | undefined>(() => {
     if (!organization || !project) return undefined;
@@ -115,6 +145,16 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
         organizationId && (
           <Space align="center" style={{ height: "100%" }}>
             <ProjectInviteButton projectId={project.id} />
+            {canEditOrg && (!discordIntegration || !hasCorrectPermissions) && (
+              <ConnectOrganizationToDiscordButton
+                type="ghost"
+                organizationId={project.organizationId}
+              >
+                {!discordIntegration
+                  ? "Connect to Discord"
+                  : "Update Discord Permissions"}
+              </ConnectOrganizationToDiscordButton>
+            )}
             <FollowOrganizationButton
               organizationId={project?.organizationId}
             />

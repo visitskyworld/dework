@@ -7,6 +7,7 @@ import { Constants } from "@dewo/app/util/constants";
 
 interface Props extends ButtonProps {
   organizationId: string;
+  style?: React.CSSProperties;
 }
 
 export const ConnectOrganizationToDiscordButton: FC<Props> = ({

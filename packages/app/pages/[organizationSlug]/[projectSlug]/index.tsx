@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Col, Layout, Tabs, Tag } from "antd";
+import { Col, Layout, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectTaskBoard } from "@dewo/app/containers/project/board/ProjectTaskBoard";
@@ -9,7 +9,6 @@ import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHead
 import {
   useProjectBySlug,
   useProjectDetails,
-  useProjectIntegrations,
 } from "@dewo/app/containers/project/hooks";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { ProjectTaskList } from "@dewo/app/containers/project/list/ProjectTaskList";
@@ -17,7 +16,6 @@ import { Tab } from "@dewo/app/components/Tab";
 import { ProjectSettings } from "@dewo/app/containers/project/settings/ProjectSettings";
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ProjectIntegrationType } from "@dewo/app/graphql/types";
 import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/FilterContext";
 import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
 import { ProjectSeo } from "@dewo/app/containers/seo/ProjectSeo";
@@ -43,12 +41,6 @@ const Page: NextPage = () => {
   );
 
   const forbiddenError = error?.message === "Forbidden resource";
-  const integrations = useProjectIntegrations(project?.id);
-  const hasDiscordIntegration = useMemo(
-    () =>
-      !!integrations?.some((i) => i.type === ProjectIntegrationType.DISCORD),
-    [integrations]
-  );
 
   useEffect(() => {
     if (!projectSlug || !organizationSlug) {
@@ -115,22 +107,7 @@ const Page: NextPage = () => {
               {!!details && canEditProject && (
                 <Tabs.TabPane
                   tab={
-                    <Tab
-                      icon={<Icons.SettingOutlined />}
-                      children={
-                        <>
-                          Settings
-                          {!hasDiscordIntegration && (
-                            <Tag
-                              className="bg-primary"
-                              style={{ marginLeft: 8 }}
-                            >
-                              Setup Discord
-                            </Tag>
-                          )}
-                        </>
-                      }
-                    />
+                    <Tab icon={<Icons.SettingOutlined />} children="Settings" />
                   }
                   style={{ padding: 12 }}
                   key="settings"

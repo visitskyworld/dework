@@ -59,7 +59,7 @@ export class GithubController {
     const { creatorId, organizationId, appUrl, ...redirectProps } =
       JSON.parse(stateString);
 
-    await this.integrationService.createOrganizationIntegration({
+    await this.integrationService.upsertOrganizationIntegration({
       creatorId,
       organizationId,
       type: OrganizationIntegrationType.GITHUB,

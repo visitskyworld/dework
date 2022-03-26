@@ -38,12 +38,17 @@ export class IntegrationService {
     ) as Promise<ProjectIntegration>;
   }
 
-  public async createOrganizationIntegration(
+  public async upsertOrganizationIntegration(
     partial: Partial<OrganizationIntegration>
   ): Promise<OrganizationIntegration> {
-    const created = await this.organizationIntegrationRepo.save(partial);
+    const orgIntegration = await this.organizationIntegrationRepo.upsert(
+      partial,
+      {
+        conflictPaths: ["organizationId", "type"],
+      }
+    );
     return this.organizationIntegrationRepo.findOne(
-      created.id
+      orgIntegration.identifiers[0]?.id
     ) as Promise<OrganizationIntegration>;
   }
 

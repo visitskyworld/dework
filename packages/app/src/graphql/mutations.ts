@@ -66,8 +66,6 @@ export const updateUserRole = gql`
       }
     }
   }
-
-  ${Fragments.userWithRoles}
 `;
 
 export const createOrganization = gql`
