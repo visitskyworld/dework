@@ -152,6 +152,41 @@ describe("PaymentResolver", () => {
         expect(updatedToken.name).toEqual(token.name);
         expect(updatedToken.symbol).toEqual(token.symbol);
       });
+
+      it("should not create a payment token with different casing", async () => {
+        const expectedAddress = "0xabcdef";
+        const addressVariant1 = "0xABCDEF";
+        const addressVariant2 = "0xAbCdEf";
+        const token = await fixtures.createPaymentToken({
+          address: addressVariant1,
+        });
+        const user = await fixtures.createUser();
+
+        const input: CreatePaymentTokenInput = {
+          type: token.type,
+          address: addressVariant2,
+          networkId: token.networkId,
+          exp: faker.datatype.number({ min: 1, max: 10 }),
+          name: token.name,
+          symbol: token.symbol,
+        };
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: PaymentRequests.createPaymentToken(input),
+        });
+
+        expect(response.statusCode).toEqual(HttpStatus.OK);
+        const updatedToken = response.body.data?.token;
+        expect(updatedToken.id).toEqual(token.id);
+        expect(updatedToken.type).toEqual(token.type);
+        expect(updatedToken.address).toEqual(expectedAddress);
+        expect(updatedToken.networkId).toEqual(token.networkId);
+        expect(updatedToken.exp).toEqual(token.exp);
+        expect(updatedToken.name).toEqual(token.name);
+        expect(updatedToken.symbol).toEqual(token.symbol);
+      });
     });
 
     describe("updatePaymentMethod", () => {

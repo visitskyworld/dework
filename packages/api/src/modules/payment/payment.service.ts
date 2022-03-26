@@ -144,15 +144,20 @@ export class PaymentService {
   public async createPaymentToken(
     partial: AtLeast<PaymentToken, "type" | "name" | "symbol" | "networkId">
   ): Promise<PaymentToken> {
+    const address = partial.address?.toLowerCase();
     const existing = await this.paymentTokenRepo.findOne({
       type: partial.type,
       networkId: partial.networkId,
-      address: partial.address ?? IsNull(),
+      address: address ?? IsNull(),
       identifier: partial.identifier ?? IsNull(),
     });
     if (!!existing) return existing;
 
-    const created = await this.paymentTokenRepo.save({ exp: 0, ...partial });
+    const created = await this.paymentTokenRepo.save({
+      exp: 0,
+      ...partial,
+      address,
+    });
     return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
   }
 
