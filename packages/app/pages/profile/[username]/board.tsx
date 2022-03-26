@@ -6,14 +6,14 @@ import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
 import { UserTaskBoard } from "@dewo/app/containers/user/UserTaskBoard";
-import { useUser } from "@dewo/app/containers/user/hooks";
+import { useUserByUsername } from "@dewo/app/containers/user/hooks";
 
 const Page: NextPage = () => {
-  const userId = useRouter().query.userId as string;
-  const user = useUser(userId);
+  const username = useRouter().query.username as string;
+  const user = useUserByUsername(username);
   const routes = useMemo(
     () =>
-      !!userId && [
+      !!username && [
         {
           path: "../",
           breadcrumbName: "Home",
@@ -27,7 +27,7 @@ const Page: NextPage = () => {
           breadcrumbName: "Task Board",
         },
       ],
-    [userId, user]
+    [username, user]
   ) as Route[];
 
   return (
@@ -35,7 +35,7 @@ const Page: NextPage = () => {
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <UserTaskBoard userId={userId} />
+        <UserTaskBoard userId={user?.id} />
       </Layout.Content>
     </Layout>
   );

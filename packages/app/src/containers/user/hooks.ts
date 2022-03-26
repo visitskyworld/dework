@@ -111,12 +111,12 @@ export function useUserRoles(
 }
 
 export function useUserTasks(
-  userId: string,
+  userId: string | undefined,
   fetchPolicy?: WatchQueryFetchPolicy
 ): Task[] | undefined {
   const { data } = useQuery<UserTasksQuery, UserTasksQueryVariables>(
     Queries.userTasks,
-    { variables: { id: userId }, fetchPolicy }
+    { variables: { id: userId! }, fetchPolicy, skip: !userId }
   );
   useListenToTasks();
   return data?.user.tasks;

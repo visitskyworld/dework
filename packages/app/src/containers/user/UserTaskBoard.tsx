@@ -7,7 +7,7 @@ import { TaskBoardColumnEmptyProps } from "../task/board/TaskBoardColumnEmtpy";
 import { SkeletonTaskBoard } from "../task/board/SkeletonTaskBoard";
 
 interface Props {
-  userId: string;
+  userId: string | undefined;
 }
 
 const empty: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>> = {
