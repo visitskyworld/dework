@@ -8,12 +8,18 @@ import {
 } from "@dewo/api/models/ProjectIntegration";
 import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
+import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
+import {
+  ProjectIntegrationCreatedEvent,
+  ProjectIntegrationUpdatedEvent,
+} from "./integration.events";
 
 @Injectable()
 export class IntegrationService {
   constructor(
+    private readonly eventBus: EventBus,
     @InjectRepository(ProjectIntegration)
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
     @InjectRepository(OrganizationIntegration)
@@ -24,18 +30,22 @@ export class IntegrationService {
     partial: Partial<ProjectIntegration>
   ): Promise<ProjectIntegration> {
     const created = await this.projectIntegrationRepo.save(partial);
-    return this.projectIntegrationRepo.findOne(
+    const refetched = (await this.projectIntegrationRepo.findOne(
       created.id
-    ) as Promise<ProjectIntegration>;
+    )) as ProjectIntegration;
+    this.eventBus.publish(new ProjectIntegrationCreatedEvent(refetched));
+    return refetched;
   }
 
   public async updateProjectIntegration(
     partial: AtLeast<ProjectIntegration, "id">
   ): Promise<ProjectIntegration> {
     const updated = await this.projectIntegrationRepo.save(partial);
-    return this.projectIntegrationRepo.findOne(
+    const refetched = (await this.projectIntegrationRepo.findOne(
       updated.id
-    ) as Promise<ProjectIntegration>;
+    )) as ProjectIntegration;
+    this.eventBus.publish(new ProjectIntegrationUpdatedEvent(refetched));
+    return refetched;
   }
 
   public async upsertOrganizationIntegration(

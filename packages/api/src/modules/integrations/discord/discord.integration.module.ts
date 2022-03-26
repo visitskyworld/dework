@@ -8,10 +8,12 @@ import { TaskModule } from "../../task/task.module";
 import { ThreepidModule } from "../../threepid/threepid.module";
 import { IntegrationModule } from "../integration.module";
 import {
+  DiscordIntegrationCreatedEventHandler,
   DiscordIntegrationTaskApplicationCreatedEventHandler,
   DiscordIntegrationTaskCreatedEventHandler,
   DiscordIntegrationTaskSubmissionCreatedEventHandler,
   DiscordIntegrationTaskUpdatedEventHandler,
+  DiscordIntegrationUpdatedEventHandler,
 } from "./discord.eventHandlers";
 import { DiscordIntegrationResolver } from "./discord.integration.resolver";
 import { DiscordIntegrationService } from "./discord.integration.service";
@@ -35,6 +37,8 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
     DiscordIntegrationTaskUpdatedEventHandler,
     DiscordIntegrationTaskApplicationCreatedEventHandler,
     DiscordIntegrationTaskSubmissionCreatedEventHandler,
+    DiscordIntegrationCreatedEventHandler,
+    DiscordIntegrationUpdatedEventHandler,
     DiscordTaskApplicationThreadService,
     DiscordStatusboardService,
   ],

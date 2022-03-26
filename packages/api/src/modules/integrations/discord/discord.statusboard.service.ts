@@ -1,19 +1,29 @@
 import _ from "lodash";
 import * as Discord from "discord.js";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { IntegrationService } from "../integration.service";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskService } from "../../task/task.service";
 import {
+  DiscordProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
+import { ProjectIntegrationCreatedEvent } from "../integration.events";
+import { DiscordService } from "./discord.service";
+import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
 
 @Injectable()
 export class DiscordStatusboardService {
+  private logger = new Logger(this.constructor.name);
+
   constructor(
+    private readonly discord: DiscordService,
     private readonly permalink: PermalinkService,
     private readonly taskService: TaskService,
     private readonly integrationService: IntegrationService
@@ -132,5 +142,52 @@ export class DiscordStatusboardService {
         .join("\n"),
       inline: true,
     };
+  }
+
+  async handleIntegrationEvent(event: ProjectIntegrationCreatedEvent) {
+    this.logger.log(
+      `Handle project integration event: ${JSON.stringify({
+        type: event.constructor.name,
+        ...event,
+      })}`
+    );
+
+    const project = await event.projectIntegration.project;
+    const { channel, integration } =
+      await this.getChannelAndIntegrationFromProject(project);
+    if (!channel || !integration) return;
+
+    if (
+      integration.config.features.includes(
+        DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+      )
+    ) {
+      await this.postStatusboardMessage(project, integration, channel);
+    }
+  }
+
+  private async getChannelAndIntegrationFromProject(project: Project): Promise<{
+    channel: Discord.TextChannel | undefined;
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD> | undefined;
+  }> {
+    const integration = await this.integrationService.findProjectIntegration(
+      project.id,
+      ProjectIntegrationType.DISCORD
+    );
+    if (!integration) return { channel: undefined, integration: undefined };
+    const organizationIntegration =
+      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
+    if (!organizationIntegration)
+      return { channel: undefined, integration: undefined };
+
+    const channel = (await this.discord
+      .getClient(organizationIntegration)
+      .channels.fetch(integration.config.channelId)) as Discord.TextChannel;
+
+    this.logger.debug(
+      `Found Discord channel: ${JSON.stringify({ channelId: channel.id })}`
+    );
+
+    return { channel, integration };
   }
 }
