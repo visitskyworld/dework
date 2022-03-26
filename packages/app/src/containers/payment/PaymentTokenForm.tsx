@@ -96,7 +96,9 @@ export const PaymentTokenForm: FC<FormProps> = ({
           }
 
           const metadata: ERC1155Metadata = await fetch(
-            uri.replace("{id}", values.identifier!)
+            uri
+              .replace(/^ipfs:\/\//, "https://ipfs.io/ipfs/")
+              .replace("{id}", values.identifier!)
           )
             .then((res) => res.json())
             .catch(() => ({
