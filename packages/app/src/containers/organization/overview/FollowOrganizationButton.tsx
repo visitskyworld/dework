@@ -11,10 +11,14 @@ import {
 } from "../../rbac/hooks";
 
 interface Props {
+  showUnfollow?: boolean;
   organizationId: string;
 }
 
-export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
+export const FollowOrganizationButton: FC<Props> = ({
+  organizationId,
+  showUnfollow = false,
+}) => {
   const followOrganization = useFollowOrganization(organizationId);
   const [handleFollow, loadingFollow] = useRunningCallback(followOrganization, [
     followOrganization,
@@ -42,7 +46,18 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
     );
   }
 
-  if (isFollowing) {
+  if (!isFollowing) {
+    return (
+      <Button
+        type="ghost"
+        loading={loadingFollow}
+        icon={<Icons.StarOutlined />}
+        onClick={handleFollow}
+      >
+        Follow {organization?.name}
+      </Button>
+    );
+  } else if (showUnfollow) {
     return (
       <Button
         type="ghost"
@@ -55,14 +70,5 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
     );
   }
 
-  return (
-    <Button
-      type="ghost"
-      loading={loadingFollow}
-      icon={<Icons.StarOutlined />}
-      onClick={handleFollow}
-    >
-      Follow {organization?.name}
-    </Button>
-  );
+  return null;
 };
