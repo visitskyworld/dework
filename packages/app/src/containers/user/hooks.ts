@@ -20,7 +20,6 @@ import {
   UserProfileByUsernameQueryVariables,
   UserRolesQuery,
   UserRolesQueryVariables,
-  UserWithRoles,
   UpdateUserRoleInput,
   UpdateUserRoleMutation,
   UpdateUserRoleMutationVariables,
@@ -101,7 +100,9 @@ export function useUserByUsername(username: string): UserProfile | undefined {
   return data?.user;
 }
 
-export function useUserRoles(userId: string): UserWithRoles | undefined {
+export function useUserRoles(
+  userId: string
+): UserRolesQuery["user"] | undefined {
   const { data } = useQuery<UserRolesQuery, UserRolesQueryVariables>(
     Queries.userRoles,
     { variables: { userId } }

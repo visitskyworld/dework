@@ -279,17 +279,6 @@ export interface UpdateUserOnboardingMutationVariables {
 // GraphQL mutation operation: UpdateUserRoleMutation
 // ====================================================
 
-export interface UpdateUserRoleMutation_user_roles {
-  __typename: "Role";
-  id: Scalar.UUID;
-  name: string;
-  color: string;
-  source: RoleSource | null;
-  fallback: boolean;
-  userId: string | null;
-  organizationId: string;
-}
-
 export interface UpdateUserRoleMutation_user_userRoles {
   __typename: "UserRole";
   roleId: string;
@@ -299,10 +288,6 @@ export interface UpdateUserRoleMutation_user_userRoles {
 export interface UpdateUserRoleMutation_user {
   __typename: "User";
   id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-  roles: UpdateUserRoleMutation_user_roles[];
   userRoles: UpdateUserRoleMutation_user_userRoles[];
 }
 
@@ -4493,12 +4478,6 @@ export interface AddRoleMutation_addRole_roles {
   organizationId: string;
 }
 
-export interface AddRoleMutation_addRole_userRoles {
-  __typename: "UserRole";
-  roleId: string;
-  hidden: boolean;
-}
-
 export interface AddRoleMutation_addRole {
   __typename: "User";
   id: Scalar.UUID;
@@ -4506,7 +4485,6 @@ export interface AddRoleMutation_addRole {
   imageUrl: string | null;
   permalink: string;
   roles: AddRoleMutation_addRole_roles[];
-  userRoles: AddRoleMutation_addRole_userRoles[];
 }
 
 export interface AddRoleMutation {
@@ -5366,12 +5344,6 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   organizationId: string;
 }
 
-export interface GetOrganizationUsersQuery_organization_users_userRoles {
-  __typename: "UserRole";
-  roleId: string;
-  hidden: boolean;
-}
-
 export interface GetOrganizationUsersQuery_organization_users {
   __typename: "User";
   id: Scalar.UUID;
@@ -5379,7 +5351,6 @@ export interface GetOrganizationUsersQuery_organization_users {
   imageUrl: string | null;
   permalink: string;
   roles: GetOrganizationUsersQuery_organization_users_roles[];
-  userRoles: GetOrganizationUsersQuery_organization_users_userRoles[];
 }
 
 export interface GetOrganizationUsersQuery_organization {
@@ -9002,12 +8973,6 @@ export interface UserWithRoles_roles {
   organizationId: string;
 }
 
-export interface UserWithRoles_userRoles {
-  __typename: "UserRole";
-  roleId: string;
-  hidden: boolean;
-}
-
 export interface UserWithRoles {
   __typename: "User";
   id: Scalar.UUID;
@@ -9015,7 +8980,6 @@ export interface UserWithRoles {
   imageUrl: string | null;
   permalink: string;
   roles: UserWithRoles_roles[];
-  userRoles: UserWithRoles_userRoles[];
 }
 
 /* tslint:disable */

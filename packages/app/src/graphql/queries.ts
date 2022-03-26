@@ -35,6 +35,10 @@ export const userRoles = gql`
   query UserRolesQuery($userId: UUID!) {
     user: getUser(id: $userId) {
       ...UserWithRoles
+      userRoles {
+        roleId
+        hidden
+      }
     }
   }
 

@@ -141,12 +141,23 @@ export class OrganizationService {
     await this.organizationMemberRepo.delete({ userId, organizationId });
   }
 
-  public getUsers(organizationId: string): Promise<User[]> {
+  public getUsers(
+    organizationId: string,
+    { joinUserRoles = false }: { joinUserRoles?: boolean } = {}
+  ): Promise<User[]> {
+    if (joinUserRoles) {
+      return this.userRepo
+        .createQueryBuilder("user")
+        .innerJoinAndSelect("user.roles", "role")
+        .innerJoin("user.roles", "orgRoles")
+        .where("orgRoles.organizationId = :organizationId", { organizationId })
+        .getMany();
+    }
+
     return this.userRepo
       .createQueryBuilder("user")
-      .innerJoinAndSelect("user.roles", "role")
-      .innerJoin("user.roles", "orgRoles")
-      .where("orgRoles.organizationId = :organizationId", { organizationId })
+      .innerJoin("user.roles", "role")
+      .where("role.organizationId = :organizationId", { organizationId })
       .getMany();
   }
 

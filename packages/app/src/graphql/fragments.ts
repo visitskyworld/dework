@@ -56,10 +56,6 @@ export const userWithRoles = gql`
     roles {
       ...Role
     }
-    userRoles {
-      roleId
-      hidden
-    }
   }
   ${user}
   ${role}

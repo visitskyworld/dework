@@ -1,6 +1,7 @@
 import {
   Args,
   Context,
+  Info,
   Mutation,
   Parent,
   Query,
@@ -9,6 +10,7 @@ import {
 } from "@nestjs/graphql";
 import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import _ from "lodash";
+import GraphQLFields from "graphql-fields";
 import { Organization } from "@dewo/api/models/Organization";
 import { OrganizationService } from "./organization.service";
 import { User } from "@dewo/api/models/User";
@@ -28,6 +30,7 @@ import { RoleGuard } from "../rbac/rbac.guard";
 import { Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { InjectRepository } from "@nestjs/typeorm";
+import { GraphQLResolveInfo } from "graphql";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -56,8 +59,14 @@ export class OrganizationResolver {
   }
 
   @ResolveField(() => [User])
-  public async users(@Parent() organization: Organization): Promise<User[]> {
-    return this.organizationService.getUsers(organization.id);
+  public async users(
+    @Parent() organization: Organization,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<User[]> {
+    const fields = Object.keys(GraphQLFields(info as any));
+    return this.organizationService.getUsers(organization.id, {
+      joinUserRoles: fields.includes("roles"),
+    });
   }
 
   @ResolveField(() => [Role])

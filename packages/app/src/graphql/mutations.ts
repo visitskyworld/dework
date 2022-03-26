@@ -59,7 +59,11 @@ export const updateUserOnboarding = gql`
 export const updateUserRole = gql`
   mutation UpdateUserRoleMutation($input: UpdateUserRoleInput!) {
     user: updateUserRole(input: $input) {
-      ...UserWithRoles
+      id
+      userRoles {
+        roleId
+        hidden
+      }
     }
   }
 
