@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Form, Button, Input, Space, Typography } from "antd";
+import { Form, Button, Input, Space, Typography, Switch, Row } from "antd";
 import { useRouter } from "next/router";
 import { useCreateProject } from "../hooks";
 import {
@@ -7,6 +7,7 @@ import {
   OrganizationIntegrationType,
   Project,
   ProjectVisibility,
+  RulePermission,
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
 import {
@@ -14,7 +15,6 @@ import {
   useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
 } from "../../organization/hooks";
-import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
 import {
   DiscordProjectIntegrationFeature,
   GithubProjectIntegrationFeature,
@@ -25,28 +25,30 @@ import {
   DiscordIntegrationFormFields,
   FormValues as DiscordFormFields,
 } from "../../integrations/CreateDiscordIntegrationForm";
-import {
-  GithubIntegrationFormFields,
-  FormValues as GithubFormFields,
-} from "../../integrations/CreateGithubIntegrationForm";
+import { FormValues as GithubFormFields } from "../../integrations/CreateGithubIntegrationForm";
 import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { ProjectSettingsContributorSuggestions } from "../settings/ProjectSettingsContributorSuggestions";
+import {
+  useCreateRole,
+  useCreateRule,
+  useOrganizationRoles,
+} from "../../rbac/hooks";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 export interface FormValues
   extends CreateProjectInput,
     Partial<DiscordFormFields>,
     Partial<GithubFormFields> {
-  type?: "dev" | "non-dev";
+  private: boolean;
 }
 
 const formValueFieldsToRememberThroughOauthFlow: (keyof FormValues)[] = [
   "name",
-  "type",
   "sectionId",
-  "visibility",
+  "private",
 ];
 
 interface ProjectCreateFormProps {
@@ -101,6 +103,11 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     !hasDiscordIntegration
   );
 
+  const { user } = useAuthContext();
+  const createRole = useCreateRole();
+  const createRule = useCreateRule();
+  const roles = useOrganizationRoles(values.organizationId);
+
   const [loading, setLoading] = useState(false);
   const handleSubmit = useCallback(
     async (values: FormValues) => {
@@ -150,6 +157,30 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           });
         }
 
+        if (values.private) {
+          const personalRole =
+            roles?.find((r) => r.userId === user!.id) ??
+            (await createRole({
+              name: "",
+              color: "",
+              organizationId: values.organizationId,
+              userId: user!.id,
+            }));
+          await createRule({
+            permission: RulePermission.VIEW_PROJECTS,
+            projectId: project.id,
+            roleId: personalRole.id,
+          });
+
+          const fallbackRole = roles?.find((r) => r.fallback);
+          await createRule({
+            permission: RulePermission.VIEW_PROJECTS,
+            projectId: project.id,
+            inverted: true,
+            roleId: fallbackRole!.id,
+          });
+        }
+
         await onCreated(project);
       } finally {
         setLoading(false);
@@ -163,6 +194,10 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
       githubRepos,
       discordChannels.value,
       discordThreads.value,
+      createRole,
+      createRule,
+      roles,
+      user,
     ]
   );
 
@@ -170,7 +205,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     const initialValues: Partial<FormValues> = {
       organizationId,
       visibility: ProjectVisibility.PUBLIC,
-      type: "non-dev",
+      private: false,
     };
 
     try {
@@ -199,25 +234,23 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         >
           <Input placeholder="Enter a project name..." />
         </Form.Item>
-        {values.type === "dev" && !!organization && (
-          <FormSection label="Github Integration">
-            {hasGithubIntegration ? (
-              <GithubIntegrationFormFields
-                values={values}
-                repos={githubRepos}
-                organizationId={organization.id}
-              />
-            ) : (
-              <ConnectOrganizationToGithubButton
-                organizationId={organizationId}
-                stateOverride={_.pick(
-                  values,
-                  formValueFieldsToRememberThroughOauthFlow
-                )}
-              />
-            )}
-          </FormSection>
-        )}
+        <FormSection style={{ margin: 0, marginTop: 8 }} label="Visibility">
+          <Typography.Paragraph style={{ marginBottom: 0 }} type="secondary">
+            {!!values.private
+              ? "You can change who can view your project later in the project settings"
+              : "Anyone can view this project and its tasks"}
+          </Typography.Paragraph>
+          <Row align="middle" style={{ gap: 8, marginBottom: 8 }}>
+            <Typography.Text>Private project</Typography.Text>
+            <Form.Item
+              name="private"
+              valuePropName="checked"
+              style={{ marginBottom: 0 }}
+            >
+              <Switch checked={!!values.private} />
+            </Form.Item>
+          </Row>
+        </FormSection>
         <AdvancedSectionCollapse toggle={advancedSection}>
           <ProjectSettingsContributorSuggestions />
         </AdvancedSectionCollapse>
