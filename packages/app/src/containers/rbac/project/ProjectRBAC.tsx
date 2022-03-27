@@ -53,11 +53,12 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
       <Divider />
 
       <Typography.Title level={5}>
-        Create Own Tasks
+        Create Tasks
         <Tooltip
           title={
             <Typography.Text style={{ whiteSpace: "pre-line" }}>
-              Describe what this is
+              This gives users the permission to create their own tasks and
+              manage those (but not to attach a bounty to them)
             </Typography.Text>
           }
         >
