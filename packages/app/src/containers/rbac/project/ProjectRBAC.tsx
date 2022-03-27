@@ -53,6 +53,26 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
       <Divider />
 
       <Typography.Title level={5}>
+        Create Own Tasks
+        <Tooltip
+          title={
+            <Typography.Text style={{ whiteSpace: "pre-line" }}>
+              Describe what this is
+            </Typography.Text>
+          }
+        >
+          <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+        </Tooltip>
+      </Typography.Title>
+      <RBACPermissionForm
+        permission={RulePermission.MANAGE_TASKS}
+        roles={roles}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
+      <Divider />
+
+      <Typography.Title level={5}>
         View Project
         <Tooltip
           title={

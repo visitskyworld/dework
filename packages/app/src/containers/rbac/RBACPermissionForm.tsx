@@ -233,7 +233,7 @@ export const RBACPermissionForm: FC<Props> = ({
               users={users}
             />
           </Form.Item>
-          {hasPermission && (
+          {hasPermission && !!onInviteUser && (
             <Button
               type="ghost"
               loading={invitingUser}

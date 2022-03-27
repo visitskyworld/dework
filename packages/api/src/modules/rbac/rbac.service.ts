@@ -245,7 +245,11 @@ export class RbacService {
           });
         // eslint-disable-next-line no-fallthrough
         case RulePermission.MANAGE_TASKS:
-          fn(CRUD, Task, task);
+          if (!!rule.taskId) {
+            fn("update", Task, task);
+          } else {
+            fn("create", Task, task);
+          }
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);
