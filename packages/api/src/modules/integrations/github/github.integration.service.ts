@@ -403,8 +403,12 @@ export class GithubIntegrationService {
     }
 
     const client = this.createClient(integration.config.installationId);
-    const res = await client.apps.listReposAccessibleToInstallation();
-    return res.data.repositories.map((repo) => ({
+    const repos = await client.paginate(
+      client.apps.listReposAccessibleToInstallation
+    );
+
+    // Note(fant): return type of client.paginate is wrong
+    return (repos as any as typeof repos["repositories"]).map((repo) => ({
       id: repo.node_id,
       name: repo.name,
       organization: repo.owner.login,
