@@ -916,9 +916,6 @@ textarea {
 }
 
 .ant-avatar {
-  &-blue {
-    background: pink;
-  }
   .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
     .make-color-classes(@i - 1);
       @color: extract(@preset-colors, @i);
