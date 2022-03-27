@@ -207,11 +207,11 @@ describe("UserResolver", () => {
           );
         });
 
-        it("should fail if someone else is connected to 3pid", async () => {
+        it("should move over threepid if was connected to other user", async () => {
           const threepid = await fixtures.createThreepid({
             source: ThreepidSource.discord,
           });
-          await fixtures.createUser(threepid);
+          const originalUser = await fixtures.createUser(threepid);
 
           const user = await fixtures.createUser({
             source: ThreepidSource.github,
@@ -222,8 +222,16 @@ describe("UserResolver", () => {
             body: UserRequests.authWithThreepid(threepid.id),
           });
 
-          client.expectGqlError(response, HttpStatus.FORBIDDEN);
-          client.expectGqlErrorMessage(response, "Account already connected");
+          expect(response.status).toEqual(HttpStatus.OK);
+          const updatedUser = response.body.data?.authWithThreepid.user;
+          expect(updatedUser.threepids).toContainEqual(
+            expect.objectContaining({ id: threepid.id })
+          );
+
+          const updatedOriginalUser = await fixtures.getUser(originalUser.id);
+          const originalUserThreepids = await updatedOriginalUser?.threepids;
+
+          expect(originalUserThreepids).toHaveLength(0);
         });
       });
 

@@ -49,19 +49,20 @@ export class UserService {
     const threepid = await this.threepidService.findById(threepidId);
     if (!threepid) throw new NotFoundException();
     if (!!threepid.userId) {
-      if (!!existingUser) {
-        if (threepid.userId !== existingUser.id) {
-          throw new ForbiddenException("Account already connected");
-        } else {
-          return existingUser;
-        }
+      if (!existingUser) {
+        return this.userRepo.findOne(threepid.userId) as Promise<User>;
+      } else if (threepid.userId === existingUser.id) {
+        return existingUser;
+      } else {
+        this.logger.warn(
+          `Authing with threepid already connected to other account: ${JSON.stringify(
+            { threepid, existingUser }
+          )}`
+        );
       }
-
-      return this.userRepo.findOne(threepid.userId) as Promise<User>;
     }
 
     const threepidImage = this.threepidService.getImageUrl(threepid);
-
     const user = await this.userRepo.save({
       ...existingUser,
       threepids: existingUser?.threepids ?? Promise.resolve([]),
@@ -86,8 +87,6 @@ export class UserService {
     threepid: Threepid,
     user: User
   ): Promise<void> {
-    if (!!threepid.userId) throw new ForbiddenException();
-
     const threepids = await user.threepids;
     if (threepids.some((t) => t.source === threepid.source)) {
       throw new ForbiddenException(
