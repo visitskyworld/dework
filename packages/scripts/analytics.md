@@ -127,3 +127,12 @@ WHERE project."createdAt" <= NOW() - INTERVAL '2 WEEKS'
 GROUP BY project.id, organization.id
 ORDER BY lastTaskUpdated DESC
 ```
+
+## Organizations who are using task role gating
+```sql
+SELECT DISTINCT organization.slug
+FROM rule
+INNER JOIN role ON role.id = rule."roleId"
+INNER JOIN organization ON organization.id = role."organizationId"
+WHERE rule."taskId" IS NOT NULL
+```
