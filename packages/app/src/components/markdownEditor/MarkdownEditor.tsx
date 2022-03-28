@@ -11,7 +11,15 @@ import React, {
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import * as Icons from "@ant-design/icons";
-import { Upload, notification, Button, message } from "antd";
+import {
+  Upload,
+  notification,
+  Button,
+  message,
+  Tabs,
+  Row,
+  Divider,
+} from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadFile } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownURL } from "./utils";
@@ -20,6 +28,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { MarkdownPreview } from "./MarkdownPreview";
 import * as commands from "@uiw/react-md-editor/lib/commands";
+import { MarkdownEditorButtons } from "./MarkdownEditorButtons";
 
 interface MarkdownEditorProps {
   initialValue?: string | undefined;
@@ -162,42 +171,62 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
       ),
     [fileRef]
   );
+
   if (editing.isOn) {
     return (
-      <Upload.Dragger
-        openFileDialogOnClick={false}
-        showUploadList={false}
-        maxCount={1}
-        customRequest={handleFileDropped}
-        className="dewo-md-upload"
-        beforeUpload={beforeUpload}
+      <Tabs
+        defaultActiveKey={"create"}
+        tabBarStyle={{ marginBottom: 0 }}
+        className="dewo-md-tabs"
       >
-        {/* input for uploading img from toolbar upload button */}
-        <input
-          type="file"
-          id="file-input"
-          ref={fileRef as React.LegacyRef<HTMLInputElement>}
-          onChange={handleToolbarFile}
-          style={{ display: "none" }}
-        />
-        <MDEditor
-          value={value}
-          onChange={setValue}
-          className="dewo-md-editor"
-          highlightEnable={false}
-          commands={newCommands}
-          extraCommands={[]}
-          preview="edit"
-          enableScroll={false}
-          autoFocus={mode === "update"}
-          textareaProps={{ placeholder }}
-          disabled={uploading}
-          onPaste={handleFilePaste}
-          onBlur={stopPropagation}
-          onSave={!autoSave ? handleSave : undefined}
-          onCancel={!autoSave ? editing.toggleOff : undefined}
-        />
-      </Upload.Dragger>
+        <Tabs.TabPane tab="Write" key="editor">
+          <Upload.Dragger
+            openFileDialogOnClick={false}
+            showUploadList={false}
+            maxCount={1}
+            customRequest={handleFileDropped}
+            className="dewo-md-upload"
+            beforeUpload={beforeUpload}
+          >
+            {/* input for uploading img from toolbar upload button */}
+            <input
+              type="file"
+              id="file-input"
+              ref={fileRef as React.LegacyRef<HTMLInputElement>}
+              onChange={handleToolbarFile}
+              style={{ display: "none" }}
+            />
+            <MDEditor
+              value={value}
+              onChange={setValue}
+              className="dewo-md-editor"
+              highlightEnable={false}
+              commands={newCommands}
+              extraCommands={[]}
+              preview="edit"
+              enableScroll={false}
+              autoFocus={mode === "update"}
+              textareaProps={{ placeholder }}
+              disabled={uploading}
+              onPaste={handleFilePaste}
+              onBlur={stopPropagation}
+              onSave={!autoSave ? handleSave : undefined}
+              onCancel={!autoSave ? editing.toggleOff : undefined}
+            />
+          </Upload.Dragger>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Preview" key="preview" style={{ paddingTop: 8 }}>
+          <MarkdownPreview value={value} placeholder={placeholder} />
+          <Divider style={{ marginTop: 8, marginBottom: 8 }} />
+          <Row justify="end">
+            <MarkdownEditorButtons
+              disabled={uploading}
+              onSave={!autoSave ? handleSave : undefined}
+              onCancel={!autoSave ? editing.toggleOff : undefined}
+            />
+          </Row>
+        </Tabs.TabPane>
+      </Tabs>
     );
   } else {
     return (

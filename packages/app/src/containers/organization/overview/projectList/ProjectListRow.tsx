@@ -63,8 +63,9 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
         <Card
           size="small"
           className="hover:component-highlight"
+          style={{ height: "100%" }}
           bodyStyle={{
-            height: 96,
+            height: "100%",
             padding: "8px 12px",
             display: "flex",
             flexDirection: "column",
@@ -80,7 +81,9 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
           </Row>
           <div style={{ flex: 1 }} />
 
-          <Row style={{ justifyContent: "space-between" }}>
+          <Row
+            style={{ rowGap: 4, justifyContent: "space-between", marginTop: 8 }}
+          >
             <Avatar.Group size="small" maxCount={3}>
               {projectUsers?.map((user) => (
                 <UserAvatar key={user.id} user={user} />

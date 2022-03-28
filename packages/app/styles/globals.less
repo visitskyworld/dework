@@ -9,7 +9,7 @@
 @primary-color-25: #8570e444;
 @primary-color-50: #8570e488;
 @body-background: #00042d;
-@twitter-color:#1DA1F2;
+@twitter-color: #1da1f2;
 @component-background: fade(@white, 10%);
 @divider-color: fade(@white, 20%);
 @border-color-base: fade(@white, 40%);
@@ -24,7 +24,7 @@
 @tag-default-bg: @component-background;
 
 @purple-base: #833bff;
-@blue-base: #78C6FF;
+@blue-base: #78c6ff;
 
 html {
   background: @body-background;
@@ -87,7 +87,7 @@ iframe {
     padding-top: 4px;
     padding-bottom: 4px;
   }
-  
+
   .ant-card-actions > li {
     margin: 4px 0;
   }
@@ -305,21 +305,22 @@ iframe {
   }
 
   .dewo-task-board-column {
-    background: #1B1D4B;
+    background: #1b1d4b;
     .dewo-task-board-column-section-title {
       position: sticky;
       top: 0;
-      background: #1B1D4B;
+      background: #1b1d4b;
       z-index: 1;
       padding-top: 8px;
-  
+
       .dewo-task-board-column-section-options {
         visibility: hidden;
         opacity: 0;
         transition: opacity 0.3s ease-in-out;
       }
-  
-      &:hover .dewo-task-board-column-section-options, .dewo-task-board-column-section-options:focus {
+
+      &:hover .dewo-task-board-column-section-options,
+      .dewo-task-board-column-section-options:focus {
         visibility: visible;
         opacity: 1;
       }
@@ -571,6 +572,17 @@ iframe {
 .font-bold {
   font-weight: 600;
 }
+
+.dewo-md-tabs {
+  .ant-tabs-nav-wrap {
+    max-width: 120px;
+    z-index: 1;
+  }
+  .ant-tabs-tabpane {
+    overflow-y: unset;
+  }
+}
+
 .dewo-md-editor.w-md-editor {
   background: transparent;
   box-shadow: none;
@@ -624,10 +636,19 @@ iframe {
     }
   }
   .w-md-editor-toolbar {
+    border: none;
+    @media (min-width: @screen-sm) {
+      margin-top: -29px;
+    }
+
+    @media (max-width: @screen-sm) {
+      border: 1px solid @border-color-split;
+      border-top: none;
+      border-bottom: none;
+      border-radius: 0;
+    }
+
     justify-content: flex-end;
-    border: 1px solid @border-color-base;
-    border-top-left-radius: @border-radius-base;
-    border-top-right-radius: @border-radius-base;
     border-bottom: 0;
     background: transparent;
     & li button {
@@ -908,7 +929,9 @@ iframe {
 }
 
 .dewo-twitter-btn {
-  &:hover, &:focus, &:active {
+  &:hover,
+  &:focus,
+  &:active {
     color: @twitter-color;
     border-color: @twitter-color;
   }

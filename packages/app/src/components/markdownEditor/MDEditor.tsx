@@ -1,7 +1,8 @@
 import React from "react";
 import { MDEditorProps } from "@uiw/react-md-editor";
-import { Button, Row, Skeleton, Typography } from "antd";
+import { Row, Skeleton, Typography } from "antd";
 import dynamic from "next/dynamic";
+import { MarkdownEditorButtons } from "./MarkdownEditorButtons";
 
 interface Props extends MDEditorProps {
   disabled?: boolean;
@@ -26,26 +27,11 @@ export const MDEditor = dynamic<Props>(
                 >
                   Markdown & any file drag-and-drop supported
                 </Typography.Text>
-                {!!props.onCancel && (
-                  <Button
-                    size="small"
-                    type="text"
-                    style={{ marginRight: 8 }}
-                    onClick={props.onCancel}
-                  >
-                    <Typography.Text type="secondary">Cancel</Typography.Text>
-                  </Button>
-                )}
-                {!!props.onSave && (
-                  <Button
-                    size="small"
-                    type="primary"
-                    disabled={props.disabled}
-                    onClick={props.onSave}
-                  >
-                    Save
-                  </Button>
-                )}
+                <MarkdownEditorButtons
+                  disabled={props.disabled}
+                  onCancel={props.onCancel}
+                  onSave={props.onSave}
+                />
               </Row>
             </div>
           )}
