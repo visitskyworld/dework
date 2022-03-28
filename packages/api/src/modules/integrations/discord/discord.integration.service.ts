@@ -141,7 +141,16 @@ export class DiscordIntegrationService {
         shouldCreateChannelIfNotExists
       );
 
-      if (!mainChannel || !guild) return;
+      if (!mainChannel || !guild) {
+        this.logger.warn(
+          `No main channel or guild found: ${JSON.stringify({
+            mainChannel,
+            guild,
+            integration,
+          })}`
+        );
+        return;
+      }
 
       if (
         event instanceof TaskCreatedEvent &&
@@ -195,24 +204,12 @@ export class DiscordIntegrationService {
         );
       }
 
-      if (!channelToPostTo) return;
-
       const statusChanged =
         event instanceof TaskCreatedEvent ||
         (event instanceof TaskUpdatedEvent &&
           event.task.status !== event.prevTask.status);
 
-      if (statusChanged && event.task.status === TaskStatus.IN_REVIEW) {
-        await this.postMovedIntoReview(event.task, channelToPostTo);
-      } else if (statusChanged && event.task.status === TaskStatus.DONE) {
-        if (
-          integration.config.features.includes(
-            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-          )
-        ) {
-          await this.postDone(channelToPostTo, event.task);
-        }
-
+      if (statusChanged && event.task.status === TaskStatus.DONE) {
         const threepids = await this.findTaskUserThreepids(event.task);
         await mainChannel.send({
           embeds: [
@@ -234,6 +231,25 @@ export class DiscordIntegrationService {
             },
           ],
         });
+      }
+
+      if (!channelToPostTo) {
+        this.logger.warn(
+          `No channel to post to found: ${JSON.stringify({ integration })}`
+        );
+        return;
+      }
+
+      if (statusChanged && event.task.status === TaskStatus.IN_REVIEW) {
+        await this.postMovedIntoReview(event.task, channelToPostTo);
+      } else if (statusChanged && event.task.status === TaskStatus.DONE) {
+        if (
+          integration.config.features.includes(
+            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+          )
+        ) {
+          await this.postDone(channelToPostTo, event.task);
+        }
       } else if (event instanceof TaskUpdatedEvent) {
         if (event.task.ownerId !== event.prevTask.ownerId) {
           await this.postOwnerChange(event.task, channelToPostTo);
