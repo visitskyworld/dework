@@ -928,10 +928,17 @@ iframe {
       &-@{color} {
         color: @@colorValue;
         background: fade(@@colorValue, 20%);
-        border: 1.5px solid fade(@@colorValue, 20%);
+        border: 2px solid fade(@@colorValue, 20%);
       }
   }
   .make-color-classes();
+
+  &-white {
+    color: @white;
+    background: fade(@white, 20%);
+    // border: 2px solid fade(@white, 20%);
+    border: 2px solid @white;
+  }
 }
 
 .ant-avatar-group > *:not(:first-child) {

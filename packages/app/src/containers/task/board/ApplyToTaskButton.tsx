@@ -11,17 +11,17 @@ interface Props {
   task: Task;
 }
 
-export const ClaimTaskButton: FC<Props> = ({ task }) => {
+export const ApplyToTaskButton: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
   const hasClaimedTask = useMemo(
     () => !!user && task.applications.some((tA) => tA.user.id === user.id),
     [user, task.applications]
   );
 
-  const navigateToTasApplicationk = useNavigateToTaskApplicationFn();
+  const navigateToTaskApplication = useNavigateToTaskApplicationFn();
   const handleInterested = useCallback(
-    () => navigateToTasApplicationk(task.id),
-    [navigateToTasApplicationk, task.id]
+    () => navigateToTaskApplication(task.id),
+    [navigateToTaskApplication, task.id]
   );
 
   const deleteTaskApplication = useDeleteTaskApplication();

@@ -15,10 +15,7 @@ export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
   const navigateToProfile = useNavigateToProfile();
 
   return (
-    <Space
-      direction="vertical"
-      style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}
-    >
+    <Space direction="vertical" style={{ width: "100%" }}>
       <Table<UserWithRoles>
         dataSource={users}
         size="small"

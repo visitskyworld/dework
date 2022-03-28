@@ -14,15 +14,15 @@ export class TaskFilterInput {
 
   @Field(() => Int, { nullable: true, defaultValue: 1000 })
   public limit?: number;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public userId?: string;
 }
 
 @InputType()
 export class GetTasksInput extends TaskFilterInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public ids?: string[];
-
-  @Field(() => GraphQLUUID, { nullable: true })
-  public userId?: string;
 
   @Field({ nullable: true })
   public rewardNotNull?: boolean;

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { NextPage } from "next";
-import { Layout, PageHeader, Row } from "antd";
+import { Grid, Layout, PageHeader, Row } from "antd";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useRouter } from "next/router";
 import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
@@ -24,6 +24,12 @@ const Page: NextPage = () => {
   const { organizationSlug } = router.query as { organizationSlug: string };
   const { organization } = useOrganizationBySlug(organizationSlug);
   const organizationId = organization?.id;
+
+  const breakpoint = Grid.useBreakpoint();
+  const inset = useMemo(() => {
+    if (breakpoint.xxl) return 128;
+    return 8;
+  }, [breakpoint]);
 
   const routes = useMemo(
     () =>
@@ -55,13 +61,13 @@ const Page: NextPage = () => {
       <Sidebar />
       <Layout.Content>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <Row style={{ marginLeft: 24, marginRight: 24 }}>
-          <Row className="max-w-lg mx-auto w-full">
-            <OrganizationHeaderSummary organizationId={organizationId} />
-          </Row>
+        <Row style={{ marginLeft: inset, marginRight: inset }}>
+          <OrganizationHeaderSummary organizationId={organizationId} />
         </Row>
         {!!organizationId && (
           <OrganizationTabs
+            tabBarStyle={{ paddingLeft: inset, paddingRight: inset }}
+            tabPaneStyle={{ padding: `12px ${inset}px` }}
             organizationId={organizationId}
             currentTab={currentTab}
             settingsTab={settingsTab}

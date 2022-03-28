@@ -158,7 +158,7 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
             </Can>
           </Select.Option>
         ))}
-        {displayedSuggestions.length > 0 && (
+        {allowCreate && !!displayedSuggestions.length && (
           <>
             <Select.OptGroup label="Suggested tags" />
             {displayedSuggestions.map((tag) => (

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { Button, Grid, List, Skeleton, Typography } from "antd";
+import { Button, List, Skeleton, Typography } from "antd";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
@@ -12,7 +12,6 @@ interface Props {
 export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganizationDetails(organizationId);
   const canUpdate = usePermission("update", organization);
-  const avatarSize = Grid.useBreakpoint().sm ? 192 : 96;
 
   const description = useMemo(() => {
     if (!organization) return null;
@@ -43,7 +42,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
     return (
       <List.Item.Meta
         className="dewo-list-item-meta"
-        avatar={<Skeleton.Avatar active size={avatarSize} />}
+        avatar={<Skeleton.Avatar active size={96} />}
         title={
           <Skeleton
             loading
@@ -59,9 +58,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   return (
     <List.Item.Meta
       className="dewo-list-item-meta"
-      avatar={
-        <OrganizationAvatar organization={organization} size={avatarSize} />
-      }
+      avatar={<OrganizationAvatar organization={organization} size={96} />}
       title={
         <Typography.Title level={2} style={{ marginBottom: 0 }}>
           {organization.name}

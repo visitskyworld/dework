@@ -8,7 +8,7 @@ import { TaskStatus } from "@dewo/app/graphql/types";
 import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { TaskCard } from "../task/board/TaskCard";
+import { TaskCard } from "../task/card/TaskCard";
 import { calculateTaskRewardAsUSD } from "../task/hooks";
 import { UserOrganizationCard } from "./UserOrganizationCard";
 

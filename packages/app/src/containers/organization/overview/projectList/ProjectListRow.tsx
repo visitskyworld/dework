@@ -1,74 +1,132 @@
-import { Card, Progress, Row, Tag, Typography } from "antd";
-import React, { FC } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Dropdown,
+  Menu,
+  Row,
+  Tag,
+  Typography,
+} from "antd";
+import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
-import { OrganizationDetails } from "@dewo/app/graphql/types";
+import { OrganizationDetails, ProjectSection } from "@dewo/app/graphql/types";
 import Link from "next/link";
-import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
-import { useIsProjectPrivate } from "@dewo/app/containers/rbac/hooks";
+import {
+  useIsProjectPrivate,
+  useOrganizationRoles,
+} from "@dewo/app/containers/rbac/hooks";
+import { useUpdateProject } from "@dewo/app/containers/project/hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { useOrganizationUsers } from "../../hooks";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { eatClick } from "@dewo/app/util/eatClick";
 
 interface Props {
   project: OrganizationDetails["projects"][number];
+  sections: ProjectSection[];
 }
 
-export const ProjectListRow: FC<Props> = ({ project }) => {
-  const screens = useBreakpoint();
+export const ProjectListRow: FC<Props> = ({ project, sections }) => {
   const isPrivate = useIsProjectPrivate(project);
+  const canChangeSection = usePermission("update", project, "sectionId");
+  const updateProject = useUpdateProject();
+  const handleMoveSection = useCallback(
+    async (section: ProjectSection) => {
+      await updateProject({
+        id: project.id,
+        sortKey: Date.now().toString(),
+        sectionId: section.id === "default" ? null : section.id,
+      });
+    },
+    [project.id, updateProject]
+  );
+
+  const { users } = useOrganizationUsers(project.organizationId);
+  const roles = useOrganizationRoles(project.organizationId);
+  const projectUsers = useMemo(() => {
+    const rolesWithAccess = new Set(
+      roles
+        ?.filter((role) =>
+          role.rules.some((r) => r.projectId === project.id && !r.inverted)
+        )
+        .map((role) => role.id)
+    );
+    return users?.filter((user) =>
+      user.roles.some((r) => rolesWithAccess.has(r.id))
+    );
+  }, [users, roles, project.id]);
+
   return (
     <Link href={project.permalink}>
       <a>
         <Card
           size="small"
           className="hover:component-highlight"
-          style={{ padding: 8 }}
+          bodyStyle={{
+            height: 96,
+            padding: "8px 12px",
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <Row style={{ alignItems: "center" }}>
-            <Row style={{ flex: 2 }}>
-              <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                {project.name}
-              </Typography.Title>
-              {isPrivate && (
-                <Tag
-                  className="bg-component"
-                  style={{ marginLeft: 16 }}
-                  icon={<Icons.LockOutlined />}
-                >
-                  Private
-                </Tag>
-              )}
-              {!!project.openBountyTaskCount && (
-                <Tag className="bg-primary" style={{ marginLeft: 16 }}>
-                  {project.openBountyTaskCount === 1
-                    ? "1 open bounty"
-                    : `${project.openBountyTaskCount} open bounties`}
-                </Tag>
-              )}
-            </Row>
-            {screens.sm && (
-              <Progress
-                size="small"
-                percent={
-                  !!project.taskCount
-                    ? (project.doneTaskCount / project.taskCount) * 100
-                    : undefined
-                }
-                showInfo={false}
-                style={{ flex: 1 }}
-              />
+          <Row style={{ columnGap: 8, paddingRight: 20 }}>
+            <Typography.Text strong>{project.name}</Typography.Text>
+            {isPrivate && (
+              <Tag className="bg-component" icon={<Icons.LockOutlined />}>
+                Private
+              </Tag>
             )}
-            {/* <Avatar.Group
-              size="small"
-              maxCount={5}
-              style={{
-                width: 104,
-                marginLeft: 16,
-                justifyContent: "flex-end",
-              }}
-            >
-              {project.members.map((member) => (
-                <UserAvatar key={member.id} user={member.user} linkToProfile />
-              ))}
-            </Avatar.Group> */}
           </Row>
+          <div style={{ flex: 1 }} />
+
+          <Row style={{ justifyContent: "space-between" }}>
+            <Avatar.Group size="small" maxCount={3}>
+              {projectUsers?.map((user) => (
+                <UserAvatar key={user.id} user={user} />
+              ))}
+            </Avatar.Group>
+            {!!project.openBountyTaskCount && (
+              <Tag className="bg-primary" style={{ margin: 0 }}>
+                {project.openBountyTaskCount === 1
+                  ? "1 open bounty"
+                  : `${project.openBountyTaskCount} open bounties`}
+              </Tag>
+            )}
+          </Row>
+
+          {canChangeSection && (
+            <Dropdown
+              key="avatar"
+              placement="bottomRight"
+              trigger={["click"]}
+              overlay={
+                <Menu>
+                  <Menu.SubMenu title="Change Section">
+                    {sections.map((section) => (
+                      <Menu.Item
+                        key={section.id}
+                        onClick={(e) => {
+                          eatClick(e.domEvent);
+                          handleMoveSection(section);
+                        }}
+                      >
+                        {section.name}
+                      </Menu.Item>
+                    ))}
+                  </Menu.SubMenu>
+                </Menu>
+              }
+            >
+              <Button
+                type="text"
+                size="small"
+                style={{ position: "absolute", top: 8, right: 8 }}
+                icon={<Icons.MoreOutlined />}
+                className="dewo-task-options-button"
+              />
+            </Dropdown>
+          )}
         </Card>
       </a>
     </Link>

@@ -1,17 +1,19 @@
 import React, { CSSProperties, FC } from "react";
-import * as Icons from "@ant-design/icons";
 import {
   Task,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import { Card, Typography, Space, Row, Rate, Tag, Tooltip } from "antd";
+import { Card, Typography, Space, Row, Rate } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
-import { TaskReactionPicker } from "./TaskReactionPicker";
-import { TaskTagsRow } from "./TaskTagsRow";
-import { TaskActionButton, useTaskActionButton } from "./TaskActionButton";
+import { TaskReactionPicker } from "../board/TaskReactionPicker";
+import { TaskTagsRow } from "../board/TaskTagsRow";
+import {
+  TaskActionButton,
+  useTaskActionButton,
+} from "../board/TaskActionButton";
 import { TaskCardAvatars } from "./TaskCardAvatars";
-import { formatTaskReward } from "../hooks";
+import { TaskRewardTag } from "../TaskRewardTag";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -48,23 +50,10 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
                 }}
               >
                 {shouldRenderReward && (
-                  <Tooltip title={formatTaskReward(task.reward!)}>
-                    <Tag
-                      key="reward"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        maxWidth: 100,
-                      }}
-                    >
-                      <Icons.DollarOutlined />
-                      <span
-                        style={{ overflow: "hidden", textOverflow: "ellipsis" }}
-                      >
-                        {formatTaskReward(task.reward!)}
-                      </span>
-                    </Tag>
-                  </Tooltip>
+                  <TaskRewardTag
+                    reward={task.reward!}
+                    style={{ maxWidth: 100 }}
+                  />
                 )}
                 {/* make reactions/button right-aligned */}
                 {!shouldRenderReactions && <div />}
@@ -81,7 +70,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       onClick={navigateToTask}
     >
       <Space direction="vertical" size={4} style={{ width: "100%" }}>
-        <Row>
+        <Row style={{ gap: 8 }}>
           <Typography.Text strong style={{ flex: 1, wordBreak: "break-word" }}>
             {task.name}
           </Typography.Text>

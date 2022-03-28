@@ -44,6 +44,7 @@ import {
   SetOrganizationDetailMutation,
   SetOrganizationDetailMutationVariables,
   SetOrganizationDetailMutation_organization,
+  TaskFilterInput,
   TaskTag,
   UpdateOrganizationInput,
   UpdateOrganizationMutation,
@@ -237,12 +238,13 @@ export function useAllOrganizationTags(
 
 export function useOrganizationTasks(
   organizationId: string,
+  filter: TaskFilterInput | undefined,
   fetchPolicy: WatchQueryFetchPolicy
 ): GetOrganizationTasksQuery["organization"] | undefined {
   const { data, refetch } = useQuery<
     GetOrganizationTasksQuery,
     GetOrganizationTasksQueryVariables
-  >(Queries.organizationTasks, { variables: { organizationId } });
+  >(Queries.organizationTasks, { variables: { organizationId, filter } });
   useEffect(() => {
     if (fetchPolicy === "cache-and-network" && !!data) {
       refetch();

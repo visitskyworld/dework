@@ -8,13 +8,14 @@ import { Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ClaimTaskButton } from "./ClaimTaskButton";
+import { ApplyToTaskButton } from "./ApplyToTaskButton";
 import { useUpdateTask } from "../hooks";
 import { PayButton } from "./PayButton";
 import { useShouldShowInlinePayButton } from "./util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { CreateSubmissionButton } from "./CreateSubmissionButton";
 import { stopPropagation } from "@dewo/app/util/eatClick";
+import { useRunningCallback } from "@dewo/app/util/hooks";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -28,6 +29,12 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   const moveToDone = useCallback(
     () => updateTask({ id: task.id, status: TaskStatus.DONE }, task),
     [updateTask, task]
+  );
+  const [claimTask, claimingTask] = useRunningCallback(
+    () =>
+      !!currentUserId &&
+      updateTask({ id: task.id, assigneeIds: [currentUserId] }),
+    [currentUserId, updateTask, task.id]
   );
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
@@ -96,6 +103,24 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   }
 
   if (
+    canUpdateTask &&
+    task.status === TaskStatus.TODO &&
+    !task.assignees.length
+  ) {
+    return (
+      <Button
+        size="small"
+        type="text"
+        loading={claimingTask}
+        icon={<Icons.RightCircleOutlined />}
+        onClick={claimTask}
+      >
+        Claim task
+      </Button>
+    );
+  }
+
+  if (
     [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
     !!task.options?.allowOpenSubmission &&
     canCreateSubmission
@@ -104,7 +129,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   }
 
   if (!canManage && task.status === TaskStatus.TODO && canApply) {
-    return <ClaimTaskButton task={task} />;
+    return <ApplyToTaskButton task={task} />;
   }
 }
 

@@ -101,11 +101,11 @@ export function useUserByUsername(username: string): UserProfile | undefined {
 }
 
 export function useUserRoles(
-  userId: string
+  userId: string | undefined
 ): UserRolesQuery["user"] | undefined {
   const { data } = useQuery<UserRolesQuery, UserRolesQueryVariables>(
     Queries.userRoles,
-    { variables: { userId } }
+    { variables: { userId: userId! }, skip: !userId }
   );
   return data?.user;
 }

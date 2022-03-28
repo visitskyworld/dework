@@ -8,7 +8,7 @@ import { SortOrder } from "antd/lib/table/interface";
 import moment from "moment";
 import Link from "next/link";
 import React, { FC } from "react";
-import { ClaimTaskButton } from "../task/board/ClaimTaskButton";
+import { ApplyToTaskButton } from "../task/board/ApplyToTaskButton";
 import { CreateSubmissionButton } from "../task/board/CreateSubmissionButton";
 import { TaskTagsRow } from "../task/board/TaskTagsRow";
 import {
@@ -100,7 +100,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                   {task.options?.allowOpenSubmission ? (
                     <CreateSubmissionButton task={task} />
                   ) : (
-                    <ClaimTaskButton task={task} />
+                    <ApplyToTaskButton task={task} />
                   )}
                 </div>
               )}
@@ -151,7 +151,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                       {task.options?.allowOpenSubmission ? (
                         <CreateSubmissionButton task={task} />
                       ) : (
-                        <ClaimTaskButton task={task} />
+                        <ApplyToTaskButton task={task} />
                       )}
                     </div>
                   ),

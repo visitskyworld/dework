@@ -10,6 +10,7 @@ interface Props {
 export const OrganizationTaskBoard: FC<Props> = ({ organizationId }) => {
   const organization = useOrganizationTasks(
     organizationId,
+    undefined,
     "cache-and-network"
   );
 

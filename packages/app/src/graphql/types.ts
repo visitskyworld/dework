@@ -5772,6 +5772,7 @@ export interface GetOrganizationTasksQuery {
 
 export interface GetOrganizationTasksQueryVariables {
   organizationId: Scalar.UUID;
+  filter?: TaskFilterInput | null;
 }
 
 /* tslint:disable */
@@ -11336,8 +11337,8 @@ export interface GetTasksInput {
   doneAtBefore?: Scalar.DateTime | null;
   statuses?: TaskStatus[] | null;
   limit?: number | null;
-  ids?: Scalar.UUID[] | null;
   userId?: Scalar.UUID | null;
+  ids?: Scalar.UUID[] | null;
   rewardNotNull?: boolean | null;
 }
 
@@ -11369,6 +11370,14 @@ export interface SetOrganizationDetailInput {
 export interface SetUserDetailInput {
   type: EntityDetailType;
   value?: string | null;
+}
+
+export interface TaskFilterInput {
+  doneAtAfter?: Scalar.DateTime | null;
+  doneAtBefore?: Scalar.DateTime | null;
+  statuses?: TaskStatus[] | null;
+  limit?: number | null;
+  userId?: Scalar.UUID | null;
 }
 
 export interface TaskOptionsInput {

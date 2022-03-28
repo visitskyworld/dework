@@ -182,10 +182,13 @@ export const organizationTags = gql`
 `;
 
 export const organizationTasks = gql`
-  query GetOrganizationTasksQuery($organizationId: UUID!) {
+  query GetOrganizationTasksQuery(
+    $organizationId: UUID!
+    $filter: TaskFilterInput
+  ) {
     organization: getOrganization(id: $organizationId) {
       id
-      tasks {
+      tasks(filter: $filter) {
         ...Task
       }
     }

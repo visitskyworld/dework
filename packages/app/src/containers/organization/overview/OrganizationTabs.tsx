@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import {
   Avatar,
@@ -7,6 +7,7 @@ import {
   Grid,
   Row,
   Skeleton,
+  Space,
   Tabs,
   Tag,
   Typography,
@@ -31,14 +32,19 @@ import { OrganizationTaskFilterButton } from "../../task/board/filters/TaskFilte
 import { TaskFilterProvider } from "../../task/board/filters/FilterContext";
 import { useOrganizationRoles } from "../../rbac/hooks";
 import { RulePermission } from "@dewo/app/graphql/types";
+import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 
 interface Props {
   organizationId: string;
   currentTab: string;
   settingsTab?: string;
+  tabBarStyle?: CSSProperties;
+  tabPaneStyle?: CSSProperties;
 }
 
 export const OrganizationTabs: FC<Props> = ({
+  tabBarStyle,
+  tabPaneStyle,
   organizationId,
   currentTab,
   settingsTab,
@@ -82,8 +88,7 @@ export const OrganizationTabs: FC<Props> = ({
   return (
     <TaskFilterProvider>
       <Tabs
-        centered
-        style={{ marginTop: 16 }}
+        tabBarStyle={tabBarStyle}
         className="dewo-tabs"
         activeKey={currentTab}
         onTabClick={navigateToTab}
@@ -99,16 +104,24 @@ export const OrganizationTabs: FC<Props> = ({
         <Tabs.TabPane
           tab={<Tab icon={<Icons.HomeOutlined />} children="Overview" />}
           key="overview"
-          className="max-w-lg mx-auto w-full"
-          style={{ padding: 12 }}
+          style={tabPaneStyle}
         >
-          <Row gutter={[24, 24]}>
+          <Row gutter={[screens.xs ? 0 : 24, 24]} className="max-w-xxl w-full">
             <Col
               xs={24}
               md={18}
               className={!screens.xs ? "dewo-divider-right" : undefined}
             >
-              <OrganizationProjectList organizationId={organizationId} />
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ width: "100%" }}
+              >
+                <OrganizationProjectList organizationId={organizationId} />
+                <OrganizationTaskDiscoveryList
+                  organizationId={organizationId}
+                />
+              </Space>
             </Col>
             <Col xs={24} md={6}>
               <Typography.Title level={5}>About</Typography.Title>
@@ -180,16 +193,18 @@ export const OrganizationTabs: FC<Props> = ({
         <Tabs.TabPane
           tab={<Tab icon={<Icons.TeamOutlined />} children="Contributors" />}
           key="contributors"
-          className="max-w-lg mx-auto w-full"
+          style={tabPaneStyle}
         >
-          <OrganizationContributorList organizationId={organizationId} />
+          <div className="max-w-lg w-full">
+            <OrganizationContributorList organizationId={organizationId} />
+          </div>
         </Tabs.TabPane>
         <Tabs.TabPane
           tab={
             <Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />
           }
           key="board"
-          className="mx-auto w-full"
+          className="w-full mx-auto"
           style={{ maxWidth: 300 * 4 + 16 * 3 + 24 * 2 }}
         >
           <OrganizationTaskBoard organizationId={organizationId} />
@@ -198,14 +213,15 @@ export const OrganizationTabs: FC<Props> = ({
           <Tabs.TabPane
             tab={<Tab icon={<Icons.SettingOutlined />} children="Settings" />}
             key="settings"
-            className="max-w-lg mx-auto w-full"
-            style={{ padding: 12 }}
+            style={tabPaneStyle}
           >
-            <OrganizationSettings
-              organizationId={organizationId}
-              currentTab={settingsTab ?? "profile"}
-              onTabClick={navigateToSettingsTab}
-            />
+            <div className="max-w-lg w-full">
+              <OrganizationSettings
+                organizationId={organizationId}
+                currentTab={settingsTab ?? "profile"}
+                onTabClick={navigateToSettingsTab}
+              />
+            </div>
           </Tabs.TabPane>
         )}
       </Tabs>
