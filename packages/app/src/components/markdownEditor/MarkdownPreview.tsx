@@ -3,6 +3,7 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import { Typography } from "antd";
 import { MDEditor } from "./MDEditor";
+import { FigmaEmbed, isFigmaUrl } from "./FigmaEmbed";
 
 interface Props {
   value?: string;
@@ -30,7 +31,17 @@ export const MarkdownPreview: FC<Props> = ({
       hideToolbar
       style={style}
       enableScroll={false}
-      previewOptions={{ linkTarget: "_blank" }}
+      previewOptions={{
+        linkTarget: "_blank",
+        components: {
+          a(props) {
+            if (!!props.href && isFigmaUrl(props.href)) {
+              return <FigmaEmbed url={props.href} />;
+            }
+            return <a {...props} />;
+          },
+        },
+      }}
       className="dewo-md-editor"
       preview="preview"
     />
