@@ -14,7 +14,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectRole, RoleSource } from "@dewo/app/graphql/types";
 import { projectRoleDescription } from "../project/settings/strings";
 import Link from "next/link";
-import { useIsProjectPrivate, useOrganizationRoles } from "../rbac/hooks";
+import { useOrganizationRoles } from "../rbac/hooks";
 
 interface Props {
   projectId: string;
@@ -24,7 +24,6 @@ interface Props {
 export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
   const [loading, setLoading] = useState(false);
   const { project } = useProject(projectId);
-  const isPrivate = useIsProjectPrivate(project);
 
   const canInvite = usePermission("create", "Role");
 
