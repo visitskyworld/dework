@@ -97,7 +97,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
               </Row>
               <Row gutter={[8, 8]}>
                 {projectsBySectionId[section.id]?.map((project) => (
-                  <Col key={project.id} xs={24} sm={12} lg={8} xl={6} xxl={4}>
+                  <Col key={project.id} xs={24} sm={12} xl={8} xxl={6}>
                     <ProjectListRow project={project} sections={sections} />
                   </Col>
                 ))}
