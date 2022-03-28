@@ -182,10 +182,7 @@ export const OrganizationTabs: FC<Props> = ({
 
               <Row style={{ rowGap: 8, columnGap: 8 }}>
                 <OrganizationInviteButton organizationId={organizationId} />
-                <FollowOrganizationButton
-                  organizationId={organizationId}
-                  showUnfollow
-                />
+                <FollowOrganizationButton organizationId={organizationId} />
                 <DebugMenu organizationId={organizationId} />
               </Row>
             </Col>
