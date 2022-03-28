@@ -37,9 +37,6 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { TaskReward } from "@dewo/api/models/TaskReward";
-import { TaskSection } from "@dewo/api/models/TaskSection";
-import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
-import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
@@ -418,54 +415,6 @@ export class TaskResolver {
   ): Promise<Task> {
     await this.taskService.deleteReaction(input, user.id);
     return this.taskService.findById(input.taskId) as Promise<Task>;
-  }
-
-  @Mutation(() => TaskSection)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "create",
-      subject: TaskSection,
-      inject: [ProjectService],
-      getSubject: (params: { input: CreateTaskSectionInput }) =>
-        Object.assign(new TaskSection(), { projectId: params.input.projectId }),
-      getOrganizationId: async (
-        _subject,
-        params: { input: CreateTaskSectionInput },
-        service
-      ) => {
-        const project = await service.findById(params.input.projectId);
-        return project?.organizationId;
-      },
-    })
-  )
-  public async createTaskSection(
-    @Args("input") input: CreateTaskSectionInput
-  ): Promise<TaskSection> {
-    return this.taskService.createSection(input);
-  }
-
-  @Mutation(() => TaskSection)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "update",
-      subject: TaskSection,
-      inject: [TaskService, ProjectService],
-      getSubject: (
-        params: { input: UpdateTaskSectionInput },
-        service: TaskService
-      ) => service.findSectionById(params.input.id),
-      getOrganizationId: async (subject) => {
-        const project = await subject.project;
-        return project?.organizationId;
-      },
-    })
-  )
-  public async updateTaskSection(
-    @Args("input") input: UpdateTaskSectionInput
-  ): Promise<TaskSection> {
-    return this.taskService.updateSection(input);
   }
 
   @Query(() => Task)

@@ -40,6 +40,8 @@ import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
+import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -149,6 +151,51 @@ export class ProjectResolver {
     @Args("input") input: CreateProjectSectionInput
   ): Promise<ProjectSection> {
     return this.projectService.createSection(input);
+  }
+
+  @Mutation(() => TaskSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: TaskSection,
+      inject: [ProjectService],
+      getSubject: (params: { input: CreateTaskSectionInput }) =>
+        Object.assign(new TaskSection(), { projectId: params.input.projectId }),
+      getOrganizationId: async (
+        _subject,
+        params: { input: CreateTaskSectionInput },
+        service
+      ) => {
+        const project = await service.findById(params.input.projectId);
+        return project?.organizationId;
+      },
+    })
+  )
+  public async createTaskSection(
+    @Args("input") input: CreateTaskSectionInput
+  ): Promise<TaskSection> {
+    return this.projectService.createTaskSection(input);
+  }
+  @Mutation(() => TaskSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: TaskSection,
+      inject: [ProjectService],
+      getSubject: (params: { input: UpdateTaskSectionInput }, service) =>
+        service.findSectionById(params.input.id),
+      getOrganizationId: async (subject) => {
+        const project = await subject.project;
+        return project?.organizationId;
+      },
+    })
+  )
+  public async updateTaskSection(
+    @Args("input") input: UpdateTaskSectionInput
+  ): Promise<TaskSection> {
+    return this.projectService.updateTaskSection(input);
   }
 
   @Mutation(() => ProjectSection)
@@ -342,10 +389,8 @@ export class ProjectResolver {
       action: "update",
       subject: Project,
       inject: [ProjectService],
-      getSubject: async (
-        params: { input: ProjectTokenGateInput },
-        service: ProjectService
-      ) => service.findById(params.input.projectId),
+      getSubject: async (params: { input: ProjectTokenGateInput }, service) =>
+        service.findById(params.input.projectId),
       getOrganizationId: (subject: Project) => subject.organizationId,
     })
   )

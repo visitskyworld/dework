@@ -17,6 +17,8 @@ import slugify from "slugify";
 import { DeepPartial, In, IsNull, Raw, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
+import { TaskStatus } from "@dewo/api/models/Task";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 
 @Injectable()
 export class ProjectService {
@@ -31,7 +33,9 @@ export class ProjectService {
     private readonly taskTagRepo: Repository<TaskTag>,
     @InjectRepository(ProjectSection)
     private readonly projectSectionRepo: Repository<ProjectSection>,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    @InjectRepository(TaskSection)
+    private readonly taskSectionRepo: Repository<TaskSection>
   ) {}
 
   public async create(partial: DeepPartial<Project>): Promise<Project> {
@@ -39,6 +43,12 @@ export class ProjectService {
       ...partial,
       sortKey: Date.now().toString(),
       slug: await this.generateSlug(partial.name ?? "Project"),
+    });
+    // Create a "Backlog" section in the TODO list
+    await this.createTaskSection({
+      projectId: created.id,
+      name: "Backlog",
+      status: TaskStatus.TODO,
     });
     return this.projectRepo.findOne(created.id) as Promise<Project>;
   }
@@ -87,6 +97,28 @@ export class ProjectService {
 
   public async deleteTokenGate(input: ProjectTokenGateInput): Promise<void> {
     await this.projectTokenGateRepo.delete(input);
+  }
+
+  public async createTaskSection(
+    partial: DeepPartial<TaskSection>
+  ): Promise<TaskSection> {
+    const created = await this.taskSectionRepo.save({
+      ...partial,
+      sortKey: Date.now().toString(),
+    });
+    return this.taskSectionRepo.findOne(created.id) as Promise<TaskSection>;
+  }
+
+  public async updateTaskSection(
+    partial: DeepAtLeast<TaskSection, "id" | "projectId">
+  ): Promise<TaskSection> {
+    const query = { id: partial.id, projectId: partial.projectId };
+    await this.taskSectionRepo.update(query, partial);
+    return this.taskSectionRepo.findOne(query) as Promise<TaskSection>;
+  }
+
+  public async findSectionById(id: string): Promise<TaskSection | undefined> {
+    return this.taskSectionRepo.findOne(id);
   }
 
   public async createSection(

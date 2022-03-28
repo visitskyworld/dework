@@ -8,7 +8,6 @@ import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PaymentModule } from "../payment/payment.module";
-import { ProjectModule } from "../project/project.module";
 import {
   OrganizationTasksResolver,
   ProjectTasksResolver,
@@ -20,9 +19,9 @@ import { PermalinkModule } from "../permalink/permalink.module";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
-import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RbacModule } from "../rbac/rbac.module";
 import { OrganizationModule } from "../organization/organization.module";
+import { ProjectModule } from "../project/project.module";
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { OrganizationModule } from "../organization/organization.module";
       TaskApplication,
       TaskSubmission,
       TaskReaction,
-      TaskSection,
       Project,
       User,
       ProjectMember,

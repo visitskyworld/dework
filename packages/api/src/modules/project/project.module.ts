@@ -3,6 +3,7 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
+import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
@@ -22,6 +23,7 @@ import { ProjectService } from "./project.service";
       ProjectTokenGate,
       ProjectSection,
       User,
+      TaskSection,
       TaskTag,
       OrganizationMember,
     ]),

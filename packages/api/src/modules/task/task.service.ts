@@ -9,7 +9,6 @@ import {
   Not,
   Repository,
   OrderByCondition,
-  DeepPartial,
   Brackets,
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
@@ -28,7 +27,6 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
-import { TaskSection } from "@dewo/api/models/TaskSection";
 import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
 
 @Injectable()
@@ -48,9 +46,7 @@ export class TaskService {
     @InjectRepository(TaskApplication)
     private readonly taskApplicationRepo: Repository<TaskApplication>,
     @InjectRepository(TaskSubmission)
-    private readonly taskSubmissionRepo: Repository<TaskSubmission>,
-    @InjectRepository(TaskSection)
-    private readonly taskSectionRepo: Repository<TaskSection>
+    private readonly taskSubmissionRepo: Repository<TaskSubmission>
   ) {}
 
   public async create(
@@ -184,30 +180,8 @@ export class TaskService {
     await this.taskReactionRepo.delete({ ...input, userId });
   }
 
-  public async createSection(
-    partial: DeepPartial<TaskSection>
-  ): Promise<TaskSection> {
-    const created = await this.taskSectionRepo.save({
-      ...partial,
-      sortKey: Date.now().toString(),
-    });
-    return this.taskSectionRepo.findOne(created.id) as Promise<TaskSection>;
-  }
-
-  public async updateSection(
-    partial: DeepAtLeast<TaskSection, "id" | "projectId">
-  ): Promise<TaskSection> {
-    const query = { id: partial.id, projectId: partial.projectId };
-    await this.taskSectionRepo.update(query, partial);
-    return this.taskSectionRepo.findOne(query) as Promise<TaskSection>;
-  }
-
   public async findById(id: string): Promise<Task | undefined> {
     return this.taskRepo.findOne(id);
-  }
-
-  public async findSectionById(id: string): Promise<TaskSection | undefined> {
-    return this.taskSectionRepo.findOne(id);
   }
 
   public async findWithRelations({
