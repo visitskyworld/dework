@@ -16,6 +16,7 @@ module.exports = [withLess, withRemoveImports, withBundleAnalyzer].reduce(
       GITHUB_APP_URL: process.env.GITHUB_APP_URL,
       ENVIRONMENT: process.env.ENVIRONMENT,
       SENTRY_DSN: process.env.SENTRY_DSN,
+      DEV_ROLE_ID: process.env.DEV_ROLE_ID,
     },
     webpack(config) {
       config.resolve.alias["bn.js"] = path.resolve(

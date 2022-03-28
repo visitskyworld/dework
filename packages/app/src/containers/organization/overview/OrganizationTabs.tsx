@@ -32,6 +32,7 @@ import { OrganizationTaskFilterButton } from "../../task/board/filters/TaskFilte
 import { TaskFilterProvider } from "../../task/board/filters/FilterContext";
 import { useOrganizationRoles } from "../../rbac/hooks";
 import { RulePermission } from "@dewo/app/graphql/types";
+import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 
 interface Props {
@@ -186,6 +187,7 @@ export const OrganizationTabs: FC<Props> = ({
                   organizationId={organizationId}
                   showUnfollow
                 />
+                <DebugMenu organizationId={organizationId} />
               </Row>
             </Col>
           </Row>

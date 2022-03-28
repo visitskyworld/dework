@@ -8,6 +8,7 @@ export const Constants = {
   GITHUB_APP_URL: nextConfig.GITHUB_APP_URL as string,
   APP_URL: nextConfig.APP_URL as string,
   SENTRY_DSN: nextConfig.SENTRY_DSN as string,
+  DEV_ROLE_ID: nextConfig.DEV_ROLE_ID as string,
   ENVIRONMENT: nextConfig.ENVIRONMENT as "prod" | "demo" | "dev",
   hotjarConfig: { ID: 2731946, version: 6 },
 };

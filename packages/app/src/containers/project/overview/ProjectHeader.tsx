@@ -13,6 +13,7 @@ import { useOrganizationDetails } from "../../organization/hooks";
 import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
+import { DebugMenu } from "@dewo/app/components/DebugMenu";
 
 interface Props {
   projectId?: string;
@@ -144,6 +145,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
         !!project &&
         organizationId && (
           <Space align="center" style={{ height: "100%" }}>
+            <DebugMenu projectId={project.id} organizationId={organizationId} />
             <ProjectInviteButton projectId={project.id} />
             {canEditOrg && (!discordIntegration || !hasCorrectPermissions) && (
               <ConnectOrganizationToDiscordButton
