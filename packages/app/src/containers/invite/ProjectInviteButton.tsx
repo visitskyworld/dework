@@ -74,21 +74,19 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
       trigger={["click"]}
       overlay={
         <Menu>
-          {isPrivate && (
-            <Menu.Item onClick={inviteProjectContributor}>
-              Invite to View Project
-              <Tooltip
-                placement="right"
-                title={
-                  <Typography.Text style={{ whiteSpace: "pre-line" }}>
-                    {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
-                  </Typography.Text>
-                }
-              >
-                <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
-              </Tooltip>
-            </Menu.Item>
-          )}
+          <Menu.Item onClick={inviteProjectContributor}>
+            Invite to View Project
+            <Tooltip
+              placement="right"
+              title={
+                <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                  {projectRoleDescription[ProjectRole.CONTRIBUTOR]}
+                </Typography.Text>
+              }
+            >
+              <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+            </Tooltip>
+          </Menu.Item>
           <Menu.Item onClick={inviteProjectAdmin}>
             Invite to Manage Project
             <Tooltip
