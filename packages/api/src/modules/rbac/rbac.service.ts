@@ -243,7 +243,8 @@ export class RbacService {
             projectId: rule.projectId ?? { $exists: true },
             permission: RulePermission.VIEW_PROJECTS,
           });
-        // eslint-disable-next-line no-fallthrough
+          fn(CRUD, Task, task);
+          break;
         case RulePermission.MANAGE_TASKS:
           if (!!rule.taskId) {
             fn("update", Task, task);
