@@ -66,7 +66,7 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
           style={{ height: "100%" }}
           bodyStyle={{
             height: "100%",
-            padding: "8px 12px",
+            padding: 12,
             display: "flex",
             flexDirection: "column",
           }}

@@ -90,7 +90,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
     <>
       <Typography.Title level={5}>Recent Tasks</Typography.Title>
       <Skeleton loading={!mounted || !organization}>
-        <Row gutter={[4, 4]}>
+        <Row gutter={[4, 4]} style={{ marginBottom: 16 }}>
           {tags.map((tag) => (
             <Tag
               key={tag.id}
