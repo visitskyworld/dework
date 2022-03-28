@@ -32,6 +32,7 @@ import { OrganizationTaskFilterButton } from "../../task/board/filters/TaskFilte
 import { TaskFilterProvider } from "../../task/board/filters/FilterContext";
 import { useOrganizationRoles } from "../../rbac/hooks";
 import { RulePermission } from "@dewo/app/graphql/types";
+import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 
@@ -126,12 +127,10 @@ export const OrganizationTabs: FC<Props> = ({
             </Col>
             <Col xs={24} md={6}>
               <Typography.Title level={5}>About</Typography.Title>
-              <Typography.Paragraph
-                type="secondary"
-                style={{ marginBottom: 16 }}
-              >
-                {organization?.description || "No description..."}
-              </Typography.Paragraph>
+              <MarkdownPreview
+                style={{ wordBreak: "break-word" }}
+                value={organization?.description || "No description..."}
+              />
 
               {!!organization?.details && (
                 <Row style={{ gap: 8, marginBottom: 16 }}>

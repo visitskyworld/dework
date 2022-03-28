@@ -24,6 +24,7 @@ import { EntityDetailType } from "@dewo/app/graphql/types";
 import { OrganizationDetailFormItem } from "../overview/OrganizationDetailFormItem";
 import { OrganizationTagSelectField } from "./OrganizationTagSelectField";
 import { ImageUploadInput } from "../../fileUploads/ImageUploadInput";
+import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 
 export interface FormValues {
   name: string;
@@ -188,7 +189,11 @@ export const OrganizationProfileSettings: FC<
           </Form.Item>
 
           <Form.Item label="Description" name="description">
-            <Input.TextArea placeholder="No description..." />
+            <MarkdownEditor
+                initialValue={initialValues?.description ?? undefined}
+                editable
+                mode="update"
+              />
           </Form.Item>
 
           <OrganizationTagSelectField organizationId={organizationId} />
