@@ -73,7 +73,7 @@ export function useCreateHiroThreepid(): () => Promise<string> {
 }
 
 export function useCreateMetamaskThreepid(): () => Promise<string> {
-  const isMetamaskAvailable = !!useProvider().current;
+  const provider = useProvider();
   const requestAddress = useRequestAddress();
   const personalSign = usePersonalSign();
 
@@ -97,6 +97,7 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
   });
 
   return useCallback(async () => {
+    const isMetamaskAvailable = !!provider.current;
     if (!isMetamaskAvailable) {
       const res = await startWalletConnectSessionMutation();
       if (!res.data) throw new Error("Failed to start Wallet Connect session");
@@ -151,7 +152,7 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
     createMetamaskThreepidMutation,
     checkWalletConnectSessionMutation,
     startWalletConnectSessionMutation,
-    isMetamaskAvailable,
+    provider,
   ]);
 }
 

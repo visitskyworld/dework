@@ -322,7 +322,11 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {(canChange("storyPoints") || !!values.storyPoints) && (
-            <Form.Item name="storyPoints" label="Task Points">
+            <Form.Item
+              name="storyPoints"
+              label="Task Points"
+              tooltip="Developers often call this 'storypoints'. Use this to estimate the size of the task in hours. Can be used very flexibly, e.g for time accounting and more."
+            >
               <StoryPointsInput disabled={!canChange("storyPoints")} />
             </Form.Item>
           )}
