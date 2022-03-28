@@ -38,13 +38,12 @@ export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
   const tasks = useProjectTasks(projectId, "cache-and-network");
   const statuses = useMemo(
     () => [
-      ...(!!project?.options?.showBacklogColumn ? [TaskStatus.BACKLOG] : []),
       TaskStatus.TODO,
       TaskStatus.IN_PROGRESS,
       TaskStatus.IN_REVIEW,
       TaskStatus.DONE,
     ],
-    [project?.options?.showBacklogColumn]
+    []
   );
 
   const sections = useMemo(

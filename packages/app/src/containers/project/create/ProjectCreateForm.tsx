@@ -64,7 +64,9 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const { organization } = useOrganizationDetails(organizationId);
   const router = useRouter();
 
-  const [values, setValues] = useState<Partial<FormValues>>({});
+  const [values, setValues] = useState<Partial<FormValues>>({
+    options: { showBacklogColumn: true },
+  });
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: Partial<FormValues>) =>
       setValues(values),

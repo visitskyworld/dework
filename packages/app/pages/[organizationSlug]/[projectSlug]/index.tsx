@@ -20,6 +20,7 @@ import { TaskFilterProvider } from "@dewo/app/containers/task/board/filters/Filt
 import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters/TaskFilterButton";
 import { ProjectSeo } from "@dewo/app/containers/seo/ProjectSeo";
 import { useOrganizationBySlug } from "@dewo/app/containers/organization/hooks";
+import { CommunitySuggestions } from "@dewo/app/containers/project/community/CommunitySuggestions";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -91,6 +92,19 @@ const Page: NextPage = () => {
                   <ProjectTaskList projectId={project?.id} />
                 </div>
               </Tabs.TabPane>
+              {!!project && !!details?.options?.showBacklogColumn && (
+                <Tabs.TabPane
+                  tab={
+                    <Tab
+                      icon={<Icons.UsergroupAddOutlined />}
+                      children="Community Suggestions"
+                    />
+                  }
+                  key="community"
+                >
+                  <CommunitySuggestions projectId={project.id} />
+                </Tabs.TabPane>
+              )}
               <Tabs.TabPane
                 tab={
                   <Tab icon={<Icons.InfoCircleOutlined />} children="About" />

@@ -9,6 +9,6 @@ export const ProjectSettingsContributorSuggestions: FC = () => (
     tooltip="Show a column to the left of 'To Do' where contributors can suggest and vote on tasks."
     style={{ margin: 0 }}
   >
-    <Checkbox>Enable Suggestions Column</Checkbox>
+    <Checkbox>Enable Community Suggestions Tab</Checkbox>
   </Form.Item>
 );

@@ -966,6 +966,14 @@ export interface CreateTaskMutation_task_assignees {
   permalink: string;
 }
 
+export interface CreateTaskMutation_task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface CreateTaskMutation_task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -1124,6 +1132,14 @@ export interface CreateTaskMutation_task_parentTask_subtasks_tags {
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1291,6 +1307,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   subtasks: CreateTaskMutation_task_parentTask_subtasks_subtasks[];
   tags: CreateTaskMutation_task_parentTask_subtasks_tags[];
   assignees: CreateTaskMutation_task_parentTask_subtasks_assignees[];
+  owner: CreateTaskMutation_task_parentTask_subtasks_owner | null;
   reward: CreateTaskMutation_task_parentTask_subtasks_reward | null;
   applications: CreateTaskMutation_task_parentTask_subtasks_applications[];
   submissions: CreateTaskMutation_task_parentTask_subtasks_submissions[];
@@ -1325,6 +1342,7 @@ export interface CreateTaskMutation_task {
   subtasks: CreateTaskMutation_task_subtasks[];
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
+  owner: CreateTaskMutation_task_owner | null;
   reward: CreateTaskMutation_task_reward | null;
   applications: CreateTaskMutation_task_applications[];
   submissions: CreateTaskMutation_task_submissions[];
@@ -1369,6 +1387,14 @@ export interface UpdateTaskMutation_task_tags {
 }
 
 export interface UpdateTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1536,6 +1562,7 @@ export interface UpdateTaskMutation_task {
   subtasks: UpdateTaskMutation_task_subtasks[];
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
+  owner: UpdateTaskMutation_task_owner | null;
   reward: UpdateTaskMutation_task_reward | null;
   applications: UpdateTaskMutation_task_applications[];
   submissions: UpdateTaskMutation_task_submissions[];
@@ -1579,6 +1606,14 @@ export interface CreateTaskApplicationMutation_application_task_tags {
 }
 
 export interface CreateTaskApplicationMutation_application_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1746,6 +1781,7 @@ export interface CreateTaskApplicationMutation_application_task {
   subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
   tags: CreateTaskApplicationMutation_application_task_tags[];
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
+  owner: CreateTaskApplicationMutation_application_task_owner | null;
   reward: CreateTaskApplicationMutation_application_task_reward | null;
   applications: CreateTaskApplicationMutation_application_task_applications[];
   submissions: CreateTaskApplicationMutation_application_task_submissions[];
@@ -1795,6 +1831,14 @@ export interface DeleteTaskApplicationMutation_task_tags {
 }
 
 export interface DeleteTaskApplicationMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1962,6 +2006,7 @@ export interface DeleteTaskApplicationMutation_task {
   subtasks: DeleteTaskApplicationMutation_task_subtasks[];
   tags: DeleteTaskApplicationMutation_task_tags[];
   assignees: DeleteTaskApplicationMutation_task_assignees[];
+  owner: DeleteTaskApplicationMutation_task_owner | null;
   reward: DeleteTaskApplicationMutation_task_reward | null;
   applications: DeleteTaskApplicationMutation_task_applications[];
   submissions: DeleteTaskApplicationMutation_task_submissions[];
@@ -2005,6 +2050,14 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -2172,6 +2225,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks[];
   tags: CreateTaskSubmissionMutation_createTaskSubmission_task_tags[];
   assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_assignees[];
+  owner: CreateTaskSubmissionMutation_createTaskSubmission_task_owner | null;
   reward: CreateTaskSubmissionMutation_createTaskSubmission_task_reward | null;
   applications: CreateTaskSubmissionMutation_createTaskSubmission_task_applications[];
   submissions: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions[];
@@ -2221,6 +2275,14 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -2388,6 +2450,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks[];
   tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags[];
   assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees[];
+  owner: UpdateTaskSubmissionMutation_updateTaskSubmission_task_owner | null;
   reward: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward | null;
   applications: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications[];
   submissions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions[];
@@ -3312,6 +3375,14 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_assignees {
   permalink: string;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_subtasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -3472,6 +3543,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_subtasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
+  owner: CreateTaskPaymentsMutation_tasks_subtasks_owner | null;
   reward: CreateTaskPaymentsMutation_tasks_subtasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_subtasks_applications[];
   submissions: CreateTaskPaymentsMutation_tasks_subtasks_submissions[];
@@ -3491,6 +3563,14 @@ export interface CreateTaskPaymentsMutation_tasks_tags {
 }
 
 export interface CreateTaskPaymentsMutation_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -3668,14 +3748,6 @@ export interface CreateTaskPaymentsMutation_tasks_parentTask {
   name: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -3790,6 +3862,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
+  owner: CreateTaskPaymentsMutation_tasks_owner | null;
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
   applications: CreateTaskPaymentsMutation_tasks_applications[];
   submissions: CreateTaskPaymentsMutation_tasks_submissions[];
@@ -3800,7 +3873,6 @@ export interface CreateTaskPaymentsMutation_tasks {
   permalink: string;
   project: CreateTaskPaymentsMutation_tasks_project;
   parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
-  owner: CreateTaskPaymentsMutation_tasks_owner | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
@@ -3881,6 +3953,14 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -4048,6 +4128,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
   tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
+  owner: CreateTasksFromGithubIssuesMutation_project_tasks_owner | null;
   reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
   applications: CreateTasksFromGithubIssuesMutation_project_tasks_applications[];
   submissions: CreateTasksFromGithubIssuesMutation_project_tasks_submissions[];
@@ -4915,6 +4996,14 @@ export interface UserTasksQuery_user_tasks_assignees {
   permalink: string;
 }
 
+export interface UserTasksQuery_user_tasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface UserTasksQuery_user_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -5099,6 +5188,7 @@ export interface UserTasksQuery_user_tasks {
   subtasks: UserTasksQuery_user_tasks_subtasks[];
   tags: UserTasksQuery_user_tasks_tags[];
   assignees: UserTasksQuery_user_tasks_assignees[];
+  owner: UserTasksQuery_user_tasks_owner | null;
   reward: UserTasksQuery_user_tasks_reward | null;
   applications: UserTasksQuery_user_tasks_applications[];
   submissions: UserTasksQuery_user_tasks_submissions[];
@@ -5592,6 +5682,14 @@ export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   permalink: string;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -5752,6 +5850,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
+  owner: GetOrganizationTasksQuery_organization_tasks_owner | null;
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
   applications: GetOrganizationTasksQuery_organization_tasks_applications[];
   submissions: GetOrganizationTasksQuery_organization_tasks_submissions[];
@@ -5998,6 +6097,14 @@ export interface GetProjectTasksQuery_project_tasks_assignees {
   permalink: string;
 }
 
+export interface GetProjectTasksQuery_project_tasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface GetProjectTasksQuery_project_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -6158,6 +6265,7 @@ export interface GetProjectTasksQuery_project_tasks {
   subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
   tags: GetProjectTasksQuery_project_tasks_tags[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
+  owner: GetProjectTasksQuery_project_tasks_owner | null;
   reward: GetProjectTasksQuery_project_tasks_reward | null;
   applications: GetProjectTasksQuery_project_tasks_applications[];
   submissions: GetProjectTasksQuery_project_tasks_submissions[];
@@ -6240,6 +6348,14 @@ export interface GetTaskQuery_task_subtasks_tags {
 }
 
 export interface GetTaskQuery_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetTaskQuery_task_subtasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -6407,6 +6523,7 @@ export interface GetTaskQuery_task_subtasks {
   subtasks: GetTaskQuery_task_subtasks_subtasks[];
   tags: GetTaskQuery_task_subtasks_tags[];
   assignees: GetTaskQuery_task_subtasks_assignees[];
+  owner: GetTaskQuery_task_subtasks_owner | null;
   reward: GetTaskQuery_task_subtasks_reward | null;
   applications: GetTaskQuery_task_subtasks_applications[];
   submissions: GetTaskQuery_task_subtasks_submissions[];
@@ -6426,6 +6543,14 @@ export interface GetTaskQuery_task_tags {
 }
 
 export interface GetTaskQuery_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetTaskQuery_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -6614,14 +6739,6 @@ export interface GetTaskQuery_task_parentTask {
   name: string;
 }
 
-export interface GetTaskQuery_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface GetTaskQuery_task_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -6736,6 +6853,7 @@ export interface GetTaskQuery_task {
   subtasks: GetTaskQuery_task_subtasks[];
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
+  owner: GetTaskQuery_task_owner | null;
   reward: GetTaskQuery_task_reward | null;
   applications: GetTaskQuery_task_applications[];
   submissions: GetTaskQuery_task_submissions[];
@@ -6746,7 +6864,6 @@ export interface GetTaskQuery_task {
   permalink: string;
   project: GetTaskQuery_task_project;
   parentTask: GetTaskQuery_task_parentTask | null;
-  owner: GetTaskQuery_task_owner | null;
   creator: GetTaskQuery_task_creator | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
@@ -6827,6 +6944,14 @@ export interface GetTasksQuery_tasks_tags {
 }
 
 export interface GetTasksQuery_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetTasksQuery_tasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -7018,6 +7143,7 @@ export interface GetTasksQuery_tasks {
   subtasks: GetTasksQuery_tasks_subtasks[];
   tags: GetTasksQuery_tasks_tags[];
   assignees: GetTasksQuery_tasks_assignees[];
+  owner: GetTasksQuery_tasks_owner | null;
   reward: GetTasksQuery_tasks_reward | null;
   applications: GetTasksQuery_tasks_applications[];
   submissions: GetTasksQuery_tasks_submissions[];
@@ -7101,6 +7227,14 @@ export interface GetTasksToPayQuery_tasks_assignees {
   imageUrl: string | null;
   permalink: string;
   paymentMethods: GetTasksToPayQuery_tasks_assignees_paymentMethods[];
+}
+
+export interface GetTasksToPayQuery_tasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
 }
 
 export interface GetTasksToPayQuery_tasks_reward_token {
@@ -7302,6 +7436,7 @@ export interface GetTasksToPayQuery_tasks {
   subtasks: GetTasksToPayQuery_tasks_subtasks[];
   tags: GetTasksToPayQuery_tasks_tags[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
+  owner: GetTasksToPayQuery_tasks_owner | null;
   reward: GetTasksToPayQuery_tasks_reward | null;
   applications: GetTasksToPayQuery_tasks_applications[];
   submissions: GetTasksToPayQuery_tasks_submissions[];
@@ -7706,6 +7841,14 @@ export interface TaskCreatedSubscription_task_subtasks_assignees {
   permalink: string;
 }
 
+export interface TaskCreatedSubscription_task_subtasks_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface TaskCreatedSubscription_task_subtasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -7866,6 +8009,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
   tags: TaskCreatedSubscription_task_subtasks_tags[];
   assignees: TaskCreatedSubscription_task_subtasks_assignees[];
+  owner: TaskCreatedSubscription_task_subtasks_owner | null;
   reward: TaskCreatedSubscription_task_subtasks_reward | null;
   applications: TaskCreatedSubscription_task_subtasks_applications[];
   submissions: TaskCreatedSubscription_task_subtasks_submissions[];
@@ -7885,6 +8029,14 @@ export interface TaskCreatedSubscription_task_tags {
 }
 
 export interface TaskCreatedSubscription_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskCreatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8062,14 +8214,6 @@ export interface TaskCreatedSubscription_task_parentTask {
   name: string;
 }
 
-export interface TaskCreatedSubscription_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface TaskCreatedSubscription_task_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -8184,6 +8328,7 @@ export interface TaskCreatedSubscription_task {
   subtasks: TaskCreatedSubscription_task_subtasks[];
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
+  owner: TaskCreatedSubscription_task_owner | null;
   reward: TaskCreatedSubscription_task_reward | null;
   applications: TaskCreatedSubscription_task_applications[];
   submissions: TaskCreatedSubscription_task_submissions[];
@@ -8194,7 +8339,6 @@ export interface TaskCreatedSubscription_task {
   permalink: string;
   project: TaskCreatedSubscription_task_project;
   parentTask: TaskCreatedSubscription_task_parentTask | null;
-  owner: TaskCreatedSubscription_task_owner | null;
   creator: TaskCreatedSubscription_task_creator | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
@@ -8232,6 +8376,14 @@ export interface TaskUpdatedSubscription_task_subtasks_tags {
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8399,6 +8551,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
   tags: TaskUpdatedSubscription_task_subtasks_tags[];
   assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
+  owner: TaskUpdatedSubscription_task_subtasks_owner | null;
   reward: TaskUpdatedSubscription_task_subtasks_reward | null;
   applications: TaskUpdatedSubscription_task_subtasks_applications[];
   submissions: TaskUpdatedSubscription_task_subtasks_submissions[];
@@ -8418,6 +8571,14 @@ export interface TaskUpdatedSubscription_task_tags {
 }
 
 export interface TaskUpdatedSubscription_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskUpdatedSubscription_task_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8595,14 +8756,6 @@ export interface TaskUpdatedSubscription_task_parentTask {
   name: string;
 }
 
-export interface TaskUpdatedSubscription_task_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface TaskUpdatedSubscription_task_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -8717,6 +8870,7 @@ export interface TaskUpdatedSubscription_task {
   subtasks: TaskUpdatedSubscription_task_subtasks[];
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
+  owner: TaskUpdatedSubscription_task_owner | null;
   reward: TaskUpdatedSubscription_task_reward | null;
   applications: TaskUpdatedSubscription_task_applications[];
   submissions: TaskUpdatedSubscription_task_submissions[];
@@ -8727,7 +8881,6 @@ export interface TaskUpdatedSubscription_task {
   permalink: string;
   project: TaskUpdatedSubscription_task_project;
   parentTask: TaskUpdatedSubscription_task_parentTask | null;
-  owner: TaskUpdatedSubscription_task_owner | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
@@ -9823,6 +9976,14 @@ export interface Task_assignees {
   permalink: string;
 }
 
+export interface Task_owner {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface Task_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
@@ -9983,6 +10144,7 @@ export interface Task {
   subtasks: Task_subtasks[];
   tags: Task_tags[];
   assignees: Task_assignees[];
+  owner: Task_owner | null;
   reward: Task_reward | null;
   applications: Task_applications[];
   submissions: Task_submissions[];
@@ -10018,6 +10180,14 @@ export interface TaskWithOrganization_tags {
 }
 
 export interface TaskWithOrganization_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskWithOrganization_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -10209,6 +10379,7 @@ export interface TaskWithOrganization {
   subtasks: TaskWithOrganization_subtasks[];
   tags: TaskWithOrganization_tags[];
   assignees: TaskWithOrganization_assignees[];
+  owner: TaskWithOrganization_owner | null;
   reward: TaskWithOrganization_reward | null;
   applications: TaskWithOrganization_applications[];
   submissions: TaskWithOrganization_submissions[];
@@ -10316,6 +10487,14 @@ export interface TaskDetails_subtasks_tags {
 }
 
 export interface TaskDetails_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskDetails_subtasks_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -10483,6 +10662,7 @@ export interface TaskDetails_subtasks {
   subtasks: TaskDetails_subtasks_subtasks[];
   tags: TaskDetails_subtasks_tags[];
   assignees: TaskDetails_subtasks_assignees[];
+  owner: TaskDetails_subtasks_owner | null;
   reward: TaskDetails_subtasks_reward | null;
   applications: TaskDetails_subtasks_applications[];
   submissions: TaskDetails_subtasks_submissions[];
@@ -10502,6 +10682,14 @@ export interface TaskDetails_tags {
 }
 
 export interface TaskDetails_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskDetails_owner {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -10679,14 +10867,6 @@ export interface TaskDetails_parentTask {
   name: string;
 }
 
-export interface TaskDetails_owner {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface TaskDetails_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -10801,6 +10981,7 @@ export interface TaskDetails {
   subtasks: TaskDetails_subtasks[];
   tags: TaskDetails_tags[];
   assignees: TaskDetails_assignees[];
+  owner: TaskDetails_owner | null;
   reward: TaskDetails_reward | null;
   applications: TaskDetails_applications[];
   submissions: TaskDetails_submissions[];
@@ -10811,7 +10992,6 @@ export interface TaskDetails {
   permalink: string;
   project: TaskDetails_project;
   parentTask: TaskDetails_parentTask | null;
-  owner: TaskDetails_owner | null;
   creator: TaskDetails_creator | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
