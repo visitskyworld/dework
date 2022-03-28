@@ -71,7 +71,12 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
             flexDirection: "column",
           }}
         >
-          <Row style={{ columnGap: 8, paddingRight: 20 }}>
+          <Row
+            style={{
+              columnGap: 8,
+              paddingRight: canChangeSection ? 20 : undefined,
+            }}
+          >
             <Typography.Text strong>{project.name}</Typography.Text>
             {isPrivate && (
               <Tag className="bg-component" icon={<Icons.LockOutlined />}>
