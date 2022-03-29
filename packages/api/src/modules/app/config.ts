@@ -60,6 +60,7 @@ export const configSchema = Joi.object<ConfigType>({
   API_URL: Joi.string().required(),
 
   POSTGRES_URL: Joi.string().required(),
+  RUN_MIGRATIONS: Joi.boolean().default(false),
   RUN_DB_SYNCHRONIZATION: Joi.boolean().default(false),
 
   REDIS_URL: Joi.string().required(),

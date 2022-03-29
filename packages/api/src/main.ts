@@ -11,9 +11,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const database = app.get(MigrationService);
-  if (!!process.env.RUN_DB_SYNCHRONIZATION) {
+  if (process.env.RUN_DB_SYNCHRONIZATION === String(true)) {
     await database.connection.synchronize();
-  } else if (!!process.env.RUN_MIGRATIONS) {
+  } else if (process.env.RUN_MIGRATIONS === String(true)) {
     await database.migrate();
   }
   await app.listen(port);
