@@ -2,7 +2,6 @@ import React, { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Button, Card, Badge, Space, Row } from "antd";
 import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
 import { TaskCard } from "../card/TaskCard";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -62,11 +61,7 @@ export const TaskBoardColumn: FC<Props> = ({
       size="small"
       title={
         <Space>
-          <Badge
-            count={count}
-            style={{ backgroundColor: Colors.grey[6] }}
-            showZero
-          />
+          <Badge count={count} showZero />
           <span>{STATUS_LABEL[status]}</span>
         </Space>
       }

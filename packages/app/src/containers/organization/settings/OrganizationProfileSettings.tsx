@@ -190,10 +190,10 @@ export const OrganizationProfileSettings: FC<
 
           <Form.Item label="Description" name="description">
             <MarkdownEditor
-                initialValue={initialValues?.description ?? undefined}
-                editable
-                mode="update"
-              />
+              initialValue={initialValues?.description ?? undefined}
+              editable
+              mode="update"
+            />
           </Form.Item>
 
           <OrganizationTagSelectField organizationId={organizationId} />

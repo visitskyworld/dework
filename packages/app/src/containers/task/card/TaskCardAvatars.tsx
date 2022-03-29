@@ -16,7 +16,7 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
 
   if (!!task.assignees.length) {
     return (
-      <Avatar.Group maxCount={task.assignees.length === 3 ? 3 : 2} size={22}>
+      <Avatar.Group maxCount={task.assignees.length === 3 ? 3 : 2} size={20}>
         {task.assignees.map((user) => (
           <Link href={user.permalink} key={user.id}>
             <a>
@@ -31,7 +31,7 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
   if (task.status === TaskStatus.TODO) {
     if (!!task.applications.length && canUpdateTask) {
       return (
-        <Avatar.Group maxCount={task.assignees.length === 3 ? 3 : 2} size={22}>
+        <Avatar.Group maxCount={task.assignees.length === 3 ? 3 : 2} size={20}>
           {task.applications.map((application) => (
             <Link href={application.user.permalink} key={application.id}>
               <a>
@@ -48,7 +48,7 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
     }
 
     if (canUpdateTask) {
-      return <Avatar size={22} className="ant-avatar-white" />;
+      return <Avatar size={20} className="ant-avatar-white" />;
     }
 
     return <TaskApplyAvatar />;

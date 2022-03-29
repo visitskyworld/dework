@@ -66,12 +66,6 @@ export const UserProfile: FC<Props> = ({ userId }) => {
               Proof of Work
             </Typography.Text>
             <Row gutter={[8, 8]} style={{ margin: 0 }}>
-              <Tag style={{ backgroundColor: Colors.volcano.primary }}>
-                <Icons.FireFilled />
-                <Typography.Text>
-                  X% satisfaction (incoming metric..)
-                </Typography.Text>
-              </Tag>
               <Tag style={{ backgroundColor: Colors.blue.primary }}>
                 <Icons.DollarCircleOutlined />
                 <Typography.Text>{`$${amountEarned} earned`}</Typography.Text>

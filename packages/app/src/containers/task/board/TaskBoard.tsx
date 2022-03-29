@@ -39,7 +39,7 @@ interface Props {
   statuses?: TaskStatus[];
 }
 
-const columnWidth = 300;
+const columnWidth = 330;
 const emptyGroups: TaskGroup[] = [{ id: "default", title: "", tasks: [] }];
 
 export const TaskBoard: FC<Props> = ({

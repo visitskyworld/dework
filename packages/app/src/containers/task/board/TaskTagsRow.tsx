@@ -31,70 +31,73 @@ export const TaskTagsRow: FC<Props> = ({
     () => task.subtasks.filter((t) => t.status === TaskStatus.DONE),
     [task.subtasks]
   );
-  if (!showStandardTags && !task.tags.length) return null;
+
+  const standardTags = [
+    !!task.dueDate && (
+      <Tag>
+        {task.status !== TaskStatus.DONE &&
+        moment().endOf("day").isAfter(task.dueDate) ? (
+          <Icons.ExclamationCircleFilled
+            style={{ color: Colors.red.primary }}
+          />
+        ) : (
+          <Icons.CalendarOutlined />
+        )}
+        <span>{moment(task.dueDate).format("D MMM")}</span>
+      </Tag>
+    ),
+    !!attachmentCount && (
+      <Tag>
+        <Icons.LinkOutlined />
+        <span>{attachmentCount}</span>
+      </Tag>
+    ),
+    !!task.storyPoints && (
+      <Tag>
+        <Icons.FlagOutlined />
+        <span>{task.storyPoints}</span>
+      </Tag>
+    ),
+    !!task.subtasks.length && (
+      <Tag>
+        {doneSubtasks.length === task.subtasks.length ? (
+          <Icons.CheckCircleFilled style={{ color: Colors.green.primary }} />
+        ) : (
+          <Icons.CheckCircleOutlined />
+        )}
+        <span>
+          {doneSubtasks.length}/{task.subtasks.length}
+        </span>
+      </Tag>
+    ),
+    "project" in task && (
+      <Tag className="bg-component" style={{ paddingLeft: 0 }}>
+        <OrganizationAvatar
+          organization={task.project.organization}
+          size={20}
+        />
+        <Typography.Text style={{ marginLeft: 4 }}>
+          {task.project.organization.name}
+        </Typography.Text>
+      </Tag>
+    ),
+  ];
+
+  const tagComponentsToRender = [
+    ...(showStandardTags ? standardTags : []),
+    ...task.tags
+      .filter((tag) => !tag.deletedAt)
+      .map((tag) => (
+        <Tag key={tag.id} color={tag.color}>
+          {tag.label}
+        </Tag>
+      )),
+  ].filter((c) => !!c);
+
+  if (!tagComponentsToRender.length) return null;
   return (
     <Row gutter={[8, 4]} style={{ ...style, margin: 0 }}>
-      {showStandardTags && (
-        <>
-          {!!task.dueDate && (
-            <Tag>
-              {task.status !== TaskStatus.DONE &&
-              moment().endOf("day").isAfter(task.dueDate) ? (
-                <Icons.ExclamationCircleFilled
-                  style={{ color: Colors.red.primary }}
-                />
-              ) : (
-                <Icons.CalendarOutlined />
-              )}
-              <span>{moment(task.dueDate).format("D MMM")}</span>
-            </Tag>
-          )}
-          {!!attachmentCount && (
-            <Tag>
-              <Icons.LinkOutlined />
-              <span>{attachmentCount}</span>
-            </Tag>
-          )}
-          {!!task.storyPoints && (
-            <Tag>
-              <Icons.FlagOutlined />
-              <span>{task.storyPoints}</span>
-            </Tag>
-          )}
-          {!!task.subtasks.length && (
-            <Tag>
-              {doneSubtasks.length === task.subtasks.length ? (
-                <Icons.CheckCircleFilled
-                  style={{ color: Colors.green.primary }}
-                />
-              ) : (
-                <Icons.CheckCircleOutlined />
-              )}
-              <span>
-                {doneSubtasks.length}/{task.subtasks.length}
-              </span>
-            </Tag>
-          )}
-          {"project" in task && (
-            <Tag className="bg-component" style={{ paddingLeft: 0 }}>
-              <OrganizationAvatar
-                organization={task.project.organization}
-                size={20}
-              />
-              <Typography.Text style={{ marginLeft: 4 }}>
-                {task.project.organization.name}
-              </Typography.Text>
-            </Tag>
-          )}
-        </>
-      )}
-      {task.tags
-        .filter((tag) => !tag.deletedAt)
-        .map((tag) => (
-          <Tag key={tag.id} color={tag.color}>
-            {tag.label}
-          </Tag>
-        ))}
+      {tagComponentsToRender}
     </Row>
   );
 };

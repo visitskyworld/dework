@@ -36,7 +36,7 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
       <Divider />
 
       <Typography.Title level={5}>
-        Manage Projects
+        Manage All Projects
         <Tooltip
           title={
             <Typography.Text style={{ whiteSpace: "pre-line" }}>

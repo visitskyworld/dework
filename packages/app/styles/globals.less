@@ -15,7 +15,8 @@
 @border-color-base: fade(@white, 40%);
 @border-color-split: fade(@white, 30%);
 @btn-text-hover-bg: fade(@white, 10%); // defaults to 3%
-@text-color-secondary: fade(@white, 60%); // defaults to 45%
+@text-color-secondary: fade(@white, 50%); // defaults to 45%
+@label-color: fade(@white, 80%); // defaults to 45%
 @layout-header-background: transparent;
 @layout-sider-background: fade(@white, 10%);
 @component-background-highlighted: fade(@white, 20%);
@@ -86,15 +87,25 @@ iframe {
   .ant-card-body {
     padding-top: 4px;
     padding-bottom: 4px;
+    line-height: normal;
   }
 
   .ant-card-actions > li {
     margin: 4px 0;
   }
+
+  .ant-card-actions {
+    border-top: 0;
+    background: fade(@white, 7%);
+  }
 }
 
 .ant-btn {
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.ant-btn-sm {
+  font-size: 13px;
 }
 
 .ant-btn.ant-btn-ghost {
@@ -225,11 +236,12 @@ iframe {
 
   &,
   & > label {
-    color: @text-color-secondary;
+    color: @label-color;
     text-transform: uppercase;
     font-size: 11px;
-    font-weight: bold;
+    font-weight: 600;
     height: unset;
+    letter-spacing: 0.5px;
 
     &::after {
       display: none;
@@ -573,6 +585,10 @@ iframe {
   font-weight: 600;
 }
 
+.font-semibold {
+  font-weight: 500;
+}
+
 .dewo-md-tabs {
   .ant-tabs-nav-wrap {
     max-width: 120px;
@@ -732,6 +748,10 @@ iframe {
     padding-right: 12px;
     padding-left: 12px;
   }
+}
+
+.ant-badge .ant-badge-count {
+  background: @component-background;
 }
 
 .dewo-task-reaction {
@@ -954,8 +974,8 @@ iframe {
       @colorValue: '@{color}-6';
       &-@{color} {
         color: @@colorValue;
-        background: fade(@@colorValue, 20%);
-        border: 2px solid fade(@@colorValue, 20%);
+        background: fade(@@colorValue, 10%);
+        border: 1px solid fade(@@colorValue, 40%);
       }
   }
   .make-color-classes();

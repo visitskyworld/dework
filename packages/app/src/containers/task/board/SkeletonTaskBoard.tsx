@@ -14,7 +14,7 @@ export const SkeletonTaskBoard: FC = () => {
     TaskStatus.DONE,
   ];
   const taskCounts = [2, 3, 2, 4];
-  const columnWidth = 300;
+  const columnWidth = 330;
   const skeletonCard = (key: number) => (
     <div key={key} style={{ marginBottom: 8 }}>
       <Card size="small">

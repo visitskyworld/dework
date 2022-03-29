@@ -69,9 +69,12 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       }
       onClick={navigateToTask}
     >
-      <Space direction="vertical" size={4} style={{ width: "100%" }}>
+      <Space direction="vertical" size={8} style={{ width: "100%" }}>
         <Row style={{ gap: 8 }}>
-          <Typography.Text strong style={{ flex: 1, wordBreak: "break-word" }}>
+          <Typography.Text
+            className="font-semibold"
+            style={{ flex: 1, wordBreak: "break-word" }}
+          >
             {task.name}
           </Typography.Text>
           <TaskCardAvatars task={task} />
