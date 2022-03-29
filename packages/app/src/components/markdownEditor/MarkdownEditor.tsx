@@ -35,7 +35,6 @@ interface MarkdownEditorProps {
 export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   initialValue,
   placeholder = "Write something or attach files...",
-  buttonText = "Edit",
   editable,
   mode,
   onChange,
