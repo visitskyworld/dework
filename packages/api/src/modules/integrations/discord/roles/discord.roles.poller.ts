@@ -1,4 +1,4 @@
-import { Controller, Logger, Post, Res } from "@nestjs/common";
+import { Controller, Logger, Post, Query, Res } from "@nestjs/common";
 import { Response } from "express";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -19,9 +19,13 @@ export class DiscordRolesPoller {
   ) {}
 
   @Post("update")
-  public async updateDiscordRoles(@Res() res: Response) {
+  public async updateDiscordRoles(
+    @Query("organizationId") organizationId: string | undefined,
+    @Res() res: Response
+  ) {
     const integrations = (await this.organizationIntegrationRepo.find({
       type: OrganizationIntegrationType.DISCORD,
+      ...(!!organizationId && { organizationId }),
     })) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>[];
 
     this.logger.log(
