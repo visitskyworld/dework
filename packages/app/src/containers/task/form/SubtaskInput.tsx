@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Input, Row } from "antd";
+import { Button, Divider, Input, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import { TaskList, TaskListRow } from "../list/TaskList";
 import { TaskDetails, TaskStatus } from "@dewo/app/graphql/types";
@@ -105,7 +105,8 @@ export const SubtaskInput: FC<Props> = ({
   );
 
   return (
-    <>
+    <div>
+      {!!rows.length && <Divider style={{ marginBottom: 0 }}>Subtasks</Divider>}
       <TaskList
         rows={rows}
         size="small"
@@ -137,6 +138,6 @@ export const SubtaskInput: FC<Props> = ({
           />
         </Row>
       )}
-    </>
+    </div>
   );
 };

@@ -4,8 +4,9 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
 import { Avatar } from "antd";
-import { TaskOpenSubmissionAvatar } from "./TaskOpenSubmissionAvatar";
-import { TaskApplyAvatar } from "./TaskApplyAvatar";
+import { CreateSubmissionAvatar } from "../actions/submit/CreateSubmissionAvatar";
+import { ApplyToTaskAvatar } from "../actions/apply/ApplyToTaskAvatar";
+import { ClaimTaskAvatar } from "../actions/claim/ClaimTaskAvatar";
 
 interface Props {
   task: Task;
@@ -44,14 +45,14 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
     }
 
     if (task.options?.allowOpenSubmission) {
-      return <TaskOpenSubmissionAvatar />;
+      return <CreateSubmissionAvatar size={20} />;
     }
 
     if (canUpdateTask) {
-      return <Avatar size={20} className="ant-avatar-white" />;
+      return <ClaimTaskAvatar size={20} />;
     }
 
-    return <TaskApplyAvatar />;
+    return <ApplyToTaskAvatar size={20} />;
   }
 
   return null;

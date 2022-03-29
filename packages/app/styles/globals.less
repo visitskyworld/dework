@@ -11,7 +11,7 @@
 @body-background: #00042d;
 @twitter-color: #1da1f2;
 @component-background: fade(@white, 10%);
-@divider-color: fade(@white, 20%);
+@divider-color: fade(@white, 10%);
 @border-color-base: fade(@white, 40%);
 @border-color-split: fade(@white, 30%);
 @btn-text-hover-bg: fade(@white, 10%); // defaults to 3%
@@ -26,6 +26,7 @@
 
 @purple-base: #833bff;
 @blue-base: #78c6ff;
+@yellow-base: #FFD260;
 
 html {
   background: @body-background;
@@ -250,18 +251,20 @@ iframe {
 }
 
 .dewo-field {
-  &.dewo-field-focus-border:not(:focus) {
-    padding-left: 0;
+  &.dewo-field-focus-border:not(:focus):not(:hover) {
     border-color: transparent;
   }
 
   &:disabled {
-    padding: 0;
-    margin: 0;
     background: unset;
     border: unset;
     cursor: unset;
     color: unset;
+    
+    &:not(.dewo-field-focus-border) {
+      padding: 0;
+      margin: 0;
+    }
   }
 }
 
@@ -721,7 +724,7 @@ iframe {
   }
 }
 
-.dewo-settings-tabs {
+.dewo-settings-tabs > .ant-card {
   .ant-tabs-nav-list {
     display: flex;
     flex-direction: column;
@@ -806,6 +809,7 @@ iframe {
 
   .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 2px 2px;
+    border-bottom: none;
   }
 }
 
@@ -998,3 +1002,13 @@ iframe {
   }
   transition: background-color 0.3s ease-in-out;
 }
+
+.make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
+  .make-color-classes(@i - 1);
+    @color: extract(@preset-colors, @i);
+    @colorValue: '@{color}-6';
+    .text-color-@{color} {
+      color: @@colorValue;
+    }
+}
+.make-color-classes();

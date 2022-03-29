@@ -11,7 +11,7 @@ import { TaskTagsRow } from "../board/TaskTagsRow";
 import {
   TaskActionButton,
   useTaskActionButton,
-} from "../board/TaskActionButton";
+} from "../actions/TaskActionButton";
 import { TaskCardAvatars } from "./TaskCardAvatars";
 import { TaskRewardTag } from "../TaskRewardTag";
 

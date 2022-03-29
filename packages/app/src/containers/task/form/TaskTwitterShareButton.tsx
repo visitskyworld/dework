@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { TaskDetails } from "@dewo/app/graphql/types";
-import { FormSection } from "@dewo/app/components/FormSection";
 import { Button } from "antd";
 import { TwitterOutlined } from "@ant-design/icons";
 import slugify from "slugify";
@@ -17,20 +16,18 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
     .concat("dework")
     .join();
   return (
-    <FormSection label="Twitter" className="mb-3">
-      <Button
-        target="_blank"
-        type="ghost"
-        className="dewo-twitter-btn"
-        size="small"
-        icon={<TwitterOutlined />}
-        href={`https://twitter.com/intent/tweet?${qs.stringify({
-          text,
-          hashtags,
-        })}`}
-      >
-        Share on Twitter
-      </Button>
-    </FormSection>
+    <Button
+      target="_blank"
+      type="ghost"
+      className="dewo-twitter-btn"
+      size="small"
+      icon={<TwitterOutlined />}
+      href={`https://twitter.com/intent/tweet?${qs.stringify({
+        text,
+        hashtags,
+      })}`}
+    >
+      Share on Twitter
+    </Button>
   );
 };

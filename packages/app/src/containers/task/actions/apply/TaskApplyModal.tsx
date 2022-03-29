@@ -1,20 +1,20 @@
 import { DiscordGuildMembershipState, Task } from "@dewo/app/graphql/types";
 import { Modal, Row, Spin, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { useCreateTaskApplication, useTask } from "./hooks";
+import { useCreateTaskApplication, useTask } from "../../hooks";
 import { Form, Button, Input } from "antd";
 import { DatePicker } from "antd";
 import moment from "moment";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useProject } from "../project/hooks";
-import {
-  useAddUserToDiscordGuild,
-  useDiscordGuildMembershipState,
-} from "../integrations/hooks";
+import { useProject } from "../../../project/hooks";
 import { useRouter } from "next/router";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { Constants } from "@dewo/app/util/constants";
-import { useFollowOrganization } from "../rbac/hooks";
+import {
+  useAddUserToDiscordGuild,
+  useDiscordGuildMembershipState,
+} from "@dewo/app/containers/integrations/hooks";
+import { useFollowOrganization } from "@dewo/app/containers/rbac/hooks";
 
 interface Props {
   taskId: string | undefined;

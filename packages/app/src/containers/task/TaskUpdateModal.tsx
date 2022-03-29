@@ -13,7 +13,7 @@ import {
 import { TaskForm, TaskFormValues } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
-import { TaskApplyModal } from "./TaskApplyModal";
+import { TaskApplyModal } from "./actions/apply/TaskApplyModal";
 import { TaskSeo } from "../seo/TaskSeo";
 
 interface Props {
@@ -58,6 +58,7 @@ export const TaskUpdateModal: FC<Props> = ({
   const initialValues = useMemo<TaskFormValues>(
     () => ({
       id: taskId,
+      projectId: task?.projectId!,
       name: task?.name ?? "",
       description: task?.description ?? undefined,
       storyPoints: task?.storyPoints ?? undefined,
@@ -75,7 +76,7 @@ export const TaskUpdateModal: FC<Props> = ({
 
   return (
     <>
-      <Modal visible={visible} onCancel={onCancel} footer={null} width={768}>
+      <Modal visible={visible} onCancel={onCancel} footer={null} width={960}>
         {!!task && <TaskOptionsButton task={task} />}
         <Skeleton loading={!task} active paragraph={{ rows: 5 }}>
           {!!task && taskRoles && (
@@ -101,7 +102,7 @@ export const TaskUpdateModalListener: FC = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string | undefined;
   const applyToTaskId = router.query.applyToTaskId as string | undefined;
-  const isOnProjectPage = !!router.query.projectName;
+  const isOnProjectPage = !!router.query.projectSlug;
 
   const closeModal = useCallback(
     () =>

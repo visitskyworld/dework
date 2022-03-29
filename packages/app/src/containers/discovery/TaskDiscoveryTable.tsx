@@ -8,8 +8,8 @@ import { SortOrder } from "antd/lib/table/interface";
 import moment from "moment";
 import Link from "next/link";
 import React, { FC } from "react";
-import { ApplyToTaskButton } from "../task/board/ApplyToTaskButton";
-import { CreateSubmissionButton } from "../task/board/CreateSubmissionButton";
+import { ApplyToTaskButton } from "../task/actions/apply/ApplyToTaskButton";
+import { CreateSubmissionButton } from "../task/actions/submit/CreateSubmissionButton";
 import { TaskTagsRow } from "../task/board/TaskTagsRow";
 import {
   calculateTaskRewardAsUSD,
@@ -98,9 +98,13 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
               {!screens.sm && (
                 <div onClick={stopPropagation}>
                   {task.options?.allowOpenSubmission ? (
-                    <CreateSubmissionButton task={task} />
+                    <CreateSubmissionButton
+                      task={task}
+                      size="small"
+                      type="text"
+                    />
                   ) : (
-                    <ApplyToTaskButton task={task} />
+                    <ApplyToTaskButton task={task} size="small" type="text" />
                   )}
                 </div>
               )}
@@ -149,9 +153,17 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                   screens.sm && (
                     <div onClick={stopPropagation}>
                       {task.options?.allowOpenSubmission ? (
-                        <CreateSubmissionButton task={task} />
+                        <CreateSubmissionButton
+                          task={task}
+                          size="small"
+                          type="text"
+                        />
                       ) : (
-                        <ApplyToTaskButton task={task} />
+                        <ApplyToTaskButton
+                          task={task}
+                          size="small"
+                          type="text"
+                        />
                       )}
                     </div>
                   ),

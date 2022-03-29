@@ -10,16 +10,7 @@ import React, {
 } from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import * as Icons from "@ant-design/icons";
-import {
-  Upload,
-  notification,
-  Button,
-  message,
-  Tabs,
-  Row,
-  Divider,
-} from "antd";
+import { Upload, notification, message, Tabs, Row, Divider } from "antd";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { useUploadFile } from "../../containers/fileUploads/hooks";
 import { getMarkdownImgPlaceholder, getMarkdownURL } from "./utils";
@@ -228,22 +219,17 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
         </Tabs.TabPane>
       </Tabs>
     );
-  } else {
+  } else if (editable) {
     return (
-      <>
+      <div
+        onClick={handleEdit}
+        className="ant-input dewo-field dewo-field-focus-border"
+        style={{ marginLeft: -12, marginRight: -12, cursor: "text" }}
+      >
         <MarkdownPreview value={savedValue} placeholder={placeholder} />
-        {!!editable && (
-          <Button
-            size="small"
-            type="ghost"
-            icon={<Icons.EditOutlined />}
-            style={{ marginTop: 8 }}
-            onClick={handleEdit}
-          >
-            {buttonText}
-          </Button>
-        )}
-      </>
+      </div>
     );
+  } else {
+    return <MarkdownPreview value={savedValue} placeholder={placeholder} />;
   }
 };

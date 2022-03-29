@@ -103,6 +103,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
     const duplicatedTask = await createTask(
       {
         name: task.name,
+        projectId: task.projectId,
         description: task.description ?? undefined,
         parentTaskId: task.parentTaskId ?? undefined,
         storyPoints: task.storyPoints ?? undefined,

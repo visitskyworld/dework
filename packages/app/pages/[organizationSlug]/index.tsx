@@ -28,6 +28,7 @@ const Page: NextPage = () => {
   const breakpoint = Grid.useBreakpoint();
   const inset = useMemo(() => {
     if (breakpoint.xxl) return 128;
+    if (breakpoint.sm) return 16;
     return 8;
   }, [breakpoint]);
 

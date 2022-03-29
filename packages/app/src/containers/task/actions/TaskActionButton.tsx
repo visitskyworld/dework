@@ -8,14 +8,14 @@ import { Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ApplyToTaskButton } from "./ApplyToTaskButton";
+import { ApplyToTaskButton } from "../actions/apply/ApplyToTaskButton";
 import { useUpdateTask } from "../hooks";
-import { PayButton } from "./PayButton";
-import { useShouldShowInlinePayButton } from "./util";
+import { PayButton } from "../board/PayButton";
+import { useShouldShowInlinePayButton } from "../board/util";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { CreateSubmissionButton } from "./CreateSubmissionButton";
+import { CreateSubmissionButton } from "./submit/CreateSubmissionButton";
 import { stopPropagation } from "@dewo/app/util/eatClick";
-import { useRunningCallback } from "@dewo/app/util/hooks";
+import { ClaimTaskButton } from "./claim/ClaimTaskButton";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -30,19 +30,12 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     () => updateTask({ id: task.id, status: TaskStatus.DONE }, task),
     [updateTask, task]
   );
-  const [claimTask, claimingTask] = useRunningCallback(
-    () =>
-      !!currentUserId &&
-      updateTask({ id: task.id, assigneeIds: [currentUserId] }),
-    [currentUserId, updateTask, task.id]
-  );
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
-  const canManage = usePermission("update", task);
+  const canManage = usePermission("update", task, "ownerId");
   const canApply = usePermission("create", "TaskApplication");
-  const canUpdateTask = usePermission("update", task, "status");
   const canAssignTask = usePermission("update", task, "assigneeIds");
-  const canCreateSubmission = usePermission("submit", task);
+  const canSubmit = usePermission("submit", task);
 
   if (shouldShowInlinePayButton) {
     return <PayButton task={task}>Pay</PayButton>;
@@ -66,7 +59,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
       task.status
     ) &&
-    canUpdateTask &&
+    canManage &&
     !!task.submissions.length
   ) {
     return (
@@ -103,33 +96,28 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   }
 
   if (
-    canUpdateTask &&
-    task.status === TaskStatus.TODO &&
-    !task.assignees.length
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
+    !!task.options?.allowOpenSubmission &&
+    canSubmit
   ) {
-    return (
-      <Button
-        size="small"
-        type="text"
-        loading={claimingTask}
-        icon={<Icons.RightCircleOutlined />}
-        onClick={claimTask}
-      >
-        Claim task
-      </Button>
-    );
+    return <CreateSubmissionButton task={task} size="small" type="text" />;
   }
 
   if (
-    [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
-    !!task.options?.allowOpenSubmission &&
-    canCreateSubmission
+    canAssignTask &&
+    task.status === TaskStatus.TODO &&
+    !task.assignees.length
   ) {
-    return <CreateSubmissionButton task={task} />;
+    return <ClaimTaskButton task={task} size="small" type="text" />;
   }
 
-  if (!canManage && task.status === TaskStatus.TODO && canApply) {
-    return <ApplyToTaskButton task={task} />;
+  if (
+    !canManage &&
+    task.status === TaskStatus.TODO &&
+    canApply &&
+    !task.assignees.length
+  ) {
+    return <ApplyToTaskButton task={task} size="small" type="text" />;
   }
 }
 

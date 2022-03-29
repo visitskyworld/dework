@@ -1,4 +1,3 @@
-import { FormSection } from "@dewo/app/components/FormSection";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import {
   DiscordGuildMembershipState,
@@ -6,7 +5,7 @@ import {
   TaskDetails,
 } from "@dewo/app/graphql/types";
 import { Constants } from "@dewo/app/util/constants";
-import { Button, message, Typography } from "antd";
+import { Button, Dropdown, Menu, message } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
 import {
@@ -32,61 +31,71 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
     task.project.organizationId
   );
   const createDiscordLink = useCreateTaskDiscordLink();
-  const handleClick = useCallback(async () => {
-    setLoading(true);
-    try {
-      if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
-        await addUserToDiscordGuild().catch();
+  const handleClick = useCallback(
+    async (openInApp: boolean) => {
+      setLoading(true);
+      try {
+        if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
+          await addUserToDiscordGuild().catch();
+        }
+        const link = await createDiscordLink(task.id);
+        if (openInApp) {
+          window.open(link.replace(/^https:\/\//, "discord://"), "_blank");
+        } else {
+          window.open(link, "_blank");
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          message.error(e.message);
+        }
+      } finally {
+        setLoading(false);
       }
-      let link = await createDiscordLink(task.id);
-      if (link) {
-        window.open(link, "_blank");
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        message.error(e.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [createDiscordLink, task.id, addUserToDiscordGuild, membershipState]);
+    },
+    [createDiscordLink, task.id, addUserToDiscordGuild, membershipState]
+  );
 
   if (!membershipState) return null;
   if (!integrations?.some((i) => i.type === ProjectIntegrationType.DISCORD)) {
     return null;
   }
+
+  if (membershipState === DiscordGuildMembershipState.MISSING_SCOPE) {
+    return (
+      <Button
+        type="primary"
+        size="small"
+        icon={<DiscordIcon />}
+        href={`${
+          Constants.GRAPHQL_API_URL
+        }/auth/discord-join-guild?state=${JSON.stringify({
+          redirect: router.asPath,
+        })}`}
+      >
+        Go to Discord thread
+      </Button>
+    );
+  }
+
   return (
-    <FormSection label="Discord" className="mb-3">
-      {membershipState === DiscordGuildMembershipState.MISSING_SCOPE ? (
-        <>
-          <Typography.Paragraph>
-            To join the discussion you need to first join our Discord server
-          </Typography.Paragraph>
-          <Button
-            type="primary"
-            size="small"
-            icon={<DiscordIcon />}
-            href={`${
-              Constants.GRAPHQL_API_URL
-            }/auth/discord-join-guild?state=${JSON.stringify({
-              redirect: router.asPath,
-            })}`}
-          >
-            Go to Discord thread
-          </Button>
-        </>
-      ) : (
-        <Button
-          type="primary"
-          target="_blank"
-          size="small"
-          loading={loading}
-          icon={<DiscordIcon />}
-          onClick={handleClick}
-        >
-          Go to Discord thread
-        </Button>
-      )}
-    </FormSection>
+    <Dropdown
+      trigger={["click"]}
+      overlay={
+        <Menu>
+          <Menu.Item onClick={() => handleClick(false)}>Discord Web</Menu.Item>
+          <Menu.Item onClick={() => handleClick(true)}>Discord App</Menu.Item>
+        </Menu>
+      }
+    >
+      <Button
+        type="primary"
+        target="_blank"
+        size="small"
+        loading={loading}
+        icon={<DiscordIcon />}
+      >
+        Go to Discord thread
+      </Button>
+    </Dropdown>
   );
 };

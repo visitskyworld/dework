@@ -1,6 +1,5 @@
 name: Deploy Vercel
-#on: [pull_request]
-on: workflow_dispatch
+on: pull_request
 jobs:
   deploy:
     runs-on: ubuntu-latest

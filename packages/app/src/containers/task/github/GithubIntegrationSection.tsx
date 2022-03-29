@@ -4,7 +4,6 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { GithubPullRequestRow } from "./GithubPullRequestRow";
 import { GithubBranchRow } from "./GithubBranchRow";
 import { useProjectIntegrations } from "../../project/hooks";
-import { Typography } from "antd";
 
 interface Props {
   task: TaskDetails;
@@ -43,27 +42,6 @@ export const GithubIntegrationSection: FC<Props> = ({ task }) => {
           {branchesWithoutPullRequests.map((branch) => (
             <GithubBranchRow key={branch.id} branch={branch} task={task} />
           ))}
-        </FormSection>
-      )}
-
-      {!task.githubBranches.length && (
-        <FormSection label="Link Github Branch" className="mb-3">
-          <Typography.Paragraph
-            type="secondary"
-            className="ant-typography-caption"
-          >
-            Automatically link your task with a Github Pull Request using the
-            branch name below
-          </Typography.Paragraph>
-
-          <Typography.Text
-            copyable
-            type="secondary"
-            className="ant-input"
-            style={{ display: "inline" }}
-          >
-            {`git checkout -b ${task.gitBranchName}`}
-          </Typography.Text>
         </FormSection>
       )}
     </>

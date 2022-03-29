@@ -25,16 +25,10 @@ import {
   usePermission,
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
-import { AssignTaskCard } from "../AssignTaskCard";
-import {
-  TaskRewardFormFields,
-  TaskRewardFormValues,
-  validator as validateTaskReward,
-} from "./TaskRewardFormFields";
-import { FormSection } from "@dewo/app/components/FormSection";
+import { TaskApplicationList } from "../TaskApplicationList";
+import { TaskRewardFormValues } from "./reward/TaskRewardFormFields";
 import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
-import { TaskRewardSummary } from "./TaskRewardSummary";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskActivityFeed } from "./TaskActivityFeed";
@@ -46,17 +40,23 @@ import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCol
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
 import { StoryPointsInput } from "./StoryPointsInput";
-import Link from "next/link";
-import { ProjectAvatar } from "@dewo/app/components/ProjectAvatar";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { useProjectTaskTags } from "../../project/hooks";
 import { TaskTwitterShareButton } from "./TaskTwitterShareButton";
 import { TaskRoleSelectField } from "./TaskRoleSelectField";
+import { TaskActionSection } from "../actions/TaskActionSection";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { TaskGithubBranchButton } from "../github/TaskGithubBranchButton";
+import {
+  TaskRewardSection,
+  useCanUpdateTaskReward,
+} from "./reward/TaskRewardSection";
+import { TaskProjectRow } from "./TaskProjectRow";
 
 export interface TaskFormValues {
   name: string;
   description?: string;
-  projectId?: string;
+  projectId: string;
   parentTaskId?: string;
   status: TaskStatus;
   dueDate?: moment.Moment;
@@ -90,6 +90,8 @@ export const TaskForm: FC<TaskFormProps> = ({
   showProjectLink,
   onSubmit,
 }) => {
+  const screens = useBreakpoint();
+
   const [form] = useForm<TaskFormValues>();
   const [values, setValues] = useState<Partial<TaskFormValues>>(
     initialValues ?? {}
@@ -99,7 +101,6 @@ export const TaskForm: FC<TaskFormProps> = ({
     __typename: "TaskTag",
     projectId,
   });
-  const canCreateReward = usePermission("create", "TaskReward");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
     (field: keyof TaskFormValues | `status[${TaskStatus}]`) =>
@@ -155,6 +156,8 @@ export const TaskForm: FC<TaskFormProps> = ({
     [form, mode, debouncedSubmit]
   );
 
+  const showTaskRewardFirst = !useCanUpdateTaskReward(task);
+
   return (
     <Form
       form={form}
@@ -164,8 +167,13 @@ export const TaskForm: FC<TaskFormProps> = ({
       onFinish={handleSubmit}
       onValuesChange={handleChange}
     >
-      <Row gutter={16} className="dewo-task-form">
-        <Col xs={24} sm={16}>
+      <Row gutter={[36, 36]} className="dewo-task-form">
+        <Col
+          xs={24}
+          sm={16}
+          style={{ display: "flex", flexDirection: "column" }}
+          className={!screens.xs ? "dewo-divider-right" : undefined}
+        >
           {!!task?.parentTask && (
             <Button
               type="text"
@@ -186,6 +194,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <Form.Item
             name="name"
+            noStyle
             // label={mode === "create" ? "Task name" : undefined}
             rules={[{ required: true, message: "Please enter a name" }]}
           >
@@ -195,8 +204,10 @@ export const TaskForm: FC<TaskFormProps> = ({
               autoFocus={mode === "create"}
               className="dewo-field dewo-field-focus-border ant-typography-h3"
               placeholder="Enter a task name..."
+              style={{ overflowY: "hidden", marginLeft: -12, marginRight: -12 }}
             />
           </Form.Item>
+
           <Form.Item
             name="status"
             label="Status"
@@ -218,20 +229,19 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="description" label="Description" className="mb-3">
+          <Form.Item name="description" className="mb-3">
             <MarkdownEditor
               initialValue={initialValues?.description ?? undefined}
               editable={canChange("description")}
+              placeholder={
+                canChange("description") ? undefined : "No task description..."
+              }
               mode={mode}
             />
           </Form.Item>
 
           {(canChange("subtasks") || !!task?.subtasks.length) && (
-            <Form.Item
-              name="subtasks"
-              label="Subtasks"
-              style={{ marginBottom: 16 }}
-            >
+            <Form.Item name="subtasks" style={{ marginBottom: 16 }}>
               <SubtaskInput projectId={projectId} task={task} />
             </Form.Item>
           )}
@@ -248,20 +258,39 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Button>
           )}
 
-          {!!task && <TaskDiscordButton task={task} />}
+          {!!task && (
+            <>
+              {canChange("assigneeIds") &&
+                task.status === TaskStatus.TODO &&
+                !!task.applications.length && (
+                  <TaskApplicationList task={task} />
+                )}
 
-          {canChange("assigneeIds") &&
-            !!task &&
-            task.status === TaskStatus.TODO &&
-            !!task.applications.length && <AssignTaskCard task={task} />}
+              <GithubIntegrationSection task={task} />
+              <TaskSubmissionsSection task={task} />
 
-          {!!task && <GithubIntegrationSection task={task} />}
-          {!!task && <TaskSubmissionsSection task={task} />}
-          <Divider />
-          {!!task && <TaskActivityFeed task={task} />}
-          {!!task && <TaskTwitterShareButton task={task} />}
+              <div style={{ flex: 1, minHeight: 40 }} />
+
+              <Row style={{ rowGap: 8, columnGap: 8 }}>
+                <TaskDiscordButton task={task} />
+                <TaskTwitterShareButton task={task} />
+                <TaskGithubBranchButton task={task} />
+              </Row>
+              <Divider style={{ marginTop: 16 }} />
+              <TaskActivityFeed task={task} />
+            </>
+          )}
         </Col>
         <Col xs={24} sm={8} style={{ marginTop: 16 }}>
+          {!!task && <TaskActionSection task={task} />}
+          {showTaskRewardFirst && (
+            <TaskRewardSection
+              projectId={projectId}
+              task={task}
+              value={values?.reward}
+            />
+          )}
+
           <Form.Item
             name="status"
             label="Status"
@@ -331,57 +360,18 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Form.Item>
           )}
 
-          {canCreateReward &&
-          !!projectId &&
-          (!task?.reward?.payment || mode === "create") ? (
-            <Form.Item
-              name="reward"
-              label="Task Reward"
-              rules={[
-                { validator: validateTaskReward, validateTrigger: "onSubmit" },
-              ]}
-            >
-              <TaskRewardFormFields
-                projectId={projectId}
-                value={values?.reward ?? undefined}
-              />
-            </Form.Item>
-          ) : (
-            !!task?.reward && <TaskRewardSummary reward={task.reward} />
+          {!showTaskRewardFirst && (
+            <TaskRewardSection
+              projectId={projectId}
+              task={task}
+              value={values?.reward}
+            />
           )}
 
           <TaskRoleSelectField roleIds={values.roleIds} projectId={projectId} />
 
           {!!task && showProjectLink && (
-            <FormSection label="Project">
-              <Link href={task.project.permalink}>
-                <a style={{ display: "flex" }}>
-                  <Button
-                    type="text"
-                    size="small"
-                    className="dewo-btn-highlight"
-                    icon={
-                      <ProjectAvatar
-                        size="small"
-                        style={{ flexShrink: 0 }}
-                        project={task.project}
-                      />
-                    }
-                  >
-                    <Typography.Text
-                      style={{
-                        marginLeft: 8,
-                        width: "100%",
-                        textAlign: "left",
-                      }}
-                      ellipsis
-                    >
-                      {task.project.name}
-                    </Typography.Text>
-                  </Button>
-                </a>
-              </Link>
-            </FormSection>
+            <TaskProjectRow project={task.project} />
           )}
 
           {canChange("options") && (

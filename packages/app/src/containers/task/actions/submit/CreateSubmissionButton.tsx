@@ -1,19 +1,19 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
-import { Button, message, Space } from "antd";
+import { Button, ButtonProps, message, Space } from "antd";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Task } from "@dewo/app/graphql/types";
 import Modal from "antd/lib/modal/Modal";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
-import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
+import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { LoginButton } from "../../auth/LoginButton";
+import { LoginButton } from "../../../auth/LoginButton";
 
-interface Props {
+interface Props extends ButtonProps {
   task: Task;
 }
 
-export const CreateSubmissionButton: FC<Props> = ({ task }) => {
+export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   const modalVisible = useToggle();
   const [loading, setLoading] = useState(false);
 
@@ -59,7 +59,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
 
   if (!user) {
     return (
-      <LoginButton size="small" icon={<Icons.UnlockOutlined />}>
+      <LoginButton {...buttonProps} icon={<Icons.UnlockOutlined />}>
         Create Submission
       </LoginButton>
     );
@@ -67,8 +67,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
   return (
     <>
       <Button
-        size="small"
-        type="text"
+        {...buttonProps}
         icon={<Icons.EditOutlined />}
         onClick={modalVisible.toggleOn}
       >
@@ -82,6 +81,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task }) => {
       >
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
           <MarkdownEditor
+            key={currentSubmission?.content}
             initialValue={currentSubmission?.content}
             buttonText={false ? "Edit submission" : "Add submission"}
             placeholder="Submit your work here..."

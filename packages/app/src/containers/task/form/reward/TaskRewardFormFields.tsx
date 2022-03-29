@@ -9,10 +9,10 @@ import {
   Space,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProjectPaymentMethods } from "../../project/hooks";
+import { useProjectPaymentMethods } from "../../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
-import { AddProjectPaymentMethodModal } from "../../payment/project/AddProjectPaymentMethodModal";
+import { AddProjectPaymentMethodModal } from "../../../payment/project/AddProjectPaymentMethodModal";
 
 export interface TaskRewardFormValues {
   amount: number;

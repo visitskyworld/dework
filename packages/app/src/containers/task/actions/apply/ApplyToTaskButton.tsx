@@ -1,17 +1,17 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Task } from "@dewo/app/graphql/types";
-import { Button, Space, Tooltip, Typography } from "antd";
+import { Button, ButtonProps, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useDeleteTaskApplication } from "../hooks";
 import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
-import { LoginButton } from "../../auth/LoginButton";
+import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
+import { useDeleteTaskApplication } from "../../hooks";
 
-interface Props {
+interface Props extends ButtonProps {
   task: Task;
 }
 
-export const ApplyToTaskButton: FC<Props> = ({ task }) => {
+export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
   const { user } = useAuthContext();
   const hasClaimedTask = useMemo(
     () => !!user && task.applications.some((tA) => tA.user.id === user.id),
@@ -32,7 +32,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task }) => {
 
   if (!user) {
     return (
-      <LoginButton size="small" type="text" icon={<Icons.UnlockOutlined />}>
+      <LoginButton {...buttonProps} icon={<Icons.UnlockOutlined />}>
         Apply to task
       </LoginButton>
     );
@@ -61,14 +61,13 @@ export const ApplyToTaskButton: FC<Props> = ({ task }) => {
             </Space>
           }
         >
-          <Button size="small" disabled icon={<Icons.LockOutlined />}>
+          <Button {...buttonProps} disabled icon={<Icons.LockOutlined />}>
             Requested
           </Button>
         </Tooltip>
       ) : (
         <Button
-          size="small"
-          type="text"
+          {...buttonProps}
           icon={<Icons.UnlockOutlined />}
           onClick={handleInterested}
         >

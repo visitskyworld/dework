@@ -72,7 +72,7 @@ import { useCallback, useMemo } from "react";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import { useOrganizationUsers } from "../organization/hooks";
 import { useProject } from "../project/hooks";
-import { TaskRewardFormValues } from "./form/TaskRewardFormFields";
+import { TaskRewardFormValues } from "./form/reward/TaskRewardFormFields";
 import { TaskFormValues } from "./form/TaskForm";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {

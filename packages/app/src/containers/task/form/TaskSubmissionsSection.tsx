@@ -3,7 +3,7 @@ import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEdit
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskDetails } from "@dewo/app/graphql/types";
-import { Card, Divider, List } from "antd";
+import { Card, Divider, List, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
 import { TaskSubmissionListItem } from "./TaskSubmissionListItem";
@@ -34,7 +34,12 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
       if (!currentSubmission) {
         await createSubmission({ taskId: task.id, content });
       } else {
-        await updateSubmission({ userId: user.id, taskId: task.id, content });
+        await updateSubmission({
+          userId: user.id,
+          taskId: task.id,
+          content,
+          deletedAt: !content ? new Date().toISOString() : undefined,
+        });
       }
     },
     [user, task.id, currentSubmission, createSubmission, updateSubmission]
@@ -43,7 +48,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   if (!canSubmit && !approvedSubmission) return null;
   if (!!approvedSubmission) {
     return (
-      <>
+      <div>
         <Divider>Submissions</Divider>
         <FormSection label="Approved Submission">
           <Card size="small" className="dewo-card-highlighted">
@@ -53,40 +58,52 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
             />
           </Card>
         </FormSection>
-      </>
+      </div>
     );
   }
 
-  return (
-    <>
-      <Divider>Submissions</Divider>
-      {canManageSubmissions && !!task.submissions.length && (
-        <FormSection label="All Submissions">
-          <Card size="small" className="dewo-card-highlighted">
-            <List
-              dataSource={task.submissions}
-              renderItem={(submission) => (
-                <TaskSubmissionListItem task={task} submission={submission} />
-              )}
-            />
-          </Card>
-        </FormSection>
-      )}
-
-      {canSubmit && (
-        <FormSection label="Your Submission">
-          <MarkdownEditor
-            initialValue={currentSubmission?.content}
-            placeholder="No submissions yet. Submit your work here."
-            buttonText={
-              !!currentSubmission ? "Edit submission" : "Add submission"
-            }
-            editable
-            mode="update"
-            onSave={handleSave}
+  const components = [
+    canManageSubmissions &&
+      !task.submissions.length &&
+      task.options?.allowOpenSubmission && (
+        <Typography.Paragraph type="secondary">
+          No submissions yet
+        </Typography.Paragraph>
+      ),
+    canManageSubmissions && !!task.submissions.length && (
+      <FormSection label="All Submissions">
+        <Card size="small" className="dewo-card-highlighted">
+          <List
+            dataSource={task.submissions}
+            renderItem={(submission) => (
+              <TaskSubmissionListItem task={task} submission={submission} />
+            )}
           />
-        </FormSection>
-      )}
-    </>
+        </Card>
+      </FormSection>
+    ),
+    !!currentSubmission && (
+      <FormSection label="Your Submission">
+        <MarkdownEditor
+          key={currentSubmission?.content}
+          initialValue={currentSubmission?.content}
+          placeholder="No submission yet. Submit your work here."
+          buttonText={
+            !!currentSubmission ? "Edit submission" : "Add submission"
+          }
+          editable
+          mode="update"
+          onSave={handleSave}
+        />
+      </FormSection>
+    ),
+  ].filter((c) => !!c);
+
+  if (!components.length) return null;
+  return (
+    <div>
+      <Divider>Submissions</Divider>
+      {components}
+    </div>
   );
 };

@@ -40,7 +40,7 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 import { AvatarSize } from "antd/lib/avatar/SizeContext";
-import { TaskActionButton } from "../board/TaskActionButton";
+import { TaskActionButton } from "../actions/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import moment from "moment";
 

@@ -6,7 +6,7 @@ import { Grid, Row, Skeleton, Space, Table, Tag, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useOrganizationTasks } from "../../hooks";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { TaskActionButton } from "@dewo/app/containers/task/board/TaskActionButton";
+import { TaskActionButton } from "@dewo/app/containers/task/actions/TaskActionButton";
 import { TaskCardAvatars } from "@dewo/app/containers/task/card/TaskCardAvatars";
 import { TaskTagsRow } from "@dewo/app/containers/task/board/TaskTagsRow";
 import { TaskRewardTag } from "@dewo/app/containers/task/TaskRewardTag";
