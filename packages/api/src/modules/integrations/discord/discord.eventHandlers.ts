@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IEventHandler, EventsHandler } from "@nestjs/cqrs";
+import { EventsHandler } from "@nestjs/cqrs";
+import { EventHandler } from "../../app/eventHandler";
 import {
   TaskApplicationCreatedEvent,
   TaskCreatedEvent,
@@ -16,42 +17,39 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
 
 @Injectable()
 @EventsHandler(TaskCreatedEvent)
-export class DiscordIntegrationTaskCreatedEventHandler
-  implements IEventHandler<TaskCreatedEvent>
-{
-  constructor(private readonly integration: DiscordIntegrationService) {}
+export class DiscordIntegrationTaskCreatedEventHandler extends EventHandler<TaskCreatedEvent> {
+  constructor(private readonly integration: DiscordIntegrationService) {
+    super();
+  }
 
-  async handle(event: TaskCreatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
+  async process(event: TaskCreatedEvent) {
     await this.integration.handle(event);
   }
 }
 
 @Injectable()
 @EventsHandler(TaskUpdatedEvent)
-export class DiscordIntegrationTaskUpdatedEventHandler
-  implements IEventHandler<TaskUpdatedEvent>
-{
-  constructor(private readonly integration: DiscordIntegrationService) {}
+export class DiscordIntegrationTaskUpdatedEventHandler extends EventHandler<TaskUpdatedEvent> {
+  constructor(private readonly integration: DiscordIntegrationService) {
+    super();
+  }
 
-  async handle(event: TaskUpdatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
+  async process(event: TaskUpdatedEvent) {
     await this.integration.handle(event);
   }
 }
 
 @Injectable()
 @EventsHandler(TaskApplicationCreatedEvent)
-export class DiscordIntegrationTaskApplicationCreatedEventHandler
-  implements IEventHandler<TaskApplicationCreatedEvent>
-{
+export class DiscordIntegrationTaskApplicationCreatedEventHandler extends EventHandler<TaskApplicationCreatedEvent> {
   constructor(
     private readonly integration: DiscordIntegrationService,
     private readonly taskApplicationChannelService: DiscordTaskApplicationThreadService
-  ) {}
+  ) {
+    super();
+  }
 
-  async handle(event: TaskApplicationCreatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
+  async process(event: TaskApplicationCreatedEvent) {
     await Promise.all([
       this.integration.handle(event),
       this.taskApplicationChannelService.createTaskApplicationThread(
@@ -63,43 +61,36 @@ export class DiscordIntegrationTaskApplicationCreatedEventHandler
 
 @Injectable()
 @EventsHandler(TaskSubmissionCreatedEvent)
-export class DiscordIntegrationTaskSubmissionCreatedEventHandler
-  implements IEventHandler<TaskSubmissionCreatedEvent>
-{
-  constructor(private readonly integration: DiscordIntegrationService) {}
+export class DiscordIntegrationTaskSubmissionCreatedEventHandler extends EventHandler<TaskSubmissionCreatedEvent> {
+  constructor(private readonly integration: DiscordIntegrationService) {
+    super();
+  }
 
-  async handle(event: TaskSubmissionCreatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
+  async process(event: TaskSubmissionCreatedEvent) {
     await this.integration.handle(event);
   }
 }
 
 @Injectable()
 @EventsHandler(ProjectIntegrationCreatedEvent)
-export class DiscordIntegrationCreatedEventHandler
-  implements IEventHandler<ProjectIntegrationCreatedEvent>
-{
-  constructor(
-    private readonly discordStatusboardService: DiscordStatusboardService
-  ) {}
+export class DiscordIntegrationCreatedEventHandler extends EventHandler<ProjectIntegrationCreatedEvent> {
+  constructor(private readonly service: DiscordStatusboardService) {
+    super();
+  }
 
-  async handle(event: ProjectIntegrationUpdatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
-    await this.discordStatusboardService.handleIntegrationEvent(event);
+  async process(event: ProjectIntegrationUpdatedEvent) {
+    await this.service.handleIntegrationEvent(event);
   }
 }
 
 @Injectable()
 @EventsHandler(ProjectIntegrationUpdatedEvent)
-export class DiscordIntegrationUpdatedEventHandler
-  implements IEventHandler<ProjectIntegrationUpdatedEvent>
-{
-  constructor(
-    private readonly discordStatusboardService: DiscordStatusboardService
-  ) {}
+export class DiscordIntegrationUpdatedEventHandler extends EventHandler<ProjectIntegrationUpdatedEvent> {
+  constructor(private readonly service: DiscordStatusboardService) {
+    super();
+  }
 
-  async handle(event: ProjectIntegrationUpdatedEvent) {
-    if (process.env.NODE_ENV === "test") return;
-    await this.discordStatusboardService.handleIntegrationEvent(event);
+  async process(event: ProjectIntegrationUpdatedEvent) {
+    await this.service.handleIntegrationEvent(event);
   }
 }

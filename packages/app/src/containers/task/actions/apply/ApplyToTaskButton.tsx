@@ -32,7 +32,11 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
 
   if (!user) {
     return (
-      <LoginButton {...buttonProps} icon={<Icons.UnlockOutlined />}>
+      <LoginButton
+        {...buttonProps}
+        icon={<Icons.UnlockOutlined />}
+        onAuthedWithWallet={handleInterested}
+      >
         Apply to task
       </LoginButton>
     );
