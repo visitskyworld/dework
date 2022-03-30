@@ -60,6 +60,7 @@ export const OrganizationProfileSettings: FC<
       name: organization?.name ?? "",
       tagline: organization?.tagline ?? undefined,
       description: organization?.description ?? undefined,
+      imageUrl: organization?.imageUrl ?? undefined,
       tagIds,
       discord: organization?.details.find((d) => d.type === "discord")?.value,
       twitter: organization?.details.find((d) => d.type === "twitter")?.value,

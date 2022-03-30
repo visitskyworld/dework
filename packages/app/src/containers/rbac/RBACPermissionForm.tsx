@@ -11,7 +11,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganizationUsers } from "../organization/hooks";
 import { useUserRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
-import { ConnectOrganizationToDiscordButton } from "../integrations/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { useOrganizationDiscordIntegration } from "../integrations/hooks";
 import { getRule, hasRule } from "./util";
 import { RoleTag } from "@dewo/app/components/RoleTag";

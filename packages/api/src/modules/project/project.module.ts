@@ -8,7 +8,6 @@ import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { IntegrationModule } from "../integrations/integration.module";
 import { PaymentModule } from "../payment/payment.module";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { RbacModule } from "../rbac/rbac.module";
@@ -28,7 +27,6 @@ import { ProjectService } from "./project.service";
       OrganizationMember,
     ]),
     PermalinkModule,
-    IntegrationModule,
     PaymentModule,
     RbacModule,
   ],

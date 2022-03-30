@@ -377,7 +377,7 @@ export interface UpdateOrganizationMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface UpdateOrganizationMutation_organization_projectTokenGates_token_network {
@@ -576,7 +576,7 @@ export interface CreateProjectMutation_project_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface CreateProjectMutation_project_organization_projectTokenGates_token_network {
@@ -2457,6 +2457,30 @@ export interface CreateProjectIntegrationMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateOrganizationIntegrationMutation
+// ====================================================
+
+export interface CreateOrganizationIntegrationMutation_integration {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject | null;
+}
+
+export interface CreateOrganizationIntegrationMutation {
+  integration: CreateOrganizationIntegrationMutation_integration;
+}
+
+export interface CreateOrganizationIntegrationMutationVariables {
+  input: CreateOrganizationIntegrationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: SetUserDetailMutation
 // ====================================================
 
@@ -3940,7 +3964,7 @@ export interface CreateProjectsFromNotionMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network {
@@ -4052,7 +4076,7 @@ export interface CreateProjectsFromTrelloMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network {
@@ -4164,7 +4188,7 @@ export interface CreateProjectsFromGithubMutation_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_projectTokenGates_token_network {
@@ -5034,7 +5058,7 @@ export interface GetOrganizationDetailsQuery_organization_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface GetOrganizationDetailsQuery_organization_projectTokenGates_token_network {
@@ -8841,7 +8865,7 @@ export interface OrganizationIntegration {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 /* tslint:disable */
@@ -10526,7 +10550,7 @@ export interface OrganizationDetails_integrations {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
-  config: Scalar.JSONObject;
+  config: Scalar.JSONObject | null;
 }
 
 export interface OrganizationDetails_projectTokenGates_token_network {
@@ -10611,6 +10635,7 @@ export enum GithubPullRequestStatus {
 }
 
 export enum OrganizationIntegrationType {
+  COORDINAPE = "COORDINAPE",
   DISCORD = "DISCORD",
   GITHUB = "GITHUB",
 }
@@ -10721,6 +10746,12 @@ export interface CreateMetamaskThreepidInput {
 export interface CreateOrganizationInput {
   name: string;
   imageUrl?: string | null;
+}
+
+export interface CreateOrganizationIntegrationInput {
+  type: OrganizationIntegrationType;
+  config?: Scalar.JSONObject | null;
+  organizationId: Scalar.UUID;
 }
 
 export interface CreateOrganizationTagInput {

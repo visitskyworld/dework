@@ -53,9 +53,7 @@ export class IntegrationService {
   ): Promise<OrganizationIntegration> {
     const orgIntegration = await this.organizationIntegrationRepo.upsert(
       partial,
-      {
-        conflictPaths: ["organizationId", "type"],
-      }
+      { conflictPaths: ["organizationId", "type"] }
     );
     return this.organizationIntegrationRepo.findOne(
       orgIntegration.identifiers[0]?.id

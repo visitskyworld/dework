@@ -16,6 +16,7 @@ import { User } from "./User";
 export enum OrganizationIntegrationType {
   DISCORD = "DISCORD",
   GITHUB = "GITHUB",
+  COORDINAPE = "COORDINAPE",
 }
 
 export interface DiscordOrganizationIntegrationConfig {
@@ -33,6 +34,7 @@ export interface OrganizationIntegrationConfigMap
   extends Record<OrganizationIntegrationType, any> {
   [OrganizationIntegrationType.DISCORD]: DiscordOrganizationIntegrationConfig;
   [OrganizationIntegrationType.GITHUB]: GithubOrganizationIntegrationConfig;
+  [OrganizationIntegrationType.COORDINAPE]: undefined;
 }
 
 registerEnumType(OrganizationIntegrationType, {
@@ -65,8 +67,8 @@ export class OrganizationIntegration<
   @Column("enum", { enum: OrganizationIntegrationType })
   public type!: TType;
 
-  @Column("json")
-  @Field(() => GraphQLJSONObject)
+  @Column("json", { nullable: true })
+  @Field(() => GraphQLJSONObject, { nullable: true })
   public config!: OrganizationIntegrationConfigMap[TType];
 
   @OneToMany(

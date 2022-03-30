@@ -5,7 +5,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { useProjectIntegrations } from "../hooks";
 import { ConnectToGithubFormSection } from "../../integrations/ConnectToGithubFormSection";
-import { ConnectOrganizationToGithubButton } from "../../integrations/ConnectOrganizationToGithubButton";
+import { ConnectOrganizationToGithubButton } from "../../integrations/buttons/ConnectOrganizationToGithubButton";
 import { Alert, Space, Typography } from "antd";
 import {
   useCreateGithubProjectIntegration,
@@ -66,7 +66,10 @@ export const ProjectSettingsGithubIntegration: FC<
   if (!hasOrgInt) {
     return (
       <ConnectToGithubFormSection>
-        <ConnectOrganizationToGithubButton organizationId={organizationId} />
+        <ConnectOrganizationToGithubButton
+          organizationId={organizationId}
+          type="ghost"
+        />
       </ConnectToGithubFormSection>
     );
   }

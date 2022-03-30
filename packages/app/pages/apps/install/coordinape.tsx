@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
+import * as qs from "query-string";
 import {
   Button,
   Card,
@@ -16,11 +17,16 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { TaskStatusAvatar } from "@dewo/app/containers/task/TaskStatusAvatar";
-import { TaskStatus } from "@dewo/app/graphql/types";
+import {
+  OrganizationIntegrationType,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { Logo } from "@dewo/app/components/Logo";
 import AnimatedBackground from "@dewo/app/assets/animated-background.svg";
 import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
 import { useRouter } from "next/router";
+import { useCreateOrganizationIntegration } from "@dewo/app/containers/integrations/hooks";
+import { useRunningCallback } from "@dewo/app/util/hooks";
 
 const Page: FC = () => {
   const { user, logout } = useAuthContext();
@@ -48,18 +54,26 @@ const Page: FC = () => {
     [organizationId, user]
   );
   const redirectUrl = useRouter().query.redirect as string;
+  const createIntegration = useCreateOrganizationIntegration();
+  const [handleCreateIntegration, creatingIntegration] = useRunningCallback(
+    createIntegration,
+    [createIntegration]
+  );
 
   const cancel = useCallback(
     () => (window.location.href = redirectUrl),
     [redirectUrl]
   );
-  const authorize = useCallback(
-    () =>
-      (window.location.href = `${redirectUrl}?dework_organization_id=${organizationId}&dework_organization_name=${
-        organization?.name ?? ""
-      }`),
-    [organizationId, organization, redirectUrl]
-  );
+  const authorize = useCallback(async () => {
+    await handleCreateIntegration({
+      organizationId: organizationId!,
+      type: OrganizationIntegrationType.COORDINAPE,
+    }).catch(() => {});
+    window.location.href = `${redirectUrl}?${qs.stringify({
+      dework_organization_id: organizationId,
+      dework_organization_name: organization?.name ?? "",
+    })}`;
+  }, [organizationId, organization, redirectUrl, handleCreateIntegration]);
 
   return (
     <Layout
@@ -85,6 +99,7 @@ const Page: FC = () => {
               <Button
                 type="primary"
                 key="authorize"
+                loading={creatingIntegration}
                 disabled={!organizationId}
                 onClick={authorize}
               >
@@ -143,6 +158,7 @@ const Page: FC = () => {
                   placeholder="Select an organization..."
                   showSearch
                   optionLabelProp="label"
+                  optionFilterProp="label"
                   value={organizationId}
                   onChange={setOrganizationId}
                 >

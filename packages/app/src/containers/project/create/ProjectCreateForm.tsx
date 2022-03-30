@@ -27,7 +27,7 @@ import {
 } from "../../integrations/CreateDiscordIntegrationForm";
 import { FormValues as GithubFormFields } from "../../integrations/CreateGithubIntegrationForm";
 import _ from "lodash";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { ProjectSettingsContributorSuggestions } from "../settings/ProjectSettingsContributorSuggestions";

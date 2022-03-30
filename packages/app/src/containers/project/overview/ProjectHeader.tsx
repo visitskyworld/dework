@@ -11,9 +11,11 @@ import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { useIsProjectPrivate } from "../../rbac/hooks";
 import { useOrganizationDetails } from "../../organization/hooks";
 import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
+import { CoordinapeMetamaskConnectButton } from "../../integrations/buttons/CoordinapeMetamaskConnectButton";
+import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
 
 interface Props {
   projectId?: string;
@@ -165,6 +167,11 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
               projectId={projectId}
               organizationId={organizationId}
               children="Connect with Discord"
+            />
+            <CoordinapeMetamaskConnectButton
+              icon={<CoordinapeIcon />}
+              organizationId={organizationId}
+              type="ghost"
             />
           </Space>
         )

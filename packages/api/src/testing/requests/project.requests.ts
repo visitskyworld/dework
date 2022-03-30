@@ -1,7 +1,5 @@
 import { CreateProjectInput } from "@dewo/api/modules/project/dto/CreateProjectInput";
-import { CreateProjectIntegrationInput } from "@dewo/api/modules/project/dto/CreateProjectIntegrationInput";
 import { UpdateProjectInput } from "@dewo/api/modules/project/dto/UpdateProjectInput";
-import { UpdateProjectIntegrationInput } from "@dewo/api/modules/project/dto/UpdateProjectIntegrationInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 
 export class ProjectRequests {
@@ -53,50 +51,6 @@ export class ProjectRequests {
         mutation UpdateProject($input: UpdateProjectInput!) {
           project: updateProject(input: $input) {
             ...Project
-          }
-        }
-
-        ${this.projectFragment}
-      `,
-      variables: { input },
-    };
-  }
-
-  public static createIntegration(
-    input: CreateProjectIntegrationInput
-  ): GraphQLTestClientRequestBody<{ input: CreateProjectIntegrationInput }> {
-    return {
-      query: `
-        mutation CreateProjectIntegration($input: CreateProjectIntegrationInput!) {
-          integration: createProjectIntegration(input: $input) {
-            id
-            type
-            deletedAt
-            project {
-              ...Project
-            }
-          }
-        }
-
-        ${this.projectFragment}
-      `,
-      variables: { input },
-    };
-  }
-
-  public static updateIntegration(
-    input: UpdateProjectIntegrationInput
-  ): GraphQLTestClientRequestBody<{ input: UpdateProjectIntegrationInput }> {
-    return {
-      query: `
-        mutation UpdateProjectIntegration($input: UpdateProjectIntegrationInput!) {
-          integration: updateProjectIntegration(input: $input) {
-            id
-            type
-            deletedAt
-            project {
-              ...Project
-            }
           }
         }
 

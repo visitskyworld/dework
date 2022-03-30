@@ -1,11 +1,14 @@
+import { Tab } from "@dewo/app/components/Tab";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Card, Divider, Modal, Tabs, Typography } from "antd";
+import * as Icons from "@ant-design/icons";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect } from "react";
 import { OrganizationRBAC } from "../../rbac/organization/OrganizationRBAC";
 import { useUpdateOrganization } from "../hooks";
 import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
+import { OrganizationIntegrations } from "./OrganizationIntegrations";
 
 interface Props {
   organizationId: string;
@@ -63,18 +66,42 @@ export const OrganizationSettings: FC<Props> = ({
         </Card>
       )}
     >
-      <Tabs.TabPane tab="Profile" key="profile">
+      <Tabs.TabPane
+        tab={<Tab icon={<Icons.AppstoreOutlined />} children="Profile" />}
+        key="profile"
+      >
         <OrganizationProfileSettings organizationId={organizationId} />
       </Tabs.TabPane>
-      <Tabs.TabPane tab="Permissions" key="members">
+      <Tabs.TabPane
+        tab={<Tab icon={<Icons.LockOutlined />} children="Permissions" />}
+        key="access"
+      >
         <Typography.Title level={4} style={{ marginBottom: 4 }}>
           Permissions
         </Typography.Title>
         <Divider style={{ marginTop: 0 }} />
         <OrganizationRBAC organizationId={organizationId} />
       </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={<Tab icon={<Icons.ShareAltOutlined />} children="Integrations" />}
+        key="integrations"
+      >
+        <Typography.Title level={4} style={{ marginBottom: 4 }}>
+          Integrations
+        </Typography.Title>
+        <Divider style={{ marginTop: 0 }} />
+        <OrganizationIntegrations organizationId={organizationId} />
+      </Tabs.TabPane>
       {canDeleteOrganization && (
-        <Tabs.TabPane tab="Delete Organization" key="delete">
+        <Tabs.TabPane
+          tab={
+            <Tab
+              icon={<Icons.DeleteOutlined />}
+              children="Delete Organization"
+            />
+          }
+          key="delete"
+        >
           {currentTab === "delete" && (
             <ConfirmDeleteOrganization organizationId={organizationId} />
           )}

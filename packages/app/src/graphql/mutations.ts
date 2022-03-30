@@ -365,6 +365,18 @@ export const createProjectIntegration = gql`
   ${Fragments.projectIntegration}
 `;
 
+export const createOrganizationIntegration = gql`
+  mutation CreateOrganizationIntegrationMutation(
+    $input: CreateOrganizationIntegrationInput!
+  ) {
+    integration: createOrganizationIntegration(input: $input) {
+      ...OrganizationIntegration
+    }
+  }
+
+  ${Fragments.organizationIntegration}
+`;
+
 export const setUserDetail = gql`
   mutation SetUserDetailMutation($input: SetUserDetailInput!) {
     organization: setUserDetail(input: $input) {

@@ -21,13 +21,10 @@ import { CreateTaskTagInput } from "./dto/CreateTaskTagInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
-import { CreateProjectIntegrationInput } from "./dto/CreateProjectIntegrationInput";
 import { User } from "@dewo/api/models/User";
 import { UpdateProjectInput } from "./dto/UpdateProjectInput";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PermalinkService } from "../permalink/permalink.service";
-import { IntegrationService } from "../integrations/integration.service";
-import { UpdateProjectIntegrationInput } from "./dto/UpdateProjectIntegrationInput";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
@@ -49,7 +46,6 @@ export class ProjectResolver {
   constructor(
     private readonly projectService: ProjectService,
     private readonly permalinkService: PermalinkService,
-    private readonly integrationService: IntegrationService,
     private readonly rbacService: RbacService
   ) {}
 
@@ -281,55 +277,6 @@ export class ProjectResolver {
     }
 
     throw new ForbiddenException();
-  }
-
-  @Mutation(() => ProjectIntegration)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "update",
-      subject: Project,
-      inject: [ProjectService],
-      getSubject: (
-        params: { input: CreateProjectIntegrationInput },
-        service: ProjectService
-      ) => service.findById(params.input.projectId),
-      getOrganizationId: (subject: Project) => subject.organizationId,
-    })
-  )
-  public async createProjectIntegration(
-    @Args("input") input: CreateProjectIntegrationInput,
-    @Context("user") user: User
-  ): Promise<ProjectIntegration> {
-    return this.integrationService.createProjectIntegration({
-      ...input,
-      creatorId: user.id,
-    });
-  }
-
-  @Mutation(() => ProjectIntegration)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "update",
-      subject: Project,
-      inject: [IntegrationService],
-      getSubject: async (
-        params: { input: UpdateProjectIntegrationInput },
-        service: IntegrationService
-      ) => {
-        const integration = await service.findProjectIntegrationById(
-          params.input.id
-        );
-        return integration?.project;
-      },
-      getOrganizationId: (subject: Project) => subject.organizationId,
-    })
-  )
-  public async updateProjectIntegration(
-    @Args("input") input: UpdateProjectIntegrationInput
-  ): Promise<ProjectIntegration> {
-    return this.integrationService.updateProjectIntegration(input);
   }
 
   @Mutation(() => TaskTag)

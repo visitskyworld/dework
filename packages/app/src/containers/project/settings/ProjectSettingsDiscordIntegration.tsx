@@ -14,7 +14,7 @@ import {
   CreateDiscordIntegrationForm,
   CreateDiscordIntegrationFormValues,
 } from "../../integrations/CreateDiscordIntegrationForm";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 
 interface Props {
   projectId: string;
@@ -58,7 +58,7 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
             <Typography.Text>
               Connected to{" "}
               <Link
-                href={`https://discord.com/channels/${orgInt.config.guildId}/${projInt.config.channelId}`}
+                href={`https://discord.com/channels/${orgInt.config?.guildId}/${projInt.config.channelId}`}
               >
                 <a target="_blank">
                   <Typography.Text strong>

@@ -1,16 +1,16 @@
 import React, { FC } from "react";
-import { Button, Tooltip } from "antd";
+import { Button, ButtonProps, Tooltip } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useConnectToGithubUrl } from "./hooks";
+import { useConnectToGithubUrl } from "../hooks";
 
-export interface ConnectOrganizationToGithubProps {
+export interface ConnectOrganizationToGithubProps extends ButtonProps {
   organizationId: string;
   stateOverride?: object;
 }
 
 export const ConnectOrganizationToGithubButton: FC<
   ConnectOrganizationToGithubProps
-> = ({ organizationId, stateOverride }) => {
+> = ({ organizationId, stateOverride, ...buttonProps }) => {
   const connectToGithubUrl = useConnectToGithubUrl(
     organizationId,
     stateOverride
@@ -22,7 +22,7 @@ export const ConnectOrganizationToGithubButton: FC<
       placement="bottom"
     >
       <Button
-        type="ghost"
+        {...buttonProps}
         style={{ marginTop: 4 }}
         icon={<Icons.GithubOutlined />}
         href={connectToGithubUrl}

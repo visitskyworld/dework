@@ -33,11 +33,13 @@ import {
   GetDiscordGuildRolesQueryVariables,
   OrganizationIntegration,
   OrganizationIntegrationType,
-  ProjectRole,
   DiscordIntegrationRole,
   CreateProjectsFromGithubInput,
   CreateProjectsFromGithubMutation,
   CreateProjectsFromGithubMutationVariables,
+  CreateOrganizationIntegrationInput,
+  CreateOrganizationIntegrationMutation,
+  CreateOrganizationIntegrationMutationVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -99,6 +101,23 @@ export function useCreateProjectIntegration(): (
     CreateProjectIntegrationMutation,
     CreateProjectIntegrationMutationVariables
   >(Mutations.createProjectIntegration);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.integration;
+    },
+    [mutation]
+  );
+}
+
+export function useCreateOrganizationIntegration(): (
+  input: CreateOrganizationIntegrationInput
+) => Promise<OrganizationIntegration> {
+  const [mutation] = useMutation<
+    CreateOrganizationIntegrationMutation,
+    CreateOrganizationIntegrationMutationVariables
+  >(Mutations.createOrganizationIntegration);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });
@@ -175,26 +194,6 @@ export function useCreateDiscordProjectIntegration(): (input: {
           threadId: thread?.id,
           name: thread?.name ?? channel.name,
         },
-      });
-    },
-    [createProjectIntegration]
-  );
-}
-
-export function useCreateDiscordRoleGateProjectIntegration(): (input: {
-  projectId: string;
-  projectRole: ProjectRole;
-  discordRoleIds: string[];
-  organizationIntegrationId: string;
-}) => Promise<ProjectIntegration> {
-  const createProjectIntegration = useCreateProjectIntegration();
-  return useCallback(
-    ({ projectId, projectRole, discordRoleIds, organizationIntegrationId }) => {
-      return createProjectIntegration({
-        projectId,
-        organizationIntegrationId,
-        type: ProjectIntegrationType.DISCORD_ROLE_GATE,
-        config: { projectRole, discordRoleIds },
       });
     },
     [createProjectIntegration]
