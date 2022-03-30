@@ -36,11 +36,13 @@ export const CoordinapeMetamaskConnectButton: FC<Props> = ({
   if (hasCoordinapeIntegration && !!user && !isConnectedToMetamask) {
     return (
       <Tooltip title="This project is connected with Coordinape. Connect your Metamask address to make your Dework tasks show up in Coordinape!">
-        <MetamaskAuthButton {...buttonProps}>
-          Connect Coordinape
-          {"   "}
-          <Icons.QuestionCircleOutlined />
-        </MetamaskAuthButton>
+        <div>
+          <MetamaskAuthButton {...buttonProps}>
+            Connect Coordinape
+            {"   "}
+            <Icons.QuestionCircleOutlined />
+          </MetamaskAuthButton>
+        </div>
       </Tooltip>
     );
   }
