@@ -44,6 +44,7 @@ export const MetamaskAuthButton: FC<Props> = ({
       children={getThreepidName[ThreepidSource.metamask]}
       state={state}
       icon={<MetamaskIcon />}
+      href={undefined}
       onClick={authWithMetamask}
       {...buttonProps}
     />
