@@ -36,6 +36,26 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
       <Divider />
 
       <Typography.Title level={5}>
+        Create Tasks
+        <Tooltip
+          title={
+            <Typography.Text style={{ whiteSpace: "pre-line" }}>
+              This gives users the permission to create their own tasks and
+              manage those (but not to attach a bounty to them)
+            </Typography.Text>
+          }
+        >
+          <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+        </Tooltip>
+      </Typography.Title>
+      <RBACPermissionForm
+        permission={RulePermission.MANAGE_TASKS}
+        roles={roles}
+        organizationId={organizationId}
+      />
+      <Divider />
+
+      <Typography.Title level={5}>
         Manage All Projects
         <Tooltip
           title={
