@@ -30,20 +30,6 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
   }
 
   if (task.status === TaskStatus.TODO) {
-    if (!!task.applications.length && canUpdateTask) {
-      return (
-        <Avatar.Group maxCount={task.assignees.length === 3 ? 3 : 2} size={20}>
-          {task.applications.map((application) => (
-            <Link href={application.user.permalink} key={application.id}>
-              <a>
-                <UserAvatar user={application.user} />
-              </a>
-            </Link>
-          ))}
-        </Avatar.Group>
-      );
-    }
-
     if (task.options?.allowOpenSubmission) {
       return <CreateSubmissionAvatar size={20} />;
     }

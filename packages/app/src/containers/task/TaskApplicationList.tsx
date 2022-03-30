@@ -1,13 +1,17 @@
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskApplication, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  TaskApplication,
+  TaskDetails,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip, Divider } from "antd";
 import moment from "moment";
 import React, { FC, useCallback, useState } from "react";
 import { useDeleteTaskApplication, useUpdateTask } from "./hooks";
 
 interface Props {
-  task: Task;
+  task: TaskDetails;
 }
 
 export const TaskApplicationList: FC<Props> = ({ task }) => {

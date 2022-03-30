@@ -1,11 +1,11 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Task } from "@dewo/app/graphql/types";
 import { Button, ButtonProps, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
 import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
 import { useDeleteTaskApplication } from "../../hooks";
+import { Task } from "@dewo/app/graphql/types";
 
 interface Props extends ButtonProps {
   task: Task;
@@ -14,7 +14,7 @@ interface Props extends ButtonProps {
 export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
   const { user } = useAuthContext();
   const hasClaimedTask = useMemo(
-    () => !!user && task.applications.some((tA) => tA.user.id === user.id),
+    () => !!user && task.applications.some((ta) => ta.userId === user.id),
     [user, task.applications]
   );
 

@@ -215,10 +215,11 @@ export class TaskService {
     let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.owner", "owner")
       .leftJoinAndSelect("task.tags", "tag")
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
-      .leftJoinAndSelect("payment.paymentMethod", "paymentMethod")
+      .leftJoinAndSelect("reward.token", "token")
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("task.reactions", "reaction")
       .leftJoinAndSelect("task.subtasks", "subtask")

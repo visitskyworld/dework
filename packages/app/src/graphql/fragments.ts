@@ -419,10 +419,13 @@ export const task = gql`
       ...TaskReward
     }
     applications {
-      ...TaskApplication
+      id
+      userId
     }
     submissions {
-      ...TaskSubmission
+      id
+      userId
+      content
     }
     review {
       ...TaskReview
@@ -438,8 +441,6 @@ export const task = gql`
   ${taskTag}
   ${taskReward}
   ${user}
-  ${taskApplication}
-  ${taskSubmission}
   ${taskReview}
   ${taskReaction}
 `;
@@ -508,8 +509,17 @@ export const taskDetails = gql`
     applications {
       ...TaskApplication
     }
+    submissions {
+      ...TaskSubmission
+    }
     nfts {
       ...TaskNFT
+    }
+    reward {
+      ...TaskReward
+      payment {
+        ...Payment
+      }
     }
   }
 
@@ -521,6 +531,8 @@ export const taskDetails = gql`
   ${githubPullRequest}
   ${githubBranch}
   ${taskApplication}
+  ${taskSubmission}
+  ${payment}
 `;
 
 export const userProfile = gql`

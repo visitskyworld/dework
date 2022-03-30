@@ -1,7 +1,7 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { Button, ButtonProps, message, Space } from "antd";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
 import { Task } from "@dewo/app/graphql/types";
 import Modal from "antd/lib/modal/Modal";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
@@ -15,7 +15,6 @@ interface Props extends ButtonProps {
 
 export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   const modalVisible = useToggle();
-  const [loading, setLoading] = useState(false);
 
   const [content, setContent] = useState<string>();
 
@@ -27,26 +26,21 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
 
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
-  const handleCreate = useCallback(async () => {
-    setLoading(true);
-    try {
-      if (!currentSubmission) {
-        await createSubmission({ taskId: task.id, content: content! });
-        message.success("Submission created");
-      } else {
-        await updateSubmission({
-          userId: user!.id,
-          taskId: task.id,
-          content: content!,
-        });
+  const [handleCreate, creating] = useRunningCallback(async () => {
+    if (!currentSubmission) {
+      await createSubmission({ taskId: task.id, content: content! });
+      message.success("Submission created");
+    } else {
+      await updateSubmission({
+        userId: user!.id,
+        taskId: task.id,
+        content: content!,
+      });
 
-        message.success("Submission updated");
-      }
-
-      modalVisible.toggleOff();
-    } finally {
-      setLoading(false);
+      message.success("Submission updated");
     }
+
+    modalVisible.toggleOff();
   }, [
     content,
     createSubmission,
@@ -93,7 +87,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
             block
             type="primary"
             disabled={!content}
-            loading={loading}
+            loading={creating}
             onClick={handleCreate}
           >
             Save
