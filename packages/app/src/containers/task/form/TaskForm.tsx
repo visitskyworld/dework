@@ -202,9 +202,9 @@ export const TaskForm: FC<TaskFormProps> = ({
               disabled={!canChange("name")}
               autoSize
               autoFocus={mode === "create"}
-              className="dewo-field dewo-field-focus-border ant-typography-h3"
+              className="dewo-field dewo-field-focus-border ant-typography-h3 overflow-y-hidden"
               placeholder="Enter a task name..."
-              style={{ overflowY: "hidden", marginLeft: -12, marginRight: -12 }}
+              style={{ marginLeft: -12, marginRight: -12 }}
             />
           </Form.Item>
 
