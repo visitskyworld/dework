@@ -3,6 +3,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Divider, Typography } from "antd";
 import React, { FC, ReactElement } from "react";
+import { useProject } from "../../project/hooks";
 import { ApplyToTaskAvatar } from "./apply/ApplyToTaskAvatar";
 import { ApplyToTaskButton } from "./apply/ApplyToTaskButton";
 import { ClaimTaskAvatar } from "./claim/ClaimTaskAvatar";
@@ -37,7 +38,8 @@ const TaskActionSectionContent: FC<{
 
 export const TaskActionSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
-  const canManage = usePermission("update", task, "ownerId");
+  const { project } = useProject(task.projectId);
+  const canManageProject = usePermission("update", project);
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);
   const canApply = usePermission("create", "TaskApplication");
@@ -45,8 +47,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
   if (task.status !== TaskStatus.TODO) return null;
 
   const content = (() => {
-    if (canManage) return null;
-
+    if (canManageProject) return null;
     if (!!user && task.assignees.some((a) => a.id === user.id)) {
       return (
         <CreateSubmissionButton size="large" type="primary" block task={task} />
