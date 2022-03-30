@@ -322,6 +322,22 @@ export const TaskList: FC<Props> = ({
                 onClick={eatClick}
                 overlay={
                   <Menu onClick={(e) => eatClick(e.domEvent)}>
+                    {!!canChange && !!row.task?.parentTaskId && (
+                      <Popconfirm
+                        icon={null}
+                        title="Convert this task to normal?"
+                        okText="Yes"
+                        onConfirm={() =>
+                          updateTask({ id: row.task!.id, parentTaskId: null })
+                        }
+                      >
+                        <Menu.Item
+                          key="normalTask"
+                          children="Convert to normal task"
+                          icon={<Icons.ExportOutlined />}
+                        />
+                      </Popconfirm>
+                    )}
                     {!!row.task && (
                       <Menu.Item
                         key="details"
