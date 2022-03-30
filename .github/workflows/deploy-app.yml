@@ -1,8 +1,10 @@
 name: Deploy App
 on:
- create:
-   tags:
-     - v*
+  push:
+    branches:
+      - "!*"
+    tags:
+      - "v*"
 jobs:
   build:
     runs-on: ubuntu-latest
