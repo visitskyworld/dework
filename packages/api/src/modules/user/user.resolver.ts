@@ -19,6 +19,7 @@ import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkService } from "../permalink/permalink.service";
+import { GQLContext } from "../app/graphql.config";
 
 @Resolver(() => User)
 @Injectable()
@@ -61,6 +62,7 @@ export class UserResolver {
 
   @Mutation(() => AuthResponse)
   public async authWithThreepid(
+    @Context() context: GQLContext,
     @Context("user") user: User | undefined,
     @Args("threepidId", { type: () => GraphQLUUID }) threepidId: string
   ): Promise<AuthResponse> {
@@ -68,6 +70,8 @@ export class UserResolver {
       threepidId,
       user
     );
+
+    context.user = updatedUser;
     return {
       user: updatedUser,
       authToken: this.userService.createAuthToken(updatedUser),

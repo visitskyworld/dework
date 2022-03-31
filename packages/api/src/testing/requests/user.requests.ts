@@ -9,9 +9,6 @@ export class UserRequests {
       id
       username
       imageUrl
-      threepids {
-        id
-      }
       paymentMethods {
         id
         type
@@ -46,6 +43,9 @@ export class UserRequests {
             authToken
             user {
               ...User
+              threepids {
+                id
+              }
             }
           }
         }
