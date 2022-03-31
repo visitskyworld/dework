@@ -98,7 +98,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   apollo.setLink(
     createApolloLink(
       origin,
-      () => initialAuthToken || getAuthToken(undefined),
+      () => getAuthToken(undefined) || initialAuthToken,
       onErrorRef
     )
   );
