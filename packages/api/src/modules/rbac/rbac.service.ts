@@ -288,6 +288,7 @@ export class RbacService {
         Task,
         [
           "status",
+          "status[TODO]",
           "status[IN_PROGRESS]",
           "status[IN_REVIEW]",
           "sectionId",
