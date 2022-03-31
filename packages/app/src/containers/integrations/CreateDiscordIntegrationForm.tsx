@@ -84,16 +84,10 @@ interface FormFieldProps {
   onRefetchChannels(): Promise<void>;
 }
 
-export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
-  values,
-  channels,
-  threads,
-  onRefetchChannels,
-}) => {
-  const showThreadSelect =
-    values.discordFeature ===
-    DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
-
+function useMissingPermissions(
+  values: Partial<FormValues>,
+  channels: DiscordIntegrationChannel[] | undefined
+) {
   const requiredPermissions = useMemo(
     () =>
       !!values.discordFeature
@@ -105,7 +99,7 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
     () => channels?.find((c) => c.id === values.discordChannelId),
     [channels, values.discordChannelId]
   );
-  const missingPermissions = useMemo(
+  return useMemo(
     () =>
       _.difference(
         requiredPermissions,
@@ -113,6 +107,23 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
       ) as DiscordPermission[],
     [requiredPermissions, channel?.permissions]
   );
+}
+
+export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
+  values,
+  channels,
+  threads,
+  onRefetchChannels,
+}) => {
+  const showThreadSelect =
+    values.discordFeature ===
+    DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
+
+  const channel = useMemo(
+    () => channels?.find((c) => c.id === values.discordChannelId),
+    [channels, values.discordChannelId]
+  );
+  const missingPermissions = useMissingPermissions(values, channels);
 
   return (
     <>
@@ -273,9 +284,13 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
   );
 
   const discordChannels = useOrganizationDiscordChannels({ organizationId });
+  const missingPermissions = useMissingPermissions(
+    values,
+    discordChannels.value
+  );
   const discordThreads = useOrganizationDiscordChannels(
     { organizationId, discordParentChannelId: values.discordChannelId },
-    !values.discordChannelId
+    !values.discordChannelId || !!missingPermissions?.length
   );
 
   const submitting = useToggle();
