@@ -371,6 +371,12 @@ export const createOrganizationIntegration = gql`
   ) {
     integration: createOrganizationIntegration(input: $input) {
       ...OrganizationIntegration
+      organization {
+        id
+        integrations {
+          ...OrganizationIntegration
+        }
+      }
     }
   }
 
@@ -719,4 +725,17 @@ export const deleteRule = gql`
   }
 
   ${Fragments.roleWithRules}
+`;
+
+export const setTaskGatingDefault = gql`
+  mutation SetTaskGatingDefault($input: TaskGatingDefaultInput!) {
+    setTaskGatingDefault(input: $input) {
+      id
+      taskGatingDefaults {
+        ...TaskGatingDefault
+      }
+    }
+  }
+
+  ${Fragments.taskGatingDefault}
 `;

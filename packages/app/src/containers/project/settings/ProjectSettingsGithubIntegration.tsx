@@ -17,31 +17,21 @@ import {
   CreateGithubIntegrationForm,
   CreateGithubIntegrationFormValues,
 } from "../../integrations/CreateGithubIntegrationForm";
-import { useOrganizationDetails } from "../../organization/hooks";
+import { useOrganizationIntegrations } from "../../organization/hooks";
 
 interface ProjectGithubIntegrationProps {
   projectId: string;
   organizationId: string;
 }
 
-function useHasOrganizationGithubIntegration(
-  organizationId: string | undefined
-): boolean {
-  const { organization } = useOrganizationDetails(organizationId);
-  return useMemo(
-    () =>
-      !!organization?.integrations.some(
-        (i) => i.type === OrganizationIntegrationType.GITHUB
-      ),
-    [organization?.integrations]
-  );
-}
-
 export const ProjectSettingsGithubIntegration: FC<
   ProjectGithubIntegrationProps
 > = ({ projectId, organizationId }) => {
   const integrations = useProjectIntegrations(projectId);
-  const hasOrgInt = useHasOrganizationGithubIntegration(organizationId);
+  const hasGithubIntegration = !!useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.GITHUB
+  )?.length;
   const projInts = useMemo(
     () => integrations?.filter((i) => i.type === ProjectIntegrationType.GITHUB),
     [integrations]
@@ -63,7 +53,7 @@ export const ProjectSettingsGithubIntegration: FC<
   const updateIntegration = useUpdateProjectIntegration();
 
   if (!integrations) return null;
-  if (!hasOrgInt) {
+  if (!hasGithubIntegration) {
     return (
       <ConnectToGithubFormSection>
         <ConnectOrganizationToGithubButton

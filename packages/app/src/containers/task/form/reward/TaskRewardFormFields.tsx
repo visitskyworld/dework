@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
+import { TaskRewardTrigger } from "@dewo/app/graphql/types";
 import {
   Button,
   ConfigProvider,
@@ -13,13 +13,7 @@ import { useProjectPaymentMethods } from "../../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AddProjectPaymentMethodModal } from "../../../payment/project/AddProjectPaymentMethodModal";
-
-export interface TaskRewardFormValues {
-  amount: number;
-  networkId: string;
-  token: PaymentToken;
-  trigger: TaskRewardTrigger;
-}
+import { TaskRewardFormValues } from "../types";
 
 export async function validator(
   _rule: unknown, // RuleObject,

@@ -8,7 +8,7 @@ import React, { FC, useCallback } from "react";
 import { useConnectToGithubUrlFn } from "../../integrations/hooks";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import Link from "next/link";
-import { useOrganizationDetails } from "../hooks";
+import { useOrganization, useOrganizationIntegrations } from "../hooks";
 
 interface Props extends ButtonProps {
   organizationId: string;
@@ -21,7 +21,11 @@ export const CreateProjectButton: FC<Props> = ({
   ...buttonProps
 }) => {
   const router = useRouter();
-  const { organization } = useOrganizationDetails(organizationId);
+  const organization = useOrganization(organizationId);
+  const hasGithubIntegration = !!useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.GITHUB
+  )?.length;
   const goToNotionOauthFlow = useCallback(() => {
     const url = `${
       Constants.GRAPHQL_API_URL
@@ -43,9 +47,6 @@ export const CreateProjectButton: FC<Props> = ({
   const goToGithubOauthFlow = useCallback(() => {
     if (!organization) return;
     const redirectUrl = `${organization.permalink}/import/github`;
-    const hasGithubIntegration = !!organization.integrations.some(
-      (i) => i.type === OrganizationIntegrationType.GITHUB
-    );
     if (hasGithubIntegration) {
       router.push(redirectUrl);
     } else {
@@ -53,7 +54,7 @@ export const CreateProjectButton: FC<Props> = ({
         appUrl: redirectUrl,
       });
     }
-  }, [router, organization, createConnectToGithubUrl]);
+  }, [router, hasGithubIntegration, organization, createConnectToGithubUrl]);
 
   if (!organization) return null;
   return (

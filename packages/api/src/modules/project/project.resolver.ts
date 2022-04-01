@@ -39,6 +39,7 @@ import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
+import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
 
 @Resolver(() => Project)
 @Injectable()
@@ -402,6 +403,16 @@ export class ProjectResolver {
     const project = await this.projectService.findBySlug(slug);
     if (!project) throw new NotFoundException();
     return project;
+  }
+
+  @Mutation(() => User)
+  @UseGuards(AuthGuard)
+  public async setTaskGatingDefault(
+    @Context("user") user: User,
+    @Args("input") input: TaskGatingDefaultInput
+  ): Promise<User> {
+    await this.projectService.setTaskGatingDefault(input, user.id);
+    return user;
   }
 
   @Query(() => [Project])

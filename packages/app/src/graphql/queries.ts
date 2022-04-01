@@ -100,6 +100,19 @@ export const organizationDetails = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const organizationIntegrations = gql`
+  query GetOrganizationIntegrationsQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      id
+      integrations {
+        ...OrganizationIntegration
+      }
+    }
+  }
+
+  ${Fragments.organizationIntegration}
+`;
+
 export const organizationBySlug = gql`
   query GetOrganizationBySlugQuery($organizationSlug: String!) {
     organization: getOrganizationBySlug(slug: $organizationSlug) {

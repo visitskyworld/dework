@@ -4,18 +4,17 @@ import { Alert, Button, Space, Tooltip } from "antd";
 import React, { FC, useMemo } from "react";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { ConnectOrganizationToGithubButton } from "../../integrations/buttons/ConnectOrganizationToGithubButton";
-import { useOrganizationDetails } from "../hooks";
+import { useOrganizationIntegrations } from "../hooks";
 
 interface Props {
   organizationId: string;
 }
 
 export const OrganizationIntegrations: FC<Props> = ({ organizationId }) => {
-  const { organization } = useOrganizationDetails(organizationId);
-
+  const integrations = useOrganizationIntegrations(organizationId);
   const types = useMemo(
-    () => new Set(organization?.integrations.map((i) => i.type)),
-    [organization?.integrations]
+    () => new Set(integrations?.map((i) => i.type)),
+    [integrations]
   );
 
   return (

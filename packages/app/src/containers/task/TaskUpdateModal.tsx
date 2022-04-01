@@ -3,18 +3,18 @@ import { Modal, Skeleton } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
 import {
-  toTaskReward,
   toTaskRewardFormValues,
   useTask,
   useTaskRoles,
-  useUpdateTask,
-  useUpdateTaskRoles,
+  useUpdateTaskFromFormValues,
 } from "./hooks";
-import { TaskForm, TaskFormValues } from "./form/TaskForm";
+import { TaskForm } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
 import moment from "moment";
 import { TaskApplyModal } from "./actions/apply/TaskApplyModal";
 import { TaskSeo } from "../seo/TaskSeo";
+import { TaskFormValues } from "./form/types";
+import { getTaskGatingType } from "./form/util";
 
 interface Props {
   taskId: string;
@@ -34,30 +34,12 @@ export const TaskUpdateModal: FC<Props> = ({
     typeof window === "undefined" ? undefined : "network-only"
   );
 
-  const updateTask = useUpdateTask();
-  const updateTaskRoles = useUpdateTaskRoles();
-  const handleSubmit = useCallback(
-    async ({ subtasks, roleIds, ...values }: TaskFormValues) => {
-      const reward = !!values.reward
-        ? toTaskReward(values.reward)
-        : values.reward;
-      if (!!reward || !_.isEmpty(values)) {
-        const dueDate = values.dueDate?.toISOString();
-        await updateTask({ id: task!.id, ...values, reward, dueDate }, task!);
-      }
-
-      if (!!roleIds) {
-        await updateTaskRoles(task!, roleIds);
-      }
-    },
-    [updateTask, updateTaskRoles, task]
-  );
+  const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
 
   const taskRoles = useTaskRoles(task);
   const tagIds = useMemo(() => task?.tags.map((t) => t.id) ?? [], [task?.tags]);
   const initialValues = useMemo<TaskFormValues>(
-    () => ({
-      id: taskId,
+    (): TaskFormValues => ({
       projectId: task?.projectId!,
       name: task?.name ?? "",
       description: task?.description ?? undefined,
@@ -68,10 +50,17 @@ export const TaskUpdateModal: FC<Props> = ({
       status: task?.status!,
       dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
-      options: _.omit(task?.options, "__typename"),
-      roleIds: taskRoles?.map((r) => r.id) ?? [],
+      gating: {
+        roleIds: taskRoles?.map((r) => r.id) ?? [],
+        type: !!task
+          ? getTaskGatingType(
+              task,
+              taskRoles?.map((r) => r.id)
+            )
+          : undefined,
+      },
     }),
-    [task, taskId, tagIds, taskRoles]
+    [task, tagIds, taskRoles]
   );
 
   return (
@@ -88,7 +77,7 @@ export const TaskUpdateModal: FC<Props> = ({
               initialValues={initialValues}
               assignees={task!.assignees}
               showProjectLink={showProjectLink}
-              onSubmit={handleSubmit}
+              onSubmit={updateTaskFromFormValues}
             />
           )}
         </Skeleton>

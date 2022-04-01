@@ -19,6 +19,8 @@ import { TokenService } from "../payment/token.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskSection } from "@dewo/api/models/TaskSection";
+import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
+import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
 
 @Injectable()
 export class ProjectService {
@@ -35,7 +37,9 @@ export class ProjectService {
     private readonly projectSectionRepo: Repository<ProjectSection>,
     private readonly tokenService: TokenService,
     @InjectRepository(TaskSection)
-    private readonly taskSectionRepo: Repository<TaskSection>
+    private readonly taskSectionRepo: Repository<TaskSection>,
+    @InjectRepository(TaskGatingDefault)
+    private readonly taskGatingDefaultRepo: Repository<TaskGatingDefault>
   ) {}
 
   public async create(partial: DeepPartial<Project>): Promise<Project> {
@@ -237,6 +241,30 @@ export class ProjectService {
         reason: "MISSING_TOKENS",
         tokenIds: tokens.map((t) => t.id),
       });
+    }
+  }
+
+  public async setTaskGatingDefault(
+    input: TaskGatingDefaultInput,
+    userId: string
+  ): Promise<void> {
+    await this.taskGatingDefaultRepo.delete({
+      userId,
+      projectId: input.projectId,
+    });
+
+    if (!!input.type) {
+      const created = await this.taskGatingDefaultRepo.save({
+        userId,
+        projectId: input.projectId,
+        type: input.type,
+      });
+
+      await this.taskGatingDefaultRepo
+        .createQueryBuilder()
+        .relation("roles")
+        .of(created)
+        .add(input.roleIds);
     }
   }
 

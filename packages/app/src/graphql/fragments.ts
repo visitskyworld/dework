@@ -559,6 +559,18 @@ export const userOnboarding = gql`
   }
 `;
 
+export const taskGatingDefault = gql`
+  fragment TaskGatingDefault on TaskGatingDefault {
+    id
+    userId
+    projectId
+    type
+    roles {
+      id
+    }
+  }
+`;
+
 export const userDetails = gql`
   fragment UserDetails on User {
     ...UserProfile
@@ -575,12 +587,16 @@ export const userDetails = gql`
     onboarding {
       ...UserOnboarding
     }
+    taskGatingDefaults {
+      ...TaskGatingDefault
+    }
   }
 
   ${userProfile}
   ${userOnboarding}
   ${paymentMethod}
   ${organization}
+  ${taskGatingDefault}
 `;
 
 export const organizationDetails = gql`
@@ -603,16 +619,12 @@ export const organizationDetails = gql`
     details {
       ...EntityDetail
     }
-    integrations {
-      ...OrganizationIntegration
-    }
     projectTokenGates {
       ...ProjectTokenGate
     }
   }
 
   ${organization}
-  ${organizationIntegration}
   ${project}
   ${projectSection}
   ${organizationTag}

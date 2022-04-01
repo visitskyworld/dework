@@ -66,14 +66,14 @@ import {
   GetOrganizationRolesQueryVariables,
   RulePermission,
   RoleWithRules,
+  TaskGatingType,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import { useOrganizationUsers } from "../organization/hooks";
-import { useProject } from "../project/hooks";
-import { TaskRewardFormValues } from "./form/reward/TaskRewardFormFields";
-import { TaskFormValues } from "./form/TaskForm";
+import { useProject, useSetTaskGatingDefault } from "../project/hooks";
+import { TaskFormValues, TaskRewardFormValues } from "./form/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
   useCreateRule,
@@ -215,14 +215,18 @@ export function useCreateTaskFromFormValues(): (
   const createTask = useCreateTask();
   const createTaskReaction = useCreateTaskReaction();
   const updateTaskRoles = useUpdateTaskRoles();
+  const setTaskGatingDefault = useSetTaskGatingDefault();
   return useCallback(
-    async ({ subtasks, reward, roleIds, ...values }, projectId) => {
+    async ({ subtasks, reward, gating, ...values }, projectId) => {
       const task = await createTask({
         ...values,
         projectId,
         ownerId: values.ownerId ?? null,
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
+        options: {
+          allowOpenSubmission: gating?.type === TaskGatingType.OPEN_SUBMISSION,
+        },
       });
       if (values.status === TaskStatus.BACKLOG) {
         await createTaskReaction({
@@ -231,8 +235,16 @@ export function useCreateTaskFromFormValues(): (
         });
       }
 
-      if (!!roleIds) {
-        await updateTaskRoles(task, roleIds);
+      if (!!gating?.roleIds) {
+        await updateTaskRoles(task, gating.roleIds);
+      }
+
+      if (gating?.default && gating?.type) {
+        await setTaskGatingDefault({
+          projectId,
+          type: gating.type,
+          roleIds: gating.roleIds ?? [],
+        });
       }
 
       for (const subtask of subtasks ?? []) {
@@ -249,7 +261,13 @@ export function useCreateTaskFromFormValues(): (
 
       return task;
     },
-    [createTask, createTaskReaction, updateTaskRoles, user]
+    [
+      createTask,
+      createTaskReaction,
+      updateTaskRoles,
+      setTaskGatingDefault,
+      user,
+    ]
   );
 }
 
@@ -277,6 +295,43 @@ export function useUpdateTask(): (
       return res.data?.task;
     },
     [mutation]
+  );
+}
+
+export function useUpdateTaskFromFormValues(
+  task: Task | undefined
+): (values: TaskFormValues) => Promise<void> {
+  const updateTask = useUpdateTask();
+  const updateTaskRoles = useUpdateTaskRoles();
+  return useCallback(
+    async ({ subtasks, gating, ...values }: TaskFormValues) => {
+      const reward = !!values.reward
+        ? toTaskReward(values.reward)
+        : values.reward;
+      if (!!reward || !!gating?.type || !_.isEmpty(values)) {
+        const dueDate = values.dueDate?.toISOString();
+        await updateTask(
+          {
+            id: task!.id,
+            ...values,
+            reward,
+            dueDate,
+            options: !!gating?.type
+              ? {
+                  allowOpenSubmission:
+                    gating.type === TaskGatingType.OPEN_SUBMISSION,
+                }
+              : undefined,
+          },
+          task!
+        );
+      }
+
+      if (!!gating?.roleIds) {
+        await updateTaskRoles(task!, gating.roleIds);
+      }
+    },
+    [updateTask, updateTaskRoles, task]
   );
 }
 

@@ -8,7 +8,6 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskGroup } from "./util";
 import { TaskCreateModal } from "../TaskCreateModal";
-import { TaskFormValues } from "../form/TaskForm";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
@@ -17,6 +16,7 @@ import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
 import { TaskSectionTitle } from "./TaskSectionTitle";
 import { TaskSectionOptionButton } from "./TaskSectionOptionButton";
 import { AtLeast } from "@dewo/app/types/general";
+import { TaskFormValues } from "../form/types";
 
 interface Props {
   status: TaskStatus;

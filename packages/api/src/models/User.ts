@@ -10,12 +10,12 @@ import {
 } from "typeorm";
 import { Audit } from "./Audit";
 import { PaymentMethod } from "./PaymentMethod";
-import { TaskApplication } from "./TaskApplication";
 import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
 import { UserOnboarding } from "./UserOnboarding";
 import { Role } from "./rbac/Role";
 import { UserRole } from "./rbac/UserRole";
+import { TaskGatingDefault } from "./TaskGatingDefault";
 
 @Entity()
 @ObjectType()
@@ -45,8 +45,9 @@ export class User extends Audit {
   @Field(() => [PaymentMethod])
   public paymentMethods!: Promise<PaymentMethod[]>;
 
-  @OneToMany(() => TaskApplication, (taskApplication) => taskApplication.user)
-  public taskApplications!: TaskApplication[];
+  @OneToMany(() => TaskGatingDefault, (x) => x.user)
+  @Field(() => [TaskGatingDefault])
+  public taskGatingDefaults!: Promise<TaskGatingDefault[]>;
 
   @OneToOne(() => UserOnboarding, (x) => x.user, { nullable: true })
   @Field(() => UserOnboarding, { nullable: true })

@@ -2,17 +2,23 @@ import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import * as Icons from "@ant-design/icons";
-import { RoleWithRules, RulePermission } from "@dewo/app/graphql/types";
+import {
+  OrganizationIntegrationType,
+  RoleWithRules,
+  RulePermission,
+} from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { Button, Form, message, Row, Select, Tooltip, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { useOrganizationUsers } from "../organization/hooks";
+import {
+  useOrganizationIntegrations,
+  useOrganizationUsers,
+} from "../organization/hooks";
 import { useUserRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/buttons/ConnectOrganizationToDiscordButton";
-import { useOrganizationDiscordIntegration } from "../integrations/hooks";
 import { getRule, hasRule } from "./util";
 import { RoleTag } from "@dewo/app/components/RoleTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -65,7 +71,10 @@ export const RBACPermissionForm: FC<Props> = ({
   });
 
   const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
-  const discordConnected = !!useOrganizationDiscordIntegration(organizationId);
+  const hasDiscordIntegration = !!useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.DISCORD
+  )?.length;
 
   const { users } = useOrganizationUsers(organizationId);
   const organizationRoles = useMemo(
@@ -191,7 +200,7 @@ export const RBACPermissionForm: FC<Props> = ({
       onFinish={handleSave}
     >
       {(hasPermission || !!values.roleIds.length) &&
-        (!discordConnected ? (
+        (!hasDiscordIntegration ? (
           <Form.Item label="Roles" name="roleIds">
             <Typography.Paragraph type="secondary" style={{ marginBottom: 4 }}>
               Connect Discord to manage access using roles from your server

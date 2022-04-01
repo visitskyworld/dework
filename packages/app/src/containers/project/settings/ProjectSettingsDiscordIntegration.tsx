@@ -1,9 +1,11 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { ProjectIntegrationType } from "@dewo/app/graphql/types";
+import {
+  OrganizationIntegrationType,
+  ProjectIntegrationType,
+} from "@dewo/app/graphql/types";
 import { useProjectIntegrations } from "../hooks";
 import {
   useCreateDiscordProjectIntegration,
-  useOrganizationDiscordIntegration,
   useUpdateProjectIntegration,
 } from "../../integrations/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -15,6 +17,7 @@ import {
   CreateDiscordIntegrationFormValues,
 } from "../../integrations/CreateDiscordIntegrationForm";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
+import { useOrganizationIntegrations } from "../../organization/hooks";
 
 interface Props {
   projectId: string;
@@ -25,7 +28,10 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
   projectId,
   organizationId,
 }) => {
-  const orgInt = useOrganizationDiscordIntegration(organizationId);
+  const discordIntegration = useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.DISCORD
+  )?.[0];
   const integrations = useProjectIntegrations(projectId);
   const projInt = useMemo(
     () => integrations?.find((i) => i.type === ProjectIntegrationType.DISCORD),
@@ -50,7 +56,7 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
     [projInt, updateIntegration]
   );
 
-  if (!!projInt && !!orgInt) {
+  if (!!projInt && !!discordIntegration) {
     return (
       <FormSection label="Discord Integration">
         <Alert
@@ -58,7 +64,7 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
             <Typography.Text>
               Connected to{" "}
               <Link
-                href={`https://discord.com/channels/${orgInt.config?.guildId}/${projInt.config.channelId}`}
+                href={`https://discord.com/channels/${discordIntegration.config?.guildId}/${projInt.config.channelId}`}
               >
                 <a target="_blank">
                   <Typography.Text strong>
@@ -77,7 +83,7 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
     );
   }
 
-  if (!!orgInt) {
+  if (!!discordIntegration) {
     return (
       <CreateDiscordIntegrationForm
         organizationId={organizationId}

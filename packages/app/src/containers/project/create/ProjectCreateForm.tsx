@@ -14,6 +14,7 @@ import {
   useOrganizationDetails,
   useOrganizationDiscordChannels,
   useOrganizationGithubRepos,
+  useOrganizationIntegrations,
 } from "../../organization/hooks";
 import {
   DiscordProjectIntegrationFeature,
@@ -77,20 +78,14 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const createDiscordIntegration = useCreateDiscordProjectIntegration();
   const createGithubIntegration = useCreateGithubProjectIntegration();
 
-  const hasGithubIntegration = useMemo(
-    () =>
-      !!organization?.integrations.some(
-        (i) => i.type === OrganizationIntegrationType.GITHUB
-      ),
-    [organization?.integrations]
-  );
-  const hasDiscordIntegration = useMemo(
-    () =>
-      !!organization?.integrations.some(
-        (i) => i.type === OrganizationIntegrationType.DISCORD
-      ),
-    [organization?.integrations]
-  );
+  const hasGithubIntegration = !!useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.GITHUB
+  )?.length;
+  const hasDiscordIntegration = !!useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.DISCORD
+  )?.length;
 
   const githubRepos = useOrganizationGithubRepos(
     organizationId,

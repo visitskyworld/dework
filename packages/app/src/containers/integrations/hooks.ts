@@ -32,7 +32,6 @@ import {
   GetDiscordGuildRolesQuery,
   GetDiscordGuildRolesQueryVariables,
   OrganizationIntegration,
-  OrganizationIntegrationType,
   DiscordIntegrationRole,
   CreateProjectsFromGithubInput,
   CreateProjectsFromGithubMutation,
@@ -44,7 +43,6 @@ import {
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
-import { useOrganizationDetails } from "../organization/hooks";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
@@ -328,17 +326,4 @@ export function useAddUserToDiscordGuild(
     });
     if (!res.data) throw new Error(JSON.stringify(res.errors));
   }, [mutation, organizationId]);
-}
-
-export function useOrganizationDiscordIntegration(
-  organizationId: string | undefined
-): OrganizationIntegration | undefined {
-  const { organization } = useOrganizationDetails(organizationId);
-  return useMemo(
-    () =>
-      organization?.integrations.find(
-        (i) => i.type === OrganizationIntegrationType.DISCORD
-      ),
-    [organization?.integrations]
-  );
 }

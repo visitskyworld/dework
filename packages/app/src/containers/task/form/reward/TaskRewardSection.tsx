@@ -7,11 +7,8 @@ import { explorerLink } from "../../../payment/hooks";
 import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 import { TaskRewardTag } from "../../TaskRewardTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import {
-  TaskRewardFormFields,
-  TaskRewardFormValues,
-  validator,
-} from "./TaskRewardFormFields";
+import { TaskRewardFormFields, validator } from "./TaskRewardFormFields";
+import { TaskRewardFormValues } from "../types";
 
 interface Props {
   projectId: string;

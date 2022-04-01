@@ -1,10 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import {
-  TaskStatus,
-  User,
-  TaskDetails,
-  TaskOptionsInput,
-} from "@dewo/app/graphql/types";
+import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
   Form,
@@ -14,8 +9,6 @@ import {
   Row,
   Typography,
   Col,
-  Checkbox,
-  Tooltip,
   DatePicker,
   Divider,
 } from "antd";
@@ -26,7 +19,6 @@ import {
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
 import { TaskApplicationList } from "../TaskApplicationList";
-import { TaskRewardFormValues } from "./reward/TaskRewardFormFields";
 import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { TaskTagSelectField } from "./TaskTagSelectField";
@@ -35,15 +27,12 @@ import { TaskActivityFeed } from "./TaskActivityFeed";
 import _ from "lodash";
 import { SubtaskInput } from "./SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { TaskListRow } from "../list/TaskList";
-import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
 import { StoryPointsInput } from "./StoryPointsInput";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { useProjectTaskTags } from "../../project/hooks";
 import { TaskTwitterShareButton } from "./TaskTwitterShareButton";
-import { TaskRoleSelectField } from "./TaskRoleSelectField";
 import { TaskActionSection } from "../actions/TaskActionSection";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { TaskGithubBranchButton } from "../github/TaskGithubBranchButton";
@@ -52,23 +41,8 @@ import {
   useCanUpdateTaskReward,
 } from "./reward/TaskRewardSection";
 import { TaskProjectRow } from "./TaskProjectRow";
-
-export interface TaskFormValues {
-  name: string;
-  description?: string;
-  projectId: string;
-  parentTaskId?: string;
-  status: TaskStatus;
-  dueDate?: moment.Moment;
-  storyPoints?: number;
-  tagIds?: string[];
-  roleIds?: string[];
-  assigneeIds: string[];
-  ownerId?: string | null;
-  reward?: TaskRewardFormValues;
-  subtasks?: TaskListRow[];
-  options?: TaskOptionsInput;
-}
+import { TaskGatingFields } from "./gating/TaskGatingFields";
+import { TaskFormValues } from "./types";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -368,26 +342,14 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           )}
 
-          <TaskRoleSelectField roleIds={values.roleIds} projectId={projectId} />
+          <TaskGatingFields
+            gating={values.gating}
+            projectId={projectId}
+            canSetDefault={mode === "create"}
+          />
 
           {!!task && showProjectLink && (
             <TaskProjectRow project={task.project} />
-          )}
-
-          {canChange("options") && (
-            <AdvancedSectionCollapse>
-              <Form.Item
-                name={["options", "allowOpenSubmission"]}
-                valuePropName="checked"
-              >
-                <Checkbox>
-                  This is a Multiple Submissions bounty{"  "}
-                  <Tooltip title="Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.">
-                    <Icons.QuestionCircleOutlined />
-                  </Tooltip>
-                </Checkbox>
-              </Form.Item>
-            </AdvancedSectionCollapse>
           )}
         </Col>
       </Row>

@@ -7,7 +7,7 @@ import {
 import { ButtonProps, Tooltip } from "antd";
 import React, { FC, useMemo } from "react";
 import { MetamaskAuthButton } from "../../auth/MetamaskAuthButton";
-import { useOrganizationDetails } from "../../organization/hooks";
+import { useOrganizationIntegrations } from "../../organization/hooks";
 
 interface Props extends ButtonProps {
   organizationId: string;
@@ -18,15 +18,10 @@ export const CoordinapeMetamaskConnectButton: FC<Props> = ({
   ...buttonProps
 }) => {
   const { user } = useAuthContext();
-  const integrations =
-    useOrganizationDetails(organizationId).organization?.integrations;
-  const hasCoordinapeIntegration = useMemo(
-    () =>
-      integrations?.some(
-        (i) => i.type === OrganizationIntegrationType.COORDINAPE
-      ),
-    [integrations]
-  );
+  const hasCoordinapeIntegration = useOrganizationIntegrations(
+    organizationId,
+    OrganizationIntegrationType.COORDINAPE
+  )?.length;
 
   const isConnectedToMetamask = useMemo(
     () => user?.threepids.some((t) => t.source === ThreepidSource.metamask),

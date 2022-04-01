@@ -69,6 +69,20 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_onboarding {
   type: UserOnboardingType;
 }
 
+export interface AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults_roles[];
+}
+
 export interface AuthWithThreepidMutation_authWithThreepid_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -81,6 +95,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user {
   threepids: AuthWithThreepidMutation_authWithThreepid_user_threepids[];
   paymentMethods: AuthWithThreepidMutation_authWithThreepid_user_paymentMethods[];
   onboarding: AuthWithThreepidMutation_authWithThreepid_user_onboarding | null;
+  taskGatingDefaults: AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults[];
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid {
@@ -212,6 +227,20 @@ export interface UpdateUserMutation_user_onboarding {
   type: UserOnboardingType;
 }
 
+export interface UpdateUserMutation_user_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface UpdateUserMutation_user_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: UpdateUserMutation_user_taskGatingDefaults_roles[];
+}
+
 export interface UpdateUserMutation_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -224,6 +253,7 @@ export interface UpdateUserMutation_user {
   threepids: UpdateUserMutation_user_threepids[];
   paymentMethods: UpdateUserMutation_user_paymentMethods[];
   onboarding: UpdateUserMutation_user_onboarding | null;
+  taskGatingDefaults: UpdateUserMutation_user_taskGatingDefaults[];
 }
 
 export interface UpdateUserMutation {
@@ -373,13 +403,6 @@ export interface UpdateOrganizationMutation_organization_details {
   value: string;
 }
 
-export interface UpdateOrganizationMutation_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface UpdateOrganizationMutation_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -426,7 +449,6 @@ export interface UpdateOrganizationMutation_organization {
   projectSections: UpdateOrganizationMutation_organization_projectSections[];
   tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
-  integrations: UpdateOrganizationMutation_organization_integrations[];
   projectTokenGates: UpdateOrganizationMutation_organization_projectTokenGates[];
 }
 
@@ -572,13 +594,6 @@ export interface CreateProjectMutation_project_organization_details {
   value: string;
 }
 
-export interface CreateProjectMutation_project_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface CreateProjectMutation_project_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -625,7 +640,6 @@ export interface CreateProjectMutation_project_organization {
   projectSections: CreateProjectMutation_project_organization_projectSections[];
   tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
-  integrations: CreateProjectMutation_project_organization_integrations[];
   projectTokenGates: CreateProjectMutation_project_organization_projectTokenGates[];
 }
 
@@ -2460,11 +2474,25 @@ export interface CreateProjectIntegrationMutationVariables {
 // GraphQL mutation operation: CreateOrganizationIntegrationMutation
 // ====================================================
 
+export interface CreateOrganizationIntegrationMutation_integration_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject | null;
+}
+
+export interface CreateOrganizationIntegrationMutation_integration_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  integrations: CreateOrganizationIntegrationMutation_integration_organization_integrations[];
+}
+
 export interface CreateOrganizationIntegrationMutation_integration {
   __typename: "OrganizationIntegration";
   id: Scalar.UUID;
   type: OrganizationIntegrationType;
   config: Scalar.JSONObject | null;
+  organization: CreateOrganizationIntegrationMutation_integration_organization;
 }
 
 export interface CreateOrganizationIntegrationMutation {
@@ -3960,13 +3988,6 @@ export interface CreateProjectsFromNotionMutation_organization_details {
   value: string;
 }
 
-export interface CreateProjectsFromNotionMutation_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4013,7 +4034,6 @@ export interface CreateProjectsFromNotionMutation_organization {
   projectSections: CreateProjectsFromNotionMutation_organization_projectSections[];
   tags: CreateProjectsFromNotionMutation_organization_tags[];
   details: CreateProjectsFromNotionMutation_organization_details[];
-  integrations: CreateProjectsFromNotionMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromNotionMutation_organization_projectTokenGates[];
 }
 
@@ -4072,13 +4092,6 @@ export interface CreateProjectsFromTrelloMutation_organization_details {
   value: string;
 }
 
-export interface CreateProjectsFromTrelloMutation_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4125,7 +4138,6 @@ export interface CreateProjectsFromTrelloMutation_organization {
   projectSections: CreateProjectsFromTrelloMutation_organization_projectSections[];
   tags: CreateProjectsFromTrelloMutation_organization_tags[];
   details: CreateProjectsFromTrelloMutation_organization_details[];
-  integrations: CreateProjectsFromTrelloMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromTrelloMutation_organization_projectTokenGates[];
 }
 
@@ -4184,13 +4196,6 @@ export interface CreateProjectsFromGithubMutation_organization_details {
   value: string;
 }
 
-export interface CreateProjectsFromGithubMutation_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface CreateProjectsFromGithubMutation_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -4237,7 +4242,6 @@ export interface CreateProjectsFromGithubMutation_organization {
   projectSections: CreateProjectsFromGithubMutation_organization_projectSections[];
   tags: CreateProjectsFromGithubMutation_organization_tags[];
   details: CreateProjectsFromGithubMutation_organization_details[];
-  integrations: CreateProjectsFromGithubMutation_organization_integrations[];
   projectTokenGates: CreateProjectsFromGithubMutation_organization_projectTokenGates[];
 }
 
@@ -4472,6 +4476,43 @@ export interface DeleteRuleMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: SetTaskGatingDefault
+// ====================================================
+
+export interface SetTaskGatingDefault_setTaskGatingDefault_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface SetTaskGatingDefault_setTaskGatingDefault_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: SetTaskGatingDefault_setTaskGatingDefault_taskGatingDefaults_roles[];
+}
+
+export interface SetTaskGatingDefault_setTaskGatingDefault {
+  __typename: "User";
+  id: Scalar.UUID;
+  taskGatingDefaults: SetTaskGatingDefault_setTaskGatingDefault_taskGatingDefaults[];
+}
+
+export interface SetTaskGatingDefault {
+  setTaskGatingDefault: SetTaskGatingDefault_setTaskGatingDefault;
+}
+
+export interface SetTaskGatingDefaultVariables {
+  input: TaskGatingDefaultInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -4537,6 +4578,20 @@ export interface MeQuery_me_onboarding {
   type: UserOnboardingType;
 }
 
+export interface MeQuery_me_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface MeQuery_me_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: MeQuery_me_taskGatingDefaults_roles[];
+}
+
 export interface MeQuery_me {
   __typename: "User";
   id: Scalar.UUID;
@@ -4549,6 +4604,7 @@ export interface MeQuery_me {
   threepids: MeQuery_me_threepids[];
   paymentMethods: MeQuery_me_paymentMethods[];
   onboarding: MeQuery_me_onboarding | null;
+  taskGatingDefaults: MeQuery_me_taskGatingDefaults[];
 }
 
 export interface MeQuery {
@@ -5054,13 +5110,6 @@ export interface GetOrganizationDetailsQuery_organization_details {
   value: string;
 }
 
-export interface GetOrganizationDetailsQuery_organization_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface GetOrganizationDetailsQuery_organization_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -5107,7 +5156,6 @@ export interface GetOrganizationDetailsQuery_organization {
   projectSections: GetOrganizationDetailsQuery_organization_projectSections[];
   tags: GetOrganizationDetailsQuery_organization_tags[];
   details: GetOrganizationDetailsQuery_organization_details[];
-  integrations: GetOrganizationDetailsQuery_organization_integrations[];
   projectTokenGates: GetOrganizationDetailsQuery_organization_projectTokenGates[];
 }
 
@@ -5116,6 +5164,36 @@ export interface GetOrganizationDetailsQuery {
 }
 
 export interface GetOrganizationDetailsQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationIntegrationsQuery
+// ====================================================
+
+export interface GetOrganizationIntegrationsQuery_organization_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject | null;
+}
+
+export interface GetOrganizationIntegrationsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  integrations: GetOrganizationIntegrationsQuery_organization_integrations[];
+}
+
+export interface GetOrganizationIntegrationsQuery {
+  organization: GetOrganizationIntegrationsQuery_organization;
+}
+
+export interface GetOrganizationIntegrationsQueryVariables {
   organizationId: Scalar.UUID;
 }
 
@@ -10420,6 +10498,29 @@ export interface UserOnboarding {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: TaskGatingDefault
+// ====================================================
+
+export interface TaskGatingDefault_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface TaskGatingDefault {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: TaskGatingDefault_roles[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: UserDetails
 // ====================================================
 
@@ -10485,6 +10586,20 @@ export interface UserDetails_onboarding {
   type: UserOnboardingType;
 }
 
+export interface UserDetails_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface UserDetails_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: UserDetails_taskGatingDefaults_roles[];
+}
+
 export interface UserDetails {
   __typename: "User";
   id: Scalar.UUID;
@@ -10497,6 +10612,7 @@ export interface UserDetails {
   threepids: UserDetails_threepids[];
   paymentMethods: UserDetails_paymentMethods[];
   onboarding: UserDetails_onboarding | null;
+  taskGatingDefaults: UserDetails_taskGatingDefaults[];
 }
 
 /* tslint:disable */
@@ -10546,13 +10662,6 @@ export interface OrganizationDetails_details {
   value: string;
 }
 
-export interface OrganizationDetails_integrations {
-  __typename: "OrganizationIntegration";
-  id: Scalar.UUID;
-  type: OrganizationIntegrationType;
-  config: Scalar.JSONObject | null;
-}
-
 export interface OrganizationDetails_projectTokenGates_token_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -10599,7 +10708,6 @@ export interface OrganizationDetails {
   projectSections: OrganizationDetails_projectSections[];
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
-  integrations: OrganizationDetails_integrations[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
 }
 
@@ -10698,6 +10806,12 @@ export enum RulePermission {
   MANAGE_PROJECTS = "MANAGE_PROJECTS",
   MANAGE_TASKS = "MANAGE_TASKS",
   VIEW_PROJECTS = "VIEW_PROJECTS",
+}
+
+export enum TaskGatingType {
+  APPLICATION = "APPLICATION",
+  OPEN_SUBMISSION = "OPEN_SUBMISSION",
+  ROLES = "ROLES",
 }
 
 export enum TaskRewardTrigger {
@@ -10929,6 +11043,12 @@ export interface TaskFilterInput {
   statuses?: TaskStatus[] | null;
   limit?: number | null;
   userId?: Scalar.UUID | null;
+}
+
+export interface TaskGatingDefaultInput {
+  projectId: Scalar.UUID;
+  type?: TaskGatingType | null;
+  roleIds?: Scalar.UUID[] | null;
 }
 
 export interface TaskOptionsInput {

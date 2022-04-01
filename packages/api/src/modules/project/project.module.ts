@@ -3,6 +3,7 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
+import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { User } from "@dewo/api/models/User";
@@ -24,6 +25,7 @@ import { ProjectService } from "./project.service";
       User,
       TaskSection,
       TaskTag,
+      TaskGatingDefault,
       OrganizationMember,
     ]),
     PermalinkModule,

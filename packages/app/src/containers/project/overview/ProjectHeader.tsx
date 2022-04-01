@@ -9,7 +9,10 @@ import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { useIsProjectPrivate } from "../../rbac/hooks";
-import { useOrganizationDetails } from "../../organization/hooks";
+import {
+  useOrganization,
+  useOrganizationIntegrations,
+} from "../../organization/hooks";
 import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
@@ -31,16 +34,15 @@ const MANAGE_CHANNELS = BigInt(0x10),
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project);
-  const { organization } = useOrganizationDetails(organizationId);
+  const organization = useOrganization(organizationId);
   const canEdit = usePermission("update", project);
   const canEditOrg = usePermission("update", "Organization");
 
+  const integrations = useOrganizationIntegrations(organizationId);
   const discordIntegration = useMemo(
     () =>
-      organization?.integrations.find(
-        (i) => i.type === OrganizationIntegrationType.DISCORD
-      ),
-    [organization]
+      integrations?.find((i) => i.type === OrganizationIntegrationType.DISCORD),
+    [integrations]
   );
   const discordPermissions = useMemo(
     () =>

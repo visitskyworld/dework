@@ -48,6 +48,9 @@ import {
   PaymentMethod,
   GetProjectDetailsQuery,
   GetProjectDetailsQueryVariables,
+  TaskGatingDefaultInput,
+  SetTaskGatingDefault,
+  SetTaskGatingDefaultVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -285,6 +288,22 @@ export function useDeleteTaskSection(): (
     DeleteTaskSectionMutation,
     DeleteTaskSectionMutationVariables
   >(Mutations.deleteTaskSection);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useSetTaskGatingDefault(): (
+  input: TaskGatingDefaultInput
+) => Promise<void> {
+  const [mutation] = useMutation<
+    SetTaskGatingDefault,
+    SetTaskGatingDefaultVariables
+  >(Mutations.setTaskGatingDefault);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });

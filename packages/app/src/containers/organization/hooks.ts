@@ -25,6 +25,8 @@ import {
   GetOrganizationDiscordChannelsQueryVariables,
   GetOrganizationGithubReposQuery,
   GetOrganizationGithubReposQueryVariables,
+  GetOrganizationIntegrationsQuery,
+  GetOrganizationIntegrationsQueryVariables,
   GetOrganizationQuery,
   GetOrganizationQueryVariables,
   GetOrganizationTagsQuery,
@@ -38,6 +40,8 @@ import {
   GithubRepo,
   Organization,
   OrganizationDetails,
+  OrganizationIntegration,
+  OrganizationIntegrationType,
   OrganizationTag,
   ProjectSection,
   SetOrganizationDetailInput,
@@ -192,6 +196,24 @@ export function useOrganizationDetails(organizationId: string | undefined): {
     skip: !organizationId,
   });
   return { organization: data?.organization ?? undefined, refetch };
+}
+
+export function useOrganizationIntegrations(
+  organizationId: string | undefined,
+  type?: OrganizationIntegrationType
+): OrganizationIntegration[] | undefined {
+  const { data } = useQuery<
+    GetOrganizationIntegrationsQuery,
+    GetOrganizationIntegrationsQueryVariables
+  >(Queries.organizationIntegrations, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return useMemo(
+    () =>
+      data?.organization.integrations.filter((i) => !type || i.type === type),
+    [data?.organization.integrations, type]
+  );
 }
 
 export function useOrganizationBySlug(organizationSlug: string | undefined): {

@@ -1,11 +1,16 @@
 import { RoleTag } from "@dewo/app/components/RoleTag";
+import { ConnectOrganizationToDiscordButton } from "@dewo/app/containers/integrations/buttons/ConnectOrganizationToDiscordButton";
+import { useOrganizationIntegrations } from "@dewo/app/containers/organization/hooks";
+import { useProject } from "@dewo/app/containers/project/hooks";
+import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { RulePermission } from "@dewo/app/graphql/types";
-import { Form, Select, Tag } from "antd";
+import {
+  OrganizationIntegrationType,
+  RulePermission,
+} from "@dewo/app/graphql/types";
+import { Form, Select } from "antd";
 import _ from "lodash";
 import React, { FC, useMemo } from "react";
-import { useProject } from "../../project/hooks";
-import { useOrganizationRoles } from "../../rbac/hooks";
 
 interface Props {
   roleIds?: string[];
@@ -19,6 +24,7 @@ export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
     // @ts-ignore
     task: { projectId },
   });
+
   const { project } = useProject(projectId);
   const roles = useOrganizationRoles(project?.organizationId);
   const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
@@ -27,33 +33,24 @@ export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
     [roles]
   );
 
-  if (!canManageRoles && !roleIds?.length) return null;
-  // TODO(fant): only show this if organization roles exist/Discord is connected
+  const hasDiscordIntegration = !!useOrganizationIntegrations(
+    project?.organizationId,
+    OrganizationIntegrationType.DISCORD
+  )?.length;
+
+  if (!project || (!canManageRoles && !roleIds?.length)) return null;
+  if (!hasDiscordIntegration) {
+    return (
+      <ConnectOrganizationToDiscordButton
+        organizationId={project.organizationId}
+      />
+    );
+  }
   return (
-    <Form.Item
-      name="roleIds"
-      label={
-        <>
-          Gating
-          <Tag
-            color="green"
-            style={{
-              marginLeft: 4,
-              fontWeight: "normal",
-              textTransform: "none",
-            }}
-          >
-            New
-          </Tag>
-        </>
-      }
-      tooltip="Let contributors with certain roles assign themselves to this task. Anyone can still apply to claim this task, but the selected roles can claim and start working on this without an application."
-    >
+    <Form.Item name={["gating", "roleIds"]}>
       <Select
         mode="multiple"
-        placeholder="Who can claim this task?"
-        showSearch
-        disabled={!canManageRoles}
+        placeholder="Select roles..."
         optionFilterProp="label"
         loading={!organizationRoles}
         tagRender={(props) => (

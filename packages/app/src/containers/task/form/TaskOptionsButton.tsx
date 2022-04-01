@@ -28,6 +28,7 @@ import {
 import Link from "next/link";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import { useOrganizationDetails } from "../../organization/hooks";
+import { getTaskGatingType } from "./util";
 
 interface Props {
   task: TaskDetails;
@@ -112,7 +113,6 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
         assigneeIds: task.assignees.map((t) => t.id),
         ownerId: task.ownerId,
         reward: toTaskRewardFormValues(task.reward ?? undefined),
-        options: { allowOpenSubmission: task.options?.allowOpenSubmission },
         subtasks: task.subtasks.map((s, index) => ({
           key: String(index),
           name: s.name,
@@ -120,7 +120,15 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
           assigneeIds: s.assignees.map((a) => a.id),
           dueDate: null,
         })),
-        roleIds: taskRoles?.map((r) => r.id) ?? [],
+        gating: {
+          roleIds: taskRoles?.map((r) => r.id) ?? [],
+          type: !!task
+            ? getTaskGatingType(
+                task,
+                taskRoles?.map((r) => r.id)
+              )
+            : undefined,
+        },
       },
       task.projectId
     );

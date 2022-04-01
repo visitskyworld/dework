@@ -4,9 +4,10 @@ import { Task } from "@dewo/app/graphql/types";
 import { Button, message, Modal, Typography } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTaskFromFormValues } from "./hooks";
-import { TaskForm, TaskFormValues } from "./form/TaskForm";
+import { TaskForm } from "./form/TaskForm";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { AtLeast } from "@dewo/app/types/general";
+import { TaskFormValues } from "./form/types";
 
 interface TaskCreateModalProps {
   visible: boolean;
@@ -31,12 +32,19 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     status: initialValues.status,
     ownerId: user?.id,
   });
-  const initialValuesWithOwner = useMemo<Partial<TaskFormValues>>(
-    () =>
-      canCreateTaskOwner
-        ? { ownerId: user?.id, ...initialValues }
-        : initialValues,
-    [initialValues, canCreateTaskOwner, user?.id]
+  const extendedInitialValues = useMemo<Partial<TaskFormValues>>(
+    () => ({
+      ownerId: canCreateTaskOwner ? user?.id : undefined,
+      ...initialValues,
+      gating: (() => {
+        const d = user?.taskGatingDefaults.find(
+          (d) => d.projectId === projectId
+        );
+        if (!d) return undefined;
+        return { type: d.type, roleIds: d.roles.map((r) => r.id) };
+      })(),
+    }),
+    [initialValues, projectId, canCreateTaskOwner, user]
   );
 
   const createTask = useCreateTaskFromFormValues();
@@ -73,7 +81,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       <TaskForm
         mode="create"
         projectId={projectId}
-        initialValues={initialValuesWithOwner}
+        initialValues={extendedInitialValues}
         buttonText="Create"
         onSubmit={handleSubmit}
       />
