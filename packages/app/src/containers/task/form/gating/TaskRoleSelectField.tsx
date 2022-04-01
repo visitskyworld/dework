@@ -14,10 +14,15 @@ import React, { FC, useMemo } from "react";
 
 interface Props {
   roleIds?: string[];
+  disabled: boolean;
   projectId: string;
 }
 
-export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
+export const TaskRoleSelectField: FC<Props> = ({
+  roleIds,
+  disabled,
+  projectId,
+}) => {
   const canManageRoles = usePermission("create", {
     __typename: "Rule",
     permission: RulePermission.MANAGE_TASKS,
@@ -39,11 +44,13 @@ export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
   )?.length;
 
   if (!project || (!canManageRoles && !roleIds?.length)) return null;
-  if (!hasDiscordIntegration) {
+  if (!disabled && !hasDiscordIntegration) {
     return (
-      <ConnectOrganizationToDiscordButton
-        organizationId={project.organizationId}
-      />
+      <div style={{ marginBottom: 16 }}>
+        <ConnectOrganizationToDiscordButton
+          organizationId={project.organizationId}
+        />
+      </div>
     );
   }
   return (
@@ -53,6 +60,7 @@ export const TaskRoleSelectField: FC<Props> = ({ roleIds, projectId }) => {
         placeholder="Select roles..."
         optionFilterProp="label"
         loading={!organizationRoles}
+        disabled={disabled}
         tagRender={(props) => (
           <RoleTag {...props} role={roleById[props.value]} />
         )}

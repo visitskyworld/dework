@@ -32,7 +32,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   );
 
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
-  const canManage = usePermission("update", task, "ownerId");
+  const canManage = usePermission("update", task, "ownerIds");
   const canApply = usePermission("create", "TaskApplication");
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);

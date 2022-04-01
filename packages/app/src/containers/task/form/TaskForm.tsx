@@ -343,6 +343,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           <TaskGatingFields
             gating={values.gating}
             projectId={projectId}
+            disabled={!canChange("")}
             canSetDefault={mode === "create"}
           />
 

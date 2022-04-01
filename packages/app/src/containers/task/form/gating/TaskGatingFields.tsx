@@ -23,6 +23,7 @@ const descriptions: Record<TaskGatingType, string> = {
 
 interface Props {
   gating?: Partial<TaskGatingFormValues>;
+  disabled: boolean;
   canSetDefault: boolean;
   projectId: string;
 }
@@ -30,6 +31,7 @@ interface Props {
 export const TaskGatingFields: FC<Props> = ({
   gating,
   projectId,
+  disabled,
   canSetDefault,
 }) => {
   const canManageRoles = usePermission("create", {
@@ -51,6 +53,10 @@ export const TaskGatingFields: FC<Props> = ({
     <>
       <Form.Item
         name={["gating", "type"]}
+        style={{
+          marginBottom:
+            gating?.type === TaskGatingType.ROLES && disabled ? 0 : undefined,
+        }}
         label={
           <>
             Gating
@@ -71,6 +77,7 @@ export const TaskGatingFields: FC<Props> = ({
           placeholder="Who can claim this task?"
           optionFilterProp="label"
           allowClear
+          disabled={disabled}
         >
           {Object.values(TaskGatingType).map((type: TaskGatingType) => (
             <Select.Option
@@ -89,12 +96,16 @@ export const TaskGatingFields: FC<Props> = ({
         </Select>
       </Form.Item>
       {gating?.type === TaskGatingType.ROLES && (
-        <TaskRoleSelectField roleIds={gating.roleIds} projectId={projectId} />
+        <TaskRoleSelectField
+          roleIds={gating.roleIds}
+          projectId={projectId}
+          disabled={disabled}
+        />
       )}
       <Form.Item
         name={["gating", "default"]}
         valuePropName="checked"
-        hidden={!canSetDefault || !shouldShowDefault}
+        hidden={!canSetDefault || !shouldShowDefault || disabled}
       >
         <Checkbox>
           Use as default{"  "}
