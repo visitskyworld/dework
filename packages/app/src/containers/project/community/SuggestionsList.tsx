@@ -25,6 +25,7 @@ const UpvoteCard: FC<UpvoteProps> = ({ taskRow }) => {
   const canReact = usePermission("create", {
     __typename: "TaskReaction",
     userId: user?.id!,
+    task: taskRow.task,
   });
   const createReaction = useCreateTaskReaction();
   const deleteReaction = useDeleteTaskReaction();

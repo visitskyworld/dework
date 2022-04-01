@@ -267,7 +267,12 @@ export class RbacService {
             status: TaskStatus.BACKLOG,
             owners: { $size: 0 },
           });
-          fn(CRUD, TaskReaction, { userId });
+          fn(CRUD, TaskReaction, {
+            userId,
+            ...(!!rule.projectId
+              ? { "task.projectId": rule.projectId }
+              : undefined),
+          });
 
           fn("submit", Task, {
             ...task,

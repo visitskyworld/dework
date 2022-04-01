@@ -403,8 +403,16 @@ export class TaskResolver {
       action: "create",
       subject: TaskReaction,
       inject: [TaskService],
-      getSubject: (params: { input: TaskReactionInput; user: User }) =>
-        Object.assign(new TaskReaction(), { userId: params.user.id }),
+      getSubject: async (
+        params: { input: TaskReactionInput; user: User },
+        service: TaskService
+      ) => {
+        const task = await service.findById(params.input.taskId);
+        return Object.assign(new TaskReaction(), {
+          userId: params.user.id,
+          task,
+        });
+      },
       async getOrganizationId(_subject, params, service) {
         const task = await service.findById(params.input.taskId);
         const project = await task?.project;
@@ -427,8 +435,16 @@ export class TaskResolver {
       action: "delete",
       subject: TaskReaction,
       inject: [TaskService],
-      getSubject: (params: { input: TaskReactionInput; user: User }) =>
-        Object.assign(new TaskReaction(), { userId: params.user.id }),
+      getSubject: async (
+        params: { input: TaskReactionInput; user: User },
+        service: TaskService
+      ) => {
+        const task = await service.findById(params.input.taskId);
+        return Object.assign(new TaskReaction(), {
+          userId: params.user.id,
+          task,
+        });
+      },
       async getOrganizationId(_subject, params, service) {
         const task = await service.findById(params.input.taskId);
         const project = await task?.project;
