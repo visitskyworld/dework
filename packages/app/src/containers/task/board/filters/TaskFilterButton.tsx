@@ -25,6 +25,7 @@ interface TaskFilterButtonProps {
   tags?: TaskTag[];
   style?: CSSProperties;
   projects?: OrganizationDetails_projects[];
+  organizationId: string;
 }
 
 const TaskFilterButton: FC<TaskFilterButtonProps> = ({
@@ -32,6 +33,7 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
   tags,
   style,
   projects,
+  organizationId,
 }) => {
   const { filter } = useTaskFilter();
   const screens = useBreakpoint();
@@ -49,7 +51,14 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
 
   return (
     <Popover
-      content={<TaskFilterForm users={users} tags={tags} projects={projects} />}
+      content={
+        <TaskFilterForm
+          users={users}
+          tags={tags}
+          projects={projects}
+          organizationId={organizationId}
+        />
+      }
       trigger="click"
       placement="bottomRight"
     >
@@ -73,11 +82,19 @@ export const ProjectTaskFilterButton: FC<{
   const { project } = useProject(projectId);
   const { users } = useOrganizationUsers(project?.organizationId);
   const tags = useProjectTaskTags(projectId);
-  return <TaskFilterButton style={style} users={users} tags={tags} />;
+  if (!project) return null;
+  return (
+    <TaskFilterButton
+      style={style}
+      users={users}
+      tags={tags}
+      organizationId={project?.organizationId}
+    />
+  );
 };
 
 export const OrganizationTaskFilterButton: FC<{
-  organizationId?: string;
+  organizationId: string;
   style?: CSSProperties;
 }> = ({ organizationId, style }) => {
   const { users } = useOrganizationUsers(organizationId);
@@ -89,6 +106,7 @@ export const OrganizationTaskFilterButton: FC<{
       users={users}
       tags={tags}
       projects={organization?.projects}
+      organizationId={organizationId}
     />
   );
 };

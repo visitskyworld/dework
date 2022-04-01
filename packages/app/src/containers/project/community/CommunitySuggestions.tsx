@@ -8,7 +8,7 @@ import {
   Typography,
 } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { useProjectTasks } from "../hooks";
+import { useProject, useProjectTasks } from "../hooks";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
@@ -53,17 +53,17 @@ interface Props {
 }
 
 export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
-  const [mounted, setMounted] = useState(false);
-
   const tasks = useProjectTasks(projectId, "cache-and-network");
 
   const [mode, setMode] = useState(SortBy.trending);
 
+  const { project } = useProject(projectId);
   const filteredTasks = useFilteredTasks(
     useMemo(
       () => tasks?.filter((task) => task.status === TaskStatus.BACKLOG) ?? [],
       [tasks]
-    )
+    ),
+    project?.organizationId
   );
   const taskRows = useMemo<TaskRow[]>(
     () =>
@@ -85,9 +85,9 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
   });
   const createTaskToggle = useToggle();
 
+  const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   if (!mounted) return <Spin />;
-
   return (
     <div className="w-full max-w-md mx-auto">
       <PageHeader

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 import { TaskFilter, useTaskFilter } from "./FilterContext";
@@ -13,14 +13,22 @@ import {
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../util";
 import { TaskQuickFilterField } from "./TaskQuickFilterField";
+import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
+import { RoleTag } from "@dewo/app/components/RoleTag";
 
 interface Props {
   users?: User[];
   tags?: TaskTag[];
   projects?: OrganizationDetails["projects"];
+  organizationId: string;
 }
 
-export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
+export const TaskFilterForm: FC<Props> = ({
+  users,
+  tags,
+  projects,
+  organizationId,
+}) => {
   const [form] = useForm<TaskFilter>();
   const { filter, onChange } = useTaskFilter();
   const handleChange = useCallback(
@@ -32,6 +40,13 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
     // Do this async, otherwise the form will render with initialValues set to the current filter value
     setTimeout(form.resetFields);
   }, [form, onChange]);
+
+  const roles = useOrganizationRoles(organizationId);
+  const organizationRoles = useMemo(
+    () => roles?.filter((role) => !role.userId && !role.fallback),
+    [roles]
+  );
+  const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
 
   return (
     <Form
@@ -78,6 +93,29 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
           ))}
         </Select>
       </Form.Item>
+      <Form.Item name="roleIds" label="Filter by Role">
+        <Select
+          mode="multiple"
+          placeholder="Select roles..."
+          optionFilterProp="label"
+          loading={!organizationRoles}
+          tagRender={(props) => (
+            <RoleTag {...props} role={roleById[props.value]} />
+          )}
+        >
+          {organizationRoles?.map((role) => (
+            <Select.Option
+              key={role.id}
+              value={role.id}
+              label={role.name}
+              style={{ fontWeight: "unset" }}
+            >
+              <RoleTag role={role} />
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       {projects?.length && (
         <Form.Item name="projectIds" label="Filter by Project">
           <Select
@@ -98,6 +136,7 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
           </Select>
         </Form.Item>
       )}
+
       {!_.isEmpty(filter) && (
         <Button
           type="text"

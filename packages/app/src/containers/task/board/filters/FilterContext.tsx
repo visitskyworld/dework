@@ -1,9 +1,15 @@
+import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
   PermissionFn,
   usePermissionFn,
 } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  RoleWithRules,
+  RulePermission,
+  Task,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import React, {
   createContext,
   FC,
@@ -23,6 +29,7 @@ export interface TaskFilter {
   ownerIds?: string[];
   statuses?: TaskStatus[];
   projectIds?: string[];
+  roleIds?: string[];
   quickFilter?: TaskQuickFilter;
 }
 
@@ -64,16 +71,28 @@ function useDebounce<T>(value: T, delay: number): T {
 
 const matchingName = (name: string | undefined) => (t: Task) =>
   !name?.length || t.name.toLowerCase().includes(name.toLowerCase());
-const matchingTags = (tagIds: string[] | undefined) => (t: Task) =>
-  !tagIds?.length || t.tags.some((tag) => tagIds.includes(tag.id));
-const matchingAssigneeIds = (assigneeIds: string[] | undefined) => (t: Task) =>
-  !assigneeIds?.length || t.assignees.some((x) => assigneeIds.includes(x.id));
-const matchingOwnerIds = (ownerIds: string[] | undefined) => (t: Task) =>
-  !ownerIds?.length || t.owners.some((x) => ownerIds.includes(x.id));
+const matchingTags = (ids: string[] | undefined) => (t: Task) =>
+  !ids?.length || t.tags.some((tag) => ids.includes(tag.id));
+const matchingAssigneeIds = (ids: string[] | undefined) => (t: Task) =>
+  !ids?.length || t.assignees.some((x) => ids.includes(x.id));
+const matchingOwnerIds = (ids: string[] | undefined) => (t: Task) =>
+  !ids?.length || t.owners.some((x) => ids.includes(x.id));
 const matchingStatuses = (statuses: TaskStatus[] | undefined) => (t: Task) =>
   !statuses?.length || statuses.includes(t.status);
-const matchingProjects = (projectIds: string[] | undefined) => (t: Task) =>
-  !projectIds?.length || projectIds.includes(t.projectId);
+const matchingProjects = (ids: string[] | undefined) => (t: Task) =>
+  !ids?.length || ids.includes(t.projectId);
+const matchingRoles =
+  (ids: string[] | undefined, roles: RoleWithRules[] | undefined) =>
+  (t: Task) =>
+    !ids?.length ||
+    !!roles
+      ?.filter((r) => ids.includes(r.id))
+      .some((r) =>
+        r.rules.some(
+          (r) =>
+            r.permission === RulePermission.MANAGE_TASKS && r.taskId === t.id
+        )
+      );
 
 const matchingQuickFilter =
   (
@@ -98,10 +117,14 @@ const matchingQuickFilter =
     }
   };
 
-export function useFilteredTasks(tasks: Task[]): Task[] {
+export function useFilteredTasks(
+  tasks: Task[],
+  organizationId: string | undefined
+): Task[] {
   const { filter } = useTaskFilter();
   const debouncedFilter = useDebounce(filter, 300);
   const { user } = useAuthContext();
+  const roles = useOrganizationRoles(organizationId);
   const permissionFn = usePermissionFn();
 
   return useMemo(
@@ -113,6 +136,7 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
         .filter(matchingOwnerIds(debouncedFilter.ownerIds))
         .filter(matchingStatuses(debouncedFilter.statuses))
         .filter(matchingProjects(debouncedFilter.projectIds))
+        .filter(matchingRoles(debouncedFilter.roleIds, roles))
         .filter(
           matchingQuickFilter(
             debouncedFilter.quickFilter,
@@ -120,6 +144,6 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
             permissionFn
           )
         ),
-    [tasks, debouncedFilter, user?.id, permissionFn]
+    [tasks, debouncedFilter, user?.id, roles, permissionFn]
   );
 }

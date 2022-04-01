@@ -60,7 +60,7 @@ export const TaskRoleSelectField: FC<Props> = ({
         placeholder="Select roles..."
         optionFilterProp="label"
         loading={!organizationRoles}
-        disabled={disabled}
+        disabled={disabled || !canManageRoles}
         tagRender={(props) => (
           <RoleTag {...props} role={roleById[props.value]} />
         )}

@@ -1,7 +1,7 @@
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Button } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
-import { useProjectTasks, useProjectTaskTags } from "../hooks";
+import { useProject, useProjectTasks, useProjectTaskTags } from "../hooks";
 import { TaskList, TaskListRow } from "../../task/list/TaskList";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -17,7 +17,11 @@ interface Props {
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const tags = useProjectTaskTags(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network");
-  const filteredTasks = useFilteredTasks(useMemo(() => tasks ?? [], [tasks]));
+  const { project } = useProject(projectId);
+  const filteredTasks = useFilteredTasks(
+    useMemo(() => tasks ?? [], [tasks]),
+    project?.organizationId
+  );
   const rows = useMemo(
     () =>
       filteredTasks.map(

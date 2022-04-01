@@ -22,6 +22,7 @@ import { ContributorReviewModal } from "../ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useFilteredTasks } from "./filters/FilterContext";
+import { useProject } from "../../project/hooks";
 
 const defaultStatuses: TaskStatus[] = [
   TaskStatus.TODO,
@@ -52,7 +53,8 @@ export const TaskBoard: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
 
-  const filteredTasks = useFilteredTasks(tasks);
+  const { project } = useProject(projectId);
+  const filteredTasks = useFilteredTasks(tasks, project?.organizationId);
   const groupedTasks = useGroupedTasks(filteredTasks, projectId, sections);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
