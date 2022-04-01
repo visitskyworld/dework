@@ -55,6 +55,7 @@ import {
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 import _ from "lodash";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 export function useCreateProject(): (
   input: CreateProjectInput
@@ -214,7 +215,7 @@ export function useProjectTasks(
     GetProjectTasksQueryVariables
   >(Queries.projectTasks, {
     variables: { projectId: projectId! },
-    skip: !projectId,
+    skip: !projectId || isSSR,
   });
   useEffect(() => {
     if (fetchPolicy === "cache-and-network" && !!data) {

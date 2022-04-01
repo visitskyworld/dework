@@ -11,6 +11,7 @@ import { CreateProjectButton } from "../CreateProjectButton";
 import { ProjectListEmpty } from "./ProjectListEmpty";
 import { useOrganizationDetails } from "../../hooks";
 import { DiscordRoleGateAlert } from "@dewo/app/containers/invite/DiscordRoleGateAlert";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 interface Props {
   organizationId: string;
@@ -60,9 +61,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   return (
-    <Skeleton
-      loading={!mounted || !organization || typeof window === "undefined"}
-    >
+    <Skeleton loading={!mounted || !organization || isSSR}>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
         <DiscordRoleGateAlert organizationId={organizationId} />
         <JoinTokenGatedProjectsAlert organizationId={organizationId} />

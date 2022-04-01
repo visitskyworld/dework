@@ -44,8 +44,11 @@ export function useOrganizationRoles(
   return data?.organization?.roles;
 }
 
-export function useIsProjectPrivate(project: Project | undefined): boolean {
-  const { ability } = useDefaultAbility(project?.organizationId);
+export function useIsProjectPrivate(
+  project: Project | undefined,
+  organizationId: string | undefined
+): boolean {
+  const { ability } = useDefaultAbility(organizationId);
   return useMemo(
     () => !!project && !!ability && !ability.can("read", project),
     [ability, project]

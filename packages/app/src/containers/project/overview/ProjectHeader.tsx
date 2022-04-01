@@ -4,21 +4,21 @@ import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
-import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
-import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { useIsProjectPrivate } from "../../rbac/hooks";
 import {
   useOrganization,
   useOrganizationIntegrations,
 } from "../../organization/hooks";
-import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
+import { useIsProjectPrivate } from "../../rbac/hooks";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
+import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { CoordinapeMetamaskConnectButton } from "../../integrations/buttons/CoordinapeMetamaskConnectButton";
 import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
+import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
+import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 
 interface Props {
   projectId?: string;
@@ -33,7 +33,7 @@ const MANAGE_CHANNELS = BigInt(0x10),
 
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
-  const isPrivate = useIsProjectPrivate(project);
+  const isPrivate = useIsProjectPrivate(project, organizationId);
   const organization = useOrganization(organizationId);
   const canEdit = usePermission("update", project);
   const canEditOrg = usePermission("update", "Organization");
@@ -161,9 +161,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
                   : "Update Discord Permissions"}
               </ConnectOrganizationToDiscordButton>
             )}
-            <FollowOrganizationButton
-              organizationId={project?.organizationId}
-            />
+            <FollowOrganizationButton organizationId={organizationId} />
             <ConnectUsingDiscordRolesButton
               type="ghost"
               projectId={projectId}

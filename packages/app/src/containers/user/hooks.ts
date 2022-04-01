@@ -32,6 +32,7 @@ import {
   SetUserDetailMutationVariables,
   SetUserDetailMutation_organization,
 } from "../../graphql/types";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
   const [mutation] = useMutation<
@@ -116,7 +117,11 @@ export function useUserTasks(
 ): Task[] | undefined {
   const { data } = useQuery<UserTasksQuery, UserTasksQueryVariables>(
     Queries.userTasks,
-    { variables: { id: userId! }, fetchPolicy, skip: !userId }
+    {
+      variables: { id: userId! },
+      fetchPolicy,
+      skip: !userId || isSSR,
+    }
   );
   useListenToTasks();
   return data?.user.tasks;

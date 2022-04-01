@@ -33,28 +33,21 @@ export function createApolloLink(
   });
   const errorLink = onError((error) => onErrorRef?.current?.(error));
 
-  // if (typeof window === "undefined") {
-  return ApolloLink.from([authLink, errorLink, httpLink]);
-  // }
+  if (Constants.APOLLO_QUERY_LOGGING) {
+    const loggingLink = new ApolloLink((operation, forward) => {
+      console.log(`🔥 ${operation.operationName}`);
+      operation.setContext({ start: new Date().getTime() });
 
-  // const wsLink = new WebSocketLink({
-  //   uri: `${Constants.GRAPHQL_WS_URL}/graphql`,
-  //   options: { reconnect: true },
-  // });
-
-  // const splitLink = split(
-  //   ({ query }) => {
-  //     const definition = getMainDefinition(query);
-  //     return (
-  //       definition.kind === "OperationDefinition" &&
-  //       definition.operation === "subscription"
-  //     );
-  //   },
-  //   wsLink,
-  //   httpLink
-  // );
-
-  // return ApolloLink.from([authLink, errorLink, timeoutLink, splitLink]);
+      return forward(operation).map((data) => {
+        const time = new Date().getTime() - operation.getContext().start;
+        console.log(`✅ ${operation.operationName}: ${time}ms`);
+        return data;
+      });
+    });
+    return ApolloLink.from([loggingLink, authLink, errorLink, httpLink]);
+  } else {
+    return ApolloLink.from([authLink, errorLink, httpLink]);
+  }
 }
 
 export const createApolloClient = (
@@ -64,7 +57,26 @@ export const createApolloClient = (
   const origin = absoluteUrl(ctx?.req).origin;
   return new ApolloClient({
     link: createApolloLink(origin, () => getAuthToken(ctx)),
-    cache: new InMemoryCache().restore(initialState),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            getOrganization: {
+              read: (_, { args, toReference }) =>
+                toReference({ __typename: "Organization", id: args?.id }),
+            },
+            getProject: {
+              read: (_, { args, toReference }) =>
+                toReference({ __typename: "Project", id: args?.id }),
+            },
+            getTask: {
+              read: (_, { args, toReference }) =>
+                toReference({ __typename: "Task", id: args?.id }),
+            },
+          },
+        },
+      },
+    }).restore(initialState),
     // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
     credentials: "same-origin",
     defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },

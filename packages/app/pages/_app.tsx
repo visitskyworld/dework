@@ -18,7 +18,6 @@ import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateMod
 import absoluteUrl from "next-absolute-url";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
-import { getDataFromTree } from "@apollo/react-ssr";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
 import { createApolloClient, createApolloLink } from "@dewo/app/graphql/apollo";
@@ -28,8 +27,10 @@ import {
   UserProfileQueryVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "../src/graphql/queries";
+import { getDataFromTree } from "@apollo/react-ssr";
+import { isSSR } from "@dewo/app/util/isSSR";
 
-if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
+if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
   hotjar.initialize(ID, version);
 }
@@ -153,9 +154,7 @@ App.getInitialProps = async ({
 };
 
 export default withApollo(
-  ({ ctx, initialState }) => {
-    return createApolloClient(ctx!, initialState);
-  },
+  ({ ctx, initialState }) => createApolloClient(ctx!, initialState),
   // Fetches all Apollo data on the server side
   { getDataFromTree }
 )(App as any);

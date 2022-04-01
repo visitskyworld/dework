@@ -58,6 +58,7 @@ import {
   UpdateProjectSectionMutationVariables,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
+import { isSSR } from "@dewo/app/util/isSSR";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
@@ -240,7 +241,7 @@ export function useOrganizationUsers(organizationId: string | undefined): {
     GetOrganizationUsersQueryVariables
   >(Queries.organizationUsers, {
     variables: { organizationId: organizationId! },
-    skip: !organizationId,
+    skip: !organizationId || isSSR,
   });
   return { users: data?.organization?.users, refetch };
 }
@@ -266,7 +267,10 @@ export function useOrganizationTasks(
   const { data, refetch } = useQuery<
     GetOrganizationTasksQuery,
     GetOrganizationTasksQueryVariables
-  >(Queries.organizationTasks, { variables: { organizationId, filter } });
+  >(Queries.organizationTasks, {
+    variables: { organizationId, filter },
+    skip: isSSR,
+  });
   useEffect(() => {
     if (fetchPolicy === "cache-and-network" && !!data) {
       refetch();

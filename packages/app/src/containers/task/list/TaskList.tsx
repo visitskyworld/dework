@@ -43,6 +43,7 @@ import { AvatarSize } from "antd/lib/avatar/SizeContext";
 import { TaskActionButton } from "../actions/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import moment from "moment";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 export interface TaskListRow {
   key: string;
@@ -143,7 +144,7 @@ export const TaskList: FC<Props> = ({
   );
 
   // TODO(fant): SSRing <Table /> gets stuck
-  if (typeof window === "undefined") return null;
+  if (isSSR) return null;
   if (!rows.length) return null;
   return (
     <Table<TaskListRow>

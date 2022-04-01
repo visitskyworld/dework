@@ -11,7 +11,7 @@ import { clearAuthToken, setAuthToken } from "../util/authToken";
 import { useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
 
-export function useCurrentUser(skip: boolean = false): UserDetails | undefined {
+function useCurrentUser(skip: boolean = false): UserDetails | undefined {
   const { data } = useQuery<MeQuery>(Queries.me, { skip });
   return data?.me;
 }

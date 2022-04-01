@@ -5,6 +5,7 @@ import {
   Dropdown,
   Menu,
   Row,
+  Skeleton,
   Tag,
   Typography,
 } from "antd";
@@ -21,6 +22,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useOrganizationUsers } from "../../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
+import _ from "lodash";
 
 interface Props {
   project: OrganizationDetails["projects"][number];
@@ -28,7 +30,7 @@ interface Props {
 }
 
 export const ProjectListRow: FC<Props> = ({ project, sections }) => {
-  const isPrivate = useIsProjectPrivate(project);
+  const isPrivate = useIsProjectPrivate(project, project.organizationId);
   const canChangeSection = usePermission("update", project, "sectionId");
   const updateProject = useUpdateProject();
   const handleMoveSection = useCallback(
@@ -90,6 +92,8 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
             style={{ rowGap: 4, justifyContent: "space-between", marginTop: 8 }}
           >
             <Avatar.Group size="small" maxCount={3}>
+              {!projectUsers &&
+                _.range(3).map((i) => <Skeleton.Avatar size="small" key={i} />)}
               {projectUsers?.map((user) => (
                 <UserAvatar key={user.id} user={user} />
               ))}

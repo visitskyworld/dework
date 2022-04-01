@@ -21,8 +21,9 @@ import {
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
 import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
+import { isSSR } from "@dewo/app/util/isSSR";
 
-if (typeof window !== "undefined" && Constants.ENVIRONMENT === "prod") {
+if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
   hotjar.initialize(ID, version);
 }

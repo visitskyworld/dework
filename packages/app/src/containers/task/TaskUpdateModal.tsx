@@ -15,6 +15,7 @@ import { TaskApplyModal } from "./actions/apply/TaskApplyModal";
 import { TaskSeo } from "../seo/TaskSeo";
 import { TaskFormValues } from "./form/types";
 import { getTaskGatingType } from "./form/util";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 interface Props {
   taskId: string;
@@ -29,10 +30,7 @@ export const TaskUpdateModal: FC<Props> = ({
   showProjectLink,
   onCancel,
 }) => {
-  const task = useTask(
-    taskId,
-    typeof window === "undefined" ? undefined : "network-only"
-  );
+  const task = useTask(taskId, isSSR ? undefined : "network-only");
 
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
 

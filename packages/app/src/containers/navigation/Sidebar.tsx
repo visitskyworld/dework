@@ -8,6 +8,7 @@ import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
 import Link from "next/link";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
@@ -15,7 +16,7 @@ export const Sidebar: FC = () => {
   const isProfileSetup = !!user?.bio || !!user?.details.length;
 
   if (!user) return null;
-  if (typeof window === "undefined") return null;
+  if (isSSR) return null;
   return (
     <Layout.Sider
       collapsible

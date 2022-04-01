@@ -22,10 +22,11 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
   const { users } = useOrganizationUsers(organizationId);
 
   const isFollowing = useMemo(
-    () => users?.some((u) => u.id === user?.id),
+    () => !!users?.some((u) => u.id === user?.id),
     [users, user]
   );
 
+  if (!users) return null;
   if (!user) {
     return (
       <LoginButton type="ghost" icon={<Icons.StarOutlined />}>

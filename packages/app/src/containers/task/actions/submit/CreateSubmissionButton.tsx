@@ -54,7 +54,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   if (!user) {
     return (
       <LoginButton {...buttonProps} icon={<Icons.UnlockOutlined />}>
-        Create Submission
+        Submit Work
       </LoginButton>
     );
   }

@@ -1,11 +1,10 @@
 import { GetServerSidePropsContext, NextPageContext } from "next";
 import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { isSSR } from "./isSSR";
 
 const AUTH_TOKEN_KEY = "dewo_auth_token";
 
-const isServer = typeof window === "undefined";
-
-if (!isServer) {
+if (!isSSR) {
   (window as any).clearAuth = function () {
     clearAuthToken(undefined);
     window.location.href = "/";
@@ -16,7 +15,7 @@ export function getAuthToken(
   ctx: NextPageContext | GetServerSidePropsContext | undefined
 ): string | undefined {
   const fromCookies = parseCookies(ctx)[AUTH_TOKEN_KEY];
-  const fromLocalStorage = !isServer
+  const fromLocalStorage = !isSSR
     ? localStorage.getItem(AUTH_TOKEN_KEY)
     : undefined;
   // @ts-ignore
@@ -30,7 +29,7 @@ export function setAuthToken(
 ) {
   // @ts-ignore
   if (!!ctx?.req) ctx.req.authToken = authToken;
-  if (!isServer) localStorage.setItem(AUTH_TOKEN_KEY, authToken);
+  if (!isSSR) localStorage.setItem(AUTH_TOKEN_KEY, authToken);
   setCookie(ctx, AUTH_TOKEN_KEY, authToken, {
     path: "/",
     sameSite: "none",
@@ -42,6 +41,6 @@ export function setAuthToken(
 export function clearAuthToken(ctx: NextPageContext | undefined) {
   // @ts-ignore
   if (!!ctx?.req) ctx.req.authToken = undefined;
-  if (!isServer) localStorage.removeItem(AUTH_TOKEN_KEY);
+  if (!isSSR) localStorage.removeItem(AUTH_TOKEN_KEY);
   destroyCookie(ctx, AUTH_TOKEN_KEY, { path: "/" });
 }

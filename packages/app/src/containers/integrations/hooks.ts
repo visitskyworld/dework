@@ -43,6 +43,7 @@ import {
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import { Constants } from "@dewo/app/util/constants";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum DiscordProjectIntegrationFeature {
@@ -78,7 +79,7 @@ export function useConnectToGithubUrlFn(): (
   const { user } = useAuthContext();
   return useCallback(
     (organizationId, stateOverride) => {
-      const appUrl = typeof window !== "undefined" ? window.location.href : "";
+      const appUrl = !isSSR ? window.location.href : "";
       const state = JSON.stringify({
         appUrl,
         creatorId: user?.id,
