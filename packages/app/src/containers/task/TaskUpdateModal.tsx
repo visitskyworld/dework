@@ -66,7 +66,7 @@ export const TaskUpdateModal: FC<Props> = ({
       <Modal visible={visible} onCancel={onCancel} footer={null} width={960}>
         {!!task && <TaskOptionsButton task={task} />}
         <Skeleton loading={!task || !taskRoles} active paragraph={{ rows: 5 }}>
-          {!!task && taskRoles && (
+          {!!task && !!taskRoles && (
             <TaskForm
               key={taskId}
               mode="update"
