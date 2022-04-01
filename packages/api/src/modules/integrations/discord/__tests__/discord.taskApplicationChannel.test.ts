@@ -78,7 +78,7 @@ describe("DiscordTaskApplicationThreadService", () => {
           organizationId: organization.id,
         });
         const task = await fixtures.createTask({
-          ownerId: user.id,
+          owners: [user],
           projectId: project.id,
         });
         const application = await fixtures.createTaskApplication({
@@ -86,7 +86,7 @@ describe("DiscordTaskApplicationThreadService", () => {
           taskId: task.id,
         });
 
-        await service.createTaskApplicationThread(application);
+        await service.createTaskApplicationThread(application, task);
         const channel = await discordGuild.channels
           .fetch()
           .then((channels) =>

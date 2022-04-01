@@ -53,7 +53,8 @@ export class DiscordIntegrationTaskApplicationCreatedEventHandler extends EventH
     await Promise.all([
       this.integration.handle(event),
       this.taskApplicationChannelService.createTaskApplicationThread(
-        event.application
+        event.application,
+        event.task
       ),
     ]);
   }

@@ -111,7 +111,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
         status: task.status,
         tagIds: task.tags.map((t) => t.id),
         assigneeIds: task.assignees.map((t) => t.id),
-        ownerId: task.ownerId,
+        ownerIds: task.owners.map((t) => t.id),
         reward: toTaskRewardFormValues(task.reward ?? undefined),
         subtasks: task.subtasks.map((s, index) => ({
           key: String(index),

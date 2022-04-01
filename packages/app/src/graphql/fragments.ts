@@ -398,7 +398,6 @@ export const task = gql`
     deletedAt
     projectId
     parentTaskId
-    ownerId
     sectionId
     number
     subtasks {
@@ -412,7 +411,7 @@ export const task = gql`
     assignees {
       ...User
     }
-    owner {
+    owners {
       ...User
     }
     reward {
@@ -494,7 +493,7 @@ export const taskDetails = gql`
       id
       name
     }
-    owner {
+    owners {
       ...User
     }
     creator {

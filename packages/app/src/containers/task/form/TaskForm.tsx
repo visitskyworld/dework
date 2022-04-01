@@ -85,7 +85,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const ownerOptions = useTaskFormUserOptions(
     projectId,
-    useMemo(() => (!!task?.owner ? [task.owner] : []), [task?.owner])
+    useMemo(() => task?.owners ?? [], [task?.owners])
   );
   const assigneeOptions = useTaskFormUserOptions(
     projectId,
@@ -117,9 +117,6 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
-      if ("ownerId" in changed && changed.ownerId === undefined) {
-        values.ownerId = null;
-      }
       form.setFieldsValue(values);
       setValues(values);
 
@@ -306,10 +303,11 @@ export const TaskForm: FC<TaskFormProps> = ({
               users={assigneeOptions}
             />
           </Form.Item>
-          <Form.Item name="ownerId" label="Reviewer">
+          <Form.Item name="ownerIds" label="Reviewers">
             <UserSelect
               placeholder="No task reviewer..."
-              disabled={!canChange("ownerId")}
+              disabled={!canChange("ownerIds")}
+              mode="multiple"
               users={ownerOptions}
             />
           </Form.Item>

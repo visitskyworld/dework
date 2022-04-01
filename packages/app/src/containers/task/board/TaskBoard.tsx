@@ -110,7 +110,10 @@ export const TaskBoard: FC<Props> = ({
         task
       );
 
-      if (status === TaskStatus.DONE && task.ownerId === user?.id) {
+      if (
+        status === TaskStatus.DONE &&
+        task.owners.some((u) => u.id === user?.id)
+      ) {
         reviewModalToggle.toggleOn();
         setTaskInReview(updatedTask);
       }

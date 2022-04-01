@@ -31,7 +31,7 @@ export interface TaskFormValues {
   gating: TaskGatingFormValues;
   roleIds?: string[];
   assigneeIds: string[];
-  ownerId?: string | null;
+  ownerIds?: string[];
   reward?: TaskRewardFormValues;
   subtasks?: TaskListRow[];
 }

@@ -58,7 +58,7 @@ describe("CoordinapeController", () => {
         status: TaskStatus.DONE,
         doneAt,
         assignees: [assignee1, assignee2],
-        ownerId: owner.id,
+        owners: [owner],
         projectId: project.id,
       });
 

@@ -291,9 +291,15 @@ export class GithubIntegrationService {
     if (!fallbackRole) throw new Error("Organization is missing fallback role");
 
     const client = this.createClient(integration.config.installationId);
-    const res = await client.apps.listReposAccessibleToInstallation();
+    const res = await client.paginate(
+      client.apps.listReposAccessibleToInstallation
+    );
+
+    // Note(fant): return type of client.paginate is wrong
     const repos = repoIds.map((repoId) =>
-      res.data.repositories.find((r) => r.node_id === repoId)
+      (res as any as typeof res["repositories"]).find(
+        (r) => r.node_id === repoId
+      )
     );
 
     for (const repo of repos) {

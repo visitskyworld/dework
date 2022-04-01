@@ -201,7 +201,7 @@ describe("TaskResolver", () => {
           tagIds: [expectedTag.id],
           assigneeIds: [user.id],
           status: expectedStatus,
-          ownerId: otherUser.id,
+          ownerIds: [otherUser.id],
         });
 
         expect(response.status).toEqual(HttpStatus.OK);
@@ -215,7 +215,9 @@ describe("TaskResolver", () => {
         expect(updatedTask.assignees).toContainEqual(
           expect.objectContaining({ id: user.id })
         );
-        expect(updatedTask.owner.id).toEqual(otherUser.id);
+        expect(updatedTask.owners).toContainEqual(
+          expect.objectContaining({ id: otherUser.id })
+        );
       });
 
       xit("should fail if adding task from other project", async () => {
@@ -253,7 +255,7 @@ describe("TaskResolver", () => {
       describe("doneAt", () => {
         it("should not set doneAt if not DONE", async () => {
           const user = await fixtures.createUser();
-          const task = await fixtures.createTask({ ownerId: user.id });
+          const task = await fixtures.createTask({ owners: [user] });
           const response = await req(user, {
             id: task.id,
             status: TaskStatus.IN_REVIEW,
@@ -263,7 +265,7 @@ describe("TaskResolver", () => {
 
         it("should set doneAt if DONE", async () => {
           const user = await fixtures.createUser();
-          const task = await fixtures.createTask({ ownerId: user.id });
+          const task = await fixtures.createTask({ owners: [user] });
           const response = await req(user, {
             id: task.id,
             status: TaskStatus.DONE,
@@ -275,7 +277,7 @@ describe("TaskResolver", () => {
           const originalDoneAt = new Date();
           const user = await fixtures.createUser();
           const task = await fixtures.createTask({
-            ownerId: user.id,
+            owners: [user],
             status: TaskStatus.DONE,
             doneAt: originalDoneAt,
           });
@@ -291,7 +293,7 @@ describe("TaskResolver", () => {
         it("should set doneAt to null if no longer DONE", async () => {
           const user = await fixtures.createUser();
           const task = await fixtures.createTask({
-            ownerId: user.id,
+            owners: [user],
             status: TaskStatus.DONE,
             doneAt: new Date(),
           });
@@ -304,7 +306,7 @@ describe("TaskResolver", () => {
       });
 
       describe("status", () => {
-        it("should allow assignee to update task to IN_REVIEW and IN_PROGRESS", async () => {
+        it("should allow assignee to update task to TODO, IN_PROGRESS, IN_REVIEW", async () => {
           const user = await fixtures.createUser();
           const task = await fixtures.createTask({ assignees: [user] });
 
@@ -325,8 +327,8 @@ describe("TaskResolver", () => {
             status: TaskStatus.DONE,
           });
 
-          client.expectGqlError(todo, HttpStatus.FORBIDDEN);
           client.expectGqlError(done, HttpStatus.FORBIDDEN);
+          expect(todo.body.data?.task.status).toEqual(TaskStatus.TODO);
           expect(inProgress.body.data?.task.status).toEqual(
             TaskStatus.IN_PROGRESS
           );

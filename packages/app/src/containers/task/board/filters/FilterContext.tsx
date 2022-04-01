@@ -78,7 +78,7 @@ export function useFilteredTasks(tasks: Task[]): Task[] {
         .filter(
           (t) =>
             !debouncedFilter.ownerIds?.length ||
-            debouncedFilter.ownerIds.includes(t.ownerId as any)
+            t.owners.some((x) => debouncedFilter.ownerIds!.includes(x.id))
         )
         .filter(
           (t) =>

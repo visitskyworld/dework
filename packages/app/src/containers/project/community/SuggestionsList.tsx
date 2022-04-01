@@ -2,10 +2,10 @@ import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPre
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, User } from "@dewo/app/graphql/types";
+import { Task } from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Button, Card, Col, Row, Tooltip, Typography } from "antd";
+import { Avatar, Button, Card, Col, Row, Tooltip, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { TaskBoardColumnEmpty } from "../../task/board/TaskBoardColumnEmtpy";
 import { TaskTagsRow } from "../../task/board/TaskTagsRow";
@@ -15,18 +15,6 @@ import * as Icons from "@ant-design/icons";
 import { useReactionModal } from "@dewo/app/src/util/reactions";
 
 const UPVOTE_REACTION = ":arrow_up_small:";
-
-const ProfileLink: FC<{ user: User }> = ({ user }) => {
-  if (!user) return null;
-  return (
-    <UserAvatar
-      linkToProfile
-      user={user}
-      size="small"
-      tooltip={{ title: "View profile" }}
-    />
-  );
-};
 
 interface UpvoteProps {
   taskRow: TaskRow;
@@ -195,7 +183,17 @@ export const SuggestionsList: FC<Props> = ({ taskRows }) => {
               </Row>
             </Col>
             <Col>
-              {taskRow.task.owner && <ProfileLink user={taskRow.task.owner} />}
+              <Avatar.Group maxCount={3}>
+                {taskRow.task.owners.map((user) => (
+                  <UserAvatar
+                    key={user.id}
+                    linkToProfile
+                    user={user}
+                    size="small"
+                    tooltip={{ title: "View profile" }}
+                  />
+                ))}
+              </Avatar.Group>
             </Col>
           </Row>
         </Card>

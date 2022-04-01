@@ -78,7 +78,7 @@ export const TaskBoardColumn: FC<Props> = ({
           {!!projectId && (
             <Can
               I="create"
-              this={{ __typename: "Task", status, projectId, ownerId: null }}
+              this={{ __typename: "Task", status, projectId, owners: [] }}
             >
               <Button
                 type="text"

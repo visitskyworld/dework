@@ -44,7 +44,7 @@ export const TaskUpdateModal: FC<Props> = ({
       storyPoints: task?.storyPoints ?? undefined,
       tagIds,
       assigneeIds: task?.assignees.map((a) => a.id) ?? [],
-      ownerId: task?.owner?.id,
+      ownerIds: task?.owners.map((o) => o.id) ?? [],
       status: task?.status!,
       dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),

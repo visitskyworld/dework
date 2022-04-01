@@ -265,7 +265,7 @@ export class RbacService {
           fn("create", Task, {
             ...task,
             status: TaskStatus.BACKLOG,
-            ownerId: null,
+            owners: { $size: 0 },
           });
           fn(CRUD, TaskReaction, { userId });
 
@@ -296,11 +296,15 @@ export class RbacService {
         ],
         { assignees: { $elemMatch: { id: userId } } }
       );
-      builder.can(["read", "update", "delete"], Task, { ownerId: userId });
+      builder.can(["read", "update", "delete"], Task, {
+        owners: { $elemMatch: { id: userId } },
+      });
 
       // this is currently only used UI-wise to determine if all task submissions should be shown
-      builder.can("update", Task, "submissions", { ownerId: userId });
-      builder.can("submit", Task, { ownerId: userId });
+      builder.can("update", Task, "submissions", {
+        owners: { $elemMatch: { id: userId } },
+      });
+      builder.can("submit", Task, { owners: { $elemMatch: { id: userId } } });
       builder.can("submit", Task, {
         assignees: { $elemMatch: { id: userId } },
       });

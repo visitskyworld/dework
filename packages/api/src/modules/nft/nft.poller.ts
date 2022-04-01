@@ -126,7 +126,7 @@ export class NFTPoller {
           taskId: task.id,
           slug: String(tokenId),
           assigneeId: assignee.id,
-          ownerId: task.ownerId,
+          ownerId: task.owners[0]?.id,
         });
 
         this.logger.debug(`Stored NFT in DB: ${JSON.stringify(nft)}`);

@@ -47,7 +47,7 @@ export class TaskRequests {
       creator {
         id
       }
-      owner {
+      owners {
         id
       }
       discordChannel {

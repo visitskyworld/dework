@@ -33,8 +33,12 @@ export class UpdateTaskInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public assigneeIds?: string[];
 
+  // TODO(fant): remove after Task.owner => Task.owners transition
   @Field(() => GraphQLUUID, { nullable: true })
   public ownerId?: string;
+
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public ownerIds?: string[];
 
   @Field(() => Int, { nullable: true })
   public storyPoints?: number;

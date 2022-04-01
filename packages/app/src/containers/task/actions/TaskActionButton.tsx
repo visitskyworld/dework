@@ -46,7 +46,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     !!task.reward &&
     !task.reward.payment &&
     !!currentUserId &&
-    task.ownerId === currentUserId
+    task.owners.some((u) => u.id === currentUserId)
   ) {
     return (
       <Button size="small" onClick={moveToDone}>

@@ -105,18 +105,15 @@ export class Task extends Audit {
   @Field({ nullable: true })
   public creatorId?: string;
 
-  @JoinColumn()
-  @ManyToOne(() => User, { nullable: true })
-  @Field(() => User, { nullable: true })
-  public owner?: Promise<User>;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public ownerId?: string;
-
   @ManyToMany(() => User, { eager: true })
   @JoinTable({ name: "task_assignees" })
   @Field(() => [User])
   public assignees!: User[];
+
+  @ManyToMany(() => User, { eager: true })
+  @JoinTable({ name: "task_owners" })
+  @Field(() => [User])
+  public owners!: User[];
 
   @OneToMany(() => TaskApplication, (x: TaskApplication) => x.task)
   @Field(() => [TaskApplication])

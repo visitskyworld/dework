@@ -160,7 +160,9 @@ export const OrganizationTabs: FC<Props> = ({
               <Row style={{ marginBottom: 16 }}>
                 <Avatar.Group maxCount={6} size="large">
                   {!organization &&
-                    _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
+                    _.range(3).map((i) => (
+                      <Skeleton.Avatar size="large" key={i} />
+                    ))}
                   {users?.map((user) => (
                     <UserAvatar key={user.id} user={user} linkToProfile />
                   ))}
@@ -173,7 +175,9 @@ export const OrganizationTabs: FC<Props> = ({
               <Row style={{ marginBottom: 16 }}>
                 <Avatar.Group maxCount={3} size="large">
                   {!organization &&
-                    _.range(3).map((i) => <Skeleton.Avatar key={i} />)}
+                    _.range(3).map((i) => (
+                      <Skeleton.Avatar size="large" key={i} />
+                    ))}
                   {adminUsers?.map((user) => (
                     <UserAvatar key={user.id} user={user} linkToProfile />
                   ))}
@@ -202,8 +206,8 @@ export const OrganizationTabs: FC<Props> = ({
             <Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />
           }
           key="board"
-          className="w-full mx-auto"
-          style={{ maxWidth: 300 * 4 + 16 * 3 + 24 * 2 }}
+          className="w-full"
+          style={{ maxWidth: 330 * 4 + 16 * 3 + 24 * 2 }}
         >
           <OrganizationTaskBoard organizationId={organizationId} />
         </Tabs.TabPane>

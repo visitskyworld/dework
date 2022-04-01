@@ -40,7 +40,7 @@ interface CoordinapeIntegrationProjectTasksQuery {
         name: string;
         permalink: string;
         assignees: UserFragment[];
-        owner: UserFragment | null;
+        owners: UserFragment[];
       }[];
     };
   };
@@ -118,7 +118,7 @@ export class CoordinapeIntegrationController implements OnModuleInit {
                   assignees {
                     ...User
                   }
-                  owner {
+                  owners {
                     ...User
                   }
                 }
@@ -168,8 +168,8 @@ export class CoordinapeIntegrationController implements OnModuleInit {
         });
       }
 
-      const owner = task.owner;
-      if (!!owner && !task.assignees.some((u) => u.id === owner?.id)) {
+      for (const owner of task.owners) {
+        if (task.assignees.some((u) => u.id === owner.id)) continue;
         const address = this.getAddress(owner);
         if (!address) continue;
 

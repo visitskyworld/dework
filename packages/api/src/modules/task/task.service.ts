@@ -215,7 +215,7 @@ export class TaskService {
     let query = this.taskRepo
       .createQueryBuilder("task")
       .leftJoinAndSelect("task.assignees", "assignee")
-      .leftJoinAndSelect("task.owner", "owner")
+      .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
@@ -264,7 +264,7 @@ export class TaskService {
         new Brackets((qb) =>
           qb
             .where("assignee.id = :userId", { userId })
-            .orWhere("task.ownerId = :userId", { userId })
+            .orWhere("owner.id = :userId", { userId })
             .orWhere(
               new Brackets((qb) =>
                 qb

@@ -30,11 +30,11 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     __typename: "Task",
     projectId,
     status: initialValues.status,
-    ownerId: user?.id,
+    owners: !!user ? [user] : [],
   });
   const extendedInitialValues = useMemo<Partial<TaskFormValues>>(
     () => ({
-      ownerId: canCreateTaskOwner ? user?.id : undefined,
+      ownerIds: canCreateTaskOwner && !!user ? [user.id] : [],
       ...initialValues,
       gating: (() => {
         const d = user?.taskGatingDefaults.find(

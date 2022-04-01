@@ -151,10 +151,7 @@ describe("DiscordIntegration", () => {
         discordGuildId,
         discordChannelId
       );
-      const task = await createTask({
-        projectId: project.id,
-        ownerId: user.id,
-      });
+      const task = await createTask({ projectId: project.id, owners: [user] });
 
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
@@ -205,7 +202,7 @@ describe("DiscordIntegration", () => {
       //   expect(hasViewAccess(perms)).toBe(false)
       // );
 
-      await updateTask(task, { ownerId: user.id });
+      await updateTask(task, { owners: [user] });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
       expect(permission!.has("SEND_MESSAGES")).toBe(true);
@@ -234,13 +231,13 @@ describe("DiscordIntegration", () => {
       );
       const task = await createTask({
         projectId: project.id,
-        ownerId: user.id,
+        owners: [user],
       });
 
       const otherOwner = await fixtures.createUser({
         source: ThreepidSource.github,
       });
-      await updateTask(task, { ownerId: otherOwner.id });
+      await updateTask(task, { owners: [otherOwner] });
       const permission = await getDiscordChannelPermission(task);
       expect(permission).not.toBe(null);
       expect(permission!.has("SEND_MESSAGES")).toBe(true);
@@ -307,7 +304,7 @@ describe("DiscordIntegration", () => {
         });
 
         const task = await fixtures.createTask({
-          ownerId: owner.id,
+          owners: [owner],
           creatorId: creator.id,
           assignees: [assigneeWithDiscord, assigneeWithoutDiscord],
         });

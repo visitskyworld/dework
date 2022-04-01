@@ -48,7 +48,7 @@ export const SubtaskInput: FC<Props> = ({
               name: newName,
               parentTaskId: task.id,
               status: TaskStatus.TODO,
-              ownerId: user?.id,
+              ownerIds: !!user ? [user.id] : [],
               assigneeIds: [],
               projectId,
             })
@@ -70,7 +70,7 @@ export const SubtaskInput: FC<Props> = ({
         adding.toggleOff();
       }
     },
-    [adding, onChange, createTask, task, projectId, value, user?.id, newName]
+    [adding, onChange, createTask, task, projectId, value, user, newName]
   );
 
   const rows = useMemo(() => {

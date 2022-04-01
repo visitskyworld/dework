@@ -251,9 +251,12 @@ export class DiscordIntegrationService {
           await this.postDone(channelToPostTo, event.task);
         }
       } else if (event instanceof TaskUpdatedEvent) {
-        if (event.task.ownerId !== event.prevTask.ownerId) {
+        const ownerIds = event.task.owners.map((u) => u.id).sort();
+        const prevOwnerIds = event.prevTask.owners.map((u) => u.id).sort();
+        if (!_.isEqual(ownerIds, prevOwnerIds)) {
           await this.postOwnerChange(event.task, channelToPostTo);
         }
+
         if (
           event.task.dueDate?.toUTCString() !==
           event.prevTask.dueDate?.toUTCString()
@@ -332,7 +335,9 @@ export class DiscordIntegrationService {
       await this.postDefaultInitialMessage(task, channelToPostTo);
     }
 
-    const discordId = !!user ? await this.getDiscordId(user.id) : undefined;
+    const [discordId] = !!user
+      ? await this.discord.getDiscordIds([user.id])
+      : [];
     if (!discordId) {
       throw new Error("User is not connected to Discord");
     }
@@ -506,14 +511,6 @@ export class DiscordIntegrationService {
     return { channel: undefined, new: false };
   }
 
-  private async getDiscordId(userId: string): Promise<string | undefined> {
-    const threepid = (await this.threepidService.findOne({
-      userId,
-      source: ThreepidSource.discord,
-    })) as Threepid<ThreepidSource.discord>;
-    return threepid?.threepid;
-  }
-
   private async postDone(channel: Discord.TextBasedChannels, task: Task) {
     await this.postTaskCard(channel, task, "✅ Task completed!");
     if (channel.isThread()) {
@@ -525,17 +522,23 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannels
   ) {
-    const owner = await task.owner;
-    if (!owner) return;
-    const ownerDiscordId = await this.getDiscordId(owner.id);
+    const ownerDiscordIds = await this.discord.getDiscordIds(
+      task.owners.map((u) => u.id)
+    );
+    if (!ownerDiscordIds.length) return;
 
+    const ownersString = task.owners
+      .map((u, i) =>
+        !!ownerDiscordIds[i] ? `<@${ownerDiscordIds[i]}>` : u.username
+      )
+      .join(", ");
     await this.postTaskCard(
       channel,
       task,
-      `${
-        !!ownerDiscordId ? `<@${ownerDiscordId}>` : owner.username
-      } added as the reviewer of the task`,
-      !!ownerDiscordId ? [ownerDiscordId] : undefined
+      task.owners.length === 1
+        ? `Task reviewer updated to ${ownersString}`
+        : `Task reviewers updated to ${ownersString}`,
+      ownerDiscordIds.filter((id): id is string => !!id)
     );
   }
 
@@ -544,11 +547,9 @@ export class DiscordIntegrationService {
     channel: Discord.TextBasedChannels
   ) {
     if (!task.assignees.length) return;
-
-    const discordIds = await Promise.all(
-      task.assignees.map((u) => this.getDiscordId(u.id))
+    const discordIds = await this.discord.getDiscordIds(
+      task.assignees.map((u) => u.id)
     );
-
     const assigneesString = task.assignees
       .map((u, index) =>
         !!discordIds[index] ? `<@${discordIds[index]}>` : u.username
@@ -566,20 +567,16 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannels
   ) {
-    const owner = await task.owner;
-    if (!owner) return;
-    const ownerDiscordId = await this.getDiscordId(owner.id);
+    const ownerDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
+    if (!ownerDiscordIds.length) return;
 
     const message = !!task.dueDate
       ? `⏳ Due date updated to ${moment(task.dueDate).format("dddd MMM Do")}`
       : "⌛️ Due date removed";
 
-    await this.postTaskCard(
-      channel,
-      task,
-      message,
-      !!ownerDiscordId ? [ownerDiscordId] : undefined
-    );
+    await this.postTaskCard(channel, task, message, ownerDiscordIds);
   }
 
   private async postDefaultInitialMessage(
@@ -608,16 +605,15 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannels
   ) {
-    const owner = !!task.ownerId
-      ? await this.getDiscordId(task.ownerId)
-      : undefined;
-
+    const ownerDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
     const firstAssignee = task.assignees[0];
     await this.postTaskCard(
       channel,
       task,
       "📭 Ready for review!",
-      !!owner ? [owner] : undefined,
+      ownerDiscordIds,
       !!firstAssignee
         ? {
             author: {
@@ -633,15 +629,15 @@ export class DiscordIntegrationService {
   public async postReviewRequest(task: Task, githubUrl: string) {
     const { channelToPostTo } = await this.getChannelFromTask(task);
     if (!channelToPostTo) return;
-    const owner = !!task.ownerId
-      ? await this.getDiscordId(task.ownerId)
-      : undefined;
+    const ownerDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
     const firstAssignee = task.assignees?.[0];
     await this.postTaskCard(
       channelToPostTo,
       task,
       `📭 Review re-requested in Github!\n\n${githubUrl}`,
-      !!owner ? [owner] : undefined,
+      ownerDiscordIds,
       !!firstAssignee
         ? {
             author: {
@@ -769,15 +765,15 @@ export class DiscordIntegrationService {
     application: TaskApplication,
     channel: Discord.TextBasedChannels
   ) {
-    const owner = !!task.ownerId
-      ? await this.getDiscordId(task.ownerId)
-      : undefined;
+    const ownerDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
     const applicant = await application.user;
     await this.postTaskCard(
       channel,
       task,
       "🙋 New applicant!",
-      !!owner ? [owner] : undefined,
+      ownerDiscordIds,
       !!applicant
         ? {
             author: {
@@ -795,15 +791,15 @@ export class DiscordIntegrationService {
     submission: TaskSubmission,
     channel: Discord.TextBasedChannels
   ) {
-    const owner = !!task.ownerId
-      ? await this.getDiscordId(task.ownerId)
-      : undefined;
+    const ownerDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
     const submitter = await submission.user;
     await this.postTaskCard(
       channel,
       task,
       "✉️ New submission!",
-      !!owner ? [owner] : undefined,
+      ownerDiscordIds,
       !!submitter
         ? {
             author: {
@@ -977,11 +973,11 @@ export class DiscordIntegrationService {
 
   public async findTaskUserThreepids(
     task: Task,
-    includeOwner = true
+    includeOwners = true
   ): Promise<Threepid<ThreepidSource.discord>[]> {
     const userIds = _([
-      ...(includeOwner ? [await task.owner] : []),
-      ...(task.assignees ?? []),
+      ...(includeOwners ? task.owners : []),
+      ...task.assignees,
     ])
       .filter((u): u is User => !!u)
       .map((u) => u.id)

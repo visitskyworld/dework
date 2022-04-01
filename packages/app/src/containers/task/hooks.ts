@@ -221,7 +221,6 @@ export function useCreateTaskFromFormValues(): (
       const task = await createTask({
         ...values,
         projectId,
-        ownerId: values.ownerId ?? null,
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
         options: {
@@ -251,7 +250,7 @@ export function useCreateTaskFromFormValues(): (
         await createTask({
           parentTaskId: task.id,
           name: subtask.name,
-          ownerId: user?.id,
+          ownerIds: !!user ? [user.id] : [],
           assigneeIds: subtask.assigneeIds,
           status: subtask.status,
           tagIds: [],

@@ -82,7 +82,7 @@ describe("RbacResolver", () => {
 
           task = await fixtures.createTask({
             projectId: project.id,
-            ownerId: owner.id,
+            owners: [owner],
           });
 
           for (const userId of [contributor.id, otherUser.id]) {
@@ -137,7 +137,7 @@ describe("RbacResolver", () => {
       it("should allow task owner to update all fields", async () => {
         const owner = await fixtures.createUser();
         const task = await fixtures.createTask({
-          ownerId: owner.id,
+          owners: [owner],
           status: TaskStatus.TODO,
         });
 

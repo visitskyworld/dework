@@ -21,7 +21,7 @@ export class PermalinkService {
       return `${appUrl}/i/${object.slug}`;
     }
     if (object instanceof User) {
-      return `${appUrl}/profile/${object.username}`;
+      return `${appUrl}/profile/${encodeURIComponent(object.username)}`;
     }
     if (object instanceof Task) {
       const p = await object.project;

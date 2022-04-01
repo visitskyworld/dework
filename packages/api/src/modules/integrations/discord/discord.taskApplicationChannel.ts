@@ -10,6 +10,7 @@ import Bluebird from "bluebird";
 import moment from "moment";
 import * as Discord from "discord.js";
 import { PermalinkService } from "../../permalink/permalink.service";
+import { Task } from "@dewo/api/models/Task";
 
 @Injectable()
 export class DiscordTaskApplicationThreadService {
@@ -23,14 +24,16 @@ export class DiscordTaskApplicationThreadService {
     private readonly integrationService: IntegrationService
   ) {}
 
-  public async createTaskApplicationThread(taskApplication: TaskApplication) {
-    const task = await taskApplication.task;
+  public async createTaskApplicationThread(
+    taskApplication: TaskApplication,
+    task: Task
+  ) {
     const applicant = await taskApplication.user;
     const project = await task.project;
 
-    if (!task.ownerId) {
+    if (!task.owners.length) {
       this.logger.warn(
-        `Cannot create task application thread for task without owner (${JSON.stringify(
+        `Cannot create task application thread for task without owners (${JSON.stringify(
           { taskApplicationId: taskApplication.id }
         )})`
       );
@@ -56,16 +59,22 @@ export class DiscordTaskApplicationThreadService {
     }
 
     // 2. get task owner's and task application user's discord id
-    const [ownerDiscordId, applicantDiscordId] =
-      await this.discord.getDiscordIds([task.ownerId!, taskApplication.userId]);
-    if (!ownerDiscordId || !applicantDiscordId) {
+    const [applicantDiscordId, ...maybeOwnersDiscordIds] =
+      await this.discord.getDiscordIds([
+        taskApplication.userId,
+        ...task.owners.map((u) => u.id),
+      ]);
+    const ownersDiscordIds = maybeOwnersDiscordIds.filter(
+      (id): id is string => !!id
+    );
+    if (!ownersDiscordIds.length || !applicantDiscordId) {
       this.logger.warn(
         `Cannot create task application thread if task owner or task applicant isn't connected with Discord (${JSON.stringify(
           {
             taskApplicationId: taskApplication.id,
-            ownerId: task.ownerId,
+            ownerIds: task.owners.map((u) => u.id),
             applicantId: taskApplication.userId,
-            ownerDiscordId,
+            ownersDiscordIds,
             applicantDiscordId,
           }
         )})`
@@ -91,7 +100,7 @@ export class DiscordTaskApplicationThreadService {
 
     // 5. add task owner and task applicant to thread
     await Bluebird.mapSeries(
-      [ownerDiscordId, applicantDiscordId],
+      [applicantDiscordId, ...ownersDiscordIds],
       async (discordUserId) => {
         try {
           const member = await guild.members.fetch({
@@ -116,7 +125,9 @@ export class DiscordTaskApplicationThreadService {
 
     // 6. send intro message
     await thread.send({
-      content: `<@${applicantDiscordId}> just applied! Here is a private thread with <@${ownerDiscordId}> (task reviewer) where you can discuss the task.`,
+      content: `<@${applicantDiscordId}> just applied! Here is a private thread with ${ownersDiscordIds
+        .map((id) => `<@${id}>`)
+        .join(", ")} (task reviewer) where you can discuss the task.`,
       embeds: [
         {
           title: task.name,
