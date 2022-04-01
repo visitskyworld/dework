@@ -28,7 +28,7 @@ export const TaskRewardSection: FC<Props> = ({ projectId, task, value }) => {
     return (
       <Form.Item
         name="reward"
-        label="Task Reward"
+        label="Bounty"
         rules={[{ validator, validateTrigger: "onSubmit" }]}
       >
         <TaskRewardFormFields projectId={projectId} value={value} />
