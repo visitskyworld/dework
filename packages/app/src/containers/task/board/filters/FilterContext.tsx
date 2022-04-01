@@ -87,7 +87,9 @@ const matchingQuickFilter =
         return (
           t.assignees.some((u) => u.id === userId) ||
           t.owners.some((u) => u.id === userId) ||
-          (permissionFn("update", t, "assigneeIds") && !t.assignees.length)
+          (t.status === TaskStatus.TODO &&
+            !t.assignees.length &&
+            permissionFn("update", t, "assigneeIds"))
         );
       case undefined:
         return true;
