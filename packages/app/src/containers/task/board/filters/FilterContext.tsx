@@ -1,3 +1,8 @@
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import {
+  PermissionFn,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import React, {
   createContext,
@@ -8,13 +13,17 @@ import React, {
   useState,
 } from "react";
 
+export enum TaskQuickFilter {
+  ASSIGNED_REVIEWING_CLAIMABLE = "ASSIGNED_REVIEWING_CLAIMABLE",
+}
 export interface TaskFilter {
   name?: string;
   tagIds?: string[];
   assigneeIds?: string[];
   ownerIds?: string[];
   statuses?: TaskStatus[];
-  projects?: string[];
+  projectIds?: string[];
+  quickFilter?: TaskQuickFilter;
 }
 
 interface TaskFilterValue {
@@ -53,43 +62,62 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+const matchingName = (name: string | undefined) => (t: Task) =>
+  !name?.length || t.name.toLowerCase().includes(name.toLowerCase());
+const matchingTags = (tagIds: string[] | undefined) => (t: Task) =>
+  !tagIds?.length || t.tags.some((tag) => tagIds.includes(tag.id));
+const matchingAssigneeIds = (assigneeIds: string[] | undefined) => (t: Task) =>
+  !assigneeIds?.length || t.assignees.some((x) => assigneeIds.includes(x.id));
+const matchingOwnerIds = (ownerIds: string[] | undefined) => (t: Task) =>
+  !ownerIds?.length || t.owners.some((x) => ownerIds.includes(x.id));
+const matchingStatuses = (statuses: TaskStatus[] | undefined) => (t: Task) =>
+  !statuses?.length || statuses.includes(t.status);
+const matchingProjects = (projectIds: string[] | undefined) => (t: Task) =>
+  !projectIds?.length || projectIds.includes(t.projectId);
+
+const matchingQuickFilter =
+  (
+    filter: TaskQuickFilter | undefined,
+    userId: string | undefined,
+    permissionFn: PermissionFn
+  ) =>
+  (t: Task) => {
+    switch (filter) {
+      case TaskQuickFilter.ASSIGNED_REVIEWING_CLAIMABLE:
+        return (
+          t.assignees.some((u) => u.id === userId) ||
+          t.owners.some((u) => u.id === userId) ||
+          (permissionFn("update", t, "assigneeIds") && !t.assignees.length)
+        );
+      case undefined:
+        return true;
+      default:
+        return false;
+    }
+  };
+
 export function useFilteredTasks(tasks: Task[]): Task[] {
   const { filter } = useTaskFilter();
   const debouncedFilter = useDebounce(filter, 300);
+  const { user } = useAuthContext();
+  const permissionFn = usePermissionFn();
 
   return useMemo(
     () =>
       tasks
+        .filter(matchingName(debouncedFilter.name))
+        .filter(matchingTags(debouncedFilter.tagIds))
+        .filter(matchingAssigneeIds(debouncedFilter.assigneeIds))
+        .filter(matchingOwnerIds(debouncedFilter.ownerIds))
+        .filter(matchingStatuses(debouncedFilter.statuses))
+        .filter(matchingProjects(debouncedFilter.projectIds))
         .filter(
-          (t) =>
-            !debouncedFilter.name?.length ||
-            t.name.toLowerCase().includes(debouncedFilter.name.toLowerCase())
-        )
-        .filter(
-          (t) =>
-            !debouncedFilter.tagIds?.length ||
-            t.tags.some((x) => debouncedFilter.tagIds!.includes(x.id))
-        )
-        .filter(
-          (t) =>
-            !debouncedFilter.assigneeIds?.length ||
-            t.assignees.some((x) => debouncedFilter.assigneeIds!.includes(x.id))
-        )
-        .filter(
-          (t) =>
-            !debouncedFilter.ownerIds?.length ||
-            t.owners.some((x) => debouncedFilter.ownerIds!.includes(x.id))
-        )
-        .filter(
-          (t) =>
-            !debouncedFilter.statuses?.length ||
-            debouncedFilter.statuses.includes(t.status)
-        )
-        .filter(
-          (t) =>
-            !debouncedFilter.projects?.length ||
-            debouncedFilter.projects.includes(t.projectId)
+          matchingQuickFilter(
+            debouncedFilter.quickFilter,
+            user?.id,
+            permissionFn
+          )
         ),
-    [tasks, debouncedFilter]
+    [tasks, debouncedFilter, user?.id, permissionFn]
   );
 }

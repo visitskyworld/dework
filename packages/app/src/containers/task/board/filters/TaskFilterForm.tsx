@@ -1,24 +1,23 @@
 import React, { FC, useCallback } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Divider, Form, Input, Select } from "antd";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 import { TaskFilter, useTaskFilter } from "./FilterContext";
-
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import _ from "lodash";
 import { useForm } from "antd/lib/form/Form";
-
 import {
-  OrganizationDetails_projects,
+  OrganizationDetails,
   TaskStatus,
   TaskTag,
   User,
 } from "@dewo/app/graphql/types";
 import { STATUS_LABEL } from "../util";
+import { TaskQuickFilterField } from "./TaskQuickFilterField";
 
 interface Props {
   users?: User[];
   tags?: TaskTag[];
-  projects?: OrganizationDetails_projects[];
+  projects?: OrganizationDetails["projects"];
 }
 
 export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
@@ -29,8 +28,9 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
     [onChange]
   );
   const resetFilter = useCallback(() => {
-    form.resetFields();
     onChange({});
+    // Do this async, otherwise the form will render with initialValues set to the current filter value
+    setTimeout(form.resetFields);
   }, [form, onChange]);
 
   return (
@@ -41,6 +41,11 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
       onValuesChange={handleChange}
       style={{ width: 320 }}
     >
+      <Form.Item name="quickFilter" label="Quick Filters">
+        <TaskQuickFilterField />
+      </Form.Item>
+      <Divider />
+
       <Form.Item name="name" label="Filter by Name">
         <Input autoFocus placeholder="Filter by name..." />
       </Form.Item>
@@ -61,7 +66,12 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
       </Form.Item>
       <Form.Item name="statuses" label="Filter by Status">
         <Select mode="multiple" placeholder="Select statuses...">
-          {(Object.keys(STATUS_LABEL) as TaskStatus[]).map((status) => (
+          {[
+            TaskStatus.TODO,
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.IN_REVIEW,
+            TaskStatus.DONE,
+          ].map((status) => (
             <Select.Option key={status} value={status}>
               {STATUS_LABEL[status]}
             </Select.Option>
@@ -69,7 +79,7 @@ export const TaskFilterForm: FC<Props> = ({ users, tags, projects }) => {
         </Select>
       </Form.Item>
       {projects?.length && (
-        <Form.Item name="projects" label="Filter by Project">
+        <Form.Item name="projectIds" label="Filter by Project">
           <Select
             mode="multiple"
             placeholder="Select projects..."

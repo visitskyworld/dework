@@ -41,7 +41,8 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
         filter.tagIds?.length,
         filter.assigneeIds?.length,
         filter.ownerIds?.length,
-        filter.projects?.length,
+        filter.projectIds?.length,
+        Number(!!filter.quickFilter),
       ]),
     [filter]
   );

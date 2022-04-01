@@ -112,11 +112,13 @@ export function usePermission(
   );
 }
 
-export function usePermissionFn(): (
+export type PermissionFn = (
   action: AbilityAction,
   subject: AbilitySubject,
   field?: string
-) => boolean | undefined {
+) => boolean | undefined;
+
+export function usePermissionFn(): PermissionFn {
   const ability = useContext(PermissionsContext);
   return useCallback(
     (action, subject, field) => {
