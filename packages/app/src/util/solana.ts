@@ -1,26 +1,68 @@
-import { useCallback } from "react";
-import { Signer } from "@solana/web3.js";
+import { useCallback, useEffect, useState } from "react";
+import { SignaturePubkeyPair, Signer, Transaction } from "@solana/web3.js";
 import {
   PaymentNetwork,
   PaymentToken,
   PaymentTokenType,
 } from "../graphql/types";
 
-export function useRequestSigner(): () => Promise<Signer> {
-  return useCallback(async () => {
-    // @ts-ignore
-    const provider = await window.solana;
-    const signer = await provider.connect();
-    return signer;
+interface PhantomSolana {
+  connect: () => Promise<Signer>;
+  signAndSendTransaction: (
+    transaction: Transaction
+  ) => Promise<{ signature: any }>;
+  signMessage: (
+    message: Uint8Array,
+    encoding: string
+  ) => Promise<SignaturePubkeyPair>;
+}
+
+export function useProvider() {
+  const [provider, setProvider] = useState<PhantomSolana | undefined>();
+  useEffect(() => {
+    const fn = async () => {
+      if ("solana" in window) {
+        // @ts-ignore
+        const phantom = (await window.solana) as PhantomSolana;
+        setProvider(phantom);
+      }
+    };
+    fn();
   }, []);
+  return provider;
+}
+
+export function useRequestSigner() {
+  const provider = useProvider();
+  return useCallback(async () => {
+    if (provider) {
+      return await provider.connect();
+    }
+    throw new Error("Phantom is not connected");
+  }, [provider]);
 }
 
 export function useRequestAddress(): () => Promise<string> {
   const requestSigner = useRequestSigner();
   return useCallback(async () => {
-    const signer = await requestSigner();
-    return signer.publicKey.toString();
+    const kp = await requestSigner();
+    return kp.publicKey.toString();
   }, [requestSigner]);
+}
+
+export function usePersonalSign() {
+  const provider = useProvider();
+  return useCallback(
+    async (message) => {
+      if (!provider) {
+        throw new Error("Phantom is not connected");
+      }
+      const encodedMessage = new TextEncoder().encode(message);
+      const signedMessage = await provider.signMessage(encodedMessage, "utf8");
+      return signedMessage.signature;
+    },
+    [provider]
+  );
 }
 
 export function useCreateSolanaTransaction(): (
@@ -32,8 +74,13 @@ export function useCreateSolanaTransaction(): (
 ) => Promise<string> {
   const requestAddress = useRequestAddress();
   const requestSigner = useRequestSigner();
+  const provider = useProvider();
   return useCallback(
     async (fromAddress, toAddress, amount, token, network) => {
+      if (!provider) {
+        throw new Error("Phantom is not connected");
+      }
+
       const solana = await import("@solana/web3.js");
       const spl = await import("@solana/spl-token");
 
@@ -120,12 +167,9 @@ export function useCreateSolanaTransaction(): (
           );
       }
 
-      // @ts-ignore
-      const { signature } = await window.solana.signAndSendTransaction(
-        transaction
-      );
+      const { signature } = await provider.signAndSendTransaction(transaction);
       return signature;
     },
-    [requestAddress, requestSigner]
+    [provider, requestAddress, requestSigner]
   );
 }

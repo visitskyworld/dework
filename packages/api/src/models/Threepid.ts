@@ -10,6 +10,7 @@ export enum ThreepidSource {
   github = "github",
   discord = "discord",
   metamask = "metamask",
+  phantom = "phantom",
   notion = "notion",
   hiro = "hiro",
   trello = "trello",

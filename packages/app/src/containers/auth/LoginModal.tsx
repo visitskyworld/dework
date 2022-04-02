@@ -14,6 +14,7 @@ import { useToggle, UseToggleHook } from "@dewo/app/util/hooks";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { Constants } from "@dewo/app/util/constants";
 import { MetamaskAuthButton } from "./MetamaskAuthButton";
+import { PhantomAuthButton } from "./PhantomAuthButton";
 
 interface Props {
   redirectUrl?: string;
@@ -94,6 +95,14 @@ export const LoginModal: FC<Props> = ({
         />
         <MetamaskAuthButton
           children={getThreepidName[ThreepidSource.metamask]}
+          size="large"
+          type="ghost"
+          block
+          state={state}
+          onAuthed={handleAuthedWithWallet}
+        />
+        <PhantomAuthButton
+          children={getThreepidName[ThreepidSource.phantom]}
           size="large"
           type="ghost"
           block

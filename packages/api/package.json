@@ -40,6 +40,7 @@
     "apollo-server-core": "^3.5.0",
     "apollo-server-express": "^3.5.0",
     "bluebird": "^3.7.2",
+    "bs58": "^5.0.0",
     "cheerio": "^1.0.0-rc.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -72,6 +73,7 @@
     "rxjs": "^7.4.0",
     "slugify": "^1.6.4",
     "trello-node-api": "^0.0.9",
+    "tweetnacl": "^1.0.3",
     "typeorm": "^0.2.41",
     "uuid": "^8.3.2",
     "uuid-base62": "^0.1.0"

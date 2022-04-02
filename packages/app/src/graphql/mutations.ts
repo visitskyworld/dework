@@ -22,6 +22,14 @@ export const createMetamaskThreepid = gql`
   }
 `;
 
+export const createPhantomThreepid = gql`
+  mutation CreatePhantomThreepid($input: CreatePhantomThreepidInput!) {
+    threepid: createPhantomThreepid(input: $input) {
+      id
+    }
+  }
+`;
+
 export const createHiroThreepid = gql`
   mutation CreateHiroThreepid($input: CreateHiroThreepidInput!) {
     threepid: createHiroThreepid(input: $input) {

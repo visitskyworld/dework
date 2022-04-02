@@ -140,6 +140,28 @@ export interface CreateMetamaskThreepidVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreatePhantomThreepid
+// ====================================================
+
+export interface CreatePhantomThreepid_threepid {
+  __typename: "Threepid";
+  id: Scalar.UUID;
+}
+
+export interface CreatePhantomThreepid {
+  threepid: CreatePhantomThreepid_threepid;
+}
+
+export interface CreatePhantomThreepidVariables {
+  input: CreatePhantomThreepidInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateHiroThreepid
 // ====================================================
 
@@ -10808,6 +10830,7 @@ export enum ThreepidSource {
   hiro = "hiro",
   metamask = "metamask",
   notion = "notion",
+  phantom = "phantom",
   trello = "trello",
 }
 
@@ -10866,6 +10889,12 @@ export interface CreatePaymentTokenInput {
   symbol: string;
   exp: number;
   networkId: Scalar.UUID;
+}
+
+export interface CreatePhantomThreepidInput {
+  message: string;
+  signature: number[];
+  address: string;
 }
 
 export interface CreateProjectInput {

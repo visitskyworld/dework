@@ -9,11 +9,13 @@ import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { HiroIcon } from "@dewo/app/components/icons/Hiro";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { useRouter } from "next/router";
+import { PhantomIcon } from "@dewo/app/components/icons/Phantom";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
   [ThreepidSource.github]: <Icons.GithubOutlined />,
   [ThreepidSource.metamask]: <MetamaskIcon />,
+  [ThreepidSource.phantom]: <PhantomIcon />,
   [ThreepidSource.notion]: <NotionIcon />,
   [ThreepidSource.trello]: <TrelloIcon />,
   [ThreepidSource.hiro]: <HiroIcon />,
@@ -23,6 +25,7 @@ export const getThreepidName: Record<ThreepidSource, string> = {
   [ThreepidSource.discord]: "Discord",
   [ThreepidSource.github]: "GitHub",
   [ThreepidSource.metamask]: "Metamask",
+  [ThreepidSource.phantom]: "Phantom",
   [ThreepidSource.notion]: "Notion",
   [ThreepidSource.trello]: "Trello",
   [ThreepidSource.hiro]: "Hiro Wallet",

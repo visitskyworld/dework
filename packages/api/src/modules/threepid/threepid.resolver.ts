@@ -17,7 +17,25 @@ import { ethers } from "ethers";
 import { GQLContext } from "../app/graphql.config";
 import { CreateHiroThreepidInput } from "./dto/CreateHiroThreepidInput";
 import { CreateMetamaskThreepidInput } from "./dto/CreateMetamaskThreepidInput";
+import { CreatePhantomThreepidInput } from "./dto/CreatePhantomThreepidInput";
 import { ThreepidService } from "./threepid.service";
+import { sign } from "tweetnacl";
+import bs58 from "bs58";
+
+const verifySolanaMessage = (
+  message: string,
+  signature: Uint8Array,
+  publicKey: string
+) => {
+  const publicKeyBuffer = bs58.decode(publicKey);
+  const messageBuffer = Buffer.from(message, "utf8");
+  const verified = sign.detached.verify(
+    messageBuffer,
+    signature,
+    publicKeyBuffer
+  );
+  return verified;
+};
 
 @Resolver(() => Threepid)
 @Injectable()
@@ -49,6 +67,32 @@ export class ThreepidResolver {
       source: ThreepidSource.metamask,
       threepid: address,
       config: { signature: input.signature, message: input.message },
+    });
+
+    if (threepid.userId) {
+      context.user = await threepid.user;
+    }
+    return threepid;
+  }
+
+  @Mutation(() => Threepid)
+  public async createPhantomThreepid(
+    @Context() context: GQLContext,
+    @Args("input") input: CreatePhantomThreepidInput
+  ) {
+    const signature = new Uint8Array(input.signature);
+    const a = verifySolanaMessage(input.message, signature, input.address);
+    if (!a) {
+      throw new BadRequestException("Signature does not match address");
+    }
+
+    const threepid = await this.threepidService.findOrCreate({
+      source: ThreepidSource.phantom,
+      threepid: input.address,
+      config: {
+        signature: bs58.encode(signature),
+        message: input.message,
+      },
     });
 
     if (threepid.userId) {

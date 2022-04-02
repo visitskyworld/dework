@@ -11,6 +11,8 @@ import {
   CreateHiroThreepidVariables,
   CreateMetamaskThreepid,
   CreateMetamaskThreepidVariables,
+  CreatePhantomThreepid,
+  CreatePhantomThreepidVariables,
   StartWalletConnectSessionMutation,
   StartWalletConnectSessionMutationVariables,
   ThreepidSource,
@@ -25,6 +27,7 @@ import { Modal } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRequestAddresses } from "@dewo/app/util/hiro";
+import * as solana from "@dewo/app/util/solana";
 
 export function useAuthWithThreepid(): (
   threepidId: string
@@ -106,17 +109,15 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
       )}`;
 
       await new Promise<void>((resolve, reject) => {
-        const modal = Modal.confirm({
+        Modal.confirm({
           icon: <MetamaskIcon />,
           title: "Connect Metamask",
           okText: "Open Metamask",
           onOk: () => {
             window.open(metamaskUrl);
-            modal.destroy();
             resolve();
           },
           onCancel: () => {
-            modal.destroy();
             reject(new Error("User did not open Metamask"));
           },
         });
@@ -153,6 +154,61 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
     checkWalletConnectSessionMutation,
     startWalletConnectSessionMutation,
     provider,
+  ]);
+}
+
+export function useCreatePhantomThreepid(): () => Promise<string> {
+  const isPhantomAvailable = solana.useProvider();
+  const requestAddress = solana.useRequestAddress();
+  const personalSign = solana.usePersonalSign();
+
+  const [createPhantomThreepidMutation] = useMutation<
+    CreatePhantomThreepid,
+    CreatePhantomThreepidVariables
+  >(Mutations.createPhantomThreepid);
+
+  return useCallback(async () => {
+    if (isPhantomAvailable) {
+      const address = await requestAddress();
+      const message = "Dework Sign In";
+      const sign = await personalSign(message);
+      const signature = Array.from(sign!);
+
+      const res = await createPhantomThreepidMutation({
+        variables: { input: { address, message, signature } },
+      });
+      if (!res.data) {
+        throw new Error("Failed to create Phantom threepid");
+      }
+      return res.data.threepid.id;
+    } else {
+      // Phantom doesn't support deep linking
+      const phantomUrl = `https://phantom.app/`;
+
+      await new Promise<void>((resolve, reject) => {
+        Modal.confirm({
+          icon: <MetamaskIcon />,
+          title: "Connect Phantom",
+          okText: "Open Phantom",
+          onOk: () => {
+            window.open(phantomUrl);
+            resolve();
+          },
+          onCancel: () => {
+            reject(new Error("User did not open Phantom"));
+          },
+        });
+      });
+
+      throw new Error(
+        "Phantom not available. Please get the Phantom browser extension to authenticate."
+      );
+    }
+  }, [
+    isPhantomAvailable,
+    requestAddress,
+    personalSign,
+    createPhantomThreepidMutation,
   ]);
 }
 

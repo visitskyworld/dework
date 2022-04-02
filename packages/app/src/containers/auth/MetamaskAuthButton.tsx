@@ -1,13 +1,7 @@
 import React, { FC } from "react";
 import { ThreepidSource, UserDetails } from "@dewo/app/graphql/types";
-import {
-  getThreepidName,
-  ThreepidAuthButton,
-} from "@dewo/app/containers/auth/ThreepidAuthButton";
-import {
-  useAuthWithThreepid,
-  useCreateMetamaskThreepid,
-} from "@dewo/app/containers/auth/hooks";
+import { getThreepidName, ThreepidAuthButton } from "./ThreepidAuthButton";
+import { useAuthWithThreepid, useCreateMetamaskThreepid } from "./hooks";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { ButtonProps } from "antd";
 import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";

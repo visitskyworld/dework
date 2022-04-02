@@ -36,6 +36,8 @@ const TaskReactionItem: FC<ReactionProps> = ({ taskId, reaction }) => {
   const canReact = usePermission("create", {
     __typename: "TaskReaction",
     userId: user?.id!,
+    // @ts-ignore
+    ...{ task: taskRow.task },
   });
 
   const createReaction = useCreateTaskReaction();
