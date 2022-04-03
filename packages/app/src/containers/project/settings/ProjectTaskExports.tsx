@@ -5,6 +5,8 @@ import { useProjectTasks } from "../hooks";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
 import { formatTaskReward } from "../../task/hooks";
+import moment from "moment";
+import { TaskDetails } from "@dewo/app/graphql/types";
 interface Props {
   projectId: string;
   projectName: string;
@@ -16,10 +18,13 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
     () => [
       { label: "Name", key: "name" },
       { label: "Tags", key: "tags" },
-      { label: "Points", key: "storyPoints" },
+      { label: "Story Points", key: "storyPoints" },
       { label: "Status", key: "status" },
       { label: "Assignees", key: "assignees" },
       { label: "Reward", key: "reward" },
+      { label: "Payment Type", key: "token" },
+      { label: "Due Date", key: "dueDate" },
+      { label: "Activities", key: "activities" },
     ],
     []
   );
@@ -32,6 +37,15 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
         status: task.status,
         assignees: task.assignees.map((assignee) => assignee.username),
         reward: !!task.reward ? formatTaskReward(task.reward) : "",
+        dueDate: task.dueDate ? moment(task.dueDate).format("LLL") : "",
+        token: !!task.reward ? task.reward.token?.name : "",
+        activities: `${
+          (task as TaskDetails).creator?.username ?? "Someone"
+        } created on ${moment(task.createdAt).format("lll")}${
+          !!task.doneAt
+            ? `, Task completed on ${moment(task.doneAt).format("lll")}`
+            : ""
+        }`,
       })) || [],
     [tasks]
   );
