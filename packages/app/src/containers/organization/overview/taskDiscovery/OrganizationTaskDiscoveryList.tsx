@@ -88,15 +88,16 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
 
   return (
     <>
-      <Typography.Title level={5}>Recent Tasks</Typography.Title>
+      <Typography.Title level={4}>Recent Tasks</Typography.Title>
       <Skeleton loading={!mounted || !organization}>
-        <Row gutter={[4, 4]} style={{ marginBottom: 16 }}>
+        <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
           {tags.map((tag) => (
             <Tag
               key={tag.id}
-              color={tag.color}
+              color={selectedTagLabel !== tag.label ? undefined : tag.color}
               className="hover:cursor-pointer"
               style={{
+                border: "1px solid rgba(255, 255, 255, 0.15)",
                 opacity:
                   !!selectedTagLabel && selectedTagLabel !== tag.label
                     ? 0.5
@@ -115,7 +116,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
 
         {!organization?.tasks.length ? (
           <Typography.Paragraph type="secondary">
-            This DAO doesn't have any tasks for you right now!
+            This DAO doesn't have any open tasks at the moment!
           </Typography.Paragraph>
         ) : (
           <Table<Task>
@@ -138,7 +139,9 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
                 key: "name",
                 render: (_, task: Task) => (
                   <Space direction="vertical" size="small">
-                    <Typography.Text strong>{task.name}</Typography.Text>
+                    <Typography.Text className="font-semibold">
+                      {task.name}
+                    </Typography.Text>
                     {!breakpoints.sm && (
                       <>
                         <TaskTagsRow task={task} showStandardTags={false} />

@@ -895,17 +895,14 @@ iframe {
   }
 
   tr > td {
-    border-top: @border-width-base @border-style-base @border-color-split;
-    border-bottom: @border-width-base @border-style-base @border-color-split;
+    border: none;
 
     &:first-child {
-      border-left: @border-width-base @border-style-base @border-color-split;
       border-top-left-radius: @border-radius-base;
       border-bottom-left-radius: @border-radius-base;
     }
 
     &:last-child {
-      border-right: @border-width-base @border-style-base @border-color-split;
       border-top-right-radius: @border-radius-base;
       border-bottom-right-radius: @border-radius-base;
     }
@@ -994,6 +991,10 @@ iframe {
     // border: 2px solid fade(@white, 20%);
     border: 2px solid @white;
   }
+}
+
+.ant-avatar-group {
+  align-items: center;
 }
 
 .ant-avatar-group > *:not(:first-child) {

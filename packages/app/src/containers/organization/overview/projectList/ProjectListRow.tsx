@@ -67,6 +67,7 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
           className="hover:component-highlight"
           style={{ height: "100%" }}
           bodyStyle={{
+            minHeight: 95,
             height: "100%",
             padding: 12,
             display: "flex",

@@ -159,7 +159,7 @@ export const OrganizationTabs: FC<Props> = ({
               <Typography.Title level={5}>Contributors</Typography.Title>
               <Row style={{ marginBottom: 16 }}>
                 <Avatar.Group maxCount={6} size="large">
-                  {!organization &&
+                  {!users &&
                     _.range(3).map((i) => (
                       <Skeleton.Avatar size="large" key={i} />
                     ))}
@@ -174,7 +174,7 @@ export const OrganizationTabs: FC<Props> = ({
               <Typography.Title level={5}>DAO admins</Typography.Title>
               <Row style={{ marginBottom: 16 }}>
                 <Avatar.Group maxCount={3} size="large">
-                  {!organization &&
+                  {!adminUsers &&
                     _.range(3).map((i) => (
                       <Skeleton.Avatar size="large" key={i} />
                     ))}
