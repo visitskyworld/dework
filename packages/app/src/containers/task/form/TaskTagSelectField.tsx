@@ -26,21 +26,21 @@ interface ComponentProps {
 }
 
 const suggestedTags: readonly { label: string; color: string }[] = [
-  { label: "🐞 Bug", color: "volcano" },
-  { label: "Good First Issue", color: "yellow" },
+  { label: "🐞 bug", color: "volcano" },
+  { label: "good first issue", color: "yellow" },
   { label: "Recurring", color: "volcano" },
-  { label: "Design", color: "purple" },
-  { label: "Frontend", color: "orange" },
-  { label: "Backend", color: "blue" },
-  { label: "Product", color: "lime" },
-  { label: "Community", color: "magenta" },
-  { label: "Marketing", color: "gold" },
-  { label: "Legal", color: "blue" },
-  { label: "Sales", color: "orange" },
-  { label: "Research", color: "yellow" },
-  { label: "Writing", color: "purple" },
-  { label: "Operations", color: "volcano" },
-  { label: "Admin", color: "magenta" },
+  { label: "design", color: "purple" },
+  { label: "frontend", color: "orange" },
+  { label: "backend", color: "blue" },
+  { label: "product", color: "lime" },
+  { label: "community", color: "magenta" },
+  { label: "marketing", color: "gold" },
+  { label: "legal", color: "blue" },
+  { label: "sales", color: "orange" },
+  { label: "research", color: "yellow" },
+  { label: "writing", color: "purple" },
+  { label: "operations", color: "volcano" },
+  { label: "admin", color: "magenta" },
 ];
 const suggestedTagMap = _.keyBy(suggestedTags, "label");
 
