@@ -1,10 +1,12 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import NodeWalletConnect from "@walletconnect/node";
+import { ethers } from "ethers";
 import { BadRequestException, Logger, NotFoundException } from "@nestjs/common";
 import { ThreepidService } from "../threepid/threepid.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { Interval } from "@nestjs/schedule";
+import { GQLContext } from "../app/graphql.config";
 
 interface WalletConnectSession {
   connector: NodeWalletConnect;
@@ -27,9 +29,7 @@ export class WalletConnectResolver {
     }
 
     const connector = new NodeWalletConnect(
-      {
-        bridge: "https://bridge.walletconnect.org",
-      },
+      { bridge: "https://bridge.walletconnect.org" },
       {
         clientMeta: {
           description: "The task manager for DAOs and decentralized work",
@@ -51,6 +51,7 @@ export class WalletConnectResolver {
 
   @Mutation(() => Threepid, { nullable: true })
   public async checkWalletConnectSession(
+    @Context() context: GQLContext,
     @Args("sessionId", { type: () => GraphQLUUID }) sessionId: string
   ): Promise<Threepid | undefined> {
     if (!(sessionId in this.sessionById)) {
@@ -63,11 +64,15 @@ export class WalletConnectResolver {
     const address = session.connector.accounts[0];
     const threepid = await this.threepidService.findOrCreate({
       source: ThreepidSource.metamask,
-      threepid: address,
+      threepid: ethers.utils.getAddress(address),
       config: { message: "WalletConnect", signature: sessionId },
     });
 
     this.deleteSession(sessionId);
+
+    if (threepid.userId) {
+      context.user = await threepid.user;
+    }
 
     return threepid;
   }

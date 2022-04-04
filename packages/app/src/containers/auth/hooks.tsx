@@ -125,9 +125,11 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
 
       const timeout = Date.now() + 30 * 1000;
       while (Date.now() < timeout) {
-        const res = await checkWalletConnectSessionMutation();
-        if (!!res.data?.threepid) {
-          return res.data.threepid.id;
+        const res = await checkWalletConnectSessionMutation().catch(
+          () => undefined
+        );
+        if (!!res?.data?.threepid) {
+          return res?.data.threepid.id;
         }
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
