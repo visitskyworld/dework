@@ -22,6 +22,7 @@ interface TaskCardProps {
 }
 
 export function useTaskActionButton(task: Task): ReactElement | undefined {
+  const { user } = useAuthContext();
   const navigateToTask = useNavigateToTask(task.id);
   const currentUserId = useAuthContext().user?.id;
 
@@ -93,6 +94,16 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
           : `${task.applications.length} Applicants`}
       </Button>
     );
+  }
+
+  if (
+    [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
+      task.status
+    ) &&
+    !!user &&
+    task.assignees.some((a) => a.id === user.id)
+  ) {
+    return <CreateSubmissionButton task={task} size="small" type="text" />;
   }
 
   if (

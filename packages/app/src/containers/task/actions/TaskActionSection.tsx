@@ -44,17 +44,25 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
   const canSubmit = usePermission("submit", task);
   const canApply = usePermission("create", "TaskApplication");
 
-  if (task.status !== TaskStatus.TODO) return null;
-
   const content = (() => {
-    if (canManageProject) return null;
-    if (!!user && task.assignees.some((a) => a.id === user.id)) {
+    if (
+      [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
+        task.status
+      ) &&
+      !!user &&
+      task.assignees.some((a) => a.id === user.id)
+    ) {
       return (
         <CreateSubmissionButton size="large" type="primary" block task={task} />
       );
     }
 
-    if (canSubmit && !!task.options?.allowOpenSubmission) {
+    if (
+      [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
+      !canManageProject &&
+      canSubmit &&
+      !!task.options?.allowOpenSubmission
+    ) {
       return (
         <TaskActionSectionContent
           color="yellow"
@@ -77,7 +85,12 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       );
     }
 
-    if (canAssignTask && !task.assignees.length) {
+    if (
+      task.status === TaskStatus.TODO &&
+      !canManageProject &&
+      canAssignTask &&
+      !task.assignees.length
+    ) {
       return (
         <TaskActionSectionContent
           avatar={
@@ -94,7 +107,13 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       );
     }
 
-    if (!canAssignTask && canApply && !task.assignees.length) {
+    if (
+      task.status === TaskStatus.TODO &&
+      !canManageProject &&
+      !canAssignTask &&
+      canApply &&
+      !task.assignees.length
+    ) {
       return (
         <TaskActionSectionContent
           color="blue"
