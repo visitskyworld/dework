@@ -12,8 +12,6 @@ import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
-import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
-import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { RbacService } from "../../rbac/rbac.service";
 
@@ -71,45 +69,6 @@ describe("UserResolver", () => {
           });
 
           client.expectGqlError(response, HttpStatus.NOT_FOUND);
-        });
-
-        describe("metamask", () => {
-          it("should connect metamask address as payment method on all relevant networks", async () => {
-            const address = faker.datatype.uuid();
-            const threepid = await fixtures.createThreepid({
-              source: ThreepidSource.metamask,
-              threepid: address,
-            });
-
-            const ethNetwork1 = await fixtures.createPaymentNetwork({
-              type: PaymentNetworkType.ETHEREUM,
-            });
-            const ethNetwork2 = await fixtures.createPaymentNetwork({
-              type: PaymentNetworkType.ETHEREUM,
-            });
-
-            const response = await client.request({
-              app,
-              body: UserRequests.authWithThreepid(threepid.id),
-            });
-
-            expect(response.status).toEqual(HttpStatus.OK);
-            const user = response.body.data?.authWithThreepid.user;
-            expect(user.paymentMethods).toContainEqual(
-              expect.objectContaining({
-                address,
-                type: PaymentMethodType.METAMASK,
-                networks: [{ id: ethNetwork1.id }],
-              })
-            );
-            expect(user.paymentMethods).toContainEqual(
-              expect.objectContaining({
-                address,
-                type: PaymentMethodType.METAMASK,
-                networks: [{ id: ethNetwork2.id }],
-              })
-            );
-          });
         });
 
         describe("unique username", () => {

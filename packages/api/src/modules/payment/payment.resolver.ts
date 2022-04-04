@@ -1,5 +1,5 @@
 import { Args, Context, Mutation, Query } from "@nestjs/graphql";
-import { ForbiddenException, Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, UseGuards } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { PaymentService } from "./payment.service";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
@@ -20,10 +20,6 @@ export class PaymentResolver {
     @Context("user") user: User,
     @Args("input") input: CreatePaymentMethodInput
   ): Promise<PaymentMethod> {
-    // TODO(fant): add a unit test for this
-    if (!!input.userId && input.userId !== user.id) {
-      throw new ForbiddenException();
-    }
     return this.paymentService.createPaymentMethod(input, user);
   }
 

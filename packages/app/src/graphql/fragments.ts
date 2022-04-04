@@ -249,7 +249,6 @@ export const projectDetails = gql`
   }
 
   ${project}
-  ${paymentToken}
   ${projectTokenGate}
   ${organization}
   ${taskSection}
@@ -576,9 +575,7 @@ export const userDetails = gql`
     threepids {
       id
       source
-    }
-    paymentMethods {
-      ...PaymentMethod
+      threepid
     }
     organizations {
       ...Organization
@@ -593,7 +590,6 @@ export const userDetails = gql`
 
   ${userProfile}
   ${userOnboarding}
-  ${paymentMethod}
   ${organization}
   ${taskGatingDefault}
 `;

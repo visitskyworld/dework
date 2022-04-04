@@ -512,12 +512,6 @@ export const createPaymentMethod = gql`
           ...PaymentMethod
         }
       }
-      user {
-        id
-        paymentMethods {
-          ...PaymentMethod
-        }
-      }
     }
   }
 

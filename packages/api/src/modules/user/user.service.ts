@@ -1,8 +1,4 @@
-import {
-  HiroThreepidConfig,
-  Threepid,
-  ThreepidSource,
-} from "@dewo/api/models/Threepid";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { EntityDetail, EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
@@ -17,9 +13,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Not, Raw, Repository } from "typeorm";
 import { ThreepidService } from "../threepid/threepid.service";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
-import { PaymentService } from "../payment/payment.service";
-import { PaymentNetworkType } from "@dewo/api/models/PaymentNetwork";
-import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
 import { FileUploadService } from "../fileUpload/fileUpload.service";
@@ -37,7 +30,6 @@ export class UserService {
     private readonly entityDetailRepo: Repository<EntityDetail>,
     private readonly threepidService: ThreepidService,
     private readonly discordRolesService: DiscordRolesService,
-    private readonly paymentService: PaymentService,
     private readonly jwtService: JwtService,
     private readonly fileUploadService: FileUploadService
   ) {}
@@ -95,56 +87,6 @@ export class UserService {
     }
     await this.threepidService.update({ ...threepid, userId: user.id });
     threepids.push(threepid);
-
-    if (threepid.source === ThreepidSource.metamask) {
-      this.logger.debug(
-        `Creating Metamask payment method from threepid: ${JSON.stringify({
-          threepidId: threepid.id,
-          userId: user.id,
-        })}`
-      );
-
-      const networks = await this.paymentService.getPaymentNetworks({
-        type: PaymentNetworkType.ETHEREUM,
-      });
-
-      await this.paymentService.batchCreatePaymentMethods(
-        networks.map((network) => ({
-          address: threepid.threepid,
-          type: PaymentMethodType.METAMASK,
-          networks: [network],
-          userId: user.id,
-          creatorId: user.id,
-        }))
-      );
-    }
-
-    if (threepid.source === ThreepidSource.hiro) {
-      this.logger.debug(
-        `Creating Hiro payment method from threepid: ${JSON.stringify({
-          threepidId: threepid.id,
-          userId: user.id,
-        })}`
-      );
-
-      const networks = await this.paymentService.getPaymentNetworks({
-        type: PaymentNetworkType.STACKS,
-      });
-
-      const config = threepid.config as HiroThreepidConfig;
-      await this.paymentService.batchCreatePaymentMethods(
-        networks.map((network) => ({
-          address:
-            network.slug === "stacks-mainnet"
-              ? config.mainnetAddress
-              : config.testnetAddress,
-          type: PaymentMethodType.HIRO,
-          networks: [network],
-          userId: user.id,
-          creatorId: user.id,
-        }))
-      );
-    }
 
     if (threepid.source === ThreepidSource.discord) {
       await this.discordRolesService.syncUserRoles(user);

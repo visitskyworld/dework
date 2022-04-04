@@ -15,7 +15,6 @@ import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
-import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkService } from "../permalink/permalink.service";
@@ -35,13 +34,6 @@ export class UserResolver {
     @Parent() user: User
   ): Promise<string> {
     return this.permalinkService.get(user, origin);
-  }
-
-  @ResolveField(() => [PaymentMethod])
-  public async paymentMethods(@Parent() user: User): Promise<PaymentMethod[]> {
-    // TODO(fant): query project PMs and filter by deletedAt directly
-    const pms = await user.paymentMethods;
-    return pms.filter((p) => !p.deletedAt);
   }
 
   @Mutation(() => User)

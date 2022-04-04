@@ -13,6 +13,7 @@ import {
   PaymentMethodType,
   PaymentTokenType,
   TaskReward,
+  ThreepidSource,
 } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Modal, notification, Table, Tag } from "antd";
@@ -21,7 +22,6 @@ import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useProject, useProjectPaymentMethods } from "../../project/hooks";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { canPaymentMethodReceiveTaskReward } from "../../payment/hooks";
 import { useERC20Contract, useSwitchChain } from "@dewo/app/util/ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { formatTaskReward } from "../hooks";
@@ -36,9 +36,7 @@ type TaskToPay = GetTasksToPayQuery["tasks"][number];
 const userToPay = (task: TaskToPay) => task.assignees[0];
 const canPayTaskAssignee = (task: TaskToPay) => {
   const user = userToPay(task);
-  return user.paymentMethods.some((pm) =>
-    canPaymentMethodReceiveTaskReward(pm, task.reward!)
-  );
+  return user.threepids.some((t) => t.source === ThreepidSource.metamask);
 };
 
 export function useCreateTaskPayments(): (
@@ -100,8 +98,8 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
       const transactions = await Promise.all(
         tasksToPay.map(async (task): Promise<MetaTransactionData> => {
           const reward = task.reward!;
-          const toAddress = userToPay(task).paymentMethods.find((pm) =>
-            canPaymentMethodReceiveTaskReward(pm, reward)
+          const toAddress = userToPay(task).threepids.find(
+            (t) => t.source === ThreepidSource.metamask
           )!.address;
 
           if (

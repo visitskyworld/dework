@@ -1,10 +1,8 @@
-import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PaymentToken, PaymentTokenType } from "@dewo/api/models/PaymentToken";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { BigNumber, ethers } from "ethers";
-import { Repository } from "typeorm";
 
 interface ERC721Contract {
   balanceOf(owner: string): Promise<BigNumber>;
@@ -16,19 +14,11 @@ interface ERC1155Contract {
 
 @Injectable()
 export class TokenService {
-  constructor(
-    @InjectRepository(PaymentMethod)
-    private readonly paymentMethodRepo: Repository<PaymentMethod>
-  ) {}
-
   public async balanceOf(token: PaymentToken, user: User): Promise<BigNumber> {
-    const addresses = await this.paymentMethodRepo
-      .createQueryBuilder("paymentMethod")
-      .innerJoin("paymentMethod.networks", "network")
-      .where("network.id = :networkId", { networkId: token.networkId })
-      .andWhere("paymentMethod.userId = :userId", { userId: user.id })
-      .getMany()
-      .then((pms) => pms.map((pm) => pm.address));
+    const threepids = await user.threepids;
+    const addresses = threepids
+      .filter((t) => t.source === ThreepidSource.metamask)
+      .map((t) => t.threepid);
 
     if (!addresses.length) return BigNumber.from(0);
 

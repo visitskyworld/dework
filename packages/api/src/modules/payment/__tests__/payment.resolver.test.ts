@@ -50,25 +50,6 @@ describe("PaymentResolver", () => {
         client.expectGqlError(response, HttpStatus.UNAUTHORIZED);
       });
 
-      it("should fail if trying to create for other user", async () => {
-        const authedUser = await fixtures.createUser();
-        const otherUser = await fixtures.createUser();
-
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(authedUser),
-          body: PaymentRequests.createPaymentMethod({
-            type: PaymentMethodType.METAMASK,
-            address: "0x123",
-            networkIds: [network.id],
-            tokenIds: [token.id],
-            userId: otherUser.id,
-          }),
-        });
-
-        client.expectGqlError(response, HttpStatus.FORBIDDEN);
-      });
-
       xit("should fail if trying to create for project without access", async () => {});
 
       it("should succeed if the user is authenticated", async () => {
@@ -81,7 +62,6 @@ describe("PaymentResolver", () => {
             address: "0x123",
             networkIds: [network.id],
             tokenIds: [token.id],
-            userId: user.id,
           }),
         });
 

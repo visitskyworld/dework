@@ -9,14 +9,6 @@ export class UserRequests {
       id
       username
       imageUrl
-      paymentMethods {
-        id
-        type
-        address
-        networks {
-          id
-        }
-      }
       details {
         value
         type

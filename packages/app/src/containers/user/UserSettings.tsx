@@ -1,7 +1,7 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import { Alert, Col, Space, Typography } from "antd";
-import React, { FC, useCallback } from "react";
+import React, { FC } from "react";
 import { MetamaskAuthButton } from "../auth/MetamaskAuthButton";
 import { PhantomAuthButton } from "../auth/PhantomAuthButton";
 import {
@@ -9,22 +9,11 @@ import {
   renderThreepidIcon,
   ThreepidAuthButton,
 } from "../auth/ThreepidAuthButton";
-import { useUpdatePaymentMethod } from "../payment/hooks";
-import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
-import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethodButton";
 
 interface Props {}
 
 export const UserSettings: FC<Props> = () => {
   const { user } = useAuthContext();
-
-  const updatePaymentMethod = useUpdatePaymentMethod();
-  const removePaymentMethod = useCallback(
-    (pm) =>
-      updatePaymentMethod({ id: pm.id, deletedAt: new Date().toISOString() }),
-    [updatePaymentMethod]
-  );
-
   // Some keys of ThreepidSource are in authMap
   const authComponentMap: Partial<Record<ThreepidSource, FC>> = {
     [ThreepidSource.metamask]: MetamaskAuthButton,
@@ -37,30 +26,6 @@ export const UserSettings: FC<Props> = () => {
 
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
-      <Col>
-        <Typography.Title level={5}>
-          Address to Receive Payments
-        </Typography.Title>
-        <Space direction="vertical" style={{ width: "100%" }}>
-          {user?.paymentMethods.map((paymentMethod) => (
-            <PaymentMethodSummary
-              type={paymentMethod.type}
-              address={paymentMethod.address}
-              networkNames={paymentMethod.networks
-                .map((n) => n.name)
-                .join(", ")}
-              onClose={() => removePaymentMethod(paymentMethod)}
-            />
-          ))}
-
-          {!!user && (
-            <AddUserPaymentMethodButton
-              userId={user?.id}
-              children="Connect Wallet for Receiving Payments"
-            />
-          )}
-        </Space>
-      </Col>
       <Col>
         <Typography.Title level={5}>Connected Accounts</Typography.Title>
         <Space direction="vertical">

@@ -1,10 +1,9 @@
 import { Button, message, Modal, Space, Typography } from "antd";
-import React, { FC, useCallback, useState } from "react";
-import { ProjectTokenGate } from "@dewo/app/graphql/types";
-import { PaymentMethodSummary } from "../payment/PaymentMethodSummary";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import { ProjectTokenGate, ThreepidSource } from "@dewo/app/graphql/types";
 import { ApolloError } from "@apollo/client";
-import { AddUserPaymentMethodButton } from "../payment/user/AddUserPaymentMethodButton";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { MetamaskAuthButton } from "../auth/MetamaskAuthButton";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];
@@ -44,6 +43,11 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
     [onVerify]
   );
 
+  const isConnectedWithMetamask = useMemo(
+    () => !!user?.threepids.some((t) => t.source === ThreepidSource.metamask),
+    [user]
+  );
+
   if (!user) return null;
   return (
     <Modal
@@ -56,27 +60,15 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
     >
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
         {tokens.map((token) => {
-          const pms = user.paymentMethods.filter((pm) =>
-            pm.networks.some((n) => n.id === token.networkId)
-          );
           return (
             <Space key={token.id} direction="vertical">
               <Typography.Text>
                 You need{" "}
                 <Typography.Text strong>{token.symbol}</Typography.Text> on{" "}
-                {token.network.name} in your wallet to join. Verify that you
-                have the token or connect a wallet that has it.
+                {token.network.name} in your wallet to join
               </Typography.Text>
-              {pms.map((pm) => (
-                <PaymentMethodSummary
-                  key={pm.id}
-                  type={pm.type}
-                  networkNames={pm.networks.map((n) => n.name).join(", ")}
-                  address={pm.address}
-                />
-              ))}
 
-              {!!pms.length && (
+              {isConnectedWithMetamask ? (
                 <Button
                   block
                   type="primary"
@@ -85,14 +77,11 @@ export const JoinTokenGatedProjectsModal: FC<Props> = ({
                 >
                   Verify Tokens
                 </Button>
+              ) : (
+                <MetamaskAuthButton block type="primary">
+                  Connect with Metamask
+                </MetamaskAuthButton>
               )}
-              <AddUserPaymentMethodButton
-                block
-                userId={user.id}
-                children={
-                  !!pms.length ? "Connect Other Wallet" : "Connect Wallet"
-                }
-              />
             </Space>
           );
         })}

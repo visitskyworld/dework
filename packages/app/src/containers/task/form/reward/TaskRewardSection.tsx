@@ -1,14 +1,12 @@
 import React, { FC } from "react";
-import * as Icons from "@ant-design/icons";
-import { Form, Row, Typography } from "antd";
+import { Form, Space } from "antd";
 import { Task } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { explorerLink } from "../../../payment/hooks";
-import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 import { TaskRewardTag } from "../../TaskRewardTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskRewardFormFields, validator } from "./TaskRewardFormFields";
 import { TaskRewardFormValues } from "../types";
+import { PaymentRow } from "@dewo/app/containers/payment/PaymentRow";
 
 interface Props {
   projectId: string;
@@ -39,30 +37,12 @@ export const TaskRewardSection: FC<Props> = ({ projectId, task, value }) => {
   if (!!task?.reward) {
     return (
       <FormSection label="Reward">
-        <Row>
+        <Space direction="vertical" size={4}>
           <TaskRewardTag reward={task.reward} />
-        </Row>
-        {!!task.reward.payment && (
-          <>
-            <Row>
-              <PaymentStatusTag status={task.reward.payment.status} />
-            </Row>
-            <Row>
-              <a
-                target="_blank"
-                href={explorerLink(task.reward.payment)}
-                rel="noreferrer"
-              >
-                <Typography.Text
-                  type="secondary"
-                  className="ant-typography-caption"
-                >
-                  View on explorer <Icons.ExportOutlined />
-                </Typography.Text>
-              </a>
-            </Row>
-          </>
-        )}
+          {!!task.reward.payment && (
+            <PaymentRow payment={task.reward.payment} />
+          )}
+        </Space>
       </FormSection>
     );
   }

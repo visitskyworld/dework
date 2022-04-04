@@ -58,17 +58,16 @@ export const userTasks = gql`
   ${Fragments.taskWithOrganization}
 `;
 
-export const userPaymentMethod = gql`
-  query UserPaymentMethodQuery($id: UUID!) {
+export const userAddress = gql`
+  query UserAddressQuery($id: UUID!) {
     user: getUser(id: $id) {
       id
-      paymentMethods {
-        ...PaymentMethod
+      threepids {
+        source
+        address: threepid
       }
     }
   }
-
-  ${Fragments.paymentMethod}
 `;
 
 export const permissions = gql`
@@ -329,11 +328,11 @@ export const tasksToPay = gql`
   query GetTasksToPayQuery($input: GetTasksInput!) {
     tasks: getTasks(input: $input) {
       ...Task
-
       assignees {
         ...User
-        paymentMethods {
-          ...PaymentMethod
+        threepids {
+          source
+          address: threepid
         }
       }
       project {
@@ -347,7 +346,6 @@ export const tasksToPay = gql`
 
   ${Fragments.task}
   ${Fragments.user}
-  ${Fragments.paymentMethod}
 `;
 
 export const projectIntegrations = gql`

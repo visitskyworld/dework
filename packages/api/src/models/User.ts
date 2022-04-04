@@ -9,7 +9,6 @@ import {
   OneToOne,
 } from "typeorm";
 import { Audit } from "./Audit";
-import { PaymentMethod } from "./PaymentMethod";
 import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
 import { UserOnboarding } from "./UserOnboarding";
@@ -40,10 +39,6 @@ export class User extends Audit {
   @OneToMany(() => EntityDetail, (t: EntityDetail) => t.user)
   @Field(() => [EntityDetail])
   public details!: Promise<EntityDetail[]>;
-
-  @OneToMany(() => PaymentMethod, (p: PaymentMethod) => p.user)
-  @Field(() => [PaymentMethod])
-  public paymentMethods!: Promise<PaymentMethod[]>;
 
   @OneToMany(() => TaskGatingDefault, (x) => x.user)
   @Field(() => [TaskGatingDefault])

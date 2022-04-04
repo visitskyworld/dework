@@ -323,6 +323,15 @@ export const TaskList: FC<Props> = ({
                 onClick={eatClick}
                 overlay={
                   <Menu onClick={(e) => eatClick(e.domEvent)}>
+                    {!!row.task && (
+                      <Menu.Item
+                        key="details"
+                        icon={<Icons.BarsOutlined />}
+                        children="Details"
+                        onClick={() => navigateToTask(row.task!.id)}
+                      />
+                    )}
+
                     {!!canChange && !!row.task?.parentTaskId && (
                       <Popconfirm
                         icon={null}
@@ -338,14 +347,6 @@ export const TaskList: FC<Props> = ({
                           icon={<Icons.ExportOutlined />}
                         />
                       </Popconfirm>
-                    )}
-                    {!!row.task && (
-                      <Menu.Item
-                        key="details"
-                        icon={<Icons.BarsOutlined />}
-                        children="Details"
-                        onClick={() => navigateToTask(row.task!.id)}
-                      />
                     )}
 
                     {!!canDeleteTask && (

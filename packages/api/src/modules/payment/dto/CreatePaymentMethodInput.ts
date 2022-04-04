@@ -18,7 +18,4 @@ export class CreatePaymentMethodInput {
 
   @Field(() => GraphQLUUID, { nullable: true })
   public projectId?: string;
-
-  @Field(() => GraphQLUUID, { nullable: true })
-  public userId?: string;
 }

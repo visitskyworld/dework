@@ -10,7 +10,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
-import { PaymentModule } from "../payment/payment.module";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
@@ -30,7 +29,6 @@ import { FileUploadModule } from "../fileUpload/fileUpload.module";
     ]),
     FileUploadModule,
     ThreepidModule,
-    PaymentModule,
     PermalinkModule,
     DiscordRolesModule,
   ],

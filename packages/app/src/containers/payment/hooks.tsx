@@ -20,12 +20,13 @@ import {
   PaymentToken,
   Task,
   TaskReward,
+  ThreepidSource,
   UpdatePaymentMethodInput,
   UpdatePaymentMethodMutation,
   UpdatePaymentMethodMutationVariables,
   User,
-  UserPaymentMethodQuery,
-  UserPaymentMethodQueryVariables,
+  UserAddressQuery,
+  UserAddressQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCreateEthereumTransaction } from "@dewo/app/util/ethereum";
 import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
@@ -138,10 +139,10 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   // const signPhantomPayout = useSignPhantomPayout();
   // const signGnosisPayout = useSignGnosisPayout();
 
-  const [loadUserPaymentMethod] = useLazyQuery<
-    UserPaymentMethodQuery,
-    UserPaymentMethodQueryVariables
-  >(Queries.userPaymentMethod);
+  const [loadUserAddress] = useLazyQuery<
+    UserAddressQuery,
+    UserAddressQueryVariables
+  >(Queries.userAddress);
   const [loadProjectPaymentMethods] = useLazyQuery<
     GetProjectPaymentMethodsQuery,
     GetProjectPaymentMethodsQueryVariables
@@ -186,20 +187,20 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const reward = task.reward;
       if (!reward) throw new Error("Task has no reward, so cannot pay");
 
-      const [paymentMethods, userPaymentMethods] = await Promise.all([
+      const [paymentMethods, userAddress] = await Promise.all([
         loadProjectPaymentMethods({
           variables: { projectId: task.projectId },
         }).then((res) => res.data?.project.paymentMethods),
-        loadUserPaymentMethod({ variables: { id: user.id } }).then(
-          (res) => res.data?.user.paymentMethods ?? []
+        loadUserAddress({ variables: { id: user.id } }).then(
+          (res) =>
+            res.data?.user.threepids?.find(
+              (t) => t.source === ThreepidSource.metamask
+            )?.address
         ),
       ]);
 
       if (!paymentMethods) throw new Error("Project not found");
 
-      const to = userPaymentMethods.find((pm) =>
-        canPaymentMethodReceiveTaskReward(pm, reward)
-      );
       const matchingSenderPaymentMethods = paymentMethods.filter((pm) =>
         canPaymentMethodSendTaskReward(pm, reward)
       );
@@ -210,7 +211,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       const network = from.networks.find(
         (n) => n.id === reward.token.networkId
       )!;
-      if (!to) {
+      if (!userAddress) {
         throw new NoUserPaymentMethodError(
           `${user.username} has no payment method on ${network.name}`
         );
@@ -220,7 +221,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         case PaymentMethodType.METAMASK: {
           const txHash = await createEthereumTransaction(
             from.address,
-            to.address,
+            userAddress,
             reward.amount,
             reward.token,
             network
@@ -244,7 +245,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           )!;
           const signature = await createSolanaTransaction(
             from.address,
-            to.address,
+            userAddress,
             Number(reward.amount),
             reward.token,
             network
@@ -267,7 +268,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           )!;
           const txId = await createStacksTransaction(
             from.address,
-            to.address,
+            userAddress,
             reward.amount,
             reward.token,
             network
@@ -310,7 +311,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
     },
     [
       loadProjectPaymentMethods,
-      loadUserPaymentMethod,
+      loadUserAddress,
       createSolanaTransaction,
       createEthereumTransaction,
       createStacksTransaction,
