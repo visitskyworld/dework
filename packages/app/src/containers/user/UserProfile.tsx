@@ -105,7 +105,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 title={
                   <>
                     <Typography.Paragraph>
-                      No tasks completed yet!
+                      No public tasks completed yet!
                     </Typography.Paragraph>
                     {isMe && (
                       <Button href="/" type="primary">

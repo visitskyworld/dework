@@ -100,7 +100,7 @@ export const TaskRewardFormFields: FC<Props> = ({
           renderEmpty={() => (
             <Empty
               imageStyle={{ display: "none" }}
-              description="To add a task reward, you need to connect a wallet to the project"
+              description="To add a bounty, you need to connect a wallet to the project"
             >
               <Button
                 type="primary"
