@@ -1,5 +1,5 @@
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
-import { Divider, Spin, Tooltip, Typography } from "antd";
+import { Divider, Spin, Tag, Tooltip, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { projectRoleDescription } from "../../project/settings/strings";
@@ -51,18 +51,29 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         onInviteUser={() => inviteToProject(ProjectRole.ADMIN)}
       />
       <Divider />
-
       <Typography.Title level={5}>
         Create Tasks
+        <Tag
+          color="green"
+          style={{
+            marginLeft: 4,
+            fontWeight: "normal",
+            textTransform: "none",
+          }}
+        >
+          Recommended!
+        </Tag>
         <Tooltip
           title={
             <Typography.Text style={{ whiteSpace: "pre-line" }}>
               This gives users the permission to create their own tasks and
-              manage those (but not to attach a bounty to them)
+              manage those (but not to attach a bounty to them). Highly
+              recommended to give to all somewhat active contributors in your
+              community
             </Typography.Text>
           }
         >
-          <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+          <Icons.QuestionCircleOutlined style={{ marginLeft: 4 }} />
         </Tooltip>
       </Typography.Title>
       <RBACPermissionForm
