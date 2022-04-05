@@ -1,8 +1,15 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as Queries from "@dewo/app/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { GetPopularOrganizationsQuery } from "@dewo/app/graphql/types";
-import { Avatar, Row, Spin, Table, Typography } from "antd";
+import { Avatar, Row, Spin, Table, Typography, Input } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
@@ -32,16 +39,36 @@ export const ProjectDiscoveryList: FC = () => {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const [searchText, setSearchText] = useState("");
+  const onChangeSearch = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value),
+    []
+  );
+  const filteredOrganizations = useMemo(
+    () =>
+      organizations?.filter((organization) =>
+        organization.name.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    [searchText, organizations]
+  );
   if (!mounted) return null;
   return (
     <>
-      <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        Popular DAOs {!!organizations && `(${organizations.length})`}
+      <Typography.Title level={3} style={{ textAlign: "center" }}>
+        Popular DAOs{" "}
+        {!!filteredOrganizations && `(${filteredOrganizations.length})`}
       </Typography.Title>
-      {!!organizations ? (
+      {!!filteredOrganizations ? (
         <div className="mx-auto max-w-md w-full">
+          <Input
+            placeholder="Search DAOs..."
+            allowClear
+            onChange={onChangeSearch}
+            size="large"
+          />
           <Table
-            dataSource={organizations}
+            dataSource={filteredOrganizations}
             pagination={{ hideOnSinglePage: true }}
             size="small"
             tableLayout="fixed"
@@ -49,6 +76,7 @@ export const ProjectDiscoveryList: FC = () => {
             className="dewo-discovery-table"
             rowKey="id"
             onRow={(o) => ({ onClick: () => router.push(o.permalink) })}
+            showHeader={false}
             columns={[
               {
                 key: "organization",
@@ -96,18 +124,13 @@ export const ProjectDiscoveryList: FC = () => {
                     )}
                   </>
                 ),
-                showSorterTooltip: false,
-                sorter: (a: OrganizationRow, b: OrganizationRow) =>
-                  a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
               },
               ...(screens.sm
                 ? [
                     {
                       key: "contributors",
-                      title: "Contributors",
+
                       width: 140,
-                      sorter: (a: OrganizationRow, b: OrganizationRow) =>
-                        a.users.length - b.users.length,
                       render: (_: unknown, organization: OrganizationRow) => (
                         <Avatar.Group maxCount={5} size="small">
                           {organization.users.map((u) => (
