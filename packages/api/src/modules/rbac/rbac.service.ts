@@ -192,8 +192,16 @@ export class RbacService {
     userId: string | undefined
   ): Promise<AppAbility> {
     const builder = new AbilityBuilder<AppAbility>(AppAbility);
-
     const CRUD: Action[] = ["create", "read", "update", "delete"];
+    const taskFieldsAssigneesCanUpdate = [
+      "status",
+      "status[TODO]",
+      "status[IN_PROGRESS]",
+      "status[IN_REVIEW]",
+      "sectionId",
+      "sortKey",
+    ];
+
     for (const rule of rules) {
       const fn = rule.inverted ? builder.cannot : builder.can;
 
@@ -247,7 +255,12 @@ export class RbacService {
           break;
         case RulePermission.MANAGE_TASKS:
           if (!!rule.taskId) {
-            fn("update", Task, task);
+            fn(
+              "update",
+              Task,
+              [...taskFieldsAssigneesCanUpdate, "assigneeIds"],
+              task
+            );
           } else {
             fn("create", Task, task);
           }
@@ -288,19 +301,9 @@ export class RbacService {
         "__role__.fallback": true,
         userId,
       });
-      builder.can(
-        "update",
-        Task,
-        [
-          "status",
-          "status[TODO]",
-          "status[IN_PROGRESS]",
-          "status[IN_REVIEW]",
-          "sectionId",
-          "sortKey",
-        ],
-        { assignees: { $elemMatch: { id: userId } } }
-      );
+      builder.can("update", Task, taskFieldsAssigneesCanUpdate, {
+        assignees: { $elemMatch: { id: userId } },
+      });
       builder.can(["read", "update", "delete"], Task, {
         owners: { $elemMatch: { id: userId } },
       });
