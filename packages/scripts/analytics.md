@@ -136,3 +136,15 @@ INNER JOIN role ON role.id = rule."roleId"
 INNER JOIN organization ON organization.id = role."organizationId"
 WHERE rule."taskId" IS NOT NULL
 ```
+
+## Organizations using the old temp Discord bots
+```sql
+SELECT slug, organization_integration.config
+FROM organization
+INNER JOIN organization_integration ON organization_integration."organizationId" = organization.id
+WHERE organization_integration.type = 'DISCORD'
+  AND (
+  	organization_integration."config"->>'useTempDiscordBot' IS NOT NULL OR
+  	organization_integration."config"->>'useTempDiscordBot2' IS NOT NULL
+  )
+```

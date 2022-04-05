@@ -10,8 +10,9 @@ import {
   PaymentMethod,
   PaymentMethodType,
 } from "@dewo/api/models/PaymentMethod";
+import { ethers } from "ethers";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
-import { PaymentToken } from "@dewo/api/models/PaymentToken";
+import { PaymentToken, PaymentTokenType } from "@dewo/api/models/PaymentToken";
 import { User } from "@dewo/api/models/User";
 import { AtLeast } from "@dewo/api/types/general";
 import { Injectable } from "@nestjs/common";
@@ -144,7 +145,9 @@ export class PaymentService {
   public async createPaymentToken(
     partial: AtLeast<PaymentToken, "type" | "name" | "symbol" | "networkId">
   ): Promise<PaymentToken> {
-    const address = partial.address?.toLowerCase();
+    const address = !!partial.address
+      ? this.formatTokenAddress(partial.type, partial.address)
+      : undefined;
     const existing = await this.paymentTokenRepo.findOne({
       type: partial.type,
       networkId: partial.networkId,
@@ -168,5 +171,15 @@ export class PaymentService {
       where: query,
       order: { sortKey: "ASC" },
     });
+  }
+
+  private formatTokenAddress(type: PaymentTokenType, address: string): string {
+    switch (type) {
+      case PaymentTokenType.ERC20:
+      case PaymentTokenType.ERC1155:
+        return ethers.utils.getAddress(address);
+      default:
+        return address;
+    }
   }
 }

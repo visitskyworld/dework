@@ -41,7 +41,7 @@ describe("PaymentResolver", () => {
           app,
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
-            address: "0x123",
+            address: "0x1234567890123456789012345678901234567890",
             networkIds: [network.id],
             tokenIds: [token.id],
           }),
@@ -59,7 +59,7 @@ describe("PaymentResolver", () => {
           auth: fixtures.createAuthToken(user),
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
-            address: "0x123",
+            address: "0x1234567890123456789012345678901234567890",
             networkIds: [network.id],
             tokenIds: [token.id],
           }),
@@ -68,7 +68,9 @@ describe("PaymentResolver", () => {
         expect(response.statusCode).toEqual(HttpStatus.OK);
         const pm = response.body.data?.paymentMethod;
         expect(pm.type).toEqual(PaymentMethodType.METAMASK);
-        expect(pm.address).toEqual("0x123");
+        expect(pm.address).toEqual(
+          "0x1234567890123456789012345678901234567890"
+        );
         expect(pm.creatorId).toEqual(user.id);
       });
     });
@@ -79,7 +81,7 @@ describe("PaymentResolver", () => {
         const network = await fixtures.createPaymentNetwork();
         const input: CreatePaymentTokenInput = {
           type: PaymentTokenType.ERC20,
-          address: "0x123",
+          address: "0x1234567890123456789012345678901234567890",
           networkId: network.id,
           exp: faker.datatype.number({ min: 1, max: 10 }),
           name: faker.company.companyName(),
@@ -104,7 +106,9 @@ describe("PaymentResolver", () => {
       });
 
       it("should not override payment token data if already exists", async () => {
-        const token = await fixtures.createPaymentToken({ address: "0x321" });
+        const token = await fixtures.createPaymentToken({
+          address: "0x1234567890123456789012345678901234567890",
+        });
         const user = await fixtures.createUser();
 
         const input: CreatePaymentTokenInput = {
@@ -133,39 +137,59 @@ describe("PaymentResolver", () => {
         expect(updatedToken.symbol).toEqual(token.symbol);
       });
 
-      it("should not create a payment token with different casing", async () => {
-        const expectedAddress = "0xabcdef";
-        const addressVariant1 = "0xABCDEF";
-        const addressVariant2 = "0xAbCdEf";
-        const token = await fixtures.createPaymentToken({
-          address: addressVariant1,
+      it("should use correct casing for ERC20", async () => {
+        const networkId = await fixtures
+          .createPaymentNetwork()
+          .then((n) => n.id);
+
+        const address1 = "0x86e7598820f95A27C7d55CFD2253035C18a37DDE";
+        const address2 = address1.toLowerCase();
+        const address3 = "0x86E7598820F95A27C7D55CFD2253035C18A37DDE";
+
+        const token1 = await fixtures.createPaymentToken({
+          type: PaymentTokenType.ERC20,
+          address: address1,
+          networkId,
         });
-        const user = await fixtures.createUser();
-
-        const input: CreatePaymentTokenInput = {
-          type: token.type,
-          address: addressVariant2,
-          networkId: token.networkId,
-          exp: faker.datatype.number({ min: 1, max: 10 }),
-          name: token.name,
-          symbol: token.symbol,
-        };
-
-        const response = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: PaymentRequests.createPaymentToken(input),
+        const token2 = await fixtures.createPaymentToken({
+          type: PaymentTokenType.ERC20,
+          address: address2,
+          networkId,
+        });
+        const token3 = await fixtures.createPaymentToken({
+          type: PaymentTokenType.ERC20,
+          address: address3,
+          networkId,
         });
 
-        expect(response.statusCode).toEqual(HttpStatus.OK);
-        const updatedToken = response.body.data?.token;
-        expect(updatedToken.id).toEqual(token.id);
-        expect(updatedToken.type).toEqual(token.type);
-        expect(updatedToken.address).toEqual(expectedAddress);
-        expect(updatedToken.networkId).toEqual(token.networkId);
-        expect(updatedToken.exp).toEqual(token.exp);
-        expect(updatedToken.name).toEqual(token.name);
-        expect(updatedToken.symbol).toEqual(token.symbol);
+        expect(token1.address).toEqual(address1);
+        expect(token2.address).toEqual(address1);
+        expect(token3.address).toEqual(address1);
+        expect(token1.id).toEqual(token2.id);
+        expect(token1.id).toEqual(token3.id);
+      });
+
+      it("should not change casing for SPL_TOKEN", async () => {
+        const networkId = await fixtures
+          .createPaymentNetwork()
+          .then((n) => n.id);
+
+        const address1 = "F5SjYkNBNF29iKsLf5r665n58qRsw4PjEwtVTLBZzGh";
+        const address2 = address1.toLowerCase();
+
+        const token1 = await fixtures.createPaymentToken({
+          type: PaymentTokenType.SPL_TOKEN,
+          address: address1,
+          networkId,
+        });
+        const token2 = await fixtures.createPaymentToken({
+          type: PaymentTokenType.SPL_TOKEN,
+          address: address2,
+          networkId,
+        });
+
+        expect(token1.address).toEqual(address1);
+        expect(token2.address).toEqual(address2);
       });
     });
 
