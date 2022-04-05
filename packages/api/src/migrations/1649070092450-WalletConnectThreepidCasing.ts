@@ -38,5 +38,5 @@ export class WalletConnectThreepidCasing1649070092450
     }
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {}
 }

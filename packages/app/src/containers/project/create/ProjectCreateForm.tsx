@@ -31,7 +31,6 @@ import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
-import { ProjectSettingsContributorSuggestions } from "../settings/ProjectSettingsContributorSuggestions";
 import {
   useCreateRole,
   useCreateRule,
@@ -65,9 +64,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const { organization } = useOrganizationDetails(organizationId);
   const router = useRouter();
 
-  const [values, setValues] = useState<Partial<FormValues>>({
-    options: { showBacklogColumn: true },
-  });
+  const [values, setValues] = useState<Partial<FormValues>>({});
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: Partial<FormValues>) =>
       setValues(values),
@@ -115,7 +112,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           visibility: values.visibility,
           sectionId: values.sectionId,
           organizationId: values.organizationId,
-          options: values.options,
+          options: { showBacklogColumn: true },
         });
 
         const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
@@ -249,25 +246,24 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           </Row>
         </FormSection>
         <AdvancedSectionCollapse toggle={advancedSection}>
-          <ProjectSettingsContributorSuggestions />
+          {!!organization && (
+            <FormSection label="Discord Integration">
+              {hasDiscordIntegration ? (
+                <DiscordIntegrationFormFields
+                  values={values}
+                  channels={discordChannels.value}
+                  threads={discordThreads.value}
+                  onRefetchChannels={discordChannels.refetch}
+                />
+              ) : (
+                <ConnectOrganizationToDiscordButton
+                  organizationId={organization.id}
+                  type="ghost"
+                />
+              )}
+            </FormSection>
+          )}
         </AdvancedSectionCollapse>
-        {!!organization && advancedSection.isOn && (
-          <FormSection label="Discord Integration">
-            {hasDiscordIntegration ? (
-              <DiscordIntegrationFormFields
-                values={values}
-                channels={discordChannels.value}
-                threads={discordThreads.value}
-                onRefetchChannels={discordChannels.refetch}
-              />
-            ) : (
-              <ConnectOrganizationToDiscordButton
-                organizationId={organization.id}
-                type="ghost"
-              />
-            )}
-          </FormSection>
-        )}
         <Form.Item name="sectionId" hidden />
         <Form.Item name="organizationId" hidden rules={[{ required: true }]} />
         <Button
