@@ -6,9 +6,8 @@ export function getRule(
   context: { projectId?: string; taskId?: string } = {}
 ): Rule | undefined {
   return role.rules.find((r) => {
-    const matchesProject =
-      !context.projectId || r.projectId === context.projectId;
-    const matchesTask = !context.taskId || r.taskId === context.taskId;
+    const matchesProject = (r.projectId ?? undefined) === context.projectId;
+    const matchesTask = (r.taskId ?? undefined) === context.taskId;
     return (
       matchesProject &&
       matchesTask &&
