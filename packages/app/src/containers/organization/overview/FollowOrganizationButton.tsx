@@ -5,17 +5,29 @@ import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { useFollowOrganization } from "../../rbac/hooks";
+import {
+  useFollowOrganization,
+  useUnfollowOrganization,
+} from "../../rbac/hooks";
 
 interface Props {
+  showUnfollow?: boolean;
   organizationId: string;
 }
 
-export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
+export const FollowOrganizationButton: FC<Props> = ({
+  organizationId,
+  showUnfollow = false,
+}) => {
   const followOrganization = useFollowOrganization(organizationId);
   const [handleFollow, loadingFollow] = useRunningCallback(followOrganization, [
     followOrganization,
   ]);
+  const unfollowOrganization = useUnfollowOrganization(organizationId);
+  const [handleUnfollow, loadingUnfollow] = useRunningCallback(
+    unfollowOrganization,
+    [unfollowOrganization]
+  );
 
   const { user } = useAuthContext();
   const organization = useOrganization(organizationId);
@@ -44,6 +56,17 @@ export const FollowOrganizationButton: FC<Props> = ({ organizationId }) => {
         onClick={handleFollow}
       >
         Follow {organization?.name}
+      </Button>
+    );
+  } else if (showUnfollow) {
+    return (
+      <Button
+        type="ghost"
+        loading={loadingUnfollow}
+        icon={<Icons.MinusCircleOutlined />}
+        onClick={handleUnfollow}
+      >
+        Unfollow {organization?.name}
       </Button>
     );
   }
