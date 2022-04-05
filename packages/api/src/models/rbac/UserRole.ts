@@ -15,7 +15,7 @@ export class UserRole {
   public userId!: string;
 
   @JoinColumn()
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { onDelete: "CASCADE" })
   @Field(() => Role)
   public role!: Promise<Role>;
   @PrimaryColumn({ type: "uuid" })

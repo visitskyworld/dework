@@ -96,7 +96,8 @@ describe("DiscordRolesService", () => {
         expect(roles1).toEqual(roles2);
       });
 
-      it("should delete existing Discord roles", async () => {
+      it("should delete existing Discord roles (even if connected to user)", async () => {
+        const user = await fixtures.createUser();
         const roleConnectedWithDiscord = await fixtures.createRole({
           organizationId: organization.id,
           source: RoleSource.DISCORD,
@@ -105,6 +106,12 @@ describe("DiscordRolesService", () => {
         const customRole = await fixtures.createRole({
           organizationId: organization.id,
         });
+
+        await fixtures.addRoles(user.id, [
+          roleConnectedWithDiscord.id,
+          customRole.id,
+        ]);
+
         await service.syncOrganizationRoles(integration);
         const roles = await organization.roles;
 
