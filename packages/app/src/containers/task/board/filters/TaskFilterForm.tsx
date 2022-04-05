@@ -29,11 +29,25 @@ export const TaskFilterForm: FC<Props> = ({
   projects,
   organizationId,
 }) => {
-  const [form] = useForm<TaskFilter>();
+  const [form] = useForm<TaskFilterDto>();
   const { filter, onChange } = useTaskFilter();
+
+  interface TaskFilterDto extends Omit<TaskFilter, "taskLabels"> {
+    tagIds?: string[];
+  }
   const handleChange = useCallback(
-    (_changed: Partial<TaskFilter>, values: TaskFilter) => onChange(values),
-    [onChange]
+    (_changed: Partial<TaskFilterDto>, values: TaskFilterDto) =>
+      onChange({
+        ...values,
+        tagLabels: _.uniq(
+          _.compact(
+            values.tagIds?.map((id) =>
+              tags?.find((t) => t.id === id)?.label.toLowerCase()
+            )
+          )
+        ),
+      }),
+    [tags, onChange]
   );
   const resetFilter = useCallback(() => {
     onChange({});

@@ -40,7 +40,7 @@ const TaskFilterButton: FC<TaskFilterButtonProps> = ({
   const filterCount = useMemo(
     () =>
       _.sum([
-        filter.tagIds?.length,
+        filter.tagLabels?.length,
         filter.assigneeIds?.length,
         filter.ownerIds?.length,
         filter.projectIds?.length,
@@ -99,13 +99,21 @@ export const OrganizationTaskFilterButton: FC<{
   style?: CSSProperties;
 }> = ({ organizationId, style }) => {
   const { users } = useOrganizationUsers(organizationId);
-  const tags = useOrganizationTaskTags(organizationId);
   const { organization } = useOrganizationDetails(organizationId);
+  const tags = useOrganizationTaskTags(organizationId);
+  const tagsWithUniqueLabels = useMemo(
+    () =>
+      _.uniqBy(
+        tags.map((tag) => ({ ...tag, label: tag.label.toLowerCase() })),
+        (tag) => tag.label
+      ),
+    [tags]
+  );
   return (
     <TaskFilterButton
       style={style}
       users={users}
-      tags={tags}
+      tags={tagsWithUniqueLabels}
       projects={organization?.projects}
       organizationId={organizationId}
     />

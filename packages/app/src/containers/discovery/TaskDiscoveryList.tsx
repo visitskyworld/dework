@@ -31,13 +31,13 @@ interface FilterValues {
   includeOpenBounties: boolean;
   includeApplicationTasks: boolean;
   includeTasksWithoutReward: boolean;
-  tagIds: string[];
+  tagLabels: string[];
   sortBy: "createdAt" | "reward";
 }
 
 const defaultFilterValues: FilterValues = {
   sortBy: "createdAt",
-  tagIds: [],
+  tagLabels: [],
   includeOpenBounties: true,
   includeApplicationTasks: true,
   includeTasksWithoutReward: false,
@@ -59,7 +59,8 @@ const filterFn: Record<
   (filter: FilterValues) => (t: TaskWithOrganization) => boolean
 > = {
   tags: (f) => (task) =>
-    !f.tagIds.length || task.tags.some((t) => f.tagIds.includes(t.id)),
+    !f.tagLabels.length ||
+    task.tags.some((t) => f.tagLabels.includes(t.label.toLowerCase())),
   openBounties: (f) => (task) =>
     f.includeOpenBounties && !!task.options?.allowOpenSubmission,
   applicationTasks: (f) => (task) =>
@@ -98,11 +99,13 @@ export const TaskDiscoveryList: FC = () => {
   const filters = useToggle(true);
   const tags = useMemo(
     () =>
-      _(tasks)
-        .map((t) => t.tags)
-        .flatten()
-        .uniqBy((t) => t.id)
-        .value(),
+      _.uniqBy(
+        _.flatten(tasks?.map((t) => t.tags)).map((tag) => ({
+          ...tag,
+          label: tag.label.toLowerCase(),
+        })),
+        (t) => t.label
+      ),
     [tasks]
   );
   const filteredAndSortedTasks = useMemo(
@@ -207,7 +210,7 @@ export const TaskDiscoveryList: FC = () => {
                       </Checkbox>
                     </Form.Item> */}
                   </FormSection>
-                  <Form.Item label="Tags" name="tagIds">
+                  <Form.Item label="Tags" name="tagLabels">
                     <TagCloudInput tags={tags} />
                   </Form.Item>
                 </Form>

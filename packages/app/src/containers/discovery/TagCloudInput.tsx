@@ -11,22 +11,24 @@ interface Props {
 
 export const TagCloudInput: FC<Props> = ({
   tags,
-  value: selectedTagIds,
+  value: selectedTagLabels,
   onChange,
 }) => {
   const [selectedTags, unselectedTags] = useMemo(
-    () => _.partition(tags, (t) => !!selectedTagIds?.includes(t.id)),
-    [selectedTagIds, tags]
+    () => _.partition(tags, (t) => !!selectedTagLabels?.includes(t.label)),
+    [selectedTagLabels, tags]
   );
 
   const selectTag = useCallback(
-    (tagId: string) => onChange?.([...(selectedTagIds || []), tagId]),
-    [selectedTagIds, onChange]
+    (tagLabel: string) => onChange?.([...(selectedTagLabels || []), tagLabel]),
+    [selectedTagLabels, onChange]
   );
   const unselectTag = useCallback(
-    (tagId: string) =>
-      onChange?.((selectedTagIds || []).filter((id) => id !== tagId)),
-    [selectedTagIds, onChange]
+    (tagLabel: string) =>
+      onChange?.(
+        (selectedTagLabels || []).filter((label) => label !== tagLabel)
+      ),
+    [selectedTagLabels, onChange]
   );
 
   return (
@@ -40,7 +42,7 @@ export const TagCloudInput: FC<Props> = ({
                 color={tag.color}
                 className="hover:cursor-pointer"
                 closable
-                onClose={() => unselectTag(tag.id)}
+                onClose={() => unselectTag(tag.label)}
               >
                 {tag.label}
               </Tag>
@@ -58,7 +60,7 @@ export const TagCloudInput: FC<Props> = ({
             key={tag.id}
             color={tag.color}
             className="hover:cursor-pointer"
-            onClick={() => selectTag(tag.id)}
+            onClick={() => selectTag(tag.label)}
           >
             {tag.label}
           </Tag>

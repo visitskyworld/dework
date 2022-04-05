@@ -24,7 +24,7 @@ export enum TaskQuickFilter {
 }
 export interface TaskFilter {
   name?: string;
-  tagIds?: string[];
+  tagLabels?: string[];
   assigneeIds?: string[];
   ownerIds?: string[];
   statuses?: TaskStatus[];
@@ -71,8 +71,9 @@ function useDebounce<T>(value: T, delay: number): T {
 
 const matchingName = (name: string | undefined) => (t: Task) =>
   !name?.length || t.name.toLowerCase().includes(name.toLowerCase());
-const matchingTags = (ids: string[] | undefined) => (t: Task) =>
-  !ids?.length || t.tags.some((tag) => ids.includes(tag.id));
+const matchingTagLabels = (labels: string[] | undefined) => (t: Task) =>
+  !labels?.length ||
+  t.tags.some((tag) => labels.includes(tag.label.toLowerCase()));
 const matchingAssigneeIds = (ids: string[] | undefined) => (t: Task) =>
   !ids?.length || t.assignees.some((x) => ids.includes(x.id));
 const matchingOwnerIds = (ids: string[] | undefined) => (t: Task) =>
@@ -131,7 +132,7 @@ export function useFilteredTasks(
     () =>
       tasks
         .filter(matchingName(debouncedFilter.name))
-        .filter(matchingTags(debouncedFilter.tagIds))
+        .filter(matchingTagLabels(debouncedFilter.tagLabels))
         .filter(matchingAssigneeIds(debouncedFilter.assigneeIds))
         .filter(matchingOwnerIds(debouncedFilter.ownerIds))
         .filter(matchingStatuses(debouncedFilter.statuses))
