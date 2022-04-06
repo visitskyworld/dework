@@ -559,7 +559,8 @@ export class DiscordIntegrationService {
     await this.postTaskCard(
       channel,
       task,
-      `${assigneesString} assigned to the task`
+      `${assigneesString} assigned to the task`,
+      discordIds.filter((id): id is string => !!id)
     );
   }
 
