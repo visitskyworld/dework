@@ -5,10 +5,11 @@ import { useToggle, UseToggleHook } from "../util/hooks";
 
 interface Props {
   toggle?: UseToggleHook;
+  label: string;
   children: ReactNode;
 }
 
-export const AdvancedSectionCollapse: FC<Props> = ({ children, toggle }) => {
+export const MoreSectionCollapse: FC<Props> = ({ children, label, toggle }) => {
   const fallbackToggle = useToggle();
   const actualToggle = toggle ?? fallbackToggle;
   return (
@@ -20,7 +21,7 @@ export const AdvancedSectionCollapse: FC<Props> = ({ children, toggle }) => {
           className="text-secondary"
           onClick={actualToggle.toggle}
         >
-          Advanced
+          {label}
           {actualToggle.isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
         </Button>
       </Divider>

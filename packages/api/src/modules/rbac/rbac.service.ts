@@ -24,6 +24,7 @@ import { User } from "@dewo/api/models/User";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../app/config";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
+import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 
 export type Action =
   | "create"
@@ -255,12 +256,7 @@ export class RbacService {
           break;
         case RulePermission.MANAGE_TASKS:
           if (!!rule.taskId) {
-            fn(
-              "update",
-              Task,
-              [...taskFieldsAssigneesCanUpdate, "assigneeIds"],
-              task
-            );
+            fn("update", Task, ["assigneeIds", "gating"], task);
           } else {
             fn("create", Task, task);
           }
@@ -289,7 +285,7 @@ export class RbacService {
 
           fn("submit", Task, {
             ...task,
-            "options.allowOpenSubmission": true,
+            gating: TaskGatingType.OPEN_SUBMISSION,
           });
           break;
       }

@@ -1,4 +1,4 @@
-import { TaskGatingType } from "@dewo/api/models/TaskGatingDefault";
+import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 

@@ -66,7 +66,6 @@ import {
   GetOrganizationRolesQueryVariables,
   RulePermission,
   RoleWithRules,
-  TaskGatingType,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -217,15 +216,15 @@ export function useCreateTaskFromFormValues(): (
   const updateTaskRoles = useUpdateTaskRoles();
   const setTaskGatingDefault = useSetTaskGatingDefault();
   return useCallback(
-    async ({ subtasks, reward, gating, ...values }, projectId) => {
+    async (
+      { subtasks, reward, roleIds, defaultGating, ...values },
+      projectId
+    ) => {
       const task = await createTask({
         ...values,
         projectId,
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
-        options: {
-          allowOpenSubmission: gating?.type === TaskGatingType.OPEN_SUBMISSION,
-        },
       });
       if (values.status === TaskStatus.BACKLOG) {
         await createTaskReaction({
@@ -234,15 +233,15 @@ export function useCreateTaskFromFormValues(): (
         });
       }
 
-      if (!!gating?.roleIds) {
-        await updateTaskRoles(task, gating.roleIds);
+      if (!!roleIds) {
+        await updateTaskRoles(task, roleIds);
       }
 
-      if (gating?.default && gating?.type) {
+      if (defaultGating) {
         await setTaskGatingDefault({
           projectId,
-          type: gating.type,
-          roleIds: gating.roleIds ?? [],
+          type: values.gating,
+          roleIds: roleIds ?? [],
         });
       }
 
@@ -303,31 +302,17 @@ export function useUpdateTaskFromFormValues(
   const updateTask = useUpdateTask();
   const updateTaskRoles = useUpdateTaskRoles();
   return useCallback(
-    async ({ subtasks, gating, ...values }: TaskFormValues) => {
+    async ({ subtasks, roleIds, ...values }: TaskFormValues) => {
       const reward = !!values.reward
         ? toTaskReward(values.reward)
         : values.reward;
-      if (!!reward || !!gating?.type || !_.isEmpty(values)) {
+      if (!!reward || !_.isEmpty(values)) {
         const dueDate = values.dueDate?.toISOString();
-        await updateTask(
-          {
-            id: task!.id,
-            ...values,
-            reward,
-            dueDate,
-            options: !!gating?.type
-              ? {
-                  allowOpenSubmission:
-                    gating.type === TaskGatingType.OPEN_SUBMISSION,
-                }
-              : undefined,
-          },
-          task!
-        );
+        await updateTask({ id: task!.id, ...values, reward, dueDate }, task!);
       }
 
-      if (!!gating?.roleIds) {
-        await updateTaskRoles(task!, gating.roleIds);
+      if (!!roleIds) {
+        await updateTaskRoles(task!, roleIds);
       }
     },
     [updateTask, updateTaskRoles, task]

@@ -141,7 +141,7 @@ export const ReorderTaskSectionsModal: FC<Props> = ({
         Manage Sections
       </Typography.Title>
       <Typography.Paragraph type="secondary" style={{ textAlign: "center" }}>
-        Create, remove, reorder and remove task sections
+        Create, reorder and remove task sections
       </Typography.Paragraph>
 
       <Row align="middle" style={{ gap: 4, marginLeft: 12 }}>

@@ -1046,11 +1046,6 @@ export interface CreateTaskMutation_task_reactions {
   reaction: string;
 }
 
-export interface CreateTaskMutation_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskMutation_task_parentTask_subtasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1186,11 +1181,6 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reactions {
   reaction: string;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskMutation_task_parentTask_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1207,6 +1197,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskMutation_task_parentTask_subtasks_subtasks[];
   tags: CreateTaskMutation_task_parentTask_subtasks_tags[];
   assignees: CreateTaskMutation_task_parentTask_subtasks_assignees[];
@@ -1216,7 +1207,6 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   submissions: CreateTaskMutation_task_parentTask_subtasks_submissions[];
   review: CreateTaskMutation_task_parentTask_subtasks_review | null;
   reactions: CreateTaskMutation_task_parentTask_subtasks_reactions[];
-  options: CreateTaskMutation_task_parentTask_subtasks_options | null;
 }
 
 export interface CreateTaskMutation_task_parentTask {
@@ -1241,6 +1231,7 @@ export interface CreateTaskMutation_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskMutation_task_subtasks[];
   tags: CreateTaskMutation_task_tags[];
   assignees: CreateTaskMutation_task_assignees[];
@@ -1250,7 +1241,6 @@ export interface CreateTaskMutation_task {
   submissions: CreateTaskMutation_task_submissions[];
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
-  options: CreateTaskMutation_task_options | null;
   parentTask: CreateTaskMutation_task_parentTask | null;
 }
 
@@ -1406,11 +1396,6 @@ export interface UpdateTaskMutation_task_reactions {
   reaction: string;
 }
 
-export interface UpdateTaskMutation_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface UpdateTaskMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1427,6 +1412,7 @@ export interface UpdateTaskMutation_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: UpdateTaskMutation_task_subtasks[];
   tags: UpdateTaskMutation_task_tags[];
   assignees: UpdateTaskMutation_task_assignees[];
@@ -1436,7 +1422,6 @@ export interface UpdateTaskMutation_task {
   submissions: UpdateTaskMutation_task_submissions[];
   review: UpdateTaskMutation_task_review | null;
   reactions: UpdateTaskMutation_task_reactions[];
-  options: UpdateTaskMutation_task_options | null;
 }
 
 export interface UpdateTaskMutation {
@@ -1591,11 +1576,6 @@ export interface CreateTaskApplicationMutation_application_task_reactions {
   reaction: string;
 }
 
-export interface CreateTaskApplicationMutation_application_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskApplicationMutation_application_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1612,6 +1592,7 @@ export interface CreateTaskApplicationMutation_application_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
   tags: CreateTaskApplicationMutation_application_task_tags[];
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
@@ -1621,7 +1602,6 @@ export interface CreateTaskApplicationMutation_application_task {
   submissions: CreateTaskApplicationMutation_application_task_submissions[];
   review: CreateTaskApplicationMutation_application_task_review | null;
   reactions: CreateTaskApplicationMutation_application_task_reactions[];
-  options: CreateTaskApplicationMutation_application_task_options | null;
 }
 
 export interface CreateTaskApplicationMutation_application {
@@ -1782,11 +1762,6 @@ export interface DeleteTaskApplicationMutation_task_reactions {
   reaction: string;
 }
 
-export interface DeleteTaskApplicationMutation_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface DeleteTaskApplicationMutation_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1803,6 +1778,7 @@ export interface DeleteTaskApplicationMutation_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: DeleteTaskApplicationMutation_task_subtasks[];
   tags: DeleteTaskApplicationMutation_task_tags[];
   assignees: DeleteTaskApplicationMutation_task_assignees[];
@@ -1812,7 +1788,6 @@ export interface DeleteTaskApplicationMutation_task {
   submissions: DeleteTaskApplicationMutation_task_submissions[];
   review: DeleteTaskApplicationMutation_task_review | null;
   reactions: DeleteTaskApplicationMutation_task_reactions[];
-  options: DeleteTaskApplicationMutation_task_options | null;
 }
 
 export interface DeleteTaskApplicationMutation {
@@ -1967,11 +1942,6 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reaction
   reaction: string;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1988,6 +1958,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks[];
   tags: CreateTaskSubmissionMutation_createTaskSubmission_task_tags[];
   assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_assignees[];
@@ -1997,7 +1968,6 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   submissions: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions[];
   review: CreateTaskSubmissionMutation_createTaskSubmission_task_review | null;
   reactions: CreateTaskSubmissionMutation_createTaskSubmission_task_reactions[];
-  options: CreateTaskSubmissionMutation_createTaskSubmission_task_options | null;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission {
@@ -2158,11 +2128,6 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reaction
   reaction: string;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -2179,6 +2144,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks[];
   tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags[];
   assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees[];
@@ -2188,7 +2154,6 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   submissions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions[];
   review: UpdateTaskSubmissionMutation_updateTaskSubmission_task_review | null;
   reactions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reactions[];
-  options: UpdateTaskSubmissionMutation_updateTaskSubmission_task_options | null;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission {
@@ -3215,11 +3180,6 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reactions {
   reaction: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3236,6 +3196,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_subtasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
@@ -3245,7 +3206,6 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   submissions: CreateTaskPaymentsMutation_tasks_subtasks_submissions[];
   review: CreateTaskPaymentsMutation_tasks_subtasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_subtasks_reactions[];
-  options: CreateTaskPaymentsMutation_tasks_subtasks_options | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_tags {
@@ -3409,11 +3369,6 @@ export interface CreateTaskPaymentsMutation_tasks_reactions {
   reaction: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTaskPaymentsMutation_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -3554,6 +3509,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_tags[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
@@ -3563,7 +3519,6 @@ export interface CreateTaskPaymentsMutation_tasks {
   submissions: CreateTaskPaymentsMutation_tasks_submissions[];
   review: CreateTaskPaymentsMutation_tasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_reactions[];
-  options: CreateTaskPaymentsMutation_tasks_options | null;
   gitBranchName: string;
   permalink: string;
   project: CreateTaskPaymentsMutation_tasks_project;
@@ -3765,11 +3720,6 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reactions {
   reaction: string;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3786,6 +3736,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
   tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
@@ -3795,7 +3746,6 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   submissions: CreateTasksFromGithubIssuesMutation_project_tasks_submissions[];
   review: CreateTasksFromGithubIssuesMutation_project_tasks_review | null;
   reactions: CreateTasksFromGithubIssuesMutation_project_tasks_reactions[];
-  options: CreateTasksFromGithubIssuesMutation_project_tasks_options | null;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project {
@@ -4762,11 +4712,6 @@ export interface UserTasksQuery_user_tasks_reactions {
   reaction: string;
 }
 
-export interface UserTasksQuery_user_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface UserTasksQuery_user_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4807,6 +4752,7 @@ export interface UserTasksQuery_user_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: UserTasksQuery_user_tasks_subtasks[];
   tags: UserTasksQuery_user_tasks_tags[];
   assignees: UserTasksQuery_user_tasks_assignees[];
@@ -4816,7 +4762,6 @@ export interface UserTasksQuery_user_tasks {
   submissions: UserTasksQuery_user_tasks_submissions[];
   review: UserTasksQuery_user_tasks_review | null;
   reactions: UserTasksQuery_user_tasks_reactions[];
-  options: UserTasksQuery_user_tasks_options | null;
   project: UserTasksQuery_user_tasks_project;
 }
 
@@ -5409,11 +5354,6 @@ export interface GetOrganizationTasksQuery_organization_tasks_reactions {
   reaction: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetOrganizationTasksQuery_organization_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5430,6 +5370,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
@@ -5439,7 +5380,6 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   submissions: GetOrganizationTasksQuery_organization_tasks_submissions[];
   review: GetOrganizationTasksQuery_organization_tasks_review | null;
   reactions: GetOrganizationTasksQuery_organization_tasks_reactions[];
-  options: GetOrganizationTasksQuery_organization_tasks_options | null;
 }
 
 export interface GetOrganizationTasksQuery_organization {
@@ -5790,11 +5730,6 @@ export interface GetProjectTasksQuery_project_tasks_reactions {
   reaction: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetProjectTasksQuery_project_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -5811,6 +5746,7 @@ export interface GetProjectTasksQuery_project_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
   tags: GetProjectTasksQuery_project_tasks_tags[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
@@ -5820,7 +5756,6 @@ export interface GetProjectTasksQuery_project_tasks {
   submissions: GetProjectTasksQuery_project_tasks_submissions[];
   review: GetProjectTasksQuery_project_tasks_review | null;
   reactions: GetProjectTasksQuery_project_tasks_reactions[];
-  options: GetProjectTasksQuery_project_tasks_options | null;
 }
 
 export interface GetProjectTasksQuery_project {
@@ -6014,11 +5949,6 @@ export interface GetTaskQuery_task_subtasks_reactions {
   reaction: string;
 }
 
-export interface GetTaskQuery_task_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetTaskQuery_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -6035,6 +5965,7 @@ export interface GetTaskQuery_task_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetTaskQuery_task_subtasks_subtasks[];
   tags: GetTaskQuery_task_subtasks_tags[];
   assignees: GetTaskQuery_task_subtasks_assignees[];
@@ -6044,7 +5975,6 @@ export interface GetTaskQuery_task_subtasks {
   submissions: GetTaskQuery_task_subtasks_submissions[];
   review: GetTaskQuery_task_subtasks_review | null;
   reactions: GetTaskQuery_task_subtasks_reactions[];
-  options: GetTaskQuery_task_subtasks_options | null;
 }
 
 export interface GetTaskQuery_task_tags {
@@ -6208,11 +6138,6 @@ export interface GetTaskQuery_task_reactions {
   reaction: string;
 }
 
-export interface GetTaskQuery_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetTaskQuery_task_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -6364,6 +6289,7 @@ export interface GetTaskQuery_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetTaskQuery_task_subtasks[];
   tags: GetTaskQuery_task_tags[];
   assignees: GetTaskQuery_task_assignees[];
@@ -6373,7 +6299,6 @@ export interface GetTaskQuery_task {
   submissions: GetTaskQuery_task_submissions[];
   review: GetTaskQuery_task_review | null;
   reactions: GetTaskQuery_task_reactions[];
-  options: GetTaskQuery_task_options | null;
   gitBranchName: string;
   permalink: string;
   project: GetTaskQuery_task_project;
@@ -6575,11 +6500,6 @@ export interface GetTasksQuery_tasks_reactions {
   reaction: string;
 }
 
-export interface GetTasksQuery_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetTasksQuery_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -6620,6 +6540,7 @@ export interface GetTasksQuery_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetTasksQuery_tasks_subtasks[];
   tags: GetTasksQuery_tasks_tags[];
   assignees: GetTasksQuery_tasks_assignees[];
@@ -6629,7 +6550,6 @@ export interface GetTasksQuery_tasks {
   submissions: GetTasksQuery_tasks_submissions[];
   review: GetTasksQuery_tasks_review | null;
   reactions: GetTasksQuery_tasks_reactions[];
-  options: GetTasksQuery_tasks_options | null;
   project: GetTasksQuery_tasks_project;
 }
 
@@ -6792,11 +6712,6 @@ export interface GetTasksToPayQuery_tasks_reactions {
   reaction: string;
 }
 
-export interface GetTasksToPayQuery_tasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface GetTasksToPayQuery_tasks_project_paymentMethods_networks {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -6852,6 +6767,7 @@ export interface GetTasksToPayQuery_tasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: GetTasksToPayQuery_tasks_subtasks[];
   tags: GetTasksToPayQuery_tasks_tags[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
@@ -6861,7 +6777,6 @@ export interface GetTasksToPayQuery_tasks {
   submissions: GetTasksToPayQuery_tasks_submissions[];
   review: GetTasksToPayQuery_tasks_review | null;
   reactions: GetTasksToPayQuery_tasks_reactions[];
-  options: GetTasksToPayQuery_tasks_options | null;
   project: GetTasksToPayQuery_tasks_project;
 }
 
@@ -7370,11 +7285,6 @@ export interface TaskCreatedSubscription_task_subtasks_reactions {
   reaction: string;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskCreatedSubscription_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7391,6 +7301,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
   tags: TaskCreatedSubscription_task_subtasks_tags[];
   assignees: TaskCreatedSubscription_task_subtasks_assignees[];
@@ -7400,7 +7311,6 @@ export interface TaskCreatedSubscription_task_subtasks {
   submissions: TaskCreatedSubscription_task_subtasks_submissions[];
   review: TaskCreatedSubscription_task_subtasks_review | null;
   reactions: TaskCreatedSubscription_task_subtasks_reactions[];
-  options: TaskCreatedSubscription_task_subtasks_options | null;
 }
 
 export interface TaskCreatedSubscription_task_tags {
@@ -7564,11 +7474,6 @@ export interface TaskCreatedSubscription_task_reactions {
   reaction: string;
 }
 
-export interface TaskCreatedSubscription_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskCreatedSubscription_task_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -7709,6 +7614,7 @@ export interface TaskCreatedSubscription_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskCreatedSubscription_task_subtasks[];
   tags: TaskCreatedSubscription_task_tags[];
   assignees: TaskCreatedSubscription_task_assignees[];
@@ -7718,7 +7624,6 @@ export interface TaskCreatedSubscription_task {
   submissions: TaskCreatedSubscription_task_submissions[];
   review: TaskCreatedSubscription_task_review | null;
   reactions: TaskCreatedSubscription_task_reactions[];
-  options: TaskCreatedSubscription_task_options | null;
   gitBranchName: string;
   permalink: string;
   project: TaskCreatedSubscription_task_project;
@@ -7877,11 +7782,6 @@ export interface TaskUpdatedSubscription_task_subtasks_reactions {
   reaction: string;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskUpdatedSubscription_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7898,6 +7798,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
   tags: TaskUpdatedSubscription_task_subtasks_tags[];
   assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
@@ -7907,7 +7808,6 @@ export interface TaskUpdatedSubscription_task_subtasks {
   submissions: TaskUpdatedSubscription_task_subtasks_submissions[];
   review: TaskUpdatedSubscription_task_subtasks_review | null;
   reactions: TaskUpdatedSubscription_task_subtasks_reactions[];
-  options: TaskUpdatedSubscription_task_subtasks_options | null;
 }
 
 export interface TaskUpdatedSubscription_task_tags {
@@ -8071,11 +7971,6 @@ export interface TaskUpdatedSubscription_task_reactions {
   reaction: string;
 }
 
-export interface TaskUpdatedSubscription_task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskUpdatedSubscription_task_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -8216,6 +8111,7 @@ export interface TaskUpdatedSubscription_task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskUpdatedSubscription_task_subtasks[];
   tags: TaskUpdatedSubscription_task_tags[];
   assignees: TaskUpdatedSubscription_task_assignees[];
@@ -8225,7 +8121,6 @@ export interface TaskUpdatedSubscription_task {
   submissions: TaskUpdatedSubscription_task_submissions[];
   review: TaskUpdatedSubscription_task_review | null;
   reactions: TaskUpdatedSubscription_task_reactions[];
-  options: TaskUpdatedSubscription_task_options | null;
   gitBranchName: string;
   permalink: string;
   project: TaskUpdatedSubscription_task_project;
@@ -9435,11 +9330,6 @@ export interface Task_reactions {
   reaction: string;
 }
 
-export interface Task_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface Task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -9456,6 +9346,7 @@ export interface Task {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: Task_subtasks[];
   tags: Task_tags[];
   assignees: Task_assignees[];
@@ -9465,7 +9356,6 @@ export interface Task {
   submissions: Task_submissions[];
   review: Task_review | null;
   reactions: Task_reactions[];
-  options: Task_options | null;
 }
 
 /* tslint:disable */
@@ -9612,11 +9502,6 @@ export interface TaskWithOrganization_reactions {
   reaction: string;
 }
 
-export interface TaskWithOrganization_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskWithOrganization_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -9657,6 +9542,7 @@ export interface TaskWithOrganization {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskWithOrganization_subtasks[];
   tags: TaskWithOrganization_tags[];
   assignees: TaskWithOrganization_assignees[];
@@ -9666,7 +9552,6 @@ export interface TaskWithOrganization {
   submissions: TaskWithOrganization_submissions[];
   review: TaskWithOrganization_review | null;
   reactions: TaskWithOrganization_reactions[];
-  options: TaskWithOrganization_options | null;
   project: TaskWithOrganization_project;
 }
 
@@ -9885,11 +9770,6 @@ export interface TaskDetails_subtasks_reactions {
   reaction: string;
 }
 
-export interface TaskDetails_subtasks_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskDetails_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -9906,6 +9786,7 @@ export interface TaskDetails_subtasks {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskDetails_subtasks_subtasks[];
   tags: TaskDetails_subtasks_tags[];
   assignees: TaskDetails_subtasks_assignees[];
@@ -9915,7 +9796,6 @@ export interface TaskDetails_subtasks {
   submissions: TaskDetails_subtasks_submissions[];
   review: TaskDetails_subtasks_review | null;
   reactions: TaskDetails_subtasks_reactions[];
-  options: TaskDetails_subtasks_options | null;
 }
 
 export interface TaskDetails_tags {
@@ -10079,11 +9959,6 @@ export interface TaskDetails_reactions {
   reaction: string;
 }
 
-export interface TaskDetails_options {
-  __typename: "TaskOptions";
-  allowOpenSubmission: boolean | null;
-}
-
 export interface TaskDetails_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -10224,6 +10099,7 @@ export interface TaskDetails {
   parentTaskId: string | null;
   sectionId: string | null;
   number: number;
+  gating: TaskGatingType;
   subtasks: TaskDetails_subtasks[];
   tags: TaskDetails_tags[];
   assignees: TaskDetails_assignees[];
@@ -10233,7 +10109,6 @@ export interface TaskDetails {
   submissions: TaskDetails_submissions[];
   review: TaskDetails_review | null;
   reactions: TaskDetails_reactions[];
-  options: TaskDetails_options | null;
   gitBranchName: string;
   permalink: string;
   project: TaskDetails_project;
@@ -10581,6 +10456,7 @@ export enum RulePermission {
 
 export enum TaskGatingType {
   APPLICATION = "APPLICATION",
+  ASSIGNEES = "ASSIGNEES",
   OPEN_SUBMISSION = "OPEN_SUBMISSION",
   ROLES = "ROLES",
 }
@@ -10652,7 +10528,6 @@ export interface CreatePaymentMethodInput {
   networkIds: Scalar.UUID[];
   tokenIds?: Scalar.UUID[] | null;
   projectId?: Scalar.UUID | null;
-  userId?: Scalar.UUID | null;
 }
 
 export interface CreatePaymentTokenInput {
@@ -10742,9 +10617,9 @@ export interface CreateTaskInput {
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;
   status: TaskStatus;
+  gating?: TaskGatingType | null;
   reward?: UpdateTaskRewardInput | null;
   dueDate?: Scalar.DateTime | null;
-  options?: TaskOptionsInput | null;
 }
 
 export interface CreateTaskPaymentsInput {
@@ -10830,10 +10705,6 @@ export interface TaskGatingDefaultInput {
   roleIds?: Scalar.UUID[] | null;
 }
 
-export interface TaskOptionsInput {
-  allowOpenSubmission?: boolean | null;
-}
-
 export interface TaskReactionInput {
   reaction: string;
   taskId: Scalar.UUID;
@@ -10892,10 +10763,10 @@ export interface UpdateTaskInput {
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;
   status?: TaskStatus | null;
+  gating?: TaskGatingType | null;
   reward?: UpdateTaskRewardInput | null;
   review?: UpdateTaskReviewInput | null;
   dueDate?: Scalar.DateTime | null;
-  options?: TaskOptionsInput | null;
 }
 
 export interface UpdateTaskReviewInput {

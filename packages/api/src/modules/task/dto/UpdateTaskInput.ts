@@ -1,8 +1,9 @@
-import { TaskOptions, TaskStatus } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { Field, InputType, Int } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import { UpdateTaskRewardInput } from "./UpdateTaskRewardInput";
 import { UpdateTaskReviewInput } from "./UpdateTaskReviewInput";
+import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 
 @InputType()
 export class UpdateTaskInput {
@@ -46,6 +47,9 @@ export class UpdateTaskInput {
   @Field(() => TaskStatus, { nullable: true })
   public status?: TaskStatus;
 
+  @Field(() => TaskGatingType, { nullable: true })
+  public gating?: TaskGatingType;
+
   @Field(() => UpdateTaskRewardInput, { nullable: true })
   public reward?: UpdateTaskRewardInput;
 
@@ -54,7 +58,4 @@ export class UpdateTaskInput {
 
   @Field({ nullable: true })
   public dueDate?: Date;
-
-  @Field(() => TaskOptions, { nullable: true })
-  public options?: TaskOptions;
 }

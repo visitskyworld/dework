@@ -9,6 +9,12 @@ import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { AtLeast } from "@dewo/app/types/general";
 import { TaskFormValues } from "./form/types";
 
+const buildKey = (initialValues: Partial<TaskFormValues>) =>
+  `TaskCreateModal.storedValues(${JSON.stringify(
+    initialValues,
+    Object.keys(initialValues).sort()
+  )})`;
+
 interface TaskCreateModalProps {
   visible: boolean;
   projectId: string;
@@ -26,26 +32,47 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
 }) => {
   const { user } = useAuthContext();
 
+  const storedValuesKey = useMemo(
+    () => buildKey(initialValues),
+    [initialValues]
+  );
+  const storedValues = useMemo(() => {
+    try {
+      const storedValuesString = localStorage.getItem(storedValuesKey);
+      if (!storedValuesString) return undefined;
+      return JSON.parse(storedValuesString);
+    } catch {
+      return undefined;
+    }
+  }, [storedValuesKey]);
+  const clearStoredValues = useCallback(() => {
+    localStorage.removeItem(storedValuesKey);
+  }, [storedValuesKey]);
+  const setStoredValues = useCallback(
+    (values: Partial<TaskFormValues>) => {
+      localStorage.setItem(storedValuesKey, JSON.stringify(values));
+    },
+    [storedValuesKey]
+  );
+
   const canCreateTaskOwner = usePermission("create", {
     __typename: "Task",
     projectId,
     status: initialValues.status,
     owners: !!user ? [user] : [],
   });
-  const extendedInitialValues = useMemo<Partial<TaskFormValues>>(
-    () => ({
+  const extendedInitialValues = useMemo<Partial<TaskFormValues>>(() => {
+    const taskGatingDefault = user?.taskGatingDefaults.find(
+      (d) => d.projectId === projectId
+    );
+    return {
       ownerIds: canCreateTaskOwner && !!user ? [user.id] : [],
       ...initialValues,
-      gating: (() => {
-        const d = user?.taskGatingDefaults.find(
-          (d) => d.projectId === projectId
-        );
-        if (!d) return undefined;
-        return { type: d.type, roleIds: d.roles.map((r) => r.id) };
-      })(),
-    }),
-    [initialValues, projectId, canCreateTaskOwner, user]
-  );
+      gating: taskGatingDefault?.type,
+      roleIds: taskGatingDefault?.roles.map((r) => r.id),
+      ...storedValues,
+    };
+  }, [initialValues, storedValues, projectId, canCreateTaskOwner, user]);
 
   const createTask = useCreateTaskFromFormValues();
   const openTask = useNavigateToTaskFn();
@@ -65,12 +92,13 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
           </>
         ),
       });
+
+      clearStoredValues();
     },
-    [createTask, onDone, projectId, openTask]
+    [createTask, onDone, projectId, openTask, clearStoredValues]
   );
   return (
     <Modal
-      title="Create Task"
       visible={visible}
       destroyOnClose
       maskClosable={false}
@@ -83,6 +111,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
         projectId={projectId}
         initialValues={extendedInitialValues}
         buttonText="Create"
+        onChange={setStoredValues}
         onSubmit={handleSubmit}
       />
     </Modal>

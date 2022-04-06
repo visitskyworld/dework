@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import Link from "next/link";
@@ -30,7 +30,7 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
   }
 
   if (task.status === TaskStatus.TODO) {
-    if (task.options?.allowOpenSubmission) {
+    if (task.gating === TaskGatingType.OPEN_SUBMISSION) {
       return <CreateSubmissionAvatar size={20} />;
     }
 
@@ -38,7 +38,9 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
       return <ClaimTaskAvatar size={20} />;
     }
 
-    return <ApplyToTaskAvatar size={20} />;
+    if (task.gating === TaskGatingType.APPLICATION) {
+      return <ApplyToTaskAvatar size={20} />;
+    }
   }
 
   return null;

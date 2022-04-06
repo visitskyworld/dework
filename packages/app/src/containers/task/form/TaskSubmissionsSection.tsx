@@ -2,7 +2,7 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { TaskDetails } from "@dewo/app/graphql/types";
+import { TaskDetails, TaskGatingType } from "@dewo/app/graphql/types";
 import { Card, Divider, List, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
@@ -65,7 +65,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const components = [
     canManageSubmissions &&
       !task.submissions.length &&
-      task.options?.allowOpenSubmission && (
+      task.gating === TaskGatingType.OPEN_SUBMISSION && (
         <Typography.Paragraph type="secondary">
           No submissions yet
         </Typography.Paragraph>

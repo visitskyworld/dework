@@ -4,6 +4,7 @@ import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRouter } from "next/router";
 import { Constants } from "@dewo/app/util/constants";
+import * as qs from "query-string";
 
 interface Props extends ButtonProps {
   organizationId: string;
@@ -22,7 +23,11 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
     <Button
       {...buttonProps}
       icon={icon}
-      href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?organizationId=${organizationId}&userId=${user?.id}&redirect=${router.asPath}`}
+      href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?${qs.stringify({
+        organizationId,
+        userId: user?.id,
+        redirect: router.asPath,
+      })}`}
     >
       {children}
     </Button>

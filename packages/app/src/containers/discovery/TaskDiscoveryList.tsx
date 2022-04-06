@@ -1,5 +1,6 @@
 import {
   GetTasksInput,
+  TaskGatingType,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
@@ -62,9 +63,9 @@ const filterFn: Record<
     !f.tagLabels.length ||
     task.tags.some((t) => f.tagLabels.includes(t.label.toLowerCase())),
   openBounties: (f) => (task) =>
-    f.includeOpenBounties && !!task.options?.allowOpenSubmission,
+    f.includeOpenBounties && task.gating === TaskGatingType.OPEN_SUBMISSION,
   applicationTasks: (f) => (task) =>
-    f.includeApplicationTasks && !task.options?.allowOpenSubmission,
+    f.includeApplicationTasks && task.gating !== TaskGatingType.OPEN_SUBMISSION,
 };
 
 export const TaskDiscoveryList: FC = () => {

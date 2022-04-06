@@ -43,6 +43,7 @@ import {
 import { TaskProjectRow } from "./TaskProjectRow";
 import { TaskGatingFields } from "./gating/TaskGatingFields";
 import { TaskFormValues } from "./types";
+import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -53,6 +54,7 @@ interface TaskFormProps {
   assignees?: User[];
   showProjectLink?: boolean;
   onSubmit(values: TaskFormValues): unknown;
+  onChange?(values: Partial<TaskFormValues>): unknown;
 }
 
 export const TaskForm: FC<TaskFormProps> = ({
@@ -62,6 +64,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   buttonText,
   initialValues,
   showProjectLink,
+  onChange,
   onSubmit,
 }) => {
   const screens = useBreakpoint();
@@ -86,10 +89,6 @@ export const TaskForm: FC<TaskFormProps> = ({
   const ownerOptions = useTaskFormUserOptions(
     projectId,
     useMemo(() => task?.owners ?? [], [task?.owners])
-  );
-  const assigneeOptions = useTaskFormUserOptions(
-    projectId,
-    useMemo(() => task?.assignees ?? [], [task?.assignees])
   );
 
   const tags = useProjectTaskTags(projectId);
@@ -119,12 +118,13 @@ export const TaskForm: FC<TaskFormProps> = ({
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
       form.setFieldsValue(values);
       setValues(values);
+      onChange?.(values);
 
       if (mode === "update") {
         debouncedSubmit(changed as TaskFormValues);
       }
     },
-    [form, mode, debouncedSubmit]
+    [form, mode, debouncedSubmit, onChange]
   );
 
   const showTaskRewardFirst = !useCanUpdateTaskReward(task);
@@ -165,8 +165,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <Form.Item
             name="name"
-            noStyle
-            // label={mode === "create" ? "Task name" : undefined}
+            style={{ margin: 0 }}
             rules={[{ required: true, message: "Please enter a name" }]}
           >
             <Input.TextArea
@@ -200,6 +199,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
+
           <Form.Item name="description" className="mb-3">
             <MarkdownEditor
               initialValue={initialValues?.description ?? undefined}
@@ -291,18 +291,13 @@ export const TaskForm: FC<TaskFormProps> = ({
             tags={tags}
           />
 
-          <Form.Item
-            name="assigneeIds"
-            label="Assignees"
-            rules={[{ type: "array" }]}
-          >
-            <UserSelect
-              placeholder="No task assignee..."
-              disabled={!canChange("assigneeIds")}
-              mode="multiple"
-              users={assigneeOptions}
-            />
-          </Form.Item>
+          <TaskGatingFields
+            mode={mode}
+            task={task}
+            values={values}
+            projectId={projectId}
+            disabled={!canChange("ownerIds")}
+          />
           <Form.Item name="ownerIds" label="Reviewers">
             <UserSelect
               placeholder="No task reviewer..."
@@ -312,26 +307,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           </Form.Item>
 
-          {(canChange("dueDate") || !!values.dueDate) && (
-            <Form.Item name="dueDate" label="Due Date">
-              <DatePicker
-                format="LL"
-                disabled={!canChange("dueDate")}
-                style={{ width: "100%" }}
-              />
-            </Form.Item>
-          )}
-
-          {(canChange("storyPoints") || !!values.storyPoints) && (
-            <Form.Item
-              name="storyPoints"
-              label="Task Points"
-              tooltip="Developers often call this 'storypoints'. Use this to estimate the size of the task in hours. Can be used very flexibly, e.g for time accounting and more."
-            >
-              <StoryPointsInput disabled={!canChange("storyPoints")} />
-            </Form.Item>
-          )}
-
           {!showTaskRewardFirst && (
             <TaskRewardSection
               projectId={projectId}
@@ -340,15 +315,44 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           )}
 
-          <TaskGatingFields
-            gating={values.gating}
-            projectId={projectId}
-            disabled={!canChange("ownerIds")}
-            canSetDefault={mode === "create"}
-          />
+          {!canChange("dueDate") && !!values.dueDate && (
+            <Form.Item name="dueDate" label="Due Date">
+              <DatePicker format="LL" disabled style={{ width: "100%" }} />
+            </Form.Item>
+          )}
+
+          {!canChange("storyPoints") && !!values.storyPoints && (
+            <Form.Item
+              name="storyPoints"
+              label="Task Points"
+              tooltip="Developers often call this 'storypoints'. Use this to estimate the size of the task in hours. Can be used very flexibly, e.g for time accounting and more."
+            >
+              <StoryPointsInput disabled />
+            </Form.Item>
+          )}
 
           {!!task && showProjectLink && (
             <TaskProjectRow project={task.project} />
+          )}
+
+          {(canChange("dueDate") || canChange("storyPoints")) && (
+            <MoreSectionCollapse label="More">
+              {canChange("dueDate") && (
+                <Form.Item name="dueDate" label="Due Date">
+                  <DatePicker format="LL" style={{ width: "100%" }} />
+                </Form.Item>
+              )}
+
+              {canChange("storyPoints") && (
+                <Form.Item
+                  name="storyPoints"
+                  label="Task Points"
+                  tooltip="Developers often call this 'storypoints'. Use this to estimate the size of the task in hours. Can be used very flexibly, e.g for time accounting and more."
+                >
+                  <StoryPointsInput />
+                </Form.Item>
+              )}
+            </MoreSectionCollapse>
           )}
         </Col>
       </Row>

@@ -42,3 +42,4 @@ jobs:
           image: gcr.io/dework-prod/app:latest
           service: app
           region: us-east1
+          project_id: dework-prod

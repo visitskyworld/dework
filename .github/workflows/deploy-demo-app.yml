@@ -1,10 +1,5 @@
-name: Deploy API
-on:
-  push:
-    branches:
-      - "!*"
-    tags:
-      - "v*"
+name: Deploy App (demo)
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,9 +21,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: gcr.io/dework-prod/api:latest
-          file: ./packages/api/Dockerfile
-          cache-from: type=registry,ref=gcr.io/dework-prod/api:latest
+          tags: gcr.io/dework-demo/app:latest
+          file: ./packages/app/Dockerfile
+          cache-from: type=registry,ref=gcr.io/dework-demo/app:latest
           cache-to: type=inline
 
       - name: Login to GCP
@@ -36,18 +31,10 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCR_JSON_KEY }}
 
-      - name: Deploy API to Cloud Run
+      - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v0
         with:
-          image: gcr.io/dework-prod/api:latest
-          service: api
+          image: gcr.io/dework-demo/app:latest
+          service: app
           region: us-east1
-          project_id: dework-prod
-
-      - name: Deploy Polling Runner to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v0
-        with:
-          image: gcr.io/dework-prod/api:latest
-          service: polling-runner
-          region: us-east1
-          project_id: dework-prod
+          project_id: dework-demo

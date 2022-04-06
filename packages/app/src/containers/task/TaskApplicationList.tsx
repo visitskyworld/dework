@@ -3,6 +3,7 @@ import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import {
   TaskApplication,
   TaskDetails,
+  TaskGatingType,
   TaskStatus,
 } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip, Divider } from "antd";
@@ -30,6 +31,7 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
             id: task.id,
             assigneeIds: [application.user.id],
             status: TaskStatus.IN_PROGRESS,
+            gating: TaskGatingType.ASSIGNEES,
             dueDate: application.endDate,
           },
           task

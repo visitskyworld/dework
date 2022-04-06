@@ -30,13 +30,13 @@ import { FormValues as GithubFormFields } from "../../integrations/CreateGithubI
 import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
-import { AdvancedSectionCollapse } from "@dewo/app/components/AdvancedSectionCollapse";
 import {
   useCreateRole,
   useCreateRule,
   useOrganizationRoles,
 } from "../../rbac/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 
 export interface FormValues
   extends CreateProjectInput,
@@ -245,7 +245,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             </Form.Item>
           </Row>
         </FormSection>
-        <AdvancedSectionCollapse toggle={advancedSection}>
+        <MoreSectionCollapse label="Advanced" toggle={advancedSection}>
           {!!organization && (
             <FormSection label="Discord Integration">
               {hasDiscordIntegration ? (
@@ -263,7 +263,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
               )}
             </FormSection>
           )}
-        </AdvancedSectionCollapse>
+        </MoreSectionCollapse>
         <Form.Item name="sectionId" hidden />
         <Form.Item name="organizationId" hidden rules={[{ required: true }]} />
         <Button

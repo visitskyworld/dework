@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Task } from "@dewo/app/graphql/types";
+import { Task, TaskGatingType } from "@dewo/app/graphql/types";
 import { Button, ButtonProps } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -16,7 +16,11 @@ export const ClaimTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
   const [claimTask, claimingTask] = useRunningCallback(
     () =>
       !!currentUserId &&
-      updateTask({ id: task.id, assigneeIds: [currentUserId] }),
+      updateTask({
+        id: task.id,
+        assigneeIds: [currentUserId],
+        gating: TaskGatingType.ASSIGNEES,
+      }),
     [currentUserId, updateTask, task.id]
   );
 

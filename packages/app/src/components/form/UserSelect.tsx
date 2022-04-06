@@ -10,6 +10,7 @@ interface Props {
   disabled?: boolean;
   value?: string[];
   onChange?(value: string[]): void;
+  onClear?(): void;
 }
 
 export const UserSelect: FC<Props> = ({
@@ -19,6 +20,7 @@ export const UserSelect: FC<Props> = ({
   disabled,
   value,
   onChange,
+  onClear,
 }) => {
   return (
     <Select
@@ -32,6 +34,7 @@ export const UserSelect: FC<Props> = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      onClear={onClear}
       tagRender={(props) => {
         const user = users?.find((u) => u.id === props.value);
         if (!user) return <div />;

@@ -1,5 +1,9 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import { TaskReward, TaskWithOrganization } from "@dewo/app/graphql/types";
+import {
+  TaskGatingType,
+  TaskReward,
+  TaskWithOrganization,
+} from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Table, Typography } from "antd";
@@ -97,7 +101,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
               )}
               {!screens.sm && (
                 <div onClick={stopPropagation}>
-                  {task.options?.allowOpenSubmission ? (
+                  {task.gating === TaskGatingType.OPEN_SUBMISSION ? (
                     <CreateSubmissionButton
                       task={task}
                       size="small"
@@ -152,7 +156,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                 render: (_: unknown, task: TaskWithOrganization) =>
                   screens.sm && (
                     <div onClick={stopPropagation}>
-                      {task.options?.allowOpenSubmission ? (
+                      {task.gating === TaskGatingType.OPEN_SUBMISSION ? (
                         <CreateSubmissionButton
                           task={task}
                           size="small"

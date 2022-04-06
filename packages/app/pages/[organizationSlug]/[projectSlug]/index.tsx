@@ -21,6 +21,8 @@ import { ProjectTaskFilterButton } from "@dewo/app/containers/task/board/filters
 import { ProjectSeo } from "@dewo/app/containers/seo/ProjectSeo";
 import { useOrganizationBySlug } from "@dewo/app/containers/organization/hooks";
 import { CommunitySuggestions } from "@dewo/app/containers/project/community/CommunitySuggestions";
+import { TaskCreateModal } from "@dewo/app/containers/task/TaskCreateModal";
+import { TaskStatus } from "@dewo/app/graphql/types";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -140,6 +142,18 @@ const Page: NextPage = () => {
         organizationId={organizationId}
       />
       {!!details && <ProjectSeo project={details} />}
+      {!!project && (
+        <TaskCreateModal
+          projectId={project.id}
+          initialValues={Object.assign(
+            { status: TaskStatus.TODO },
+            router.query
+          )}
+          visible={router.route.endsWith("/create")}
+          onDone={() => router.push(project.permalink)}
+          onCancel={() => router.push(project.permalink)}
+        />
+      )}
     </Layout>
   );
 };

@@ -48,13 +48,22 @@ export const TaskRoleSelectField: FC<Props> = ({
     return (
       <div style={{ marginBottom: 16 }}>
         <ConnectOrganizationToDiscordButton
+          block
+          type="ghost"
+          size="small"
           organizationId={project.organizationId}
         />
       </div>
     );
   }
   return (
-    <Form.Item name={["gating", "roleIds"]}>
+    <Form.Item
+      name="roleIds"
+      rules={[
+        { required: true, message: "Select at least one role" },
+        { type: "array", min: 1, message: "Select at least one role" },
+      ]}
+    >
       <Select
         mode="multiple"
         placeholder="Select roles..."

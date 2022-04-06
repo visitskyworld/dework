@@ -13,12 +13,6 @@ export interface TaskRewardFormValues {
   trigger: TaskRewardTrigger;
 }
 
-export interface TaskGatingFormValues {
-  type?: TaskGatingType;
-  roleIds?: string[];
-  default?: boolean;
-}
-
 export interface TaskFormValues {
   name: string;
   description?: string;
@@ -28,7 +22,8 @@ export interface TaskFormValues {
   dueDate?: moment.Moment;
   storyPoints?: number;
   tagIds?: string[];
-  gating: TaskGatingFormValues;
+  gating?: TaskGatingType;
+  defaultGating?: boolean;
   roleIds?: string[];
   assigneeIds: string[];
   ownerIds?: string[];

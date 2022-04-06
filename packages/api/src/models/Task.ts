@@ -32,6 +32,7 @@ import { GithubIssue } from "./GithubIssue";
 import { TaskSubmission } from "./TaskSubmission";
 import { TaskNFT } from "./TaskNFT";
 import { TaskSection } from "./TaskSection";
+import { TaskGatingType } from "./enums/TaskGatingType";
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
@@ -192,9 +193,9 @@ export class Task extends Audit {
   @Field(() => Date, { nullable: true })
   public dueDate?: Date | null;
 
-  @Column("json", { nullable: true })
-  @Field({ nullable: true })
-  public options?: TaskOptions;
+  @Column("enum", { enum: TaskGatingType, default: TaskGatingType.APPLICATION })
+  @Field(() => TaskGatingType)
+  public gating!: TaskGatingType;
 
   @Field()
   public slug!: string;

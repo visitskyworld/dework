@@ -1,6 +1,6 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
 import { Divider, Typography } from "antd";
 import React, { FC, ReactElement } from "react";
 import { useProject } from "../../project/hooks";
@@ -61,7 +61,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
       !canManageProject &&
       canSubmit &&
-      !!task.options?.allowOpenSubmission
+      task.gating === TaskGatingType.OPEN_SUBMISSION
     ) {
       return (
         <TaskActionSectionContent
@@ -72,7 +72,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
               style={{ marginRight: 8, display: "inline-grid" }}
             />
           }
-          label="Contest Bounty"
+          label="Multiple Submissions Bounty"
           button={
             <CreateSubmissionButton
               size="large"
@@ -112,7 +112,8 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       !canManageProject &&
       !canAssignTask &&
       canApply &&
-      !task.assignees.length
+      !task.assignees.length &&
+      task.gating === TaskGatingType.APPLICATION
     ) {
       return (
         <TaskActionSectionContent
@@ -123,7 +124,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
               style={{ marginRight: 8, display: "inline-grid" }}
             />
           }
-          label="Application Process"
+          label="Apply"
           button={
             <ApplyToTaskButton size="large" type="primary" block task={task} />
           }

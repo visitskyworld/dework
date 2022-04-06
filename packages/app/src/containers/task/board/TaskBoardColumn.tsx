@@ -4,10 +4,8 @@ import { Button, Card, Badge, Space, Row } from "antd";
 import * as Icons from "@ant-design/icons";
 import { TaskCard } from "../card/TaskCard";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
-import { useToggle } from "@dewo/app/util/hooks";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { STATUS_LABEL, TaskGroup } from "./util";
-import { TaskCreateModal } from "../TaskCreateModal";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
@@ -15,8 +13,9 @@ import {
 import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
 import { TaskSectionTitle } from "./TaskSectionTitle";
 import { TaskSectionOptionButton } from "./TaskSectionOptionButton";
-import { AtLeast } from "@dewo/app/types/general";
-import { TaskFormValues } from "../form/types";
+import { useProject } from "../../project/hooks";
+import Link from "next/link";
+import * as qs from "query-string";
 
 interface Props {
   status: TaskStatus;
@@ -37,19 +36,14 @@ export const TaskBoardColumn: FC<Props> = ({
   footer,
   empty,
 }) => {
-  const createTaskToggle = useToggle();
   const hasPermission = usePermissionFn();
   const count = useMemo(
     () => groups.reduce((count, group) => count + group.tasks.length, 0),
     [groups]
   );
-  const initialValues = useMemo<AtLeast<TaskFormValues, "status">>(
-    () => ({ status }),
-    [status]
-  );
 
+  const { project } = useProject(projectId);
   const isEmpty = useMemo(() => groups.every((g) => !g.tasks.length), [groups]);
-
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const toggleCollapsed = useCallback(
     (id: string) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] })),
@@ -75,17 +69,16 @@ export const TaskBoardColumn: FC<Props> = ({
               />
             </Can>
           )}
-          {!!projectId && (
+          {!!project && (
             <Can
               I="create"
               this={{ __typename: "Task", status, projectId, owners: [] }}
             >
-              <Button
-                type="text"
-                icon={
-                  <Icons.PlusOutlined onClick={createTaskToggle.toggleOn} />
-                }
-              />
+              <Link
+                href={`${project.permalink}/create?${qs.stringify({ status })}`}
+              >
+                <Button type="text" icon={<Icons.PlusOutlined />} />
+              </Link>
             </Can>
           )}
         </>
@@ -93,15 +86,6 @@ export const TaskBoardColumn: FC<Props> = ({
       style={{ width }}
       className="dewo-task-board-column"
     >
-      {!!projectId && (
-        <TaskCreateModal
-          projectId={projectId}
-          initialValues={initialValues}
-          visible={createTaskToggle.isOn}
-          onCancel={createTaskToggle.toggleOff}
-          onDone={createTaskToggle.toggleOff}
-        />
-      )}
       {groups.map((group, index) => (
         <div key={index}>
           {groups.length > 1 && (

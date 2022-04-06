@@ -14,7 +14,6 @@ import moment from "moment";
 import { TaskApplyModal } from "./actions/apply/TaskApplyModal";
 import { TaskSeo } from "../seo/TaskSeo";
 import { TaskFormValues } from "./form/types";
-import { getTaskGatingType } from "./form/util";
 import { isSSR } from "@dewo/app/util/isSSR";
 
 interface Props {
@@ -48,15 +47,8 @@ export const TaskUpdateModal: FC<Props> = ({
       status: task?.status!,
       dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
       reward: toTaskRewardFormValues(task?.reward ?? undefined),
-      gating: {
-        roleIds: taskRoles?.map((r) => r.id) ?? [],
-        type: !!task
-          ? getTaskGatingType(
-              task,
-              taskRoles?.map((r) => r.id)
-            )
-          : undefined,
-      },
+      gating: task?.gating,
+      roleIds: taskRoles?.map((r) => r.id),
     }),
     [task, tagIds, taskRoles]
   );

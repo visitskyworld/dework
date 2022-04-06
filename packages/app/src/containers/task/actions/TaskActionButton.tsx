@@ -1,6 +1,7 @@
 import React, { FC, ReactElement, useCallback } from "react";
 import {
   Task,
+  TaskGatingType,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
@@ -108,7 +109,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
 
   if (
     [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
-    !!task.options?.allowOpenSubmission &&
+    task.gating === TaskGatingType.OPEN_SUBMISSION &&
     canSubmit
   ) {
     return <CreateSubmissionButton task={task} size="small" type="text" />;
@@ -126,7 +127,8 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     !canManage &&
     task.status === TaskStatus.TODO &&
     canApply &&
-    !task.assignees.length
+    !task.assignees.length &&
+    task.gating === TaskGatingType.APPLICATION
   ) {
     return <ApplyToTaskButton task={task} size="small" type="text" />;
   }

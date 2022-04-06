@@ -60,7 +60,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = ({
   }, [savedValue, editing]);
 
   useEffect(() => {
-    if (autoSave) onChange?.(value);
+    if (autoSave && typeof value === "string") onChange?.(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 

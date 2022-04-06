@@ -399,6 +399,7 @@ export const task = gql`
     parentTaskId
     sectionId
     number
+    gating
     subtasks {
       id
       name
@@ -430,9 +431,6 @@ export const task = gql`
     }
     reactions {
       ...TaskReaction
-    }
-    options {
-      allowOpenSubmission
     }
   }
 

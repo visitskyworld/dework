@@ -1,7 +1,12 @@
 import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
 import { useUserRoles } from "@dewo/app/containers/user/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { RulePermission, Task, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  RulePermission,
+  Task,
+  TaskGatingType,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { Grid, Row, Skeleton, Space, Table, Tag, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useOrganizationTasks } from "../../hooks";
@@ -59,7 +64,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
       const rewardMultiplier = !!task.reward ? 0b1000 : 1;
       const relevanceMultiplier = claimableTaskIds.has(task.id)
         ? 0b100
-        : !task.options?.allowOpenSubmission
+        : task.gating !== TaskGatingType.OPEN_SUBMISSION
         ? 0b010
         : 0b001;
       return (

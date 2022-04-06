@@ -1,3 +1,4 @@
+import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
@@ -479,7 +480,7 @@ describe("TaskResolver", () => {
         it("should succeed for anyone on open bounty task", async () => {
           const user = await fixtures.createUser();
           const task = await fixtures.createTask({
-            options: { allowOpenSubmission: true },
+            gating: TaskGatingType.OPEN_SUBMISSION,
           });
 
           const response = await client.request({
@@ -550,7 +551,7 @@ describe("TaskResolver", () => {
         it("should not return submission if is deleted", async () => {
           const user = await fixtures.createUser();
           const task = await fixtures.createTask({
-            options: { allowOpenSubmission: true },
+            gating: TaskGatingType.OPEN_SUBMISSION,
           });
           const submission = await fixtures.createTaskSubmission({
             userId: user.id,
