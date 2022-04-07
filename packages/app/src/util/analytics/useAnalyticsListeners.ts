@@ -17,6 +17,9 @@ function useAnalyticsTrackElements() {
       const path: HTMLElement[] = event.path;
 
       const getName = (el: HTMLElement): string | undefined => {
+        if (!["INPUT", "BUTTON", "TEXTAREA"].includes(el.tagName)) {
+          return undefined;
+        }
         // @ts-expect-error
         if (!!el.name && typeof el.name === "string") return el.name;
         if (!!el.id && el.id !== "__next") return `#${el.id}`;
@@ -27,7 +30,7 @@ function useAnalyticsTrackElements() {
       if (!!element) {
         const eventName = `${_.capitalize(type)}: ${getName(element)}`;
         amplitude.logEvent(eventName, {
-          type: element.tagName,
+          tagName: element.tagName,
           host: window.location.host,
           href: window.location.href,
           route: routerRef.current.route,
