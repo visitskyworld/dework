@@ -10,6 +10,9 @@ import { HiroIcon } from "@dewo/app/components/icons/Hiro";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { useRouter } from "next/router";
 import { PhantomIcon } from "@dewo/app/components/icons/Phantom";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import classNames from "classnames";
+import styles from "./ThreepidAuthButton.module.less";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
@@ -39,8 +42,15 @@ interface Props extends ButtonProps {
 export const ThreepidAuthButton: FC<Props> = ({
   source,
   state,
+  className,
   ...buttonProps
 }) => {
+  const { user } = useAuthContext();
+  const connected = useMemo(
+    () => user?.threepids?.some((t) => t.source === source),
+    [user, source]
+  );
+
   const router = useRouter();
   const stateWithRedirect = useMemo(
     () => ({ redirect: router.asPath, ...state }),
@@ -54,6 +64,8 @@ export const ThreepidAuthButton: FC<Props> = ({
         stateWithRedirect
       )}`}
       {...buttonProps}
+      disabled={buttonProps.disabled || connected}
+      className={classNames({ className, [styles.connected]: connected })}
     />
   );
 };

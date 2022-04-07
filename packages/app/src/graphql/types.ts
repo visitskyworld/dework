@@ -34,7 +34,8 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_threepids {
 export interface AuthWithThreepidMutation_authWithThreepid_user_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults_roles {
@@ -181,7 +182,8 @@ export interface UpdateUserMutation_user_threepids {
 export interface UpdateUserMutation_user_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 export interface UpdateUserMutation_user_taskGatingDefaults_roles {
@@ -232,7 +234,8 @@ export interface UpdateUserMutationVariables {
 export interface UpdateUserOnboardingMutation_onboarding_user_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 export interface UpdateUserOnboardingMutation_onboarding_user {
@@ -244,7 +247,8 @@ export interface UpdateUserOnboardingMutation_onboarding_user {
 export interface UpdateUserOnboardingMutation_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
   user: UpdateUserOnboardingMutation_onboarding_user;
 }
 
@@ -4399,7 +4403,8 @@ export interface MeQuery_me_threepids {
 export interface MeQuery_me_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 export interface MeQuery_me_taskGatingDefaults_roles {
@@ -10168,7 +10173,8 @@ export interface UserProfile {
 export interface UserOnboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 /* tslint:disable */
@@ -10230,7 +10236,8 @@ export interface UserDetails_threepids {
 export interface UserDetails_onboarding {
   __typename: "UserOnboarding";
   id: Scalar.UUID;
-  type: UserOnboardingType;
+  type: string;
+  completedAt: Scalar.DateTime | null;
 }
 
 export interface UserDetails_taskGatingDefaults_roles {
@@ -10482,11 +10489,6 @@ export enum ThreepidSource {
   notion = "notion",
   phantom = "phantom",
   trello = "trello",
-}
-
-export enum UserOnboardingType {
-  CONTRIBUTOR = "CONTRIBUTOR",
-  DAO_CORE_TEAM = "DAO_CORE_TEAM",
 }
 
 export interface CreateFileUploadUrlInput {
@@ -10809,11 +10811,11 @@ export interface UpdateUserInput {
   username?: string | null;
   bio?: string | null;
   imageUrl?: string | null;
-  paymentMethodId?: Scalar.UUID | null;
 }
 
 export interface UpdateUserOnboardingInput {
-  type: UserOnboardingType;
+  type: string;
+  completedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdateUserRoleInput {

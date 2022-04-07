@@ -2,7 +2,7 @@ import { Alert, Button, message } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { useToggle } from "@dewo/app/util/hooks";
-import { LoginButton } from "../auth/LoginButton";
+import { LoginButton } from "../auth/buttons/LoginButton";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ProjectTokenGate } from "@dewo/app/graphql/types";
 import { useJoinProjectWithToken } from "./hooks";

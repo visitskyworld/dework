@@ -16,9 +16,9 @@ import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { CoordinapeMetamaskConnectButton } from "../../integrations/buttons/CoordinapeMetamaskConnectButton";
 import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
-import { ConnectUsingDiscordRolesButton } from "../../auth/ConnectUsingDiscordRolesButton";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
+import { ConnectUsingDiscordRolesButton } from "../../auth/buttons/ConnectUsingDiscordRolesButton";
 
 interface Props {
   projectId?: string;

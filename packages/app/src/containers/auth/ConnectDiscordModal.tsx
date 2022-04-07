@@ -1,8 +1,7 @@
 import React, { FC } from "react";
 import { Modal, Typography } from "antd";
-
 import { ThreepidSource } from "@dewo/app/graphql/types";
-import { ThreepidAuthButton } from "@dewo/app/containers/auth/ThreepidAuthButton";
+import { ThreepidAuthButton } from "@dewo/app/containers/auth/buttons/ThreepidAuthButton";
 
 interface Props {
   visible: boolean;

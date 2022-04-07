@@ -552,6 +552,7 @@ export const userOnboarding = gql`
   fragment UserOnboarding on UserOnboarding {
     id
     type
+    completedAt
   }
 `;
 

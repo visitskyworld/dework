@@ -3,8 +3,8 @@ import * as Icons from "@ant-design/icons";
 import { Button } from "antd";
 import { useOrganization, useOrganizationUsers } from "../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { LoginButton } from "../../auth/LoginButton";
 import { useRunningCallback } from "@dewo/app/util/hooks";
+import { LoginButton } from "../../auth/buttons/LoginButton";
 import {
   useFollowOrganization,
   useUnfollowOrganization,

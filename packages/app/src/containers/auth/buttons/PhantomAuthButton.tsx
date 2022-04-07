@@ -3,7 +3,7 @@ import { ThreepidSource, UserDetails } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { ButtonProps } from "antd";
 import React, { FC } from "react";
-import { useAuthWithThreepid, useCreatePhantomThreepid } from "./hooks";
+import { useAuthWithThreepid, useCreatePhantomThreepid } from "../hooks";
 import { getThreepidName, ThreepidAuthButton } from "./ThreepidAuthButton";
 
 interface Props extends ButtonProps {

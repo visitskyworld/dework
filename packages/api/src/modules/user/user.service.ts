@@ -64,10 +64,11 @@ export class UserService {
           ? await this.fileUploadService.uploadFileFromUrl(threepidImage)
           : undefined),
       username:
-        existingUser?.username ??
-        (await this.generateUsername(
-          this.threepidService.getUsername(threepid)
-        )),
+        existingUser?.username.startsWith("deworker") === false
+          ? existingUser.username
+          : await this.generateUsername(
+              this.threepidService.getUsername(threepid)
+            ),
     });
 
     await this.connectThreepidToUser(threepid, user);
@@ -162,7 +163,7 @@ export class UserService {
   }
 
   public async updateOnboarding(
-    partial: AtLeast<UserOnboarding, "userId">
+    partial: AtLeast<UserOnboarding, "userId" | "type">
   ): Promise<UserOnboarding> {
     const onboarding = await this.userOnboardingRepo.findOne({
       userId: partial.userId,

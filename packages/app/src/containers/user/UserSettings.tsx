@@ -2,13 +2,13 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import { Alert, Col, Space, Typography } from "antd";
 import React, { FC } from "react";
-import { MetamaskAuthButton } from "../auth/MetamaskAuthButton";
-import { PhantomAuthButton } from "../auth/PhantomAuthButton";
+import { MetamaskAuthButton } from "../auth/buttons/MetamaskAuthButton";
+import { PhantomAuthButton } from "../auth/buttons/PhantomAuthButton";
 import {
   getThreepidName,
   renderThreepidIcon,
   ThreepidAuthButton,
-} from "../auth/ThreepidAuthButton";
+} from "../auth/buttons/ThreepidAuthButton";
 
 interface Props {}
 

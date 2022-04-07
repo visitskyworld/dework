@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { ProjectTokenGate, ThreepidSource } from "@dewo/app/graphql/types";
 import { ApolloError } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { MetamaskAuthButton } from "../auth/MetamaskAuthButton";
+import { MetamaskAuthButton } from "../auth/buttons/MetamaskAuthButton";
 
 interface Props {
   tokens: ProjectTokenGate["token"][];

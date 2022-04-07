@@ -3,7 +3,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Button, ButtonProps, Space, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
-import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
+import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 import { useDeleteTaskApplication } from "../../hooks";
 import { Task } from "@dewo/app/graphql/types";
 

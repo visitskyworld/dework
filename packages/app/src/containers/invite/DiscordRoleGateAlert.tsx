@@ -3,7 +3,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { RoleSource, ThreepidSource } from "@dewo/app/graphql/types";
 import { Alert, Row } from "antd";
 import React, { FC, useMemo } from "react";
-import { ConnectUsingDiscordRolesButton } from "../auth/ConnectUsingDiscordRolesButton";
+import { ConnectUsingDiscordRolesButton } from "../auth/buttons/ConnectUsingDiscordRolesButton";
 import { useOrganizationRoles } from "../rbac/hooks";
 
 interface Props {

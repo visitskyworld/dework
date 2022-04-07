@@ -25,16 +25,16 @@ const Auth: NextPage = () => {
 
   const auth = useCallback(async () => {
     try {
-      const user = await authWithThreepid(threepidId);
+      await authWithThreepid(threepidId);
       if (!!state.inviteId) {
         await acceptInvite(state.inviteId).catch(() => {});
       }
 
       if (!!state.redirect && state.redirect !== "/") {
         await router.push(state.redirect);
-      } else {
-        await router.push(!!user.onboarding ? "/" : "/onboarding");
       }
+
+      await router.push(state.redirect);
     } catch (error) {
       if (error instanceof ApolloError) {
         if (error.message === "Account already connected") {

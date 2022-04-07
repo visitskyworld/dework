@@ -29,6 +29,7 @@ import {
 import * as Queries from "../src/graphql/queries";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { isSSR } from "@dewo/app/util/isSSR";
+import { OnboardingCarouselModal } from "@dewo/app/containers/onboarding/OnboardingCarouselModal";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -129,6 +130,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
               <FeedbackButton />
               <TaskUpdateModalListener />
               <ServerErrorModal onErrorRef={onErrorRef} />
+              <OnboardingCarouselModal />
             </SidebarProvider>
           </PermissionsProvider>
         </AuthProvider>

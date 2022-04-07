@@ -1,16 +1,14 @@
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, ButtonProps } from "antd";
 import React, { FC, useCallback } from "react";
-import { LoginModal } from "./LoginModal";
+import { LoginModal } from "../LoginModal";
 
 interface Props extends ButtonProps {
-  redirectToOnboarding?: boolean;
   onAuthedWithWallet?(): void;
 }
 
 export const LoginButton: FC<Props> = ({
   className,
-  redirectToOnboarding,
   onAuthedWithWallet,
   onClick,
   ...props
@@ -32,7 +30,6 @@ export const LoginButton: FC<Props> = ({
       <Button {...props} onClick={handleClick} />
       <LoginModal
         toggle={modalVisible}
-        redirectToOnboarding={redirectToOnboarding}
         onAuthedWithWallet={handleAuthedWithWallet}
       />
     </>

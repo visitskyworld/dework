@@ -23,7 +23,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { Logo } from "@dewo/app/components/Logo";
 import AnimatedBackground from "@dewo/app/assets/animated-background.svg";
-import { LoginButton } from "@dewo/app/containers/auth/LoginButton";
+import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 import { useRouter } from "next/router";
 import { useCreateOrganizationIntegration } from "@dewo/app/containers/integrations/hooks";
 import { useRunningCallback } from "@dewo/app/util/hooks";

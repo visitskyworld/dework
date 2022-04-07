@@ -11,7 +11,7 @@ import {
   Typography,
   Tabs,
 } from "antd";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { WatchDemoButton } from "./WatchDemoButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
@@ -21,7 +21,6 @@ interface Props {
 
 export const ProductSection: FC<Props> = () => {
   const loginModal = useToggle();
-  const [onboardingFlow, setOnboardingFlow] = useState<string>();
   const screens = useBreakpoint();
   return (
     <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
@@ -53,10 +52,7 @@ export const ProductSection: FC<Props> = () => {
                 type="primary"
                 size="large"
                 block
-                onClick={() => {
-                  setOnboardingFlow("dao");
-                  loginModal.toggleOn();
-                }}
+                onClick={loginModal.toggleOn}
               >
                 Setup Project
               </Button>
@@ -70,14 +66,7 @@ export const ProductSection: FC<Props> = () => {
             <Typography.Paragraph style={{ marginTop: 8 }}>
               or
             </Typography.Paragraph>
-            <Button
-              size="large"
-              block
-              onClick={() => {
-                setOnboardingFlow("import");
-                loginModal.toggleOn();
-              }}
-            >
+            <Button size="large" block onClick={loginModal.toggleOn}>
               Import from Notion/Trello/Github
             </Button>
           </Space>
@@ -155,12 +144,9 @@ export const ProductSection: FC<Props> = () => {
 
       <LoginModal
         toggle={loginModal}
-        redirectUrl={`${Constants.APP_URL}/onboarding/${onboardingFlow ?? ""}`}
+        redirectUrl={Constants.APP_URL}
         onAuthedWithWallet={(_userDetails, threepidId) => {
-          const state = JSON.stringify({
-            redirect: `/onboarding/${onboardingFlow ?? ""}`,
-          });
-          window.location.href = `${Constants.APP_URL}/auth/3pid/${threepidId}?state=${state}`;
+          window.location.href = `${Constants.APP_URL}/auth/3pid/${threepidId}`;
         }}
       />
     </Row>

@@ -2,7 +2,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { RoleSource, ThreepidSource } from "@dewo/app/graphql/types";
 import { ButtonProps } from "antd";
 import React, { FC, useMemo } from "react";
-import { useRolesWithAccess } from "../rbac/hooks";
+import { useRolesWithAccess } from "../../rbac/hooks";
 import { LoginButton } from "./LoginButton";
 import { ThreepidAuthButton } from "./ThreepidAuthButton";
 

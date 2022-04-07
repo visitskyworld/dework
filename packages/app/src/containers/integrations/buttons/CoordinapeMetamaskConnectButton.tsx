@@ -6,7 +6,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { ButtonProps, Tooltip } from "antd";
 import React, { FC, useMemo } from "react";
-import { MetamaskAuthButton } from "../../auth/MetamaskAuthButton";
+import { MetamaskAuthButton } from "../../auth/buttons/MetamaskAuthButton";
 import { useOrganizationIntegrations } from "../../organization/hooks";
 
 interface Props extends ButtonProps {

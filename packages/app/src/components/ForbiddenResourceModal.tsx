@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRolesWithAccess } from "../containers/rbac/hooks";
 import { useOrganization } from "../containers/organization/hooks";
 import { RoleTag } from "./RoleTag";
-import { ConnectUsingDiscordRolesButton } from "../containers/auth/ConnectUsingDiscordRolesButton";
+import { ConnectUsingDiscordRolesButton } from "../containers/auth/buttons/ConnectUsingDiscordRolesButton";
 
 interface Props {
   visible: boolean;

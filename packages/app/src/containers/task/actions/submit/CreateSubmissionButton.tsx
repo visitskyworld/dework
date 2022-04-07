@@ -7,7 +7,7 @@ import Modal from "antd/lib/modal/Modal";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { LoginButton } from "../../../auth/LoginButton";
+import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 
 interface Props extends ButtonProps {
   task: Task;

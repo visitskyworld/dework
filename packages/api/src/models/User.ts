@@ -46,7 +46,7 @@ export class User extends Audit {
 
   @OneToOne(() => UserOnboarding, (x) => x.user, { nullable: true })
   @Field(() => UserOnboarding, { nullable: true })
-  public onboarding?: UserOnboarding;
+  public onboarding?: Promise<UserOnboarding>;
 
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
