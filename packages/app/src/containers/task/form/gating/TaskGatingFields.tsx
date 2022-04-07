@@ -1,4 +1,4 @@
-import { Checkbox, Form, Select, Tooltip } from "antd";
+import { Checkbox, Form, Select, Tag, Tooltip } from "antd";
 import React, { FC, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { TaskRoleSelectField } from "./TaskRoleSelectField";
@@ -98,6 +98,18 @@ export const TaskGatingFields: FC<Props> = ({
                 <Tooltip title={descriptions[type]}>
                   <Icons.QuestionCircleOutlined />
                 </Tooltip>
+              )}
+              {type === TaskGatingType.ROLES && (
+                <Tag
+                  color="green"
+                  style={{
+                    marginLeft: 8,
+                    fontWeight: "normal",
+                    textTransform: "none",
+                  }}
+                >
+                  New
+                </Tag>
               )}
             </Select.Option>
           ))}
