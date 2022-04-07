@@ -1,5 +1,4 @@
 @import "~antd/dist/antd.less";
-@import "~antd/dist/antd.less";
 @import "./theme.less";
 
 html {
@@ -251,7 +250,7 @@ iframe {
     border: unset;
     cursor: unset;
     color: unset;
-    
+
     &:not(.dewo-field-focus-border) {
       padding: 0;
       margin: 0;
@@ -610,7 +609,7 @@ iframe {
     padding-bottom: 18px;
     caret-color: @text-color;
   }
-  
+
   .w-md-editor-text-pre {
     overflow: hidden;
   }
@@ -634,7 +633,8 @@ iframe {
     font-size: unset;
     font-family: unset;
 
-    & > blockquote table tr, & > table tr {
+    & > blockquote table tr,
+    & > table tr {
       background: unset;
     }
   }
@@ -966,13 +966,13 @@ iframe {
 .ant-avatar {
   .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
     .make-color-classes(@i - 1);
-      @color: extract(@preset-colors, @i);
-      @colorValue: '@{color}-6';
-      &-@{color} {
-        color: @@colorValue;
-        background: fade(@@colorValue, 10%);
-        border: 1px solid fade(@@colorValue, 40%);
-      }
+    @color: extract(@preset-colors, @i);
+    @colorValue: "@{color}-6";
+    &-@{color} {
+      color: @@colorValue;
+      background: fade(@@colorValue, 10%);
+      border: 1px solid fade(@@colorValue, 40%);
+    }
   }
   .make-color-classes();
 
@@ -1001,14 +1001,93 @@ iframe {
 
 .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
   .make-color-classes(@i - 1);
-    @color: extract(@preset-colors, @i);
-    @colorValue: '@{color}-6';
-    .text-color-@{color} {
-      color: @@colorValue;
-    }
+  @color: extract(@preset-colors, @i);
+  @colorValue: "@{color}-6";
+  .text-color-@{color} {
+    color: @@colorValue;
+  }
 }
 .make-color-classes();
 
 .overflow-y-hidden {
   overflow-y: hidden;
+}
+
+.ProseMirror {
+  .token.cdata,
+  .token.comment,
+  .token.doctype,
+  .token.prolog,
+  .code-block[data-language] .token.block-comment {
+    color: #999;
+  }
+  .code-block[data-language] .token.punctuation {
+    color: #ccc;
+  }
+  .code-block[data-language] .token.attr-name,
+  .code-block[data-language] .token.deleted,
+  .code-block[data-language] .token.namespace,
+  .code-block[data-language] .token.tag {
+    color: #e2777a;
+  }
+  .code-block[data-language] .token.function-name {
+    color: #6196cc;
+  }
+  .code-block[data-language] .token.boolean,
+  .code-block[data-language] .token.function,
+  .code-block[data-language] .token.number {
+    color: #f08d49;
+  }
+  .code-block[data-language] .token.class-name,
+  .code-block[data-language] .token.constant,
+  .code-block[data-language] .token.property,
+  .code-block[data-language] .token.symbol {
+    color: #f8c555;
+  }
+  .code-block[data-language] .token.atrule,
+  .code-block[data-language] .token.builtin,
+  .code-block[data-language] .token.important,
+  .code-block[data-language] .token.keyword,
+  .code-block[data-language] .token.selector {
+    color: #cc99cd;
+  }
+  .code-block[data-language] .token.attr-value,
+  .code-block[data-language] .token.char,
+  .code-block[data-language] .token.regex,
+  .code-block[data-language] .token.string,
+  .code-block[data-language] .token.variable {
+    color: #7ec699;
+  }
+  .code-block[data-language] .token.entity,
+  .code-block[data-language] .token.operator,
+  .code-block[data-language] .token.url {
+    color: #67cdcc;
+  }
+  .code-block[data-language] .token.bold,
+  .code-block[data-language] .token.important {
+    font-weight: 700;
+  }
+  .code-block[data-language] .token.italic {
+    font-style: italic;
+  }
+  .code-block[data-language] .token.entity {
+    cursor: help;
+  }
+  .code-block[data-language] .token.inserted {
+    color: green;
+  }
+  .code-block[data-language] .token.string-literal.interpolation.content {
+    color: #7ec699;
+  }
+  .code-block[data-language]
+    .token.string-literal.interpolation.delimiter.punctuation {
+    color: #e2777a;
+  }
+  .heading-actions {
+    display: none !important;
+  }
+}
+.block-menu-trigger.ProseMirror-widget svg {
+  opacity: 0.5;
+  scale: 0.8;
 }

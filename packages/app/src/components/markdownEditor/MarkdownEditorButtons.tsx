@@ -1,10 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, SyntheticEvent } from "react";
 import { Button, Typography } from "antd";
 
 interface Props {
   disabled?: boolean;
-  onSave?(): void;
-  onCancel?(): void;
+  onSave?(e?: SyntheticEvent): void;
+  onCancel?(e?: SyntheticEvent): void;
 }
 
 export const MarkdownEditorButtons: FC<Props> = ({

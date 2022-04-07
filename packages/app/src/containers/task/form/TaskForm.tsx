@@ -20,7 +20,6 @@ import {
 } from "@dewo/app/contexts/PermissionsContext";
 import { TaskApplicationList } from "../TaskApplicationList";
 import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
-import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskActivityFeed } from "./TaskActivityFeed";
@@ -44,6 +43,7 @@ import { TaskProjectRow } from "./TaskProjectRow";
 import { TaskGatingFields } from "./gating/TaskGatingFields";
 import { TaskFormValues } from "./types";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -166,7 +166,6 @@ export const TaskForm: FC<TaskFormProps> = ({
 
           <Form.Item
             name="name"
-            style={{ margin: 0 }}
             rules={[{ required: true, message: "Please enter a name" }]}
           >
             <Input.TextArea
@@ -202,13 +201,10 @@ export const TaskForm: FC<TaskFormProps> = ({
           </Form.Item>
 
           <Form.Item name="description" className="mb-3">
-            <MarkdownEditor
-              initialValue={initialValues?.description ?? undefined}
-              editable={canChange("description")}
-              placeholder={
-                canChange("description") ? undefined : "No task description..."
-              }
+            <RichMarkdownEditor
+              initialValue={initialValues?.description ?? ""}
               mode={mode}
+              editable={canChange("description") ?? false}
             />
           </Form.Item>
 
