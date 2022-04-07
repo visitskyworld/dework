@@ -1,10 +1,4 @@
-import {
-  Field,
-  InputType,
-  Int,
-  ObjectType,
-  registerEnumType,
-} from "@nestjs/graphql";
+import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -43,13 +37,6 @@ export enum TaskStatus {
 }
 
 registerEnumType(TaskStatus, { name: "TaskStatus" });
-
-@ObjectType()
-@InputType("TaskOptionsInput")
-export class TaskOptions {
-  @Field({ nullable: true })
-  public allowOpenSubmission?: boolean;
-}
 
 @Entity()
 @ObjectType()
