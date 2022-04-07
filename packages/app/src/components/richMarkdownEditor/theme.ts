@@ -10,6 +10,9 @@ DefaultTheme.blockToolbarIconSelected = textColor;
 export const theme: typeof DefaultTheme = {
   ...dark,
 
+  // @ts-expect-error
+  fontFamily: null,
+
   text: textColor,
   placeholder: "rgba(255, 255, 255, 0.3)",
   textSecondary: "rgba(255, 255, 255, 0.5)",
