@@ -56,7 +56,11 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
         data={csvData}
         headers={headers}
       >
-        <Button type="ghost" icon={<ExportOutlined />}>
+        <Button
+          type="ghost"
+          icon={<ExportOutlined />}
+          name="Export tasks as CSV"
+        >
           Export CSV
         </Button>
       </CSVLink>

@@ -62,6 +62,7 @@ export const FollowOrganizationButton: FC<Props> = ({
     return (
       <Button
         type="ghost"
+        name="Unfollow organization"
         loading={loadingUnfollow}
         icon={<Icons.MinusCircleOutlined />}
         onClick={handleUnfollow}

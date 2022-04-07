@@ -17,6 +17,7 @@ module.exports = [withLess, withRemoveImports, withBundleAnalyzer].reduce(
       ENVIRONMENT: process.env.ENVIRONMENT,
       SENTRY_DSN: process.env.SENTRY_DSN,
       DEV_ROLE_ID: process.env.DEV_ROLE_ID,
+      AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
       APOLLO_QUERY_LOGGING: process.env.APOLLO_QUERY_LOGGING === "true",
     },
     webpack(config) {

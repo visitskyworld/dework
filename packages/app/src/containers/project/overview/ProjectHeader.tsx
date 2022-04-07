@@ -151,21 +151,31 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
           <Space align="center" style={{ height: "100%" }}>
             <DebugMenu projectId={project.id} organizationId={organizationId} />
             <ProjectInviteButton projectId={project.id} />
-            {canEditOrg && (!discordIntegration || !hasCorrectPermissions) && (
+            {canEditOrg && !discordIntegration && (
               <ConnectOrganizationToDiscordButton
                 type="ghost"
+                name="Connect organization to Discord from Project Header"
                 organizationId={project.organizationId}
               >
-                {!discordIntegration
-                  ? "Connect to Discord"
-                  : "Update Discord Permissions"}
+                Connect to Discord
               </ConnectOrganizationToDiscordButton>
             )}
+            {canEditOrg && !!discordIntegration && !hasCorrectPermissions && (
+              <ConnectOrganizationToDiscordButton
+                type="ghost"
+                name="Update Discord permissions from Project Header"
+                organizationId={project.organizationId}
+              >
+                Update Discord Permissions
+              </ConnectOrganizationToDiscordButton>
+            )}
+
             <FollowOrganizationButton organizationId={organizationId} />
             <ConnectUsingDiscordRolesButton
               type="ghost"
               projectId={projectId}
               organizationId={organizationId}
+              name="Connect user with Discord from Project Header"
               children="Connect with Discord"
             />
             <CoordinapeMetamaskConnectButton

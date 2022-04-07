@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { AppInitialProps, AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.less";
@@ -30,6 +30,8 @@ import * as Queries from "../src/graphql/queries";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { OnboardingCarouselModal } from "@dewo/app/containers/onboarding/OnboardingCarouselModal";
+import { AmplitudeProvider } from "@dewo/app/util/analytics/AmplitudeContext";
+import { useAnalyticsListeners } from "@dewo/app/util/analytics/useAnalyticsListeners";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -47,6 +49,11 @@ Sentry.init({
   environment: Constants.ENVIRONMENT,
   ignoreErrors: ["ResizeObserver loop limit exceeded"],
 });
+
+const Hooks: FC = () => {
+  useAnalyticsListeners();
+  return null;
+};
 
 interface AuthProps {
   origin: string;
@@ -119,21 +126,33 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       </Head>
       <FallbackSeo />
       <ApolloProvider client={apollo as any}>
-        <AuthProvider
-          initialAuthenticated={!!initialAuthToken || !!getAuthToken(undefined)}
+        <AmplitudeProvider
+          apiKey={Constants.AMPLITUDE_API_KEY}
+          apiEndpoint={
+            Constants.ENVIRONMENT === "dev"
+              ? undefined
+              : `${Constants.GRAPHQL_API_URL.replace("https://", "")}/a`
+          }
         >
-          <PermissionsProvider>
-            <SidebarProvider>
-              <Redirector />
-              <Component {...pageProps} />
-              <InviteMessageToast />
-              <FeedbackButton />
-              <TaskUpdateModalListener />
-              <ServerErrorModal onErrorRef={onErrorRef} />
-              <OnboardingCarouselModal />
-            </SidebarProvider>
-          </PermissionsProvider>
-        </AuthProvider>
+          <AuthProvider
+            initialAuthenticated={
+              !!initialAuthToken || !!getAuthToken(undefined)
+            }
+          >
+            <PermissionsProvider>
+              <SidebarProvider>
+                <Redirector />
+                <Hooks />
+                <Component {...pageProps} />
+                <InviteMessageToast />
+                <FeedbackButton />
+                <TaskUpdateModalListener />
+                <ServerErrorModal onErrorRef={onErrorRef} />
+                <OnboardingCarouselModal />
+              </SidebarProvider>
+            </PermissionsProvider>
+          </AuthProvider>
+        </AmplitudeProvider>
       </ApolloProvider>
     </>
   );

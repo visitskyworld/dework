@@ -50,6 +50,7 @@ export const Sidebar: FC = () => {
               <Button
                 size="small"
                 type="primary"
+                name="Setup Profile from Sidebar"
                 className="ant-typography-caption"
                 style={{ paddingLeft: 2, paddingRight: 2, border: "none" }}
               >

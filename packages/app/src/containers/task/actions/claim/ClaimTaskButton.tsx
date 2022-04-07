@@ -29,6 +29,7 @@ export const ClaimTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
       {...buttonProps}
       loading={claimingTask}
       icon={<Icons.ArrowRightOutlined />}
+      name="Claim task"
       onClick={claimTask}
     >
       Claim task

@@ -53,7 +53,11 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
 
   if (!user) {
     return (
-      <LoginButton {...buttonProps} icon={<Icons.UnlockOutlined />}>
+      <LoginButton
+        {...buttonProps}
+        icon={<Icons.UnlockOutlined />}
+        name="Submit work (unauthenticated)"
+      >
         Submit Work
       </LoginButton>
     );
@@ -63,6 +67,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
       <Button
         {...buttonProps}
         icon={<Icons.EditOutlined />}
+        name={!!currentSubmission ? "Edit submission" : "Submit work"}
         onClick={modalVisible.toggleOn}
       >
         {!!currentSubmission ? "Edit Submission" : "Submit Work"}

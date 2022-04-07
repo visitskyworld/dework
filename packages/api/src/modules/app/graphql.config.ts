@@ -7,7 +7,7 @@ import { User } from "@dewo/api/models/User";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as Amplitude from "@amplitude/node";
+import { AnalyticsClient } from "./analytics/analytics.client";
 
 export interface GQLContext {
   req: Request;
@@ -21,7 +21,7 @@ function getAuthToken(req: Request): string | undefined {
   return match?.[1];
 }
 
-function getIpAddress(req: Request): string {
+export function getIpAddress(req: Request): string {
   // https://stackoverflow.com/a/10849772
   const address =
     (req.headers["x-forwarded-for"] as string) ||
@@ -35,23 +35,14 @@ function getIpAddress(req: Request): string {
 @Injectable()
 export class GraphQLConfig implements GqlOptionsFactory {
   private logger = new Logger("GraphQL");
-  private amplitude?: Amplitude.NodeClient;
 
   constructor(
+    private readonly analytics: AnalyticsClient,
     private readonly config: ConfigService<ConfigType>,
     private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>
-  ) {
-    const amplitudeApiKey = config.get("AMPLITUDE_API_KEY");
-    if (!!amplitudeApiKey) {
-      this.amplitude = Amplitude.init(amplitudeApiKey);
-    } else {
-      this.logger.warn(
-        "Amplitude event logging not enabled! Set env var AMPLITUDE_API_KEY to enable."
-      );
-    }
-  }
+  ) {}
 
   createGqlOptions(): GqlModuleOptions {
     const that = this;
@@ -75,7 +66,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
             that.logger.log(`${prefix}: started`);
 
             const user = requestContext.context.user;
-            that.amplitude?.logEvent({
+            that.analytics.client?.logEvent({
               event_type: `GraphQL request: ${requestContext.request.operationName}`,
               user_id: user?.id,
               user_properties: !!user ? { username: user.username } : undefined,
@@ -104,7 +95,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
                   `${prefix}: completed in ${duration} ms, returned ${size} bytes`
                 );
 
-                that.amplitude?.logEvent({
+                that.analytics.client?.logEvent({
                   event_type: `GraphQL response: ${requestContext.request.operationName}`,
                   user_id: requestContext.context.user?.id,
                   ip: getIpAddress(requestContext.context.req),

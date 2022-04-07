@@ -27,12 +27,13 @@ import { CoordinapeModule } from "../integrations/coordinape/coordinape.module";
 import { NFTModule } from "../nft/nft.module";
 import { RbacModule } from "../rbac/rbac.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
+import { AnalyticsModule } from "./analytics/analytics.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
   GlobalJwtModule,
   GraphQLModule.forRootAsync({
-    imports: [TypeOrmModule.forFeature([User])],
+    imports: [TypeOrmModule.forFeature([User]), AnalyticsModule],
     useClass: GraphQLConfig,
   }),
   TypeOrmModule.forRootAsync({
@@ -65,6 +66,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   NFTModule,
   RbacModule,
   DiscordRolesModule,
+  AnalyticsModule,
 ];
 
 @Module({

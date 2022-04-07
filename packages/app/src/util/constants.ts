@@ -9,6 +9,7 @@ export const Constants = {
   APP_URL: nextConfig.APP_URL as string,
   SENTRY_DSN: nextConfig.SENTRY_DSN as string,
   DEV_ROLE_ID: nextConfig.DEV_ROLE_ID as string,
+  AMPLITUDE_API_KEY: nextConfig.AMPLITUDE_API_KEY as string,
   APOLLO_QUERY_LOGGING: nextConfig.APOLLO_QUERY_LOGGING as boolean,
   ENVIRONMENT: nextConfig.ENVIRONMENT as "prod" | "demo" | "dev",
   hotjarConfig: { ID: 2731946, version: 6 },

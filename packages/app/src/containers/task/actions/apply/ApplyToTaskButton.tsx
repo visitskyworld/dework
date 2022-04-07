@@ -35,6 +35,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
       <LoginButton
         {...buttonProps}
         icon={<Icons.UnlockOutlined />}
+        name="Apply to task (unauthenticated)"
         onAuthedWithWallet={handleInterested}
       >
         Apply to task
@@ -57,6 +58,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
               </Typography.Text>
               <Button
                 size="small"
+                name="Unclaim task"
                 onClick={handleUnclaimTask}
                 icon={<Icons.UnlockOutlined />}
               >
@@ -72,6 +74,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
       ) : (
         <Button
           {...buttonProps}
+          name="Apply to task"
           icon={<Icons.UnlockOutlined />}
           onClick={handleInterested}
         >

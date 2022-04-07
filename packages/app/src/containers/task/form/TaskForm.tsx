@@ -132,6 +132,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   return (
     <Form
       form={form}
+      name={`Task Form (${mode})`}
       layout="vertical"
       initialValues={initialValues}
       requiredMark={false}
