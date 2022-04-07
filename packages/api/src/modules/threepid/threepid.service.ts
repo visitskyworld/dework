@@ -9,6 +9,7 @@ import {
   ThreepidSource,
 } from "@dewo/api/models/Threepid";
 import { AtLeast } from "@dewo/api/types/general";
+import { ethers } from "ethers";
 
 type GithubThreepidConfigProfileJson = {
   location: string;
@@ -62,7 +63,7 @@ export class ThreepidService {
     return this.create(partial);
   }
 
-  public getImageUrl(threepid: Threepid): string | undefined {
+  public async getImageUrl(threepid: Threepid): Promise<string | undefined> {
     switch (threepid.source) {
       case ThreepidSource.discord:
         const profile = this.getDiscordThreePidConfig(threepid).profile;
@@ -71,10 +72,15 @@ export class ThreepidService {
       case ThreepidSource.github:
         return this.getGithubThreePidConfig(threepid).profile.photos?.[0]
           ?.value;
+      case ThreepidSource.metamask:
+        return (
+          (await ethers.getDefaultProvider().getAvatar(threepid.threepid)) ??
+          undefined
+        );
     }
   }
 
-  public getUsername(threepid: Threepid): string {
+  public async getUsername(threepid: Threepid): Promise<string> {
     switch (threepid.source) {
       case ThreepidSource.discord: {
         return this.getDiscordThreePidConfig(threepid).profile.username;
@@ -83,6 +89,13 @@ export class ThreepidService {
         const githubUsername =
           this.getGithubThreePidConfig(threepid).profile.username;
         if (!!githubUsername) return githubUsername;
+        break;
+      }
+      case ThreepidSource.metamask: {
+        const resolved = await ethers
+          .getDefaultProvider()
+          .lookupAddress(threepid.threepid);
+        if (!!resolved) return resolved;
         break;
       }
     }

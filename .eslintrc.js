@@ -6,5 +6,6 @@ module.exports = {
     "react-hooks/exhaustive-deps": "error",
     "react-hooks/rules-of-hooks": "warn",
     "react/jsx-no-literals": "warn",
+    "prefer-const": "warn",
   },
 };

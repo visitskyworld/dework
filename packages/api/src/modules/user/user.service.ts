@@ -54,7 +54,7 @@ export class UserService {
       }
     }
 
-    const threepidImage = this.threepidService.getImageUrl(threepid);
+    const threepidImage = await this.threepidService.getImageUrl(threepid);
     const user = await this.userRepo.save({
       ...existingUser,
       threepids: existingUser?.threepids ?? Promise.resolve([]),
@@ -67,7 +67,7 @@ export class UserService {
         existingUser?.username.startsWith("deworker") === false
           ? existingUser.username
           : await this.generateUsername(
-              this.threepidService.getUsername(threepid)
+              await this.threepidService.getUsername(threepid)
             ),
     });
 
