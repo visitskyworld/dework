@@ -42,7 +42,7 @@ export const UserSelect: FC<Props> = ({
       }}
     >
       {users?.map((user) => (
-        <Select.Option value={user.id} label={user.username}>
+        <Select.Option key={user.id} value={user.id} label={user.username}>
           <UserSelectOption user={user} />
         </Select.Option>
       ))}

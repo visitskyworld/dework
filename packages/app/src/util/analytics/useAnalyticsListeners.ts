@@ -1,12 +1,15 @@
 import _ from "lodash";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { isSSR } from "../isSSR";
 import { useAmplitude } from "./AmplitudeContext";
 
 function useAnalyticsTrackElements() {
   const amplitude = useAmplitude();
   const router = useRouter();
+  const routerRef = useRef(router);
+  routerRef.current = router;
+
   useEffect(() => {
     if (isSSR) return;
     const listener = (type: keyof WindowEventMap) => (event: unknown) => {
@@ -16,7 +19,7 @@ function useAnalyticsTrackElements() {
       const getName = (el: HTMLElement): string | undefined => {
         // @ts-expect-error
         if (!!el.name && typeof el.name === "string") return el.name;
-        if (!!el.id) return `#${el.id}`;
+        if (!!el.id && el.id !== "__next") return `#${el.id}`;
         return undefined;
       };
 
@@ -27,7 +30,8 @@ function useAnalyticsTrackElements() {
           type: element.tagName,
           host: window.location.host,
           href: window.location.href,
-          params: router.query,
+          route: routerRef.current.route,
+          params: routerRef.current.query,
         });
       }
     };
@@ -36,7 +40,7 @@ function useAnalyticsTrackElements() {
     types.forEach((t) => document.addEventListener(t, listener(t), true));
     return () =>
       types.forEach((t) => document.removeEventListener(t, listener(t), true));
-  }, [amplitude, router]);
+  }, [amplitude]);
 }
 
 function useAnalyticsTrackRoutes() {

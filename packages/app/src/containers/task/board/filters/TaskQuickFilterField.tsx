@@ -25,7 +25,7 @@ export const TaskQuickFilterField: FC<Props> = ({ value, onChange }) => {
         {Object.entries(quickFilters).map(([type, quickFilter]) => {
           const selected = value === type;
           return (
-            <Tooltip title={quickFilter.description}>
+            <Tooltip key={type} title={quickFilter.description}>
               <Tag
                 color={type === value ? "green" : undefined}
                 style={{ padding: "4px 12px", cursor: "pointer" }}
