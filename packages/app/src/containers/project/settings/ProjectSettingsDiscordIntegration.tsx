@@ -9,7 +9,7 @@ import {
   useUpdateProjectIntegration,
 } from "../../integrations/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { Alert, Typography } from "antd";
+import { Alert, Space, Typography } from "antd";
 import Link from "next/link";
 import { ConnectToDiscordFormSection } from "../../integrations/ConnectToDiscordFormSection";
 import {
@@ -32,10 +32,11 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
     organizationId,
     OrganizationIntegrationType.DISCORD
   )?.[0];
-  const integrations = useProjectIntegrations(projectId);
-  const projInt = useMemo(
-    () => integrations?.find((i) => i.type === ProjectIntegrationType.DISCORD),
-    [integrations]
+  const allIntegrations = useProjectIntegrations(projectId);
+  const discordIntegrations = useMemo(
+    () =>
+      allIntegrations?.filter((i) => i.type === ProjectIntegrationType.DISCORD),
+    [allIntegrations]
   );
 
   const createIntegration = useCreateDiscordProjectIntegration();
@@ -48,56 +49,53 @@ export const ProjectSettingsDiscordIntegration: FC<Props> = ({
 
   const updateIntegration = useUpdateProjectIntegration();
   const removeIntegration = useCallback(
-    () =>
-      updateIntegration({
-        id: projInt!.id,
-        deletedAt: new Date().toISOString(),
-      }),
-    [projInt, updateIntegration]
+    (id: string) =>
+      updateIntegration({ id, deletedAt: new Date().toISOString() }),
+    [updateIntegration]
   );
 
-  if (!!projInt && !!discordIntegration) {
+  if (!discordIntegration) {
     return (
-      <FormSection label="Discord Integration">
-        <Alert
-          message={
-            <Typography.Text>
-              Connected to{" "}
-              <Link
-                href={`https://discord.com/channels/${discordIntegration.config?.guildId}/${projInt.config.channelId}`}
-              >
-                <a target="_blank">
-                  <Typography.Text strong>
-                    {projInt.config.name}
-                  </Typography.Text>
-                </a>
-              </Link>
-            </Typography.Text>
-          }
-          type="success"
-          showIcon
-          closable
-          onClose={removeIntegration}
+      <ConnectToDiscordFormSection>
+        <ConnectOrganizationToDiscordButton
+          organizationId={organizationId}
+          type="ghost"
         />
-      </FormSection>
-    );
-  }
-
-  if (!!discordIntegration) {
-    return (
-      <CreateDiscordIntegrationForm
-        organizationId={organizationId}
-        onSubmit={handleSubmit}
-      />
+      </ConnectToDiscordFormSection>
     );
   }
 
   return (
-    <ConnectToDiscordFormSection>
-      <ConnectOrganizationToDiscordButton
-        organizationId={organizationId}
-        type="ghost"
-      />
-    </ConnectToDiscordFormSection>
+    <FormSection label="Discord Integration">
+      <Space direction="vertical" style={{ width: "100%" }}>
+        {discordIntegrations?.map((integration) => (
+          <Alert
+            key={integration.id}
+            message={
+              <Typography.Text>
+                Connected to{" "}
+                <Link
+                  href={`https://discord.com/channels/${discordIntegration.config?.guildId}/${integration.config.channelId}`}
+                >
+                  <a target="_blank">
+                    <Typography.Text strong>
+                      {integration.config.name}
+                    </Typography.Text>
+                  </a>
+                </Link>
+              </Typography.Text>
+            }
+            type="success"
+            showIcon
+            closable
+            onClose={() => removeIntegration(integration.id)}
+          />
+        ))}
+        <CreateDiscordIntegrationForm
+          organizationId={organizationId}
+          onSubmit={handleSubmit}
+        />
+      </Space>
+    </FormSection>
   );
 };

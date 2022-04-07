@@ -69,6 +69,7 @@ export const ProjectSettingsGithubIntegration: FC<
       <Space direction="vertical" style={{ width: "100%" }}>
         {projInts?.map((integration) => (
           <Alert
+            key={integration.id}
             message={
               <Typography.Text>
                 Connected to{" "}

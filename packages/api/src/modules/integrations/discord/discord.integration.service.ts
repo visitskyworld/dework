@@ -12,6 +12,7 @@ import { In, Repository } from "typeorm";
 import {
   DiscordProjectIntegrationConfig,
   DiscordProjectIntegrationFeature,
+  ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
 import { DiscordService } from "./discord.service";
@@ -80,12 +81,26 @@ export class DiscordIntegrationService {
       | TaskApplicationCreatedEvent
       | TaskSubmissionCreatedEvent
   ) {
-    if (!!event.task.parentTaskId) return;
-    const integration = await this.integrationService.findProjectIntegration(
+    const integrations = await this.integrationService.findProjectIntegrations(
       event.task.projectId,
       ProjectIntegrationType.DISCORD
     );
-    if (!integration) return;
+
+    for (const integration of integrations) {
+      await this.handleIntegration(event, integration);
+    }
+  }
+
+  async handleIntegration(
+    event:
+      | TaskUpdatedEvent
+      | TaskCreatedEvent
+      | TaskApplicationCreatedEvent
+      | TaskSubmissionCreatedEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
+  ) {
+    const task = (await this.taskService.findById(event.task.id)) as Task;
+    if (!!task.parentTaskId) return;
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
     if (!organizationIntegration) return;
@@ -106,7 +121,7 @@ export class DiscordIntegrationService {
       );
       if (event instanceof TaskUpdatedEvent) {
         const changed = _.reduce<Task, string[]>(
-          event.task,
+          task,
           (result, value, key) =>
             _.isEqual(value, event.prevTask[key as keyof Task])
               ? result
@@ -116,7 +131,7 @@ export class DiscordIntegrationService {
         this.logger.log(
           `Changed fields: ${JSON.stringify({
             fields: changed,
-            values: _.pick(event.task, changed),
+            values: _.pick(task, changed),
           })}`
         );
       }
@@ -124,10 +139,10 @@ export class DiscordIntegrationService {
       const shouldCreateChannelIfNotExists = await (async () => {
         if (event instanceof TaskApplicationCreatedEvent) return true;
         if (event instanceof TaskSubmissionCreatedEvent) return true;
-        if (event.task.status === TaskStatus.IN_PROGRESS) return true;
-        if (event.task.status === TaskStatus.IN_REVIEW) return true;
-        if (!!event.task.assignees.length) return true;
-        if (!!(await event.task.applications).length) return true;
+        if (task.status === TaskStatus.IN_PROGRESS) return true;
+        if (task.status === TaskStatus.IN_REVIEW) return true;
+        if (!!task.assignees.length) return true;
+        if (!!(await task.applications).length) return true;
         return false;
       })();
 
@@ -137,7 +152,8 @@ export class DiscordIntegrationService {
         wasChannelToPostToJustCreated,
         guild,
       } = await this.getChannelFromTask(
-        event.task,
+        task,
+        integration,
         shouldCreateChannelIfNotExists
       );
 
@@ -154,21 +170,21 @@ export class DiscordIntegrationService {
 
       if (
         event instanceof TaskCreatedEvent &&
-        event.task.status === TaskStatus.TODO &&
+        task.status === TaskStatus.TODO &&
         integration.config.features.includes(
           DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL
         )
       ) {
-        const storyPoints = event.task.storyPoints;
-        const dueDateString = !!event.task.dueDate
-          ? moment(event.task.dueDate).format("dddd MMM Do")
+        const storyPoints = task.storyPoints;
+        const dueDateString = !!task.dueDate
+          ? moment(task.dueDate).format("dddd MMM Do")
           : undefined;
-        const reward = event.task.reward;
-        const hasAssignees = event.task.assignees.length;
-        const url = await this.permalink.get(event.task);
+        const reward = task.reward;
+        const hasAssignees = task.assignees.length;
+        const url = await this.permalink.get(task);
         await this.postTaskCard(
           mainChannel,
-          event.task,
+          task,
           "New task created!",
           undefined,
           {
@@ -191,14 +207,14 @@ export class DiscordIntegrationService {
       if (
         (event instanceof TaskCreatedEvent ||
           event instanceof TaskUpdatedEvent) &&
-        event.task.status === TaskStatus.TODO &&
-        event.task.assignees.length === 0 &&
+        task.status === TaskStatus.TODO &&
+        task.assignees.length === 0 &&
         integration.config.features.includes(
           DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
         )
       ) {
         await this.discordStatusboardService.postStatusboardMessage(
-          await event.task.project,
+          await task.project,
           integration,
           mainChannel
         );
@@ -207,18 +223,18 @@ export class DiscordIntegrationService {
       const statusChanged =
         event instanceof TaskCreatedEvent ||
         (event instanceof TaskUpdatedEvent &&
-          event.task.status !== event.prevTask.status);
+          task.status !== event.prevTask.status);
 
-      if (statusChanged && event.task.status === TaskStatus.DONE) {
-        const threepids = await this.findTaskUserThreepids(event.task);
+      if (statusChanged && task.status === TaskStatus.DONE) {
+        const threepids = await this.findTaskUserThreepids(task);
         await mainChannel.send({
           embeds: [
             {
-              title: event.task.name,
+              title: task.name,
               description: `Task is now done! ${threepids
                 .map((t) => `<@${t.threepid}>`)
                 .join(" ")}`,
-              url: await this.permalink.get(event.task),
+              url: await this.permalink.get(task),
               image: !integration.config.features.includes(
                 DiscordProjectIntegrationFeature.DISABLE_GIFS_IN_TASK_DONE_MESSAGE
               )
@@ -240,63 +256,58 @@ export class DiscordIntegrationService {
         return;
       }
 
-      if (statusChanged && event.task.status === TaskStatus.IN_REVIEW) {
-        await this.postMovedIntoReview(event.task, channelToPostTo);
-      } else if (statusChanged && event.task.status === TaskStatus.DONE) {
+      if (statusChanged && task.status === TaskStatus.IN_REVIEW) {
+        await this.postMovedIntoReview(task, channelToPostTo);
+      } else if (statusChanged && task.status === TaskStatus.DONE) {
         if (
           integration.config.features.includes(
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
           )
         ) {
-          await this.postDone(channelToPostTo, event.task);
+          await this.postDone(channelToPostTo, task);
         }
       } else if (event instanceof TaskUpdatedEvent) {
-        const ownerIds = event.task.owners.map((u) => u.id).sort();
+        const ownerIds = task.owners.map((u) => u.id).sort();
         const prevOwnerIds = event.prevTask.owners.map((u) => u.id).sort();
         if (!_.isEqual(ownerIds, prevOwnerIds)) {
-          await this.postOwnerChange(event.task, channelToPostTo);
+          await this.postOwnerChange(task, channelToPostTo);
         }
 
         if (
-          event.task.dueDate?.toUTCString() !==
-          event.prevTask.dueDate?.toUTCString()
+          task.dueDate?.toUTCString() !== event.prevTask.dueDate?.toUTCString()
         ) {
-          await this.postDueDateChange(event.task, channelToPostTo);
+          await this.postDueDateChange(task, channelToPostTo);
         }
 
-        const assigneeIds = event.task.assignees.map((u) => u.id).sort();
+        const assigneeIds = task.assignees.map((u) => u.id).sort();
         const prevAssigneeIds = event.prevTask.assignees
           .map((u) => u.id)
           .sort();
         if (!_.isEqual(assigneeIds, prevAssigneeIds)) {
-          await this.postAssigneesChange(event.task, channelToPostTo);
+          await this.postAssigneesChange(task, channelToPostTo);
         }
       } else if (event instanceof TaskCreatedEvent) {
-        if (!!event.task.assignees.length) {
-          await this.postAssigneesChange(event.task, channelToPostTo);
+        if (!!task.assignees.length) {
+          await this.postAssigneesChange(task, channelToPostTo);
         } else if (wasChannelToPostToJustCreated) {
-          await this.postDefaultInitialMessage(event.task, channelToPostTo);
+          await this.postDefaultInitialMessage(task, channelToPostTo);
         }
       } else if (event instanceof TaskSubmissionCreatedEvent) {
         await this.postTaskSubmissionCreated(
-          event.task,
+          task,
           event.submission,
           channelToPostTo
         );
       } else if (event instanceof TaskApplicationCreatedEvent) {
         await this.postTaskApplicationCreated(
-          event.task,
+          task,
           event.application,
           channelToPostTo
         );
       }
 
       if (channelToPostTo.isThread()) {
-        await this.addTaskUsersToDiscordThread(
-          event.task,
-          channelToPostTo,
-          guild
-        );
+        await this.addTaskUsersToDiscordThread(task, channelToPostTo, guild);
       }
 
       // write about task applicant updates (should that be done elsewhere maybe?)
@@ -318,8 +329,12 @@ export class DiscordIntegrationService {
   ): Promise<string> {
     const task = await this.taskService.findById(taskId);
     if (!task) throw new NotFoundException("Task not found");
+    const integration = await this.getNonStatusBoardMessageChannel(
+      task.projectId
+    );
+    if (!integration) throw new NotFoundException("Integration not found");
     const { channelToPostTo, wasChannelToPostToJustCreated, guild } =
-      await this.getChannelFromTask(task, true);
+      await this.getChannelFromTask(task, integration, true);
 
     if (!channelToPostTo) {
       throw new NotFoundException(
@@ -469,11 +484,16 @@ export class DiscordIntegrationService {
   }> {
     const toChannel =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL;
+    const toStatusBoard =
+      DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE;
     const toThread =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
     const toThreadPerTask =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK;
-    if (config.features.includes(toChannel)) {
+    if (
+      config.features.includes(toChannel) ||
+      config.features.includes(toStatusBoard)
+    ) {
       return { channel, new: false };
     }
 
@@ -628,7 +648,14 @@ export class DiscordIntegrationService {
   }
 
   public async postReviewRequest(task: Task, githubUrl: string) {
-    const { channelToPostTo } = await this.getChannelFromTask(task);
+    const integration = await this.getNonStatusBoardMessageChannel(
+      task.projectId
+    );
+    if (!integration) return;
+    const { channelToPostTo } = await this.getChannelFromTask(
+      task,
+      integration
+    );
     if (!channelToPostTo) return;
     const ownerDiscordIds = await this.discord
       .getDiscordIds(task.owners.map((u) => u.id))
@@ -658,7 +685,14 @@ export class DiscordIntegrationService {
   ) {
     const task = await this.taskService.findById(taskId);
     if (!task) return;
-    const { channelToPostTo } = await this.getChannelFromTask(task);
+    const integration = await this.getNonStatusBoardMessageChannel(
+      task.projectId
+    );
+    if (!integration) return;
+    const { channelToPostTo } = await this.getChannelFromTask(
+      task,
+      integration
+    );
     if (!channelToPostTo) return;
     const firstAssignee = task.assignees?.[0];
     const assignees = await this.findTaskUserThreepids(task, false);
@@ -684,6 +718,7 @@ export class DiscordIntegrationService {
 
   private async getChannelFromTask(
     task: Task,
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>,
     shouldCreateIfNotExists?: boolean
   ): Promise<{
     mainChannel: Discord.TextChannel | undefined;
@@ -691,17 +726,6 @@ export class DiscordIntegrationService {
     wasChannelToPostToJustCreated: boolean;
     guild: Discord.Guild | undefined;
   }> {
-    const integration = await this.integrationService.findProjectIntegration(
-      task.projectId,
-      ProjectIntegrationType.DISCORD
-    );
-    if (!integration)
-      return {
-        mainChannel: undefined,
-        channelToPostTo: undefined,
-        wasChannelToPostToJustCreated: false,
-        guild: undefined,
-      };
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
     if (!organizationIntegration) {
@@ -997,5 +1021,23 @@ export class DiscordIntegrationService {
       })}`
     );
     return threepids;
+  }
+
+  private async getNonStatusBoardMessageChannel(
+    projectId: string
+  ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD> | undefined> {
+    const integrations = await this.integrationService.findProjectIntegrations(
+      projectId,
+      ProjectIntegrationType.DISCORD
+    );
+    return integrations.find((i) =>
+      i.config.features.some((f) =>
+        [
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD,
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+        ].includes(f)
+      )
+    );
   }
 }

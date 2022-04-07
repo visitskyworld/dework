@@ -83,6 +83,17 @@ export class IntegrationService {
     }) as Promise<ProjectIntegration<T>>;
   }
 
+  public async findProjectIntegrations<T extends ProjectIntegrationType>(
+    projectId: string,
+    type: T
+  ): Promise<ProjectIntegration<T>[]> {
+    return this.projectIntegrationRepo.find({
+      type,
+      projectId,
+      deletedAt: IsNull(),
+    }) as Promise<ProjectIntegration<T>[]>;
+  }
+
   public async findOrganizationIntegrationById(
     id: string
   ): Promise<OrganizationIntegration | undefined> {
