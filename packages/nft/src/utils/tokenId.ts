@@ -9,7 +9,6 @@ import {
   GetTaskNFTMetadataQuery,
   GetTaskNFTMetadataQueryVariables,
   ThreepidSource,
-  PaymentMethodType,
   User,
 } from "../graphql/types";
 
@@ -61,15 +60,10 @@ export async function getTokenMetadata(
 }
 
 function getTaskUser(user: User): TaskUser {
-  const threepidAddress = user.threepids.find(
-    (t) => t.source === ThreepidSource.metamask
-  )?.threepid;
-  const paymentMethodAddress = user.paymentMethods.find(
-    (pm) => pm.type === PaymentMethodType.METAMASK
-  )?.address;
   return {
     username: user.username,
-    address: threepidAddress ?? paymentMethodAddress,
+    address: user.threepids.find((t) => t.source === ThreepidSource.metamask)
+      ?.threepid,
     imageUrl: user.imageUrl ?? undefined,
   };
 }
