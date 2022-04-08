@@ -45,7 +45,6 @@ export class NFTService {
       .innerJoinAndSelect("task.assignees", "assignee")
       .innerJoin("project.organization", "organization")
       .leftJoin("assignee.threepids", "threepid")
-      .leftJoin("assignee.paymentMethods", "paymentMethod")
       .leftJoin("task.nfts", "nft")
       .where("organization.mintTaskNFTs = :mintTaskNFTs", {
         mintTaskNFTs: true,
