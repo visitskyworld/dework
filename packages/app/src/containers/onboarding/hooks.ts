@@ -59,18 +59,18 @@ export function useOnboarding(): {
 
   const updateOnboarding = useUpdateUserOnboarding();
   const onNext = useCallback(async () => {
+    if (currentStep === OnboardingStep.done) {
+      await updateOnboarding({
+        type: type!,
+        completedAt: new Date().toISOString(),
+      });
+    }
+
     const nextStep = steps[steps.indexOf(currentStep!) + 1];
     if (!!nextStep) {
       router.push({ query: { ...router.query, onboarding: nextStep } });
     } else if (!!currentStep) {
       router.push({ query: _.omit(router.query, "onboarding") });
-    }
-
-    if (nextStep === OnboardingStep.done) {
-      await updateOnboarding({
-        type: type!,
-        completedAt: new Date().toISOString(),
-      });
     }
   }, [updateOnboarding, currentStep, steps, router, type]);
 

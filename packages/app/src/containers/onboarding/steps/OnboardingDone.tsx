@@ -1,5 +1,5 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
 import { Avatar, Button, Card, Col, Row, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import Link from "next/link";
@@ -13,6 +13,7 @@ interface Props {
 export const OnboardingDone: FC<Props> = ({ onNext }) => {
   const { user } = useAuthContext();
   const createOrganization = useToggle();
+  const [handleNext, loadingNext] = useRunningCallback(onNext, [onNext]);
   if (!user) return null;
   return (
     <>
@@ -99,7 +100,13 @@ export const OnboardingDone: FC<Props> = ({ onNext }) => {
         </Col>
       </Row>
 
-      <Button size="large" type="primary" className="mx-auto" onClick={onNext}>
+      <Button
+        size="large"
+        type="primary"
+        className="mx-auto"
+        loading={loadingNext}
+        onClick={handleNext}
+      >
         Close
       </Button>
 
