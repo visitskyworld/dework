@@ -93,9 +93,9 @@ export class DiscordTaskApplicationThreadService {
     const name = `${applicant.username} - ${task.name}`;
     const thread = await channel.threads.create({
       name: name.length > 100 ? `${name.slice(0, 97)}...` : name,
-      type: guild.features.includes("PRIVATE_THREADS")
-        ? "GUILD_PRIVATE_THREAD"
-        : undefined,
+      // type: guild.features.includes("PRIVATE_THREADS")
+      //   ? "GUILD_PRIVATE_THREAD"
+      //   : undefined,
     });
 
     // 5. add task owner and task applicant to thread
