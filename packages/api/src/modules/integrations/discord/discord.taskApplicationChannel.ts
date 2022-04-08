@@ -31,15 +31,6 @@ export class DiscordTaskApplicationThreadService {
     const applicant = await taskApplication.user;
     const project = await task.project;
 
-    if (!task.owners.length) {
-      this.logger.warn(
-        `Cannot create task application thread for task without owners (${JSON.stringify(
-          { taskApplicationId: taskApplication.id }
-        )})`
-      );
-      return;
-    }
-
     // 1. get org discord integration
     const integration =
       await this.integrationService.findOrganizationIntegration(
@@ -67,9 +58,9 @@ export class DiscordTaskApplicationThreadService {
     const ownersDiscordIds = maybeOwnersDiscordIds.filter(
       (id): id is string => !!id
     );
-    if (!ownersDiscordIds.length || !applicantDiscordId) {
+    if (!applicantDiscordId) {
       this.logger.warn(
-        `Cannot create task application thread if task owner or task applicant isn't connected with Discord (${JSON.stringify(
+        `Cannot create task application thread if task applicant isn't connected with Discord (${JSON.stringify(
           {
             taskApplicationId: taskApplication.id,
             ownerIds: task.owners.map((u) => u.id),
@@ -125,9 +116,13 @@ export class DiscordTaskApplicationThreadService {
 
     // 6. send intro message
     await thread.send({
-      content: `<@${applicantDiscordId}> just applied! Here is a private thread with ${ownersDiscordIds
-        .map((id) => `<@${id}>`)
-        .join(", ")} (task reviewer) where you can discuss the task.`,
+      content: `<@${applicantDiscordId}> just applied! Here is a private thread ${
+        !!ownersDiscordIds.length
+          ? `with ${ownersDiscordIds
+              .map((id) => `<@${id}>`)
+              .join(", ")} (task reviewer)`
+          : ""
+      } where you can discuss the task.`,
       embeds: [
         {
           title: task.name,
