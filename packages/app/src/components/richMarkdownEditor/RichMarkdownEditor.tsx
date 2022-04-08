@@ -148,7 +148,9 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
         >
           Markdown & any file drag-and-drop supported
         </Typography.Text>
-        <MarkdownEditorButtons onCancel={handleCancel} onSave={handleSave} />
+        {mode === "update" && (
+          <MarkdownEditorButtons onCancel={handleCancel} onSave={handleSave} />
+        )}
       </Row>
     </div>
   );

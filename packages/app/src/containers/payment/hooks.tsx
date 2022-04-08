@@ -34,6 +34,7 @@ import React, { useCallback } from "react";
 import { useCreateStacksTransaction } from "@dewo/app/util/hiro";
 import { Modal } from "antd";
 import { SelectPaymentMethodModalContent } from "./SelectPaymentMethodModalContent";
+import { Constants } from "@dewo/app/util/constants";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -45,9 +46,7 @@ export const canPaymentMethodReceiveTaskReward = (
 export const canPaymentMethodSendTaskReward = (
   paymentMethod: PaymentMethod,
   reward: TaskReward
-) =>
-  paymentMethod.networks.some((n) => n.id === reward.token.networkId) &&
-  paymentMethod.tokens.some((t) => t.id === reward.token.id);
+) => paymentMethod.networks.some((n) => n.id === reward.token.networkId);
 
 export function explorerLink(payment: Payment): string | undefined {
   if (!!payment.data?.signature) {
@@ -184,9 +183,21 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
   return useCallback(
     async (task: Task, user: User) => {
+      const { BigNumber } = await import("ethers");
       const reward = task.reward;
       if (!reward) throw new Error("Task has no reward, so cannot pay");
+      if (reward.peggedToUsd && !reward.token.usdPrice) {
+        throw new Error(
+          `This task reward is pegged to USD, but we currently don't know ${reward.token.symbol}'s USD value. Write to us on Discord and we will set this up for your token.`
+        );
+      }
 
+      const amount = reward.peggedToUsd
+        ? BigNumber.from(reward.amount)
+            .mul(BigNumber.from(10).pow(reward.token.exp))
+            .div(BigNumber.from(Math.round(reward.token.usdPrice!)))
+            .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
+        : BigNumber.from(reward.amount);
       const [paymentMethods, userAddress] = await Promise.all([
         loadProjectPaymentMethods({
           variables: { projectId: task.projectId },
@@ -222,7 +233,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           const txHash = await createEthereumTransaction(
             from.address,
             userAddress,
-            reward.amount,
+            amount.toString(),
             reward.token,
             network
           );
@@ -246,7 +257,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           const signature = await createSolanaTransaction(
             from.address,
             userAddress,
-            Number(reward.amount),
+            amount.toNumber(),
             reward.token,
             network
           );
@@ -269,7 +280,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           const txId = await createStacksTransaction(
             from.address,
             userAddress,
-            reward.amount,
+            amount.toString(),
             reward.token,
             network
           );

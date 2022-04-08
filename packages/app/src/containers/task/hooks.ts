@@ -80,15 +80,20 @@ import {
   useOrganizationRoles,
 } from "../rbac/hooks";
 import { getRule, hasRule } from "../rbac/util";
+import { Constants } from "@dewo/app/util/constants";
 
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
 ): UpdateTaskRewardInput | null => {
   if (!reward?.amount || !reward?.token || !reward?.trigger) return null;
   return {
-    amount: parseFixed(String(reward.amount), reward.token.exp).toString(),
+    amount: parseFixed(
+      String(reward.amount),
+      reward.peggedToUsd ? Constants.NUM_DECIMALS_IN_USD_PEG : reward.token.exp
+    ).toString(),
     tokenId: reward.token.id,
     trigger: reward.trigger,
+    peggedToUsd: reward.peggedToUsd,
   };
 };
 
@@ -97,15 +102,36 @@ export const toTaskRewardFormValues = (
 ): TaskRewardFormValues | undefined => {
   if (!reward) return undefined;
   return {
-    amount: Number(formatFixed(reward.amount, reward.token.exp)),
+    amount: Number(
+      formatFixed(
+        reward.amount,
+        reward.peggedToUsd
+          ? Constants.NUM_DECIMALS_IN_USD_PEG
+          : reward.token.exp
+      )
+    ),
     networkId: reward.token.networkId,
     token: reward.token,
     trigger: reward.trigger,
+    peggedToUsd: reward.peggedToUsd,
   };
 };
 
-export const formatTaskReward = (reward: TaskReward) =>
-  [formatFixed(reward.amount, reward.token.exp), reward.token.symbol].join(" ");
+export const formatTaskReward = (reward: TaskReward) => {
+  if (reward.peggedToUsd) {
+    return [
+      "$" +
+        Number(formatFixed(reward.amount, Constants.NUM_DECIMALS_IN_USD_PEG)),
+      "in",
+      reward.token.symbol,
+    ].join(" ");
+  } else {
+    return [
+      Number(formatFixed(reward.amount, reward.token.exp)),
+      reward.token.symbol,
+    ].join(" ");
+  }
+};
 
 export const formatTaskRewardAsUSD = (
   reward: TaskReward

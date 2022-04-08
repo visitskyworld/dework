@@ -12,4 +12,7 @@ export class UpdateTaskRewardInput {
 
   @Field(() => TaskRewardTrigger)
   public trigger!: TaskRewardTrigger;
+
+  @Field(() => Boolean, { nullable: true })
+  public peggedToUsd?: boolean;
 }

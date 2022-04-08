@@ -18,6 +18,10 @@ export class TaskReward extends Audit {
   @Field()
   public amount!: string;
 
+  @Column({ default: false })
+  @Field()
+  public peggedToUsd!: boolean;
+
   @JoinColumn()
   @ManyToOne(() => PaymentToken)
   @Field(() => PaymentToken)

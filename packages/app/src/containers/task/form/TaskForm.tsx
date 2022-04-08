@@ -204,7 +204,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             <RichMarkdownEditor
               initialValue={initialValues?.description ?? ""}
               mode={mode}
-              editable={canChange("description") ?? false}
+              editable={!!canChange("description")}
             />
           </Form.Item>
 

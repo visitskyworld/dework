@@ -49,12 +49,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
                   flexWrap: "nowrap",
                 }}
               >
-                {shouldRenderReward && (
-                  <TaskRewardTag
-                    reward={task.reward!}
-                    style={{ maxWidth: 100 }}
-                  />
-                )}
+                {shouldRenderReward && <TaskRewardTag reward={task.reward!} />}
                 {/* make reactions/button right-aligned */}
                 {!shouldRenderReactions && <div />}
                 {shouldRenderReactions && (

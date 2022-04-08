@@ -270,6 +270,7 @@ export const taskReward = gql`
     id
     amount
     trigger
+    peggedToUsd
     token {
       ...PaymentToken
     }

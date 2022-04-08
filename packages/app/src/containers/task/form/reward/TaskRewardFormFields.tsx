@@ -14,6 +14,7 @@ import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 import { AddProjectPaymentMethodModal } from "../../../payment/project/AddProjectPaymentMethodModal";
 import { TaskRewardFormValues } from "../types";
+import { PegToUsdCheckbox } from "./PegToUsdCheckbox";
 
 export async function validator(
   _rule: unknown, // RuleObject,
@@ -79,13 +80,20 @@ export const TaskRewardFormFields: FC<Props> = ({
     [onChange, value]
   );
   const handleChangeToken = useCallback(
-    (tokenId: string) =>
+    (tokenId: string) => {
+      const token = tokens.find((t) => t.id === tokenId);
       onChange?.({
         ...value,
         trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-        token: tokens.find((t) => t.id === tokenId),
-      }),
+        token,
+        peggedToUsd: value?.peggedToUsd && !!token?.usdPrice,
+      });
+    },
     [onChange, value, tokens]
+  );
+  const handleChangePeggedToUsd = useCallback(
+    (peggedToUsd: boolean) => onChange?.({ ...value, peggedToUsd }),
+    [onChange, value]
   );
 
   const handleClear = useCallback(() => {
@@ -162,17 +170,16 @@ export const TaskRewardFormFields: FC<Props> = ({
                 onChange={handleChangeToken}
               >
                 {tokens.map((token) => (
-                  <Select.Option
-                    key={token.id}
-                    value={token.id}
-                    label={token.symbol}
-                  >
-                    {token.symbol}
+                  <Select.Option key={token.id} value={token.id}>
+                    {value?.peggedToUsd ? `$ in ${token.symbol}` : token.symbol}
                   </Select.Option>
                 ))}
               </Select>
             }
           />
+        )}
+        {!!value?.networkId && (
+          <PegToUsdCheckbox value={value} onChange={handleChangePeggedToUsd} />
         )}
       </Space>
       <AddProjectPaymentMethodModal

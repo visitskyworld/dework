@@ -1019,6 +1019,7 @@ export interface CreateTaskMutation_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskMutation_task_reward_token;
   payment: CreateTaskMutation_task_reward_payment | null;
 }
@@ -1154,6 +1155,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskMutation_task_parentTask_subtasks_reward_token;
   payment: CreateTaskMutation_task_parentTask_subtasks_reward_payment | null;
 }
@@ -1369,6 +1371,7 @@ export interface UpdateTaskMutation_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: UpdateTaskMutation_task_reward_token;
   payment: UpdateTaskMutation_task_reward_payment | null;
 }
@@ -1549,6 +1552,7 @@ export interface CreateTaskApplicationMutation_application_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskApplicationMutation_application_task_reward_token;
   payment: CreateTaskApplicationMutation_application_task_reward_payment | null;
 }
@@ -1735,6 +1739,7 @@ export interface DeleteTaskApplicationMutation_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: DeleteTaskApplicationMutation_task_reward_token;
   payment: DeleteTaskApplicationMutation_task_reward_payment | null;
 }
@@ -1915,6 +1920,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token;
   payment: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payment | null;
 }
@@ -2101,6 +2107,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token;
   payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payment | null;
 }
@@ -3153,6 +3160,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskPaymentsMutation_tasks_subtasks_reward_token;
   payment: CreateTaskPaymentsMutation_tasks_subtasks_reward_payment | null;
 }
@@ -3309,6 +3317,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTaskPaymentsMutation_tasks_reward_token;
   payment: CreateTaskPaymentsMutation_tasks_reward_payment | null;
 }
@@ -3693,6 +3702,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: CreateTasksFromGithubIssuesMutation_project_tasks_reward_token;
   payment: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payment | null;
 }
@@ -4686,6 +4696,7 @@ export interface UserTasksQuery_user_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: UserTasksQuery_user_tasks_reward_token;
   payment: UserTasksQuery_user_tasks_reward_payment | null;
 }
@@ -5328,6 +5339,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetOrganizationTasksQuery_organization_tasks_reward_token;
   payment: GetOrganizationTasksQuery_organization_tasks_reward_payment | null;
 }
@@ -5704,6 +5716,7 @@ export interface GetProjectTasksQuery_project_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetProjectTasksQuery_project_tasks_reward_token;
   payment: GetProjectTasksQuery_project_tasks_reward_payment | null;
 }
@@ -5923,6 +5936,7 @@ export interface GetTaskQuery_task_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetTaskQuery_task_subtasks_reward_token;
   payment: GetTaskQuery_task_subtasks_reward_payment | null;
 }
@@ -6079,6 +6093,7 @@ export interface GetTaskQuery_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetTaskQuery_task_reward_token;
   payment: GetTaskQuery_task_reward_payment | null;
 }
@@ -6474,6 +6489,7 @@ export interface GetTasksQuery_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetTasksQuery_tasks_reward_token;
   payment: GetTasksQuery_tasks_reward_payment | null;
 }
@@ -6686,6 +6702,7 @@ export interface GetTasksToPayQuery_tasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: GetTasksToPayQuery_tasks_reward_token;
   payment: GetTasksToPayQuery_tasks_reward_payment | null;
 }
@@ -7259,6 +7276,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskCreatedSubscription_task_subtasks_reward_token;
   payment: TaskCreatedSubscription_task_subtasks_reward_payment | null;
 }
@@ -7415,6 +7433,7 @@ export interface TaskCreatedSubscription_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskCreatedSubscription_task_reward_token;
   payment: TaskCreatedSubscription_task_reward_payment | null;
 }
@@ -7756,6 +7775,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskUpdatedSubscription_task_subtasks_reward_token;
   payment: TaskUpdatedSubscription_task_subtasks_reward_payment | null;
 }
@@ -7912,6 +7932,7 @@ export interface TaskUpdatedSubscription_task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskUpdatedSubscription_task_reward_token;
   payment: TaskUpdatedSubscription_task_reward_payment | null;
 }
@@ -8285,6 +8306,7 @@ export interface TaskRewardUpdatedSubscription_taskReward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskRewardUpdatedSubscription_taskReward_token;
   payment: TaskRewardUpdatedSubscription_taskReward_payment | null;
 }
@@ -9000,6 +9022,7 @@ export interface TaskReward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskReward_token;
   payment: TaskReward_payment | null;
 }
@@ -9304,6 +9327,7 @@ export interface Task_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: Task_reward_token;
   payment: Task_reward_payment | null;
 }
@@ -9476,6 +9500,7 @@ export interface TaskWithOrganization_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskWithOrganization_reward_token;
   payment: TaskWithOrganization_reward_payment | null;
 }
@@ -9744,6 +9769,7 @@ export interface TaskDetails_subtasks_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskDetails_subtasks_reward_token;
   payment: TaskDetails_subtasks_reward_payment | null;
 }
@@ -9900,6 +9926,7 @@ export interface TaskDetails_reward {
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
   token: TaskDetails_reward_token;
   payment: TaskDetails_reward_payment | null;
 }
@@ -10781,6 +10808,7 @@ export interface UpdateTaskRewardInput {
   amount: string;
   tokenId: Scalar.UUID;
   trigger: TaskRewardTrigger;
+  peggedToUsd?: boolean | null;
 }
 
 export interface UpdateTaskSectionInput {

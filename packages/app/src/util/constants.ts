@@ -12,6 +12,7 @@ export const Constants = {
   AMPLITUDE_API_KEY: nextConfig.AMPLITUDE_API_KEY as string,
   APOLLO_QUERY_LOGGING: nextConfig.APOLLO_QUERY_LOGGING as boolean,
   ENVIRONMENT: nextConfig.ENVIRONMENT as "prod" | "demo" | "dev",
+  NUM_DECIMALS_IN_USD_PEG: 6,
   hotjarConfig: { ID: 2731946, version: 6 },
 };
 

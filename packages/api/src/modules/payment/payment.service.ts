@@ -19,6 +19,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, In, IsNull, Repository } from "typeorm";
 import { CreatePaymentMethodInput } from "./dto/CreatePaymentMethodInput";
+import { PriceService } from "./price.service";
 
 @Injectable()
 export class PaymentService {
@@ -30,7 +31,8 @@ export class PaymentService {
     @InjectRepository(PaymentNetwork)
     private readonly paymentNetworkRepo: Repository<PaymentNetwork>,
     @InjectRepository(PaymentToken)
-    private readonly paymentTokenRepo: Repository<PaymentToken>
+    private readonly paymentTokenRepo: Repository<PaymentToken>,
+    private readonly priceService: PriceService
   ) {}
 
   public async create(
@@ -154,12 +156,24 @@ export class PaymentService {
       address: address ?? IsNull(),
       identifier: partial.identifier ?? IsNull(),
     });
-    if (!!existing) return existing;
+    const usdPrice =
+      !!address && partial.type === PaymentTokenType.ERC20
+        ? await this.priceService.lookupERC20TokenPrice(address)
+        : undefined;
+
+    if (!!existing) {
+      if (!!usdPrice) {
+        await this.paymentTokenRepo.update({ id: existing.id }, { usdPrice });
+        existing.usdPrice = usdPrice;
+      }
+      return existing;
+    }
 
     const created = await this.paymentTokenRepo.save({
       exp: 0,
       ...partial,
       address,
+      usdPrice,
     });
     return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
   }

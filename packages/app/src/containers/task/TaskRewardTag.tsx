@@ -1,17 +1,16 @@
 import { TaskReward } from "@dewo/app/graphql/types";
 import { Tag, Tooltip } from "antd";
 import * as Icons from "@ant-design/icons";
-import React, { CSSProperties, FC } from "react";
+import React, { FC } from "react";
 import { formatTaskReward } from "./hooks";
 
 interface Props {
   reward: TaskReward;
-  style?: CSSProperties;
 }
 
-export const TaskRewardTag: FC<Props> = ({ reward, style }) => (
+export const TaskRewardTag: FC<Props> = ({ reward }) => (
   <Tooltip title={formatTaskReward(reward)}>
-    <Tag style={{ backgroundColor: "white", color: "black", ...style }}>
+    <Tag style={{ backgroundColor: "white", color: "black", minWidth: 0 }}>
       <Icons.DollarOutlined />
       <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
         {formatTaskReward(reward)}

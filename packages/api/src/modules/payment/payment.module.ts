@@ -10,6 +10,7 @@ import { PaymentPoller } from "./payment.poller";
 import { PaymentResolver } from "./payment.resolver";
 import { PaymentService } from "./payment.service";
 import { PricePoller } from "./price.poller";
+import { PriceService } from "./price.service";
 import { TokenService } from "./token.service";
 
 @Module({
@@ -22,7 +23,7 @@ import { TokenService } from "./token.service";
       PaymentToken,
     ]),
   ],
-  providers: [PaymentResolver, PaymentService, TokenService],
+  providers: [PaymentResolver, PaymentService, TokenService, PriceService],
   controllers: [PricePoller, PaymentPoller],
   exports: [PaymentService, TokenService],
 })

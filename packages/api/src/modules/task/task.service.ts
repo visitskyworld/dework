@@ -294,7 +294,12 @@ export class TaskService {
         );
     }
 
-    if (!projectIds && !ids && (!userId || userId !== requestingUserId)) {
+    if (
+      !projectIds &&
+      !ids &&
+      !rewardIds &&
+      (!userId || userId !== requestingUserId)
+    ) {
       query = query
         .leftJoin(
           Rule,
