@@ -29,6 +29,7 @@ interface Props {
 const MANAGE_CHANNELS = BigInt(0x10),
   MANAGE_ROLES = BigInt(0x10000000),
   SEND_MESSAGES = BigInt(0x800),
+  CREATE_PRIVATE_THREADS = BigInt(0x1000000000),
   MANAGE_THREADS = BigInt(0x400000000);
 
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
@@ -55,6 +56,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
     discordPermissions &&
     discordPermissions & MANAGE_CHANNELS &&
     discordPermissions & SEND_MESSAGES &&
+    discordPermissions & CREATE_PRIVATE_THREADS &&
     discordPermissions & MANAGE_THREADS &&
     discordPermissions & MANAGE_ROLES;
 

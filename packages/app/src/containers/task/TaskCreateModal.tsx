@@ -5,9 +5,10 @@ import { Button, message, Modal, Typography } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTaskFromFormValues } from "./hooks";
 import { TaskForm } from "./form/TaskForm";
-import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { AtLeast } from "@dewo/app/types/general";
 import { TaskFormValues } from "./form/types";
+import { useRouter } from "next/router";
+import { useProject } from "../project/hooks";
 
 const buildKey = (initialValues: Partial<TaskFormValues>) =>
   `TaskCreateModal.storedValues(${JSON.stringify(
@@ -44,14 +45,15 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     } catch {
       return undefined;
     }
-  }, [storedValuesKey]);
-  const clearStoredValues = useCallback(() => {
-    localStorage.removeItem(storedValuesKey);
-  }, [storedValuesKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedValuesKey, visible]);
+  const clearStoredValues = useCallback(
+    () => localStorage.removeItem(storedValuesKey),
+    [storedValuesKey]
+  );
   const setStoredValues = useCallback(
-    (values: Partial<TaskFormValues>) => {
-      localStorage.setItem(storedValuesKey, JSON.stringify(values));
-    },
+    (values: Partial<TaskFormValues>) =>
+      localStorage.setItem(storedValuesKey, JSON.stringify(values)),
     [storedValuesKey]
   );
 
@@ -75,7 +77,8 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   }, [initialValues, storedValues, projectId, canCreateTaskOwner, user]);
 
   const createTask = useCreateTaskFromFormValues();
-  const openTask = useNavigateToTaskFn();
+  const { project } = useProject(projectId);
+  const router = useRouter();
   const handleSubmit = useCallback(
     async (values: TaskFormValues) => {
       const task = await createTask(values, projectId);
@@ -86,7 +89,13 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
             <Typography.Text style={{ marginRight: 16 }}>
               Task created
             </Typography.Text>
-            <Button type="ghost" size="small" onClick={() => openTask(task.id)}>
+            <Button
+              type="ghost"
+              size="small"
+              onClick={() =>
+                router.push(`${project?.permalink}?taskId=${task.id}`)
+              }
+            >
               View
             </Button>
           </>
@@ -95,7 +104,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
 
       clearStoredValues();
     },
-    [createTask, onDone, projectId, openTask, clearStoredValues]
+    [createTask, onDone, projectId, project, router, clearStoredValues]
   );
   return (
     <Modal

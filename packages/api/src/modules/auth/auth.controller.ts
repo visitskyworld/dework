@@ -73,6 +73,7 @@ export class AuthController {
           Discord.Permissions.FLAGS.MANAGE_CHANNELS,
           Discord.Permissions.FLAGS.MANAGE_ROLES,
           Discord.Permissions.FLAGS.SEND_MESSAGES,
+          Discord.Permissions.FLAGS.CREATE_PRIVATE_THREADS,
         ]).bitfield.toString(),
         scope: "bot",
         client_id: this.config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_ID"),

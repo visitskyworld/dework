@@ -115,9 +115,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
       onClickLink={handleLinkClick}
       readOnly={!editable}
       disableExtensions={["emoji"]}
-      handleDOMEvents={{
-        drop: dropHandler,
-      }}
+      handleDOMEvents={{ drop: dropHandler }}
     />
   );
 

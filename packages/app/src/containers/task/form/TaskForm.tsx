@@ -99,14 +99,11 @@ export const TaskForm: FC<TaskFormProps> = ({
       try {
         setLoading(true);
         await onSubmit(values);
-        if (mode === "create") {
-          form.resetFields();
-        }
       } finally {
         setLoading(false);
       }
     },
-    [onSubmit, form, mode]
+    [onSubmit]
   );
 
   const debouncedSubmit = useMemo(
