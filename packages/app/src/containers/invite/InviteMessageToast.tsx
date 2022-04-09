@@ -14,11 +14,10 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
-import { UserDetails } from "@dewo/app/graphql/types";
+import { ProjectRole, UserDetails } from "@dewo/app/graphql/types";
 import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
-import { projectRoleToString } from "../project/settings/strings";
 import { InviteMessage } from "./InviteMessage";
 
 const messageBottomStyle: CSSProperties = {
@@ -66,7 +65,7 @@ export const InviteMessageToast: FC = () => {
       return (
         <InviteMessage
           inviter={inviter}
-          role="DAO admin"
+          permission="manage"
           to={invite.organization.name}
         />
       );
@@ -76,7 +75,9 @@ export const InviteMessageToast: FC = () => {
       return (
         <InviteMessage
           inviter={inviter}
-          role={projectRoleToString[invite.projectRole].toLowerCase()}
+          permission={
+            invite.projectRole === ProjectRole.ADMIN ? "manage" : "view"
+          }
           to={invite.project.name}
         />
       );
