@@ -1,15 +1,19 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Divider, Input, Row } from "antd";
-import * as Icons from "@ant-design/icons";
-import { TaskList, TaskListRow } from "../list/TaskList";
+import { Divider } from "antd";
+import { TaskList, TaskListRow } from "../../list/TaskList";
 import { TaskDetails, TaskStatus } from "@dewo/app/graphql/types";
-import { useCreateTask } from "../hooks";
+import { useCreateTask } from "../../hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { eatClick } from "@dewo/app/util/eatClick";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import _ from "lodash";
-import { TextAreaRef } from "antd/lib/input/TextArea";
+import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
+import { NewSubtaskInput } from "./NewSubtaskInput";
+
+export interface SubtaskFormValues {
+  name: string;
+  description: string;
+}
 
 interface Props {
   projectId: string;
@@ -26,31 +30,25 @@ export const SubtaskInput: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
   const createTask = useCreateTask();
-  const subTaskInputRef = useRef<TextAreaRef>(null);
+
   const hasPermission = usePermissionFn();
   const canCreateSubtask = !task || hasPermission("update", task, "subtasks");
 
   const adding = useToggle();
-  const [newName, setNewName] = useState("");
 
-  const focusInput = useCallback(
-    () => subTaskInputRef.current?.focus(),
-    [subTaskInputRef]
-  );
   const handleAddTask = useCallback(
-    async (e) => {
-      eatClick(e);
-      if (!newName) return;
+    async (newSubtask: SubtaskFormValues) => {
       try {
         adding.toggleOn();
         const subtask = !!task
           ? await createTask({
-              name: newName,
+              ...newSubtask,
               parentTaskId: task.id,
               status: TaskStatus.TODO,
               ownerIds: !!user ? [user.id] : [],
               assigneeIds: [],
               projectId,
+              reward: undefined,
             })
           : undefined;
 
@@ -59,18 +57,17 @@ export const SubtaskInput: FC<Props> = ({
           {
             key: subtask?.id ?? Date.now().toString(),
             task: subtask,
-            name: newName,
+            name: newSubtask.name,
             assigneeIds: [],
             status: TaskStatus.TODO,
             dueDate: subtask?.dueDate ?? null,
           },
         ]);
-        setNewName("");
       } finally {
         adding.toggleOff();
       }
     },
-    [adding, onChange, createTask, task, projectId, value, user, newName]
+    [adding, onChange, createTask, task, projectId, value, user]
   );
 
   const rows = useMemo(() => {
@@ -104,39 +101,27 @@ export const SubtaskInput: FC<Props> = ({
     [onChange, rows]
   );
 
+  const navigateToTask = useNavigateToTaskFn();
+  const handleClick = useCallback(
+    (row: TaskListRow) => !!row.task && navigateToTask(row.task.id),
+    [navigateToTask]
+  );
+
   return (
     <div>
       {!!rows.length && <Divider style={{ marginBottom: 0 }}>Subtasks</Divider>}
       <TaskList
         rows={rows}
         size="small"
+        nameEditable={false}
+        onClick={handleClick}
         showHeader={false}
         projectId={projectId}
         onChange={handleChange}
         onDelete={handleDelete}
       />
       {canCreateSubtask && (
-        <Row align="middle" style={{ gap: 4 }}>
-          <Button
-            icon={<Icons.PlusOutlined />}
-            shape="circle"
-            size="small"
-            type="ghost"
-            loading={adding.isOn}
-            onClick={!!newName ? handleAddTask : focusInput}
-          />
-          <Input.TextArea
-            autoSize
-            ref={subTaskInputRef}
-            className="dewo-field dewo-field-focus-border"
-            style={{ flex: 1 }}
-            placeholder="Add subtask..."
-            disabled={adding.isOn}
-            value={newName}
-            onChange={(event) => setNewName(event.target.value)}
-            onPressEnter={handleAddTask}
-          />
-        </Row>
+        <NewSubtaskInput onSubmit={handleAddTask} disabled={adding.isOn} />
       )}
     </div>
   );

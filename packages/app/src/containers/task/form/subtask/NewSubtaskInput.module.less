@@ -1,0 +1,13 @@
+@import "../../../../../styles/theme.less";
+
+.card {
+  transition: background 0.3s ease-in-out;
+  border-radius: @border-radius-base;
+  padding: 8px;
+  margin: 0 -8px;
+}
+.activeCard {
+  &.card {
+    background: fade(@component-background, 5%);
+  }
+}

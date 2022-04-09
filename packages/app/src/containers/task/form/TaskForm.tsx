@@ -24,7 +24,7 @@ import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import _ from "lodash";
-import { SubtaskInput } from "./SubtaskInput";
+import { SubtaskInput } from "./subtask/SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
@@ -147,7 +147,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             <Button
               type="text"
               size="small"
-              style={{ marginLeft: -12 }}
               icon={<Icons.CaretLeftFilled className="text-secondary" />}
               onClick={() => navigateToTask(task.parentTask!.id)}
             >
@@ -171,7 +170,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               autoFocus={mode === "create"}
               className="dewo-field dewo-field-focus-border ant-typography-h3 overflow-y-hidden"
               placeholder="Enter a task name..."
-              style={{ marginLeft: -12, marginRight: -12 }}
+              style={{ paddingLeft: 4 }}
             />
           </Form.Item>
 

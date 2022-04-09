@@ -19,7 +19,7 @@ export const theme: typeof DefaultTheme = {
   background: "none",
 
   code: "#c5c8c6",
-  codeBackground: "#282828",
+  codeBackground: "#1f1f28",
   codeBorder: "#00000000",
   codeTag: "#000000",
 

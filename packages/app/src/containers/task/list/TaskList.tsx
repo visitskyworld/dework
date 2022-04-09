@@ -216,6 +216,10 @@ export const TaskList: FC<Props> = ({
                   (e.target as HTMLInputElement).blur();
                 }}
               />
+            ) : size === "small" ? (
+              <Typography.Paragraph style={{ padding: 8, marginBottom: 0 }}>
+                {name}
+              </Typography.Paragraph>
             ) : (
               <Typography.Title level={5} style={{ marginBottom: 0 }}>
                 {name}
@@ -323,7 +327,7 @@ export const TaskList: FC<Props> = ({
                 onClick={eatClick}
                 overlay={
                   <Menu onClick={(e) => eatClick(e.domEvent)}>
-                    {!!row.task && (
+                    {!!row.task && !onClick && (
                       <Menu.Item
                         key="details"
                         icon={<Icons.BarsOutlined />}
@@ -337,9 +341,10 @@ export const TaskList: FC<Props> = ({
                         icon={null}
                         title="Convert this task to normal?"
                         okText="Yes"
-                        onConfirm={() =>
-                          updateTask({ id: row.task!.id, parentTaskId: null })
-                        }
+                        onConfirm={(e) => {
+                          e && eatClick(e);
+                          updateTask({ id: row.task!.id, parentTaskId: null });
+                        }}
                       >
                         <Menu.Item
                           key="normalTask"
@@ -355,7 +360,10 @@ export const TaskList: FC<Props> = ({
                         title="Delete this subtask?"
                         okType="danger"
                         okText="Delete"
-                        onConfirm={() => handleDelete(row)}
+                        onConfirm={(e) => {
+                          e && eatClick(e);
+                          handleDelete(row);
+                        }}
                       >
                         <Menu.Item
                           key="delete"
