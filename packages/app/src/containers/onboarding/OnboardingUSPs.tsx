@@ -20,6 +20,7 @@ export const OnboardingUSPs: FC<Props> = ({ usps }) => {
       >
         {usps.map((usp) => (
           <TypographyComponent
+            key={usp}
             level={5}
             className="mx-auto w-full"
             style={{ whiteSpace: "break-spaces", fontWeight: 500 }}

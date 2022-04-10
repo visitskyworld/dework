@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
@@ -19,12 +20,15 @@ import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 import { InviteMessage } from "./InviteMessage";
+import { useOnboarding } from "../onboarding/hooks";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
 };
 
 export const InviteMessageToast: FC = () => {
+  const showingOnboarding = !!useOnboarding().step;
+
   const router = useRouter();
   const inviteId = router.query.inviteId as string | undefined;
   const invite = useInvite(inviteId);
@@ -42,6 +46,9 @@ export const InviteMessageToast: FC = () => {
   const connectDiscordModalVisible = useToggle();
 
   const acceptInvite = useAcceptInvite();
+
+  const routerRef = useRef(router);
+  routerRef.current = router;
   const handleAcceptInvite = useCallback(async () => {
     await acceptInvite(inviteId!);
     message.destroy();
@@ -50,12 +57,12 @@ export const InviteMessageToast: FC = () => {
       type: "success",
       style: messageBottomStyle,
     });
-    router.push({
-      pathname: router.pathname,
-      query: _.omit(router.query, ["inviteId"]),
+    routerRef.current.push({
+      pathname: routerRef.current.pathname,
+      query: _.omit(routerRef.current.query, ["inviteId"]),
     });
     tokenGatedModalVisible.toggleOff();
-  }, [acceptInvite, tokenGatedModalVisible, inviteId, router]);
+  }, [acceptInvite, tokenGatedModalVisible, inviteId]);
 
   const inviteMessage = useMemo(() => {
     if (!invite) return undefined;
@@ -122,7 +129,7 @@ export const InviteMessageToast: FC = () => {
   };
 
   useEffect(() => {
-    if (!invite) return;
+    if (!invite || showingOnboarding) return;
 
     const handleClick = async () => {
       message.destroy();
@@ -158,7 +165,7 @@ export const InviteMessageToast: FC = () => {
       style: messageBottomStyle,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [!!invite, authenticated]);
+  }, [!!invite, showingOnboarding, authenticated]);
 
   return (
     <>

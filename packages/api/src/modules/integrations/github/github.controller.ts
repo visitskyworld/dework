@@ -40,7 +40,7 @@ function PreventConcurrency(): MethodDecorator {
 
 @Controller("github")
 export class GithubController {
-  private readonly logger = new Logger("GithubController");
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly configService: ConfigService<ConfigType>,

@@ -1,12 +1,4 @@
-import React, {
-  Children,
-  cloneElement,
-  CSSProperties,
-  FC,
-  isValidElement,
-  useCallback,
-  useState,
-} from "react";
+import React, { CSSProperties, FC, useCallback } from "react";
 import { useUploadFile } from "./hooks";
 import { FilePicker } from "@dewo/app/components/FilePicker";
 
@@ -20,31 +12,20 @@ export const ImageUploadInput: FC<FileUploadInputProps> = ({
   style,
   onChange,
 }) => {
-  const [loading, setLoading] = useState(false);
   const uploadImage = useUploadFile();
   const handleSelectImage = useCallback(
     async ([image]: [File]) => {
       try {
-        setLoading(true);
         const imageUrl = await uploadImage(image);
         await onChange?.(imageUrl);
-      } finally {
-        setLoading(false);
-      }
+      } catch {}
     },
     [uploadImage, onChange]
   );
 
-  const childrenWithProps = Children.map(children, (child) => {
-    if (isValidElement(child)) {
-      return cloneElement(child, { loading });
-    }
-    return child;
-  });
-
   return (
     <FilePicker accept="image/*" style={style} onSelect={handleSelectImage}>
-      {childrenWithProps}
+      {children}
     </FilePicker>
   );
 };
