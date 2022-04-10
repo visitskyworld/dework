@@ -16,7 +16,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 import { Diff, DiffEdit } from "deep-diff";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
-import { STATUS_LABEL } from "../../board/util";
+import { STATUS_LABEL } from "../board/util";
 
 interface ActivityFeedItem {
   date: string;
