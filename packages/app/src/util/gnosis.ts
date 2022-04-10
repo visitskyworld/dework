@@ -4,13 +4,6 @@ import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { PaymentNetwork } from "../graphql/types";
 import { Signer } from "ethers";
 
-const safeServiceUrlByNetworkSlug: Record<string, string> = {
-  "ethereum-mainnet": "https://safe-transaction.gnosis.io",
-  "ethereum-rinkeby": "https://safe-transaction.rinkeby.gnosis.io",
-  "gnosis-chain": "https://safe-transaction.xdai.gnosis.io",
-  "polygon-mainnet": "https://safe-transaction.polygon.gnosis.io",
-};
-
 export function useRequestSafe() {
   const requestSigner = useRequestSigner();
   return useCallback(
@@ -104,7 +97,7 @@ export function useProposeTransaction(): (
   const isSafeOwner = useIsGnosisSafeOwner();
   return useCallback(
     async (safeAddress, transactions, network) => {
-      const safeServiceUrl = safeServiceUrlByNetworkSlug[network.slug];
+      const safeServiceUrl = network.config?.gnosisSafe?.serviceUrl;
       if (!safeServiceUrl) {
         throw new Error(`No safe service for ${network.slug}`);
       }

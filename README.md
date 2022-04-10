@@ -149,7 +149,7 @@ BEGIN
       "explorerUrl": "https://cchain.explorer.avax.network",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.avalanche.gnosis.io",
-        "addressPrefix": "avalanche"
+        "addressPrefix": "avax"
       }
     }' AS json)
   ), (
