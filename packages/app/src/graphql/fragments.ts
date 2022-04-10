@@ -72,6 +72,20 @@ export const paymentNetwork = gql`
   }
 `;
 
+export const auditLogEvent = gql`
+  fragment AuditLogEvent on AuditLogEvent {
+    id
+    createdAt
+    user {
+      ...User
+    }
+    sessionId
+    diff
+  }
+
+  ${user}
+`;
+
 export const paymentToken = gql`
   fragment PaymentToken on PaymentToken {
     id
@@ -518,6 +532,9 @@ export const taskDetails = gql`
         ...Payment
       }
     }
+    auditLog {
+      ...AuditLogEvent
+    }
   }
 
   ${task}
@@ -530,6 +547,7 @@ export const taskDetails = gql`
   ${taskApplication}
   ${taskSubmission}
   ${payment}
+  ${auditLogEvent}
 `;
 
 export const userProfile = gql`

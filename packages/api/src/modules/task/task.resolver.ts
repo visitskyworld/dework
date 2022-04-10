@@ -42,6 +42,8 @@ import _ from "lodash";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { RbacService } from "../rbac/rbac.service";
 import { OrganizationService } from "../organization/organization.service";
+import { AuditLogEvent } from "@dewo/api/models/AuditLogEvent";
+import { AuditLogService } from "../auditLog/auditLog.service";
 
 @Injectable()
 @Resolver(() => Task)
@@ -49,7 +51,8 @@ export class TaskResolver {
   constructor(
     private readonly taskService: TaskService,
     private readonly permalinkService: PermalinkService,
-    private readonly rbacService: RbacService
+    private readonly rbacService: RbacService,
+    private readonly auditLogService: AuditLogService
   ) {}
 
   @ResolveField(() => [TaskTag])
@@ -66,6 +69,11 @@ export class TaskResolver {
     if (!!task.assignees) return task.assignees;
     const refetched = await this.taskService.findById(task.id);
     return refetched!.assignees;
+  }
+
+  @ResolveField(() => [AuditLogEvent])
+  public async auditLog(@Parent() task: Task): Promise<AuditLogEvent[]> {
+    return this.auditLogService.get(task);
   }
 
   @ResolveField(() => [User])
@@ -338,22 +346,26 @@ export class TaskResolver {
     })
   )
   public async updateTask(
+    @Context("user") user: User,
     @Args("input") input: UpdateTaskInput
   ): Promise<Task> {
-    const task = await this.taskService.update({
-      ...input,
-      tags: !!input.tagIds
-        ? (input.tagIds.map((id) => ({ id })) as any)
-        : undefined,
-      assignees: !!input.assigneeIds
-        ? (input.assigneeIds.map((id) => ({ id })) as any)
-        : undefined,
-      owners: !!input.ownerIds
-        ? (input.ownerIds.map((id) => ({ id })) as any)
-        : !!input.ownerId
-        ? [{ id: input.ownerId }]
-        : undefined,
-    });
+    const task = await this.taskService.update(
+      {
+        ...input,
+        tags: !!input.tagIds
+          ? (input.tagIds.map((id) => ({ id })) as any)
+          : undefined,
+        assignees: !!input.assigneeIds
+          ? (input.assigneeIds.map((id) => ({ id })) as any)
+          : undefined,
+        owners: !!input.ownerIds
+          ? (input.ownerIds.map((id) => ({ id })) as any)
+          : !!input.ownerId
+          ? [{ id: input.ownerId }]
+          : undefined,
+      },
+      user.id
+    );
 
     if (!!input.assigneeIds?.length) {
       const project = await task.project;
@@ -382,9 +394,10 @@ export class TaskResolver {
     })
   )
   public async deleteTask(
+    @Context("user") user: User,
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Task> {
-    return this.taskService.update({ id, deletedAt: new Date() });
+    return this.taskService.update({ id, deletedAt: new Date() }, user.id);
   }
 
   @Mutation(() => [Task])

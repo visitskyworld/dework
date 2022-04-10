@@ -2,12 +2,21 @@ import { Task } from "@dewo/api/models/Task";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 
-export class TaskUpdatedEvent {
-  constructor(public readonly task: Task, public readonly prevTask: Task) {}
+export class TaskCreatedEvent {
+  constructor(
+    public readonly task: Task,
+    public readonly userId?: string,
+    public readonly sessionId?: string
+  ) {}
 }
 
-export class TaskCreatedEvent {
-  constructor(public readonly task: Task) {}
+export class TaskUpdatedEvent {
+  constructor(
+    public readonly task: Task,
+    public readonly prevTask: Task,
+    public readonly userId?: string,
+    public readonly sessionId?: string
+  ) {}
 }
 
 export class TaskApplicationCreatedEvent {

@@ -22,6 +22,7 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { RbacModule } from "../rbac/rbac.module";
 import { OrganizationModule } from "../organization/organization.module";
 import { ProjectModule } from "../project/project.module";
+import { AuditLogModule } from "../auditLog/auditLog.module";
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ProjectModule } from "../project/project.module";
     OrganizationModule,
     PermalinkModule,
     RbacModule,
+    AuditLogModule,
   ],
   providers: [
     TaskResolver,

@@ -5,7 +5,6 @@ import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
 import supertest from "supertest";
-import faker from "faker";
 import moment from "moment";
 import { Coordinape } from "../coordinape.types";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
@@ -39,9 +38,9 @@ describe("CoordinapeController", () => {
         .then((res) => res.body);
 
     it("should return task completed within given date range", async () => {
-      const address1 = `0x${faker.datatype.number()}`;
-      const address2 = `0x${faker.datatype.number()}`;
-      const address3 = `0x${faker.datatype.number()}`;
+      const address1 = "0x1111111111111111111111111111111111111111";
+      const address2 = "0x2222222222222222222222222222222222222222";
+      const address3 = "0x3333333333333333333333333333333333333333";
       const assignee1 = await fixtures.createUser({
         source: ThreepidSource.metamask,
         threepid: address1,
@@ -116,7 +115,7 @@ describe("CoordinapeController", () => {
     it("should not return uncompleted task", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: `0x${faker.datatype.number()}`,
+        threepid: "0x1234567890123456789012345678901234567890",
       });
       await fixtures.createTask({
         assignees: [user],
@@ -131,7 +130,7 @@ describe("CoordinapeController", () => {
     it("should not return tasks completed before or after date range", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: `0x${faker.datatype.number()}`,
+        threepid: "0x1234567890123456789012345678901234567890",
       });
       await fixtures.createTask({
         status: TaskStatus.DONE,
@@ -153,7 +152,7 @@ describe("CoordinapeController", () => {
     it("should not return tasks from private project", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: `0x${faker.datatype.number()}`,
+        threepid: "0x1234567890123456789012345678901234567890",
       });
       await fixtures.createRole(
         { organizationId: project.organizationId, fallback: true },

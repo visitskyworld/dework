@@ -3506,6 +3506,23 @@ export interface CreateTaskPaymentsMutation_tasks_nfts {
   payment: CreateTaskPaymentsMutation_tasks_nfts_payment;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: CreateTaskPaymentsMutation_tasks_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
 export interface CreateTaskPaymentsMutation_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3540,6 +3557,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
   nfts: CreateTaskPaymentsMutation_tasks_nfts[];
+  auditLog: CreateTaskPaymentsMutation_tasks_auditLog[];
 }
 
 export interface CreateTaskPaymentsMutation {
@@ -6293,6 +6311,23 @@ export interface GetTaskQuery_task_nfts {
   payment: GetTaskQuery_task_nfts_payment;
 }
 
+export interface GetTaskQuery_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetTaskQuery_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: GetTaskQuery_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
 export interface GetTaskQuery_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -6327,6 +6362,7 @@ export interface GetTaskQuery_task {
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
   nfts: GetTaskQuery_task_nfts[];
+  auditLog: GetTaskQuery_task_auditLog[];
 }
 
 export interface GetTaskQuery {
@@ -7622,6 +7658,23 @@ export interface TaskCreatedSubscription_task_nfts {
   payment: TaskCreatedSubscription_task_nfts_payment;
 }
 
+export interface TaskCreatedSubscription_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskCreatedSubscription_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: TaskCreatedSubscription_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
 export interface TaskCreatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7656,6 +7709,7 @@ export interface TaskCreatedSubscription_task {
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
   nfts: TaskCreatedSubscription_task_nfts[];
+  auditLog: TaskCreatedSubscription_task_auditLog[];
 }
 
 export interface TaskCreatedSubscription {
@@ -8121,6 +8175,23 @@ export interface TaskUpdatedSubscription_task_nfts {
   payment: TaskUpdatedSubscription_task_nfts_payment;
 }
 
+export interface TaskUpdatedSubscription_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskUpdatedSubscription_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: TaskUpdatedSubscription_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
 export interface TaskUpdatedSubscription_task {
   __typename: "Task";
   id: Scalar.UUID;
@@ -8155,6 +8226,7 @@ export interface TaskUpdatedSubscription_task {
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
   nfts: TaskUpdatedSubscription_task_nfts[];
+  auditLog: TaskUpdatedSubscription_task_auditLog[];
 }
 
 export interface TaskUpdatedSubscription {
@@ -8462,6 +8534,32 @@ export interface PaymentNetwork {
   type: PaymentNetworkType;
   config: Scalar.JSONObject;
   sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: AuditLogEvent
+// ====================================================
+
+export interface AuditLogEvent_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AuditLogEvent {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: AuditLogEvent_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
 }
 
 /* tslint:disable */
@@ -10115,6 +10213,23 @@ export interface TaskDetails_nfts {
   payment: TaskDetails_nfts_payment;
 }
 
+export interface TaskDetails_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface TaskDetails_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: TaskDetails_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
 export interface TaskDetails {
   __typename: "Task";
   id: Scalar.UUID;
@@ -10149,6 +10264,7 @@ export interface TaskDetails {
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
   nfts: TaskDetails_nfts[];
+  auditLog: TaskDetails_auditLog[];
 }
 
 /* tslint:disable */

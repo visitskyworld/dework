@@ -58,11 +58,14 @@ export class TaskService {
       sortKey: Date.now().toString(),
     });
     const refetched = (await this.taskRepo.findOne(created.id)) as Task;
-    this.eventBus.publish(new TaskCreatedEvent(refetched));
+    this.eventBus.publish(new TaskCreatedEvent(refetched, created.creatorId));
     return refetched;
   }
 
-  public async update(partial: DeepAtLeast<Task, "id">): Promise<Task> {
+  public async update(
+    partial: DeepAtLeast<Task, "id">,
+    userId?: string
+  ): Promise<Task> {
     const oldTask = await this.taskRepo.findOne({ id: partial.id });
     if (!oldTask) throw new NotFoundException();
     const updated = await this.taskRepo.save({
@@ -81,7 +84,7 @@ export class TaskService {
     });
 
     const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
-    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask));
+    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask, userId));
     return refetched;
   }
 

@@ -22,7 +22,6 @@ import { TaskApplicationList } from "../TaskApplicationList";
 import { GithubIntegrationSection } from "../github/GithubIntegrationSection";
 import { TaskTagSelectField } from "./TaskTagSelectField";
 import { useForm } from "antd/lib/form/Form";
-import { TaskActivityFeed } from "./TaskActivityFeed";
 import _ from "lodash";
 import { SubtaskInput } from "./subtask/SubtaskInput";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
@@ -44,6 +43,7 @@ import { TaskGatingFields } from "./gating/TaskGatingFields";
 import { TaskFormValues } from "./types";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
+import { TaskActivityFeed } from "./auditLog/TaskActivityFeed";
 
 interface TaskFormProps {
   mode: "create" | "update";

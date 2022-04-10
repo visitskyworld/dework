@@ -2,7 +2,11 @@ import React, { FC, ReactElement, ReactNode, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { PaymentStatus, TaskDetails } from "@dewo/app/graphql/types";
+import {
+  PaymentStatus,
+  TaskDetails,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { Avatar, Button, Col, Row, Space, Tag, Typography } from "antd";
 import moment from "moment";
 import _ from "lodash";
@@ -10,6 +14,9 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
+import { Diff, DiffEdit } from "deep-diff";
+import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
+import { STATUS_LABEL } from "../../board/util";
 
 interface ActivityFeedItem {
   date: string;
@@ -48,11 +55,11 @@ const TaskActivityFeedRow: FC<RowProps> = ({ item }) => {
           {moment(item.date).format("lll")}
         </Typography.Text>
       </Row>
-      {details.isOn && (
+      <HeadlessCollapse expanded={details.isOn}>
         <Col style={{ marginLeft: 24 + 16, opacity: 0.6, padding: 0 }}>
           {item.details}
         </Col>
-      )}
+      </HeadlessCollapse>
     </>
   );
 };
@@ -60,6 +67,18 @@ const TaskActivityFeedRow: FC<RowProps> = ({ item }) => {
 export const TaskActivityFeed: FC<Props> = ({ task }) => {
   const showSubmissions = usePermission("update", task, "submissions");
   const showApplications = usePermission("read", "TaskApplication");
+
+  const statusAuditLogEvents = useMemo(
+    () =>
+      task.auditLog.filter(
+        (l) =>
+          (l.diff as Diff<any>[]).some(
+            (d) => d.kind === "E" && d.path?.[0] === "status"
+          ),
+        [task.auditLog]
+      ),
+    [task.auditLog]
+  );
 
   const items = useMemo<ActivityFeedItem[]>(() => {
     const items: ActivityFeedItem[] = [
@@ -72,6 +91,28 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
         ),
         text: `${task.creator?.username ?? "Someone"} created this task`,
       },
+      ...statusAuditLogEvents.map((event) => ({
+        date: event.createdAt,
+        avatar: !!event.user ? (
+          <UserAvatar size="small" user={event.user} linkToProfile />
+        ) : (
+          <Avatar size="small" icon={<Icons.EditOutlined />} />
+        ),
+        text: (() => {
+          const statusDiff = (event.diff as Diff<any>[]).find(
+            (d): d is DiffEdit<any> =>
+              d.kind === "E" && d.path?.[0] === "status"
+          )!;
+          return (
+            <>
+              {event.user?.username ?? "Someone"} changed the status to
+              <Tag style={{ margin: "0 4px" }}>
+                {STATUS_LABEL[statusDiff.rhs as TaskStatus]}
+              </Tag>
+            </>
+          );
+        })(),
+      })),
       ...task.nfts.map((nft) => ({
         date: nft.createdAt,
         avatar: <Avatar size="small" icon={<Icons.LinkOutlined />} />,
@@ -153,7 +194,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
     }
 
     return _.sortBy(items, (i) => i.date);
-  }, [task, showSubmissions, showApplications]);
+  }, [task, showSubmissions, showApplications, statusAuditLogEvents]);
   return (
     <FormSection label="Activity" className="mb-3">
       <Space direction="vertical" style={{ width: "100%" }}>
