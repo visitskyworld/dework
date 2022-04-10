@@ -147,6 +147,7 @@ export class GithubIntegrationService {
           ? TaskStatus.BACKLOG
           : TaskStatus.TODO;
 
+      const taskNumber = await this.taskService.getNextTaskNumber(project.id);
       const task = await this.connection.transaction(async (manager) => {
         const task = await manager.save(Task, {
           name: issue.title,
@@ -154,7 +155,7 @@ export class GithubIntegrationService {
           tags,
           status,
           projectId: project.id,
-          number: await this.taskService.getNextTaskNumber(project.id),
+          number: taskNumber,
           sortKey: Date.now().toString(),
           ...taskOverride,
         });

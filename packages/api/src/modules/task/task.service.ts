@@ -337,7 +337,11 @@ export class TaskService {
 
   public async getNextTaskNumber(projectId: string): Promise<number> {
     const project = await this.projectService.findById(projectId);
-    if (!project) throw new NotFoundException();
+    if (!project) {
+      throw new NotFoundException(
+        `Project not found (cannot create next task number): ${projectId}`
+      );
+    }
     const result = await this.taskRepo
       .createQueryBuilder("task")
       .select("MAX(task.number)", "max")

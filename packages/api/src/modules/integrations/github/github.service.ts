@@ -137,8 +137,10 @@ export class GithubService {
   ): Promise<ProjectIntegration<ProjectIntegrationType.GITHUB> | undefined> {
     return this.projectIntegrationRepo
       .createQueryBuilder("projInt")
+      .innerJoin("projInt.project", "project")
       .innerJoin("projInt.organizationIntegration", "orgInt")
       .where("projInt.deletedAt IS NULL")
+      .andWhere("project.deletedAt IS NULL")
       .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
       .andWhere(`"projInt"."config"->>'repo' = :repo`, { repo })
       .andWhere(`"projInt"."config"->>'organization' = :organization`, {
