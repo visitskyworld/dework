@@ -244,8 +244,8 @@ export class RbacService {
           fn("delete", TaskApplication);
           fn(CRUD, Rule, {
             ...(!!rule.projectId
-              ? { "task.projectId": rule.projectId }
-              : { task: { $exists: true } }),
+              ? { "__task__.projectId": rule.projectId }
+              : { __task__: { $exists: true } }),
             permission: RulePermission.MANAGE_TASKS,
           });
           fn(CRUD, Rule, {

@@ -87,8 +87,12 @@ export class RbacResolver {
       action: "delete",
       subject: Rule,
       inject: [RbacService],
-      getSubject: (params: { id: string }, service) =>
-        service.findRuleById(params.id),
+      async getSubject(params: { id: string }, service: RbacService) {
+        const rule = await service.findRuleById(params.id);
+        if (!rule) return undefined;
+        await rule.task;
+        return rule;
+      },
       async getOrganizationId(subject) {
         const role = await subject.role;
         return role?.organizationId;

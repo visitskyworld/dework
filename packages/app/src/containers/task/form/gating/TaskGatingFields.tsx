@@ -44,7 +44,7 @@ export const TaskGatingFields: FC<Props> = ({
     __typename: "Rule",
     permission: RulePermission.MANAGE_TASKS,
     // @ts-ignore
-    task: { projectId },
+    __task__: { projectId },
   });
 
   const canChangeAssignees = usePermission(mode, task ?? "Task", "assigneeIds");

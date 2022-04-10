@@ -27,7 +27,7 @@ export const TaskRoleSelectField: FC<Props> = ({
     __typename: "Rule",
     permission: RulePermission.MANAGE_TASKS,
     // @ts-ignore
-    task: { projectId },
+    __task__: { projectId },
   });
 
   const { project } = useProject(projectId);
@@ -59,10 +59,7 @@ export const TaskRoleSelectField: FC<Props> = ({
   return (
     <Form.Item
       name="roleIds"
-      rules={[
-        { required: true, message: "Select at least one role" },
-        { type: "array", min: 1, message: "Select at least one role" },
-      ]}
+      rules={[{ type: "array", min: 1, message: "Select at least one role" }]}
     >
       <Select
         mode="multiple"
