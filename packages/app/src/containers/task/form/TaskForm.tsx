@@ -43,7 +43,7 @@ import { TaskGatingFields } from "./gating/TaskGatingFields";
 import { TaskFormValues } from "./types";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
-import { TaskActivityFeed } from "./auditLog/TaskActivityFeed";
+import { TaskActivityFeed } from "./TaskActivityFeed";
 
 interface TaskFormProps {
   mode: "create" | "update";
