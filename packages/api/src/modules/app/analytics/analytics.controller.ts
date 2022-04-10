@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Body, Controller, Post, Req, Res } from "@nestjs/common";
-import { AnalyticsClient } from "./analytics.client";
-import { Event } from "@amplitude/node";
+import * as request from "request-promise";
 import { getIpAddress } from "../graphql.config";
 
 interface EventPayload {
@@ -14,17 +13,17 @@ interface EventPayload {
 
 @Controller("a")
 export class AnalyticsController {
-  constructor(private readonly analytics: AnalyticsClient) {}
-
   @Post()
   async amplitudeEventProxy(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: EventPayload
   ) {
-    const ip = getIpAddress(req);
-    const events: Event[] = JSON.parse(body.e);
-    events.forEach((e) => this.analytics.client?.logEvent({ ...e, ip }));
+    await request.post({
+      url: "https://api.amplitude.com",
+      headers: { "x-forwarded-for": getIpAddress(req) },
+      form: body,
+    });
     res.status(200).send("success");
   }
 }
