@@ -127,8 +127,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     !canManage &&
     task.status === TaskStatus.TODO &&
     canApply &&
-    !task.assignees.length &&
-    task.gating === TaskGatingType.APPLICATION
+    !task.assignees.length
   ) {
     return <ApplyToTaskButton task={task} size="small" type="text" />;
   }

@@ -112,8 +112,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       !canManageProject &&
       !canAssignTask &&
       canApply &&
-      !task.assignees.length &&
-      task.gating === TaskGatingType.APPLICATION
+      !task.assignees.length
     ) {
       return (
         <TaskActionSectionContent
