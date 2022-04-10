@@ -25,6 +25,7 @@ import { useQuery } from "@apollo/client";
 import { AtLeast } from "../types/general";
 import { useOrganizationBySlug } from "../containers/organization/hooks";
 import { useRouter } from "next/router";
+import { useTask } from "../containers/task/hooks";
 
 type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "claimTask";
 type AbilitySubject =
@@ -52,10 +53,20 @@ const PermissionsContext = createContext<Ability<AbilityType>>(
 );
 export const Can = createContextualCan(PermissionsContext.Consumer);
 
-export const PermissionsProvider: FC = ({ children }) => {
-  const organizationSlug = useRouter().query.organizationSlug as string;
+function useCurrentOrganizationId(): string | undefined {
+  const organizationSlug = useRouter().query.organizationSlug as
+    | string
+    | undefined;
   const { organization } = useOrganizationBySlug(organizationSlug);
-  const organizationId = organization?.id;
+
+  const taskId = useRouter().query.taskId as string | undefined;
+  const task = useTask(taskId);
+
+  return organization?.id ?? task?.project?.organizationId;
+}
+
+export const PermissionsProvider: FC = ({ children }) => {
+  const organizationId = useCurrentOrganizationId();
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
     { variables: { organizationId: organizationId! }, skip: !organizationId }
