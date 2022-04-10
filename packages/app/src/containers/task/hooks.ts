@@ -275,6 +275,7 @@ export function useCreateTaskFromFormValues(): (
         await createTask({
           parentTaskId: task.id,
           name: subtask.name,
+          description: subtask.description,
           ownerIds: !!user ? [user.id] : [],
           assigneeIds: subtask.assigneeIds,
           status: subtask.status,

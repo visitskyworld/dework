@@ -115,6 +115,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
         subtasks: task.subtasks.map((s, index) => ({
           key: String(index),
           name: s.name,
+          description: s.description,
           status: s.status,
           assigneeIds: s.assignees.map((a) => a.id),
           dueDate: null,

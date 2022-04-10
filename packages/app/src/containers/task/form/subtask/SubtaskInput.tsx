@@ -58,6 +58,7 @@ export const SubtaskInput: FC<Props> = ({
             key: subtask?.id ?? Date.now().toString(),
             task: subtask,
             name: newSubtask.name,
+            description: newSubtask.description,
             assigneeIds: [],
             status: TaskStatus.TODO,
             dueDate: subtask?.dueDate ?? null,
@@ -72,19 +73,17 @@ export const SubtaskInput: FC<Props> = ({
 
   const rows = useMemo(() => {
     if (!task) return value ?? [];
-    return _(task.subtasks)
-      .sortBy((task) => task.sortKey)
-      .map(
-        (task): TaskListRow => ({
-          task,
-          key: task.id,
-          name: task.name,
-          assigneeIds: task.assignees.map((u) => u.id),
-          dueDate: task.dueDate ?? null,
-          status: task.status,
-        })
-      )
-      .value();
+    return _.sortBy(task.subtasks, (t) => t.sortKey).map(
+      (task): TaskListRow => ({
+        task,
+        key: task.id,
+        name: task.name,
+        description: task.description,
+        assigneeIds: task.assignees.map((u) => u.id),
+        dueDate: task.dueDate ?? null,
+        status: task.status,
+      })
+    );
   }, [value, task]);
 
   const handleChange = useCallback(

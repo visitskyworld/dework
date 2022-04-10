@@ -49,6 +49,7 @@ export interface TaskListRow {
   key: string;
   task?: Task;
   name: string;
+  description: string | null;
   status: TaskStatus;
   dueDate: string | null;
   assigneeIds: string[];
