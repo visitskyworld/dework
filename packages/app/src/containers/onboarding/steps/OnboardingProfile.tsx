@@ -104,6 +104,7 @@ export const OnboardingProfile: FC<Props> = ({ onNext }) => {
           source={ThreepidSource.discord}
           children="Import from Discord"
           type="primary"
+          name="Onboarding Profile: import from Discord"
         />
       )}
       <Button
@@ -113,6 +114,7 @@ export const OnboardingProfile: FC<Props> = ({ onNext }) => {
         htmlType="submit"
         loading={submitting}
         style={{ alignSelf: "center" }}
+        name="Onboarding Profile: continue"
       >
         Continue
       </Button>
@@ -122,6 +124,7 @@ export const OnboardingProfile: FC<Props> = ({ onNext }) => {
         size="small"
         className="text-secondary"
         style={{ alignSelf: "center" }}
+        name="Onboarding Profile: already have an account"
         onClick={logout}
       >
         Already have an account?

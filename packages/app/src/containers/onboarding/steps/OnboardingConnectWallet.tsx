@@ -38,6 +38,7 @@ export const OnboardingConnectWallet: FC<Props> = ({ active, onNext }) => {
           size="large"
           block
           type="primary"
+          name="Onboarding Wallet: connect Metamask"
           onAuthed={onNext}
         />
         <Dropdown
@@ -51,6 +52,7 @@ export const OnboardingConnectWallet: FC<Props> = ({ active, onNext }) => {
                 size="large"
                 block
                 type="text"
+                name="Onboarding Wallet: connect Phantom"
                 onAuthed={onNext}
               />
               <HiroAuthButton
@@ -58,6 +60,7 @@ export const OnboardingConnectWallet: FC<Props> = ({ active, onNext }) => {
                 size="large"
                 block
                 type="text"
+                name="Onboarding Wallet: connect Hiro"
                 onAuthed={onNext}
               />
             </Menu>
@@ -72,6 +75,7 @@ export const OnboardingConnectWallet: FC<Props> = ({ active, onNext }) => {
         type="text"
         style={{ alignSelf: "center" }}
         className="text-secondary"
+        name="Onboarding Wallet: skip"
         onClick={onNext}
       >
         Not now

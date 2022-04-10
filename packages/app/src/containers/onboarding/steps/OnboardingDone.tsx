@@ -1,10 +1,11 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
-import { Avatar, Button, Card, Col, Row, Space, Typography } from "antd";
+import { Avatar, Button, Col, Row, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import Link from "next/link";
 import React, { FC } from "react";
 import { OrganizationCreateModal } from "../../organization/create/OrganizationCreateModal";
+import styles from "./OnboardingDone.module.less";
 
 interface Props {
   onNext(): void;
@@ -32,70 +33,53 @@ export const OnboardingDone: FC<Props> = ({ onNext }) => {
         style={{ flex: 1, marginBottom: 16 }}
       >
         <Col xs={24} sm={8}>
-          <Card
-            bordered={false}
-            className="hover:component-highlight hover:cursor-pointer"
+          <Button
+            block
+            className={styles.tile}
+            name="Onboarding Done: create DAO"
             onClick={createOrganization.toggleOn}
           >
-            <Space
-              direction="vertical"
-              align="center"
-              style={{ width: "100%" }}
+            <Avatar icon={<Icons.TeamOutlined />} size="large" />
+            <Typography.Paragraph
+              strong
+              style={{ margin: 0, textAlign: "center" }}
             >
-              <Avatar icon={<Icons.TeamOutlined />} size="large" />
+              Setup your first DAO
+            </Typography.Paragraph>
+          </Button>
+        </Col>
+        <Col xs={24} sm={8}>
+          <Link href={user.permalink}>
+            <Button
+              block
+              className={styles.tile}
+              name="Onboarding Done: setup profile"
+            >
+              <Avatar icon={<Icons.SmileOutlined />} size="large" />
               <Typography.Paragraph
                 strong
                 style={{ margin: 0, textAlign: "center" }}
               >
-                Setup your first DAO
+                Setup your profile
               </Typography.Paragraph>
-            </Space>
-          </Card>
-        </Col>
-        <Col xs={24} sm={8}>
-          <Link href={user.permalink}>
-            <Card
-              bordered={false}
-              style={{ flex: 1 }}
-              className="hover:component-highlight hover:cursor-pointer"
-            >
-              <Space
-                direction="vertical"
-                align="center"
-                style={{ width: "100%" }}
-              >
-                <Avatar icon={<Icons.SmileOutlined />} size="large" />
-                <Typography.Paragraph
-                  strong
-                  style={{ margin: 0, textAlign: "center" }}
-                >
-                  Setup your profile
-                </Typography.Paragraph>
-              </Space>
-            </Card>
+            </Button>
           </Link>
         </Col>
         <Col xs={24} sm={8}>
           <Link href="/">
-            <Card
-              bordered={false}
-              style={{ flex: 1 }}
-              className="hover:component-highlight hover:cursor-pointer"
+            <Button
+              block
+              className={styles.tile}
+              name="Onboarding Done: explore tasks and bounties"
             >
-              <Space
-                direction="vertical"
-                align="center"
-                style={{ width: "100%" }}
+              <Avatar icon={<Icons.TrophyOutlined />} size="large" />
+              <Typography.Paragraph
+                strong
+                style={{ margin: 0, textAlign: "center" }}
               >
-                <Avatar icon={<Icons.TrophyOutlined />} size="large" />
-                <Typography.Paragraph
-                  strong
-                  style={{ margin: 0, textAlign: "center" }}
-                >
-                  Explore tasks and bounties
-                </Typography.Paragraph>
-              </Space>
-            </Card>
+                Explore tasks and bounties
+              </Typography.Paragraph>
+            </Button>
           </Link>
         </Col>
       </Row>
@@ -105,6 +89,7 @@ export const OnboardingDone: FC<Props> = ({ onNext }) => {
         type="primary"
         className="mx-auto"
         loading={loadingNext}
+        name="Onboarding Done: close"
         onClick={handleNext}
       >
         Close

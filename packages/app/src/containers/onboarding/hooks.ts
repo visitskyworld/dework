@@ -1,5 +1,6 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidSource, UserDetails } from "@dewo/app/graphql/types";
+import { useAmplitude } from "@dewo/app/util/analytics/AmplitudeContext";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo } from "react";
@@ -40,6 +41,7 @@ export function useOnboarding(): {
   onPrev(): void;
 } {
   const router = useRouter();
+  const { logEvent } = useAmplitude();
 
   const { user } = useAuthContext();
   const shouldShow = useMemo(
@@ -72,12 +74,15 @@ export function useOnboarding(): {
     } else if (!!currentStep) {
       router.push({ query: _.omit(router.query, "onboarding") });
     }
-  }, [updateOnboarding, currentStep, steps, router, type]);
+
+    logEvent("Onboarding: step", { step: nextStep, type });
+  }, [logEvent, updateOnboarding, currentStep, steps, router, type]);
 
   const onPrev = useCallback(async () => {
     const prevStep = steps[steps.indexOf(currentStep!) - 1];
     router.push({ query: { ...router.query, onboarding: prevStep } });
-  }, [steps, router, currentStep]);
+    logEvent("Onboarding: step", { step: prevStep, type });
+  }, [logEvent, steps, router, currentStep, type]);
 
   useEffect(() => {
     if (!!user && !user.onboarding) {
@@ -88,6 +93,7 @@ export function useOnboarding(): {
         updateOnboarding({ type: "Onboarding.v1.ConnectDiscord" });
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [!!user]);
 

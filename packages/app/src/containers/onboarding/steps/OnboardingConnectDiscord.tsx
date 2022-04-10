@@ -41,11 +41,13 @@ export const OnboardingConnectDiscord: FC<Props> = ({ onNext }) => {
           type="primary"
           size="large"
           style={{ alignSelf: "center" }}
+          name="Onboarding Discord: connect"
         />
         <Button
           type="text"
           style={{ alignSelf: "center" }}
           className="text-secondary"
+          name="Onboarding Discord: skip"
           onClick={onNext}
         >
           Not now
