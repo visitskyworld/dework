@@ -22,7 +22,12 @@ function useAnalyticsTrackElements() {
         }
         // @ts-expect-error
         if (!!el.name && typeof el.name === "string") return el.name;
-        if (!!el.id && el.id !== "__next") return `#${el.id}`;
+        if (
+          !!el.id &&
+          !el.id.includes("rc-tabs") &&
+          !el.id.includes("rc_select")
+        )
+          return `#${el.id}`;
         return undefined;
       };
 
@@ -39,7 +44,7 @@ function useAnalyticsTrackElements() {
       }
     };
 
-    const types: (keyof WindowEventMap)[] = ["click", "focus", "blur"];
+    const types: (keyof WindowEventMap)[] = ["click", "focus"];
     types.forEach((t) => document.addEventListener(t, listener(t), true));
     return () =>
       types.forEach((t) => document.removeEventListener(t, listener(t), true));

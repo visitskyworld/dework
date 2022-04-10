@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import { UserSelectOption } from "./UserSelectOption";
 
 interface Props {
+  id?: string;
   mode?: "multiple" | undefined;
   placeholder?: string;
   users: User[] | undefined;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const UserSelect: FC<Props> = ({
+  id,
   mode,
   placeholder,
   users,
@@ -24,6 +26,7 @@ export const UserSelect: FC<Props> = ({
 }) => {
   return (
     <Select
+      id={id}
       mode={mode}
       showSearch
       className="dewo-select-item-full-width"

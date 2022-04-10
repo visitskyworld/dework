@@ -29,11 +29,13 @@ export async function validator(
 
 interface Props {
   projectId: string;
+  id?: string;
   value?: Partial<TaskRewardFormValues>;
   onChange?(value: Partial<TaskRewardFormValues>): void;
 }
 
 export const TaskRewardFormFields: FC<Props> = ({
+  id,
   projectId,
   value,
   onChange,
@@ -120,6 +122,7 @@ export const TaskRewardFormFields: FC<Props> = ({
           )}
         >
           <Select
+            id={`${id}_networkId`}
             placeholder="Select where you'll pay"
             value={value?.networkId}
             allowClear
@@ -164,6 +167,7 @@ export const TaskRewardFormFields: FC<Props> = ({
             style={{ width: "100%" }}
             addonAfter={
               <Select
+                id={`${id}_tokenId`}
                 style={{ minWidth: 100 }}
                 value={value?.token?.id}
                 placeholder="Token"
