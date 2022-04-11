@@ -10588,11 +10588,6 @@ export enum ProjectRole {
   CONTRIBUTOR = "CONTRIBUTOR",
 }
 
-export enum ProjectVisibility {
-  PRIVATE = "PRIVATE",
-  PUBLIC = "PUBLIC",
-}
-
 export enum RoleSource {
   DISCORD = "DISCORD",
 }
@@ -10695,7 +10690,6 @@ export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
   sectionId?: Scalar.UUID | null;
-  visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
 }
 
@@ -10758,7 +10752,6 @@ export interface CreateTaskInput {
   parentTaskId?: Scalar.UUID | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
-  ownerId?: Scalar.UUID | null;
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;
   status: TaskStatus;
@@ -10875,7 +10868,6 @@ export interface UpdateProjectInput {
   name?: string | null;
   description?: string | null;
   sectionId?: Scalar.UUID | null;
-  visibility?: ProjectVisibility | null;
   options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
   sortKey?: string | null;
@@ -10904,7 +10896,6 @@ export interface UpdateTaskInput {
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
-  ownerId?: Scalar.UUID | null;
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;
   status?: TaskStatus | null;

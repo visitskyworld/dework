@@ -26,12 +26,6 @@ export const CreateProjectTokenGate: FC<Props> = ({ project }) => {
         tokenId: token!.id,
         role: projectRole!,
       });
-      // if (project.visibility !== ProjectVisibility.PRIVATE) {
-      //   await updateProject({
-      //     id: project.id,
-      //     visibility: ProjectVisibility.PRIVATE,
-      //   });
-      // }
     },
     [projectRole, project, createProjectTokenGate]
   );

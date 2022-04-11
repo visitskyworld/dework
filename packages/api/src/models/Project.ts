@@ -1,9 +1,4 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
@@ -15,13 +10,6 @@ import { ProjectMember } from "./ProjectMember";
 import { ProjectTokenGate } from "./ProjectTokenGate";
 import { ProjectSection } from "./ProjectSection";
 import { TaskSection } from "./TaskSection";
-
-export enum ProjectVisibility {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
-}
-
-registerEnumType(ProjectVisibility, { name: "ProjectVisibility" });
 
 @ObjectType()
 @InputType("ProjectOptionsInput")
@@ -40,9 +28,6 @@ export class Project extends Audit {
   @Column({ nullable: true, length: 4096 })
   @Field({ nullable: true })
   public description!: string;
-
-  @Column({ enum: ProjectVisibility, default: ProjectVisibility.PUBLIC })
-  public visibility!: ProjectVisibility;
 
   @JoinColumn()
   @ManyToOne(() => Organization)

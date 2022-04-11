@@ -83,18 +83,6 @@ export class TaskResolver {
     return refetched!.owners;
   }
 
-  // TODO(fant): remove post Task.owner => Task.owners transition
-  @ResolveField(() => User, { nullable: true })
-  public async owner(@Parent() task: Task): Promise<User | undefined> {
-    return this.owners(task).then((o) => o[0]);
-  }
-
-  // TODO(fant): remove post Task.owner => Task.owners transition
-  @ResolveField(() => String, { nullable: true })
-  public async ownerId(@Parent() task: Task): Promise<string | undefined> {
-    return this.owner(task).then((o) => o?.id);
-  }
-
   @ResolveField(() => [TaskSubmission])
   public async submissions(@Parent() task: Task): Promise<TaskSubmission[]> {
     const submissions = await task.submissions;
@@ -164,8 +152,6 @@ export class TaskResolver {
         : [],
       owners: !!input.ownerIds
         ? (input.ownerIds.map((id) => ({ id })) as any)
-        : !!input.ownerId
-        ? [{ id: input.ownerId }]
         : [],
       creatorId: user.id,
       ...input,
@@ -360,8 +346,6 @@ export class TaskResolver {
           : undefined,
         owners: !!input.ownerIds
           ? (input.ownerIds.map((id) => ({ id })) as any)
-          : !!input.ownerId
-          ? [{ id: input.ownerId }]
           : undefined,
       },
       user.id

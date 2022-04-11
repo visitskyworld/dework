@@ -6,7 +6,6 @@ import {
   CreateProjectInput,
   OrganizationIntegrationType,
   Project,
-  ProjectVisibility,
   RulePermission,
 } from "@dewo/app/graphql/types";
 import { FormSection } from "@dewo/app/components/FormSection";
@@ -109,7 +108,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         setLoading(true);
         const project = await createProject({
           name: values.name,
-          visibility: values.visibility,
           sectionId: values.sectionId,
           organizationId: values.organizationId,
           options: { showBacklogColumn: true },
@@ -198,7 +196,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
   const initialValues = useMemo<Partial<FormValues>>(() => {
     const initialValues: Partial<FormValues> = {
       organizationId,
-      visibility: ProjectVisibility.PUBLIC,
       private: false,
     };
 
