@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
 import { Connection, In, Repository } from "typeorm";
 import * as Colors from "@ant-design/colors";
+import * as request from "request-promise";
 import NearestColor from "nearest-color";
 import * as Discord from "discord.js";
 import { Role, RoleSource } from "@dewo/api/models/rbac/Role";
@@ -14,6 +15,11 @@ import { User } from "@dewo/api/models/User";
 import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
+
+interface GuildMember {
+  userId: string;
+  roles: string[];
+}
 
 @Injectable()
 export class DiscordRolesService {
@@ -129,10 +135,12 @@ export class DiscordRolesService {
     // const fallbackRole = existingRoles.find((r) => r.fallback);
     // const discordEveryoneRole = discordRoles.find(isEveryoneRole);
 
-    const members = await guild.members.fetch();
-    const discordUserIds = members.map((m) => m.user.id);
+    const members = await this.getGuildMembers(
+      client,
+      integration.config.guildId
+    );
     const userByDiscordId = await this.discord.getUsersFromDiscordIds(
-      discordUserIds
+      members.map((m) => m.userId)
     );
 
     const newDiscordRoles = discordRoles.filter(
@@ -207,8 +215,8 @@ export class DiscordRolesService {
         }
 
         const discordIdsWithRole = members
-          .filter((m) => m.roles.cache.some((r) => r.id === role.externalId))
-          .map((m) => m.user.id);
+          .filter((m) => !!role.externalId && m.roles.includes(role.externalId))
+          .map((m) => m.userId);
         const usersWithRole = discordIdsWithRole
           .map((discordId) => userByDiscordId[discordId])
           .filter((u): u is User => !!u);
@@ -244,6 +252,39 @@ export class DiscordRolesService {
         ]);
       }
     });
+  }
+
+  private async getGuildMembers(
+    client: Discord.Client,
+    guildId: string
+  ): Promise<GuildMember[]> {
+    const members: GuildMember[] = [];
+
+    while (true) {
+      const limit = 1000;
+      const after = members[members.length - 1]?.userId;
+      this.logger.debug(
+        `Fetching guild member chunk: ${JSON.stringify({
+          guildId,
+          after,
+          fetched: members.length,
+        })}`
+      );
+      const memberChunk = await request.get({
+        url: `https://discord.com/api/guilds/${guildId}/members`,
+        qs: { limit, after },
+        json: true,
+        headers: { authorization: `Bot ${client.token}` },
+      });
+
+      members.push(
+        ...memberChunk.map((m: any) => ({ roles: m.roles, userId: m.user.id }))
+      );
+
+      if (memberChunk.length < limit) break;
+    }
+
+    return members;
   }
 
   private extractDiscordRoleFields(discordRole: Discord.Role): Partial<Role> {

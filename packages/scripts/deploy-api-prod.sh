@@ -41,5 +41,5 @@ gcloud run deploy $DEPLOYMENT_NAME  \
   --region $REGION                  \
   --platform managed                \
   --memory 2G                       \
-  --timeout 20m                     \
+  --timeout 30m                     \
   --allow-unauthenticated

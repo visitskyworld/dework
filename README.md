@@ -189,7 +189,7 @@ BEGIN
       "explorerUrl": "https://arbiscan.io",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.arbitrum.gnosis.io",
-        "addressPrefix": "aox"
+        "addressPrefix": "arb"
       }
     }' AS json)
   ), (
