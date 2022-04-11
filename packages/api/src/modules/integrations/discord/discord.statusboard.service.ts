@@ -2,7 +2,6 @@ import _ from "lodash";
 import * as Discord from "discord.js";
 import { Injectable, Logger } from "@nestjs/common";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
-import { Project } from "@dewo/api/models/Project";
 import { IntegrationService } from "../integration.service";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { TaskService } from "../../task/task.service";
@@ -17,6 +16,7 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
+import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
 
 @Injectable()
 export class DiscordStatusboardService {
@@ -29,15 +29,31 @@ export class DiscordStatusboardService {
     private readonly integrationService: IntegrationService
   ) {}
 
-  public async postStatusboardMessage(
-    project: Project,
-    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>,
-    channel: Discord.TextChannel
+  private async postStatusboardMessage(
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
+    const project = await integration.project;
+    const organizationIntegration =
+      (await integration.organizationIntegration) as
+        | OrganizationIntegration<OrganizationIntegrationType.DISCORD>
+        | undefined;
+    if (!organizationIntegration) {
+      this.logger.warn("No organization integration found");
+      return;
+    }
+    const guild = await this.discord
+      .getClient(organizationIntegration)
+      .guilds.fetch(organizationIntegration.config.guildId);
+    const channel = await guild.channels.fetch(integration.config.channelId);
+    if (!channel || !channel.isText()) {
+      this.logger.warn(`No text channel found (${JSON.stringify(channel)})`);
+      return;
+    }
+
     const discordFieldLimit = 25;
     let tasks = (
       await this.taskService.findWithRelations({
-        projectIds: [project.id],
+        projectIds: [integration.projectId],
         statuses: [TaskStatus.TODO],
         userId: null,
         rewardNotNull: true,
@@ -48,7 +64,7 @@ export class DiscordStatusboardService {
     if (tasks.length < discordFieldLimit) {
       const tasksWithoutReward = (
         await this.taskService.findWithRelations({
-          projectIds: [project.id],
+          projectIds: [integration.projectId],
           statuses: [TaskStatus.TODO],
           userId: null,
           limit: discordFieldLimit,
@@ -115,7 +131,7 @@ export class DiscordStatusboardService {
       ? `💰 Reward: ${await this.taskService.formatTaskReward(task.reward)}`
       : undefined;
 
-    let tags: string[] = [];
+    const tags: string[] = [];
     let tagString = undefined;
     const tagsCharLimit = 20;
     if (task.tags.length > 0 && task.tags[0].label.length < tagsCharLimit) {
@@ -144,50 +160,59 @@ export class DiscordStatusboardService {
     };
   }
 
-  async handleIntegrationEvent(event: ProjectIntegrationCreatedEvent) {
+  private async getProjectIntegrations(
+    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent
+  ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>[]> {
+    if (event instanceof ProjectIntegrationCreatedEvent) {
+      if (event.projectIntegration.type === ProjectIntegrationType.DISCORD) {
+        const discordIntegration =
+          event.projectIntegration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
+        if (
+          discordIntegration.config.features.includes(
+            DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+          )
+        ) {
+          return [discordIntegration];
+        }
+      }
+    }
+
+    if (
+      event instanceof TaskCreatedEvent ||
+      event instanceof TaskUpdatedEvent
+    ) {
+      const integrations =
+        await this.integrationService.findProjectIntegrations(
+          event.task.projectId,
+          ProjectIntegrationType.DISCORD
+        );
+
+      return integrations.filter((integration) =>
+        integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+        )
+      );
+    }
+
+    return [];
+  }
+
+  async handle(
+    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent
+  ) {
     this.logger.log(
-      `Handle project integration event: ${JSON.stringify({
+      `Handle event: ${JSON.stringify({
         type: event.constructor.name,
         ...event,
       })}`
     );
 
-    const project = await event.projectIntegration.project;
-    const { channel, integration } =
-      await this.getChannelAndIntegrationFromProject(project);
-    if (!channel || !integration) return;
-
-    if (
-      integration.config.features.includes(
-        DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
-      )
-    ) {
-      await this.postStatusboardMessage(project, integration, channel);
-    }
-  }
-
-  private async getChannelAndIntegrationFromProject(project: Project): Promise<{
-    channel: Discord.TextChannel | undefined;
-    integration: ProjectIntegration<ProjectIntegrationType.DISCORD> | undefined;
-  }> {
-    const integration = await this.integrationService.findProjectIntegration(
-      project.id,
-      ProjectIntegrationType.DISCORD
-    );
-    if (!integration) return { channel: undefined, integration: undefined };
-    const organizationIntegration =
-      (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
-    if (!organizationIntegration)
-      return { channel: undefined, integration: undefined };
-
-    const channel = (await this.discord
-      .getClient(organizationIntegration)
-      .channels.fetch(integration.config.channelId)) as Discord.TextChannel;
-
+    const integrations = await this.getProjectIntegrations(event);
     this.logger.debug(
-      `Found Discord channel: ${JSON.stringify({ channelId: channel.id })}`
+      `Found status board integrations: ${JSON.stringify(integrations)}`
     );
-
-    return { channel, integration };
+    for (const integration of integrations) {
+      await this.postStatusboardMessage(integration);
+    }
   }
 }

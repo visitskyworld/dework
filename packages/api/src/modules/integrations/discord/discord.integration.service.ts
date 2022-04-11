@@ -88,7 +88,13 @@ export class DiscordIntegrationService {
     );
 
     for (const integration of integrations) {
-      await this.handleIntegration(event, integration);
+      if (
+        !integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+        )
+      ) {
+        await this.handleIntegration(event, integration);
+      }
     }
   }
 
@@ -202,22 +208,6 @@ export class DiscordIntegrationService {
               .filter((s) => !!s)
               .join("\n"),
           }
-        );
-      }
-
-      if (
-        (event instanceof TaskCreatedEvent ||
-          event instanceof TaskUpdatedEvent) &&
-        task.status === TaskStatus.TODO &&
-        task.assignees.length === 0 &&
-        integration.config.features.includes(
-          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
-        )
-      ) {
-        await this.discordStatusboardService.postStatusboardMessage(
-          await task.project,
-          integration,
-          mainChannel
         );
       }
 
@@ -485,16 +475,11 @@ export class DiscordIntegrationService {
   }> {
     const toChannel =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL;
-    const toStatusBoard =
-      DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE;
     const toThread =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD;
     const toThreadPerTask =
       DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK;
-    if (
-      config.features.includes(toChannel) ||
-      config.features.includes(toStatusBoard)
-    ) {
+    if (config.features.includes(toChannel)) {
       return { channel, new: false };
     }
 

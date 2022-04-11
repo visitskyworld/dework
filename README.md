@@ -195,7 +195,7 @@ BEGIN
   ), (
     optimism_mainnet_id,
     'ETHEREUM',
-    'Optimistic Ethereum',
+    'Optimism',
     'optimism-mainnet',
     '007',
     CAST('{

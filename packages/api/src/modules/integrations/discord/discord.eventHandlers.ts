@@ -18,24 +18,32 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
 @Injectable()
 @EventsHandler(TaskCreatedEvent)
 export class DiscordIntegrationTaskCreatedEventHandler extends EventHandler<TaskCreatedEvent> {
-  constructor(private readonly integration: DiscordIntegrationService) {
+  constructor(
+    private readonly integration: DiscordIntegrationService,
+    private readonly statusBoardService: DiscordStatusboardService
+  ) {
     super();
   }
 
   async process(event: TaskCreatedEvent) {
     await this.integration.handle(event);
+    await this.statusBoardService.handle(event);
   }
 }
 
 @Injectable()
 @EventsHandler(TaskUpdatedEvent)
 export class DiscordIntegrationTaskUpdatedEventHandler extends EventHandler<TaskUpdatedEvent> {
-  constructor(private readonly integration: DiscordIntegrationService) {
+  constructor(
+    private readonly integration: DiscordIntegrationService,
+    private readonly statusBoardService: DiscordStatusboardService
+  ) {
     super();
   }
 
   async process(event: TaskUpdatedEvent) {
     await this.integration.handle(event);
+    await this.statusBoardService.handle(event);
   }
 }
 
@@ -80,7 +88,7 @@ export class DiscordIntegrationCreatedEventHandler extends EventHandler<ProjectI
   }
 
   async process(event: ProjectIntegrationUpdatedEvent) {
-    await this.service.handleIntegrationEvent(event);
+    await this.service.handle(event);
   }
 }
 
@@ -92,6 +100,6 @@ export class DiscordIntegrationUpdatedEventHandler extends EventHandler<ProjectI
   }
 
   async process(event: ProjectIntegrationUpdatedEvent) {
-    await this.service.handleIntegrationEvent(event);
+    await this.service.handle(event);
   }
 }
