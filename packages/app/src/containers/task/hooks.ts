@@ -138,11 +138,14 @@ export const formatTaskRewardAsUSD = (
 ): string | undefined => {
   if (!reward.token.usdPrice) return undefined;
 
-  const amount = Number(formatFixed(reward.amount, reward.token.exp));
+  const amount = reward.peggedToUsd
+    ? Number(formatFixed(reward.amount, Constants.NUM_DECIMALS_IN_USD_PEG))
+    : Number(formatFixed(reward.amount, reward.token.exp)) *
+      reward.token.usdPrice;
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(amount * reward.token.usdPrice);
+  }).format(amount);
 };
 
 export const calculateTaskRewardAsUSD = (

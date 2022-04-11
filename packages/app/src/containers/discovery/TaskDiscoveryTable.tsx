@@ -89,12 +89,12 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                   >
                     {formatTaskReward(task.reward)}
                   </Typography.Paragraph>
-                  {!!task.reward.token.usdPrice && (
+                  {!!task.reward.token.usdPrice && !task.reward.peggedToUsd && (
                     <Typography.Paragraph
                       type="secondary"
                       className="ant-typography-caption"
                     >
-                      ~{formatTaskRewardAsUSD(task.reward)}
+                      {formatTaskRewardAsUSD(task.reward)}
                     </Typography.Paragraph>
                   )}
                 </>
@@ -134,13 +134,13 @@ export const TaskDiscoveryTable: FC<Props> = ({ tasks }) => {
                       >
                         {formatTaskReward(reward)}
                       </Typography.Paragraph>
-                      {!!reward.token.usdPrice && (
+                      {!!reward.token.usdPrice && !reward.peggedToUsd && (
                         <Typography.Paragraph
                           type="secondary"
                           className="ant-typography-caption"
                           style={{ textAlign: "center" }}
                         >
-                          ~{formatTaskRewardAsUSD(reward)}
+                          {formatTaskRewardAsUSD(reward)}
                         </Typography.Paragraph>
                       )}
                     </>
