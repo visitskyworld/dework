@@ -17,6 +17,8 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { useFilteredTasks } from "../../task/board/filters/FilterContext";
 import _ from "lodash";
 import { SuggestionsList } from "./SuggestionsList";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { LoginButton } from "../../auth/buttons/LoginButton";
 
 const UPVOTE_REACTION = ":arrow_up_small:";
 
@@ -53,6 +55,7 @@ interface Props {
 }
 
 export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
+  const authenticated = !!useAuthContext().user;
   const tasks = useProjectTasks(projectId, "cache-and-network");
 
   const [mode, setMode] = useState(SortBy.trending);
@@ -88,7 +91,13 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <Spin />;
+  if (!mounted) {
+    return (
+      <div style={{ display: "grid", placeItems: "center", padding: 40 }}>
+        <Spin />
+      </div>
+    );
+  }
   return (
     <div className="w-full max-w-md mx-auto">
       <PageHeader
@@ -112,29 +121,33 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
           </Dropdown>
         }
         extra={
-          canCreateTask && (
-            <>
-              <Button
-                icon={<Icons.PlusOutlined />}
-                type="primary"
-                onClick={createTaskToggle.toggleOn}
-              >
-                Add a suggestion
-              </Button>
-              <TaskCreateModal
-                projectId={projectId}
-                initialValues={{ status: TaskStatus.BACKLOG }}
-                visible={createTaskToggle.isOn}
-                onCancel={createTaskToggle.toggleOff}
-                onDone={createTaskToggle.toggleOff}
-              />
-            </>
-          )
+          canCreateTask &&
+          (authenticated ? (
+            <Button
+              icon={<Icons.PlusOutlined />}
+              type="primary"
+              onClick={createTaskToggle.toggleOn}
+            >
+              Add a suggestion
+            </Button>
+          ) : (
+            <LoginButton icon={<Icons.PlusOutlined />} type="primary">
+              Add a suggestion
+            </LoginButton>
+          ))
         }
       ></PageHeader>
       <Layout.Content>
         <SuggestionsList taskRows={taskRows} />
       </Layout.Content>
+
+      <TaskCreateModal
+        projectId={projectId}
+        initialValues={{ status: TaskStatus.BACKLOG }}
+        visible={createTaskToggle.isOn}
+        onCancel={createTaskToggle.toggleOff}
+        onDone={createTaskToggle.toggleOff}
+      />
     </div>
   );
 };

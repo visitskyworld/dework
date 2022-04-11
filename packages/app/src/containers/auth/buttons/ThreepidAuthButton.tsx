@@ -13,6 +13,7 @@ import { PhantomIcon } from "@dewo/app/components/icons/Phantom";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import classNames from "classnames";
 import styles from "./ThreepidAuthButton.module.less";
+import Link from "next/link";
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,
@@ -56,16 +57,22 @@ export const ThreepidAuthButton: FC<Props> = ({
     () => ({ redirect: router.asPath, ...state }),
     [router.asPath, state]
   );
-  return (
+
+  const href = Object.keys(buttonProps).includes("href")
+    ? buttonProps.href
+    : `${Constants.GRAPHQL_API_URL}/auth/${source}?state=${JSON.stringify(
+        stateWithRedirect
+      )}`;
+
+  const button = (
     <Button
       htmlType="button"
       icon={renderThreepidIcon[source]}
-      href={`${Constants.GRAPHQL_API_URL}/auth/${source}?state=${JSON.stringify(
-        stateWithRedirect
-      )}`}
       {...buttonProps}
       disabled={buttonProps.disabled || connected}
       className={classNames({ className, [styles.connected]: connected })}
     />
   );
+
+  return !!href ? <Link href={href} children={button} /> : button;
 };
