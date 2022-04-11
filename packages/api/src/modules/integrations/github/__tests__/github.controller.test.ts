@@ -231,7 +231,7 @@ describe("GithubController", () => {
         expect(githubIssue!.number).toEqual(issueNumber);
       });
 
-      xit("should not create multiple tasks if called in parallel", async () => {
+      it("should not create multiple tasks if called in parallel", async () => {
         const { project, github } =
           await fixtures.createProjectWithGithubIntegration();
 
