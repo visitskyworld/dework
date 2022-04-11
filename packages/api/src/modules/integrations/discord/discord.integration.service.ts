@@ -929,13 +929,15 @@ export class DiscordIntegrationService {
       })}`
     );
 
-    await channel.setDefaultAutoArchiveDuration(
-      channel.guild.features.includes(GuildFeature.SevenDayThreadArchive)
-        ? 10080
-        : channel.guild.features.includes(GuildFeature.ThreeDayThreadArchive)
-        ? 4320
-        : 1440
-    );
+    await channel
+      .setDefaultAutoArchiveDuration(
+        channel.guild.features.includes(GuildFeature.SevenDayThreadArchive)
+          ? 10080
+          : channel.guild.features.includes(GuildFeature.ThreeDayThreadArchive)
+          ? 4320
+          : 1440
+      )
+      .catch(() => {});
     const thread = await channel.threads.create({
       name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
     });
