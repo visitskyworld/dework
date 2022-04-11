@@ -38,6 +38,7 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
 import { DiscordStatusboardService } from "./discord.statusboard.service";
+import { GuildFeature } from "discord-api-types";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -531,17 +532,14 @@ export class DiscordIntegrationService {
     return { channel: undefined, new: false };
   }
 
-  private async postDone(channel: Discord.TextBasedChannels, task: Task) {
+  private async postDone(channel: Discord.TextBasedChannel, task: Task) {
     await this.postTaskCard(channel, task, "✅ Task completed!");
     if (channel.isThread()) {
       await channel.setArchived(true);
     }
   }
 
-  private async postOwnerChange(
-    task: Task,
-    channel: Discord.TextBasedChannels
-  ) {
+  private async postOwnerChange(task: Task, channel: Discord.TextBasedChannel) {
     const ownerDiscordIds = await this.discord.getDiscordIds(
       task.owners.map((u) => u.id)
     );
@@ -564,7 +562,7 @@ export class DiscordIntegrationService {
 
   private async postAssigneesChange(
     task: Task,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     if (!task.assignees.length) return;
     const discordIds = await this.discord.getDiscordIds(
@@ -586,7 +584,7 @@ export class DiscordIntegrationService {
 
   private async postDueDateChange(
     task: Task,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     const ownerDiscordIds = await this.discord
       .getDiscordIds(task.owners.map((u) => u.id))
@@ -602,7 +600,7 @@ export class DiscordIntegrationService {
 
   private async postDefaultInitialMessage(
     task: Task,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     const creator = await task.creator;
     await this.postTaskCard(
@@ -624,7 +622,7 @@ export class DiscordIntegrationService {
 
   private async postMovedIntoReview(
     task: Task,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     const ownerDiscordIds = await this.discord
       .getDiscordIds(task.owners.map((u) => u.id))
@@ -739,7 +737,10 @@ export class DiscordIntegrationService {
 
     const guild = await this.discord
       .getClient(organizationIntegration)
-      .guilds.fetch(organizationIntegration.config.guildId);
+      .guilds.fetch({
+        guild: organizationIntegration.config.guildId,
+        force: true,
+      });
     await guild.roles.fetch();
 
     this.logger.debug(
@@ -788,7 +789,7 @@ export class DiscordIntegrationService {
   private async postTaskApplicationCreated(
     task: Task,
     application: TaskApplication,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     const ownerDiscordIds = await this.discord
       .getDiscordIds(task.owners.map((u) => u.id))
@@ -814,7 +815,7 @@ export class DiscordIntegrationService {
   private async postTaskSubmissionCreated(
     task: Task,
     submission: TaskSubmission,
-    channel: Discord.TextBasedChannels
+    channel: Discord.TextBasedChannel
   ) {
     const ownerDiscordIds = await this.discord
       .getDiscordIds(task.owners.map((u) => u.id))
@@ -838,7 +839,7 @@ export class DiscordIntegrationService {
   }
 
   private async postTaskCard(
-    channel: Discord.TextBasedChannels,
+    channel: Discord.TextBasedChannel,
     task: Task,
     message: string,
     discordIdsToTag?: string[],
@@ -860,7 +861,7 @@ export class DiscordIntegrationService {
   }
 
   private async post(
-    channel: Discord.TextBasedChannels,
+    channel: Discord.TextBasedChannel,
     message: string | Discord.MessageOptions
   ): Promise<void> {
     this.logger.debug(
@@ -943,6 +944,13 @@ export class DiscordIntegrationService {
       })}`
     );
 
+    await channel.setDefaultAutoArchiveDuration(
+      channel.guild.features.includes(GuildFeature.SevenDayThreadArchive)
+        ? 10080
+        : channel.guild.features.includes(GuildFeature.ThreeDayThreadArchive)
+        ? 4320
+        : 1440
+    );
     const thread = await channel.threads.create({
       name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
     });
