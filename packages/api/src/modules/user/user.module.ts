@@ -8,7 +8,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThreepidModule } from "../threepid/threepid.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
-import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 import { FileUploadModule } from "../fileUpload/fileUpload.module";
@@ -16,14 +15,7 @@ import { UserPromptModule } from "./prompt/userPrompt.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      User,
-      UserOnboarding,
-      EntityDetail,
-      Organization,
-      Project,
-      Task,
-    ]),
+    TypeOrmModule.forFeature([User, EntityDetail, Organization, Project, Task]),
     FileUploadModule,
     ThreepidModule,
     PermalinkModule,

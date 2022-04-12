@@ -111,8 +111,8 @@ export class GithubService {
   }): Promise<Task | undefined> {
     return this.taskRepo
       .createQueryBuilder("task")
-      .innerJoinAndSelect("task.assignees", "assignees")
-      .innerJoinAndSelect("task.owners", "owners")
+      .leftJoinAndSelect("task.assignees", "assignees")
+      .leftJoinAndSelect("task.owners", "owners")
       .innerJoin("task.project", "project")
       .innerJoin("project.integrations", "projInt")
       .innerJoin("projInt.organizationIntegration", "orgInt")

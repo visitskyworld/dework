@@ -1,17 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Length } from "class-validator";
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  OneToOne,
-} from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
-import { UserOnboarding } from "./UserOnboarding";
 import { Role } from "./rbac/Role";
 import { UserRole } from "./rbac/UserRole";
 import { TaskGatingDefault } from "./TaskGatingDefault";
@@ -48,10 +40,6 @@ export class User extends Audit {
   @OneToMany(() => UserPrompt, (x) => x.user)
   @Field(() => [UserPrompt])
   public prompts!: Promise<UserPrompt[]>;
-
-  @OneToOne(() => UserOnboarding, (x) => x.user, { nullable: true })
-  @Field(() => UserOnboarding, { nullable: true })
-  public onboarding?: Promise<UserOnboarding>;
 
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({

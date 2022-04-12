@@ -15,8 +15,6 @@ import { UserService } from "./user.service";
 import { AuthResponse } from "./dto/AuthResponse";
 import { UpdateUserInput } from "./dto/UpdateUserInput";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
-import { UpdateUserOnboardingInput } from "./dto/UpdateUserOnboardingInput";
-import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkService } from "../permalink/permalink.service";
 import { GQLContext } from "../app/graphql.config";
 
@@ -84,15 +82,6 @@ export class UserResolver {
       ...input,
       ...(input.username ? { username } : {}),
     });
-  }
-
-  @Mutation(() => UserOnboarding)
-  @UseGuards(AuthGuard)
-  public async updateUserOnboarding(
-    @Context("user") user: User,
-    @Args("input") input: UpdateUserOnboardingInput
-  ): Promise<UserOnboarding> {
-    return this.userService.updateOnboarding({ userId: user.id, ...input });
   }
 
   @Query(() => User)
