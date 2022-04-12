@@ -28,6 +28,7 @@ import { NFTModule } from "../nft/nft.module";
 import { RbacModule } from "../rbac/rbac.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
+import { UserPromptModule } from "../user/prompt/userPrompt.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -48,6 +49,7 @@ export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
 export const AppModuleImports: ModuleMetadata["imports"] = [
   ...AppBootstrapModuleImports,
   UserModule,
+  UserPromptModule,
   AuthModule,
   OrganizationModule,
   ProjectModule,

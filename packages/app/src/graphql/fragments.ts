@@ -567,10 +567,11 @@ export const userProfile = gql`
   ${entityDetail}
 `;
 
-export const userOnboarding = gql`
-  fragment UserOnboarding on UserOnboarding {
+export const userPrompt = gql`
+  fragment UserPrompt on UserPrompt {
     id
     type
+    createdAt
     completedAt
   }
 `;
@@ -598,8 +599,8 @@ export const userDetails = gql`
     organizations {
       ...Organization
     }
-    onboarding {
-      ...UserOnboarding
+    prompts {
+      ...UserPrompt
     }
     taskGatingDefaults {
       ...TaskGatingDefault
@@ -607,7 +608,7 @@ export const userDetails = gql`
   }
 
   ${userProfile}
-  ${userOnboarding}
+  ${userPrompt}
   ${organization}
   ${taskGatingDefault}
 `;

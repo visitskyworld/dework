@@ -3,7 +3,7 @@ import { Button, Space, Typography, Image } from "antd";
 import React, { FC } from "react";
 import ConnectToDiscordGraphic from "@dewo/app/assets/connect-to-discord.svg";
 import { ThreepidAuthButton } from "../../auth/buttons/ThreepidAuthButton";
-import { OnboardingUSPs } from "../OnboardingUSPs";
+import { OnboardingUSPs } from "./OnboardingUSPs";
 
 const usps = [
   "🏰   Get special access with your Discord roles",

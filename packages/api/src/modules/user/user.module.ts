@@ -12,6 +12,7 @@ import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 import { FileUploadModule } from "../fileUpload/fileUpload.module";
+import { UserPromptModule } from "./prompt/userPrompt.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { FileUploadModule } from "../fileUpload/fileUpload.module";
     ThreepidModule,
     PermalinkModule,
     DiscordRolesModule,
+    UserPromptModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

@@ -31,10 +31,11 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_threepids {
   threepid: string;
 }
 
-export interface AuthWithThreepidMutation_authWithThreepid_user_onboarding {
-  __typename: "UserOnboarding";
+export interface AuthWithThreepidMutation_authWithThreepid_user_prompts {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
@@ -62,7 +63,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user {
   organizations: AuthWithThreepidMutation_authWithThreepid_user_organizations[];
   details: AuthWithThreepidMutation_authWithThreepid_user_details[];
   threepids: AuthWithThreepidMutation_authWithThreepid_user_threepids[];
-  onboarding: AuthWithThreepidMutation_authWithThreepid_user_onboarding | null;
+  prompts: AuthWithThreepidMutation_authWithThreepid_user_prompts[];
   taskGatingDefaults: AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults[];
 }
 
@@ -179,10 +180,11 @@ export interface UpdateUserMutation_user_threepids {
   threepid: string;
 }
 
-export interface UpdateUserMutation_user_onboarding {
-  __typename: "UserOnboarding";
+export interface UpdateUserMutation_user_prompts {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
@@ -210,7 +212,7 @@ export interface UpdateUserMutation_user {
   organizations: UpdateUserMutation_user_organizations[];
   details: UpdateUserMutation_user_details[];
   threepids: UpdateUserMutation_user_threepids[];
-  onboarding: UpdateUserMutation_user_onboarding | null;
+  prompts: UpdateUserMutation_user_prompts[];
   taskGatingDefaults: UpdateUserMutation_user_taskGatingDefaults[];
 }
 
@@ -228,36 +230,38 @@ export interface UpdateUserMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: UpdateUserOnboardingMutation
+// GraphQL mutation operation: UpdateUserPromptMutation
 // ====================================================
 
-export interface UpdateUserOnboardingMutation_onboarding_user_onboarding {
-  __typename: "UserOnboarding";
+export interface UpdateUserPromptMutation_prompt_user_prompts {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
-export interface UpdateUserOnboardingMutation_onboarding_user {
+export interface UpdateUserPromptMutation_prompt_user {
   __typename: "User";
   id: Scalar.UUID;
-  onboarding: UpdateUserOnboardingMutation_onboarding_user_onboarding | null;
+  prompts: UpdateUserPromptMutation_prompt_user_prompts[];
 }
 
-export interface UpdateUserOnboardingMutation_onboarding {
-  __typename: "UserOnboarding";
+export interface UpdateUserPromptMutation_prompt {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
-  user: UpdateUserOnboardingMutation_onboarding_user;
+  user: UpdateUserPromptMutation_prompt_user;
 }
 
-export interface UpdateUserOnboardingMutation {
-  onboarding: UpdateUserOnboardingMutation_onboarding;
+export interface UpdateUserPromptMutation {
+  prompt: UpdateUserPromptMutation_prompt;
 }
 
-export interface UpdateUserOnboardingMutationVariables {
-  input: UpdateUserOnboardingInput;
+export interface UpdateUserPromptMutationVariables {
+  input: UpdateUserPromptInput;
 }
 
 /* tslint:disable */
@@ -4428,10 +4432,11 @@ export interface MeQuery_me_threepids {
   threepid: string;
 }
 
-export interface MeQuery_me_onboarding {
-  __typename: "UserOnboarding";
+export interface MeQuery_me_prompts {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
@@ -4459,7 +4464,7 @@ export interface MeQuery_me {
   organizations: MeQuery_me_organizations[];
   details: MeQuery_me_details[];
   threepids: MeQuery_me_threepids[];
-  onboarding: MeQuery_me_onboarding | null;
+  prompts: MeQuery_me_prompts[];
   taskGatingDefaults: MeQuery_me_taskGatingDefaults[];
 }
 
@@ -10310,13 +10315,14 @@ export interface UserProfile {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserOnboarding
+// GraphQL fragment: UserPrompt
 // ====================================================
 
-export interface UserOnboarding {
-  __typename: "UserOnboarding";
+export interface UserPrompt {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
@@ -10376,10 +10382,11 @@ export interface UserDetails_threepids {
   threepid: string;
 }
 
-export interface UserDetails_onboarding {
-  __typename: "UserOnboarding";
+export interface UserDetails_prompts {
+  __typename: "UserPrompt";
   id: Scalar.UUID;
   type: string;
+  createdAt: Scalar.DateTime;
   completedAt: Scalar.DateTime | null;
 }
 
@@ -10407,7 +10414,7 @@ export interface UserDetails {
   organizations: UserDetails_organizations[];
   details: UserDetails_details[];
   threepids: UserDetails_threepids[];
-  onboarding: UserDetails_onboarding | null;
+  prompts: UserDetails_prompts[];
   taskGatingDefaults: UserDetails_taskGatingDefaults[];
 }
 
@@ -10948,7 +10955,7 @@ export interface UpdateUserInput {
   imageUrl?: string | null;
 }
 
-export interface UpdateUserOnboardingInput {
+export interface UpdateUserPromptInput {
   type: string;
   completedAt?: Scalar.DateTime | null;
 }

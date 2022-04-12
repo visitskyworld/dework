@@ -29,7 +29,7 @@ import {
 import * as Queries from "../src/graphql/queries";
 import { getDataFromTree } from "@apollo/react-ssr";
 import { isSSR } from "@dewo/app/util/isSSR";
-import { OnboardingCarouselModal } from "@dewo/app/containers/onboarding/OnboardingCarouselModal";
+import { PromptModal } from "@dewo/app/containers/prompts/PromptModal";
 import { AmplitudeProvider } from "@dewo/app/util/analytics/AmplitudeContext";
 import { useAnalyticsListeners } from "@dewo/app/util/analytics/useAnalyticsListeners";
 
@@ -148,7 +148,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
                 <FeedbackButton />
                 <TaskUpdateModalListener />
                 <ServerErrorModal onErrorRef={onErrorRef} />
-                <OnboardingCarouselModal />
+                <PromptModal />
               </SidebarProvider>
             </PermissionsProvider>
           </AuthProvider>

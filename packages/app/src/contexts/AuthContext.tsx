@@ -45,7 +45,8 @@ export const AuthProvider: FC<{ initialAuthenticated: boolean }> = ({
       username: user.username,
       organizations: user.organizations.map((o) => o.id),
       threepids: user.threepids.map((t) => t.source),
-      onboarding: user.onboarding?.type,
+      onboarding: user.prompts.find((p) => p.type.startsWith("Onboarding"))
+        ?.type,
       userAgent: navigator.userAgent,
     });
   }, [user, amplitude]);

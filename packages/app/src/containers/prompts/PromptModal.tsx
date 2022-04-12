@@ -2,28 +2,31 @@ import { Button, Carousel, Modal } from "antd";
 import { CarouselRef } from "antd/lib/carousel";
 import React, { ComponentType, FC, useEffect, useMemo, useRef } from "react";
 import * as Icons from "@ant-design/icons";
-import { OnboardingStep, useOnboarding } from "./hooks";
-import styles from "./OnboardingCarouselModal.module.less";
-import { OnboardingConnectDiscord } from "./steps/OnboardingConnectDiscord";
-import { OnboardingConnectWallet } from "./steps/OnboardingConnectWallet";
-import { OnboardingDone } from "./steps/OnboardingDone";
-import { OnboardingProfile } from "./steps/OnboardingProfile";
+import { usePrompt, UserPromptStep } from "./hooks";
+import styles from "./PromptModal.module.less";
+import { OnboardingConnectDiscord } from "./onboarding/OnboardingConnectDiscord";
+import { OnboardingConnectWallet } from "./onboarding/OnboardingConnectWallet";
+import { OnboardingDone } from "./onboarding/OnboardingDone";
+import { OnboardingProfile } from "./onboarding/OnboardingProfile";
+import { ConnectWalletToReceiveTaskReward } from "./task/ConnectWalletToReceiveTaskReward";
 
 const StepComponentMapping: Record<
-  OnboardingStep,
+  UserPromptStep,
   ComponentType<{ onNext(): void; active: boolean }>
 > = {
-  [OnboardingStep.profile]: OnboardingProfile,
-  [OnboardingStep.wallet]: OnboardingConnectWallet,
-  [OnboardingStep.discord]: OnboardingConnectDiscord,
-  [OnboardingStep.done]: OnboardingDone,
+  [UserPromptStep.OnboardingProfile]: OnboardingProfile,
+  [UserPromptStep.OnboardingConnectWallet]: OnboardingConnectWallet,
+  [UserPromptStep.OnboardingConnectDiscord]: OnboardingConnectDiscord,
+  [UserPromptStep.OnboardingDone]: OnboardingDone,
+  [UserPromptStep.TaskConnectWalletToReceiveReward]:
+    ConnectWalletToReceiveTaskReward,
 };
 
-export const OnboardingCarouselModal: FC = () => {
-  const onboarding = useOnboarding();
+export const PromptModal: FC = () => {
+  const prompt = usePrompt();
   const currentIndex = useMemo(
-    () => onboarding.steps.indexOf(onboarding.step!),
-    [onboarding]
+    () => prompt.steps.indexOf(prompt.step!),
+    [prompt]
   );
 
   const carousel = useRef<CarouselRef>(null);
@@ -35,7 +38,7 @@ export const OnboardingCarouselModal: FC = () => {
 
   return (
     <Modal
-      visible={!!onboarding.step}
+      visible={!!prompt.step}
       footer={null}
       closable={false}
       destroyOnClose
@@ -52,14 +55,14 @@ export const OnboardingCarouselModal: FC = () => {
         prefixCls={`ant-carousel ${styles.carousel}`}
         dots={false}
       >
-        {onboarding.steps.map((step) => {
+        {prompt.steps.map((step) => {
           const Component = StepComponentMapping[step];
           return (
             <div key={step}>
               <div className={styles.content}>
                 <Component
-                  active={step === onboarding.step}
-                  onNext={onboarding.onNext}
+                  active={step === prompt.step}
+                  onNext={prompt.onNext}
                 />
               </div>
             </div>
@@ -73,7 +76,7 @@ export const OnboardingCarouselModal: FC = () => {
           type="text"
           size="large"
           className={styles.back}
-          onClick={onboarding.onPrev}
+          onClick={prompt.onPrev}
         />
       )}
     </Modal>

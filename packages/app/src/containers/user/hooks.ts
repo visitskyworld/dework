@@ -12,10 +12,9 @@ import {
   UserProfileQuery,
   UserProfileQueryVariables,
   UserProfile,
-  UpdateUserOnboardingInput,
-  UserOnboarding,
-  UpdateUserOnboardingMutation,
-  UpdateUserOnboardingMutationVariables,
+  UpdateUserPromptInput,
+  UpdateUserPromptMutation,
+  UpdateUserPromptMutationVariables,
   UserProfileByUsernameQuery,
   UserProfileByUsernameQueryVariables,
   UserRolesQuery,
@@ -49,18 +48,17 @@ export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
   );
 }
 
-export function useUpdateUserOnboarding(): (
-  input: UpdateUserOnboardingInput
-) => Promise<UserOnboarding> {
+export function useUpdateUserPrompt(): (
+  input: UpdateUserPromptInput
+) => Promise<void> {
   const [mutation] = useMutation<
-    UpdateUserOnboardingMutation,
-    UpdateUserOnboardingMutationVariables
-  >(Mutations.updateUserOnboarding);
+    UpdateUserPromptMutation,
+    UpdateUserPromptMutationVariables
+  >(Mutations.updateUserPrompt);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data.onboarding;
     },
     [mutation]
   );

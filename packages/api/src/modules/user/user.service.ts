@@ -16,6 +16,7 @@ import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { UserOnboarding } from "@dewo/api/models/UserOnboarding";
 import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
 import { FileUploadService } from "../fileUpload/fileUpload.service";
+import { UserPromptService } from "./prompt/userPrompt.service";
 
 @Injectable()
 export class UserService {
@@ -31,7 +32,8 @@ export class UserService {
     private readonly threepidService: ThreepidService,
     private readonly discordRolesService: DiscordRolesService,
     private readonly jwtService: JwtService,
-    private readonly fileUploadService: FileUploadService
+    private readonly fileUploadService: FileUploadService,
+    private readonly userPromptService: UserPromptService
   ) {}
 
   public async authWithThreepid(
@@ -73,6 +75,9 @@ export class UserService {
 
     await this.connectThreepidToUser(threepid, user);
     await this.autoPopulateDetails(user.id, threepid);
+    if (!existingUser) {
+      await this.createOnboardingPrompt(user);
+    }
     return this.userRepo.findOne(user.id) as Promise<User>;
   }
 
@@ -91,6 +96,22 @@ export class UserService {
 
     if (threepid.source === ThreepidSource.discord) {
       await this.discordRolesService.syncUserRoles(user);
+    }
+  }
+
+  private async createOnboardingPrompt(user: User): Promise<void> {
+    const threepids = await user.threepids;
+    const sources = new Set(threepids.map((t) => t.source));
+    if (sources.has(ThreepidSource.discord)) {
+      await this.userPromptService.create({
+        userId: user.id,
+        type: "Onboarding.v1.ConnectWallet",
+      });
+    } else {
+      await this.userPromptService.create({
+        userId: user.id,
+        type: "Onboarding.v1.ConnectDiscord",
+      });
     }
   }
 

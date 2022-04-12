@@ -4,7 +4,7 @@ import ConnectWalletGraphic from "@dewo/app/assets/connect-wallet.svg";
 import { HiroAuthButton } from "../../auth/buttons/HiroAuthButton";
 import { MetamaskAuthButton } from "../../auth/buttons/MetamaskAuthButton";
 import { PhantomAuthButton } from "../../auth/buttons/PhantomAuthButton";
-import { OnboardingUSPs } from "../OnboardingUSPs";
+import { OnboardingUSPs } from "./OnboardingUSPs";
 
 const usps = [
   "💰   Get paid for tasks and bounties you complete",

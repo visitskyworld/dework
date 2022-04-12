@@ -48,20 +48,20 @@ export const updateUser = gql`
   ${Fragments.userDetails}
 `;
 
-export const updateUserOnboarding = gql`
-  mutation UpdateUserOnboardingMutation($input: UpdateUserOnboardingInput!) {
-    onboarding: updateUserOnboarding(input: $input) {
-      ...UserOnboarding
+export const updateUserPrompt = gql`
+  mutation UpdateUserPromptMutation($input: UpdateUserPromptInput!) {
+    prompt: updateUserPrompt(input: $input) {
+      ...UserPrompt
       user {
         id
-        onboarding {
-          ...UserOnboarding
+        prompts {
+          ...UserPrompt
         }
       }
     }
   }
 
-  ${Fragments.userOnboarding}
+  ${Fragments.userPrompt}
 `;
 
 export const updateUserRole = gql`

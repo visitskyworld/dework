@@ -20,14 +20,14 @@ import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 import { InviteMessage } from "./InviteMessage";
-import { useOnboarding } from "../onboarding/hooks";
+import { usePrompt } from "../prompts/hooks";
 
 const messageBottomStyle: CSSProperties = {
   marginTop: "calc(100vh - 140px)",
 };
 
 export const InviteMessageToast: FC = () => {
-  const showingOnboarding = !!useOnboarding().step;
+  const showingPrompt = !!usePrompt().step;
 
   const router = useRouter();
   const inviteId = router.query.inviteId as string | undefined;
@@ -129,7 +129,7 @@ export const InviteMessageToast: FC = () => {
   };
 
   useEffect(() => {
-    if (!invite || showingOnboarding) return;
+    if (!invite || showingPrompt) return;
 
     const handleClick = async () => {
       message.destroy();
@@ -165,7 +165,7 @@ export const InviteMessageToast: FC = () => {
       style: messageBottomStyle,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [!!invite, showingOnboarding, authenticated]);
+  }, [!!invite, showingPrompt, authenticated]);
 
   return (
     <>

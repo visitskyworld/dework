@@ -257,6 +257,43 @@ describe("UserResolver", () => {
           value: "my-username#1234",
         });
       });
+
+      describe("onboarding prompts", () => {
+        it("should create Discord onboarding prompt", async () => {
+          const threepid = await fixtures.createThreepid({
+            source: ThreepidSource.metamask,
+            threepid: "0x1111111111111111111111111111111111111111",
+          });
+
+          const res = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          expect(res.body.data?.authWithThreepid.user.prompts).toContainEqual(
+            expect.objectContaining({
+              type: "Onboarding.v1.ConnectDiscord",
+            })
+          );
+        });
+
+        it("should create wallet onboarding prompt", async () => {
+          const threepid = await fixtures.createThreepid({
+            source: ThreepidSource.discord,
+          });
+
+          const res = await client.request({
+            app,
+            body: UserRequests.authWithThreepid(threepid.id),
+          });
+
+          expect(res.body.data?.authWithThreepid.user.prompts).toContainEqual(
+            expect.objectContaining({
+              type: "Onboarding.v1.ConnectWallet",
+            })
+          );
+        });
+      });
     });
 
     describe("updateUser", () => {

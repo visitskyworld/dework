@@ -15,6 +15,7 @@ import { UserOnboarding } from "./UserOnboarding";
 import { Role } from "./rbac/Role";
 import { UserRole } from "./rbac/UserRole";
 import { TaskGatingDefault } from "./TaskGatingDefault";
+import { UserPrompt } from "./UserPrompt";
 
 @Entity()
 @ObjectType()
@@ -43,6 +44,10 @@ export class User extends Audit {
   @OneToMany(() => TaskGatingDefault, (x) => x.user)
   @Field(() => [TaskGatingDefault])
   public taskGatingDefaults!: Promise<TaskGatingDefault[]>;
+
+  @OneToMany(() => UserPrompt, (x) => x.user)
+  @Field(() => [UserPrompt])
+  public prompts!: Promise<UserPrompt[]>;
 
   @OneToOne(() => UserOnboarding, (x) => x.user, { nullable: true })
   @Field(() => UserOnboarding, { nullable: true })
