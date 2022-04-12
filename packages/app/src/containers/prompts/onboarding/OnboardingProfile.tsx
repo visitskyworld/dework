@@ -10,7 +10,7 @@ import { useUpdateUser } from "../../user/hooks";
 import { ThreepidAuthButton } from "../../auth/buttons/ThreepidAuthButton";
 
 interface Props {
-  onNext(): void;
+  onNext(): Promise<void>;
 }
 
 export const OnboardingProfile: FC<Props> = ({ onNext }) => {

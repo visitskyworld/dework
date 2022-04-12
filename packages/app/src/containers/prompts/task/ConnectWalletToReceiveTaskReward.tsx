@@ -4,7 +4,7 @@ import { Emojione } from "react-emoji-render";
 import { MetamaskAuthButton } from "../../auth/buttons/MetamaskAuthButton";
 
 interface Props {
-  onNext(): void;
+  onNext(): Promise<void>;
 }
 
 export const ConnectWalletToReceiveTaskReward: FC<Props> = ({ onNext }) => {

@@ -19,6 +19,7 @@ export const CreateOrganizationButton: FC<ButtonProps> = (buttonProps) => {
       <OrganizationCreateModal
         visible={createOrganization.isOn}
         onClose={createOrganization.toggleOff}
+        onCreated={createOrganization.toggleOff}
       />
     </>
   );

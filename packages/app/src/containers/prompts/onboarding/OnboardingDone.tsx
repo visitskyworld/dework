@@ -2,17 +2,18 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
 import { Avatar, Button, Col, Row, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import Link from "next/link";
 import React, { FC } from "react";
 import { OrganizationCreateModal } from "../../organization/create/OrganizationCreateModal";
 import styles from "./OnboardingDone.module.less";
+import { useRouter } from "next/router";
 
 interface Props {
-  onNext(): void;
+  onNext(): Promise<void>;
 }
 
 export const OnboardingDone: FC<Props> = ({ onNext }) => {
   const { user } = useAuthContext();
+  const router = useRouter();
   const createOrganization = useToggle();
   const [handleNext, loadingNext] = useRunningCallback(onNext, [onNext]);
   if (!user) return null;
@@ -49,38 +50,36 @@ export const OnboardingDone: FC<Props> = ({ onNext }) => {
           </Button>
         </Col>
         <Col xs={24} sm={8}>
-          <Link href={user.permalink}>
-            <Button
-              block
-              className={styles.tile}
-              name="Onboarding Done: setup profile"
+          <Button
+            block
+            className={styles.tile}
+            name="Onboarding Done: setup profile"
+            onClick={() => onNext().then(() => router.push(user.permalink))}
+          >
+            <Avatar icon={<Icons.SmileOutlined />} size="large" />
+            <Typography.Paragraph
+              strong
+              style={{ margin: 0, textAlign: "center" }}
             >
-              <Avatar icon={<Icons.SmileOutlined />} size="large" />
-              <Typography.Paragraph
-                strong
-                style={{ margin: 0, textAlign: "center" }}
-              >
-                Setup your profile
-              </Typography.Paragraph>
-            </Button>
-          </Link>
+              Setup your profile
+            </Typography.Paragraph>
+          </Button>
         </Col>
         <Col xs={24} sm={8}>
-          <Link href="/">
-            <Button
-              block
-              className={styles.tile}
-              name="Onboarding Done: explore tasks and bounties"
+          <Button
+            block
+            className={styles.tile}
+            name="Onboarding Done: explore tasks and bounties"
+            onClick={() => onNext().then(() => router.push("/"))}
+          >
+            <Avatar icon={<Icons.TrophyOutlined />} size="large" />
+            <Typography.Paragraph
+              strong
+              style={{ margin: 0, textAlign: "center" }}
             >
-              <Avatar icon={<Icons.TrophyOutlined />} size="large" />
-              <Typography.Paragraph
-                strong
-                style={{ margin: 0, textAlign: "center" }}
-              >
-                Explore tasks and bounties
-              </Typography.Paragraph>
-            </Button>
-          </Link>
+              Explore tasks and bounties
+            </Typography.Paragraph>
+          </Button>
         </Col>
       </Row>
 
@@ -98,6 +97,7 @@ export const OnboardingDone: FC<Props> = ({ onNext }) => {
       <OrganizationCreateModal
         visible={createOrganization.isOn}
         onClose={createOrganization.toggleOff}
+        onCreated={onNext}
       />
     </>
   );

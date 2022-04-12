@@ -12,7 +12,7 @@ const usps = [
 ];
 
 interface Props {
-  onNext(): void;
+  onNext(): Promise<void>;
 }
 
 export const OnboardingConnectDiscord: FC<Props> = ({ onNext }) => {

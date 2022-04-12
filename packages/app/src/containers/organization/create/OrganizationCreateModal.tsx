@@ -5,11 +5,13 @@ import { OrganizationCreateForm } from "./OrganizationCreateForm";
 interface OrganizationCreateModalProps {
   visible: boolean;
   onClose(): void;
+  onCreated(): void;
 }
 
 export const OrganizationCreateModal: FC<OrganizationCreateModalProps> = ({
   visible,
   onClose,
+  onCreated,
 }) => {
   return (
     <Modal
@@ -18,7 +20,7 @@ export const OrganizationCreateModal: FC<OrganizationCreateModalProps> = ({
       onCancel={onClose}
       footer={null}
     >
-      <OrganizationCreateForm onCreated={onClose} />
+      <OrganizationCreateForm onCreated={onCreated} />
     </Modal>
   );
 };

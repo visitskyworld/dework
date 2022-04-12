@@ -12,7 +12,7 @@ const usps = [
 ];
 interface Props {
   active: boolean;
-  onNext(): void;
+  onNext(): Promise<void>;
 }
 
 export const OnboardingConnectWallet: FC<Props> = ({ active, onNext }) => {
