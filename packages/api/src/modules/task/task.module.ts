@@ -1,4 +1,3 @@
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { Task } from "@dewo/api/models/Task";
 import { TaskReward } from "@dewo/api/models/TaskReward";
@@ -16,7 +15,6 @@ import {
 } from "./task.resolver";
 import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { RbacModule } from "../rbac/rbac.module";
@@ -34,8 +32,6 @@ import { AuditLogModule } from "../auditLog/auditLog.module";
       TaskReaction,
       Project,
       User,
-      ProjectMember,
-      OrganizationMember,
     ]),
     CqrsModule,
     PaymentModule,

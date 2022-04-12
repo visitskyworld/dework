@@ -37,8 +37,6 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
-import { DiscordStatusboardService } from "./discord.statusboard.service";
-import { GuildFeature } from "discord-api-types";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -57,8 +55,7 @@ export class DiscordIntegrationService {
     private readonly threepidService: ThreepidService,
     private readonly integrationService: IntegrationService,
     @InjectRepository(DiscordChannel)
-    private readonly discordChannelRepo: Repository<DiscordChannel>,
-    private readonly discordStatusboardService: DiscordStatusboardService
+    private readonly discordChannelRepo: Repository<DiscordChannel>
   ) {}
 
   private gifs = [
@@ -931,9 +928,9 @@ export class DiscordIntegrationService {
 
     await channel
       .setDefaultAutoArchiveDuration(
-        channel.guild.features.includes(GuildFeature.SevenDayThreadArchive)
+        channel.guild.features.includes("SEVEN_DAY_THREAD_ARCHIVE")
           ? 10080
-          : channel.guild.features.includes(GuildFeature.ThreeDayThreadArchive)
+          : channel.guild.features.includes("THREE_DAY_THREAD_ARCHIVE")
           ? 4320
           : 1440
       )

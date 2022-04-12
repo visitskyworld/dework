@@ -1,5 +1,4 @@
 import { Organization } from "@dewo/api/models/Organization";
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
@@ -21,7 +20,6 @@ import { Role } from "@dewo/api/models/rbac/Role";
     TypeOrmModule.forFeature([
       Organization,
       User,
-      OrganizationMember,
       Project,
       ProjectTokenGate,
       OrganizationTag,

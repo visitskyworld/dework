@@ -1,5 +1,4 @@
 import { Project } from "@dewo/api/models/Project";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
@@ -14,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
-import { DeepPartial, In, IsNull, Raw, Repository } from "typeorm";
+import { DeepPartial, IsNull, Raw, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
 import { TaskStatus } from "@dewo/api/models/Task";
@@ -27,8 +26,6 @@ export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
-    @InjectRepository(ProjectMember)
-    private readonly projectMemberRepo: Repository<ProjectMember>,
     @InjectRepository(ProjectTokenGate)
     private readonly projectTokenGateRepo: Repository<ProjectTokenGate>,
     @InjectRepository(TaskTag)
@@ -143,37 +140,6 @@ export class ProjectService {
     const query = { id: partial.id, organizationId: partial.organizationId };
     await this.projectSectionRepo.update(query, partial);
     return this.projectSectionRepo.findOne(query) as Promise<ProjectSection>;
-  }
-
-  public async addMemberIfNotExists(projectId: string, userIds: string[]) {
-    if (!userIds.length) return;
-
-    const members = await this.projectMemberRepo.find({
-      projectId,
-      userId: In(userIds),
-    });
-
-    const nonmemberIds = userIds.filter(
-      (id) => !members.some((m) => m.userId === id)
-    );
-
-    await this.projectMemberRepo.save(
-      nonmemberIds.map((userId) => ({
-        projectId,
-        userId,
-        role: ProjectRole.CONTRIBUTOR,
-      }))
-    );
-  }
-
-  public async removeMember(projectId: string, userId: string): Promise<void> {
-    await this.projectMemberRepo.delete({ userId, projectId });
-  }
-
-  public findMember(
-    partial: Partial<Pick<ProjectMember, "projectId" | "userId" | "role">>
-  ): Promise<ProjectMember | undefined> {
-    return this.projectMemberRepo.findOne(partial);
   }
 
   public findById(id: string): Promise<Project | undefined> {

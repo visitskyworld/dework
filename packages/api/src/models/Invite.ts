@@ -2,11 +2,11 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { AfterLoad, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
-import { OrganizationRole } from "./OrganizationMember";
 import { Project } from "./Project";
 import { User } from "./User";
 import encoder from "uuid-base62";
 import { ProjectRole } from "./enums/ProjectRole";
+import { OrganizationRole } from "./enums/OrganizationRole";
 
 @Entity()
 @ObjectType()

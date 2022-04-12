@@ -1,6 +1,4 @@
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { Project } from "@dewo/api/models/Project";
-import { ProjectMember } from "@dewo/api/models/ProjectMember";
 import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
@@ -19,14 +17,12 @@ import { ProjectService } from "./project.service";
   imports: [
     TypeOrmModule.forFeature([
       Project,
-      ProjectMember,
       ProjectTokenGate,
       ProjectSection,
       User,
       TaskSection,
       TaskTag,
       TaskGatingDefault,
-      OrganizationMember,
     ]),
     PermalinkModule,
     PaymentModule,

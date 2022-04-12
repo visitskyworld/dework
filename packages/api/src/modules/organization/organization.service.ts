@@ -1,6 +1,5 @@
 import { EntityDetail } from "@dewo/api/models/EntityDetail";
 import { Organization } from "@dewo/api/models/Organization";
-import { OrganizationMember } from "@dewo/api/models/OrganizationMember";
 import { OrganizationTag } from "@dewo/api/models/OrganizationTag";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
@@ -24,8 +23,6 @@ export class OrganizationService {
     private readonly rbacService: RbacService,
     @InjectRepository(Organization)
     private readonly organizationRepo: Repository<Organization>,
-    @InjectRepository(OrganizationMember)
-    private readonly organizationMemberRepo: Repository<OrganizationMember>,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
     @InjectRepository(ProjectTokenGate)
@@ -124,21 +121,6 @@ export class OrganizationService {
     return this.organizationTagRepo.findOne(
       created.id
     ) as Promise<OrganizationTag>;
-  }
-
-  public findMember(
-    partial: Partial<
-      Pick<OrganizationMember, "organizationId" | "userId" | "role">
-    >
-  ): Promise<OrganizationMember | undefined> {
-    return this.organizationMemberRepo.findOne(partial);
-  }
-
-  public async removeMember(
-    organizationId: string,
-    userId: string
-  ): Promise<void> {
-    await this.organizationMemberRepo.delete({ userId, organizationId });
   }
 
   public getUsers(

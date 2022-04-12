@@ -6,7 +6,6 @@ import { PaymentMethod } from "./PaymentMethod";
 import { ProjectIntegration } from "./ProjectIntegration";
 import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
-import { ProjectMember } from "./ProjectMember";
 import { ProjectTokenGate } from "./ProjectTokenGate";
 import { ProjectSection } from "./ProjectSection";
 import { TaskSection } from "./TaskSection";
@@ -72,9 +71,6 @@ export class Project extends Audit {
   @OneToMany(() => ProjectTokenGate, (p: ProjectTokenGate) => p.project)
   @Field(() => [ProjectTokenGate])
   public tokenGates!: Promise<ProjectTokenGate[]>;
-
-  @OneToMany(() => ProjectMember, (om: ProjectMember) => om.project)
-  public members!: Promise<ProjectMember[]>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

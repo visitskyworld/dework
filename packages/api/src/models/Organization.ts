@@ -1,7 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
-import { OrganizationMember } from "./OrganizationMember";
 import { Project } from "./Project";
 import { OrganizationIntegration } from "./OrganizationIntegration";
 import { OrganizationTag } from "./OrganizationTag";
@@ -36,12 +35,6 @@ export class Organization extends Audit {
   @JoinTable({ name: "organization_tag_map" })
   @Field(() => [OrganizationTag])
   public tags!: OrganizationTag[];
-
-  @OneToMany(
-    () => OrganizationMember,
-    (om: OrganizationMember) => om.organization
-  )
-  public members!: Promise<OrganizationMember[]>;
 
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])
