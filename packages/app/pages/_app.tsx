@@ -123,6 +123,9 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           rel="icon"
           href={faviconByEnvironment[Constants.ENVIRONMENT ?? "prod"]}
         />
+        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon-precomposed" href="/logo.png" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#F94A90" />
       </Head>
       <FallbackSeo />
       <ApolloProvider client={apollo as any}>
