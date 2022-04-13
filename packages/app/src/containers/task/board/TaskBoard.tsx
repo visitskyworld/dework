@@ -23,6 +23,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useFilteredTasks } from "./filters/FilterContext";
 import { useProject } from "../../project/hooks";
+import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 
 const defaultStatuses: TaskStatus[] = [
   TaskStatus.TODO,
@@ -52,6 +53,7 @@ export const TaskBoard: FC<Props> = ({
   statuses = defaultStatuses,
 }) => {
   const { user } = useAuthContext();
+  const hasPermission = usePermissionFn();
 
   const { project } = useProject(projectId);
   const filteredTasks = useFilteredTasks(tasks, project?.organizationId);
@@ -107,8 +109,20 @@ export const TaskBoard: FC<Props> = ({
       const taskBelow = group?.tasks[indexExcludingItself];
       const sortKey = getSortKeyBetween(taskAbove, taskBelow, (t) => t.sortKey);
 
+      const shouldAssignCurrentUser =
+        !!user &&
+        task.status === TaskStatus.TODO &&
+        status === TaskStatus.IN_PROGRESS &&
+        !task.assignees.length &&
+        hasPermission("update", task, "assigneeIds");
       const updatedTask = await updateTask(
-        { id: taskId, status, sortKey, sectionId: group?.section?.id ?? null },
+        {
+          id: taskId,
+          status,
+          sortKey,
+          assigneeIds: shouldAssignCurrentUser ? [user.id] : undefined,
+          sectionId: group?.section?.id ?? null,
+        },
         task
       );
 
@@ -120,7 +134,7 @@ export const TaskBoard: FC<Props> = ({
         setTaskInReview(updatedTask);
       }
     },
-    [tasks, groupedTasks, updateTask, reviewModalToggle, user]
+    [tasks, groupedTasks, updateTask, hasPermission, reviewModalToggle, user]
   );
 
   const [loaded, setLoaded] = useState(false);
