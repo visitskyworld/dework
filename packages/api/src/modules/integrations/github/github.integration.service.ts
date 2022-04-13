@@ -141,11 +141,7 @@ export class GithubIntegrationService {
         })}`
       );
       const status =
-        issue.state === "closed"
-          ? TaskStatus.DONE
-          : project.options?.showBacklogColumn
-          ? TaskStatus.BACKLOG
-          : TaskStatus.TODO;
+        issue.state === "closed" ? TaskStatus.DONE : TaskStatus.TODO;
 
       const taskNumber = await this.taskService.getNextTaskNumber(project.id);
       const task = await this.connection.transaction(async (manager) => {
