@@ -44,6 +44,7 @@ import { TaskFormValues } from "./types";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { TaskActivityFeed } from "./TaskActivityFeed";
+import { useToggle } from "@dewo/app/util/hooks";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -125,6 +126,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   );
 
   const showTaskRewardFirst = !useCanUpdateTaskReward(task);
+  const moreSection = useToggle(!!values?.dueDate || !!values?.storyPoints);
 
   return (
     <Form
@@ -329,7 +331,7 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {(canChange("dueDate") || canChange("storyPoints")) && (
-            <MoreSectionCollapse label="More">
+            <MoreSectionCollapse label="More" toggle={moreSection}>
               {canChange("dueDate") && (
                 <Form.Item name="dueDate" label="Due Date">
                   <DatePicker format="LL" style={{ width: "100%" }} />
