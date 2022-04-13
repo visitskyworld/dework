@@ -104,7 +104,7 @@ BEGIN
       "explorerUrl": "https://etherscan.io",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.gnosis.io",
-        "addressPrefix": "eth"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/eth:"
       }
     }' AS json)
   ), (
@@ -119,7 +119,7 @@ BEGIN
       "explorerUrl": "https://blockscout.com/xdai/mainnet",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.xdai.gnosis.io",
-        "addressPrefix": "xdai"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/xdai:"
       }
     }' AS json)
   ), (
@@ -134,7 +134,7 @@ BEGIN
       "explorerUrl": "https://polygonscan.com",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.polygon.gnosis.io",
-        "addressPrefix": "matic"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/matic:"
       }
     }' AS json)
   ), (
@@ -149,7 +149,7 @@ BEGIN
       "explorerUrl": "https://cchain.explorer.avax.network",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.avalanche.gnosis.io",
-        "addressPrefix": "avax"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/avax:"
       }
     }' AS json)
   ), (
@@ -161,7 +161,11 @@ BEGIN
     CAST('{
       "chainId": 250,
       "rpcUrl": "https://rpc.ftm.tools",
-      "explorerUrl": "https://ftmscan.com"
+      "explorerUrl": "https://ftmscan.com",
+      "gnosisSafe": {
+        "serviceUrl": "https://safe.fantom.network",
+        "safeUrlPrefix": "https://safe.fantom.network/#/safes/"
+      }
     }' AS json)
   ), (
     harmony_mainnet_id,
@@ -174,7 +178,8 @@ BEGIN
       "rpcUrl": "https://api.harmony.one",
       "explorerUrl": "https://explorer.harmony.one",
       "gnosisSafe": {
-        "serviceUrl": "https://multisig.harmony.one"
+        "serviceUrl": "https://multisig.harmony.one",
+        "safeUrlPrefix": "https://multisig.harmony.one/#/safes/"
       }
     }' AS json)
   ), (
@@ -189,7 +194,7 @@ BEGIN
       "explorerUrl": "https://arbiscan.io",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.arbitrum.gnosis.io",
-        "addressPrefix": "arb"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/arb1:"
       }
     }' AS json)
   ), (
@@ -204,7 +209,7 @@ BEGIN
       "explorerUrl": "https://optimistic.etherscan.io",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.optimism.gnosis.io",
-        "addressPrefix": "oeth"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/oeth:"
       }
     }' AS json)
   ), (
@@ -216,7 +221,11 @@ BEGIN
     CAST('{
       "chainId": 122,
       "rpcUrl": "https://rpc.fuse.io",
-      "explorerUrl": "https://explorer.fuse.io"
+      "explorerUrl": "https://explorer.fuse.io",
+      "gnosisSafe": {
+        "serviceUrl": "https://gnosis-safe.fuse.io",
+        "safeUrlPrefix": "https://gnosis-safe.fuse.io/fuse:"
+      }
     }' AS json)
   ), (
     bsc_mainnet_id,
@@ -230,7 +239,7 @@ BEGIN
       "explorerUrl": "https://bscscan.com",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.bsc.gnosis.io",
-        "addressPrefix": "bsc"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/bnb:"
       }
     }' AS json)
   ), (
@@ -265,7 +274,7 @@ BEGIN
       "explorerUrl": "https://rinkeby.etherscan.io",
       "gnosisSafe": {
         "serviceUrl": "https://safe-transaction.rinkeby.gnosis.io",
-        "addressPrefix": "rin"
+        "safeUrlPrefix": "https://gnosis-safe.io/app/rin:"
       }
     }' AS json)
   ), (

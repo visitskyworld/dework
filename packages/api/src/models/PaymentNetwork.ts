@@ -18,7 +18,7 @@ interface EthereumConfig {
   explorerUrl: string;
   gnosisSafe?: {
     serviceUrl: string;
-    addressPrefix?: string;
+    safeUrlPrefix?: string;
   };
 }
 

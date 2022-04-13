@@ -60,9 +60,8 @@ export function explorerLink(payment: Payment): string | undefined {
   }
 
   if (!!payment.data?.safeTxHash && !!payment.network.config.gnosisSafe) {
-    const addressPrefix = payment.network.config.gnosisSafe.addressPrefix;
-    const prefix = !!addressPrefix ? `${addressPrefix}:` : "";
-    return `https://gnosis-safe.io/app/${prefix}${payment.paymentMethod.address}/transactions/queue`;
+    const safeUrlPrefix = payment.network.config.gnosisSafe.safeUrlPrefix;
+    return `${safeUrlPrefix}${payment.paymentMethod.address}/transactions/queue`;
   }
 
   if (!!payment.data?.txId) {
