@@ -44,8 +44,8 @@ const UserPromptStepMapping: Record<
 export function usePrompt(): {
   step: UserPromptStep | undefined;
   steps: UserPromptStep[];
-  onNext(): void;
-  onPrev(): void;
+  onNext(): Promise<void>;
+  onPrev(): Promise<void>;
 } {
   const router = useRouter();
   const routerRef = useRef(router);

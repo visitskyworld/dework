@@ -12,7 +12,7 @@ import { ConnectWalletToReceiveTaskReward } from "./task/ConnectWalletToReceiveT
 
 const StepComponentMapping: Record<
   UserPromptStep,
-  ComponentType<{ onNext(): void; active: boolean }>
+  ComponentType<{ onNext(): Promise<void>; active: boolean }>
 > = {
   [UserPromptStep.OnboardingProfile]: OnboardingProfile,
   [UserPromptStep.OnboardingConnectWallet]: OnboardingConnectWallet,
