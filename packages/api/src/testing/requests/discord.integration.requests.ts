@@ -25,6 +25,19 @@ export class DiscordIntegrationRequests {
     };
   }
 
+  public static getOrganizationsUserFollowsOnDiscord(): GraphQLTestClientRequestBody {
+    return {
+      query: `
+        query GetOrganizationsUserFollowsOnDiscord {
+          organizations: getOrganizationsUserFollowsOnDiscord {
+            id
+            name
+          }
+        }
+      `,
+    };
+  }
+
   public static createTaskDiscordLink(
     taskId: string
   ): GraphQLTestClientRequestBody<{ taskId: string }> {

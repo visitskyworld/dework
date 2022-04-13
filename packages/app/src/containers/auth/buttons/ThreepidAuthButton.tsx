@@ -12,8 +12,9 @@ import { useRouter } from "next/router";
 import { PhantomIcon } from "@dewo/app/components/icons/Phantom";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import classNames from "classnames";
-import styles from "./ThreepidAuthButton.module.less";
 import Link from "next/link";
+import styles from "./ThreepidAuthButton.module.less";
+// const styles: any = {};
 
 export const renderThreepidIcon: Record<ThreepidSource, ReactNode> = {
   [ThreepidSource.discord]: <DiscordIcon />,

@@ -1,4 +1,5 @@
 import { DiscordChannel } from "@dewo/api/models/DiscordChannel";
+import { Organization } from "@dewo/api/models/Organization";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
@@ -23,7 +24,12 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, ProjectIntegration, DiscordChannel]),
+    TypeOrmModule.forFeature([
+      User,
+      ProjectIntegration,
+      DiscordChannel,
+      Organization,
+    ]),
     TaskModule,
     ThreepidModule,
     PermalinkModule,

@@ -223,8 +223,7 @@ export class OrganizationResolver {
 
   @Query(() => [Organization])
   public async getPopularOrganizations(): Promise<Organization[]> {
-    const organizations = await this.organizationService.findPopular();
-    return organizations;
+    return this.organizationService.findPopular();
   }
 }
 

@@ -13,7 +13,6 @@ const discordGuildId = "915593019871342592";
 const discordChannelId = "950769460501958659";
 
 const discordUserId = "921849518750838834";
-const discordUserAccessToken = "MIh53yuCgx4CNwQA5tqbIkAiaG98Gc";
 
 describe("DiscordIntegrationResolver", () => {
   let app: INestApplication;
@@ -100,6 +99,37 @@ describe("DiscordIntegrationResolver", () => {
             name: discordThread.name,
             integrationId: integration.id,
           })
+        );
+      });
+    });
+
+    describe("getOrganizationsUserFollowsOnDiscord", () => {
+      // can be run on-demand to test this query, but needs a fresh accessToken
+      xit("should return organizations where user is part of Discord", async () => {
+        const user = await fixtures.createUser({
+          source: ThreepidSource.discord,
+          threepid: "<insert>",
+          config: {
+            accessToken: "<insert>",
+            profile: { username: faker.internet.userName() },
+          } as any,
+        });
+
+        const organization = await fixtures.createOrganization();
+        await fixtures.createOrganizationIntegration({
+          organizationId: organization.id,
+          type: OrganizationIntegrationType.DISCORD,
+          config: { guildId: discordGuildId, permissions: "" },
+        });
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: DiscordIntegrationRequests.getOrganizationsUserFollowsOnDiscord(),
+        });
+
+        expect(response.body.data?.organizations).toContainEqual(
+          expect.objectContaining({ id: organization.id })
         );
       });
     });
@@ -241,7 +271,6 @@ describe("DiscordIntegrationResolver", () => {
           source: ThreepidSource.discord,
           threepid: discordUserId,
           config: {
-            accessToken: discordUserAccessToken,
             profile: { username: faker.internet.userName() },
           } as any,
         });
