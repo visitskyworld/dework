@@ -74,6 +74,7 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
             const project = await createProject({
               name: "Main Project",
               organizationId: organization.id,
+              options: { showBacklogColumn: true },
             });
             await router.push(project.permalink);
             break;
