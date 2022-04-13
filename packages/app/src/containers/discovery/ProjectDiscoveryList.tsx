@@ -66,6 +66,7 @@ export const ProjectDiscoveryList: FC = () => {
             allowClear
             onChange={onChangeSearch}
             size="large"
+            style={{ borderColor: "rgba(255,255,255,0.4)" }}
           />
           <Table
             dataSource={filteredOrganizations}
