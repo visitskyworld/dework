@@ -68,9 +68,9 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
         icon={<DiscordIcon />}
         href={`${
           Constants.GRAPHQL_API_URL
-        }/auth/discord-join-guild?state=${JSON.stringify({
-          redirect: router.asPath,
-        })}`}
+        }/auth/discord-join-guild?state=${encodeURIComponent(
+          JSON.stringify({ redirect: router.asPath })
+        )}`}
       >
         Go to Discord thread
       </Button>

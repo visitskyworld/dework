@@ -28,7 +28,7 @@ interface ComponentProps {
 const suggestedTags: readonly { label: string; color: string }[] = [
   { label: "🐞 bug", color: "volcano" },
   { label: "good first issue", color: "yellow" },
-  { label: "Recurring", color: "volcano" },
+  { label: "recurring", color: "volcano" },
   { label: "design", color: "purple" },
   { label: "frontend", color: "orange" },
   { label: "backend", color: "blue" },

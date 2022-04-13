@@ -60,8 +60,8 @@ export const ThreepidAuthButton: FC<Props> = ({
 
   const href = Object.keys(buttonProps).includes("href")
     ? buttonProps.href
-    : `${Constants.GRAPHQL_API_URL}/auth/${source}?state=${JSON.stringify(
-        stateWithRedirect
+    : `${Constants.GRAPHQL_API_URL}/auth/${source}?state=${encodeURIComponent(
+        JSON.stringify(stateWithRedirect)
       )}`;
 
   const button = (

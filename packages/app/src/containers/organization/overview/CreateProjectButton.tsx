@@ -29,17 +29,17 @@ export const CreateProjectButton: FC<Props> = ({
   const goToNotionOauthFlow = useCallback(() => {
     const url = `${
       Constants.GRAPHQL_API_URL
-    }/auth/notion?state=${JSON.stringify({
-      redirect: `${router.asPath}/import/notion`,
-    })}`;
+    }/auth/notion?state=${encodeURIComponent(
+      JSON.stringify({ redirect: `${router.asPath}/import/notion` })
+    )}`;
     window.location.href = url;
   }, [router.asPath]);
   const goToTrelloOauthFlow = useCallback(() => {
     const url = `${
       Constants.GRAPHQL_API_URL
-    }/auth/trello?state=${JSON.stringify({
-      redirect: `${router.asPath}/import/trello`,
-    })}`;
+    }/auth/trello?state=${encodeURIComponent(
+      JSON.stringify({ redirect: `${router.asPath}/import/trello` })
+    )}`;
     window.location.href = url;
   }, [router.asPath]);
 

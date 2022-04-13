@@ -51,18 +51,22 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
           case "notion": {
             const url = `${
               Constants.GRAPHQL_API_URL
-            }/auth/notion?state=${JSON.stringify({
-              redirect: `${organization.permalink}/import/notion`,
-            })}`;
+            }/auth/notion?state=${encodeURIComponent(
+              JSON.stringify({
+                redirect: `${organization.permalink}/import/notion`,
+              })
+            )}`;
             window.location.href = url;
             break;
           }
           case "trello": {
             const url = `${
               Constants.GRAPHQL_API_URL
-            }/auth/trello?state=${JSON.stringify({
-              redirect: `${organization.permalink}/import/trello`,
-            })}`;
+            }/auth/trello?state=${encodeURIComponent(
+              JSON.stringify({
+                redirect: `${organization.permalink}/import/trello`,
+              })
+            )}`;
             window.location.href = url;
             break;
           }
