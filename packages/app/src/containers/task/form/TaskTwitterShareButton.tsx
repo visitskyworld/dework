@@ -18,7 +18,6 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
   return (
     <Button
       target="_blank"
-      type="ghost"
       className="dewo-twitter-btn"
       size="small"
       icon={<TwitterOutlined />}

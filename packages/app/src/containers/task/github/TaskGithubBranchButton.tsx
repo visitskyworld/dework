@@ -36,7 +36,7 @@ export const TaskGithubBranchButton: FC<Props> = ({ task }) => {
         </Menu>
       }
     >
-      <Button type="ghost" size="small" icon={<Icons.GithubOutlined />}>
+      <Button size="small" icon={<Icons.GithubOutlined />}>
         Link Github branch
       </Button>
     </Dropdown>
