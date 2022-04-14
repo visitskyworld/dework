@@ -1,7 +1,7 @@
 import React, { CSSProperties, FC } from "react";
-import * as Icons from "@ant-design/icons";
-import { Tag, Tooltip } from "antd";
+import { Tag } from "antd";
 import { PaymentStatus } from "../graphql/types";
+import { QuestionmarkTooltip } from "./QuestionmarkTooltip";
 
 const paymentStatusToString: Record<PaymentStatus, string> = {
   [PaymentStatus.PROCESSING]: "Processing",
@@ -24,10 +24,10 @@ export const PaymentStatusTag: FC<Props> = ({ status, style }) => (
   <Tag color={paymentStatusToColor[status]} style={style}>
     {paymentStatusToString[status]}
     {status === PaymentStatus.PROCESSING && (
-      <Tooltip title="Transactions are checked every minute, so it might take a few minutes before it shows up as confirmed in Dework.">
-        {"  "}
-        <Icons.QuestionCircleOutlined />
-      </Tooltip>
+      <QuestionmarkTooltip
+        title="Transactions are checked every minute, so it might take a few minutes before it shows up as confirmed in Dework."
+        marginLeft={4}
+      />
     )}
   </Tag>
 );

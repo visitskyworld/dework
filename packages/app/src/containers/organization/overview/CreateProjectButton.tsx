@@ -93,7 +93,7 @@ export const CreateProjectButton: FC<Props> = ({
             <Space>
               <Icons.GithubOutlined />
               1-1 Sync with Github
-              <Tooltip title="Everything that happens in Dework syncs w Github, and vice versa. Creating tasks in Dework creates open issues in Github - merging the branch in Github moves the task to Done in Dework, etc">
+              <Tooltip title="Everything that happens in Dework syncs w Github, and vice versa. Creating tasks in Dework creates open issues in Github - merging the branch in Github moves the task to Done in Dework, etc.">
                 <Icons.QuestionCircleOutlined className="ant-form-item-tooltip" />
               </Tooltip>
               <Tag color="green">New</Tag>

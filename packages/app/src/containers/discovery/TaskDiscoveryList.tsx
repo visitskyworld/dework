@@ -13,7 +13,6 @@ import {
   Row,
   Select,
   Spin,
-  Tooltip,
   Typography,
 } from "antd";
 import * as Icons from "@ant-design/icons";
@@ -27,6 +26,7 @@ import _ from "lodash";
 import { TagCloudInput } from "./TagCloudInput";
 import { useToggle } from "@dewo/app/util/hooks";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
 interface FilterValues {
   includeOpenBounties: boolean;
@@ -126,10 +126,10 @@ export const TaskDiscoveryList: FC = () => {
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
         🔥 Explore Bounties {!!tasks && `(${tasks.length})`}
-        {"   "}
-        <Tooltip title="Only tasks in public boards and with a bounty reward show up here!">
-          <Icons.QuestionCircleOutlined />
-        </Tooltip>
+        <QuestionmarkTooltip
+          marginLeft={8}
+          title="Only tasks in public boards and with a bounty reward show up here!"
+        />
       </Typography.Title>
       <div className="mx-auto max-w-lg w-full">
         {!!filteredAndSortedTasks ? (
@@ -180,10 +180,11 @@ export const TaskDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <Checkbox>
-                        Show tasks where anyone can submit{"    "}
-                        <Tooltip title="Open bounties are tasks with a fixed bounty that anyone can submit work for. Submit your work on Dework and talk with the task reviewer about payout.">
-                          <Icons.QuestionCircleOutlined />
-                        </Tooltip>
+                        Show tasks where anyone can submit
+                        <QuestionmarkTooltip
+                          title="Open bounties are tasks with a fixed bounty that anyone can submit work for. Submit your work on Dework and talk with the task reviewer about payout."
+                          marginLeft={8}
+                        />
                       </Checkbox>
                     </Form.Item>
                     <Form.Item
@@ -192,10 +193,11 @@ export const TaskDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <Checkbox>
-                        Show tasks that can be reserved{"    "}
-                        <Tooltip title="Bigger tasks usually require a short application where you share with the DAO why you should be the one to do the task. Once an application has been approved, the task will be reserved to you and cannot be claimed by someone else.">
-                          <Icons.QuestionCircleOutlined />
-                        </Tooltip>
+                        Show tasks that can be reserved
+                        <QuestionmarkTooltip
+                          title="Bigger tasks usually require a short application where you share with the DAO why you should be the one to do the task. Once an application has been approved, the task will be reserved to you and cannot be claimed by someone else."
+                          marginLeft={8}
+                        />
                       </Checkbox>
                     </Form.Item>
                     {/* <Form.Item
@@ -204,10 +206,11 @@ export const TaskDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <Checkbox>
-                        Show tasks without bounties{"    "}
-                        <Tooltip title="DAOs don't put bounties on all tasks. That doesn't mean you won't get compensated if you do the work! Apply to tasks without bounties and talk with the task reviewer about compensation.">
-                          <Icons.QuestionCircleOutlined />
-                        </Tooltip>
+                        Show tasks without bounties
+                        <QuestionmarkTooltip
+            title="DAOs don't put bounties on all tasks. That doesn't mean you won't get compensated if you do the work! Apply to tasks without bounties and talk with the task reviewer about compensation."
+            marginLeft={8}
+          />
                       </Checkbox>
                     </Form.Item> */}
                   </FormSection>

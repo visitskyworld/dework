@@ -1,6 +1,5 @@
-import { Checkbox, Form, Select, Tag, Tooltip } from "antd";
+import { Checkbox, Form, Select, Tag } from "antd";
 import React, { FC, useMemo } from "react";
-import * as Icons from "@ant-design/icons";
 import { TaskRoleSelectField } from "./TaskRoleSelectField";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { RulePermission, Task, TaskGatingType } from "@dewo/app/graphql/types";
@@ -8,6 +7,8 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { useTaskFormUserOptions } from "../../hooks";
 import { TaskFormValues } from "../types";
+import { deworkSocialLinks } from "@dewo/app/util/constants";
+import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
 const labels: Record<TaskGatingType, string> = {
   [TaskGatingType.ASSIGNEES]: "Choose Assignees",
@@ -60,7 +61,17 @@ export const TaskGatingFields: FC<Props> = ({
   }, [values?.gating, values?.roleIds]);
 
   return (
-    <FormSection style={{ marginBottom: 0 }} label="Gating">
+    <FormSection
+      style={{ marginBottom: 0 }}
+      label={
+        <QuestionmarkTooltip
+          title="Task gating decides who can work on this task."
+          marginLeft={4}
+          readMoreUrl={deworkSocialLinks.gitbook.bountyTypesAndGating}
+          children="Gating"
+        />
+      }
+    >
       <Form.Item
         name="gating"
         rules={[
@@ -93,11 +104,11 @@ export const TaskGatingFields: FC<Props> = ({
               disabled={type === TaskGatingType.ROLES && !canManageRoles}
             >
               {labels[type]}
-              {"  "}
               {!!descriptions[type] && (
-                <Tooltip title={descriptions[type]}>
-                  <Icons.QuestionCircleOutlined />
-                </Tooltip>
+                <QuestionmarkTooltip
+                  marginLeft={8}
+                  title={descriptions[type]}
+                />
               )}
               {type === TaskGatingType.ROLES && (
                 <Tag
@@ -145,10 +156,11 @@ export const TaskGatingFields: FC<Props> = ({
       {mode === "create" && shouldShowDefault && !disabled && (
         <Form.Item name="defaultGating" valuePropName="checked">
           <Checkbox>
-            Use as default{"  "}
-            <Tooltip title="If checked, this task gating will show as default when you create a task in this project. This default is only visible for you within this specific project.">
-              <Icons.QuestionCircleOutlined />
-            </Tooltip>
+            Use as default
+            <QuestionmarkTooltip
+              marginLeft={8}
+              title="If checked, this task gating will show as default when you create a task in this project. This default is only visible for you within this specific project."
+            />
           </Checkbox>
         </Form.Item>
       )}

@@ -6,6 +6,7 @@ import { DiscordProjectIntegrationFeature } from "./hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
 import _ from "lodash";
+import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 const DiscordProjectIntegrationFeatureLabel: Partial<
   Record<DiscordProjectIntegrationFeature, string>
@@ -127,8 +128,14 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
   return (
     <>
       <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
-        Want to automatically create Discord threads to discuss Dework tasks?
-        Try out the Discord integration for this project!
+        Automatically create Discord threads to discuss Dework tasks.{" "}
+        <a
+          href={deworkSocialLinks.gitbook.connectingToDiscord}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Read more here
+        </a>
       </Typography.Paragraph>
       <Form.Item name="discordFeature">
         <Select

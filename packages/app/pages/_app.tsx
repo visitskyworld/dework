@@ -16,7 +16,7 @@ import { SidebarProvider } from "@dewo/app/contexts/sidebarContext";
 import { useRouter } from "next/router";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
 import absoluteUrl from "next-absolute-url";
-import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
+import { FloatingFooterButtons } from "@dewo/app/containers/feedback/FloatingFooterButtons";
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
@@ -148,7 +148,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
                 <Hooks />
                 <Component {...pageProps} />
                 <InviteMessageToast />
-                <FeedbackButton />
+                <FloatingFooterButtons />
                 <TaskUpdateModalListener />
                 <ServerErrorModal onErrorRef={onErrorRef} />
                 <PromptModal />

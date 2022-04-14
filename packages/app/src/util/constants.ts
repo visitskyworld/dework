@@ -21,7 +21,14 @@ export const siteDescription =
   "The task manager for DAOs and decentralized work";
 export const siteURL = "https://dework.xyz";
 
+const docsBase = "https://dework-community.gitbook.io/product-docs";
+
 export const deworkSocialLinks = {
   twitter: "https://twitter.com/deworkxyz",
   discord: "https://discord.gg/rPEsPzShd7",
+  gitbook: {
+    index: docsBase,
+    connectingToDiscord: `${docsBase}/guides/connecting-to-discord`,
+    bountyTypesAndGating: `${docsBase}/fundamentals/bounty-types-and-gating`,
+  },
 };

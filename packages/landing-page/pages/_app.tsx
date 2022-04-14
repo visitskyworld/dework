@@ -20,8 +20,8 @@ import {
 } from "@apollo/client";
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
-import { FeedbackButton } from "@dewo/app/containers/feedback/FeedbackButton";
 import { isSSR } from "@dewo/app/util/isSSR";
+import { FloatingFooterButtons } from "@dewo/app/containers/feedback/FloatingFooterButtons";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -75,7 +75,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       </Head>
       <ApolloProvider client={apollo as any}>
         <Component {...pageProps} />
-        <FeedbackButton />
+        <FloatingFooterButtons />
       </ApolloProvider>
     </>
   );
