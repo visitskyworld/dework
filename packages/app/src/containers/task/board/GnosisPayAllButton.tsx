@@ -25,6 +25,7 @@ import Link from "next/link";
 import { useERC20Contract, useSwitchChain } from "@dewo/app/util/ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { formatTaskReward } from "../hooks";
+import { Constants } from "@dewo/app/util/constants";
 
 interface Props {
   projectId: string;
@@ -84,6 +85,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const switchChain = useSwitchChain();
   const loadERC20Contract = useERC20Contract();
   const submit = useCallback(async () => {
+    const { BigNumber } = await import("ethers");
     try {
       setLoading(true);
 
@@ -102,6 +104,13 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
             (t) => t.source === ThreepidSource.metamask
           )!.address;
 
+          const amount = reward.peggedToUsd
+            ? BigNumber.from(reward.amount)
+                .mul(BigNumber.from(10).pow(reward.token.exp))
+                .div(BigNumber.from(Math.round(reward.token.usdPrice!)))
+                .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
+            : BigNumber.from(reward.amount);
+
           if (
             reward.token.type === PaymentTokenType.ERC20 &&
             !!reward.token.address
@@ -117,14 +126,14 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
               value: "0",
               data: contract.interface.encodeFunctionData("transfer", [
                 toAddress,
-                reward.amount,
+                amount.toString(),
               ]),
             };
           }
 
           return {
             to: toAddress,
-            value: reward.amount,
+            value: amount.toString(),
             data: `0x${reward.id.replace(/-/g, "")}`,
           };
         })
