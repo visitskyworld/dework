@@ -92,6 +92,13 @@ export const LoginModal: FC<Props> = ({
               state={state}
               onAuthed={onAuthedWithWallet}
             />
+            <ThreepidAuthButton
+              source={ThreepidSource.github}
+              children={getThreepidName[ThreepidSource.github]}
+              size="large"
+              block
+              state={state}
+            />
           </Space>
         </MoreSectionCollapse>
       </Space>

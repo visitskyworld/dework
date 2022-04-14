@@ -198,7 +198,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <Form.Item name="description" className="mb-3">
+          <Form.Item name="description">
             <RichMarkdownEditor
               initialValue={initialValues?.description ?? ""}
               mode={mode}
@@ -213,15 +213,18 @@ export const TaskForm: FC<TaskFormProps> = ({
           )}
 
           {mode === "create" && canSubmit && (
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              loading={loading}
-            >
-              {buttonText}
-            </Button>
+            <>
+              <div style={{ flex: 1 }} />
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                block
+                loading={loading}
+              >
+                {buttonText}
+              </Button>
+            </>
           )}
 
           {!!task && (
@@ -239,8 +242,8 @@ export const TaskForm: FC<TaskFormProps> = ({
 
               <Row style={{ rowGap: 8, columnGap: 8 }}>
                 <TaskDiscordButton task={task} />
-                <TaskTwitterShareButton task={task} />
                 <TaskGithubBranchButton task={task} />
+                <TaskTwitterShareButton task={task} />
               </Row>
               <Divider style={{ marginTop: 16 }} />
               <TaskActivityFeed task={task} />
@@ -256,6 +259,14 @@ export const TaskForm: FC<TaskFormProps> = ({
               value={values?.reward}
             />
           )}
+
+          <TaskGatingFields
+            mode={mode}
+            task={task}
+            values={values}
+            projectId={projectId}
+            disabled={!canChange("ownerIds")}
+          />
 
           <Form.Item
             name="status"
@@ -286,13 +297,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             tags={tags}
           />
 
-          <TaskGatingFields
-            mode={mode}
-            task={task}
-            values={values}
-            projectId={projectId}
-            disabled={!canChange("ownerIds")}
-          />
           <Form.Item name="ownerIds" label="Reviewers">
             <UserSelect
               placeholder="No task reviewer..."

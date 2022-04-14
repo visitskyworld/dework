@@ -180,7 +180,7 @@ export const TaskDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <Checkbox>
-                        Show tasks where anyone can submit
+                        Multiple submissions tasks
                         <QuestionmarkTooltip
                           title="Open bounties are tasks with a fixed bounty that anyone can submit work for. Submit your work on Dework and talk with the task reviewer about payout."
                           marginLeft={8}
@@ -193,7 +193,7 @@ export const TaskDiscoveryList: FC = () => {
                       style={{ margin: 0 }}
                     >
                       <Checkbox>
-                        Show tasks that can be reserved
+                        Tasks with an application process
                         <QuestionmarkTooltip
                           title="Bigger tasks usually require a short application where you share with the DAO why you should be the one to do the task. Once an application has been approved, the task will be reserved to you and cannot be claimed by someone else."
                           marginLeft={8}

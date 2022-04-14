@@ -72,7 +72,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
               style={{ marginRight: 8, display: "inline-grid" }}
             />
           }
-          label="Multiple Submissions Bounty"
+          label="Multiple Submissions"
           button={
             <CreateSubmissionButton
               size="large"
@@ -123,7 +123,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
               style={{ marginRight: 8, display: "inline-grid" }}
             />
           }
-          label="Apply"
+          label="Application Process "
           button={
             <ApplyToTaskButton size="large" type="primary" block task={task} />
           }

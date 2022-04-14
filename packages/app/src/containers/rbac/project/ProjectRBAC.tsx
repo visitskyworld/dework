@@ -1,5 +1,5 @@
 import { ProjectRole, RulePermission } from "@dewo/app/graphql/types";
-import { Divider, Spin, Tag, Tooltip, Typography } from "antd";
+import { Card, Divider, Spin, Tag, Tooltip, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { projectRoleDescription } from "../../project/settings/strings";
@@ -8,6 +8,7 @@ import { RBACPermissionForm } from "../RBACPermissionForm";
 import { ProjectPrivatePermissionForm } from "./ProjectPrivatePermissionForm";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useCreateProjectInvite } from "../../invite/hooks";
+import styles from "../CardRBAC.module.less";
 
 interface Props {
   projectId: string;
@@ -43,13 +44,15 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <RBACPermissionForm
-        permission={RulePermission.MANAGE_PROJECTS}
-        roles={roles}
-        projectId={projectId}
-        organizationId={organizationId}
-        onInviteUser={() => inviteToProject(ProjectRole.ADMIN)}
-      />
+      <Card bordered={false} className={styles.card}>
+        <RBACPermissionForm
+          permission={RulePermission.MANAGE_PROJECTS}
+          roles={roles}
+          projectId={projectId}
+          organizationId={organizationId}
+          onInviteUser={() => inviteToProject(ProjectRole.ADMIN)}
+        />
+      </Card>
       <Divider />
       <Typography.Title level={5}>
         Create Tasks
@@ -76,12 +79,14 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 4 }} />
         </Tooltip>
       </Typography.Title>
-      <RBACPermissionForm
-        permission={RulePermission.MANAGE_TASKS}
-        roles={roles}
-        projectId={projectId}
-        organizationId={organizationId}
-      />
+      <Card bordered={false} className={styles.card}>
+        <RBACPermissionForm
+          permission={RulePermission.MANAGE_TASKS}
+          roles={roles}
+          projectId={projectId}
+          organizationId={organizationId}
+        />
+      </Card>
       <Divider />
 
       <Typography.Title level={5}>
@@ -96,11 +101,13 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <ProjectPrivatePermissionForm
-        projectId={projectId}
-        organizationId={organizationId}
-        onInviteUser={() => inviteToProject(ProjectRole.CONTRIBUTOR)}
-      />
+      <Card bordered={false} className={styles.card}>
+        <ProjectPrivatePermissionForm
+          projectId={projectId}
+          organizationId={organizationId}
+          onInviteUser={() => inviteToProject(ProjectRole.CONTRIBUTOR)}
+        />
+      </Card>
     </>
   );
 };

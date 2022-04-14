@@ -76,7 +76,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
     return (
       <Row align="middle" style={{ flexDirection: "column" }}>
         <Typography.Paragraph style={{ textAlign: "center" }}>
-          To apply to this task you need to first join our Discord server!
+          To apply to this task you first need to connect your Discord account
         </Typography.Paragraph>
         <Button
           type="primary"

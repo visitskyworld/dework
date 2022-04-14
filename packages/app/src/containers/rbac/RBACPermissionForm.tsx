@@ -215,7 +215,7 @@ export const RBACPermissionForm: FC<Props> = ({
           <Form.Item label="Roles" name="roleIds">
             <Select
               mode="multiple"
-              placeholder="Select Roles..."
+              placeholder="Select Discord Roles..."
               showSearch
               disabled={!hasPermission}
               optionFilterProp="label"
