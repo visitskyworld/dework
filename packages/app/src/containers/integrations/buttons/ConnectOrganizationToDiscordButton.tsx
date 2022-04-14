@@ -9,12 +9,16 @@ import * as qs from "query-string";
 interface Props extends ButtonProps {
   organizationId: string;
   style?: React.CSSProperties;
+  asAdmin?: boolean;
+  guildId?: string;
 }
 
 export const ConnectOrganizationToDiscordButton: FC<Props> = ({
   organizationId,
   children = "Connect to Discord",
   icon = <DiscordIcon />,
+  asAdmin = false,
+  guildId,
   ...buttonProps
 }) => {
   const { user } = useAuthContext();
@@ -27,6 +31,8 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
         organizationId,
         userId: user?.id,
         redirect: router.asPath,
+        ...(asAdmin ? { asAdmin: true } : {}),
+        ...(guildId ? { guildId } : {}),
       })}`}
     >
       {children}

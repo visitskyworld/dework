@@ -250,6 +250,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
                   values={values}
                   channels={discordChannels.value}
                   threads={discordThreads.value}
+                  organizationId={organizationId}
                   onRefetchChannels={discordChannels.refetch}
                 />
               ) : (

@@ -64,18 +64,24 @@ export class AuthController {
 
   @Get("discord-bot")
   async discordBot(@Req() req: Request, @Res() res: Response) {
+    const { asAdmin = false, guildId } = req.query;
     res.redirect(
       `https://discord.com/api/oauth2/authorize?${qs.stringify({
         response_type: "code",
         // https://discordapi.com/permissions.html
-        permissions: new Discord.Permissions([
-          Discord.Permissions.FLAGS.MANAGE_THREADS,
-          Discord.Permissions.FLAGS.MANAGE_CHANNELS,
-          Discord.Permissions.FLAGS.MANAGE_ROLES,
-          Discord.Permissions.FLAGS.SEND_MESSAGES,
-          Discord.Permissions.FLAGS.CREATE_PRIVATE_THREADS,
-        ]).bitfield.toString(),
+        permissions: new Discord.Permissions(
+          asAdmin
+            ? [Discord.Permissions.FLAGS.ADMINISTRATOR]
+            : [
+                Discord.Permissions.FLAGS.MANAGE_THREADS,
+                Discord.Permissions.FLAGS.MANAGE_CHANNELS,
+                Discord.Permissions.FLAGS.MANAGE_ROLES,
+                Discord.Permissions.FLAGS.SEND_MESSAGES,
+                Discord.Permissions.FLAGS.CREATE_PRIVATE_THREADS,
+              ]
+        ).bitfield.toString(),
         scope: "bot",
+        guild_id: guildId,
         client_id: this.config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_ID"),
         state: JSON.stringify(req.query),
         redirect_uri: `${this.config.get<string>(

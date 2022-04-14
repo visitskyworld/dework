@@ -1,11 +1,25 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { Button, Checkbox, Form, Select, Space, Image, Typography } from "antd";
-import { useOrganizationDiscordChannels } from "../organization/hooks";
+import {
+  Image,
+  Button,
+  Checkbox,
+  Form,
+  Select,
+  Space,
+  Typography,
+  Collapse,
+  Row,
+} from "antd";
+import {
+  useOrganizationDiscordChannels,
+  useOrganizationIntegrations,
+} from "../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
 import { DiscordProjectIntegrationFeature } from "./hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
 import _ from "lodash";
+import { ConnectOrganizationToDiscordButton } from "./buttons/ConnectOrganizationToDiscordButton";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 const DiscordProjectIntegrationFeatureLabel: Partial<
@@ -81,6 +95,7 @@ interface FormFieldProps {
   values: Partial<FormValues>;
   channels?: DiscordIntegrationChannel[];
   threads?: DiscordIntegrationChannel[];
+  organizationId: string;
   onRefetchChannels(): Promise<void>;
 }
 
@@ -113,6 +128,7 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
   values,
   channels,
   threads,
+  organizationId,
   onRefetchChannels,
 }) => {
   const showThreadSelect =
@@ -124,6 +140,14 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
     [channels, values.discordChannelId]
   );
   const missingPermissions = useMissingPermissions(values, channels);
+  const integrations = useOrganizationIntegrations(organizationId);
+  const guildId = useMemo(
+    () =>
+      channel?.integrationId &&
+      integrations?.find((int) => int.id === channel.integrationId)?.config
+        ?.guildId,
+    [integrations, channel?.integrationId]
+  );
 
   return (
     <>
@@ -173,38 +197,68 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
             },
             message: (
               <>
-                <Space style={{ marginTop: 2 }}>
-                  <Typography.Text type="secondary">
-                    Dework bot doesn't have the right permissions for this
-                    channel. To fix this, follow these steps:
-                    <ol>
-                      <li>Go to the channel settings (NOT server settings)</li>
-                      <li>
-                        Add the bot Dework to the channel (not the role
-                        'Dework')
-                      </li>
-                      <li>
-                        Give Dework the following permissions:{" "}
-                        {missingPermissions
-                          .map((p) => DiscordPermissionToString[p])
-                          .join(", ")}
-                      </li>
-                    </ol>
-                  </Typography.Text>
-                  <Button
-                    size="small"
-                    type="ghost"
-                    onClick={async () => {
-                      await onRefetchChannels();
-                      form.setFields([
-                        { name: "discordChannelId", errors: undefined },
-                      ]);
-                    }}
+                <Typography.Paragraph
+                  type="secondary"
+                  style={{ marginTop: 16 }}
+                >
+                  Dework bot doesn't have the right permissions for this
+                  channel. To fix this, give the Dework bot the correct channel
+                  permissions or grant it admin access:
+                </Typography.Paragraph>
+                <Collapse accordion ghost defaultActiveKey={1}>
+                  <Collapse.Panel
+                    key={1}
+                    header="Grant Administrator Permissions (recommended)"
                   >
-                    Retry
-                  </Button>
-                </Space>
-                <Image width="100%" src="/discord/add-dework-bot.jpeg" />
+                    <Row>
+                      <ConnectOrganizationToDiscordButton
+                        asAdmin
+                        guildId={guildId}
+                        organizationId={organizationId}
+                        children="Give Administrator Access"
+                      />
+                    </Row>
+                  </Collapse.Panel>
+
+                  <Collapse.Panel
+                    key={2}
+                    header="Add Dework Bot to the Channel"
+                  >
+                    <Space style={{ marginTop: 2 }}>
+                      <Typography.Text type="secondary">
+                        Follow these steps:
+                        <ol>
+                          <li>
+                            Go to the channel settings (NOT server settings)
+                          </li>
+                          <li>
+                            Add the bot Dework to the channel (not the role
+                            'Dework')
+                          </li>
+                          <li>
+                            Give Dework the following permissions:{" "}
+                            {missingPermissions
+                              .map((p) => DiscordPermissionToString[p])
+                              .join(", ")}
+                          </li>
+                        </ol>
+                      </Typography.Text>
+                      <Button
+                        size="small"
+                        type="ghost"
+                        onClick={async () => {
+                          await onRefetchChannels();
+                          form.setFields([
+                            { name: "discordChannelId", errors: undefined },
+                          ]);
+                        }}
+                      >
+                        Retry
+                      </Button>
+                    </Space>
+                    <Image width="100%" src="/discord/add-dework-bot.jpeg" />
+                  </Collapse.Panel>
+                </Collapse>
               </>
             ),
           }),
@@ -342,6 +396,7 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
         values={values}
         channels={discordChannels.value}
         threads={discordThreads.value}
+        organizationId={organizationId}
         onRefetchChannels={discordChannels.refetch}
       />
       <Button
