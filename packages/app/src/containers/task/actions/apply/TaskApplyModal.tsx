@@ -40,6 +40,9 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const createTaskApplication = useCreateTaskApplication();
   const handleSubmit = useCallback(
     async (input) => {
+      if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
+        await addUserToDiscordGuild().catch(() => {});
+      }
       const claimedTask = await createTaskApplication({
         taskId: task!.id,
         userId: user!.id,
@@ -47,9 +50,6 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         startDate: input.dates[0],
         endDate: input.dates[1],
       });
-      if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
-        await addUserToDiscordGuild().catch();
-      }
       await followOrganization();
       await onDone(claimedTask);
     },

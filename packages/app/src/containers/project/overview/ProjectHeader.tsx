@@ -27,6 +27,7 @@ interface Props {
 
 // Hardcoded discord permissions. TODO: maybe move to an API route?
 const MANAGE_CHANNELS = BigInt(0x10),
+  CREATE_INSTANT_INVITE = BigInt(0x1),
   MANAGE_ROLES = BigInt(0x10000000),
   SEND_MESSAGES = BigInt(0x800),
   CREATE_PRIVATE_THREADS = BigInt(0x1000000000),
@@ -54,6 +55,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   );
   const hasCorrectPermissions =
     discordPermissions &&
+    discordPermissions & CREATE_INSTANT_INVITE &&
     discordPermissions & MANAGE_CHANNELS &&
     discordPermissions & SEND_MESSAGES &&
     discordPermissions & CREATE_PRIVATE_THREADS &&

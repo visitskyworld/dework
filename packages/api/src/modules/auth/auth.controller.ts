@@ -78,6 +78,7 @@ export class AuthController {
                 Discord.Permissions.FLAGS.MANAGE_ROLES,
                 Discord.Permissions.FLAGS.SEND_MESSAGES,
                 Discord.Permissions.FLAGS.CREATE_PRIVATE_THREADS,
+                Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE,
               ]
         ).bitfield.toString(),
         scope: "bot",

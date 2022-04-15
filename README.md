@@ -497,3 +497,13 @@ NFT_CONTRACT_ADDRESS=
 ```bash
 open "https://rinkeby.etherscan.io/proxyContractChecker?a=$NFT_CONTRACT_ADDRESS"
 ```
+
+# Running API scripts
+```bash
+yarn api ts-node-dev \
+  --no-notify \
+  --require dotenv/config \
+  --require tsconfig-paths/register \
+  src/scripts/fetchCurrentDiscordIntegrationPermissions.ts \
+  dotenv_config_path=.env.prod
+```

@@ -47,7 +47,10 @@ export class FetchCurrentDiscordIntegrationPermissionsService {
           {
             config: {
               ...integration.config,
-              latestPermissions: botUser.permissions.bitfield.toString(),
+              originalPermissions:
+                integration.config.originalPermissions ??
+                integration.config.permissions,
+              permissions: botUser.permissions.bitfield.toString(),
             },
           }
         );
@@ -55,7 +58,15 @@ export class FetchCurrentDiscordIntegrationPermissionsService {
         this.logger.error(error);
         await this.repo.update(
           { id: integration.id },
-          { config: { ...integration.config, latestPermissions: "0" } }
+          {
+            config: {
+              ...integration.config,
+              originalPermissions:
+                integration.config.originalPermissions ??
+                integration.config.permissions,
+              permissions: "0",
+            },
+          }
         );
       }
     }

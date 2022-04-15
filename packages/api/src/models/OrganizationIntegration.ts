@@ -21,6 +21,7 @@ export enum OrganizationIntegrationType {
 
 export interface DiscordOrganizationIntegrationConfig {
   guildId: string;
+  originalPermissions?: string;
   permissions: string;
   latestPermissions?: string;
   useTempDiscordBot?: boolean;
