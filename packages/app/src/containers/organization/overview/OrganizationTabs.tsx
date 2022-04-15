@@ -133,7 +133,7 @@ export const OrganizationTabs: FC<Props> = ({
               />
 
               {!!organization?.details && (
-                <Row style={{ gap: 8, marginBottom: 16 }}>
+                <Row style={{ gap: 8, marginBottom: 16, marginTop: 8 }}>
                   {organization.details.map((detail) => (
                     <EntityDetailAvatar entityDetail={detail} key={detail.id} />
                   ))}

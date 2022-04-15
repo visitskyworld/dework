@@ -93,31 +93,43 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
 
   return (
     <>
-      <Typography.Title level={4}>Recent Tasks</Typography.Title>
+      <Typography.Title level={4}>Open Tasks</Typography.Title>
       <Skeleton loading={!mounted || !organization}>
-        <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
-          {tags.map((tag) => (
-            <Tag
-              key={tag.id}
-              color={selectedTagLabel !== tag.label ? undefined : tag.color}
-              className="hover:cursor-pointer"
-              style={{
-                border: "1px solid rgba(255, 255, 255, 0.15)",
-                opacity:
-                  !!selectedTagLabel && selectedTagLabel !== tag.label
-                    ? 0.5
-                    : undefined,
-              }}
-              onClick={() =>
-                setSelectedTagLabel((prevValue) =>
-                  prevValue === tag.label ? undefined : tag.label
-                )
-              }
-            >
-              {tag.label}
-            </Tag>
-          ))}
-        </Row>
+        {tags?.length > 0 && (
+          <>
+            <Row style={{ marginBottom: 8 }}>
+              <Typography.Text
+                type="secondary"
+                className="ant-typography-caption"
+              >
+                Click on tags to show tasks for
+              </Typography.Text>
+            </Row>
+            <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
+              {tags.map((tag) => (
+                <Tag
+                  key={tag.id}
+                  color={selectedTagLabel !== tag.label ? undefined : tag.color}
+                  className="hover:cursor-pointer"
+                  style={{
+                    border: "1px solid rgba(255, 255, 255, 0.15)",
+                    opacity:
+                      !!selectedTagLabel && selectedTagLabel !== tag.label
+                        ? 0.5
+                        : undefined,
+                  }}
+                  onClick={() =>
+                    setSelectedTagLabel((prevValue) =>
+                      prevValue === tag.label ? undefined : tag.label
+                    )
+                  }
+                >
+                  {tag.label}
+                </Tag>
+              ))}
+            </Row>
+          </>
+        )}
 
         {!organization?.tasks.length ? (
           <Typography.Paragraph type="secondary">
