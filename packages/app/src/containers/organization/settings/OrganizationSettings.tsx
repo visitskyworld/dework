@@ -1,45 +1,19 @@
 import { Tab } from "@dewo/app/components/Tab";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Card, Divider, Modal, Tabs, Typography } from "antd";
+import { Card, Divider, Tabs, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
-import { useRouter } from "next/router";
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC } from "react";
 import { OrganizationRBAC } from "../../rbac/organization/OrganizationRBAC";
-import { useUpdateOrganization } from "../hooks";
 import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
 import { OrganizationIntegrations } from "./OrganizationIntegrations";
+import { OrganizationSettingsManage } from "./OrganizationSettingsManage";
 
 interface Props {
   organizationId: string;
   currentTab: string;
   onTabClick(tab: string): void;
 }
-
-const ConfirmDeleteOrganization: FC<{ organizationId: string }> = ({
-  organizationId,
-}) => {
-  const router = useRouter();
-  const updateOrganization = useUpdateOrganization();
-  const deleteOrganization = useCallback(async () => {
-    try {
-      await updateOrganization({
-        id: organizationId,
-        deletedAt: new Date().toISOString(),
-      });
-      await router.push("/");
-    } catch (err) {}
-  }, [updateOrganization, organizationId, router]);
-  useEffect(() => {
-    Modal.confirm({
-      title: "Do you want to delete this organization?",
-      onOk: () => deleteOrganization(),
-      onCancel: () => router.back(),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return null;
-};
 
 export const OrganizationSettings: FC<Props> = ({
   currentTab,
@@ -94,17 +68,10 @@ export const OrganizationSettings: FC<Props> = ({
       </Tabs.TabPane>
       {canDeleteOrganization && (
         <Tabs.TabPane
-          tab={
-            <Tab
-              icon={<Icons.DeleteOutlined />}
-              children="Delete Organization"
-            />
-          }
-          key="delete"
+          tab={<Tab icon={<Icons.SettingOutlined />} children="Manage" />}
+          key="manage"
         >
-          {currentTab === "delete" && (
-            <ConfirmDeleteOrganization organizationId={organizationId} />
-          )}
+          <OrganizationSettingsManage organizationId={organizationId} />
         </Tabs.TabPane>
       )}
     </Tabs>
