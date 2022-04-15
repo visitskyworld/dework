@@ -146,7 +146,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
       items.push(
         ...task.applications.map((a) => ({
           date: a.createdAt,
-          avatar: <UserAvatar size="small" user={a.user} />,
+          avatar: <UserAvatar size="small" user={a.user} linkToProfile />,
           text: `${a.user.username} applied to this task`,
           details: (
             <>
