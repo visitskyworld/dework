@@ -15,6 +15,7 @@ import {
 import { ThreepidService } from "../threepid/threepid.service";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
+import { AnalyticsClient } from "../app/analytics/analytics.client";
 
 type RequestFromCallback = Request & { user: StrategyResponse };
 
@@ -26,7 +27,8 @@ export class AuthController {
     private readonly config: ConfigService<ConfigType>,
     private readonly integrationService: IntegrationService,
     private readonly discordRolesService: DiscordRolesService,
-    private readonly threepidService: ThreepidService
+    private readonly threepidService: ThreepidService,
+    private readonly analytics: AnalyticsClient
   ) {}
 
   @Get("github")
@@ -65,12 +67,31 @@ export class AuthController {
   @Get("discord-bot")
   async discordBot(@Req() req: Request, @Res() res: Response) {
     const { asAdmin = false, guildId } = req.query;
+
+    const variant =
+      parseInt((req.query.organizationId as string)[0], 16) % 2 ? "A" : "B";
+
+    await this.analytics.client?.logEvent({
+      event_type: "Discord Bot: start authorize flow",
+      user_id: req.query.userId as string,
+      event_properties: {
+        ...req.query,
+        ...(!asAdmin && {
+          experimentName: "Discord bot permissions: specific vs administrator",
+          experimentVariant:
+            variant === "A"
+              ? "A (specific permissions)"
+              : "B (administrator permissions)",
+        }),
+      },
+    });
+
     res.redirect(
       `https://discord.com/api/oauth2/authorize?${qs.stringify({
         response_type: "code",
         // https://discordapi.com/permissions.html
         permissions: new Discord.Permissions(
-          asAdmin
+          asAdmin || variant === "B"
             ? [Discord.Permissions.FLAGS.ADMINISTRATOR]
             : [
                 Discord.Permissions.FLAGS.MANAGE_THREADS,
@@ -108,6 +129,16 @@ export class AuthController {
 
     try {
       const state = JSON.parse(query.state!);
+
+      await this.analytics.client?.logEvent({
+        event_type: "Discord Bot: finish authorize flow",
+        user_id: state.userId,
+        event_properties: {
+          ...state,
+          permissions: query.permissions ?? "0",
+          guildId: query.guild_id,
+        },
+      });
 
       if (!!query.guild_id && !!query.permissions) {
         const config: DiscordOrganizationIntegrationConfig = {
