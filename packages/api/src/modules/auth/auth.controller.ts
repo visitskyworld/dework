@@ -69,21 +69,20 @@ export class AuthController {
     const { asAdmin = false, guildId } = req.query;
 
     const variant =
-      parseInt((req.query.organizationId as string)[0], 16) % 2 ? "A" : "B";
+      parseInt((req.query.userId as string)[0], 16) % 2 ? "A" : "B";
 
     await this.analytics.client?.logEvent({
       event_type: "Discord Bot: start authorize flow",
       user_id: req.query.userId as string,
-      event_properties: {
-        ...req.query,
-        ...(!asAdmin && {
-          experimentName: "Discord bot permissions: specific vs administrator",
-          experimentVariant:
-            variant === "A"
-              ? "A (specific permissions)"
-              : "B (administrator permissions)",
-        }),
-      },
+      user_properties: asAdmin
+        ? undefined
+        : {
+            "Experiment: Discord bot permissions":
+              variant === "A"
+                ? "A (specific permissions)"
+                : "B (administrator permission)",
+          },
+      event_properties: req.query,
     });
 
     res.redirect(
