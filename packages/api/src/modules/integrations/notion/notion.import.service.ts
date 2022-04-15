@@ -22,6 +22,7 @@ import {
   ThreepidSource,
 } from "@dewo/api/models/Threepid";
 import { ThreepidService } from "../../threepid/threepid.service";
+import { statusMappingGuesses } from "@dewo/api/utils/statusMappingGuesses";
 
 @Injectable()
 export class NotionImportService {
@@ -32,23 +33,6 @@ export class NotionImportService {
     private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService
   ) {}
-
-  // Note(fant): this should be kept in sync with the Trello status labels
-  private statusGuesses: Record<TaskStatus, string[]> = {
-    [TaskStatus.TODO]: [
-      "not started",
-      "backlog",
-      "todo",
-      "to-do",
-      "to do",
-      "sprint",
-      "up for grabs",
-    ],
-    [TaskStatus.IN_PROGRESS]: ["progress", "doing", "claimed"],
-    [TaskStatus.IN_REVIEW]: ["review"],
-    [TaskStatus.DONE]: ["done", "completed", "finished"],
-    [TaskStatus.BACKLOG]: [],
-  };
 
   private colorMapping: Record<SelectColor, keyof typeof AntColors> = {
     default: "grey",
@@ -103,7 +87,7 @@ export class NotionImportService {
         database_id: databaseId,
       });
 
-      let cards: QueryDatabaseResponse["results"] = [];
+      const cards: QueryDatabaseResponse["results"] = [];
       let nextCursor: string | null | undefined;
       do {
         const result = await notion.databases.query({
@@ -215,7 +199,7 @@ export class NotionImportService {
     if (status.type !== "select") return undefined;
     const label = status.select?.name;
     if (!label) return undefined;
-    for (const [status, guesses] of Object.entries(this.statusGuesses)) {
+    for (const [status, guesses] of Object.entries(statusMappingGuesses)) {
       if (guesses.some((guess) => label.toLowerCase().includes(guess))) {
         return status as TaskStatus;
       }

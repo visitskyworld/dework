@@ -18,6 +18,7 @@ import {
 import { TrelloBoard } from "./dto/TrelloBoard";
 import { RbacService } from "../../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { statusMappingGuesses } from "@dewo/api/utils/statusMappingGuesses";
 
 @Injectable()
 export class TrelloImportService {
@@ -30,23 +31,6 @@ export class TrelloImportService {
     private readonly rbacService: RbacService,
     private readonly config: ConfigService<ConfigType>
   ) {}
-
-  // Note(fant): this should be kept in sync with the Notion status labels
-  private statusGuesses: Record<TaskStatus, string[]> = {
-    [TaskStatus.TODO]: [
-      "not started",
-      "backlog",
-      "todo",
-      "to-do",
-      "to do",
-      "sprint",
-      "up for grabs",
-    ],
-    [TaskStatus.IN_PROGRESS]: ["progress", "doing", "claimed"],
-    [TaskStatus.IN_REVIEW]: ["review"],
-    [TaskStatus.DONE]: ["done", "completed", "finished"],
-    [TaskStatus.BACKLOG]: [],
-  };
 
   private colorMapping: Record<string, keyof typeof AntColors> = {
     green: "green",
@@ -204,7 +188,7 @@ export class TrelloImportService {
 
   private guessStatus(listName: string | undefined): TaskStatus | undefined {
     if (!listName) return undefined;
-    for (const [status, guesses] of Object.entries(this.statusGuesses)) {
+    for (const [status, guesses] of Object.entries(statusMappingGuesses)) {
       if (guesses.some((guess) => listName.toLowerCase().includes(guess))) {
         return status as TaskStatus;
       }
