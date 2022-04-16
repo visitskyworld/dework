@@ -98,6 +98,12 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
     if (!!project) setProjectName(project.name);
   }, [project]);
 
+  const onBlurProjectName = useCallback(() => {
+    if (projectName !== project?.name) {
+      submitProjectName();
+    }
+    editName.toggleOff();
+  }, [projectName, project?.name, editName, submitProjectName]);
   return (
     <PageHeader
       className="dewo-project-header"
@@ -124,7 +130,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
               autoFocus={true}
               className="ant-input dewo-field dewo-field-display ant-typography-h3"
               placeholder="Enter a project name..."
-              onBlur={editName.toggleOff}
+              onBlur={onBlurProjectName}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   submitProjectName();
