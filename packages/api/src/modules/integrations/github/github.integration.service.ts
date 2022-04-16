@@ -175,7 +175,7 @@ export class GithubIntegrationService {
   }
 
   public async createIssueFromTask(task: Task): Promise<void> {
-    if (!!task.parentTaskId) return;
+    if (!!task.parentTaskId || task.status === TaskStatus.BACKLOG) return;
     const projInt = await this.integrationService.findProjectIntegration(
       task.projectId,
       ProjectIntegrationType.GITHUB
