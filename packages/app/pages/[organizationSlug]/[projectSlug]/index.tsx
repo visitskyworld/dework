@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
 import { Col, Layout, Tabs } from "antd";
@@ -23,6 +23,7 @@ import { useOrganizationBySlug } from "@dewo/app/containers/organization/hooks";
 import { CommunitySuggestions } from "@dewo/app/containers/project/community/CommunitySuggestions";
 import { TaskCreateModal } from "@dewo/app/containers/task/TaskCreateModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
+import moment from "moment";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -50,6 +51,15 @@ const Page: NextPage = () => {
       router.replace("/");
     }
   }, [router, projectSlug, organizationSlug]);
+
+  const createFormInitialValues = useMemo(() => {
+    if (!router.query.values) return { status: TaskStatus.TODO };
+    const parsed = JSON.parse(router.query.values as string);
+    return {
+      ...parsed,
+      dueDate: !!parsed.dueDate ? moment(parsed.dueDate) : undefined,
+    };
+  }, [router.query.values]);
 
   if (!projectSlug || !organizationSlug) {
     return null;
@@ -145,10 +155,7 @@ const Page: NextPage = () => {
       {!!project && (
         <TaskCreateModal
           projectId={project.id}
-          initialValues={Object.assign(
-            { status: TaskStatus.TODO },
-            router.query
-          )}
+          initialValues={createFormInitialValues}
           visible={router.route.endsWith("/create")}
           onDone={() => router.push(project.permalink)}
           onCancel={() => router.push(project.permalink)}

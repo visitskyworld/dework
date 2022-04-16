@@ -1,33 +1,17 @@
 import * as Icons from "@ant-design/icons";
 import { Project, TaskDetails } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
-import {
-  Button,
-  Dropdown,
-  Menu,
-  message,
-  Popconfirm,
-  Space,
-  Typography,
-} from "antd";
+import { Button, Dropdown, Menu, message, Popconfirm, Typography } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
-import {
-  toTaskRewardFormValues,
-  useCreateTaskFromFormValues,
-  useDeleteTask,
-  useTaskRoles,
-  useUpdateTask,
-} from "../hooks";
+import { useDeleteTask, useTaskRoles, useUpdateTask } from "../hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import {
-  useCloseTaskDetails,
-  useNavigateToTaskFn,
-} from "@dewo/app/util/navigation";
+import { useCloseTaskDetails } from "@dewo/app/util/navigation";
 import Link from "next/link";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import { useOrganizationDetails } from "../../organization/hooks";
+import { toTaskFormValues } from "./util";
 
 interface Props {
   task: TaskDetails;
@@ -85,7 +69,6 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
   const canDelete = usePermission("delete", task);
   const deleteTask = useDeleteTask();
   const router = useRouter();
-
   const handleDeleteTask = useCallback(async () => {
     await deleteTask(task.id);
     await router.push(task.project.permalink);
@@ -97,50 +80,17 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
   );
 
   const taskRoles = useTaskRoles(task);
-  const navigateToTask = useNavigateToTaskFn();
-  const createTask = useCreateTaskFromFormValues();
-  const duplicate = useCallback(async () => {
-    const duplicatedTask = await createTask(
-      {
-        name: task.name,
-        projectId: task.projectId,
-        description: task.description ?? undefined,
-        parentTaskId: task.parentTaskId ?? undefined,
-        storyPoints: task.storyPoints ?? undefined,
-        status: task.status,
-        tagIds: task.tags.map((t) => t.id),
-        assigneeIds: task.assignees.map((t) => t.id),
-        ownerIds: task.owners.map((t) => t.id),
-        reward: toTaskRewardFormValues(task.reward ?? undefined),
-        subtasks: task.subtasks.map((s, index) => ({
-          key: String(index),
-          name: s.name,
-          description: s.description,
-          status: s.status,
-          assigneeIds: s.assignees.map((a) => a.id),
-          dueDate: null,
-        })),
-        gating: task.gating,
-        roleIds: taskRoles?.map((r) => r.id),
-      },
-      task.projectId
-    );
 
-    message.success({
-      content: (
-        <Space>
-          <Typography.Text>Task duplicated</Typography.Text>
-          <Button
-            type="ghost"
-            size="small"
-            onClick={() => navigateToTask(duplicatedTask.id)}
-          >
-            View
-          </Button>
-        </Space>
-      ),
-    });
-  }, [navigateToTask, createTask, taskRoles, task]);
+  const handleDuplicate = useCallback(() => {
+    if (!taskRoles) return;
+    router.push(
+      `${task.project.permalink}/create?values=${encodeURIComponent(
+        JSON.stringify(
+          toTaskFormValues({ ...task, name: `${task.name} (Copy)` }, taskRoles)
+        )
+      )}`
+    );
+  }, [router, task, taskRoles]);
 
   return (
     <Dropdown
@@ -161,7 +111,7 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
             <Menu.Item
               icon={<Icons.CopyOutlined />}
               children={<Typography.Text>Duplicate</Typography.Text>}
-              onClick={duplicate}
+              onClick={handleDuplicate}
             />
           )}
           {canUpdate && <MoveTaskSubmenu task={task} />}

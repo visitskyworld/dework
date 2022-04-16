@@ -27,7 +27,6 @@ import {
   UserTasksQuery,
   UserTasksQueryVariables,
   User,
-  UpdateTaskRewardInput,
   TaskReward,
   UpdateTaskInput,
   GetTasksInput,
@@ -69,10 +68,10 @@ import {
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
-import { formatFixed, parseFixed } from "@ethersproject/bignumber";
+import { formatFixed } from "@ethersproject/bignumber";
 import { useOrganizationUsers } from "../organization/hooks";
 import { useProject, useSetTaskGatingDefault } from "../project/hooks";
-import { TaskFormValues, TaskRewardFormValues } from "./form/types";
+import { TaskFormValues } from "./form/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import {
   useCreateRule,
@@ -81,41 +80,7 @@ import {
 } from "../rbac/hooks";
 import { getRule, hasRule } from "../rbac/util";
 import { Constants } from "@dewo/app/util/constants";
-
-export const toTaskReward = (
-  reward: TaskRewardFormValues | undefined
-): UpdateTaskRewardInput | null => {
-  if (!reward?.amount || !reward?.token || !reward?.trigger) return null;
-  return {
-    amount: parseFixed(
-      String(reward.amount),
-      reward.peggedToUsd ? Constants.NUM_DECIMALS_IN_USD_PEG : reward.token.exp
-    ).toString(),
-    tokenId: reward.token.id,
-    trigger: reward.trigger,
-    peggedToUsd: reward.peggedToUsd,
-  };
-};
-
-export const toTaskRewardFormValues = (
-  reward: TaskReward | undefined
-): TaskRewardFormValues | undefined => {
-  if (!reward) return undefined;
-  return {
-    amount: Number(
-      formatFixed(
-        reward.amount,
-        reward.peggedToUsd
-          ? Constants.NUM_DECIMALS_IN_USD_PEG
-          : reward.token.exp
-      )
-    ),
-    networkId: reward.token.networkId,
-    token: reward.token,
-    trigger: reward.trigger,
-    peggedToUsd: reward.peggedToUsd,
-  };
-};
+import { toTaskReward } from "./form/util";
 
 export const formatTaskReward = (reward: TaskReward) => {
   if (reward.peggedToUsd) {

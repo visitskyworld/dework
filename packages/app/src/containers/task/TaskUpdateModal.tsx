@@ -2,19 +2,14 @@ import _ from "lodash";
 import { Modal, Skeleton } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo } from "react";
-import {
-  toTaskRewardFormValues,
-  useTask,
-  useTaskRoles,
-  useUpdateTaskFromFormValues,
-} from "./hooks";
+import { useTask, useTaskRoles, useUpdateTaskFromFormValues } from "./hooks";
 import { TaskForm } from "./form/TaskForm";
 import { TaskOptionsButton } from "./form/TaskOptionsButton";
-import moment from "moment";
 import { TaskApplyModal } from "./actions/apply/TaskApplyModal";
 import { TaskSeo } from "../seo/TaskSeo";
 import { TaskFormValues } from "./form/types";
 import { isSSR } from "@dewo/app/util/isSSR";
+import { toTaskFormValues } from "./form/util";
 
 interface Props {
   taskId: string;
@@ -34,23 +29,10 @@ export const TaskUpdateModal: FC<Props> = ({
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
 
   const taskRoles = useTaskRoles(task);
-  const tagIds = useMemo(() => task?.tags.map((t) => t.id) ?? [], [task?.tags]);
-  const initialValues = useMemo<TaskFormValues>(
-    (): TaskFormValues => ({
-      projectId: task?.projectId!,
-      name: task?.name ?? "",
-      description: task?.description ?? undefined,
-      storyPoints: task?.storyPoints ?? undefined,
-      tagIds,
-      assigneeIds: task?.assignees.map((a) => a.id) ?? [],
-      ownerIds: task?.owners.map((o) => o.id) ?? [],
-      status: task?.status!,
-      dueDate: !!task?.dueDate ? moment(task?.dueDate) : undefined,
-      reward: toTaskRewardFormValues(task?.reward ?? undefined),
-      gating: task?.gating,
-      roleIds: taskRoles?.map((r) => r.id),
-    }),
-    [task, tagIds, taskRoles]
+  const initialValues = useMemo(
+    (): TaskFormValues | undefined =>
+      !!task && !!taskRoles ? toTaskFormValues(task, taskRoles) : undefined,
+    [task, taskRoles]
   );
 
   return (
@@ -58,7 +40,7 @@ export const TaskUpdateModal: FC<Props> = ({
       <Modal visible={visible} onCancel={onCancel} footer={null} width={960}>
         {!!task && <TaskOptionsButton task={task} />}
         <Skeleton loading={!task || !taskRoles} active paragraph={{ rows: 5 }}>
-          {!!task && !!taskRoles && (
+          {!!initialValues && (
             <TaskForm
               key={taskId}
               mode="update"

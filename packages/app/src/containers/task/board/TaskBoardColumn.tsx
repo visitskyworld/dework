@@ -15,7 +15,6 @@ import { TaskSectionTitle } from "./TaskSectionTitle";
 import { TaskSectionOptionButton } from "./TaskSectionOptionButton";
 import { useProject } from "../../project/hooks";
 import Link from "next/link";
-import * as qs from "query-string";
 
 interface Props {
   status: TaskStatus;
@@ -75,7 +74,9 @@ export const TaskBoardColumn: FC<Props> = ({
               this={{ __typename: "Task", status, projectId, owners: [] }}
             >
               <Link
-                href={`${project.permalink}/create?${qs.stringify({ status })}`}
+                href={`${project.permalink}/create?values=${encodeURIComponent(
+                  JSON.stringify({ status })
+                )}`}
               >
                 <Button type="text" icon={<Icons.PlusOutlined />} />
               </Link>

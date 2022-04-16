@@ -69,10 +69,10 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     );
     return {
       ownerIds: canCreateTaskOwner && !!user ? [user.id] : [],
-      ...initialValues,
       gating: taskGatingDefault?.type,
       roleIds: taskGatingDefault?.roles.map((r) => r.id),
       ...storedValues,
+      ...initialValues,
     };
   }, [initialValues, storedValues, projectId, canCreateTaskOwner, user]);
 
