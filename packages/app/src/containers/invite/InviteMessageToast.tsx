@@ -1,11 +1,4 @@
-import React, {
-  CSSProperties,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { Button, message, Space, Typography } from "antd";
@@ -21,10 +14,6 @@ import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 import { InviteMessage } from "./InviteMessage";
 import { usePrompt } from "../prompts/hooks";
-
-const messageBottomStyle: CSSProperties = {
-  marginTop: "calc(100vh - 140px)",
-};
 
 export const InviteMessageToast: FC = () => {
   const showingPrompt = !!usePrompt().step;
@@ -55,14 +44,19 @@ export const InviteMessageToast: FC = () => {
     message.success({
       content: "Invite accepted!",
       type: "success",
-      style: messageBottomStyle,
     });
     routerRef.current.push({
       pathname: routerRef.current.pathname,
-      query: _.omit(routerRef.current.query, ["inviteId"]),
+      query: _.omit(routerRef.current.query, ["inviteId", "autoJoin"]),
     });
     tokenGatedModalVisible.toggleOff();
   }, [acceptInvite, tokenGatedModalVisible, inviteId]);
+
+  useEffect(() => {
+    if (router.query.autoJoin && inviteId) {
+      handleAcceptInvite();
+    }
+  }, [handleAcceptInvite, inviteId, router.query]);
 
   const inviteMessage = useMemo(() => {
     if (!invite) return undefined;
@@ -100,13 +94,12 @@ export const InviteMessageToast: FC = () => {
   const handleAuthedWithWalletSuccess = useCallback(
     async (userDetails: UserDetails) => {
       authModalVisible.toggleOff();
+      handleAcceptInvite();
 
       if (!hasDiscordThreepid(userDetails)) {
         showConnectDiscordModal();
       } else if (isTokenGated) {
         showTokenGateModal();
-      } else {
-        handleAcceptInvite();
       }
     },
     [
@@ -162,16 +155,25 @@ export const InviteMessageToast: FC = () => {
       ),
       duration: 0, // forever
       type: undefined as any,
-      style: messageBottomStyle,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [!!invite, showingPrompt, authenticated]);
+
+  const redirectUrl = useMemo(() => {
+    const searchParams = new URLSearchParams({
+      ...router.query,
+      autoJoin: "true",
+    }).toString();
+    const basePath = router.asPath.split("?")[0];
+    return `${basePath}?${searchParams}`;
+  }, [router.asPath, router.query]);
 
   return (
     <>
       <LoginModal
         toggle={authModalVisible}
         onAuthedWithWallet={handleAuthedWithWalletSuccess}
+        redirectUrl={redirectUrl}
       />
       {isTokenGated && (
         <JoinTokenGatedProjectsModal
