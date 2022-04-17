@@ -31,7 +31,7 @@ function useAnalyticsTrackElements() {
         return undefined;
       };
 
-      const element = path.find((el) => !!getName(el));
+      const element = path?.find((el) => !!getName(el));
       if (!!element) {
         const eventName = `${_.capitalize(type)}: ${getName(element)}`;
         amplitude.logEvent(eventName, {

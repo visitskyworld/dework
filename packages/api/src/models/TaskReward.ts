@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import GraphQLUUID from "graphql-type-uuid";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Payment } from "./Payment";
@@ -37,8 +38,8 @@ export class TaskReward extends Audit {
   @JoinColumn()
   @ManyToOne(() => Payment, { nullable: true, eager: true, cascade: true })
   @Field(() => Payment, { nullable: true })
-  public payment?: Payment;
+  public payment?: Payment | null;
   @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public paymentId?: string;
+  @Field(() => GraphQLUUID, { nullable: true })
+  public paymentId?: string | null;
 }

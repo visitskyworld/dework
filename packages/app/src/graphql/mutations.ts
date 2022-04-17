@@ -588,6 +588,16 @@ export const createTaskPayments = gql`
   ${Fragments.taskDetails}
 `;
 
+export const clearTaskPayments = gql`
+  mutation ClearTaskPaymentsMutation($input: ClearTaskPaymentsInput!) {
+    tasks: clearTaskPayments(input: $input) {
+      ...TaskDetails
+    }
+  }
+
+  ${Fragments.taskDetails}
+`;
+
 export const startWalletConnectSession = gql`
   mutation StartWalletConnectSessionMutation($sessionId: UUID!) {
     connectorUri: startWalletConnectSession(sessionId: $sessionId)

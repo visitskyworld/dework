@@ -1,5 +1,6 @@
 import React, { FC, ReactElement, useCallback } from "react";
 import {
+  PaymentStatus,
   Task,
   TaskGatingType,
   TaskStatus,
@@ -17,6 +18,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { CreateSubmissionButton } from "./submit/CreateSubmissionButton";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { ClaimTaskButton } from "./claim/ClaimTaskButton";
+import { ClearTaskRewardPaymentButton } from "../board/ClearTaskRewardPaymentButton";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -38,6 +40,18 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   const canApply = usePermission("create", "TaskApplication");
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);
+  const canUpdate = usePermission("update", "TaskReward");
+
+  const shouldShowClearButton =
+    canUpdate && task.reward?.payment?.status === PaymentStatus.FAILED;
+
+  if (shouldShowClearButton && task.reward?.payment) {
+    return (
+      <ClearTaskRewardPaymentButton payment={task.reward.payment}>
+        Clear
+      </ClearTaskRewardPaymentButton>
+    );
+  }
 
   if (shouldShowInlinePayButton) {
     return <PayButton task={task}>Pay</PayButton>;

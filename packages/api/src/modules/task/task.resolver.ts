@@ -44,6 +44,7 @@ import { RbacService } from "../rbac/rbac.service";
 import { OrganizationService } from "../organization/organization.service";
 import { AuditLogEvent } from "@dewo/api/models/AuditLogEvent";
 import { AuditLogService } from "../auditLog/auditLog.service";
+import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 
 @Injectable()
 @Resolver(() => Task)
@@ -391,6 +392,14 @@ export class TaskResolver {
   ): Promise<Task[]> {
     if (!input.taskRewardIds.length) return [];
     return this.taskService.createPayments(input);
+  }
+
+  @Mutation(() => [Task])
+  @UseGuards(AuthGuard)
+  public async clearTaskPayments(
+    @Args("input") input: ClearTaskPaymentsInput
+  ): Promise<Task[]> {
+    return this.taskService.clearPayments(input);
   }
 
   @Mutation(() => Task)

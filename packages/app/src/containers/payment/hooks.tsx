@@ -3,6 +3,8 @@ import * as URL from "url";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
+  ClearTaskPaymentsMutation,
+  ClearTaskPaymentsMutationVariables,
   CreatePaymentMethodInput,
   CreatePaymentMethodMutation,
   CreatePaymentMethodMutationVariables,
@@ -328,5 +330,26 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
       selectProjectPaymentMethod,
       registerTaskPayment,
     ]
+  );
+}
+
+export function useClearPaymentReward() {
+  const [mutation] = useMutation<
+    ClearTaskPaymentsMutation,
+    ClearTaskPaymentsMutationVariables
+  >(Mutations.clearTaskPayments);
+  return useCallback(
+    async (paymentId: string) => {
+      const res = await mutation({
+        variables: {
+          input: {
+            paymentId,
+          },
+        },
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.tasks;
+    },
+    [mutation]
   );
 }
