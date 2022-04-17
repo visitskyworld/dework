@@ -29,6 +29,7 @@ import { RbacModule } from "../rbac/rbac.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { UserPromptModule } from "../user/prompt/userPrompt.module";
+import { GithubWebhookModule } from "../integrations/github/webhook/github.webhook.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -57,6 +58,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   ThreepidModule,
   InviteModule,
   GithubIntegrationModule,
+  GithubWebhookModule,
   DiscordIntegrationModule,
   NotionModule,
   TrelloModule,

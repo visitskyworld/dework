@@ -1,5 +1,6 @@
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
+import Bluebird from "bluebird";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import {
   ProjectIntegration,
@@ -11,6 +12,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
+import { User } from "@dewo/api/models/User";
+import { ThreepidSource } from "@dewo/api/models/Threepid";
 
 @Injectable()
 export class GithubService {
@@ -23,6 +26,8 @@ export class GithubService {
     private readonly githubIssueRepo: Repository<GithubIssue>,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
     @InjectRepository(ProjectIntegration)
     private readonly projectIntegrationRepo: Repository<ProjectIntegration>
   ) {}
@@ -132,15 +137,13 @@ export class GithubService {
       .getOne();
   }
 
-  public async findIntegration(
-    installationId: number,
+  public async findIntegrations(
     organization: string,
     repo: string
-  ): Promise<ProjectIntegration<ProjectIntegrationType.GITHUB> | undefined> {
+  ): Promise<ProjectIntegration<ProjectIntegrationType.GITHUB>[]> {
     return this.projectIntegrationRepo
       .createQueryBuilder("projInt")
       .innerJoin("projInt.project", "project")
-      .innerJoin("projInt.organizationIntegration", "orgInt")
       .where("projInt.deletedAt IS NULL")
       .andWhere("project.deletedAt IS NULL")
       .andWhere("projInt.type = :type", { type: ProjectIntegrationType.GITHUB })
@@ -148,12 +151,33 @@ export class GithubService {
       .andWhere(`"projInt"."config"->>'organization' = :organization`, {
         organization,
       })
-      .andWhere("orgInt.type = :type", { type: ProjectIntegrationType.GITHUB })
-      .andWhere(`"orgInt"."config"->>'installationId' = :installationId`, {
-        installationId,
-      })
-      .getOne() as Promise<
-      ProjectIntegration<ProjectIntegrationType.GITHUB> | undefined
+      .getMany() as Promise<
+      ProjectIntegration<ProjectIntegrationType.GITHUB>[]
     >;
+  }
+
+  public async getUsersFromGithubIds(
+    githubIds: number[]
+  ): Promise<Record<number, User>> {
+    const users = await this.userRepo
+      .createQueryBuilder("user")
+      .innerJoinAndSelect("user.threepids", "threepid")
+      .where("threepid.source = :source", { source: ThreepidSource.github })
+      .andWhere("threepid.threepid IN (:...githubIds)", {
+        githubIds: githubIds.map(String),
+      })
+      .getMany();
+    return Bluebird.reduce<User, Record<number, User>>(
+      users,
+      async (acc, user) => {
+        const threepids = await user.threepids;
+        const discordId = threepids.find(
+          (t) => t.source === ThreepidSource.github
+        )?.threepid;
+        if (!discordId) return acc;
+        return { ...acc, [Number(discordId)]: user };
+      },
+      {}
+    );
   }
 }

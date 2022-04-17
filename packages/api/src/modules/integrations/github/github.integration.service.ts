@@ -73,7 +73,14 @@ export class GithubIntegrationService {
   public async updateIssue(
     issue: Pick<
       Github.Issue,
-      "id" | "html_url" | "state" | "title" | "body" | "labels" | "number"
+      | "id"
+      | "html_url"
+      | "state"
+      | "title"
+      | "body"
+      | "labels"
+      | "number"
+      | "assignees"
     >,
     project: Project,
     taskOverride: Partial<Task> = {}
@@ -251,6 +258,7 @@ export class GithubIntegrationService {
           state: issue.state as any,
           body: issue.body ?? null,
           labels: issue.labels as any as Github.Label[],
+          assignees: (issue.assignees as any[]) ?? [],
         },
         project,
         { creatorId: userId }

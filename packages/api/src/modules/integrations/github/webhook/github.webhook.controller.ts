@@ -6,20 +6,27 @@ import {
   GithubPullRequest,
   GithubPullRequestStatus,
 } from "@dewo/api/models/GithubPullRequest";
-import { ConfigType } from "../../app/config";
-import { GithubService } from "./github.service";
-import { TaskService } from "../../task/task.service";
-import { IntegrationService } from "../integration.service";
+import { ConfigType } from "../../../app/config";
+import { GithubService } from "../github.service";
+import { TaskService } from "../../../task/task.service";
+import { IntegrationService } from "../../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
-import { GithubIntegrationService } from "./github.integration.service";
-import { DiscordIntegrationService } from "../discord/discord.integration.service";
+import { GithubIntegrationService } from "../github.integration.service";
+import { DiscordIntegrationService } from "../../discord/discord.integration.service";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 import * as qs from "query-string";
+import { GithubSyncIncomingService } from "../sync/github.sync.incoming";
 
 type GithubPullRequestPayload = Pick<
   GithubPullRequest,
-  "title" | "status" | "number" | "branchName" | "link" | "taskId"
+  | "title"
+  | "status"
+  | "number"
+  | "branchName"
+  | "link"
+  | "taskId"
+  | "externalId"
 >;
 
 function PreventConcurrency(): MethodDecorator {
@@ -39,7 +46,7 @@ function PreventConcurrency(): MethodDecorator {
 }
 
 @Controller("github")
-export class GithubController {
+export class GithubWebhookController {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
@@ -48,7 +55,8 @@ export class GithubController {
     private readonly taskService: TaskService,
     private readonly githubService: GithubService,
     private readonly githubIntegrationService: GithubIntegrationService,
-    private readonly discordIntegrationService: DiscordIntegrationService
+    private readonly discordIntegrationService: DiscordIntegrationService,
+    private readonly githubSyncIncomingService: GithubSyncIncomingService
   ) {}
 
   // Hit when user finishes the GH app installation
@@ -77,6 +85,8 @@ export class GithubController {
     const event = request.body as Github.WebhookEvent;
     this.log("Incoming Github webhook", event);
 
+    await this.githubSyncIncomingService.handleWebhook(event);
+
     if (
       !("installation" in event) ||
       !("repository" in event) ||
@@ -87,8 +97,7 @@ export class GithubController {
       return;
     }
 
-    const integration = await this.githubService.findIntegration(
-      event.installation.id,
+    const [integration] = await this.githubService.findIntegrations(
       event.repository.owner.login,
       event.repository.name
     );
@@ -184,12 +193,13 @@ export class GithubController {
       if (!result) return;
       const { task, branchName } = result;
 
-      const { title, state, html_url, number, draft } = event.pull_request;
+      const { id, title, state, html_url, number, draft } = event.pull_request;
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
       const prData: GithubPullRequestPayload = {
         title,
         number,
         branchName,
+        externalId: id,
         status: {
           open: GithubPullRequestStatus.OPEN,
           closed: GithubPullRequestStatus.CLOSED,

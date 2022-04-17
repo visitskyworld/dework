@@ -15,6 +15,10 @@ registerEnumType(GithubPullRequestStatus, { name: "GithubPullRequestStatus" });
 @Entity()
 @ObjectType()
 export class GithubPullRequest extends Audit {
+  @Column({ type: "int", nullable: true })
+  @Field(() => Int, { nullable: true })
+  public externalId?: number;
+
   @Column()
   @Field()
   public title!: string;

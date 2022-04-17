@@ -1,13 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
 import { Task } from "@dewo/api/models/Task";
-import { GithubController } from "./github.controller";
 import { GithubService } from "./github.service";
 import { TaskModule } from "../../task/task.module";
-import { LoggerMiddleware } from "../../auth/logger";
-import { IntegrationModule } from "../integration.module";
 import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegration";
 import { GithubResolver } from "./github.resolver";
 import { GithubIntegrationService } from "./github.integration.service";
@@ -17,9 +14,10 @@ import { GithubIssue } from "@dewo/api/models/GithubIssue";
 import { Project } from "@dewo/api/models/Project";
 import { GithubIntegrationTaskCreatedEventHandler } from "./github.eventHandlers";
 import { PermalinkModule } from "../../permalink/permalink.module";
-import { DiscordIntegrationModule } from "../discord/discord.integration.module";
 import { OrganizationModule } from "../../organization/organization.module";
 import { RbacModule } from "../../rbac/rbac.module";
+import { IntegrationModule } from "../integration.module";
+import { User } from "@dewo/api/models/User";
 
 @Module({
   imports: [
@@ -28,6 +26,7 @@ import { RbacModule } from "../../rbac/rbac.module";
       GithubBranch,
       GithubIssue,
       Task,
+      User,
       Project,
       ProjectIntegration,
       OrganizationIntegration,
@@ -35,10 +34,9 @@ import { RbacModule } from "../../rbac/rbac.module";
     TaskModule,
     ProjectModule,
     OrganizationModule,
-    IntegrationModule,
-    DiscordIntegrationModule,
     PermalinkModule,
     RbacModule,
+    IntegrationModule,
   ],
   providers: [
     GithubService,
@@ -46,11 +44,6 @@ import { RbacModule } from "../../rbac/rbac.module";
     GithubIntegrationService,
     GithubIntegrationTaskCreatedEventHandler,
   ],
-  controllers: [GithubController],
-  exports: [GithubService],
+  exports: [GithubService, GithubIntegrationService],
 })
-export class GithubIntegrationModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(LoggerMiddleware).forRoutes(GithubController);
-  }
-}
+export class GithubIntegrationModule {}
