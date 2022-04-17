@@ -1,5 +1,9 @@
-import { DiscordGuildMembershipState, Task } from "@dewo/app/graphql/types";
-import { Modal, Row, Spin, Typography } from "antd";
+import {
+  DiscordGuildMembershipState,
+  OrganizationIntegrationType,
+  Task,
+} from "@dewo/app/graphql/types";
+import { Modal, notification, Row, Spin, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import { useCreateTaskApplication, useTask } from "../../hooks";
 import { Form, Button, Input } from "antd";
@@ -15,6 +19,10 @@ import {
   useDiscordGuildMembershipState,
 } from "@dewo/app/containers/integrations/hooks";
 import { useFollowOrganization } from "@dewo/app/containers/rbac/hooks";
+import {
+  useOrganization,
+  useOrganizationIntegrations,
+} from "@dewo/app/containers/organization/hooks";
 
 interface Props {
   taskId: string | undefined;
@@ -29,6 +37,11 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
 
   const task = useTask(taskId);
   const { project } = useProject(task?.projectId);
+  const organization = useOrganization(project?.organizationId);
+  const hasDiscordIntegration = !!useOrganizationIntegrations(
+    project?.organizationId,
+    OrganizationIntegrationType.DISCORD
+  )?.length;
   const membershipState = useDiscordGuildMembershipState(
     project?.organizationId
   );
@@ -52,6 +65,15 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       });
       await followOrganization();
       await onDone(claimedTask);
+
+      notification.success({
+        placement: "top",
+        duration: 5000,
+        message: "Application submitted!",
+        description: hasDiscordIntegration
+          ? `You will now be able to chat with the task reviewer in a Discord thread we created for you in ${organization?.name}'s server`
+          : "Next the task reviewer will review your application. If they assign you, you can start working on the task",
+      });
     },
     [
       createTaskApplication,
@@ -61,6 +83,8 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       membershipState,
       task,
       user,
+      organization,
+      hasDiscordIntegration,
     ]
   );
 
