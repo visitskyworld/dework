@@ -27,6 +27,7 @@ import { TagCloudInput } from "./TagCloudInput";
 import { useToggle } from "@dewo/app/util/hooks";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
+import { suggestedTags } from "../../util/tags";
 
 interface FilterValues {
   includeOpenBounties: boolean;
@@ -98,7 +99,7 @@ export const TaskDiscoveryList: FC = () => {
 
   const screens = useBreakpoint();
   const filters = useToggle(true);
-  const tags = useMemo(
+  const tasksTags = useMemo(
     () =>
       _.uniqBy(
         _.flatten(tasks?.map((t) => t.tags)).map((tag) => ({
@@ -215,7 +216,10 @@ export const TaskDiscoveryList: FC = () => {
                     </Form.Item> */}
                   </FormSection>
                   <Form.Item label="Tags" name="tagLabels">
-                    <TagCloudInput tags={tags} />
+                    <TagCloudInput
+                      mainTags={suggestedTags}
+                      moreTags={tasksTags}
+                    />
                   </Form.Item>
                 </Form>
               </Card>

@@ -7,6 +7,7 @@ import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { TaskTag } from "@dewo/app/graphql/types";
+import { suggestedTags } from "../../../util/tags";
 
 interface Props {
   label?: string;
@@ -25,23 +26,6 @@ interface ComponentProps {
   onChange?(value: string[]): void;
 }
 
-const suggestedTags: readonly { label: string; color: string }[] = [
-  { label: "🐞 bug", color: "volcano" },
-  { label: "good first issue", color: "yellow" },
-  { label: "recurring", color: "volcano" },
-  { label: "design", color: "purple" },
-  { label: "frontend", color: "orange" },
-  { label: "backend", color: "blue" },
-  { label: "product", color: "lime" },
-  { label: "community", color: "magenta" },
-  { label: "marketing", color: "gold" },
-  { label: "legal", color: "blue" },
-  { label: "sales", color: "orange" },
-  { label: "research", color: "yellow" },
-  { label: "writing", color: "purple" },
-  { label: "operations", color: "volcano" },
-  { label: "admin", color: "magenta" },
-];
 const suggestedTagMap = _.keyBy(suggestedTags, "label");
 
 const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
