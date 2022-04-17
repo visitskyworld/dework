@@ -274,7 +274,7 @@ export class RbacService {
           fn("create", Task, {
             ...task,
             status: TaskStatus.BACKLOG,
-            owners: { $size: 0 },
+            ownerIds: { $size: 0 },
           });
           fn(CRUD, TaskReaction, {
             userId,

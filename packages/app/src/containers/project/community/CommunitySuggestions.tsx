@@ -84,7 +84,8 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
   const canCreateTask = usePermission("create", {
     __typename: "Task",
     projectId,
-    owners: [],
+    // @ts-ignore
+    ...{ ownerIds: [] },
     status: TaskStatus.BACKLOG,
   });
   const createTaskToggle = useToggle();

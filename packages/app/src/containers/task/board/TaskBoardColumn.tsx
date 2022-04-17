@@ -71,7 +71,13 @@ export const TaskBoardColumn: FC<Props> = ({
           {!!project && (
             <Can
               I="create"
-              this={{ __typename: "Task", status, projectId, owners: [] }}
+              this={{
+                __typename: "Task",
+                status,
+                projectId,
+                // @ts-ignore
+                ...{ ownerIds: [] },
+              }}
             >
               <Link
                 href={`${project.permalink}/create?values=${encodeURIComponent(
