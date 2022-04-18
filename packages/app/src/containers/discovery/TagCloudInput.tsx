@@ -44,7 +44,7 @@ export const TagCloudInput: FC<Props> = ({
         ?.map((moreTag) => ({ ...moreTag, label: moreTag.label.toLowerCase() }))
         .filter(
           (moreTag) =>
-            mainTags.some(
+            !mainTags.some(
               (mainTag) => mainTag.label.toLowerCase() === moreTag.label
             ) && moreTag.label.includes(searchText.toLowerCase())
         ),
