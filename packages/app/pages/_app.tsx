@@ -3,7 +3,6 @@ import { AppInitialProps, AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.less";
 import { withApollo, WithApolloProps } from "next-with-apollo";
-import * as Sentry from "@sentry/nextjs";
 import { AuthProvider } from "@dewo/app/contexts/AuthContext";
 import { Constants } from "@dewo/app/util/constants";
 import { ErrorLink } from "@apollo/client/link/error";
@@ -43,12 +42,6 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
   demo: "/logo.demo.svg",
   prod: "/logo.svg",
 };
-
-Sentry.init({
-  dsn: Constants.SENTRY_DSN,
-  environment: Constants.ENVIRONMENT,
-  ignoreErrors: ["ResizeObserver loop limit exceeded"],
-});
 
 const Hooks: FC = () => {
   useAnalyticsListeners();

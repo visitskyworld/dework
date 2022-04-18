@@ -26,7 +26,6 @@
     "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh",
     "deploy:lp:prod": "./packages/scripts/deploy-lp-prod.sh",
     "deploy:nft:prod": "./packages/scripts/deploy-nft-prod.sh",
-    "postinstall": "patch-package --patch-dir packages/api/patches && patch-package --patch-dir packages/app/patches",
     "prepare": "husky install"
   },
   "devDependencies": {

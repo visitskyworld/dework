@@ -10,7 +10,11 @@ DEPLOYMENT_NAME="app"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/app"
 REGION="us-east1"
 
-docker build --platform linux/amd64 -t $IMAGE_NAME -f packages/app/Dockerfile .
+#  --build-arg SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} \
+docker build \
+  --platform linux/amd64 \
+  -t $IMAGE_NAME \
+  -f packages/app/Dockerfile .
 docker push $IMAGE_NAME
 
 gcloud config set project $PROJECT_ID

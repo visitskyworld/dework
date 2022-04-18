@@ -4,13 +4,22 @@
 FROM node:16-alpine AS builder
 WORKDIR /builder
 
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+
 COPY package.json yarn.lock ./
 COPY packages/app/package.json packages/app/
 COPY packages/app/patches patches
 RUN yarn app install --frozen-lockfile && yarn patch-package
 
 COPY tsconfig.base.json ./
-COPY packages/app/tsconfig.json packages/app/next.config.js packages/app/
+COPY packages/app/tsconfig.json \
+     packages/app/next.config.js \
+     packages/app/sentry.client.config.ts \
+     packages/app/sentry.server.config.ts \
+     packages/app/sentry.properties \
+     \
+     packages/app/
 
 COPY packages/types packages/types
 COPY packages/app/public packages/app/public
@@ -33,5 +42,8 @@ RUN yarn app install --frozen-lockfile --production
 COPY --from=builder /builder/packages/app/public ./packages/app/public
 COPY --from=builder /builder/packages/app/.next ./packages/app/.next
 COPY --from=builder /builder/packages/app/next.config.js ./packages/app/
+COPY --from=builder /builder/packages/app/sentry.client.config.ts ./packages/app/
+COPY --from=builder /builder/packages/app/sentry.server.config.ts ./packages/app/
+COPY --from=builder /builder/packages/app/sentry.properties ./packages/app/
 
 CMD ["yarn", "app", "start"]

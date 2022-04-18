@@ -11,6 +11,7 @@ import { MeQuery, UserDetails } from "../graphql/types";
 import { clearAuthToken, setAuthToken } from "../util/authToken";
 import { useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
+import * as Sentry from "@sentry/nextjs";
 import { useAmplitude } from "../util/analytics/AmplitudeContext";
 
 function useCurrentUser(skip: boolean = false): UserDetails | undefined {
@@ -49,6 +50,8 @@ export const AuthProvider: FC<{ initialAuthenticated: boolean }> = ({
         ?.type,
       userAgent: navigator.userAgent,
     });
+
+    Sentry.setUser({ id: user.id });
   }, [user, amplitude]);
 
   const logout = useCallback(() => {
