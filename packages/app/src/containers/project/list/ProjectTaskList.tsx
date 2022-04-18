@@ -8,7 +8,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { useFilteredTasks } from "../../task/board/filters/FilterContext";
+import { useFilteredTasks } from "../../task/filters/FilterContext";
 
 interface Props {
   projectId?: string;

@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
-import { TaskTagSelectField } from "../../form/TaskTagSelectField";
+import { TaskTagSelectField } from "../form/TaskTagSelectField";
 import { TaskFilter, useTaskFilter } from "./FilterContext";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import _ from "lodash";
@@ -11,7 +11,7 @@ import {
   TaskTag,
   User,
 } from "@dewo/app/graphql/types";
-import { STATUS_LABEL } from "../util";
+import { STATUS_LABEL } from "../board/util";
 import { TaskQuickFilterField } from "./TaskQuickFilterField";
 import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
 import { RoleTag } from "@dewo/app/components/RoleTag";
@@ -31,6 +31,8 @@ export const TaskFilterForm: FC<Props> = ({
 }) => {
   const [form] = useForm<TaskFilterDto>();
   const { filter, onChange } = useTaskFilter();
+
+  console.log(form.getFieldsValue);
 
   interface TaskFilterDto extends Omit<TaskFilter, "taskLabels"> {
     tagIds?: string[];

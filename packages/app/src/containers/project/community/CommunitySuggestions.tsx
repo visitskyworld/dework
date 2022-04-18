@@ -14,7 +14,7 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { useFilteredTasks } from "../../task/board/filters/FilterContext";
+import { useFilteredTasks } from "../../task/filters/FilterContext";
 import _ from "lodash";
 import { SuggestionsList } from "./SuggestionsList";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";

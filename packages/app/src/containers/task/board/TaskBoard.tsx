@@ -21,7 +21,7 @@ import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 import { ContributorReviewModal } from "../ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useFilteredTasks } from "./filters/FilterContext";
+import { useFilteredTasks } from "../filters/FilterContext";
 import { useProject } from "../../project/hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 
