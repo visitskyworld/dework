@@ -382,7 +382,9 @@ export class DiscordIntegrationService {
 
     const guild = await this.discord
       .getClient(integration)
-      .guilds.fetch(integration.config.guildId);
+      .guilds.fetch(integration.config.guildId)
+      .catch(() => undefined);
+    if (!guild) return DiscordGuildMembershipState.MEMBER;
 
     try {
       await guild.members.fetch(discordThreepid.threepid);
