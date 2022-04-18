@@ -67,11 +67,10 @@ export class AuthController {
   @Get("discord-bot")
   async discordBot(@Req() req: Request, @Res() res: Response) {
     const { asAdmin = false, guildId } = req.query;
-
     const variant =
       parseInt((req.query.userId as string)[0], 16) % 2 ? "A" : "B";
 
-    await this.analytics.client?.logEvent({
+    this.analytics.client?.logEvent({
       event_type: "Discord Bot: start authorize flow",
       user_id: req.query.userId as string,
       user_properties: asAdmin
@@ -129,7 +128,7 @@ export class AuthController {
     try {
       const state = JSON.parse(query.state!);
 
-      await this.analytics.client?.logEvent({
+      this.analytics.client?.logEvent({
         event_type: "Discord Bot: finish authorize flow",
         user_id: state.userId,
         event_properties: {
