@@ -38,9 +38,7 @@ export const TaskCardAvatars: FC<Props> = ({ task }) => {
       return <ClaimTaskAvatar size={20} />;
     }
 
-    if (task.gating === TaskGatingType.APPLICATION) {
-      return <ApplyToTaskAvatar size={20} />;
-    }
+    return <ApplyToTaskAvatar size={20} />;
   }
 
   return null;
