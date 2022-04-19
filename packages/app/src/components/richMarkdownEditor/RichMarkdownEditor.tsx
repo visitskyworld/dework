@@ -7,7 +7,7 @@ import { message, Row, Typography } from "antd";
 import router from "next/router";
 import { FigmaEmbed, isFigmaUrl } from "../markdownEditor/FigmaEmbed";
 import DefaultTooltip from "rich-markdown-editor/dist/components/Tooltip";
-import { useDropHandler } from "./utils";
+import { keydownHandler, useDropHandler } from "./utils";
 import { isLocalURL } from "next/dist/shared/lib/router/router";
 import { theme } from "./theme";
 import { eatClick } from "@dewo/app/util/eatClick";
@@ -115,7 +115,10 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
       onClickLink={handleLinkClick}
       readOnly={!editable}
       disableExtensions={["emoji"]}
-      handleDOMEvents={{ drop: dropHandler }}
+      handleDOMEvents={{
+        drop: dropHandler,
+        keydown: keydownHandler,
+      }}
     />
   );
 

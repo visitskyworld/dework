@@ -1,6 +1,20 @@
 import { useUploadFile } from "@dewo/app/containers/fileUploads/hooks";
 import { message } from "antd";
 import { EditorView } from "prosemirror-view";
+import { KeyboardEvent } from "react";
+
+export const keydownHandler = (v: EditorView, event: Event) => {
+  const e = event as any as KeyboardEvent<HTMLDivElement>;
+  if (e.shiftKey && e.key === "Enter") {
+    const tr = v.state.tr.replaceSelectionWith(
+      v.state.schema.nodes.br.create()
+    );
+    v.dispatch(tr);
+    event.preventDefault();
+    return true;
+  }
+  return false;
+};
 
 export const useDropHandler = () => {
   const uploadFile = useUploadFile();
