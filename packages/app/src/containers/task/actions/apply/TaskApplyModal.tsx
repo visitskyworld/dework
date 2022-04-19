@@ -68,7 +68,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
 
       notification.success({
         placement: "top",
-        duration: 5000,
+        duration: 5,
         message: "Application submitted!",
         description: hasDiscordIntegration
           ? `You will now be able to chat with the task reviewer in a Discord thread we created for you in ${organization?.name}'s server`

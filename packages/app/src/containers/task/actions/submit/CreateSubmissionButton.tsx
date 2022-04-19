@@ -8,6 +8,8 @@ import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEdit
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
+import { useFollowOrganization } from "@dewo/app/containers/rbac/hooks";
+import { useProject } from "../../../project/hooks";
 
 interface Props extends ButtonProps {
   task: Task;
@@ -19,16 +21,19 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   const [content, setContent] = useState<string>();
 
   const { user } = useAuthContext();
+  const { project } = useProject(task?.projectId);
   const currentSubmission = useMemo(
     () => task.submissions.find((s) => s.userId === user?.id),
     [task.submissions, user]
   );
+  const followOrganization = useFollowOrganization(project?.organizationId);
 
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
   const [handleCreate, creating] = useRunningCallback(async () => {
     if (!currentSubmission) {
       await createSubmission({ taskId: task.id, content: content! });
+      await followOrganization();
       message.success("Submission created");
     } else {
       await updateSubmission({
@@ -45,6 +50,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
     content,
     createSubmission,
     updateSubmission,
+    followOrganization,
     user,
     currentSubmission,
     modalVisible,
