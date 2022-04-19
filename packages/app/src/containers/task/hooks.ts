@@ -263,6 +263,16 @@ export function useCreateTaskFromFormValues(): (
     ]
   );
 }
+const getTaskOptimisticReponse = (
+  task: Task | undefined,
+  input: UpdateTaskInput
+) => {
+  if (!task) return undefined;
+  return {
+    // TODO: find a better way to merge optimistic task updates
+    task: _.merge({}, task, _.omit(input, ["reward"])),
+  };
+};
 
 export function useUpdateTask(): (
   input: UpdateTaskInput,
@@ -276,12 +286,7 @@ export function useUpdateTask(): (
     async (input, task) => {
       const res = await mutation({
         variables: { input },
-        optimisticResponse: !!task
-          ? {
-              // TODO: find a better way to merge optimistic task updates
-              task: _.merge({}, task, _.omit(input, ["reward"])),
-            }
-          : undefined,
+        optimisticResponse: getTaskOptimisticReponse(task, input),
       });
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));

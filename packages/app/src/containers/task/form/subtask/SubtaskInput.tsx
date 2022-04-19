@@ -1,14 +1,16 @@
 import React, { FC, useCallback, useMemo } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
+import { DragDropContext, DragDropContextProps } from "react-beautiful-dnd";
 import { Divider } from "antd";
 import { TaskList, TaskListRow } from "../../list/TaskList";
 import { TaskDetails, TaskStatus } from "@dewo/app/graphql/types";
-import { useCreateTask } from "../../hooks";
+import { useCreateTask, useUpdateTask } from "../../hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import _ from "lodash";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { NewSubtaskInput } from "./NewSubtaskInput";
+import { getSortKeyBetween } from "../../board/util";
 
 export interface SubtaskFormValues {
   name: string;
@@ -30,9 +32,9 @@ export const SubtaskInput: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
   const createTask = useCreateTask();
-
   const hasPermission = usePermissionFn();
   const canCreateSubtask = !task || hasPermission("update", task, "subtasks");
+  const updateTask = useUpdateTask();
 
   const adding = useToggle();
 
@@ -69,6 +71,46 @@ export const SubtaskInput: FC<Props> = ({
       }
     },
     [adding, onChange, createTask, task, projectId, value, user]
+  );
+
+  const handleDragEnd = useCallback<DragDropContextProps["onDragEnd"]>(
+    async (result) => {
+      if (result.reason !== "DROP" || !result.destination) return;
+
+      const {
+        source: { index: oldIndex },
+        destination: { index: newIndex },
+      } = result;
+
+      if (!task && value) {
+        let updatedValue = value;
+        const temp = updatedValue[oldIndex];
+        updatedValue.splice(oldIndex, 1);
+        updatedValue.splice(newIndex, 0, temp);
+        onChange?.(updatedValue);
+      } else if (task) {
+        const sortedTasks = _.sortBy(task.subtasks, (t) => t.sortKey);
+
+        const indexExcludingItself =
+          oldIndex < newIndex ? newIndex + 1 : newIndex;
+
+        const taskAbove = sortedTasks[indexExcludingItself - 1];
+        const taskBelow = sortedTasks[indexExcludingItself];
+        const newKey = getSortKeyBetween(
+          taskAbove,
+          taskBelow,
+          (t) => t.sortKey
+        );
+        await updateTask(
+          {
+            id: sortedTasks[oldIndex].id,
+            sortKey: newKey,
+          },
+          sortedTasks[oldIndex]
+        );
+      }
+    },
+    [task, value, onChange, updateTask]
   );
 
   const rows = useMemo(() => {
@@ -109,16 +151,19 @@ export const SubtaskInput: FC<Props> = ({
   return (
     <div>
       {!!rows.length && <Divider style={{ marginBottom: 0 }}>Subtasks</Divider>}
-      <TaskList
-        rows={rows}
-        size="small"
-        nameEditable={false}
-        onClick={handleClick}
-        showHeader={false}
-        projectId={projectId}
-        onChange={handleChange}
-        onDelete={handleDelete}
-      />
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <TaskList
+          rows={rows}
+          size="small"
+          nameEditable={false}
+          onClick={handleClick}
+          showHeader={false}
+          projectId={projectId}
+          canCreateSubtask={!!canCreateSubtask}
+          onChange={handleChange}
+          onDelete={handleDelete}
+        />
+      </DragDropContext>
       {canCreateSubtask && (
         <NewSubtaskInput onSubmit={handleAddTask} disabled={adding.isOn} />
       )}

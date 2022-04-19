@@ -44,6 +44,7 @@ import { TaskActionButton } from "../actions/TaskActionButton";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import moment from "moment";
 import { isSSR } from "@dewo/app/util/isSSR";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 export interface TaskListRow {
   key: string;
@@ -65,9 +66,15 @@ interface Props {
   projectId?: string;
   style?: CSSProperties;
   size?: AvatarSize;
+  canCreateSubtask?: boolean;
   onChange?(changed: Partial<TaskListRow>, row: TaskListRow): void;
   onDelete?(row: TaskListRow): void;
   onClick?(row: TaskListRow): void;
+}
+
+interface TableRowComponentProps extends React.HTMLAttributes<any> {
+  "data-row-key": string;
+  index: number;
 }
 
 const statuses = [
@@ -77,6 +84,39 @@ const statuses = [
   TaskStatus.IN_REVIEW,
   TaskStatus.DONE,
 ];
+const DroppableTableBody = ({ ...props }) => {
+  return (
+    <Droppable droppableId="sub-tasks">
+      {(provided) => (
+        <tbody ref={provided.innerRef} {...props} {...provided.droppableProps}>
+          {props.children}
+          {provided.placeholder}
+        </tbody>
+      )}
+    </Droppable>
+  );
+};
+
+const DraggableTableRow = ({ index, ...props }: TableRowComponentProps) => {
+  return (
+    <Draggable
+      key={props["data-row-key"]}
+      draggableId={props["data-row-key"]}
+      index={index}
+    >
+      {(provided) => {
+        return (
+          <tr
+            ref={provided.innerRef}
+            {...props}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          ></tr>
+        );
+      }}
+    </Draggable>
+  );
+};
 
 // Drag and drop table: https://codesandbox.io/s/react-beautiful-dnd-examples-multi-drag-table-with-antd-gptbl
 export const TaskList: FC<Props> = ({
@@ -89,6 +129,7 @@ export const TaskList: FC<Props> = ({
   defaultSortByStatus = false,
   style,
   size,
+  canCreateSubtask,
   onChange,
   onDelete,
   onClick,
@@ -156,9 +197,26 @@ export const TaskList: FC<Props> = ({
       className={size === "small" ? "dewo-table-xs" : "dewo-card-table"}
       pagination={{ hideOnSinglePage: true }}
       rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
-      onRow={(t) => ({
-        onClick: !!onClick ? () => onClick(t) : undefined,
+      onRow={(t, index) => ({
+        index,
+        onClick: !!onClick
+          ? (e) => {
+              eatClick(e);
+              onClick(t);
+            }
+          : undefined,
       })}
+      components={
+        canCreateSubtask
+          ? {
+              body: {
+                wrapper: (val: TableRowComponentProps) =>
+                  DroppableTableBody(val),
+                row: (val: TableRowComponentProps) => DraggableTableRow(val),
+              },
+            }
+          : undefined
+      }
       columns={[
         {
           dataIndex: "status",
@@ -197,6 +255,7 @@ export const TaskList: FC<Props> = ({
           showSorterTooltip: false,
           sorter: (a, b) => a.name.localeCompare(b.name),
           filterIcon: <Icons.SearchOutlined />,
+          className: "w-full",
           onFilter: (value, row) =>
             row.name.toLowerCase().includes((value as string).toLowerCase()),
           render: (name: string, row: TaskListRow) =>

@@ -24,7 +24,7 @@ export const TaskUpdateModal: FC<Props> = ({
   showProjectLink,
   onCancel,
 }) => {
-  const task = useTask(taskId, isSSR ? undefined : "network-only");
+  const task = useTask(taskId, isSSR ? undefined : "cache-and-network");
 
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
 
