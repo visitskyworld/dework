@@ -97,7 +97,11 @@ export class GithubSyncIncomingService {
       .createQueryBuilder()
       .relation("owners")
       .of(task.id)
-      .add(Object.values(users));
+      .add(
+        Object.values(users).filter(
+          (u) => !task.owners.some((o) => o.id === u.id)
+        )
+      );
   }
 
   private async process<T>(
