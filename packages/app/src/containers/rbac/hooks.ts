@@ -50,7 +50,7 @@ export function useFetchFallbackRole(): (
   const [fetchOrganizationRoles] = useLazyQuery<
     GetOrganizationRolesQuery,
     GetOrganizationRolesQueryVariables
-  >(Queries.organizationRoles);
+  >(Queries.organizationRoles, { ssr: false });
   return useCallback(
     async (organizationId) => {
       const res = await fetchOrganizationRoles({

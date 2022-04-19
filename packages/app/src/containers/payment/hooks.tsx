@@ -142,11 +142,11 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const [loadUserAddress] = useLazyQuery<
     UserAddressQuery,
     UserAddressQueryVariables
-  >(Queries.userAddress);
+  >(Queries.userAddress, { ssr: false });
   const [loadProjectPaymentMethods] = useLazyQuery<
     GetProjectPaymentMethodsQuery,
     GetProjectPaymentMethodsQueryVariables
-  >(Queries.projectPaymentMethods);
+  >(Queries.projectPaymentMethods, { ssr: false });
   const [registerTaskPayment] = useMutation<
     CreateTaskPaymentsMutation,
     CreateTaskPaymentsMutationVariables

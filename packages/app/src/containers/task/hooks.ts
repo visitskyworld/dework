@@ -543,7 +543,7 @@ export function useLazyTaskReactionUsers(taskId: string) {
   return useLazyQuery<
     GetTaskReactionUsersQuery,
     GetTaskReactionUsersQueryVariables
-  >(Queries.taskReactionUsers, { variables: { taskId } });
+  >(Queries.taskReactionUsers, { variables: { taskId }, ssr: false });
 }
 
 export function useTasks(
