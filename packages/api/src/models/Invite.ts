@@ -5,8 +5,7 @@ import { Organization } from "./Organization";
 import { Project } from "./Project";
 import { User } from "./User";
 import encoder from "uuid-base62";
-import { ProjectRole } from "./enums/ProjectRole";
-import { OrganizationRole } from "./enums/OrganizationRole";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 @Entity()
 @ObjectType()
@@ -18,10 +17,6 @@ export class Invite extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public organizationId?: string;
-
-  @Column({ enum: OrganizationRole, nullable: true })
-  @Field(() => OrganizationRole, { nullable: true })
-  public organizationRole?: OrganizationRole;
 
   @Field()
   public slug!: string;
@@ -39,9 +34,9 @@ export class Invite extends Audit {
   @Field({ nullable: true })
   public projectId?: string;
 
-  @Column({ enum: ProjectRole, nullable: true })
-  @Field(() => ProjectRole, { nullable: true })
-  public projectRole?: ProjectRole;
+  @Column({ type: "enum", enum: RulePermission })
+  @Field(() => RulePermission)
+  public permission!: RulePermission;
 
   @JoinColumn()
   @ManyToOne(() => User)

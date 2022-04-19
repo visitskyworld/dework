@@ -1,18 +1,10 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "../Audit";
+import { RulePermission } from "../enums/RulePermission";
 import { Project } from "../Project";
 import { Task } from "../Task";
 import { Role } from "./Role";
-
-export enum RulePermission {
-  MANAGE_ORGANIZATION = "MANAGE_ORGANIZATION",
-  MANAGE_PROJECTS = "MANAGE_PROJECTS",
-  MANAGE_TASKS = "MANAGE_TASKS",
-  VIEW_PROJECTS = "VIEW_PROJECTS",
-}
-
-registerEnumType(RulePermission, { name: "RulePermission" });
 
 @Entity()
 @ObjectType()

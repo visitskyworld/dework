@@ -7,7 +7,7 @@ import { INestApplication } from "@nestjs/common";
 import supertest from "supertest";
 import moment from "moment";
 import { Coordinape } from "../coordinape.types";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 describe("CoordinapeController", () => {
   describe("integrations/coordinape", () => {

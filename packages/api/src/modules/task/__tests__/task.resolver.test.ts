@@ -1,5 +1,5 @@
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";

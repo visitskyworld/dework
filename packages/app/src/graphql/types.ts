@@ -2624,44 +2624,21 @@ export interface DeleteProjectTokenGateMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateOrganizationInviteMutation
+// GraphQL mutation operation: CreateInviteMutation
 // ====================================================
 
-export interface CreateOrganizationInviteMutation_invite {
+export interface CreateInviteMutation_invite {
   __typename: "Invite";
   id: Scalar.UUID;
   permalink: string;
 }
 
-export interface CreateOrganizationInviteMutation {
-  invite: CreateOrganizationInviteMutation_invite;
+export interface CreateInviteMutation {
+  invite: CreateInviteMutation_invite;
 }
 
-export interface CreateOrganizationInviteMutationVariables {
-  input: OrganizationInviteInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: CreateProjectInviteMutation
-// ====================================================
-
-export interface CreateProjectInviteMutation_invite {
-  __typename: "Invite";
-  id: Scalar.UUID;
-  permalink: string;
-}
-
-export interface CreateProjectInviteMutation {
-  invite: CreateProjectInviteMutation_invite;
-}
-
-export interface CreateProjectInviteMutationVariables {
-  input: ProjectInviteInput;
+export interface CreateInviteMutationVariables {
+  input: CreateInviteInput;
 }
 
 /* tslint:disable */
@@ -7539,7 +7516,7 @@ export interface GetInviteQuery_invite {
   inviter: GetInviteQuery_invite_inviter;
   organization: GetInviteQuery_invite_organization | null;
   project: GetInviteQuery_invite_project | null;
-  projectRole: ProjectRole | null;
+  permission: RulePermission;
 }
 
 export interface GetInviteQuery {
@@ -9461,7 +9438,7 @@ export interface Invite {
   inviter: Invite_inviter;
   organization: Invite_organization | null;
   project: Invite_project | null;
-  projectRole: ProjectRole | null;
+  permission: RulePermission;
 }
 
 /* tslint:disable */
@@ -11171,6 +11148,12 @@ export interface CreateHiroThreepidInput {
   testnetAddress: string;
 }
 
+export interface CreateInviteInput {
+  organizationId?: Scalar.UUID | null;
+  projectId?: Scalar.UUID | null;
+  permission: RulePermission;
+}
+
 export interface CreateMetamaskThreepidInput {
   message: string;
   signature: string;
@@ -11329,15 +11312,6 @@ export interface GetTasksInput {
   userId?: Scalar.UUID | null;
   ids?: Scalar.UUID[] | null;
   rewardNotNull?: boolean | null;
-}
-
-export interface OrganizationInviteInput {
-  organizationId: Scalar.UUID;
-}
-
-export interface ProjectInviteInput {
-  projectId: Scalar.UUID;
-  role: ProjectRole;
 }
 
 export interface ProjectOptionsInput {

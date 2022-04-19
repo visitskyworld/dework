@@ -7,14 +7,18 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useCreateProjectInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useProject } from "../project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ProjectRole, RoleSource } from "@dewo/app/graphql/types";
+import {
+  ProjectRole,
+  RoleSource,
+  RulePermission,
+} from "@dewo/app/graphql/types";
 import { projectRoleDescription } from "../project/settings/strings";
 import Link from "next/link";
 import { useOrganizationRoles } from "../rbac/hooks";
+import { useCreateInvite } from "./hooks";
 
 interface Props {
   projectId: string;
@@ -29,13 +33,13 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
-  const createProjectInvite = useCreateProjectInvite();
+  const createInvite = useCreateInvite();
   const inviteToProject = useCallback(
-    async (role: ProjectRole) => {
+    async (permission: RulePermission) => {
       try {
         setLoading(true);
-        const inviteLink = await createProjectInvite({
-          role,
+        const inviteLink = await createInvite({
+          permission,
           projectId: project!.id,
         });
         copyToClipboardAndShowToast(inviteLink);
@@ -43,14 +47,14 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
         setLoading(false);
       }
     },
-    [createProjectInvite, copyToClipboardAndShowToast, project]
+    [createInvite, copyToClipboardAndShowToast, project]
   );
   const inviteProjectContributor = useCallback(
-    () => inviteToProject(ProjectRole.CONTRIBUTOR),
+    () => inviteToProject(RulePermission.VIEW_PROJECTS),
     [inviteToProject]
   );
   const inviteProjectAdmin = useCallback(
-    () => inviteToProject(ProjectRole.ADMIN),
+    () => inviteToProject(RulePermission.MANAGE_PROJECTS),
     [inviteToProject]
   );
 

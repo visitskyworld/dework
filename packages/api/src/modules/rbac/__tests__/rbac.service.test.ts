@@ -1,5 +1,5 @@
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { Organization } from "@dewo/api/models/Organization";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";

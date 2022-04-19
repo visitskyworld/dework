@@ -27,7 +27,8 @@ import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
-import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
+import { Rule } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 
 @Injectable()

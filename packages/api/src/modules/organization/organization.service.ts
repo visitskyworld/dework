@@ -12,7 +12,7 @@ import slugify from "slugify";
 import { IsNull, Raw, Repository } from "typeorm";
 import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { RbacService } from "../rbac/rbac.service";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 
 @Injectable()

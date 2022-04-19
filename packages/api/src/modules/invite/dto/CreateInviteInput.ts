@@ -3,19 +3,13 @@ import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class CreateRuleInput {
-  @Field(() => RulePermission)
-  public permission!: RulePermission;
-
-  @Field({ nullable: true })
-  public inverted?: boolean;
-
-  @Field(() => GraphQLUUID)
-  public roleId!: string;
-
+export class CreateInviteInput {
   @Field(() => GraphQLUUID, { nullable: true })
-  public taskId?: string;
+  public organizationId?: string;
 
   @Field(() => GraphQLUUID, { nullable: true })
   public projectId?: string;
+
+  @Field(() => RulePermission)
+  public permission!: RulePermission;
 }

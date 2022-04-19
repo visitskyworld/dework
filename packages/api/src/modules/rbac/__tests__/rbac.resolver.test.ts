@@ -1,4 +1,4 @@
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";

@@ -17,7 +17,7 @@ import {
 } from "@dewo/api/models/Threepid";
 import { TrelloBoard } from "./dto/TrelloBoard";
 import { RbacService } from "../../rbac/rbac.service";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { statusMappingGuesses } from "@dewo/api/utils/statusMappingGuesses";
 
 @Injectable()

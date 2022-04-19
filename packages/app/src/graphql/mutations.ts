@@ -448,18 +448,9 @@ export const deleteProjectTokenGate = gql`
   ${Fragments.projectTokenGate}
 `;
 
-export const createOrganizationInvite = gql`
-  mutation CreateOrganizationInviteMutation($input: OrganizationInviteInput!) {
-    invite: createOrganizationInvite(input: $input) {
-      id
-      permalink
-    }
-  }
-`;
-
-export const createProjectInvite = gql`
-  mutation CreateProjectInviteMutation($input: ProjectInviteInput!) {
-    invite: createProjectInvite(input: $input) {
+export const createInvite = gql`
+  mutation CreateInviteMutation($input: CreateInviteInput!) {
+    invite: createInvite(input: $input) {
       id
       permalink
     }

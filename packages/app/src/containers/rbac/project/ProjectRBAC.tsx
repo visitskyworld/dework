@@ -7,7 +7,7 @@ import { useOrganizationRoles } from "../hooks";
 import { RBACPermissionForm } from "../RBACPermissionForm";
 import { ProjectPrivatePermissionForm } from "./ProjectPrivatePermissionForm";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
-import { useCreateProjectInvite } from "../../invite/hooks";
+import { useCreateInvite } from "../../invite/hooks";
 import styles from "../CardRBAC.module.less";
 
 interface Props {
@@ -20,13 +20,13 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
-  const createProjectInvite = useCreateProjectInvite();
+  const createInvite = useCreateInvite();
   const inviteToProject = useCallback(
-    async (role: ProjectRole) => {
-      const inviteLink = await createProjectInvite({ role, projectId });
+    async (permission: RulePermission) => {
+      const inviteLink = await createInvite({ permission, projectId });
       copyToClipboardAndShowToast(inviteLink);
     },
-    [createProjectInvite, copyToClipboardAndShowToast, projectId]
+    [createInvite, copyToClipboardAndShowToast, projectId]
   );
 
   if (!roles) return <Spin />;
@@ -50,7 +50,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           roles={roles}
           projectId={projectId}
           organizationId={organizationId}
-          onInviteUser={() => inviteToProject(ProjectRole.ADMIN)}
+          onInviteUser={() => inviteToProject(RulePermission.MANAGE_PROJECTS)}
         />
       </Card>
       <Divider />
@@ -85,6 +85,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           roles={roles}
           projectId={projectId}
           organizationId={organizationId}
+          onInviteUser={() => inviteToProject(RulePermission.MANAGE_TASKS)}
         />
       </Card>
       <Divider />
@@ -105,7 +106,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
         <ProjectPrivatePermissionForm
           projectId={projectId}
           organizationId={organizationId}
-          onInviteUser={() => inviteToProject(ProjectRole.CONTRIBUTOR)}
+          onInviteUser={() => inviteToProject(RulePermission.VIEW_PROJECTS)}
         />
       </Card>
     </>

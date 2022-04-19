@@ -6,7 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        run: yarn && yarn app patch-package && yarn api patch-package
+        run: yarn
+      - name: Patch Package
+        run: yarn patch-package --patch-dir packages/api/patches && yarn patch-package --patch-dir packages/app/patches
       - name: Run ESLint
         run: yarn lint
       - name: Compile Typescript

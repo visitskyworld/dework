@@ -6,7 +6,7 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import Bluebird from "bluebird";
 import faker from "faker";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 describe("OrganizationResolver", () => {
   let app: INestApplication;

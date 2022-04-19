@@ -8,12 +8,19 @@ import { useAcceptInvite, useInvite } from "./hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useToggle } from "@dewo/app/util/hooks";
 import { LoginModal } from "../auth/LoginModal";
-import { ProjectRole, UserDetails } from "@dewo/app/graphql/types";
+import { RulePermission, UserDetails } from "@dewo/app/graphql/types";
 import { hasDiscordThreepid } from "@dewo/app/src/containers/auth/hooks";
 import { JoinTokenGatedProjectsModal } from "./JoinTokenGatedProjectsModal";
 import { ConnectDiscordModal } from "../auth/ConnectDiscordModal";
 import { InviteMessage } from "./InviteMessage";
 import { usePrompt } from "../prompts/hooks";
+
+const permissionToVerb: Record<RulePermission, string> = {
+  [RulePermission.VIEW_PROJECTS]: "view",
+  [RulePermission.MANAGE_TASKS]: "contribute to",
+  [RulePermission.MANAGE_PROJECTS]: "manage",
+  [RulePermission.MANAGE_ORGANIZATION]: "manage",
+};
 
 export const InviteMessageToast: FC = () => {
   const showingPrompt = !!usePrompt().step;
@@ -66,19 +73,17 @@ export const InviteMessageToast: FC = () => {
       return (
         <InviteMessage
           inviter={inviter}
-          permission="manage"
+          permission={permissionToVerb[invite.permission]}
           to={invite.organization.name}
         />
       );
     }
 
-    if (!!invite.project && !!invite.projectRole) {
+    if (!!invite.project && !!invite.permission) {
       return (
         <InviteMessage
           inviter={inviter}
-          permission={
-            invite.projectRole === ProjectRole.ADMIN ? "manage" : "view"
-          }
+          permission={permissionToVerb[invite.permission]}
           to={invite.project.name}
         />
       );

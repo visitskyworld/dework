@@ -13,12 +13,11 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import GraphQLUUID from "graphql-type-uuid";
 import { InviteService } from "./invite.service";
 import { Invite } from "@dewo/api/models/Invite";
-import { OrganizationInviteInput } from "./dto/OrganizationInviteInput";
-import { ProjectInviteInput } from "./dto/ProjectInviteInput";
 import { ProjectService } from "../project/project.service";
 import { PermalinkService } from "../permalink/permalink.service";
 import { RoleGuard } from "../rbac/rbac.guard";
 import { Role } from "@dewo/api/models/rbac/Role";
+import { CreateInviteInput } from "./dto/CreateInviteInput";
 
 @Resolver(() => Invite)
 @Injectable()
@@ -43,50 +42,31 @@ export class InviteResolver {
       action: "create",
       subject: Role,
       inject: [ProjectService],
-      getOrganizationId: (
+      getOrganizationId: async (
         _subject,
-        params: { input: OrganizationInviteInput }
-      ) => params.input.organizationId,
-    })
-  )
-  public async createOrganizationInvite(
-    @Context("user") user: User,
-    @Args("input") input: OrganizationInviteInput
-  ): Promise<Invite> {
-    return this.inviteService.create(
-      { organizationId: input.organizationId },
-      user
-    );
-  }
-
-  @Mutation(() => Invite)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "create",
-      subject: Role,
-      inject: [ProjectService],
-      async getOrganizationId(
-        _subject,
-        params: { input: ProjectInviteInput },
+        params: { input: CreateInviteInput },
         service
-      ) {
-        const project = await service.findById(params.input.projectId);
-        return project?.organizationId;
+      ) => {
+        if (!!params.input.organizationId) {
+          return params.input.organizationId;
+        }
+
+        if (!!params.input.projectId) {
+          const project = await service.findById(params.input.projectId);
+          return project?.organizationId;
+        }
+
+        throw new Error(
+          'Invite must have either "organizationId" or "projectId"'
+        );
       },
     })
   )
-  public async createProjectInvite(
+  public async createInvite(
     @Context("user") user: User,
-    @Args("input") input: ProjectInviteInput
+    @Args("input") input: CreateInviteInput
   ): Promise<Invite> {
-    return this.inviteService.create(
-      {
-        projectId: input.projectId,
-        projectRole: input.role,
-      },
-      user
-    );
+    return this.inviteService.create(input, user);
   }
 
   @Mutation(() => Invite)

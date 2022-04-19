@@ -1,10 +1,11 @@
 import { Button, Dropdown, Menu } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { CSSProperties, FC, useCallback } from "react";
-import { useCreateOrganizationInvite } from "./hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useOrganizationDetails } from "../organization/hooks";
+import { RulePermission } from "@dewo/app/graphql/types";
+import { useCreateInvite } from "./hooks";
 
 interface Props {
   organizationId: string;
@@ -20,13 +21,14 @@ export const OrganizationInviteButton: FC<Props> = ({
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
-  const createOrganizationInvite = useCreateOrganizationInvite();
+  const createInvite = useCreateInvite();
   const inviteOrganizationAdmin = useCallback(async () => {
-    const inviteLink = await createOrganizationInvite({
+    const inviteLink = await createInvite({
       organizationId: organization!.id,
+      permission: RulePermission.MANAGE_ORGANIZATION,
     });
     copyToClipboardAndShowToast(inviteLink);
-  }, [createOrganizationInvite, copyToClipboardAndShowToast, organization]);
+  }, [createInvite, copyToClipboardAndShowToast, organization]);
   const inviteToTokenGatedProjects = useCallback(async () => {
     copyToClipboardAndShowToast(organization!.permalink);
   }, [copyToClipboardAndShowToast, organization]);

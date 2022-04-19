@@ -236,7 +236,7 @@ export const invite = gql`
         ...ProjectTokenGate
       }
     }
-    projectRole
+    permission
   }
 
   ${user}

@@ -1,4 +1,3 @@
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -6,6 +5,7 @@ import { InviteRequests } from "@dewo/api/testing/requests/invite.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { Project } from "@dewo/api/models/Project";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 describe("InviteResolver", () => {
   let app: INestApplication;
@@ -21,82 +21,90 @@ describe("InviteResolver", () => {
   afterAll(() => app.close());
 
   describe("Mutations", () => {
-    describe("createOrganizationInvite", () => {
-      it("should succeed for owner", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization({}, user);
-        const res = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.createOrganizationInvite({
-            organizationId: organization.id,
-          }),
+    describe("createInvite", () => {
+      describe("organization", () => {
+        it("should succeed for owner", async () => {
+          const user = await fixtures.createUser();
+          const organization = await fixtures.createOrganization({}, user);
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: InviteRequests.createInvite({
+              organizationId: organization.id,
+              permission: RulePermission.MANAGE_ORGANIZATION,
+            }),
+          });
+
+          expect(res.body.data?.invite).toBeDefined();
+          expect(res.body.data?.invite.organizationId).toEqual(organization.id);
         });
 
-        expect(res.body.data?.invite).toBeDefined();
-        expect(res.body.data?.invite.organizationId).toEqual(organization.id);
+        it("should fail for random user", async () => {
+          const user = await fixtures.createUser();
+          const organization = await fixtures.createOrganization();
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: InviteRequests.createInvite({
+              organizationId: organization.id,
+              permission: RulePermission.MANAGE_ORGANIZATION,
+            }),
+          });
+
+          client.expectGqlError(res, HttpStatus.FORBIDDEN);
+        });
       });
 
-      it("should fail for random user", async () => {
-        const user = await fixtures.createUser();
-        const organization = await fixtures.createOrganization();
-        const res = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.createOrganizationInvite({
-            organizationId: organization.id,
-          }),
+      describe("project", () => {
+        it("owner can invite VIEW_PROJECTS", async () => {
+          const { user, project } = await fixtures.createUserOrgProject();
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: InviteRequests.createInvite({
+              projectId: project.id,
+              permission: RulePermission.VIEW_PROJECTS,
+            }),
+          });
+
+          expect(res.body.data.invite).toEqual(
+            expect.objectContaining({
+              permission: RulePermission.VIEW_PROJECTS,
+            })
+          );
         });
 
-        client.expectGqlError(res, HttpStatus.FORBIDDEN);
-      });
-    });
+        it("owner can invite MANAGE_PROJECTS", async () => {
+          const { user, project } = await fixtures.createUserOrgProject();
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: InviteRequests.createInvite({
+              projectId: project.id,
+              permission: RulePermission.MANAGE_PROJECTS,
+            }),
+          });
 
-    describe("createProjectInvite", () => {
-      it("owner can invite CONTRIBUTOR", async () => {
-        const { user, project } = await fixtures.createUserOrgProject();
-        const res = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.createProjectInvite({
-            projectId: project.id,
-            role: ProjectRole.CONTRIBUTOR,
-          }),
+          expect(res.body.data.invite).toEqual(
+            expect.objectContaining({
+              permission: RulePermission.MANAGE_PROJECTS,
+            })
+          );
         });
 
-        expect(res.body.data.invite).toEqual(
-          expect.objectContaining({ projectRole: ProjectRole.CONTRIBUTOR })
-        );
-      });
-
-      it("owner can invite ADMIN", async () => {
-        const { user, project } = await fixtures.createUserOrgProject();
-        const res = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.createProjectInvite({
-            projectId: project.id,
-            role: ProjectRole.ADMIN,
-          }),
+        it("org member cannot invite VIEW_PROJECTS", async () => {
+          const user = await fixtures.createUser();
+          const project = await fixtures.createProject();
+          const res = await client.request({
+            app,
+            auth: fixtures.createAuthToken(user),
+            body: InviteRequests.createInvite({
+              projectId: project.id,
+              permission: RulePermission.VIEW_PROJECTS,
+            }),
+          });
+          client.expectGqlError(res, HttpStatus.FORBIDDEN);
         });
-
-        expect(res.body.data.invite).toEqual(
-          expect.objectContaining({ projectRole: ProjectRole.ADMIN })
-        );
-      });
-
-      it("org member cannot invite CONTRIBUTOR", async () => {
-        const user = await fixtures.createUser();
-        const project = await fixtures.createProject();
-        const res = await client.request({
-          app,
-          auth: fixtures.createAuthToken(user),
-          body: InviteRequests.createProjectInvite({
-            projectId: project.id,
-            role: ProjectRole.ADMIN,
-          }),
-        });
-        client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
     });
 
@@ -107,7 +115,10 @@ describe("InviteResolver", () => {
           const invited = await fixtures.createUser();
           const organization = await fixtures.createOrganization({}, inviter);
           const invite = await fixtures.createInvite(
-            { organizationId: organization.id },
+            {
+              organizationId: organization.id,
+              permission: RulePermission.MANAGE_ORGANIZATION,
+            },
             inviter
           );
 
@@ -142,7 +153,10 @@ describe("InviteResolver", () => {
           const invited = await fixtures.createUser();
 
           const invite = await fixtures.createInvite(
-            { projectId: project.id, projectRole: ProjectRole.CONTRIBUTOR },
+            {
+              projectId: project.id,
+              permission: RulePermission.VIEW_PROJECTS,
+            },
             inviter
           );
 
@@ -176,7 +190,10 @@ describe("InviteResolver", () => {
           const invited = await fixtures.createUser();
 
           const invite = await fixtures.createInvite(
-            { projectId: project.id, projectRole: ProjectRole.ADMIN },
+            {
+              projectId: project.id,
+              permission: RulePermission.MANAGE_PROJECTS,
+            },
             inviter
           );
 

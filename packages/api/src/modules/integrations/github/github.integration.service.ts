@@ -28,7 +28,7 @@ import { GithubIssue } from "@dewo/api/models/GithubIssue";
 import { Connection } from "typeorm";
 import { InjectConnection } from "@nestjs/typeorm";
 import { RbacService } from "../../rbac/rbac.service";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 @Injectable()
 export class GithubIntegrationService {

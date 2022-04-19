@@ -55,8 +55,9 @@ import { TaskApplication } from "../models/TaskApplication";
 
 import { RbacService } from "../modules/rbac/rbac.service";
 import { Role } from "../models/rbac/Role";
-import { Rule, RulePermission } from "../models/rbac/Rule";
+import { Rule } from "../models/rbac/Rule";
 import { RbacModule } from "../modules/rbac/rbac.module";
+import { RulePermission } from "../models/enums/RulePermission";
 
 @Injectable()
 export class Fixtures {

@@ -12,8 +12,8 @@ import faker from "faker";
 import { User } from "@dewo/api/models/User";
 import { EntityDetailType } from "@dewo/api/models/EntityDetail";
 import { SetUserDetailInput } from "../dto/SetUserDetailInput";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
 import { RbacService } from "../../rbac/rbac.service";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 describe("UserResolver", () => {
   let app: INestApplication;

@@ -36,7 +36,7 @@ import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { RbacService } from "../rbac/rbac.service";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";

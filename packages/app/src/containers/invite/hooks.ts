@@ -7,12 +7,9 @@ import {
   GetInviteQuery,
   GetInviteQueryVariables,
   Invite,
-  OrganizationInviteInput,
-  CreateOrganizationInviteMutation,
-  CreateOrganizationInviteMutationVariables,
-  ProjectInviteInput,
-  CreateProjectInviteMutation,
-  CreateProjectInviteMutationVariables,
+  CreateInviteInput,
+  CreateInviteMutation,
+  CreateInviteMutationVariables,
   JoinProjectWithTokenMutation,
   JoinProjectWithTokenMutationVariables,
   Project,
@@ -30,33 +27,13 @@ export function useInvite(inviteId: string | undefined): Invite | undefined {
   return data?.invite ?? undefined;
 }
 
-export function useCreateOrganizationInvite(): (
-  input: OrganizationInviteInput
+export function useCreateInvite(): (
+  input: CreateInviteInput
 ) => Promise<string> {
   const [createInvite] = useMutation<
-    CreateOrganizationInviteMutation,
-    CreateOrganizationInviteMutationVariables
-  >(Mutations.createOrganizationInvite);
-  return useCallback(
-    async (input) => {
-      const res = await createInvite({
-        variables: { input },
-      });
-
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.invite.permalink;
-    },
-    [createInvite]
-  );
-}
-
-export function useCreateProjectInvite(): (
-  input: ProjectInviteInput
-) => Promise<string> {
-  const [createInvite] = useMutation<
-    CreateProjectInviteMutation,
-    CreateProjectInviteMutationVariables
-  >(Mutations.createProjectInvite);
+    CreateInviteMutation,
+    CreateInviteMutationVariables
+  >(Mutations.createInvite);
   return useCallback(
     async (input) => {
       const res = await createInvite({

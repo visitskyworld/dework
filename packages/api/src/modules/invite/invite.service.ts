@@ -1,7 +1,5 @@
-import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { Invite } from "@dewo/api/models/Invite";
-import { Project } from "@dewo/api/models/Project";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { User } from "@dewo/api/models/User";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -28,7 +26,7 @@ export class InviteService {
   }
 
   public async delete(
-    partial: Pick<Invite, "projectId" | "projectRole">
+    partial: Pick<Invite, "projectId" | "permission">
   ): Promise<void> {
     await this.inviteRepo.delete(partial);
   }
@@ -37,9 +35,14 @@ export class InviteService {
     const invite = await this.inviteRepo.findOne(inviteId);
     if (!invite) throw new NotFoundException();
 
-    if (!!invite.organizationId) {
+    const permissions = this.getRulesByInvitePermission(invite.permission);
+    if (!!permissions) {
+      const organizationId =
+        invite.organizationId ?? (await invite.project)?.organizationId;
+      if (!organizationId) throw new NotFoundException();
+
       const fallbackRole = await this.rbacService.getFallbackRole(
-        invite.organizationId
+        organizationId
       );
 
       if (!!fallbackRole) {
@@ -48,52 +51,47 @@ export class InviteService {
 
       const role = await this.rbacService.getOrCreatePersonalRole(
         user.id,
-        invite.organizationId
-      );
-      await this.rbacService.createRules(
-        [
-          RulePermission.MANAGE_ORGANIZATION,
-          RulePermission.MANAGE_PROJECTS,
-        ].map((permission) => ({ roleId: role.id, permission }))
-      );
-    }
-
-    if (!!invite.projectId && !!invite.projectRole) {
-      const project = (await invite.project) as Project;
-      const fallbackRole = await this.rbacService.getFallbackRole(
-        project.organizationId
+        organizationId
       );
 
-      if (!!fallbackRole) {
-        await this.rbacService.addRoles(user.id, [fallbackRole.id]);
-      }
-
-      const role = await this.rbacService.getOrCreatePersonalRole(
-        user.id,
-        project.organizationId
-      );
-      if (invite.projectRole === ProjectRole.ADMIN) {
+      if (!!invite.organizationId) {
         await this.rbacService.createRules(
-          [RulePermission.MANAGE_PROJECTS, RulePermission.VIEW_PROJECTS].map(
-            (permission) => ({
-              roleId: role.id,
-              permission,
-              projectId: project.id,
-            })
-          )
+          permissions.map((permission) => ({ roleId: role.id, permission }))
         );
-      } else if (invite.projectRole === ProjectRole.CONTRIBUTOR) {
+      }
+
+      if (!!invite.projectId) {
         await this.rbacService.createRules(
-          [RulePermission.VIEW_PROJECTS].map((permission) => ({
+          permissions.map((permission) => ({
             roleId: role.id,
             permission,
-            projectId: project.id,
+            projectId: invite.projectId,
           }))
         );
       }
     }
 
     return invite;
+  }
+
+  public getRulesByInvitePermission(
+    permission: RulePermission
+  ): RulePermission[] | undefined {
+    switch (permission) {
+      case RulePermission.MANAGE_ORGANIZATION:
+        return [
+          RulePermission.MANAGE_ORGANIZATION,
+          RulePermission.MANAGE_PROJECTS,
+        ];
+      case RulePermission.MANAGE_PROJECTS:
+        return [RulePermission.MANAGE_PROJECTS, RulePermission.VIEW_PROJECTS];
+      case RulePermission.MANAGE_TASKS:
+        return [RulePermission.MANAGE_TASKS, RulePermission.VIEW_PROJECTS];
+      case RulePermission.VIEW_PROJECTS:
+        return [RulePermission.VIEW_PROJECTS];
+      default:
+        return undefined;
+    }
   }
 
   public async findById(id: string): Promise<Invite | undefined> {

@@ -1,5 +1,5 @@
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
-import { RulePermission } from "@dewo/api/models/rbac/Rule";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";

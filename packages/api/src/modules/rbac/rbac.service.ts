@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindConditions, In, Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
-import { Rule, RulePermission } from "@dewo/api/models/rbac/Rule";
+import { Rule } from "@dewo/api/models/rbac/Rule";
 import {
   Ability,
   AbilityBuilder,
@@ -25,6 +25,7 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../app/config";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 export type Action =
   | "create"
@@ -130,6 +131,7 @@ export class RbacService {
   public async createRules(
     partial: AtLeast<Rule, "permission" | "roleId">[]
   ): Promise<Rule[]> {
+    if (!partial.length) return [];
     const currentRules = await this.ruleRepo.find({
       roleId: In(partial.map((x) => x.roleId)),
     });
