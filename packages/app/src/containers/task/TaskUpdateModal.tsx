@@ -10,6 +10,8 @@ import { TaskSeo } from "../seo/TaskSeo";
 import { TaskFormValues } from "./form/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { toTaskFormValues } from "./form/util";
+import { NotFoundResourceModal } from "@dewo/app/components/NotFoundResourceModal";
+import { useCloseTaskDetails } from "@dewo/app/util/navigation";
 
 interface Props {
   taskId: string;
@@ -25,10 +27,9 @@ export const TaskUpdateModal: FC<Props> = ({
   onCancel,
 }) => {
   const task = useTask(taskId, isSSR ? undefined : "cache-and-network");
-
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
-
   const taskRoles = useTaskRoles(task);
+  const closeTaskDetails = useCloseTaskDetails();
   const initialValues = useMemo(
     (): TaskFormValues | undefined =>
       !!task && !!taskRoles ? toTaskFormValues(task, taskRoles) : undefined,
@@ -55,6 +56,14 @@ export const TaskUpdateModal: FC<Props> = ({
         </Skeleton>
       </Modal>
       {visible && !!task && <TaskSeo task={task} />}
+      {visible && !task && (
+        <NotFoundResourceModal
+          visible={visible}
+          message={"This task does not exist or has been deleted."}
+          onClose={onCancel}
+          onGoBack={closeTaskDetails}
+        />
+      )}
     </>
   );
 };

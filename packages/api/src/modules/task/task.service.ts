@@ -198,7 +198,7 @@ export class TaskService {
   }
 
   public async findById(id: string): Promise<Task | undefined> {
-    return this.taskRepo.findOne(id);
+    return this.taskRepo.findOne({ id, deletedAt: IsNull() });
   }
 
   public async findWithRelations({
