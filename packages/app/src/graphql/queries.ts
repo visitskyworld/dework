@@ -177,6 +177,16 @@ export const popularOrganizations = gql`
   ${Fragments.user}
 `;
 
+export const organizationsUserFollowsOnDiscord = gql`
+  query GetOrganizationsUserFollowsOnDiscordQuery {
+    organizations: getOrganizationsUserFollowsOnDiscord {
+      ...Organization
+    }
+  }
+
+  ${Fragments.organization}
+`;
+
 export const organizationTags = gql`
   query GetOrganizationTagsQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {

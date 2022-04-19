@@ -5713,6 +5713,29 @@ export interface GetPopularOrganizationsQuery {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationsUserFollowsOnDiscordQuery
+// ====================================================
+
+export interface GetOrganizationsUserFollowsOnDiscordQuery_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface GetOrganizationsUserFollowsOnDiscordQuery {
+  organizations: GetOrganizationsUserFollowsOnDiscordQuery_organizations[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetOrganizationTagsQuery
 // ====================================================
 

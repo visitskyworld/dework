@@ -1,48 +1,60 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, CSSProperties, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { Button } from "antd";
-import { useOrganization, useOrganizationUsers } from "../hooks";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { LoginButton } from "../../auth/buttons/LoginButton";
 import {
   useFollowOrganization,
   useUnfollowOrganization,
 } from "../../rbac/hooks";
+import { eatClick } from "../../../util/eatClick";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 interface Props {
   showUnfollow?: boolean;
   organizationId: string;
+  style?: CSSProperties;
 }
 
 export const FollowOrganizationButton: FC<Props> = ({
   organizationId,
   showUnfollow = false,
+  style,
 }) => {
   const followOrganization = useFollowOrganization(organizationId);
   const [handleFollow, loadingFollow] = useRunningCallback(followOrganization, [
     followOrganization,
   ]);
+  const handleFollowClick = useCallback(
+    (event: any) => {
+      eatClick(event);
+      handleFollow();
+    },
+    [handleFollow]
+  );
   const unfollowOrganization = useUnfollowOrganization(organizationId);
   const [handleUnfollow, loadingUnfollow] = useRunningCallback(
     unfollowOrganization,
     [unfollowOrganization]
   );
-
-  const { user } = useAuthContext();
-  const organization = useOrganization(organizationId);
-  const { users } = useOrganizationUsers(organizationId);
-
-  const isFollowing = useMemo(
-    () => !!users?.some((u) => u.id === user?.id),
-    [users, user]
+  const handleUnfollowClick = useCallback(
+    (event: any) => {
+      eatClick(event);
+      handleUnfollow();
+    },
+    [handleUnfollow]
   );
 
-  if (!users) return null;
+  const { user } = useAuthContext();
+  const isFollowing = useMemo(
+    () => user?.organizations.some((o) => o.id === organizationId),
+    [user?.organizations, organizationId]
+  );
+
   if (!user) {
     return (
       <LoginButton type="ghost" icon={<Icons.StarOutlined />}>
-        Follow {organization?.name}
+        Follow
       </LoginButton>
     );
   }
@@ -53,9 +65,10 @@ export const FollowOrganizationButton: FC<Props> = ({
         type="ghost"
         loading={loadingFollow}
         icon={<Icons.StarOutlined />}
-        onClick={handleFollow}
+        style={style}
+        onClick={handleFollowClick}
       >
-        Follow {organization?.name}
+        Follow
       </Button>
     );
   } else if (showUnfollow) {
@@ -65,9 +78,10 @@ export const FollowOrganizationButton: FC<Props> = ({
         name="Unfollow organization"
         loading={loadingUnfollow}
         icon={<Icons.MinusCircleOutlined />}
-        onClick={handleUnfollow}
+        style={style}
+        onClick={handleUnfollowClick}
       >
-        Unfollow {organization?.name}
+        Unfollow
       </Button>
     );
   }

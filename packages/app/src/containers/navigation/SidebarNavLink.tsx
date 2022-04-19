@@ -1,8 +1,11 @@
 import { useRouter } from "next/router";
+import * as URL from "url";
 import Link, { LinkProps } from "next/link";
 import React, { FC, useMemo } from "react";
+import { isSSR } from "@dewo/app/util/isSSR";
 
 interface Props extends LinkProps {
+  href: string;
   exact?: boolean;
   clickable?: boolean;
   className?: string;
@@ -16,10 +19,12 @@ export const SidebarNavLink: FC<Props> = ({
   ...restProps
 }) => {
   const { asPath } = useRouter();
-  const isActive = useMemo(
-    () => (exact ? asPath === href : asPath.startsWith(href as string)),
-    [exact, asPath, href]
-  );
+  const isActive = useMemo(() => {
+    if (isSSR) return false;
+    const pathname = href.startsWith("/") ? href : URL.parse(href).pathname;
+    if (!pathname) return false;
+    return exact ? pathname === asPath : asPath.startsWith(pathname);
+  }, [exact, asPath, href]);
 
   const className = [restProps.className ?? "", isActive ? "active" : ""].join(
     " "

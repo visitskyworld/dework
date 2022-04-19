@@ -1,5 +1,6 @@
 import {
   InternalRefetchQueriesInclude,
+  useLazyQuery,
   useMutation,
   useQuery,
 } from "@apollo/client";
@@ -29,7 +30,6 @@ import {
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { useCallback, useMemo } from "react";
-import { useOrganizationUsers } from "../organization/hooks";
 
 export function useOrganizationRoles(
   organizationId: string | undefined
@@ -42,6 +42,24 @@ export function useOrganizationRoles(
     skip: !organizationId,
   });
   return data?.organization?.roles;
+}
+
+export function useFetchFallbackRole(): (
+  organizationId: string
+) => Promise<Role | undefined> {
+  const [fetchOrganizationRoles] = useLazyQuery<
+    GetOrganizationRolesQuery,
+    GetOrganizationRolesQueryVariables
+  >(Queries.organizationRoles);
+  return useCallback(
+    async (organizationId) => {
+      const res = await fetchOrganizationRoles({
+        variables: { organizationId },
+      });
+      return res.data?.organization.roles.find((r) => r.fallback);
+    },
+    [fetchOrganizationRoles]
+  );
 }
 
 export function useIsProjectPrivate(
@@ -65,7 +83,12 @@ export function useAddRole(): (
   );
   return useCallback(
     async (role, userId) => {
-      const refetchQueries: InternalRefetchQueriesInclude = [];
+      const refetchQueries: InternalRefetchQueriesInclude = [
+        {
+          query: Queries.organizationUsers,
+          variables: { organizationId: role.organizationId },
+        },
+      ];
       if (user?.id === userId) {
         refetchQueries.push({ query: Queries.me });
         refetchQueries.push({
@@ -95,7 +118,12 @@ export function useRemoveRole(): (
   >(Mutations.removeRole);
   return useCallback(
     async (role, userId) => {
-      const refetchQueries: InternalRefetchQueriesInclude = [];
+      const refetchQueries: InternalRefetchQueriesInclude = [
+        {
+          query: Queries.organizationUsers,
+          variables: { organizationId: role.organizationId },
+        },
+      ];
       if (user?.id === userId) {
         refetchQueries.push({ query: Queries.me });
         refetchQueries.push({
@@ -173,17 +201,13 @@ export function useFollowOrganization(
 ): () => Promise<void> {
   const { user } = useAuthContext();
   const addRole = useAddRole();
-
-  const roles = useOrganizationRoles(organizationId);
-  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
-
-  const { refetch: refetchOrganizationUsers } =
-    useOrganizationUsers(organizationId);
+  const fetchFallbackRole = useFetchFallbackRole();
   return useCallback(async () => {
-    if (!fallbackRole || !user) return;
-    await addRole(fallbackRole, user.id);
-    await refetchOrganizationUsers();
-  }, [addRole, refetchOrganizationUsers, user, fallbackRole]);
+    if (!organizationId || !user) return;
+    const role = await fetchFallbackRole(organizationId);
+    if (!role) return;
+    await addRole(role, user.id);
+  }, [addRole, user, fetchFallbackRole, organizationId]);
 }
 
 export function useUnfollowOrganization(
@@ -191,17 +215,13 @@ export function useUnfollowOrganization(
 ): () => Promise<void> {
   const { user } = useAuthContext();
   const removeRole = useRemoveRole();
-
-  const roles = useOrganizationRoles(organizationId);
-  const fallbackRole = useMemo(() => roles?.find((r) => r.fallback), [roles]);
-
-  const { refetch: refetchOrganizationUsers } =
-    useOrganizationUsers(organizationId);
+  const fetchFallbackRole = useFetchFallbackRole();
   return useCallback(async () => {
-    if (!fallbackRole || !user) return;
-    await removeRole(fallbackRole, user.id);
-    await refetchOrganizationUsers();
-  }, [removeRole, refetchOrganizationUsers, user, fallbackRole]);
+    if (!organizationId || !user) return;
+    const role = await fetchFallbackRole(organizationId);
+    if (!role) return;
+    await removeRole(role, user.id);
+  }, [removeRole, user, fetchFallbackRole, organizationId]);
 }
 
 export function useRolesWithAccess(

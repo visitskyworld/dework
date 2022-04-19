@@ -67,6 +67,7 @@ export const Sidebar: FC = () => {
             <SidebarNavLink
               key={organization.id}
               href={organization.permalink}
+              clickable
               className="dewo-sidebar-item"
             >
               <SidebarOrganizationAvatar organization={organization} />
@@ -78,6 +79,16 @@ export const Sidebar: FC = () => {
               <Avatar size={48} icon={<Icons.PlusOutlined />} />
             </CreateOrganizationButton>
           </Tooltip>
+
+          <SidebarNavLink
+            href="/recommended"
+            clickable
+            className="dewo-sidebar-item"
+          >
+            <Button type="text" className="dewo-sidebar-item">
+              <Avatar size={48} icon={<Icons.CompassFilled />} />
+            </Button>
+          </SidebarNavLink>
         </Col>
       </Col>
     </Layout.Sider>
