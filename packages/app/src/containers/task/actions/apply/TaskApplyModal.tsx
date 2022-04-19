@@ -35,7 +35,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const { user } = useAuthContext();
   const router = useRouter();
 
-  const task = useTask(taskId);
+  const { task } = useTask(taskId);
   const { project } = useProject(task?.projectId);
   const organization = useOrganization(project?.organizationId);
   const hasDiscordIntegration = !!useOrganizationIntegrations(

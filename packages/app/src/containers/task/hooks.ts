@@ -1,4 +1,5 @@
 import {
+  ApolloError,
   useApolloClient,
   useLazyQuery,
   useMutation,
@@ -524,15 +525,18 @@ export function useGenerateRandomTagColor(
 export function useTask(
   taskId: string | undefined,
   fetchPolicy?: WatchQueryFetchPolicy
-): GetTaskQuery["task"] | undefined {
-  const { data } = useQuery<GetTaskQuery, GetTaskQueryVariables>(Queries.task, {
-    variables: { taskId: taskId! },
-    skip: !taskId,
-    fetchPolicy,
-  });
+): { task: GetTaskQuery["task"] | undefined; error: ApolloError | undefined } {
+  const { data, error } = useQuery<GetTaskQuery, GetTaskQueryVariables>(
+    Queries.task,
+    {
+      variables: { taskId: taskId! },
+      skip: !taskId,
+      fetchPolicy,
+    }
+  );
   const task = data?.task ?? undefined;
-  if (!task || task.id !== taskId) return undefined;
-  return task;
+  if (!task || task.id !== taskId) return { task: undefined, error };
+  return { task, error };
 }
 
 export function useLazyTaskReactionUsers(taskId: string) {

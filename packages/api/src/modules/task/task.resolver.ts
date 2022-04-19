@@ -467,6 +467,16 @@ export class TaskResolver {
   }
 
   @Query(() => Task)
+  @UseGuards(
+    RoleGuard({
+      action: "read",
+      subject: Project,
+      inject: [TaskService],
+      getSubject: (params: { id: string }, service: TaskService) =>
+        service.findById(params.id).then((t) => t?.project),
+      getOrganizationId: (subject) => subject.organizationId,
+    })
+  )
   public async getTask(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ): Promise<Task | undefined> {

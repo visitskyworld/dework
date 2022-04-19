@@ -60,8 +60,7 @@ function useCurrentOrganizationId(): string | undefined {
   const { organization } = useOrganizationBySlug(organizationSlug);
 
   const taskId = useRouter().query.taskId as string | undefined;
-  const task = useTask(taskId);
-
+  const { task } = useTask(taskId);
   return organization?.id ?? task?.project?.organizationId;
 }
 

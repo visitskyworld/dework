@@ -6,14 +6,12 @@ interface Props {
   visible: boolean;
   message: string;
   onClose(): void;
-  onGoBack(): void;
 }
 
 export const NotFoundResourceModal: FC<Props> = ({
   visible,
   message,
   onClose,
-  onGoBack,
 }) => {
   return (
     <Modal
@@ -34,7 +32,7 @@ export const NotFoundResourceModal: FC<Props> = ({
       </Typography.Title>
       <Typography.Paragraph type="secondary">{message}</Typography.Paragraph>
       <Row style={{ gap: 8, justifyContent: "center" }}>
-        <Button onClick={() => onGoBack()}>Go back to previous page</Button>
+        <Button onClick={onClose}>Close</Button>
       </Row>
     </Modal>
   );

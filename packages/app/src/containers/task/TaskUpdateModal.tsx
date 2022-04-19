@@ -11,34 +11,44 @@ import { TaskFormValues } from "./form/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { toTaskFormValues } from "./form/util";
 import { NotFoundResourceModal } from "@dewo/app/components/NotFoundResourceModal";
-import { useCloseTaskDetails } from "@dewo/app/util/navigation";
+import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
 
 interface Props {
   taskId: string;
   visible: boolean;
-  showProjectLink: boolean;
   onCancel(): void;
 }
 
-export const TaskUpdateModal: FC<Props> = ({
-  taskId,
-  visible,
-  showProjectLink,
-  onCancel,
-}) => {
-  const task = useTask(taskId, isSSR ? undefined : "cache-and-network");
+export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
+  const router = useRouter();
+  const isOnProjectPage = !!router.query.projectSlug;
+  const { task, error } = useTask(
+    taskId,
+    isSSR ? undefined : "cache-and-network"
+  );
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
   const taskRoles = useTaskRoles(task);
-  const closeTaskDetails = useCloseTaskDetails();
   const initialValues = useMemo(
     (): TaskFormValues | undefined =>
       !!task && !!taskRoles ? toTaskFormValues(task, taskRoles) : undefined,
     [task, taskRoles]
   );
 
+  const forbiddenError = !!error?.graphQLErrors.some(
+    (e) => e.extensions.response.statusCode === 403
+  );
+  const notFoundError = !!error?.graphQLErrors.some(
+    (e) => e.extensions.response.statusCode === 404
+  );
+
   return (
     <>
-      <Modal visible={visible} onCancel={onCancel} footer={null} width={960}>
+      <Modal
+        visible={visible && !forbiddenError && !notFoundError}
+        onCancel={onCancel}
+        footer={null}
+        width={960}
+      >
         {!!task && <TaskOptionsButton task={task} />}
         <Skeleton loading={!task || !taskRoles} active paragraph={{ rows: 5 }}>
           {!!initialValues && (
@@ -49,21 +59,21 @@ export const TaskUpdateModal: FC<Props> = ({
               projectId={task!.projectId}
               initialValues={initialValues}
               assignees={task!.assignees}
-              showProjectLink={showProjectLink}
+              showProjectLink={isOnProjectPage}
               onSubmit={updateTaskFromFormValues}
             />
           )}
         </Skeleton>
       </Modal>
       {visible && !!task && <TaskSeo task={task} />}
-      {visible && !task && (
-        <NotFoundResourceModal
-          visible={visible}
-          message={"This task does not exist or has been deleted."}
-          onClose={onCancel}
-          onGoBack={closeTaskDetails}
-        />
-      )}
+      <NotFoundResourceModal
+        visible={visible && notFoundError}
+        message="This task does not exist or has been deleted."
+        onClose={onCancel}
+      />
+      <ForbiddenResourceModal
+        visible={visible && forbiddenError && !isOnProjectPage}
+      />
     </>
   );
 };
@@ -72,7 +82,6 @@ export const TaskUpdateModalListener: FC = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string | undefined;
   const applyToTaskId = router.query.applyToTaskId as string | undefined;
-  const isOnProjectPage = !!router.query.projectSlug;
 
   const closeModal = useCallback(
     () =>
@@ -88,7 +97,6 @@ export const TaskUpdateModalListener: FC = () => {
         taskId={taskId!}
         visible={!!taskId}
         onCancel={closeModal}
-        showProjectLink={!isOnProjectPage}
       />
       <TaskApplyModal
         taskId={applyToTaskId}
