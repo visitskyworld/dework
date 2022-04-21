@@ -5,7 +5,7 @@ import * as Icons from "@ant-design/icons";
 import { TaskCard } from "../card/TaskCard";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { STATUS_LABEL, TaskGroup } from "./util";
+import { STATUS_LABEL, TaskSectionData } from "./util";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
@@ -18,7 +18,7 @@ import Link from "next/link";
 
 interface Props {
   status: TaskStatus;
-  groups: TaskGroup[];
+  sections: TaskSectionData[];
   width: number;
   projectId?: string;
   currentlyDraggingTask?: Task;
@@ -28,7 +28,7 @@ interface Props {
 
 export const TaskBoardColumn: FC<Props> = ({
   status,
-  groups,
+  sections,
   width,
   projectId,
   currentlyDraggingTask,
@@ -37,12 +37,15 @@ export const TaskBoardColumn: FC<Props> = ({
 }) => {
   const hasPermission = usePermissionFn();
   const count = useMemo(
-    () => groups.reduce((count, group) => count + group.tasks.length, 0),
-    [groups]
+    () => sections.reduce((count, section) => count + section.tasks.length, 0),
+    [sections]
   );
 
   const { project } = useProject(projectId);
-  const isEmpty = useMemo(() => groups.every((g) => !g.tasks.length), [groups]);
+  const isEmpty = useMemo(
+    () => sections.every((g) => !g.tasks.length),
+    [sections]
+  );
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const toggleCollapsed = useCallback(
     (id: string) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] })),
@@ -93,31 +96,31 @@ export const TaskBoardColumn: FC<Props> = ({
       style={{ width }}
       className="dewo-task-board-column"
     >
-      {groups.map((group, index) => (
+      {sections.map((section, index) => (
         <div key={index}>
-          {groups.length > 1 && (
+          {sections.length > 1 && (
             <Row
               align="middle"
               className="dewo-task-board-column-section-title"
             >
               <TaskSectionTitle
-                title={`${group.title} (${group.tasks.length})`}
-                collapsed={collapsed[group.id]}
-                onChangeCollapsed={() => toggleCollapsed(group.id)}
+                title={`${section.title} (${section.tasks.length})`}
+                collapsed={collapsed[section.id]}
+                onChangeCollapsed={() => toggleCollapsed(section.id)}
               />
               <div style={{ flex: 1 }} />
-              {!!group.section && (
+              {!!section.section && (
                 <TaskSectionOptionButton
-                  section={group.section}
+                  section={section.section}
                   projectId={projectId}
                 />
               )}
-              {group.button}
+              {section.button}
             </Row>
           )}
-          {!collapsed[group.id] && (
+          {!collapsed[section.id] && (
             <Droppable
-              droppableId={[status, group.id].join(":")}
+              droppableId={[status, section.id].join(":")}
               isDropDisabled={
                 !currentlyDraggingTask ||
                 (currentlyDraggingTask.status === TaskStatus.DONE &&
@@ -135,7 +138,7 @@ export const TaskBoardColumn: FC<Props> = ({
                   {...provided.droppableProps}
                   style={{ ...provided.droppableProps, paddingTop: 8 }}
                 >
-                  {group.tasks.map((task, index) => (
+                  {section.tasks.map((task, index) => (
                     <Draggable
                       key={task.id}
                       draggableId={task.id}
@@ -163,7 +166,7 @@ export const TaskBoardColumn: FC<Props> = ({
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  {index === groups.length - 1 && isEmpty && !!empty && (
+                  {index === sections.length - 1 && isEmpty && !!empty && (
                     <TaskBoardColumnEmpty {...empty} />
                   )}
                 </div>

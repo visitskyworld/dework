@@ -40,6 +40,7 @@ import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { CreateTaskSectionInput } from "./dto/CreateTaskSectionInput";
 import { UpdateTaskSectionInput } from "./dto/UpdateTaskSectionInput";
 import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
+import { TaskView } from "@dewo/api/models/TaskView";
 
 @Resolver(() => Project)
 @Injectable()
@@ -81,6 +82,13 @@ export class ProjectResolver {
     // TODO(fant): query and filter by deletedAt directly
     const sections = await project.taskSections;
     return sections.filter((s) => !s.deletedAt);
+  }
+
+  @ResolveField(() => [TaskView])
+  public async taskViews(@Parent() project: Project): Promise<TaskView[]> {
+    // TODO(fant): query and filter by deletedAt directly
+    const views = await project.taskViews;
+    return views.filter((s) => !s.deletedAt);
   }
 
   @ResolveField(() => [ProjectIntegration])
@@ -150,6 +158,25 @@ export class ProjectResolver {
     return this.projectService.createSection(input);
   }
 
+  @Mutation(() => ProjectSection)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "update",
+      subject: ProjectSection,
+      inject: [ProjectService],
+      getOrganizationId: (
+        _subject,
+        params: { input: UpdateProjectSectionInput }
+      ) => params.input.organizationId,
+    })
+  )
+  public async updateProjectSection(
+    @Args("input") input: UpdateProjectSectionInput
+  ): Promise<ProjectSection> {
+    return this.projectService.updateSection(input);
+  }
+
   @Mutation(() => TaskSection)
   @UseGuards(
     AuthGuard,
@@ -193,25 +220,6 @@ export class ProjectResolver {
     @Args("input") input: UpdateTaskSectionInput
   ): Promise<TaskSection> {
     return this.projectService.updateTaskSection(input);
-  }
-
-  @Mutation(() => ProjectSection)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "update",
-      subject: ProjectSection,
-      inject: [ProjectService],
-      getOrganizationId: (
-        _subject,
-        params: { input: UpdateProjectSectionInput }
-      ) => params.input.organizationId,
-    })
-  )
-  public async updateProjectSection(
-    @Args("input") input: UpdateProjectSectionInput
-  ): Promise<ProjectSection> {
-    return this.projectService.updateSection(input);
   }
 
   @Mutation(() => Project)

@@ -1,4 +1,4 @@
-import { Task, TaskSection, TaskStatus } from "@dewo/app/graphql/types";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
 import React, {
   FC,
@@ -14,27 +14,17 @@ import {
   DragStart,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { getSortKeyBetween, TaskGroup, useGroupedTasks } from "./util";
+import { getSortKeyBetween } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../hooks";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 import { ContributorReviewModal } from "../ContributorReviewModal";
 import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { useFilteredTasks } from "../filters/FilterContext";
-import { useProject } from "../../project/hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-
-const defaultStatuses: TaskStatus[] = [
-  TaskStatus.TODO,
-  TaskStatus.IN_PROGRESS,
-  TaskStatus.IN_REVIEW,
-  TaskStatus.DONE,
-];
-
+import { useTaskViewGroups } from "../views/hooks";
 interface Props {
   tasks: Task[];
-  sections?: TaskSection[];
   projectId?: string;
   footer?: Partial<Record<TaskStatus, ReactNode>>;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
@@ -42,22 +32,12 @@ interface Props {
 }
 
 const columnWidth = 330;
-const emptyGroups: TaskGroup[] = [{ id: "default", title: "", tasks: [] }];
 
-export const TaskBoard: FC<Props> = ({
-  tasks,
-  sections,
-  projectId,
-  footer,
-  empty,
-  statuses = defaultStatuses,
-}) => {
+export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
   const { user } = useAuthContext();
   const hasPermission = usePermissionFn();
 
-  const { project } = useProject(projectId);
-  const filteredTasks = useFilteredTasks(tasks, project?.organizationId);
-  const groupedTasks = useGroupedTasks(filteredTasks, projectId, sections);
+  const taskViewGroups = useTaskViewGroups(tasks, projectId);
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
   const currentlyDraggingTask = useMemo(
@@ -79,7 +59,7 @@ export const TaskBoard: FC<Props> = ({
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
-      const [status, groupId] = result.destination.droppableId.split(":") as [
+      const [status, sectionId] = result.destination.droppableId.split(":") as [
         TaskStatus,
         string
       ];
@@ -104,9 +84,12 @@ export const TaskBoard: FC<Props> = ({
         return newIndex;
       })();
 
-      const group = groupedTasks[status]?.find((group) => group.id === groupId);
-      const taskAbove = group?.tasks[indexExcludingItself - 1];
-      const taskBelow = group?.tasks[indexExcludingItself];
+      const section = taskViewGroups
+        .find((g) => g.value === status)
+        ?.sections.find((s) => s.id === sectionId);
+
+      const taskAbove = section?.tasks[indexExcludingItself - 1];
+      const taskBelow = section?.tasks[indexExcludingItself];
       const sortKey = getSortKeyBetween(taskAbove, taskBelow, (t) => t.sortKey);
 
       const shouldAssignCurrentUser =
@@ -121,7 +104,7 @@ export const TaskBoard: FC<Props> = ({
           status,
           sortKey,
           assigneeIds: shouldAssignCurrentUser ? [user.id] : undefined,
-          sectionId: group?.section?.id ?? null,
+          sectionId: section?.section?.id ?? null,
         },
         task
       );
@@ -134,7 +117,7 @@ export const TaskBoard: FC<Props> = ({
         setTaskInReview(updatedTask);
       }
     },
-    [tasks, groupedTasks, updateTask, hasPermission, reviewModalToggle, user]
+    [tasks, taskViewGroups, updateTask, hasPermission, reviewModalToggle, user]
   );
 
   const [loaded, setLoaded] = useState(false);
@@ -150,16 +133,16 @@ export const TaskBoard: FC<Props> = ({
       <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
         <Row className="dewo-task-board">
           <Space size="middle" align="start">
-            {statuses.map((status) => (
-              <div key={status} style={{ width: columnWidth }}>
+            {taskViewGroups.map((group) => (
+              <div key={group.value} style={{ width: columnWidth }}>
                 <TaskBoardColumn
-                  status={status}
+                  status={group.value as TaskStatus}
                   width={columnWidth}
-                  groups={groupedTasks[status] ?? emptyGroups}
+                  sections={group.sections}
                   projectId={projectId}
                   currentlyDraggingTask={currentlyDraggingTask}
-                  footer={footer?.[status]}
-                  empty={empty?.[status]}
+                  footer={footer?.[group.value as TaskStatus]}
+                  empty={empty?.[group.value as TaskStatus]}
                 />
               </div>
             ))}

@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { taskView } from "./fragments/task";
 
 export const entityDetail = gql`
   fragment EntityDetail on EntityDetail {
@@ -260,12 +261,16 @@ export const projectDetails = gql`
     taskSections {
       ...TaskSection
     }
+    taskViews {
+      ...TaskView
+    }
   }
 
   ${project}
   ${projectTokenGate}
   ${organization}
   ${taskSection}
+  ${taskView}
 `;
 
 export const taskTag = gql`

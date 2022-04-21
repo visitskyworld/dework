@@ -33,7 +33,7 @@ import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 
 @Injectable()
 export class TaskService {
-  private readonly logger = new Logger("UserService");
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly eventBus: EventBus,

@@ -1,4 +1,5 @@
 import * as Icons from "@ant-design/icons";
+import * as Colors from "@ant-design/colors";
 import { Project, TaskDetails } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { Button, Dropdown, Menu, message, Popconfirm, Typography } from "antd";
@@ -117,7 +118,9 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
           {canUpdate && <MoveTaskSubmenu task={task} />}
           {canDelete && (
             <Popconfirm
-              icon={null}
+              icon={
+                <Icons.DeleteOutlined style={{ color: Colors.grey.primary }} />
+              }
               title="Delete this task?"
               okType="danger"
               okText="Delete"

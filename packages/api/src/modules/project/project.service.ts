@@ -20,6 +20,8 @@ import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
 import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
+import { TaskViewService } from "../task/taskView/taskView.service";
+import { TaskViewType } from "@dewo/api/models/TaskView";
 
 @Injectable()
 export class ProjectService {
@@ -32,11 +34,12 @@ export class ProjectService {
     private readonly taskTagRepo: Repository<TaskTag>,
     @InjectRepository(ProjectSection)
     private readonly projectSectionRepo: Repository<ProjectSection>,
-    private readonly tokenService: TokenService,
     @InjectRepository(TaskSection)
     private readonly taskSectionRepo: Repository<TaskSection>,
     @InjectRepository(TaskGatingDefault)
-    private readonly taskGatingDefaultRepo: Repository<TaskGatingDefault>
+    private readonly taskGatingDefaultRepo: Repository<TaskGatingDefault>,
+    private readonly tokenService: TokenService,
+    private readonly taskViewService: TaskViewService
   ) {}
 
   public async create(partial: DeepPartial<Project>): Promise<Project> {
@@ -51,6 +54,28 @@ export class ProjectService {
       name: "Backlog",
       status: TaskStatus.TODO,
     });
+
+    await this.taskViewService.create({
+      name: "Board",
+      projectId: created.id,
+      filters: [],
+      type: TaskViewType.BOARD,
+    });
+    // await this.taskViewService.create({
+    //   name: "Open Tasks",
+    //   projectId: created.id,
+    //   type: TaskViewType.LIST,
+    //   filters: [
+    //     { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
+    //   ],
+    //   sortBys: [
+    //     {
+    //       direction: TaskViewSortByDirection.DESC,
+    //       field: TaskViewSortByField.createdAt,
+    //     },
+    //   ],
+    // });
+
     return this.projectRepo.findOne(created.id) as Promise<Project>;
   }
 

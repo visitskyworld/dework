@@ -616,6 +616,35 @@ export interface CreateProjectMutation_project_taskSections {
   projectId: string;
 }
 
+export interface CreateProjectMutation_project_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface CreateProjectMutation_project_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface CreateProjectMutation_project_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: CreateProjectMutation_project_taskViews_filters[];
+  sortBys: CreateProjectMutation_project_taskViews_sortBys[];
+}
+
 export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -631,6 +660,7 @@ export interface CreateProjectMutation_project {
   tokenGates: CreateProjectMutation_project_tokenGates[];
   organization: CreateProjectMutation_project_organization;
   taskSections: CreateProjectMutation_project_taskSections[];
+  taskViews: CreateProjectMutation_project_taskViews[];
 }
 
 export interface CreateProjectMutation {
@@ -707,6 +737,35 @@ export interface UpdateProjectMutation_project_taskSections {
   projectId: string;
 }
 
+export interface UpdateProjectMutation_project_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface UpdateProjectMutation_project_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface UpdateProjectMutation_project_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: UpdateProjectMutation_project_taskViews_filters[];
+  sortBys: UpdateProjectMutation_project_taskViews_sortBys[];
+}
+
 export interface UpdateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -722,6 +781,7 @@ export interface UpdateProjectMutation_project {
   tokenGates: UpdateProjectMutation_project_tokenGates[];
   organization: UpdateProjectMutation_project_organization;
   taskSections: UpdateProjectMutation_project_taskSections[];
+  taskViews: UpdateProjectMutation_project_taskViews[];
 }
 
 export interface UpdateProjectMutation {
@@ -4903,6 +4963,170 @@ export interface SetTaskGatingDefaultVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateTaskViewMutation
+// ====================================================
+
+export interface CreateTaskViewMutation_taskView_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface CreateTaskViewMutation_taskView_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface CreateTaskViewMutation_taskView_project_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface CreateTaskViewMutation_taskView_project_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface CreateTaskViewMutation_taskView_project_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: CreateTaskViewMutation_taskView_project_taskViews_filters[];
+  sortBys: CreateTaskViewMutation_taskView_project_taskViews_sortBys[];
+}
+
+export interface CreateTaskViewMutation_taskView_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskViews: CreateTaskViewMutation_taskView_project_taskViews[];
+}
+
+export interface CreateTaskViewMutation_taskView {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: CreateTaskViewMutation_taskView_filters[];
+  sortBys: CreateTaskViewMutation_taskView_sortBys[];
+  project: CreateTaskViewMutation_taskView_project;
+}
+
+export interface CreateTaskViewMutation {
+  taskView: CreateTaskViewMutation_taskView;
+}
+
+export interface CreateTaskViewMutationVariables {
+  input: CreateTaskViewInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateTaskViewMutation
+// ====================================================
+
+export interface UpdateTaskViewMutation_taskView_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface UpdateTaskViewMutation_taskView_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface UpdateTaskViewMutation_taskView_project_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface UpdateTaskViewMutation_taskView_project_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface UpdateTaskViewMutation_taskView_project_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: UpdateTaskViewMutation_taskView_project_taskViews_filters[];
+  sortBys: UpdateTaskViewMutation_taskView_project_taskViews_sortBys[];
+}
+
+export interface UpdateTaskViewMutation_taskView_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  taskViews: UpdateTaskViewMutation_taskView_project_taskViews[];
+}
+
+export interface UpdateTaskViewMutation_taskView {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: UpdateTaskViewMutation_taskView_filters[];
+  sortBys: UpdateTaskViewMutation_taskView_sortBys[];
+  project: UpdateTaskViewMutation_taskView_project;
+}
+
+export interface UpdateTaskViewMutation {
+  taskView: UpdateTaskViewMutation_taskView;
+}
+
+export interface UpdateTaskViewMutationVariables {
+  input: UpdateTaskViewInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -6092,6 +6316,35 @@ export interface GetProjectDetailsQuery_project_taskSections {
   projectId: string;
 }
 
+export interface GetProjectDetailsQuery_project_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface GetProjectDetailsQuery_project_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface GetProjectDetailsQuery_project_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: GetProjectDetailsQuery_project_taskViews_filters[];
+  sortBys: GetProjectDetailsQuery_project_taskViews_sortBys[];
+}
+
 export interface GetProjectDetailsQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -6107,6 +6360,7 @@ export interface GetProjectDetailsQuery_project {
   tokenGates: GetProjectDetailsQuery_project_tokenGates[];
   organization: GetProjectDetailsQuery_project_organization;
   taskSections: GetProjectDetailsQuery_project_taskSections[];
+  taskViews: GetProjectDetailsQuery_project_taskViews[];
 }
 
 export interface GetProjectDetailsQuery {
@@ -9530,6 +9784,35 @@ export interface ProjectDetails_taskSections {
   projectId: string;
 }
 
+export interface ProjectDetails_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface ProjectDetails_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface ProjectDetails_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: ProjectDetails_taskViews_filters[];
+  sortBys: ProjectDetails_taskViews_sortBys[];
+}
+
 export interface ProjectDetails {
   __typename: "Project";
   id: Scalar.UUID;
@@ -9545,6 +9828,7 @@ export interface ProjectDetails {
   tokenGates: ProjectDetails_tokenGates[];
   organization: ProjectDetails_organization;
   taskSections: ProjectDetails_taskSections[];
+  taskViews: ProjectDetails_taskViews[];
 }
 
 /* tslint:disable */
@@ -11040,6 +11324,78 @@ export interface OrganizationDetails {
 // @generated
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL fragment: TaskViewFilter
+// ====================================================
+
+export interface TaskViewFilter {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: TaskViewSortBy
+// ====================================================
+
+export interface TaskViewSortBy {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: TaskView
+// ====================================================
+
+export interface TaskView_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+}
+
+export interface TaskView_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface TaskView {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: string;
+  filters: TaskView_filters[];
+  sortBys: TaskView_sortBys[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
@@ -11145,6 +11501,34 @@ export enum TaskStatus {
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
   TODO = "TODO",
+}
+
+export enum TaskViewFilterType {
+  ASSIGNEES = "ASSIGNEES",
+  OWNERS = "OWNERS",
+  ROLES = "ROLES",
+  STATUSES = "STATUSES",
+  TAGS = "TAGS",
+}
+
+export enum TaskViewGroupBy {
+  status = "status",
+}
+
+export enum TaskViewSortByDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+export enum TaskViewSortByField {
+  createdAt = "createdAt",
+  dueDate = "dueDate",
+  sortKey = "sortKey",
+}
+
+export enum TaskViewType {
+  BOARD = "BOARD",
+  LIST = "LIST",
 }
 
 export enum ThreepidSource {
@@ -11322,6 +11706,15 @@ export interface CreateTaskTagInput {
   projectId: Scalar.UUID;
 }
 
+export interface CreateTaskViewInput {
+  projectId: Scalar.UUID;
+  name: string;
+  type: TaskViewType;
+  groupBy?: TaskViewGroupBy | null;
+  filters: TaskViewFilterInput[];
+  sortBys: TaskViewSortByInput[];
+}
+
 export interface DeleteTaskApplicationInput {
   taskId: Scalar.UUID;
   userId: Scalar.UUID;
@@ -11375,6 +11768,20 @@ export interface TaskGatingDefaultInput {
 export interface TaskReactionInput {
   reaction: string;
   taskId: Scalar.UUID;
+}
+
+export interface TaskViewFilterInput {
+  type: TaskViewFilterType;
+  tagIds?: Scalar.UUID[] | null;
+  assigneeIds?: Scalar.UUID[] | null;
+  ownerIds?: Scalar.UUID[] | null;
+  roleIds?: Scalar.UUID[] | null;
+  statuses?: TaskStatus[] | null;
+}
+
+export interface TaskViewSortByInput {
+  direction: TaskViewSortByDirection;
+  field: TaskViewSortByField;
 }
 
 export interface UpdateOrganizationInput {
@@ -11468,6 +11875,16 @@ export interface UpdateTaskTagInput {
   projectId: Scalar.UUID;
   label?: string | null;
   color?: string | null;
+  deletedAt?: Scalar.DateTime | null;
+}
+
+export interface UpdateTaskViewInput {
+  id: Scalar.UUID;
+  name?: string | null;
+  type?: TaskViewType | null;
+  groupBy?: TaskViewGroupBy | null;
+  filters?: TaskViewFilterInput[] | null;
+  sortBys?: TaskViewSortByInput[] | null;
   deletedAt?: Scalar.DateTime | null;
 }
 

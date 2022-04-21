@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { useProjectDetails, useProjectTasks } from "../hooks";
+import { useProjectTasks } from "../hooks";
 import { TaskBoard } from "../../task/board/TaskBoard";
 import * as Icons from "@ant-design/icons";
 import { TaskStatus } from "@dewo/app/graphql/types";
@@ -34,7 +34,6 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 };
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
-  const { project } = useProjectDetails(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network");
   const statuses = useMemo(
     () => [
@@ -46,15 +45,9 @@ export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
     []
   );
 
-  const sections = useMemo(
-    () => project?.taskSections ?? [],
-    [project?.taskSections]
-  );
-
   return tasks ? (
     <TaskBoard
       tasks={tasks}
-      sections={sections}
       projectId={projectId}
       empty={empty}
       statuses={statuses}

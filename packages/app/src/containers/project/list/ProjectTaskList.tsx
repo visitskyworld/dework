@@ -1,14 +1,13 @@
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Button } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
-import { useProject, useProjectTasks, useProjectTaskTags } from "../hooks";
+import { useProjectTasks, useProjectTaskTags } from "../hooks";
 import { TaskList, TaskListRow } from "../../task/list/TaskList";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { useFilteredTasks } from "../../task/filters/FilterContext";
 
 interface Props {
   projectId?: string;
@@ -17,14 +16,9 @@ interface Props {
 export const ProjectTaskList: FC<Props> = ({ projectId }) => {
   const tags = useProjectTaskTags(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network");
-  const { project } = useProject(projectId);
-  const filteredTasks = useFilteredTasks(
-    useMemo(() => tasks ?? [], [tasks]),
-    project?.organizationId
-  );
   const rows = useMemo(
     () =>
-      filteredTasks.map(
+      tasks?.map(
         (task): TaskListRow => ({
           task,
           key: task.id,
@@ -35,7 +29,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           dueDate: task.dueDate,
         })
       ),
-    [filteredTasks]
+    [tasks]
   );
 
   const canCreateTask = usePermission("create", {
@@ -51,7 +45,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
     [navigateToTask]
   );
 
-  if (!tasks) return null;
+  if (!rows) return null;
   return (
     <>
       <TaskList

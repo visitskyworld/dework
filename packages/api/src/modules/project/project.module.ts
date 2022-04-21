@@ -10,6 +10,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PaymentModule } from "../payment/payment.module";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { RbacModule } from "../rbac/rbac.module";
+import { TaskViewModule } from "../task/taskView/taskView.module";
 import { ProjectResolver } from "./project.resolver";
 import { ProjectService } from "./project.service";
 
@@ -27,6 +28,7 @@ import { ProjectService } from "./project.service";
     PermalinkModule,
     PaymentModule,
     RbacModule,
+    TaskViewModule,
   ],
   providers: [ProjectResolver, ProjectService],
   exports: [ProjectService],

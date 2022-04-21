@@ -8,13 +8,12 @@ import {
   Typography,
 } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { useProject, useProjectTasks } from "../hooks";
+import { useProjectTasks } from "../hooks";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskCreateModal } from "../../task/TaskCreateModal";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { useFilteredTasks } from "../../task/filters/FilterContext";
 import _ from "lodash";
 import { SuggestionsList } from "./SuggestionsList";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -60,25 +59,18 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
 
   const [mode, setMode] = useState(SortBy.trending);
 
-  const { project } = useProject(projectId);
-  const filteredTasks = useFilteredTasks(
-    useMemo(
-      () => tasks?.filter((task) => task.status === TaskStatus.BACKLOG) ?? [],
-      [tasks]
-    ),
-    project?.organizationId
-  );
   const taskRows = useMemo<TaskRow[]>(
     () =>
-      filteredTasks
+      tasks
+        ?.filter((t) => t.status === TaskStatus.BACKLOG)
         .map((task) => ({
           task,
           upvotes: _.sumBy(task.reactions, (reaction) =>
             reaction.reaction === UPVOTE_REACTION ? 1 : 0
           ),
         }))
-        .sort(sortFnMap[mode]),
-    [filteredTasks, mode]
+        .sort(sortFnMap[mode]) ?? [],
+    [tasks, mode]
   );
 
   const canCreateTask = usePermission("create", {

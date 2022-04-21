@@ -20,6 +20,7 @@ import {
   TaskSection,
   TaskSubmission,
   TaskTag,
+  TaskView,
 } from "../graphql/types";
 import { useQuery } from "@apollo/client";
 import { AtLeast } from "../types/general";
@@ -42,6 +43,7 @@ type AbilitySubject =
   | AtLeast<Rule, "__typename" | "permission">
   | AtLeast<Task, "__typename" | "status">
   | AtLeast<TaskTag, "__typename" | "projectId">
+  | AtLeast<TaskView, "__typename" | "projectId">
   | AtLeast<TaskReaction, "__typename" | "userId">
   | AtLeast<TaskSection, "__typename" | "projectId">
   | AtLeast<TaskApplication, "__typename" | "userId">

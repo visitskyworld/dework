@@ -1,0 +1,36 @@
+@import "../../../../../styles/theme.less";
+
+.form {
+  :global {
+    .ant-divider.ant-divider-horizontal {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .ant-list-item {
+      padding: 0;
+      padding-left: 12px;
+
+      .ant-list-item-action > li {
+        padding: 0;
+      }
+
+      .ant-list-item-meta-avatar {
+        margin-right: 8px;
+      }
+    }
+
+    .ant-select .ant-select-selector, .ant-btn.ant-btn-default {
+      background: fade(@white, 5%);
+    }
+
+    .ant-select:not(:focus):not(:hover):not(:active):not(:focus-within) .ant-select-selector {
+      border-color: transparent;
+    }
+  }
+}
+
+.button {
+  padding-left: 12px;
+  padding-left: 12px;
+}

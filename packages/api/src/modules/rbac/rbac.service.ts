@@ -25,6 +25,7 @@ import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "../app/config";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
+import { TaskView } from "@dewo/api/models/TaskView";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 export type Action =
@@ -41,6 +42,7 @@ export type Subject = InferSubjects<
   | typeof Task
   | typeof TaskReward
   | typeof TaskTag
+  | typeof TaskView
   | typeof TaskSection
   | typeof TaskReaction
   | typeof TaskApplication
@@ -216,6 +218,9 @@ export class RbacService {
       const taskTag: Partial<TaskTag> | undefined = !!rule.projectId
         ? { projectId: rule.projectId }
         : undefined;
+      const taskView: Partial<TaskView> | undefined = !!rule.projectId
+        ? { projectId: rule.projectId }
+        : undefined;
       const taskSection: Partial<TaskSection> | undefined = !!rule.projectId
         ? { projectId: rule.projectId }
         : undefined;
@@ -239,6 +244,7 @@ export class RbacService {
         case RulePermission.MANAGE_PROJECTS:
           fn(CRUD, Project, project);
           fn(CRUD, TaskTag, taskTag);
+          fn(CRUD, TaskView, taskView);
           fn(CRUD, TaskReward);
           fn(CRUD, TaskSection, taskSection);
           fn("submit", Task, task);

@@ -30,6 +30,7 @@ import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { UserPromptModule } from "../user/prompt/userPrompt.module";
 import { GithubWebhookModule } from "../integrations/github/webhook/github.webhook.module";
+import { TaskViewModule } from "../task/taskView/taskView.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -55,6 +56,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   OrganizationModule,
   ProjectModule,
   TaskModule,
+  TaskViewModule,
   ThreepidModule,
   InviteModule,
   GithubIntegrationModule,

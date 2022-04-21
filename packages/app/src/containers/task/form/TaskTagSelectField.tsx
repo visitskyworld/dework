@@ -1,4 +1,10 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, {
+  CSSProperties,
+  FC,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import { Tag, Form, Select, ConfigProvider, Empty, Button } from "antd";
@@ -8,13 +14,20 @@ import { TaskTagDetailsModal } from "./TaskTagDetailsModal";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { TaskTag } from "@dewo/app/graphql/types";
 import { suggestedTags } from "../../../util/tags";
+import { NamePath } from "antd/lib/form/interface";
+import { Rule } from "antd/lib/form";
 
 interface Props {
+  name: NamePath;
   label?: string;
   disabled?: boolean;
   projectId?: string;
   allowCreate?: boolean;
   tags?: TaskTag[];
+  style?: CSSProperties;
+  rules?: Rule[];
+  allowClear?: boolean;
+  onClear?(): void;
 }
 
 interface ComponentProps {
@@ -23,6 +36,8 @@ interface ComponentProps {
   projectId?: string;
   tags?: TaskTag[];
   value?: string[];
+  allowClear?: boolean;
+  onClear?(): void;
   onChange?(value: string[]): void;
 }
 
@@ -34,7 +49,9 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
   allowCreate,
   disabled,
   value,
+  allowClear,
   onChange,
+  onClear,
 }) => {
   const tagById = useMemo(() => _.keyBy(tags, "id"), [tags]);
 
@@ -108,6 +125,8 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
         optionFilterProp="label"
         optionLabelProp="label" // don't put children inside tagRender
         placeholder={disabled ? "No tags..." : "Select tags..."}
+        allowClear={allowClear}
+        onClear={onClear}
         onChange={handleChange}
         tagRender={(props) => (
           <Tag
@@ -164,23 +183,30 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
 };
 
 export const TaskTagSelectField: FC<Props> = ({
+  name,
   disabled,
   allowCreate,
   projectId,
   tags,
-  label = "Tags",
+  label,
+  style,
+  rules,
+  allowClear,
+  onClear,
 }) => (
   <ConfigProvider
     renderEmpty={() => (
       <Empty description="Create your first tag by typing..." />
     )}
   >
-    <Form.Item name="tagIds" label={label} rules={[{ type: "array" }]}>
+    <Form.Item name={name} label={label} rules={rules} style={style}>
       <TaskTagSelectFieldComponent
         disabled={disabled}
         allowCreate={allowCreate}
         projectId={projectId}
         tags={tags}
+        allowClear={allowClear}
+        onClear={onClear}
       />
     </Form.Item>
   </ConfigProvider>

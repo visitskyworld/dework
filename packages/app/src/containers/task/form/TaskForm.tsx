@@ -291,6 +291,8 @@ export const TaskForm: FC<TaskFormProps> = ({
           </Form.Item>
 
           <TaskTagSelectField
+            name="tagIds"
+            label="Tags"
             disabled={!canChange("tagIds")}
             allowCreate={canCreateTag}
             projectId={projectId}

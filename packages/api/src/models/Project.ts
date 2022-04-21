@@ -9,6 +9,7 @@ import { TaskTag } from "./TaskTag";
 import { ProjectTokenGate } from "./ProjectTokenGate";
 import { ProjectSection } from "./ProjectSection";
 import { TaskSection } from "./TaskSection";
+import { TaskView } from "./TaskView";
 
 @ObjectType()
 @InputType("ProjectOptionsInput")
@@ -71,6 +72,10 @@ export class Project extends Audit {
   @OneToMany(() => ProjectTokenGate, (p: ProjectTokenGate) => p.project)
   @Field(() => [ProjectTokenGate])
   public tokenGates!: Promise<ProjectTokenGate[]>;
+
+  @OneToMany(() => TaskView, (p: TaskView) => p.project)
+  @Field(() => [TaskView])
+  public taskViews!: Promise<TaskView[]>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
