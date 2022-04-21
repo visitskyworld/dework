@@ -4,12 +4,15 @@ import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
 import { Divider, Typography } from "antd";
 import React, { FC, ReactElement } from "react";
 import { useProject } from "../../project/hooks";
+import { PayButton } from "../board/PayButton";
+import { useShouldShowInlinePayButton } from "../board/util";
 import { ApplyToTaskAvatar } from "./apply/ApplyToTaskAvatar";
 import { ApplyToTaskButton } from "./apply/ApplyToTaskButton";
 import { ClaimTaskAvatar } from "./claim/ClaimTaskAvatar";
 import { ClaimTaskButton } from "./claim/ClaimTaskButton";
 import { CreateSubmissionAvatar } from "./submit/CreateSubmissionAvatar";
 import { CreateSubmissionButton } from "./submit/CreateSubmissionButton";
+import * as Icons from "@ant-design/icons";
 
 interface Props {
   task: Task;
@@ -43,8 +46,21 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);
   const canApply = usePermission("create", "TaskApplication");
+  const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
 
   const content = (() => {
+    if (shouldShowInlinePayButton) {
+      return (
+        <PayButton
+          block
+          size="large"
+          icon={<Icons.DollarCircleOutlined />}
+          task={task}
+        >
+          Pay
+        </PayButton>
+      );
+    }
     if (
       [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW].includes(
         task.status

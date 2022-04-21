@@ -1,7 +1,7 @@
 import { Task } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { RouterContext } from "next/dist/shared/lib/router-context";
-import { Button, notification } from "antd";
+import { Button, ButtonProps, notification } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
@@ -12,12 +12,17 @@ import {
 } from "../../payment/hooks";
 import { useProject } from "../../project/hooks";
 
-interface Props {
+interface Props extends ButtonProps {
   task: Task;
   onDone?(): Promise<unknown>;
 }
 
-export const PayButton: FC<Props> = ({ children, task, onDone }) => {
+export const PayButton: FC<Props> = ({
+  children,
+  task,
+  onDone,
+  ...buttonProps
+}) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -43,7 +48,11 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
               <RouterContext.Provider value={router}>
                 <Link href={`${project!.permalink}/settings`}>
                   <a>
-                    <Button type="primary" onClick={notification.destroy}>
+                    <Button
+                      type="primary"
+                      onClick={notification.destroy}
+                      {...buttonProps}
+                    >
                       Setup payment
                     </Button>
                   </a>
@@ -66,7 +75,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
         setLoading(false);
       }
     },
-    [task, router, onDone, payTaskReward, project]
+    [task, payTaskReward, onDone, router, project, buttonProps]
   );
   return (
     <Button
@@ -74,6 +83,7 @@ export const PayButton: FC<Props> = ({ children, task, onDone }) => {
       size="small"
       type="primary"
       onClick={handlePayAndClose}
+      {...buttonProps}
     >
       {children}
     </Button>
