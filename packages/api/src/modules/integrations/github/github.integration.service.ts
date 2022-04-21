@@ -29,6 +29,7 @@ import { Connection } from "typeorm";
 import { InjectConnection } from "@nestjs/typeorm";
 import { RbacService } from "../../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
+import Bluebird from "bluebird";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -428,26 +429,30 @@ export class GithubIntegrationService {
   }
 
   public async getProjectIssues(projectId: string) {
-    const projInt = await this.integrationService.findProjectIntegration(
+    const integrations = await this.integrationService.findProjectIntegrations(
       projectId,
       ProjectIntegrationType.GITHUB
     );
-    if (!projInt) {
-      throw new NotFoundException("Project integration not found");
-    }
 
-    const orgInt = (await projInt.organizationIntegration) as
-      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
-      | undefined;
-    if (!orgInt) {
-      throw new NotFoundException("Organization integration not found");
-    }
+    const nestedIssues = await Bluebird.mapSeries(
+      integrations,
+      async (integration) => {
+        const orgInt = (await integration.organizationIntegration) as
+          | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+          | undefined;
+        if (!orgInt) {
+          throw new NotFoundException("Organization integration not found");
+        }
 
-    return this.getGithubIssues(
-      projInt.config.organization,
-      projInt.config.repo,
-      orgInt.config.installationId
+        return this.getGithubIssues(
+          integration.config.organization,
+          integration.config.repo,
+          orgInt.config.installationId
+        );
+      }
     );
+
+    return nestedIssues.flat();
   }
 
   public async getGithubIssues(
