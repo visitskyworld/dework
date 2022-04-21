@@ -229,11 +229,7 @@ export class GithubWebhookController {
 
         this.log("Updated PR's status", { title: pr.title, status });
 
-        const subtasks = await task.subtasks;
-        const everySubtaskDone = subtasks.every(
-          (subTask) => subTask.status === TaskStatus.DONE
-        );
-        if (merged && everySubtaskDone) {
+        if (merged) {
           await this.taskService.update({
             id: task.id,
             status: TaskStatus.DONE,
