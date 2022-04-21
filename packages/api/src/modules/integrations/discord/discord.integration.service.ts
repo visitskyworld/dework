@@ -37,6 +37,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
+import { getMarkdownImages } from "@dewo/api/utils/markdown";
 
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
@@ -782,10 +783,17 @@ export class DiscordIntegrationService {
       .getDiscordIds(task.owners.map((u) => u.id))
       .then((ids) => ids.filter((id): id is string => !!id));
     const submitter = await submission.user;
+    const images = getMarkdownImages(submission.content);
     await this.postTaskCard(
       channel,
       task,
-      "✉️ New submission!",
+      `✉️ New submission!${
+        images.length > 0
+          ? `\n\n[${images.length} ${
+              images.length === 1 ? "image" : "images"
+            } attached](${await this.permalink.get(task)})`
+          : ""
+      }`,
       ownerDiscordIds,
       !!submitter
         ? {
@@ -795,7 +803,8 @@ export class DiscordIntegrationService {
               url: await this.permalink.get(submitter),
             },
           }
-        : undefined
+        : undefined,
+      images.slice(0, 4)
     );
   }
 
@@ -804,8 +813,10 @@ export class DiscordIntegrationService {
     task: Task,
     message: string,
     discordIdsToTag?: string[],
-    embedOverride?: Partial<Discord.MessageEmbedOptions>
+    embedOverride?: Partial<Discord.MessageEmbedOptions>,
+    images: string[] = []
   ): Promise<void> {
+    const url = await this.permalink.get(task);
     await this.post(channel, {
       content: discordIdsToTag?.length
         ? discordIdsToTag.map((id) => `<@${id}>`).join(" ")
@@ -814,9 +825,15 @@ export class DiscordIntegrationService {
         {
           title: task.name,
           description: message,
-          url: await this.permalink.get(task),
+          url,
+          image: images ? { url: images[0] } : undefined,
           ...embedOverride,
         },
+        // Sending rest of images as separate "embeds" (but same URL) will
+        // allow including up to 4 images in one embed.
+        ...(images.length > 1
+          ? images?.slice(1, 4).map((a) => ({ image: { url: a }, url }))
+          : []),
       ],
     });
   }
