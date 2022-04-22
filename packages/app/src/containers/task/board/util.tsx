@@ -29,6 +29,7 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
 };
 
 export const PRIORITY_LABEL: Record<TaskPriority, string> = {
+  [TaskPriority.NONE]: "No Priority",
   [TaskPriority.LOW]: "Low Priority",
   [TaskPriority.MEDIUM]: "Medium Priority",
   [TaskPriority.HIGH]: "High Priority",

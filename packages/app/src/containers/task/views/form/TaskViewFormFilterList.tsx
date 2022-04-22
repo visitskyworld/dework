@@ -12,6 +12,7 @@ const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
   [TaskViewFilterType.STATUSES]: "Status",
   [TaskViewFilterType.TAGS]: "Tags",
   [TaskViewFilterType.ASSIGNEES]: "Assignees",
+  [TaskViewFilterType.PRIORITIES]: "Priority",
   [TaskViewFilterType.OWNERS]: "Reviewer",
   [TaskViewFilterType.ROLES]: "Roles",
 };
@@ -37,6 +38,7 @@ export const TaskViewFormFilterList: FC<Props> = ({ form, projectId }) => (
                     TaskViewFilterType.STATUSES,
                     TaskViewFilterType.TAGS,
                     TaskViewFilterType.ASSIGNEES,
+                    TaskViewFilterType.PRIORITIES,
                     // TaskViewFilterType.OWNERS,
                     TaskViewFilterType.ROLES,
                   ]

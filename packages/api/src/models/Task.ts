@@ -43,6 +43,7 @@ export enum TaskPriority {
   HIGH = "HIGH",
   MEDIUM = "MEDIUM",
   LOW = "LOW",
+  NONE = "NONE",
 }
 
 registerEnumType(TaskPriority, { name: "TaskPriority" });
@@ -66,9 +67,9 @@ export class Task extends Audit {
   @Field(() => TaskStatus)
   public status!: TaskStatus;
 
-  @Column({ type: "enum", enum: TaskPriority, nullable: true })
-  @Field(() => TaskPriority, { nullable: true })
-  public priority?: TaskPriority;
+  @Column({ type: "enum", enum: TaskPriority, default: TaskPriority.NONE })
+  @Field(() => TaskPriority)
+  public priority!: TaskPriority;
 
   @Column()
   @Field()

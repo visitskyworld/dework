@@ -24,6 +24,7 @@ import { useTaskViewContext } from "./TaskViewContext";
 import {
   matchingAssigneeIds,
   matchingOwnerIds,
+  matchingPriorities,
   matchingRoles,
   matchingStatuses,
   matchingTagIds,
@@ -125,6 +126,11 @@ export function useTaskViewGroups(
         .filter(
           matchingStatuses(
             findFilter(TaskViewFilterType.STATUSES)?.statuses ?? undefined
+          )
+        )
+        .filter(
+          matchingPriorities(
+            findFilter(TaskViewFilterType.PRIORITIES)?.priorities ?? undefined
           )
         )
         .filter(

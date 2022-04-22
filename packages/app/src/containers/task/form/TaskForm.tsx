@@ -302,12 +302,6 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Select a priority"
               disabled={!canChange("priority")}
             >
-              <Select.Option key="none" value={null}>
-                <Space>
-                  <TaskPriorityIcon priority={undefined} />
-                  No Priority
-                </Space>
-              </Select.Option>
               {(Object.keys(PRIORITY_LABEL) as TaskPriority[]).map(
                 (priority) => (
                   <Select.Option key={priority} value={priority}>

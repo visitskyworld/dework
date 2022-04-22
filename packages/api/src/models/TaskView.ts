@@ -8,7 +8,7 @@ import GraphQLUUID from "graphql-type-uuid";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
-import { TaskStatus } from "./Task";
+import { TaskPriority, TaskStatus } from "./Task";
 
 export enum TaskViewType {
   LIST = "LIST",
@@ -36,6 +36,7 @@ export enum TaskViewFilterType {
   ASSIGNEES = "ASSIGNEES",
   OWNERS = "OWNERS",
   ROLES = "ROLES",
+  PRIORITIES = "PRIORITIES",
 }
 
 registerEnumType(TaskViewType, { name: "TaskViewType" });
@@ -64,6 +65,9 @@ export class TaskViewFilter {
 
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
+
+  @Field(() => [TaskPriority], { nullable: true })
+  public priorities?: TaskPriority[];
 }
 
 @InputType("TaskViewSortByInput")

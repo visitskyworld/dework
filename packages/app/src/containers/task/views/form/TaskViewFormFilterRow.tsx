@@ -6,11 +6,16 @@ import {
   useProjectTaskTags,
 } from "@dewo/app/containers/project/hooks";
 import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
-import { TaskStatus, TaskViewFilterType } from "@dewo/app/graphql/types";
-import { Form, Select } from "antd";
+import {
+  TaskPriority,
+  TaskStatus,
+  TaskViewFilterType,
+} from "@dewo/app/graphql/types";
+import { Form, Select, Space } from "antd";
 import _ from "lodash";
 import React, { FC, useMemo } from "react";
-import { STATUS_LABEL } from "../../board/util";
+import { TaskPriorityIcon } from "../../board/TaskPriorityIcon";
+import { PRIORITY_LABEL, STATUS_LABEL } from "../../board/util";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 
 interface Props {
@@ -124,6 +129,44 @@ const StatusFilter: FC<Props> = ({ name, onClear }) => {
   );
 };
 
+const PriorityFilter: FC<Props> = ({ name, onClear }) => {
+  return (
+    <Form.Item
+      name={[name, "priorities"]}
+      style={{ flex: 1 }}
+      rules={[
+        {
+          type: "array",
+          min: 1,
+          message: "Select at least one priority",
+        },
+      ]}
+    >
+      <Select
+        placeholder="Select task priorities..."
+        mode="multiple"
+        allowClear
+        onClear={onClear}
+      >
+        {[
+          TaskPriority.NONE,
+          TaskPriority.LOW,
+          TaskPriority.MEDIUM,
+          TaskPriority.HIGH,
+          TaskPriority.URGENT,
+        ].map((priority) => (
+          <Select.Option key={priority} value={priority}>
+            <Space>
+              <TaskPriorityIcon priority={priority} />
+              {PRIORITY_LABEL[priority]}
+            </Space>
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+  );
+};
+
 const RoleFilter: FC<Props> = ({ name, projectId, onClear }) => {
   const { project } = useProject(projectId);
   const roles = useOrganizationRoles(project?.organizationId);
@@ -181,6 +224,8 @@ export const TaskViewFormFilterRow: FC<Props> = (props) => {
       return <OwnerFilter {...props} />;
     case TaskViewFilterType.STATUSES:
       return <StatusFilter {...props} />;
+    case TaskViewFilterType.PRIORITIES:
+      return <PriorityFilter {...props} />;
     case TaskViewFilterType.ROLES:
       return <RoleFilter {...props} />;
     default:

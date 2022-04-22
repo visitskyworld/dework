@@ -89,7 +89,7 @@ export const TaskPriorityIcon: FC<Props> = ({ priority }) => {
       return LowPrio;
     case TaskPriority.URGENT:
       return UrgentPrio;
-    default:
+    case TaskPriority.NONE:
       return NoPrio;
   }
 };

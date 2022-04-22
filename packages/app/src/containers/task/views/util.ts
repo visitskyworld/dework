@@ -2,6 +2,7 @@ import {
   RoleWithRules,
   RulePermission,
   Task,
+  TaskPriority,
   TaskStatus,
 } from "@dewo/app/graphql/types";
 
@@ -19,6 +20,9 @@ export const matchingOwnerIds = (ids: string[] | undefined) => (t: Task) =>
 export const matchingStatuses =
   (statuses: TaskStatus[] | undefined) => (t: Task) =>
     !statuses?.length || statuses.includes(t.status);
+export const matchingPriorities =
+  (priorities: TaskPriority[] | undefined) => (t: Task) =>
+    !priorities?.length || priorities.includes(t.priority);
 export const matchingProjects = (ids: string[] | undefined) => (t: Task) =>
   !ids?.length || ids.includes(t.projectId);
 export const matchingRoles =
