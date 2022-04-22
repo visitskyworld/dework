@@ -1,5 +1,14 @@
 import React, { FC, useCallback, useMemo } from "react";
-import { Button, Col, Form, message, Row, Typography, Space } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  message,
+  Row,
+  Typography,
+  Space,
+  Modal,
+} from "antd";
 import { InputWithLabel } from "./InputWithLabel";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -9,6 +18,7 @@ import { EditUserAvatarButton } from "./EditUserAvatarButton";
 import { UserDetails } from "./UserDetails";
 import { useToggle } from "@dewo/app/util/hooks";
 import router from "next/router";
+import { UserSettings } from "./UserSettings";
 
 interface Props {
   userId: string;
@@ -25,6 +35,7 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
   const [form] = Form.useForm();
   const editing = useToggle();
   const loading = useToggle(false);
+  const userSettings = useToggle();
 
   type InititalValues = Record<string, string>;
 
@@ -150,6 +161,26 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         >
           Edit Profile
         </Button>
+      )}
+      {!!isMe && (
+        <>
+          <Button
+            block
+            type="ghost"
+            style={{ marginTop: 16 }}
+            onClick={userSettings.toggleOn}
+          >
+            Settings
+          </Button>
+          <Modal
+            visible={userSettings.isOn}
+            title="Settings"
+            footer={null}
+            onCancel={userSettings.toggleOff}
+          >
+            <UserSettings />
+          </Modal>
+        </>
       )}
     </Form>
   );
