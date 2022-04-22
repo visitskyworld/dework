@@ -7,6 +7,7 @@ import {
   Resolver,
   Int,
   Context,
+  Info,
 } from "@nestjs/graphql";
 import {
   ForbiddenException,
@@ -45,6 +46,8 @@ import { OrganizationService } from "../organization/organization.service";
 import { AuditLogEvent } from "@dewo/api/models/AuditLogEvent";
 import { AuditLogService } from "../auditLog/auditLog.service";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
+import { GraphQLResolveInfo } from "graphql";
+import GraphQLFields from "graphql-fields";
 
 @Injectable()
 @Resolver(() => Task)
@@ -486,10 +489,17 @@ export class TaskResolver {
   }
 
   @Query(() => [Task])
-  public async getTasks(@Args("input") input: GetTasksInput): Promise<Task[]> {
+  public async getTasks(
+    @Args("input") input: GetTasksInput,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<Task[]> {
     if (input.ids?.length === 0) return [];
     if (input.statuses?.length === 0) return [];
-    return this.taskService.findWithRelations(input);
+    const fields = GraphQLFields(info as any);
+    return this.taskService.findWithRelations({
+      ...input,
+      joinProjectOrganization: !!fields.project?.organization,
+    });
   }
 }
 

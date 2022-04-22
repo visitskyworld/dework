@@ -118,8 +118,14 @@ export const calculateTaskRewardAsUSD = (
   reward: TaskReward | undefined
 ): number | undefined => {
   if (!reward?.token.usdPrice) return undefined;
-  const amount = Number(formatFixed(reward.amount, reward.token.exp));
-  return amount * reward.token.usdPrice;
+  if (reward.peggedToUsd) {
+    return Number(
+      formatFixed(reward.amount, Constants.NUM_DECIMALS_IN_USD_PEG)
+    );
+  } else {
+    const amount = Number(formatFixed(reward.amount, reward.token.exp));
+    return amount * reward.token.usdPrice;
+  }
 };
 
 export function useAddTaskToApolloCache(): (task: Task) => void {

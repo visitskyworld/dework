@@ -212,6 +212,7 @@ export class TaskService {
     doneAtBefore,
     rewardNotNull,
     requestingUserId,
+    joinProjectOrganization = false,
   }: {
     ids?: string[];
     rewardIds?: string[];
@@ -224,6 +225,7 @@ export class TaskService {
     rewardNotNull?: boolean;
     limit?: number;
     requestingUserId?: string;
+    joinProjectOrganization?: boolean;
   }): Promise<Task[]> {
     if (ids?.length === 0) return [];
     if (projectIds?.length === 0) return [];
@@ -244,6 +246,10 @@ export class TaskService {
       .leftJoinAndSelect("task.submissions", "submission")
       .innerJoinAndSelect("task.project", "project")
       .where("1 = 1");
+
+    if (joinProjectOrganization) {
+      query = query.innerJoinAndSelect("project.organization", "organization");
+    }
 
     if (!!ids) {
       query = query.andWhere("task.id IN (:...ids)", { ids });
