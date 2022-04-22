@@ -1,4 +1,4 @@
-import { Row, Typography } from "antd";
+import { Button, Row, Typography } from "antd";
 import React, { FC } from "react";
 import { Emojione } from "react-emoji-render";
 import { MetamaskAuthButton } from "../../auth/buttons/MetamaskAuthButton";
@@ -32,6 +32,15 @@ export const ConnectWalletToReceiveTaskReward: FC<Props> = ({ onNext }) => {
         style={{ alignSelf: "center" }}
         onAuthed={onNext}
       />
+      <Button
+        type="text"
+        style={{ alignSelf: "center", marginTop: 8 }}
+        className="text-secondary"
+        name="Task Reward: skip connecting Metamask"
+        onClick={onNext}
+      >
+        Not now
+      </Button>
     </>
   );
 };
