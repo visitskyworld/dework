@@ -18,7 +18,11 @@ import {
   Divider,
   Space,
 } from "antd";
-import { PRIORITY_LABEL, STATUS_LABEL } from "../board/util";
+import {
+  getProjectTaskStatuses,
+  PRIORITY_LABEL,
+  STATUS_LABEL,
+} from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
 import {
   usePermission,
@@ -35,7 +39,7 @@ import { TaskSubmissionsSection } from "./TaskSubmissionsSection";
 import { TaskDiscordButton } from "./TaskDiscordButton";
 import { StoryPointsInput } from "./StoryPointsInput";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
-import { useProjectTaskTags } from "../../project/hooks";
+import { useProjectDetails, useProjectTaskTags } from "../../project/hooks";
 import { TaskTwitterShareButton } from "./TaskTwitterShareButton";
 import { TaskActionSection } from "../actions/TaskActionSection";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
@@ -76,6 +80,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   onSubmit,
 }) => {
   const screens = useBreakpoint();
+  const { project } = useProjectDetails(projectId);
 
   const [form] = useForm<TaskFormValues>();
   const [values, setValues] = useState<Partial<TaskFormValues>>(
@@ -193,7 +198,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Select a task status"
               disabled={!canChange("status")}
             >
-              {(Object.keys(STATUS_LABEL) as TaskStatus[]).map((status) => (
+              {getProjectTaskStatuses(project).map((status) => (
                 <Select.Option
                   key={status}
                   value={status}
@@ -285,7 +290,7 @@ export const TaskForm: FC<TaskFormProps> = ({
               placeholder="Select a task status"
               disabled={!canChange("status")}
             >
-              {(Object.keys(STATUS_LABEL) as TaskStatus[]).map((status) => (
+              {getProjectTaskStatuses(project).map((status) => (
                 <Select.Option
                   key={status}
                   value={status}

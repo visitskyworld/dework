@@ -3,6 +3,7 @@ import { RoleTag } from "@dewo/app/components/RoleTag";
 import { useOrganizationUsers } from "@dewo/app/containers/organization/hooks";
 import {
   useProject,
+  useProjectDetails,
   useProjectTaskTags,
 } from "@dewo/app/containers/project/hooks";
 import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
@@ -95,7 +96,9 @@ const OwnerFilter: FC<Props> = ({ name, projectId, onClear }) => {
   );
 };
 
-const StatusFilter: FC<Props> = ({ name, onClear }) => {
+const StatusFilter: FC<Props> = ({ name, projectId, onClear }) => {
+  const showBacklog =
+    useProjectDetails(projectId).project?.options?.showBacklogColumn;
   return (
     <Form.Item
       name={[name, "statuses"]}
@@ -115,15 +118,18 @@ const StatusFilter: FC<Props> = ({ name, onClear }) => {
         onClear={onClear}
       >
         {[
+          showBacklog && TaskStatus.BACKLOG,
           TaskStatus.TODO,
           TaskStatus.IN_PROGRESS,
           TaskStatus.IN_REVIEW,
           TaskStatus.DONE,
-        ].map((status) => (
-          <Select.Option key={status} value={status}>
-            {STATUS_LABEL[status]}
-          </Select.Option>
-        ))}
+        ]
+          .filter((s): s is TaskStatus => !!s)
+          .map((status) => (
+            <Select.Option key={status} value={status}>
+              {STATUS_LABEL[status]}
+            </Select.Option>
+          ))}
       </Select>
     </Form.Item>
   );

@@ -16,7 +16,6 @@ import slugify from "slugify";
 import { DeepPartial, IsNull, Raw, Repository } from "typeorm";
 import { TokenService } from "../payment/token.service";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
-import { TaskStatus } from "@dewo/api/models/Task";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
 import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
@@ -47,12 +46,6 @@ export class ProjectService {
       ...partial,
       sortKey: Date.now().toString(),
       slug: await this.generateSlug(partial.name ?? "Project"),
-    });
-    // Create a "Backlog" section in the TODO list
-    await this.createTaskSection({
-      projectId: created.id,
-      name: "Backlog",
-      status: TaskStatus.TODO,
     });
 
     await this.taskViewService.create({

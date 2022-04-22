@@ -26,7 +26,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
 
   const shouldRenderReward = !!task.reward;
   const shouldRenderReactions =
-    !!task.reactions.length || task.status === TaskStatus.BACKLOG;
+    !!task.reactions.length || task.status === TaskStatus.COMMUNITY_SUGGESTIONS;
   const shouldRenderTaskActionButton = !!useTaskActionButton(task);
   return (
     <Card

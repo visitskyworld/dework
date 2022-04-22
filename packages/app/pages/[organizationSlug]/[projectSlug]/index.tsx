@@ -73,7 +73,7 @@ const Page: NextPage = () => {
               projectId={project?.id}
               activeKey={currentTab}
               extraTabs={[
-                !!project && !!details?.options?.showBacklogColumn && (
+                !!project && !!details?.options?.showCommunitySuggestions && (
                   <Tabs.TabPane
                     tab={
                       <Tab

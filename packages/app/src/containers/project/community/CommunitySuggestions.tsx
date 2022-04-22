@@ -62,7 +62,7 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
   const taskRows = useMemo<TaskRow[]>(
     () =>
       tasks
-        ?.filter((t) => t.status === TaskStatus.BACKLOG)
+        ?.filter((t) => t.status === TaskStatus.COMMUNITY_SUGGESTIONS)
         .map((task) => ({
           task,
           upvotes: _.sumBy(task.reactions, (reaction) =>
@@ -78,7 +78,7 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
     projectId,
     // @ts-ignore
     ...{ ownerIds: [] },
-    status: TaskStatus.BACKLOG,
+    status: TaskStatus.COMMUNITY_SUGGESTIONS,
   });
   const createTaskToggle = useToggle();
 
@@ -136,7 +136,7 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
 
       <TaskCreateModal
         projectId={projectId}
-        initialValues={{ status: TaskStatus.BACKLOG }}
+        initialValues={{ status: TaskStatus.COMMUNITY_SUGGESTIONS }}
         visible={createTaskToggle.isOn}
         onCancel={createTaskToggle.toggleOff}
         onDone={createTaskToggle.toggleOff}

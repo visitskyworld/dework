@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from "react";
 import {
   PaymentMethodType,
+  ProjectDetails,
   Task,
   TaskPriority,
   TaskSection,
@@ -21,11 +22,31 @@ export interface TaskSectionData {
 }
 
 export const STATUS_LABEL: Record<TaskStatus, string> = {
-  [TaskStatus.BACKLOG]: "Community Suggestions",
+  [TaskStatus.COMMUNITY_SUGGESTIONS]: "Community Suggestions",
+  [TaskStatus.BACKLOG]: "Backlog",
   [TaskStatus.TODO]: "To Do",
   [TaskStatus.IN_PROGRESS]: "In Progress",
   [TaskStatus.IN_REVIEW]: "In Review",
   [TaskStatus.DONE]: "Done",
+};
+
+export const getProjectTaskStatuses = (
+  projectDetails: ProjectDetails | undefined
+) => {
+  const keys = Object.keys(STATUS_LABEL) as TaskStatus[];
+  if (!projectDetails) return keys;
+  const { showBacklogColumn, showCommunitySuggestions } =
+    projectDetails.options ?? {};
+  const statuses = keys.filter((status) => {
+    if (status === TaskStatus.BACKLOG) {
+      return showBacklogColumn;
+    }
+    if (status === TaskStatus.COMMUNITY_SUGGESTIONS) {
+      return showCommunitySuggestions;
+    }
+    return true;
+  });
+  return statuses;
 };
 
 export const PRIORITY_LABEL: Record<TaskPriority, string> = {

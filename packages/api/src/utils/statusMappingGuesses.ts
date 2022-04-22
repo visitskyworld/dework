@@ -1,9 +1,9 @@
 import { TaskStatus } from "../models/Task";
 
 export const statusMappingGuesses: Record<TaskStatus, string[]> = {
+  [TaskStatus.BACKLOG]: ["backlog"],
   [TaskStatus.TODO]: [
     "not started",
-    "backlog",
     "todo",
     "to-do",
     "to do",
@@ -13,5 +13,5 @@ export const statusMappingGuesses: Record<TaskStatus, string[]> = {
   [TaskStatus.IN_PROGRESS]: ["progress", "doing", "claimed", "incomplete"],
   [TaskStatus.IN_REVIEW]: ["review"],
   [TaskStatus.DONE]: ["done", "complete", "finished"],
-  [TaskStatus.BACKLOG]: [],
+  [TaskStatus.COMMUNITY_SUGGESTIONS]: [],
 };

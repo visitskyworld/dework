@@ -485,6 +485,7 @@ export interface CreateOrganizationTagMutationVariables {
 export interface CreateProjectMutation_project_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
+  showCommunitySuggestions: boolean | null;
 }
 
 export interface CreateProjectMutation_project_tokenGates_token_network {
@@ -684,6 +685,7 @@ export interface CreateProjectMutationVariables {
 export interface UpdateProjectMutation_project_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
+  showCommunitySuggestions: boolean | null;
 }
 
 export interface UpdateProjectMutation_project_tokenGates_token_network {
@@ -6282,6 +6284,7 @@ export interface GetProjectQueryVariables {
 export interface GetProjectDetailsQuery_project_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
+  showCommunitySuggestions: boolean | null;
 }
 
 export interface GetProjectDetailsQuery_project_tokenGates_token_network {
@@ -9760,6 +9763,7 @@ export interface Invite {
 export interface ProjectDetails_options {
   __typename: "ProjectOptions";
   showBacklogColumn: boolean | null;
+  showCommunitySuggestions: boolean | null;
 }
 
 export interface ProjectDetails_tokenGates_token_network {
@@ -11542,6 +11546,7 @@ export enum TaskRewardTrigger {
 
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
+  COMMUNITY_SUGGESTIONS = "COMMUNITY_SUGGESTIONS",
   DONE = "DONE",
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
@@ -11779,6 +11784,7 @@ export interface GetTasksInput {
 
 export interface ProjectOptionsInput {
   showBacklogColumn?: boolean | null;
+  showCommunitySuggestions?: boolean | null;
 }
 
 export interface ProjectTokenGateInput {

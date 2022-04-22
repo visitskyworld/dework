@@ -110,7 +110,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           name: values.name,
           sectionId: values.sectionId,
           organizationId: values.organizationId,
-          options: { showBacklogColumn: true },
+          options: { showCommunitySuggestions: true },
         });
 
         const repo = githubRepos?.find((r) => r.id === values.githubRepoId);

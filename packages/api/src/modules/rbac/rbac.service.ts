@@ -281,7 +281,7 @@ export class RbacService {
 
           fn("create", Task, {
             ...task,
-            status: TaskStatus.BACKLOG,
+            status: TaskStatus.COMMUNITY_SUGGESTIONS,
             ownerIds: { $size: 0 },
           });
           fn(CRUD, TaskReaction, {

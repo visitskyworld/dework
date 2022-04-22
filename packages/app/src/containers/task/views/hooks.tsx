@@ -97,8 +97,8 @@ export function useTaskViewGroups(
   const { project } = useProject(projectId);
   const roles = useOrganizationRoles(project?.organizationId);
 
-  const customSortingSections =
-    useProjectDetails(projectId).project?.taskSections;
+  const details = useProjectDetails(projectId).project;
+  const customSortingSections = details?.taskSections;
 
   const findFilter = useCallback(
     (type: TaskViewFilterType) =>
@@ -164,17 +164,20 @@ export function useTaskViewGroups(
     if (groupBy === TaskViewGroupBy.status) {
       const statusFilter = findFilter(TaskViewFilterType.STATUSES);
       return [
+        details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
         TaskStatus.TODO,
         TaskStatus.IN_PROGRESS,
         TaskStatus.IN_REVIEW,
         TaskStatus.DONE,
-      ].filter(
-        (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
-      );
+      ]
+        .filter((s): s is TaskStatus => !!s)
+        .filter(
+          (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
+        );
     }
 
     return [];
-  }, [groupBy, findFilter]);
+  }, [groupBy, details?.options?.showBacklogColumn, findFilter]);
 
   return useMemo<TaskViewGroup[]>(
     () =>

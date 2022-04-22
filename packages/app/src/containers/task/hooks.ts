@@ -221,7 +221,7 @@ export function useCreateTaskFromFormValues(): (
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
       });
-      if (values.status === TaskStatus.BACKLOG) {
+      if (values.status === TaskStatus.COMMUNITY_SUGGESTIONS) {
         await createTaskReaction({
           taskId: task.id,
           reaction: ":arrow_up_small:",

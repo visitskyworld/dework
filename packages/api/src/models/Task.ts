@@ -29,6 +29,7 @@ import { TaskSection } from "./TaskSection";
 import { TaskGatingType } from "./enums/TaskGatingType";
 
 export enum TaskStatus {
+  COMMUNITY_SUGGESTIONS = "COMMUNITY_SUGGESTIONS",
   BACKLOG = "BACKLOG",
   TODO = "TODO",
   IN_PROGRESS = "IN_PROGRESS",

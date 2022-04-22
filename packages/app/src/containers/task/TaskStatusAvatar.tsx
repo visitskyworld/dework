@@ -5,7 +5,8 @@ import { TaskStatus } from "@dewo/app/graphql/types";
 import { Avatar, AvatarProps } from "antd";
 
 const colorByStatus: Record<TaskStatus, string> = {
-  [TaskStatus.BACKLOG]: Colors.orange.primary!,
+  [TaskStatus.COMMUNITY_SUGGESTIONS]: Colors.orange.primary!,
+  [TaskStatus.BACKLOG]: Colors.grey.primary!,
   [TaskStatus.TODO]: Colors.grey.primary!,
   [TaskStatus.IN_PROGRESS]: Colors.yellow.primary!,
   [TaskStatus.IN_REVIEW]: Colors.blue.primary!,
@@ -13,7 +14,8 @@ const colorByStatus: Record<TaskStatus, string> = {
 };
 
 const iconByStatus: Record<TaskStatus, ReactNode> = {
-  [TaskStatus.BACKLOG]: <Icons.BulbOutlined />,
+  [TaskStatus.COMMUNITY_SUGGESTIONS]: <Icons.BulbOutlined />,
+  [TaskStatus.BACKLOG]: "•",
   [TaskStatus.TODO]: "•",
   [TaskStatus.IN_PROGRESS]: <Icons.ThunderboltOutlined />,
   [TaskStatus.IN_REVIEW]: <Icons.SyncOutlined />,

@@ -251,6 +251,7 @@ export const projectDetails = gql`
     ...Project
     options {
       showBacklogColumn
+      showCommunitySuggestions
     }
     tokenGates {
       ...ProjectTokenGate

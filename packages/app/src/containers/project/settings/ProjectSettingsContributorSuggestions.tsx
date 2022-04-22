@@ -3,7 +3,7 @@ import { Checkbox, Form } from "antd";
 
 export const ProjectSettingsContributorSuggestions: FC = () => (
   <Form.Item
-    name={["options", "showBacklogColumn"]}
+    name={["options", "showCommunitySuggestions"]}
     valuePropName="checked"
     label="Contributor Suggestions"
     tooltip="Show a tab where contributors can suggest and vote on tasks."
