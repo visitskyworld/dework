@@ -37,6 +37,9 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { TaskService } from "../../task/task.service";
 import { IntegrationService } from "../integration.service";
+import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
+import { RoleSource } from "@dewo/api/models/rbac/Role";
+import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { getMarkdownImages } from "@dewo/api/utils/markdown";
 
 export enum DiscordGuildMembershipState {
@@ -55,6 +58,7 @@ export class DiscordIntegrationService {
     private readonly taskService: TaskService,
     private readonly threepidService: ThreepidService,
     private readonly integrationService: IntegrationService,
+    private readonly rbacService: RbacService,
     @InjectRepository(DiscordChannel)
     private readonly discordChannelRepo: Repository<DiscordChannel>
   ) {}
@@ -173,6 +177,8 @@ export class DiscordIntegrationService {
         const reward = task.reward;
         const hasAssignees = task.assignees.length;
         const url = await this.permalink.get(task);
+        const discordRoleIdsToTag = await this.getDiscordRoleIdsForTask(task);
+
         await this.postTaskCard(
           mainChannel,
           task,
@@ -191,7 +197,9 @@ export class DiscordIntegrationService {
             ]
               .filter((s) => !!s)
               .join("\n"),
-          }
+          },
+          [],
+          discordRoleIdsToTag
         );
       }
 
@@ -676,6 +684,17 @@ export class DiscordIntegrationService {
     );
   }
 
+  private async getDiscordRoleIdsForTask(task: Task): Promise<string[]> {
+    if (task.gating !== TaskGatingType.ROLES) {
+      return [];
+    }
+    const roles = await this.rbacService.findRolesForTask(
+      task.id,
+      RoleSource.DISCORD
+    );
+    return roles.map((r) => r.externalId).filter((id): id is string => !!id);
+  }
+
   private async getChannelFromTask(
     task: Task,
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>,
@@ -814,13 +833,17 @@ export class DiscordIntegrationService {
     message: string,
     discordIdsToTag?: string[],
     embedOverride?: Partial<Discord.MessageEmbedOptions>,
-    images: string[] = []
+    images: string[] = [],
+    discordRoleIdsToTag?: string[]
   ): Promise<void> {
     const url = await this.permalink.get(task);
+    const tags = [
+      ...(discordIdsToTag || []).map((id) => `<@${id}>`),
+      ...(discordRoleIdsToTag || []).map((id) => `<@&${id}>`),
+    ];
+    const content = tags.length ? tags.join(" ") : " ";
     await this.post(channel, {
-      content: discordIdsToTag?.length
-        ? discordIdsToTag.map((id) => `<@${id}>`).join(" ")
-        : " ",
+      content,
       embeds: [
         {
           title: task.name,

@@ -21,6 +21,7 @@ import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordModule } from "./discord.module";
 import { DiscordStatusboardService } from "./discord.statusboard.service";
 import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
+import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationCh
       Organization,
     ]),
     TaskModule,
+    RbacModule,
     ThreepidModule,
     PermalinkModule,
     IntegrationModule,

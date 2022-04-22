@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindConditions, In, Repository } from "typeorm";
-import { Role } from "@dewo/api/models/rbac/Role";
+import { Role, RoleSource } from "@dewo/api/models/rbac/Role";
 import { Rule } from "@dewo/api/models/rbac/Rule";
 import {
   Ability,
@@ -384,5 +384,20 @@ export class RbacService {
 
   public async findRuleById(id: string): Promise<Rule | undefined> {
     return this.ruleRepo.findOne(id);
+  }
+
+  public async findRolesForTask(
+    taskId: string,
+    source: RoleSource
+  ): Promise<Role[]> {
+    return await this.roleRepo
+      .createQueryBuilder("role")
+      .innerJoin("role.rules", "rule")
+      .where("rule.taskId = :taskId", { taskId })
+      .andWhere("rule.permission = :permission", {
+        permission: RulePermission.MANAGE_TASKS,
+      })
+      .andWhere("role.source = :source", { source })
+      .getMany();
   }
 }
