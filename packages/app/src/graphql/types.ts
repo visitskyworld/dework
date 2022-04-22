@@ -1257,6 +1257,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -1291,6 +1292,7 @@ export interface CreateTaskMutation_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -1473,6 +1475,7 @@ export interface UpdateTaskMutation_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -1654,6 +1657,7 @@ export interface CreateTaskApplicationMutation_application_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -1841,6 +1845,7 @@ export interface DeleteTaskApplicationMutation_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -2022,6 +2027,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -2209,6 +2215,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -3239,6 +3246,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -3570,6 +3578,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -3760,6 +3769,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -4091,6 +4101,7 @@ export interface ClearTaskPaymentsMutation_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -4320,6 +4331,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -5503,6 +5515,7 @@ export interface UserTasksQuery_user_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -6145,6 +6158,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -6552,6 +6566,7 @@ export interface GetProjectTasksQuery_project_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -6772,6 +6787,7 @@ export interface GetTaskQuery_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -7114,6 +7130,7 @@ export interface GetTaskQuery_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -7367,6 +7384,7 @@ export interface GetTasksQuery_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -7595,6 +7613,7 @@ export interface GetTasksToPayQuery_tasks {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -8130,6 +8149,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -8461,6 +8481,7 @@ export interface TaskCreatedSubscription_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -8647,6 +8668,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -8978,6 +9000,7 @@ export interface TaskUpdatedSubscription_task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -10273,6 +10296,7 @@ export interface Task {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -10470,6 +10494,7 @@ export interface TaskWithOrganization {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -10715,6 +10740,7 @@ export interface TaskDetails_subtasks {
   name: string;
   status: TaskStatus;
   description: string | null;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -11046,6 +11072,7 @@ export interface TaskDetails {
   name: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority | null;
   sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
@@ -11488,6 +11515,13 @@ export enum TaskGatingType {
   ASSIGNEES = "ASSIGNEES",
   OPEN_SUBMISSION = "OPEN_SUBMISSION",
   ROLES = "ROLES",
+}
+
+export enum TaskPriority {
+  HIGH = "HIGH",
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  URGENT = "URGENT",
 }
 
 export enum TaskRewardTrigger {

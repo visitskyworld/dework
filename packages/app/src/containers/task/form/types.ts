@@ -1,6 +1,7 @@
 import {
   PaymentToken,
   TaskGatingType,
+  TaskPriority,
   TaskRewardTrigger,
   TaskStatus,
 } from "@dewo/app/graphql/types";
@@ -20,6 +21,7 @@ export interface TaskFormValues {
   projectId: string;
   parentTaskId?: string;
   status: TaskStatus;
+  priority: TaskPriority | null;
   dueDate?: moment.Moment;
   storyPoints?: number;
   tagIds?: string[];

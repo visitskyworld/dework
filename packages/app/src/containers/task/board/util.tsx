@@ -2,6 +2,7 @@ import { ReactNode, useMemo } from "react";
 import {
   PaymentMethodType,
   Task,
+  TaskPriority,
   TaskSection,
   TaskStatus,
 } from "@dewo/app/graphql/types";
@@ -25,6 +26,13 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.IN_PROGRESS]: "In Progress",
   [TaskStatus.IN_REVIEW]: "In Review",
   [TaskStatus.DONE]: "Done",
+};
+
+export const PRIORITY_LABEL: Record<TaskPriority, string> = {
+  [TaskPriority.LOW]: "Low Priority",
+  [TaskPriority.MEDIUM]: "Medium Priority",
+  [TaskPriority.HIGH]: "High Priority",
+  [TaskPriority.URGENT]: "Urgent",
 };
 
 export function useShouldShowInlinePayButton(task: Task): boolean {

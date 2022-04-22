@@ -1,4 +1,4 @@
-import { TaskStatus } from "@dewo/api/models/Task";
+import { TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import { Field, InputType, Int } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 import { UpdateTaskRewardInput } from "./UpdateTaskRewardInput";
@@ -42,6 +42,9 @@ export class UpdateTaskInput {
 
   @Field(() => TaskStatus, { nullable: true })
   public status?: TaskStatus;
+
+  @Field(() => TaskPriority, { nullable: true })
+  public priority?: TaskPriority;
 
   @Field(() => TaskGatingType, { nullable: true })
   public gating?: TaskGatingType;

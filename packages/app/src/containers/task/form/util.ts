@@ -56,6 +56,7 @@ export const toTaskFormValues = (
   assigneeIds: task.assignees.map((a) => a.id) ?? [],
   ownerIds: task.owners.map((o) => o.id) ?? [],
   status: task.status!,
+  priority: task.priority ?? null,
   dueDate: !!task.dueDate ? moment(task.dueDate) : undefined,
   reward: toTaskRewardFormValues(task.reward ?? undefined),
   gating: task.gating,

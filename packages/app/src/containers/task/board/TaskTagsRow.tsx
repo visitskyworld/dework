@@ -9,6 +9,8 @@ import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import moment from "moment";
+import { TaskPriorityIcon } from "./TaskPriorityIcon";
+import { PRIORITY_LABEL } from "./util";
 
 interface Props {
   task: Task | TaskWithOrganization;
@@ -33,6 +35,11 @@ export const TaskTagsRow: FC<Props> = ({
   );
 
   const standardTags = [
+    !!task.priority && (
+      <Tag title={PRIORITY_LABEL[task.priority]} style={{ height: 22 }}>
+        <TaskPriorityIcon priority={task.priority} />
+      </Tag>
+    ),
     !!task.dueDate && (
       <Tag>
         {task.status !== TaskStatus.DONE &&

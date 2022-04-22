@@ -1,5 +1,10 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { TaskStatus, User, TaskDetails } from "@dewo/app/graphql/types";
+import {
+  TaskStatus,
+  User,
+  TaskDetails,
+  TaskPriority,
+} from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
   Form,
@@ -11,8 +16,9 @@ import {
   Col,
   DatePicker,
   Divider,
+  Space,
 } from "antd";
-import { STATUS_LABEL } from "../board/util";
+import { PRIORITY_LABEL, STATUS_LABEL } from "../board/util";
 import { useTaskFormUserOptions } from "../hooks";
 import {
   usePermission,
@@ -45,6 +51,7 @@ import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import { useToggle } from "@dewo/app/util/hooks";
+import { TaskPriorityIcon } from "../board/TaskPriorityIcon";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -287,6 +294,32 @@ export const TaskForm: FC<TaskFormProps> = ({
                   {STATUS_LABEL[status]}
                 </Select.Option>
               ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="priority" label="Priority">
+            <Select
+              placeholder="Select a priority"
+              disabled={!canChange("priority")}
+            >
+              <Select.Option key="none" value={null}>
+                <Space>
+                  <TaskPriorityIcon priority={undefined} />
+                  No Priority
+                </Space>
+              </Select.Option>
+              {(Object.keys(PRIORITY_LABEL) as TaskPriority[]).map(
+                (priority) => (
+                  <Select.Option key={priority} value={priority}>
+                    <Space align="center">
+                      <div style={{ lineHeight: 1 }}>
+                        <TaskPriorityIcon priority={priority} />
+                      </div>
+                      {PRIORITY_LABEL[priority]}
+                    </Space>
+                  </Select.Option>
+                )
+              )}
             </Select>
           </Form.Item>
 

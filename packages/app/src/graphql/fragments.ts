@@ -409,6 +409,7 @@ export const task = gql`
     name
     description
     status
+    priority
     sortKey
     storyPoints
     dueDate
