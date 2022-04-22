@@ -523,5 +523,6 @@ export class Fixtures {
     RbacModule,
   ],
   providers: [Fixtures],
+  exports: [Fixtures],
 })
 export class FixturesModule {}

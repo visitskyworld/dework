@@ -507,3 +507,13 @@ yarn api ts-node-dev \
   src/scripts/fetchCurrentDiscordIntegrationPermissions.ts \
   dotenv_config_path=.env.prod
 ```
+
+# Load seed data
+```bash
+yarn api ts-node-dev \
+  --no-notify \
+  --require dotenv/config \
+  --require tsconfig-paths/register \
+  src/scripts/seedData.ts \
+  dotenv_config_path=.env.local
+```
