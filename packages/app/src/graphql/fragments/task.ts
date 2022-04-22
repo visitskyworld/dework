@@ -8,6 +8,7 @@ const taskViewFilter = gql`
     ownerIds
     assigneeIds
     statuses
+    priorities
   }
 `;
 

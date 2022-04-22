@@ -624,6 +624,7 @@ export interface CreateProjectMutation_project_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface CreateProjectMutation_project_taskViews_sortBys {
@@ -745,6 +746,7 @@ export interface UpdateProjectMutation_project_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface UpdateProjectMutation_project_taskViews_sortBys {
@@ -4986,6 +4988,7 @@ export interface CreateTaskViewMutation_taskView_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface CreateTaskViewMutation_taskView_sortBys {
@@ -5002,6 +5005,7 @@ export interface CreateTaskViewMutation_taskView_project_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface CreateTaskViewMutation_taskView_project_taskViews_sortBys {
@@ -5068,6 +5072,7 @@ export interface UpdateTaskViewMutation_taskView_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_sortBys {
@@ -5084,6 +5089,7 @@ export interface UpdateTaskViewMutation_taskView_project_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_project_taskViews_sortBys {
@@ -6338,6 +6344,7 @@ export interface GetProjectDetailsQuery_project_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface GetProjectDetailsQuery_project_taskViews_sortBys {
@@ -9815,6 +9822,7 @@ export interface ProjectDetails_taskViews_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface ProjectDetails_taskViews_sortBys {
@@ -11363,6 +11371,7 @@ export interface TaskViewFilter {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 /* tslint:disable */
@@ -11397,6 +11406,7 @@ export interface TaskView_filters {
   ownerIds: Scalar.UUID[] | null;
   assigneeIds: Scalar.UUID[] | null;
   statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
 }
 
 export interface TaskView_sortBys {

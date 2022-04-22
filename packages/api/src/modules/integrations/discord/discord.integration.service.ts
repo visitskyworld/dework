@@ -685,6 +685,8 @@ export class DiscordIntegrationService {
   }
 
   private async getDiscordRoleIdsForTask(task: Task): Promise<string[]> {
+    // Note(fant): only enable this for the Dework development project for now
+    if (task.projectId !== "cdba0597-6aed-4fd3-a3da-2c1c2b45912d") return [];
     if (task.gating !== TaskGatingType.ROLES) {
       return [];
     }

@@ -77,7 +77,7 @@ const NoPrio = (
 );
 
 interface Props {
-  priority: TaskPriority | undefined;
+  priority: TaskPriority;
 }
 export const TaskPriorityIcon: FC<Props> = ({ priority }) => {
   switch (priority) {
