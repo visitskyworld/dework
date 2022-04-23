@@ -59,7 +59,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
               projectId={task!.projectId}
               initialValues={initialValues}
               assignees={task!.assignees}
-              showProjectLink={isOnProjectPage}
+              showProjectLink={!isOnProjectPage}
               onSubmit={updateTaskFromFormValues}
             />
           )}

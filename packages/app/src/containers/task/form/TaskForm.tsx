@@ -272,14 +272,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           )}
 
-          <TaskGatingFields
-            mode={mode}
-            task={task}
-            values={values}
-            projectId={projectId}
-            disabled={!canChange("ownerIds")}
-          />
-
           <Form.Item
             name="status"
             label="Status"
@@ -301,6 +293,14 @@ export const TaskForm: FC<TaskFormProps> = ({
               ))}
             </Select>
           </Form.Item>
+
+          <TaskGatingFields
+            mode={mode}
+            task={task}
+            values={values}
+            projectId={projectId}
+            disabled={!canChange("ownerIds")}
+          />
 
           <Form.Item name="priority" label="Priority">
             <Select

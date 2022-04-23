@@ -4,7 +4,7 @@ import {
   Task,
 } from "@dewo/app/graphql/types";
 import { Modal, notification, Row, Spin, Typography } from "antd";
-import React, { FC, useCallback } from "react";
+import React, { FC } from "react";
 import { useCreateTaskApplication, useTask } from "../../hooks";
 import { Form, Button, Input } from "antd";
 import { DatePicker } from "antd";
@@ -23,6 +23,12 @@ import {
   useOrganization,
   useOrganizationIntegrations,
 } from "@dewo/app/containers/organization/hooks";
+import { useRunningCallback } from "@dewo/app/util/hooks";
+
+interface FormValues {
+  message: string;
+  dates: [moment.Moment, moment.Moment];
+}
 
 interface Props {
   taskId: string | undefined;
@@ -51,8 +57,8 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const followOrganization = useFollowOrganization(project?.organizationId);
 
   const createTaskApplication = useCreateTaskApplication();
-  const handleSubmit = useCallback(
-    async (input) => {
+  const [handleSubmit, submitting] = useRunningCallback(
+    async (input: FormValues) => {
       if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
         await addUserToDiscordGuild().catch(() => {});
       }
@@ -60,8 +66,8 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         taskId: task!.id,
         userId: user!.id,
         message: input.message,
-        startDate: input.dates[0],
-        endDate: input.dates[1],
+        startDate: input.dates[0].toISOString(),
+        endDate: input.dates[1].toISOString(),
       });
       await followOrganization();
       await onDone(claimedTask);
@@ -121,7 +127,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
     <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
       <Form.Item
         name="dates"
-        label="When are you claiming this task for?"
+        label="How much time will you need?"
         rules={[{ required: true, message: "Please enter a date" }]}
       >
         <DatePicker.RangePicker
@@ -139,8 +145,14 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         />
       </Form.Item>
 
-      <Button type="primary" htmlType="submit" size="large" block>
-        I'm Interested
+      <Button
+        loading={submitting}
+        type="primary"
+        htmlType="submit"
+        size="large"
+        block
+      >
+        Apply
       </Button>
     </Form>
   );

@@ -1,6 +1,7 @@
 import React, { CSSProperties, FC, useMemo } from "react";
 import {
   Task,
+  TaskPriority,
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
@@ -35,7 +36,7 @@ export const TaskTagsRow: FC<Props> = ({
   );
 
   const standardTags = [
-    !!task.priority && (
+    task.priority !== TaskPriority.NONE && (
       <Tag title={PRIORITY_LABEL[task.priority]} style={{ height: 22 }}>
         <TaskPriorityIcon priority={task.priority} />
       </Tag>
