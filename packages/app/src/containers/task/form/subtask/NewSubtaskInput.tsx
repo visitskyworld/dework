@@ -7,14 +7,23 @@ import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { SubtaskFormValues } from "./SubtaskInput";
 import style from "./NewSubtaskInput.module.less";
 
-const initialValues: Partial<SubtaskFormValues> = {};
 interface NewSubtaskProps {
   disabled?: boolean;
   onSubmit: (subtask: SubtaskFormValues) => void;
+  onCancel?: () => void;
+  hideButton?: boolean;
+  placeholder?: string;
+  initialValues?: Partial<SubtaskFormValues>;
+  autoFocus?: boolean;
 }
 export const NewSubtaskInput: FC<NewSubtaskProps> = ({
   onSubmit,
-  disabled = false,
+  onCancel,
+  disabled,
+  hideButton,
+  placeholder = "Add a subtask",
+  initialValues = {},
+  autoFocus,
 }) => {
   const subTaskInputRef = useRef<InputRef>(null);
   const focusInput = useCallback(
@@ -38,7 +47,8 @@ export const NewSubtaskInput: FC<NewSubtaskProps> = ({
     isInitialized.toggleOff();
     setValues(initialValues);
     form.resetFields();
-  }, [form, isInitialized]);
+    onCancel?.();
+  }, [form, initialValues, isInitialized, onCancel]);
 
   const handleAddTask = useCallback(async () => {
     if (!values.name) return;
@@ -67,7 +77,7 @@ export const NewSubtaskInput: FC<NewSubtaskProps> = ({
           " "
         )}
       >
-        <Col>
+        <Col hidden={hideButton}>
           <Button
             icon={<Icons.PlusOutlined />}
             shape="circle"
@@ -85,9 +95,10 @@ export const NewSubtaskInput: FC<NewSubtaskProps> = ({
               bordered={false}
               ref={subTaskInputRef}
               style={{ flex: 1, fontWeight: 500 }}
-              placeholder="Add subtask..."
+              placeholder={placeholder}
               disabled={disabled}
               onPressEnter={handleSubmit}
+              autoFocus={autoFocus}
             />
           </Form.Item>
           <HeadlessCollapse expanded={isInitialized.isOn}>

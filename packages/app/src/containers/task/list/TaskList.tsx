@@ -15,7 +15,6 @@ import {
   Button,
   DatePicker,
   Dropdown,
-  Input,
   Menu,
   Popconfirm,
   Row,
@@ -23,7 +22,13 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import React, { CSSProperties, FC, useCallback, useMemo } from "react";
+import React, {
+  CSSProperties,
+  FC,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import {
   formatTaskReward,
   useDeleteTask,
@@ -45,12 +50,13 @@ import { TaskTagsRow } from "../board/TaskTagsRow";
 import moment from "moment";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import { NewSubtaskInput } from "../form/subtask/NewSubtaskInput";
 
 export interface TaskListRow {
   key: string;
   task?: Task;
   name: string;
-  description: string | null;
+  description: string | undefined;
   status: TaskStatus;
   dueDate: string | null;
   assigneeIds: string[];
@@ -59,7 +65,6 @@ export interface TaskListRow {
 interface Props {
   rows: TaskListRow[];
   tags?: TaskTag[];
-  nameEditable?: boolean;
   showHeader?: boolean;
   showActionButtons?: boolean;
   defaultSortByStatus?: boolean;
@@ -70,10 +75,12 @@ interface Props {
   onChange?(changed: Partial<TaskListRow>, row: TaskListRow): void;
   onDelete?(row: TaskListRow): void;
   onClick?(row: TaskListRow): void;
+  editable?: boolean;
 }
 
 interface TableRowComponentProps extends React.HTMLAttributes<any> {
   "data-row-key": string;
+  isDragDisabled?: boolean;
   index: number;
 }
 
@@ -97,12 +104,17 @@ const DroppableTableBody = ({ ...props }) => {
   );
 };
 
-const DraggableTableRow = ({ index, ...props }: TableRowComponentProps) => {
+const DraggableTableRow = ({
+  index,
+  isDragDisabled = false,
+  ...props
+}: TableRowComponentProps) => {
   return (
     <Draggable
       key={props["data-row-key"]}
       draggableId={props["data-row-key"]}
       index={index}
+      isDragDisabled={isDragDisabled}
     >
       {(provided) => {
         return (
@@ -123,7 +135,6 @@ export const TaskList: FC<Props> = ({
   rows,
   tags,
   projectId,
-  nameEditable = true,
   showHeader = true,
   showActionButtons = false,
   defaultSortByStatus = false,
@@ -133,6 +144,7 @@ export const TaskList: FC<Props> = ({
   onChange,
   onDelete,
   onClick,
+  editable = false,
 }) => {
   const navigateToTask = useNavigateToTaskFn();
 
@@ -185,6 +197,8 @@ export const TaskList: FC<Props> = ({
     [onDelete, deleteTask]
   );
 
+  const [editingRow, setEditingRow] = useState<string | undefined>();
+
   // TODO(fant): SSRing <Table /> gets stuck
   if (isSSR) return null;
   if (!rows.length) return null;
@@ -201,6 +215,7 @@ export const TaskList: FC<Props> = ({
         index,
         onClick: !!onClick
           ? (e) => {
+              editable && setEditingRow(t.key);
               eatClick(e);
               onClick(t);
             }
@@ -210,15 +225,19 @@ export const TaskList: FC<Props> = ({
         canCreateSubtask
           ? {
               body: {
-                wrapper: (val: TableRowComponentProps) =>
-                  DroppableTableBody(val),
-                row: (val: TableRowComponentProps) => DraggableTableRow(val),
+                wrapper: DroppableTableBody,
+                row: (val: TableRowComponentProps) =>
+                  DraggableTableRow({
+                    ...val,
+                    isDragDisabled: val["data-row-key"] === editingRow,
+                  }),
               },
             }
           : undefined
       }
       columns={[
         {
+          key: "status",
           dataIndex: "status",
           width: 1,
           render: (currentStatus: TaskStatus, row) => (
@@ -250,6 +269,7 @@ export const TaskList: FC<Props> = ({
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
         },
         {
+          key: "name",
           title: "Name",
           dataIndex: "name",
           showSorterTooltip: false,
@@ -258,35 +278,39 @@ export const TaskList: FC<Props> = ({
           className: "w-full",
           onFilter: (value, row) =>
             row.name.toLowerCase().includes((value as string).toLowerCase()),
-          render: (name: string, row: TaskListRow) =>
-            nameEditable ? (
-              <Input.TextArea
-                autoSize
-                className="dewo-field dewo-field-focus-border"
-                style={{ paddingTop: 4 }}
-                placeholder="Enter name..."
-                disabled={!canChange(row.task, "name") || !nameEditable}
-                defaultValue={name}
-                onPressEnter={(e) => {
-                  e.preventDefault();
-                  handleChange(
-                    { name: (e.target as HTMLInputElement).value },
-                    row
-                  );
-                  (e.target as HTMLInputElement).blur();
-                }}
-              />
-            ) : size === "small" ? (
-              <Typography.Paragraph style={{ padding: 8, marginBottom: 0 }}>
-                {name}
-              </Typography.Paragraph>
-            ) : (
-              <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                {name}
-              </Typography.Title>
-            ),
+          render: (name: string, row: TaskListRow) => {
+            const isEditing = editingRow === row.key;
+            if (!isEditing) {
+              return size === "small" ? (
+                <Typography.Paragraph style={{ padding: 8, marginBottom: 0 }}>
+                  {name}
+                </Typography.Paragraph>
+              ) : (
+                <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                  {name}
+                </Typography.Title>
+              );
+            }
+
+            return (
+              <div onClick={eatClick} style={{ margin: "0 8px" }}>
+                <NewSubtaskInput
+                  initialValues={row}
+                  placeholder="Add a title"
+                  hideButton
+                  autoFocus
+                  onCancel={() => setEditingRow(undefined)}
+                  onSubmit={(c) => {
+                    onChange?.(c, row);
+                    setEditingRow(undefined);
+                  }}
+                />
+              </div>
+            );
+          },
         },
         {
+          key: "tags",
           title: "Tags",
           dataIndex: ["task", "tags"],
           width: !!tags ? undefined : 1,
@@ -307,6 +331,7 @@ export const TaskList: FC<Props> = ({
             ),
         },
         {
+          key: "dueDate",
           title: "Due",
           dataIndex: "dueDate",
           width: 82,
@@ -338,6 +363,7 @@ export const TaskList: FC<Props> = ({
           ),
         },
         {
+          key: "assignees",
           title: "Assignees",
           dataIndex: "assigneeIds",
           width: 1,
@@ -370,8 +396,8 @@ export const TaskList: FC<Props> = ({
           ),
         },
         {
-          title: "Actions",
           key: "actions",
+          title: "Actions",
           width: showActionButtons ? 140 : 1,
           render: (_, row) => (
             <Row align="middle" style={{ justifyContent: "space-between" }}>

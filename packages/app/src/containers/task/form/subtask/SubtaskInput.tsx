@@ -83,7 +83,7 @@ export const SubtaskInput: FC<Props> = ({
       } = result;
 
       if (!task && value) {
-        let updatedValue = value;
+        const updatedValue = value;
         const temp = updatedValue[oldIndex];
         updatedValue.splice(oldIndex, 1);
         updatedValue.splice(newIndex, 0, temp);
@@ -120,7 +120,7 @@ export const SubtaskInput: FC<Props> = ({
         task,
         key: task.id,
         name: task.name,
-        description: task.description,
+        description: task.description ?? "",
         assigneeIds: task.assignees.map((u) => u.id),
         dueDate: task.dueDate ?? null,
         status: task.status,
@@ -155,7 +155,7 @@ export const SubtaskInput: FC<Props> = ({
         <TaskList
           rows={rows}
           size="small"
-          nameEditable={false}
+          editable={!!canCreateSubtask}
           onClick={handleClick}
           showHeader={false}
           projectId={projectId}

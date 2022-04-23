@@ -24,7 +24,7 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
           key: task.id,
           assigneeIds: task.assignees.map((u) => u.id),
           name: task.name,
-          description: task.description,
+          description: task.description ?? undefined,
           status: task.status,
           dueDate: task.dueDate,
         })
@@ -51,7 +51,6 @@ export const ProjectTaskList: FC<Props> = ({ projectId }) => {
       <TaskList
         rows={rows}
         tags={tags}
-        nameEditable={false}
         showActionButtons={true}
         defaultSortByStatus={true}
         projectId={projectId}
