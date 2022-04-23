@@ -17,6 +17,7 @@ import {
   DatePicker,
   Divider,
   Space,
+  Breadcrumb,
 } from "antd";
 import {
   getProjectTaskStatuses,
@@ -48,7 +49,6 @@ import {
   TaskRewardSection,
   useCanUpdateTaskReward,
 } from "./reward/TaskRewardSection";
-import { TaskProjectRow } from "./TaskProjectRow";
 import { TaskGatingFields } from "./gating/TaskGatingFields";
 import { TaskFormValues } from "./types";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
@@ -56,6 +56,7 @@ import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/Rich
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import { useToggle } from "@dewo/app/util/hooks";
 import { TaskPriorityIcon } from "../board/TaskPriorityIcon";
+import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -172,6 +173,27 @@ export const TaskForm: FC<TaskFormProps> = ({
                 {task.parentTask.name}
               </Typography.Text>
             </Button>
+          )}
+
+          {showProjectLink && !!task && (
+            <Breadcrumb>
+              <Breadcrumb.Item href={task.project.organization.permalink}>
+                <OrganizationAvatar
+                  size={16}
+                  tooltip={{ visible: false }}
+                  organization={task.project.organization}
+                  style={{ marginRight: 8 }}
+                />
+                <span>{task.project.organization.name}</span>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                href={task.project.permalink}
+                className="text-secondary"
+                // style={{ color: "unset" }}
+              >
+                {task.project.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
           )}
 
           <Form.Item
@@ -362,10 +384,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             >
               <StoryPointsInput disabled />
             </Form.Item>
-          )}
-
-          {!!task && showProjectLink && (
-            <TaskProjectRow project={task.project} />
           )}
 
           {(canChange("dueDate") || canChange("storyPoints")) && (

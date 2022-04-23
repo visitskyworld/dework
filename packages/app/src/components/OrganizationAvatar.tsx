@@ -18,14 +18,14 @@ export const OrganizationAvatar: FC<Props> = ({
   <Tooltip title={organization.name} placement="top" {...tooltip}>
     <Avatar
       src={organization.imageUrl}
+      icon={organization.name?.[0]?.toUpperCase() ?? <Icons.TeamOutlined />}
+      {...otherProps}
       style={{
         backgroundColor: !organization.imageUrl
           ? colorFromUuid(organization.id)
           : undefined,
         ...otherProps.style,
       }}
-      icon={organization.name?.[0]?.toUpperCase() ?? <Icons.TeamOutlined />}
-      {...otherProps}
       className={`bg-component ${className}`}
     />
   </Tooltip>

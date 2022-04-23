@@ -992,6 +992,16 @@ iframe {
   margin-left: -8px;
 }
 
+.ant-breadcrumb {
+  > span:last-child a {
+    color: @text-color-secondary;
+  }
+
+  a:hover, & > span:last-child a:hover {
+    color: @text-color;
+  }
+}
+
 .dewo-suggestion-card {
   &.dewo-suggestion-upvoted {
     background-color: @primary-color-50;
