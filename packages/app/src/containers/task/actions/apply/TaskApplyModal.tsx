@@ -4,7 +4,7 @@ import {
   Task,
 } from "@dewo/app/graphql/types";
 import { Modal, notification, Row, Spin, Typography } from "antd";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { useCreateTaskApplication, useTask } from "../../hooks";
 import { Form, Button, Input } from "antd";
 import { DatePicker } from "antd";
@@ -12,6 +12,7 @@ import moment from "moment";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useProject } from "../../../project/hooks";
 import { useRouter } from "next/router";
+import { ThreepidSource } from "@dewo/app/graphql/types";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { Constants } from "@dewo/app/util/constants";
 import {
@@ -44,6 +45,10 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   const { task } = useTask(taskId);
   const { project } = useProject(task?.projectId);
   const organization = useOrganization(project?.organizationId);
+  const isConnectedToDiscord = useMemo(
+    () => !!user?.threepids.some((t) => t.source === ThreepidSource.discord),
+    [user]
+  );
   const hasDiscordIntegration = !!useOrganizationIntegrations(
     project?.organizationId,
     OrganizationIntegrationType.DISCORD
@@ -106,13 +111,15 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
     return (
       <Row align="middle" style={{ flexDirection: "column" }}>
         <Typography.Paragraph style={{ textAlign: "center" }}>
-          To apply to this task you first need to connect your Discord account
+          {isConnectedToDiscord
+            ? `To apply to this task you first need to join ${organization?.name}'s Discord server`
+            : "To apply to this task you first need to connect your Discord account"}
         </Typography.Paragraph>
         <Button
           type="primary"
           size="large"
           icon={<DiscordIcon />}
-          children="Connect to Discord"
+          children={isConnectedToDiscord ? "Join server" : "Connect Discord"}
           href={`${
             Constants.GRAPHQL_API_URL
           }/auth/discord-join-guild?state=${encodeURIComponent(
