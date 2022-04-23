@@ -162,6 +162,7 @@ export const TaskForm: FC<TaskFormProps> = ({
             <Button
               type="text"
               size="small"
+              style={{ marginLeft: -8, alignSelf: "flex-start" }}
               icon={<Icons.CaretLeftFilled className="text-secondary" />}
               onClick={() => navigateToTask(task.parentTask!.id)}
             >

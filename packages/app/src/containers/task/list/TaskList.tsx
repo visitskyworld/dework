@@ -4,6 +4,7 @@ import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   Task,
+  TaskGatingType,
   TaskReward,
   TaskStatus,
   TaskTag,
@@ -178,7 +179,10 @@ export const TaskList: FC<Props> = ({
 
   const updateTask = useUpdateTask();
   const handleChange = useCallback(
-    async (changed: Partial<TaskListRow>, prevValue: TaskListRow) => {
+    async (
+      changed: Partial<TaskListRow> & { gating?: TaskGatingType },
+      prevValue: TaskListRow
+    ) => {
       if (!!prevValue.task) {
         await updateTask({ id: prevValue.task.id, ...changed });
       }
@@ -377,7 +381,12 @@ export const TaskList: FC<Props> = ({
                 label: <UserSelectOption key={user.id} user={user} />,
               }))}
               value={assigneeIds}
-              onChange={(assigneeIds) => handleChange({ assigneeIds }, row)}
+              onChange={(assigneeIds) =>
+                handleChange(
+                  { assigneeIds, gating: TaskGatingType.ASSIGNEES },
+                  row
+                )
+              }
             >
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Avatar.Group maxCount={3} size={size}>

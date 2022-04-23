@@ -3,7 +3,11 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { DragDropContext, DragDropContextProps } from "react-beautiful-dnd";
 import { Divider } from "antd";
 import { TaskList, TaskListRow } from "../../list/TaskList";
-import { TaskDetails, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  TaskDetails,
+  TaskGatingType,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { useCreateTask, useUpdateTask } from "../../hooks";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -49,6 +53,7 @@ export const SubtaskInput: FC<Props> = ({
               status: TaskStatus.TODO,
               ownerIds: !!user ? [user.id] : [],
               assigneeIds: [],
+              gating: TaskGatingType.ASSIGNEES,
               projectId,
               reward: undefined,
             })

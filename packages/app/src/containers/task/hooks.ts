@@ -66,6 +66,7 @@ import {
   GetOrganizationRolesQueryVariables,
   RulePermission,
   RoleWithRules,
+  TaskGatingType,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -253,6 +254,7 @@ export function useCreateTaskFromFormValues(): (
           description: subtask.description,
           ownerIds: !!user ? [user.id] : [],
           assigneeIds: subtask.assigneeIds,
+          gating: TaskGatingType.ASSIGNEES,
           status: subtask.status,
           tagIds: [],
           projectId: task.projectId,
