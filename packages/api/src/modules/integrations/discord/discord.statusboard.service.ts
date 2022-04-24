@@ -107,18 +107,27 @@ export class DiscordStatusboardService {
 
     try {
       const messageId = integration.config.messageId;
-      if (messageId) {
+      if (!!messageId) {
         const message = await channel.messages.fetch(messageId);
         if (message) await message.edit(messageContent);
       } else {
-        throw new Error("Outdated Discord message ID");
+        const newMessage = await channel.send(messageContent);
+        await this.integrationService.updateProjectIntegration({
+          id: integration.id,
+          config: { ...integration.config, messageId: newMessage.id },
+        });
       }
-    } catch {
-      const newMessage = await channel.send(messageContent);
-      await this.integrationService.updateProjectIntegration({
-        id: integration.id,
-        config: { ...integration.config, messageId: newMessage.id },
-      });
+    } catch (error) {
+      const errorString = JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      );
+      this.logger.error(
+        `Failed using existing message: ${JSON.stringify({
+          errorString,
+          integration,
+        })}`
+      );
     }
   }
 
