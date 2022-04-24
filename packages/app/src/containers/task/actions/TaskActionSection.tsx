@@ -75,7 +75,6 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
 
     if (
       [TaskStatus.TODO, TaskStatus.IN_PROGRESS].includes(task.status) &&
-      !canManageProject &&
       canSubmit &&
       task.gating === TaskGatingType.OPEN_SUBMISSION
     ) {
@@ -103,7 +102,6 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
 
     if (
       task.status === TaskStatus.TODO &&
-      !canManageProject &&
       canAssignTask &&
       !task.assignees.length
     ) {
@@ -139,7 +137,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
               style={{ marginRight: 8, display: "inline-grid" }}
             />
           }
-          label="Application Process "
+          label="Application Process"
           button={
             <ApplyToTaskButton size="large" type="primary" block task={task} />
           }
