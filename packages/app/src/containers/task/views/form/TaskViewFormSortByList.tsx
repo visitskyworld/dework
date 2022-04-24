@@ -21,6 +21,7 @@ const sortByFieldToString: Record<TaskViewSortByField, string> = {
   [TaskViewSortByField.createdAt]: "Created At",
   [TaskViewSortByField.dueDate]: "Due Date",
   [TaskViewSortByField.sortKey]: "Custom (drag-n-drop)",
+  [TaskViewSortByField.priority]: "Priority",
 };
 
 interface Props {
@@ -80,6 +81,7 @@ export const TaskViewFormSortByList: FC<Props> = ({ form }) => {
                 <Select placeholder="Select field...">
                   {[
                     TaskViewSortByField.sortKey,
+                    TaskViewSortByField.priority,
                     TaskViewSortByField.dueDate,
                     TaskViewSortByField.createdAt,
                   ].map((type) => (

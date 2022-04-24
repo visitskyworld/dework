@@ -11085,6 +11085,7 @@ export enum TaskViewSortByDirection {
 export enum TaskViewSortByField {
   createdAt = "createdAt",
   dueDate = "dueDate",
+  priority = "priority",
   sortKey = "sortKey",
 }
 

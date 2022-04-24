@@ -14,6 +14,7 @@ import {
   UpdateTaskViewMutation,
   UpdateTaskViewMutationVariables,
   PaymentStatus,
+  TaskPriority,
 } from "@dewo/app/graphql/types";
 import React, { useCallback, useMemo } from "react";
 import {
@@ -34,6 +35,19 @@ import { TaskSectionData } from "../board/util";
 import { GnosisPayAllButton } from "../board/GnosisPayAllButton";
 import { useProject, useProjectDetails } from "../../project/hooks";
 import { useOrganizationRoles } from "../../rbac/hooks";
+
+const sortByFieldFns: Partial<
+  Record<TaskViewSortByField, (task: Task) => string | number>
+> = {
+  priority: (t) =>
+    [
+      TaskPriority.URGENT,
+      TaskPriority.HIGH,
+      TaskPriority.MEDIUM,
+      TaskPriority.LOW,
+      TaskPriority.NONE,
+    ].indexOf(t.priority),
+};
 
 export function useCreateTaskView(): (
   input: CreateTaskViewInput
@@ -151,7 +165,7 @@ export function useTaskViewGroups(
       _.mapValues(groups, (tasks) =>
         _.orderBy(
           tasks,
-          sortBys.map((sortBy) => sortBy.field),
+          sortBys.map((sortBy) => sortByFieldFns[sortBy.field] ?? sortBy.field),
           sortBys.map((sortBy) =>
             sortBy.direction === TaskViewSortByDirection.ASC ? "asc" : "desc"
           )

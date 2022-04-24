@@ -16,6 +16,7 @@ export enum TaskViewType {
 }
 
 export enum TaskViewSortByField {
+  priority = "priority",
   sortKey = "sortKey",
   createdAt = "createdAt",
   dueDate = "dueDate",
