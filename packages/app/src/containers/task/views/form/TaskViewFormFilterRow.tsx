@@ -64,6 +64,7 @@ const AssigneeFilter: FC<Props> = ({ name, projectId, onClear }) => {
       <UserSelect
         mode="multiple"
         placeholder="Select assignees..."
+        showUnassigned
         users={users}
         onClear={onClear}
       />

@@ -54,8 +54,8 @@ export class TaskViewFilter {
   @Field(() => [GraphQLUUID], { nullable: true })
   public tagIds?: string[];
 
-  @Field(() => [GraphQLUUID], { nullable: true })
-  public assigneeIds?: string[];
+  @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
+  public assigneeIds?: (string | null)[];
 
   @Field(() => [GraphQLUUID], { nullable: true })
   public ownerIds?: string[];

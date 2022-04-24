@@ -13,8 +13,11 @@ export const matchingTagLabels = (labels: string[] | undefined) => (t: Task) =>
   t.tags.some((tag) => labels.includes(tag.label.toLowerCase()));
 export const matchingTagIds = (ids: string[] | undefined) => (t: Task) =>
   !ids?.length || t.tags.some((x) => ids.includes(x.id));
-export const matchingAssigneeIds = (ids: string[] | undefined) => (t: Task) =>
-  !ids?.length || t.assignees.some((x) => ids.includes(x.id));
+export const matchingAssigneeIds =
+  (ids: (string | null)[] | undefined) => (t: Task) =>
+    !ids?.length ||
+    t.assignees.some((x) => ids.includes(x.id)) ||
+    (ids.includes(null) && !t.assignees.length);
 export const matchingOwnerIds = (ids: string[] | undefined) => (t: Task) =>
   !ids?.length || t.owners.some((x) => ids.includes(x.id));
 export const matchingStatuses =
