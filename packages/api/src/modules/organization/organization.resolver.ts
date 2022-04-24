@@ -31,6 +31,7 @@ import { Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GraphQLResolveInfo } from "graphql";
+import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -224,6 +225,54 @@ export class OrganizationResolver {
   @Query(() => [Organization])
   public async getPopularOrganizations(): Promise<Organization[]> {
     return this.organizationService.findPopular();
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: OrganizationToken,
+      inject: [OrganizationService],
+      getSubject: (params: { organizationId: string; tokenId: string }) =>
+        Object.assign(new OrganizationToken(), params),
+      getOrganizationId: (subject) => subject.organizationId,
+    })
+  )
+  public async addTokenToOrganization(
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
+    @Args("tokenId", { type: () => GraphQLUUID }) tokenId: string
+  ): Promise<Organization> {
+    await this.organizationService.addTokens(organizationId, [tokenId]);
+    const organization = await this.organizationService.findById(
+      organizationId
+    );
+    if (!organization) throw new NotFoundException();
+    return organization;
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: OrganizationToken,
+      inject: [OrganizationService],
+      getSubject: (params: { organizationId: string; tokenId: string }) =>
+        Object.assign(new OrganizationToken(), params),
+      getOrganizationId: (subject) => subject.organizationId,
+    })
+  )
+  public async removeTokenFromOrganization(
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string,
+    @Args("tokenId", { type: () => GraphQLUUID }) tokenId: string
+  ): Promise<Organization> {
+    await this.organizationService.removeTokens(organizationId, [tokenId]);
+    const organization = await this.organizationService.findById(
+      organizationId
+    );
+    if (!organization) throw new NotFoundException();
+    return organization;
   }
 }
 

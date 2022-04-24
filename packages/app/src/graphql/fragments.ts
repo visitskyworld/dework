@@ -107,16 +107,12 @@ export const paymentMethod = gql`
     id
     type
     address
-    networks {
+    network {
       ...PaymentNetwork
-    }
-    tokens {
-      ...PaymentToken
     }
   }
 
   ${paymentNetwork}
-  ${paymentToken}
 `;
 
 export const payment = gql`
@@ -145,6 +141,20 @@ export const organization = gql`
     tagline
     permalink
   }
+`;
+
+export const organizationWithTokens = gql`
+  fragment OrganizationWithTokens on Organization {
+    id
+    tokens {
+      ...PaymentToken
+      network {
+        ...PaymentNetwork
+      }
+    }
+  }
+  ${paymentToken}
+  ${paymentNetwork}
 `;
 
 export const organizationTag = gql`

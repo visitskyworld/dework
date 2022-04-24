@@ -94,7 +94,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
         .map((taskId) => taskById[taskId])
         .filter((task): task is TaskToPay => !!task);
 
-      const network = gnosisPaymentMethod!.networks[0];
+      const network = gnosisPaymentMethod!.network;
       await switchChain(network);
 
       const transactions = await Promise.all(

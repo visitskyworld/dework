@@ -706,6 +706,38 @@ export const createRole = gql`
   ${Fragments.roleWithRules}
 `;
 
+export const addTokenToOrganization = gql`
+  mutation AddTokenToOrganizationMutation(
+    $organizationId: UUID!
+    $tokenId: UUID!
+  ) {
+    organization: addTokenToOrganization(
+      organizationId: $organizationId
+      tokenId: $tokenId
+    ) {
+      ...OrganizationWithTokens
+    }
+  }
+
+  ${Fragments.organizationWithTokens}
+`;
+
+export const removeTokenFromOrganization = gql`
+  mutation RemoveTokenFromOrganizationMutation(
+    $organizationId: UUID!
+    $tokenId: UUID!
+  ) {
+    organization: removeTokenFromOrganization(
+      organizationId: $organizationId
+      tokenId: $tokenId
+    ) {
+      ...OrganizationWithTokens
+    }
+  }
+
+  ${Fragments.organizationWithTokens}
+`;
+
 export const createRule = gql`
   mutation CreateRuleMutation($input: CreateRuleInput!) {
     rule: createRule(input: $input) {

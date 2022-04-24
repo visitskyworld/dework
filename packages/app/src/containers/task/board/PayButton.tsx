@@ -46,7 +46,7 @@ export const PayButton: FC<Props> = ({
               "Set up a payment method to pay contributors in this project.",
             btn: (
               <RouterContext.Provider value={router}>
-                <Link href={`${project!.permalink}/settings`}>
+                <Link href={`${project!.permalink}/settings/payment-method`}>
                   <a>
                     <Button
                       type="primary"

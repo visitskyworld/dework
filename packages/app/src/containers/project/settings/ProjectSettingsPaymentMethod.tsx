@@ -32,7 +32,7 @@ export const ProjectSettingsPaymentMethod: FC<Props> = ({ projectId }) => {
             key={paymentMethod.id}
             type={paymentMethod.type}
             address={paymentMethod.address}
-            networkNames={paymentMethod.networks.map((n) => n.name).join(", ")}
+            networkName={paymentMethod.network.name}
             onClose={() => removePaymentMethod(paymentMethod)}
           />
         ))}

@@ -321,15 +321,15 @@ export class Fixtures {
   }
 
   public async createPaymentMethod(
-    partial: Partial<PaymentMethod> & { networkIds?: string[] } = {},
+    partial: Partial<PaymentMethod> = {},
     user?: User
   ): Promise<PaymentMethod> {
     return this.paymentService.createPaymentMethod(
       {
         type: PaymentMethodType.METAMASK,
         address: "0x0000000000000000000000000000000000000000",
-        networkIds: await this.createPaymentNetwork().then((n) => [n.id]),
-        tokenIds: [],
+        networkId: await this.createPaymentNetwork().then((n) => n.id),
+        projectId: await this.createProject().then((p) => p.id),
         ...partial,
       },
       user ?? (await this.createUser())

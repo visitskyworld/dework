@@ -1,3 +1,4 @@
+import { PaymentToken } from "./PaymentToken";
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
@@ -35,6 +36,11 @@ export class Organization extends Audit {
   @JoinTable({ name: "organization_tag_map" })
   @Field(() => [OrganizationTag])
   public tags!: OrganizationTag[];
+
+  @ManyToMany(() => PaymentToken)
+  @JoinTable({ name: "organization_token" })
+  @Field(() => [PaymentToken])
+  public tokens!: Promise<PaymentToken[]>;
 
   @OneToMany(() => Project, (p: Project) => p.organization)
   @Field(() => [Project])

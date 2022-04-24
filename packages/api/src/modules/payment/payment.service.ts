@@ -75,31 +75,16 @@ export class PaymentService {
     input: CreatePaymentMethodInput,
     user: User
   ): Promise<PaymentMethod> {
-    const [tokens, networks] = await Promise.all([
-      !!input.tokenIds?.length
-        ? this.paymentTokenRepo.find({ id: In(input.tokenIds) })
-        : ([] as PaymentToken[]),
-      this.paymentNetworkRepo.find({ id: In(input.networkIds) }),
-    ]);
-
     const created = await this.batchCreatePaymentMethods([
-      { ...input, networks, tokens, creatorId: user.id },
+      { ...input, creatorId: user.id },
     ]);
     return created[0];
   }
 
   public async batchCreatePaymentMethods(
-    partials: Partial<
-      Omit<PaymentMethod, "networks" | "tokens"> & {
-        networks: PaymentNetwork[];
-        tokens: PaymentToken[];
-      }
-    >[]
+    partials: Partial<PaymentMethod>[]
   ): Promise<PaymentMethod[]> {
-    const processed = partials.map((pm) =>
-      Object.assign(new PaymentMethod(), pm)
-    );
-    const created = await this.paymentMethodRepo.save(processed);
+    const created = await this.paymentMethodRepo.save(partials);
     return this.paymentMethodRepo.find({ id: In(created.map((c) => c.id)) });
   }
 

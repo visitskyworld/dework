@@ -10,12 +10,9 @@ export class CreatePaymentMethodInput {
   @Field()
   public address!: string;
 
-  @Field(() => [GraphQLUUID])
-  public networkIds!: string[];
+  @Field(() => GraphQLUUID)
+  public networkId!: string;
 
-  @Field(() => [GraphQLUUID], { nullable: true })
-  public tokenIds?: string[];
-
-  @Field(() => GraphQLUUID, { nullable: true })
-  public projectId?: string;
+  @Field(() => GraphQLUUID)
+  public projectId!: string;
 }

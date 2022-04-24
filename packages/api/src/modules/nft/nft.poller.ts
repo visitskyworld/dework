@@ -161,7 +161,7 @@ export class NFTPoller {
 
     const paymentMethod = await this.paymentMethodRepo
       .createQueryBuilder("pm")
-      .innerJoinAndSelect("pm.networks", "n")
+      .innerJoinAndSelect("pm.network", "n")
       .where("n.id = :networkId", { networkId: network.id })
       .andWhere("pm.address = :address", { address: signer.address })
       .andWhere("pm.type = :type", { type: PaymentMethodType.METAMASK })

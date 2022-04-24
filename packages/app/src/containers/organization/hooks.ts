@@ -7,6 +7,8 @@ import {
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
+  AddTokenToOrganizationMutation,
+  AddTokenToOrganizationMutationVariables,
   CreateOrganizationInput,
   CreateOrganizationMutation,
   CreateOrganizationMutationVariables,
@@ -35,6 +37,8 @@ import {
   GetOrganizationTasksQueryVariables,
   GetOrganizationTaskTagsQuery,
   GetOrganizationTaskTagsQueryVariables,
+  GetOrganizationTokensQuery,
+  GetOrganizationTokensQueryVariables,
   GetOrganizationUsersQuery,
   GetOrganizationUsersQueryVariables,
   GithubRepo,
@@ -44,10 +48,12 @@ import {
   OrganizationIntegrationType,
   OrganizationTag,
   ProjectSection,
+  RemoveTokenFromOrganizationMutation,
+  RemoveTokenFromOrganizationMutationVariables,
   SetOrganizationDetailInput,
+  SetOrganizationDetailMutation_organization,
   SetOrganizationDetailMutation,
   SetOrganizationDetailMutationVariables,
-  SetOrganizationDetailMutation_organization,
   TaskFilterInput,
   TaskTag,
   UpdateOrganizationInput,
@@ -328,4 +334,48 @@ export function useOrganizationDiscordChannels(
       await refetch();
     }, [refetch]),
   };
+}
+
+export function useOrganizationTokens(organizationId: string | undefined) {
+  const { data } = useQuery<
+    GetOrganizationTokensQuery,
+    GetOrganizationTokensQueryVariables
+  >(Queries.organizationTokens, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return useMemo(
+    () => data?.organization?.tokens ?? [],
+    [data?.organization?.tokens]
+  );
+}
+
+export function useAddTokenToOrganization() {
+  const [mutation] = useMutation<
+    AddTokenToOrganizationMutation,
+    AddTokenToOrganizationMutationVariables
+  >(Mutations.addTokenToOrganization);
+  return useCallback(
+    async (organizationId, tokenId) => {
+      const res = await mutation({ variables: { organizationId, tokenId } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data.organization;
+    },
+    [mutation]
+  );
+}
+
+export function useRemoveTokenFromOrganization() {
+  const [mutation] = useMutation<
+    RemoveTokenFromOrganizationMutation,
+    RemoveTokenFromOrganizationMutationVariables
+  >(Mutations.removeTokenFromOrganization);
+  return useCallback(
+    async (organizationId, tokenId) => {
+      const res = await mutation({ variables: { organizationId, tokenId } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data.organization;
+    },
+    [mutation]
+  );
 }

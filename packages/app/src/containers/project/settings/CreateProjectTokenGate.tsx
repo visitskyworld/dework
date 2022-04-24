@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import { Button, Dropdown, Menu, Tooltip, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
-import { PaymentTokenForm } from "../../payment/PaymentTokenForm";
+import { PaymentTokenForm } from "../../payment/token/PaymentTokenForm";
 import {
   PaymentToken,
   ProjectDetails,

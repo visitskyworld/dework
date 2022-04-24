@@ -146,6 +146,7 @@ export class GithubSyncIncomingService {
       .createQueryBuilder("task")
       .innerJoin("task.githubPullRequests", "pullRequest")
       .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.owners", "owner")
       .where("pullRequest.externalId = :pullRequestId", { pullRequestId })
       .andWhere("task.projectId = :projectId", {
         projectId: integration.projectId,

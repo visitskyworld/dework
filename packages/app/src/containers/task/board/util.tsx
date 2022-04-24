@@ -61,14 +61,10 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
   const { project } = useProject(task.projectId);
   const paymentMethods = useProjectPaymentMethods(task.projectId);
   const canManageProject = usePermission("update", project);
-  const hasPaymentMethod = useMemo(
+  const isGnosisSafeConnected = useMemo(
     () =>
-      !!paymentMethods?.some(
-        (pm) =>
-          pm.type !== PaymentMethodType.GNOSIS_SAFE &&
-          pm.networks.some((n) => n.id === task.reward?.token.networkId)
-      ),
-    [paymentMethods, task.reward?.token.networkId]
+      !!paymentMethods?.some((pm) => pm.type === PaymentMethodType.GNOSIS_SAFE),
+    [paymentMethods]
   );
   return (
     task.status === TaskStatus.DONE &&
@@ -76,7 +72,7 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
     !!task.reward &&
     !task.reward.payment &&
     !!canManageProject &&
-    hasPaymentMethod
+    !isGnosisSafeConnected
   );
 }
 

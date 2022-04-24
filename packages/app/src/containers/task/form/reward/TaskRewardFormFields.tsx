@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useMemo } from "react";
-import { TaskRewardTrigger } from "@dewo/app/graphql/types";
+import React, { FC, useCallback } from "react";
+import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
 import {
   Button,
   ConfigProvider,
@@ -9,10 +9,13 @@ import {
   Space,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProjectPaymentMethods } from "../../../project/hooks";
+import { useProject } from "../../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
-import { AddProjectPaymentMethodModal } from "../../../payment/project/AddProjectPaymentMethodModal";
+
+import { AddTokenModal } from "../../../payment/token/AddTokenModal";
+import { useOrganizationTokens } from "@dewo/app/containers/organization/hooks";
+
 import { TaskRewardFormValues } from "../types";
 import { PegToUsdCheckbox } from "./PegToUsdCheckbox";
 
@@ -40,58 +43,33 @@ export const TaskRewardFormFields: FC<Props> = ({
   value,
   onChange,
 }) => {
-  const addPaymentMethod = useToggle();
-  const forcefullyShowNetworkSelect = useToggle();
-  const handlePaymentMethodModalClosed = useCallback(() => {
-    addPaymentMethod.toggleOff();
-    forcefullyShowNetworkSelect.toggleOn();
-  }, [addPaymentMethod, forcefullyShowNetworkSelect]);
+  const { project } = useProject(projectId);
+  const addCustomToken = useToggle();
 
-  const paymentMethods = useProjectPaymentMethods(projectId);
-  const networks = useMemo(
-    () =>
-      _(paymentMethods)
-        .map((pm) => pm.networks)
-        .flatten()
-        .uniqBy((n) => n.id)
-        .value(),
-    [paymentMethods]
-  );
+  const tokens = useOrganizationTokens(project?.organizationId);
 
-  const tokens = useMemo(
-    () =>
-      _(paymentMethods)
-        .map((pm) => pm.tokens)
-        .flatten()
-        .filter((t) => t.networkId === value?.networkId)
-        .uniqBy((t) => t.id)
-        .value(),
-    [paymentMethods, value?.networkId]
-  );
-
-  const handleChangeNetworkId = useCallback(
-    (networkId: string) => {
-      forcefullyShowNetworkSelect.toggleOff();
-      onChange?.({ ...value, networkId, token: undefined });
-    },
-    [value, onChange, forcefullyShowNetworkSelect]
-  );
   const handleChangeAmount = useCallback(
     (amount: number | null) =>
       onChange?.({ ...value, amount: amount ?? undefined }),
     [onChange, value]
   );
   const handleChangeToken = useCallback(
-    (tokenId: string) => {
-      const token = tokens.find((t) => t.id === tokenId);
+    (token?: PaymentToken) =>
       onChange?.({
         ...value,
         trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
         token,
+        networkId: token?.networkId,
         peggedToUsd: value?.peggedToUsd && !!token?.usdPrice,
-      });
+      }),
+    [onChange, value]
+  );
+  const handleChangeTokenId = useCallback(
+    (tokenId: string) => {
+      const token = tokens.find((t) => t.id === tokenId);
+      handleChangeToken(token);
     },
-    [onChange, value, tokens]
+    [handleChangeToken, tokens]
   );
   const handleChangePeggedToUsd = useCallback(
     (peggedToUsd: boolean) => onChange?.({ ...value, peggedToUsd }),
@@ -102,7 +80,14 @@ export const TaskRewardFormFields: FC<Props> = ({
     onChange?.({});
   }, [onChange]);
 
-  if (!paymentMethods) return null;
+  const handleCustomTokenModalClosed = useCallback(
+    (token?: PaymentToken) => {
+      addCustomToken.toggleOff();
+      if (!!token) handleChangeToken(token);
+    },
+    [addCustomToken, handleChangeToken]
+  );
+
   return (
     <>
       <Space direction="vertical" style={{ width: "100%" }}>
@@ -110,55 +95,49 @@ export const TaskRewardFormFields: FC<Props> = ({
           renderEmpty={() => (
             <Empty
               imageStyle={{ display: "none" }}
-              description="To add a bounty, you need to connect a wallet to the project"
+              description="To add a bounty, you need to add tokens to pay with"
             >
               <Button
                 type="primary"
                 size="small"
-                children="Connect now"
-                onClick={addPaymentMethod.toggleOn}
+                children="Add token"
+                onClick={addCustomToken.toggleOn}
               />
             </Empty>
           )}
         >
           <Select
-            id={`${id}_networkId`}
-            placeholder="Select where you'll pay"
-            value={value?.networkId}
+            id={`${id}_tokenId`}
+            placeholder="Select a token"
+            value={value?.token?.id}
             allowClear
-            open={forcefullyShowNetworkSelect.isOn || undefined}
-            onBlur={forcefullyShowNetworkSelect.toggleOff}
             dropdownRender={(menu) => (
               <>
                 {menu}
-                {!!networks.length && (
+                {!!tokens.length && (
                   <Button
                     block
                     type="text"
                     style={{ textAlign: "left", marginTop: 4 }}
                     className="text-secondary"
                     icon={<Icons.PlusCircleOutlined />}
-                    children="Add another"
-                    onClick={addPaymentMethod.toggleOn}
+                    children="Add token"
+                    onClick={addCustomToken.toggleOn}
                   />
                 )}
               </>
             )}
-            onChange={handleChangeNetworkId}
+            onChange={handleChangeTokenId}
             onClear={handleClear}
           >
-            {networks.map((network) => (
-              <Select.Option
-                key={network.id}
-                value={network.id}
-                label={network.name}
-              >
-                {network.name}
+            {tokens.map((token) => (
+              <Select.Option key={token.id} value={token.id} label={token.name}>
+                {`${token.symbol} (${token.network.name})`}
               </Select.Option>
             ))}
           </Select>
         </ConfigProvider>
-        {!!value?.networkId && (
+        {!!value?.token && (
           <InputNumber
             min={0}
             placeholder="Enter amount"
@@ -171,7 +150,9 @@ export const TaskRewardFormFields: FC<Props> = ({
                 style={{ minWidth: 100 }}
                 value={value?.token?.id}
                 placeholder="Token"
-                onChange={handleChangeToken}
+                onChange={handleChangeTokenId}
+                disabled
+                showArrow={false}
               >
                 {tokens.map((token) => (
                   <Select.Option key={token.id} value={token.id}>
@@ -186,11 +167,13 @@ export const TaskRewardFormFields: FC<Props> = ({
           <PegToUsdCheckbox value={value} onChange={handleChangePeggedToUsd} />
         )}
       </Space>
-      <AddProjectPaymentMethodModal
-        projectId={projectId}
-        visible={addPaymentMethod.isOn}
-        onClose={handlePaymentMethodModalClosed}
-      />
+      {!!project?.organizationId && (
+        <AddTokenModal
+          organizationId={project.organizationId}
+          visible={addCustomToken.isOn}
+          onClose={handleCustomTokenModalClosed}
+        />
+      )}
     </>
   );
 };

@@ -12,6 +12,7 @@ import {
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { Project } from "@dewo/api/models/Project";
 import { Organization } from "@dewo/api/models/Organization";
+import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
 import { AtLeast } from "@dewo/api/types/general";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
@@ -50,6 +51,7 @@ export type Subject = InferSubjects<
   | typeof Role
   | typeof Rule
   | typeof UserRole
+  | typeof OrganizationToken
 >;
 
 export class AppAbility extends Ability<[Action, Subject]> {}
@@ -246,6 +248,7 @@ export class RbacService {
           fn(CRUD, TaskTag, taskTag);
           fn(CRUD, TaskView, taskView);
           fn(CRUD, TaskReward);
+          fn(CRUD, OrganizationToken);
           fn(CRUD, TaskSection, taskSection);
           fn("submit", Task, task);
           fn(CRUD, TaskSubmission);

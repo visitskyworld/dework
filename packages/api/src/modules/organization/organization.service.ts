@@ -14,6 +14,7 @@ import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
+import { PaymentToken } from "@dewo/api/models/PaymentToken";
 
 @Injectable()
 export class OrganizationService {
@@ -245,5 +246,41 @@ export class OrganizationService {
       if (!set.has(candidate)) return candidate;
     }
     throw new Error("Could not generate slug");
+  }
+
+  public async addTokens(
+    organizationId: string,
+    tokenIds: string[]
+  ): Promise<void> {
+    const tokens: PaymentToken[] = await this.organizationRepo
+      .createQueryBuilder()
+      .relation("tokens")
+      .of(organizationId)
+      .loadMany();
+
+    const existingTokenIds = tokens.map((token) => token.id);
+
+    const newTokenIds = tokenIds.filter(
+      (tokenId) => !existingTokenIds.includes(tokenId)
+    );
+
+    if (newTokenIds.length) {
+      await this.organizationRepo
+        .createQueryBuilder()
+        .relation("tokens")
+        .of(organizationId)
+        .add(newTokenIds);
+    }
+  }
+
+  public async removeTokens(
+    organizationId: string,
+    tokenIds: string[]
+  ): Promise<void> {
+    await this.organizationRepo
+      .createQueryBuilder()
+      .relation("tokens")
+      .of(organizationId)
+      .remove(tokenIds);
   }
 }

@@ -1,7 +1,6 @@
 import { PaymentMethodType } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 import {
-  PaymentToken,
   PaymentTokenType,
   PaymentTokenVisibility,
 } from "@dewo/api/models/PaymentToken";
@@ -29,21 +28,20 @@ describe("PaymentResolver", () => {
   describe("Mutations", () => {
     describe("createPaymentMethod", () => {
       let network: PaymentNetwork;
-      let token: PaymentToken;
 
       beforeEach(async () => {
         network = await fixtures.createPaymentNetwork();
-        token = await fixtures.createPaymentToken({ networkId: network.id });
       });
 
       it("should fail if the user is unauthenticated", async () => {
+        const project = await fixtures.createProject();
         const response = await client.request({
           app,
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x1234567890123456789012345678901234567890",
-            networkIds: [network.id],
-            tokenIds: [token.id],
+            networkId: network.id,
+            projectId: project.id,
           }),
         });
 
@@ -54,14 +52,15 @@ describe("PaymentResolver", () => {
 
       it("should succeed if the user is authenticated", async () => {
         const user = await fixtures.createUser();
+        const project = await fixtures.createProject();
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
             address: "0x1234567890123456789012345678901234567890",
-            networkIds: [network.id],
-            tokenIds: [token.id],
+            networkId: network.id,
+            projectId: project.id,
           }),
         });
 

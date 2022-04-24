@@ -44,11 +44,11 @@ export const shortenedAddress = (address: string) =>
 export const canPaymentMethodReceiveTaskReward = (
   paymentMethod: PaymentMethod,
   reward: TaskReward
-) => paymentMethod.networks.some((n) => n.id === reward.token.networkId);
+) => paymentMethod.network.id === reward.token.networkId;
 export const canPaymentMethodSendTaskReward = (
   paymentMethod: PaymentMethod,
   reward: TaskReward
-) => paymentMethod.networks.some((n) => n.id === reward.token.networkId);
+) => paymentMethod.network.id === reward.token.networkId;
 
 export function explorerLink(payment: Payment): string | undefined {
   if (!!payment.data?.signature) {
@@ -220,12 +220,9 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         matchingSenderPaymentMethods
       );
 
-      const network = from.networks.find(
-        (n) => n.id === reward.token.networkId
-      )!;
       if (!userAddress) {
         throw new NoUserPaymentMethodError(
-          `${user.username} has no payment method on ${network.name}`
+          `${user.username} has no payment method on ${from.network.name}`
         );
       }
 
@@ -236,7 +233,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
             userAddress,
             amount.toString(),
             reward.token,
-            network
+            from.network
           );
 
           await registerTaskPayment({
@@ -252,15 +249,12 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.PHANTOM: {
-          const network = from.networks.find(
-            (n) => n.id === reward.token.networkId
-          )!;
           const signature = await createSolanaTransaction(
             from.address,
             userAddress,
             amount.toNumber(),
             reward.token,
-            network
+            from.network
           );
           await registerTaskPayment({
             variables: {
@@ -275,15 +269,12 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.HIRO: {
-          const network = from.networks.find(
-            (n) => n.id === reward.token.networkId
-          )!;
           const txId = await createStacksTransaction(
             from.address,
             userAddress,
             amount.toString(),
             reward.token,
-            network
+            from.network
           );
           await registerTaskPayment({
             variables: {
