@@ -8,6 +8,9 @@ export const postgresConfig = (
 ): TypeOrmModuleOptions => ({
   type: "postgres",
   url: configService.get("POSTGRES_URL"),
+  cache: {
+    tableName: "typeorm_query_cache",
+  },
   entities: [path.join(__dirname, "../../models/**/*.{js,ts}")],
   // Note(fant): "1*" so that we only grab migrations
   // synchronize: process.env.NODE_ENV === 'test',

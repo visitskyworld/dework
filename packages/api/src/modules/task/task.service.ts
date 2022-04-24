@@ -1,4 +1,5 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
+import * as ms from "milliseconds";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -324,6 +325,7 @@ export class TaskService {
       (!userId || userId !== requestingUserId)
     ) {
       query = query
+        .cache(ms.hours(1))
         .leftJoin(
           Rule,
           "rule",

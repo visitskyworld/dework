@@ -26,7 +26,8 @@
     "deploy:app:prod": "./packages/scripts/deploy-app-prod.sh",
     "deploy:lp:prod": "./packages/scripts/deploy-lp-prod.sh",
     "deploy:nft:prod": "./packages/scripts/deploy-nft-prod.sh",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "apply-patches": "yarn patch-package --patch-dir packages/api/patches && yarn patch-package --patch-dir packages/app/patches"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.8.0",
