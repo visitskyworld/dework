@@ -24,13 +24,14 @@ export class PaymentMethodSingleNetwork1650728376118
         GROUP BY "paymentMethodId"
       `);
 
-    for (const row of rows) {
-      await queryRunner.query(`
-        UPDATE "payment_method"
-        SET "networkId" = '${row.networkId}'
-        WHERE "id" = '${row.methodId}'
-      `);
-    }
+    await queryRunner.query(`
+      ${rows
+        .map(
+          (r) =>
+            `UPDATE "payment_method" SET "networkId" = '${r.networkId}' WHERE "id" = '${r.methodId}';`
+        )
+        .join("\n")}
+    `);
 
     await queryRunner.query(
       `ALTER TABLE "payment_method" ALTER COLUMN "networkId" SET NOT NULL;`
