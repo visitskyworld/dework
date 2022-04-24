@@ -22,8 +22,6 @@ export class PopulateOrganizationTokenFromPaymentMethodTokens1650730244338
         .map((token) => `('${token.organizationId}', '${token.tokenId}')`)
         .join(",\n")}
 		`);
-
-    await queryRunner.query(`DROP TABLE "organization_token"`);
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
