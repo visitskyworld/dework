@@ -73,6 +73,21 @@ const Page: NextPage = () => {
               projectId={project?.id}
               activeKey={currentTab}
               extraTabs={[
+                !!details && canEditProject && (
+                  <Tabs.TabPane
+                    tab={
+                      <Tab
+                        icon={<Icons.SettingOutlined />}
+                        children="Settings"
+                      />
+                    }
+                    style={{ padding: 12 }}
+                    key="settings"
+                    className="max-w-lg mx-auto w-full"
+                  >
+                    <ProjectSettings project={details} />
+                  </Tabs.TabPane>
+                ),
                 !!project && !!details?.options?.showCommunitySuggestions && (
                   <Tabs.TabPane
                     tab={
@@ -99,21 +114,6 @@ const Page: NextPage = () => {
                     </Col>
                   )}
                 </Tabs.TabPane>,
-                !!details && canEditProject && (
-                  <Tabs.TabPane
-                    tab={
-                      <Tab
-                        icon={<Icons.SettingOutlined />}
-                        children="Settings"
-                      />
-                    }
-                    style={{ padding: 12 }}
-                    key="settings"
-                    className="max-w-lg mx-auto w-full"
-                  >
-                    <ProjectSettings project={details} />
-                  </Tabs.TabPane>
-                ),
               ].filter((t): t is ReactElement => !!t)}
             />
           </TaskViewProvider>
