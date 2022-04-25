@@ -202,9 +202,11 @@ const RoleFilter: FC<Props> = ({ name, projectId, onClear }) => {
         loading={!organizationRoles}
         allowClear
         onClear={onClear}
-        tagRender={(props) => (
-          <RoleTag {...props} role={roleById[props.value]} />
-        )}
+        tagRender={(props) =>
+          !!roleById[props.value] && (
+            <RoleTag {...props} role={roleById[props.value]} />
+          )
+        }
       >
         {organizationRoles?.map((role) => (
           <Select.Option

@@ -15,6 +15,8 @@ import { User } from "@dewo/api/models/User";
 import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
 import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
+import { StatusCodeError } from "request-promise/errors";
+import Bluebird from "bluebird";
 
 interface GuildMember {
   userId: string;
@@ -261,27 +263,44 @@ export class DiscordRolesService {
     const members: GuildMember[] = [];
 
     while (true) {
-      const limit = 1000;
-      const after = members[members.length - 1]?.userId;
-      this.logger.debug(
-        `Fetching guild member chunk: ${JSON.stringify({
-          guildId,
-          after,
-          fetched: members.length,
-        })}`
-      );
-      const memberChunk = await request.get({
-        url: `https://discord.com/api/guilds/${guildId}/members`,
-        qs: { limit, after },
-        json: true,
-        headers: { authorization: `Bot ${client.token}` },
-      });
+      try {
+        const limit = 1000;
+        const after = members[members.length - 1]?.userId;
+        this.logger.debug(
+          `Fetching guild member chunk: ${JSON.stringify({
+            guildId,
+            after,
+            fetched: members.length,
+          })}`
+        );
+        const memberChunk = await request.get({
+          url: `https://discord.com/api/guilds/${guildId}/members`,
+          qs: { limit, after },
+          json: true,
+          headers: { authorization: `Bot ${client.token}` },
+        });
 
-      members.push(
-        ...memberChunk.map((m: any) => ({ roles: m.roles, userId: m.user.id }))
-      );
+        members.push(
+          ...memberChunk.map((m: any) => ({
+            roles: m.roles,
+            userId: m.user.id,
+          }))
+        );
 
-      if (memberChunk.length < limit) break;
+        if (memberChunk.length < limit) break;
+      } catch (error) {
+        if (error instanceof StatusCodeError && error.statusCode === 429) {
+          this.logger.warn(
+            `Discord API rate limit exceeded: ${JSON.stringify({
+              error: error.error,
+              headers: error.response.headers,
+            })}`
+          );
+          await Bluebird.delay(Number(error.response.headers["retry-after"]));
+        } else {
+          throw error;
+        }
+      }
     }
 
     return members;

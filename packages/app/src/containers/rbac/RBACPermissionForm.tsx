@@ -220,9 +220,11 @@ export const RBACPermissionForm: FC<Props> = ({
               disabled={!hasPermission}
               optionFilterProp="label"
               loading={!organizationRoles}
-              tagRender={(props) => (
-                <RoleTag {...props} role={roleById[props.value]} />
-              )}
+              tagRender={(props) =>
+                !!roleById[props.value] && (
+                  <RoleTag {...props} role={roleById[props.value]} />
+                )
+              }
             >
               {organizationRoles?.map((role) => (
                 <Select.Option key={role.id} value={role.id} label={role.name}>

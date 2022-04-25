@@ -32,9 +32,11 @@ export class DiscordRolesPoller {
       `Update Discord roles: ${JSON.stringify({ count: integrations.length })}`
     );
 
+    const results: Record<string, any> = {};
     for (const integration of integrations) {
       try {
         await this.service.syncOrganizationRoles(integration);
+        results[integration.organizationId] = { status: "success" };
       } catch (error) {
         const errorString = JSON.stringify(
           error,
@@ -46,9 +48,14 @@ export class DiscordRolesPoller {
             errorString,
           })}`
         );
+
+        results[integration.organizationId] = {
+          status: "failed",
+          error: errorString,
+        };
       }
     }
 
-    res.json({ ok: true });
+    res.json({ ok: true, results });
   }
 }
