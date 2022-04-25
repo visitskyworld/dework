@@ -7,10 +7,9 @@ import { ReorderTaskSectionsModal } from "./ReorderTaskSectionsModal";
 
 interface Props {
   section: TaskSection;
-  projectId?: string;
 }
 
-export const TaskSectionOptionButton: FC<Props> = ({ section, projectId }) => {
+export const TaskSectionOptionButton: FC<Props> = ({ section }) => {
   const managingSections = useToggle();
   return (
     <>
@@ -21,14 +20,12 @@ export const TaskSectionOptionButton: FC<Props> = ({ section, projectId }) => {
         className="dewo-task-board-column-section-options"
         onClick={managingSections.toggleOn}
       />
-      {!!projectId && (
-        <ReorderTaskSectionsModal
-          visible={managingSections.isOn}
-          projectId={projectId}
-          status={section.status}
-          onClose={managingSections.toggleOff}
-        />
-      )}
+      <ReorderTaskSectionsModal
+        visible={managingSections.isOn}
+        projectId={section.projectId}
+        status={section.status}
+        onClose={managingSections.toggleOff}
+      />
     </>
   );
 };

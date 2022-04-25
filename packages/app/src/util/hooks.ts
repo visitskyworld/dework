@@ -1,6 +1,13 @@
 import { message } from "antd";
 import copy from "copy-to-clipboard";
-import { DependencyList, useCallback, useMemo, useState } from "react";
+import {
+  DependencyList,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export interface UseToggleHook {
   isOn: boolean;
@@ -68,4 +75,12 @@ export function useCopyToClipboardAndShowToast(
     },
     [messageContent]
   );
+}
+
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
 }

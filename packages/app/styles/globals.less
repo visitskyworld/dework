@@ -264,6 +264,7 @@ iframe {
 
 // prevent task board overflow
 .ant-tabs-content {
+  height: 100%;
   max-height: 100%;
 }
 
@@ -287,22 +288,34 @@ iframe {
       display: flex;
       flex-direction: column;
       min-height: 0;
+      height: 100%;
       max-height: 100%;
 
       & > div {
         display: flex;
         flex-direction: column;
         min-height: 0;
+        height: 100%;
         max-height: 100%;
 
         & > .ant-card {
           display: flex;
           flex-direction: column;
           min-height: 0;
+          height: 100%;
           max-height: 100%;
 
           & > .ant-card-head {
             flex-shrink: 0;
+          }
+
+          & > .ant-card-body {
+            height: 100%;
+            overflow: hidden;
+
+            & > div, & > div > div {
+              height: 100%;
+            }
           }
         }
       }
@@ -312,11 +325,8 @@ iframe {
   .dewo-task-board-column {
     background: #1b1d4b;
     .dewo-task-board-column-section-title {
-      position: sticky;
-      top: 0;
-      background: #1b1d4b;
-      z-index: 1;
-      padding-top: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
 
       .dewo-task-board-column-section-options {
         visibility: hidden;
@@ -334,22 +344,15 @@ iframe {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: @component-background-highlighted;
-  border-radius: @border-radius-base;
-  border: 1px solid transparent;
-  background-clip: content-box;
-}
-::-webkit-scrollbar {
+  height: 6px;
   width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: @component-background;
+  border-radius: @border-radius-base;
+  border: 1px solid transparent;
+  background-clip: content-box;
 }
 
 *:hover::-webkit-scrollbar-thumb {
@@ -1096,4 +1099,8 @@ iframe {
   .heading-actions {
     display: none !important;
   }
+}
+
+.ReactVirtualized__Grid__innerScrollContainer {
+  min-height: 100%;
 }

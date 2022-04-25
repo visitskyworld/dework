@@ -1,13 +1,6 @@
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import React, {
-  FC,
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-  ReactNode,
-} from "react";
+import React, { FC, useEffect, useCallback, useState, useMemo } from "react";
 import {
   DragDropContext,
   DragDropContextProps,
@@ -27,14 +20,13 @@ import { useTaskViewGroups } from "../views/hooks";
 interface Props {
   tasks: Task[];
   projectId?: string;
-  footer?: Partial<Record<TaskStatus, ReactNode>>;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
   statuses?: TaskStatus[];
 }
 
 const columnWidth = 330;
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
+export const TaskBoard: FC<Props> = ({ tasks, projectId, empty }) => {
   const { user } = useAuthContext();
   const hasPermission = usePermissionFn();
 
@@ -60,13 +52,10 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
       if (result.reason !== "DROP" || !result.destination) return;
 
       const taskId = result.draggableId;
-      const [status, sectionId] = result.destination.droppableId.split(":") as [
-        TaskStatus,
-        string
-      ];
+      const status = result.destination.droppableId as TaskStatus;
 
-      const task = tasks.find((t) => t.id === taskId);
-      if (!task) return;
+      const taskViewGroup = taskViewGroups.find((g) => g.value === status);
+      if (!taskViewGroup) return;
 
       const indexExcludingItself = (() => {
         const newIndex = result.destination.index;
@@ -85,12 +74,24 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
         return newIndex;
       })();
 
-      const section = taskViewGroups
-        .find((g) => g.value === status)
-        ?.sections.find((s) => s.id === sectionId);
+      let sectionIndex = 0;
+      let sectionOffset = 1;
+      while (
+        sectionOffset + taskViewGroup.sections[sectionIndex].tasks.length <
+        indexExcludingItself
+      ) {
+        sectionOffset += 1 + taskViewGroup.sections[sectionIndex].tasks.length;
+        sectionIndex += 1;
+      }
 
-      const taskAbove = section?.tasks[indexExcludingItself - 1];
-      const taskBelow = section?.tasks[indexExcludingItself];
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const section = taskViewGroup.sections[sectionIndex];
+      const indexInSection = indexExcludingItself - sectionOffset;
+
+      const taskAbove = section?.tasks[indexInSection - 1];
+      const taskBelow = section?.tasks[indexInSection];
       const sortKey = getSortKeyBetween(taskAbove, taskBelow, (t) => t.sortKey);
 
       const shouldAssignCurrentUser =
@@ -104,7 +105,7 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
           id: taskId,
           status,
           sortKey,
-          assigneeIds: shouldAssignCurrentUser ? [user.id] : undefined,
+          assigneeIds: shouldAssignCurrentUser ? [user!.id] : undefined,
           sectionId: section?.section?.id ?? null,
         },
         task
@@ -142,7 +143,6 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, footer, empty }) => {
                   sections={group.sections}
                   projectId={projectId}
                   currentlyDraggingTask={currentlyDraggingTask}
-                  footer={footer?.[group.value as TaskStatus]}
                   empty={empty?.[group.value as TaskStatus]}
                 />
               </div>

@@ -71,6 +71,7 @@ export const TaskViewTabs: FC<Props> = ({
         activeKey={
           activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
         }
+        destroyInactiveTabPane
         className={`dewo-tabs ${styles.tabs}`}
         onTabClick={navigateToTab}
       >

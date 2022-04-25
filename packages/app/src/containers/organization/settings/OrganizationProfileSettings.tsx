@@ -87,24 +87,27 @@ export const OrganizationProfileSettings: FC<
         const { discord, twitter, website, ...organizationValues } = values;
 
         await Promise.all([
-          discord !== initialValues.discord &&
-            updateOrganizationDetail({
-              organizationId,
-              type: EntityDetailType.discord,
-              value: discord,
-            }),
-          twitter !== initialValues.twitter &&
-            updateOrganizationDetail({
-              organizationId,
-              type: EntityDetailType.twitter,
-              value: twitter,
-            }),
-          website !== initialValues.website &&
-            updateOrganizationDetail({
-              organizationId,
-              type: EntityDetailType.website,
-              value: website,
-            }),
+          discord !== initialValues.discord
+            ? updateOrganizationDetail({
+                organizationId,
+                type: EntityDetailType.discord,
+                value: discord,
+              })
+            : undefined,
+          twitter !== initialValues.twitter
+            ? updateOrganizationDetail({
+                organizationId,
+                type: EntityDetailType.twitter,
+                value: twitter,
+              })
+            : undefined,
+          website !== initialValues.website
+            ? updateOrganizationDetail({
+                organizationId,
+                type: EntityDetailType.website,
+                value: website,
+              })
+            : undefined,
           updateOrganization({ id: organizationId, ...organizationValues }),
         ]);
 

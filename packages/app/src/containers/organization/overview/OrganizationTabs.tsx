@@ -89,6 +89,7 @@ export const OrganizationTabs: FC<Props> = ({
     <Tabs
       tabBarStyle={tabBarStyle}
       className="dewo-tabs"
+      style={{ height: "100%" }}
       activeKey={currentTab}
       onTabClick={navigateToTab}
     >

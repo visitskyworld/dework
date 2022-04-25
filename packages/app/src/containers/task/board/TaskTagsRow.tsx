@@ -37,12 +37,16 @@ export const TaskTagsRow: FC<Props> = ({
 
   const standardTags = [
     task.priority !== TaskPriority.NONE && (
-      <Tag title={PRIORITY_LABEL[task.priority]} style={{ height: 22 }}>
+      <Tag
+        key="priority"
+        title={PRIORITY_LABEL[task.priority]}
+        style={{ height: 22 }}
+      >
         <TaskPriorityIcon priority={task.priority} />
       </Tag>
     ),
     !!task.dueDate && (
-      <Tag>
+      <Tag key="dueDate">
         {task.status !== TaskStatus.DONE &&
         moment().endOf("day").isAfter(task.dueDate) ? (
           <Icons.ExclamationCircleFilled
@@ -55,19 +59,19 @@ export const TaskTagsRow: FC<Props> = ({
       </Tag>
     ),
     !!attachmentCount && (
-      <Tag>
+      <Tag key="attachmentCount">
         <Icons.LinkOutlined />
         <span>{attachmentCount}</span>
       </Tag>
     ),
     !!task.storyPoints && (
-      <Tag>
+      <Tag key="storyPiints">
         <Icons.FlagOutlined />
         <span>{task.storyPoints}</span>
       </Tag>
     ),
     !!task.subtasks.length && (
-      <Tag>
+      <Tag key="subtasks">
         {doneSubtasks.length === task.subtasks.length ? (
           <Icons.CheckCircleFilled style={{ color: Colors.green.primary }} />
         ) : (
@@ -79,7 +83,7 @@ export const TaskTagsRow: FC<Props> = ({
       </Tag>
     ),
     "project" in task && (
-      <Tag className="bg-component" style={{ paddingLeft: 0 }}>
+      <Tag key="project" className="bg-component" style={{ paddingLeft: 0 }}>
         <OrganizationAvatar
           organization={task.project.organization}
           size={20}
@@ -104,7 +108,7 @@ export const TaskTagsRow: FC<Props> = ({
 
   if (!tagComponentsToRender.length) return null;
   return (
-    <Row gutter={[8, 4]} style={{ ...style, margin: 0 }}>
+    <Row style={{ ...style, marginLeft: 0, marginRight: 0, rowGap: 4 }}>
       {tagComponentsToRender}
     </Row>
   );

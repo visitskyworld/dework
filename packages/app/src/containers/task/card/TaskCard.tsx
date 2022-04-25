@@ -4,7 +4,7 @@ import {
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import { Card, Typography, Space, Row, Rate } from "antd";
+import { Card, Typography, Row, Rate } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { TaskReactionPicker } from "../board/TaskReactionPicker";
 import { TaskTagsRow } from "../board/TaskTagsRow";
@@ -64,18 +64,16 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       }
       onClick={navigateToTask}
     >
-      <Space direction="vertical" size={8} style={{ width: "100%" }}>
-        <Row style={{ gap: 8 }}>
-          <Typography.Text
-            className="font-semibold"
-            style={{ flex: 1, wordBreak: "break-word" }}
-          >
-            {task.name}
-          </Typography.Text>
-          <TaskCardAvatars task={task} />
-        </Row>
-        <TaskTagsRow task={task} />
-      </Space>
+      <Row style={{ rowGap: 8 }}>
+        <Typography.Text
+          className="font-semibold"
+          style={{ flex: 1, wordBreak: "break-word" }}
+        >
+          {task.name}
+        </Typography.Text>
+        <TaskCardAvatars task={task} />
+      </Row>
+      <TaskTagsRow task={task} style={{ marginTop: 8 }} />
       {showReview && (
         <>
           <Row style={{ marginBottom: 4 }}>
