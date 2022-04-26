@@ -193,10 +193,16 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         );
       }
 
+      const usdPriceAccuracy = 1_000_000;
       const amount = reward.peggedToUsd
         ? BigNumber.from(reward.amount)
             .mul(BigNumber.from(10).pow(reward.token.exp))
-            .div(BigNumber.from(Math.round(reward.token.usdPrice!)))
+            .mul(BigNumber.from(usdPriceAccuracy))
+            .div(
+              BigNumber.from(
+                Math.round(reward.token.usdPrice! * usdPriceAccuracy)
+              )
+            )
             .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
         : BigNumber.from(reward.amount);
       const [paymentMethods, userAddress] = await Promise.all([

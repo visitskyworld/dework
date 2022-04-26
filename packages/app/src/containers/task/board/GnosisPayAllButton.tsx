@@ -104,10 +104,16 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
             (t) => t.source === ThreepidSource.metamask
           )!.address;
 
+          const usdPriceAccuracy = 1_000_000;
           const amount = reward.peggedToUsd
             ? BigNumber.from(reward.amount)
                 .mul(BigNumber.from(10).pow(reward.token.exp))
-                .div(BigNumber.from(Math.round(reward.token.usdPrice!)))
+                .mul(BigNumber.from(usdPriceAccuracy))
+                .div(
+                  BigNumber.from(
+                    Math.round(reward.token.usdPrice! * usdPriceAccuracy)
+                  )
+                )
                 .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
             : BigNumber.from(reward.amount);
 
