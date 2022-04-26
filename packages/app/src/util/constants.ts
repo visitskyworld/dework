@@ -11,6 +11,8 @@ export const Constants = {
   DEV_ROLE_ID: nextConfig.DEV_ROLE_ID as string,
   AMPLITUDE_API_KEY: nextConfig.AMPLITUDE_API_KEY as string,
   APOLLO_QUERY_LOGGING: nextConfig.APOLLO_QUERY_LOGGING as boolean,
+  COORDINAPE_INTEGRATION_USER_ID:
+    nextConfig.COORDINAPE_INTEGRATION_USER_ID as string,
   ENVIRONMENT: nextConfig.ENVIRONMENT as "prod" | "demo" | "dev",
   NUM_DECIMALS_IN_USD_PEG: 6,
   hotjarConfig: { ID: 2731946, version: 6 },
