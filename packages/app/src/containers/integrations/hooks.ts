@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -53,6 +54,39 @@ export enum DiscordProjectIntegrationFeature {
   POST_NEW_TASKS_TO_CHANNEL = "POST_NEW_TASKS_TO_CHANNEL",
   POST_STATUS_BOARD_MESSAGE = "POST_STATUS_BOARD_MESSAGE",
 }
+
+export const DiscordPermissionToString = {
+  VIEW_CHANNEL: "View Channel",
+  SEND_MESSAGES: "Send Messages",
+  SEND_MESSAGES_IN_THREADS: "Send Messages in Threads",
+  CREATE_PUBLIC_THREADS: "Create Public Threads",
+  EMBED_LINKS: "Embed Links",
+};
+
+export type DiscordPermission = keyof typeof DiscordPermissionToString;
+
+const DiscordPermissionsForFeature: Partial<
+  Record<DiscordProjectIntegrationFeature, DiscordPermission[]>
+> = {
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "EMBED_LINKS",
+  ],
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "SEND_MESSAGES_IN_THREADS",
+    "EMBED_LINKS",
+  ],
+  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK]: [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES",
+    "SEND_MESSAGES_IN_THREADS",
+    "CREATE_PUBLIC_THREADS",
+    "EMBED_LINKS",
+  ],
+};
 
 // Copied from @dewo/api/models/ProjectIntegration
 export enum GithubProjectIntegrationFeature {
@@ -327,4 +361,28 @@ export function useAddUserToDiscordGuild(
     });
     if (!res.data) throw new Error(JSON.stringify(res.errors));
   }, [mutation, organizationId]);
+}
+
+export function useMissingPermissions(
+  channels: DiscordIntegrationChannel[] | undefined,
+  discordFeature: DiscordProjectIntegrationFeature | undefined,
+  discordChannelId: string | undefined
+) {
+  const requiredPermissions = useMemo(
+    () =>
+      !!discordFeature ? DiscordPermissionsForFeature[discordFeature] : [],
+    [discordFeature]
+  );
+  const channel = useMemo(
+    () => channels?.find((c) => c.id === discordChannelId),
+    [channels, discordChannelId]
+  );
+  return useMemo(
+    () =>
+      _.difference(
+        requiredPermissions,
+        channel?.permissions ?? []
+      ) as DiscordPermission[],
+    [requiredPermissions, channel?.permissions]
+  );
 }

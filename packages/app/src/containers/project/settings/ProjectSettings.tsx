@@ -5,13 +5,15 @@ import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { useRouter } from "next/router";
 import { Tab } from "@dewo/app/components/Tab";
 import * as Icons from "@ant-design/icons";
-import { ProjectSettingsIntegrations } from "./ProjectSettingsIntegrations";
+import { ProjectSettingsGithubIntegration } from "./ProjectSettingsGithubIntegration";
+import { ProjectSettingsDiscordIntegration } from "./ProjectSettingsDiscordIntegration";
 import { ProjectSettingsPaymentMethod } from "./ProjectSettingsPaymentMethod";
 import { ProjectSettingsGeneral } from "./ProjectSettingsGeneral";
 import { ProjectSettingsTokenGating } from "./ProjectSettingsTokenGating";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectSettingsManage } from "./ProjectSettingsManage";
 import { ProjectRBAC } from "../../rbac/project/ProjectRBAC";
+import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 interface Props {
   project: ProjectDetails;
@@ -32,7 +34,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
   );
 
   const isDesktop = screens.sm;
-  const tabStyle = { paddingLeft: isDesktop ? 24 : 0, maxWidth: 550 };
+  const tabStyle = { paddingLeft: isDesktop ? 24 : 0, maxWidth: 700 };
   return (
     <Tabs
       type="card"
@@ -59,11 +61,20 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         <ProjectSettingsGeneral project={project} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={<Tab icon={<Icons.ShareAltOutlined />} children="Integrations" />}
-        key="integrations"
+        tab={<Tab icon={<DiscordIcon />} children="Discord Integration" />}
+        key="discord"
         style={tabStyle}
       >
-        <ProjectSettingsIntegrations project={project} />
+        <ProjectSettingsDiscordIntegration project={project} />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={
+          <Tab icon={<Icons.GithubOutlined />} children="Github Integration" />
+        }
+        key="github"
+        style={tabStyle}
+      >
+        <ProjectSettingsGithubIntegration project={project} />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={<Tab icon={<Icons.LockOutlined />} children="Permissions" />}

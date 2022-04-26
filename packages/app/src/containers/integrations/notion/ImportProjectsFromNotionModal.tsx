@@ -2,8 +2,8 @@ import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { Button, Modal, Select, Space, Typography } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useState } from "react";
-import { useOrganizationDetails } from "../organization/hooks";
-import { useCreateProjectsFromNotion, useNotionDatabases } from "./hooks";
+import { useOrganizationDetails } from "../../organization/hooks";
+import { useCreateProjectsFromNotion, useNotionDatabases } from "../hooks";
 
 interface Props {
   threepidId: string;

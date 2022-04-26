@@ -14,10 +14,10 @@ import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import { useIsProjectPrivate } from "../../rbac/hooks";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
-import { CoordinapeMetamaskConnectButton } from "../../integrations/buttons/CoordinapeMetamaskConnectButton";
+import { CoordinapeMetamaskConnectButton } from "../../integrations/coordinape/CoordinapeMetamaskConnectButton";
 import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
 import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
 import { ConnectUsingDiscordRolesButton } from "../../auth/buttons/ConnectUsingDiscordRolesButton";
 
 interface Props {

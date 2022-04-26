@@ -18,7 +18,7 @@ import {
 } from "../organization/hooks";
 import { useUserRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
-import { ConnectOrganizationToDiscordButton } from "../integrations/buttons/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../integrations/discord/ConnectOrganizationToDiscordButton";
 import { getRule, hasRule } from "./util";
 import { RoleTag } from "@dewo/app/components/RoleTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";

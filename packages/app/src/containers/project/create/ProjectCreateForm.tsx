@@ -24,10 +24,10 @@ import {
 import {
   DiscordIntegrationFormFields,
   FormValues as DiscordFormFields,
-} from "../../integrations/CreateDiscordIntegrationForm";
-import { FormValues as GithubFormFields } from "../../integrations/CreateGithubIntegrationForm";
+} from "../../integrations/discord/CreateDiscordIntegrationForm";
+import { FormValues as GithubFormFields } from "../../integrations/github/CreateGithubIntegrationForm";
 import _ from "lodash";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
 import {
   useCreateRole,

@@ -1,0 +1,30 @@
+@import "../../../styles/theme.less";
+
+.integrationcard {
+  :global(.ant-card-head) {
+    border-bottom: none;
+    border-radius: 4px;
+  }
+  :global(.ant-card-body)  {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  :global(.ant-form) {
+    padding-top: 12px;
+    margin: 0 20px 20px 20px;
+    border-top: 1px solid @divider-color;
+  }
+}
+
+.expanded {
+  :global(.ant-card-head) {
+    border-radius: 0;
+  }
+}
+
+.connected {
+  :global(.ant-card-head) {
+    background: @primary-color;
+  }
+}

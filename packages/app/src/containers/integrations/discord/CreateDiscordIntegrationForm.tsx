@@ -1,26 +1,18 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
-import {
-  Image,
-  Button,
-  Checkbox,
-  Form,
-  Select,
-  Space,
-  Typography,
-  Collapse,
-  Row,
-} from "antd";
+import { Button, Checkbox, Form, Select, Typography } from "antd";
 import {
   useOrganizationDiscordChannels,
   useOrganizationIntegrations,
-} from "../organization/hooks";
+} from "../../organization/hooks";
 import { useForm } from "antd/lib/form/Form";
-import { DiscordProjectIntegrationFeature } from "./hooks";
+import {
+  DiscordProjectIntegrationFeature,
+  useMissingPermissions,
+} from "../hooks";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DiscordIntegrationChannel } from "@dewo/app/graphql/types";
-import _ from "lodash";
-import { ConnectOrganizationToDiscordButton } from "./buttons/ConnectOrganizationToDiscordButton";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
+import { SelectDiscordChannelFormItem } from "./SelectDiscordChannelFormItem";
 
 const DiscordProjectIntegrationFeatureLabel: Partial<
   Record<DiscordProjectIntegrationFeature, string>
@@ -35,39 +27,6 @@ const DiscordProjectIntegrationFeatureLabel: Partial<
     "Post a status board message with all currently open tasks",
 };
 
-const DiscordPermissionToString = {
-  VIEW_CHANNEL: "View Channel",
-  SEND_MESSAGES: "Send Messages",
-  SEND_MESSAGES_IN_THREADS: "Send Messages in Threads",
-  CREATE_PUBLIC_THREADS: "Create Public Threads",
-  EMBED_LINKS: "Embed Links",
-};
-
-type DiscordPermission = keyof typeof DiscordPermissionToString;
-
-const DiscordPermissionsForFeature: Partial<
-  Record<DiscordProjectIntegrationFeature, DiscordPermission[]>
-> = {
-  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]: [
-    "VIEW_CHANNEL",
-    "SEND_MESSAGES",
-    "EMBED_LINKS",
-  ],
-  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD]: [
-    "VIEW_CHANNEL",
-    "SEND_MESSAGES",
-    "SEND_MESSAGES_IN_THREADS",
-    "EMBED_LINKS",
-  ],
-  [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK]: [
-    "VIEW_CHANNEL",
-    "SEND_MESSAGES",
-    "SEND_MESSAGES_IN_THREADS",
-    "CREATE_PUBLIC_THREADS",
-    "EMBED_LINKS",
-  ],
-};
-
 export interface FormValues {
   discordChannelId: string;
   discordThreadId?: string;
@@ -75,7 +34,7 @@ export interface FormValues {
   discordFeaturePostNewTasksEnabled?: boolean;
 }
 
-export interface CreateDiscordIntegrationFormValues {
+export interface CreateDiscordIntegrationPayload {
   channel: DiscordIntegrationChannel;
   thread?: DiscordIntegrationChannel;
   features: DiscordProjectIntegrationFeature[];
@@ -83,7 +42,7 @@ export interface CreateDiscordIntegrationFormValues {
 
 interface Props {
   organizationId: string;
-  onSubmit(values: CreateDiscordIntegrationFormValues): Promise<void>;
+  onSubmit(payload: CreateDiscordIntegrationPayload): Promise<void>;
 }
 
 const initialValues: Partial<FormValues> = {
@@ -97,31 +56,6 @@ interface FormFieldProps {
   threads?: DiscordIntegrationChannel[];
   organizationId: string;
   onRefetchChannels(): Promise<void>;
-}
-
-function useMissingPermissions(
-  values: Partial<FormValues>,
-  channels: DiscordIntegrationChannel[] | undefined
-) {
-  const requiredPermissions = useMemo(
-    () =>
-      !!values.discordFeature
-        ? DiscordPermissionsForFeature[values.discordFeature]
-        : [],
-    [values.discordFeature]
-  );
-  const channel = useMemo(
-    () => channels?.find((c) => c.id === values.discordChannelId),
-    [channels, values.discordChannelId]
-  );
-  return useMemo(
-    () =>
-      _.difference(
-        requiredPermissions,
-        channel?.permissions ?? []
-      ) as DiscordPermission[],
-    [requiredPermissions, channel?.permissions]
-  );
 }
 
 export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
@@ -139,7 +73,11 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
     () => channels?.find((c) => c.id === values.discordChannelId),
     [channels, values.discordChannelId]
   );
-  const missingPermissions = useMissingPermissions(values, channels);
+  const missingPermissions = useMissingPermissions(
+    channels,
+    values.discordFeature,
+    values.discordChannelId
+  );
   const integrations = useOrganizationIntegrations(organizationId);
   const guildId = useMemo(
     () =>
@@ -179,109 +117,17 @@ export const DiscordIntegrationFormFields: FC<FormFieldProps> = ({
           ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        name="discordChannelId"
-        label="Post In"
-        hidden={!values.discordFeature}
-        rules={[
-          {
-            required: !!values.discordFeature,
-            message: "Please select a Discord channel",
-          },
-          (form) => ({
-            async validator() {
-              if (!channel) return;
-              if (!!missingPermissions.length) {
-                throw new Error();
-              }
-            },
-            message: (
-              <>
-                <Typography.Paragraph
-                  type="secondary"
-                  style={{ marginTop: 16 }}
-                >
-                  Dework bot doesn't have the right permissions for this
-                  channel. To fix this, give the Dework bot the correct channel
-                  permissions or grant it admin access:
-                </Typography.Paragraph>
-                <Collapse accordion ghost defaultActiveKey={1}>
-                  <Collapse.Panel
-                    key={1}
-                    header="Grant Administrator Permissions (recommended)"
-                  >
-                    <Row>
-                      <ConnectOrganizationToDiscordButton
-                        asAdmin
-                        guildId={guildId}
-                        organizationId={organizationId}
-                        children="Give Administrator Access"
-                      />
-                    </Row>
-                  </Collapse.Panel>
 
-                  <Collapse.Panel
-                    key={2}
-                    header="Add Dework Bot to the Channel"
-                  >
-                    <Space style={{ marginTop: 2 }}>
-                      <Typography.Text type="secondary">
-                        Follow these steps:
-                        <ol>
-                          <li>
-                            Go to the channel settings (NOT server settings)
-                          </li>
-                          <li>
-                            Add the bot Dework to the channel (not the role
-                            'Dework')
-                          </li>
-                          <li>
-                            Give Dework the following permissions:{" "}
-                            {missingPermissions
-                              .map((p) => DiscordPermissionToString[p])
-                              .join(", ")}
-                          </li>
-                        </ol>
-                      </Typography.Text>
-                      <Button
-                        size="small"
-                        type="ghost"
-                        onClick={async () => {
-                          await onRefetchChannels();
-                          form.setFields([
-                            { name: "discordChannelId", errors: undefined },
-                          ]);
-                        }}
-                      >
-                        Retry
-                      </Button>
-                    </Space>
-                    <Image width="100%" src="/discord/add-dework-bot.jpeg" />
-                  </Collapse.Panel>
-                </Collapse>
-              </>
-            ),
-          }),
-        ]}
-      >
-        <Select
-          loading={!channels}
-          placeholder="Select Discord Channel..."
-          allowClear
-          showSearch
-          optionFilterProp="label"
-        >
-          {channels?.map((channel) => (
-            <Select.Option
-              key={channel.id}
-              value={channel.id}
-              label={channel.name}
-            >
-              {`#${channel.name}`}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+      <SelectDiscordChannelFormItem
+        guildId={guildId}
+        organizationId={organizationId}
+        channels={channels}
+        missingPermissions={missingPermissions}
+        feature={values.discordFeature}
+        hidden={!values.discordFeature}
+        onRefetchChannels={onRefetchChannels}
+      />
+
       <Form.Item
         name="discordThreadId"
         label="Thread"
@@ -345,8 +191,9 @@ export const CreateDiscordIntegrationForm: FC<Props> = ({
 
   const discordChannels = useOrganizationDiscordChannels({ organizationId });
   const missingPermissions = useMissingPermissions(
-    values,
-    discordChannels.value
+    discordChannels.value,
+    values.discordFeature,
+    values.discordChannelId
   );
   const discordThreads = useOrganizationDiscordChannels(
     { organizationId, discordParentChannelId: values.discordChannelId },

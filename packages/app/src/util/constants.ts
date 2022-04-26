@@ -29,6 +29,7 @@ export const deworkSocialLinks = {
   gitbook: {
     index: docsBase,
     connectingToDiscord: `${docsBase}/guides/connecting-to-discord`,
+    connectingToGithub: `${docsBase}/integrations/github`,
     bountyTypesAndGating: `${docsBase}/fundamentals/bounty-types-and-gating`,
   },
 };

@@ -2,8 +2,8 @@ import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import { Alert, Button, Space, Tooltip } from "antd";
 import React, { FC, useMemo } from "react";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/buttons/ConnectOrganizationToDiscordButton";
-import { ConnectOrganizationToGithubButton } from "../../integrations/buttons/ConnectOrganizationToGithubButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToGithubButton } from "../../integrations/github/ConnectOrganizationToGithubButton";
 import { useOrganizationIntegrations } from "../hooks";
 
 interface Props {

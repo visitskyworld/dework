@@ -10,10 +10,10 @@ import { OrganizationHeaderSummary } from "@dewo/app/containers/organization/ove
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
 import { Project } from "@dewo/app/graphql/types";
 import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
-import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/ImportProjectsFromNotionModal";
-import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/ImportProjectsFromTrelloModal";
+import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations/notion/ImportProjectsFromNotionModal";
+import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/trello/ImportProjectsFromTrelloModal";
 import { OrganizationSeo } from "@dewo/app/containers/seo/OrganizationSeo";
-import { ImportProjectsFromGithubModal } from "@dewo/app/containers/integrations/ImportProjectsFromGithubModal";
+import { ImportProjectsFromGithubModal } from "@dewo/app/containers/integrations/github/ImportProjectsFromGithubModal";
 
 const Page: NextPage = () => {
   const router = useRouter();

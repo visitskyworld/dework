@@ -1,5 +1,5 @@
 import { RoleTag } from "@dewo/app/components/RoleTag";
-import { ConnectOrganizationToDiscordButton } from "@dewo/app/containers/integrations/buttons/ConnectOrganizationToDiscordButton";
+import { ConnectOrganizationToDiscordButton } from "@dewo/app/containers/integrations/discord/ConnectOrganizationToDiscordButton";
 import { useOrganizationIntegrations } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";

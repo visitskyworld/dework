@@ -1,14 +1,13 @@
 import { GithubRepo } from "@dewo/app/graphql/types";
 import { useToggle } from "@dewo/app/util/hooks";
-import { Button, Checkbox, Form, Select, Typography } from "antd";
+import { Button, Checkbox, Form } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useState } from "react";
-import { useOrganizationGithubRepos } from "../organization/hooks";
-import {
-  GithubProjectIntegrationFeature,
-  useConnectToGithubUrl,
-} from "./hooks";
+import { useOrganizationGithubRepos } from "../../organization/hooks";
+import { GithubProjectIntegrationFeature } from "../hooks";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
+import { SelectGihubRepoFormItem } from "./SelectGithubRepoFormItem";
+import { ImportGithubIssuesFormItem } from "./ImportGithubIssuesFormItem";
 
 export interface FormValues {
   githubRepoId: string;
@@ -41,71 +40,25 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
   values,
   repos,
   organizationId,
-}) => {
-  const connectToGithubUrl = useConnectToGithubUrl(organizationId);
-
-  return (
-    <>
-      {repos ? (
-        <Typography.Paragraph type="secondary">
-          Can't find your repository?{" "}
-          <a href={connectToGithubUrl} target="_blank" rel="noreferrer">
-            Add it
-          </a>{" "}
-          to your installation configuration.
-        </Typography.Paragraph>
-      ) : (
-        <Typography.Paragraph type="secondary">
-          Link a Github repo to automatically make pull requests show up in
-          tasks.
-        </Typography.Paragraph>
-      )}
-      <Form.Item
-        name="githubRepoId"
-        rules={[{ required: true, message: "Please select a Github repo" }]}
-      >
-        <Select loading={!repos} placeholder="Select Github Repo" allowClear>
-          {repos?.map((repo) => (
-            <Select.Option
-              key={repo.id}
-              value={repo.id}
-              label={`${repo.organization}/${repo.name}`}
-            >
-              {`${repo.organization}/${repo.name}`}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="githubImportIssues"
-        valuePropName="checked"
-        hidden={!values.githubRepoId}
-        style={{ margin: 0 }}
-      >
-        <Checkbox>
-          Import existing Github Issues to Dework
-          <QuestionmarkTooltip
-            title="Easily move all your Github issues into Dework. New issues will be added and updated automatically."
-            marginLeft={8}
-          />
-        </Checkbox>
-      </Form.Item>
-      <Form.Item
-        name="githubFeatureCreateIssuesFromTasks"
-        valuePropName="checked"
-        hidden={!values.githubRepoId}
-      >
-        <Checkbox>
-          Create Github Issue when Dework task is created
-          <QuestionmarkTooltip
-            title="Automatically post Dework tasks to Github issues."
-            marginLeft={8}
-          />
-        </Checkbox>
-      </Form.Item>
-    </>
-  );
-};
+}) => (
+  <>
+    <SelectGihubRepoFormItem organizationId={organizationId} repos={repos} />
+    <ImportGithubIssuesFormItem hidden={!values.githubRepoId} />
+    <Form.Item
+      name="githubFeatureCreateIssuesFromTasks"
+      valuePropName="checked"
+      hidden={!values.githubRepoId}
+    >
+      <Checkbox>
+        Create Github Issue when Dework task is created
+        <QuestionmarkTooltip
+          title="Automatically post Dework tasks to Github issues."
+          marginLeft={8}
+        />
+      </Checkbox>
+    </Form.Item>
+  </>
+);
 
 export const CreateGithubIntegrationForm: FC<Props> = ({
   organizationId,

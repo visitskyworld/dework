@@ -1,37 +1,37 @@
+import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { Button, Modal, Select, Space, Typography } from "antd";
 import { useRouter } from "next/router";
-import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback, useState } from "react";
-import {
-  useOrganization,
-  useOrganizationGithubRepos,
-} from "../organization/hooks";
-import { useCreateProjectsFromGithub } from "./hooks";
+import { useOrganization } from "../../organization/hooks";
+import { useCreateProjectsFromTrello, useTrelloBoards } from "../hooks";
 
 interface Props {
+  threepidId: string;
   organizationId: string;
   visible: boolean;
 }
 
-export const ImportProjectsFromGithubModal: FC<Props> = ({
+export const ImportProjectsFromTrelloModal: FC<Props> = ({
+  threepidId,
   organizationId,
   visible,
 }) => {
-  const githubRepos = useOrganizationGithubRepos(organizationId);
-  const [selectedRepoIds, setSelectedRepoIds] = useState<string[]>([]);
+  const trelloBoards = useTrelloBoards(threepidId);
+  const [selectedBoardIds, setSelectedBoardIds] = useState<string[]>([]);
 
   const organization = useOrganization(organizationId);
   const router = useRouter();
-  const createProjectsFromGithub = useCreateProjectsFromGithub();
+  const createProjectsFromTrello = useCreateProjectsFromTrello();
 
   const [importing, setImporting] = useState(false);
   const handleImport = useCallback(async () => {
     if (!organization) return;
     setImporting(true);
     try {
-      await createProjectsFromGithub({
+      await createProjectsFromTrello({
+        threepidId,
         organizationId,
-        repoIds: selectedRepoIds,
+        boardIds: selectedBoardIds,
       });
       await router.push(organization.permalink);
     } finally {
@@ -39,36 +39,37 @@ export const ImportProjectsFromGithubModal: FC<Props> = ({
     }
   }, [
     organization,
+    createProjectsFromTrello,
     router,
-    selectedRepoIds,
+    selectedBoardIds,
     organizationId,
-    createProjectsFromGithub,
+    threepidId,
   ]);
 
   return (
     <Modal visible={visible} closable={false} footer={null}>
       <Typography.Title level={4} style={{ textAlign: "center" }}>
-        Import Repos from Github...
+        Import Boards from Trello...
       </Typography.Title>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
         <Typography.Paragraph
           type="secondary"
           style={{ textAlign: "center", margin: 0 }}
         >
-          Select Github Repos to import below. You can select one or multiple!
+          Select Trello Boards to import below. You can select one or multiple!
         </Typography.Paragraph>
         <Select
-          loading={!githubRepos}
+          loading={!trelloBoards}
           disabled={importing}
           mode="multiple"
           optionFilterProp="label"
-          placeholder="Select Github Repos..."
+          placeholder="Select Trello Boards..."
           style={{ width: "100%" }}
-          onChange={(values) => setSelectedRepoIds(values as string[])}
+          onChange={(values) => setSelectedBoardIds(values as string[])}
         >
-          {githubRepos?.map((repo) => (
-            <Select.Option key={repo.id} value={repo.id} label={repo.name}>
-              {repo.name}
+          {trelloBoards?.map((board) => (
+            <Select.Option key={board.id} value={board.id} label={board.name}>
+              {board.name}
             </Select.Option>
           ))}
         </Select>
@@ -77,8 +78,8 @@ export const ImportProjectsFromGithubModal: FC<Props> = ({
           loading={importing}
           type="primary"
           size="large"
-          disabled={!selectedRepoIds.length}
-          icon={<Icons.GithubOutlined />}
+          disabled={!selectedBoardIds.length}
+          icon={<TrelloIcon />}
           onClick={handleImport}
         >
           Import
@@ -88,8 +89,8 @@ export const ImportProjectsFromGithubModal: FC<Props> = ({
             type="secondary"
             style={{ textAlign: "center" }}
           >
-            Github repos and issues are being imported. This might take up to 30
-            seconds, depending on how many repos and issues you have. Don't
+            Trello boards and cards are being imported. This might take up to 30
+            seconds, depending on how many boards and cards you have. Don't
             refresh the screen!
           </Typography.Paragraph>
         )}

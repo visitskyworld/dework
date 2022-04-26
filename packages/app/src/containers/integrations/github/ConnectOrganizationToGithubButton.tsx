@@ -10,7 +10,13 @@ export interface ConnectOrganizationToGithubProps extends ButtonProps {
 
 export const ConnectOrganizationToGithubButton: FC<
   ConnectOrganizationToGithubProps
-> = ({ organizationId, stateOverride, ...buttonProps }) => {
+> = ({
+  organizationId,
+  stateOverride,
+  icon = <Icons.GithubOutlined />,
+  children = "Connect to Github",
+  ...buttonProps
+}) => {
   const connectToGithubUrl = useConnectToGithubUrl(
     organizationId,
     stateOverride
@@ -23,11 +29,11 @@ export const ConnectOrganizationToGithubButton: FC<
     >
       <Button
         {...buttonProps}
-        style={{ marginTop: 4 }}
-        icon={<Icons.GithubOutlined />}
+        style={buttonProps.style}
+        icon={icon}
         href={connectToGithubUrl}
       >
-        Connect to Github
+        {children}
       </Button>
     </Tooltip>
   );

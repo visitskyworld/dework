@@ -1012,6 +1012,11 @@ iframe {
   transition: background-color 0.3s ease-in-out;
 }
 
+.dewo-simple-button.ant-btn.ant-btn-default {
+  background: none;
+  border: 1px solid @white;
+}
+
 .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
   .make-color-classes(@i - 1);
   @color: extract(@preset-colors, @i);
