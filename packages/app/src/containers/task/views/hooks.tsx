@@ -122,6 +122,7 @@ export function useTaskViewGroups(
   const filtered = useMemo(
     () =>
       tasks
+        .filter((t) => !t.deletedAt)
         .filter(
           matchingTagIds(
             findFilter(TaskViewFilterType.TAGS)?.tagIds ?? undefined
