@@ -59,9 +59,6 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
 
   if (
     task.status === TaskStatus.IN_REVIEW &&
-    !!task.reward &&
-    !task.reward.payment &&
-    !!currentUserId &&
     task.owners.some((u) => u.id === currentUserId)
   ) {
     return (
