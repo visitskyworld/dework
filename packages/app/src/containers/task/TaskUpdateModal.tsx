@@ -28,7 +28,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
   );
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
   const taskRoles = useTaskRoles(task);
-  const initialValues = useMemo(
+  const formValues = useMemo(
     (): TaskFormValues | undefined =>
       !!task && !!taskRoles ? toTaskFormValues(task, taskRoles) : undefined,
     [task, taskRoles]
@@ -50,15 +50,14 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         width={960}
       >
         {!!task && <TaskOptionsButton task={task} />}
-        <Skeleton loading={!task || !taskRoles} active paragraph={{ rows: 5 }}>
-          {!!initialValues && (
+        <Skeleton loading={!formValues} active paragraph={{ rows: 5 }}>
+          {!!task && (
             <TaskForm
               key={taskId}
               mode="update"
               task={task}
               projectId={task!.projectId}
-              initialValues={initialValues}
-              assignees={task!.assignees}
+              initialValues={formValues}
               showProjectLink={!isOnProjectPage}
               onSubmit={updateTaskFromFormValues}
             />

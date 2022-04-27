@@ -1,10 +1,5 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
-import {
-  TaskStatus,
-  User,
-  TaskDetails,
-  TaskPriority,
-} from "@dewo/app/graphql/types";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { TaskStatus, TaskDetails, TaskPriority } from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
   Form,
@@ -64,7 +59,6 @@ interface TaskFormProps {
   task?: TaskDetails;
   buttonText?: string;
   initialValues?: Partial<TaskFormValues>;
-  assignees?: User[];
   showProjectLink?: boolean;
   onSubmit(values: TaskFormValues): unknown;
   onChange?(values: Partial<TaskFormValues>): unknown;
@@ -137,6 +131,14 @@ export const TaskForm: FC<TaskFormProps> = ({
     },
     [form, mode, debouncedSubmit, onChange]
   );
+
+  useEffect(() => {
+    if (!!initialValues) {
+      setValues({ ...values, ...initialValues });
+      form.setFieldsValue(initialValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues]);
 
   const showTaskRewardFirst = !useCanUpdateTaskReward(task);
   const moreSection = useToggle(!!values?.dueDate || !!values?.storyPoints);
