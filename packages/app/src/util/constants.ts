@@ -33,5 +33,6 @@ export const deworkSocialLinks = {
     connectingToDiscord: `${docsBase}/guides/connecting-to-discord`,
     connectingToGithub: `${docsBase}/integrations/github`,
     bountyTypesAndGating: `${docsBase}/fundamentals/bounty-types-and-gating`,
+    payments: `${docsBase}/fundamentals/payments-on-dework#make-payments`,
   },
 };

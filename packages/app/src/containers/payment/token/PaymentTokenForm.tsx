@@ -1,10 +1,13 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
+import * as Icons from "@ant-design/icons";
 import { useRunningCallback, UseToggleHook } from "@dewo/app/util/hooks";
 import { Button, ButtonProps, Form, Modal, Select } from "antd";
 import {
   CreatePaymentTokenInput,
   PaymentNetwork,
   PaymentToken,
+  PaymentTokenType,
+  PaymentTokenVisibility,
 } from "@dewo/app/graphql/types";
 import { useForm } from "antd/lib/form/Form";
 
@@ -49,6 +52,16 @@ export const PaymentTokenForm: FC<FormProps> = ({
   const selectedNetwork = useMemo(
     () => networks?.find((n) => n.id === values.networkId),
     [networks, values.networkId]
+  );
+  const tokens = useMemo(
+    () =>
+      _.sortBy(
+        selectedNetwork?.tokens.filter(
+          (t) => t.visibility === PaymentTokenVisibility.ALWAYS
+        ),
+        (t) => (t.type === PaymentTokenType.NATIVE ? 0 : 1)
+      ),
+    [selectedNetwork?.tokens]
   );
 
   const manuallySetValues = useCallback(
@@ -130,7 +143,7 @@ export const PaymentTokenForm: FC<FormProps> = ({
       </Form.Item>
 
       {!!selectedNetwork &&
-        ("address" in values && !!values.address ? (
+        ("address" in values ? (
           <CustomTokenFormFields
             network={selectedNetwork}
             values={values as AtLeast<CreatePaymentTokenInput, "address">}
@@ -151,14 +164,28 @@ export const PaymentTokenForm: FC<FormProps> = ({
               allowClear
               optionFilterProp="label"
               onSearch={handleSearchToken}
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  {!!tokens.length && (
+                    <Button
+                      block
+                      type="text"
+                      style={{ textAlign: "left", marginTop: 4 }}
+                      className="text-secondary"
+                      icon={<Icons.PlusCircleOutlined />}
+                      children="Add your own token (ERC 20, 721 or 1155)"
+                      onClick={() =>
+                        manuallySetValues({ ...values, address: "" })
+                      }
+                    />
+                  )}
+                </>
+              )}
             >
-              {selectedNetwork?.tokens.map((token) => (
-                <Select.Option
-                  key={token.id}
-                  value={token.id}
-                  label={token.name}
-                >
-                  {token.name}
+              {tokens.map((t) => (
+                <Select.Option key={t.id} value={t.id} label={t.name}>
+                  {t.name}
                 </Select.Option>
               ))}
             </Select>

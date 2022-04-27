@@ -6,9 +6,9 @@ import {
 } from "@dewo/app/graphql/types";
 import { AtLeast } from "@dewo/app/types/general";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { Button, Col, Form, Input, Row } from "antd";
-import React, { FC, useCallback, useEffect } from "react";
-import { useGuessTokenMetadata } from "./useGuessTokenMetadata";
+import { Button, Col, Form, Input, Row, Select } from "antd";
+import React, { FC, useCallback } from "react";
+import { useLookupToken } from "./useLookupToken";
 
 interface Props {
   network: PaymentNetwork;
@@ -30,36 +30,63 @@ export const CustomTokenFormFields: FC<Props> = ({
     [onChange, network.id]
   );
 
-  const guess = useGuessTokenMetadata();
-  const [guessTokenMetadata, guessing] = useRunningCallback(guess, [guess]);
-  const handleLookup = useCallback(async () => {
-    const token = await guessTokenMetadata(
+  const lookupToken = useLookupToken();
+  const [handleLookupToken, lookingUp] = useRunningCallback(async () => {
+    const token = await lookupToken(
       values.address,
       network,
+      values.type!,
       values.identifier ?? undefined
     );
     if (!!token) {
       onChange(token);
-    } else {
-      onChange({ ...values, type: PaymentTokenType.ERC1155 });
     }
-  }, [guessTokenMetadata, values, network, onChange]);
-
-  useEffect(() => {
-    handleLookup();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    lookupToken,
+    values.address,
+    values.type,
+    values.identifier,
+    network,
+    onChange,
+  ]);
 
   return (
     <>
       <Row style={{ gap: 8 }}>
+        <Form.Item
+          label="Type"
+          name="type"
+          rules={[{ required: true, message: "Required" }]}
+          style={{ flex: 1 }}
+        >
+          <Select<PaymentTokenType>
+            placeholder="Select type"
+            showSearch
+            optionFilterProp="label"
+          >
+            {[
+              PaymentTokenType.ERC20,
+              PaymentTokenType.ERC721,
+              PaymentTokenType.ERC1155,
+            ].map((type) => (
+              <Select.Option key={type} value={type} label={type}>
+                {type}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item
           label="Contract Address"
           name="address"
           rules={[{ required: true, message: "Please enter token address" }]}
           style={{ flex: 3 }}
         >
-          <Input disabled={guessing} allowClear onChange={handleChange} />
+          <Input
+            disabled={lookingUp}
+            allowClear
+            placeholder="Enter contract address..."
+            onChange={handleChange}
+          />
         </Form.Item>
         <Form.Item
           label="Token ID"
@@ -73,10 +100,19 @@ export const CustomTokenFormFields: FC<Props> = ({
           ]}
           style={{ flex: 1 }}
         >
-          <Input placeholder="Token ID" />
+          <Input placeholder="ID..." />
         </Form.Item>
         <FormSection label={"\u2060"}>
-          <Button loading={guessing} type="ghost" onClick={handleLookup}>
+          <Button
+            loading={lookingUp}
+            disabled={
+              !values.address ||
+              !values.type ||
+              (values.type === PaymentTokenType.ERC1155 && !values.identifier)
+            }
+            type="ghost"
+            onClick={handleLookupToken}
+          >
             Lookup
           </Button>
         </FormSection>
@@ -88,7 +124,7 @@ export const CustomTokenFormFields: FC<Props> = ({
             name="name"
             label="Token Name"
             rules={[{ required: true }]}
-            hidden={!values.name}
+            hidden={values.name === undefined}
           >
             <Input disabled />
           </Form.Item>
@@ -98,7 +134,7 @@ export const CustomTokenFormFields: FC<Props> = ({
             name="symbol"
             label="Symbol"
             rules={[{ required: true }]}
-            hidden={!values.symbol}
+            hidden={values.symbol === undefined}
           >
             <Input disabled />
           </Form.Item>
@@ -109,7 +145,7 @@ export const CustomTokenFormFields: FC<Props> = ({
             name="exp"
             label="Decimals"
             rules={[{ required: true }]}
-            hidden={!values.exp}
+            hidden={values.exp === undefined}
           >
             <Input disabled />
           </Form.Item>

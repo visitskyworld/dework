@@ -2,6 +2,7 @@ import { PaymentToken } from "@dewo/app/graphql/types";
 import { Modal } from "antd";
 import React, { FC, useCallback } from "react";
 import { useAddTokenToOrganization } from "../../organization/hooks";
+import { PaymentMethodEducationAlert } from "./PaymentMethodEducationAlert";
 import { PaymentTokenForm } from "./PaymentTokenForm";
 
 interface Props {
@@ -34,6 +35,7 @@ export const AddTokenModal: FC<Props> = ({
       onCancel={handleClose}
       destroyOnClose
     >
+      <PaymentMethodEducationAlert />
       <PaymentTokenForm onDone={handleDone} />
     </Modal>
   );
