@@ -66,21 +66,10 @@ export class AuthController {
 
   @Get("discord-bot")
   async discordBot(@Req() req: Request, @Res() res: Response) {
-    const { asAdmin = false, guildId } = req.query;
-    const variant =
-      parseInt((req.query.userId as string)[0], 16) % 2 ? "A" : "B";
-
+    const { guildId } = req.query;
     this.analytics.client?.logEvent({
       event_type: "Discord Bot: start authorize flow",
       user_id: req.query.userId as string,
-      user_properties: asAdmin
-        ? undefined
-        : {
-            "Experiment: Discord bot permissions":
-              variant === "A"
-                ? "A (specific permissions)"
-                : "B (administrator permission)",
-          },
       event_properties: req.query,
     });
 
@@ -88,18 +77,9 @@ export class AuthController {
       `https://discord.com/api/oauth2/authorize?${qs.stringify({
         response_type: "code",
         // https://discordapi.com/permissions.html
-        permissions: new Discord.Permissions(
-          asAdmin || variant === "B"
-            ? [Discord.Permissions.FLAGS.ADMINISTRATOR]
-            : [
-                Discord.Permissions.FLAGS.MANAGE_THREADS,
-                Discord.Permissions.FLAGS.MANAGE_CHANNELS,
-                Discord.Permissions.FLAGS.MANAGE_ROLES,
-                Discord.Permissions.FLAGS.SEND_MESSAGES,
-                Discord.Permissions.FLAGS.CREATE_PRIVATE_THREADS,
-                Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE,
-              ]
-        ).bitfield.toString(),
+        permissions: new Discord.Permissions([
+          Discord.Permissions.FLAGS.ADMINISTRATOR,
+        ]).bitfield.toString(),
         scope: "bot",
         guild_id: guildId,
         client_id: this.config.get<string>("MAIN_DISCORD_OAUTH_CLIENT_ID"),

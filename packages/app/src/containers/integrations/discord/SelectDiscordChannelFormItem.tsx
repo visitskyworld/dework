@@ -76,7 +76,6 @@ export const SelectDiscordChannelFormItem = ({
               >
                 <Row>
                   <ConnectOrganizationToDiscordButton
-                    asAdmin
                     guildId={guildId}
                     organizationId={organizationId}
                     children="Give Administrator Access"

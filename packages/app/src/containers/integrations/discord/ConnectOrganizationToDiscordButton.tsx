@@ -10,7 +10,6 @@ import Link from "next/link";
 interface Props extends ButtonProps {
   organizationId: string;
   style?: React.CSSProperties;
-  asAdmin?: boolean;
   guildId?: string;
 }
 
@@ -18,7 +17,6 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
   organizationId,
   children = "Connect to Discord",
   icon = <DiscordIcon />,
-  asAdmin = false,
   guildId,
   ...buttonProps
 }) => {
@@ -30,7 +28,6 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
         organizationId,
         userId: user?.id,
         redirect: router.asPath,
-        ...(asAdmin ? { asAdmin: true } : {}),
         ...(guildId ? { guildId } : {}),
       })}`}
     >
