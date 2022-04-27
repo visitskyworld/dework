@@ -82,6 +82,14 @@ export class DiscordTaskApplicationThreadService {
 
     // 4. create private thread in channel
     const name = `${applicant.username} - ${task.name}`;
+    this.logger.debug(
+      `Creating thread: ${JSON.stringify({
+        taskApplicationId: taskApplication.id,
+        name,
+        applicantDiscordId,
+        ownersDiscordIds,
+      })}`
+    );
     const thread = await channel.threads.create({
       name: name.length > 100 ? `${name.slice(0, 97)}...` : name,
       // type: guild.features.includes("PRIVATE_THREADS")
@@ -90,6 +98,12 @@ export class DiscordTaskApplicationThreadService {
     });
 
     // 5. add task owner and task applicant to thread
+    this.logger.debug(
+      `Inviting users: ${JSON.stringify({
+        taskApplicationId: taskApplication.id,
+        threadId: thread.id,
+      })}`
+    );
     await Bluebird.mapSeries(
       [applicantDiscordId, ...ownersDiscordIds],
       async (discordUserId) => {
@@ -115,6 +129,12 @@ export class DiscordTaskApplicationThreadService {
     );
 
     // 6. send intro message
+    this.logger.debug(
+      `Sending message in thread: ${JSON.stringify({
+        taskApplicationId: taskApplication.id,
+        threadId: thread.id,
+      })}`
+    );
     await thread.send({
       content: `<@${applicantDiscordId}> just applied! Here is a private thread ${
         !!ownersDiscordIds.length
@@ -144,6 +164,10 @@ export class DiscordTaskApplicationThreadService {
         },
       ],
     });
+
+    this.logger.debug(
+      `Done: ${JSON.stringify({ taskApplicationId: taskApplication.id })}`
+    );
   }
 
   private async getOrCreatePrivateChannel(
