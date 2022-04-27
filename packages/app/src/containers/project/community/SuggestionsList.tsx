@@ -142,9 +142,8 @@ export const SuggestionsList: FC<Props> = ({ taskRows }) => {
     <>
       {taskRows.map((taskRow, index) => (
         <Card
-          hoverable
           onClick={() => handleClick(taskRow.task)}
-          bordered={false}
+          className="bg-body-secondary hover:cursor-pointer hover:component-highlight"
           style={{ marginBottom: 20 }}
           key={taskRow.task.id}
         >

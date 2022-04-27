@@ -86,17 +86,7 @@ export const TaskDiscoveryList: FC = () => {
     }),
     [values.includeTasksWithoutReward]
   );
-  const _tasks = useTasks(tasksQuery);
-  // hackily filter out tasks created during demos
-  const tasks = useMemo(
-    () =>
-      _tasks?.filter((t) => {
-        const name = t.project.organization.name.toLowerCase();
-        return !name.includes("demo") && !name.includes("test");
-      }),
-    [_tasks]
-  );
-
+  const tasks = useTasks(tasksQuery);
   const screens = useBreakpoint();
   const filters = useToggle(true);
   const tasksTags = useMemo(
@@ -138,6 +128,7 @@ export const TaskDiscoveryList: FC = () => {
             <Col sm={24} md={8}>
               <Card
                 style={{ marginTop: 16 }}
+                className="bg-body-secondary"
                 size="small"
                 title="Filter bounties"
                 extra={

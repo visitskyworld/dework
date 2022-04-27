@@ -1,4 +1,4 @@
-import { Tabs, Typography } from "antd";
+import { Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
@@ -72,7 +72,7 @@ export const TaskViewTabs: FC<Props> = ({
           activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
         }
         destroyInactiveTabPane
-        className={`dewo-tabs ${styles.tabs}`}
+        className={styles.tabs}
         onTabClick={navigateToTab}
       >
         {views.map((view) => (
@@ -90,9 +90,7 @@ export const TaskViewTabs: FC<Props> = ({
                   <Icons.UnorderedListOutlined />
                 )}
                 {view.id === currentView?.id && <div style={{ width: 8 }} />}
-                <Typography.Text italic={hasLocalChanges(view.id)}>
-                  {view.name}
-                </Typography.Text>
+                {hasLocalChanges(view.id) ? <i>{view.name}</i> : view.name}
               </>
             }
             key={`view:${view.id}`}

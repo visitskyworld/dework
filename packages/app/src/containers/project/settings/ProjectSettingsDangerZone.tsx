@@ -41,7 +41,7 @@ export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
   return (
     <FormSection label="DANGER ZONE">
       <Card
-        className="dewo-danger-zone"
+        className="dewo-danger-zone bg-body-secondary"
         size="small"
         bodyStyle={{ padding: 10 }}
       >

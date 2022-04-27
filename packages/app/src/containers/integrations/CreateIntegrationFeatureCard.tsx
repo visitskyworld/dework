@@ -40,11 +40,7 @@ export const CreateIntegrationFeatureCard = ({
     })}
     extra={
       isConnected ? (
-        <Button
-          type="default"
-          className="dewo-simple-button"
-          onClick={expanded.toggle}
-        >
+        <Button className="dewo-simple-button" onClick={expanded.toggle}>
           {connectedButtonCopy}
         </Button>
       ) : (

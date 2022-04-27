@@ -3,6 +3,8 @@ import * as URL from "url";
 import Link, { LinkProps } from "next/link";
 import React, { FC, useMemo } from "react";
 import { isSSR } from "@dewo/app/util/isSSR";
+import classNames from "classnames";
+import styles from "./Sidebar.module.less";
 
 interface Props extends LinkProps {
   href: string;
@@ -26,9 +28,10 @@ export const SidebarNavLink: FC<Props> = ({
     return exact ? pathname === asPath : asPath.startsWith(pathname);
   }, [exact, asPath, href]);
 
-  const className = [restProps.className ?? "", isActive ? "active" : ""].join(
-    " "
-  );
+  const className = classNames({
+    [restProps.className ?? ""]: true,
+    [styles.active]: isActive,
+  });
 
   if (!clickable) {
     return <div className={className}>{children}</div>;

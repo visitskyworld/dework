@@ -112,7 +112,6 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
                   color={selectedTagLabel !== tag.label ? undefined : tag.color}
                   className="hover:cursor-pointer"
                   style={{
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
                     opacity:
                       !!selectedTagLabel && selectedTagLabel !== tag.label
                         ? 0.5

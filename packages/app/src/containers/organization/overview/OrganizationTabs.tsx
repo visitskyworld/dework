@@ -33,6 +33,7 @@ import { RulePermission } from "@dewo/app/graphql/types";
 import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
+import styles from "./OrganizationTabs.module.less";
 
 interface Props {
   organizationId: string;
@@ -88,8 +89,7 @@ export const OrganizationTabs: FC<Props> = ({
   return (
     <Tabs
       tabBarStyle={tabBarStyle}
-      className="dewo-tabs"
-      style={{ height: "100%" }}
+      className={styles.tabs}
       activeKey={currentTab}
       onTabClick={navigateToTab}
     >
@@ -98,7 +98,11 @@ export const OrganizationTabs: FC<Props> = ({
         key="overview"
         style={tabPaneStyle}
       >
-        <Row gutter={[screens.xs ? 0 : 24, 24]} className="max-w-xxl w-full">
+        <Row
+          gutter={[screens.xs ? 0 : 48, 24]}
+          style={{ marginTop: 20 }}
+          className="max-w-xxl w-full"
+        >
           <Col
             xs={24}
             md={18}
@@ -112,7 +116,7 @@ export const OrganizationTabs: FC<Props> = ({
           <Col xs={24} md={6}>
             <Typography.Title level={5}>About</Typography.Title>
             <MarkdownPreview
-              style={{ wordBreak: "break-word" }}
+              style={{ wordBreak: "break-word", opacity: 0.7 }}
               value={organization?.description || "No description..."}
             />
 

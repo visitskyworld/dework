@@ -17,6 +17,8 @@ import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import _ from "lodash";
+import { SearchOutlined } from "@ant-design/icons";
+import styles from "./ProjectDiscoveryList.module.less";
 
 type OrganizationRow = GetPopularOrganizationsQuery["organizations"][number];
 
@@ -56,7 +58,7 @@ export const ProjectDiscoveryList: FC = () => {
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center" }}>
-        Popular DAOs{" "}
+        🌍 Popular DAOs{" "}
         {!!filteredOrganizations && `(${filteredOrganizations.length})`}
       </Typography.Title>
       {!!filteredOrganizations ? (
@@ -65,8 +67,9 @@ export const ProjectDiscoveryList: FC = () => {
             placeholder="Search DAOs..."
             allowClear
             onChange={onChangeSearch}
+            prefix={<SearchOutlined />}
             size="large"
-            style={{ borderColor: "rgba(255,255,255,0.4)" }}
+            className={styles.searchbar}
           />
           <Table
             dataSource={filteredOrganizations}

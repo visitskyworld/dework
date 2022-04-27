@@ -43,7 +43,7 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <RBACPermissionForm
           permission={RulePermission.MANAGE_ORGANIZATION}
           roles={roles}
@@ -69,7 +69,7 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <RBACPermissionForm
           permission={RulePermission.MANAGE_PROJECTS}
           roles={roles}
@@ -94,7 +94,7 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <RBACPermissionForm
           permission={RulePermission.MANAGE_TASKS}
           roles={roles}

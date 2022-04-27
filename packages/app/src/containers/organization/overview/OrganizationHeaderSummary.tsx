@@ -41,7 +41,6 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   if (!organization) {
     return (
       <List.Item.Meta
-        className="dewo-list-item-meta"
         avatar={<Skeleton.Avatar active size={96} />}
         title={
           <Skeleton
@@ -56,15 +55,16 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
   }
 
   return (
-    <List.Item.Meta
-      className="dewo-list-item-meta"
-      avatar={<OrganizationAvatar organization={organization} size={96} />}
-      title={
-        <Typography.Title level={2} style={{ marginBottom: 0 }}>
-          {organization.name}
-        </Typography.Title>
-      }
-      description={description}
-    />
+    <>
+      <List.Item.Meta
+        avatar={<OrganizationAvatar organization={organization} size={96} />}
+        title={
+          <Typography.Title level={2} style={{ marginBottom: 0 }}>
+            {organization.name}
+          </Typography.Title>
+        }
+        description={description}
+      />
+    </>
   );
 };

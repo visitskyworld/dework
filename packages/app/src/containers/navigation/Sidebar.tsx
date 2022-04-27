@@ -9,6 +9,7 @@ import { SidebarNavLink } from "./SidebarNavLink";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
 import Link from "next/link";
 import { isSSR } from "@dewo/app/util/isSSR";
+import styles from "./Sidebar.module.less";
 
 export const Sidebar: FC = () => {
   const { user } = useAuthContext();
@@ -22,11 +23,11 @@ export const Sidebar: FC = () => {
       collapsible
       breakpoint="sm"
       onBreakpoint={setToggle}
-      width={72}
+      width={78}
       collapsedWidth="0"
       collapsed={isOn}
       trigger={null}
-      className="dewo-divider-right"
+      className={styles.sidebar}
     >
       <Col
         style={{
@@ -34,11 +35,12 @@ export const Sidebar: FC = () => {
           padding: "12px 0",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <SidebarNavLink
           href={user.permalink}
-          className="dewo-sidebar-item"
+          className={styles.item}
           clickable={false}
         >
           <HeaderProfileAvatar />
@@ -60,7 +62,7 @@ export const Sidebar: FC = () => {
           </Link>
         )}
 
-        <Divider style={{ margin: "12px 0" }} />
+        <Divider style={{ margin: "12px 0", minWidth: "50%", width: "50%" }} />
 
         <Col style={{ flex: 1, overflowX: "hidden", overflowY: "auto" }}>
           {user?.organizations.map((organization) => (
@@ -68,24 +70,20 @@ export const Sidebar: FC = () => {
               key={organization.id}
               href={organization.permalink}
               clickable
-              className="dewo-sidebar-item"
+              className={styles.item}
             >
               <SidebarOrganizationAvatar organization={organization} />
             </SidebarNavLink>
           ))}
 
           <Tooltip title="Create Organization" placement="right">
-            <CreateOrganizationButton type="text" className="dewo-sidebar-item">
+            <CreateOrganizationButton type="text" className={styles.item}>
               <Avatar size={48} icon={<Icons.PlusOutlined />} />
             </CreateOrganizationButton>
           </Tooltip>
 
-          <SidebarNavLink
-            href="/recommended"
-            clickable
-            className="dewo-sidebar-item"
-          >
-            <Button type="text" className="dewo-sidebar-item">
+          <SidebarNavLink href="/recommended" clickable className={styles.item}>
+            <Button type="text" className={styles.item}>
               <Avatar size={48} icon={<Icons.CompassFilled />} />
             </Button>
           </SidebarNavLink>

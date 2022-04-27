@@ -153,12 +153,7 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         </Row>
       )}
       {!!isMe && !editing.isOn && (
-        <Button
-          block
-          type="ghost"
-          style={{ marginTop: 16 }}
-          onClick={editing.toggle}
-        >
+        <Button block style={{ marginTop: 16 }} onClick={editing.toggle}>
           Edit Profile
         </Button>
       )}
@@ -166,7 +161,6 @@ export const UserProfileForm: FC<Props> = ({ userId, onSaved }) => {
         <>
           <Button
             block
-            type="ghost"
             style={{ marginTop: 16 }}
             onClick={userSettings.toggleOn}
           >

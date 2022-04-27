@@ -45,9 +45,8 @@ export const TaskViewProvider: FC<ProviderProps> = ({
   >({});
 
   const router = useRouter();
-  const { viewSlug } = router.query as {
-    organizationSlug: string;
-    projectSlug: string;
+  const { viewSlug, tab } = router.query as {
+    tab?: string;
     viewSlug?: string;
   };
 
@@ -57,6 +56,7 @@ export const TaskViewProvider: FC<ProviderProps> = ({
   const key = useMemo(() => buildKey(projectId!), [projectId]);
   const view = useMemo(() => {
     if (isSSR) return undefined;
+    if (!!tab) return undefined;
     if (!!viewSlug) {
       const view = views?.find((v) => v.slug === viewSlug);
       if (!!view) return view;
@@ -66,14 +66,14 @@ export const TaskViewProvider: FC<ProviderProps> = ({
     const lastView = views?.find((v) => v.id === lastViewId);
     if (!!lastView) return lastView;
     return views?.[0];
-  }, [viewSlug, views, key]);
+  }, [viewSlug, views, key, tab]);
 
   useEffect(() => {
-    if (!view && !!views?.length && !!project) {
+    if (!tab && !view && !!views?.length && !!project) {
       router.push(project.permalink);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, views?.length, project]);
+  }, [view, views?.length, project, tab]);
 
   useEffect(() => {
     const lastViewId = localStorage.getItem(key) ?? undefined;

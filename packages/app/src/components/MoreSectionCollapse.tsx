@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from "react";
 import { Button, Divider } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useToggle, UseToggleHook } from "../util/hooks";
+import { HeadlessCollapse } from "./HeadlessCollapse";
 
 interface Props {
   toggle?: UseToggleHook;
@@ -25,7 +26,9 @@ export const MoreSectionCollapse: FC<Props> = ({ children, label, toggle }) => {
           {actualToggle.isOn ? <Icons.UpOutlined /> : <Icons.DownOutlined />}
         </Button>
       </Divider>
-      {actualToggle.isOn && children}
+      <HeadlessCollapse expanded={actualToggle.isOn}>
+        {children}
+      </HeadlessCollapse>
     </>
   );
 };

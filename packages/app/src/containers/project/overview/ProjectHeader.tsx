@@ -16,9 +16,9 @@ import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { ProjectInviteButton } from "../../invite/ProjectInviteButton";
 import { CoordinapeMetamaskConnectButton } from "../../integrations/coordinape/CoordinapeMetamaskConnectButton";
 import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
-import { FollowOrganizationButton } from "../../organization/overview/FollowOrganizationButton";
-import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
 import { ConnectUsingDiscordRolesButton } from "../../auth/buttons/ConnectUsingDiscordRolesButton";
+import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
+import styles from "./ProjectHeader.module.less";
 
 interface Props {
   projectId?: string;
@@ -67,18 +67,9 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const routes = useMemo<Route[] | undefined>(() => {
     if (!organization || !project) return undefined;
     return [
-      {
-        path: "../..",
-        breadcrumbName: "Home",
-      },
-      {
-        path: organization.slug,
-        breadcrumbName: organization.name,
-      },
-      {
-        path: project.slug,
-        breadcrumbName: project.name,
-      },
+      { path: "../..", breadcrumbName: "Home" },
+      { path: organization.slug, breadcrumbName: organization.name },
+      { path: project.slug, breadcrumbName: project.name },
     ];
   }, [organization, project]);
 
@@ -106,8 +97,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   }, [projectName, project?.name, editName, submitProjectName]);
   return (
     <PageHeader
-      className="dewo-project-header"
-      style={{ paddingBottom: 0 }}
+      className={styles.header}
       title={
         !!project ? (
           !editName.isOn ? (
@@ -144,19 +134,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
           <Skeleton.Button active style={{ width: 200 }} />
         )
       }
-      // subTitle={
-      //   !!project ? (
-      //     <Row align="middle">
-      //       <Avatar.Group maxCount={3} size="large" style={{ marginRight: 16 }}>
-      //         {project?.members.map((m) => (
-      //           <UserAvatar key={m.id} user={m.user} linkToProfile />
-      //         ))}
-      //       </Avatar.Group>
-      //     </Row>
-      //   ) : (
-      //     <Skeleton.Avatar active size="large" />
-      //   )
-      // }
       extra={
         !!project &&
         organizationId && (
@@ -165,7 +142,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             <ProjectInviteButton projectId={project.id} />
             {canEditOrg && !discordIntegration && (
               <ConnectOrganizationToDiscordButton
-                type="ghost"
                 name="Connect organization to Discord from Project Header"
                 organizationId={project.organizationId}
               >
@@ -174,17 +150,13 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             )}
             {canEditOrg && !!discordIntegration && !hasCorrectPermissions && (
               <ConnectOrganizationToDiscordButton
-                type="ghost"
                 name="Update Discord permissions from Project Header"
                 organizationId={project.organizationId}
               >
                 Update Discord Permissions
               </ConnectOrganizationToDiscordButton>
             )}
-
-            <FollowOrganizationButton organizationId={organizationId} />
             <ConnectUsingDiscordRolesButton
-              type="ghost"
               projectId={projectId}
               organizationId={organizationId}
               name="Connect user with Discord from Project Header"
@@ -193,7 +165,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
             <CoordinapeMetamaskConnectButton
               icon={<CoordinapeIcon />}
               organizationId={organizationId}
-              type="ghost"
             />
           </Space>
         )

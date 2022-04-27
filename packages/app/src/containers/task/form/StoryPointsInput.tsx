@@ -33,7 +33,7 @@ export const StoryPointsInput: FC<Props> = ({ disabled, value, onChange }) => (
     <InputNumber
       min={0}
       style={{ width: "100%" }}
-      placeholder="Estimate task size in hours"
+      placeholder="Estimate task effort"
       value={value}
       onChange={useCallback(
         (value) =>

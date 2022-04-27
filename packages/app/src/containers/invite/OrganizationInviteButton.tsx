@@ -39,7 +39,6 @@ export const OrganizationInviteButton: FC<Props> = ({
   if (canInvite && !hasTokenGatedProjects) {
     return (
       <Button
-        type="ghost"
         icon={<Icons.UsergroupAddOutlined />}
         style={style}
         onClick={inviteOrganizationAdmin}
@@ -52,7 +51,6 @@ export const OrganizationInviteButton: FC<Props> = ({
   if (!canInvite && hasTokenGatedProjects) {
     return (
       <Button
-        type="ghost"
         icon={<Icons.UsergroupAddOutlined />}
         style={style}
         onClick={inviteToTokenGatedProjects}
@@ -82,11 +80,7 @@ export const OrganizationInviteButton: FC<Props> = ({
           </Menu>
         }
       >
-        <Button
-          type="ghost"
-          icon={<Icons.UsergroupAddOutlined />}
-          style={style}
-        >
+        <Button icon={<Icons.UsergroupAddOutlined />} style={style}>
           Invite
         </Button>
       </Dropdown>

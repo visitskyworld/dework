@@ -146,7 +146,6 @@ export const ProjectInviteButton: FC<Props> = ({ projectId, style }) => {
       }
     >
       <Button
-        type="ghost"
         loading={loading}
         icon={<Icons.UsergroupAddOutlined />}
         style={style}

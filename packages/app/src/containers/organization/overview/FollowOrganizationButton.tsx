@@ -62,7 +62,7 @@ export const FollowOrganizationButton: FC<Props> = ({
   if (!isFollowing) {
     return (
       <Button
-        type="ghost"
+        type="primary"
         loading={loadingFollow}
         icon={<Icons.StarOutlined />}
         style={style}
@@ -74,7 +74,6 @@ export const FollowOrganizationButton: FC<Props> = ({
   } else if (showUnfollow) {
     return (
       <Button
-        type="ghost"
         name="Unfollow organization"
         loading={loadingUnfollow}
         icon={<Icons.MinusCircleOutlined />}

@@ -1,0 +1,52 @@
+@import "~@dewo/app/styles/theme.less";
+
+.sidebar {
+  border-right: 1px solid @divider-color;
+  background-color: @body-background-secondary;
+
+  .item {
+    padding: 0;
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    border-radius: @border-radius-base;
+  
+    transition: background 0.3s ease-in-out;
+    position: relative;
+    &:hover {
+      background: @component-background;
+      &::before {
+        height: 20px;
+        opacity: 1;
+      }
+    }
+  
+    &::before {
+      content: "";
+      width: @border-radius-base;
+      height: 8px;
+      opacity: 0;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      background-color: @text-color-secondary;
+      position: absolute;
+      left: 0;
+      transition: all 0.3s ease-in-out;
+    }
+  
+    &.active {
+      &::before {
+        background-color: @text-color;
+        height: 48px;
+        opacity: 1;
+      }
+    }
+  
+    :global(.ant-avatar) {
+      display: grid;
+      place-items: center;
+    }
+  }
+}
+

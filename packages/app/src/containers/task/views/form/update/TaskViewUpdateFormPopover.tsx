@@ -80,7 +80,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
       }
     >
       <Button
-        type="ghost"
+        type="primary"
         size="small"
         icon={<ControlIcon style={{ margin: 0 }} />}
         onClick={eatClick}

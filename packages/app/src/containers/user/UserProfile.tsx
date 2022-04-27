@@ -57,7 +57,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
     <div className="mx-auto max-w-lg" style={{ marginTop: 40 }}>
       <Row gutter={[16, 16]} style={{ margin: 0 }}>
         <Col xs={24} md={8}>
-          <Card>
+          <Card className="bg-body-secondary">
             <UserProfileForm userId={userId} />
             <Typography.Text
               className="dewo-label"
@@ -94,7 +94,11 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           </Card>
         </Col>
         <Col xs={24} md={16}>
-          <Card size="small" title="Completed tasks">
+          <Card
+            style={{ background: "hsl(240, 14%, 13%)" }}
+            size="small"
+            title="Completed tasks"
+          >
             {!mounted || !completedTasks ? (
               <div style={{ display: "grid", padding: 16 }}>
                 <Spin />

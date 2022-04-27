@@ -44,7 +44,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <RBACPermissionForm
           permission={RulePermission.MANAGE_PROJECTS}
           roles={roles}
@@ -79,7 +79,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 4 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <RBACPermissionForm
           permission={RulePermission.MANAGE_TASKS}
           roles={roles}
@@ -102,7 +102,7 @@ export const ProjectRBAC: FC<Props> = ({ projectId, organizationId }) => {
           <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
         </Tooltip>
       </Typography.Title>
-      <Card bordered={false} className={styles.card}>
+      <Card className={`bg-body-secondary ${styles.card}`}>
         <ProjectPrivatePermissionForm
           projectId={projectId}
           organizationId={organizationId}

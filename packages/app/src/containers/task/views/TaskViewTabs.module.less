@@ -1,16 +1,33 @@
+@import "~@dewo/app/styles/theme.less";
+
 
 .tabs {
-  padding-top: 12px;
   height: 100%;
+  
+  > :global(.ant-tabs-nav) > :global(.ant-tabs-nav-wrap) > :global(.ant-tabs-nav-list) {
+    flex: 1;
+  
+    padding-left: 12px;
+    padding-right: 12px;
+  
+    @media (min-width: @screen-sm) {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+  }
 
   :global {
-    .ant-tabs-nav-list {
-      flex: 1;
-    }
-
     .ant-tabs-tab div[role="tab"] {
       display: flex;
       align-items: center;
+    }
+
+    .ant-tabs-nav {
+      background-color: @body-background-secondary;
+
+      .ant-tabs-nav-operations {
+        display: none;
+      }
     }
   }
 }

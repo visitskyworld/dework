@@ -11,7 +11,7 @@ import { deworkSocialLinks } from "@dewo/app/util/constants";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
 const labels: Record<TaskGatingType, string> = {
-  [TaskGatingType.ASSIGNEES]: "Choose Assignees",
+  [TaskGatingType.ASSIGNEES]: "Assign someone",
   [TaskGatingType.APPLICATION]: "Application Process",
   [TaskGatingType.OPEN_SUBMISSION]: "Multiple Submissions",
   [TaskGatingType.ROLES]: "Discord Roles",
@@ -19,9 +19,9 @@ const labels: Record<TaskGatingType, string> = {
 
 const descriptions: Partial<Record<TaskGatingType, string>> = {
   [TaskGatingType.APPLICATION]:
-    "Contributors apply to this task, and the reviewer can assign the best applicant.",
+    "Contributors can apply to this task, and the reviewer can assign the best applicant.",
   [TaskGatingType.ROLES]:
-    "Contributors with certain roles assign themselves to this task. Anyone can still apply to claim this task, but the selected roles can claim and start working on this without an application.",
+    "Contributors with certain roles can assign themselves to this task. Anyone can still apply to claim this task, but the selected roles can claim and start working on this without an application.",
   [TaskGatingType.OPEN_SUBMISSION]:
     "Allow anyone to submit a task submission. Submissions will be shown to admins in the task details. From there, review and pick the best submission.",
 };
@@ -65,10 +65,10 @@ export const TaskGatingFields: FC<Props> = ({
       style={{ marginBottom: 0 }}
       label={
         <QuestionmarkTooltip
-          title="Task gating decides who can work on this task."
+          title="Select a strategy to decide who is allowed to pick up this task."
           marginLeft={4}
           readMoreUrl={deworkSocialLinks.gitbook.bountyTypesAndGating}
-          children="Gating"
+          children="Assignee"
         />
       }
     >

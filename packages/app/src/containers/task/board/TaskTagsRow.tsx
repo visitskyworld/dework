@@ -83,7 +83,7 @@ export const TaskTagsRow: FC<Props> = ({
       </Tag>
     ),
     "project" in task && (
-      <Tag key="project" className="bg-component" style={{ paddingLeft: 0 }}>
+      <Tag key="project" style={{ paddingLeft: 0 }}>
         <OrganizationAvatar
           organization={task.project.organization}
           size={20}

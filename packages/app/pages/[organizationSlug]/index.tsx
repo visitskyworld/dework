@@ -27,7 +27,7 @@ const Page: NextPage = () => {
 
   const breakpoint = Grid.useBreakpoint();
   const inset = useMemo(() => {
-    if (breakpoint.xxl) return 128;
+    if (breakpoint.xxl) return 72;
     if (breakpoint.sm) return 16;
     return 8;
   }, [breakpoint]);
@@ -60,20 +60,31 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
-        <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
-        <Row style={{ marginLeft: inset, marginRight: inset }}>
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
+        <PageHeader
+          breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
+          className="bg-body-secondary"
+        />
+        <Row
+          style={{ paddingLeft: inset, paddingRight: inset }}
+          className="bg-body-secondary"
+        >
           <OrganizationHeaderSummary organizationId={organizationId} />
         </Row>
-        {!!organizationId && (
-          <OrganizationTabs
-            tabBarStyle={{ paddingLeft: inset, paddingRight: inset }}
-            tabPaneStyle={{ padding: `12px ${inset}px` }}
-            organizationId={organizationId}
-            currentTab={currentTab}
-            settingsTab={settingsTab}
-          />
-        )}
+        <Layout.Content style={{ flex: 1 }}>
+          {!!organizationId && (
+            <OrganizationTabs
+              tabBarStyle={{
+                paddingLeft: inset,
+                paddingRight: inset,
+              }}
+              tabPaneStyle={{ padding: `12px ${inset}px` }}
+              organizationId={organizationId}
+              currentTab={currentTab}
+              settingsTab={settingsTab}
+            />
+          )}
+        </Layout.Content>
       </Layout.Content>
 
       {!!organizationId && (

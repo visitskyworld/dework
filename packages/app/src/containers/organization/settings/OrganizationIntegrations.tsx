@@ -22,18 +22,12 @@ export const OrganizationIntegrations: FC<Props> = ({ organizationId }) => {
       {types.has(OrganizationIntegrationType.DISCORD) ? (
         <Alert message="Discord Connected" type="success" showIcon />
       ) : (
-        <ConnectOrganizationToDiscordButton
-          organizationId={organizationId}
-          type="ghost"
-        />
+        <ConnectOrganizationToDiscordButton organizationId={organizationId} />
       )}
       {types.has(OrganizationIntegrationType.GITHUB) ? (
         <Alert message="Github Connected" type="success" showIcon />
       ) : (
-        <ConnectOrganizationToGithubButton
-          organizationId={organizationId}
-          type="ghost"
-        />
+        <ConnectOrganizationToGithubButton organizationId={organizationId} />
       )}
       {types.has(OrganizationIntegrationType.COORDINAPE) ? (
         <Alert message="Coordinape Connected" type="success" showIcon />
@@ -43,7 +37,6 @@ export const OrganizationIntegrations: FC<Props> = ({ organizationId }) => {
         >
           <Button
             icon={<CoordinapeIcon />}
-            type="ghost"
             href="https://app.coordinape.com/admin"
             target="_blank"
           >

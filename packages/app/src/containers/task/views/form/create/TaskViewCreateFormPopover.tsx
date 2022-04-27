@@ -1,4 +1,4 @@
-import { Button, Popover, Space } from "antd";
+import { Button, Popover, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { CreateTaskViewInput } from "@dewo/app/graphql/types";
@@ -48,10 +48,10 @@ export const TaskViewCreateFormPopover: FC<Props> = ({ projectId }) => {
         />
       }
     >
-      <Space className="text-secondary">
+      <div>
         <Icons.PlusOutlined />
-        Add view
-      </Space>
+        <Typography.Text className="text-secondary">Add view</Typography.Text>
+      </div>
     </Popover>
   );
 };

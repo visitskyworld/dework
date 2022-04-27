@@ -32,7 +32,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
     <Card
       size="small"
       style={style}
-      bodyStyle={{ padding: 8 }}
+      bodyStyle={{ padding: 12 }}
       className="hover:component-highlight"
       actions={
         shouldRenderReward ||

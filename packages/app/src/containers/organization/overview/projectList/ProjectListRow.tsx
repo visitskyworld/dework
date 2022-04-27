@@ -23,6 +23,7 @@ import { useOrganizationUsers } from "../../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
 import _ from "lodash";
+import styles from "./ProjectListRow.module.less";
 
 interface Props {
   project: OrganizationDetails["projects"][number];
@@ -62,18 +63,7 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
   return (
     <Link href={project.permalink}>
       <a>
-        <Card
-          size="small"
-          className="hover:component-highlight"
-          style={{ height: "100%" }}
-          bodyStyle={{
-            minHeight: 95,
-            height: "100%",
-            padding: 12,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <Card size="small" className={styles.card}>
           <Row
             style={{
               columnGap: 8,

@@ -144,7 +144,6 @@ export const CreateDiscordIntegrationFeatureForm = ({
           onRefetchChannels={onRefetchChannels}
         />
         <Button
-          type="ghost"
           loading={disconnecting}
           hidden={!existingIntegration}
           onClick={handleDisconnect}

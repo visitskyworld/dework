@@ -71,7 +71,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         ) : (
           sections.filter(shouldRenderSection).map((section) => (
             <div key={section.id}>
-              <Row align="middle" style={{ marginBottom: 4 }}>
+              <Row align="middle" style={{ marginBottom: 8 }}>
                 <Typography.Title level={4} style={{ margin: 0 }}>
                   {section.name}
                 </Typography.Title>

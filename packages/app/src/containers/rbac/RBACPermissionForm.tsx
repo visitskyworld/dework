@@ -206,7 +206,6 @@ export const RBACPermissionForm: FC<Props> = ({
               Connect Discord to manage access using roles from your server
             </Typography.Paragraph>
             <ConnectOrganizationToDiscordButton
-              type="ghost"
               icon={<DiscordIcon />}
               organizationId={organizationId}
             />
@@ -246,7 +245,7 @@ export const RBACPermissionForm: FC<Props> = ({
           </Form.Item>
           {hasPermission && !!onInviteUser && (
             <Button
-              type="ghost"
+              type="primary"
               loading={invitingUser}
               icon={<Icons.UsergroupAddOutlined />}
               style={{ marginBottom: 12 }}

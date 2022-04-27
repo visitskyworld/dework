@@ -1,0 +1,19 @@
+@import "~@dewo/app/styles/theme.less";
+
+.header {
+  background: @body-background-secondary;
+  
+  padding-bottom: 12px;
+  @media (min-width: @screen-sm) {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .ant-page-header-heading {
+    justify-content: flex-start;
+  }
+  .ant-page-header-heading-left {
+    flex-wrap: wrap;
+    flex: unset;
+  }
+}

@@ -3,9 +3,6 @@
 
 html {
   background: @body-background;
-  background-image: url("/background.png");
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 body,
@@ -74,7 +71,7 @@ iframe {
 
   .ant-card-actions {
     border-top: 0;
-    background: fade(@white, 7%);
+    background: hsl(230, 14%, 22%);
   }
 }
 
@@ -276,8 +273,12 @@ iframe {
   height: 100%;
   overflow-x: auto;
   max-height: 100vh;
+  background: @body-background;
 
   padding: 12px;
+  @media (min-width: @screen-sm) {
+    padding: 32px;
+  }
 
   // TODO(fant): rework these hacks
   & > .ant-space {
@@ -323,7 +324,8 @@ iframe {
   }
 
   .dewo-task-board-column {
-    background: #1b1d4b;
+    background: @body-background-secondary;
+    height: 100vh;
     .dewo-task-board-column-section-title {
       padding-left: 8px;
       padding-right: 8px;
@@ -339,6 +341,11 @@ iframe {
         visibility: visible;
         opacity: 1;
       }
+    }
+
+    .ant-card-head {
+      border-bottom-color: @border-color-split;
+      border-bottom-width: 1px;
     }
   }
 }
@@ -406,50 +413,6 @@ iframe {
   margin-bottom: 0;
 }
 
-.dewo-sidebar-item {
-  padding: 0;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: @border-radius-base;
-
-  transition: background 0.3s ease-in-out;
-  position: relative;
-  &:hover {
-    background: @component-background;
-    &::before {
-      height: 20px;
-      opacity: 1;
-    }
-  }
-
-  &::before {
-    content: "";
-    width: @border-radius-base;
-    height: 8px;
-    opacity: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color: @text-color-secondary;
-    position: absolute;
-    left: 0;
-    transition: all 0.3s ease-in-out;
-  }
-
-  &.active {
-    &::before {
-      background-color: @text-color;
-      height: 48px;
-      opacity: 1;
-    }
-  }
-
-  .ant-avatar {
-    display: grid;
-    place-items: center;
-  }
-}
 .dewo-header-mobile {
   display: none;
   @media (max-width: @screen-sm) {
@@ -466,7 +429,7 @@ iframe {
 .hover\:component-highlight {
   transition: background 0.3s ease-in-out;
   &:hover {
-    background: fade(@white, 20%);
+    background: @component-background-highlighted;
   }
 }
 
@@ -490,6 +453,15 @@ iframe {
 
 .ant-tabs-tab .anticon {
   margin-right: 6px;
+}
+
+
+.ant-tabs-tab  {
+  font-weight: 500;
+}
+
+.ant-tabs-tab-active {
+  font-weight: 500;
 }
 
 .ant-tabs-tab:not(.ant-tabs-tab-active) .anticon {
@@ -543,6 +515,10 @@ iframe {
 
 .bg-body {
   background: @body-background;
+}
+
+.bg-body-secondary {
+  background-color: @body-background-secondary;
 }
 
 #__next,
@@ -723,6 +699,8 @@ iframe {
 }
 
 .dewo-settings-tabs > .ant-card {
+  background-color: @body-background-secondary;
+
   .ant-tabs-nav-list {
     display: flex;
     flex-direction: column;
@@ -788,6 +766,10 @@ iframe {
 }
 
 .dewo-tabs {
+  .ant-tabs-content {
+    background-color: @body-background;
+  }
+
   & > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list {
     padding-left: 12px;
     padding-right: 12px;
@@ -824,16 +806,6 @@ iframe {
   cursor: pointer;
 }
 
-.dewo-project-header {
-  .ant-page-header-heading {
-    justify-content: flex-start;
-  }
-  .ant-page-header-heading-left {
-    flex-wrap: wrap;
-    flex: unset;
-  }
-}
-
 .dewo-discovery-table {
   .ant-table {
     background: transparent;
@@ -845,7 +817,7 @@ iframe {
   }
 
   .ant-table-row {
-    background: @component-background;
+    background: @primary-color-15;
   }
 
   tr > th {
@@ -881,7 +853,7 @@ iframe {
   }
 
   .ant-table-row {
-    background: @component-background;
+    background: @body-background-secondary;
   }
 
   tr > th {
@@ -967,6 +939,9 @@ iframe {
 }
 
 .ant-avatar {
+
+  background-color: fade(@white, 13%);
+
   .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
     .make-color-classes(@i - 1);
     @color: extract(@preset-colors, @i);
