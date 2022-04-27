@@ -1,4 +1,6 @@
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
+import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
+import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { RoleTag } from "@dewo/app/components/RoleTag";
 import { useOrganizationUsers } from "@dewo/app/containers/organization/hooks";
 import {
@@ -12,10 +14,9 @@ import {
   TaskStatus,
   TaskViewFilterType,
 } from "@dewo/app/graphql/types";
-import { Form, Select, Space } from "antd";
+import { Form, Row, Select, Space } from "antd";
 import _ from "lodash";
 import React, { FC, useMemo } from "react";
-import { TaskPriorityIcon } from "../../board/TaskPriorityIcon";
 import { PRIORITY_LABEL, STATUS_LABEL } from "../../board/util";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
 
@@ -128,7 +129,10 @@ const StatusFilter: FC<Props> = ({ name, projectId, onClear }) => {
           .filter((s): s is TaskStatus => !!s)
           .map((status) => (
             <Select.Option key={status} value={status}>
-              {STATUS_LABEL[status]}
+              <Row align="middle" style={{ columnGap: 8 }}>
+                <TaskStatusIcon status={status} />
+                {STATUS_LABEL[status]}
+              </Row>
             </Select.Option>
           ))}
       </Select>
@@ -164,7 +168,7 @@ const PriorityFilter: FC<Props> = ({ name, onClear }) => {
         ].map((priority) => (
           <Select.Option key={priority} value={priority}>
             <Space>
-              <TaskPriorityIcon priority={priority} />
+              <TaskPriorityIcon priority={priority} size={13} />
               {PRIORITY_LABEL[priority]}
             </Space>
           </Select.Option>

@@ -4,7 +4,7 @@ import {
   TaskStatus,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
-import { Card, Typography, Row, Rate } from "antd";
+import { Card, Typography, Row, Rate, Avatar } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { TaskReactionPicker } from "../board/TaskReactionPicker";
 import { TaskTagsRow } from "../board/TaskTagsRow";
@@ -12,8 +12,9 @@ import {
   TaskActionButton,
   useTaskActionButton,
 } from "../actions/TaskActionButton";
-import { TaskCardAvatars } from "./TaskCardAvatars";
+import { TaskGatingIcon } from "./TaskGatingIcon";
 import { TaskRewardTag } from "../TaskRewardTag";
+import { UserAvatar } from "@dewo/app/components/UserAvatar";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -67,11 +68,23 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       <Row style={{ rowGap: 8 }}>
         <Typography.Text
           className="font-semibold"
-          style={{ flex: 1, wordBreak: "break-word" }}
+          style={{ flex: 1, wordBreak: "break-word", marginRight: 8 }}
         >
           {task.name}
         </Typography.Text>
-        <TaskCardAvatars task={task} />
+        {!!task.assignees.length ? (
+          <Avatar.Group
+            style={{ alignSelf: "flex-start" }}
+            maxCount={task.assignees.length === 3 ? 3 : 2}
+            size={20}
+          >
+            {task.assignees.map((user) => (
+              <UserAvatar key={user.id} user={user} linkToProfile />
+            ))}
+          </Avatar.Group>
+        ) : (
+          <TaskGatingIcon task={task} />
+        )}
       </Row>
       <TaskTagsRow task={task} style={{ marginTop: 8 }} />
       {showReview && (

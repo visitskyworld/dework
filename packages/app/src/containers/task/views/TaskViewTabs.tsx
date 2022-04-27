@@ -2,7 +2,6 @@ import { Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
-import { ProjectTaskBoard } from "../../project/board/ProjectTaskBoard";
 import { useProject, useProjectDetails } from "../../project/hooks";
 import { useTaskViewContext } from "./TaskViewContext";
 import { TaskView, TaskViewType } from "@dewo/app/graphql/types";
@@ -11,6 +10,8 @@ import styles from "./TaskViewTabs.module.less";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewCreateFormPopover } from "./form/create/TaskViewCreateFormPopover";
 import { AtLeast } from "@dewo/app/types/general";
+import { ProjectTaskList } from "../../project/list/ProjectTaskList";
+import { ProjectTaskBoard } from "../../project/board/ProjectTaskBoard";
 
 interface Props {
   projectId?: string;
@@ -96,7 +97,19 @@ export const TaskViewTabs: FC<Props> = ({
             key={`view:${view.id}`}
             closable={false}
           >
-            <ProjectTaskBoard projectId={projectId} />
+            {(currentView?.id === view.id ? currentView : view).type ===
+            TaskViewType.BOARD ? (
+              <ProjectTaskBoard projectId={projectId} />
+            ) : (
+              <div
+                style={{ width: "100%", height: "100%", overflowX: "hidden" }}
+              >
+                <ProjectTaskList
+                  projectId={projectId}
+                  className={styles.list}
+                />
+              </div>
+            )}
           </Tabs.TabPane>
         ))}
         {canCreate && (

@@ -65,7 +65,12 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     task.owners.some((u) => u.id === currentUserId)
   ) {
     return (
-      <Button size="small" onClick={moveToDone}>
+      <Button
+        icon={<Icons.CheckOutlined />}
+        size="small"
+        type="text"
+        onClick={moveToDone}
+      >
         Approve
       </Button>
     );

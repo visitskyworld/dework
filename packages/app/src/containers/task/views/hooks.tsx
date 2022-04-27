@@ -15,6 +15,7 @@ import {
   UpdateTaskViewMutationVariables,
   PaymentStatus,
   TaskPriority,
+  TaskViewType,
 } from "@dewo/app/graphql/types";
 import React, { useCallback, useMemo } from "react";
 import {
@@ -178,13 +179,25 @@ export function useTaskViewGroups(
   const groupValues = useMemo(() => {
     if (groupBy === TaskViewGroupBy.status) {
       const statusFilter = findFilter(TaskViewFilterType.STATUSES);
-      return [
-        details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
-        TaskStatus.TODO,
-        TaskStatus.IN_PROGRESS,
-        TaskStatus.IN_REVIEW,
-        TaskStatus.DONE,
-      ]
+
+      const statuses =
+        currentView?.type === TaskViewType.LIST
+          ? [
+              TaskStatus.IN_REVIEW,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.TODO,
+              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.DONE,
+            ]
+          : [
+              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.TODO,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.IN_REVIEW,
+              TaskStatus.DONE,
+            ];
+
+      return statuses
         .filter((s): s is TaskStatus => !!s)
         .filter(
           (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
@@ -192,7 +205,12 @@ export function useTaskViewGroups(
     }
 
     return [];
-  }, [groupBy, details?.options?.showBacklogColumn, findFilter]);
+  }, [
+    groupBy,
+    currentView?.type,
+    details?.options?.showBacklogColumn,
+    findFilter,
+  ]);
 
   return useMemo<TaskViewGroup[]>(
     () =>
@@ -250,6 +268,7 @@ export function useTaskViewGroups(
           }
         } else if (
           groupBy === TaskViewGroupBy.status &&
+          currentView?.type === TaskViewType.BOARD &&
           sortKeySorting &&
           !!customSortingSections
         ) {
@@ -285,6 +304,14 @@ export function useTaskViewGroups(
           sections: [{ id: "default", tasks, title: "Uncategorized" }],
         };
       }),
-    [groupValues, groupBy, sorted, sortBys, projectId, customSortingSections]
+    [
+      groupValues,
+      groupBy,
+      sorted,
+      sortBys,
+      currentView?.type,
+      projectId,
+      customSortingSections,
+    ]
   );
 }

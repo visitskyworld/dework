@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo } from "react";
 import { useToggle } from "@dewo/app/util/hooks";
 import { DragDropContext, DragDropContextProps } from "react-beautiful-dnd";
 import { Divider } from "antd";
-import { TaskList, TaskListRow } from "../../list/TaskList";
 import {
   TaskDetails,
   TaskGatingType,
@@ -15,6 +14,7 @@ import _ from "lodash";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { NewSubtaskInput } from "./NewSubtaskInput";
 import { getSortKeyBetween } from "../../board/util";
+import { SubtaskTable, SubtaskTableRowData } from "./SubtaskTable";
 
 export interface SubtaskFormValues {
   name: string;
@@ -24,8 +24,8 @@ export interface SubtaskFormValues {
 interface Props {
   projectId: string;
   task?: TaskDetails;
-  value?: TaskListRow[];
-  onChange?(value: TaskListRow[]): void;
+  value?: SubtaskTableRowData[];
+  onChange?(value: SubtaskTableRowData[]): void;
 }
 
 export const SubtaskInput: FC<Props> = ({
@@ -121,7 +121,7 @@ export const SubtaskInput: FC<Props> = ({
   const rows = useMemo(() => {
     if (!task) return value ?? [];
     return _.sortBy(task.subtasks, (t) => t.sortKey).map(
-      (task): TaskListRow => ({
+      (task): SubtaskTableRowData => ({
         task,
         key: task.id,
         name: task.name,
@@ -134,7 +134,10 @@ export const SubtaskInput: FC<Props> = ({
   }, [value, task]);
 
   const handleChange = useCallback(
-    async (changed: Partial<TaskListRow>, prevRow: TaskListRow) =>
+    async (
+      changed: Partial<SubtaskTableRowData>,
+      prevRow: SubtaskTableRowData
+    ) =>
       onChange?.(
         rows.map((r) => (r.key === prevRow.key ? { ...r, ...changed } : r))
       ),
@@ -142,14 +145,14 @@ export const SubtaskInput: FC<Props> = ({
   );
 
   const handleDelete = useCallback(
-    async (row: TaskListRow) =>
+    async (row: SubtaskTableRowData) =>
       onChange?.(rows.filter((r) => r.key !== row.key)),
     [onChange, rows]
   );
 
   const navigateToTask = useNavigateToTaskFn();
   const handleClick = useCallback(
-    (row: TaskListRow) => !!row.task && navigateToTask(row.task.id),
+    (row: SubtaskTableRowData) => !!row.task && navigateToTask(row.task.id),
     [navigateToTask]
   );
 
@@ -157,7 +160,7 @@ export const SubtaskInput: FC<Props> = ({
     <div>
       {!!rows.length && <Divider style={{ marginBottom: 0 }}>Subtasks</Divider>}
       <DragDropContext onDragEnd={handleDragEnd}>
-        <TaskList
+        <SubtaskTable
           rows={rows}
           size="small"
           editable={!!canCreateSubtask}

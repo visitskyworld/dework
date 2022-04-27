@@ -1,487 +1,173 @@
-import * as Icons from "@ant-design/icons";
-import * as Colors from "@ant-design/colors";
-import { eatClick, stopPropagation } from "@dewo/app/util/eatClick";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import {
-  Task,
-  TaskGatingType,
-  TaskReward,
-  TaskStatus,
-  TaskTag,
-  User,
-} from "@dewo/app/graphql/types";
-import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import {
-  Avatar,
-  Button,
-  DatePicker,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Row,
-  Table,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Grid, Row, Table } from "antd";
 import React, {
   CSSProperties,
   FC,
-  useCallback,
+  MutableRefObject,
+  ReactNode,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { TaskListItem } from "../../task/list/TaskListItem";
 import {
-  formatTaskReward,
-  useDeleteTask,
-  useTaskFormUserOptions,
-  useUpdateTask,
-} from "../../task/hooks";
-import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
-import { STATUS_LABEL } from "../../task/board/util";
-import _ from "lodash";
-import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
-import { TaskStatusAvatar } from "../TaskStatusAvatar";
+  TaskViewGroupHeader,
+  TaskViewGroupHeaderExtra,
+} from "../../task/board/TaskViewGroupHeader";
+import { useTaskViewGroups } from "../views/hooks";
 import {
-  usePermission,
-  usePermissionFn,
-} from "@dewo/app/contexts/PermissionsContext";
-import { AvatarSize } from "antd/lib/avatar/SizeContext";
-import { TaskActionButton } from "../actions/TaskActionButton";
-import { TaskTagsRow } from "../board/TaskTagsRow";
-import moment from "moment";
-import { isSSR } from "@dewo/app/util/isSSR";
-import { Draggable, Droppable } from "react-beautiful-dnd";
-import { NewSubtaskInput } from "../form/subtask/NewSubtaskInput";
-
-export interface TaskListRow {
-  key: string;
-  task?: Task;
-  name: string;
-  description: string | undefined;
-  status: TaskStatus;
-  dueDate: string | null;
-  assigneeIds: string[];
-}
+  List,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+} from "react-virtualized";
+import { usePrevious } from "@dewo/app/util/hooks";
+import { TaskCard } from "../card/TaskCard";
+import classNames from "classnames";
+import styles from "./TaskList.module.less";
 
 interface Props {
-  rows: TaskListRow[];
-  tags?: TaskTag[];
-  showHeader?: boolean;
-  showActionButtons?: boolean;
-  defaultSortByStatus?: boolean;
+  tasks: Task[];
+  mode?: "table" | "virtualized";
+  showHeaders?: boolean;
   projectId?: string;
   style?: CSSProperties;
-  size?: AvatarSize;
-  canCreateSubtask?: boolean;
-  onChange?(changed: Partial<TaskListRow>, row: TaskListRow): void;
-  onDelete?(row: TaskListRow): void;
-  onClick?(row: TaskListRow): void;
-  editable?: boolean;
+  className?: string;
 }
 
-interface TableRowComponentProps extends React.HTMLAttributes<any> {
-  "data-row-key": string;
-  isDragDisabled?: boolean;
-  index: number;
+function useRecalculateTaskCardHeight(
+  cache: CellMeasurerCache,
+  list: MutableRefObject<List | null>,
+  ...deps: any[]
+) {
+  const prevDeps = deps.map(usePrevious);
+  const changed = !deps.every((dep, index) => prevDeps[index] === dep);
+  if (changed) {
+    cache.clearAll();
+    list.current?.recomputeRowHeights();
+  }
 }
 
-const statuses = [
-  // TaskStatus.BACKLOG,
-  TaskStatus.TODO,
-  TaskStatus.IN_PROGRESS,
-  TaskStatus.IN_REVIEW,
-  TaskStatus.DONE,
-];
-const DroppableTableBody = ({ ...props }) => {
-  return (
-    <Droppable droppableId="sub-tasks">
-      {(provided) => (
-        <tbody ref={provided.innerRef} {...props} {...provided.droppableProps}>
-          {props.children}
-          {provided.placeholder}
-        </tbody>
-      )}
-    </Droppable>
-  );
-};
-
-const DraggableTableRow = ({
-  index,
-  isDragDisabled = false,
-  ...props
-}: TableRowComponentProps) => {
-  return (
-    <Draggable
-      key={props["data-row-key"]}
-      draggableId={props["data-row-key"]}
-      index={index}
-      isDragDisabled={isDragDisabled}
-    >
-      {(provided) => {
-        return (
-          <tr
-            ref={provided.innerRef}
-            {...props}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-          ></tr>
-        );
-      }}
-    </Draggable>
-  );
-};
-
-// Drag and drop table: https://codesandbox.io/s/react-beautiful-dnd-examples-multi-drag-table-with-antd-gptbl
 export const TaskList: FC<Props> = ({
-  rows,
-  tags,
+  tasks,
   projectId,
-  showHeader = true,
-  showActionButtons = false,
-  defaultSortByStatus = false,
+  showHeaders = true,
   style,
-  size,
-  canCreateSubtask,
-  onChange,
-  onDelete,
-  onClick,
-  editable = false,
+  className,
+  mode = "virtualized",
 }) => {
-  const navigateToTask = useNavigateToTaskFn();
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const taskViewGroups = useTaskViewGroups(tasks, projectId);
 
-  const canDeleteTask = usePermission("delete", "Task");
-  const hasPermission = usePermissionFn();
-  const canChange = useCallback(
-    (
-      task: Task | undefined,
-      field: keyof Task | `status[${TaskStatus}]` | "assigneeIds"
-    ) => {
-      if (!!task) {
-        return hasPermission("update", task, field);
-      } else {
-        return hasPermission("create", "Task", field);
-      }
-    },
-    [hasPermission]
+  const list = useRef<List>(null);
+  const cache = useMemo(
+    () => new CellMeasurerCache({ fixedWidth: true, defaultHeight: 36 }),
+    []
   );
 
-  const existingAssignees = useMemo(
+  const screen = Grid.useBreakpoint();
+  useRecalculateTaskCardHeight(
+    cache,
+    list,
+    collapsed,
+    taskViewGroups,
+    screen.sm
+  );
+
+  const rows = useMemo<(() => ReactNode)[]>(
     () =>
-      _(rows)
-        .map((r) => r.task?.assignees ?? [])
-        .flatten()
-        .uniqBy((u) => u.id)
-        .value(),
-    [rows]
-  );
-  const users = useTaskFormUserOptions(projectId!, existingAssignees);
-  const userById = useMemo(() => _.keyBy(users, (u) => u.id), [users]);
-
-  const updateTask = useUpdateTask();
-  const handleChange = useCallback(
-    async (
-      changed: Partial<TaskListRow> & { gating?: TaskGatingType },
-      prevValue: TaskListRow
-    ) => {
-      if (!!prevValue.task) {
-        await updateTask({ id: prevValue.task.id, ...changed });
-      }
-
-      onChange?.(changed, prevValue);
-    },
-    [onChange, updateTask]
-  );
-
-  const deleteTask = useDeleteTask();
-  const handleDelete = useCallback(
-    async (value: TaskListRow) => {
-      if (!!value.task) await deleteTask(value.task.id);
-      onDelete?.(value);
-    },
-    [onDelete, deleteTask]
-  );
-
-  const [editingRow, setEditingRow] = useState<string | undefined>();
-
-  // TODO(fant): SSRing <Table /> gets stuck
-  if (isSSR) return null;
-  if (!rows.length) return null;
-  return (
-    <Table<TaskListRow>
-      dataSource={rows}
-      size="small"
-      style={style}
-      showHeader={showHeader}
-      className={size === "small" ? "dewo-table-xs" : "dewo-card-table"}
-      pagination={{ hideOnSinglePage: true }}
-      rowClassName={!!onClick ? "hover:cursor-pointer" : undefined}
-      onRow={(t, index) => ({
-        index,
-        onClick: !!onClick
-          ? (e) => {
-              editable && setEditingRow(t.key);
-              eatClick(e);
-              onClick(t);
-            }
-          : undefined,
-      })}
-      components={
-        canCreateSubtask
-          ? {
-              body: {
-                wrapper: DroppableTableBody,
-                row: (val: TableRowComponentProps) =>
-                  DraggableTableRow({
-                    ...val,
-                    isDragDisabled: val["data-row-key"] === editingRow,
-                  }),
-              },
-            }
-          : undefined
-      }
-      columns={[
-        {
-          key: "status",
-          dataIndex: "status",
-          width: 1,
-          render: (currentStatus: TaskStatus, row) => (
-            <DropdownSelect
-              value={currentStatus}
-              mode="default"
-              disabled={!canChange(row.task, "status")}
-              onChange={(status) => handleChange({ status }, row)}
-              options={statuses.map((status) => ({
-                value: status,
-                label: (
-                  <Row style={{ gap: 8 }}>
-                    <TaskStatusAvatar size={20} status={status} />
-                    {STATUS_LABEL[status]}
-                  </Row>
-                ),
-              }))}
-              children={
-                <div>
-                  <Tooltip title={STATUS_LABEL[currentStatus]} placement="left">
-                    <TaskStatusAvatar size={size} status={currentStatus} />
-                  </Tooltip>
-                </div>
-              }
-            />
-          ),
-          defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
-          sorter: (a, b) =>
-            statuses.indexOf(a.status) - statuses.indexOf(b.status),
-        },
-        {
-          key: "name",
-          title: "Name",
-          dataIndex: "name",
-          showSorterTooltip: false,
-          sorter: (a, b) => a.name.localeCompare(b.name),
-          filterIcon: <Icons.SearchOutlined />,
-          className: "w-full",
-          onFilter: (value, row) =>
-            row.name.toLowerCase().includes((value as string).toLowerCase()),
-          render: (name: string, row: TaskListRow) => {
-            const isEditing = editingRow === row.key;
-            if (!isEditing) {
-              return size === "small" ? (
-                <Typography.Paragraph style={{ padding: 8, marginBottom: 0 }}>
-                  {name}
-                </Typography.Paragraph>
-              ) : (
-                <Typography.Title level={5} style={{ marginBottom: 0 }}>
-                  {name}
-                </Typography.Title>
-              );
-            }
-
-            return (
-              <div onClick={eatClick} style={{ margin: "0 8px" }}>
-                <NewSubtaskInput
-                  initialValues={row}
-                  placeholder="Add a title"
-                  hideButton
-                  autoFocus
-                  onCancel={() => setEditingRow(undefined)}
-                  onSubmit={(c) => {
-                    onChange?.(c, row);
-                    setEditingRow(undefined);
+      taskViewGroups
+        .map((taskViewGroup) => [
+          () =>
+            !!showHeaders ? (
+              <Row style={{ padding: 12 }}>
+                <TaskViewGroupHeader
+                  showIcon
+                  count={taskViewGroup.sections.reduce(
+                    (count, section) => count + section.tasks.length,
+                    0
+                  )}
+                  status={taskViewGroup.value as TaskStatus}
+                  collapse={{
+                    collapsed: !!collapsed[taskViewGroup.value],
+                    onToggle: (collapsed) =>
+                      setCollapsed((prev) => ({
+                        ...prev,
+                        [taskViewGroup.value]: collapsed,
+                      })),
                   }}
                 />
-              </div>
-            );
-          },
-        },
-        {
-          key: "tags",
-          title: "Tags",
-          dataIndex: ["task", "tags"],
-          width: !!tags ? undefined : 1,
-          render: (_, row) =>
-            !!row.task && (
-              <TaskTagsRow task={row.task} showStandardTags={false} />
-            ),
-        },
-        { title: "Points", dataIndex: ["task", "storyPoints"], width: 1 },
-        {
-          title: "Reward",
-          dataIndex: ["task", "reward"],
-          render: (reward: TaskReward | undefined) =>
-            !!reward && (
-              <Typography.Text style={{ whiteSpace: "nowrap" }}>
-                {formatTaskReward(reward)}
-              </Typography.Text>
-            ),
-        },
-        {
-          key: "dueDate",
-          title: "Due",
-          dataIndex: "dueDate",
-          width: 82,
-          render: (dueDate: string | undefined, row) => (
-            <div onClick={stopPropagation}>
-              <DatePicker
-                bordered={false}
-                format="D MMM"
-                value={!!dueDate ? moment(dueDate) : undefined}
-                placeholder=""
-                disabled={!canChange(row.task, "dueDate")}
-                style={{ padding: 0 }}
-                onChange={(dueDate) =>
-                  handleChange({ dueDate: dueDate?.toISOString() ?? null }, row)
-                }
-                suffixIcon={
-                  row.status !== TaskStatus.DONE &&
-                  !!dueDate &&
-                  moment().endOf("day").isAfter(dueDate) ? (
-                    <Icons.ExclamationCircleFilled
-                      style={{ color: Colors.red.primary, marginLeft: 4 }}
-                    />
-                  ) : (
-                    <Icons.CalendarOutlined />
-                  )
-                }
-              />
-            </div>
-          ),
-        },
-        {
-          key: "assignees",
-          title: "Assignees",
-          dataIndex: "assigneeIds",
-          width: 1,
-          render: (assigneeIds: string[], row: TaskListRow) => (
-            <DropdownSelect
-              mode="multiple"
-              placement="bottomRight"
-              disabled={!canChange(row.task, "assigneeIds")}
-              options={users?.map((user) => ({
-                value: user.id,
-                label: <UserSelectOption key={user.id} user={user} />,
-              }))}
-              value={assigneeIds}
-              onChange={(assigneeIds) =>
-                handleChange(
-                  { assigneeIds, gating: TaskGatingType.ASSIGNEES },
-                  row
-                )
-              }
-            >
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Avatar.Group maxCount={3} size={size}>
-                  {assigneeIds
-                    .map((id) => userById[id])
-                    .filter((u): u is User => !!u)
-                    .map((user) => (
-                      <UserAvatar key={user.id} user={user} />
-                    ))}
-                  {!assigneeIds.length && (
-                    <Avatar icon={<Icons.UserAddOutlined />} />
-                  )}
-                </Avatar.Group>
-              </div>
-            </DropdownSelect>
-          ),
-        },
-        {
-          key: "actions",
-          title: "Actions",
-          width: showActionButtons ? 140 : 1,
-          render: (_, row) => (
-            <Row align="middle" style={{ justifyContent: "space-between" }}>
-              {showActionButtons && !!row.task && (
-                <TaskActionButton task={row.task} />
-              )}
-              <div />
-              <Dropdown
-                key="avatar"
-                placement="bottomRight"
-                trigger={["click"]}
-                // @ts-ignore
-                onClick={eatClick}
-                overlay={
-                  <Menu onClick={(e) => eatClick(e.domEvent)}>
-                    {!!row.task && !onClick && (
-                      <Menu.Item
-                        key="details"
-                        icon={<Icons.BarsOutlined />}
-                        children="Details"
-                        onClick={() => navigateToTask(row.task!.id)}
-                      />
-                    )}
-
-                    {!!canChange && !!row.task?.parentTaskId && (
-                      <Popconfirm
-                        icon={null}
-                        title="Convert this task to normal?"
-                        okText="Yes"
-                        onConfirm={(e) => {
-                          e && eatClick(e);
-                          updateTask({ id: row.task!.id, parentTaskId: null });
-                        }}
-                      >
-                        <Menu.Item
-                          key="normalTask"
-                          children="Convert to normal task"
-                          icon={<Icons.ExportOutlined />}
-                        />
-                      </Popconfirm>
-                    )}
-
-                    {!!canDeleteTask && (
-                      <Popconfirm
-                        icon={null}
-                        title="Delete this subtask?"
-                        okType="danger"
-                        okText="Delete"
-                        onConfirm={(e) => {
-                          e && eatClick(e);
-                          handleDelete(row);
-                        }}
-                      >
-                        <Menu.Item
-                          key="delete"
-                          icon={<Icons.DeleteOutlined />}
-                          danger
-                          children="Delete"
-                        />
-                      </Popconfirm>
-                    )}
-                  </Menu>
-                }
-              >
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<Icons.MoreOutlined />}
-                  style={showActionButtons ? undefined : { margin: -4 }}
+                <TaskViewGroupHeaderExtra
+                  status={taskViewGroup.value as TaskStatus}
+                  projectId={projectId}
                 />
-              </Dropdown>
-            </Row>
-          ),
-        },
-      ]}
-    />
+              </Row>
+            ) : null,
+          ...taskViewGroup.sections
+            .map((section) =>
+              section.tasks.map(
+                (task) => () =>
+                  !collapsed[taskViewGroup.value] ? (
+                    screen.sm ? (
+                      <TaskListItem key={task.id} task={task} />
+                    ) : (
+                      <TaskCard task={task} style={{ marginBottom: 8 }} />
+                    )
+                  ) : null
+              )
+            )
+            .flat(),
+        ])
+        .flat(),
+    [taskViewGroups, collapsed, projectId, showHeaders, screen.sm]
+  );
+
+  if (mode === "table") {
+    return (
+      <Table
+        dataSource={rows}
+        bordered={false}
+        size="small"
+        style={style}
+        className={classNames({
+          [className ?? ""]: true,
+          [styles.table]: true,
+        })}
+        showHeader={showHeaders}
+        pagination={{ hideOnSinglePage: true }}
+        columns={[{ key: "column", render: (_, row) => row() }]}
+      />
+    );
+  }
+
+  return (
+    <AutoSizer>
+      {({ height, width }) => (
+        <List
+          height={height}
+          width={width}
+          rowCount={rows.length}
+          rowHeight={cache.rowHeight}
+          style={style}
+          className={className}
+          deferredMeasurementCache={cache}
+          ref={(ref) => {
+            // @ts-expect-error
+            list.current = ref;
+          }}
+          rowRenderer={({ index, style, parent, columnIndex, key }) => (
+            <CellMeasurer
+              cache={cache}
+              columnIndex={columnIndex}
+              key={key}
+              parent={parent}
+              rowIndex={index}
+            >
+              <div style={style}>{rows[index]()}</div>
+            </CellMeasurer>
+          )}
+        />
+      )}
+    </AutoSizer>
   );
 };

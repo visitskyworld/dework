@@ -50,7 +50,7 @@ iframe {
   }
 }
 
-.ant-layout-content {
+.ant-tabs-content-holder {
   overflow: auto;
 }
 
@@ -292,31 +292,23 @@ iframe {
       height: 100%;
       max-height: 100%;
 
-      & > div {
+      & > .ant-card {
         display: flex;
         flex-direction: column;
         min-height: 0;
         height: 100%;
         max-height: 100%;
 
-        & > .ant-card {
-          display: flex;
-          flex-direction: column;
-          min-height: 0;
+        & > .ant-card-head {
+          flex-shrink: 0;
+        }
+
+        & > .ant-card-body {
           height: 100%;
-          max-height: 100%;
+          overflow: hidden;
 
-          & > .ant-card-head {
-            flex-shrink: 0;
-          }
-
-          & > .ant-card-body {
+          & > div, & > div > div {
             height: 100%;
-            overflow: hidden;
-
-            & > div, & > div > div {
-              height: 100%;
-            }
           }
         }
       }

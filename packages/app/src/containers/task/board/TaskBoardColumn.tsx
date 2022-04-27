@@ -9,28 +9,28 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Button, Card, Badge, Space } from "antd";
-import * as Icons from "@ant-design/icons";
+import { Card } from "antd";
 import { TaskCard } from "../card/TaskCard";
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Can, usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
-import { STATUS_LABEL, TaskSectionData } from "./util";
+import { TaskSectionData } from "./util";
 import {
   TaskBoardColumnEmpty,
   TaskBoardColumnEmptyProps,
 } from "./TaskBoardColumnEmtpy";
 import { TaskBoardColumnOptionButton } from "./TaskBoardColumnOptionButton";
-import { useProject } from "../../project/hooks";
 import {
   List,
   CellMeasurerCache,
   CellMeasurer,
   AutoSizer,
 } from "react-virtualized";
-import Link from "next/link";
 import { usePrevious } from "@dewo/app/util/hooks";
-import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskBoardColumnSectionHeader } from "./TaskBoardColumnSectionHeader";
+import {
+  TaskViewGroupHeader,
+  TaskViewGroupHeaderExtra,
+} from "./TaskViewGroupHeader";
 
 interface Props {
   status: TaskStatus;
@@ -50,18 +50,10 @@ interface ListRow {
 function useRecalculateTaskCardHeight(
   cache: CellMeasurerCache,
   list: MutableRefObject<List | null>,
-  sections: TaskSectionData[],
-  collapsed: Record<string, boolean>
+  ...deps: any[]
 ) {
-  const authenticated = useAuthContext().user;
-  const prevSections = usePrevious(sections);
-  const prevCollapsed = usePrevious(collapsed);
-  const prevAuthenticated = usePrevious(authenticated);
-  if (
-    prevSections !== sections ||
-    prevCollapsed !== collapsed ||
-    prevAuthenticated !== authenticated
-  ) {
+  const prevDeps = deps.map(usePrevious);
+  if (!deps.every((dep, index) => prevDeps[index] === dep)) {
     cache.clearAll();
     list.current?.recomputeRowHeights();
   }
@@ -82,7 +74,6 @@ export const TaskBoardColumn: FC<Props> = ({
     [sections]
   );
 
-  const { project } = useProject(projectId);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const toggleCollapsed = useCallback(
     (id: string) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] })),
@@ -133,43 +124,23 @@ export const TaskBoardColumn: FC<Props> = ({
   return (
     <Card
       size="small"
-      title={
-        <Space>
-          <Badge count={count} showZero />
-          <span>{STATUS_LABEL[status]}</span>
-        </Space>
-      }
+      title={<TaskViewGroupHeader showIcon count={count} status={status} />}
       extra={
-        <>
-          {!!projectId && status !== TaskStatus.DONE && (
-            <Can I="create" this={{ __typename: "TaskSection", projectId }}>
-              <TaskBoardColumnOptionButton
-                status={status}
-                projectId={projectId}
-              />
-            </Can>
-          )}
-          {!!project && (
-            <Can
-              I="create"
-              this={{
-                __typename: "Task",
-                status,
-                projectId,
-                // @ts-ignore
-                ...{ ownerIds: [] },
-              }}
-            >
-              <Link
-                href={`${project.permalink}/create?values=${encodeURIComponent(
-                  JSON.stringify({ status })
-                )}`}
-              >
-                <Button type="text" icon={<Icons.PlusOutlined />} />
-              </Link>
-            </Can>
-          )}
-        </>
+        <TaskViewGroupHeaderExtra
+          status={status}
+          projectId={projectId}
+          extra={
+            !!projectId &&
+            status !== TaskStatus.DONE && (
+              <Can I="create" this={{ __typename: "TaskSection", projectId }}>
+                <TaskBoardColumnOptionButton
+                  status={status}
+                  projectId={projectId}
+                />
+              </Can>
+            )
+          }
+        />
       }
       style={{ width }}
       bodyStyle={{ padding: 0 }}

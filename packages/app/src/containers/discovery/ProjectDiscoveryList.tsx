@@ -134,7 +134,7 @@ export const ProjectDiscoveryList: FC = () => {
                     {
                       key: "contributors",
 
-                      width: 140,
+                      width: 120,
                       render: (_: unknown, organization: OrganizationRow) => (
                         <Avatar.Group maxCount={5} size="small">
                           {organization.users.map((u) => (

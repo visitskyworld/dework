@@ -1,5 +1,5 @@
-import React, { FC, useMemo } from "react";
-import { useProjectDetails, useProjectTasks } from "../hooks";
+import React, { FC } from "react";
+import { useProjectTasks } from "../hooks";
 import { TaskBoard } from "../../task/board/TaskBoard";
 import * as Icons from "@ant-design/icons";
 import { TaskStatus } from "@dewo/app/graphql/types";
@@ -38,27 +38,9 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 };
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
-  const { project } = useProjectDetails(projectId);
   const tasks = useProjectTasks(projectId, "cache-and-network");
-  const statuses = useMemo(
-    () =>
-      [
-        project?.options?.showBacklogColumn ? TaskStatus.BACKLOG : undefined,
-        TaskStatus.TODO,
-        TaskStatus.IN_PROGRESS,
-        TaskStatus.IN_REVIEW,
-        TaskStatus.DONE,
-      ].filter((status): status is TaskStatus => status !== undefined),
-    [project?.options?.showBacklogColumn]
-  );
-
   return tasks ? (
-    <TaskBoard
-      tasks={tasks}
-      projectId={projectId}
-      empty={empty}
-      statuses={statuses}
-    />
+    <TaskBoard tasks={tasks} projectId={projectId} empty={empty} />
   ) : (
     <SkeletonTaskBoard />
   );

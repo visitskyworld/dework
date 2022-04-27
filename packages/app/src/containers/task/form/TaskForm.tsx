@@ -50,8 +50,9 @@ import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { TaskActivityFeed } from "./TaskActivityFeed";
 import { useToggle } from "@dewo/app/util/hooks";
-import { TaskPriorityIcon } from "../board/TaskPriorityIcon";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
+import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
+import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -229,7 +230,10 @@ export const TaskForm: FC<TaskFormProps> = ({
                   value={status}
                   disabled={!canChange(`status[${status}]`)}
                 >
-                  {STATUS_LABEL[status]}
+                  <Row align="middle" style={{ columnGap: 8 }}>
+                    <TaskStatusIcon status={status} />
+                    {STATUS_LABEL[status]}
+                  </Row>
                 </Select.Option>
               ))}
             </Select>
@@ -313,7 +317,10 @@ export const TaskForm: FC<TaskFormProps> = ({
                   value={status}
                   disabled={!canChange(`status[${status}]`)}
                 >
-                  {STATUS_LABEL[status]}
+                  <Row align="middle" style={{ columnGap: 8 }}>
+                    <TaskStatusIcon status={status} />
+                    {STATUS_LABEL[status]}
+                  </Row>
                 </Select.Option>
               ))}
             </Select>
@@ -337,7 +344,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                   <Select.Option key={priority} value={priority}>
                     <Space align="center">
                       <div style={{ lineHeight: 1 }}>
-                        <TaskPriorityIcon priority={priority} />
+                        <TaskPriorityIcon priority={priority} size={13} />
                       </div>
                       {PRIORITY_LABEL[priority]}
                     </Space>

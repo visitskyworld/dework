@@ -1,6 +1,7 @@
-import { Form, Input } from "antd";
+import { Divider, Form, Input, List } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, ReactNode, useCallback, useMemo } from "react";
+import * as Icons from "@ant-design/icons";
 import {
   CreateTaskViewInput,
   UpdateTaskViewInput,
@@ -12,6 +13,7 @@ import styles from "./TaskViewForm.module.less";
 import { TaskViewFormFilterList } from "./TaskViewFormFilterList";
 import { TaskViewFormSortByList } from "./TaskViewFormSortByList";
 import { Can } from "@dewo/app/contexts/PermissionsContext";
+import { TaskViewTypeRadioGroup } from "./TaskViewTypeRadioGroup";
 
 export type FormValues = CreateTaskViewInput | UpdateTaskViewInput;
 
@@ -65,7 +67,6 @@ export const TaskViewForm: FC<Props> = ({
     >
       <Form.Item name="id" hidden />
       <Form.Item name="projectId" hidden />
-      <Form.Item name="type" hidden />
       <Form.Item name="sortBys" hidden />
 
       <Can I="create" this={{ __typename: "TaskView", projectId }}>
@@ -82,10 +83,10 @@ export const TaskViewForm: FC<Props> = ({
         </Form.Item>
       </Can>
 
-      {/* <List.Item actions={[<TaskViewTypeRadioGroup key="type" />]}>
+      <List.Item actions={[<TaskViewTypeRadioGroup key="type" />]}>
         <List.Item.Meta avatar={<Icons.LayoutOutlined />} title="Layout" />
       </List.Item>
-      <Divider /> */}
+      <Divider />
 
       <TaskViewFormFilterList form={form} projectId={projectId} />
       <TaskViewFormSortByList form={form} />

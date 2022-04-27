@@ -5,7 +5,6 @@ import {
   DragDropContext,
   DragDropContextProps,
   DragStart,
-  resetServerContext,
 } from "react-beautiful-dnd";
 import { getSortKeyBetween } from "./util";
 import { TaskBoardColumn } from "./TaskBoardColumn";
@@ -21,7 +20,6 @@ interface Props {
   tasks: Task[];
   projectId?: string;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
-  statuses?: TaskStatus[];
 }
 
 const columnWidth = 330;
@@ -122,30 +120,24 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, empty }) => {
     [tasks, taskViewGroups, updateTask, hasPermission, reviewModalToggle, user]
   );
 
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    resetServerContext();
-    setLoaded(true);
-  }, []);
-
-  resetServerContext();
-  if (!loaded) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
         <Row className="dewo-task-board">
           <Space size="middle" align="start">
             {taskViewGroups.map((group) => (
-              <div key={group.value} style={{ width: columnWidth }}>
-                <TaskBoardColumn
-                  status={group.value as TaskStatus}
-                  width={columnWidth}
-                  sections={group.sections}
-                  projectId={projectId}
-                  currentlyDraggingTask={currentlyDraggingTask}
-                  empty={empty?.[group.value as TaskStatus]}
-                />
-              </div>
+              <TaskBoardColumn
+                key={group.value}
+                status={group.value as TaskStatus}
+                width={columnWidth}
+                sections={group.sections}
+                projectId={projectId}
+                currentlyDraggingTask={currentlyDraggingTask}
+                empty={empty?.[group.value as TaskStatus]}
+              />
             ))}
           </Space>
         </Row>

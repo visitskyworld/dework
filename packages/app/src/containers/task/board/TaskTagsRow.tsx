@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC, ReactNode, useMemo } from "react";
 import {
   Task,
   TaskPriority,
@@ -10,19 +10,21 @@ import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import moment from "moment";
-import { TaskPriorityIcon } from "./TaskPriorityIcon";
 import { PRIORITY_LABEL } from "./util";
+import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 
 interface Props {
   task: Task | TaskWithOrganization;
   showStandardTags?: boolean;
   style?: CSSProperties;
+  extra?: ReactNode[];
 }
 
 export const TaskTagsRow: FC<Props> = ({
   task,
   showStandardTags = true,
   style,
+  extra,
 }) => {
   const attachmentCount = useMemo(
     () =>
@@ -40,9 +42,9 @@ export const TaskTagsRow: FC<Props> = ({
       <Tag
         key="priority"
         title={PRIORITY_LABEL[task.priority]}
-        style={{ height: 22 }}
+        style={{ height: 20 }}
       >
-        <TaskPriorityIcon priority={task.priority} />
+        <TaskPriorityIcon priority={task.priority} size={13} />
       </Tag>
     ),
     !!task.dueDate && (
@@ -104,6 +106,7 @@ export const TaskTagsRow: FC<Props> = ({
           {tag.label}
         </Tag>
       )),
+    ...(extra ?? []),
   ].filter((c) => !!c);
 
   if (!tagComponentsToRender.length) return null;

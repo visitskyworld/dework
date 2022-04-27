@@ -5,7 +5,7 @@ import {
   TaskRewardTrigger,
   TaskStatus,
 } from "@dewo/app/graphql/types";
-import { TaskListRow } from "../list/TaskList";
+import { SubtaskTableRowData } from "./subtask/SubtaskTable";
 
 export interface TaskRewardFormValues {
   amount: number;
@@ -31,5 +31,5 @@ export interface TaskFormValues {
   assigneeIds: string[];
   ownerIds?: string[];
   reward?: TaskRewardFormValues;
-  subtasks?: TaskListRow[];
+  subtasks?: SubtaskTableRowData[];
 }

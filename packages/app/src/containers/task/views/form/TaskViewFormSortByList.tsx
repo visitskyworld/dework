@@ -44,6 +44,7 @@ export const TaskViewFormSortByList: FC<Props> = ({ form }) => {
                     <Menu>
                       {[
                         TaskViewSortByField.sortKey,
+                        TaskViewSortByField.priority,
                         TaskViewSortByField.dueDate,
                         TaskViewSortByField.createdAt,
                       ].map((field) => (
