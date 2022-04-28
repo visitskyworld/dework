@@ -8,6 +8,7 @@ import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHead
 import {
   useProjectBySlug,
   useProjectDetails,
+  useProjectIdBySlug,
 } from "@dewo/app/containers/project/hooks";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { Tab } from "@dewo/app/components/Tab";
@@ -34,6 +35,7 @@ const Page: NextPage = () => {
   };
   const { organization } = useOrganizationBySlug(organizationSlug);
   const { project, error } = useProjectBySlug(projectSlug);
+  const projectId = useProjectIdBySlug(projectSlug); // resolves even if has no access
   const canEditProject = usePermission("update", project);
   const details = useProjectDetails(project?.id).project;
   const organizationId = organization?.id;
@@ -63,14 +65,11 @@ const Page: NextPage = () => {
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <ProjectHeader
-          projectId={project?.id}
-          organizationId={organizationId}
-        />
+        <ProjectHeader projectId={projectId} organizationId={organizationId} />
         <Layout.Content style={{ flex: 1 }}>
-          <TaskViewProvider projectId={project?.id}>
+          <TaskViewProvider projectId={projectId}>
             <TaskViewTabs
-              projectId={project?.id}
+              projectId={projectId}
               activeKey={currentTab}
               extraTabs={[
                 !!details && canEditProject && (
@@ -121,7 +120,7 @@ const Page: NextPage = () => {
       </Layout.Content>
       <ForbiddenResourceModal
         visible={forbiddenError}
-        projectId={project?.id}
+        projectId={projectId}
         organizationId={organizationId}
       />
       {!!details && <ProjectSeo project={details} />}

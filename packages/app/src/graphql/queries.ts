@@ -274,6 +274,12 @@ export const projectBySlug = gql`
   ${Fragments.project}
 `;
 
+export const projectIdBySlug = gql`
+  query GetProjectIdBySlugQuery($projectSlug: String!) {
+    projectId: getProjectIdBySlug(slug: $projectSlug)
+  }
+`;
+
 export const projectTasks = gql`
   query GetProjectTasksQuery($projectId: UUID!) {
     project: getProject(id: $projectId) {

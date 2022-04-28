@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { Avatar, Button, Modal, Row, Typography } from "antd";
 import { IncognitoIcon } from "@dewo/app/components/icons/Incognito";
 import Link from "next/link";
@@ -20,6 +20,11 @@ export const ForbiddenResourceModal: FC<Props> = ({
 }) => {
   const organization = useOrganization(organizationId);
   const roles = useRolesWithAccess(organizationId, projectId);
+  const organizationRoles = useMemo(
+    () => roles?.filter((r) => !r.userId),
+    [roles]
+  );
+  console.log("dang", { organizationRoles });
   return (
     <Modal
       visible={visible}
@@ -38,15 +43,14 @@ export const ForbiddenResourceModal: FC<Props> = ({
       </Typography.Title>
       <Typography.Paragraph type="secondary">
         You don't have access to this project.
-        {!!roles?.length && " The following roles can access this project:"}
+        {!!organizationRoles?.length &&
+          " The following roles can access this project:"}
       </Typography.Paragraph>
-      {!!roles?.length && (
+      {!!organizationRoles?.length && (
         <Row style={{ justifyContent: "center", marginBottom: 16, rowGap: 4 }}>
-          {roles
-            ?.filter((role) => !role.userId)
-            .map((role) => (
-              <RoleTag key={role.id} role={role} />
-            ))}
+          {organizationRoles.map((role) => (
+            <RoleTag key={role.id} role={role} />
+          ))}
         </Row>
       )}
       <Row style={{ gap: 8, justifyContent: "center" }}>

@@ -6354,6 +6354,23 @@ export interface GetProjectBySlugQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetProjectIdBySlugQuery
+// ====================================================
+
+export interface GetProjectIdBySlugQuery {
+  projectId: Scalar.UUID;
+}
+
+export interface GetProjectIdBySlugQueryVariables {
+  projectSlug: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetProjectTasksQuery
 // ====================================================
 

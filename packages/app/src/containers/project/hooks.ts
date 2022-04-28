@@ -51,6 +51,8 @@ import {
   TaskGatingDefaultInput,
   SetTaskGatingDefault,
   SetTaskGatingDefaultVariables,
+  GetProjectIdBySlugQuery,
+  GetProjectIdBySlugQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -178,6 +180,19 @@ export function useProjectBySlug(projectSlug: string | undefined): {
     skip: !projectSlug,
   });
   return { project: data?.project ?? undefined, error };
+}
+
+export function useProjectIdBySlug(
+  projectSlug: string | undefined
+): string | undefined {
+  const { data } = useQuery<
+    GetProjectIdBySlugQuery,
+    GetProjectIdBySlugQueryVariables
+  >(Queries.projectIdBySlug, {
+    variables: { projectSlug: projectSlug! },
+    skip: !projectSlug,
+  });
+  return data?.projectId;
 }
 
 export function useProjectIntegrations(

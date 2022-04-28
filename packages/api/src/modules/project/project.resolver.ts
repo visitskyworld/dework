@@ -413,6 +413,13 @@ export class ProjectResolver {
     return project;
   }
 
+  @Query(() => GraphQLUUID)
+  public async getProjectIdBySlug(@Args("slug") slug: string): Promise<string> {
+    const project = await this.projectService.findBySlug(slug);
+    if (!project) throw new NotFoundException();
+    return project.id;
+  }
+
   @Mutation(() => User)
   @UseGuards(AuthGuard)
   public async setTaskGatingDefault(
