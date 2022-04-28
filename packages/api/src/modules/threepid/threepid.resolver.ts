@@ -4,6 +4,8 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
+  UseGuards,
 } from "@nestjs/common";
 import {
   Args,
@@ -21,6 +23,8 @@ import { CreatePhantomThreepidInput } from "./dto/CreatePhantomThreepidInput";
 import { ThreepidService } from "./threepid.service";
 import { sign } from "tweetnacl";
 import bs58 from "bs58";
+import { AuthGuard } from "../auth/guards/auth.guard";
+import GraphQLUUID from "graphql-type-uuid";
 
 const verifySolanaMessage = (
   message: string,
@@ -117,5 +121,18 @@ export class ThreepidResolver {
     }
 
     return threepid;
+  }
+
+  @Mutation(() => User)
+  @UseGuards(AuthGuard)
+  public async deleteThreepid(
+    @Context("user") user: User,
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<User> {
+    const threepid = await this.threepidService.findById(id);
+    if (!threepid) throw new NotFoundException();
+    if (threepid.userId !== user.id) throw new ForbiddenException();
+    await this.threepidService.update({ ...threepid, userId: null as any });
+    return user;
   }
 }

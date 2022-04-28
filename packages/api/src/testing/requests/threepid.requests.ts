@@ -18,6 +18,7 @@ export class ThreepidRequests {
       variables: { input },
     };
   }
+
   public static createPhantomThreepid(
     input: CreatePhantomThreepidInput
   ): GraphQLTestClientRequestBody<{ input: CreatePhantomThreepidInput }> {
@@ -31,6 +32,24 @@ export class ThreepidRequests {
         }
       `,
       variables: { input },
+    };
+  }
+
+  public static deleteThreepid(
+    id: string
+  ): GraphQLTestClientRequestBody<{ id: string }> {
+    return {
+      query: `
+        mutation DeleteThreepid($id: UUID!) {
+          user: deleteThreepid(id: $id) {
+            id
+            threepids {
+              id
+            }
+          }
+        }
+      `,
+      variables: { id },
     };
   }
 }

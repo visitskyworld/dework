@@ -1,3 +1,4 @@
+import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { ThreepidRequests } from "@dewo/api/testing/requests/threepid.requests";
@@ -10,10 +11,12 @@ import nacl from "tweetnacl";
 describe("ThreepidResolver", () => {
   let app: INestApplication;
   let client: GraphQLTestClient;
+  let fixtures: Fixtures;
 
   beforeAll(async () => {
     app = await getTestApp();
     client = app.get(GraphQLTestClient);
+    fixtures = app.get(Fixtures);
   });
 
   afterAll(() => app.close());
@@ -160,6 +163,34 @@ describe("ThreepidResolver", () => {
         });
 
         client.expectGqlError(response, HttpStatus.BAD_REQUEST);
+      });
+    });
+
+    describe("deleteThreepid", () => {
+      it("should remove threepid from user", async () => {
+        const threepid = await fixtures.createThreepid();
+        const user = await fixtures.createUser(threepid);
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ThreepidRequests.deleteThreepid(threepid.id),
+        });
+
+        expect(response.body.data.user.threepids).not.toContainEqual(
+          expect.objectContaining({ id: threepid.id })
+        );
+      });
+
+      it("should fail if threepid is not connected to authing user", async () => {
+        const threepid = await fixtures.createThreepid();
+        const user = await fixtures.createUser();
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: ThreepidRequests.deleteThreepid(threepid.id),
+        });
+
+        client.expectGqlError(response, HttpStatus.FORBIDDEN);
       });
     });
   });

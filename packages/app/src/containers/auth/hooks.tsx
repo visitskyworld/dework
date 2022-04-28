@@ -17,6 +17,8 @@ import {
   StartWalletConnectSessionMutationVariables,
   ThreepidSource,
   UserDetails,
+  DeleteThreepidMutation,
+  DeleteThreepidMutationVariables,
 } from "@dewo/app/graphql/types";
 import {
   usePersonalSign,
@@ -28,6 +30,7 @@ import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRequestAddresses } from "@dewo/app/util/hiro";
 import * as solana from "@dewo/app/util/solana";
+import { deleteThreepid } from "@dewo/app/graphql/mutations/threepid";
 
 export function useAuthWithThreepid(): (
   threepidId: string
@@ -212,6 +215,20 @@ export function useCreatePhantomThreepid(): () => Promise<string> {
     personalSign,
     createPhantomThreepidMutation,
   ]);
+}
+
+export function useDeleteThreepid(): (id: string) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteThreepidMutation,
+    DeleteThreepidMutationVariables
+  >(deleteThreepid);
+  return useCallback(
+    async (id) => {
+      const res = await mutation({ variables: { id } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
 }
 
 export const hasDiscordThreepid = (user: UserDetails): boolean =>

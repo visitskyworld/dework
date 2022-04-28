@@ -4975,6 +4975,83 @@ export interface UpdateTaskViewMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: DeleteThreepidMutation
+// ====================================================
+
+export interface DeleteThreepidMutation_deleteThreepid_organizations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface DeleteThreepidMutation_deleteThreepid_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface DeleteThreepidMutation_deleteThreepid_threepids {
+  __typename: "Threepid";
+  id: string;
+  source: ThreepidSource;
+  threepid: string;
+}
+
+export interface DeleteThreepidMutation_deleteThreepid_prompts {
+  __typename: "UserPrompt";
+  id: Scalar.UUID;
+  type: string;
+  createdAt: Scalar.DateTime;
+  completedAt: Scalar.DateTime | null;
+}
+
+export interface DeleteThreepidMutation_deleteThreepid_taskGatingDefaults_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+}
+
+export interface DeleteThreepidMutation_deleteThreepid_taskGatingDefaults {
+  __typename: "TaskGatingDefault";
+  id: Scalar.UUID;
+  userId: string;
+  projectId: string;
+  type: TaskGatingType;
+  roles: DeleteThreepidMutation_deleteThreepid_taskGatingDefaults_roles[];
+}
+
+export interface DeleteThreepidMutation_deleteThreepid {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  bio: string | null;
+  organizations: DeleteThreepidMutation_deleteThreepid_organizations[];
+  details: DeleteThreepidMutation_deleteThreepid_details[];
+  threepids: DeleteThreepidMutation_deleteThreepid_threepids[];
+  prompts: DeleteThreepidMutation_deleteThreepid_prompts[];
+  taskGatingDefaults: DeleteThreepidMutation_deleteThreepid_taskGatingDefaults[];
+}
+
+export interface DeleteThreepidMutation {
+  deleteThreepid: DeleteThreepidMutation_deleteThreepid;
+}
+
+export interface DeleteThreepidMutationVariables {
+  id: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
