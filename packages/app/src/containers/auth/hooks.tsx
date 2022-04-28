@@ -30,6 +30,7 @@ import { MetamaskIcon } from "@dewo/app/components/icons/Metamask";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { useRequestAddresses } from "@dewo/app/util/hiro";
 import * as solana from "@dewo/app/util/solana";
+import { useWalletConnector } from "@dewo/app/util/walletconnect";
 import { deleteThreepid } from "@dewo/app/graphql/mutations/threepid";
 
 export function useAuthWithThreepid(): (
@@ -160,6 +161,31 @@ export function useCreateMetamaskThreepid(): () => Promise<string> {
     startWalletConnectSessionMutation,
     provider,
   ]);
+}
+
+export function useCreateWalletConnectThreepid(): (
+  address: string
+) => Promise<string> {
+  const loadConnector = useWalletConnector();
+  const [createMetamaskThreepidMutation] = useMutation<
+    CreateMetamaskThreepid,
+    CreateMetamaskThreepidVariables
+  >(Mutations.createMetamaskThreepid);
+  return useCallback(
+    async (address: string) => {
+      const connector = await loadConnector();
+      const message = "Dework Sign In";
+      const signature = await connector.signPersonalMessage([message, address]);
+      const { data } = await createMetamaskThreepidMutation({
+        variables: { input: { address, signature, message } },
+      });
+      if (!data) {
+        throw new Error("Failed to create Wallet Connect threepid");
+      }
+      return data.threepid.id;
+    },
+    [loadConnector, createMetamaskThreepidMutation]
+  );
 }
 
 export function useCreatePhantomThreepid(): () => Promise<string> {

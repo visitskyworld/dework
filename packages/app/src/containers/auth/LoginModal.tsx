@@ -13,6 +13,7 @@ import { MetamaskAuthButton } from "./buttons/MetamaskAuthButton";
 import { PhantomAuthButton } from "./buttons/PhantomAuthButton";
 import { HiroAuthButton } from "./buttons/HiroAuthButton";
 import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
+import { WalletConnectButton } from "./buttons/WalletConnectButton";
 
 interface Props {
   redirectUrl?: string;
@@ -70,6 +71,13 @@ export const LoginModal: FC<Props> = ({
         />
         <MetamaskAuthButton
           children={getThreepidName[ThreepidSource.metamask]}
+          size="large"
+          block
+          state={state}
+          onAuthed={onAuthedWithWallet}
+        />
+        <WalletConnectButton
+          children="WalletConnect"
           size="large"
           block
           state={state}
