@@ -34,9 +34,7 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
               Task moved to {project.name}
             </Typography.Text>
             <Link href={`${project.permalink}?taskId=${task.id}`}>
-              <Button type="ghost" size="small">
-                View
-              </Button>
+              <Button size="small">View</Button>
             </Link>
           </RouterContext.Provider>
         ),

@@ -90,7 +90,6 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
               Task created
             </Typography.Text>
             <Button
-              type="ghost"
               size="small"
               onClick={() =>
                 router.push(`${project?.permalink}?taskId=${task.id}`)

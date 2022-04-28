@@ -9,6 +9,7 @@ import { TaskActionButton } from "../actions/TaskActionButton";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import styles from "./TaskListItem.module.less";
 
 interface Props {
   task: Task;
@@ -19,7 +20,7 @@ export const TaskListItem: FC<Props> = ({ task }) => {
   return (
     <Card
       size="small"
-      className="hover:cursor-pointer hover:component-highlight bg-body-secondary"
+      className={styles.card}
       style={{ marginBottom: 8, paddingTop: 8, paddingBottom: 8 }}
       onClick={navigateToTask}
     >

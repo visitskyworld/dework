@@ -53,7 +53,7 @@ export const FollowOrganizationButton: FC<Props> = ({
 
   if (!user) {
     return (
-      <LoginButton type="ghost" icon={<Icons.StarOutlined />}>
+      <LoginButton type="primary" icon={<Icons.StarOutlined />}>
         Follow
       </LoginButton>
     );

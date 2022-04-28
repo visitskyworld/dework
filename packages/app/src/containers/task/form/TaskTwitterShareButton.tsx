@@ -19,7 +19,6 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
     <Button
       target="_blank"
       className="dewo-twitter-btn"
-      type="ghost"
       size="small"
       icon={<TwitterOutlined />}
       href={`https://twitter.com/intent/tweet?${qs.stringify({

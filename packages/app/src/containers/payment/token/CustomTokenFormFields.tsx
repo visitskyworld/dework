@@ -110,7 +110,6 @@ export const CustomTokenFormFields: FC<Props> = ({
               !values.type ||
               (values.type === PaymentTokenType.ERC1155 && !values.identifier)
             }
-            type="ghost"
             onClick={handleLookupToken}
           >
             Lookup

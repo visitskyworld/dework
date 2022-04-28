@@ -49,7 +49,6 @@ export const TaskRoleSelectField: FC<Props> = ({
       <div style={{ marginBottom: 16 }}>
         <ConnectOrganizationToDiscordButton
           block
-          type="ghost"
           size="small"
           organizationId={project.organizationId}
         />

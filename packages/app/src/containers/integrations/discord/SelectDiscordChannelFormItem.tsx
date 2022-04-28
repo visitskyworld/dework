@@ -103,7 +103,6 @@ export const SelectDiscordChannelFormItem = ({
                   </Typography.Text>
                   <Button
                     size="small"
-                    type="ghost"
                     onClick={async () => {
                       await onRefetchChannels();
                       form.setFields([

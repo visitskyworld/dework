@@ -1,0 +1,10 @@
+@import "~@dewo/app/styles/theme.less";
+
+.card:global(.ant-card.ant-card-small) {
+  background: @body-background-secondary;
+  transition: background 0.3s ease-in-out;
+  &:hover {
+    background: @component-background;
+    cursor: pointer;
+  }
+}

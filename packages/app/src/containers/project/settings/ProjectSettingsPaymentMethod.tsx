@@ -38,7 +38,6 @@ export const ProjectSettingsPaymentMethod: FC<Props> = ({ projectId }) => {
         ))}
         <AddProjectPaymentMethodButton
           key={paymentMethods?.length}
-          type="ghost"
           projectId={projectId}
           children="Add Payment Method"
         />

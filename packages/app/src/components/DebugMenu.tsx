@@ -51,7 +51,7 @@ export const DebugMenu: FC<Props> = ({ projectId, organizationId }) => {
         </Menu>
       }
     >
-      <Button type="ghost">
+      <Button>
         <Icons.ToolFilled />
       </Button>
     </Dropdown>
