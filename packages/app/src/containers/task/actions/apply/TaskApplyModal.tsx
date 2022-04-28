@@ -25,6 +25,8 @@ import {
   useOrganizationIntegrations,
 } from "@dewo/app/containers/organization/hooks";
 import { useRunningCallback } from "@dewo/app/util/hooks";
+import { RouterContext } from "next/dist/shared/lib/router-context";
+import Link from "next/link";
 
 interface FormValues {
   message: string;
@@ -81,9 +83,20 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         placement: "top",
         duration: 5,
         message: "Application submitted!",
-        description: hasDiscordIntegration
-          ? `You will now be able to chat with the task reviewer in a Discord thread we created for you in ${organization?.name}'s server`
-          : "Next the task reviewer will review your application. If they assign you, you can start working on the task",
+        description: (
+          <RouterContext.Provider value={router}>
+            <Typography.Paragraph>
+              {hasDiscordIntegration
+                ? `You will now be able to chat with the task reviewer in a Discord thread we created for you in ${organization?.name}'s server`
+                : `Next the task reviewer will review your application. If they assign you, you can start working on the task`}
+            </Typography.Paragraph>
+            <Link href={user!.permalink + "/board"}>
+              <a>
+                <Button type="primary">Go to My Task Board</Button>
+              </a>
+            </Link>
+          </RouterContext.Provider>
+        ),
       });
     },
     [

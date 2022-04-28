@@ -36,6 +36,8 @@ import { TaskSectionData } from "../board/util";
 import { GnosisPayAllButton } from "../board/GnosisPayAllButton";
 import { useProject, useProjectDetails } from "../../project/hooks";
 import { useOrganizationRoles } from "../../rbac/hooks";
+import { useRouter } from "next/router";
+import { TodoGroup, TodoGroupText } from "./PersonalBoardView";
 
 const sortByFieldFns: Partial<
   Record<TaskViewSortByField, (task: Task) => string | number>
@@ -95,6 +97,8 @@ export function useTaskViewGroups(
   projectId?: string
 ): TaskViewGroup[] {
   const { currentView } = useTaskViewContext();
+  const router = useRouter();
+  const isOnPersonalBoard = /.*\/profile\/.+\/board*./.test(router.asPath);
   const sortBys = useMemo(
     () =>
       !!currentView?.sortBys.length
@@ -268,6 +272,33 @@ export function useTaskViewGroups(
           }
         } else if (
           groupBy === TaskViewGroupBy.status &&
+          value === TaskStatus.TODO &&
+          isOnPersonalBoard
+        ) {
+          const groups = _.groupBy(tasks, (t) => {
+            if (t.submissions.length > 0) return TodoGroup.work_submitted;
+            if (t.assignees.length > 0) return TodoGroup.assigned;
+            if (t.applications.length > 0) return TodoGroup.applied;
+            return TodoGroup.default;
+          });
+          return {
+            type: groupBy,
+            value,
+            sections: [
+              TodoGroup.assigned,
+              TodoGroup.applied,
+              TodoGroup.work_submitted,
+              TodoGroup.default,
+            ]
+              .map((todoGroup) => ({
+                id: todoGroup,
+                tasks: _.sortBy(groups[todoGroup] ?? [], (t) => t.sortKey),
+                title: TodoGroupText[todoGroup],
+              }))
+              .filter((s) => !!s.tasks.length),
+          };
+        } else if (
+          groupBy === TaskViewGroupBy.status &&
           currentView?.type === TaskViewType.BOARD &&
           sortKeySorting &&
           !!customSortingSections
@@ -306,12 +337,13 @@ export function useTaskViewGroups(
       }),
     [
       groupValues,
-      groupBy,
       sorted,
       sortBys,
+      groupBy,
+      isOnPersonalBoard,
       currentView?.type,
-      projectId,
       customSortingSections,
+      projectId,
     ]
   );
 }
