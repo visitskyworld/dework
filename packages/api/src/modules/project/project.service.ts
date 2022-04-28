@@ -20,7 +20,13 @@ import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskGatingDefault } from "@dewo/api/models/TaskGatingDefault";
 import { TaskGatingDefaultInput } from "./dto/TaskGatingDefaultInput";
 import { TaskViewService } from "../task/taskView/taskView.service";
-import { TaskViewType } from "@dewo/api/models/TaskView";
+import {
+  TaskViewFilterType,
+  TaskViewSortByDirection,
+  TaskViewSortByField,
+  TaskViewType,
+} from "@dewo/api/models/TaskView";
+import { TaskStatus } from "@dewo/api/models/Task";
 
 @Injectable()
 export class ProjectService {
@@ -54,20 +60,21 @@ export class ProjectService {
       filters: [],
       type: TaskViewType.BOARD,
     });
-    // await this.taskViewService.create({
-    //   name: "Open Tasks",
-    //   projectId: created.id,
-    //   type: TaskViewType.LIST,
-    //   filters: [
-    //     { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
-    //   ],
-    //   sortBys: [
-    //     {
-    //       direction: TaskViewSortByDirection.DESC,
-    //       field: TaskViewSortByField.createdAt,
-    //     },
-    //   ],
-    // });
+    await this.taskViewService.create({
+      name: "Open Tasks",
+      projectId: created.id,
+      type: TaskViewType.LIST,
+      filters: [
+        { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
+        { type: TaskViewFilterType.ASSIGNEES, assigneeIds: [null] },
+      ],
+      sortBys: [
+        {
+          direction: TaskViewSortByDirection.ASC,
+          field: TaskViewSortByField.priority,
+        },
+      ],
+    });
 
     return this.projectRepo.findOne(created.id) as Promise<Project>;
   }
