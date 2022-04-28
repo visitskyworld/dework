@@ -1,5 +1,10 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { TaskStatus, TaskDetails, TaskPriority } from "@dewo/app/graphql/types";
+import {
+  TaskStatus,
+  TaskDetails,
+  TaskPriority,
+  TaskGatingType,
+} from "@dewo/app/graphql/types";
 import * as Icons from "@ant-design/icons";
 import {
   Form,
@@ -122,12 +127,22 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
-      form.setFieldsValue(values);
-      setValues(values);
-      onChange?.(values);
+      const shouldResetRoles =
+        changed.gating && changed.gating !== TaskGatingType.ROLES;
+
+      const newValues: Partial<TaskFormValues> = shouldResetRoles
+        ? { ...values, roleIds: [] }
+        : values;
+
+      form.setFieldsValue(newValues);
+      setValues(newValues);
+      onChange?.(newValues);
 
       if (mode === "update") {
-        debouncedSubmit(changed as TaskFormValues);
+        const newChanged: Partial<TaskFormValues> = shouldResetRoles
+          ? { ...changed, roleIds: [] }
+          : changed;
+        debouncedSubmit(newChanged as TaskFormValues);
       }
     },
     [form, mode, debouncedSubmit, onChange]
