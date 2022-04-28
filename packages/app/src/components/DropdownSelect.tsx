@@ -1,11 +1,12 @@
-import { Dropdown, DropDownProps, Menu } from "antd";
-import React, { ReactNode, useCallback } from "react";
+import { Dropdown, DropDownProps, Input, Menu } from "antd";
+import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import { eatClick, stopPropagation } from "../util/eatClick";
 
 interface DropdownSelectOption {
   value: string;
   label: ReactNode;
   disabled?: boolean;
+  data?: string;
 }
 
 interface DropdownSelectProps<T = string | string[]> {
@@ -16,6 +17,7 @@ interface DropdownSelectProps<T = string | string[]> {
   children: ReactNode;
   options?: DropdownSelectOption[];
   onChange?(value: T): void;
+  showSearch?: boolean;
 }
 
 export function DropdownSelect<T extends string | string[]>({
@@ -26,6 +28,7 @@ export function DropdownSelect<T extends string | string[]>({
   placement,
   children,
   onChange,
+  showSearch = false,
 }: DropdownSelectProps<T>) {
   const isSelected = useCallback(
     (v: string) => {
@@ -51,17 +54,45 @@ export function DropdownSelect<T extends string | string[]>({
     [value, mode, onChange]
   );
 
+  const [filter, setFilter] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!options) {
+      return [];
+    }
+
+    const lowerCasedFilter = filter.toLowerCase();
+    return options.filter(({ data }) =>
+      data?.toLowerCase()?.includes(lowerCasedFilter)
+    );
+  }, [filter, options]);
+
   return (
     <Dropdown
+      destroyPopupOnHide
       placement={placement}
       disabled={disabled}
       trigger={["click"]}
       // @ts-ignore
       onClick={eatClick}
       overlay={
-        <Menu onClick={(e) => stopPropagation(e.domEvent)}>
+        <Menu
+          onClick={(e) => stopPropagation(e.domEvent)}
+          style={{ width: 280 }}
+        >
+          {showSearch && (
+            <Menu.Item>
+              <Input
+                autoFocus
+                value={filter}
+                onChange={(e) => setFilter(e.currentTarget.value)}
+                onClick={stopPropagation}
+                placeholder="Search username..."
+              />
+            </Menu.Item>
+          )}
           <div style={{ maxHeight: 264, overflowY: "auto" }}>
-            {options?.map((option) => (
+            {filteredOptions.map((option) => (
               <Menu.Item
                 key={option.value}
                 disabled={option.disabled}

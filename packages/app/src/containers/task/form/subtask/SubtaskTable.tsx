@@ -378,12 +378,14 @@ export const SubtaskTable: FC<Props> = ({
           width: 1,
           render: (assigneeIds: string[], row: SubtaskTableRowData) => (
             <DropdownSelect
+              showSearch
               mode="multiple"
               placement="bottomRight"
               disabled={!canChange(row.task, "assigneeIds")}
               options={users?.map((user) => ({
                 value: user.id,
                 label: <UserSelectOption key={user.id} user={user} />,
+                data: user.username,
               }))}
               value={assigneeIds}
               onChange={(assigneeIds) =>
