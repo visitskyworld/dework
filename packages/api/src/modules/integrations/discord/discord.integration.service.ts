@@ -42,6 +42,15 @@ import { RoleSource } from "@dewo/api/models/rbac/Role";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { getMarkdownImages } from "@dewo/api/utils/markdown";
 
+const STATUS_LABEL: Record<TaskStatus, string> = {
+  [TaskStatus.BACKLOG]: "Backlog",
+  [TaskStatus.COMMUNITY_SUGGESTIONS]: "Community Suggestions",
+  [TaskStatus.TODO]: "To Do",
+  [TaskStatus.IN_PROGRESS]: "In Progress",
+  [TaskStatus.IN_REVIEW]: "In Review",
+  [TaskStatus.DONE]: "Done",
+};
+
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
   HAS_SCOPE = "HAS_SCOPE",
@@ -141,16 +150,12 @@ export class DiscordIntegrationService {
         return false;
       })();
 
-      const {
-        mainChannel,
-        channelToPostTo,
-        wasChannelToPostToJustCreated,
-        guild,
-      } = await this.getChannelFromTask(
-        task,
-        integration,
-        shouldCreateChannelIfNotExists
-      );
+      const { mainChannel, channelToPostTo, guild } =
+        await this.getChannelFromTask(
+          task,
+          integration,
+          shouldCreateChannelIfNotExists
+        );
 
       if (!mainChannel || !guild) {
         this.logger.warn(
@@ -272,12 +277,6 @@ export class DiscordIntegrationService {
         if (!_.isEqual(assigneeIds, prevAssigneeIds)) {
           await this.postAssigneesChange(task, channelToPostTo);
         }
-      } else if (event instanceof TaskCreatedEvent) {
-        if (!!task.assignees.length) {
-          await this.postAssigneesChange(task, channelToPostTo);
-        } else if (wasChannelToPostToJustCreated) {
-          await this.postDefaultInitialMessage(task, channelToPostTo);
-        }
       } else if (event instanceof TaskSubmissionCreatedEvent) {
         await this.postTaskSubmissionCreated(
           task,
@@ -319,8 +318,11 @@ export class DiscordIntegrationService {
       task.projectId
     );
     if (!integration) throw new NotFoundException("Integration not found");
-    const { channelToPostTo, wasChannelToPostToJustCreated, guild } =
-      await this.getChannelFromTask(task, integration, true);
+    const { channelToPostTo, guild } = await this.getChannelFromTask(
+      task,
+      integration,
+      true
+    );
 
     if (!channelToPostTo) {
       throw new NotFoundException(
@@ -330,10 +332,6 @@ export class DiscordIntegrationService {
 
     if (channelToPostTo.isThread() && channelToPostTo.archived) {
       channelToPostTo.setArchived(false);
-    }
-
-    if (wasChannelToPostToJustCreated) {
-      await this.postDefaultInitialMessage(task, channelToPostTo);
     }
 
     const [discordId] = !!user
@@ -584,20 +582,60 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannel
   ) {
-    const creator = await task.creator;
+    const project = await task.project,
+      subtasks = await Promise.all(
+        (
+          await task.subtasks
+        ).map(async (s) => ({
+          name: s.name,
+          url: await this.permalink.get(s),
+        }))
+      );
+
+    const topData = [
+      { name: "Status", value: STATUS_LABEL[task.status] },
+      {
+        name: "Due date",
+        value: task.dueDate && moment(task.dueDate).format("DD/MM/YYYY"),
+      },
+      {
+        name: "Task points",
+        value: task.storyPoints,
+      },
+      {
+        name: "Reward",
+        value:
+          task.reward && (await this.taskService.formatTaskReward(task.reward)),
+      },
+      {
+        name: "Assignee",
+        value: (await this.findTaskUserThreepids(task, false))
+          .map((threepid) => `<@${threepid.threepid}>`)
+          .join(", "),
+        // Dework usernames with profile link:
+        // value: task.assignees
+        //   .map((u) => `[${u.username}](${this.permalink.get(u)})`)
+        //   .join(", "),
+      },
+    ].filter(({ value }) => value != null);
+
+    const fields = [
+      {
+        name: "Subtasks",
+        value: subtasks.map((st) => `- [${st.name}](${st.url})`).join("\n"),
+      },
+    ].filter(({ value }) => !!value);
+
     await this.postTaskCard(
       channel,
       task,
-      `Thread for Dework task "${task.name}"`,
+      `${topData.map((d) => `**${d.name}**: ${d.value}`).join("\n")}\n\n${
+        task.description
+      }`,
       undefined,
       {
-        author: !!creator
-          ? {
-              name: creator.username,
-              iconURL: creator.imageUrl,
-              url: await this.permalink.get(creator),
-            }
-          : undefined,
+        author: { name: project.name, url: await this.permalink.get(project) },
+        fields,
       }
     );
   }
@@ -978,6 +1016,8 @@ export class DiscordIntegrationService {
       channelId: thread.id,
       name: thread.name,
     });
+
+    await this.postDefaultInitialMessage(task, thread);
 
     return thread;
   }
