@@ -121,7 +121,9 @@ export function useConnectToGithubUrlFn(): (
         ...stateOverride,
       });
 
-      return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
+      return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(
+        encodeURIComponent(state)
+      )}`;
     },
     [user?.id]
   );

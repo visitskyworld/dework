@@ -30,7 +30,9 @@ export const CreateProjectButton: FC<Props> = ({
     const url = `${
       Constants.GRAPHQL_API_URL
     }/auth/notion?state=${encodeURIComponent(
-      JSON.stringify({ redirect: `${router.asPath}/import/notion` })
+      encodeURIComponent(
+        JSON.stringify({ redirect: `${router.asPath}/import/notion` })
+      )
     )}`;
     window.location.href = url;
   }, [router.asPath]);
@@ -38,7 +40,9 @@ export const CreateProjectButton: FC<Props> = ({
     const url = `${
       Constants.GRAPHQL_API_URL
     }/auth/trello?state=${encodeURIComponent(
-      JSON.stringify({ redirect: `${router.asPath}/import/trello` })
+      encodeURIComponent(
+        JSON.stringify({ redirect: `${router.asPath}/import/trello` })
+      )
     )}`;
     window.location.href = url;
   }, [router.asPath]);

@@ -52,9 +52,11 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
             const url = `${
               Constants.GRAPHQL_API_URL
             }/auth/notion?state=${encodeURIComponent(
-              JSON.stringify({
-                redirect: `${organization.permalink}/import/notion`,
-              })
+              encodeURIComponent(
+                JSON.stringify({
+                  redirect: `${organization.permalink}/import/notion`,
+                })
+              )
             )}`;
             window.location.href = url;
             break;
@@ -63,9 +65,11 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
             const url = `${
               Constants.GRAPHQL_API_URL
             }/auth/trello?state=${encodeURIComponent(
-              JSON.stringify({
-                redirect: `${organization.permalink}/import/trello`,
-              })
+              encodeURIComponent(
+                JSON.stringify({
+                  redirect: `${organization.permalink}/import/trello`,
+                })
+              )
             )}`;
             window.location.href = url;
             break;
