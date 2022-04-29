@@ -1,6 +1,7 @@
 import { GithubBranch } from "@dewo/api/models/GithubBranch";
 import { GithubPullRequest } from "@dewo/api/models/GithubPullRequest";
 import Bluebird from "bluebird";
+import * as Github from "@octokit/webhooks-types";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import {
   ProjectIntegration,
@@ -8,7 +9,7 @@ import {
 } from "@dewo/api/models/ProjectIntegration";
 import { Task } from "@dewo/api/models/Task";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
@@ -17,6 +18,8 @@ import { ThreepidSource } from "@dewo/api/models/Threepid";
 
 @Injectable()
 export class GithubService {
+  private readonly logger = new Logger(this.constructor.name);
+
   constructor(
     @InjectRepository(GithubPullRequest)
     private readonly githubPullRequestRepo: Repository<GithubPullRequest>,
@@ -56,24 +59,19 @@ export class GithubService {
     return this.githubPullRequestRepo.findOne({ taskId });
   }
 
-  public async createBranch(
-    partial: Partial<GithubBranch>
+  public async upsertBranch(
+    partial: AtLeast<GithubBranch, "name" | "repo" | "organization" | "taskId">
   ): Promise<GithubBranch> {
-    const created = await this.githubBranchRepo.save(partial);
-    return this.githubBranchRepo.findOne(created.id) as Promise<GithubBranch>;
-  }
-
-  public async updateBranch(
-    partial: DeepAtLeast<GithubBranch, "id">
-  ): Promise<GithubBranch> {
-    const updated = await this.githubBranchRepo.save(partial);
-    return this.githubBranchRepo.findOne(updated.id) as Promise<GithubBranch>;
+    const branch = await this.githubBranchRepo.upsert(partial, {
+      conflictPaths: ["name", "repo", "organization", "taskId"],
+    });
+    return this.githubBranchRepo.findOneOrFail(branch.identifiers[0]?.id);
   }
 
   public async findBranchByName(
     name: string
   ): Promise<GithubBranch | undefined> {
-    return this.githubBranchRepo.findOne({ name: name });
+    return this.githubBranchRepo.findOne({ name });
   }
 
   public async createIssue(
@@ -179,5 +177,58 @@ export class GithubService {
       },
       {}
     );
+  }
+
+  public async getBranchAndTask(
+    ref: string,
+    repository: Github.Repository,
+    installationId: number
+  ): Promise<
+    { name: string; task: Task; organization: string; repo: string } | undefined
+  > {
+    const name = ref.replace("refs/head/", "");
+    const taskNumber = this.parseTaskNumberFromBranchName(name);
+
+    if (!taskNumber) {
+      this.logger.log(
+        `Failed to parse task number from branch name: ${JSON.stringify({
+          name,
+        })}`
+      );
+      return undefined;
+    }
+
+    this.logger.log(
+      `Parsed task number from branch name: ${JSON.stringify({
+        name,
+        taskNumber,
+      })}`
+    );
+
+    const organization = repository.owner.login;
+    const repo = repository.name;
+
+    const task = await this.findTask({
+      taskNumber,
+      installationId,
+      organization,
+      repo,
+    });
+
+    if (!task) {
+      this.logger.log(
+        `Failed to find task: ${JSON.stringify({ taskNumber, installationId })}`
+      );
+      return undefined;
+    }
+
+    this.logger.log(
+      `Found task: ${JSON.stringify({
+        taskId: task.id,
+        taskNumber,
+        installationId,
+      })}`
+    );
+    return { task, name, organization, repo };
   }
 }

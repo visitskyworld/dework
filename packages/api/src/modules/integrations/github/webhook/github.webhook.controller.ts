@@ -13,7 +13,7 @@ import { IntegrationService } from "../../integration.service";
 import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegration";
 import { GithubIntegrationService } from "../github.integration.service";
 import { DiscordIntegrationService } from "../../discord/discord.integration.service";
-import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 import * as qs from "query-string";
 import { GithubSyncIncomingService } from "../sync/github.sync.incoming";
@@ -113,85 +113,18 @@ export class GithubWebhookController {
     }
 
     if (
-      "ref" in event &&
-      integration.config.features.includes(
-        GithubProjectIntegrationFeature.SHOW_BRANCHES
-      )
-    ) {
-      const result = await this.getBranchAndTask(
-        event.ref,
-        event.repository,
-        event.installation.id
-      );
-      if (!result) return;
-      const {
-        task,
-        branchName,
-        organization: githubOrganizationSlug,
-        repo,
-      } = result;
-
-      const branch = await this.githubService.findBranchByName(branchName);
-      if (branch) {
-        this.log("Found existing branch", {
-          name: branchName,
-          repo: branch.repo,
-          organization: branch.organization,
-        });
-
-        if ("deleted" in event && event.deleted) {
-          await this.githubService.updateBranch({
-            id: branch.id,
-            deletedAt: new Date(),
-          });
-        } else {
-          await this.githubService.updateBranch({
-            id: branch.id,
-            deletedAt: null!,
-          });
-        }
-      } else {
-        await this.githubService.createBranch({
-          name: branchName,
-          repo,
-          organization: githubOrganizationSlug,
-          link: `https://github.com/${githubOrganizationSlug}/${repo}/compare/${branchName}`,
-          taskId: task.id,
-        });
-        this.log("Created a new branch", {
-          name: branchName,
-          repo,
-          githubOrganizationSlug,
-        });
-      }
-
-      if (task.status === TaskStatus.TODO) {
-        await this.taskService.update({
-          id: task.id,
-          status: TaskStatus.IN_PROGRESS,
-        });
-        this.log("Moving task into IN_PROGRESS", {
-          id: task.id,
-          name: task.name,
-        });
-      } else {
-        await this.triggerTaskUpdatedSubscription(task.id);
-      }
-    }
-
-    if (
       "pull_request" in event &&
       integration.config.features.includes(
         GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS
       )
     ) {
-      const result = await this.getBranchAndTask(
+      const result = await this.githubService.getBranchAndTask(
         event.pull_request.head.ref,
         event.repository,
         event.installation.id
       );
       if (!result) return;
-      const { task, branchName } = result;
+      const { task, name: branchName } = result;
 
       const { id, title, state, html_url, number, draft } = event.pull_request;
       const pr = await this.githubService.findPullRequestByTaskId(task.id);
@@ -289,47 +222,6 @@ export class GithubWebhookController {
 
       await this.triggerTaskUpdatedSubscription(task.id);
     }
-  }
-
-  private async getBranchAndTask(
-    ref: string,
-    repository: Github.Repository,
-    installationId: number
-  ): Promise<
-    | { branchName: string; task: Task; organization: string; repo: string }
-    | undefined
-  > {
-    const branchName = ref.replace("refs/head/", "");
-    const taskNumber =
-      this.githubService.parseTaskNumberFromBranchName(branchName);
-
-    if (!taskNumber) {
-      this.log("Failed to parse task number from branch name", branchName);
-      return undefined;
-    }
-
-    this.log("Parsed task number from branch name", {
-      branchName,
-      taskNumber,
-    });
-
-    const organization = repository.owner.login;
-    const repo = repository.name;
-
-    const task = await this.githubService.findTask({
-      taskNumber,
-      installationId,
-      organization,
-      repo,
-    });
-
-    if (!task) {
-      this.log("Failed to find task", { taskNumber, installationId });
-      return undefined;
-    }
-
-    this.log("Found task", { taskId: task.id, taskNumber, installationId });
-    return { task, branchName, organization, repo };
   }
 
   private async triggerTaskUpdatedSubscription(taskId: string) {

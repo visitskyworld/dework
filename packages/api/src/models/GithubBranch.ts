@@ -1,18 +1,22 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import {
+  AfterLoad,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  Unique,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Task } from "./Task";
 
 @Entity()
 @ObjectType()
+@Unique(["name", "organization", "repo", "taskId"])
 export class GithubBranch extends Audit {
   @Column()
   @Field()
   public name!: string;
-
-  @Column()
-  @Field()
-  public link!: string;
 
   @Column()
   @Field()
@@ -33,4 +37,12 @@ export class GithubBranch extends Audit {
   @Column({ nullable: true })
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Field()
+  public link!: string;
+
+  @AfterLoad()
+  getSlug() {
+    this.link = `https://github.com/${this.organization}/${this.repo}/compare/${this.name}`;
+  }
 }

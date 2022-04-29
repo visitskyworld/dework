@@ -248,7 +248,7 @@ export class Fixtures {
     partial: DeepAtLeast<GithubBranch, "name">
   ): Promise<GithubBranch> {
     const task = this.createTask();
-    return this.githubService.createBranch({
+    return this.githubService.upsertBranch({
       name: partial.name ?? faker.datatype.string(),
       link: faker.datatype.string(),
       repo: faker.internet.userName(),

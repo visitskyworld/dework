@@ -1,8 +1,14 @@
 import {
+  OrganizationIntegration,
+  OrganizationIntegrationType,
+} from "@dewo/api/models/OrganizationIntegration";
+import {
+  GithubProjectIntegrationFeature,
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { TaskService } from "@dewo/api/modules/task/task.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as Github from "@octokit/webhooks-types";
@@ -15,6 +21,7 @@ export class GithubSyncIncomingService {
 
   constructor(
     private readonly github: GithubService,
+    private readonly taskService: TaskService,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>
   ) {}
@@ -39,6 +46,10 @@ export class GithubSyncIncomingService {
       if (event.action === "review_requested") {
         await this.process(integrations, event, this.reviewRequested);
       }
+    }
+
+    if ("ref" in event && "commits" in event) {
+      await this.process(integrations, event, this.commitsPushed);
     }
   }
 
@@ -104,12 +115,56 @@ export class GithubSyncIncomingService {
       );
   }
 
+  private async commitsPushed(
+    event: Github.PushEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+  ) {
+    if (
+      integration.config.features.includes(
+        GithubProjectIntegrationFeature.SHOW_BRANCHES
+      )
+    ) {
+      const branch = await this.github.getBranchAndTask(
+        event.ref,
+        event.repository,
+        organizationIntegration.config.installationId
+      );
+
+      if (!branch) return;
+
+      await this.github.upsertBranch({
+        taskId: branch.task.id,
+        name: branch.name,
+        organization: branch.organization,
+        repo: branch.repo,
+        deletedAt: event.deleted ? new Date() : (null as any),
+      });
+
+      if (
+        event.created &&
+        [TaskStatus.TODO, TaskStatus.BACKLOG].includes(branch.task.status)
+      ) {
+        this.logger.debug(
+          `commitsPushed: moving task to IN_PROGRESS (${JSON.stringify({
+            taskId: branch.task.id,
+          })})`
+        );
+        await this.taskService.update({
+          id: branch.task.id,
+          status: TaskStatus.IN_PROGRESS,
+        });
+      }
+    }
+  }
+
   private async process<T>(
     integrations: ProjectIntegration<ProjectIntegrationType.GITHUB>[],
     event: T,
     fn: (
       event: T,
-      integration: ProjectIntegration<ProjectIntegrationType.GITHUB>
+      integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+      organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
     ) => Promise<void>
   ) {
     for (const integration of integrations) {
@@ -119,7 +174,9 @@ export class GithubSyncIncomingService {
           functionName: fn.name,
         })}`
       );
-      await fn.call(this, event, integration);
+      const orgInt =
+        (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
+      await fn.call(this, event, integration, orgInt);
     }
   }
 

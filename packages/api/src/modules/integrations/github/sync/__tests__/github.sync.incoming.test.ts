@@ -7,7 +7,7 @@ import faker from "faker";
 import { DeepPartial } from "typeorm";
 import { GithubSyncIncomingService } from "../github.sync.incoming";
 import { Project } from "@dewo/api/models/Project";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 
@@ -97,60 +97,112 @@ describe("GithubSyncIncomingService", () => {
   afterAll(() => app.close());
 
   describe("webhook", () => {
-    it("issue assigned", async () => {
-      const event: DeepPartial<Github.IssuesAssignedEvent> = {
-        action: "assigned",
-        issue: githubIssue,
-        assignee: githubUser,
-        repository: githubRepository,
-        sender: githubUser,
-        installation: { id: installationId },
-        organization: githubOrganization,
-      };
-      await service.handleWebhook(event as any);
+    describe("IssuesAssignedEvent", () => {
+      it("issue assigned", async () => {
+        const event: DeepPartial<Github.IssuesAssignedEvent> = {
+          action: "assigned",
+          issue: githubIssue,
+          assignee: githubUser,
+          repository: githubRepository,
+          sender: githubUser,
+          installation: { id: installationId },
+          organization: githubOrganization,
+        };
+        await service.handleWebhook(event as any);
 
-      const updatedTask = await fixtures.getTask(task.id);
-      expect(updatedTask!.assignees).toContainEqual(
-        expect.objectContaining({ id: user.id })
-      );
+        const updatedTask = await fixtures.getTask(task.id);
+        expect(updatedTask!.assignees).toContainEqual(
+          expect.objectContaining({ id: user.id })
+        );
+      });
     });
 
-    it("issue unassigned", async () => {
-      await fixtures.updateTask({ id: task.id, assignees: [user] });
+    describe("IssuesUnassignedEvent", () => {
+      it("issue unassigned", async () => {
+        await fixtures.updateTask({ id: task.id, assignees: [user] });
 
-      const event: DeepPartial<Github.IssuesUnassignedEvent> = {
-        action: "unassigned",
-        issue: githubIssue,
-        assignee: githubUser,
-        repository: githubRepository,
-        sender: githubUser,
-        installation: { id: installationId },
-        organization: githubOrganization,
-      };
-      await service.handleWebhook(event as any);
+        const event: DeepPartial<Github.IssuesUnassignedEvent> = {
+          action: "unassigned",
+          issue: githubIssue,
+          assignee: githubUser,
+          repository: githubRepository,
+          sender: githubUser,
+          installation: { id: installationId },
+          organization: githubOrganization,
+        };
+        await service.handleWebhook(event as any);
 
-      const updatedTask = await fixtures.getTask(task.id);
-      expect(updatedTask!.assignees).not.toContainEqual(
-        expect.objectContaining({ id: user.id })
-      );
+        const updatedTask = await fixtures.getTask(task.id);
+        expect(updatedTask!.assignees).not.toContainEqual(
+          expect.objectContaining({ id: user.id })
+        );
+      });
     });
 
-    it("PR review requested", async () => {
-      const event: DeepPartial<Github.PullRequestReviewRequestedEvent> = {
-        action: "review_requested",
-        pull_request: githubPullRequest,
-        requested_reviewer: githubUser,
-        repository: githubRepository,
-        sender: githubUser,
-        installation: { id: installationId },
-        organization: githubOrganization,
-      };
-      await service.handleWebhook(event as any);
+    describe("PullRequestReviewRequestedEvent", () => {
+      it("PR review requested", async () => {
+        const event: DeepPartial<Github.PullRequestReviewRequestedEvent> = {
+          action: "review_requested",
+          pull_request: githubPullRequest,
+          requested_reviewer: githubUser,
+          repository: githubRepository,
+          sender: githubUser,
+          installation: { id: installationId },
+          organization: githubOrganization,
+        };
+        await service.handleWebhook(event as any);
 
-      const updatedTask = await fixtures.getTask(task.id);
-      expect(updatedTask!.owners).toContainEqual(
-        expect.objectContaining({ id: user.id })
-      );
+        const updatedTask = await fixtures.getTask(task.id);
+        expect(updatedTask!.owners).toContainEqual(
+          expect.objectContaining({ id: user.id })
+        );
+      });
+    });
+
+    describe("PushEvent", () => {
+      it("should create a branch in the DB", async () => {
+        const branchName = `username/dw-${task.number}/feature`;
+        const event: DeepPartial<Github.PushEvent> = {
+          ref: `refs/head/${branchName}`,
+          commits: [],
+          installation: { id: installationId },
+          repository: githubRepository,
+        };
+        await service.handleWebhook(event as any);
+
+        const branch = await fixtures.getGithubBranchbyName(branchName);
+        expect(branch?.name).toEqual(branchName);
+      });
+
+      it("should update a task's status to IN_PROGRESS when its branch is created", async () => {
+        const branchName = `username/dw-${task.number}/feature`;
+        const event: DeepPartial<Github.PushEvent> = {
+          ref: `refs/head/${branchName}`,
+          commits: [],
+          created: true,
+          installation: { id: installationId },
+          repository: githubRepository,
+        };
+        await service.handleWebhook(event as any);
+
+        const updatedTask = await fixtures.getTask(task.id);
+        expect(updatedTask!.status).toEqual(TaskStatus.IN_PROGRESS);
+      });
+
+      it("should mark branch as deleted when deleting github ref", async () => {
+        const branchName = `username/dw-${task.number}/feature`;
+        const event: DeepPartial<Github.PushEvent> = {
+          ref: `refs/head/${branchName}`,
+          commits: [],
+          deleted: true,
+          installation: { id: installationId },
+          repository: githubRepository,
+        };
+        await service.handleWebhook(event as any);
+
+        const branch = await fixtures.getGithubBranchbyName(branchName);
+        expect(branch?.deletedAt).toBeDefined();
+      });
     });
   });
 });
