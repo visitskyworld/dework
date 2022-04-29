@@ -270,7 +270,14 @@ export class RbacService {
             fn("update", Task, ["assigneeIds", "gating"], task);
           } else {
             fn("create", Task, task);
+            fn(CRUD, Rule, {
+              ...(!!rule.projectId
+                ? { "__task__.projectId": rule.projectId }
+                : { __task__: { $exists: true } }),
+              permission: RulePermission.MANAGE_TASKS,
+            });
           }
+
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);

@@ -3,7 +3,6 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
 import { Divider, Row, Typography } from "antd";
 import React, { FC, ReactElement } from "react";
-import { useProject } from "../../project/hooks";
 import { PayButton } from "../board/PayButton";
 import { useShouldShowInlinePayButton } from "../board/util";
 import { ApplyToTaskButton } from "./apply/ApplyToTaskButton";
@@ -13,6 +12,8 @@ import * as Icons from "@ant-design/icons";
 import { ContestIcon } from "@dewo/app/components/icons/task/Contest";
 import { ClaimableIcon } from "@dewo/app/components/icons/task/Claimable";
 import { ApplicationIcon } from "@dewo/app/components/icons/task/Application";
+import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
+import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 interface Props {
   task: Task;
@@ -21,9 +22,10 @@ interface Props {
 const TaskActionSectionContent: FC<{
   icon: ReactElement;
   label: string;
+  description?: string;
   color?: string;
   button: ReactElement;
-}> = ({ icon, label, color, button }) => (
+}> = ({ icon, label, color, description, button }) => (
   <>
     <Row
       align="middle"
@@ -42,16 +44,27 @@ const TaskActionSectionContent: FC<{
       </Typography.Text>
     </Row>
     {button}
+    {!!description && (
+      <Typography.Paragraph
+        type="secondary"
+        className="ant-typography-caption"
+        style={{ textAlign: "center", marginTop: 8 }}
+      >
+        {description}
+        <QuestionmarkTooltip
+          marginLeft={8}
+          title="What other contributors see might differ."
+          readMoreUrl={deworkSocialLinks.gitbook.bountyTypesAndGating}
+        />
+      </Typography.Paragraph>
+    )}
   </>
 );
 
 export const TaskActionSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
-  const { project } = useProject(task.projectId);
-  const canManageProject = usePermission("update", project);
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);
-  const canApply = usePermission("create", "TaskApplication");
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
 
   const content = (() => {
@@ -86,7 +99,6 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
     ) {
       return (
         <TaskActionSectionContent
-          color="yellow"
           icon={<ContestIcon style={{ width: 16 }} />}
           label="Multiple Submissions"
           button={
@@ -103,6 +115,7 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
 
     if (
       task.status === TaskStatus.TODO &&
+      task.gating === TaskGatingType.ROLES &&
       canAssignTask &&
       !task.assignees.length
     ) {
@@ -117,20 +130,27 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
       );
     }
 
-    if (
-      task.status === TaskStatus.TODO &&
-      !canManageProject &&
-      !canAssignTask &&
-      canApply &&
-      !task.assignees.length
-    ) {
+    if (task.status === TaskStatus.TODO && !task.assignees.length) {
       return (
         <TaskActionSectionContent
-          color="blue"
           icon={<ApplicationIcon style={{ width: 16 }} />}
           label="Application Process"
+          description={
+            canAssignTask
+              ? "You can claim this task because you have the permission to manage it"
+              : undefined
+          }
           button={
-            <ApplyToTaskButton size="large" type="primary" block task={task} />
+            canAssignTask ? (
+              <ClaimTaskButton size="large" type="primary" block task={task} />
+            ) : (
+              <ApplyToTaskButton
+                size="large"
+                type="primary"
+                block
+                task={task}
+              />
+            )
           }
         />
       );

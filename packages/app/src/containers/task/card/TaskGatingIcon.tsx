@@ -31,7 +31,7 @@ export const TaskGatingIcon: FC<Props> = ({ task }) => {
       );
     }
 
-    if (canUpdateTask) {
+    if (canUpdateTask && task.gating === TaskGatingType.ROLES) {
       return (
         <Tooltip title="Claim this task to assign yourself and start working on it">
           <ClaimableIcon style={{ width: 16 }} />

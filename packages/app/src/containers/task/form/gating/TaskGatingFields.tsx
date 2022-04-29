@@ -1,5 +1,6 @@
-import { Checkbox, Form, Select, Tag } from "antd";
-import React, { FC, useMemo } from "react";
+import { Checkbox, Form, Row, Select, Tag } from "antd";
+import React, { FC, ReactNode, useMemo } from "react";
+import * as Icons from "@ant-design/icons";
 import { TaskRoleSelectField } from "./TaskRoleSelectField";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { RulePermission, Task, TaskGatingType } from "@dewo/app/graphql/types";
@@ -9,12 +10,25 @@ import { useTaskFormUserOptions } from "../../hooks";
 import { TaskFormValues } from "../types";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
+import { ApplicationIcon } from "@dewo/app/components/icons/task/Application";
+import { ContestIcon } from "@dewo/app/components/icons/task/Contest";
+import { ClaimableIcon } from "@dewo/app/components/icons/task/Claimable";
 
 const labels: Record<TaskGatingType, string> = {
   [TaskGatingType.ASSIGNEES]: "Assign someone",
   [TaskGatingType.APPLICATION]: "Application Process",
   [TaskGatingType.OPEN_SUBMISSION]: "Multiple Submissions",
   [TaskGatingType.ROLES]: "Discord Roles",
+};
+
+const icons: Record<TaskGatingType, ReactNode> = {
+  [TaskGatingType.ASSIGNEES]: (
+    // <LockIcon style={{ width: 16 }} />
+    <Icons.UserAddOutlined />
+  ),
+  [TaskGatingType.APPLICATION]: <ApplicationIcon style={{ width: 16 }} />,
+  [TaskGatingType.OPEN_SUBMISSION]: <ContestIcon style={{ width: 16 }} />,
+  [TaskGatingType.ROLES]: <ClaimableIcon style={{ width: 16 }} />,
 };
 
 const descriptions: Partial<Record<TaskGatingType, string>> = {
@@ -100,28 +114,26 @@ export const TaskGatingFields: FC<Props> = ({
             <Select.Option
               key={type}
               value={type}
-              label={labels[type]}
               disabled={type === TaskGatingType.ROLES && !canManageRoles}
             >
-              {labels[type]}
-              {!!descriptions[type] && (
-                <QuestionmarkTooltip
-                  marginLeft={8}
-                  title={descriptions[type]}
-                />
-              )}
-              {type === TaskGatingType.ROLES && (
-                <Tag
-                  color="green"
-                  style={{
-                    marginLeft: 8,
-                    fontWeight: "normal",
-                    textTransform: "none",
-                  }}
-                >
-                  New
-                </Tag>
-              )}
+              <Row align="middle" style={{ columnGap: 8 }}>
+                {icons[type]}
+                {labels[type]}
+                {!!descriptions[type] && (
+                  <QuestionmarkTooltip title={descriptions[type]} />
+                )}
+                {type === TaskGatingType.ROLES && (
+                  <Tag
+                    color="green"
+                    style={{
+                      fontWeight: "normal",
+                      textTransform: "none",
+                    }}
+                  >
+                    New
+                  </Tag>
+                )}
+              </Row>
             </Select.Option>
           ))}
         </Select>
