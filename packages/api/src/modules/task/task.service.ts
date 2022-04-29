@@ -14,7 +14,6 @@ import {
 } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import {
-  TaskApplicationCreatedEvent,
   TaskCreatedEvent,
   TaskSubmissionCreatedEvent,
   TaskUpdatedEvent,
@@ -23,7 +22,6 @@ import { CreateTaskPaymentsInput } from "./dto/CreateTaskPaymentsInput";
 import { PaymentService } from "../payment/payment.service";
 import { TaskReward } from "@dewo/api/models/TaskReward";
 import { ProjectService } from "../project/project.service";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
@@ -46,8 +44,6 @@ export class TaskService {
     private readonly taskRewardRepo: Repository<TaskReward>,
     private readonly paymentService: PaymentService,
     private readonly projectService: ProjectService,
-    @InjectRepository(TaskApplication)
-    private readonly taskApplicationRepo: Repository<TaskApplication>,
     @InjectRepository(TaskSubmission)
     private readonly taskSubmissionRepo: Repository<TaskSubmission>
   ) {}
@@ -89,32 +85,6 @@ export class TaskService {
     const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
     this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask, userId));
     return refetched;
-  }
-
-  public async createApplication(
-    partial: DeepAtLeast<TaskApplication, "userId" | "taskId">
-  ): Promise<TaskApplication> {
-    const task = await this.taskRepo.findOne(partial.taskId);
-    if (!task) throw new NotFoundException();
-
-    const applications = await task.applications;
-    const existing = applications.find((a) => a.userId === partial.userId);
-    if (!!existing) return existing;
-
-    const created = await this.taskApplicationRepo.save(partial);
-    const refetched = (await this.taskApplicationRepo.findOne({
-      id: created.id,
-    })) as TaskApplication;
-    this.eventBus.publish(new TaskApplicationCreatedEvent(task, refetched));
-    return refetched;
-  }
-
-  public async deleteApplication(
-    taskId: string,
-    userId: string
-  ): Promise<Task> {
-    await this.taskApplicationRepo.delete({ taskId, userId });
-    return this.findById(taskId) as Promise<Task>;
   }
 
   public async createSubmission(

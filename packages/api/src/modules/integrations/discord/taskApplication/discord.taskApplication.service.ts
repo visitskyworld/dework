@@ -4,16 +4,16 @@ import {
 } from "@dewo/api/models/OrganizationIntegration";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { Injectable, Logger } from "@nestjs/common";
-import { IntegrationService } from "../integration.service";
-import { DiscordService } from "./discord.service";
 import Bluebird from "bluebird";
 import moment from "moment";
 import * as Discord from "discord.js";
-import { PermalinkService } from "../../permalink/permalink.service";
 import { Task } from "@dewo/api/models/Task";
+import { DiscordService } from "../discord.service";
+import { PermalinkService } from "@dewo/api/modules/permalink/permalink.service";
+import { IntegrationService } from "../../integration.service";
 
 @Injectable()
-export class DiscordTaskApplicationThreadService {
+export class DiscordTaskApplicationService {
   private logger = new Logger(this.constructor.name);
 
   private readonly channelName = "dework-task-applicants";
@@ -27,7 +27,7 @@ export class DiscordTaskApplicationThreadService {
   public async createTaskApplicationThread(
     taskApplication: TaskApplication,
     task: Task
-  ) {
+  ): Promise<string | undefined> {
     const applicant = await taskApplication.user;
     const project = await task.project;
 
@@ -46,7 +46,7 @@ export class DiscordTaskApplicationThreadService {
           }
         )})`
       );
-      return;
+      return undefined;
     }
 
     // 2. get task owner's and task application user's discord id
@@ -168,6 +168,8 @@ export class DiscordTaskApplicationThreadService {
     this.logger.debug(
       `Done: ${JSON.stringify({ taskApplicationId: taskApplication.id })}`
     );
+
+    return `https://discord.com/channels/${thread.guildId}/${thread.id}`;
   }
 
   private async getOrCreatePrivateChannel(

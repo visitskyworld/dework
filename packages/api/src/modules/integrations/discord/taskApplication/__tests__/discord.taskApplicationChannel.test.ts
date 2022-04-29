@@ -6,25 +6,25 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
 import * as Discord from "discord.js";
 import _ from "lodash";
-import { DiscordService } from "../discord.service";
-import { DiscordTaskApplicationThreadService } from "../discord.taskApplicationChannel";
+import { DiscordService } from "../../discord.service";
+import { DiscordTaskApplicationService } from "../discord.taskApplication.service";
 
 const discordGuildId = "915593019871342592";
 const discordUserId = "921849518750838834";
 
-describe("DiscordTaskApplicationThreadService", () => {
+describe("DiscordTaskApplicationService", () => {
   let app: INestApplication;
   let fixtures: Fixtures;
   let discord: Discord.Client;
   let user: User;
   let discordGuild: Discord.Guild;
-  let service: DiscordTaskApplicationThreadService;
+  let service: DiscordTaskApplicationService;
 
   beforeAll(async () => {
     app = await getTestApp();
     fixtures = app.get(Fixtures);
     discord = app.get(DiscordService).getClient({ config: {} } as any);
-    service = app.get(DiscordTaskApplicationThreadService);
+    service = app.get(DiscordTaskApplicationService);
 
     user = await fixtures.createUser({
       source: ThreepidSource.discord,
@@ -117,6 +117,14 @@ describe("DiscordTaskApplicationThreadService", () => {
         expect(
           latestThread.permissionsFor(discordUserId)?.has("VIEW_CHANNEL")
         ).toBe(true);
+
+        const updatedTask = await fixtures.getTask(task.id);
+        const updatedApplication = (await updatedTask?.applications)?.find(
+          (a) => a.id === application.id
+        );
+        expect(updatedApplication?.discordThreadUrl).toBe(
+          `https://discord.com/channels/${discordGuild.id}/${latestThread.id}`
+        );
       });
     });
   });

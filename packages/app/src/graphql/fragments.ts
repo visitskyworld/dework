@@ -380,6 +380,7 @@ export const taskApplication = gql`
     endDate
     createdAt
     userId
+    discordThreadUrl
     user {
       ...User
     }

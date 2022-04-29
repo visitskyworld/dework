@@ -19,6 +19,10 @@ export class TaskApplication extends Audit {
   @Field({ nullable: true })
   public message?: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public discordThreadUrl?: string;
+
   @Column()
   @Field()
   public startDate!: Date;

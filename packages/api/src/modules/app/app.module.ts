@@ -31,6 +31,7 @@ import { AnalyticsModule } from "./analytics/analytics.module";
 import { UserPromptModule } from "../user/prompt/userPrompt.module";
 import { GithubWebhookModule } from "../integrations/github/webhook/github.webhook.module";
 import { TaskViewModule } from "../task/taskView/taskView.module";
+import { TaskApplicationModule } from "../task/taskApplication/taskApplication.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -57,6 +58,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   ProjectModule,
   TaskModule,
   TaskViewModule,
+  TaskApplicationModule,
   ThreepidModule,
   InviteModule,
   GithubIntegrationModule,

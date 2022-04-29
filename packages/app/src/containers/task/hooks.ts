@@ -347,7 +347,7 @@ export function useCreateTaskDiscordLink(): (
 
 export function useCreateTaskApplication(): (
   input: CreateTaskApplicationInput
-) => Promise<Task> {
+) => Promise<CreateTaskApplicationMutation["application"]> {
   const [mutation] = useMutation<
     CreateTaskApplicationMutation,
     CreateTaskApplicationMutationVariables
@@ -356,7 +356,7 @@ export function useCreateTaskApplication(): (
     async (input) => {
       const res = await mutation({ variables: { input } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data?.application.task;
+      return res.data?.application;
     },
     [mutation]
   );

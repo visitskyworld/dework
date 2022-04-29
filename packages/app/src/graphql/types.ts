@@ -1474,6 +1474,14 @@ export interface UpdateTaskMutationVariables {
 // GraphQL mutation operation: CreateTaskApplicationMutation
 // ====================================================
 
+export interface CreateTaskApplicationMutation_application_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
 export interface CreateTaskApplicationMutation_application_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -1627,6 +1635,13 @@ export interface CreateTaskApplicationMutation_application_task {
 export interface CreateTaskApplicationMutation_application {
   __typename: "TaskApplication";
   id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  user: CreateTaskApplicationMutation_application_user;
   task: CreateTaskApplicationMutation_application_task;
 }
 
@@ -3196,6 +3211,7 @@ export interface CreateTaskPaymentsMutation_tasks_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: CreateTaskPaymentsMutation_tasks_applications_user;
 }
 
@@ -3674,6 +3690,7 @@ export interface ClearTaskPaymentsMutation_tasks_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: ClearTaskPaymentsMutation_tasks_applications_user;
 }
 
@@ -6833,6 +6850,7 @@ export interface GetTaskQuery_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: GetTaskQuery_task_applications_user;
 }
 
@@ -8090,6 +8108,7 @@ export interface TaskCreatedSubscription_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: TaskCreatedSubscription_task_applications_user;
 }
 
@@ -8564,6 +8583,7 @@ export interface TaskUpdatedSubscription_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: TaskUpdatedSubscription_task_applications_user;
 }
 
@@ -9797,6 +9817,7 @@ export interface TaskApplication {
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
   userId: string;
+  discordThreadUrl: string | null;
   user: TaskApplication_user;
 }
 
@@ -10513,6 +10534,7 @@ export interface TaskDetails_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  discordThreadUrl: string | null;
   user: TaskDetails_applications_user;
 }
 

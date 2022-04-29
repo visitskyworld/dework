@@ -13,7 +13,6 @@ import {
 } from "../integration.events";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordStatusboardService } from "./discord.statusboard.service";
-import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
 
 @Injectable()
 @EventsHandler(TaskCreatedEvent)
@@ -50,21 +49,12 @@ export class DiscordIntegrationTaskUpdatedEventHandler extends EventHandler<Task
 @Injectable()
 @EventsHandler(TaskApplicationCreatedEvent)
 export class DiscordIntegrationTaskApplicationCreatedEventHandler extends EventHandler<TaskApplicationCreatedEvent> {
-  constructor(
-    private readonly integration: DiscordIntegrationService,
-    private readonly taskApplicationChannelService: DiscordTaskApplicationThreadService
-  ) {
+  constructor(private readonly integration: DiscordIntegrationService) {
     super();
   }
 
   async process(event: TaskApplicationCreatedEvent) {
-    await Promise.all([
-      this.integration.handle(event),
-      this.taskApplicationChannelService.createTaskApplicationThread(
-        event.application,
-        event.task
-      ),
-    ]);
+    await this.integration.handle(event);
   }
 }
 

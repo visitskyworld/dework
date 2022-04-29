@@ -1,7 +1,6 @@
 import { Project } from "@dewo/api/models/Project";
 import { Task } from "@dewo/api/models/Task";
 import { TaskReward } from "@dewo/api/models/TaskReward";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
@@ -27,7 +26,6 @@ import { AuditLogModule } from "../auditLog/auditLog.module";
     TypeOrmModule.forFeature([
       Task,
       TaskReward,
-      TaskApplication,
       TaskSubmission,
       TaskReaction,
       Project,

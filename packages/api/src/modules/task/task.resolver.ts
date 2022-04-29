@@ -18,7 +18,6 @@ import {
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
-import { CreateTaskApplicationInput } from "./dto/CreateTaskApplicationInput";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
@@ -31,8 +30,6 @@ import slugify from "slugify";
 import { GetTasksInput, TaskFilterInput } from "./dto/GetTasksInput";
 import { PermalinkService } from "../permalink/permalink.service";
 import { TaskReactionInput } from "./dto/TaskReactionInput";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
-import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { ProjectService } from "../project/project.service";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
@@ -170,74 +167,6 @@ export class TaskResolver {
     }
 
     return task;
-  }
-
-  @Mutation(() => TaskApplication)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "create",
-      subject: TaskApplication,
-      inject: [TaskService],
-      getSubject: async (
-        params: { input: CreateTaskApplicationInput },
-        service
-      ) => {
-        const task = await service.findById(params.input.taskId);
-        if (!task) return undefined;
-        return Object.assign(new TaskApplication(), params.input, {
-          projectId: task.projectId,
-        });
-      },
-      async getOrganizationId(
-        _subject,
-        params: { input: CreateTaskApplicationInput },
-        service
-      ) {
-        const task = await service.findById(params.input.taskId);
-        const project = await task?.project;
-        return project?.organizationId;
-      },
-    })
-  )
-  public async createTaskApplication(
-    @Args("input") input: CreateTaskApplicationInput
-  ): Promise<TaskApplication> {
-    return this.taskService.createApplication(input);
-  }
-
-  @Mutation(() => Task)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "delete",
-      subject: TaskApplication,
-      inject: [TaskService],
-      getSubject: async (
-        params: { input: DeleteTaskApplicationInput },
-        service
-      ) => {
-        const task = await service.findById(params.input.taskId);
-        if (!task) return undefined;
-        return Object.assign(new TaskApplication(), params.input, {
-          projectId: task.projectId,
-        });
-      },
-      async getOrganizationId(
-        _subject,
-        params: { input: CreateTaskApplicationInput },
-        service
-      ) {
-        const task = await service.findById(params.input.taskId);
-        const project = await task?.project;
-        return project?.organizationId;
-      },
-    })
-  )
-  public async deleteTaskApplication(
-    @Args("input") input: DeleteTaskApplicationInput
-  ): Promise<Task> {
-    return this.taskService.deleteApplication(input.taskId, input.userId);
   }
 
   @Mutation(() => TaskSubmission)

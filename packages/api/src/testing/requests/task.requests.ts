@@ -1,10 +1,10 @@
 import { CreateTaskInput } from "@dewo/api/modules/task/dto/CreateTaskInput";
-import { CreateTaskApplicationInput } from "@dewo/api/modules/task/dto/CreateTaskApplicationInput";
+import { CreateTaskApplicationInput } from "@dewo/api/modules/task/taskApplication/dto/CreateTaskApplicationInput";
 import { UpdateTaskInput } from "@dewo/api/modules/task/dto/UpdateTaskInput";
 import { GraphQLTestClientRequestBody } from "../GraphQLTestClient";
 import { GetTasksInput } from "@dewo/api/modules/task/dto/GetTasksInput";
 import { TaskReactionInput } from "@dewo/api/modules/task/dto/TaskReactionInput";
-import { DeleteTaskApplicationInput } from "@dewo/api/modules/task/dto/DeleteTaskApplicationInput";
+import { DeleteTaskApplicationInput } from "@dewo/api/modules/task/taskApplication/dto/DeleteTaskApplicationInput";
 import { CreateTaskSubmissionInput } from "@dewo/api/modules/task/dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "@dewo/api/modules/task/dto/UpdateTaskSubmissionInput";
 

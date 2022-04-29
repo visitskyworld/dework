@@ -58,6 +58,8 @@ import { Role } from "../models/rbac/Role";
 import { Rule } from "../models/rbac/Rule";
 import { RbacModule } from "../modules/rbac/rbac.module";
 import { RulePermission } from "../models/enums/RulePermission";
+import { TaskApplicationModule } from "../modules/task/taskApplication/taskApplication.module";
+import { TaskApplicationService } from "../modules/task/taskApplication/taskApplication.service";
 
 @Injectable()
 export class Fixtures {
@@ -67,6 +69,7 @@ export class Fixtures {
     private readonly projectService: ProjectService,
     private readonly integrationService: IntegrationService,
     private readonly taskService: TaskService,
+    private readonly taskApplicationService: TaskApplicationService,
     private readonly githubService: GithubService,
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
@@ -229,7 +232,7 @@ export class Fixtures {
   public async createTaskApplication(
     partial: Partial<TaskApplication> = {}
   ): Promise<TaskApplication> {
-    return this.taskService.createApplication({
+    return this.taskApplicationService.create({
       userId: await this.createUser().then((u) => u.id),
       taskId: await this.createTask().then((t) => t.id),
       startDate: faker.datatype.datetime(),
@@ -517,6 +520,7 @@ export class Fixtures {
     ProjectModule,
     IntegrationModule,
     TaskModule,
+    TaskApplicationModule,
     GithubIntegrationModule,
     InviteModule,
     PaymentModule,

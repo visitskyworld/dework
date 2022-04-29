@@ -20,8 +20,9 @@ import { DiscordIntegrationResolver } from "./discord.integration.resolver";
 import { DiscordIntegrationService } from "./discord.integration.service";
 import { DiscordModule } from "./discord.module";
 import { DiscordStatusboardService } from "./discord.statusboard.service";
-import { DiscordTaskApplicationThreadService } from "./discord.taskApplicationChannel";
+
 import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
       ProjectIntegration,
       DiscordChannel,
       Organization,
+      TaskApplication,
     ]),
     TaskModule,
     RbacModule,
@@ -47,7 +49,6 @@ import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
     DiscordIntegrationTaskSubmissionCreatedEventHandler,
     DiscordIntegrationCreatedEventHandler,
     DiscordIntegrationUpdatedEventHandler,
-    DiscordTaskApplicationThreadService,
     DiscordStatusboardService,
   ],
   exports: [DiscordIntegrationService],

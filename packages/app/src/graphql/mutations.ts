@@ -242,7 +242,7 @@ export const updateTask = gql`
 export const createTaskApplication = gql`
   mutation CreateTaskApplicationMutation($input: CreateTaskApplicationInput!) {
     application: createTaskApplication(input: $input) {
-      id
+      ...TaskApplication
       task {
         ...Task
       }
@@ -250,6 +250,7 @@ export const createTaskApplication = gql`
   }
 
   ${Fragments.task}
+  ${Fragments.taskApplication}
 `;
 
 export const deleteTaskApplication = gql`

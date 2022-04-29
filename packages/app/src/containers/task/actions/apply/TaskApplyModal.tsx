@@ -27,6 +27,7 @@ import {
 import { useRunningCallback } from "@dewo/app/util/hooks";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import Link from "next/link";
+import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
 
 interface FormValues {
   message: string;
@@ -69,7 +70,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
         await addUserToDiscordGuild().catch(() => {});
       }
-      const claimedTask = await createTaskApplication({
+      const application = await createTaskApplication({
         taskId: task!.id,
         userId: user!.id,
         message: input.message,
@@ -77,25 +78,54 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         endDate: input.dates[1].toISOString(),
       });
       await followOrganization();
-      await onDone(claimedTask);
+      await onDone(application.task);
+
+      const content =
+        hasDiscordIntegration && !!application.discordThreadUrl ? (
+          <>
+            <Typography.Paragraph>
+              You will now be able to chat with the task reviewer in a Discord
+              thread we created for you in {organization?.name}'s server
+            </Typography.Paragraph>
+            <Row style={{ columnGap: 8 }}>
+              <OpenDiscordButton
+                type="primary"
+                size="small"
+                href={application.discordThreadUrl}
+              >
+                Open Discord
+              </OpenDiscordButton>
+              <Link href={user!.permalink + "/board"}>
+                <a>
+                  <Button size="small" onClick={notification.destroy}>
+                    Go to My Task Board
+                  </Button>
+                </a>
+              </Link>
+            </Row>
+          </>
+        ) : (
+          <>
+            <Typography.Paragraph>
+              Next the task reviewer will review your application. If they
+              assign you, you can start working on the task
+            </Typography.Paragraph>
+            <Link href={user!.permalink + "/board"}>
+              <a>
+                <Button type="primary" onClick={notification.destroy}>
+                  Go to My Task Board
+                </Button>
+              </a>
+            </Link>
+          </>
+        );
 
       notification.success({
         placement: "top",
         duration: 5,
         message: "Application submitted!",
         description: (
-          <RouterContext.Provider value={router}>
-            <Typography.Paragraph>
-              {hasDiscordIntegration
-                ? `You will now be able to chat with the task reviewer in a Discord thread we created for you in ${organization?.name}'s server`
-                : `Next the task reviewer will review your application. If they assign you, you can start working on the task`}
-            </Typography.Paragraph>
-            <Link href={user!.permalink + "/board"}>
-              <a>
-                <Button type="primary">Go to My Task Board</Button>
-              </a>
-            </Link>
-          </RouterContext.Provider>
+          <RouterContext.Provider value={router} children={content} />
         ),
       });
     },
