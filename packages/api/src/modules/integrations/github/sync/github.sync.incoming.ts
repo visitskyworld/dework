@@ -48,8 +48,12 @@ export class GithubSyncIncomingService {
       }
     }
 
-    if ("ref" in event && "commits" in event) {
-      await this.process(integrations, event, this.commitsPushed);
+    if ("ref" in event && "ref_type" in event && event.ref_type === "branch") {
+      if ("master_branch" in event) {
+        await this.process(integrations, event, this.branchCreated);
+      } else {
+        await this.process(integrations, event, this.branchDeleted);
+      }
     }
   }
 
@@ -115,8 +119,8 @@ export class GithubSyncIncomingService {
       );
   }
 
-  private async commitsPushed(
-    event: Github.PushEvent,
+  private async branchCreated(
+    event: Github.CreateEvent | Github.DeleteEvent,
     integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
     organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
   ) {
@@ -138,15 +142,11 @@ export class GithubSyncIncomingService {
         name: branch.name,
         organization: branch.organization,
         repo: branch.repo,
-        deletedAt: event.deleted ? new Date() : (null as any),
       });
 
-      if (
-        event.created &&
-        [TaskStatus.TODO, TaskStatus.BACKLOG].includes(branch.task.status)
-      ) {
+      if ([TaskStatus.TODO, TaskStatus.BACKLOG].includes(branch.task.status)) {
         this.logger.debug(
-          `commitsPushed: moving task to IN_PROGRESS (${JSON.stringify({
+          `branchCreated: moving task to IN_PROGRESS (${JSON.stringify({
             taskId: branch.task.id,
           })})`
         );
@@ -155,6 +155,34 @@ export class GithubSyncIncomingService {
           status: TaskStatus.IN_PROGRESS,
         });
       }
+    }
+  }
+
+  private async branchDeleted(
+    event: Github.DeleteEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+  ) {
+    if (
+      integration.config.features.includes(
+        GithubProjectIntegrationFeature.SHOW_BRANCHES
+      )
+    ) {
+      const branch = await this.github.getBranchAndTask(
+        event.ref,
+        event.repository,
+        organizationIntegration.config.installationId
+      );
+
+      if (!branch) return;
+
+      await this.github.upsertBranch({
+        taskId: branch.task.id,
+        name: branch.name,
+        organization: branch.organization,
+        repo: branch.repo,
+        deletedAt: new Date(),
+      });
     }
   }
 

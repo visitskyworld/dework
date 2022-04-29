@@ -9,6 +9,7 @@ import { AtLeast } from "@dewo/app/types/general";
 import { TaskFormValues } from "./form/types";
 import { useRouter } from "next/router";
 import { useProject } from "../project/hooks";
+import moment from "moment";
 
 const buildKey = (initialValues: Partial<TaskFormValues>) =>
   `TaskCreateModal.storedValues(${JSON.stringify(
@@ -72,6 +73,9 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       gating: taskGatingDefault?.type,
       roleIds: taskGatingDefault?.roles.map((r) => r.id),
       ...storedValues,
+      dueDate: !!storedValues?.dueDate
+        ? moment(storedValues.dueDate)
+        : undefined,
       ...initialValues,
     };
   }, [initialValues, storedValues, projectId, canCreateTaskOwner, user]);

@@ -159,12 +159,13 @@ describe("GithubSyncIncomingService", () => {
       });
     });
 
-    describe("PushEvent", () => {
+    describe("CreateEvent", () => {
       it("should create a branch in the DB", async () => {
         const branchName = `username/dw-${task.number}/feature`;
-        const event: DeepPartial<Github.PushEvent> = {
+        const event: DeepPartial<Github.CreateEvent> = {
           ref: `refs/head/${branchName}`,
-          commits: [],
+          ref_type: "branch",
+          master_branch: "master",
           installation: { id: installationId },
           repository: githubRepository,
         };
@@ -176,10 +177,10 @@ describe("GithubSyncIncomingService", () => {
 
       it("should update a task's status to IN_PROGRESS when its branch is created", async () => {
         const branchName = `username/dw-${task.number}/feature`;
-        const event: DeepPartial<Github.PushEvent> = {
+        const event: DeepPartial<Github.CreateEvent> = {
           ref: `refs/head/${branchName}`,
-          commits: [],
-          created: true,
+          ref_type: "branch",
+          master_branch: "master",
           installation: { id: installationId },
           repository: githubRepository,
         };
@@ -188,13 +189,14 @@ describe("GithubSyncIncomingService", () => {
         const updatedTask = await fixtures.getTask(task.id);
         expect(updatedTask!.status).toEqual(TaskStatus.IN_PROGRESS);
       });
+    });
 
+    describe("DeleteEvent", () => {
       it("should mark branch as deleted when deleting github ref", async () => {
         const branchName = `username/dw-${task.number}/feature`;
-        const event: DeepPartial<Github.PushEvent> = {
+        const event: DeepPartial<Github.DeleteEvent> = {
           ref: `refs/head/${branchName}`,
-          commits: [],
-          deleted: true,
+          ref_type: "branch",
           installation: { id: installationId },
           repository: githubRepository,
         };

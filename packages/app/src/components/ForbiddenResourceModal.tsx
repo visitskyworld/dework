@@ -24,7 +24,6 @@ export const ForbiddenResourceModal: FC<Props> = ({
     () => roles?.filter((r) => !r.userId),
     [roles]
   );
-  console.log("dang", { organizationRoles });
   return (
     <Modal
       visible={visible}
