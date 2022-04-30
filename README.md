@@ -85,6 +85,7 @@ DECLARE
 BEGIN
   UPDATE task SET "rewardId" = NULL;
   DELETE FROM task_reward;
+  DELETE FROM task_nft;
   DELETE FROM project_token_gate;
   DELETE FROM payment;
   DELETE FROM payment_method;
