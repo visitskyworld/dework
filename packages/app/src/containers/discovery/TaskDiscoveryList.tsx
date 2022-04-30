@@ -104,6 +104,7 @@ export const TaskDiscoveryList: FC = () => {
     () =>
       tasks
         ?.filter(filterFn.tags(values))
+        .filter((t) => !t.name.toLowerCase().includes("test"))
         .filter(
           (t) =>
             filterFn.applicationTasks(values)(t) ||
