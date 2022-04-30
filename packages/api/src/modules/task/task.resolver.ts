@@ -498,9 +498,11 @@ export class UserTasksResolver {
   @ResolveField(() => [Task])
   public async tasks(
     @Context("user") requestingUser: User | undefined,
-    @Parent() user: User
+    @Parent() user: User,
+    @Args("filter", { nullable: true }) filter: TaskFilterInput
   ): Promise<Task[]> {
     return this.taskService.findWithRelations({
+      ...filter,
       userId: user.id,
       requestingUserId: requestingUser?.id,
     });

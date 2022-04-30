@@ -262,7 +262,7 @@ describe("UserResolver", () => {
         it("should create Discord onboarding prompt", async () => {
           const threepid = await fixtures.createThreepid({
             source: ThreepidSource.metamask,
-            threepid: "0x1111111111111111111111111111111111111111",
+            threepid: fixtures.address(),
           });
 
           const res = await client.request({

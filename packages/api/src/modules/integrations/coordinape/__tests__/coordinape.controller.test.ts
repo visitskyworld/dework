@@ -38,9 +38,9 @@ describe("CoordinapeController", () => {
         .then((res) => res.body);
 
     it("should return task completed within given date range", async () => {
-      const address1 = "0x1111111111111111111111111111111111111111";
-      const address2 = "0x2222222222222222222222222222222222222222";
-      const address3 = "0x3333333333333333333333333333333333333333";
+      const address1 = fixtures.address();
+      const address2 = fixtures.address();
+      const address3 = fixtures.address();
       const assignee1 = await fixtures.createUser({
         source: ThreepidSource.metamask,
         threepid: address1,
@@ -115,7 +115,7 @@ describe("CoordinapeController", () => {
     it("should not return uncompleted task", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: "0x1234567890123456789012345678901234567890",
+        threepid: fixtures.address(),
       });
       await fixtures.createTask({
         assignees: [user],
@@ -130,7 +130,7 @@ describe("CoordinapeController", () => {
     it("should not return tasks completed before or after date range", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: "0x1234567890123456789012345678901234567890",
+        threepid: fixtures.address(),
       });
       await fixtures.createTask({
         status: TaskStatus.DONE,
@@ -152,7 +152,7 @@ describe("CoordinapeController", () => {
     it("should not return tasks from private project", async () => {
       const user = await fixtures.createUser({
         source: ThreepidSource.metamask,
-        threepid: "0x1234567890123456789012345678901234567890",
+        threepid: fixtures.address(),
       });
       await fixtures.createRole(
         { organizationId: project.organizationId, fallback: true },

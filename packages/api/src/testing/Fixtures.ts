@@ -4,6 +4,7 @@ import { User } from "../models/User";
 import { UserModule } from "../modules/user/user.module";
 import { UserService } from "../modules/user/user.service";
 import faker from "faker";
+import { ethers } from "ethers";
 import { ThreepidService } from "../modules/threepid/threepid.service";
 import { ThreepidModule } from "../modules/threepid/threepid.module";
 import { Organization } from "../models/Organization";
@@ -509,6 +510,10 @@ export class Fixtures {
 
   async addRoles(userId: string, roleIds: string[]) {
     await this.rbacService.addRoles(userId, roleIds);
+  }
+
+  address(): string {
+    return ethers.Wallet.createRandom().address;
   }
 }
 

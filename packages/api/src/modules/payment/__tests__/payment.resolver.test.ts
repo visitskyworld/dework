@@ -39,7 +39,7 @@ describe("PaymentResolver", () => {
           app,
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
-            address: "0x1234567890123456789012345678901234567890",
+            address: fixtures.address(),
             networkId: network.id,
             projectId: project.id,
           }),
@@ -52,13 +52,14 @@ describe("PaymentResolver", () => {
 
       it("should succeed if the user is authenticated", async () => {
         const user = await fixtures.createUser();
+        const address = fixtures.address();
         const project = await fixtures.createProject();
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(user),
           body: PaymentRequests.createPaymentMethod({
             type: PaymentMethodType.METAMASK,
-            address: "0x1234567890123456789012345678901234567890",
+            address,
             networkId: network.id,
             projectId: project.id,
           }),
@@ -67,9 +68,7 @@ describe("PaymentResolver", () => {
         expect(response.statusCode).toEqual(HttpStatus.OK);
         const pm = response.body.data?.paymentMethod;
         expect(pm.type).toEqual(PaymentMethodType.METAMASK);
-        expect(pm.address).toEqual(
-          "0x1234567890123456789012345678901234567890"
-        );
+        expect(pm.address).toEqual(address);
         expect(pm.creatorId).toEqual(user.id);
       });
     });
@@ -80,7 +79,7 @@ describe("PaymentResolver", () => {
         const network = await fixtures.createPaymentNetwork();
         const input: CreatePaymentTokenInput = {
           type: PaymentTokenType.ERC20,
-          address: "0x1234567890123456789012345678901234567890",
+          address: fixtures.address(),
           networkId: network.id,
           exp: faker.datatype.number({ min: 1, max: 10 }),
           name: faker.company.companyName(),
@@ -106,7 +105,7 @@ describe("PaymentResolver", () => {
 
       it("should not override payment token data if already exists", async () => {
         const token = await fixtures.createPaymentToken({
-          address: "0x1234567890123456789012345678901234567890",
+          address: fixtures.address(),
         });
         const user = await fixtures.createUser();
 
