@@ -34,6 +34,7 @@ import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPre
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 import styles from "./OrganizationTabs.module.less";
+import { OrganizationPublicInviteButton } from "../../invite/OrganizationPublicInviteButton";
 
 interface Props {
   organizationId: string;
@@ -156,6 +157,7 @@ export const OrganizationTabs: FC<Props> = ({
                 ))}
               </Avatar.Group>
             </Row>
+            <OrganizationPublicInviteButton />
 
             <Divider />
 
