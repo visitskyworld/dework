@@ -6,7 +6,7 @@
     "packages/landing-page",
     "packages/nft"
   ],
-  "version": "1.11.10",
+  "version": "1.12.0",
   "private": true,
   "engines": {
     "yarn": "1.22.x"
