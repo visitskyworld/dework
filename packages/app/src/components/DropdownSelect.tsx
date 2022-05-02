@@ -57,9 +57,8 @@ export function DropdownSelect<T extends string | string[]>({
   const [filter, setFilter] = useState("");
 
   const filteredOptions = useMemo(() => {
-    if (!options) {
-      return [];
-    }
+    if (!options) return [];
+    if (!filter) return options;
 
     const lowerCasedFilter = filter.toLowerCase();
     return options.filter(({ data }) =>
