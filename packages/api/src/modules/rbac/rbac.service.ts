@@ -410,4 +410,27 @@ export class RbacService {
       .andWhere("role.source = :source", { source })
       .getMany();
   }
+
+  public async isProjectsPrivate(
+    projectIds: string[]
+  ): Promise<Record<string, boolean>> {
+    const rules = await this.ruleRepo
+      .createQueryBuilder("rule")
+      .innerJoin("rule.role", "role")
+      .where("role.fallback IS TRUE")
+      .andWhere("rule.projectId IN (:...projectIds)", { projectIds })
+      .andWhere("rule.permission = :permission", {
+        permission: RulePermission.VIEW_PROJECTS,
+      })
+      .andWhere("rule.inverted IS TRUE")
+      .getMany();
+
+    return projectIds.reduce(
+      (acc, projectId) => ({
+        ...acc,
+        [projectId]: rules.some((rule) => rule.projectId === projectId),
+      }),
+      {}
+    );
+  }
 }

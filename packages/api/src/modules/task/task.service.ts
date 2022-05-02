@@ -1,5 +1,4 @@
 import { Task, TaskStatus } from "@dewo/api/models/Task";
-import * as ms from "milliseconds";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -52,9 +51,9 @@ export class TaskService {
     partial: DeepAtLeast<Task, "projectId" | "name" | "status">
   ): Promise<Task> {
     const created = await this.taskRepo.save({
+      sortKey: Date.now().toString(),
       ...partial,
       number: await this.getNextTaskNumber(partial.projectId),
-      sortKey: Date.now().toString(),
     });
     const refetched = (await this.taskRepo.findOne(created.id)) as Task;
     this.eventBus.publish(new TaskCreatedEvent(refetched, created.creatorId));
@@ -295,7 +294,7 @@ export class TaskService {
       (!userId || userId !== requestingUserId)
     ) {
       query = query
-        .cache(ms.hours(1))
+        // .cache(ms.hours(1))
         .leftJoin(
           Rule,
           "rule",

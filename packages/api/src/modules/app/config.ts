@@ -12,6 +12,7 @@ export interface ConfigType {
   RUN_DB_SYNCHRONIZATION: boolean;
 
   REDIS_URL: string;
+  ELASTICSEARCH_NODE: string;
 
   GITHUB_OAUTH_CLIENT_ID: string;
   GITHUB_OAUTH_CLIENT_SECRET: string;
@@ -64,6 +65,7 @@ export const configSchema = Joi.object<ConfigType>({
   RUN_DB_SYNCHRONIZATION: Joi.boolean().default(false),
 
   REDIS_URL: Joi.string().required(),
+  ELASTICSEARCH_NODE: Joi.string().required(),
 
   GITHUB_OAUTH_CLIENT_ID: Joi.string().required(),
   GITHUB_OAUTH_CLIENT_SECRET: Joi.string().required(),

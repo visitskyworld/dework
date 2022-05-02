@@ -7123,17 +7123,17 @@ export interface GetTaskReactionUsersQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetTasksQuery
+// GraphQL query operation: GetPaginatedTasksQuery
 // ====================================================
 
-export interface GetTasksQuery_tasks_subtasks {
+export interface GetPaginatedTasksQuery_paginated_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
 }
 
-export interface GetTasksQuery_tasks_tags {
+export interface GetPaginatedTasksQuery_paginated_tasks_tags {
   __typename: "TaskTag";
   id: Scalar.UUID;
   label: string;
@@ -7143,7 +7143,7 @@ export interface GetTasksQuery_tasks_tags {
   projectId: string;
 }
 
-export interface GetTasksQuery_tasks_assignees {
+export interface GetPaginatedTasksQuery_paginated_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -7151,7 +7151,7 @@ export interface GetTasksQuery_tasks_assignees {
   permalink: string;
 }
 
-export interface GetTasksQuery_tasks_owners {
+export interface GetPaginatedTasksQuery_paginated_tasks_owners {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -7159,7 +7159,7 @@ export interface GetTasksQuery_tasks_owners {
   permalink: string;
 }
 
-export interface GetTasksQuery_tasks_reward_token {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -7173,7 +7173,7 @@ export interface GetTasksQuery_tasks_reward_token {
   visibility: PaymentTokenVisibility;
 }
 
-export interface GetTasksQuery_tasks_reward_payment_paymentMethod_network {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -7183,15 +7183,15 @@ export interface GetTasksQuery_tasks_reward_payment_paymentMethod_network {
   sortKey: string;
 }
 
-export interface GetTasksQuery_tasks_reward_payment_paymentMethod {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetTasksQuery_tasks_reward_payment_paymentMethod_network;
+  network: GetPaginatedTasksQuery_paginated_tasks_reward_payment_paymentMethod_network;
 }
 
-export interface GetTasksQuery_tasks_reward_payment_network {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -7201,53 +7201,53 @@ export interface GetTasksQuery_tasks_reward_payment_network {
   sortKey: string;
 }
 
-export interface GetTasksQuery_tasks_reward_payment {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetTasksQuery_tasks_reward_payment_paymentMethod;
-  network: GetTasksQuery_tasks_reward_payment_network;
+  paymentMethod: GetPaginatedTasksQuery_paginated_tasks_reward_payment_paymentMethod;
+  network: GetPaginatedTasksQuery_paginated_tasks_reward_payment_network;
 }
 
-export interface GetTasksQuery_tasks_reward {
+export interface GetPaginatedTasksQuery_paginated_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   trigger: TaskRewardTrigger;
   peggedToUsd: boolean;
-  token: GetTasksQuery_tasks_reward_token;
-  payment: GetTasksQuery_tasks_reward_payment | null;
+  token: GetPaginatedTasksQuery_paginated_tasks_reward_token;
+  payment: GetPaginatedTasksQuery_paginated_tasks_reward_payment | null;
 }
 
-export interface GetTasksQuery_tasks_applications {
+export interface GetPaginatedTasksQuery_paginated_tasks_applications {
   __typename: "TaskApplication";
   id: Scalar.UUID;
   userId: string;
 }
 
-export interface GetTasksQuery_tasks_submissions {
+export interface GetPaginatedTasksQuery_paginated_tasks_submissions {
   __typename: "TaskSubmission";
   id: Scalar.UUID;
   userId: string;
   content: string;
 }
 
-export interface GetTasksQuery_tasks_review {
+export interface GetPaginatedTasksQuery_paginated_tasks_review {
   __typename: "TaskReview";
   id: Scalar.UUID;
   message: string | null;
   rating: number | null;
 }
 
-export interface GetTasksQuery_tasks_reactions {
+export interface GetPaginatedTasksQuery_paginated_tasks_reactions {
   __typename: "TaskReaction";
   id: Scalar.UUID;
   userId: string;
   reaction: string;
 }
 
-export interface GetTasksQuery_tasks_project_organization {
+export interface GetPaginatedTasksQuery_paginated_tasks_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
   name: string;
@@ -7257,7 +7257,7 @@ export interface GetTasksQuery_tasks_project_organization {
   permalink: string;
 }
 
-export interface GetTasksQuery_tasks_project {
+export interface GetPaginatedTasksQuery_paginated_tasks_project {
   __typename: "Project";
   id: Scalar.UUID;
   slug: string;
@@ -7268,10 +7268,10 @@ export interface GetTasksQuery_tasks_project {
   permalink: string;
   sectionId: string | null;
   sortKey: string;
-  organization: GetTasksQuery_tasks_project_organization;
+  organization: GetPaginatedTasksQuery_paginated_tasks_project_organization;
 }
 
-export interface GetTasksQuery_tasks {
+export interface GetPaginatedTasksQuery_paginated_tasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
@@ -7289,24 +7289,32 @@ export interface GetTasksQuery_tasks {
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
-  subtasks: GetTasksQuery_tasks_subtasks[];
-  tags: GetTasksQuery_tasks_tags[];
-  assignees: GetTasksQuery_tasks_assignees[];
-  owners: GetTasksQuery_tasks_owners[];
-  reward: GetTasksQuery_tasks_reward | null;
-  applications: GetTasksQuery_tasks_applications[];
-  submissions: GetTasksQuery_tasks_submissions[];
-  review: GetTasksQuery_tasks_review | null;
-  reactions: GetTasksQuery_tasks_reactions[];
-  project: GetTasksQuery_tasks_project;
+  subtasks: GetPaginatedTasksQuery_paginated_tasks_subtasks[];
+  tags: GetPaginatedTasksQuery_paginated_tasks_tags[];
+  assignees: GetPaginatedTasksQuery_paginated_tasks_assignees[];
+  owners: GetPaginatedTasksQuery_paginated_tasks_owners[];
+  reward: GetPaginatedTasksQuery_paginated_tasks_reward | null;
+  applications: GetPaginatedTasksQuery_paginated_tasks_applications[];
+  submissions: GetPaginatedTasksQuery_paginated_tasks_submissions[];
+  review: GetPaginatedTasksQuery_paginated_tasks_review | null;
+  reactions: GetPaginatedTasksQuery_paginated_tasks_reactions[];
+  project: GetPaginatedTasksQuery_paginated_tasks_project;
 }
 
-export interface GetTasksQuery {
-  tasks: GetTasksQuery_tasks[];
+export interface GetPaginatedTasksQuery_paginated {
+  __typename: "TaskSearchResponse";
+  total: number;
+  cursor: string | null;
+  tasks: GetPaginatedTasksQuery_paginated_tasks[];
 }
 
-export interface GetTasksQueryVariables {
-  input: GetTasksInput;
+export interface GetPaginatedTasksQuery {
+  paginated: GetPaginatedTasksQuery_paginated;
+}
+
+export interface GetPaginatedTasksQueryVariables {
+  filter: SearchTasksInput;
+  cursor?: string | null;
 }
 
 /* tslint:disable */
@@ -11200,6 +11208,7 @@ export enum TaskViewSortByDirection {
 
 export enum TaskViewSortByField {
   createdAt = "createdAt",
+  doneAt = "doneAt",
   dueDate = "dueDate",
   priority = "priority",
   sortKey = "sortKey",
@@ -11418,6 +11427,14 @@ export interface ProjectTokenGateInput {
   projectId: Scalar.UUID;
   tokenId: Scalar.UUID;
   role: ProjectRole;
+}
+
+export interface SearchTasksInput {
+  statuses?: TaskStatus[] | null;
+  hasReward?: boolean | null;
+  assigneeIds?: (Scalar.UUID | null)[] | null;
+  parentTaskId?: Scalar.UUID[] | null;
+  sortBy: TaskViewSortByInput;
 }
 
 export interface SetOrganizationDetailInput {

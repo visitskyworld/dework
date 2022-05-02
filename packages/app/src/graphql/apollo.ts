@@ -73,6 +73,14 @@ export const createApolloClient = (
               read: (_, { args, toReference }) =>
                 toReference({ __typename: "Task", id: args?.id }),
             },
+            getPaginatedTasks: {
+              keyArgs: ["filter"],
+              merge: (existing, incoming) => ({
+                ...existing,
+                ...incoming,
+                tasks: [...(existing?.tasks ?? []), ...incoming.tasks],
+              }),
+            },
           },
         },
       },

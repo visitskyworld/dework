@@ -1,7 +1,8 @@
 import {
-  GetTasksInput,
   TaskGatingType,
   TaskStatus,
+  TaskViewSortByDirection,
+  TaskViewSortByField,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import {
@@ -19,7 +20,7 @@ import * as Icons from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { CompareFn } from "antd/lib/table/interface";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { calculateTaskRewardAsUSD, useTasks } from "../task/hooks";
+import { calculateTaskRewardAsUSD, usePaginatedTasks } from "../task/hooks";
 import { TaskDiscoveryTable } from "./TaskDiscoveryTable";
 import { FormSection } from "@dewo/app/components/FormSection";
 import _ from "lodash";
@@ -78,31 +79,33 @@ export const TaskDiscoveryList: FC = () => {
     []
   );
 
-  const tasksQuery = useMemo(
-    (): GetTasksInput => ({
-      statuses: [TaskStatus.TODO],
-      rewardNotNull: !values.includeTasksWithoutReward,
-      userId: null,
-    }),
-    [values.includeTasksWithoutReward]
-  );
-  const tasks = useTasks(tasksQuery);
+  const paginated = usePaginatedTasks({
+    statuses: [TaskStatus.TODO],
+    hasReward: true,
+    sortBy: {
+      field: TaskViewSortByField.createdAt,
+      direction: TaskViewSortByDirection.DESC,
+    },
+    assigneeIds: [null],
+    parentTaskId: null,
+  });
+
   const screens = useBreakpoint();
   const filters = useToggle(true);
   const tasksTags = useMemo(
     () =>
       _.uniqBy(
-        _.flatten(tasks?.map((t) => t.tags)).map((tag) => ({
+        _.flatten(paginated.tasks?.map((t) => t.tags)).map((tag) => ({
           ...tag,
           label: tag.label.toLowerCase(),
         })),
         (t) => t.label
       ),
-    [tasks]
+    [paginated?.tasks]
   );
   const filteredAndSortedTasks = useMemo(
     () =>
-      tasks
+      paginated?.tasks
         ?.filter(filterFn.tags(values))
         .filter((t) => !t.name.toLowerCase().includes("test"))
         .filter(
@@ -111,20 +114,20 @@ export const TaskDiscoveryList: FC = () => {
             filterFn.openBounties(values)(t)
         )
         .sort(sortBy[values.sortBy]),
-    [tasks, values]
+    [paginated?.tasks, values]
   );
 
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        🔥 Explore Bounties {!!tasks && `(${tasks.length})`}
+        🔥 Explore Bounties {!!paginated.total && `(${paginated.total})`}
         <QuestionmarkTooltip
           marginLeft={8}
           title="Only tasks in public boards and with a bounty reward show up here!"
         />
       </Typography.Title>
       <div className="mx-auto max-w-lg w-full">
-        {!!filteredAndSortedTasks ? (
+        {!!paginated.tasks && !!filteredAndSortedTasks ? (
           <Row gutter={16}>
             <Col sm={24} md={8}>
               <Card
@@ -217,7 +220,17 @@ export const TaskDiscoveryList: FC = () => {
               </Card>
             </Col>
             <Col sm={24} md={16}>
-              <TaskDiscoveryTable tasks={filteredAndSortedTasks} />
+              <TaskDiscoveryTable
+                key={JSON.stringify(values)}
+                tasks={filteredAndSortedTasks}
+                total={
+                  paginated.hasMore
+                    ? paginated.total!
+                    : filteredAndSortedTasks.length
+                }
+                loading={paginated.loading}
+                onFetchMore={paginated.fetchMore}
+              />
             </Col>
           </Row>
         ) : (

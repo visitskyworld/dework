@@ -30,9 +30,6 @@ import {
   User,
   TaskReward,
   UpdateTaskInput,
-  GetTasksInput,
-  GetTasksQuery,
-  GetTasksQueryVariables,
   TaskReactionInput,
   CreateTaskReactionMutation,
   CreateTaskReactionMutationVariables,
@@ -55,7 +52,6 @@ import {
   UpdateTaskSubmissionMutationVariables,
   CreateTaskDiscordLinkMutation,
   CreateTaskDiscordLinkMutationVariables,
-  TaskWithOrganization,
   CreateTaskInput,
   UpdateTaskTagInput,
   UpdateTaskTagMutation,
@@ -67,6 +63,10 @@ import {
   RulePermission,
   RoleWithRules,
   TaskGatingType,
+  GetPaginatedTasksQuery,
+  GetPaginatedTasksQueryVariables,
+  SearchTasksInput,
+  TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -83,6 +83,7 @@ import {
 import { getRule, hasRule } from "../rbac/util";
 import { Constants } from "@dewo/app/util/constants";
 import { toTaskReward } from "./form/util";
+import { useRunning } from "@dewo/app/util/hooks";
 
 export const formatTaskReward = (reward: TaskReward) => {
   if (reward.peggedToUsd) {
@@ -554,15 +555,37 @@ export function useLazyTaskReactionUsers(taskId: string) {
   >(Queries.taskReactionUsers, { variables: { taskId }, ssr: false });
 }
 
-export function useTasks(
-  input: GetTasksInput,
+export function usePaginatedTasks(
+  filter: SearchTasksInput,
   skip: boolean = false
-): TaskWithOrganization[] | undefined {
-  const { data } = useQuery<GetTasksQuery, GetTasksQueryVariables>(
-    Queries.tasks,
-    { variables: { input }, skip }
+): {
+  tasks?: TaskWithOrganization[];
+  cursor?: string;
+  total?: number;
+  hasMore: boolean;
+  loading: boolean;
+  fetchMore(): void;
+} {
+  const { data, loading, fetchMore } = useQuery<
+    GetPaginatedTasksQuery,
+    GetPaginatedTasksQueryVariables
+  >(Queries.paginatedTasks, { variables: { filter }, skip });
+  const cursor = data?.paginated?.cursor ?? undefined;
+  const [handleFetchMore, fetchingMore] = useRunning(
+    useCallback(() => {
+      if (!!cursor) {
+        return fetchMore({ variables: { cursor } });
+      }
+    }, [cursor, fetchMore])
   );
-  return data?.tasks ?? undefined;
+  return {
+    cursor,
+    tasks: data?.paginated.tasks ?? undefined,
+    total: data?.paginated?.total ?? undefined,
+    loading: loading || fetchingMore,
+    hasMore: !data || !!cursor,
+    fetchMore: handleFetchMore,
+  };
 }
 
 export function useListenToTasks() {

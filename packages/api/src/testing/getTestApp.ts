@@ -19,7 +19,7 @@ export async function getTestApp(): Promise<INestApplication> {
     imports: [...AppModuleImports!, FixturesModule, MigrationModule],
     providers: [GraphQLTestClient, WebhookTestClient],
   })
-    .setLogger(logger)
+    // .setLogger(logger)
     .compile();
   const app = module.createNestApplication();
   app.useGlobalPipes(new ValidationPipe());

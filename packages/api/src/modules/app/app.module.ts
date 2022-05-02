@@ -33,6 +33,7 @@ import { GithubWebhookModule } from "../integrations/github/webhook/github.webho
 import { TaskViewModule } from "../task/taskView/taskView.module";
 import { TaskApplicationModule } from "../task/taskApplication/taskApplication.module";
 import { ReputationModule } from "../reputation/reputation.module";
+import { TaskSearchModule } from "../task/search/task.search.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -58,6 +59,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   OrganizationModule,
   ProjectModule,
   TaskModule,
+  TaskSearchModule,
   TaskViewModule,
   TaskApplicationModule,
   ThreepidModule,

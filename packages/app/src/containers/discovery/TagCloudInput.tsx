@@ -104,7 +104,7 @@ export const TagCloudInput: FC<Props> = ({
       </div>
       {!!selectedTags.length && (
         <>
-          <Row gutter={[8, 4]}>
+          <Row style={{ rowGap: 4 }}>
             {selectedTags.map((tag) => (
               <Tag
                 key={tag.label}
@@ -130,7 +130,7 @@ export const TagCloudInput: FC<Props> = ({
               Click on tags to show tasks for
             </Typography.Text>
           )}
-          <Row gutter={[8, 4]}>
+          <Row style={{ rowGap: 4 }}>
             {unselectedMainTags.map((tag) => (
               <Tag
                 key={tag.label}
@@ -143,7 +143,7 @@ export const TagCloudInput: FC<Props> = ({
             ))}
           </Row>
           <MoreSectionCollapse label="More" toggle={moreSectionToggle}>
-            <Row gutter={[8, 4]}>
+            <Row style={{ rowGap: 4 }}>
               {unselectedMoreTags.map((tag) => (
                 <Tag
                   key={tag.id}

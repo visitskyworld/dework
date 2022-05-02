@@ -20,6 +20,7 @@ import { FormValues } from "./TaskViewForm";
 const sortByFieldToString: Record<TaskViewSortByField, string> = {
   [TaskViewSortByField.createdAt]: "Created At",
   [TaskViewSortByField.dueDate]: "Due Date",
+  [TaskViewSortByField.doneAt]: "Completed At",
   [TaskViewSortByField.sortKey]: "Custom (drag-n-drop)",
   [TaskViewSortByField.priority]: "Priority",
 };

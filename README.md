@@ -509,6 +509,16 @@ yarn api ts-node-dev \
   dotenv_config_path=.env.prod
 ```
 
+# Index tasks
+```bash
+yarn api ts-node-dev \
+  --no-notify \
+  --require dotenv/config \
+  --require tsconfig-paths/register \
+  src/scripts/indexTasks.ts \
+  dotenv_config_path=.env.local
+```
+
 # Load seed data
 ```bash
 yarn api ts-node-dev \

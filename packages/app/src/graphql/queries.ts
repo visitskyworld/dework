@@ -340,10 +340,14 @@ export const taskReactionUsers = gql`
   ${Fragments.user}
 `;
 
-export const tasks = gql`
-  query GetTasksQuery($input: GetTasksInput!) {
-    tasks: getTasks(input: $input) {
-      ...TaskWithOrganization
+export const paginatedTasks = gql`
+  query GetPaginatedTasksQuery($filter: SearchTasksInput!, $cursor: String) {
+    paginated: getPaginatedTasks(filter: $filter, cursor: $cursor) {
+      total
+      cursor
+      tasks {
+        ...TaskWithOrganization
+      }
     }
   }
 
