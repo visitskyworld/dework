@@ -1,4 +1,10 @@
-import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  Float,
+  Int,
+  ObjectType,
+  registerEnumType,
+} from "@nestjs/graphql";
 import {
   Column,
   Entity,
@@ -76,8 +82,8 @@ export class Task extends Audit {
   @Field()
   public sortKey!: string;
 
-  @Column({ type: "int", nullable: true })
-  @Field(() => Int, { nullable: true })
+  @Column({ type: "float", nullable: true })
+  @Field(() => Float, { nullable: true })
   public storyPoints?: number;
 
   @JoinColumn()

@@ -1,4 +1,4 @@
-import { Dropdown, InputNumber, Menu } from "antd";
+import { InputNumber } from "antd";
 import React, { FC, useCallback } from "react";
 
 interface Props {
@@ -8,38 +8,15 @@ interface Props {
 }
 
 export const StoryPointsInput: FC<Props> = ({ disabled, value, onChange }) => (
-  <Dropdown
+  <InputNumber
     disabled={disabled}
-    trigger={["click"]}
-    overlay={
-      <Menu>
-        <div style={{ maxHeight: 264, overflowY: "auto" }}>
-          {[1, 2, 3, 5, 8].map((storyPoints) => (
-            <Menu.Item
-              key={storyPoints}
-              children={storyPoints}
-              className={
-                value === storyPoints
-                  ? "ant-select-item-option-selected"
-                  : undefined
-              }
-              onClick={() => onChange?.(storyPoints)}
-            />
-          ))}
-        </div>
-      </Menu>
-    }
-  >
-    <InputNumber
-      min={0}
-      style={{ width: "100%" }}
-      placeholder="Estimate task effort"
-      value={value}
-      onChange={useCallback(
-        (value) =>
-          onChange?.(typeof value === "number" ? Math.ceil(value) : null),
-        [onChange]
-      )}
-    />
-  </Dropdown>
+    min={0}
+    style={{ width: "100%" }}
+    placeholder="Estimate task effort"
+    value={value}
+    onChange={useCallback(
+      (value) => onChange?.(typeof value === "number" ? value : null),
+      [onChange]
+    )}
+  />
 );
