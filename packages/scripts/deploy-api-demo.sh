@@ -14,10 +14,13 @@ docker build --platform linux/amd64 -t $IMAGE_NAME -f packages/api/Dockerfile .
 docker push $IMAGE_NAME
 
 gcloud config set project $PROJECT_ID
-#gcloud app deploy --image-url=$IMAGE_NAME --appyaml=$APP_YAML_PATH --quiet
 
 DEPLOYMENT_NAME="api"
 ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH)
+
+gcloud run services update $DEPLOYMENT_NAME                 \
+  --region $REGION                                          \
+  --add-cloudsql-instances "dework-demo:us-east1:pg-demo"
 
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \
@@ -31,6 +34,10 @@ gcloud run deploy $DEPLOYMENT_NAME  \
 
 DEPLOYMENT_NAME="polling-runner"
 ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH exclude-env)
+
+gcloud run services update $DEPLOYMENT_NAME                 \
+  --region $REGION                                          \
+  --add-cloudsql-instances "dework-demo:us-east1:pg-demo"
 
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \

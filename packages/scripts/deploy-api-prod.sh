@@ -19,6 +19,10 @@ gcloud config set project $PROJECT_ID
 DEPLOYMENT_NAME="api"
 ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH)
 
+gcloud run services update $DEPLOYMENT_NAME                 \
+  --region $REGION                                          \
+  --add-cloudsql-instances "dework-prod:us-east1:pg-prod"
+
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \
   --update-env-vars $ENV_VARS       \
@@ -34,6 +38,10 @@ gcloud run deploy $DEPLOYMENT_NAME  \
 
 DEPLOYMENT_NAME="polling-runner"
 ENV_VARS=$(node packages/scripts/get-polling-runner-env.js $APP_ENV_YAML_PATH exclude-env)
+
+gcloud run services update $DEPLOYMENT_NAME                 \
+  --region $REGION                                          \
+  --add-cloudsql-instances "dework-prod:us-east1:pg-prod"
 
 gcloud run deploy $DEPLOYMENT_NAME  \
   --image $IMAGE_NAME               \
