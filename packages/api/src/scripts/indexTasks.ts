@@ -7,7 +7,6 @@ import { Repository } from "typeorm";
 import { TaskSearchService } from "../modules/task/search/task.search.service";
 import { Task } from "../models/Task";
 import { TaskSearchModule } from "../modules/task/search/task.search.module";
-import { ElasticsearchService } from "@nestjs/elasticsearch";
 
 @Injectable()
 export class IndexTasksService {
@@ -69,9 +68,6 @@ export class IndexTasksModule {}
 async function run() {
   const app = await NestFactory.create(IndexTasksModule);
   await app.init();
-  const elasticsearch = app.get(ElasticsearchService);
-  await elasticsearch.indices.delete({ index: "tasks-220501" }).catch(() => {});
-
   const service = app.get(IndexTasksService);
   await service.run();
   await app.close();

@@ -39,6 +39,7 @@ interface IndexedTask {
   hasReward: boolean;
   spam: boolean;
   public: boolean;
+  reward: number | undefined;
 
   tagIds: string[];
   organizationId: string;
@@ -85,6 +86,7 @@ export class TaskSearchService implements OnModuleInit {
           properties: {
             status: { type: "keyword" },
             priority: { type: "byte" },
+            reward: { type: "long" },
             spam: { type: "boolean" },
             public: { type: "boolean" },
             hasReward: { type: "boolean" },
@@ -345,6 +347,7 @@ export class TaskSearchService implements OnModuleInit {
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
       public: isPublic,
+      reward: undefined,
       spam:
         !!task.name.match(/(demo|test)/i) ||
         !!project.name.match(/(demo|test)/i) ||

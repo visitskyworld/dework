@@ -21,6 +21,7 @@ export enum TaskViewSortByField {
   createdAt = "createdAt",
   dueDate = "dueDate",
   doneAt = "doneAt",
+  reward = "reward",
 }
 
 export enum TaskViewSortByDirection {
