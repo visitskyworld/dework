@@ -1,4 +1,4 @@
-import { Grid, Row, Table } from "antd";
+import { Grid, Row } from "antd";
 import React, {
   CSSProperties,
   FC,
@@ -23,12 +23,9 @@ import {
 } from "react-virtualized";
 import { usePrevious } from "@dewo/app/util/hooks";
 import { TaskCard } from "../card/TaskCard";
-import classNames from "classnames";
-import styles from "./TaskList.module.less";
 
 interface Props {
   tasks: Task[];
-  mode?: "table" | "virtualized";
   showHeaders?: boolean;
   projectId?: string;
   style?: CSSProperties;
@@ -54,7 +51,6 @@ export const TaskList: FC<Props> = ({
   showHeaders = true,
   style,
   className,
-  mode = "virtualized",
 }) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const taskViewGroups = useTaskViewGroups(tasks, projectId);
@@ -121,24 +117,6 @@ export const TaskList: FC<Props> = ({
         .flat(),
     [taskViewGroups, collapsed, projectId, showHeaders, screen.sm]
   );
-
-  if (mode === "table") {
-    return (
-      <Table
-        dataSource={rows}
-        bordered={false}
-        size="small"
-        style={style}
-        className={classNames({
-          [className ?? ""]: true,
-          [styles.table]: true,
-        })}
-        showHeader={showHeaders}
-        pagination={{ hideOnSinglePage: true }}
-        columns={[{ key: "column", render: (_, row) => row() }]}
-      />
-    );
-  }
 
   return (
     <AutoSizer>

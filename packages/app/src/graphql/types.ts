@@ -7248,30 +7248,6 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reactions {
   reaction: string;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_project_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  name: string;
-  imageUrl: string | null;
-  slug: string;
-  tagline: string | null;
-  permalink: string;
-}
-
-export interface GetPaginatedTasksQuery_paginated_tasks_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-  sectionId: string | null;
-  sortKey: string;
-  organization: GetPaginatedTasksQuery_paginated_tasks_project_organization;
-}
-
 export interface GetPaginatedTasksQuery_paginated_tasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7299,7 +7275,6 @@ export interface GetPaginatedTasksQuery_paginated_tasks {
   submissions: GetPaginatedTasksQuery_paginated_tasks_submissions[];
   review: GetPaginatedTasksQuery_paginated_tasks_review | null;
   reactions: GetPaginatedTasksQuery_paginated_tasks_reactions[];
-  project: GetPaginatedTasksQuery_paginated_tasks_project;
 }
 
 export interface GetPaginatedTasksQuery_paginated {
@@ -7314,6 +7289,206 @@ export interface GetPaginatedTasksQuery {
 }
 
 export interface GetPaginatedTasksQueryVariables {
+  filter: SearchTasksInput;
+  cursor?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetPaginatedTasksWithOrganizationQuery
+// ====================================================
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_paymentMethod_network;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_paymentMethod;
+  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment_network;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
+  token: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_token;
+  payment: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payment | null;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  userId: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  userId: string;
+  content: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  organization: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project_organization;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  sortKey: string;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  subtasks: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_subtasks[];
+  tags: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_tags[];
+  assignees: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_assignees[];
+  owners: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_owners[];
+  reward: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward | null;
+  applications: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_applications[];
+  submissions: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_submissions[];
+  review: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_review | null;
+  reactions: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reactions[];
+  project: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated {
+  __typename: "TaskSearchResponse";
+  total: number;
+  cursor: string | null;
+  tasks: GetPaginatedTasksWithOrganizationQuery_paginated_tasks[];
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery {
+  paginated: GetPaginatedTasksWithOrganizationQuery_paginated;
+}
+
+export interface GetPaginatedTasksWithOrganizationQueryVariables {
   filter: SearchTasksInput;
   cursor?: string | null;
 }
@@ -11213,6 +11388,7 @@ export enum TaskViewSortByField {
   doneAt = "doneAt",
   dueDate = "dueDate",
   priority = "priority",
+  reward = "reward",
   sortKey = "sortKey",
 }
 
@@ -11435,7 +11611,9 @@ export interface SearchTasksInput {
   statuses?: TaskStatus[] | null;
   hasReward?: boolean | null;
   assigneeIds?: (Scalar.UUID | null)[] | null;
-  parentTaskId?: Scalar.UUID[] | null;
+  projectIds?: (Scalar.UUID | null)[] | null;
+  parentTaskId?: Scalar.UUID | null;
+  organizationId?: Scalar.UUID | null;
   sortBy: TaskViewSortByInput;
 }
 

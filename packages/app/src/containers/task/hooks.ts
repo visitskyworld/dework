@@ -557,9 +557,9 @@ export function useLazyTaskReactionUsers(taskId: string) {
 
 export function usePaginatedTasks(
   filter: SearchTasksInput,
-  skip: boolean = false
+  withOrganization: boolean = false
 ): {
-  tasks?: TaskWithOrganization[];
+  tasks?: (Task | TaskWithOrganization)[];
   cursor?: string;
   total?: number;
   hasMore: boolean;
@@ -569,7 +569,12 @@ export function usePaginatedTasks(
   const { data, loading, fetchMore } = useQuery<
     GetPaginatedTasksQuery,
     GetPaginatedTasksQueryVariables
-  >(Queries.paginatedTasks, { variables: { filter }, skip });
+  >(
+    withOrganization
+      ? Queries.paginatedTasksWithOrganization
+      : Queries.paginatedTasks,
+    { variables: { filter }, ssr: false }
+  );
   const cursor = data?.paginated?.cursor ?? undefined;
   const [handleFetchMore, fetchingMore] = useRunning(
     useCallback(() => {

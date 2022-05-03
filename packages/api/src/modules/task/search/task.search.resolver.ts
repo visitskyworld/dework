@@ -17,19 +17,34 @@ import { OrganizationService } from "../../organization/organization.service";
 
 @Injectable()
 export class TaskSearchResolver {
-  constructor(private readonly service: TaskSearchService) {}
+  constructor(
+    private readonly service: TaskSearchService,
+    private readonly organizationService: OrganizationService
+  ) {}
 
   @Query(() => TaskSearchResponse)
   public async getPaginatedTasks(
+    @Context("user") user: User | undefined,
     @Args("filter") filter: SearchTasksInput,
     @Args("cursor", { type: () => String, nullable: true })
     cursor: string | undefined
   ): Promise<TaskSearchResponse> {
+    let projectIds = filter.projectIds;
+    if (!!filter.organizationId) {
+      const projects = await this.organizationService.getProjects(
+        filter.organizationId,
+        user?.id
+      );
+      if (!projectIds) projectIds = [];
+      projectIds.push(...projects.map((p) => p.id));
+    }
+
     return this.service.search({
       ...filter,
       cursor,
       spam: false,
       public: true,
+      projectIds,
     });
   }
 }

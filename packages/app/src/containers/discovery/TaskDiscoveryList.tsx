@@ -1,4 +1,5 @@
 import {
+  Task,
   TaskGatingType,
   TaskStatus,
   TaskViewSortByDirection,
@@ -46,10 +47,7 @@ const defaultFilterValues: FilterValues = {
   includeTasksWithoutReward: false,
 };
 
-const sortBy: Record<
-  FilterValues["sortBy"],
-  CompareFn<TaskWithOrganization>
-> = {
+const sortBy: Record<FilterValues["sortBy"], CompareFn<Task>> = {
   createdAt: (a, b) =>
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   reward: (a, b) =>
@@ -57,18 +55,17 @@ const sortBy: Record<
     (calculateTaskRewardAsUSD(a.reward ?? undefined) ?? 0),
 };
 
-const filterFn: Record<
-  string,
-  (filter: FilterValues) => (t: TaskWithOrganization) => boolean
-> = {
-  tags: (f) => (task) =>
-    !f.tagLabels.length ||
-    task.tags.some((t) => f.tagLabels.includes(t.label.toLowerCase())),
-  openBounties: (f) => (task) =>
-    f.includeOpenBounties && task.gating === TaskGatingType.OPEN_SUBMISSION,
-  applicationTasks: (f) => (task) =>
-    f.includeApplicationTasks && task.gating !== TaskGatingType.OPEN_SUBMISSION,
-};
+const filterFn: Record<string, (filter: FilterValues) => (t: Task) => boolean> =
+  {
+    tags: (f) => (task) =>
+      !f.tagLabels.length ||
+      task.tags.some((t) => f.tagLabels.includes(t.label.toLowerCase())),
+    openBounties: (f) => (task) =>
+      f.includeOpenBounties && task.gating === TaskGatingType.OPEN_SUBMISSION,
+    applicationTasks: (f) => (task) =>
+      f.includeApplicationTasks &&
+      task.gating !== TaskGatingType.OPEN_SUBMISSION,
+  };
 
 export const TaskDiscoveryList: FC = () => {
   const [form] = useForm<FilterValues>();
@@ -79,16 +76,19 @@ export const TaskDiscoveryList: FC = () => {
     []
   );
 
-  const paginated = usePaginatedTasks({
-    statuses: [TaskStatus.TODO],
-    hasReward: true,
-    sortBy: {
-      field: TaskViewSortByField.createdAt,
-      direction: TaskViewSortByDirection.DESC,
+  const paginated = usePaginatedTasks(
+    {
+      statuses: [TaskStatus.TODO],
+      hasReward: true,
+      sortBy: {
+        field: TaskViewSortByField.createdAt,
+        direction: TaskViewSortByDirection.DESC,
+      },
+      assigneeIds: [null],
+      parentTaskId: null,
     },
-    assigneeIds: [null],
-    parentTaskId: null,
-  });
+    true
+  );
 
   const screens = useBreakpoint();
   const filters = useToggle(true);
@@ -222,7 +222,7 @@ export const TaskDiscoveryList: FC = () => {
             <Col sm={24} md={16}>
               <TaskDiscoveryTable
                 key={JSON.stringify(values)}
-                tasks={filteredAndSortedTasks}
+                tasks={filteredAndSortedTasks as TaskWithOrganization[]}
                 total={
                   paginated.hasMore
                     ? paginated.total!

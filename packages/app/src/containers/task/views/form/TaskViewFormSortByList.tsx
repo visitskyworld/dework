@@ -22,6 +22,7 @@ const sortByFieldToString: Record<TaskViewSortByField, string> = {
   [TaskViewSortByField.dueDate]: "Due Date",
   [TaskViewSortByField.doneAt]: "Completed At",
   [TaskViewSortByField.sortKey]: "Custom (drag-n-drop)",
+  [TaskViewSortByField.reward]: "Bounty",
   [TaskViewSortByField.priority]: "Priority",
 };
 

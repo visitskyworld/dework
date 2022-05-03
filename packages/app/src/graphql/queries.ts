@@ -346,6 +346,23 @@ export const paginatedTasks = gql`
       total
       cursor
       tasks {
+        ...Task
+      }
+    }
+  }
+
+  ${Fragments.task}
+`;
+
+export const paginatedTasksWithOrganization = gql`
+  query GetPaginatedTasksWithOrganizationQuery(
+    $filter: SearchTasksInput!
+    $cursor: String
+  ) {
+    paginated: getPaginatedTasks(filter: $filter, cursor: $cursor) {
+      total
+      cursor
+      tasks {
         ...TaskWithOrganization
       }
     }

@@ -1,9 +1,15 @@
-import { TaskStatus } from "@dewo/app/graphql/types";
-import { Row, Skeleton, Tag, Typography } from "antd";
-import React, { FC, useEffect, useMemo, useState } from "react";
-import { useOrganizationTasks } from "../../hooks";
+import {
+  SearchTasksInput,
+  Task,
+  TaskStatus,
+  TaskViewSortByDirection,
+  TaskViewSortByField,
+} from "@dewo/app/graphql/types";
+import { ConfigProvider, Empty, Row, Skeleton, Tag, Typography } from "antd";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
-import { TaskList } from "@dewo/app/containers/task/list/TaskList";
+import { TaskTable } from "@dewo/app/containers/task/list/TaskTable";
+import { usePaginatedTasks } from "@dewo/app/containers/task/hooks";
 
 interface Props {
   organizationId: string;
@@ -12,34 +18,41 @@ interface Props {
 export const OrganizationTaskDiscoveryList: FC<Props> = ({
   organizationId,
 }) => {
-  const organization = useOrganizationTasks(
-    organizationId,
-    { statuses: [TaskStatus.TODO], userId: null },
-    "cache-first"
+  const query = useMemo<SearchTasksInput>(
+    () => ({
+      statuses: [TaskStatus.TODO],
+      sortBy: {
+        field: TaskViewSortByField.createdAt,
+        direction: TaskViewSortByDirection.DESC,
+      },
+      assigneeIds: [null],
+      parentTaskId: null,
+      organizationId,
+    }),
+    [organizationId]
   );
+  const paginated = usePaginatedTasks(query);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const [selectedTagLabel, setSelectedTagLabel] = useState<string>();
   const tags = useMemo(() => {
-    const tags = organization?.tasks.map((task) => task.tags).flat();
+    const tags = paginated.tasks?.map((task) => task.tags).flat();
     return _.uniqBy(tags, (t) => t.label);
-  }, [organization]);
-  const filteredTasks = useMemo(
-    () =>
-      organization?.tasks.filter(
-        (t) =>
-          !selectedTagLabel ||
-          t.tags.some((tag) => tag.label === selectedTagLabel)
-      ),
-    [organization?.tasks, selectedTagLabel]
+  }, [paginated.tasks]);
+
+  const shouldRenderTask = useCallback(
+    (task: Task) =>
+      !selectedTagLabel ||
+      task.tags.some((tag) => tag.label === selectedTagLabel),
+    [selectedTagLabel]
   );
 
   return (
     <>
       <Typography.Title level={4}>Open Tasks</Typography.Title>
-      <Skeleton loading={!mounted || !organization}>
+      <Skeleton loading={!mounted || paginated.loading}>
         {tags?.length > 0 && (
           <>
             <Row style={{ marginBottom: 8 }}>
@@ -75,15 +88,20 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
           </>
         )}
 
-        {!organization?.tasks.length ? (
-          <Typography.Paragraph type="secondary">
-            This DAO doesn't have any open tasks at the moment!
-          </Typography.Paragraph>
-        ) : (
-          !!filteredTasks && (
-            <TaskList tasks={filteredTasks} showHeaders={false} mode="table" />
-          )
-        )}
+        <ConfigProvider
+          renderEmpty={() => (
+            <Empty
+              imageStyle={{ display: "none" }}
+              description="This DAO doesn't have any open tasks at the moment!"
+            />
+          )}
+        >
+          <TaskTable
+            query={query}
+            showHeaders={false}
+            shouldRenderTask={shouldRenderTask}
+          />
+        </ConfigProvider>
       </Skeleton>
     </>
   );

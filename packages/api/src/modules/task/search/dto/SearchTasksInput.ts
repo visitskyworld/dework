@@ -19,8 +19,14 @@ export class SearchTasksInput {
   @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
   public assigneeIds?: string[];
 
-  @Field(() => [GraphQLUUID], { nullable: true })
+  @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
+  public projectIds?: string[];
+
+  @Field(() => GraphQLUUID, { nullable: true })
   public parentTaskId?: null;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public organizationId?: null;
 
   @Field()
   public sortBy!: TaskViewSortBy;

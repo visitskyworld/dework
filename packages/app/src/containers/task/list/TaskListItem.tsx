@@ -18,12 +18,7 @@ interface Props {
 export const TaskListItem: FC<Props> = ({ task }) => {
   const navigateToTask = useNavigateToTask(task.id);
   return (
-    <Card
-      size="small"
-      className={styles.card}
-      style={{ marginBottom: 8, paddingTop: 8, paddingBottom: 8 }}
-      onClick={navigateToTask}
-    >
+    <Card size="small" className={styles.card} onClick={navigateToTask}>
       <Row align="middle" style={{ columnGap: 16 }}>
         <TaskStatusIcon status={task.status} />
         <TaskGatingIcon task={task} />
