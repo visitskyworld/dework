@@ -10,19 +10,7 @@ import {
   TaskTag,
   User,
 } from "@dewo/app/graphql/types";
-import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import {
-  Avatar,
-  Button,
-  DatePicker,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Row,
-  Table,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Avatar, DatePicker, Row, Table, Tooltip, Typography } from "antd";
 import React, {
   CSSProperties,
   FC,
@@ -33,10 +21,7 @@ import React, {
 import { UserSelectOption } from "@dewo/app/components/form/UserSelectOption";
 import _ from "lodash";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
-import {
-  usePermission,
-  usePermissionFn,
-} from "@dewo/app/contexts/PermissionsContext";
+import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { AvatarSize } from "antd/lib/avatar/SizeContext";
 import moment from "moment";
 import { isSSR } from "@dewo/app/util/isSSR";
@@ -44,7 +29,6 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import {
   formatTaskReward,
-  useDeleteTask,
   useTaskFormUserOptions,
   useUpdateTask,
 } from "../../hooks";
@@ -52,6 +36,7 @@ import { STATUS_LABEL } from "../../board/util";
 import { NewSubtaskInput } from "./NewSubtaskInput";
 import { TaskTagsRow } from "../../board/TaskTagsRow";
 import { TaskActionButton } from "../../actions/TaskActionButton";
+import { SubtaskOptionButton } from "./SubtaskOptionButton";
 
 export interface SubtaskTableRowData {
   key: string;
@@ -150,9 +135,6 @@ export const SubtaskTable: FC<Props> = ({
   onClick,
   editable = false,
 }) => {
-  const navigateToTask = useNavigateToTaskFn();
-
-  const canDeleteTask = usePermission("delete", "Task");
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
     (
@@ -193,15 +175,6 @@ export const SubtaskTable: FC<Props> = ({
       onChange?.(changed, prevValue);
     },
     [onChange, updateTask]
-  );
-
-  const deleteTask = useDeleteTask();
-  const handleDelete = useCallback(
-    async (value: SubtaskTableRowData) => {
-      if (!!value.task) await deleteTask(value.task.id);
-      onDelete?.(value);
-    },
-    [onDelete, deleteTask]
   );
 
   const [editingRow, setEditingRow] = useState<string | undefined>();
@@ -421,70 +394,11 @@ export const SubtaskTable: FC<Props> = ({
                 <TaskActionButton task={row.task} />
               )}
               <div />
-              <Dropdown
-                key="avatar"
-                placement="bottomRight"
-                trigger={["click"]}
-                // @ts-ignore
-                onClick={eatClick}
-                overlay={
-                  <Menu onClick={(e) => eatClick(e.domEvent)}>
-                    {!!row.task && !onClick && (
-                      <Menu.Item
-                        key="details"
-                        icon={<Icons.BarsOutlined />}
-                        children="Details"
-                        onClick={() => navigateToTask(row.task!.id)}
-                      />
-                    )}
-
-                    {!!canChange && !!row.task?.parentTaskId && (
-                      <Popconfirm
-                        icon={null}
-                        title="Convert this task to normal?"
-                        okText="Yes"
-                        onConfirm={(e) => {
-                          e && eatClick(e);
-                          updateTask({ id: row.task!.id, parentTaskId: null });
-                        }}
-                      >
-                        <Menu.Item
-                          key="normalTask"
-                          children="Convert to normal task"
-                          icon={<Icons.ExportOutlined />}
-                        />
-                      </Popconfirm>
-                    )}
-
-                    {!!canDeleteTask && (
-                      <Popconfirm
-                        icon={null}
-                        title="Delete this subtask?"
-                        okType="danger"
-                        okText="Delete"
-                        onConfirm={(e) => {
-                          e && eatClick(e);
-                          handleDelete(row);
-                        }}
-                      >
-                        <Menu.Item
-                          key="delete"
-                          icon={<Icons.DeleteOutlined />}
-                          danger
-                          children="Delete"
-                        />
-                      </Popconfirm>
-                    )}
-                  </Menu>
-                }
-              >
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<Icons.MoreOutlined />}
-                  style={showActionButtons ? undefined : { margin: -4 }}
-                />
-              </Dropdown>
+              <SubtaskOptionButton
+                task={row.task}
+                style={showActionButtons ? undefined : { margin: -4 }}
+                onDelete={() => onDelete?.(row)}
+              />
             </Row>
           ),
         },
