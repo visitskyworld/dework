@@ -11,10 +11,15 @@ import { Task } from "@dewo/api/models/Task";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { GithubIssue } from "@dewo/api/models/GithubIssue";
 import { User } from "@dewo/api/models/User";
-import { ThreepidSource } from "@dewo/api/models/Threepid";
+import { Threepid, ThreepidSource } from "@dewo/api/models/Threepid";
+import { Octokit } from "@octokit/rest";
+import { ConfigService } from "@nestjs/config";
+import { createAppAuth } from "@octokit/auth-app";
+import { ConfigType } from "../../app/config";
+import { ThreepidService } from "../../threepid/threepid.service";
 
 @Injectable()
 export class GithubService {
@@ -32,7 +37,9 @@ export class GithubService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     @InjectRepository(ProjectIntegration)
-    private readonly projectIntegrationRepo: Repository<ProjectIntegration>
+    private readonly projectIntegrationRepo: Repository<ProjectIntegration>,
+    private readonly threepidService: ThreepidService,
+    private readonly config: ConfigService<ConfigType>
   ) {}
 
   public async createPullRequest(
@@ -179,6 +186,41 @@ export class GithubService {
     );
   }
 
+  public async getGithubIds(
+    userIds: string[]
+  ): Promise<Record<string, string>> {
+    if (!userIds) return {};
+    const threepids = await this.threepidService.find({
+      userId: In(userIds),
+      source: ThreepidSource.github,
+    });
+    return userIds.reduce(
+      (acc, userId) => ({
+        ...acc,
+        [userId]: threepids.find((t) => t.userId === userId)?.threepid,
+      }),
+      {}
+    );
+  }
+
+  public async getGithubUsernames(
+    userIds: string[]
+  ): Promise<Record<string, string>> {
+    if (!userIds) return {};
+    const threepids = (await this.threepidService.find({
+      userId: In(userIds),
+      source: ThreepidSource.github,
+    })) as Threepid<ThreepidSource.github>[];
+    return userIds.reduce(
+      (acc, userId) => ({
+        ...acc,
+        [userId]: threepids.find((t) => t.userId === userId)?.config.profile
+          .username,
+      }),
+      {}
+    );
+  }
+
   public async getBranchAndTask(
     ref: string,
     repository: Github.Repository,
@@ -230,5 +272,29 @@ export class GithubService {
       })}`
     );
     return { task, name, organization, repo };
+  }
+
+  public createClient(installationId?: number): Octokit {
+    const privateKeyBase64 = this.config.get(
+      "GITHUB_APP_PRIVATE_KEY"
+    ) as string;
+    const privateKey = Buffer.from(privateKeyBase64, "base64").toString();
+
+    // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
+    // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
+    // TODO(fant): figure out how to properly auth with clientId/clientSecret
+    return new Octokit(
+      !!installationId
+        ? {
+            authStrategy: createAppAuth,
+            auth: {
+              appId: this.config.get("GITHUB_APP_ID"),
+              privateKey,
+              installationId,
+              // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
+            },
+          }
+        : undefined
+    );
   }
 }

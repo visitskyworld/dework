@@ -10,15 +10,18 @@ import { Project } from "@dewo/api/models/Project";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
+import { GithubService } from "../../github.service";
+
+const installationId = 21818562;
 
 const githubUser: DeepPartial<Github.User> = {
-  login: faker.internet.userName(),
-  id: faker.datatype.number(),
+  login: "davidfant",
+  id: 17096641,
   type: "User",
 };
 
 const githubOrganization: DeepPartial<Github.Organization> = {
-  login: faker.internet.userName(),
+  login: "deworkxyz-testing",
   id: faker.datatype.number(),
 };
 
@@ -36,7 +39,7 @@ const githubIssue: DeepPartial<Github.Issue> = {
 
 const githubPullRequest: DeepPartial<Github.PullRequest> = {
   id: faker.datatype.number(),
-  number: faker.datatype.number(),
+  number: 135,
   title: faker.lorem.sentence(),
   body: faker.lorem.paragraph(),
   user: githubUser,
@@ -47,7 +50,7 @@ const githubPullRequest: DeepPartial<Github.PullRequest> = {
 
 const githubRepository: DeepPartial<Github.Repository> = {
   id: faker.datatype.number(),
-  name: faker.internet.userName(),
+  name: "issues",
   private: false,
   owner: githubOrganization,
 };
@@ -58,7 +61,6 @@ describe("GithubSyncIncomingService", () => {
   let service: GithubSyncIncomingService;
 
   let project: Project;
-  let installationId: number;
   let task: Task;
   let user: User;
 
@@ -67,7 +69,6 @@ describe("GithubSyncIncomingService", () => {
     fixtures = app.get(Fixtures);
     service = app.get(GithubSyncIncomingService);
 
-    installationId = faker.datatype.number();
     ({ project } = await fixtures.createProjectWithGithubIntegration(
       {},
       {},
@@ -81,6 +82,7 @@ describe("GithubSyncIncomingService", () => {
     user = await fixtures.createUser({
       source: ThreepidSource.github,
       threepid: String(githubUser.id!),
+      config: { profile: { username: githubUser.login! } },
     });
     task = await fixtures.createTask({ projectId: project.id });
     await fixtures.createGithubIssue({
@@ -155,6 +157,34 @@ describe("GithubSyncIncomingService", () => {
         const updatedTask = await fixtures.getTask(task.id);
         expect(updatedTask!.owners).toContainEqual(
           expect.objectContaining({ id: user.id })
+        );
+      });
+    });
+
+    describe("PullRequestOpenedEvent", () => {
+      it("should assign task owners as PR reviewers", async () => {
+        await fixtures.updateTask({ id: task.id, owners: [user] });
+
+        const event: DeepPartial<Github.PullRequestOpenedEvent> = {
+          action: "opened",
+          pull_request: githubPullRequest as any,
+          repository: githubRepository,
+          sender: githubUser,
+          installation: { id: installationId },
+          organization: githubOrganization,
+        };
+        await service.handleWebhook(event as any);
+
+        const { data: pr } = await app
+          .get(GithubService)
+          .createClient(installationId)
+          .pulls.get({
+            pull_number: githubPullRequest.number!,
+            repo: githubRepository.name!,
+            owner: githubOrganization.login!,
+          });
+        expect(pr.requested_reviewers).toContainEqual(
+          expect.objectContaining({ id: githubUser.id! })
         );
       });
     });

@@ -9,10 +9,6 @@ import { Project } from "@dewo/api/models/Project";
 import { ProjectService } from "../../project/project.service";
 import { GithubService } from "./github.service";
 import { IntegrationService } from "../integration.service";
-import { ConfigType } from "../../app/config";
-import { ConfigService } from "@nestjs/config";
-import { Octokit } from "@octokit/rest";
-import { createAppAuth } from "@octokit/auth-app";
 import { GithubRepo } from "./dto/GithubRepo";
 import {
   OrganizationIntegration,
@@ -67,7 +63,6 @@ export class GithubIntegrationService {
     private readonly integrationService: IntegrationService,
     private readonly rbacService: RbacService,
     private readonly permalink: PermalinkService,
-    private readonly config: ConfigService<ConfigType>,
     @InjectConnection() public readonly connection: Connection
   ) {}
 
@@ -183,8 +178,12 @@ export class GithubIntegrationService {
   }
 
   public async createIssueFromTask(task: Task): Promise<void> {
-    if (!!task.parentTaskId || task.status === TaskStatus.COMMUNITY_SUGGESTIONS)
+    if (
+      !!task.parentTaskId ||
+      task.status === TaskStatus.COMMUNITY_SUGGESTIONS
+    ) {
       return;
+    }
     const projInt = await this.integrationService.findProjectIntegration(
       task.projectId,
       ProjectIntegrationType.GITHUB
@@ -217,7 +216,9 @@ export class GithubIntegrationService {
       return;
     }
 
-    const client = this.createClient(orgInt.config.installationId);
+    const client = this.githubService.createClient(
+      orgInt.config.installationId
+    );
     const res = await client.issues.create({
       owner: projInt.config.organization,
       repo: projInt.config.repo,
@@ -297,7 +298,9 @@ export class GithubIntegrationService {
     );
     if (!fallbackRole) throw new Error("Organization is missing fallback role");
 
-    const client = this.createClient(integration.config.installationId);
+    const client = this.githubService.createClient(
+      integration.config.installationId
+    );
     const res = await client.paginate(
       client.apps.listReposAccessibleToInstallation
     );
@@ -415,7 +418,9 @@ export class GithubIntegrationService {
       throw new NotFoundException("Organization integration not found");
     }
 
-    const client = this.createClient(integration.config.installationId);
+    const client = this.githubService.createClient(
+      integration.config.installationId
+    );
     const repos = await client.paginate(
       client.apps.listReposAccessibleToInstallation
     );
@@ -468,7 +473,7 @@ export class GithubIntegrationService {
         installationId,
       })}`
     );
-    const client = this.createClient(installationId);
+    const client = this.githubService.createClient(installationId);
     const issues = await client.paginate(
       client.issues.listForRepo,
       { owner: organization, repo, state: "all", page_size: 100 },
@@ -483,29 +488,5 @@ export class GithubIntegrationService {
       })}`
     );
     return issues;
-  }
-
-  private createClient(installationId?: number): Octokit {
-    const privateKeyBase64 = this.config.get(
-      "GITHUB_APP_PRIVATE_KEY"
-    ) as string;
-    const privateKey = Buffer.from(privateKeyBase64, "base64").toString();
-
-    // const clientId = this.config.get("GITHUB_APP_CLIENT_ID");
-    // const clientSecret = this.config.get("GITHUB_APP_CLIENT_SECRET");
-    // TODO(fant): figure out how to properly auth with clientId/clientSecret
-    return new Octokit(
-      !!installationId
-        ? {
-            authStrategy: createAppAuth,
-            auth: {
-              appId: this.config.get("GITHUB_APP_ID"),
-              privateKey,
-              installationId,
-              // ...(!!installationId ? { installationId } : { clientId, clientSecret }),
-            },
-          }
-        : undefined
-    );
   }
 }

@@ -43,7 +43,9 @@ export class GithubSyncIncomingService {
     }
 
     if ("pull_request" in event) {
-      if (event.action === "review_requested") {
+      if (event.action === "opened") {
+        await this.process(integrations, event, this.pullRequestCreated);
+      } else if (event.action === "review_requested") {
         await this.process(integrations, event, this.reviewRequested);
       }
     }
@@ -184,6 +186,33 @@ export class GithubSyncIncomingService {
         deletedAt: new Date(),
       });
     }
+  }
+
+  private async pullRequestCreated(
+    event: Github.PullRequestOpenedEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+  ) {
+    const task = await this.getTaskFromPullRequest(
+      event.pull_request.id,
+      integration
+    );
+    if (!task || !task.owners.length) return;
+
+    const client = this.github.createClient(
+      organizationIntegration.config.installationId
+    );
+
+    const githubUsernames = await this.github.getGithubUsernames(
+      task.owners.map((u) => u.id)
+    );
+
+    await client.pulls.requestReviewers({
+      pull_number: event.pull_request.number,
+      repo: event.repository.name,
+      owner: event.organization?.login!,
+      reviewers: Object.values(githubUsernames),
+    });
   }
 
   private async process<T>(

@@ -18,6 +18,7 @@ import { OrganizationModule } from "../../organization/organization.module";
 import { RbacModule } from "../../rbac/rbac.module";
 import { IntegrationModule } from "../integration.module";
 import { User } from "@dewo/api/models/User";
+import { ThreepidModule } from "../../threepid/threepid.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { User } from "@dewo/api/models/User";
     PermalinkModule,
     RbacModule,
     IntegrationModule,
+    ThreepidModule,
   ],
   providers: [
     GithubService,

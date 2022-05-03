@@ -147,11 +147,11 @@ export class Task extends Audit {
 
   @OneToMany(() => GithubPullRequest, (g: GithubPullRequest) => g.task)
   @Field(() => [GithubPullRequest])
-  public githubPullRequests?: Promise<GithubPullRequest[]>;
+  public githubPullRequests!: Promise<GithubPullRequest[]>;
 
   @OneToMany(() => GithubBranch, (g: GithubBranch) => g.task)
   @Field(() => [GithubBranch])
-  public githubBranches?: Promise<GithubBranch[]>;
+  public githubBranches!: Promise<GithubBranch[]>;
 
   @OneToOne(() => GithubIssue, (x: GithubIssue) => x.task, {
     nullable: true,
