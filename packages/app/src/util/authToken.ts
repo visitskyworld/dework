@@ -11,16 +11,30 @@ if (!isSSR) {
   };
 }
 
-export function getAuthToken(
+function getAuthTokens(
   ctx: NextPageContext | GetServerSidePropsContext | undefined
-): string | undefined {
+) {
   const fromCookies = parseCookies(ctx)[AUTH_TOKEN_KEY];
   const fromLocalStorage = !isSSR
     ? localStorage.getItem(AUTH_TOKEN_KEY)
     : undefined;
   // @ts-ignore
   const fromSSRContext = ctx?.req?.authToken;
-  return fromSSRContext ?? fromCookies ?? fromLocalStorage;
+  return { fromCookies, fromLocalStorage, fromSSRContext };
+}
+
+export function getAuthToken(
+  ctx: NextPageContext | GetServerSidePropsContext | undefined
+): string | undefined {
+  const tokens = getAuthTokens(ctx);
+  return tokens.fromSSRContext ?? tokens.fromCookies ?? tokens.fromLocalStorage;
+}
+
+export function isCookiesDisabled(
+  ctx: NextPageContext | GetServerSidePropsContext | undefined
+) {
+  const tokens = getAuthTokens(ctx);
+  return !!tokens.fromLocalStorage && !tokens.fromCookies;
 }
 
 export function setAuthToken(

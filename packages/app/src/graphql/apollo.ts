@@ -3,14 +3,16 @@ import {
   ApolloLink,
   createHttpLink,
   InMemoryCache,
+  useApolloClient,
 } from "@apollo/client";
 import { ErrorLink, onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import absoluteUrl from "next-absolute-url";
-import { MutableRefObject } from "react";
-import { getAuthToken } from "../util/authToken";
+import { MutableRefObject, useEffect } from "react";
+import { getAuthToken, isCookiesDisabled } from "../util/authToken";
 import { Constants } from "../util/constants";
 import { GetServerSidePropsContext, NextPageContext } from "next";
+import { useAuthContext } from "../contexts/AuthContext";
 
 export function createApolloLink(
   origin: string,
@@ -90,3 +92,14 @@ export const createApolloClient = (
     defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
   });
 };
+
+export function useRefetchDataClientSideIfCookiesAreDisabled() {
+  const apolloClient = useApolloClient();
+  const authenticated = useAuthContext();
+
+  useEffect(() => {
+    if (authenticated && isCookiesDisabled(undefined)) {
+      apolloClient.reFetchObservableQueries();
+    }
+  }, [authenticated, apolloClient]);
+}

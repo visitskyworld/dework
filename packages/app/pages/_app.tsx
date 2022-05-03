@@ -19,7 +19,11 @@ import { FloatingFooterButtons } from "@dewo/app/containers/feedback/FloatingFoo
 import { ServerErrorModal } from "@dewo/app/components/ServerErrorModal";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import { FallbackSeo } from "@dewo/app/containers/seo/FallbackSeo";
-import { createApolloClient, createApolloLink } from "@dewo/app/graphql/apollo";
+import {
+  createApolloClient,
+  createApolloLink,
+  useRefetchDataClientSideIfCookiesAreDisabled,
+} from "@dewo/app/graphql/apollo";
 import { ApolloProvider, useLazyQuery } from "@apollo/client";
 import {
   UserProfileQuery,
@@ -45,6 +49,7 @@ const faviconByEnvironment: Record<typeof Constants.ENVIRONMENT, string> = {
 
 const Hooks: FC = () => {
   useAnalyticsListeners();
+  useRefetchDataClientSideIfCookiesAreDisabled();
   return null;
 };
 
@@ -104,6 +109,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
       onErrorRef
     )
   );
+
   return (
     <>
       <Head>
