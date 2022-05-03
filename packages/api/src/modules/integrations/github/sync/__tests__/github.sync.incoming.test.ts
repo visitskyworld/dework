@@ -187,6 +187,40 @@ describe("GithubSyncIncomingService", () => {
           expect.objectContaining({ id: githubUser.id! })
         );
       });
+
+      it("should link PR to task when referencing in body", async () => {
+        const task = await fixtures.createTask({
+          name: "task title",
+          projectId: project.id,
+        });
+        const issue = await fixtures.createGithubIssue({
+          taskId: task.id,
+        });
+
+        const createPrEvent: DeepPartial<Github.PullRequestEvent> = {
+          action: "opened",
+          number: 3,
+          pull_request: {
+            id: 924652457,
+            node_id: "PR_kwDOHO7Xq843HROp",
+            number: 3,
+            state: "open",
+            title: "pr title",
+            body: `hello!\r\ncloses #${issue.externalId}\r\nthird row`,
+            head: {
+              ref: "ea/rm",
+            },
+            base: {
+              ref: "main",
+            },
+          },
+          repository: githubRepository,
+        };
+        await service.handleWebhook(createPrEvent as any);
+
+        const pr = await fixtures.getGithubPullRequestByTaskId(task.id);
+        expect(pr).toBeDefined();
+      });
     });
 
     describe("CreateEvent", () => {

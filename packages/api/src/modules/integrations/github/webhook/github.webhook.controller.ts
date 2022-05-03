@@ -123,6 +123,7 @@ export class GithubWebhookController {
         event.repository,
         event.installation.id
       );
+
       if (!result) return;
       const { task, name: branchName } = result;
 

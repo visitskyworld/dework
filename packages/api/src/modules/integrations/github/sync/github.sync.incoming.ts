@@ -1,3 +1,8 @@
+import { GithubIssue } from "@dewo/api/models/GithubIssue";
+import {
+  GithubPullRequest,
+  GithubPullRequestStatus,
+} from "@dewo/api/models/GithubPullRequest";
 import {
   OrganizationIntegration,
   OrganizationIntegrationType,
@@ -44,7 +49,12 @@ export class GithubSyncIncomingService {
 
     if ("pull_request" in event) {
       if (event.action === "opened") {
-        await this.process(integrations, event, this.pullRequestCreated);
+        await this.process(
+          integrations,
+          event,
+          this.requestPullRequestReviewFromTaskOwners
+        );
+        await this.process(integrations, event, this.linkPullRequestToTask);
       } else if (event.action === "review_requested") {
         await this.process(integrations, event, this.reviewRequested);
       }
@@ -188,7 +198,7 @@ export class GithubSyncIncomingService {
     }
   }
 
-  private async pullRequestCreated(
+  private async requestPullRequestReviewFromTaskOwners(
     event: Github.PullRequestOpenedEvent,
     integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
     organizationIntegration: OrganizationIntegration<OrganizationIntegrationType.GITHUB>
@@ -266,5 +276,72 @@ export class GithubSyncIncomingService {
         projectId: integration.projectId,
       })
       .getOne();
+  }
+
+  private async linkPullRequestToTask(
+    event: Github.PullRequestOpenedEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>
+  ) {
+    const { title, state, html_url, number, body } = event.pull_request;
+    const getLinkedIssues = async (body: string) => {
+      const closingKeywords = [
+        "close",
+        "closes",
+        "closed",
+        "fix",
+        "fixes",
+        "fixed",
+        "resolve",
+        "resolves",
+        "resolved",
+      ];
+      const matchedNumbers = body.matchAll(
+        new RegExp(`(?:${closingKeywords.join("|")})\\s+#([0-9]+)`, "gi")
+      );
+      const linkedIssueNumbers = Array.from(matchedNumbers ?? [], (rga) =>
+        parseInt(rga[1])
+      );
+      const issues = await Promise.all(
+        linkedIssueNumbers.map((number) =>
+          this.github
+            .findIssue(number, integration.projectId)
+            .catch(() => undefined)
+        )
+      );
+      return issues.filter((i): i is GithubIssue => i !== undefined);
+    };
+
+    const issues = await getLinkedIssues(body ?? "");
+    this.logger.debug(
+      `Searched PR body for linked issues: ${JSON.stringify({
+        url: event.pull_request.url,
+        issues,
+      })}`
+    );
+
+    const linkedIssue = issues[0];
+    if (!linkedIssue) return;
+
+    const alreadyLinkedTask = await this.getTaskFromPullRequest(
+      number,
+      integration
+    );
+    if (alreadyLinkedTask && alreadyLinkedTask.id === linkedIssue.taskId) {
+      return;
+    }
+
+    const prData: Partial<GithubPullRequest> = {
+      title,
+      number,
+      branchName: event.pull_request.head.ref.replace("refs/head/", ""),
+      externalId: linkedIssue.externalId,
+      status: {
+        open: GithubPullRequestStatus.OPEN,
+        closed: GithubPullRequestStatus.CLOSED,
+      }[state],
+      link: html_url ?? "",
+      taskId: linkedIssue.taskId,
+    };
+    await this.github.createPullRequest(prData);
   }
 }
