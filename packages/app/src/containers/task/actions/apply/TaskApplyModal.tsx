@@ -3,8 +3,8 @@ import {
   OrganizationIntegrationType,
   Task,
 } from "@dewo/app/graphql/types";
-import { Modal, notification, Row, Spin, Typography } from "antd";
-import React, { FC, useMemo } from "react";
+import { Alert, Modal, notification, Row, Spin, Typography } from "antd";
+import React, { FC, useEffect, useMemo } from "react";
 import { useCreateTaskApplication, useTask } from "../../hooks";
 import { Form, Button, Input } from "antd";
 import { DatePicker } from "antd";
@@ -28,6 +28,24 @@ import { useRunningCallback } from "@dewo/app/util/hooks";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import Link from "next/link";
 import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
+import {
+  ExperimentOptions,
+  useExperiment,
+} from "@dewo/app/util/analytics/useExperiment";
+import { useAmplitude } from "@dewo/app/util/analytics/AmplitudeContext";
+
+const experimentWithDiscordConnected: ExperimentOptions<"A" | "B"> = {
+  name: "Task apply modal copy",
+  variants: {
+    A: "Apply",
+    B: "Create Discord thread",
+  },
+};
+
+const experimentWithoutDiscordConnected: ExperimentOptions<"A" | "B"> = {
+  ...experimentWithDiscordConnected,
+  variants: { A: experimentWithDiscordConnected.variants.A },
+};
 
 interface FormValues {
   message: string;
@@ -63,6 +81,12 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
     project?.organizationId
   );
   const followOrganization = useFollowOrganization(project?.organizationId);
+
+  const variant = useExperiment(
+    hasDiscordIntegration
+      ? experimentWithDiscordConnected
+      : experimentWithoutDiscordConnected
+  );
 
   const createTaskApplication = useCreateTaskApplication();
   const [handleSubmit, submitting] = useRunningCallback(
@@ -123,7 +147,10 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       notification.success({
         placement: "top",
         duration: 5,
-        message: "Application submitted!",
+        message:
+          variant === "A"
+            ? "Application submitted!"
+            : "Discord thread created!",
         description: (
           <RouterContext.Provider value={router} children={content} />
         ),
@@ -139,7 +166,17 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       user,
       organization,
       hasDiscordIntegration,
+      variant,
     ]
+  );
+
+  const header = variant === "B" && (
+    <Alert
+      showIcon
+      type="info"
+      style={{ marginTop: 20, marginBottom: 20 }}
+      message={`To be assigned to this task, talk with the task reviewer on Discord. Fill in the details below and we will create a thread in ${organization?.name}'s Discord server where you can discuss the details.`}
+    />
   );
 
   if (!membershipState) {
@@ -153,10 +190,11 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
   if (membershipState === DiscordGuildMembershipState.MISSING_SCOPE) {
     return (
       <Row align="middle" style={{ flexDirection: "column" }}>
+        {header}
         <Typography.Paragraph style={{ textAlign: "center" }}>
           {isConnectedToDiscord
-            ? `To apply to this task you first need to join ${organization?.name}'s Discord server`
-            : "To apply to this task you first need to connect your Discord account"}
+            ? `First you need to join ${organization?.name}'s Discord server`
+            : "First you need to connect your Discord account"}
         </Typography.Paragraph>
         <Button
           type="primary"
@@ -175,9 +213,10 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
 
   return (
     <Form layout="vertical" requiredMark={false} onFinish={handleSubmit}>
+      {header}
       <Form.Item
         name="dates"
-        label="How much time will you need?"
+        label="When can you work on this?"
         rules={[{ required: true, message: "Please enter a date" }]}
       >
         <DatePicker.RangePicker
@@ -202,16 +241,24 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         size="large"
         block
       >
-        Apply
+        {variant === "A" ? "Apply" : "Create Discord Thread"}
       </Button>
     </Form>
   );
 };
 
 export const TaskApplyModal: FC<Props> = (props) => {
+  const { logEvent } = useAmplitude();
+  useEffect(() => {
+    if (props.visible) {
+      logEvent("Close task apply modal", { taskId: props.taskId });
+    } else {
+      logEvent("Open task apply modal", { taskId: props.taskId });
+    }
+  }, [logEvent, props.visible, props.taskId]);
+
   return (
     <Modal
-      title="Apply to Task"
       visible={props.visible}
       destroyOnClose
       onCancel={props.onCancel}

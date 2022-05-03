@@ -15,6 +15,7 @@ type EventProperties = { [key: string]: any };
 interface AmplitudeContextProps {
   identify(id: string, properties: EventProperties): void;
   logEvent(eventName: string, properties?: EventProperties): void;
+  setUserProperties(properties: any): void;
 }
 
 const AmplitudeContext = createContext<AmplitudeContextProps>({} as any);
@@ -82,9 +83,23 @@ export const AmplitudeProvider: FC<AmplitudeProviderProps> = ({
     [amplitude, debug]
   );
 
+  const setUserProperties = useCallback(
+    (properties: any) => {
+      if (debug) {
+        console.log("[AmplitudeProvider.setUserProperties]", properties);
+      }
+
+      amplitude?.setUserProperties(properties);
+    },
+    [amplitude, debug]
+  );
+
   return (
     <AmplitudeContext.Provider
-      value={useMemo(() => ({ identify, logEvent }), [identify, logEvent])}
+      value={useMemo(
+        () => ({ identify, logEvent, setUserProperties }),
+        [identify, logEvent, setUserProperties]
+      )}
     >
       {useMemo(() => children, [children])}
     </AmplitudeContext.Provider>
