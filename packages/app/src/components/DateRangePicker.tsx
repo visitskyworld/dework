@@ -9,7 +9,7 @@ interface Props {
 
 export const DateRangePicker: FC<Props> = ({ onSetRange }) => {
   const [label, setLabel] = useState("Last 30 days");
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(60);
   const onClickCustomRange = useCallback(
     (day: number) => {
       const startDate = moment().subtract(day, "days").toISOString();

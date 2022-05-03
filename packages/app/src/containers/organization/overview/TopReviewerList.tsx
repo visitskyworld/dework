@@ -1,14 +1,14 @@
 import React, { FC, useMemo, useState } from "react";
-import { useOrganizationTasks } from "../hooks";
+import { useOrganizationTasks, useOrganizationUsers } from "../hooks";
 
-import { User, TaskStatus } from "@dewo/app/graphql/types";
+import { User, TaskStatus, ThreepidSource } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
+import _ from "lodash";
 import { ExportOutlined } from "@ant-design/icons";
 import { Table, Space, Typography, Button, Row, Col } from "antd";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { DateRangePicker } from "@dewo/app/components/DateRangePicker";
-import moment from "moment";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import styles from "./Contributor.module.less";
 interface Props {
@@ -16,23 +16,44 @@ interface Props {
 }
 interface ExportProps {
   users: Reviewer[];
+  organizationId: string;
 }
 export interface Reviewer extends User {
   tasksReviewed: number;
   taskPoints: number;
 }
 
-const TopReviewerExports: FC<ExportProps> = ({ users }) => {
+const TopReviewerExports: FC<ExportProps> = ({ users, organizationId }) => {
+  const { users: usersWithThreePids } = useOrganizationUsers(organizationId);
+  const addressByUserId = useMemo(() => {
+    const groupedByUserId = _.keyBy(usersWithThreePids, "id");
+    return _.mapValues(
+      groupedByUserId,
+      (u) =>
+        u?.threepids?.find((t) => t.source === ThreepidSource.metamask)
+          ?.threepid
+    );
+  }, [usersWithThreePids]);
+
   const headers = useMemo(
     () => [
       { label: "Username", key: "username" },
+      { label: "Wallet address", key: "address" },
       { label: "Tasks Reviewed", key: "tasksReviewed" },
       { label: "Task Points", key: "taskPoints" },
     ],
     []
   );
+
+  const csvData = useMemo(() => {
+    return users.map((user) => ({
+      ...user,
+      address: addressByUserId[user.id],
+    }));
+  }, [users, addressByUserId]);
+
   return (
-    <CSVLink filename="top-reviewers.csv" data={users} headers={headers}>
+    <CSVLink filename="top-reviewers.csv" data={csvData} headers={headers}>
       <Button
         icon={<ExportOutlined />}
         name="Export organization top reviewers as CSV"
@@ -45,10 +66,7 @@ const TopReviewerExports: FC<ExportProps> = ({ users }) => {
 
 export const TopReviewerList: FC<Props> = ({ organizationId }) => {
   const [page, setPage] = useState(1);
-  const [range, setRange] = useState([
-    moment().subtract(30, "days").format(),
-    moment().format(),
-  ]);
+  const [range, setRange] = useState(["", ""]);
   const navigateToProfile = useNavigateToProfile();
   const organization = useOrganizationTasks(
     organizationId,
@@ -133,7 +151,9 @@ export const TopReviewerList: FC<Props> = ({ organizationId }) => {
           },
         ]}
       />
-      {canUpdateOrganization && <TopReviewerExports users={reviewers} />}
+      {canUpdateOrganization && (
+        <TopReviewerExports users={reviewers} organizationId={organizationId} />
+      )}
     </Space>
   );
 };
