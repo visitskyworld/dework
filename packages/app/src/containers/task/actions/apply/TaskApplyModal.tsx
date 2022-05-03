@@ -241,7 +241,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         size="large"
         block
       >
-        {variant === "A" ? "Apply" : "Create Discord Thread"}
+        {variant === "A" ? "Apply" : "I'm interested"}
       </Button>
     </Form>
   );
