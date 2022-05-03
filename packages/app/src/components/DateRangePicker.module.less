@@ -1,0 +1,19 @@
+@import "~@dewo/app/styles/theme.less";
+
+.iconOnly {
+  width: 36px;
+  height: 24px;
+  margin-top: 1px;
+  background: @btn-default-bg;
+  border: none;
+  cursor: pointer;
+  :global {
+    .ant-picker-input, .ant-picker-range-separator {
+      display: none;
+    }
+    .ant-picker-suffix {
+      color: fade(@white, 85%);
+      margin: 0px;
+    }
+  }
+}

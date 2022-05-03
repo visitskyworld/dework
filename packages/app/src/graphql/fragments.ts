@@ -31,6 +31,13 @@ export const role = gql`
   }
 `;
 
+export const threepid = gql`
+  fragment Threepid on Threepid {
+    source
+    threepid
+  }
+`;
+
 export const roleWithRules = gql`
   fragment RoleWithRules on Role {
     ...Role
@@ -60,6 +67,21 @@ export const userWithRoles = gql`
   }
   ${user}
   ${role}
+`;
+
+export const userWithRolesAndThreePids = gql`
+  fragment UserWithRolesAndThreePids on User {
+    ...User
+    roles {
+      ...Role
+    }
+    threepids {
+      ...Threepid
+    }
+  }
+  ${user}
+  ${role}
+  ${threepid}
 `;
 
 export const paymentNetwork = gql`

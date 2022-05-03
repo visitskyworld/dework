@@ -34,6 +34,8 @@ import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPre
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 import styles from "./OrganizationTabs.module.less";
+import { TopContributorList } from "./TopContributorList";
+import { TopReviewerList } from "./TopReviewerList";
 import { OrganizationPublicInviteButton } from "../../invite/OrganizationPublicInviteButton";
 
 interface Props {
@@ -190,9 +192,17 @@ export const OrganizationTabs: FC<Props> = ({
         key="contributors"
         style={tabPaneStyle}
       >
-        <div className="max-w-lg w-full">
-          <OrganizationContributorList organizationId={organizationId} />
-        </div>
+        <Row gutter={[16, 24]} style={{ marginTop: 20 }}>
+          <Col className="gutter-row" sm={24} md={24} lg={12}>
+            <TopContributorList organizationId={organizationId} />
+          </Col>
+          <Col className="gutter-row" sm={24} md={24} lg={12}>
+            <TopReviewerList organizationId={organizationId} />
+          </Col>
+          <Col lg={24}>
+            <OrganizationContributorList organizationId={organizationId} />
+          </Col>
+        </Row>
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={<Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />}

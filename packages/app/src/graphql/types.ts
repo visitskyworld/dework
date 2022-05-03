@@ -5729,6 +5729,7 @@ export interface GetOrganizationUsersQuery_organization_users {
   username: string;
   imageUrl: string | null;
   permalink: string;
+  threepids: UserDetails_threepids[];
   roles: GetOrganizationUsersQuery_organization_users_roles[];
 }
 
@@ -9055,6 +9056,7 @@ export interface UserWithRoles {
   username: string;
   imageUrl: string | null;
   permalink: string;
+  threepids?: UserDetails_threepids[];
   roles: UserWithRoles_roles[];
 }
 
