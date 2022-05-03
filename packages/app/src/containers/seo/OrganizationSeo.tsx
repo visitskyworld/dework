@@ -21,9 +21,9 @@ export const OrganizationSeo: FC<Props> = ({ organization }) => {
         site_name: "Dework",
         images: [
           {
-            url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
+            url: `https://dework-og-image-fant.vercel.app/${encodeURIComponent(
               organization.name
-            )}**.png?${qs.stringify({
+            )}.png?${qs.stringify({
               subtitle: description,
               md: 1,
               fontSize: "100px",

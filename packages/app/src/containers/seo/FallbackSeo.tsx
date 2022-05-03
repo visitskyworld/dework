@@ -14,9 +14,9 @@ export const FallbackSeo: FC = () => (
       // images: "https://i.imgur.com/vs0aXnL.png",
       images: [
         {
-          url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
+          url: `https://dework-og-image-fant.vercel.app/${encodeURIComponent(
             siteTitle
-          )}**.png?${qs.stringify({
+          )}.png?${qs.stringify({
             subtitle: siteDescription,
             md: 1,
             fontSize: "100px",

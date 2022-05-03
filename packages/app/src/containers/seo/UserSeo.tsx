@@ -20,9 +20,9 @@ export const UserSeo: FC<Props> = ({ user }) => {
         site_name: "Dework",
         images: [
           {
-            url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
+            url: `https://dework-og-image-fant.vercel.app/${encodeURIComponent(
               user.username
-            )}**.png?${qs.stringify({
+            )}.png?${qs.stringify({
               subtitle: description,
               md: 1,
               fontSize: "100px",

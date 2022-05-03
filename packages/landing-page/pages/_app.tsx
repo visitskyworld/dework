@@ -41,7 +41,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
   apollo,
 }) => {
   const imageUrl =
-    "https://dework-og-image-fant.vercel.app/**Dework**.png?fontSize=100px&heights=300&images=https%3A%2F%2Fapp.dework.xyz%2Flogo.png&md=1&subtitle=The%20task%20manager%20for%20DAOs%20and%20decentralized%20work&widths=300";
+    "https://dework-og-image-fant.vercel.app/Dework.png?fontSize=100px&heights=300&images=https%3A%2F%2Fapp.dework.xyz%2Flogo.png&md=1&subtitle=The%20task%20manager%20for%20DAOs%20and%20decentralized%20work&widths=300";
   return (
     <>
       <Head>

@@ -20,9 +20,9 @@ export const ProjectSeo: FC<Props> = ({ project }) => {
         site_name: "Dework",
         images: [
           {
-            url: `https://dework-og-image-fant.vercel.app/**${encodeURIComponent(
+            url: `https://dework-og-image-fant.vercel.app/${encodeURIComponent(
               project.name
-            )}**.png?${qs.stringify({
+            )}.png?${qs.stringify({
               subtitle: project.organization.name,
               md: 1,
               fontSize: "100px",
