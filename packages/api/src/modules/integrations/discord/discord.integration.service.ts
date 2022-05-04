@@ -150,12 +150,16 @@ export class DiscordIntegrationService {
         return false;
       })();
 
-      const { mainChannel, channelToPostTo, guild } =
-        await this.getChannelFromTask(
-          task,
-          integration,
-          shouldCreateChannelIfNotExists
-        );
+      const {
+        mainChannel,
+        channelToPostTo,
+        guild,
+        wasChannelToPostToJustCreated,
+      } = await this.getChannelFromTask(
+        task,
+        integration,
+        shouldCreateChannelIfNotExists
+      );
 
       if (!mainChannel || !guild) {
         this.logger.warn(
@@ -247,7 +251,9 @@ export class DiscordIntegrationService {
         return;
       }
 
-      if (statusChanged && task.status === TaskStatus.IN_REVIEW) {
+      if (wasChannelToPostToJustCreated) {
+        await this.postDefaultInitialMessage(task, channelToPostTo);
+      } else if (statusChanged && task.status === TaskStatus.IN_REVIEW) {
         await this.postMovedIntoReview(task, channelToPostTo);
       } else if (statusChanged && task.status === TaskStatus.DONE) {
         if (
@@ -1016,8 +1022,6 @@ export class DiscordIntegrationService {
       channelId: thread.id,
       name: thread.name,
     });
-
-    await this.postDefaultInitialMessage(task, thread);
 
     return thread;
   }
