@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./modules/app/app.module";
 import { MigrationService } from "./modules/app/migration/migration.service";
+import "source-map-support/register";
 
 async function bootstrap() {
   const port = process.env.PORT || 8080;

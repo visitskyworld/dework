@@ -12,7 +12,7 @@
     "migration:revert:local": "ts-node --require dotenv/config --require tsconfig-paths/register src/modules/app/migration/run revert dotenv_config_path=.env.local",
     "test": "jest --runInBand --setupFiles tsconfig-paths/register",
     "build": "rm -rf build && nest build --path tsconfig.json",
-    "start": "ts-node --require tsconfig-paths/register src/main.ts"
+    "start": "node build/main.js"
   },
   "dependencies": {
     "@amplitude/node": "^1.9.2",
@@ -76,6 +76,7 @@
     "request-promise": "^4.2.6",
     "rxjs": "^7.4.0",
     "slugify": "^1.6.4",
+    "source-map-support": "^0.5.21",
     "trello-node-api": "^0.0.9",
     "ts-node-dev": "^1.1.8",
     "tweetnacl": "^1.0.3",
