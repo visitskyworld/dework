@@ -30,9 +30,7 @@ export const CreateProjectButton: FC<Props> = ({
     const url = `${
       Constants.GRAPHQL_API_URL
     }/auth/notion?state=${encodeURIComponent(
-      encodeURIComponent(
-        JSON.stringify({ redirect: `${router.asPath}/import/notion` })
-      )
+      JSON.stringify({ redirect: `${router.asPath}/import/notion` })
     )}`;
     window.location.href = url;
   }, [router.asPath]);

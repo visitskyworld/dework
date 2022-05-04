@@ -52,11 +52,9 @@ export const OrganizationCreateForm: FC<OrganizationCreateFormProps> = ({
             const url = `${
               Constants.GRAPHQL_API_URL
             }/auth/notion?state=${encodeURIComponent(
-              encodeURIComponent(
-                JSON.stringify({
-                  redirect: `${organization.permalink}/import/notion`,
-                })
-              )
+              JSON.stringify({
+                redirect: `${organization.permalink}/import/notion`,
+              })
             )}`;
             window.location.href = url;
             break;
