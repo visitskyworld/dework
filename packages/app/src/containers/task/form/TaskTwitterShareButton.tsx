@@ -26,7 +26,7 @@ export const TaskTwitterShareButton: FC<Props> = ({ task }) => {
         hashtags,
       })}`}
     >
-      Share on Twitter
+      Share
     </Button>
   );
 };

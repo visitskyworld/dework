@@ -163,6 +163,7 @@ export class GithubIntegrationService {
           externalId: issue.id,
           number: issue.number,
           taskId: task.id,
+          link: issue.html_url,
         });
 
         return task;
@@ -237,6 +238,7 @@ export class GithubIntegrationService {
       externalId: res.data.id,
       number: res.data.number,
       taskId: task.id,
+      link: res.data.html_url,
     });
 
     this.logger.log(

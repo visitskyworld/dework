@@ -3338,6 +3338,13 @@ export interface CreateTaskPaymentsMutation_tasks_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -3437,6 +3444,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   skills: CreateTaskPaymentsMutation_tasks_skills[];
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
+  githubIssue: CreateTaskPaymentsMutation_tasks_githubIssue | null;
   nfts: CreateTaskPaymentsMutation_tasks_nfts[];
   auditLog: CreateTaskPaymentsMutation_tasks_auditLog[];
 }
@@ -3824,6 +3832,13 @@ export interface ClearTaskPaymentsMutation_tasks_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface ClearTaskPaymentsMutation_tasks_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface ClearTaskPaymentsMutation_tasks_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -3923,6 +3938,7 @@ export interface ClearTaskPaymentsMutation_tasks {
   skills: ClearTaskPaymentsMutation_tasks_skills[];
   githubPullRequests: ClearTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: ClearTaskPaymentsMutation_tasks_githubBranches[];
+  githubIssue: ClearTaskPaymentsMutation_tasks_githubIssue | null;
   nfts: ClearTaskPaymentsMutation_tasks_nfts[];
   auditLog: ClearTaskPaymentsMutation_tasks_auditLog[];
 }
@@ -7066,6 +7082,13 @@ export interface GetTaskQuery_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface GetTaskQuery_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface GetTaskQuery_task_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -7165,6 +7188,7 @@ export interface GetTaskQuery_task {
   skills: GetTaskQuery_task_skills[];
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
+  githubIssue: GetTaskQuery_task_githubIssue | null;
   nfts: GetTaskQuery_task_nfts[];
   auditLog: GetTaskQuery_task_auditLog[];
 }
@@ -8522,6 +8546,13 @@ export interface TaskCreatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskCreatedSubscription_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface TaskCreatedSubscription_task_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -8621,6 +8652,7 @@ export interface TaskCreatedSubscription_task {
   skills: TaskCreatedSubscription_task_skills[];
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
+  githubIssue: TaskCreatedSubscription_task_githubIssue | null;
   nfts: TaskCreatedSubscription_task_nfts[];
   auditLog: TaskCreatedSubscription_task_auditLog[];
 }
@@ -9004,6 +9036,13 @@ export interface TaskUpdatedSubscription_task_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskUpdatedSubscription_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface TaskUpdatedSubscription_task_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -9103,6 +9142,7 @@ export interface TaskUpdatedSubscription_task {
   skills: TaskUpdatedSubscription_task_skills[];
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
+  githubIssue: TaskUpdatedSubscription_task_githubIssue | null;
   nfts: TaskUpdatedSubscription_task_nfts[];
   auditLog: TaskUpdatedSubscription_task_auditLog[];
 }
@@ -10094,6 +10134,22 @@ export interface GithubPullRequest {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: GithubIssue
+// ====================================================
+
+export interface GithubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: GithubBranch
 // ====================================================
 
@@ -11013,6 +11069,13 @@ export interface TaskDetails_githubBranches {
   deletedAt: Scalar.DateTime | null;
 }
 
+export interface TaskDetails_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
 export interface TaskDetails_nfts_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
@@ -11112,6 +11175,7 @@ export interface TaskDetails {
   skills: TaskDetails_skills[];
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
+  githubIssue: TaskDetails_githubIssue | null;
   nfts: TaskDetails_nfts[];
   auditLog: TaskDetails_auditLog[];
 }

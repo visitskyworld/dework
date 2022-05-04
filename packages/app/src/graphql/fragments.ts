@@ -357,6 +357,14 @@ export const githubPullRequest = gql`
   }
 `;
 
+export const githubIssue = gql`
+  fragment GithubIssue on GithubIssue {
+    id
+    number
+    link
+  }
+`;
+
 export const githubBranch = gql`
   fragment GithubBranch on GithubBranch {
     id
@@ -561,6 +569,9 @@ export const taskDetails = gql`
     githubBranches {
       ...GithubBranch
     }
+    githubIssue {
+      ...GithubIssue
+    }
     applications {
       ...TaskApplication
     }
@@ -589,6 +600,7 @@ export const taskDetails = gql`
   ${organization}
   ${githubPullRequest}
   ${githubBranch}
+  ${githubIssue}
   ${taskApplication}
   ${taskSubmission}
   ${payment}

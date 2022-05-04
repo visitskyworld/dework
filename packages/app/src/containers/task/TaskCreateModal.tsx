@@ -116,7 +116,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
       maskClosable={false}
       onCancel={onCancel}
       footer={null}
-      width={960}
+      width={1000}
     >
       <TaskForm
         mode="create"

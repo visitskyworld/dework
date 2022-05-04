@@ -58,6 +58,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
+import { TaskGithubIssueButton } from "./TaskGithubIssueButton";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -298,6 +299,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
               <Row style={{ rowGap: 8, columnGap: 8 }}>
                 <TaskDiscordButton task={task} />
+                <TaskGithubIssueButton task={task} />
                 <TaskGithubBranchButton task={task} />
                 <TaskTwitterShareButton task={task} />
               </Row>

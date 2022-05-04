@@ -55,7 +55,7 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
           encodeURIComponent(JSON.stringify({ redirect: router.asPath }))
         )}`}
       >
-        Go to Discord thread
+        Discuss
       </Button>
     );
   }
@@ -66,7 +66,7 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
       size="small"
       href={handleCreateDiscordLink}
     >
-      Go to Discord thread
+      Discuss
     </OpenDiscordButton>
   );
 };

@@ -14,6 +14,10 @@ export class GithubIssue extends Audit {
   @Field(() => Int)
   public number!: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public link?: string;
+
   @JoinColumn()
   @OneToOne(() => Task)
   @Field(() => Task)

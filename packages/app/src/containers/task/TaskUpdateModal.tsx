@@ -47,7 +47,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         visible={visible && !forbiddenError && !notFoundError}
         onCancel={onCancel}
         footer={null}
-        width={960}
+        width={1000}
       >
         {!!task && <TaskOptionsButton task={task} />}
         <Skeleton loading={!formValues} active paragraph={{ rows: 5 }}>
