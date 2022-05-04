@@ -33,6 +33,7 @@ import { TaskSubmission } from "./TaskSubmission";
 import { TaskNFT } from "./TaskNFT";
 import { TaskSection } from "./TaskSection";
 import { TaskGatingType } from "./enums/TaskGatingType";
+import { Skill } from "./Skill";
 
 export enum TaskStatus {
   COMMUNITY_SUGGESTIONS = "COMMUNITY_SUGGESTIONS",
@@ -82,7 +83,7 @@ export class Task extends Audit {
   @Field()
   public sortKey!: string;
 
-  @Column({ type: "float", nullable: true })
+  @Column({ type: "float4", nullable: true })
   @Field(() => Float, { nullable: true })
   public storyPoints?: number;
 
@@ -144,6 +145,11 @@ export class Task extends Audit {
   @JoinTable({ name: "task_tag_map" })
   @Field(() => [TaskTag])
   public tags!: TaskTag[];
+
+  @ManyToMany(() => Skill, { eager: true })
+  @JoinTable({ name: "task_skill" })
+  @Field(() => [Skill])
+  public skills!: Skill[];
 
   @OneToMany(() => GithubPullRequest, (g: GithubPullRequest) => g.task)
   @Field(() => [GithubPullRequest])

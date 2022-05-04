@@ -53,6 +53,7 @@ export const toTaskFormValues = (
   description: task.description ?? undefined,
   storyPoints: task.storyPoints ?? undefined,
   tagIds: task.tags.map((t) => t.id) ?? [],
+  skillIds: task.skills.map((s) => s.id) ?? [],
   assigneeIds: task.assignees.map((a) => a.id) ?? [],
   ownerIds: task.owners.map((o) => o.id) ?? [],
   status: task.status!,

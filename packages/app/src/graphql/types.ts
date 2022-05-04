@@ -24,6 +24,12 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_details {
   value: string;
 }
 
+export interface AuthWithThreepidMutation_authWithThreepid_user_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface AuthWithThreepidMutation_authWithThreepid_user_threepids {
   __typename: "Threepid";
   id: string;
@@ -62,6 +68,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user {
   bio: string | null;
   organizations: AuthWithThreepidMutation_authWithThreepid_user_organizations[];
   details: AuthWithThreepidMutation_authWithThreepid_user_details[];
+  skills: AuthWithThreepidMutation_authWithThreepid_user_skills[];
   threepids: AuthWithThreepidMutation_authWithThreepid_user_threepids[];
   prompts: AuthWithThreepidMutation_authWithThreepid_user_prompts[];
   taskGatingDefaults: AuthWithThreepidMutation_authWithThreepid_user_taskGatingDefaults[];
@@ -173,6 +180,12 @@ export interface UpdateUserMutation_user_details {
   value: string;
 }
 
+export interface UpdateUserMutation_user_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UpdateUserMutation_user_threepids {
   __typename: "Threepid";
   id: string;
@@ -211,6 +224,7 @@ export interface UpdateUserMutation_user {
   bio: string | null;
   organizations: UpdateUserMutation_user_organizations[];
   details: UpdateUserMutation_user_details[];
+  skills: UpdateUserMutation_user_skills[];
   threepids: UpdateUserMutation_user_threepids[];
   prompts: UpdateUserMutation_user_prompts[];
   taskGatingDefaults: UpdateUserMutation_user_taskGatingDefaults[];
@@ -1000,6 +1014,12 @@ export interface CreateTaskMutation_task_tags {
   projectId: string;
 }
 
+export interface CreateTaskMutation_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface CreateTaskMutation_task_assignees {
   __typename: "User";
   id: Scalar.UUID;
@@ -1119,6 +1139,12 @@ export interface CreateTaskMutation_task_parentTask_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface CreateTaskMutation_task_parentTask_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_assignees {
@@ -1245,6 +1271,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   gating: TaskGatingType;
   subtasks: CreateTaskMutation_task_parentTask_subtasks_subtasks[];
   tags: CreateTaskMutation_task_parentTask_subtasks_tags[];
+  skills: CreateTaskMutation_task_parentTask_subtasks_skills[];
   assignees: CreateTaskMutation_task_parentTask_subtasks_assignees[];
   owners: CreateTaskMutation_task_parentTask_subtasks_owners[];
   reward: CreateTaskMutation_task_parentTask_subtasks_reward | null;
@@ -1280,6 +1307,7 @@ export interface CreateTaskMutation_task {
   gating: TaskGatingType;
   subtasks: CreateTaskMutation_task_subtasks[];
   tags: CreateTaskMutation_task_tags[];
+  skills: CreateTaskMutation_task_skills[];
   assignees: CreateTaskMutation_task_assignees[];
   owners: CreateTaskMutation_task_owners[];
   reward: CreateTaskMutation_task_reward | null;
@@ -1322,6 +1350,12 @@ export interface UpdateTaskMutation_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface UpdateTaskMutation_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface UpdateTaskMutation_task_assignees {
@@ -1448,6 +1482,7 @@ export interface UpdateTaskMutation_task {
   gating: TaskGatingType;
   subtasks: UpdateTaskMutation_task_subtasks[];
   tags: UpdateTaskMutation_task_tags[];
+  skills: UpdateTaskMutation_task_skills[];
   assignees: UpdateTaskMutation_task_assignees[];
   owners: UpdateTaskMutation_task_owners[];
   reward: UpdateTaskMutation_task_reward | null;
@@ -1497,6 +1532,12 @@ export interface CreateTaskApplicationMutation_application_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_assignees {
@@ -1623,6 +1664,7 @@ export interface CreateTaskApplicationMutation_application_task {
   gating: TaskGatingType;
   subtasks: CreateTaskApplicationMutation_application_task_subtasks[];
   tags: CreateTaskApplicationMutation_application_task_tags[];
+  skills: CreateTaskApplicationMutation_application_task_skills[];
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
   owners: CreateTaskApplicationMutation_application_task_owners[];
   reward: CreateTaskApplicationMutation_application_task_reward | null;
@@ -1677,6 +1719,12 @@ export interface DeleteTaskApplicationMutation_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_assignees {
@@ -1803,6 +1851,7 @@ export interface DeleteTaskApplicationMutation_task {
   gating: TaskGatingType;
   subtasks: DeleteTaskApplicationMutation_task_subtasks[];
   tags: DeleteTaskApplicationMutation_task_tags[];
+  skills: DeleteTaskApplicationMutation_task_skills[];
   assignees: DeleteTaskApplicationMutation_task_assignees[];
   owners: DeleteTaskApplicationMutation_task_owners[];
   reward: DeleteTaskApplicationMutation_task_reward | null;
@@ -1844,6 +1893,12 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_assignees {
@@ -1970,6 +2025,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   gating: TaskGatingType;
   subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks[];
   tags: CreateTaskSubmissionMutation_createTaskSubmission_task_tags[];
+  skills: CreateTaskSubmissionMutation_createTaskSubmission_task_skills[];
   assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_assignees[];
   owners: CreateTaskSubmissionMutation_createTaskSubmission_task_owners[];
   reward: CreateTaskSubmissionMutation_createTaskSubmission_task_reward | null;
@@ -2017,6 +2073,12 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees {
@@ -2143,6 +2205,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   gating: TaskGatingType;
   subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks[];
   tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags[];
+  skills: UpdateTaskSubmissionMutation_updateTaskSubmission_task_skills[];
   assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees[];
   owners: UpdateTaskSubmissionMutation_updateTaskSubmission_task_owners[];
   reward: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward | null;
@@ -2975,6 +3038,12 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_tags {
   projectId: string;
 }
 
+export interface CreateTaskPaymentsMutation_tasks_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_subtasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
@@ -3099,6 +3168,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   gating: TaskGatingType;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_subtasks_tags[];
+  skills: CreateTaskPaymentsMutation_tasks_subtasks_skills[];
   assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
   owners: CreateTaskPaymentsMutation_tasks_subtasks_owners[];
   reward: CreateTaskPaymentsMutation_tasks_subtasks_reward | null;
@@ -3116,6 +3186,12 @@ export interface CreateTaskPaymentsMutation_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_assignees {
@@ -3402,6 +3478,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   gating: TaskGatingType;
   subtasks: CreateTaskPaymentsMutation_tasks_subtasks[];
   tags: CreateTaskPaymentsMutation_tasks_tags[];
+  skills: CreateTaskPaymentsMutation_tasks_skills[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   owners: CreateTaskPaymentsMutation_tasks_owners[];
   reward: CreateTaskPaymentsMutation_tasks_reward | null;
@@ -3452,6 +3529,12 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface ClearTaskPaymentsMutation_tasks_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_subtasks_assignees {
@@ -3578,6 +3661,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks {
   gating: TaskGatingType;
   subtasks: ClearTaskPaymentsMutation_tasks_subtasks_subtasks[];
   tags: ClearTaskPaymentsMutation_tasks_subtasks_tags[];
+  skills: ClearTaskPaymentsMutation_tasks_subtasks_skills[];
   assignees: ClearTaskPaymentsMutation_tasks_subtasks_assignees[];
   owners: ClearTaskPaymentsMutation_tasks_subtasks_owners[];
   reward: ClearTaskPaymentsMutation_tasks_subtasks_reward | null;
@@ -3595,6 +3679,12 @@ export interface ClearTaskPaymentsMutation_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface ClearTaskPaymentsMutation_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_assignees {
@@ -3881,6 +3971,7 @@ export interface ClearTaskPaymentsMutation_tasks {
   gating: TaskGatingType;
   subtasks: ClearTaskPaymentsMutation_tasks_subtasks[];
   tags: ClearTaskPaymentsMutation_tasks_tags[];
+  skills: ClearTaskPaymentsMutation_tasks_skills[];
   assignees: ClearTaskPaymentsMutation_tasks_assignees[];
   owners: ClearTaskPaymentsMutation_tasks_owners[];
   reward: ClearTaskPaymentsMutation_tasks_reward | null;
@@ -3970,6 +4061,12 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_assignees {
@@ -4096,6 +4193,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   gating: TaskGatingType;
   subtasks: CreateTasksFromGithubIssuesMutation_project_tasks_subtasks[];
   tags: CreateTasksFromGithubIssuesMutation_project_tasks_tags[];
+  skills: CreateTasksFromGithubIssuesMutation_project_tasks_skills[];
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
   owners: CreateTasksFromGithubIssuesMutation_project_tasks_owners[];
   reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
@@ -4824,6 +4922,35 @@ export interface SetTaskGatingDefaultVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: SetUserSkillsMutation
+// ====================================================
+
+export interface SetUserSkillsMutation_setUserSkills_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface SetUserSkillsMutation_setUserSkills {
+  __typename: "User";
+  id: Scalar.UUID;
+  skills: SetUserSkillsMutation_setUserSkills_skills[];
+}
+
+export interface SetUserSkillsMutation {
+  setUserSkills: SetUserSkillsMutation_setUserSkills;
+}
+
+export interface SetUserSkillsMutationVariables {
+  skillIds: Scalar.UUID[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateTaskViewMutation
 // ====================================================
 
@@ -5012,6 +5139,12 @@ export interface DeleteThreepidMutation_deleteThreepid_details {
   value: string;
 }
 
+export interface DeleteThreepidMutation_deleteThreepid_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface DeleteThreepidMutation_deleteThreepid_threepids {
   __typename: "Threepid";
   id: string;
@@ -5050,6 +5183,7 @@ export interface DeleteThreepidMutation_deleteThreepid {
   bio: string | null;
   organizations: DeleteThreepidMutation_deleteThreepid_organizations[];
   details: DeleteThreepidMutation_deleteThreepid_details[];
+  skills: DeleteThreepidMutation_deleteThreepid_skills[];
   threepids: DeleteThreepidMutation_deleteThreepid_threepids[];
   prompts: DeleteThreepidMutation_deleteThreepid_prompts[];
   taskGatingDefaults: DeleteThreepidMutation_deleteThreepid_taskGatingDefaults[];
@@ -5087,6 +5221,12 @@ export interface MeQuery_me_details {
   id: Scalar.UUID;
   type: EntityDetailType;
   value: string;
+}
+
+export interface MeQuery_me_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface MeQuery_me_threepids {
@@ -5127,6 +5267,7 @@ export interface MeQuery_me {
   bio: string | null;
   organizations: MeQuery_me_organizations[];
   details: MeQuery_me_details[];
+  skills: MeQuery_me_skills[];
   threepids: MeQuery_me_threepids[];
   prompts: MeQuery_me_prompts[];
   taskGatingDefaults: MeQuery_me_taskGatingDefaults[];
@@ -5162,6 +5303,12 @@ export interface UserProfileByUsernameQuery_user_details {
   value: string;
 }
 
+export interface UserProfileByUsernameQuery_user_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UserProfileByUsernameQuery_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -5171,6 +5318,7 @@ export interface UserProfileByUsernameQuery_user {
   bio: string | null;
   organizations: UserProfileByUsernameQuery_user_organizations[];
   details: UserProfileByUsernameQuery_user_details[];
+  skills: UserProfileByUsernameQuery_user_skills[];
 }
 
 export interface UserProfileByUsernameQuery {
@@ -5207,6 +5355,12 @@ export interface UserProfileQuery_user_details {
   value: string;
 }
 
+export interface UserProfileQuery_user_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UserProfileQuery_user {
   __typename: "User";
   id: Scalar.UUID;
@@ -5216,6 +5370,7 @@ export interface UserProfileQuery_user {
   bio: string | null;
   organizations: UserProfileQuery_user_organizations[];
   details: UserProfileQuery_user_details[];
+  skills: UserProfileQuery_user_skills[];
 }
 
 export interface UserProfileQuery {
@@ -5294,6 +5449,12 @@ export interface UserTasksQuery_user_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface UserTasksQuery_user_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface UserTasksQuery_user_tasks_assignees {
@@ -5444,6 +5605,7 @@ export interface UserTasksQuery_user_tasks {
   gating: TaskGatingType;
   subtasks: UserTasksQuery_user_tasks_subtasks[];
   tags: UserTasksQuery_user_tasks_tags[];
+  skills: UserTasksQuery_user_tasks_skills[];
   assignees: UserTasksQuery_user_tasks_assignees[];
   owners: UserTasksQuery_user_tasks_owners[];
   reward: UserTasksQuery_user_tasks_reward | null;
@@ -6003,6 +6165,12 @@ export interface GetOrganizationTasksQuery_organization_tasks_tags {
   projectId: string;
 }
 
+export interface GetOrganizationTasksQuery_organization_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
@@ -6127,6 +6295,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   gating: TaskGatingType;
   subtasks: GetOrganizationTasksQuery_organization_tasks_subtasks[];
   tags: GetOrganizationTasksQuery_organization_tasks_tags[];
+  skills: GetOrganizationTasksQuery_organization_tasks_skills[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   owners: GetOrganizationTasksQuery_organization_tasks_owners[];
   reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
@@ -6415,6 +6584,12 @@ export interface GetProjectTasksQuery_project_tasks_tags {
   projectId: string;
 }
 
+export interface GetProjectTasksQuery_project_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface GetProjectTasksQuery_project_tasks_assignees {
   __typename: "User";
   id: Scalar.UUID;
@@ -6539,6 +6714,7 @@ export interface GetProjectTasksQuery_project_tasks {
   gating: TaskGatingType;
   subtasks: GetProjectTasksQuery_project_tasks_subtasks[];
   tags: GetProjectTasksQuery_project_tasks_tags[];
+  skills: GetProjectTasksQuery_project_tasks_skills[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   owners: GetProjectTasksQuery_project_tasks_owners[];
   reward: GetProjectTasksQuery_project_tasks_reward | null;
@@ -6619,6 +6795,12 @@ export interface GetTaskQuery_task_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface GetTaskQuery_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface GetTaskQuery_task_subtasks_assignees {
@@ -6745,6 +6927,7 @@ export interface GetTaskQuery_task_subtasks {
   gating: TaskGatingType;
   subtasks: GetTaskQuery_task_subtasks_subtasks[];
   tags: GetTaskQuery_task_subtasks_tags[];
+  skills: GetTaskQuery_task_subtasks_skills[];
   assignees: GetTaskQuery_task_subtasks_assignees[];
   owners: GetTaskQuery_task_subtasks_owners[];
   reward: GetTaskQuery_task_subtasks_reward | null;
@@ -6762,6 +6945,12 @@ export interface GetTaskQuery_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface GetTaskQuery_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface GetTaskQuery_task_assignees {
@@ -7059,6 +7248,7 @@ export interface GetTaskQuery_task {
   gating: TaskGatingType;
   subtasks: GetTaskQuery_task_subtasks[];
   tags: GetTaskQuery_task_tags[];
+  skills: GetTaskQuery_task_skills[];
   assignees: GetTaskQuery_task_assignees[];
   owners: GetTaskQuery_task_owners[];
   reward: GetTaskQuery_task_reward | null;
@@ -7148,6 +7338,12 @@ export interface GetPaginatedTasksQuery_paginated_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface GetPaginatedTasksQuery_paginated_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface GetPaginatedTasksQuery_paginated_tasks_assignees {
@@ -7274,6 +7470,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks {
   gating: TaskGatingType;
   subtasks: GetPaginatedTasksQuery_paginated_tasks_subtasks[];
   tags: GetPaginatedTasksQuery_paginated_tasks_tags[];
+  skills: GetPaginatedTasksQuery_paginated_tasks_skills[];
   assignees: GetPaginatedTasksQuery_paginated_tasks_assignees[];
   owners: GetPaginatedTasksQuery_paginated_tasks_owners[];
   reward: GetPaginatedTasksQuery_paginated_tasks_reward | null;
@@ -7323,6 +7520,12 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_assignees {
@@ -7473,6 +7676,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks {
   gating: TaskGatingType;
   subtasks: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_subtasks[];
   tags: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_tags[];
+  skills: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_skills[];
   assignees: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_assignees[];
   owners: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_owners[];
   reward: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward | null;
@@ -7523,6 +7727,12 @@ export interface GetTasksToPayQuery_tasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface GetTasksToPayQuery_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface GetTasksToPayQuery_tasks_assignees_threepids {
@@ -7680,6 +7890,7 @@ export interface GetTasksToPayQuery_tasks {
   gating: TaskGatingType;
   subtasks: GetTasksToPayQuery_tasks_subtasks[];
   tags: GetTasksToPayQuery_tasks_tags[];
+  skills: GetTasksToPayQuery_tasks_skills[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
   owners: GetTasksToPayQuery_tasks_owners[];
   reward: GetTasksToPayQuery_tasks_reward | null;
@@ -8042,6 +8253,25 @@ export interface GetDiscordGuildRolesQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetSkillsQuery
+// ====================================================
+
+export interface GetSkillsQuery_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface GetSkillsQuery {
+  skills: GetSkillsQuery_skills[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
@@ -8060,6 +8290,12 @@ export interface TaskCreatedSubscription_task_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_assignees {
@@ -8186,6 +8422,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   gating: TaskGatingType;
   subtasks: TaskCreatedSubscription_task_subtasks_subtasks[];
   tags: TaskCreatedSubscription_task_subtasks_tags[];
+  skills: TaskCreatedSubscription_task_subtasks_skills[];
   assignees: TaskCreatedSubscription_task_subtasks_assignees[];
   owners: TaskCreatedSubscription_task_subtasks_owners[];
   reward: TaskCreatedSubscription_task_subtasks_reward | null;
@@ -8203,6 +8440,12 @@ export interface TaskCreatedSubscription_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskCreatedSubscription_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskCreatedSubscription_task_assignees {
@@ -8489,6 +8732,7 @@ export interface TaskCreatedSubscription_task {
   gating: TaskGatingType;
   subtasks: TaskCreatedSubscription_task_subtasks[];
   tags: TaskCreatedSubscription_task_tags[];
+  skills: TaskCreatedSubscription_task_skills[];
   assignees: TaskCreatedSubscription_task_assignees[];
   owners: TaskCreatedSubscription_task_owners[];
   reward: TaskCreatedSubscription_task_reward | null;
@@ -8535,6 +8779,12 @@ export interface TaskUpdatedSubscription_task_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_assignees {
@@ -8661,6 +8911,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   gating: TaskGatingType;
   subtasks: TaskUpdatedSubscription_task_subtasks_subtasks[];
   tags: TaskUpdatedSubscription_task_subtasks_tags[];
+  skills: TaskUpdatedSubscription_task_subtasks_skills[];
   assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
   owners: TaskUpdatedSubscription_task_subtasks_owners[];
   reward: TaskUpdatedSubscription_task_subtasks_reward | null;
@@ -8678,6 +8929,12 @@ export interface TaskUpdatedSubscription_task_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskUpdatedSubscription_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskUpdatedSubscription_task_assignees {
@@ -8964,6 +9221,7 @@ export interface TaskUpdatedSubscription_task {
   gating: TaskGatingType;
   subtasks: TaskUpdatedSubscription_task_subtasks[];
   tags: TaskUpdatedSubscription_task_tags[];
+  skills: TaskUpdatedSubscription_task_skills[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   owners: TaskUpdatedSubscription_task_owners[];
   reward: TaskUpdatedSubscription_task_reward | null;
@@ -10140,6 +10398,12 @@ export interface Task_tags {
   projectId: string;
 }
 
+export interface Task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface Task_assignees {
   __typename: "User";
   id: Scalar.UUID;
@@ -10264,6 +10528,7 @@ export interface Task {
   gating: TaskGatingType;
   subtasks: Task_subtasks[];
   tags: Task_tags[];
+  skills: Task_skills[];
   assignees: Task_assignees[];
   owners: Task_owners[];
   reward: Task_reward | null;
@@ -10297,6 +10562,12 @@ export interface TaskWithOrganization_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskWithOrganization_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskWithOrganization_assignees {
@@ -10447,6 +10718,7 @@ export interface TaskWithOrganization {
   gating: TaskGatingType;
   subtasks: TaskWithOrganization_subtasks[];
   tags: TaskWithOrganization_tags[];
+  skills: TaskWithOrganization_skills[];
   assignees: TaskWithOrganization_assignees[];
   owners: TaskWithOrganization_owners[];
   reward: TaskWithOrganization_reward | null;
@@ -10537,6 +10809,12 @@ export interface TaskDetails_subtasks_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskDetails_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskDetails_subtasks_assignees {
@@ -10663,6 +10941,7 @@ export interface TaskDetails_subtasks {
   gating: TaskGatingType;
   subtasks: TaskDetails_subtasks_subtasks[];
   tags: TaskDetails_subtasks_tags[];
+  skills: TaskDetails_subtasks_skills[];
   assignees: TaskDetails_subtasks_assignees[];
   owners: TaskDetails_subtasks_owners[];
   reward: TaskDetails_subtasks_reward | null;
@@ -10680,6 +10959,12 @@ export interface TaskDetails_tags {
   createdAt: Scalar.DateTime;
   deletedAt: Scalar.DateTime | null;
   projectId: string;
+}
+
+export interface TaskDetails_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface TaskDetails_assignees {
@@ -10966,6 +11251,7 @@ export interface TaskDetails {
   gating: TaskGatingType;
   subtasks: TaskDetails_subtasks[];
   tags: TaskDetails_tags[];
+  skills: TaskDetails_skills[];
   assignees: TaskDetails_assignees[];
   owners: TaskDetails_owners[];
   reward: TaskDetails_reward | null;
@@ -11010,6 +11296,12 @@ export interface UserProfile_details {
   value: string;
 }
 
+export interface UserProfile_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UserProfile {
   __typename: "User";
   id: Scalar.UUID;
@@ -11019,6 +11311,7 @@ export interface UserProfile {
   bio: string | null;
   organizations: UserProfile_organizations[];
   details: UserProfile_details[];
+  skills: UserProfile_skills[];
 }
 
 /* tslint:disable */
@@ -11087,6 +11380,12 @@ export interface UserDetails_details {
   value: string;
 }
 
+export interface UserDetails_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UserDetails_threepids {
   __typename: "Threepid";
   id: string;
@@ -11125,6 +11424,7 @@ export interface UserDetails {
   bio: string | null;
   organizations: UserDetails_organizations[];
   details: UserDetails_details[];
+  skills: UserDetails_skills[];
   threepids: UserDetails_threepids[];
   prompts: UserDetails_prompts[];
   taskGatingDefaults: UserDetails_taskGatingDefaults[];
@@ -11224,6 +11524,21 @@ export interface OrganizationDetails {
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Skill
+// ====================================================
+
+export interface Skill {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
 }
 
 /* tslint:disable */
@@ -11594,6 +11909,7 @@ export interface CreateTaskInput {
   projectId: Scalar.UUID;
   parentTaskId?: Scalar.UUID | null;
   tagIds?: Scalar.UUID[] | null;
+  skillIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;
@@ -11666,6 +11982,7 @@ export interface ProjectTokenGateInput {
 export interface SearchTasksInput {
   statuses?: TaskStatus[] | null;
   hasReward?: boolean | null;
+  skillIds?: Scalar.UUID[] | null;
   assigneeIds?: (Scalar.UUID | null)[] | null;
   projectIds?: (Scalar.UUID | null)[] | null;
   parentTaskId?: Scalar.UUID | null;
@@ -11765,6 +12082,7 @@ export interface UpdateTaskInput {
   projectId?: Scalar.UUID | null;
   sortKey?: string | null;
   tagIds?: Scalar.UUID[] | null;
+  skillIds?: Scalar.UUID[] | null;
   assigneeIds?: Scalar.UUID[] | null;
   ownerIds?: Scalar.UUID[] | null;
   storyPoints?: number | null;

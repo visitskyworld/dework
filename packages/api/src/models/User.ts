@@ -8,6 +8,7 @@ import { Role } from "./rbac/Role";
 import { UserRole } from "./rbac/UserRole";
 import { TaskGatingDefault } from "./TaskGatingDefault";
 import { UserPrompt } from "./UserPrompt";
+import { Skill } from "./Skill";
 
 @Entity()
 @ObjectType()
@@ -49,6 +50,11 @@ export class User extends Audit {
   })
   @Field(() => [Role])
   public roles!: Promise<Role[]>;
+
+  @ManyToMany(() => Skill)
+  @JoinTable({ name: "user_skill" })
+  @Field(() => [Skill])
+  public skills!: Promise<Skill[]>;
 
   @OneToMany(() => UserRole, (x) => x.user)
   @Field(() => [UserRole])

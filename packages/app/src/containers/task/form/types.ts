@@ -25,6 +25,7 @@ export interface TaskFormValues {
   dueDate?: moment.Moment;
   storyPoints?: number;
   tagIds?: string[];
+  skillIds?: string[];
   gating?: TaskGatingType;
   defaultGating?: boolean;
   roleIds?: string[];

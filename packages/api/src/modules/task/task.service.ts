@@ -206,6 +206,7 @@ export class TaskService {
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")
+      .leftJoinAndSelect("task.skills", "skill")
       .leftJoinAndSelect("task.reward", "reward")
       .leftJoinAndSelect("reward.payment", "payment")
       .leftJoinAndSelect("reward.token", "token")

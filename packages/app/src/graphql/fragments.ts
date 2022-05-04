@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { skill } from "./fragments/skill";
 import { taskView } from "./fragments/task";
 
 export const entityDetail = gql`
@@ -463,6 +464,9 @@ export const task = gql`
     tags {
       ...TaskTag
     }
+    skills {
+      ...Skill
+    }
     assignees {
       ...User
     }
@@ -490,6 +494,7 @@ export const task = gql`
   }
 
   ${taskTag}
+  ${skill}
   ${taskReward}
   ${user}
   ${taskReview}
@@ -600,11 +605,15 @@ export const userProfile = gql`
     details {
       ...EntityDetail
     }
+    skills {
+      ...Skill
+    }
   }
 
   ${user}
   ${organization}
   ${entityDetail}
+  ${skill}
 `;
 
 export const userPrompt = gql`

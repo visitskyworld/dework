@@ -42,6 +42,7 @@ interface IndexedTask {
   reward: number | undefined;
 
   tagIds: string[];
+  skillIds: string[];
   organizationId: string;
   assigneeIds: string[];
   ownerIds: string[];
@@ -97,6 +98,7 @@ export class TaskSearchService implements OnModuleInit {
             assigneeIds: { type: "keyword" },
             ownerIds: { type: "keyword" },
             tagIds: { type: "keyword" },
+            skillIds: { type: "keyword" },
             parentTaskId: { type: "keyword" },
             projectId: { type: "keyword" },
             organizationId: { type: "keyword" },
@@ -167,6 +169,7 @@ export class TaskSearchService implements OnModuleInit {
     assigneeIds?: (string | null)[];
     parentTaskId?: null;
     tagIds?: string[];
+    skillIds?: string[];
     hasReward?: boolean;
     spam?: boolean;
     public?: boolean;
@@ -263,6 +266,18 @@ export class TaskSearchService implements OnModuleInit {
                     },
                   ]
                 : []),
+              ...(!!q.skillIds
+                ? [
+                    {
+                      terms_set: {
+                        skillIds: {
+                          terms: q.skillIds,
+                          minimum_should_match_script: { source: "1" },
+                        },
+                      },
+                    },
+                  ]
+                : []),
               ...(q.hasReward !== undefined
                 ? [{ match: { hasReward: q.hasReward } }]
                 : []),
@@ -308,6 +323,7 @@ export class TaskSearchService implements OnModuleInit {
         .leftJoinAndSelect("task.assignees", "assignee")
         .leftJoinAndSelect("task.owners", "owner")
         .leftJoinAndSelect("task.tags", "tag")
+        .leftJoinAndSelect("task.skills", "skill")
         .leftJoinAndSelect("task.reward", "reward")
         .leftJoinAndSelect("reward.payment", "payment")
         .leftJoinAndSelect("reward.token", "token")
@@ -344,6 +360,7 @@ export class TaskSearchService implements OnModuleInit {
       hasReward: !!task.rewardId,
       organizationId: organization.id,
       tagIds: task.tags.map((t) => t.id),
+      skillIds: (await task.skills).map((s) => s.id),
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
       public: isPublic,

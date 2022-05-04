@@ -9,12 +9,7 @@ import {
   TaskSearchCreatedEventHandler,
   TaskSearchUpdatedEventHandler,
 } from "./task.search.eventHandlers";
-import {
-  OrganizationTaskSearchResolver,
-  ProjectTaskSearchResolver,
-  TaskSearchResolver,
-  UserTaskSearchResolver,
-} from "./task.search.resolver";
+import { TaskSearchResolver } from "./task.search.resolver";
 import { OrganizationModule } from "../../organization/organization.module";
 import { RbacModule } from "../../rbac/rbac.module";
 
@@ -36,9 +31,6 @@ import { RbacModule } from "../../rbac/rbac.module";
     TaskSearchCreatedEventHandler,
     TaskSearchUpdatedEventHandler,
     TaskSearchResolver,
-    OrganizationTaskSearchResolver,
-    ProjectTaskSearchResolver,
-    UserTaskSearchResolver,
   ],
   exports: [TaskSearchService],
 })

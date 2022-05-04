@@ -94,6 +94,14 @@ export const UserSettings: FC<Props> = () => {
             );
           })}
         </Space>
+
+        {/* <Typography.Title level={5}>Skills</Typography.Title>
+        <SkillSelect
+          placeholder="Select skills..."
+          value={skillIds}
+          style={{ width: "100%" }}
+          onChange={setUserSkills}
+        /> */}
       </Col>
     </Space>
   );

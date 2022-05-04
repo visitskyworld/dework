@@ -22,6 +22,9 @@ export class CreateTaskInput {
   public tagIds?: string[];
 
   @Field(() => [GraphQLUUID], { nullable: true })
+  public skillIds?: string[];
+
+  @Field(() => [GraphQLUUID], { nullable: true })
   public assigneeIds?: string[];
 
   @Field(() => [GraphQLUUID], { nullable: true })

@@ -148,6 +148,9 @@ export class TaskResolver {
   ): Promise<Task> {
     const task = await this.taskService.create({
       tags: !!input.tagIds ? (input.tagIds.map((id) => ({ id })) as any) : [],
+      skills: !!input.skillIds
+        ? (input.skillIds.map((id) => ({ id })) as any)
+        : [],
       assignees: !!input.assigneeIds
         ? (input.assigneeIds.map((id) => ({ id })) as any)
         : [],
@@ -274,6 +277,9 @@ export class TaskResolver {
         tags: !!input.tagIds
           ? (input.tagIds.map((id) => ({ id })) as any)
           : undefined,
+        skills: !!input.skillIds
+          ? (input.skillIds.map((id) => ({ id })) as any)
+          : [],
         assignees: !!input.assigneeIds
           ? (input.assigneeIds.map((id) => ({ id })) as any)
           : undefined,

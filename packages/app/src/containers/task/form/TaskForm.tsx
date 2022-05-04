@@ -341,6 +341,16 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
+          {/* <Form.Item name="skillIds" label="Skills">
+            <SkillSelect
+              disabled={!canChange("skillIds")}
+              placeholder={
+                !canChange("skillIds") ? "No skills..." : "Select skills..."
+              }
+              allowClear
+            />
+          </Form.Item> */}
+
           <TaskGatingFields
             mode={mode}
             task={task}

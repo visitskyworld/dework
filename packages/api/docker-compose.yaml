@@ -32,6 +32,8 @@ services:
     environment:
         discovery.type: single-node
         cluster.name: dework
+        ES_JAVA_OPTS: -Xms512m -Xmx512m
+    restart: always
     volumes:
         - dework-elasticsearch-data:/usr/share/elasticsearch/data
   
@@ -42,6 +44,8 @@ services:
     environment:
         discovery.type: single-node
         cluster.name: dework-test
+        ES_JAVA_OPTS: -Xms512m -Xmx512m
+    restart: always
 
   #redis:
   #  image: redis:5-alpine

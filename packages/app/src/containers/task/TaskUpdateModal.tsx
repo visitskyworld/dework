@@ -35,10 +35,10 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
   );
 
   const forbiddenError = !!error?.graphQLErrors.some(
-    (e) => e.extensions.response.statusCode === 403
+    (e) => e.extensions?.response?.statusCode === 403
   );
   const notFoundError = !!error?.graphQLErrors.some(
-    (e) => e.extensions.response.statusCode === 404
+    (e) => e.extensions?.response?.statusCode === 404
   );
 
   return (
