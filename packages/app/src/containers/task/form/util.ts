@@ -1,6 +1,6 @@
 import {
   RoleWithRules,
-  Task,
+  TaskDetails,
   TaskReward,
   UpdateTaskRewardInput,
 } from "@dewo/app/graphql/types";
@@ -45,7 +45,7 @@ export const toTaskRewardFormValues = (
 };
 
 export const toTaskFormValues = (
-  task: Task,
+  task: TaskDetails,
   roles: RoleWithRules[]
 ): TaskFormValues => ({
   projectId: task.projectId!,
