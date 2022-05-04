@@ -1,8 +1,8 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
-import { Button, ButtonProps, message, Space } from "antd";
+import { Typography, Button, ButtonProps, message, Space } from "antd";
 import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
-import { Task } from "@dewo/app/graphql/types";
+import { Task, ThreepidSource } from "@dewo/app/graphql/types";
 import Modal from "antd/lib/modal/Modal";
 import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../../hooks";
@@ -10,13 +10,17 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 import { useFollowOrganization } from "@dewo/app/containers/rbac/hooks";
 import { useProject } from "../../../project/hooks";
+import { MetamaskAuthButton } from "@dewo/app/containers/auth/buttons/MetamaskAuthButton";
+import { getThreepidName } from "@dewo/app/containers/auth/buttons/ThreepidAuthButton";
+import { WalletConnectButton } from "@dewo/app/containers/auth/buttons/WalletConnectButton";
 
 interface Props extends ButtonProps {
   task: Task;
 }
 
 export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
-  const modalVisible = useToggle();
+  const submissionModalVisible = useToggle();
+  const connectWalletModalVisible = useToggle();
 
   const [content, setContent] = useState<string>();
 
@@ -25,6 +29,11 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   const currentSubmission = useMemo(
     () => task.submissions.find((s) => s.userId === user?.id),
     [task.submissions, user]
+  );
+
+  const hasConnectedWallet = useMemo(
+    () => user?.threepids?.some((t) => t.source === ThreepidSource.metamask),
+    [user]
   );
   const followOrganization = useFollowOrganization(project?.organizationId);
 
@@ -45,7 +54,7 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
       message.success("Submission updated");
     }
 
-    modalVisible.toggleOff();
+    submissionModalVisible.toggleOff();
   }, [
     content,
     createSubmission,
@@ -53,9 +62,30 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
     followOrganization,
     user,
     currentSubmission,
-    modalVisible,
+    submissionModalVisible,
     task.id,
   ]);
+
+  const handleSubmitOrEditWork = useCallback(() => {
+    const needToConnectWallet =
+      !hasConnectedWallet && !currentSubmission && !!task.reward;
+    if (needToConnectWallet) {
+      connectWalletModalVisible.toggleOn();
+    } else {
+      submissionModalVisible.toggleOn();
+    }
+  }, [
+    hasConnectedWallet,
+    currentSubmission,
+    task.reward,
+    connectWalletModalVisible,
+    submissionModalVisible,
+  ]);
+
+  const handleAuthedWithWallet = useCallback(() => {
+    connectWalletModalVisible.toggleOff();
+    submissionModalVisible.toggleOn();
+  }, [connectWalletModalVisible, submissionModalVisible]);
 
   if (!user) {
     return (
@@ -74,14 +104,48 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
         {...buttonProps}
         icon={<Icons.EditOutlined />}
         name={!!currentSubmission ? "Edit submission" : "Submit work"}
-        onClick={modalVisible.toggleOn}
+        onClick={handleSubmitOrEditWork}
       >
         {!!currentSubmission ? "Edit Submission" : "Submit Work"}
       </Button>
       <Modal
+        onCancel={connectWalletModalVisible.toggleOff}
+        visible={connectWalletModalVisible.isOn}
+        footer={null}
+      >
+        <Typography.Title level={2} style={{ textAlign: "center" }}>
+          Connect your Wallet
+        </Typography.Title>
+
+        <Typography.Paragraph
+          type="secondary"
+          style={{ textAlign: "center", fontSize: "130%" }}
+        >
+          To submit work, you need to connect a wallet so you can get paid.
+        </Typography.Paragraph>
+
+        <Space
+          direction="vertical"
+          style={{ width: "100%", marginTop: "24px" }}
+        >
+          <MetamaskAuthButton
+            children={getThreepidName[ThreepidSource.metamask]}
+            size="large"
+            block
+            onAuthed={handleAuthedWithWallet}
+          />
+          <WalletConnectButton
+            children="WalletConnect"
+            size="large"
+            block
+            onAuthed={handleAuthedWithWallet}
+          />
+        </Space>
+      </Modal>
+      <Modal
         title="Submission"
-        visible={modalVisible.isOn}
-        onCancel={modalVisible.toggleOff}
+        visible={submissionModalVisible.isOn}
+        onCancel={submissionModalVisible.toggleOff}
         footer={null}
       >
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
