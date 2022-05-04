@@ -6,12 +6,15 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { FeedbackForm } from "./FeedbackForm";
+import { useIsEmbedded } from "@dewo/app/util/navigation";
 
 export const FloatingFooterButtons: FC = () => {
   const { user } = useAuthContext();
   const modal = useToggle();
+  const embedded = useIsEmbedded();
 
   if (!user) return null;
+  if (embedded) return null;
   return (
     <>
       <Space style={{ position: "absolute", bottom: 16, right: 16 }}>

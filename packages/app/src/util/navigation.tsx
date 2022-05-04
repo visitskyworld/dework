@@ -66,3 +66,8 @@ export function useNavigateToTaskApplicationFn(): (
     [router]
   );
 }
+
+export function useIsEmbedded(): boolean {
+  const router = useRouter();
+  return router.query.hasOwnProperty("embed");
+}

@@ -10,8 +10,7 @@ import styles from "./TaskViewTabs.module.less";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewCreateFormPopover } from "./form/create/TaskViewCreateFormPopover";
 import { AtLeast } from "@dewo/app/types/general";
-import { ProjectTaskList } from "../../project/list/ProjectTaskList";
-import { ProjectTaskBoard } from "../../project/board/ProjectTaskBoard";
+import { TaskViewLayout } from "./TaskViewLayout";
 
 interface Props {
   projectId?: string;
@@ -97,19 +96,7 @@ export const TaskViewTabs: FC<Props> = ({
             key={`view:${view.id}`}
             closable={false}
           >
-            {(currentView?.id === view.id ? currentView : view).type ===
-            TaskViewType.BOARD ? (
-              <ProjectTaskBoard projectId={projectId} />
-            ) : (
-              <div
-                style={{ width: "100%", height: "100%", overflowX: "hidden" }}
-              >
-                <ProjectTaskList
-                  projectId={projectId}
-                  className={styles.list}
-                />
-              </div>
-            )}
+            {view.id === currentView?.id && <TaskViewLayout />}
           </Tabs.TabPane>
         ))}
         {canCreate && (

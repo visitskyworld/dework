@@ -14,10 +14,13 @@ import { ImportProjectsFromNotionModal } from "@dewo/app/containers/integrations
 import { ImportProjectsFromTrelloModal } from "@dewo/app/containers/integrations/trello/ImportProjectsFromTrelloModal";
 import { OrganizationSeo } from "@dewo/app/containers/seo/OrganizationSeo";
 import { ImportProjectsFromGithubModal } from "@dewo/app/containers/integrations/github/ImportProjectsFromGithubModal";
+import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
+import { useIsEmbedded } from "@dewo/app/util/navigation";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = router.pathname.split("/")[2] ?? "overview";
+  const isEmbedded = useIsEmbedded() as boolean;
   const importSource = router.query.importSource as string | undefined;
   const settingsTab = router.query.settingsTab as string | undefined;
 
@@ -59,31 +62,38 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      <Sidebar />
+      {!isEmbedded && <Sidebar />}
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <PageHeader
-          breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
-          className="bg-body-secondary"
-        />
-        <Row
-          style={{ paddingLeft: inset, paddingRight: inset }}
-          className="bg-body-secondary"
-        >
-          <OrganizationHeaderSummary organizationId={organizationId} />
-        </Row>
+        {!isEmbedded && (
+          <PageHeader
+            breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
+            className="bg-body-secondary"
+          />
+        )}
+        {!isEmbedded && (
+          <Row
+            style={{ paddingLeft: inset, paddingRight: inset }}
+            className="bg-body-secondary"
+          >
+            <OrganizationHeaderSummary organizationId={organizationId} />
+          </Row>
+        )}
         <Layout.Content style={{ flex: 1 }}>
-          {!!organizationId && (
-            <OrganizationTabs
-              tabBarStyle={{
-                paddingLeft: inset,
-                paddingRight: inset,
-              }}
-              tabPaneStyle={{ padding: `12px ${inset}px` }}
-              organizationId={organizationId}
-              currentTab={currentTab}
-              settingsTab={settingsTab}
-            />
-          )}
+          {!!organizationId &&
+            (isEmbedded ? (
+              <OrganizationTaskBoard organizationId={organizationId} />
+            ) : (
+              <OrganizationTabs
+                tabBarStyle={{
+                  paddingLeft: inset,
+                  paddingRight: inset,
+                }}
+                tabPaneStyle={{ padding: `12px ${inset}px` }}
+                organizationId={organizationId}
+                currentTab={currentTab}
+                settingsTab={settingsTab}
+              />
+            ))}
         </Layout.Content>
       </Layout.Content>
 

@@ -23,10 +23,13 @@ import { TaskStatus } from "@dewo/app/graphql/types";
 import moment from "moment";
 import { TaskViewProvider } from "@dewo/app/containers/task/views/TaskViewContext";
 import { TaskViewTabs } from "@dewo/app/containers/task/views/TaskViewTabs";
+import { useIsEmbedded } from "@dewo/app/util/navigation";
+import { TaskViewLayout } from "@dewo/app/containers/task/views/TaskViewLayout";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const currentTab = router.query.tab as string | undefined;
+  const isEmbedded = useIsEmbedded();
 
   const { organizationSlug, projectSlug } = router.query as {
     organizationSlug: string;
@@ -63,58 +66,70 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      <Sidebar />
+      {!isEmbedded && <Sidebar />}
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <ProjectHeader projectId={projectId} organizationId={organizationId} />
+        {!isEmbedded && (
+          <ProjectHeader
+            projectId={projectId}
+            organizationId={organizationId}
+          />
+        )}
         <Layout.Content style={{ flex: 1 }}>
           <TaskViewProvider projectId={projectId}>
-            <TaskViewTabs
-              projectId={projectId}
-              activeKey={currentTab}
-              extraTabs={[
-                !!details && canEditProject && (
+            {isEmbedded ? (
+              <TaskViewLayout />
+            ) : (
+              <TaskViewTabs
+                projectId={projectId}
+                activeKey={currentTab}
+                extraTabs={[
+                  !!details && canEditProject && (
+                    <Tabs.TabPane
+                      tab={
+                        <Tab
+                          icon={<Icons.SettingOutlined />}
+                          children="Settings"
+                        />
+                      }
+                      style={{ padding: 12 }}
+                      key="settings"
+                      className="max-w-lg mx-auto w-full"
+                    >
+                      <ProjectSettings project={details} />
+                    </Tabs.TabPane>
+                  ),
+                  !!project && !!details?.options?.showCommunitySuggestions && (
+                    <Tabs.TabPane
+                      tab={
+                        <Tab
+                          icon={<Icons.UsergroupAddOutlined />}
+                          children="Community Suggestions"
+                        />
+                      }
+                      key="community"
+                    >
+                      <CommunitySuggestions projectId={project.id} />
+                    </Tabs.TabPane>
+                  ),
                   <Tabs.TabPane
                     tab={
                       <Tab
-                        icon={<Icons.SettingOutlined />}
-                        children="Settings"
+                        icon={<Icons.InfoCircleOutlined />}
+                        children="About"
                       />
                     }
-                    style={{ padding: 12 }}
-                    key="settings"
-                    className="max-w-lg mx-auto w-full"
+                    key="about"
+                    style={{ padding: "24px 12px" }}
                   >
-                    <ProjectSettings project={details} />
-                  </Tabs.TabPane>
-                ),
-                !!project && !!details?.options?.showCommunitySuggestions && (
-                  <Tabs.TabPane
-                    tab={
-                      <Tab
-                        icon={<Icons.UsergroupAddOutlined />}
-                        children="Community Suggestions"
-                      />
-                    }
-                    key="community"
-                  >
-                    <CommunitySuggestions projectId={project.id} />
-                  </Tabs.TabPane>
-                ),
-                <Tabs.TabPane
-                  tab={
-                    <Tab icon={<Icons.InfoCircleOutlined />} children="About" />
-                  }
-                  key="about"
-                  style={{ padding: "24px 12px" }}
-                >
-                  {!!details && (
-                    <Col className="mx-auto max-w-sm w-full">
-                      <ProjectAbout project={details} />
-                    </Col>
-                  )}
-                </Tabs.TabPane>,
-              ].filter((t): t is ReactElement => !!t)}
-            />
+                    {!!details && (
+                      <Col className="mx-auto max-w-sm w-full">
+                        <ProjectAbout project={details} />
+                      </Col>
+                    )}
+                  </Tabs.TabPane>,
+                ].filter((t): t is ReactElement => !!t)}
+              />
+            )}
           </TaskViewProvider>
         </Layout.Content>
       </Layout.Content>
