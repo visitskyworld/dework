@@ -127,12 +127,12 @@ export const organizationUsers = gql`
     organization: getOrganization(id: $organizationId) {
       id
       users {
-        ...UserWithRolesAndThreePids
+        ...UserWithRolesAndThreepids
       }
     }
   }
 
-  ${Fragments.userWithRolesAndThreePids}
+  ${Fragments.userWithRolesAndThreepids}
 `;
 
 export const organizationRoles = gql`

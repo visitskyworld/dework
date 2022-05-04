@@ -5723,14 +5723,20 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   organizationId: string;
 }
 
+export interface GetOrganizationUsersQuery_organization_users_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
 export interface GetOrganizationUsersQuery_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-  threepids: UserDetails_threepids[];
   roles: GetOrganizationUsersQuery_organization_users_roles[];
+  threepids: GetOrganizationUsersQuery_organization_users_threepids[];
 }
 
 export interface GetOrganizationUsersQuery_organization {
@@ -9164,6 +9170,21 @@ export interface Role {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Threepid
+// ====================================================
+
+export interface Threepid {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: RoleWithRules
 // ====================================================
 
@@ -9231,8 +9252,43 @@ export interface UserWithRoles {
   username: string;
   imageUrl: string | null;
   permalink: string;
-  threepids?: UserDetails_threepids[];
   roles: UserWithRoles_roles[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: UserWithRolesAndThreepids
+// ====================================================
+
+export interface UserWithRolesAndThreepids_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+}
+
+export interface UserWithRolesAndThreepids_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  threepid: string;
+}
+
+export interface UserWithRolesAndThreepids {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: UserWithRolesAndThreepids_roles[];
+  threepids: UserWithRolesAndThreepids_threepids[];
 }
 
 /* tslint:disable */

@@ -69,8 +69,8 @@ export const userWithRoles = gql`
   ${role}
 `;
 
-export const userWithRolesAndThreePids = gql`
-  fragment UserWithRolesAndThreePids on User {
+export const userWithRolesAndThreepids = gql`
+  fragment UserWithRolesAndThreepids on User {
     ...User
     roles {
       ...Role

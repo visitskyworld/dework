@@ -4,7 +4,12 @@ import { ExportOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { useOrganizationUsers } from "../hooks";
 import { Table, Space, Row, Typography, Button } from "antd";
-import { Role, ThreepidSource, UserWithRoles } from "@dewo/app/graphql/types";
+import {
+  Role,
+  ThreepidSource,
+  UserWithRoles,
+  UserWithRolesAndThreepids,
+} from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { RoleTag } from "@dewo/app/components/RoleTag";
@@ -15,7 +20,7 @@ interface Props {
 }
 
 interface ExportProps {
-  users: UserWithRoles[];
+  users: UserWithRolesAndThreepids[];
   organizationId: string;
 }
 
