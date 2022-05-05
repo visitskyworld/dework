@@ -30,12 +30,14 @@ export class TaskSearchResolver {
       projectIds.push(...projects.map((p) => p.id));
     }
 
+    const isQueryingOnLandingPage = !projectIds;
+
+    // TODO(fant): if projectId is set, make sure user has access to it
     return this.service.search({
       ...filter,
       cursor,
-      spam: false,
-      public: true,
       projectIds,
+      ...(isQueryingOnLandingPage ? { public: true, spam: false } : {}),
     });
   }
 }

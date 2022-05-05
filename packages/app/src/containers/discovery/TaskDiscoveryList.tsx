@@ -1,10 +1,10 @@
 import {
+  SearchTasksInput,
   Task,
   TaskGatingType,
   TaskStatus,
   TaskViewSortByDirection,
   TaskViewSortByField,
-  TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import {
   Button,
@@ -21,7 +21,7 @@ import * as Icons from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { CompareFn } from "antd/lib/table/interface";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { calculateTaskRewardAsUSD, usePaginatedTasks } from "../task/hooks";
+import { calculateTaskRewardAsUSD } from "../task/hooks";
 import { TaskDiscoveryTable } from "./TaskDiscoveryTable";
 import { FormSection } from "@dewo/app/components/FormSection";
 import _ from "lodash";
@@ -30,6 +30,7 @@ import { useToggle } from "@dewo/app/util/hooks";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { suggestedTags } from "../../util/tags";
+import { useTaskViewLayoutData } from "../task/views/hooks";
 
 interface FilterValues {
   includeOpenBounties: boolean;
@@ -76,18 +77,34 @@ export const TaskDiscoveryList: FC = () => {
     []
   );
 
-  const paginated = usePaginatedTasks(
+  const [data] = useTaskViewLayoutData(
+    useMemo<SearchTasksInput[]>(
+      () => [
+        {
+          statuses: [TaskStatus.TODO],
+          hasReward: true,
+          sortBy: {
+            field: TaskViewSortByField.createdAt,
+            direction: TaskViewSortByDirection.DESC,
+          },
+          assigneeIds: [null],
+          parentTaskId: null,
+        },
+      ],
+      []
+    ),
     {
-      statuses: [TaskStatus.TODO],
-      hasReward: true,
-      sortBy: {
-        field: TaskViewSortByField.createdAt,
-        direction: TaskViewSortByDirection.DESC,
+      withOrganization: true,
+      sort: sortBy[values.sortBy],
+      filter: (t) => {
+        if (!filterFn.tags(values)(t)) return false;
+        if (!!t.name.match(/(demo|test)/i)) return false;
+        return (
+          filterFn.applicationTasks(values)(t) ||
+          filterFn.openBounties(values)(t)
+        );
       },
-      assigneeIds: [null],
-      parentTaskId: null,
-    },
-    true
+    }
   );
 
   const screens = useBreakpoint();
@@ -95,39 +112,26 @@ export const TaskDiscoveryList: FC = () => {
   const tasksTags = useMemo(
     () =>
       _.uniqBy(
-        _.flatten(paginated.tasks?.map((t) => t.tags)).map((tag) => ({
+        _.flatten(data.tasks?.map((t) => t.tags)).map((tag) => ({
           ...tag,
           label: tag.label.toLowerCase(),
         })),
         (t) => t.label
       ),
-    [paginated?.tasks]
-  );
-  const filteredAndSortedTasks = useMemo(
-    () =>
-      paginated?.tasks
-        ?.filter(filterFn.tags(values))
-        .filter((t) => !t.name.toLowerCase().includes("test"))
-        .filter(
-          (t) =>
-            filterFn.applicationTasks(values)(t) ||
-            filterFn.openBounties(values)(t)
-        )
-        .sort(sortBy[values.sortBy]),
-    [paginated?.tasks, values]
+    [data?.tasks]
   );
 
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        🔥 Explore Bounties {!!paginated.total && `(${paginated.total})`}
+        🔥 Explore Bounties {!!data.total && `(${data.total})`}
         <QuestionmarkTooltip
           marginLeft={8}
           title="Only tasks in public boards and with a bounty reward show up here!"
         />
       </Typography.Title>
       <div className="mx-auto max-w-lg w-full">
-        {!!paginated.tasks && !!filteredAndSortedTasks ? (
+        {!!data.tasks ? (
           <Row gutter={16}>
             <Col sm={24} md={8}>
               <Card
@@ -220,17 +224,7 @@ export const TaskDiscoveryList: FC = () => {
               </Card>
             </Col>
             <Col sm={24} md={16}>
-              <TaskDiscoveryTable
-                key={JSON.stringify(values)}
-                tasks={filteredAndSortedTasks as TaskWithOrganization[]}
-                total={
-                  paginated.hasMore
-                    ? paginated.total!
-                    : filteredAndSortedTasks.length
-                }
-                loading={paginated.loading}
-                onFetchMore={paginated.fetchMore}
-              />
+              <TaskDiscoveryTable key={JSON.stringify(values)} data={data} />
             </Col>
           </Row>
         ) : (

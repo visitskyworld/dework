@@ -11891,9 +11891,12 @@ export interface ProjectTokenGateInput {
 
 export interface SearchTasksInput {
   statuses?: TaskStatus[] | null;
+  priorities?: TaskPriority[] | null;
   hasReward?: boolean | null;
   skillIds?: Scalar.UUID[] | null;
   assigneeIds?: (Scalar.UUID | null)[] | null;
+  ownerIds?: (Scalar.UUID | null)[] | null;
+  tagIds?: Scalar.UUID[] | null;
   projectIds?: (Scalar.UUID | null)[] | null;
   parentTaskId?: Scalar.UUID | null;
   organizationId?: Scalar.UUID | null;

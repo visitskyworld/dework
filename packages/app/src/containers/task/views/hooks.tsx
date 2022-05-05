@@ -1,4 +1,5 @@
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
+import * as Queries from "@dewo/app/graphql/queries";
 import {
   CreateTaskViewInput,
   TaskView,
@@ -16,8 +17,12 @@ import {
   PaymentStatus,
   TaskPriority,
   TaskViewType,
+  SearchTasksInput,
+  TaskWithOrganization,
+  GetPaginatedTasksQuery,
+  GetPaginatedTasksQueryVariables,
 } from "@dewo/app/graphql/types";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   createTaskView,
   updateTaskView,
@@ -345,5 +350,141 @@ export function useTaskViewGroups(
       customSortingSections,
       projectId,
     ]
+  );
+}
+
+export interface TaskViewLayoutItem {
+  value: TaskStatus;
+  type: TaskViewGroupBy;
+  query: SearchTasksInput;
+}
+
+export function useTaskViewLayoutItems() {
+  const { currentView } = useTaskViewContext();
+  const details = useProjectDetails(currentView?.projectId).project;
+  return useMemo<TaskViewLayoutItem[]>(() => {
+    if (!currentView) return [];
+    if (currentView.groupBy === TaskViewGroupBy.status) {
+      const filter = (type: TaskViewFilterType) =>
+        currentView.filters.find((f) => f.type === type);
+
+      const statusFilter = filter(TaskViewFilterType.STATUSES);
+      const statuses =
+        currentView.type === TaskViewType.LIST
+          ? [
+              TaskStatus.IN_REVIEW,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.TODO,
+              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.DONE,
+            ]
+          : [
+              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.TODO,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.IN_REVIEW,
+              TaskStatus.DONE,
+            ];
+
+      return statuses
+        .filter((s): s is TaskStatus => !!s)
+        .filter(
+          (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
+        )
+        .map(
+          (status): TaskViewLayoutItem => ({
+            value: status,
+            type: TaskViewGroupBy.status,
+            query: {
+              projectIds: !!currentView.projectId
+                ? [currentView.projectId]
+                : undefined,
+              statuses: [status],
+              priorities: filter(TaskViewFilterType.PRIORITIES)?.priorities,
+              assigneeIds: filter(TaskViewFilterType.ASSIGNEES)?.assigneeIds,
+              ownerIds: filter(TaskViewFilterType.OWNERS)?.ownerIds,
+              tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
+              sortBy: currentView.sortBys[0],
+            },
+          })
+        );
+    }
+
+    return [];
+  }, [currentView, details?.options?.showBacklogColumn]);
+}
+
+export interface TaskViewLayoutData {
+  tasks?: (Task | TaskWithOrganization)[];
+  cursor?: string;
+  total?: number;
+  hasMore: boolean;
+  loading: boolean;
+  fetchMore(): void;
+}
+
+export function useTaskViewLayoutData(
+  filters: SearchTasksInput[],
+  options: {
+    filter?(task: Task): boolean;
+    sort?(a: Task, b: Task): number;
+    withOrganization?: boolean;
+  } = {}
+): TaskViewLayoutData[] {
+  const apollo = useApolloClient();
+
+  const [fetchingMore, setFetchingMore] = useState<Record<string, boolean>>({});
+  const [forceUpdater, setForceUpdater] = useState(0);
+  const forceUpdate = useCallback(
+    () => setForceUpdater((prev) => prev + 1),
+    []
+  );
+
+  const observables = useMemo(() => {
+    return filters.map((filter) =>
+      apollo.watchQuery<
+        GetPaginatedTasksQuery,
+        GetPaginatedTasksQueryVariables
+      >({
+        query: options.withOrganization
+          ? Queries.paginatedTasksWithOrganization
+          : Queries.paginatedTasks,
+        variables: { filter },
+        fetchPolicy: "cache-first",
+      })
+    );
+  }, [apollo, filters, options.withOrganization]);
+
+  useEffect(() => {
+    observables.forEach((o) => o.subscribe(forceUpdate));
+  }, [observables, forceUpdate]);
+
+  return useMemo(
+    () =>
+      observables.map((obs) => {
+        const res = obs.getCurrentResult();
+        let tasks = res.data?.paginated.tasks ?? undefined;
+        if (!!options.filter) tasks = tasks?.filter(options.filter);
+        if (!!options.sort) tasks = tasks?.sort(options.sort);
+        return {
+          tasks,
+          cursor: res.data?.paginated.cursor ?? undefined,
+          total: res.data?.paginated.total ?? undefined,
+          hasMore: !res.data || !!res.data.paginated.cursor,
+          loading: res.loading || fetchingMore[obs.queryId],
+          fetchMore: async () => {
+            if (!!res.data?.paginated.cursor) {
+              setFetchingMore((prev) => ({ ...prev, [obs.queryId]: true }));
+              return obs
+                .fetchMore({ variables: { cursor: res.data.paginated.cursor } })
+                .finally(() =>
+                  setFetchingMore((prev) => ({ ...prev, [obs.queryId]: false }))
+                );
+            }
+          },
+        };
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [observables, forceUpdater, fetchingMore, options.filter]
   );
 }

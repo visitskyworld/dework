@@ -1,4 +1,4 @@
-import { TaskStatus } from "@dewo/api/models/Task";
+import { TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import { TaskViewSortBy } from "@dewo/api/models/TaskView";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
@@ -13,6 +13,9 @@ export class SearchTasksInput {
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
 
+  @Field(() => [TaskPriority], { nullable: true })
+  public priorities?: TaskPriority[];
+
   @Field({ nullable: true })
   public hasReward?: boolean;
 
@@ -21,6 +24,12 @@ export class SearchTasksInput {
 
   @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
   public assigneeIds?: string[];
+
+  @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
+  public ownerIds?: string[];
+
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public tagIds?: string[];
 
   @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
   public projectIds?: string[];

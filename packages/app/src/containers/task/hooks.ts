@@ -63,10 +63,6 @@ import {
   RulePermission,
   RoleWithRules,
   TaskGatingType,
-  GetPaginatedTasksQuery,
-  GetPaginatedTasksQueryVariables,
-  SearchTasksInput,
-  TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -83,7 +79,6 @@ import {
 import { getRule, hasRule } from "../rbac/util";
 import { Constants } from "@dewo/app/util/constants";
 import { toTaskReward } from "./form/util";
-import { useRunning } from "@dewo/app/util/hooks";
 
 export const formatTaskReward = (reward: TaskReward) => {
   if (reward.peggedToUsd) {
@@ -553,44 +548,6 @@ export function useLazyTaskReactionUsers(taskId: string) {
     GetTaskReactionUsersQuery,
     GetTaskReactionUsersQueryVariables
   >(Queries.taskReactionUsers, { variables: { taskId }, ssr: false });
-}
-
-export function usePaginatedTasks(
-  filter: SearchTasksInput,
-  withOrganization: boolean = false
-): {
-  tasks?: (Task | TaskWithOrganization)[];
-  cursor?: string;
-  total?: number;
-  hasMore: boolean;
-  loading: boolean;
-  fetchMore(): void;
-} {
-  const { data, loading, fetchMore } = useQuery<
-    GetPaginatedTasksQuery,
-    GetPaginatedTasksQueryVariables
-  >(
-    withOrganization
-      ? Queries.paginatedTasksWithOrganization
-      : Queries.paginatedTasks,
-    { variables: { filter }, ssr: false }
-  );
-  const cursor = data?.paginated?.cursor ?? undefined;
-  const [handleFetchMore, fetchingMore] = useRunning(
-    useCallback(() => {
-      if (!!cursor) {
-        return fetchMore({ variables: { cursor } });
-      }
-    }, [cursor, fetchMore])
-  );
-  return {
-    cursor,
-    tasks: data?.paginated.tasks ?? undefined,
-    total: data?.paginated?.total ?? undefined,
-    loading: loading || fetchingMore,
-    hasMore: !data || !!cursor,
-    fetchMore: handleFetchMore,
-  };
 }
 
 export function useListenToTasks() {

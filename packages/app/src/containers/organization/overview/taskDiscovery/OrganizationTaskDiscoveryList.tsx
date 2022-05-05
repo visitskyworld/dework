@@ -9,7 +9,7 @@ import { ConfigProvider, Empty, Row, Skeleton, Tag, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import { TaskTable } from "@dewo/app/containers/task/list/TaskTable";
-import { usePaginatedTasks } from "@dewo/app/containers/task/hooks";
+import { useTaskViewLayoutData } from "@dewo/app/containers/task/views/hooks";
 
 interface Props {
   organizationId: string;
@@ -18,29 +18,32 @@ interface Props {
 export const OrganizationTaskDiscoveryList: FC<Props> = ({
   organizationId,
 }) => {
-  const query = useMemo<SearchTasksInput>(
-    () => ({
-      statuses: [TaskStatus.TODO],
-      sortBy: {
-        field: TaskViewSortByField.createdAt,
-        direction: TaskViewSortByDirection.DESC,
-      },
-      assigneeIds: [null],
-      parentTaskId: null,
-      organizationId,
-    }),
-    [organizationId]
+  const [data] = useTaskViewLayoutData(
+    useMemo<SearchTasksInput[]>(
+      () => [
+        {
+          statuses: [TaskStatus.TODO],
+          sortBy: {
+            field: TaskViewSortByField.createdAt,
+            direction: TaskViewSortByDirection.DESC,
+          },
+          assigneeIds: [null],
+          parentTaskId: null,
+          organizationId,
+        },
+      ],
+      [organizationId]
+    )
   );
-  const paginated = usePaginatedTasks(query);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const [selectedTagLabel, setSelectedTagLabel] = useState<string>();
   const tags = useMemo(() => {
-    const tags = paginated.tasks?.map((task) => task.tags).flat();
+    const tags = data.tasks?.map((task) => task.tags).flat();
     return _.uniqBy(tags, (t) => t.label);
-  }, [paginated.tasks]);
+  }, [data.tasks]);
 
   const shouldRenderTask = useCallback(
     (task: Task) =>
@@ -52,7 +55,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
   return (
     <>
       <Typography.Title level={4}>Open Tasks</Typography.Title>
-      <Skeleton loading={!mounted || paginated.loading}>
+      <Skeleton loading={!mounted || data.loading}>
         {tags?.length > 0 && (
           <>
             <Row style={{ marginBottom: 8 }}>
@@ -97,7 +100,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
           )}
         >
           <TaskTable
-            query={query}
+            data={data}
             showHeaders={false}
             shouldRenderTask={shouldRenderTask}
           />

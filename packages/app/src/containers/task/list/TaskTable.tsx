@@ -7,18 +7,18 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { SearchTasksInput, Task } from "@dewo/app/graphql/types";
+import { Task } from "@dewo/app/graphql/types";
 import { TaskListItem } from "../../task/list/TaskListItem";
 
 import { TaskCard } from "../card/TaskCard";
 import classNames from "classnames";
 import styles from "./TaskList.module.less";
-import { usePaginatedTasks } from "../hooks";
 import _ from "lodash";
 import { SkeletonTaskListItem } from "./SkeletonTaskListItem";
+import { TaskViewLayoutData } from "../views/hooks";
 
 interface Props {
-  query: SearchTasksInput;
+  data: TaskViewLayoutData;
   showHeaders?: boolean;
   style?: CSSProperties;
   className?: string;
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const TaskTable: FC<Props> = ({
-  query,
+  data,
   showHeaders = true,
   style,
   className,
@@ -37,32 +37,28 @@ export const TaskTable: FC<Props> = ({
     pageSize: 10,
   });
 
-  const paginated = usePaginatedTasks(query);
-
   const isLastTaskLoaded = useMemo(() => {
     if (!pagination?.current || !pagination?.pageSize) return true;
     const lastTaskIndex = pagination.current * pagination.pageSize - 1;
-    return !!paginated.tasks?.[lastTaskIndex];
-  }, [pagination, paginated.tasks]);
+    return !!data.tasks?.[lastTaskIndex];
+  }, [pagination, data.tasks]);
   useEffect(() => {
-    if (!paginated.loading && !isLastTaskLoaded) {
-      paginated.fetchMore();
+    if (!data.loading && !isLastTaskLoaded) {
+      data.fetchMore();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paginated.loading, isLastTaskLoaded]);
+  }, [data.loading, isLastTaskLoaded]);
 
   const screen = Grid.useBreakpoint();
 
   const tasks = useMemo(
     () =>
-      !!shouldRenderTask
-        ? paginated.tasks?.filter(shouldRenderTask)
-        : paginated.tasks,
-    [paginated.tasks, shouldRenderTask]
+      !!shouldRenderTask ? data.tasks?.filter(shouldRenderTask) : data.tasks,
+    [data.tasks, shouldRenderTask]
   );
   const rows = useMemo<(() => ReactNode)[]>(
     () =>
-      _.range((paginated.hasMore ? paginated.total : tasks?.length) ?? 0)
+      _.range((data.hasMore ? data.total : tasks?.length) ?? 0)
         .map((index) => tasks?.[index])
         .map(
           (task) => () =>
@@ -76,7 +72,7 @@ export const TaskTable: FC<Props> = ({
               <SkeletonTaskListItem />
             )
         ),
-    [tasks, paginated.hasMore, paginated.total, screen.lg]
+    [tasks, data.hasMore, data.total, screen.lg]
   );
 
   return (

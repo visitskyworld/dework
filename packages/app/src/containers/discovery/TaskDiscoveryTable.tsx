@@ -21,20 +21,13 @@ import {
   formatTaskReward,
   formatTaskRewardAsUSD,
 } from "../task/hooks";
+import { TaskViewLayoutData } from "../task/views/hooks";
 
 interface Props {
-  tasks: TaskWithOrganization[];
-  total: number;
-  loading: boolean;
-  onFetchMore(): void;
+  data: TaskViewLayoutData;
 }
 
-export const TaskDiscoveryTable: FC<Props> = ({
-  tasks,
-  total,
-  loading,
-  onFetchMore,
-}) => {
+export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
   const navigateToTask = useNavigateToTaskFn();
   const screens = useBreakpoint();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -42,21 +35,24 @@ export const TaskDiscoveryTable: FC<Props> = ({
     pageSize: 10,
   });
   const rows = useMemo(
-    () => _.range(total).map((index) => tasks[index]),
-    [tasks, total]
+    () =>
+      _.range((data.hasMore ? data.total : data.tasks?.length) ?? 0).map(
+        (index) => data.tasks?.[index] as TaskWithOrganization
+      ),
+    [data.hasMore, data.total, data.tasks]
   );
 
   const isLastTaskLoaded = useMemo(() => {
     if (!pagination?.current || !pagination?.pageSize) return true;
     const lastTaskIndex = pagination.current * pagination.pageSize - 1;
-    return !!tasks[lastTaskIndex];
-  }, [pagination, tasks]);
+    return !!data.tasks?.[lastTaskIndex];
+  }, [pagination, data.tasks]);
   useEffect(() => {
-    if (!loading && !isLastTaskLoaded) {
-      onFetchMore();
+    if (!data.loading && !isLastTaskLoaded) {
+      data.fetchMore();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, isLastTaskLoaded]);
+  }, [data.loading, isLastTaskLoaded]);
 
   return (
     <Table

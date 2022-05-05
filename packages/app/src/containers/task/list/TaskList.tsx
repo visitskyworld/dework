@@ -1,4 +1,4 @@
-import { Grid, Row } from "antd";
+import { Button, Grid, Row, Skeleton } from "antd";
 import React, {
   CSSProperties,
   FC,
@@ -8,13 +8,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { TaskStatus } from "@dewo/app/graphql/types";
 import { TaskListItem } from "../../task/list/TaskListItem";
 import {
   TaskViewGroupHeader,
   TaskViewGroupHeaderExtra,
 } from "../../task/board/TaskViewGroupHeader";
-import { useTaskViewGroups } from "../views/hooks";
+import { useTaskViewLayoutData, useTaskViewLayoutItems } from "../views/hooks";
 import {
   List,
   AutoSizer,
@@ -23,11 +23,10 @@ import {
 } from "react-virtualized";
 import { usePrevious } from "@dewo/app/util/hooks";
 import { TaskCard } from "../card/TaskCard";
+import { useTaskViewContext } from "../views/TaskViewContext";
 
 interface Props {
-  tasks: Task[];
   showHeaders?: boolean;
-  projectId?: string;
   style?: CSSProperties;
   className?: string;
 }
@@ -46,76 +45,77 @@ function useRecalculateTaskCardHeight(
 }
 
 export const TaskList: FC<Props> = ({
-  tasks,
-  projectId,
   showHeaders = true,
   style,
   className,
 }) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-  const taskViewGroups = useTaskViewGroups(tasks, projectId);
+  const items = useTaskViewLayoutItems();
+  const queries = useMemo(() => items.map((i) => i.query), [items]);
+  const data = useTaskViewLayoutData(queries);
+  const projectId = useTaskViewContext().currentView?.projectId ?? undefined;
 
   const list = useRef<List>(null);
   const cache = useMemo(
-    () => new CellMeasurerCache({ fixedWidth: true, defaultHeight: 36 }),
+    () => new CellMeasurerCache({ fixedWidth: true, defaultHeight: 59 }),
     []
   );
 
   const screen = Grid.useBreakpoint();
-  useRecalculateTaskCardHeight(
-    cache,
-    list,
-    collapsed,
-    taskViewGroups,
-    screen.sm
-  );
+  useRecalculateTaskCardHeight(cache, list, collapsed, data, screen.sm);
 
   const rows = useMemo<(() => ReactNode)[]>(
     () =>
-      taskViewGroups
-        .map((taskViewGroup) => [
-          () =>
-            !!showHeaders ? (
-              <Row style={{ padding: 12 }}>
-                <TaskViewGroupHeader
-                  showIcon
-                  count={taskViewGroup.sections.reduce(
-                    (count, section) => count + section.tasks.length,
-                    0
-                  )}
-                  status={taskViewGroup.value as TaskStatus}
-                  collapse={{
-                    collapsed: !!collapsed[taskViewGroup.value],
-                    onToggle: (collapsed) =>
-                      setCollapsed((prev) => ({
-                        ...prev,
-                        [taskViewGroup.value]: collapsed,
-                      })),
-                  }}
-                />
-                <TaskViewGroupHeaderExtra
-                  status={taskViewGroup.value as TaskStatus}
-                  projectId={projectId}
-                />
-              </Row>
-            ) : null,
-          ...taskViewGroup.sections
-            .map((section) =>
-              section.tasks.map(
-                (task) => () =>
-                  !collapsed[taskViewGroup.value] ? (
-                    screen.sm ? (
-                      <TaskListItem key={task.id} task={task} />
-                    ) : (
-                      <TaskCard task={task} style={{ marginBottom: 8 }} />
-                    )
-                  ) : null
-              )
-            )
-            .flat(),
-        ])
+      data
+        .map((d, index) => {
+          const status = items[index].value as TaskStatus;
+          return [
+            () =>
+              !!showHeaders ? (
+                <Row style={{ padding: 12 }}>
+                  <TaskViewGroupHeader
+                    showIcon
+                    count={d.total ?? 0}
+                    status={status}
+                    collapse={{
+                      collapsed: !!collapsed[status],
+                      onToggle: (collapsed) =>
+                        setCollapsed((prev) => ({
+                          ...prev,
+                          [status]: collapsed,
+                        })),
+                    }}
+                  />
+                  <TaskViewGroupHeaderExtra
+                    status={status}
+                    projectId={projectId}
+                  />
+                </Row>
+              ) : null,
+            ...(d.tasks ?? []).map(
+              (task) => () =>
+                !collapsed[status] ? (
+                  screen.sm ? (
+                    <TaskListItem key={task.id} task={task} />
+                  ) : (
+                    <TaskCard task={task} style={{ marginBottom: 8 }} />
+                  )
+                ) : null
+            ),
+            ...(!collapsed[status] && d.hasMore && !!d.tasks
+              ? [
+                  () => (
+                    <Button block type="text" onClick={d.fetchMore}>
+                      Load more
+                    </Button>
+                  ),
+                ]
+              : []),
+            ...(d.loading ? [() => <Skeleton />] : []),
+          ];
+        })
         .flat(),
-    [taskViewGroups, collapsed, projectId, showHeaders, screen.sm]
+    [data, collapsed, projectId, showHeaders, screen.sm, items]
   );
 
   return (
