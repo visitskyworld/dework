@@ -104,7 +104,7 @@ export class RbacResolver {
   ): Promise<Role> {
     const rule = await this.service.findRuleById(id);
     const role = await rule!.role;
-    await this.service.deleteRule(id);
+    await this.service.deleteRule(rule!);
     return role;
   }
 

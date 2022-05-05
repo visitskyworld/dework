@@ -1,6 +1,10 @@
+import { Task } from "@dewo/api/models/Task";
 import { Injectable } from "@nestjs/common";
 import { EventsHandler } from "@nestjs/cqrs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import { EventHandler } from "../../app/eventHandler";
+import { RuleCreatedEvent, RuleDeletedEvent } from "../../rbac/rbac.events";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
 import { TaskSearchService } from "./task.search.service";
 
@@ -25,5 +29,53 @@ export class TaskSearchUpdatedEventHandler extends EventHandler<TaskUpdatedEvent
 
   async process(event: TaskUpdatedEvent) {
     await this.service.index([event.task]);
+  }
+}
+
+@Injectable()
+@EventsHandler(RuleCreatedEvent)
+export class TaskSearchRuleCreatedEventHandler extends EventHandler<RuleCreatedEvent> {
+  constructor(
+    private readonly service: TaskSearchService,
+    @InjectRepository(Task)
+    private readonly repo: Repository<Task>
+  ) {
+    super();
+  }
+
+  async process(event: RuleCreatedEvent) {
+    if (!!event.rule.taskId) {
+      const tasks = await this.repo.find({ id: event.rule.taskId });
+      await this.service.index(tasks);
+    }
+
+    if (!!event.rule.projectId) {
+      const tasks = await this.repo.find({ projectId: event.rule.projectId });
+      await this.service.index(tasks);
+    }
+  }
+}
+
+@Injectable()
+@EventsHandler(RuleDeletedEvent)
+export class TaskSearchRuleDeletedEventHandler extends EventHandler<RuleDeletedEvent> {
+  constructor(
+    private readonly service: TaskSearchService,
+    @InjectRepository(Task)
+    private readonly repo: Repository<Task>
+  ) {
+    super();
+  }
+
+  async process(event: RuleDeletedEvent) {
+    if (!!event.rule.taskId) {
+      const tasks = await this.repo.find({ id: event.rule.taskId });
+      await this.service.index(tasks);
+    }
+
+    if (!!event.rule.projectId) {
+      const tasks = await this.repo.find({ projectId: event.rule.projectId });
+      await this.service.index(tasks);
+    }
   }
 }

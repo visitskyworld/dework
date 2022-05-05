@@ -7,6 +7,8 @@ import { ConfigType } from "../../app/config";
 import { TaskSearchService } from "./task.search.service";
 import {
   TaskSearchCreatedEventHandler,
+  TaskSearchRuleCreatedEventHandler,
+  TaskSearchRuleDeletedEventHandler,
   TaskSearchUpdatedEventHandler,
 } from "./task.search.eventHandlers";
 import { TaskSearchResolver } from "./task.search.resolver";
@@ -30,6 +32,8 @@ import { RbacModule } from "../../rbac/rbac.module";
     TaskSearchService,
     TaskSearchCreatedEventHandler,
     TaskSearchUpdatedEventHandler,
+    TaskSearchRuleDeletedEventHandler,
+    TaskSearchRuleCreatedEventHandler,
     TaskSearchResolver,
   ],
   exports: [TaskSearchService],

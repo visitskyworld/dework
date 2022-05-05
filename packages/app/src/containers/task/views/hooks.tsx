@@ -406,6 +406,7 @@ export function useTaskViewLayoutItems() {
               assigneeIds: filter(TaskViewFilterType.ASSIGNEES)?.assigneeIds,
               ownerIds: filter(TaskViewFilterType.OWNERS)?.ownerIds,
               tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
+              roleIds: filter(TaskViewFilterType.ROLES)?.roleIds,
               parentTaskId: null,
               sortBy: {
                 field:

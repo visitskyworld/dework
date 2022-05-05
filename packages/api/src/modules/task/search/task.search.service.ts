@@ -43,6 +43,7 @@ interface IndexedTask {
 
   tagIds: string[];
   skillIds: string[];
+  roleIds: string[];
   organizationId: string;
   assigneeIds: string[];
   ownerIds: string[];
@@ -99,6 +100,7 @@ export class TaskSearchService implements OnModuleInit {
             ownerIds: { type: "keyword" },
             tagIds: { type: "keyword" },
             skillIds: { type: "keyword" },
+            roleIds: { type: "keyword" },
             parentTaskId: { type: "keyword" },
             projectId: { type: "keyword" },
             organizationId: { type: "keyword" },
@@ -113,6 +115,7 @@ export class TaskSearchService implements OnModuleInit {
   }
 
   public async index(tasks: Task[], refresh: boolean = false) {
+    if (!tasks.length) return;
     this.logger.debug(
       `Indexing tasks: ${JSON.stringify({ count: tasks.length })}`
     );
@@ -165,6 +168,7 @@ export class TaskSearchService implements OnModuleInit {
     statuses?: TaskStatus[];
     priorities?: TaskPriority[];
     projectIds?: string[];
+    roleIds?: string[];
     ownerIds?: (string | null)[];
     assigneeIds?: (string | null)[];
     parentTaskId?: null;
@@ -278,6 +282,18 @@ export class TaskSearchService implements OnModuleInit {
                     },
                   ]
                 : []),
+              ...(!!q.roleIds
+                ? [
+                    {
+                      terms_set: {
+                        roleIds: {
+                          terms: q.roleIds,
+                          minimum_should_match_script: { source: "1" },
+                        },
+                      },
+                    },
+                  ]
+                : []),
               ...(q.hasReward !== undefined
                 ? [{ match: { hasReward: q.hasReward } }]
                 : []),
@@ -350,6 +366,7 @@ export class TaskSearchService implements OnModuleInit {
   ): Promise<IndexedTask> {
     const project = await task.project;
     const organization = await project.organization;
+    const roles = await this.rbacService.findRolesForTask(task.id);
     return {
       ..._.pick(task, ["id", "name", "status", "sortKey", "projectId"]),
       priority: TaskPriorityNumber[task.priority],
@@ -361,6 +378,7 @@ export class TaskSearchService implements OnModuleInit {
       organizationId: organization.id,
       tagIds: task.tags.map((t) => t.id),
       skillIds: (await task.skills).map((s) => s.id),
+      roleIds: roles.map((r) => r.id),
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
       public: isPublic,

@@ -12521,6 +12521,7 @@ export interface SearchTasksInput {
   priorities?: TaskPriority[] | null;
   hasReward?: boolean | null;
   skillIds?: Scalar.UUID[] | null;
+  roleIds?: Scalar.UUID[] | null;
   assigneeIds?: (Scalar.UUID | null)[] | null;
   ownerIds?: (Scalar.UUID | null)[] | null;
   tagIds?: Scalar.UUID[] | null;

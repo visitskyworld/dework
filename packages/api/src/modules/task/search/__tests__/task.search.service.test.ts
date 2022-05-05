@@ -11,6 +11,7 @@ import { INestApplication } from "@nestjs/common";
 import Bluebird from "bluebird";
 import _ from "lodash";
 import moment from "moment";
+import { SearchTasksInput } from "../dto/SearchTasksInput";
 import { TaskSearchService } from "../task.search.service";
 
 describe("TaskSearchService", () => {
@@ -181,6 +182,38 @@ describe("TaskSearchService", () => {
       });
 
       expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: task.id })
+      );
+    });
+
+    it("should query roles correctly", async () => {
+      const role = await fixtures.createRole();
+
+      const task = await fixtures.createTask();
+      await service.index([task], true);
+
+      const filter: SearchTasksInput = {
+        projectIds: [task.projectId],
+        roleIds: [role.id],
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+      };
+      const res1 = await service.search(filter);
+      expect(res1.tasks).not.toContainEqual(
+        expect.objectContaining({ id: task.id })
+      );
+
+      await fixtures.createRule({
+        roleId: role.id,
+        taskId: task.id,
+        permission: RulePermission.MANAGE_TASKS,
+      });
+      await service.index([task], true);
+
+      const res2 = await service.search(filter);
+      expect(res2.tasks).toContainEqual(
         expect.objectContaining({ id: task.id })
       );
     });

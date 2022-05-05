@@ -22,6 +22,9 @@ export class SearchTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public skillIds?: string[];
 
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public roleIds?: string[];
+
   @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
   public assigneeIds?: string[];
 

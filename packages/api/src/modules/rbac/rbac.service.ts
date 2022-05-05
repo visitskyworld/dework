@@ -28,6 +28,8 @@ import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { TaskView } from "@dewo/api/models/TaskView";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
+import { EventBus } from "@nestjs/cqrs";
+import { RuleCreatedEvent, RuleDeletedEvent } from "./rbac.events";
 
 export type Action =
   | "create"
@@ -69,7 +71,8 @@ export class RbacService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(UserRole)
     private readonly userRoleRepo: Repository<UserRole>,
-    private readonly config: ConfigService<ConfigType>
+    private readonly config: ConfigService<ConfigType>,
+    private readonly eventBus: EventBus
   ) {}
 
   public async abilityForUser(
@@ -154,11 +157,14 @@ export class RbacService {
       partial.map((p) => currentRules.find((r) => matches(p, r)) ?? p)
     );
 
-    return this.ruleRepo.findByIds(rules.map((r) => r.id));
+    const refetched = await this.ruleRepo.findByIds(rules.map((r) => r.id));
+    this.eventBus.publishAll(refetched.map((r) => new RuleCreatedEvent(r)));
+    return refetched;
   }
 
-  public async deleteRule(ruleId: string): Promise<void> {
-    await this.ruleRepo.delete(ruleId);
+  public async deleteRule(rule: Rule): Promise<void> {
+    await this.ruleRepo.delete(rule.id);
+    this.eventBus.publish(new RuleDeletedEvent(rule));
   }
 
   public async addToOrganization(
@@ -402,17 +408,19 @@ export class RbacService {
 
   public async findRolesForTask(
     taskId: string,
-    source: RoleSource
+    source?: RoleSource
   ): Promise<Role[]> {
-    return await this.roleRepo
+    let qb = this.roleRepo
       .createQueryBuilder("role")
       .innerJoin("role.rules", "rule")
       .where("rule.taskId = :taskId", { taskId })
       .andWhere("rule.permission = :permission", {
         permission: RulePermission.MANAGE_TASKS,
-      })
-      .andWhere("role.source = :source", { source })
-      .getMany();
+      });
+    if (!!source) {
+      qb = qb.andWhere("role.source = :source", { source });
+    }
+    return qb.getMany();
   }
 
   public async isProjectsPrivate(
