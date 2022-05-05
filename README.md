@@ -6,6 +6,7 @@
 git clone https://github.com/deworkxyz/dework.git
 cd dework
 yarn
+yarn apply-patches
 ```
 
 ### Environment variables
