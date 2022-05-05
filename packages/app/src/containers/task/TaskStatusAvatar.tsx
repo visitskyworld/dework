@@ -42,7 +42,7 @@ export const TaskStatusAvatar: FC<Props> = ({
         borderWidth: 1,
         borderStyle: "solid",
         borderColor: color,
-        color: color,
+        color,
       }}
     />
   );

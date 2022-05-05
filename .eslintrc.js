@@ -7,5 +7,6 @@ module.exports = {
     "react-hooks/rules-of-hooks": "warn",
     "react/jsx-no-literals": "warn",
     "prefer-const": "warn",
+    "object-shorthand": ["error", "properties"],
   },
 };

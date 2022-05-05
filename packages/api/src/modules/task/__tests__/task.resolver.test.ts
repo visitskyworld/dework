@@ -350,9 +350,9 @@ describe("TaskResolver", () => {
           app,
           auth: fixtures.createAuthToken(user),
           body: TaskRequests.createApplication({
-            message: message,
-            startDate: startDate,
-            endDate: endDate,
+            message,
+            startDate,
+            endDate,
             userId: user.id,
             taskId: task.id,
           }),

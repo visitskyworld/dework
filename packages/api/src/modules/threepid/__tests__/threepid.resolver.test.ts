@@ -104,7 +104,7 @@ describe("ThreepidResolver", () => {
           app,
           body: ThreepidRequests.createPhantomThreepid({
             message,
-            signature: signature,
+            signature,
             address: wallet.publicKey.toString(),
           }),
         });
