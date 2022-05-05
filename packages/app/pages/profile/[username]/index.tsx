@@ -21,7 +21,7 @@ const Page: NextPage = () => {
           breadcrumbName: "Home",
         },
         {
-          path: user?.permalink,
+          path: user ? new URL(user.permalink).pathname : "",
           breadcrumbName: user?.username ?? "Profile",
         },
       ],

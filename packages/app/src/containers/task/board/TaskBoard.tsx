@@ -15,10 +15,13 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useTaskViewGroups } from "../views/hooks";
+import { SkeletonTaskBoard } from "./SkeletonTaskBoard";
 
 interface Props {
   tasks: Task[];
   projectId?: string;
+  organizationId?: string;
+  userId?: string;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
 }
 
@@ -122,7 +125,8 @@ export const TaskBoard: FC<Props> = ({ tasks, projectId, empty }) => {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
+  if (!mounted) return <SkeletonTaskBoard />;
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>

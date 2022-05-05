@@ -9,6 +9,7 @@ import {
   useProjectBySlug,
   useProjectDetails,
   useProjectIdBySlug,
+  useProjectTasks,
 } from "@dewo/app/containers/project/hooks";
 import { ProjectAbout } from "@dewo/app/containers/project/about/ProjectAbout";
 import { Tab } from "@dewo/app/components/Tab";
@@ -21,8 +22,9 @@ import { CommunitySuggestions } from "@dewo/app/containers/project/community/Com
 import { TaskCreateModal } from "@dewo/app/containers/task/TaskCreateModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import moment from "moment";
-import { TaskViewProvider } from "@dewo/app/containers/task/views/TaskViewContext";
+import { ProjectTaskViewProvider } from "@dewo/app/containers/task/views/TaskViewContext";
 import { TaskViewTabs } from "@dewo/app/containers/task/views/TaskViewTabs";
+import { ProjectEmptyColumns } from "@dewo/app/containers/project/board/ProjectTaskBoard";
 import { useIsEmbedded } from "@dewo/app/util/navigation";
 import { TaskViewLayout } from "@dewo/app/containers/task/views/TaskViewLayout";
 
@@ -60,6 +62,8 @@ const Page: NextPage = () => {
     };
   }, [router.query.values]);
 
+  const tasks = useProjectTasks(projectId);
+
   if (!projectSlug || !organizationSlug) {
     return null;
   }
@@ -75,9 +79,9 @@ const Page: NextPage = () => {
           />
         )}
         <Layout.Content style={{ flex: 1 }}>
-          <TaskViewProvider projectId={projectId}>
+          <ProjectTaskViewProvider projectId={projectId}>
             {isEmbedded ? (
-              <TaskViewLayout />
+              <TaskViewLayout tasks={tasks} />
             ) : (
               <TaskViewTabs
                 projectId={projectId}
@@ -128,9 +132,11 @@ const Page: NextPage = () => {
                     )}
                   </Tabs.TabPane>,
                 ].filter((t): t is ReactElement => !!t)}
-              />
+              >
+                <TaskViewLayout empty={ProjectEmptyColumns} tasks={tasks} />
+              </TaskViewTabs>
             )}
-          </TaskViewProvider>
+          </ProjectTaskViewProvider>
         </Layout.Content>
       </Layout.Content>
       <ForbiddenResourceModal

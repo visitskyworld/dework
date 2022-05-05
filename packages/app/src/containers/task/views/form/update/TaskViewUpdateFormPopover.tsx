@@ -1,21 +1,31 @@
 import { Button, Popover } from "antd";
 import React, { FC, useCallback, useState, useMemo } from "react";
-import { TaskView, UpdateTaskViewInput } from "@dewo/app/graphql/types";
+import {
+  CreateTaskViewInput,
+  TaskView,
+  UpdateTaskViewInput,
+} from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { TaskViewUpdateFormFooter } from "./TaskViewUpdateFormFooter";
 import { useUpdateTaskView } from "../../hooks";
 import { TaskViewForm } from "../TaskViewForm";
 import { useTaskViewContext } from "../../TaskViewContext";
 import { ControlIcon } from "@dewo/app/components/icons/Control";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import _ from "lodash";
 
 interface Props {
   view: TaskView;
-  projectId: string;
 }
 
-export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
-  const { views, hasLocalChanges, onChangeViewLocally, onResetLocalChanges } =
-    useTaskViewContext();
+export const TaskViewUpdateFormPopover: FC<Props> = ({ view }) => {
+  const {
+    saveButtonText,
+    views,
+    hasLocalChanges,
+    onChangeViewLocally,
+    onResetLocalChanges,
+  } = useTaskViewContext();
   const updateTaskView = useUpdateTaskView();
   const handleChange = useCallback(
     (changed: UpdateTaskViewInput) => onChangeViewLocally(view.id, changed),
@@ -43,12 +53,20 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
   );
 
   const handleSubmit = useCallback(
-    async (values: UpdateTaskViewInput) => {
-      await updateTaskView(values);
+    async (values: CreateTaskViewInput | UpdateTaskViewInput) => {
+      await updateTaskView(
+        _.omit(values, [
+          "userId",
+          "projectId",
+          "organizationId",
+        ]) as UpdateTaskViewInput
+      );
       handleReset();
     },
     [updateTaskView, handleReset]
   );
+
+  const canCreate = usePermission("create", view) ?? false;
 
   return (
     <Popover
@@ -56,8 +74,8 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
       style={{ minWidth: 260 }}
       content={
         <TaskViewForm
+          canCreate={canCreate}
           key={resetFormKey}
-          projectId={projectId}
           initialValues={initialValues}
           onSubmit={handleSubmit}
           onChange={handleChange}
@@ -69,6 +87,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
               showDelete={views.length > 1}
               onReset={handleReset}
               onDelete={handleDelete}
+              saveText={saveButtonText}
             />
           )}
         />

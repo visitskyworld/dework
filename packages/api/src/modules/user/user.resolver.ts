@@ -17,6 +17,7 @@ import { UpdateUserInput } from "./dto/UpdateUserInput";
 import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { PermalinkService } from "../permalink/permalink.service";
 import { GQLContext } from "../app/graphql.config";
+import { TaskView } from "@dewo/api/models/TaskView";
 
 @Resolver(() => User)
 @Injectable()
@@ -32,6 +33,12 @@ export class UserResolver {
     @Parent() user: User
   ): Promise<string> {
     return this.permalinkService.get(user, origin);
+  }
+
+  @ResolveField(() => [TaskView])
+  public async taskViews(@Parent() user: User): Promise<TaskView[]> {
+    const views = await user.taskViews;
+    return views.filter((s) => !s.deletedAt);
   }
 
   @Mutation(() => User)

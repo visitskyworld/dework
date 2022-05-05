@@ -182,8 +182,8 @@ export class RbacResolver {
   public async getPermissions(
     @Context("user") user: User,
     @Args("unauthed", { nullable: true }) unauthed: boolean,
-    @Args("organizationId", { type: () => GraphQLUUID })
-    organizationId: string
+    @Args("organizationId", { type: () => GraphQLUUID, nullable: true })
+    organizationId?: string
   ): Promise<unknown[]> {
     const ability = await this.service.abilityForUser(
       unauthed ? undefined : user?.id,

@@ -2,13 +2,6 @@ import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { RoleTag } from "@dewo/app/components/RoleTag";
-import { useOrganizationUsers } from "@dewo/app/containers/organization/hooks";
-import {
-  useProject,
-  useProjectDetails,
-  useProjectTaskTags,
-} from "@dewo/app/containers/project/hooks";
-import { useOrganizationRoles } from "@dewo/app/containers/rbac/hooks";
 import {
   TaskPriority,
   TaskStatus,
@@ -19,16 +12,16 @@ import _ from "lodash";
 import React, { FC, useMemo } from "react";
 import { PRIORITY_LABEL, STATUS_LABEL } from "../../board/util";
 import { TaskTagSelectField } from "../../form/TaskTagSelectField";
+import { useTaskViewContext } from "../TaskViewContext";
 
 interface Props {
   name: string | number;
   type: TaskViewFilterType;
-  projectId: string;
   onClear(): void;
 }
 
-const TagFilter: FC<Props> = ({ name, projectId, onClear }) => {
-  const tags = useProjectTaskTags(projectId);
+const TagFilter: FC<Props> = ({ name, onClear }) => {
+  const { tags } = useTaskViewContext();
   return (
     <TaskTagSelectField
       style={{ flex: 1 }}
@@ -47,9 +40,8 @@ const TagFilter: FC<Props> = ({ name, projectId, onClear }) => {
   );
 };
 
-const AssigneeFilter: FC<Props> = ({ name, projectId, onClear }) => {
-  const { project } = useProject(projectId);
-  const { users } = useOrganizationUsers(project?.organizationId);
+const AssigneeFilter: FC<Props> = ({ name, onClear }) => {
+  const { filterableMembers } = useTaskViewContext();
   return (
     <Form.Item
       name={[name, "assigneeIds"]}
@@ -66,16 +58,15 @@ const AssigneeFilter: FC<Props> = ({ name, projectId, onClear }) => {
         mode="multiple"
         placeholder="Select assignees..."
         showUnassigned
-        users={users}
+        users={filterableMembers}
         onClear={onClear}
       />
     </Form.Item>
   );
 };
 
-const OwnerFilter: FC<Props> = ({ name, projectId, onClear }) => {
-  const { project } = useProject(projectId);
-  const { users } = useOrganizationUsers(project?.organizationId);
+const OwnerFilter: FC<Props> = ({ name, onClear }) => {
+  const { filterableMembers } = useTaskViewContext();
   return (
     <Form.Item
       name={[name, "ownerIds"]}
@@ -91,16 +82,15 @@ const OwnerFilter: FC<Props> = ({ name, projectId, onClear }) => {
       <UserSelect
         mode="multiple"
         placeholder="Select reviewers..."
-        users={users}
+        users={filterableMembers}
         onClear={onClear}
       />
     </Form.Item>
   );
 };
 
-const StatusFilter: FC<Props> = ({ name, projectId, onClear }) => {
-  const showBacklog =
-    useProjectDetails(projectId).project?.options?.showBacklogColumn;
+const StatusFilter: FC<Props> = ({ name, onClear }) => {
+  const { showBacklog } = useTaskViewContext();
   return (
     <Form.Item
       name={[name, "statuses"]}
@@ -178,9 +168,8 @@ const PriorityFilter: FC<Props> = ({ name, onClear }) => {
   );
 };
 
-const RoleFilter: FC<Props> = ({ name, projectId, onClear }) => {
-  const { project } = useProject(projectId);
-  const roles = useOrganizationRoles(project?.organizationId);
+const RoleFilter: FC<Props> = ({ name, onClear }) => {
+  const { roles } = useTaskViewContext();
   const organizationRoles = useMemo(
     () => roles?.filter((role) => !role.userId && !role.fallback),
     [roles]

@@ -253,12 +253,15 @@ export function useOrganizationUsers(organizationId: string | undefined): {
 }
 
 export function useAllOrganizationTags(
-  organizationId: string
+  organizationId: string | undefined
 ): OrganizationTag[] {
   const { data } = useQuery<
     GetOrganizationTagsQuery,
     GetOrganizationTagsQueryVariables
-  >(Queries.organizationTags, { variables: { organizationId } });
+  >(Queries.organizationTags, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
   return useMemo(
     () => data?.organization.allTags ?? [],
     [data?.organization.allTags]
@@ -266,7 +269,7 @@ export function useAllOrganizationTags(
 }
 
 export function useOrganizationTasks(
-  organizationId: string,
+  organizationId: string | undefined,
   filter: TaskFilterInput | undefined,
   fetchPolicy: WatchQueryFetchPolicy
 ): GetOrganizationTasksQuery["organization"] | undefined {
@@ -274,8 +277,8 @@ export function useOrganizationTasks(
     GetOrganizationTasksQuery,
     GetOrganizationTasksQueryVariables
   >(Queries.organizationTasks, {
-    variables: { organizationId, filter },
-    skip: isSSR,
+    variables: { organizationId: organizationId!, filter },
+    skip: isSSR || !organizationId,
   });
   useEffect(() => {
     if (fetchPolicy === "cache-and-network" && !!data) {

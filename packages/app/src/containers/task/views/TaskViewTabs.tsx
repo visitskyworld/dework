@@ -2,7 +2,7 @@ import { Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
-import { useProject, useProjectDetails } from "../../project/hooks";
+import { useProject } from "../../project/hooks";
 import { useTaskViewContext } from "./TaskViewContext";
 import { TaskView, TaskViewType } from "@dewo/app/graphql/types";
 import { TaskViewUpdateFormPopover } from "./form/update/TaskViewUpdateFormPopover";
@@ -10,29 +10,33 @@ import styles from "./TaskViewTabs.module.less";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewCreateFormPopover } from "./form/create/TaskViewCreateFormPopover";
 import { AtLeast } from "@dewo/app/types/general";
-import { TaskViewLayout } from "./TaskViewLayout";
 
 interface Props {
   projectId?: string;
+  organizationId?: string;
+  userId?: string;
   activeKey?: string;
   extraTabs?: React.ReactElement[];
 }
 
 export const TaskViewTabs: FC<Props> = ({
   projectId,
+  organizationId,
+  userId,
   activeKey,
   extraTabs,
+  children,
 }) => {
-  const views = useProjectDetails(projectId).project?.taskViews;
-  const { currentView, hasLocalChanges } = useTaskViewContext();
+  const { currentView, hasLocalChanges, views } = useTaskViewContext();
   const { project } = useProject(projectId);
+  const router = useRouter();
 
   const canCreate = usePermission("create", {
     __typename: "TaskView",
+    organizationId,
     projectId,
-  } as AtLeast<TaskView, "__typename" | "projectId">);
-
-  const router = useRouter();
+    userId,
+  } as AtLeast<TaskView, "__typename" | "projectId" | "organizationId" | "userId">);
 
   const navigateToTab = useCallback(
     (tabKey: string) => {
@@ -64,6 +68,7 @@ export const TaskViewTabs: FC<Props> = ({
       `}
     />
   );
+
   return (
     <>
       {styleToMakeExtraTabsRightAligned}
@@ -80,10 +85,7 @@ export const TaskViewTabs: FC<Props> = ({
             tab={
               <>
                 {view.id === currentView?.id ? (
-                  <TaskViewUpdateFormPopover
-                    view={view}
-                    projectId={projectId!}
-                  />
+                  <TaskViewUpdateFormPopover view={view} />
                 ) : view.type === TaskViewType.BOARD ? (
                   <Icons.ProjectOutlined />
                 ) : (
@@ -96,13 +98,19 @@ export const TaskViewTabs: FC<Props> = ({
             key={`view:${view.id}`}
             closable={false}
           >
-            {view.id === currentView?.id && <TaskViewLayout />}
+            {children}
           </Tabs.TabPane>
         ))}
         {canCreate && (
           <Tabs.TabPane
             key="add"
-            tab={<TaskViewCreateFormPopover projectId={projectId!} />}
+            tab={
+              <TaskViewCreateFormPopover
+                projectId={projectId}
+                userId={userId}
+                organizationId={organizationId}
+              />
+            }
           />
         )}
         <div />

@@ -259,6 +259,7 @@ export class TaskService {
           qb
             .where("assignee.id = :userId", { userId })
             .orWhere("owner.id = :userId", { userId })
+            .orWhere("submission.userId = :userId", { userId })
             .orWhere(
               new Brackets((qb) =>
                 qb

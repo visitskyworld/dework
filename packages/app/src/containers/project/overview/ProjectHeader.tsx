@@ -1,4 +1,4 @@
-import { Input, PageHeader, Skeleton, Space, Typography } from "antd";
+import { Input, Skeleton, Space, Typography } from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
@@ -18,7 +18,7 @@ import { CoordinapeMetamaskConnectButton } from "../../integrations/coordinape/C
 import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
 import { ConnectUsingDiscordRolesButton } from "../../auth/buttons/ConnectUsingDiscordRolesButton";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
-import styles from "./ProjectHeader.module.less";
+import { Header } from "../../navigation/header/Header";
 
 interface Props {
   projectId?: string;
@@ -96,8 +96,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
     editName.toggleOff();
   }, [projectName, project?.name, editName, submitProjectName]);
   return (
-    <PageHeader
-      className={styles.header}
+    <Header
       title={
         !!project ? (
           !editName.isOn ? (

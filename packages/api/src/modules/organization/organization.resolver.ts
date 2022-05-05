@@ -32,6 +32,7 @@ import { Role } from "@dewo/api/models/rbac/Role";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GraphQLResolveInfo } from "graphql";
 import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
+import { TaskView } from "@dewo/api/models/TaskView";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -42,6 +43,14 @@ export class OrganizationResolver {
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>
   ) {}
+
+  @ResolveField(() => [TaskView])
+  public async taskViews(
+    @Parent() organization: Organization
+  ): Promise<TaskView[]> {
+    const views = await organization.taskViews;
+    return views.filter((s) => !s.deletedAt);
+  }
 
   @ResolveField(() => String)
   public permalink(

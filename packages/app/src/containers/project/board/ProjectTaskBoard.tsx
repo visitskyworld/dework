@@ -7,10 +7,13 @@ import { TaskBoardColumnEmptyProps } from "../../task/board/TaskBoardColumnEmtpy
 import { SkeletonTaskBoard } from "../../task/board/SkeletonTaskBoard";
 
 interface Props {
-  projectId: string | undefined;
+  projectId?: string;
 }
 
-const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
+export const ProjectEmptyColumns: Record<
+  TaskStatus,
+  TaskBoardColumnEmptyProps
+> = {
   [TaskStatus.COMMUNITY_SUGGESTIONS]: {
     title: "Contributors can create suggestions and vote on them",
     icon: <Icons.BulbOutlined />,
@@ -39,8 +42,13 @@ const empty: Record<TaskStatus, TaskBoardColumnEmptyProps> = {
 
 export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
   const tasks = useProjectTasks(projectId, "cache-and-network");
+
   return tasks ? (
-    <TaskBoard tasks={tasks} projectId={projectId} empty={empty} />
+    <TaskBoard
+      tasks={tasks}
+      projectId={projectId}
+      empty={ProjectEmptyColumns}
+    />
   ) : (
     <SkeletonTaskBoard />
   );

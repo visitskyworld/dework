@@ -666,12 +666,16 @@ export const userDetails = gql`
     taskGatingDefaults {
       ...TaskGatingDefault
     }
+    taskViews {
+      ...TaskView
+    }
   }
 
   ${userProfile}
   ${userPrompt}
   ${organization}
   ${taskGatingDefault}
+  ${taskView}
 `;
 
 export const organizationDetails = gql`
@@ -697,6 +701,9 @@ export const organizationDetails = gql`
     projectTokenGates {
       ...ProjectTokenGate
     }
+    taskViews {
+      ...TaskView
+    }
   }
 
   ${organization}
@@ -705,4 +712,5 @@ export const organizationDetails = gql`
   ${organizationTag}
   ${entityDetail}
   ${projectTokenGate}
+  ${taskView}
 `;

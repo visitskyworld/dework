@@ -1,7 +1,7 @@
 import React, { FC } from "react";
+import { SkeletonTaskBoard } from "../../task/board/SkeletonTaskBoard";
 import { TaskBoard } from "../../task/board/TaskBoard";
 import { useOrganizationTasks } from "../hooks";
-import { SkeletonTaskBoard } from "../../task/board/SkeletonTaskBoard";
 
 interface Props {
   organizationId: string;

@@ -12,6 +12,7 @@ import { PermalinkModule } from "../permalink/permalink.module";
 import { DiscordRolesModule } from "../integrations/discord/roles/discord.roles.module";
 import { FileUploadModule } from "../fileUpload/fileUpload.module";
 import { UserPromptModule } from "./prompt/userPrompt.module";
+import { TaskViewModule } from "../task/taskView/taskView.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserPromptModule } from "./prompt/userPrompt.module";
     PermalinkModule,
     DiscordRolesModule,
     UserPromptModule,
+    TaskViewModule,
   ],
   providers: [UserResolver, UserService],
   exports: [UserService],

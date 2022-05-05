@@ -7,7 +7,6 @@ import {
   mixin,
   ForbiddenException,
   Logger,
-  NotFoundException,
 } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { GqlExecutionContext } from "@nestjs/graphql";
@@ -88,9 +87,6 @@ export function RoleGuard<
         ...injectable
       );
       this.logger.debug(`Fetched organization id: ${organizationId}`);
-      if (!organizationId) {
-        throw new NotFoundException("Organization not found");
-      }
 
       const ability = await this.service.abilityForUser(
         gqlContext.user?.id,

@@ -19,10 +19,9 @@ const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
 
 interface Props {
   form: FormInstance<FormValues>;
-  projectId: string;
 }
 
-export const TaskViewFormFilterList: FC<Props> = ({ form, projectId }) => (
+export const TaskViewFormFilterList: FC<Props> = ({ form }) => (
   <Form.List name="filters">
     {(fields, { add, remove }) => (
       <>
@@ -39,7 +38,7 @@ export const TaskViewFormFilterList: FC<Props> = ({ form, projectId }) => (
                     TaskViewFilterType.TAGS,
                     TaskViewFilterType.ASSIGNEES,
                     TaskViewFilterType.PRIORITIES,
-                    // TaskViewFilterType.OWNERS,
+                    TaskViewFilterType.OWNERS,
                     TaskViewFilterType.ROLES,
                   ]
                     .filter(
@@ -69,7 +68,6 @@ export const TaskViewFormFilterList: FC<Props> = ({ form, projectId }) => (
           <TaskViewFormFilterRow
             name={field.name}
             type={form.getFieldValue(["filters", field.name, "type"])}
-            projectId={projectId}
             // when pressing onClear and removing the item sync, Ant form will
             // also save the cleared value, creating a filter without a type
             onClear={() => requestAnimationFrame(() => remove(index))}

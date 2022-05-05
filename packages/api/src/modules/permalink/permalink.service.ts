@@ -14,6 +14,16 @@ export class PermalinkService {
   constructor(private readonly config: ConfigService<ConfigType>) {}
   private logger = new Logger(this.constructor.name);
 
+  private async getBoard(
+    object: User | Project | Organization,
+    appUrl: string
+  ) {
+    if (object instanceof User) {
+      return `${await this.get(object, appUrl)}/board`;
+    }
+    return await this.get(object, appUrl);
+  }
+
   async get(
     object: Task | TaskView | TaskNFT | Project | Organization | User | Invite,
     appUrl = this.config.get("APP_URL")
@@ -29,8 +39,12 @@ export class PermalinkService {
       return `${await this.get(p, appUrl)}?taskId=${object.id}`;
     }
     if (object instanceof TaskView) {
-      const p = await object.project;
-      return `${await this.get(p, appUrl)}/view/${object.slug}`;
+      const p =
+        (await object.project) ??
+        (await object.user) ??
+        (await object.organization);
+
+      if (p) return `${await this.getBoard(p, appUrl)}/view/${object.slug}`;
     }
     if (object instanceof Project) {
       const o = await object.organization;

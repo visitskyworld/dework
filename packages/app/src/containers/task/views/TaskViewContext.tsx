@@ -1,4 +1,10 @@
-import { TaskView, UpdateTaskViewInput } from "@dewo/app/graphql/types";
+import {
+  Role,
+  TaskTag,
+  TaskView,
+  UpdateTaskViewInput,
+  User,
+} from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import _ from "lodash";
 import { useRouter } from "next/router";
@@ -11,7 +17,14 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useProject, useProjectDetails } from "../../project/hooks";
+import {
+  useOrganizationDetails,
+  useOrganizationUsers,
+} from "../../organization/hooks";
+
+import { useProjectDetails, useProjectTaskTags } from "../../project/hooks";
+import { useOrganizationRoles } from "../../rbac/hooks";
+import { useUser, useUserTaskViews } from "../../user/hooks";
 
 const buildKey = (projectId: string) =>
   `TaskViewProvider.lastViewId.${projectId}`;
@@ -22,6 +35,11 @@ interface TaskViewValue {
   hasLocalChanges(viewId: string): boolean;
   onChangeViewLocally(viewId: string, values: UpdateTaskViewInput): void;
   onResetLocalChanges(viewId: string): void;
+  saveButtonText: string;
+  filterableMembers: User[];
+  tags: TaskTag[];
+  showBacklog: boolean;
+  roles: Role[];
 }
 
 const TaskViewContext = createContext<TaskViewValue>({
@@ -30,15 +48,110 @@ const TaskViewContext = createContext<TaskViewValue>({
   hasLocalChanges: () => false,
   onChangeViewLocally: () => {},
   onResetLocalChanges: () => {},
+  saveButtonText: "Save for everyone",
+  filterableMembers: [],
+  tags: [],
+  showBacklog: true,
+  roles: [],
 });
 
-interface ProviderProps {
-  projectId?: string;
-}
+export const UserTaskViewProvider: FC<{
+  userId?: string;
+}> = ({ userId, children }) => {
+  const router = useRouter();
+  const user = useUser(userId);
+  const views = useUserTaskViews(userId);
 
-export const TaskViewProvider: FC<ProviderProps> = ({
-  projectId,
+  const filterableMembers = useMemo(() => (user ? [user] : []), [user]);
+
+  if (!userId || !views) return null;
+
+  return (
+    <TaskViewProvider
+      redirect={() => router.push(user?.permalink ?? "/")}
+      views={views}
+      key={buildKey(userId)}
+      children={children}
+      filterableMembers={filterableMembers}
+      saveButtonText="Save"
+    />
+  );
+};
+
+export const OrganizationTaskViewProvider: FC<{
+  organizationId?: string;
+}> = ({ organizationId, children }) => {
+  const router = useRouter();
+  const { organization } = useOrganizationDetails(organizationId);
+
+  const roles = useOrganizationRoles(organizationId);
+  const { users: filterableMembers } = useOrganizationUsers(organizationId);
+
+  if (!organizationId || !organization?.taskViews) return null;
+
+  return (
+    <TaskViewProvider
+      redirect={() => router.push(organization?.permalink ?? "/")}
+      views={organization.taskViews}
+      key={buildKey(organizationId)}
+      children={children}
+      filterableMembers={filterableMembers}
+      roles={roles}
+    />
+  );
+};
+
+export const ProjectTaskViewProvider: FC<{
+  projectId?: string;
+}> = ({ projectId, children }) => {
+  const router = useRouter();
+  const { project } = useProjectDetails(projectId);
+  const views = project?.taskViews;
+  const showBacklog = project?.options?.showBacklogColumn;
+  const roles = useOrganizationRoles(project?.organizationId);
+
+  const { users: filterableMembers } = useOrganizationUsers(
+    project?.organizationId
+  );
+  const tags = useProjectTaskTags(projectId);
+
+  if (!projectId || !views) return null;
+
+  return (
+    <TaskViewProvider
+      redirect={() => router.push(project?.permalink ?? "/")}
+      views={views}
+      key={buildKey(projectId)}
+      children={children}
+      filterableMembers={filterableMembers}
+      tags={tags}
+      showBacklog={showBacklog ?? true}
+      roles={roles}
+    />
+  );
+};
+
+const emptyArray: [] = [];
+
+const TaskViewProvider: FC<{
+  redirect: () => void;
+  key: string;
+  views: TaskView[];
+  saveButtonText?: string;
+  filterableMembers?: User[];
+  tags?: TaskTag[];
+  showBacklog?: boolean;
+  roles?: Role[];
+}> = ({
+  redirect,
+  key,
   children,
+  views,
+  saveButtonText = "Save for everyone",
+  filterableMembers = emptyArray,
+  tags = emptyArray,
+  showBacklog = true,
+  roles = emptyArray,
 }) => {
   const [localViewChanges, setLocalViewChanges] = useState<
     Record<string, TaskView | undefined>
@@ -50,10 +163,6 @@ export const TaskViewProvider: FC<ProviderProps> = ({
     viewSlug?: string;
   };
 
-  const { project } = useProject(projectId);
-  const views = useProjectDetails(projectId).project?.taskViews;
-
-  const key = useMemo(() => buildKey(projectId!), [projectId]);
   const view = useMemo(() => {
     if (isSSR) return undefined;
     if (!!tab) return undefined;
@@ -69,11 +178,11 @@ export const TaskViewProvider: FC<ProviderProps> = ({
   }, [viewSlug, views, key, tab]);
 
   useEffect(() => {
-    if (!tab && !view && !!views?.length && !!project) {
-      router.push(project.permalink);
+    if (!tab && !view && !!views?.length) {
+      redirect();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, views?.length, project, tab]);
+  }, [view, views?.length, tab]);
 
   useEffect(() => {
     const lastViewId = localStorage.getItem(key) ?? undefined;
@@ -117,11 +226,16 @@ export const TaskViewProvider: FC<ProviderProps> = ({
   return (
     <TaskViewContext.Provider
       value={{
-        views: useMemo(() => views ?? [], [views]),
+        views,
         currentView: viewWithLocalChanges ?? view,
         hasLocalChanges,
         onChangeViewLocally,
         onResetLocalChanges,
+        saveButtonText,
+        filterableMembers,
+        tags,
+        showBacklog,
+        roles,
       }}
     >
       {useMemo(() => children, [children])}

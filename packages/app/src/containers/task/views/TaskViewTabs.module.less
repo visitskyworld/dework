@@ -1,15 +1,16 @@
 @import "~@dewo/app/styles/theme.less";
 
-
 .tabs {
   height: 100%;
-  
-  > :global(.ant-tabs-nav) > :global(.ant-tabs-nav-wrap) > :global(.ant-tabs-nav-list) {
+
+  > :global(.ant-tabs-nav)
+    > :global(.ant-tabs-nav-wrap)
+    > :global(.ant-tabs-nav-list) {
     flex: 1;
-  
+
     padding-left: 12px;
     padding-right: 12px;
-  
+
     @media (min-width: @screen-sm) {
       padding-left: 32px;
       padding-right: 32px;
@@ -29,18 +30,5 @@
         display: none;
       }
     }
-  }
-}
-
-.list {
-  padding-top: 16px;
-  padding-bottom: 100px;
-
-  padding-left: 12px;
-  padding-right: 12px;
-
-  @media (min-width: @screen-sm) {
-    padding-left: 32px;
-    padding-right: 32px;
   }
 }

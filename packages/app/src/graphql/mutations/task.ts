@@ -11,6 +11,18 @@ export const createTaskView = gql`
           ...TaskView
         }
       }
+      user {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
+      organization {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
     }
   }
 
@@ -22,6 +34,18 @@ export const updateTaskView = gql`
     taskView: updateTaskView(input: $input) {
       ...TaskView
       project {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
+      user {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
+      organization {
         id
         taskViews {
           ...TaskView

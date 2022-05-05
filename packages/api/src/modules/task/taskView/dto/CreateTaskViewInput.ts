@@ -9,8 +9,14 @@ import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
 export class CreateTaskViewInput {
-  @Field(() => GraphQLUUID)
-  public projectId!: string;
+  @Field(() => GraphQLUUID, { nullable: true })
+  public projectId?: string;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public userId?: string;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public organizationId?: string;
 
   @Field()
   public name!: string;

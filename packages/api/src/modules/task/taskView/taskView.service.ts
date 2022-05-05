@@ -3,9 +3,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Raw, Repository } from "typeorm";
 
-import { TaskView } from "@dewo/api/models/TaskView";
+import {
+  TaskView,
+  TaskViewFilterType,
+  TaskViewType,
+} from "@dewo/api/models/TaskView";
 import slugify from "slugify";
 import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 export class TaskViewService {
@@ -23,6 +28,38 @@ export class TaskViewService {
       sortKey: Date.now().toString(),
     });
     return this.repo.findOneOrFail(created.id);
+  }
+
+  public async createDefaultUserTaskViews(user: User): Promise<TaskView[]> {
+    return await Promise.all([
+      this.create({
+        name: "Assigned",
+        filters: [
+          {
+            type: TaskViewFilterType.ASSIGNEES,
+            assigneeIds: [user.id],
+          },
+        ],
+        type: TaskViewType.BOARD,
+        userId: user.id,
+      }),
+      // TODO(fant): we need a way to search for task applicants
+      // this.create({
+      //   name: "Applied",
+      //   filters: [
+      //     { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
+      //     { type: TaskViewFilterType.ASSIGNEES, assigneeIds: [null] },
+      //   ],
+      //   type: TaskViewType.LIST,
+      //   userId: user.id,
+      // }),
+      this.create({
+        name: "To Review",
+        filters: [{ type: TaskViewFilterType.OWNERS, ownerIds: [user.id] }],
+        type: TaskViewType.BOARD,
+        userId: user.id,
+      }),
+    ]);
   }
 
   public async update(partial: DeepAtLeast<TaskView, "id">): Promise<TaskView> {

@@ -1,4 +1,3 @@
-import { Divider, Form, Input, List } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, ReactNode, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
@@ -12,17 +11,18 @@ import { useRunningCallback } from "@dewo/app/util/hooks";
 import styles from "./TaskViewForm.module.less";
 import { TaskViewFormFilterList } from "./TaskViewFormFilterList";
 import { TaskViewFormSortByList } from "./TaskViewFormSortByList";
-import { Can } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewTypeRadioGroup } from "./TaskViewTypeRadioGroup";
+import { Divider, Form, List } from "antd";
+import { DebouncedInput } from "../../../../components/DebouncedInput";
 
 export type FormValues = CreateTaskViewInput | UpdateTaskViewInput;
 
 interface Props {
-  projectId: string;
   initialValues?: Partial<FormValues>;
   renderFooter(info: { submitting: boolean }): ReactNode;
   onSubmit(values: FormValues): void;
   onChange?(values: FormValues): void;
+  canCreate: boolean;
 }
 
 const defaultInitialValues: Omit<FormValues, "projectId"> = {
@@ -34,11 +34,11 @@ const defaultInitialValues: Omit<FormValues, "projectId"> = {
 };
 
 export const TaskViewForm: FC<Props> = ({
-  projectId,
   initialValues = defaultInitialValues,
   renderFooter,
   onSubmit,
   onChange,
+  canCreate,
 }) => {
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: FormValues) => onChange?.(values),
@@ -67,28 +67,28 @@ export const TaskViewForm: FC<Props> = ({
     >
       <Form.Item name="id" hidden />
       <Form.Item name="projectId" hidden />
-      <Form.Item name="sortBys" hidden />
+      <Form.Item name="userId" hidden />
+      <Form.Item name="organizationId" hidden />
 
-      <Can I="create" this={{ __typename: "TaskView", projectId }}>
-        <Form.Item
-          name="name"
-          rules={[{ required: true, min: 1, message: "Please name this view" }]}
-        >
-          <Input
-            placeholder="View name"
-            autoComplete="off"
-            // https://github.com/ant-design/ant-design/issues/15610#issuecomment-475951448
-            onKeyDown={(e) => e.stopPropagation()}
-          />
-        </Form.Item>
-      </Can>
+      <Form.Item
+        hidden={!canCreate}
+        name="name"
+        rules={[{ required: true, min: 1, message: "Please name this view" }]}
+      >
+        <DebouncedInput
+          placeholder="View name"
+          autoComplete="off"
+          // https://github.com/ant-design/ant-design/issues/15610#issuecomment-475951448
+          onKeyDown={(e) => e.stopPropagation()}
+        />
+      </Form.Item>
 
       <List.Item actions={[<TaskViewTypeRadioGroup key="type" />]}>
         <List.Item.Meta avatar={<Icons.LayoutOutlined />} title="Layout" />
       </List.Item>
       <Divider />
 
-      <TaskViewFormFilterList form={form} projectId={projectId} />
+      <TaskViewFormFilterList form={form} />
       <TaskViewFormSortByList form={form} />
       {footer}
     </Form>

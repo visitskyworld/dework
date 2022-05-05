@@ -22,6 +22,9 @@ import {
   UpdateUserRoleInput,
   UpdateUserRoleMutation,
   UpdateUserRoleMutationVariables,
+  UserTaskViewsQuery,
+  UserTaskViewsQueryVariables,
+  TaskView,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 import { useListenToTasks } from "../task/hooks";
@@ -81,10 +84,10 @@ export function useUpdateUserDetail(): (
   );
 }
 
-export function useUser(userId: string): UserProfile | undefined {
+export function useUser(userId: string | undefined): UserProfile | undefined {
   const { data } = useQuery<UserProfileQuery, UserProfileQueryVariables>(
     Queries.userProfile,
-    { variables: { id: userId } }
+    { variables: { id: userId! }, skip: !userId }
   );
   return data?.user;
 }
@@ -107,6 +110,16 @@ export function useUserRoles(
     { variables: { userId: userId! }, skip: !userId }
   );
   return data?.user;
+}
+
+export function useUserTaskViews(
+  userId: string | undefined
+): TaskView[] | undefined {
+  const { data } = useQuery<UserTaskViewsQuery, UserTaskViewsQueryVariables>(
+    Queries.userTaskViews,
+    { variables: { id: userId! }, skip: !userId }
+  );
+  return data?.user.taskViews;
 }
 
 export function useUserTasks(

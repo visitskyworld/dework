@@ -46,7 +46,10 @@ export class TaskViewResolver {
         params: { input: CreateTaskViewInput },
         service
       ) {
-        const project = await service.findById(params.input.projectId);
+        if (params.input.organizationId) return params.input.organizationId;
+        const project = params.input.projectId
+          ? await service.findById(params.input.projectId)
+          : undefined;
         return project?.organizationId;
       },
     })

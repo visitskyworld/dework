@@ -74,7 +74,7 @@ export class RbacService {
 
   public async abilityForUser(
     userId: string | undefined,
-    organizationId: string
+    organizationId?: string
   ): Promise<AppAbility> {
     const rules = await this.getRules(userId, organizationId);
     return this.createAbility(rules, organizationId, userId);
@@ -195,7 +195,7 @@ export class RbacService {
 
   private async createAbility(
     rules: Rule[],
-    organizationId: string,
+    organizationId: string | undefined,
     userId: string | undefined
   ): Promise<AppAbility> {
     const builder = new AbilityBuilder<AppAbility>(AppAbility);
@@ -237,6 +237,7 @@ export class RbacService {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organization);
           fn(CRUD, ProjectSection);
+          fn(CRUD, TaskView, { organizationId });
           fn("update", Project, ["sectionId", "sortKey"], project);
           const roleConditions: Partial<Role> | undefined = { organizationId };
           fn(CRUD, Role, roleConditions);
@@ -321,6 +322,9 @@ export class RbacService {
       builder.can(["read", "update", "delete"], Task, {
         owners: { $elemMatch: { id: userId } },
       });
+      builder.can(CRUD, TaskView, {
+        userId,
+      });
 
       // this is currently only used UI-wise to determine if all task submissions should be shown
       builder.can("update", Task, "submissions", {
@@ -354,7 +358,7 @@ export class RbacService {
 
   private async getRules(
     userId: string | undefined,
-    organizationId: string
+    organizationId: string | undefined
   ): Promise<Rule[]> {
     return this.ruleRepo
       .createQueryBuilder("rule")

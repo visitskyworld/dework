@@ -16,6 +16,7 @@ import { SetUserDetailInput } from "./dto/SetUserDetailInput";
 import { DiscordRolesService } from "../integrations/discord/roles/discord.roles.service";
 import { FileUploadService } from "../fileUpload/fileUpload.service";
 import { UserPromptService } from "./prompt/userPrompt.service";
+import { TaskViewService } from "../task/taskView/taskView.service";
 
 @Injectable()
 export class UserService {
@@ -30,7 +31,8 @@ export class UserService {
     private readonly discordRolesService: DiscordRolesService,
     private readonly jwtService: JwtService,
     private readonly fileUploadService: FileUploadService,
-    private readonly userPromptService: UserPromptService
+    private readonly userPromptService: UserPromptService,
+    private readonly taskViewService: TaskViewService
   ) {}
 
   public async authWithThreepid(
@@ -74,6 +76,7 @@ export class UserService {
     await this.autoPopulateDetails(user.id, threepid);
     if (!existingUser) {
       await this.createOnboardingPrompt(user);
+      await this.taskViewService.createDefaultUserTaskViews(user);
     }
     return this.userRepo.findOne(user.id) as Promise<User>;
   }

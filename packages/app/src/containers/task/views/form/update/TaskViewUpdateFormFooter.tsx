@@ -14,6 +14,7 @@ interface Props {
   showDelete: boolean;
   onReset(): void;
   onDelete(): void;
+  saveText?: string;
 }
 
 export const TaskViewUpdateFormFooter: FC<Props> = ({
@@ -23,6 +24,7 @@ export const TaskViewUpdateFormFooter: FC<Props> = ({
   showDelete,
   onReset,
   onDelete,
+  saveText = "Save for everyone",
 }) => {
   const copyToClipboard = useCopyToClipboardAndShowToast("View link copied");
   const handleCopy = useCallback(
@@ -77,7 +79,7 @@ export const TaskViewUpdateFormFooter: FC<Props> = ({
               loading={submitting}
               style={{ flex: 1 }}
             >
-              Save for everyone
+              {saveText}
             </Button>
           )}
         </Row>

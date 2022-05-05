@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import * as Fragments from "./fragments";
+import * as TaskFragments from "./fragments/task";
 
 export const me = gql`
   query MeQuery {
@@ -58,6 +59,19 @@ export const userTasks = gql`
   ${Fragments.taskWithOrganization}
 `;
 
+export const userTaskViews = gql`
+  query UserTaskViewsQuery($id: UUID!) {
+    user: getUser(id: $id) {
+      id
+      taskViews {
+        ...TaskView
+      }
+    }
+  }
+
+  ${TaskFragments.taskView}
+`;
+
 export const userAddress = gql`
   query UserAddressQuery($id: UUID!) {
     user: getUser(id: $id) {
@@ -71,7 +85,7 @@ export const userAddress = gql`
 `;
 
 export const permissions = gql`
-  query PermissionsQuery($organizationId: UUID!, $unauthed: Boolean) {
+  query PermissionsQuery($organizationId: UUID, $unauthed: Boolean) {
     permissions: getPermissions(
       organizationId: $organizationId
       unauthed: $unauthed

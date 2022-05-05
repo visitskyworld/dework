@@ -8,10 +8,16 @@ import { useRouter } from "next/router";
 import { useTaskViewContext } from "../../TaskViewContext";
 
 interface Props {
-  projectId: string;
+  projectId?: string;
+  userId?: string;
+  organizationId?: string;
 }
 
-export const TaskViewCreateFormPopover: FC<Props> = ({ projectId }) => {
+export const TaskViewCreateFormPopover: FC<Props> = ({
+  projectId,
+  userId,
+  organizationId,
+}) => {
   const { views } = useTaskViewContext();
   const router = useRouter();
 
@@ -31,8 +37,8 @@ export const TaskViewCreateFormPopover: FC<Props> = ({ projectId }) => {
       trigger={["click"]}
       content={
         <TaskViewForm
-          projectId={projectId!}
-          initialValues={{ projectId: projectId! }}
+          canCreate={true}
+          initialValues={{ projectId, userId, organizationId }}
           onSubmit={handleSubmit}
           renderFooter={({ submitting }) => (
             <Button

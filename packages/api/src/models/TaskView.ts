@@ -7,8 +7,10 @@ import {
 import GraphQLUUID from "graphql-type-uuid";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
+import { Organization } from "./Organization";
 import { Project } from "./Project";
 import { TaskPriority, TaskStatus } from "./Task";
+import { User } from "./User";
 
 export enum TaskViewType {
   LIST = "LIST",
@@ -127,11 +129,27 @@ export class TaskView extends Audit {
 
   @JoinColumn()
   @ManyToOne(() => Project)
-  @Field(() => Project)
-  public project!: Promise<Project>;
-  @Column({ type: "uuid" })
-  @Field()
-  public projectId!: string;
+  @Field(() => Project, { nullable: true })
+  public project?: Promise<Project>;
+  @Column({ type: "uuid", nullable: true })
+  @Field(() => GraphQLUUID, { nullable: true })
+  public projectId?: string;
+
+  @JoinColumn()
+  @ManyToOne(() => Organization)
+  @Field(() => Organization, { nullable: true })
+  public organization?: Promise<Organization>;
+  @Column({ type: "uuid", nullable: true })
+  @Field(() => GraphQLUUID, { nullable: true })
+  public organizationId?: string;
+
+  @JoinColumn()
+  @ManyToOne(() => User)
+  @Field(() => User, { nullable: true })
+  public user?: Promise<User>;
+  @Column({ type: "uuid", nullable: true })
+  @Field(() => GraphQLUUID, { nullable: true })
+  public userId?: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -8,6 +8,7 @@ import { OrganizationTag } from "./OrganizationTag";
 import { EntityDetail } from "./EntityDetail";
 import { ProjectSection } from "./ProjectSection";
 import { Role } from "./rbac/Role";
+import { TaskView } from "./TaskView";
 
 @Entity()
 @ObjectType()
@@ -72,6 +73,10 @@ export class Organization extends Audit {
   @Column({ default: false })
   @Field()
   public mintTaskNFTs!: boolean;
+
+  @OneToMany(() => TaskView, (p: TaskView) => p.organization)
+  @Field(() => [TaskView])
+  public taskViews!: Promise<TaskView[]>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

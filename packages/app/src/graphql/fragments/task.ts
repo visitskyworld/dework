@@ -28,6 +28,8 @@ export const taskView = gql`
     groupBy
     permalink
     projectId
+    organizationId
+    userId
     filters {
       ...TaskViewFilter
     }
