@@ -410,17 +410,36 @@ export class RbacService {
     taskId: string,
     source?: RoleSource
   ): Promise<Role[]> {
+    const roles = await this.findRolesForTasks([taskId], source);
+    return roles[taskId] ?? [];
+  }
+
+  public async findRolesForTasks(
+    taskIds: string[],
+    source?: RoleSource
+  ): Promise<Record<string, Role[]>> {
     let qb = this.roleRepo
       .createQueryBuilder("role")
-      .innerJoin("role.rules", "rule")
-      .where("rule.taskId = :taskId", { taskId })
+      .innerJoinAndSelect("role.rules", "rule")
+      .where("rule.taskId IN (:...taskIds)", { taskIds })
       .andWhere("rule.permission = :permission", {
         permission: RulePermission.MANAGE_TASKS,
       });
     if (!!source) {
       qb = qb.andWhere("role.source = :source", { source });
     }
-    return qb.getMany();
+
+    const roles = await qb.getMany();
+    const mapping: Record<string, Role[]> = {};
+    for (const role of roles) {
+      for (const rule of await role.rules) {
+        if (!!rule.taskId) {
+          if (!mapping[rule.taskId]) mapping[rule.taskId] = [];
+          mapping[rule.taskId].push(role);
+        }
+      }
+    }
+    return mapping;
   }
 
   public async isProjectsPrivate(

@@ -125,11 +125,19 @@ export class TaskSearchService implements OnModuleInit {
       projectIds
     );
 
+    const roles = await this.rbacService.findRolesForTasks(
+      tasks.map((t) => t.id)
+    );
+
     const documents = await Promise.all(
       tasks.map((t) =>
         !!t.deletedAt
           ? undefined
-          : this.toDocument(t, !isProjectPrivate[t.projectId])
+          : this.toDocument(
+              t,
+              !isProjectPrivate[t.projectId],
+              roles[t.id]?.map((r) => r.id) ?? []
+            )
       )
     );
 
@@ -362,11 +370,11 @@ export class TaskSearchService implements OnModuleInit {
 
   private async toDocument(
     task: Task,
-    isPublic: boolean
+    isPublic: boolean,
+    roleIds: string[]
   ): Promise<IndexedTask> {
     const project = await task.project;
     const organization = await project.organization;
-    const roles = await this.rbacService.findRolesForTask(task.id);
     return {
       ..._.pick(task, ["id", "name", "status", "sortKey", "projectId"]),
       priority: TaskPriorityNumber[task.priority],
@@ -378,7 +386,7 @@ export class TaskSearchService implements OnModuleInit {
       organizationId: organization.id,
       tagIds: task.tags.map((t) => t.id),
       skillIds: (await task.skills).map((s) => s.id),
-      roleIds: roles.map((r) => r.id),
+      roleIds,
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
       public: isPublic,

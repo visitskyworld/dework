@@ -11,7 +11,11 @@ import { AppModuleImports } from "../modules/app/app.module";
 import { MigrationService } from "../modules/app/migration/migration.service";
 import { MigrationModule } from "../modules/app/migration/migration.module";
 
+let _app: INestApplication;
+
 export async function getTestApp(): Promise<INestApplication> {
+  if (!!_app) return _app;
+
   const logger = new ConsoleLogger();
   logger.setLogLevels([]);
 
@@ -29,5 +33,8 @@ export async function getTestApp(): Promise<INestApplication> {
   await app.init();
 
   logger.setLogLevels(["debug"]);
+  _app = app;
+  // @ts-ignore
+  _app.close = () => {};
   return app;
 }
