@@ -361,7 +361,9 @@ export interface TaskViewLayoutItem {
 
 export function useTaskViewLayoutItems() {
   const { currentView } = useTaskViewContext();
-  const details = useProjectDetails(currentView?.projectId).project;
+  const details = useProjectDetails(
+    currentView?.projectId ?? undefined
+  ).project;
   return useMemo<TaskViewLayoutItem[]>(() => {
     if (!currentView) return [];
     if (currentView.groupBy === TaskViewGroupBy.status) {
