@@ -16,20 +16,20 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useTaskViewGroups } from "../views/hooks";
 import { SkeletonTaskBoard } from "./SkeletonTaskBoard";
+import { useTaskViewContext } from "../views/TaskViewContext";
 
 interface Props {
   tasks: Task[];
-  projectId?: string;
-  organizationId?: string;
   userId?: string;
   empty?: Partial<Record<TaskStatus, TaskBoardColumnEmptyProps>>;
 }
 
 const columnWidth = 330;
 
-export const TaskBoard: FC<Props> = ({ tasks, projectId, empty }) => {
+export const TaskBoard: FC<Props> = ({ tasks, empty }) => {
   const { user } = useAuthContext();
   const hasPermission = usePermissionFn();
+  const projectId = useTaskViewContext().currentView?.projectId ?? undefined;
 
   const taskViewGroups = useTaskViewGroups(tasks, projectId);
 

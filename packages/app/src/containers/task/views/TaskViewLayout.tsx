@@ -15,7 +15,7 @@ export const TaskViewLayout: FC<{
 
   if (currentView?.type === TaskViewType.BOARD) {
     if (!tasks) return <SkeletonTaskBoard />;
-    return <TaskBoard empty={empty} tasks={tasks} />;
+    return <TaskBoard tasks={tasks} empty={empty} />;
   }
 
   return (

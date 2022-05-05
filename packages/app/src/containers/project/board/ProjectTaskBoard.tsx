@@ -44,11 +44,7 @@ export const ProjectTaskBoard: FC<Props> = ({ projectId }) => {
   const tasks = useProjectTasks(projectId, "cache-and-network");
 
   return tasks ? (
-    <TaskBoard
-      tasks={tasks}
-      projectId={projectId}
-      empty={ProjectEmptyColumns}
-    />
+    <TaskBoard tasks={tasks} empty={ProjectEmptyColumns} />
   ) : (
     <SkeletonTaskBoard />
   );
