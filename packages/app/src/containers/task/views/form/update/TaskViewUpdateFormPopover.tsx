@@ -1,10 +1,6 @@
 import { Button, Popover } from "antd";
 import React, { FC, useCallback, useState, useMemo } from "react";
-import {
-  TaskView,
-  UpdateTaskInput,
-  UpdateTaskViewInput,
-} from "@dewo/app/graphql/types";
+import { TaskView, UpdateTaskViewInput } from "@dewo/app/graphql/types";
 import { eatClick } from "@dewo/app/util/eatClick";
 import { TaskViewUpdateFormFooter } from "./TaskViewUpdateFormFooter";
 import { useUpdateTaskView } from "../../hooks";
@@ -22,7 +18,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
     useTaskViewContext();
   const updateTaskView = useUpdateTaskView();
   const handleChange = useCallback(
-    (changed: UpdateTaskInput) => onChangeViewLocally(view.id, changed),
+    (changed: UpdateTaskViewInput) => onChangeViewLocally(view.id, changed),
     [onChangeViewLocally, view.id]
   );
 
@@ -40,7 +36,6 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view, projectId }) => {
   const initialValues = useMemo(
     () => ({
       ...view,
-      projectId: undefined,
       filters: view.filters.map(({ __typename, ...f }) => f),
       sortBys: view.sortBys.map(({ __typename, ...s }) => s),
     }),
