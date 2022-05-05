@@ -406,9 +406,10 @@ export function useTaskViewLayoutItems() {
               tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
               sortBy: {
                 field:
-                  currentView.sortBys[0].field ?? TaskViewSortByField.createdAt,
+                  currentView.sortBys[0]?.field ??
+                  TaskViewSortByField.createdAt,
                 direction:
-                  currentView.sortBys[0].direction ??
+                  currentView.sortBys[0]?.direction ??
                   TaskViewSortByDirection.DESC,
               },
             },
