@@ -404,7 +404,13 @@ export function useTaskViewLayoutItems() {
               assigneeIds: filter(TaskViewFilterType.ASSIGNEES)?.assigneeIds,
               ownerIds: filter(TaskViewFilterType.OWNERS)?.ownerIds,
               tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
-              sortBy: currentView.sortBys[0],
+              sortBy: {
+                field:
+                  currentView.sortBys[0].field ?? TaskViewSortByField.createdAt,
+                direction:
+                  currentView.sortBys[0].direction ??
+                  TaskViewSortByDirection.DESC,
+              },
             },
           })
         );
