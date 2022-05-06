@@ -67,7 +67,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
       !task.submissions.length &&
       task.gating === TaskGatingType.OPEN_SUBMISSION && (
         <Typography.Paragraph type="secondary">
-          No submissions yet
+          No submissions to review
         </Typography.Paragraph>
       ),
     canManageSubmissions && !!task.submissions.length && (

@@ -2,11 +2,22 @@ import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPre
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskStatus, TaskSubmission } from "@dewo/app/graphql/types";
-import { Button, List, Space, Tooltip } from "antd";
+import {
+  Task,
+  TaskGatingType,
+  TaskStatus,
+  TaskSubmission,
+} from "@dewo/app/graphql/types";
+import { useRunning, useToggle } from "@dewo/app/util/hooks";
+import { Button, List, Modal, Space, Tooltip, Typography } from "antd";
 import moment from "moment";
-import React, { FC, useCallback, useState } from "react";
-import { useUpdateTask, useUpdateTaskSubmission } from "../hooks";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import {
+  useCreateTask,
+  useTask,
+  useUpdateTask,
+  useUpdateTaskSubmission,
+} from "../hooks";
 
 interface Props {
   task: Task;
@@ -16,30 +27,78 @@ interface Props {
 export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
   const { user } = useAuthContext();
   const canApprove = usePermission("update", task);
+  const taskDetails = useTask(task.id).task;
 
   const updateTask = useUpdateTask();
   const updateSubmission = useUpdateTaskSubmission();
+  const addTask = useCreateTask();
 
-  const [approving, setApproving] = useState(false);
-  const handleApprove = useCallback(
+  const approveSingle = useCallback(
     async (submission: TaskSubmission) => {
-      setApproving(true);
-      try {
-        await updateSubmission({
-          userId: submission.userId,
-          taskId: submission.taskId,
-          approverId: user?.id,
-        });
-        await updateTask({
-          id: submission.taskId,
-          assigneeIds: [submission.userId],
-          status: TaskStatus.DONE,
-        });
-      } finally {
-        setApproving(false);
-      }
+      await updateSubmission({
+        userId: submission.userId,
+        taskId: submission.taskId,
+        approverId: user?.id,
+      });
+
+      await updateTask({
+        id: submission.taskId,
+        assigneeIds: [submission.userId],
+        status: TaskStatus.DONE,
+      });
     },
-    [updateSubmission, user?.id, updateTask]
+    [updateSubmission, updateTask, user?.id]
+  );
+
+  const approveMultiple = useCallback(
+    async (submission) => {
+      setShouldApprove(true);
+
+      await updateSubmission({
+        userId: submission.userId,
+        taskId: submission.taskId,
+        approverId: user?.id,
+        deletedAt: new Date().toISOString(),
+      });
+
+      await addTask({
+        name: task.name,
+        description:
+          `Approved submission for [${task.name}](${
+            taskDetails!.permalink
+          })\n\n---\n\n` + submission.content,
+        parentTaskId: submission.taskId,
+        status: TaskStatus.DONE,
+
+        gating: TaskGatingType.ASSIGNEES,
+        assigneeIds: [submission.userId],
+        projectId: task.projectId,
+        storyPoints: task.storyPoints,
+        tagIds: task.tags.map((tag) => tag.id),
+        ownerIds: task.owners.map((owner) => owner.id),
+        reward: task.reward && {
+          amount: task.reward.amount,
+          trigger: task.reward.trigger,
+          peggedToUsd: task.reward.peggedToUsd,
+          tokenId: task.reward.token.id,
+        },
+      });
+    },
+    [addTask, task, taskDetails, updateSubmission, user?.id]
+  );
+
+  const showModal = useToggle();
+
+  const [handleApprove, approving] = useRunning(
+    useCallback(
+      async (submission: TaskSubmission, multiple: boolean) => {
+        await (multiple
+          ? approveMultiple(submission)
+          : approveSingle(submission));
+        showModal.toggleOff();
+      },
+      [approveMultiple, approveSingle, showModal]
+    )
   );
 
   const handleDelete = useCallback(
@@ -52,53 +111,97 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
     [updateSubmission]
   );
 
+  const [_shouldApproveMultiple, setShouldApprove] = useState(false);
+  const shouldApproveMultiple = useMemo(() => {
+    const key = `Task.${task.id}.approveMultiple`;
+    if (_shouldApproveMultiple) {
+      localStorage.setItem(key, "true");
+    }
+    return localStorage.getItem(key) === "true";
+  }, [task.id, _shouldApproveMultiple]);
+
   return (
-    <List.Item
-      actions={[
-        !submission.approver && (
-          <Space size={4} direction="vertical" style={{ marginLeft: 8 }}>
-            {canApprove && (
+    <>
+      <List.Item
+        actions={[
+          !submission.approver && (
+            <Space size={4} direction="vertical" style={{ marginLeft: 8 }}>
+              {canApprove && (
+                <Button
+                  size="small"
+                  loading={approving}
+                  onClick={
+                    shouldApproveMultiple
+                      ? () => handleApprove(submission, true)
+                      : showModal.toggleOn
+                  }
+                >
+                  Approve
+                </Button>
+              )}
               <Button
+                key="remove"
                 size="small"
-                loading={approving}
-                onClick={() => handleApprove(submission)}
+                type="text"
+                className="text-secondary"
+                onClick={() => handleDelete(submission)}
               >
-                Approve
+                Remove
               </Button>
-            )}
-            <Button
-              key="remove"
-              size="small"
-              type="text"
-              className="text-secondary"
-              onClick={() => handleDelete(submission)}
+            </Space>
+          ),
+        ]}
+      >
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Tooltip title={submission.user.username}>
+            <a
+              href={submission.user.permalink}
+              target="_blank"
+              rel="noreferrer"
             >
-              Remove
+              <List.Item.Meta
+                avatar={
+                  <UserAvatar
+                    user={submission.user}
+                    tooltip={{ visible: false }}
+                  />
+                }
+                title={submission.user.username}
+                description={moment(submission.createdAt).calendar()}
+              />
+            </a>
+          </Tooltip>
+          <MarkdownPreview
+            style={{ wordBreak: "break-word" }}
+            value={submission.content}
+          />
+        </Space>
+      </List.Item>
+      <Modal
+        visible={showModal.isOn}
+        onCancel={showModal.toggleOff}
+        title="Approve submission"
+        footer={
+          <>
+            <Button
+              type="primary"
+              onClick={() => handleApprove(submission, false)}
+            >
+              Just this one
             </Button>
-          </Space>
-        ),
-      ]}
-    >
-      <Space direction="vertical" style={{ width: "100%" }}>
-        <Tooltip title={submission.user.username}>
-          <a href={submission.user.permalink} target="_blank" rel="noreferrer">
-            <List.Item.Meta
-              avatar={
-                <UserAvatar
-                  user={submission.user}
-                  tooltip={{ visible: false }}
-                />
-              }
-              title={submission.user.username}
-              description={moment(submission.createdAt).calendar()}
-            />
-          </a>
-        </Tooltip>
-        <MarkdownPreview
-          style={{ wordBreak: "break-word" }}
-          value={submission.content}
-        />
-      </Space>
-    </List.Item>
+            <Button
+              type="primary"
+              onClick={() => handleApprove(submission, true)}
+            >
+              More than one
+            </Button>
+          </>
+        }
+      >
+        <Typography.Paragraph style={{ margin: 0 }}>
+          How many submissions do you want to approve?
+        </Typography.Paragraph>
+      </Modal>
+    </>
   );
 };

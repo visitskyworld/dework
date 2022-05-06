@@ -28,10 +28,12 @@ export function useToggle(defaultIsOn: boolean = false): UseToggleHook {
   );
 }
 
-export function useRunning<P extends any[]>(callback: (...args: P) => any) {
+export function useRunning<P extends any[], R extends Promise<any>>(
+  callback: (...args: P) => R
+) {
   const [isRunning, setIsRunning] = useState(false);
   return [
-    async (...args: P) => {
+    (...args: P): R => {
       const response = callback(...args);
       if (response instanceof Promise) {
         setIsRunning(true);
