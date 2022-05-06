@@ -5,14 +5,12 @@ import {
   TaskPriority,
   TaskGatingType,
 } from "@dewo/app/graphql/types";
-import * as Icons from "@ant-design/icons";
 import {
   Form,
   Button,
   Input,
   Select,
   Row,
-  Typography,
   Col,
   DatePicker,
   Divider,
@@ -177,44 +175,39 @@ export const TaskForm: FC<TaskFormProps> = ({
           style={{ display: "flex", flexDirection: "column" }}
           className={!screens.xs ? "dewo-divider-right" : undefined}
         >
-          {!!task?.parentTask && (
-            <Button
-              type="text"
-              size="small"
-              style={{ marginLeft: -8, alignSelf: "flex-start" }}
-              icon={<Icons.CaretLeftFilled className="text-secondary" />}
-              onClick={() => navigateToTask(task.parentTask!.id)}
-            >
-              <Typography.Text
-                type="secondary"
-                style={{ marginLeft: 8, width: "100%", textAlign: "left" }}
-                ellipsis
+          <Breadcrumb style={{ marginLeft: 4 }}>
+            {showProjectLink && !!task && (
+              <>
+                <Breadcrumb.Item href={task.project.organization.permalink}>
+                  <OrganizationAvatar
+                    size={16}
+                    tooltip={{ visible: false }}
+                    organization={task.project.organization}
+                    style={{ marginRight: 8 }}
+                  />
+                  <span>{task.project.organization.name}</span>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  href={task.project.permalink}
+                  className="text-secondary"
+                  // style={{ color: "unset" }}
+                >
+                  {task.project.name}
+                </Breadcrumb.Item>
+              </>
+            )}
+            {!!task?.parentTask && (
+              <Breadcrumb.Item
+                href="#"
+                onClick={() => navigateToTask(task.parentTask!.id)}
               >
                 {task.parentTask.name}
-              </Typography.Text>
-            </Button>
-          )}
-
-          {showProjectLink && !!task && (
-            <Breadcrumb>
-              <Breadcrumb.Item href={task.project.organization.permalink}>
-                <OrganizationAvatar
-                  size={16}
-                  tooltip={{ visible: false }}
-                  organization={task.project.organization}
-                  style={{ marginRight: 8 }}
-                />
-                <span>{task.project.organization.name}</span>
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                href={task.project.permalink}
-                className="text-secondary"
-                // style={{ color: "unset" }}
-              >
-                {task.project.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          )}
+            )}
+            <Breadcrumb.Item className="text-secondary">
+              #{task?.number}
+            </Breadcrumb.Item>
+          </Breadcrumb>
 
           <Form.Item
             name="name"
