@@ -28,24 +28,8 @@ import { useRunningCallback } from "@dewo/app/util/hooks";
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import Link from "next/link";
 import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
-import {
-  ExperimentOptions,
-  useExperiment,
-} from "@dewo/app/util/analytics/useExperiment";
+
 import { useAmplitude } from "@dewo/app/util/analytics/AmplitudeContext";
-
-const experimentWithDiscordConnected: ExperimentOptions<"A" | "B"> = {
-  name: "Task apply modal copy",
-  variants: {
-    A: "Apply",
-    B: "Create Discord thread",
-  },
-};
-
-const experimentWithoutDiscordConnected: ExperimentOptions<"A" | "B"> = {
-  ...experimentWithDiscordConnected,
-  variants: { A: experimentWithDiscordConnected.variants.A },
-};
 
 interface FormValues {
   message: string;
@@ -81,12 +65,6 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
     project?.organizationId
   );
   const followOrganization = useFollowOrganization(project?.organizationId);
-
-  const variant = useExperiment(
-    hasDiscordIntegration
-      ? experimentWithDiscordConnected
-      : experimentWithoutDiscordConnected
-  );
 
   const createTaskApplication = useCreateTaskApplication();
   const [handleSubmit, submitting] = useRunningCallback(
@@ -147,10 +125,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       notification.success({
         placement: "top",
         duration: 5,
-        message:
-          variant === "A"
-            ? "Application submitted!"
-            : "Discord thread created!",
+        message: "Submitted",
         description: (
           <RouterContext.Provider value={router} children={content} />
         ),
@@ -166,11 +141,10 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
       user,
       organization,
       hasDiscordIntegration,
-      variant,
     ]
   );
 
-  const header = variant === "B" && (
+  const header = (
     <Alert
       showIcon
       type="info"
@@ -241,7 +215,7 @@ const ApplyToTaskContent: FC<Props> = ({ taskId, onDone }) => {
         size="large"
         block
       >
-        {variant === "A" ? "Apply" : "I'm interested"}
+        I'm interested
       </Button>
     </Form>
   );

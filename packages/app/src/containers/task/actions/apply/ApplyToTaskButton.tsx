@@ -6,18 +6,6 @@ import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
 import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 import { useDeleteTaskApplication } from "../../hooks";
 import { Task } from "@dewo/app/graphql/types";
-import {
-  ExperimentOptions,
-  useExperiment,
-} from "@dewo/app/util/analytics/useExperiment";
-
-const applyCtaExperiment: ExperimentOptions<"A" | "B"> = {
-  name: "Task apply button copy",
-  variants: {
-    A: "Apply to task",
-    B: "I'm interested",
-  },
-};
 
 interface Props extends ButtonProps {
   task: Task;
@@ -42,9 +30,6 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
     [deleteTaskApplication, task.id, user]
   );
 
-  const applyCtaVariant = useExperiment(applyCtaExperiment);
-  const applyToTaskCopy = applyCtaExperiment.variants[applyCtaVariant];
-
   if (!user) {
     return (
       <LoginButton
@@ -53,7 +38,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
         name="Apply to task (unauthenticated)"
         onAuthedWithWallet={handleInterested}
       >
-        {applyToTaskCopy}
+        I'm interested
       </LoginButton>
     );
   }
@@ -93,7 +78,7 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
           icon={<Icons.UnlockOutlined />}
           onClick={handleInterested}
         >
-          {applyToTaskCopy}
+          I'm interested
         </Button>
       )}
     </>
