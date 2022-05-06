@@ -120,11 +120,12 @@ export const TaskDiscoveryList: FC = () => {
       ),
     [data?.tasks]
   );
+  const nMatchingBounties = data.tasks?.length;
 
   return (
     <>
       <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        🔥 Explore Bounties {!!data.total && `(${data.total})`}
+        🔥 Explore Bounties {!!nMatchingBounties && `(${nMatchingBounties})`}
         <QuestionmarkTooltip
           marginLeft={8}
           title="Only tasks in public boards and with a bounty reward show up here!"
