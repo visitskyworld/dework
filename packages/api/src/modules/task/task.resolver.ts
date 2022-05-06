@@ -110,27 +110,6 @@ export class TaskResolver {
     return subtasks.filter((t) => !t.deletedAt);
   }
 
-  @ResolveField(() => [TaskApplication])
-  public async applications(
-    @Parent() task: Task,
-    @Context("user") user: User
-  ): Promise<TaskApplication[]> {
-    if (!user) return [];
-    const project = await task.project;
-    const ability = await this.rbacService.abilityForUser(
-      user.id,
-      project.organizationId
-    );
-
-    const applications = await this.taskApplicationRepo.find({
-      where: { taskId: task.id },
-    });
-
-    return applications.filter((application) =>
-      ability.can("read", application)
-    );
-  }
-
   @ResolveField(() => String)
   public gitBranchName(
     @Context("user") user: User | undefined,

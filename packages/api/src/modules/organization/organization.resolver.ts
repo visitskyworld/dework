@@ -76,6 +76,7 @@ export class OrganizationResolver {
     const fields = Object.keys(GraphQLFields(info as any));
     return this.organizationService.getUsers(organization.id, {
       joinUserRoles: fields.includes("roles"),
+      joinUserThreepids: fields.includes("threepids"),
     });
   }
 

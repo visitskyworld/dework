@@ -126,24 +126,26 @@ export class OrganizationService {
 
   public getUsers(
     organizationId: string,
-    { joinUserRoles = false }: { joinUserRoles?: boolean } = {}
+    {
+      joinUserRoles = false,
+      joinUserThreepids = false,
+    }: { joinUserRoles?: boolean; joinUserThreepids?: boolean } = {}
   ): Promise<User[]> {
+    let qb = this.userRepo
+      .createQueryBuilder("user")
+      .innerJoin("user.roles", "orgRoles")
+      .where("orgRoles.organizationId = :organizationId", { organizationId })
+      .andWhere("orgRoles.fallback IS TRUE");
+
     if (joinUserRoles) {
-      return this.userRepo
-        .createQueryBuilder("user")
-        .innerJoinAndSelect("user.roles", "role")
-        .innerJoin("user.roles", "orgRoles")
-        .where("orgRoles.organizationId = :organizationId", { organizationId })
-        .andWhere("orgRoles.fallback IS TRUE")
-        .getMany();
+      qb = qb.innerJoinAndSelect("user.roles", "role");
     }
 
-    return this.userRepo
-      .createQueryBuilder("user")
-      .innerJoin("user.roles", "role")
-      .where("role.organizationId = :organizationId", { organizationId })
-      .andWhere("role.fallback IS TRUE")
-      .getMany();
+    if (joinUserThreepids) {
+      qb = qb.innerJoinAndSelect("user.threepids", "threepid");
+    }
+
+    return qb.getMany();
   }
 
   public getAllTags(organizationId: string): Promise<OrganizationTag[]> {

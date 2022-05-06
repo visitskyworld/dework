@@ -12,7 +12,10 @@ import moment from "moment";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
-import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import {
+  usePermission,
+  usePermissionFn,
+} from "@dewo/app/contexts/PermissionsContext";
 import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 import { Diff, DiffEdit } from "deep-diff";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
@@ -65,9 +68,8 @@ const TaskActivityFeedRow: FC<RowProps> = ({ item }) => {
 };
 
 export const TaskActivityFeed: FC<Props> = ({ task }) => {
+  const hasPermission = usePermissionFn();
   const showSubmissions = usePermission("update", task, "submissions");
-  const showApplications = usePermission("read", "TaskApplication");
-
   const statusAuditLogEvents = useMemo(
     () =>
       task.auditLog.filter(
@@ -142,9 +144,10 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
       })),
     ];
 
-    if (showApplications) {
-      items.push(
-        ...task.applications.map((a) => ({
+    items.push(
+      ...task.applications
+        .filter((a) => hasPermission("read", a))
+        .map((a) => ({
           date: a.createdAt,
           avatar: <UserAvatar size="small" user={a.user} linkToProfile />,
           text: `${a.user.username} applied to this task`,
@@ -166,8 +169,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
             </>
           ),
         }))
-      );
-    }
+    );
 
     if (showSubmissions) {
       items.push(
@@ -194,7 +196,7 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
     }
 
     return _.sortBy(items, (i) => i.date);
-  }, [task, showSubmissions, showApplications, statusAuditLogEvents]);
+  }, [task, hasPermission, showSubmissions, statusAuditLogEvents]);
   return (
     <FormSection label="Activity" className="mb-3">
       <Space direction="vertical" style={{ width: "100%" }}>
