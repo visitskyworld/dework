@@ -10,6 +10,8 @@ import { ThreepidModule } from "../../threepid/threepid.module";
 import { IntegrationModule } from "../integration.module";
 import {
   DiscordIntegrationCreatedEventHandler,
+  DiscordIntegrationPaymentConfirmedEventHandler,
+  DiscordIntegrationPaymentCreatedEventHandler,
   DiscordIntegrationTaskApplicationCreatedEventHandler,
   DiscordIntegrationTaskCreatedEventHandler,
   DiscordIntegrationTaskSubmissionCreatedEventHandler,
@@ -23,6 +25,7 @@ import { DiscordStatusboardService } from "./discord.statusboard.service";
 
 import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { Task } from "@dewo/api/models/Task";
 
 @Module({
   imports: [
@@ -32,6 +35,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
       DiscordChannel,
       Organization,
       TaskApplication,
+      Task,
     ]),
     TaskModule,
     RbacModule,
@@ -49,6 +53,8 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
     DiscordIntegrationTaskSubmissionCreatedEventHandler,
     DiscordIntegrationCreatedEventHandler,
     DiscordIntegrationUpdatedEventHandler,
+    DiscordIntegrationPaymentConfirmedEventHandler,
+    DiscordIntegrationPaymentCreatedEventHandler,
     DiscordStatusboardService,
   ],
   exports: [DiscordIntegrationService],

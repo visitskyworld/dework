@@ -41,6 +41,10 @@ import { RbacService } from "@dewo/api/modules/rbac/rbac.service";
 import { RoleSource } from "@dewo/api/models/rbac/Role";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { getMarkdownImages } from "@dewo/api/utils/markdown";
+import {
+  PaymentConfirmedEvent,
+  PaymentCreatedEvent,
+} from "../../payment/payment.events";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.BACKLOG]: "Backlog",
@@ -78,6 +82,8 @@ export class DiscordIntegrationService {
       | TaskCreatedEvent
       | TaskApplicationCreatedEvent
       | TaskSubmissionCreatedEvent
+      | PaymentCreatedEvent
+      | (PaymentConfirmedEvent & { task: Task })
   ) {
     const integrations = await this.integrationService.findProjectIntegrations(
       event.task.projectId,
@@ -100,9 +106,44 @@ export class DiscordIntegrationService {
       | TaskUpdatedEvent
       | TaskCreatedEvent
       | TaskApplicationCreatedEvent
-      | TaskSubmissionCreatedEvent,
+      | TaskSubmissionCreatedEvent
+      | PaymentCreatedEvent
+      | (PaymentConfirmedEvent & { task: Task }),
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
+    if (event instanceof PaymentCreatedEvent) {
+      const { channelToPostTo } = await this.getChannelFromTask(
+        event.task,
+        integration,
+        true
+      );
+      if (
+        channelToPostTo &&
+        integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+        )
+      ) {
+        await this.postPaymentStarted(channelToPostTo, event.task);
+      }
+      return;
+    } else if (event instanceof PaymentConfirmedEvent) {
+      const { channelToPostTo } = await this.getChannelFromTask(
+        event.task,
+        integration,
+        true
+      );
+      if (
+        channelToPostTo &&
+        integration.config.features.includes(
+          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+        )
+      ) {
+        await this.postPaymentComplete(channelToPostTo, event.task);
+        await this.postDone(channelToPostTo, event.task);
+      }
+      return;
+    }
+
     const task = (await this.taskService.findById(event.task.id)) as Task;
     if (!!task.parentTaskId) return;
     const organizationIntegration =
@@ -259,7 +300,8 @@ export class DiscordIntegrationService {
         if (
           integration.config.features.includes(
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-          )
+          ) &&
+          !task.reward
         ) {
           await this.postDone(channelToPostTo, task);
         }
@@ -516,6 +558,30 @@ export class DiscordIntegrationService {
     }
 
     return { channel: undefined, new: false };
+  }
+
+  private async postPaymentStarted(
+    channel: Discord.TextBasedChannel,
+    task: Task
+  ) {
+    await this.postTaskCard(
+      channel,
+      task,
+      "Payment is now processing...",
+      task.assignees.map((a) => a.id)
+    );
+  }
+
+  private async postPaymentComplete(
+    channel: Discord.TextBasedChannel,
+    task: Task
+  ) {
+    await this.postTaskCard(
+      channel,
+      task,
+      "💰 Payment confirmed!",
+      task.assignees.map((a) => a.id)
+    );
   }
 
   private async postDone(channel: Discord.TextBasedChannel, task: Task) {

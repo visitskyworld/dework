@@ -22,6 +22,8 @@ import {
 } from "@dewo/api/models/PaymentNetwork";
 import * as request from "request-promise";
 import { Response } from "express";
+import { EventBus } from "@nestjs/cqrs";
+import { PaymentConfirmedEvent } from "./payment.events";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
@@ -55,7 +57,8 @@ export class PaymentPoller {
 
   constructor(
     @InjectRepository(Payment)
-    private readonly paymentRepo: Repository<Payment>
+    private readonly paymentRepo: Repository<Payment>,
+    private readonly eventBus: EventBus
   ) {}
 
   @Post("update")
@@ -105,12 +108,13 @@ export class PaymentPoller {
         );
 
         if (confirmation.confirmed) {
-          await this.paymentRepo.save({
+          const saved = await this.paymentRepo.save({
             ...payment,
             data: { ...payment.data, ...confirmation.data },
             status: PaymentStatus.CONFIRMED,
             nextStatusCheckAt: null,
           });
+          this.eventBus.publish(new PaymentConfirmedEvent(saved));
         } else if (expired) {
           await this.paymentRepo.save({
             ...payment,

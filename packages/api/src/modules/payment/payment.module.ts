@@ -4,6 +4,7 @@ import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { User } from "@dewo/api/models/User";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { LoggerMiddleware } from "../auth/logger";
 import { PaymentPoller } from "./payment.poller";
@@ -22,6 +23,7 @@ import { TokenService } from "./token.service";
       PaymentNetwork,
       PaymentToken,
     ]),
+    CqrsModule,
   ],
   providers: [PaymentResolver, PaymentService, TokenService, PriceService],
   controllers: [PricePoller, PaymentPoller],

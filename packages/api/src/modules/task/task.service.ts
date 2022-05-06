@@ -28,6 +28,7 @@ import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { Rule } from "@dewo/api/models/rbac/Rule";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
+import { PaymentCreatedEvent } from "../payment/payment.events";
 
 @Injectable()
 export class TaskService {
@@ -136,7 +137,15 @@ export class TaskService {
       rewards.map((r) => ({ ...r, payment: undefined, paymentId: payment.id }))
     );
 
-    return this.findWithRelations({ rewardIds: input.taskRewardIds });
+    const tasks = await this.findWithRelations({
+      rewardIds: input.taskRewardIds,
+    });
+
+    tasks.map((t) =>
+      this.eventBus.publish(new PaymentCreatedEvent(payment, t))
+    );
+
+    return tasks;
   }
 
   public async clearPayments(input: ClearTaskPaymentsInput): Promise<Task[]> {

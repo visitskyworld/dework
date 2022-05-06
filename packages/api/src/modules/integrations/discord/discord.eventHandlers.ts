@@ -1,6 +1,13 @@
+import { Task } from "@dewo/api/models/Task";
 import { Injectable } from "@nestjs/common";
 import { EventsHandler } from "@nestjs/cqrs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import { EventHandler } from "../../app/eventHandler";
+import {
+  PaymentConfirmedEvent,
+  PaymentCreatedEvent,
+} from "../../payment/payment.events";
 import {
   TaskApplicationCreatedEvent,
   TaskCreatedEvent,
@@ -67,6 +74,41 @@ export class DiscordIntegrationTaskSubmissionCreatedEventHandler extends EventHa
 
   async process(event: TaskSubmissionCreatedEvent) {
     await this.integration.handle(event);
+  }
+}
+
+@Injectable()
+@EventsHandler(PaymentCreatedEvent)
+export class DiscordIntegrationPaymentCreatedEventHandler extends EventHandler<PaymentCreatedEvent> {
+  constructor(private readonly integration: DiscordIntegrationService) {
+    super();
+  }
+
+  async process(event: PaymentCreatedEvent) {
+    await this.integration.handle(event);
+  }
+}
+
+@Injectable()
+@EventsHandler(PaymentConfirmedEvent)
+export class DiscordIntegrationPaymentConfirmedEventHandler extends EventHandler<PaymentConfirmedEvent> {
+  constructor(
+    private readonly integration: DiscordIntegrationService,
+    @InjectRepository(Task)
+    private readonly taskRepo: Repository<Task>
+  ) {
+    super();
+  }
+
+  async process(event: PaymentConfirmedEvent) {
+    const tasks = await this.taskRepo
+      .createQueryBuilder("task")
+      .innerJoin("task.reward", "reward")
+      .innerJoin("reward.payment", "payment")
+      .where("payment.id = :id", { id: event.payment.id })
+      .getMany();
+    if (!tasks) return;
+    for (const task of tasks) await this.integration.handle({ ...event, task });
   }
 }
 
