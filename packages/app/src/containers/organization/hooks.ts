@@ -62,7 +62,7 @@ import {
   UpdateProjectSectionInput,
   UpdateProjectSectionMutation,
   UpdateProjectSectionMutationVariables,
-  UserWithRolesAndThreepids,
+  UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { useCallback, useEffect, useMemo } from "react";
@@ -239,7 +239,7 @@ export function useOrganizationBySlug(organizationSlug: string | undefined): {
 }
 
 export function useOrganizationUsers(organizationId: string | undefined): {
-  users: UserWithRolesAndThreepids[] | undefined;
+  users: UserWithRoles[] | undefined;
   refetch(): Promise<unknown>;
 } {
   const { data, refetch } = useQuery<

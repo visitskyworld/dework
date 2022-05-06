@@ -4,12 +4,7 @@ import { ExportOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { useOrganizationUsers } from "../hooks";
 import { Table, Space, Row, Typography, Button } from "antd";
-import {
-  Role,
-  ThreepidSource,
-  UserWithRoles,
-  UserWithRolesAndThreepids,
-} from "@dewo/app/graphql/types";
+import { Role, UserWithRoles } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { RoleTag } from "@dewo/app/components/RoleTag";
@@ -20,7 +15,7 @@ interface Props {
 }
 
 interface ExportProps {
-  users: UserWithRolesAndThreepids[];
+  users: UserWithRoles[];
   organizationId: string;
 }
 
@@ -48,10 +43,9 @@ const OrganizationContributorExports: FC<ExportProps> = ({
         )
         .map((role) => role.name)
         .join(", "),
-      address:
-        user?.threepids &&
-        user.threepids.find((t) => t.source === ThreepidSource.metamask)
-          ?.threepid,
+      // address:
+      //   user?.threepids.find((t) => t.source === ThreepidSource.metamask)
+      //     ?.threepid,
     }));
   }, [users, organizationId]);
   return (

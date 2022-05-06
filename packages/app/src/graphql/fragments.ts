@@ -70,21 +70,6 @@ export const userWithRoles = gql`
   ${role}
 `;
 
-export const userWithRolesAndThreepids = gql`
-  fragment UserWithRolesAndThreepids on User {
-    ...User
-    roles {
-      ...Role
-    }
-    threepids {
-      ...Threepid
-    }
-  }
-  ${user}
-  ${role}
-  ${threepid}
-`;
-
 export const paymentNetwork = gql`
   fragment PaymentNetwork on PaymentNetwork {
     id

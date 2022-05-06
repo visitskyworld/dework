@@ -1,9 +1,8 @@
 import React, { FC, useMemo, useState } from "react";
-import { useOrganizationTasks, useOrganizationUsers } from "../hooks";
+import { useOrganizationTasks } from "../hooks";
 
-import { User, TaskStatus, ThreepidSource } from "@dewo/app/graphql/types";
+import { User, TaskStatus } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
-import _ from "lodash";
 import { ExportOutlined } from "@ant-design/icons";
 import { Table, Space, Typography, Button, Row, Col } from "antd";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
@@ -16,44 +15,25 @@ interface Props {
 }
 interface ExportProps {
   users: Reviewer[];
-  organizationId: string;
 }
 export interface Reviewer extends User {
   tasksReviewed: number;
   taskPoints: number;
 }
 
-const TopReviewerExports: FC<ExportProps> = ({ users, organizationId }) => {
-  const { users: usersWithThreePids } = useOrganizationUsers(organizationId);
-  const addressByUserId = useMemo(() => {
-    const groupedByUserId = _.keyBy(usersWithThreePids, "id");
-    return _.mapValues(
-      groupedByUserId,
-      (u) =>
-        u?.threepids?.find((t) => t.source === ThreepidSource.metamask)
-          ?.threepid
-    );
-  }, [usersWithThreePids]);
-
+const TopReviewerExports: FC<ExportProps> = ({ users }) => {
   const headers = useMemo(
     () => [
       { label: "Username", key: "username" },
-      { label: "Wallet address", key: "address" },
+      // { label: "Wallet address", key: "address" },
       { label: "Tasks Reviewed", key: "tasksReviewed" },
       { label: "Task Points", key: "taskPoints" },
     ],
     []
   );
 
-  const csvData = useMemo(() => {
-    return users.map((user) => ({
-      ...user,
-      address: addressByUserId[user.id],
-    }));
-  }, [users, addressByUserId]);
-
   return (
-    <CSVLink filename="top-reviewers.csv" data={csvData} headers={headers}>
+    <CSVLink filename="top-reviewers.csv" data={users} headers={headers}>
       <Button
         icon={<ExportOutlined />}
         name="Export organization top reviewers as CSV"
@@ -151,9 +131,7 @@ export const TopReviewerList: FC<Props> = ({ organizationId }) => {
           },
         ]}
       />
-      {canUpdateOrganization && (
-        <TopReviewerExports users={reviewers} organizationId={organizationId} />
-      )}
+      {canUpdateOrganization && <TopReviewerExports users={reviewers} />}
     </Space>
   );
 };

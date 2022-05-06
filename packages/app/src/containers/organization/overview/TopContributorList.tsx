@@ -1,13 +1,7 @@
 import React, { FC, useMemo, useState } from "react";
-import { useOrganizationTasks, useOrganizationUsers } from "../hooks";
+import { useOrganizationTasks } from "../hooks";
 
-import {
-  TaskReward,
-  TaskStatus,
-  ThreepidSource,
-  User,
-} from "@dewo/app/graphql/types";
-import _ from "lodash";
+import { TaskReward, TaskStatus, User } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
 import { Table, Space, Typography, Button, Row, Col } from "antd";
@@ -28,24 +22,12 @@ export interface Contributor extends User {
 }
 interface ExportProps {
   users: Contributor[];
-  organizationId: string;
 }
-const TopContributorExports: FC<ExportProps> = ({ users, organizationId }) => {
-  const { users: usersWithThreePids } = useOrganizationUsers(organizationId);
-  const addressByUserId = useMemo(() => {
-    const groupedByUserId = _.keyBy(usersWithThreePids, "id");
-    return _.mapValues(
-      groupedByUserId,
-      (u) =>
-        u?.threepids?.find((t) => t.source === ThreepidSource.metamask)
-          ?.threepid
-    );
-  }, [usersWithThreePids]);
 
+const TopContributorExports: FC<ExportProps> = ({ users }) => {
   const headers = useMemo(
     () => [
       { label: "Username", key: "username" },
-      { label: "Wallet address", key: "address" },
       { label: "Tasks Done", key: "tasksDone" },
       { label: "Task Points", key: "taskPoints" },
       { label: "Earned", key: "earned" },
@@ -53,15 +35,8 @@ const TopContributorExports: FC<ExportProps> = ({ users, organizationId }) => {
     []
   );
 
-  const csvData = useMemo(() => {
-    return users.map((user) => ({
-      ...user,
-      address: addressByUserId[user.id],
-    }));
-  }, [users, addressByUserId]);
-
   return (
-    <CSVLink filename="top-contributors.csv" data={csvData} headers={headers}>
+    <CSVLink filename="top-contributors.csv" data={users} headers={headers}>
       <Button
         icon={<ExportOutlined />}
         name="Export organization top contributors as CSV"
@@ -166,12 +141,7 @@ export const TopContributorList: FC<Props> = ({ organizationId }) => {
           },
         ]}
       />
-      {canUpdateOrganization && (
-        <TopContributorExports
-          users={contributors}
-          organizationId={organizationId}
-        />
-      )}
+      {canUpdateOrganization && <TopContributorExports users={contributors} />}
     </Space>
   );
 };

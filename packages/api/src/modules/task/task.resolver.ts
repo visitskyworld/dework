@@ -45,9 +45,6 @@ import { AuditLogService } from "../auditLog/auditLog.service";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { GraphQLResolveInfo } from "graphql";
 import GraphQLFields from "graphql-fields";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 @Resolver(() => Task)
@@ -56,9 +53,7 @@ export class TaskResolver {
     private readonly taskService: TaskService,
     private readonly permalinkService: PermalinkService,
     private readonly rbacService: RbacService,
-    private readonly auditLogService: AuditLogService,
-    @InjectRepository(TaskApplication)
-    private readonly taskApplicationRepo: Repository<TaskApplication>
+    private readonly auditLogService: AuditLogService
   ) {}
 
   @ResolveField(() => [TaskTag])
