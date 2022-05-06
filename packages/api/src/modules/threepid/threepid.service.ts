@@ -73,10 +73,12 @@ export class ThreepidService {
         return this.getGithubThreePidConfig(threepid).profile.photos?.[0]
           ?.value;
       case ThreepidSource.metamask:
-        return (
-          (await ethers.getDefaultProvider().getAvatar(threepid.threepid)) ??
-          undefined
-        );
+        if (process.env.NODE_ENV !== "test") {
+          return (
+            (await ethers.getDefaultProvider().getAvatar(threepid.threepid)) ??
+            undefined
+          );
+        }
     }
   }
 
@@ -92,10 +94,12 @@ export class ThreepidService {
         break;
       }
       case ThreepidSource.metamask: {
-        const resolved = await ethers
-          .getDefaultProvider()
-          .lookupAddress(threepid.threepid);
-        if (!!resolved) return resolved;
+        if (process.env.NODE_ENV !== "test") {
+          const resolved = await ethers
+            .getDefaultProvider()
+            .lookupAddress(threepid.threepid);
+          if (!!resolved) return resolved;
+        }
         break;
       }
     }
