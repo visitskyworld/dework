@@ -235,6 +235,7 @@ export class OrganizationService {
       where: {
         slug: Raw((alias) => `${alias} ~ '^${slug}(-\\d+)?$'`),
       },
+      withDeleted: true,
     });
 
     if (!orgsMatchingSlugs.length && !slugBlacklist.has(slug)) return slug;

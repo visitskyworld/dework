@@ -357,6 +357,16 @@ export class TaskService {
 
   public async formatTaskReward(reward: TaskReward): Promise<string> {
     const token = await reward.token;
+
+    if (reward.peggedToUsd) {
+      const usdPegDecimalCount = 6;
+      return [
+        "$" + formatFixed(reward.amount, usdPegDecimalCount),
+        "in",
+        token.symbol,
+      ].join(" ");
+    }
+
     return [formatFixed(reward.amount, token.exp), token.symbol].join(" ");
   }
 }

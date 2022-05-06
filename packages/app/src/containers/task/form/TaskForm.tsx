@@ -175,39 +175,41 @@ export const TaskForm: FC<TaskFormProps> = ({
           style={{ display: "flex", flexDirection: "column" }}
           className={!screens.xs ? "dewo-divider-right" : undefined}
         >
-          <Breadcrumb style={{ marginLeft: 4 }}>
-            {showProjectLink && !!task && (
-              <>
-                <Breadcrumb.Item href={task.project.organization.permalink}>
-                  <OrganizationAvatar
-                    size={16}
-                    tooltip={{ visible: false }}
-                    organization={task.project.organization}
-                    style={{ marginRight: 8 }}
-                  />
-                  <span>{task.project.organization.name}</span>
-                </Breadcrumb.Item>
+          {!!task && (
+            <Breadcrumb style={{ marginLeft: 4 }}>
+              {showProjectLink && (
+                <>
+                  <Breadcrumb.Item href={task.project.organization.permalink}>
+                    <OrganizationAvatar
+                      size={16}
+                      tooltip={{ visible: false }}
+                      organization={task.project.organization}
+                      style={{ marginRight: 8 }}
+                    />
+                    <span>{task.project.organization.name}</span>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item
+                    href={task.project.permalink}
+                    className="text-secondary"
+                    // style={{ color: "unset" }}
+                  >
+                    {task.project.name}
+                  </Breadcrumb.Item>
+                </>
+              )}
+              {!!task.parentTask && (
                 <Breadcrumb.Item
-                  href={task.project.permalink}
-                  className="text-secondary"
-                  // style={{ color: "unset" }}
+                  href="#"
+                  onClick={() => navigateToTask(task.parentTask!.id)}
                 >
-                  {task.project.name}
+                  {task.parentTask.name}
                 </Breadcrumb.Item>
-              </>
-            )}
-            {!!task?.parentTask && (
-              <Breadcrumb.Item
-                href="#"
-                onClick={() => navigateToTask(task.parentTask!.id)}
-              >
-                {task.parentTask.name}
+              )}
+              <Breadcrumb.Item className="text-secondary">
+                #{task.number}
               </Breadcrumb.Item>
-            )}
-            <Breadcrumb.Item className="text-secondary">
-              #{task?.number}
-            </Breadcrumb.Item>
-          </Breadcrumb>
+            </Breadcrumb>
+          )}
 
           <Form.Item
             name="name"
