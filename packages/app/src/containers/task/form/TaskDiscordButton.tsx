@@ -36,7 +36,8 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
       if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
         await addUserToDiscordGuild().catch(() => {});
       }
-      return createDiscordLink(task.id);
+      const link = await createDiscordLink(task.id);
+      return link;
     } catch (e) {
       if (e instanceof Error) {
         message.error(e.message);
