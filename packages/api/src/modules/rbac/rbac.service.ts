@@ -259,7 +259,7 @@ export class RbacService {
           fn(CRUD, TaskSection, taskSection);
           fn("submit", Task, task);
           fn(CRUD, TaskSubmission);
-          fn("delete", TaskApplication);
+          fn(["delete", "read"], TaskApplication);
           fn(CRUD, Rule, {
             ...(!!rule.projectId
               ? { "__task__.projectId": rule.projectId }

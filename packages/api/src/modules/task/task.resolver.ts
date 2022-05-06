@@ -45,6 +45,9 @@ import { AuditLogService } from "../auditLog/auditLog.service";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { GraphQLResolveInfo } from "graphql";
 import GraphQLFields from "graphql-fields";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 @Resolver(() => Task)
@@ -53,7 +56,9 @@ export class TaskResolver {
     private readonly taskService: TaskService,
     private readonly permalinkService: PermalinkService,
     private readonly rbacService: RbacService,
-    private readonly auditLogService: AuditLogService
+    private readonly auditLogService: AuditLogService,
+    @InjectRepository(TaskApplication)
+    private readonly taskApplicationRepo: Repository<TaskApplication>
   ) {}
 
   @ResolveField(() => [TaskTag])
@@ -103,6 +108,27 @@ export class TaskResolver {
   public async subtasks(@Parent() task: Task): Promise<Task[]> {
     const subtasks = await task.subtasks;
     return subtasks.filter((t) => !t.deletedAt);
+  }
+
+  @ResolveField(() => [TaskApplication])
+  public async applications(
+    @Parent() task: Task,
+    @Context("user") user: User
+  ): Promise<TaskApplication[]> {
+    if (!user) return [];
+    const project = await task.project;
+    const ability = await this.rbacService.abilityForUser(
+      user.id,
+      project.organizationId
+    );
+
+    const applications = await this.taskApplicationRepo.find({
+      where: { taskId: task.id },
+    });
+
+    return applications.filter((application) =>
+      ability.can("read", application)
+    );
   }
 
   @ResolveField(() => String)

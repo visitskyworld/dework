@@ -20,6 +20,7 @@ import { RbacModule } from "../rbac/rbac.module";
 import { OrganizationModule } from "../organization/organization.module";
 import { ProjectModule } from "../project/project.module";
 import { AuditLogModule } from "../auditLog/auditLog.module";
+import { TaskApplication } from "@dewo/api/models/TaskApplication";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuditLogModule } from "../auditLog/auditLog.module";
       TaskReaction,
       Project,
       User,
+      TaskApplication,
     ]),
     CqrsModule,
     PaymentModule,
