@@ -466,10 +466,11 @@ describe("UserResolver", () => {
       it("should return non-deleted organizations", async () => {
         const user = await fixtures.createUser();
         const existingOrg = await fixtures.createOrganization({}, user);
-        const deletedOrg = await fixtures.createOrganization(
-          { deletedAt: new Date() },
-          user
-        );
+        const deletedOrg = await fixtures.createOrganization({}, user);
+        await fixtures.updateOrganization({
+          id: deletedOrg.id,
+          deletedAt: new Date(),
+        });
 
         const response = await client.request({
           app,

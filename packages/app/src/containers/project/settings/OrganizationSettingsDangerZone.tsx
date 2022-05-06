@@ -2,11 +2,11 @@ import React, { FC, useCallback, useState } from "react";
 import { Button, Card, Form, Input, message, Typography } from "antd";
 
 import { useRouter } from "next/router";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useRunning, useToggle } from "@dewo/app/util/hooks";
 import { FormSection } from "@dewo/app/components/FormSection";
 import {
+  useDeleteOrganization,
   useOrganization,
-  useUpdateOrganization,
 } from "../../organization/hooks";
 
 interface Props {
@@ -18,30 +18,26 @@ export const OrganizationSettingsDangerZone: FC<Props> = ({
 }) => {
   const organization = useOrganization(organizationId);
 
-  const updateOrganization = useUpdateOrganization();
-  const deletingOrganization = useToggle(false);
+  const deleteOrganization = useDeleteOrganization();
   const router = useRouter();
+  const [handleDelete, deleting] = useRunning(
+    useCallback(
+      async () =>
+        await deleteOrganization(organizationId)
+          .then(() => {
+            message.success("Organization deleted!");
+            router.push("/");
+          })
+          .catch(() => message.error("Could not delete organization!")),
+      [deleteOrganization, organizationId, router]
+    )
+  );
+
+  const deletingOrganization = useToggle(false);
 
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const handleChangeName = (e: React.FormEvent<HTMLInputElement>) => {
+  const handleChangeName = (e: React.FormEvent<HTMLInputElement>) =>
     setName(e.currentTarget.value);
-  };
-  const deleteOrganization = useCallback(async () => {
-    setLoading(true);
-    try {
-      await updateOrganization({
-        id: organizationId,
-        deletedAt: new Date().toISOString(),
-      });
-      setLoading(false);
-      message.success("Organization deleted!");
-      await router.push("/");
-    } catch (e) {
-      message.error("Could not delete organization!");
-      setLoading(false);
-    }
-  }, [updateOrganization, organizationId, router]);
   const toggle = useCallback(() => {
     setName("");
     deletingOrganization.toggle();
@@ -72,9 +68,9 @@ export const OrganizationSettingsDangerZone: FC<Props> = ({
               />
               <Button
                 danger
-                loading={loading}
+                loading={deleting}
                 disabled={name !== organization?.name}
-                onClick={deleteOrganization}
+                onClick={handleDelete}
               >
                 I understand the consequences, delete this organization
               </Button>

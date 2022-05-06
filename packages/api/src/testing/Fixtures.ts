@@ -210,6 +210,10 @@ export class Fixtures {
     return this.projectService.update(partial);
   }
 
+  public async updateOrganization(partial: DeepAtLeast<Organization, "id">) {
+    await this.organizationService.update(partial);
+  }
+
   public async createTaskTag(partial: Partial<TaskTag> = {}): Promise<TaskTag> {
     return this.projectService.createTag({
       label: faker.company.companyName(),

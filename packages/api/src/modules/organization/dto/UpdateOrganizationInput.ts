@@ -20,7 +20,4 @@ export class UpdateOrganizationInput {
 
   @Field({ nullable: true })
   public imageUrl?: string;
-
-  @Field({ nullable: true })
-  public deletedAt?: Date;
 }

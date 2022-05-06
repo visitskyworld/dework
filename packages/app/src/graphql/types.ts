@@ -543,6 +543,23 @@ export interface UpdateOrganizationMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: DeleteOrganizationMutation
+// ====================================================
+
+export interface DeleteOrganizationMutation {
+  deleteOrganization: boolean;
+}
+
+export interface DeleteOrganizationMutationVariables {
+  id: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateOrganizationTagMutation
 // ====================================================
 
@@ -12540,7 +12557,6 @@ export interface UpdateOrganizationInput {
   description?: string | null;
   tagIds?: Scalar.UUID[] | null;
   imageUrl?: string | null;
-  deletedAt?: Scalar.DateTime | null;
 }
 
 export interface UpdatePaymentMethodInput {

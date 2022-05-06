@@ -86,21 +86,21 @@ describe("OrganizationResolver", () => {
         const updated = response.body.data?.organization;
         expect(updated.name).toEqual(expectedName);
       });
+    });
 
-      it("should set deletedAt if is owner", async () => {
+    describe("deleteOrganization", () => {
+      it("should delete organization", async () => {
         const { user: owner, organization } =
           await fixtures.createUserOrgProject();
         const response = await client.request({
           app,
           auth: fixtures.createAuthToken(owner),
-          body: OrganizationRequests.update({
-            id: organization.id,
-            deletedAt: new Date(),
-          }),
+          body: OrganizationRequests.delete(organization.id),
         });
         expect(response.status).toEqual(HttpStatus.OK);
-        const updated = response.body.data?.organization;
-        expect(updated.deletedAt).not.toBe(null);
+        await expect(
+          fixtures.getOrganization(organization.id)
+        ).resolves.toBeUndefined();
       });
     });
   });

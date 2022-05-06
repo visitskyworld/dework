@@ -60,6 +60,19 @@ export class OrganizationRequests {
     };
   }
 
+  public static delete(
+    id: string
+  ): GraphQLTestClientRequestBody<{ id: string }> {
+    return {
+      query: `
+        mutation DeleteOrganization($id: UUID!) {
+          deleteOrganization(id: $id)
+        }
+      `,
+      variables: { id },
+    };
+  }
+
   public static get(
     organizationId: string
   ): GraphQLTestClientRequestBody<{ organizationId: string }> {

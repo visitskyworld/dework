@@ -96,6 +96,12 @@ export const updateOrganization = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const deleteOrganization = gql`
+  mutation DeleteOrganizationMutation($id: UUID!) {
+    deleteOrganization(id: $id)
+  }
+`;
+
 export const createOrganizationTag = gql`
   mutation CreateOrganizationTagMutation($input: CreateOrganizationTagInput!) {
     organizationTag: createOrganizationTag(input: $input) {

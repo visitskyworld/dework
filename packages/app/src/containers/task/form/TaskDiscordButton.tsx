@@ -6,7 +6,7 @@ import {
   TaskDetails,
 } from "@dewo/app/graphql/types";
 import { Constants } from "@dewo/app/util/constants";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback } from "react";
 import {
@@ -32,10 +32,17 @@ export const TaskDiscordButton: FC<Props> = ({ task }) => {
   );
   const createDiscordLink = useCreateTaskDiscordLink();
   const handleCreateDiscordLink = useCallback(async () => {
-    if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
-      await addUserToDiscordGuild().catch(() => {});
+    try {
+      if (membershipState === DiscordGuildMembershipState.HAS_SCOPE) {
+        await addUserToDiscordGuild().catch(() => {});
+      }
+      return createDiscordLink(task.id);
+    } catch (e) {
+      if (e instanceof Error) {
+        message.error(e.message);
+      }
+      throw e;
     }
-    return createDiscordLink(task.id);
   }, [addUserToDiscordGuild, createDiscordLink, task.id, membershipState]);
 
   if (!membershipState) return null;

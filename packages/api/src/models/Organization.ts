@@ -1,6 +1,13 @@
 import { PaymentToken } from "./PaymentToken";
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Project } from "./Project";
 import { OrganizationIntegration } from "./OrganizationIntegration";
@@ -78,7 +85,7 @@ export class Organization extends Audit {
   @Field(() => [TaskView])
   public taskViews!: Promise<TaskView[]>;
 
-  @Column({ nullable: true })
+  @DeleteDateColumn()
   @Field({ nullable: true })
   public deletedAt?: Date;
 }

@@ -75,11 +75,8 @@ export class OrganizationService {
     return this.findById(created.id) as Promise<Organization>;
   }
 
-  public async update(
-    partial: DeepAtLeast<Organization, "id">
-  ): Promise<Organization> {
-    const updated = await this.organizationRepo.save(partial);
-    return this.findById(updated.id) as Promise<Organization>;
+  public async update(partial: DeepAtLeast<Organization, "id">): Promise<void> {
+    await this.organizationRepo.save(partial);
   }
 
   public findById(id: string): Promise<Organization | undefined> {

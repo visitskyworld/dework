@@ -62,6 +62,8 @@ import {
   UpdateProjectSectionInput,
   UpdateProjectSectionMutation,
   UpdateProjectSectionMutationVariables,
+  DeleteOrganizationMutation,
+  DeleteOrganizationMutationVariables,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
@@ -105,6 +107,23 @@ export function useUpdateOrganization(): (
 
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.organization;
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteOrganization(): (id: string) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteOrganizationMutation,
+    DeleteOrganizationMutationVariables
+  >(Mutations.deleteOrganization);
+  return useCallback(
+    async (id) => {
+      const res = await mutation({
+        variables: { id },
+        refetchQueries: [{ query: Queries.me }],
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]
   );

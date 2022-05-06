@@ -152,12 +152,33 @@ export class OrganizationResolver {
   public async updateOrganization(
     @Args("input") input: UpdateOrganizationInput
   ): Promise<Organization> {
-    return this.organizationService.update({
+    await this.organizationService.update({
       ...input,
       tags: !!input.tagIds
         ? (input.tagIds.map((id) => ({ id })) as any)
         : undefined,
     });
+
+    return this.organizationService.findById(input.id) as Promise<Organization>;
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: Organization,
+      inject: [OrganizationService],
+      getSubject: (params: { id: string }, service: OrganizationService) =>
+        service.findById(params.id),
+      getOrganizationId: (subject) => subject.id,
+    })
+  )
+  public async deleteOrganization(
+    @Args("id", { type: () => GraphQLUUID }) id: string
+  ): Promise<boolean> {
+    await this.organizationService.update({ id, deletedAt: new Date() });
+    return true;
   }
 
   @Mutation(() => Organization)
