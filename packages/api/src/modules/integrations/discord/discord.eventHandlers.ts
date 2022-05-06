@@ -2,7 +2,7 @@ import { Task } from "@dewo/api/models/Task";
 import { Injectable } from "@nestjs/common";
 import { EventsHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { EventHandler } from "../../app/eventHandler";
 import {
   PaymentConfirmedEvent,
@@ -85,7 +85,7 @@ export class DiscordIntegrationPaymentCreatedEventHandler extends EventHandler<P
   }
 
   async process(event: PaymentCreatedEvent) {
-    await this.integration.handle(event);
+    await this.integration.handlePayment(event, event.task);
   }
 }
 
@@ -107,8 +107,13 @@ export class DiscordIntegrationPaymentConfirmedEventHandler extends EventHandler
       .innerJoin("reward.payment", "payment")
       .where("payment.id = :id", { id: event.payment.id })
       .getMany();
-    if (!tasks) return;
-    for (const task of tasks) await this.integration.handle({ ...event, task });
+    if (!tasks.length) return;
+    const tasksWithRelations = await this.taskRepo.find({
+      id: In(tasks.map((t) => t.id)),
+    });
+    for (const task of tasksWithRelations) {
+      await this.integration.handlePayment(event, task);
+    }
   }
 }
 

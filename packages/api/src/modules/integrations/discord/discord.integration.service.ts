@@ -76,14 +76,65 @@ export class DiscordIntegrationService {
     private readonly discordChannelRepo: Repository<DiscordChannel>
   ) {}
 
+  async handlePayment(
+    event: PaymentCreatedEvent | PaymentConfirmedEvent,
+    task: Task
+  ) {
+    const integrations = await this.integrationService.findProjectIntegrations(
+      task.projectId,
+      ProjectIntegrationType.DISCORD
+    );
+
+    this.logger.log(
+      `Handle task payment event: ${JSON.stringify({
+        type: event.constructor.name,
+        task,
+        ...event,
+      })}`
+    );
+
+    for (const integration of integrations) {
+      if (event instanceof PaymentCreatedEvent) {
+        const { channelToPostTo } = await this.getChannelFromTask(
+          task,
+          integration,
+          true
+        );
+        if (
+          channelToPostTo &&
+          integration.config.features.includes(
+            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+          )
+        ) {
+          await this.postPaymentStarted(channelToPostTo, task);
+        }
+        return;
+      } else if (event instanceof PaymentConfirmedEvent) {
+        const { channelToPostTo } = await this.getChannelFromTask(
+          task,
+          integration,
+          true
+        );
+        if (
+          channelToPostTo &&
+          integration.config.features.includes(
+            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+          )
+        ) {
+          await this.postPaymentComplete(channelToPostTo, task);
+          await this.postDone(channelToPostTo, task);
+        }
+        return;
+      }
+    }
+  }
+
   async handle(
     event:
       | TaskUpdatedEvent
       | TaskCreatedEvent
       | TaskApplicationCreatedEvent
       | TaskSubmissionCreatedEvent
-      | PaymentCreatedEvent
-      | (PaymentConfirmedEvent & { task: Task })
   ) {
     const integrations = await this.integrationService.findProjectIntegrations(
       event.task.projectId,
@@ -106,44 +157,9 @@ export class DiscordIntegrationService {
       | TaskUpdatedEvent
       | TaskCreatedEvent
       | TaskApplicationCreatedEvent
-      | TaskSubmissionCreatedEvent
-      | PaymentCreatedEvent
-      | (PaymentConfirmedEvent & { task: Task }),
+      | TaskSubmissionCreatedEvent,
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
-    if (event instanceof PaymentCreatedEvent) {
-      const { channelToPostTo } = await this.getChannelFromTask(
-        event.task,
-        integration,
-        true
-      );
-      if (
-        channelToPostTo &&
-        integration.config.features.includes(
-          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-        )
-      ) {
-        await this.postPaymentStarted(channelToPostTo, event.task);
-      }
-      return;
-    } else if (event instanceof PaymentConfirmedEvent) {
-      const { channelToPostTo } = await this.getChannelFromTask(
-        event.task,
-        integration,
-        true
-      );
-      if (
-        channelToPostTo &&
-        integration.config.features.includes(
-          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-        )
-      ) {
-        await this.postPaymentComplete(channelToPostTo, event.task);
-        await this.postDone(channelToPostTo, event.task);
-      }
-      return;
-    }
-
     const task = (await this.taskService.findById(event.task.id)) as Task;
     if (!!task.parentTaskId) return;
     const organizationIntegration =
@@ -564,11 +580,14 @@ export class DiscordIntegrationService {
     channel: Discord.TextBasedChannel,
     task: Task
   ) {
+    const discordIds = await this.discord.getDiscordIds(
+      task.assignees.map((u) => u.id)
+    );
     await this.postTaskCard(
       channel,
       task,
       "Payment is now processing...",
-      task.assignees.map((a) => a.id)
+      discordIds.filter((id): id is string => !!id)
     );
   }
 
@@ -576,11 +595,14 @@ export class DiscordIntegrationService {
     channel: Discord.TextBasedChannel,
     task: Task
   ) {
+    const discordIds = await this.discord.getDiscordIds(
+      task.assignees.map((u) => u.id)
+    );
     await this.postTaskCard(
       channel,
       task,
       "💰 Payment confirmed!",
-      task.assignees.map((a) => a.id)
+      discordIds.filter((id): id is string => !!id)
     );
   }
 
