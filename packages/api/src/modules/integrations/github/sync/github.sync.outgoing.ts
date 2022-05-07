@@ -8,7 +8,7 @@ import {
   ProjectIntegration,
   ProjectIntegrationType,
 } from "@dewo/api/models/ProjectIntegration";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { Injectable, Logger } from "@nestjs/common";
 import { Octokit } from "@octokit/rest";
@@ -78,6 +78,42 @@ export class GithubSyncOutgoingService {
           client
         );
       }
+    }
+
+    if (changed.includes("status")) {
+      await this.statusChanged(issue, integration, client, task, prevTask);
+    }
+  }
+
+  private async statusChanged(
+    issue: GithubIssue,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>,
+    client: Octokit,
+    task: Task,
+    prevTask?: Task
+  ) {
+    if (!prevTask?.status) return;
+
+    if (
+      task.status === TaskStatus.DONE &&
+      prevTask.status !== TaskStatus.DONE
+    ) {
+      await client.issues.update({
+        owner: integration.config.organization,
+        repo: integration.config.repo,
+        issue_number: issue.number,
+        state: "closed",
+      });
+    } else if (
+      prevTask.status === TaskStatus.DONE &&
+      task.status !== TaskStatus.DONE
+    ) {
+      await client.issues.update({
+        owner: integration.config.organization,
+        repo: integration.config.repo,
+        issue_number: issue.number,
+        state: "open",
+      });
     }
   }
 

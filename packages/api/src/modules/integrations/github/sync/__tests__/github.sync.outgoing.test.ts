@@ -1,5 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
-import { Task } from "@dewo/api/models/Task";
+import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -88,6 +88,18 @@ describe("GithubSyncOutgoingService", () => {
       });
     return res.data;
   }
+
+  describe("statusChanged", () => {
+    it("should open and close issue", async () => {
+      expect((await getIssue()).state).toEqual("open");
+
+      await req({ status: TaskStatus.DONE }, { status: TaskStatus.TODO });
+      expect((await getIssue()).state).toBe("closed");
+
+      await req({ status: TaskStatus.TODO }, { status: TaskStatus.DONE });
+      expect((await getIssue()).state).toBe("open");
+    });
+  });
 
   describe("assigneesChanged", () => {
     it("should add and remove Github issue assignees", async () => {
