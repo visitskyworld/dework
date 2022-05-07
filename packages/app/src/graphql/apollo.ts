@@ -13,6 +13,7 @@ import { getAuthToken, isCookiesDisabled } from "../util/authToken";
 import { Constants } from "../util/constants";
 import { GetServerSidePropsContext, NextPageContext } from "next";
 import { useAuthContext } from "../contexts/AuthContext";
+import _ from "lodash";
 
 export function createApolloLink(
   origin: string,
@@ -77,11 +78,19 @@ export const createApolloClient = (
             },
             getPaginatedTasks: {
               keyArgs: ["filter"],
-              merge: (existing, incoming) => ({
-                ...existing,
-                ...incoming,
-                tasks: [...(existing?.tasks ?? []), ...incoming.tasks],
-              }),
+              // merge: (existing, incoming) => ({
+              //   ...existing,
+              //   ...incoming,
+              //   tasks: [...(existing?.tasks ?? []), ...incoming.tasks],
+              // }),
+              merge: (existing, incoming) => {
+                if (_.isEqual(existing, incoming)) return existing;
+                return {
+                  ...existing,
+                  ...incoming,
+                  tasks: [...(existing?.tasks ?? []), ...incoming.tasks],
+                };
+              },
             },
           },
         },
