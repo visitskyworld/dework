@@ -16,6 +16,7 @@ const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
   [TaskViewFilterType.OWNERS]: "Reviewer",
   [TaskViewFilterType.ROLES]: "Roles",
   [TaskViewFilterType.SKILLS]: "Skills",
+  [TaskViewFilterType.APPLICANTS]: "Applicants",
 };
 
 interface Props {

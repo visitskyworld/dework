@@ -47,6 +47,7 @@ interface IndexedTask {
   organizationId: string;
   assigneeIds: string[];
   ownerIds: string[];
+  applicantIds: string[];
 }
 
 @Injectable()
@@ -98,6 +99,7 @@ export class TaskSearchService implements OnModuleInit {
             dueDate: { type: "date" },
             assigneeIds: { type: "keyword" },
             ownerIds: { type: "keyword" },
+            applicantIds: { type: "keyword" },
             tagIds: { type: "keyword" },
             skillIds: { type: "keyword" },
             roleIds: { type: "keyword" },
@@ -179,6 +181,7 @@ export class TaskSearchService implements OnModuleInit {
     roleIds?: string[];
     ownerIds?: (string | null)[];
     assigneeIds?: (string | null)[];
+    applicantIds?: string[];
     parentTaskId?: null;
     tagIds?: string[];
     skillIds?: string[];
@@ -240,68 +243,33 @@ export class TaskSearchService implements OnModuleInit {
               ...(!!q.projectIds
                 ? [{ terms: { projectId: q.projectIds } }]
                 : []),
-              ...(!!q.ownerIds?.filter((id) => !!id).length
-                ? [
-                    {
-                      terms_set: {
-                        ownerIds: {
-                          terms: q.ownerIds.filter((id): id is string => !!id),
-                          minimum_should_match_script: { source: "1" },
-                        },
-                      },
-                    },
-                  ]
-                : []),
-              ...(!!q.assigneeIds?.filter((id) => !!id).length
-                ? [
-                    {
-                      terms_set: {
-                        assigneeIds: {
-                          terms: q.assigneeIds.filter(
-                            (id): id is string => !!id
-                          ),
-                          minimum_should_match_script: { source: "1" },
-                        },
-                      },
-                    },
-                  ]
-                : []),
-              ...(!!q.tagIds
-                ? [
-                    {
-                      terms_set: {
-                        tagIds: {
-                          terms: q.tagIds,
-                          minimum_should_match_script: { source: "1" },
-                        },
-                      },
-                    },
-                  ]
-                : []),
-              ...(!!q.skillIds
-                ? [
-                    {
-                      terms_set: {
-                        skillIds: {
-                          terms: q.skillIds,
-                          minimum_should_match_script: { source: "1" },
-                        },
-                      },
-                    },
-                  ]
-                : []),
-              ...(!!q.roleIds
-                ? [
-                    {
-                      terms_set: {
-                        roleIds: {
-                          terms: q.roleIds,
-                          minimum_should_match_script: { source: "1" },
-                        },
-                      },
-                    },
-                  ]
-                : []),
+
+              !!q.ownerIds?.filter((id) => !!id).length &&
+                this.toTermSetFilter(
+                  "ownerIds",
+                  q.ownerIds?.filter((id) => !!id)
+                ),
+              !!q.assigneeIds?.filter((id) => !!id).length &&
+                this.toTermSetFilter(
+                  "assigneeIds",
+                  q.assigneeIds?.filter((id) => !!id)
+                ),
+              this.toTermSetFilter(
+                "tagIds",
+                q.tagIds?.filter((id) => !!id)
+              ),
+              this.toTermSetFilter(
+                "applicantIds",
+                q.applicantIds?.filter((id) => !!id)
+              ),
+              this.toTermSetFilter(
+                "skillIds",
+                q.skillIds?.filter((id) => !!id)
+              ),
+              this.toTermSetFilter(
+                "roleIds",
+                q.roleIds?.filter((id) => !!id)
+              ),
               ...(q.hasReward !== undefined
                 ? [{ match: { hasReward: q.hasReward } }]
                 : []),
@@ -309,7 +277,7 @@ export class TaskSearchService implements OnModuleInit {
               ...(q.public !== undefined
                 ? [{ match: { public: q.public } }]
                 : []),
-            ],
+            ].filter((f) => !!f),
           },
         },
       },
@@ -389,6 +357,7 @@ export class TaskSearchService implements OnModuleInit {
       roleIds,
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
+      applicantIds: (await task.applications).map((a) => a.userId),
       public: isPublic,
       reward: undefined,
       spam:
@@ -396,6 +365,15 @@ export class TaskSearchService implements OnModuleInit {
         !!project.name.match(/(demo|test)/i) ||
         !!organization.name.match(/(demo|test)/i) ||
         moment(task.createdAt).diff(moment(project.createdAt)) < ms.hours(2),
+    };
+  }
+
+  private toTermSetFilter(name: string, value: unknown[] | undefined) {
+    if (!value) return undefined;
+    return {
+      terms_set: {
+        [name]: { terms: value, minimum_should_match_script: { source: "1" } },
+      },
     };
   }
 

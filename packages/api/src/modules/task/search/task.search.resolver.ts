@@ -30,7 +30,7 @@ export class TaskSearchResolver {
       projectIds.push(...projects.map((p) => p.id));
     }
 
-    const isQueryingOnLandingPage = !projectIds;
+    const isQueryingOnLandingPage = !projectIds && !filter.applicantIds;
 
     // TODO(fant): if projectId is set, make sure user has access to it
     return this.service.search({

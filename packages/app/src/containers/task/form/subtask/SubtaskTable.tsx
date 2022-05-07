@@ -352,6 +352,7 @@ export const SubtaskTable: FC<Props> = ({
           render: (assigneeIds: string[], row: SubtaskTableRowData) => (
             <DropdownSelect
               showSearch
+              menuStyle={{ width: 280 }}
               mode="multiple"
               placement="bottomRight"
               disabled={!canChange(row.task, "assigneeIds")}

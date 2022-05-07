@@ -41,6 +41,7 @@ export class IndexTasksService {
         .leftJoinAndSelect("task.assignees", "assignee")
         .leftJoinAndSelect("task.owners", "owner")
         .leftJoinAndSelect("task.tags", "tag")
+        .leftJoinAndSelect("task.applications", "application")
         .leftJoinAndSelect("task.skills", "skill")
         .innerJoinAndSelect("task.project", "project")
         .innerJoinAndSelect("project.organization", "organization")

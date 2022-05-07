@@ -5,7 +5,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EventHandler } from "../../app/eventHandler";
 import { RuleCreatedEvent, RuleDeletedEvent } from "../../rbac/rbac.events";
-import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+import {
+  TaskApplicationCreatedEvent,
+  TaskApplicationDeletedEvent,
+  TaskCreatedEvent,
+  TaskUpdatedEvent,
+} from "../../task/task.events";
 import { TaskSearchService } from "./task.search.service";
 
 @Injectable()
@@ -28,6 +33,30 @@ export class TaskSearchUpdatedEventHandler extends EventHandler<TaskUpdatedEvent
   }
 
   async process(event: TaskUpdatedEvent) {
+    await this.service.index([event.task]);
+  }
+}
+
+@Injectable()
+@EventsHandler(TaskApplicationCreatedEvent)
+export class TaskSearchApplicationCreatedEventHandler extends EventHandler<TaskApplicationCreatedEvent> {
+  constructor(private readonly service: TaskSearchService) {
+    super();
+  }
+
+  async process(event: TaskApplicationCreatedEvent) {
+    await this.service.index([event.task]);
+  }
+}
+
+@Injectable()
+@EventsHandler(TaskApplicationDeletedEvent)
+export class TaskSearchApplicationDeletedEventHandler extends EventHandler<TaskApplicationDeletedEvent> {
+  constructor(private readonly service: TaskSearchService) {
+    super();
+  }
+
+  async process(event: TaskApplicationDeletedEvent) {
     await this.service.index([event.task]);
   }
 }

@@ -6,7 +6,10 @@ import { Repository } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskService } from "../task.service";
-import { TaskApplicationCreatedEvent } from "../task.events";
+import {
+  TaskApplicationCreatedEvent,
+  TaskApplicationDeletedEvent,
+} from "../task.events";
 import { DiscordTaskApplicationService } from "../../integrations/discord/taskApplication/discord.taskApplication.service";
 
 @Injectable()
@@ -37,13 +40,21 @@ export class TaskApplicationService {
 
     refetched.discordThreadUrl = discordThreadUrl;
     await this.repo.update({ id: created.id }, { discordThreadUrl });
-    this.eventBus.publish(new TaskApplicationCreatedEvent(task, refetched));
 
+    const refetchedTask = await this.taskService.findById(partial.taskId);
+    this.eventBus.publish(
+      new TaskApplicationCreatedEvent(refetchedTask!, refetched)
+    );
     return refetched;
   }
 
   public async delete(taskId: string, userId: string): Promise<Task> {
-    await this.repo.delete({ taskId, userId });
-    return this.taskService.findById(taskId) as Promise<Task>;
+    const application = await this.repo.findOne({ taskId, userId });
+    const task = (await this.taskService.findById(taskId)) as Task;
+    if (!!application) {
+      await this.repo.delete({ taskId, userId });
+      this.eventBus.publish(new TaskApplicationDeletedEvent(task, application));
+    }
+    return task;
   }
 }

@@ -26,6 +26,13 @@ export class TaskApplicationCreatedEvent {
   ) {}
 }
 
+export class TaskApplicationDeletedEvent {
+  constructor(
+    public readonly task: Task,
+    public readonly application: TaskApplication
+  ) {}
+}
+
 export class TaskSubmissionCreatedEvent {
   constructor(
     public readonly task: Task,

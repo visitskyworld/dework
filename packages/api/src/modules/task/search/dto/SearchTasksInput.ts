@@ -34,6 +34,9 @@ export class SearchTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public tagIds?: string[];
 
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public applicantIds?: string[];
+
   @Field(() => [GraphQLUUID], { nullable: "itemsAndList" })
   public projectIds?: string[];
 

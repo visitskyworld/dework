@@ -11,6 +11,7 @@ import {
 import slugify from "slugify";
 import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
 import { User } from "@dewo/api/models/User";
+import { TaskStatus } from "@dewo/api/models/Task";
 
 @Injectable()
 export class TaskViewService {
@@ -43,16 +44,16 @@ export class TaskViewService {
         type: TaskViewType.BOARD,
         userId: user.id,
       }),
-      // TODO(fant): we need a way to search for task applicants
-      // this.create({
-      //   name: "Applied",
-      //   filters: [
-      //     { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
-      //     { type: TaskViewFilterType.ASSIGNEES, assigneeIds: [null] },
-      //   ],
-      //   type: TaskViewType.LIST,
-      //   userId: user.id,
-      // }),
+      this.create({
+        name: "Applied",
+        filters: [
+          { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
+          { type: TaskViewFilterType.ASSIGNEES, assigneeIds: [null] },
+          { type: TaskViewFilterType.APPLICANTS, applicantIds: [user.id] },
+        ],
+        type: TaskViewType.LIST,
+        userId: user.id,
+      }),
       this.create({
         name: "To Review",
         filters: [{ type: TaskViewFilterType.OWNERS, ownerIds: [user.id] }],

@@ -1,5 +1,11 @@
 import { Dropdown, DropDownProps, Input, Menu } from "antd";
-import React, { ReactNode, useCallback, useMemo, useState } from "react";
+import React, {
+  CSSProperties,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { eatClick, stopPropagation } from "../util/eatClick";
 
 interface DropdownSelectOption {
@@ -18,6 +24,7 @@ interface DropdownSelectProps<T = string | string[]> {
   options?: DropdownSelectOption[];
   onChange?(value: T): void;
   showSearch?: boolean;
+  menuStyle?: CSSProperties;
 }
 
 export function DropdownSelect<T extends string | string[]>({
@@ -28,6 +35,7 @@ export function DropdownSelect<T extends string | string[]>({
   placement,
   children,
   onChange,
+  menuStyle,
   showSearch = false,
 }: DropdownSelectProps<T>) {
   const isSelected = useCallback(
@@ -75,10 +83,7 @@ export function DropdownSelect<T extends string | string[]>({
       // @ts-ignore
       onClick={eatClick}
       overlay={
-        <Menu
-          onClick={(e) => stopPropagation(e.domEvent)}
-          style={{ width: 280 }}
-        >
+        <Menu onClick={(e) => stopPropagation(e.domEvent)} style={menuStyle}>
           {showSearch && (
             <Menu.Item>
               <Input

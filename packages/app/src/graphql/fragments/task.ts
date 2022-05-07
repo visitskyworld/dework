@@ -7,6 +7,7 @@ const taskViewFilter = gql`
     roleIds
     ownerIds
     assigneeIds
+    applicantIds
     statuses
     priorities
     skillIds

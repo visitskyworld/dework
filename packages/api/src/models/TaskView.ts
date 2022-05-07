@@ -40,6 +40,7 @@ export enum TaskViewFilterType {
   STATUSES = "STATUSES",
   ASSIGNEES = "ASSIGNEES",
   OWNERS = "OWNERS",
+  APPLICANTS = "APPLICANTS",
   ROLES = "ROLES",
   PRIORITIES = "PRIORITIES",
   SKILLS = "SKILLS",
@@ -65,6 +66,9 @@ export class TaskViewFilter {
 
   @Field(() => [GraphQLUUID], { nullable: true })
   public ownerIds?: string[];
+
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public applicantIds?: string[];
 
   @Field(() => [GraphQLUUID], { nullable: true })
   public roleIds?: string[];

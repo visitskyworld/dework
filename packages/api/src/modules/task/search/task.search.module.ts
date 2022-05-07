@@ -6,6 +6,8 @@ import { ElasticsearchModule } from "@nestjs/elasticsearch";
 import { ConfigType } from "../../app/config";
 import { TaskSearchService } from "./task.search.service";
 import {
+  TaskSearchApplicationCreatedEventHandler,
+  TaskSearchApplicationDeletedEventHandler,
   TaskSearchCreatedEventHandler,
   TaskSearchRuleCreatedEventHandler,
   TaskSearchRuleDeletedEventHandler,
@@ -32,6 +34,8 @@ import { RbacModule } from "../../rbac/rbac.module";
     TaskSearchService,
     TaskSearchCreatedEventHandler,
     TaskSearchUpdatedEventHandler,
+    TaskSearchApplicationCreatedEventHandler,
+    TaskSearchApplicationDeletedEventHandler,
     TaskSearchRuleDeletedEventHandler,
     TaskSearchRuleCreatedEventHandler,
     TaskSearchResolver,
