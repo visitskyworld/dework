@@ -15,6 +15,7 @@ const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
   [TaskViewFilterType.PRIORITIES]: "Priority",
   [TaskViewFilterType.OWNERS]: "Reviewer",
   [TaskViewFilterType.ROLES]: "Roles",
+  [TaskViewFilterType.SKILLS]: "Skills",
 };
 
 interface Props {
@@ -40,6 +41,7 @@ export const TaskViewFormFilterList: FC<Props> = ({ form }) => (
                     TaskViewFilterType.PRIORITIES,
                     TaskViewFilterType.OWNERS,
                     TaskViewFilterType.ROLES,
+                    // TaskViewFilterType.SKILLS,
                   ]
                     .filter(
                       (type) =>

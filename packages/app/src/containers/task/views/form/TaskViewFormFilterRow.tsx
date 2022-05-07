@@ -1,3 +1,4 @@
+import { SkillSelect } from "@dewo/app/components/form/SkillSelect";
 import { UserSelect } from "@dewo/app/components/form/UserSelect";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
@@ -216,6 +217,22 @@ const RoleFilter: FC<Props> = ({ name, onClear }) => {
   );
 };
 
+const SkillFilter: FC<Props> = ({ name, onClear }) => (
+  <Form.Item
+    name={[name, "skillIds"]}
+    style={{ flex: 1 }}
+    rules={[
+      {
+        type: "array",
+        min: 1,
+        message: "Select at least one skill",
+      },
+    ]}
+  >
+    <SkillSelect placeholder="Select skills..." allowClear onClear={onClear} />
+  </Form.Item>
+);
+
 export const TaskViewFormFilterRow: FC<Props> = (props) => {
   switch (props.type) {
     case TaskViewFilterType.TAGS:
@@ -230,6 +247,8 @@ export const TaskViewFormFilterRow: FC<Props> = (props) => {
       return <PriorityFilter {...props} />;
     case TaskViewFilterType.ROLES:
       return <RoleFilter {...props} />;
+    case TaskViewFilterType.SKILLS:
+      return <SkillFilter {...props} />;
     default:
       return null;
   }

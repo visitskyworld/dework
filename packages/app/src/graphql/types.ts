@@ -12250,6 +12250,7 @@ export enum TaskViewFilterType {
   OWNERS = "OWNERS",
   PRIORITIES = "PRIORITIES",
   ROLES = "ROLES",
+  SKILLS = "SKILLS",
   STATUSES = "STATUSES",
   TAGS = "TAGS",
 }
