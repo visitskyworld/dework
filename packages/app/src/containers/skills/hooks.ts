@@ -8,7 +8,7 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
 
-export function useSkills() {
+export function useSkills(): GetSkillsQuery["skills"] | undefined {
   const { data } = useQuery<GetSkillsQuery>(getSkills);
   return data?.skills;
 }

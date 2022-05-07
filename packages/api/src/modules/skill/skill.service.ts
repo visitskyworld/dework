@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { IsNull, Repository } from "typeorm";
 import { Skill } from "@dewo/api/models/Skill";
 import { User } from "@dewo/api/models/User";
 
@@ -13,8 +13,8 @@ export class SkillService {
     private readonly userRepo: Repository<User>
   ) {}
 
-  findAll(): Promise<Skill[]> {
-    return this.repo.find();
+  findTopLevelSkills(): Promise<Skill[]> {
+    return this.repo.find({ parentId: IsNull() });
   }
 
   async setUserSkills(userId: string, skillIds: string[]): Promise<User> {

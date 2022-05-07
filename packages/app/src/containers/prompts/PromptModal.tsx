@@ -9,6 +9,7 @@ import { OnboardingConnectWallet } from "./onboarding/OnboardingConnectWallet";
 import { OnboardingDone } from "./onboarding/OnboardingDone";
 import { OnboardingProfile } from "./onboarding/OnboardingProfile";
 import { ConnectWalletToReceiveTaskReward } from "./task/ConnectWalletToReceiveTaskReward";
+import { OnboardingSkills } from "./onboarding/OnboardingSkills";
 
 const StepComponentMapping: Record<
   UserPromptStep,
@@ -17,6 +18,7 @@ const StepComponentMapping: Record<
   [UserPromptStep.OnboardingProfile]: OnboardingProfile,
   [UserPromptStep.OnboardingConnectWallet]: OnboardingConnectWallet,
   [UserPromptStep.OnboardingConnectDiscord]: OnboardingConnectDiscord,
+  [UserPromptStep.OnboardingSkills]: OnboardingSkills,
   [UserPromptStep.OnboardingDone]: OnboardingDone,
   [UserPromptStep.TaskConnectWalletToReceiveReward]:
     ConnectWalletToReceiveTaskReward,

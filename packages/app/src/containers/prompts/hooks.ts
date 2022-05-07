@@ -10,6 +10,7 @@ export enum UserPromptStep {
   OnboardingProfile = "profile",
   OnboardingConnectWallet = "wallet",
   OnboardingConnectDiscord = "discord",
+  OnboardingSkills = "skills",
   OnboardingDone = "done",
   TaskConnectWalletToReceiveReward = "task-reward-wallet",
 }
@@ -21,15 +22,21 @@ const UserPromptStepMapping: Record<
   "Onboarding.v1.ConnectWallet": () => [
     UserPromptStep.OnboardingProfile,
     UserPromptStep.OnboardingConnectWallet,
+    // UserPromptStep.OnboardingSkills,
     UserPromptStep.OnboardingDone,
   ],
   "Onboarding.v1.ConnectDiscord": (user) => {
     if (user.threepids.some((t) => t.source === ThreepidSource.discord)) {
-      return [UserPromptStep.OnboardingProfile, UserPromptStep.OnboardingDone];
+      return [
+        UserPromptStep.OnboardingProfile,
+        // UserPromptStep.OnboardingSkills,
+        UserPromptStep.OnboardingDone,
+      ];
     }
     return [
       UserPromptStep.OnboardingProfile,
       UserPromptStep.OnboardingConnectDiscord,
+      // UserPromptStep.OnboardingSkills,
       UserPromptStep.OnboardingDone,
     ];
   },

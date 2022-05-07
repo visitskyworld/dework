@@ -12,7 +12,7 @@ export class SkillResolver {
 
   @Query(() => [Skill])
   public async getSkills(): Promise<Skill[]> {
-    return this.service.findAll();
+    return this.service.findTopLevelSkills();
   }
 
   @Mutation(() => User)

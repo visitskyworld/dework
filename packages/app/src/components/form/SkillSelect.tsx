@@ -7,7 +7,7 @@ export const SkillSelect: FC<SelectProps> = (props) => {
   return (
     <Select mode="multiple" loading={!skills} {...props}>
       {skills?.map((skill) => (
-        <Select.Option key={skill.id} value={skill.id} label={skill.name}>
+        <Select.Option key={skill.id} value={skill.id}>
           {skill.name}
         </Select.Option>
       ))}
