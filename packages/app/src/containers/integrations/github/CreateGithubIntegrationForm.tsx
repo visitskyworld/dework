@@ -1,5 +1,4 @@
 import { GithubRepo } from "@dewo/app/graphql/types";
-import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Checkbox, Form } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { FC, useCallback, useState } from "react";
@@ -8,9 +7,10 @@ import { GithubProjectIntegrationFeature } from "../hooks";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { SelectGihubRepoFormItem } from "./SelectGithubRepoFormItem";
 import { ImportGithubIssuesFormItem } from "./ImportGithubIssuesFormItem";
+import { useRunning } from "@dewo/app/util/hooks";
 
 export interface FormValues {
-  githubRepoId: string;
+  githubRepoIds: string[];
   githubImportIssues?: boolean;
   githubFeatureCreateIssuesFromTasks?: boolean;
 }
@@ -43,11 +43,11 @@ export const GithubIntegrationFormFields: FC<FormFieldProps> = ({
 }) => (
   <>
     <SelectGihubRepoFormItem organizationId={organizationId} repos={repos} />
-    <ImportGithubIssuesFormItem hidden={!values.githubRepoId} />
+    <ImportGithubIssuesFormItem hidden={!values.githubRepoIds?.length} />
     <Form.Item
       name="githubFeatureCreateIssuesFromTasks"
       valuePropName="checked"
-      hidden={!values.githubRepoId}
+      hidden={!values.githubRepoIds?.length}
     >
       <Checkbox>
         Create Github Issue when Dework task is created
@@ -75,30 +75,30 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
 
   const githubRepos = useOrganizationGithubRepos(organizationId);
 
-  const submitting = useToggle();
-  const handleSubmit = useCallback(
-    async (values: FormValues) => {
-      const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
-      if (!repo) return;
+  const [handleSubmit, submitting] = useRunning(
+    useCallback(
+      async (values: FormValues) => {
+        if (!githubRepos) return;
+        const repos = githubRepos.filter((r) =>
+          values.githubRepoIds?.includes(r.id)
+        );
 
-      try {
-        submitting.toggleOn();
-        await onSubmit({
-          repo,
-          importIssues: !!values.githubImportIssues,
-          features: [
-            GithubProjectIntegrationFeature.SHOW_BRANCHES,
-            GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-            ...(values.githubFeatureCreateIssuesFromTasks
-              ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
-              : []),
-          ],
-        });
-      } finally {
-        submitting.toggleOff();
-      }
-    },
-    [submitting, githubRepos, onSubmit]
+        for (const repo of repos) {
+          await onSubmit({
+            repo,
+            importIssues: !!values.githubImportIssues,
+            features: [
+              GithubProjectIntegrationFeature.SHOW_BRANCHES,
+              GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+              ...(values.githubFeatureCreateIssuesFromTasks
+                ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
+                : []),
+            ],
+          });
+        }
+      },
+      [githubRepos, onSubmit]
+    )
   );
 
   return (
@@ -119,8 +119,8 @@ export const CreateGithubIntegrationForm: FC<Props> = ({
         type="primary"
         htmlType="submit"
         block
-        loading={submitting.isOn}
-        hidden={!values.githubRepoId}
+        loading={submitting}
+        hidden={!values.githubRepoIds?.length}
       >
         Connect Github
       </Button>

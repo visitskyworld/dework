@@ -113,20 +113,24 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           options: { showCommunitySuggestions: true },
         });
 
-        const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
-        if (!!repo) {
-          await createGithubIntegration({
-            repo,
-            projectId: project.id,
-            importIssues: !!values.githubImportIssues,
-            features: [
-              GithubProjectIntegrationFeature.SHOW_BRANCHES,
-              GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-              ...(values.githubFeatureCreateIssuesFromTasks
-                ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
-                : []),
-            ],
-          });
+        const repos = githubRepos?.filter((r) =>
+          values.githubRepoIds?.includes(r.id)
+        );
+        if (!!repos?.length) {
+          for (const repo of repos) {
+            await createGithubIntegration({
+              repo,
+              projectId: project.id,
+              importIssues: !!values.githubImportIssues,
+              features: [
+                GithubProjectIntegrationFeature.SHOW_BRANCHES,
+                GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+                ...(values.githubFeatureCreateIssuesFromTasks
+                  ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
+                  : []),
+              ],
+            });
+          }
         }
 
         const channel = discordChannels.value?.find(

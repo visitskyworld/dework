@@ -47,7 +47,7 @@ const getFeatures = (
 };
 
 export interface FormValues {
-  githubRepoId: string;
+  githubRepoIds: string[];
   githubImportIssues?: boolean;
   githubFeatureCreateIssuesFromTasks?: boolean;
 }
@@ -90,15 +90,19 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
   );
   const [handleSubmit, submitting] = useRunningCallback(
     async (values: FormValues) => {
-      const repo = githubRepos?.find((r) => r.id === values.githubRepoId);
-      if (!repo) return;
+      if (!githubRepos) return;
+      const repos = githubRepos.filter((r) =>
+        values.githubRepoIds?.includes(r.id)
+      );
 
       try {
-        await onSubmit({
-          repo,
-          importIssues: !!values.githubImportIssues,
-          features: getFeatures(feature),
-        });
+        for (const repo of repos) {
+          await onSubmit({
+            repo,
+            importIssues: !!values.githubImportIssues,
+            features: getFeatures(feature),
+          });
+        }
       } finally {
         form.resetFields();
       }
@@ -168,13 +172,15 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
               organizationId={organizationId}
               repos={githubRepos}
             />
-            <ImportGithubIssuesFormItem hidden={!values.githubRepoId} />
+            <ImportGithubIssuesFormItem
+              hidden={!values.githubRepoIds?.length}
+            />
           </FormSection>
           <Button
             type="primary"
             htmlType="submit"
             loading={submitting}
-            hidden={!values.githubRepoId}
+            hidden={!values.githubRepoIds?.length}
           >
             Connect Github
           </Button>

@@ -30,10 +30,15 @@ export const SelectGihubRepoFormItem = ({
         </Typography.Paragraph>
       )}
       <Form.Item
-        name="githubRepoId"
+        name="githubRepoIds"
         rules={[{ required: true, message: "Please select a Github repo" }]}
       >
-        <Select loading={!repos} placeholder="Select Github Repo" allowClear>
+        <Select
+          mode="multiple"
+          loading={!repos}
+          placeholder="Select Github Repo"
+          allowClear
+        >
           {repos?.map((repo) => (
             <Select.Option
               key={repo.id}
