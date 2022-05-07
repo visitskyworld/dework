@@ -529,18 +529,22 @@ export function useGenerateRandomTagColor(
 export function useTask(
   taskId: string | undefined,
   fetchPolicy?: WatchQueryFetchPolicy
-): { task: GetTaskQuery["task"] | undefined; error: ApolloError | undefined } {
-  const { data, error } = useQuery<GetTaskQuery, GetTaskQueryVariables>(
-    Queries.task,
-    {
-      variables: { taskId: taskId! },
-      skip: !taskId,
-      fetchPolicy,
-    }
-  );
+): {
+  task: GetTaskQuery["task"] | undefined;
+  error: ApolloError | undefined;
+  refetch: () => Promise<unknown>;
+} {
+  const { data, error, refetch } = useQuery<
+    GetTaskQuery,
+    GetTaskQueryVariables
+  >(Queries.task, {
+    variables: { taskId: taskId! },
+    skip: !taskId,
+    fetchPolicy,
+  });
   const task = data?.task ?? undefined;
-  if (!task || task.id !== taskId) return { task: undefined, error };
-  return { task, error };
+  if (!task || task.id !== taskId) return { task: undefined, error, refetch };
+  return { task, error, refetch };
 }
 
 export function useLazyTaskReactionUsers(taskId: string) {

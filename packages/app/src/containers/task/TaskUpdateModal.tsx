@@ -12,6 +12,7 @@ import { isSSR } from "@dewo/app/util/isSSR";
 import { toTaskFormValues } from "./form/util";
 import { NotFoundResourceModal } from "@dewo/app/components/NotFoundResourceModal";
 import { ForbiddenResourceModal } from "@dewo/app/components/ForbiddenResourceModal";
+import { useWindowFocus } from "@dewo/app/util/hooks";
 
 interface Props {
   taskId: string;
@@ -19,13 +20,10 @@ interface Props {
   onCancel(): void;
 }
 
-export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
+const TaskUpdateModalContent: FC<{ taskId: string }> = ({ taskId }) => {
   const router = useRouter();
   const isOnProjectPage = !!router.query.projectSlug;
-  const { task, error } = useTask(
-    taskId,
-    isSSR ? undefined : "cache-and-network"
-  );
+  const { task } = useTask(taskId, isSSR ? undefined : "cache-and-network");
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
   const taskRoles = useTaskRoles(task);
   const formValues = useMemo(
@@ -34,13 +32,38 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
     [task, taskRoles]
   );
 
+  return (
+    <Skeleton loading={!formValues} active paragraph={{ rows: 5 }}>
+      {!!task && (
+        <TaskForm
+          key={taskId}
+          mode="update"
+          task={task}
+          projectId={task!.projectId}
+          initialValues={formValues}
+          showProjectLink={!isOnProjectPage}
+          onSubmit={updateTaskFromFormValues}
+        />
+      )}
+    </Skeleton>
+  );
+};
+
+export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
+  const router = useRouter();
+  const isOnProjectPage = !!router.query.projectSlug;
+  const { task, error, refetch } = useTask(
+    taskId,
+    isSSR ? undefined : "cache-and-network"
+  );
+  useWindowFocus(refetch);
+
   const forbiddenError = !!error?.graphQLErrors.some(
     (e) => e.extensions?.response?.statusCode === 403
   );
   const notFoundError = !!error?.graphQLErrors.some(
     (e) => e.extensions?.response?.statusCode === 404
   );
-
   return (
     <>
       <Modal
@@ -50,19 +73,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         width={1000}
       >
         {!!task && <TaskOptionsButton task={task} />}
-        <Skeleton loading={!formValues} active paragraph={{ rows: 5 }}>
-          {!!task && (
-            <TaskForm
-              key={taskId}
-              mode="update"
-              task={task}
-              projectId={task!.projectId}
-              initialValues={formValues}
-              showProjectLink={!isOnProjectPage}
-              onSubmit={updateTaskFromFormValues}
-            />
-          )}
-        </Skeleton>
+        <TaskUpdateModalContent key={taskId} taskId={taskId} />
       </Modal>
       {visible && !!task && <TaskSeo task={task} />}
       <NotFoundResourceModal
