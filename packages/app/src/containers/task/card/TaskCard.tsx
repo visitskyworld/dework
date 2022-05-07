@@ -15,6 +15,7 @@ import {
 import { TaskGatingIcon } from "./TaskGatingIcon";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
+import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -24,6 +25,7 @@ interface TaskCardProps {
 
 export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const navigateToTask = useNavigateToTask(task.id);
+  const prefetchProps = usePrefetchTaskDetailsOnHover(task.id);
 
   const shouldRenderReward = !!task.reward;
   const shouldRenderReactions =
@@ -64,6 +66,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           : undefined
       }
       onClick={navigateToTask}
+      {...prefetchProps}
     >
       <Row style={{ rowGap: 8 }}>
         <Typography.Text

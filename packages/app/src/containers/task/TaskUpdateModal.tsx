@@ -23,7 +23,7 @@ interface Props {
 const TaskUpdateModalContent: FC<{ taskId: string }> = ({ taskId }) => {
   const router = useRouter();
   const isOnProjectPage = !!router.query.projectSlug;
-  const { task } = useTask(taskId, isSSR ? undefined : "cache-and-network");
+  const { task } = useTask(taskId);
   const updateTaskFromFormValues = useUpdateTaskFromFormValues(task);
   const taskRoles = useTaskRoles(task);
   const formValues = useMemo(

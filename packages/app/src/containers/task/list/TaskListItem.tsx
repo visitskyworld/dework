@@ -10,6 +10,7 @@ import { TaskRewardTag } from "../TaskRewardTag";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import styles from "./TaskListItem.module.less";
+import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnHover";
 
 interface Props {
   task: Task;
@@ -17,8 +18,14 @@ interface Props {
 
 export const TaskListItem: FC<Props> = ({ task }) => {
   const navigateToTask = useNavigateToTask(task.id);
+  const prefetchTaskDetailsOnHover = usePrefetchTaskDetailsOnHover(task.id);
   return (
-    <Card size="small" className={styles.card} onClick={navigateToTask}>
+    <Card
+      size="small"
+      className={styles.card}
+      onClick={navigateToTask}
+      {...prefetchTaskDetailsOnHover}
+    >
       <Row align="middle" style={{ columnGap: 16 }}>
         <TaskStatusIcon status={task.status} />
         <TaskGatingIcon task={task} />
