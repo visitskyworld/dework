@@ -12547,6 +12547,7 @@ export interface ProjectTokenGateInput {
 }
 
 export interface SearchTasksInput {
+  name?: string | null;
   statuses?: TaskStatus[] | null;
   priorities?: TaskPriority[] | null;
   hasReward?: boolean | null;

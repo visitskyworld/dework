@@ -30,6 +30,7 @@ import {
 import { useTaskViewContext } from "./TaskViewContext";
 import {
   matchingAssigneeIds,
+  matchingName,
   matchingOwnerIds,
   matchingPriorities,
   matchingRoles,
@@ -101,7 +102,7 @@ export function useTaskViewGroups(
   tasks: Task[],
   projectId?: string
 ): TaskViewGroup[] {
-  const { currentView } = useTaskViewContext();
+  const { currentView, searchQuery } = useTaskViewContext();
   const router = useRouter();
   const isOnPersonalBoard = /.*\/profile\/.+\/board*./.test(router.asPath);
   const sortBys = useMemo(
@@ -133,6 +134,7 @@ export function useTaskViewGroups(
     () =>
       tasks
         .filter((t) => !t.deletedAt)
+        .filter(matchingName(searchQuery))
         .filter(
           matchingTagIds(
             findFilter(TaskViewFilterType.TAGS)?.tagIds ?? undefined
@@ -164,7 +166,7 @@ export function useTaskViewGroups(
             roles
           )
         ),
-    [tasks, roles, findFilter]
+    [tasks, roles, searchQuery, findFilter]
   );
 
   const groups = useMemo(
@@ -360,7 +362,7 @@ export interface TaskViewLayoutItem {
 }
 
 export function useTaskViewLayoutItems() {
-  const { currentView } = useTaskViewContext();
+  const { currentView, searchQuery } = useTaskViewContext();
   const details = useProjectDetails(
     currentView?.projectId ?? undefined
   ).project;
@@ -408,6 +410,7 @@ export function useTaskViewLayoutItems() {
               tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
               roleIds: filter(TaskViewFilterType.ROLES)?.roleIds,
               skillIds: filter(TaskViewFilterType.SKILLS)?.skillIds,
+              name: searchQuery,
               applicantIds: filter(TaskViewFilterType.APPLICANTS)?.applicantIds,
               parentTaskId: null,
               sortBy: {
@@ -424,7 +427,7 @@ export function useTaskViewLayoutItems() {
     }
 
     return [];
-  }, [currentView, details?.options?.showBacklogColumn]);
+  }, [currentView, details?.options?.showBacklogColumn, searchQuery]);
 }
 
 export interface TaskViewLayoutData {

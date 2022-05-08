@@ -85,8 +85,33 @@ export class TaskSearchService implements OnModuleInit {
     await this.elasticsearch.indices.create({
       index: this.indexName,
       body: {
+        // https://gist.github.com/vrsandeep/f2cf494b2b407aaf4b904389f8fe83a3
+        settings: {
+          analysis: {
+            tokenizer: {
+              ngram_tokenizer: {
+                type: "ngram",
+                min_gram: "3",
+                max_gram: "4",
+                token_chars: ["letter", "digit"],
+              },
+            },
+            analyzer: {
+              ngram_analyzer: {
+                tokenizer: "ngram_tokenizer",
+                type: "custom",
+                filter: ["lowercase"],
+              },
+            },
+          },
+        },
         mappings: {
           properties: {
+            name: {
+              type: "text",
+              term_vector: "yes",
+              analyzer: "ngram_analyzer",
+            },
             status: { type: "keyword" },
             priority: { type: "byte" },
             reward: { type: "long" },
@@ -175,6 +200,7 @@ export class TaskSearchService implements OnModuleInit {
   }
 
   public async search(q: {
+    name?: string;
     statuses?: TaskStatus[];
     priorities?: TaskPriority[];
     projectIds?: string[];
@@ -211,11 +237,15 @@ export class TaskSearchService implements OnModuleInit {
       index: this.indexName,
       body: {
         size,
-        sort: [{ [q.sortBy.field]: q.sortBy.direction.toLowerCase() }],
+        sort: [
+          ...(!!q.name ? [{ _score: "desc" }] : []),
+          { [q.sortBy.field]: q.sortBy.direction.toLowerCase() },
+        ],
         search_after: !!q.cursor ? this.fromCursor(q.cursor) : undefined,
         track_total_hits: 1000,
         query: {
           bool: {
+            must: !!q.name ? [{ match: { name: { query: q.name } } }] : [],
             must_not: [
               ...(q.ownerIds?.includes(null)
                 ? [{ exists: { field: "ownerIds" } }]

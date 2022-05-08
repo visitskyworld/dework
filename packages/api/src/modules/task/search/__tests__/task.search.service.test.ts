@@ -218,6 +218,36 @@ describe("TaskSearchService", () => {
       );
     });
 
+    it("should return tasks matching name", async () => {
+      const project = await fixtures.createProject();
+      const task1 = await fixtures.createTask({
+        name: "Dework is cold",
+        projectId: project.id,
+      });
+      const task2 = await fixtures.createTask({
+        name: "Dework is cool",
+        projectId: project.id,
+      });
+      const task3 = await fixtures.createTask({
+        name: "Something else",
+        projectId: project.id,
+      });
+      await service.index([task1, task2, task3], true);
+
+      const res = await service.search({
+        projectIds: [project.id],
+        name: "work is cool",
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+      });
+
+      expect(res.tasks[0].id).toEqual(task2.id);
+      expect(res.tasks[1].id).toEqual(task1.id);
+      expect(res).not.toContainEqual(expect.objectContaining({ id: task3.id }));
+    });
+
     describe("sorting", () => {
       let project: Project;
       let task1: Task;

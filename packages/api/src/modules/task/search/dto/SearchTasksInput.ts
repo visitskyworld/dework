@@ -10,6 +10,9 @@ export class SearchTasksInput {
   // @Field({ nullable: true })
   // public doneAtBefore?: Date;
 
+  @Field({ nullable: true })
+  public name?: string;
+
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
 

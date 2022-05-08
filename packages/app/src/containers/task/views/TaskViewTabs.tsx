@@ -1,4 +1,4 @@
-import { Tabs } from "antd";
+import { Divider, Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
@@ -10,6 +10,7 @@ import styles from "./TaskViewTabs.module.less";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewCreateFormPopover } from "./form/create/TaskViewCreateFormPopover";
 import { AtLeast } from "@dewo/app/types/general";
+import { TaskViewToolbar } from "./TaskViewToolbar";
 
 interface Props {
   projectId?: string;
@@ -98,6 +99,8 @@ export const TaskViewTabs: FC<Props> = ({
             key={`view:${view.id}`}
             closable={false}
           >
+            <TaskViewToolbar />
+            <Divider style={{ margin: 0 }} />
             {children}
           </Tabs.TabPane>
         ))}

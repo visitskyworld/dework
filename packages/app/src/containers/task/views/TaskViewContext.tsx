@@ -40,6 +40,8 @@ interface TaskViewValue {
   tags: TaskTag[];
   showBacklog: boolean;
   roles: Role[];
+  searchQuery: string;
+  onSearchQueryChange(query: string): void;
 }
 
 const TaskViewContext = createContext<TaskViewValue>({
@@ -53,6 +55,8 @@ const TaskViewContext = createContext<TaskViewValue>({
   tags: [],
   showBacklog: true,
   roles: [],
+  searchQuery: "",
+  onSearchQueryChange: () => {},
 });
 
 export const UserTaskViewProvider: FC<{
@@ -156,6 +160,7 @@ const TaskViewProvider: FC<{
   const [localViewChanges, setLocalViewChanges] = useState<
     Record<string, TaskView | undefined>
   >({});
+  const [searchQuery, onSearchQueryChange] = useState("");
 
   const router = useRouter();
   const { viewSlug, tab } = router.query as {
@@ -236,6 +241,8 @@ const TaskViewProvider: FC<{
         tags,
         showBacklog,
         roles,
+        searchQuery,
+        onSearchQueryChange,
       }}
     >
       {useMemo(() => children, [children])}

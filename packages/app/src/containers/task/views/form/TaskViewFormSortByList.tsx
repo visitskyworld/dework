@@ -16,6 +16,7 @@ import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { TaskViewFormSortByDirectionToggle } from "./TaskViewFormSortByDirectionToggle";
 import { FormValues } from "./TaskViewForm";
+import { SortIcon } from "@dewo/app/components/icons/Sort";
 
 const sortByFieldToString: Record<TaskViewSortByField, string> = {
   [TaskViewSortByField.createdAt]: "Created At",
@@ -66,16 +67,13 @@ export const TaskViewFormSortByList: FC<Props> = ({ form }) => {
                   }
                 >
                   <Button size="small" type="text" className="text-secondary">
-                    Sort by <Icons.RightOutlined />
+                    Add sorting <Icons.RightOutlined />
                   </Button>
                 </Dropdown>
               ),
             ]}
           >
-            <List.Item.Meta
-              avatar={<Icons.SortAscendingOutlined />}
-              title="Sort by..."
-            />
+            <List.Item.Meta avatar={<SortIcon />} title="Sort by" />
           </List.Item>
 
           {fields.map((field, index) => (

@@ -7,6 +7,7 @@ import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { TaskViewFormFilterRow } from "./TaskViewFormFilterRow";
 import { FormValues } from "./TaskViewForm";
+import { FilterIcon } from "@dewo/app/components/icons/Filter";
 
 const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
   [TaskViewFilterType.STATUSES]: "Status",
@@ -64,7 +65,7 @@ export const TaskViewFormFilterList: FC<Props> = ({ form }) => (
             </Dropdown>,
           ]}
         >
-          <List.Item.Meta avatar={<Icons.FilterFilled />} title="Filter" />
+          <List.Item.Meta avatar={<FilterIcon />} title="Filter" />
         </List.Item>
 
         {fields.map((field, index) => (
