@@ -70,7 +70,7 @@ export const UserTaskViewProvider: FC<{
     <TaskViewProvider
       redirect={() => router.push(user?.permalink ?? "/")}
       views={views}
-      key={buildKey(userId)}
+      lastViewIdKey={buildKey(userId)}
       children={children}
       filterableMembers={filterableMembers}
       saveButtonText="Save"
@@ -93,7 +93,7 @@ export const OrganizationTaskViewProvider: FC<{
     <TaskViewProvider
       redirect={() => router.push(organization?.permalink ?? "/")}
       views={organization.taskViews}
-      key={buildKey(organizationId)}
+      lastViewIdKey={buildKey(organizationId)}
       children={children}
       filterableMembers={filterableMembers}
       roles={roles}
@@ -121,7 +121,7 @@ export const ProjectTaskViewProvider: FC<{
     <TaskViewProvider
       redirect={() => router.push(project?.permalink ?? "/")}
       views={views}
-      key={buildKey(projectId)}
+      lastViewIdKey={buildKey(projectId)}
       children={children}
       filterableMembers={filterableMembers}
       tags={tags}
@@ -135,7 +135,7 @@ const emptyArray: [] = [];
 
 const TaskViewProvider: FC<{
   redirect: () => void;
-  key: string;
+  lastViewIdKey: string;
   views: TaskView[];
   saveButtonText?: string;
   filterableMembers?: User[];
@@ -144,7 +144,7 @@ const TaskViewProvider: FC<{
   roles?: Role[];
 }> = ({
   redirect,
-  key,
+  lastViewIdKey,
   children,
   views,
   saveButtonText = "Save for everyone",
@@ -171,11 +171,11 @@ const TaskViewProvider: FC<{
       if (!!view) return view;
     }
 
-    const lastViewId = localStorage.getItem(key);
+    const lastViewId = localStorage.getItem(lastViewIdKey);
     const lastView = views?.find((v) => v.id === lastViewId);
     if (!!lastView) return lastView;
     return views?.[0];
-  }, [viewSlug, views, key, tab]);
+  }, [viewSlug, views, lastViewIdKey, tab]);
 
   useEffect(() => {
     if (!tab && !view && !!views?.length) {
@@ -185,11 +185,11 @@ const TaskViewProvider: FC<{
   }, [view, views?.length, tab]);
 
   useEffect(() => {
-    const lastViewId = localStorage.getItem(key) ?? undefined;
+    const lastViewId = localStorage.getItem(lastViewIdKey) ?? undefined;
     if (!!view && view.id !== lastViewId) {
-      localStorage.setItem(key, view.id);
+      localStorage.setItem(lastViewIdKey, view.id);
     }
-  }, [view, key]);
+  }, [view, lastViewIdKey]);
 
   const viewWithLocalChanges = useMemo(
     () => (!!view ? localViewChanges[view.id] : undefined),

@@ -1,6 +1,6 @@
 import { Task, TaskStatus } from "@dewo/app/graphql/types";
 import { Row, Space } from "antd";
-import React, { FC, useEffect, useCallback, useState, useMemo } from "react";
+import React, { FC, useCallback, useState, useMemo } from "react";
 import {
   DragDropContext,
   DragDropContextProps,
@@ -11,7 +11,7 @@ import { TaskBoardColumn } from "./TaskBoardColumn";
 import { useUpdateTask } from "../hooks";
 import { TaskBoardColumnEmptyProps } from "./TaskBoardColumnEmtpy";
 import { ContributorReviewModal } from "../ContributorReviewModal";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useMounted, useToggle } from "@dewo/app/util/hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useTaskViewGroups } from "../views/hooks";
@@ -123,10 +123,8 @@ export const TaskBoard: FC<Props> = ({ tasks, empty }) => {
     [tasks, taskViewGroups, updateTask, hasPermission, reviewModalToggle, user]
   );
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
   if (!mounted) return <SkeletonTaskBoard />;
-
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>

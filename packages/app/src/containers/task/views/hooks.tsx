@@ -448,8 +448,8 @@ export function useTaskViewLayoutData(
 
   const [fetchingMore, setFetchingMore] = useState<Record<string, boolean>>({});
   const [forceUpdater, setForceUpdater] = useState(0);
-  const forceUpdate = useCallback(
-    () => setForceUpdater((prev) => prev + 1),
+  const forceUpdate = useMemo(
+    () => _.debounce(() => setForceUpdater((prev) => prev + 1), 100),
     []
   );
 

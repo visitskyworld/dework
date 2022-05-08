@@ -1,13 +1,5 @@
 import { Button, Grid, Row, Skeleton } from "antd";
-import React, {
-  CSSProperties,
-  FC,
-  MutableRefObject,
-  ReactNode,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { CSSProperties, FC, useMemo, useRef, useState } from "react";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { TaskListItem } from "../../task/list/TaskListItem";
 import {
@@ -21,27 +13,17 @@ import {
   CellMeasurer,
   CellMeasurerCache,
 } from "react-virtualized";
-import { usePrevious } from "@dewo/app/util/hooks";
 import { TaskCard } from "../card/TaskCard";
 import { useTaskViewContext } from "../views/TaskViewContext";
+import {
+  useRecalculateVirtualizedListRowHeight,
+  VirtualizedListRow,
+} from "./useRecalculateVirtualizedListRowHeight";
 
 interface Props {
   showHeaders?: boolean;
   style?: CSSProperties;
   className?: string;
-}
-
-function useRecalculateTaskCardHeight(
-  cache: CellMeasurerCache,
-  list: MutableRefObject<List | null>,
-  ...deps: any[]
-) {
-  const prevDeps = deps.map(usePrevious);
-  const changed = !deps.every((dep, index) => prevDeps[index] === dep);
-  if (changed) {
-    cache.clearAll();
-    list.current?.recomputeRowHeights();
-  }
 }
 
 export const TaskList: FC<Props> = ({
@@ -62,16 +44,16 @@ export const TaskList: FC<Props> = ({
   );
 
   const screen = Grid.useBreakpoint();
-  useRecalculateTaskCardHeight(cache, list, collapsed, data, screen.sm);
-
-  const rows = useMemo<(() => ReactNode)[]>(
+  const rows = useMemo<VirtualizedListRow[]>(
     () =>
       data
         .map((d, index) => {
           const status = items[index].value as TaskStatus;
           return [
-            () =>
-              !!showHeaders ? (
+            {
+              id: `header:${status}`,
+              hidden: !showHeaders,
+              render: () => (
                 <Row style={{ padding: 12 }}>
                   <TaskViewGroupHeader
                     showIcon
@@ -80,10 +62,7 @@ export const TaskList: FC<Props> = ({
                     collapse={{
                       collapsed: !!collapsed[status],
                       onToggle: (collapsed) =>
-                        setCollapsed((prev) => ({
-                          ...prev,
-                          [status]: collapsed,
-                        })),
+                        setCollapsed((p) => ({ ...p, [status]: collapsed })),
                     }}
                   />
                   <TaskViewGroupHeaderExtra
@@ -91,32 +70,40 @@ export const TaskList: FC<Props> = ({
                     projectId={projectId}
                   />
                 </Row>
-              ) : null,
-            ...(d.tasks ?? []).map(
-              (task) => () =>
-                !collapsed[status] ? (
-                  screen.sm ? (
-                    <TaskListItem key={task.id} task={task} />
-                  ) : (
-                    <TaskCard task={task} style={{ marginBottom: 8 }} />
-                  )
-                ) : null
-            ),
-            ...(!collapsed[status] && d.hasMore && !!d.tasks
-              ? [
-                  () => (
-                    <Button block type="text" onClick={d.fetchMore}>
-                      Load more
-                    </Button>
-                  ),
-                ]
-              : []),
-            ...(d.loading ? [() => <Skeleton />] : []),
+              ),
+            },
+            ...(d.tasks ?? []).map((task) => ({
+              id: task.id,
+              hidden: !!collapsed[status],
+              render: () =>
+                screen.sm ? (
+                  <TaskListItem key={task.id} task={task} />
+                ) : (
+                  <TaskCard task={task} style={{ marginBottom: 8 }} />
+                ),
+            })),
+            {
+              id: `load-more:${status}`,
+              hidden: !!collapsed[status] || !d.hasMore || !d.tasks,
+              render: () => (
+                <Button block type="text" onClick={d.fetchMore}>
+                  Load more
+                </Button>
+              ),
+            },
+            {
+              id: `loading:${status}`,
+              hidden: !d.loading,
+              render: () => <Skeleton />,
+            },
           ];
         })
-        .flat(),
-    [data, collapsed, projectId, showHeaders, screen.sm, items]
+        .flat()
+        .filter((r) => !r.hidden),
+    [data, collapsed, items, projectId, showHeaders, screen.sm]
   );
+
+  useRecalculateVirtualizedListRowHeight(cache, list, rows);
 
   return (
     <AutoSizer>
@@ -141,7 +128,7 @@ export const TaskList: FC<Props> = ({
               parent={parent}
               rowIndex={index}
             >
-              <div style={style}>{rows[index]()}</div>
+              <div style={style}>{rows[index].render()}</div>
             </CellMeasurer>
           )}
         />

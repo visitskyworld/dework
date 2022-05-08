@@ -1,12 +1,4 @@
-import React, {
-  FC,
-  MutableRefObject,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Card } from "antd";
@@ -25,12 +17,15 @@ import {
   CellMeasurer,
   AutoSizer,
 } from "react-virtualized";
-import { usePrevious } from "@dewo/app/util/hooks";
 import { TaskBoardColumnSectionHeader } from "./TaskBoardColumnSectionHeader";
 import {
   TaskViewGroupHeader,
   TaskViewGroupHeaderExtra,
 } from "./TaskViewGroupHeader";
+import {
+  useRecalculateVirtualizedListRowHeight,
+  VirtualizedListRow,
+} from "../list/useRecalculateVirtualizedListRowHeight";
 
 interface Props {
   status: TaskStatus;
@@ -39,24 +34,6 @@ interface Props {
   projectId?: string;
   currentlyDraggingTask?: Task;
   empty?: TaskBoardColumnEmptyProps;
-}
-
-interface ListRow {
-  draggableId: string;
-  isDragDisabled: boolean;
-  render(): ReactNode;
-}
-
-function useRecalculateTaskCardHeight(
-  cache: CellMeasurerCache,
-  list: MutableRefObject<List | null>,
-  ...deps: any[]
-) {
-  const prevDeps = deps.map(usePrevious);
-  if (!deps.every((dep, index) => prevDeps[index] === dep)) {
-    cache.clearAll();
-    list.current?.recomputeRowHeights();
-  }
 }
 
 export const TaskBoardColumn: FC<Props> = ({
@@ -86,11 +63,14 @@ export const TaskBoardColumn: FC<Props> = ({
     []
   );
 
-  const rows = useMemo<ListRow[]>(
+  const rows = useMemo<
+    (VirtualizedListRow & { draggableId: string; isDragDisabled: boolean })[]
+  >(
     () =>
       sections
         .map((section) => [
           {
+            id: [status, section.id].join(":"),
             draggableId: [status, section.id].join(":"),
             isDragDisabled: true,
             render: () =>
@@ -105,6 +85,7 @@ export const TaskBoardColumn: FC<Props> = ({
               ),
           },
           ...section.tasks.map((task) => ({
+            id: JSON.stringify(task),
             draggableId: task.id,
             isDragDisabled: !hasPermission("update", task, `status[${status}]`),
             render: () =>
@@ -120,7 +101,8 @@ export const TaskBoardColumn: FC<Props> = ({
     [sections, collapsed, toggleCollapsed, hasPermission, status]
   );
 
-  useRecalculateTaskCardHeight(cache, list, sections, collapsed);
+  useRecalculateVirtualizedListRowHeight(cache, list, rows);
+
   return (
     <Card
       size="small"

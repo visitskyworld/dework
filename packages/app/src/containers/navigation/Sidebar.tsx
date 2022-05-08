@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { SidebarOrganizationAvatar } from "./SidebarOrganizationAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -16,8 +16,12 @@ export const Sidebar: FC = () => {
   const { isOn, setToggle } = useSidebarContext();
   const isProfileSetup = !!user?.bio || !!user?.details.length;
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   if (!user) return null;
   if (isSSR) return null;
+  if (!mounted) return null;
   return (
     <Layout.Sider
       collapsible

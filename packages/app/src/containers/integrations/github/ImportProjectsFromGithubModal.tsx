@@ -60,8 +60,9 @@ export const ImportProjectsFromGithubModal: FC<Props> = ({
         <Select
           loading={!githubRepos}
           disabled={importing}
+          showSearch
+          optionLabelProp="label"
           mode="multiple"
-          optionFilterProp="label"
           placeholder="Select Github Repos..."
           style={{ width: "100%" }}
           onChange={(values) => setSelectedRepoIds(values as string[])}

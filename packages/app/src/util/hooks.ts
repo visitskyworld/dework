@@ -95,3 +95,9 @@ export function useWindowFocus(callback: () => void) {
     return () => window.removeEventListener("focus", callback);
   }, [callback]);
 }
+
+export function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}

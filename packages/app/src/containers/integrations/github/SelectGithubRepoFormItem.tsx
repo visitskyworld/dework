@@ -38,6 +38,8 @@ export const SelectGihubRepoFormItem = ({
           loading={!repos}
           placeholder="Select Github Repo"
           allowClear
+          showSearch
+          optionFilterProp="label"
         >
           {repos?.map((repo) => (
             <Select.Option
