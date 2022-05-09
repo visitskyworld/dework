@@ -25,6 +25,7 @@ import { DiscordStatusboardService } from "./discord.statusboard.service";
 
 import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import { DiscordIntegrationPoller } from "./discord.integration.poller";
 import { Task } from "@dewo/api/models/Task";
 
 @Module({
@@ -57,6 +58,7 @@ import { Task } from "@dewo/api/models/Task";
     DiscordIntegrationPaymentCreatedEventHandler,
     DiscordStatusboardService,
   ],
+  controllers: [DiscordIntegrationPoller],
   exports: [DiscordIntegrationService],
 })
 export class DiscordIntegrationModule {}

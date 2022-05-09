@@ -29,6 +29,7 @@ import { Rule } from "@dewo/api/models/rbac/Rule";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { PaymentCreatedEvent } from "../payment/payment.events";
+import moment from "moment";
 
 @Injectable()
 export class TaskService {
@@ -320,6 +321,22 @@ export class TaskService {
       .andWhere("project.deletedAt IS NULL")
       .orderBy("task.createdAt", "DESC")
       .limit(limit)
+      .getMany();
+  }
+
+  public async findOverdueTasks(): Promise<Task[]> {
+    const todayDateString = moment().format("YYYY-MM-DD");
+    return this.taskRepo
+      .createQueryBuilder("task")
+      .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.owners", "owner")
+      .andWhere("task.status NOT IN (:...statuses)", {
+        statuses: [TaskStatus.DONE],
+      })
+      .andWhere("DATE_TRUNC('day', task.dueDate) = :date", {
+        date: todayDateString,
+      })
+      .andWhere("task.deletedAt IS NULL")
       .getMany();
   }
 

@@ -672,6 +672,22 @@ export class DiscordIntegrationService {
     await this.postTaskCard(channel, task, message, ownerDiscordIds);
   }
 
+  async postOverdueDateWarning(task: Task, channel: Discord.TextBasedChannel) {
+    const ownersDiscordIds = await this.discord
+      .getDiscordIds(task.owners.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
+    const assigneesDiscordIds = await this.discord
+      .getDiscordIds(task.assignees.map((u) => u.id))
+      .then((ids) => ids.filter((id): id is string => !!id));
+
+    await this.postTaskCard(
+      channel,
+      task,
+      "⌛️ This task is due!",
+      Array.from(new Set([...ownersDiscordIds, ...assigneesDiscordIds]))
+    );
+  }
+
   private async postDefaultInitialMessage(
     task: Task,
     channel: Discord.TextBasedChannel
@@ -841,7 +857,7 @@ export class DiscordIntegrationService {
     return roles.map((r) => r.externalId).filter((id): id is string => !!id);
   }
 
-  private async getChannelFromTask(
+  async getChannelFromTask(
     task: Task,
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>,
     shouldCreateIfNotExists?: boolean
@@ -1180,7 +1196,7 @@ export class DiscordIntegrationService {
     return threepids;
   }
 
-  private async getNonStatusBoardMessageChannel(
+  async getNonStatusBoardMessageChannel(
     projectId: string
   ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD> | undefined> {
     const integrations = await this.integrationService.findProjectIntegrations(
