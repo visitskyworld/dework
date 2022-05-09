@@ -13,7 +13,10 @@ export const OnboardingSkills: FC<Props> = ({ onNext }) => {
   const [handleNext, loadingNext] = useRunning(onNext);
   return (
     <>
-      <Tag color="green" style={{ alignSelf: "center", marginBottom: 8 }}>
+      <Tag
+        color="green"
+        style={{ alignSelf: "center", marginBottom: 8, marginRight: 0 }}
+      >
         New
       </Tag>
       <Typography.Title level={2} style={{ textAlign: "center" }}>
