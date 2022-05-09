@@ -118,7 +118,8 @@ export function useProposeTransaction(): (
 
       const safe = await requestSafe(safeAddress);
       const safeTransaction = await safe.createTransaction(
-        transactions.map((tx) => ({ ...tx, to: utils.getAddress(tx.to) }))
+        transactions.map((tx) => ({ ...tx, to: utils.getAddress(tx.to) })),
+        { nonce: await safeService.getNextNonce(safeAddress) }
       );
 
       const safeTxHash = await safe.getTransactionHash(safeTransaction);
