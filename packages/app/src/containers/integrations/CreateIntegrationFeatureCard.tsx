@@ -43,23 +43,18 @@ export const CreateIntegrationFeatureCard = ({
         <Button className="dewo-simple-button" onClick={expanded.toggle}>
           {connectedButtonCopy}
         </Button>
+      ) : expanded.isOn ? (
+        <Button type="text" onClick={expanded.toggleOff}>
+          Cancel
+        </Button>
       ) : (
-        <Space>
-          <Button
-            type="text"
-            hidden={!expanded.isOn}
-            onClick={expanded.toggleOff}
-          >
-            Cancel
-          </Button>
-          <Button
-            type={disabled ? "default" : "primary"}
-            disabled={disabled}
-            onClick={expanded.toggle}
-          >
-            Setup integration
-          </Button>
-        </Space>
+        <Button
+          type={disabled ? "default" : "primary"}
+          disabled={disabled}
+          onClick={expanded.toggle}
+        >
+          Setup
+        </Button>
       )
     }
   >

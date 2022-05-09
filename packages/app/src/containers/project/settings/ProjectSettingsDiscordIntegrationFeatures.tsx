@@ -80,9 +80,9 @@ export const ProjectSettingsDiscordIntegrationFeatures: FC<Props> = ({
       <Space size="middle" direction="vertical" style={{ width: "100%" }}>
         {[
           DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
-          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
           DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL,
-          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
+          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
+          // DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
         ].map((feature) => (
           <CreateDiscordIntegrationFeatureForm
             key={feature}
@@ -90,6 +90,10 @@ export const ProjectSettingsDiscordIntegrationFeatures: FC<Props> = ({
             organizationId={organizationId}
             channels={channels}
             disabled={!hasDiscordOrganizationIntegration}
+            recommended={
+              feature ===
+              DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+            }
             existingIntegration={discordProjectIntegrations?.find((i) =>
               i.config.features.includes(feature)
             )}

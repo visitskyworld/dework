@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Button, Form, Typography } from "antd";
+import { Button, Form, Tag, Typography } from "antd";
 import {
   DiscordIntegrationChannel,
   OrganizationIntegrationType,
@@ -37,6 +37,7 @@ const DiscordProjectIntegrationFeatureTitle: Partial<
 
 interface Props {
   organizationId: string;
+  recommended?: boolean;
   feature: DiscordProjectIntegrationFeature;
   channels?: DiscordIntegrationChannel[];
   existingIntegration: ProjectIntegration | undefined;
@@ -51,12 +52,14 @@ export const CreateDiscordIntegrationFeatureForm = ({
   channels,
   existingIntegration,
   disabled = false,
+  recommended,
   onRefetchChannels,
   onSubmit,
 }: Props) => {
   const [form] = useForm<FormValues>();
   const [values, setValues] = useState<Partial<FormValues>>({});
-  const expanded = useToggle(false);
+
+  const expanded = useToggle(recommended && !disabled);
 
   const integrations = useOrganizationIntegrations(
     organizationId,
@@ -123,6 +126,7 @@ export const CreateDiscordIntegrationFeatureForm = ({
         onFinish={handleSubmit}
       >
         <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
+          {recommended && <Tag color="green">Recommended!</Tag>}
           Learn more about this integration{" "}
           <a
             href={deworkSocialLinks.gitbook.connectingToDiscord}
