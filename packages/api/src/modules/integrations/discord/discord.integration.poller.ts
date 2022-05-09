@@ -28,32 +28,45 @@ export class DiscordIntegrationPoller {
     );
 
     for (const task of overdueTasks) {
-      const integration =
-        await this.discordIntegrationService.getNonStatusBoardMessageChannel(
-          task.projectId
-        );
+      try {
+        const integration =
+          await this.discordIntegrationService.getNonStatusBoardMessageChannel(
+            task.projectId
+          );
 
-      if (!integration) return;
+        if (!integration) return;
 
-      const { channelToPostTo } =
-        await this.discordIntegrationService.getChannelFromTask(
+        const { channelToPostTo } =
+          await this.discordIntegrationService.getChannelFromTask(
+            task,
+            integration
+          );
+
+        if (!channelToPostTo) {
+          this.logger.warn(
+            `No channel to post to found: ${JSON.stringify({ integration })}`
+          );
+          return;
+        }
+
+        await this.discordIntegrationService.postOverdueDateWarning(
           task,
-          integration
+          channelToPostTo
         );
 
-      if (!channelToPostTo) {
-        this.logger.warn(
-          `No channel to post to found: ${JSON.stringify({ integration })}`
+        this.logger.log(`Overdue task with id ${task.id} has been notified`);
+      } catch (error) {
+        const errorString = JSON.stringify(
+          error,
+          Object.getOwnPropertyNames(error)
         );
-        return;
+        this.logger.error(
+          `Failed sending overdue task notification: ${JSON.stringify({
+            error: errorString,
+            task,
+          })}`
+        );
       }
-
-      await this.discordIntegrationService.postOverdueDateWarning(
-        task,
-        channelToPostTo
-      );
-
-      this.logger.log(`Overdue task with id ${task.id} has been notified`);
     }
   }
 }
