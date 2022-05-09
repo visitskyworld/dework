@@ -7,7 +7,6 @@ import {
 } from "@dewo/app/graphql/types";
 import {
   Form,
-  Button,
   Input,
   Select,
   Row,
@@ -16,6 +15,7 @@ import {
   Divider,
   Space,
   Breadcrumb,
+  Tag,
 } from "antd";
 import {
   getProjectTaskStatuses,
@@ -57,12 +57,13 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { TaskGithubIssueButton } from "./TaskGithubIssueButton";
+import { SkillSelect } from "@dewo/app/components/form/SkillSelect";
+import { TaskFormCreateButton } from "./TaskFormCreateButton";
 
 interface TaskFormProps {
   mode: "create" | "update";
   projectId: string;
   task?: TaskDetails;
-  buttonText?: string;
   initialValues?: Partial<TaskFormValues>;
   showProjectLink?: boolean;
   onSubmit(values: TaskFormValues): unknown;
@@ -73,7 +74,6 @@ export const TaskForm: FC<TaskFormProps> = ({
   mode,
   task,
   projectId,
-  buttonText,
   initialValues,
   showProjectLink,
   onChange,
@@ -267,15 +267,11 @@ export const TaskForm: FC<TaskFormProps> = ({
           {mode === "create" && canSubmit && (
             <>
               <div style={{ flex: 1 }} />
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                block
+              <TaskFormCreateButton
                 loading={loading}
-              >
-                {buttonText}
-              </Button>
+                hasSkills={!!values.skillIds?.length}
+                onSubmit={form.submit}
+              />
             </>
           )}
 
@@ -338,16 +334,6 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          {/* <Form.Item name="skillIds" label="Skills">
-            <SkillSelect
-              disabled={!canChange("skillIds")}
-              placeholder={
-                !canChange("skillIds") ? "No skills..." : "Select skills..."
-              }
-              allowClear
-            />
-          </Form.Item> */}
-
           <TaskGatingFields
             mode={mode}
             task={task}
@@ -355,6 +341,35 @@ export const TaskForm: FC<TaskFormProps> = ({
             projectId={projectId}
             disabled={!canChange("ownerIds")}
           />
+
+          <Form.Item
+            name="skillIds"
+            label={
+              <>
+                Skills
+                <Tag
+                  color="green"
+                  style={{
+                    fontWeight: "normal",
+                    textTransform: "none",
+                    marginLeft: 4,
+                  }}
+                >
+                  New
+                </Tag>
+              </>
+            }
+          >
+            <SkillSelect
+              disabled={!canChange("skillIds")}
+              placeholder={
+                !canChange("skillIds")
+                  ? "No skills..."
+                  : "What skills are needed to do this task?"
+              }
+              allowClear
+            />
+          </Form.Item>
 
           <Form.Item name="priority" label="Priority">
             <Select

@@ -7,9 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Task } from "@dewo/app/graphql/types";
 import { TaskListItem } from "../../task/list/TaskListItem";
-
 import { TaskCard } from "../card/TaskCard";
 import classNames from "classnames";
 import styles from "./TaskList.module.less";
@@ -22,7 +20,6 @@ interface Props {
   showHeaders?: boolean;
   style?: CSSProperties;
   className?: string;
-  shouldRenderTask?(task: Task): boolean;
 }
 
 export const TaskTable: FC<Props> = ({
@@ -30,7 +27,6 @@ export const TaskTable: FC<Props> = ({
   showHeaders = true,
   style,
   className,
-  shouldRenderTask,
 }) => {
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -50,29 +46,31 @@ export const TaskTable: FC<Props> = ({
   }, [data.loading, isLastTaskLoaded]);
 
   const screen = Grid.useBreakpoint();
-
-  const tasks = useMemo(
-    () =>
-      !!shouldRenderTask ? data.tasks?.filter(shouldRenderTask) : data.tasks,
-    [data.tasks, shouldRenderTask]
-  );
   const rows = useMemo<(() => ReactNode)[]>(
     () =>
-      _.range((data.hasMore ? data.total : tasks?.length) ?? 0)
-        .map((index) => tasks?.[index])
+      _.range((data.hasMore ? data.total : data.tasks?.length) ?? 0)
+        .map((index) => data.tasks?.[index])
         .map(
           (task) => () =>
             !!task ? (
               screen.lg ? (
-                <TaskListItem key={task.id} task={task} />
+                <TaskListItem
+                  key={task.id}
+                  task={task}
+                  tags={{ skills: true }}
+                />
               ) : (
-                <TaskCard task={task} style={{ marginBottom: 8 }} />
+                <TaskCard
+                  task={task}
+                  style={{ marginBottom: 8 }}
+                  tags={{ skills: true }}
+                />
               )
             ) : (
               <SkeletonTaskListItem />
             )
         ),
-    [tasks, data.hasMore, data.total, screen.lg]
+    [data.tasks, data.hasMore, data.total, screen.lg]
   );
 
   return (

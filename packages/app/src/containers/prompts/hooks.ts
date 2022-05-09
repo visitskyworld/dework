@@ -22,21 +22,36 @@ const UserPromptStepMapping: Record<
   "Onboarding.v1.ConnectWallet": () => [
     UserPromptStep.OnboardingProfile,
     UserPromptStep.OnboardingConnectWallet,
-    // UserPromptStep.OnboardingSkills,
     UserPromptStep.OnboardingDone,
   ],
   "Onboarding.v1.ConnectDiscord": (user) => {
     if (user.threepids.some((t) => t.source === ThreepidSource.discord)) {
       return [
         UserPromptStep.OnboardingProfile,
-        // UserPromptStep.OnboardingSkills,
+        UserPromptStep.OnboardingSkills,
         UserPromptStep.OnboardingDone,
       ];
     }
     return [
       UserPromptStep.OnboardingProfile,
       UserPromptStep.OnboardingConnectDiscord,
-      // UserPromptStep.OnboardingSkills,
+      UserPromptStep.OnboardingSkills,
+      UserPromptStep.OnboardingDone,
+    ];
+  },
+  "Onboarding.v2.ConnectWallet": () => [
+    UserPromptStep.OnboardingProfile,
+    UserPromptStep.OnboardingConnectWallet,
+    UserPromptStep.OnboardingSkills,
+    UserPromptStep.OnboardingDone,
+  ],
+  "Onboarding.v2.ConnectDiscord": (user) => {
+    if (user.threepids.some((t) => t.source === ThreepidSource.discord)) {
+      return [UserPromptStep.OnboardingProfile, UserPromptStep.OnboardingDone];
+    }
+    return [
+      UserPromptStep.OnboardingProfile,
+      UserPromptStep.OnboardingConnectDiscord,
       UserPromptStep.OnboardingDone,
     ];
   },
@@ -45,6 +60,9 @@ const UserPromptStepMapping: Record<
       return [];
     }
     return [UserPromptStep.TaskConnectWalletToReceiveReward];
+  },
+  "Skills.v1.ChooseSkills": () => {
+    return [UserPromptStep.OnboardingSkills];
   },
 };
 

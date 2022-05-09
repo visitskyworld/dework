@@ -7,7 +7,7 @@ import {
 import { Card, Typography, Row, Rate, Avatar } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { TaskReactionPicker } from "../board/TaskReactionPicker";
-import { TaskTagsRow } from "../board/TaskTagsRow";
+import { TagOptions, TaskTagsRow } from "../board/TaskTagsRow";
 import {
   TaskActionButton,
   useTaskActionButton,
@@ -19,11 +19,17 @@ import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
+  tags?: TagOptions;
   style?: CSSProperties;
   showReview?: boolean;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
+export const TaskCard: FC<TaskCardProps> = ({
+  task,
+  tags,
+  style,
+  showReview,
+}) => {
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchProps = usePrefetchTaskDetailsOnHover(task.id);
 
@@ -89,7 +95,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
           <TaskGatingIcon task={task} />
         )}
       </Row>
-      <TaskTagsRow task={task} style={{ marginTop: 8 }} />
+      <TaskTagsRow task={task} style={{ marginTop: 8 }} options={tags} />
       {showReview && (
         <>
           <Row style={{ marginBottom: 4 }}>

@@ -122,7 +122,6 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
         mode="create"
         projectId={projectId}
         initialValues={extendedInitialValues}
-        buttonText="Create"
         onChange={setStoredValues}
         onSubmit={handleSubmit}
       />

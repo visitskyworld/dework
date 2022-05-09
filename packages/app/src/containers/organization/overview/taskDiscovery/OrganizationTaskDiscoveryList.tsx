@@ -1,15 +1,16 @@
 import {
   SearchTasksInput,
-  Task,
   TaskStatus,
   TaskViewSortByDirection,
   TaskViewSortByField,
 } from "@dewo/app/graphql/types";
-import { ConfigProvider, Empty, Row, Skeleton, Tag, Typography } from "antd";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import _ from "lodash";
+import { Empty, Row, Skeleton, Spin, Typography } from "antd";
+import React, { FC, useMemo, useState } from "react";
 import { TaskTable } from "@dewo/app/containers/task/list/TaskTable";
 import { useTaskViewLayoutData } from "@dewo/app/containers/task/views/hooks";
+import { useMounted } from "@dewo/app/util/hooks";
+import { useSkills } from "@dewo/app/containers/skills/hooks";
+import { SkillTag } from "@dewo/app/components/SkillTag";
 
 interface Props {
   organizationId: string;
@@ -18,6 +19,12 @@ interface Props {
 export const OrganizationTaskDiscoveryList: FC<Props> = ({
   organizationId,
 }) => {
+  // const { user } = useAuthContext();
+  const [skillIds, setSkillIds] = useState<string[]>(
+    [] // () => user?.skills.map((s) => s.id) ?? []
+  );
+  const skills = useSkills();
+
   const [data] = useTaskViewLayoutData(
     useMemo<SearchTasksInput[]>(
       () => [
@@ -29,74 +36,68 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
           },
           assigneeIds: [null],
           parentTaskId: null,
+          skillIds: !!skillIds.length ? skillIds : undefined,
           organizationId,
         },
       ],
-      [organizationId]
+      [organizationId, skillIds]
     )
   );
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const [selectedTagLabel, setSelectedTagLabel] = useState<string>();
-  const tags = useMemo(() => {
-    const tags = data.tasks?.map((task) => task.tags).flat();
-    return _.uniqBy(tags, (t) => t.label);
-  }, [data.tasks]);
-
-  const shouldRenderTask = useCallback(
-    (task: Task) =>
-      !selectedTagLabel ||
-      task.tags.some((tag) => tag.label === selectedTagLabel),
-    [selectedTagLabel]
-  );
+  const mounted = useMounted();
 
   return (
     <>
       <Typography.Title level={4}>Open Tasks</Typography.Title>
-      <Skeleton loading={!mounted || data.loading}>
-        {tags?.length > 0 && (
-          <>
-            <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
-              {tags.map((tag) => (
-                <Tag
-                  key={tag.id}
-                  color={selectedTagLabel !== tag.label ? undefined : tag.color}
-                  className="hover:cursor-pointer"
-                  style={{
-                    opacity:
-                      !!selectedTagLabel && selectedTagLabel !== tag.label
-                        ? 0.5
-                        : undefined,
-                  }}
-                  onClick={() =>
-                    setSelectedTagLabel((prevValue) =>
-                      prevValue === tag.label ? undefined : tag.label
-                    )
-                  }
-                >
-                  {tag.label}
-                </Tag>
-              ))}
-            </Row>
-          </>
-        )}
+      <Skeleton loading={!mounted}>
+        <Typography.Paragraph
+          type="secondary"
+          className="ant-typography-caption"
+        >
+          Click on skills to show tasks for
+        </Typography.Paragraph>
+        <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
+          {skills?.map((skill) => {
+            const selected = skillIds.includes(skill.id);
+            return (
+              <SkillTag
+                key={skill.id}
+                skill={skill}
+                color={selected ? "blue" : undefined}
+                className="hover:cursor-pointer"
+                style={{
+                  opacity: !!skillIds.length && !selected ? 0.5 : undefined,
+                }}
+                onClick={() =>
+                  setSkillIds((prev) =>
+                    selected
+                      ? prev.filter((s) => s !== skill.id)
+                      : [...prev, skill.id]
+                  )
+                }
+              />
+            );
+          })}
+        </Row>
 
-        <ConfigProvider
-          renderEmpty={() => (
+        {!data.tasks?.length ? (
+          data.loading ? (
+            <div style={{ padding: 8, display: "grid", placeItems: "center" }}>
+              <Spin />
+            </div>
+          ) : (
             <Empty
               imageStyle={{ display: "none" }}
-              description="This DAO doesn't have any open tasks at the moment!"
+              description={
+                !!skillIds.length
+                  ? "This DAO doesn't have any open tasks matching the selected skills at the moment!"
+                  : "This DAO doesn't have any open tasks at the moment!"
+              }
             />
-          )}
-        >
-          <TaskTable
-            data={data}
-            showHeaders={false}
-            shouldRenderTask={shouldRenderTask}
-          />
-        </ConfigProvider>
+          )
+        ) : (
+          <TaskTable data={data} showHeaders={false} />
+        )}
       </Skeleton>
     </>
   );

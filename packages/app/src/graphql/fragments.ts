@@ -457,6 +457,9 @@ export const task = gql`
     tags {
       ...TaskTag
     }
+    skills {
+      ...Skill
+    }
     assignees {
       ...User
     }
@@ -484,6 +487,7 @@ export const task = gql`
   }
 
   ${taskTag}
+  ${skill}
   ${taskReward}
   ${user}
   ${taskReview}
@@ -545,9 +549,6 @@ export const taskDetails = gql`
     creator {
       ...User
     }
-    skills {
-      ...Skill
-    }
     githubPullRequests {
       ...GithubPullRequest
     }
@@ -581,7 +582,6 @@ export const taskDetails = gql`
   ${taskNft}
   ${user}
   ${project}
-  ${skill}
   ${organization}
   ${githubPullRequest}
   ${githubBranch}

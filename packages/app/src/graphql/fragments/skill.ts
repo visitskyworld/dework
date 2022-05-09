@@ -4,5 +4,6 @@ export const skill = gql`
   fragment Skill on Skill {
     id
     name
+    emoji
   }
 `;

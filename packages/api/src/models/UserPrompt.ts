@@ -6,7 +6,10 @@ import { User } from "./User";
 type UserPromptType =
   | "Onboarding.v1.ConnectWallet"
   | "Onboarding.v1.ConnectDiscord"
-  | "Task.v1.ConnectWalletToReceiveReward";
+  | "Onboarding.v2.ConnectWallet"
+  | "Onboarding.v2.ConnectDiscord"
+  | "Task.v1.ConnectWalletToReceiveReward"
+  | "Skills.v1.ChooseSkills";
 
 @Entity()
 @ObjectType()

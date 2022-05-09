@@ -1,7 +1,7 @@
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
 import { Constants } from "@dewo/app/util/constants";
-import { Button, ButtonProps, Dropdown, Menu, Space, Tag, Tooltip } from "antd";
+import { Button, ButtonProps, Dropdown, Menu, Space, Tooltip } from "antd";
 import { useRouter } from "next/router";
 import * as Icons from "@ant-design/icons";
 import React, { FC, useCallback } from "react";
@@ -81,14 +81,12 @@ export const CreateProjectButton: FC<Props> = ({
             <Space>
               <NotionIcon />
               Import tasks from Notion
-              <Tag color="green">New</Tag>
             </Space>
           </Menu.Item>
           <Menu.Item onClick={goToTrelloOauthFlow}>
             <Space>
               <TrelloIcon />
               Import tasks from Trello
-              <Tag color="green">New</Tag>
             </Space>
           </Menu.Item>
           <Menu.Item onClick={goToGithubOauthFlow}>
@@ -98,7 +96,6 @@ export const CreateProjectButton: FC<Props> = ({
               <Tooltip title="Everything that happens in Dework syncs w Github, and vice versa. Creating tasks in Dework creates open issues in Github - merging the branch in Github moves the task to Done in Dework, etc.">
                 <Icons.QuestionCircleOutlined className="ant-form-item-tooltip" />
               </Tooltip>
-              <Tag color="green">New</Tag>
             </Space>
           </Menu.Item>
         </Menu>

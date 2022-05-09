@@ -1,13 +1,5 @@
 import React, { FC } from "react";
-import {
-  Button,
-  ButtonProps,
-  Dropdown,
-  Menu,
-  Space,
-  Tag,
-  Typography,
-} from "antd";
+import { Button, ButtonProps, Dropdown, Menu, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { NotionIcon } from "@dewo/app/components/icons/Notion";
 import { TrelloIcon } from "@dewo/app/components/icons/Trello";
@@ -37,21 +29,18 @@ export const OrganizationCreateFormSubmitButton: FC<
           <Space>
             <NotionIcon />
             Import tasks from Notion
-            <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>
         <Menu.Item onClick={() => props.onClick({ import: "trello" })}>
           <Space>
             <TrelloIcon />
             Import tasks from Trello
-            <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>
         <Menu.Item onClick={() => props.onClick({ import: "github" })}>
           <Space>
             <Icons.GithubOutlined />
             Import tasks from Github
-            <Tag color="green">New</Tag>
           </Space>
         </Menu.Item>
         <Menu.Item onClick={() => props.onClick()}>

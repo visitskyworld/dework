@@ -107,7 +107,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
                   Created by {task.project.organization.name} (
                   {moment(task.createdAt).calendar()})
                 </Typography.Paragraph>
-                <TaskTagsRow task={task} showStandardTags={false} />
+                <TaskTagsRow task={task} />
                 {!screens.sm && !!task.reward && (
                   <>
                     <Typography.Paragraph

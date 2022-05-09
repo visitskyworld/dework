@@ -12,12 +12,20 @@ import { Audit } from "./Audit";
 import { User } from "./User";
 import { Task } from "./Task";
 
-@Entity()
+@Entity({ orderBy: { sortKey: "ASC" } })
 @ObjectType()
 export class Skill extends Audit {
   @Column()
   @Field()
   public name!: string;
+
+  @Column()
+  @Field()
+  public emoji!: string;
+
+  @Column()
+  @Field()
+  public sortKey!: string;
 
   @ManyToMany(() => User)
   @JoinTable({ name: "user_skill" })

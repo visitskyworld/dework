@@ -34,6 +34,7 @@ import {
   matchingOwnerIds,
   matchingPriorities,
   matchingRoles,
+  matchingSkillIds,
   matchingStatuses,
   matchingTagIds,
 } from "./util";
@@ -138,6 +139,11 @@ export function useTaskViewGroups(
         .filter(
           matchingTagIds(
             findFilter(TaskViewFilterType.TAGS)?.tagIds ?? undefined
+          )
+        )
+        .filter(
+          matchingSkillIds(
+            findFilter(TaskViewFilterType.SKILLS)?.skillIds ?? undefined
           )
         )
         .filter(

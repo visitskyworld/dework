@@ -1,9 +1,17 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidSource } from "@dewo/app/graphql/types";
-import { Alert, Button, Col, Popconfirm, Space, Typography } from "antd";
+import {
+  Alert,
+  Button,
+  Col,
+  Divider,
+  Popconfirm,
+  Space,
+  Typography,
+} from "antd";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { MetamaskAuthButton } from "../auth/buttons/MetamaskAuthButton";
 import { PhantomAuthButton } from "../auth/buttons/PhantomAuthButton";
 import {
@@ -13,6 +21,8 @@ import {
 } from "../auth/buttons/ThreepidAuthButton";
 import { useDeleteThreepid } from "../auth/hooks";
 import { useRunningCallback } from "@dewo/app/util/hooks";
+import { useSetUserSkills } from "../skills/hooks";
+import { SkillSelect } from "@dewo/app/components/form/SkillSelect";
 
 interface Props {}
 
@@ -34,9 +44,27 @@ export const UserSettings: FC<Props> = () => {
     [deleteThreepid]
   );
 
+  const skillIds = useMemo(
+    () => user?.skills.map((s) => s.id) ?? [],
+    [user?.skills]
+  );
+  const setSkills = useSetUserSkills();
+
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Col>
+        <Typography.Title level={5}>Skills</Typography.Title>
+        <Typography.Paragraph type="secondary">
+          Select your skills. This is used to show you relevant tasks and find
+          interesting projects.
+        </Typography.Paragraph>
+        <SkillSelect
+          placeholder="Select skills..."
+          value={skillIds}
+          style={{ width: "100%" }}
+          onChange={setSkills}
+        />
+        <Divider />
         <Typography.Title level={5}>Connected Accounts</Typography.Title>
         <Space direction="vertical">
           {[
@@ -94,14 +122,6 @@ export const UserSettings: FC<Props> = () => {
             );
           })}
         </Space>
-
-        {/* <Typography.Title level={5}>Skills</Typography.Title>
-        <SkillSelect
-          placeholder="Select skills..."
-          value={skillIds}
-          style={{ width: "100%" }}
-          onChange={setUserSkills}
-        /> */}
       </Col>
     </Space>
   );

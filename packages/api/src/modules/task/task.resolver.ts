@@ -45,6 +45,7 @@ import { AuditLogService } from "../auditLog/auditLog.service";
 import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { GraphQLResolveInfo } from "graphql";
 import GraphQLFields from "graphql-fields";
+import { Skill } from "@dewo/api/models/Skill";
 
 @Injectable()
 @Resolver(() => Task)
@@ -70,6 +71,13 @@ export class TaskResolver {
     if (!!task.assignees) return task.assignees;
     const refetched = await this.taskService.findById(task.id);
     return refetched!.assignees;
+  }
+
+  @ResolveField(() => [Skill])
+  public async skills(@Parent() task: Task): Promise<Skill[]> {
+    if (!!task.skills) return task.skills;
+    const refetched = await this.taskService.findById(task.id);
+    return refetched!.skills;
   }
 
   @ResolveField(() => [AuditLogEvent])

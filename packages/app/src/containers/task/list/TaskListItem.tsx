@@ -4,9 +4,8 @@ import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
 import { Task } from "@dewo/app/graphql/types";
 import { TaskGatingIcon } from "../card/TaskGatingIcon";
-import { TaskTagsRow } from "../board/TaskTagsRow";
+import { TagOptions, TaskTagsRow } from "../board/TaskTagsRow";
 import { TaskActionButton } from "../actions/TaskActionButton";
-import { TaskRewardTag } from "../TaskRewardTag";
 import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import styles from "./TaskListItem.module.less";
@@ -14,9 +13,10 @@ import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnH
 
 interface Props {
   task: Task;
+  tags?: TagOptions;
 }
 
-export const TaskListItem: FC<Props> = ({ task }) => {
+export const TaskListItem: FC<Props> = ({ task, tags }) => {
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchTaskDetailsOnHover = usePrefetchTaskDetailsOnHover(task.id);
   return (
@@ -40,11 +40,7 @@ export const TaskListItem: FC<Props> = ({ task }) => {
         </Typography.Text>
         <TaskTagsRow
           task={task}
-          extra={
-            !!task.reward
-              ? [<TaskRewardTag key="reward" reward={task.reward} />]
-              : []
-          }
+          options={tags}
           style={{ flex: 1, justifyContent: "flex-end" }}
         />
 

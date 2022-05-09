@@ -77,9 +77,22 @@ export const TaskList: FC<Props> = ({
               hidden: !!collapsed[status],
               render: () =>
                 screen.sm ? (
-                  <TaskListItem key={task.id} task={task} />
+                  <TaskListItem
+                    key={task.id}
+                    task={task}
+                    tags={{
+                      skills: true,
+                      tags: true,
+                      properties: true,
+                      reward: true,
+                    }}
+                  />
                 ) : (
-                  <TaskCard task={task} style={{ marginBottom: 8 }} />
+                  <TaskCard
+                    task={task}
+                    style={{ marginBottom: 8 }}
+                    tags={{ skills: true, tags: true, properties: true }}
+                  />
                 ),
             })),
             {

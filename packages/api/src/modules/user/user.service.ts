@@ -105,12 +105,12 @@ export class UserService {
     if (sources.has(ThreepidSource.discord)) {
       await this.userPromptService.create({
         userId: user.id,
-        type: "Onboarding.v1.ConnectWallet",
+        type: "Onboarding.v2.ConnectWallet",
       });
     } else {
       await this.userPromptService.create({
         userId: user.id,
-        type: "Onboarding.v1.ConnectDiscord",
+        type: "Onboarding.v2.ConnectDiscord",
       });
     }
   }

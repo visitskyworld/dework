@@ -296,10 +296,7 @@ export const SubtaskTable: FC<Props> = ({
           title: "Tags",
           dataIndex: ["task", "tags"],
           width: !!tags ? undefined : 1,
-          render: (_, row) =>
-            !!row.task && (
-              <TaskTagsRow task={row.task} showStandardTags={false} />
-            ),
+          render: (_, row) => !!row.task && <TaskTagsRow task={row.task} />,
         },
         { title: "Points", dataIndex: ["task", "storyPoints"], width: 1 },
         {

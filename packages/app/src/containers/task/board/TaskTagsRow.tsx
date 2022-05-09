@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, ReactNode, useMemo } from "react";
+import React, { CSSProperties, FC, useMemo } from "react";
 import {
   Task,
   TaskPriority,
@@ -12,19 +12,31 @@ import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import moment from "moment";
 import { PRIORITY_LABEL } from "./util";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
+import { TaskRewardTag } from "../TaskRewardTag";
+import { SkillTag } from "@dewo/app/components/SkillTag";
+
+export interface TagOptions {
+  properties?: boolean;
+  reward?: boolean;
+  tags?: boolean;
+  skills?: "emoji" | true;
+}
+
+const defaultOptions: TagOptions = {
+  tags: true,
+  skills: true,
+};
 
 interface Props {
   task: Task | TaskWithOrganization;
-  showStandardTags?: boolean;
+  options?: TagOptions;
   style?: CSSProperties;
-  extra?: ReactNode[];
 }
 
 export const TaskTagsRow: FC<Props> = ({
   task,
-  showStandardTags = true,
+  options = defaultOptions,
   style,
-  extra,
 }) => {
   const attachmentCount = useMemo(
     () =>
@@ -98,15 +110,28 @@ export const TaskTagsRow: FC<Props> = ({
   ];
 
   const tagComponentsToRender = [
-    ...(showStandardTags ? standardTags : []),
-    ...task.tags
-      .filter((tag) => !tag.deletedAt)
-      .map((tag) => (
-        <Tag key={tag.id} color={tag.color}>
-          {tag.label}
-        </Tag>
-      )),
-    ...(extra ?? []),
+    ...(options.properties ? standardTags : []),
+    ...(options.skills
+      ? task.skills.map((skill) => (
+          <SkillTag
+            key={skill.id}
+            mode={options.skills === "emoji" ? "emoji" : undefined}
+            skill={skill}
+          />
+        ))
+      : []),
+    ...(options.tags
+      ? task.tags
+          .filter((tag) => !tag.deletedAt)
+          .map((tag) => (
+            <Tag key={tag.id} color={tag.color}>
+              {tag.label}
+            </Tag>
+          ))
+      : []),
+    ...(options.reward && !!task.reward
+      ? [<TaskRewardTag key="reward" reward={task.reward} />]
+      : []),
   ].filter((c) => !!c);
 
   if (!tagComponentsToRender.length) return null;
