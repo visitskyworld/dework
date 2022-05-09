@@ -26,9 +26,6 @@ export class GithubSyncOutgoingService {
   ) {}
 
   public async handle(task: Task, prevTask: Task | undefined) {
-    const issue = await task.githubIssue;
-    if (!issue) return;
-
     const integration = await this.integrationService.findProjectIntegration(
       task.projectId,
       ProjectIntegrationType.GITHUB
@@ -81,7 +78,10 @@ export class GithubSyncOutgoingService {
     }
 
     if (changed.includes("status")) {
-      await this.statusChanged(issue, integration, client, task, prevTask);
+      const issue = await task.githubIssue;
+      if (!!issue) {
+        await this.statusChanged(issue, integration, client, task, prevTask);
+      }
     }
   }
 
