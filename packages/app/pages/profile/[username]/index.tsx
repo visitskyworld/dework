@@ -31,7 +31,7 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Sidebar />
-      <Layout.Content>
+      <Layout.Content style={{ overflowY: "auto" }}>
         <PageHeader breadcrumb={<PageHeaderBreadcrumbs routes={routes} />} />
         {!!user && <UserProfile key={username} userId={user?.id} />}
       </Layout.Content>

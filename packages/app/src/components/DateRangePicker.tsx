@@ -1,6 +1,6 @@
 import { DatePicker, Space, Typography, Button } from "antd";
 import moment from "moment";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import styles from "./DateRangePicker.module.less";
 
 interface Props {
@@ -8,7 +8,6 @@ interface Props {
 }
 
 export const DateRangePicker: FC<Props> = ({ onSetRange }) => {
-  const [label, setLabel] = useState("Last 30 days");
   const [days, setDays] = useState(60);
   const onClickCustomRange = useCallback(
     (day: number) => {
@@ -16,15 +15,18 @@ export const DateRangePicker: FC<Props> = ({ onSetRange }) => {
       const endDate = moment().toISOString();
       setDays(day);
       onSetRange([startDate, endDate]);
-      setLabel(`Last ${day} days`);
     },
     [onSetRange]
   );
   const onClickAllTime = useCallback(() => {
     setDays(60);
     onSetRange(["", ""]);
-    setLabel(`All time`);
   }, [onSetRange]);
+
+  const [label, setLabel] = useState("Last 30 days");
+  useEffect(() => {
+    if (days !== 0) setLabel(days === 60 ? "All time" : `Last ${days} days`);
+  }, [days]);
 
   return (
     <Space
