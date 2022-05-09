@@ -22,6 +22,7 @@ export const TaskListItem: FC<Props> = ({ task }) => {
   return (
     <Card
       size="small"
+      bordered={false}
       className={styles.card}
       onClick={navigateToTask}
       {...prefetchTaskDetailsOnHover}

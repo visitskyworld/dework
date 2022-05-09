@@ -90,7 +90,7 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
               ))}
             </Avatar.Group>
             {!!project.openBountyTaskCount && (
-              <Tag className="bg-primary" style={{ margin: 0 }}>
+              <Tag color={"purple"} style={{ margin: 0, fontWeight: 600 }}>
                 {project.openBountyTaskCount === 1
                   ? "1 open bounty"
                   : `${project.openBountyTaskCount} open bounties`}

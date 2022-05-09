@@ -145,7 +145,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
           type="secondary"
           italic
           className="text-secondary"
-          style={{ flex: 1, textAlign: "left" }}
+          style={{ flex: 1, textAlign: "left", opacity: 0.4 }}
         >
           Markdown & any file drag-and-drop supported
         </Typography.Text>

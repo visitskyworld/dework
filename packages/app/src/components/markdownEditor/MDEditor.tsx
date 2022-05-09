@@ -23,7 +23,7 @@ export const MDEditor = dynamic<Props>(
                   type="secondary"
                   italic
                   className="ant-typography-caption"
-                  style={{ opacity: 0.5, flex: 1, textAlign: "left" }}
+                  style={{ opacity: 0.4, flex: 1, textAlign: "left" }}
                 >
                   Markdown & any file drag-and-drop supported
                 </Typography.Text>

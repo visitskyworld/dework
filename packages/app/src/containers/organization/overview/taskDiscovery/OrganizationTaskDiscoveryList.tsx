@@ -58,14 +58,6 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
       <Skeleton loading={!mounted || data.loading}>
         {tags?.length > 0 && (
           <>
-            <Row style={{ marginBottom: 8 }}>
-              <Typography.Text
-                type="secondary"
-                className="ant-typography-caption"
-              >
-                Click on tags to show tasks for
-              </Typography.Text>
-            </Row>
             <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
               {tags.map((tag) => (
                 <Tag
