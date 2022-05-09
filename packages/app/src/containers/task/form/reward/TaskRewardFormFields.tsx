@@ -5,11 +5,13 @@ import {
   ConfigProvider,
   Empty,
   InputNumber,
+  Row,
   Select,
   Space,
+  Typography,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProject } from "../../../project/hooks";
+import { useProject, useProjectPaymentMethods } from "../../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 
@@ -18,6 +20,10 @@ import { useOrganizationTokens } from "@dewo/app/containers/organization/hooks";
 
 import { TaskRewardFormValues } from "../types";
 import { PegToUsdCheckbox } from "./PegToUsdCheckbox";
+import { AddProjectPaymentMethodModal } from "@dewo/app/containers/payment/project/AddProjectPaymentMethodModal";
+import { paymentMethodTypeToString } from "@dewo/app/containers/payment/util";
+import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
+import { OnboardingAlert } from "@dewo/app/components/OnboardingAlert";
 
 export async function validator(
   _rule: unknown, // RuleObject,
@@ -45,8 +51,10 @@ export const TaskRewardFormFields: FC<Props> = ({
 }) => {
   const { project } = useProject(projectId);
   const addCustomToken = useToggle();
+  const addPaymentMethod = useToggle();
 
   const tokens = useOrganizationTokens(project?.organizationId);
+  const pms = useProjectPaymentMethods(projectId);
 
   const handleChangeAmount = useCallback(
     (amount: number | null) =>
@@ -166,6 +174,37 @@ export const TaskRewardFormFields: FC<Props> = ({
         {!!value?.networkId && (
           <PegToUsdCheckbox value={value} onChange={handleChangePeggedToUsd} />
         )}
+        <HeadlessCollapse expanded={!!value?.token && !!value?.amount}>
+          {!!pms?.length ? (
+            <OnboardingAlert
+              name="Task Form: connected payment methods"
+              message={
+                <>
+                  {_.uniq(
+                    pms.map((pm) => paymentMethodTypeToString[pm.type])
+                  ).join(", ")}{" "}
+                  connected. <a onClick={addPaymentMethod.toggleOn}>Add more</a>
+                </>
+              }
+            />
+          ) : (
+            <Row align="middle" style={{ columnGap: 12 }}>
+              <Button
+                size="small"
+                type="primary"
+                onClick={addPaymentMethod.toggleOn}
+              >
+                Setup payment
+              </Button>
+              <Typography.Text
+                type="secondary"
+                className="ant-typography-caption"
+              >
+                (Can also be set up later)
+              </Typography.Text>
+            </Row>
+          )}
+        </HeadlessCollapse>
       </Space>
       {!!project?.organizationId && (
         <AddTokenModal
@@ -174,6 +213,11 @@ export const TaskRewardFormFields: FC<Props> = ({
           onClose={handleCustomTokenModalClosed}
         />
       )}
+      <AddProjectPaymentMethodModal
+        projectId={projectId}
+        visible={addPaymentMethod.isOn}
+        onClose={addPaymentMethod.toggleOff}
+      />
     </>
   );
 };
