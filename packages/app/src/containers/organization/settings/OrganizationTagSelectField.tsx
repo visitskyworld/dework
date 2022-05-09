@@ -68,7 +68,6 @@ const OrganizationTagSelectFieldComponent: FC<
       value={value}
       loading={loading}
       optionFilterProp="label"
-      optionLabelProp="label" // don't put children inside tagRender
       placeholder="Select tags..."
       onChange={handleChange}
       tagRender={(props) => (
