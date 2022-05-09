@@ -287,7 +287,7 @@ export class TaskResolver {
           : undefined,
         skills: !!input.skillIds
           ? (input.skillIds.map((id) => ({ id })) as any)
-          : [],
+          : undefined,
         assignees: !!input.assigneeIds
           ? (input.assigneeIds.map((id) => ({ id })) as any)
           : undefined,
