@@ -266,10 +266,7 @@ export class RbacService {
               : { __task__: { $exists: true } }),
             permission: RulePermission.MANAGE_TASKS,
           });
-          fn(CRUD, Rule, {
-            projectId: rule.projectId ?? { $exists: true },
-            permission: RulePermission.VIEW_PROJECTS,
-          });
+          fn(CRUD, Rule, { projectId: rule.projectId ?? { $exists: true } });
           fn(CRUD, Task, task);
           break;
         case RulePermission.MANAGE_TASKS:
