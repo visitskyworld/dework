@@ -6,11 +6,14 @@ import { Raw, Repository } from "typeorm";
 import {
   TaskView,
   TaskViewFilterType,
+  TaskViewSortByDirection,
+  TaskViewSortByField,
   TaskViewType,
 } from "@dewo/api/models/TaskView";
 import slugify from "slugify";
 import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
 import { User } from "@dewo/api/models/User";
+import { Organization } from "@dewo/api/models/Organization";
 import { TaskStatus } from "@dewo/api/models/Task";
 
 @Injectable()
@@ -61,6 +64,32 @@ export class TaskViewService {
         userId: user.id,
       }),
     ]);
+  }
+
+  public async createDefaultOrganizationTaskViews(
+    organization: Organization
+  ): Promise<void> {
+    await this.create({
+      name: "Board",
+      organizationId: organization.id,
+      filters: [],
+      type: TaskViewType.BOARD,
+    });
+    await this.create({
+      name: "Open Tasks",
+      organizationId: organization.id,
+      type: TaskViewType.LIST,
+      filters: [
+        { type: TaskViewFilterType.STATUSES, statuses: [TaskStatus.TODO] },
+        { type: TaskViewFilterType.ASSIGNEES, assigneeIds: [null] },
+      ],
+      sortBys: [
+        {
+          direction: TaskViewSortByDirection.ASC,
+          field: TaskViewSortByField.priority,
+        },
+      ],
+    });
   }
 
   public async update(partial: DeepAtLeast<TaskView, "id">): Promise<TaskView> {

@@ -15,6 +15,7 @@ import { RbacService } from "../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
+import { TaskViewService } from "../task/taskView/taskView.service";
 
 @Injectable()
 export class OrganizationService {
@@ -22,6 +23,7 @@ export class OrganizationService {
 
   constructor(
     private readonly rbacService: RbacService,
+    private readonly taskViewService: TaskViewService,
     @InjectRepository(Organization)
     private readonly organizationRepo: Repository<Organization>,
     @InjectRepository(Project)
@@ -71,6 +73,8 @@ export class OrganizationService {
           await this.rbacService.addRoles(creator.id, [role.id]);
         }),
     ]);
+
+    await this.taskViewService.createDefaultOrganizationTaskViews(created);
 
     return this.findById(created.id) as Promise<Organization>;
   }

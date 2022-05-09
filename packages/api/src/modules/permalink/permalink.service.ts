@@ -21,6 +21,9 @@ export class PermalinkService {
     if (object instanceof User) {
       return `${await this.get(object, appUrl)}/board`;
     }
+    if (object instanceof Organization) {
+      return `${await this.get(object, appUrl)}/board`;
+    }
     return await this.get(object, appUrl);
   }
 

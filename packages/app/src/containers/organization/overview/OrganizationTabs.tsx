@@ -15,11 +15,11 @@ import {
 import { OrganizationProjectList } from "@dewo/app/containers/organization/overview/projectList/OrganizationProjectList";
 import {
   useOrganizationDetails,
+  useOrganizationTasks,
   useOrganizationUsers,
 } from "@dewo/app/containers/organization/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { OrganizationInviteButton } from "@dewo/app/containers/invite/OrganizationInviteButton";
-import { OrganizationTaskBoard } from "@dewo/app/containers/organization/overview/OrganizationTaskBoard";
 import { useRouter } from "next/router";
 import { OrganizationSettings } from "../settings/OrganizationSettings";
 import { FollowOrganizationButton } from "./FollowOrganizationButton";
@@ -37,6 +37,9 @@ import styles from "./OrganizationTabs.module.less";
 import { TopContributorList } from "./TopContributorList";
 import { TopReviewerList } from "./TopReviewerList";
 import { OrganizationPublicInviteButton } from "../../invite/OrganizationPublicInviteButton";
+import { OrganizationTaskViewProvider } from "../../task/views/TaskViewContext";
+import { TaskViewTabs } from "../../task/views/TaskViewTabs";
+import { TaskViewLayout } from "../../task/views/TaskViewLayout";
 
 interface Props {
   organizationId: string;
@@ -88,6 +91,11 @@ export const OrganizationTabs: FC<Props> = ({
       users?.filter((u) => u.roles.some((r) => adminRoleIds?.includes(r.id))),
     [users, adminRoleIds]
   );
+  const tasks = useOrganizationTasks(
+    organizationId,
+    undefined,
+    "cache-and-network"
+  )?.tasks;
 
   return (
     <Tabs
@@ -210,7 +218,11 @@ export const OrganizationTabs: FC<Props> = ({
         className="w-full"
         style={{ maxWidth: 330 * 4 + 16 * 3 + 24 * 2 }}
       >
-        <OrganizationTaskBoard organizationId={organizationId} />
+        <OrganizationTaskViewProvider organizationId={organizationId}>
+          <TaskViewTabs organizationId={organizationId}>
+            <TaskViewLayout tasks={tasks} />
+          </TaskViewTabs>
+        </OrganizationTaskViewProvider>
       </Tabs.TabPane>
       {canUpdateOrganization && (
         <Tabs.TabPane

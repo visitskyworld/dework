@@ -72,6 +72,7 @@ export class TaskViewResolver {
         service: TaskViewService
       ) => service.findById(params.input.id),
       async getOrganizationId(subject) {
+        if (subject.organizationId) return subject.organizationId;
         const project = await subject.project;
         return project?.organizationId;
       },
