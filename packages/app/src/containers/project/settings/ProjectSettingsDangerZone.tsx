@@ -12,9 +12,9 @@ interface Props {
 }
 
 export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
-  const refetchOrganization = useOrganizationDetails(
+  const { organization, refetch: refetchOrganization } = useOrganizationDetails(
     project.organizationId
-  ).refetch;
+  );
   const updateProject = useUpdateProject();
   const deletingProject = useToggle(false);
   const router = useRouter();
@@ -29,12 +29,12 @@ export const ProjectSettingsDangerZone: FC<Props> = ({ project }) => {
       deletedAt: new Date().toISOString(),
     });
     refetchOrganization(); // async
-    router.push({ pathname: project?.permalink });
+    router.push({ pathname: organization?.permalink });
   }, [
     updateProject,
     refetchOrganization,
     project?.id,
-    project?.permalink,
+    organization?.permalink,
     router,
   ]);
 
