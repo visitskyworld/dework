@@ -11,7 +11,6 @@ import { Avatar, Button, Col, Row, Space, Tag, Typography } from "antd";
 import moment from "moment";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
-import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import {
   usePermission,
   usePermissionFn,
@@ -20,6 +19,7 @@ import { PaymentStatusTag } from "@dewo/app/components/PaymentStatusTag";
 import { Diff, DiffEdit } from "deep-diff";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { STATUS_LABEL } from "../board/util";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 
 interface ActivityFeedItem {
   date: string;
@@ -178,9 +178,9 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
           avatar: <UserAvatar size="small" user={submission.user} />,
           text: `${submission.user.username} created a submission`,
           details: (
-            <MarkdownPreview
-              style={{ wordBreak: "break-word" }}
-              value={submission.content}
+            <RichMarkdownEditor
+              initialValue={submission.content}
+              editable={false}
             />
           ),
         }))

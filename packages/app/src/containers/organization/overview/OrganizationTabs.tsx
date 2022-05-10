@@ -28,13 +28,13 @@ import _ from "lodash";
 import { OrganizationContributorList } from "./OrganizationContributorList";
 import { EntityDetailAvatar } from "../../../components/EntityDetailAvatar";
 import { Tab } from "@dewo/app/components/Tab";
-import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
 import styles from "./OrganizationTabs.module.less";
 import { TopContributorList } from "./TopContributorList";
 import { TopReviewerList } from "./TopReviewerList";
 import { OrganizationPublicInviteButton } from "../../invite/OrganizationPublicInviteButton";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { OrganizationTaskViewProvider } from "../../task/views/TaskViewContext";
 import { TaskViewTabs } from "../../task/views/TaskViewTabs";
 import { TaskViewLayout } from "../../task/views/TaskViewLayout";
@@ -115,10 +115,12 @@ export const OrganizationTabs: FC<Props> = ({
           </Col>
           <Col xs={24} md={6}>
             <Typography.Title level={5}>About</Typography.Title>
-            <MarkdownPreview
-              style={{ wordBreak: "break-word", opacity: 0.7 }}
-              value={organization?.description || "No description..."}
-            />
+            <div style={{ opacity: 0.7 }}>
+              <RichMarkdownEditor
+                initialValue={organization?.description || "No description..."}
+                editable={false}
+              />
+            </div>
 
             {!!organization?.details && (
               <Row style={{ gap: 8, marginBottom: 16, marginTop: 8 }}>

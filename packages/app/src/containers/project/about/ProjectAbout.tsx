@@ -1,4 +1,4 @@
-import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectDetails } from "@dewo/app/graphql/types";
 import React, { FC, useCallback } from "react";
@@ -20,9 +20,9 @@ export const ProjectAbout: FC<Props> = ({ project }) => {
 - Maybe even a FAQ about the project`;
 
   return (
-    <MarkdownEditor
+    <RichMarkdownEditor
       initialValue={project.description || initialValue}
-      editable={canUpdateProject}
+      editable={canUpdateProject || false}
       mode="update"
       onSave={handleSave}
     />

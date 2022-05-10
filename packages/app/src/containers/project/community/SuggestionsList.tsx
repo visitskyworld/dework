@@ -1,4 +1,3 @@
-import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -13,6 +12,7 @@ import { useCreateTaskReaction, useDeleteTaskReaction } from "../../task/hooks";
 import { TaskRow } from "./CommunitySuggestions";
 import * as Icons from "@ant-design/icons";
 import { useReactionModal } from "@dewo/app/src/util/reactions";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 
 const UPVOTE_REACTION = ":arrow_up_small:";
 
@@ -174,11 +174,15 @@ export const SuggestionsList: FC<Props> = ({ taskRows }) => {
                   <TaskTagsRow task={taskRow.task} />
                 </Row>
               )}
-              <Row>
+              <Row
+                style={{
+                  pointerEvents: "none", // to prevent text cursor from appearing in richmarkdowneditor
+                }}
+              >
                 {!!taskRow.task.description && (
-                  <MarkdownPreview
-                    style={{ wordBreak: "break-all" }}
-                    value={taskRow.task.description}
+                  <RichMarkdownEditor
+                    initialValue={taskRow.task.description}
+                    editable={false}
                   />
                 )}
               </Row>

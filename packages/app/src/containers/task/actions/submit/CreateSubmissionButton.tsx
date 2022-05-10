@@ -4,7 +4,6 @@ import { Typography, Button, ButtonProps, message, Space } from "antd";
 import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
 import { Task, ThreepidSource } from "@dewo/app/graphql/types";
 import Modal from "antd/lib/modal/Modal";
-import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../../hooks";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
@@ -13,6 +12,7 @@ import { useProject } from "../../../project/hooks";
 import { MetamaskAuthButton } from "@dewo/app/containers/auth/buttons/MetamaskAuthButton";
 import { getThreepidName } from "@dewo/app/containers/auth/buttons/ThreepidAuthButton";
 import { WalletConnectButton } from "@dewo/app/containers/auth/buttons/WalletConnectButton";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 
 interface Props extends ButtonProps {
   task: Task;
@@ -40,21 +40,25 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
   const createSubmission = useCreateTaskSubmission();
   const updateSubmission = useUpdateTaskSubmission();
   const [handleCreate, creating] = useRunningCallback(async () => {
-    if (!currentSubmission) {
-      await createSubmission({ taskId: task.id, content: content! });
-      await followOrganization();
-      message.success("Submission created");
-    } else {
-      await updateSubmission({
-        userId: user!.id,
-        taskId: task.id,
-        content: content!,
-      });
-
-      message.success("Submission updated");
+    try {
+      if (!currentSubmission) {
+        await createSubmission({
+          taskId: task.id,
+          content: content!,
+        });
+        followOrganization();
+        message.success("Submission created");
+      } else {
+        await updateSubmission({
+          userId: user!.id,
+          taskId: task.id,
+          content: content!,
+        });
+        message.success("Submission updated");
+      }
+    } finally {
+      submissionModalVisible.toggleOff();
     }
-
-    submissionModalVisible.toggleOff();
   }, [
     content,
     createSubmission,
@@ -149,24 +153,27 @@ export const CreateSubmissionButton: FC<Props> = ({ task, ...buttonProps }) => {
         footer={null}
       >
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          <MarkdownEditor
-            key={currentSubmission?.content}
-            initialValue={currentSubmission?.content}
-            buttonText={false ? "Edit submission" : "Add submission"}
-            placeholder="Submit your work here..."
+          <RichMarkdownEditor
+            initialValue={currentSubmission?.content ?? ""}
+            placeholder="Write your submission here"
             editable
+            bordered
             mode="create"
             onChange={setContent}
+            onSave={handleCreate}
+            key={currentSubmission?.content}
+            buttons={({ disabled, onSave }) => (
+              <Button
+                block
+                type="primary"
+                onClick={onSave}
+                disabled={!content || disabled}
+                loading={creating}
+              >
+                {currentSubmission ? "Save" : "Submit"}
+              </Button>
+            )}
           />
-          <Button
-            block
-            type="primary"
-            disabled={!content}
-            loading={creating}
-            onClick={handleCreate}
-          >
-            Save
-          </Button>
         </Space>
       </Modal>
     </>

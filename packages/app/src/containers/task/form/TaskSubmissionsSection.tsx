@@ -1,5 +1,5 @@
 import { FormSection } from "@dewo/app/components/FormSection";
-import { MarkdownEditor } from "@dewo/app/components/markdownEditor/MarkdownEditor";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskDetails, TaskGatingType } from "@dewo/app/graphql/types";
@@ -84,16 +84,13 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     ),
     !!currentSubmission && (
       <FormSection label="Your Submission">
-        <MarkdownEditor
-          key={currentSubmission?.content}
+        <RichMarkdownEditor
           initialValue={currentSubmission?.content}
-          placeholder="No submission yet. Submit your work here."
-          buttonText={
-            !!currentSubmission ? "Edit submission" : "Add submission"
-          }
           editable
+          bordered
           mode="update"
           onSave={handleSave}
+          placeholder="Write your submission here"
         />
       </FormSection>
     ),

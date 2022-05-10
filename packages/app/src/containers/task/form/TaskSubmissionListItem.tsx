@@ -1,4 +1,4 @@
-import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
+import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -171,9 +171,9 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
               />
             </a>
           </Tooltip>
-          <MarkdownPreview
-            style={{ wordBreak: "break-word" }}
-            value={submission.content}
+          <RichMarkdownEditor
+            initialValue={submission.content}
+            editable={false}
           />
         </Space>
       </List.Item>

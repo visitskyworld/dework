@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { RichMarkdownComponent } from "./RichMarkdownComponent";
 import { useUploadFile } from "@dewo/app/containers/fileUploads/hooks";
 import { MarkdownEditorButtons } from "../markdownEditor/MarkdownEditorButtons";
-import { useToggle } from "@dewo/app/util/hooks";
+import { useRunning, useToggle } from "@dewo/app/util/hooks";
 import { message, Row, Typography } from "antd";
 import router from "next/router";
 import { FigmaEmbed, isFigmaUrl } from "../markdownEditor/FigmaEmbed";
@@ -11,6 +10,8 @@ import { keydownHandler, useDropHandler } from "./utils";
 import { isLocalURL } from "next/dist/shared/lib/router/router";
 import { theme } from "./theme";
 import { eatClick } from "@dewo/app/util/eatClick";
+import classNames from "classnames";
+import { RichMarkdownComponent } from "./RichMarkdownComponent";
 
 const FigmaWrapper: FC<{
   attrs: {
@@ -22,17 +23,34 @@ interface RichMarkdownEditorProps {
   initialValue: string;
   onChange?(description: string | undefined): void;
   onSave?(description: string | undefined): void;
-  mode: "create" | "update";
+  mode?: "create" | "update";
   editable: boolean;
+  placeholder?: string;
+  buttons?: FC<{
+    disabled: boolean;
+    hidden: boolean;
+    onSave: (e: React.SyntheticEvent) => void;
+    onCancel: (e: React.SyntheticEvent) => void;
+  }>;
+  bordered?: boolean;
 }
 export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
   initialValue,
   onChange,
   onSave,
-  mode,
+  mode = "create",
   editable,
+  placeholder = "Write your description here",
+  buttons: Buttons = mode === "update" ? MarkdownEditorButtons : undefined,
+  bordered,
 }) => {
-  const uploadFile = useUploadFile();
+  const className = classNames([
+    "ant-input",
+    !bordered && "dewo-field",
+    !bordered && "dewo-field-focus-border",
+  ]);
+
+  const [uploadFile, isUploading] = useRunning(useUploadFile());
   const autosave = mode === "create";
 
   const [value, setValue] = useState(initialValue);
@@ -65,11 +83,13 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
     [isEditing, onChange, onSave, value]
   );
 
+  const [resetKey, setResetKey] = useState(0);
   const handleCancel = useCallback(
     (e) => {
       if (e) eatClick(e);
       isEditing.toggleOff();
-      setSavedValue(savedValue);
+      setValue(savedValue);
+      setResetKey((i) => i + 1);
     },
     [isEditing, savedValue]
   );
@@ -89,6 +109,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
 
   const Editor = (
     <RichMarkdownComponent
+      key={resetKey}
       tooltip={DefaultTooltip}
       uploadImage={async (file) => {
         const isLt2M = file.size / 1024 / 1024 < 40;
@@ -111,7 +132,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
         },
       ]}
       theme={theme}
-      placeholder="Write your description here"
+      placeholder={placeholder}
       onClickLink={handleLinkClick}
       readOnly={!editable}
       disableExtensions={["emoji"]}
@@ -126,18 +147,18 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
     return Editor;
   }
 
+  const showSave = isEditing.isOn && savedValue !== value;
+
   return (
     <div
       onClick={isEditing.toggleOn}
-      className="ant-input dewo-field dewo-field-focus-border"
+      className={className}
       style={{ paddingLeft: 4 }}
     >
       {Editor}
       <Row
         style={{
           marginTop: 8,
-          visibility:
-            isEditing.isOn && savedValue !== value ? "visible" : "hidden",
         }}
         align="middle"
       >
@@ -145,12 +166,21 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
           type="secondary"
           italic
           className="text-secondary"
-          style={{ flex: 1, textAlign: "left", opacity: 0.4 }}
+          style={{
+            flex: 1,
+            textAlign: "left",
+            visibility: showSave ? "visible" : "hidden",
+          }}
         >
           Markdown & any file drag-and-drop supported
         </Typography.Text>
-        {mode === "update" && (
-          <MarkdownEditorButtons onCancel={handleCancel} onSave={handleSave} />
+        {Buttons && (
+          <Buttons
+            onSave={handleSave}
+            onCancel={handleCancel}
+            disabled={isUploading}
+            hidden={!showSave}
+          />
         )}
       </Row>
     </div>
