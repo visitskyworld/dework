@@ -12442,6 +12442,11 @@ export enum GithubPullRequestStatus {
   OPEN = "OPEN",
 }
 
+export enum Language {
+  CHINESE = "CHINESE",
+  ENGLISH = "ENGLISH",
+}
+
 export enum OrganizationIntegrationType {
   COORDINAPE = "COORDINAPE",
   DISCORD = "DISCORD",
@@ -12781,6 +12786,7 @@ export interface ProjectTokenGateInput {
 
 export interface SearchTasksInput {
   name?: string | null;
+  languages?: Language[] | null;
   statuses?: TaskStatus[] | null;
   priorities?: TaskPriority[] | null;
   hasReward?: boolean | null;

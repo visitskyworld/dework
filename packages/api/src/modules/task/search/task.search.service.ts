@@ -16,6 +16,7 @@ import _ from "lodash";
 import moment from "moment";
 import { Repository } from "typeorm";
 import { RbacService } from "../../rbac/rbac.service";
+import { Language } from "@dewo/api/models/enums/Language";
 
 const TaskPriorityNumber: Record<TaskPriority, number> = {
   [TaskPriority.NONE]: 0,
@@ -30,6 +31,7 @@ interface IndexedTask {
   name: string;
   status: TaskStatus;
   priority: number;
+  language: Language;
   sortKey: string;
   createdAt: string;
   doneAt: string | undefined;
@@ -113,6 +115,7 @@ export class TaskSearchService implements OnModuleInit {
               analyzer: "ngram_analyzer",
             },
             status: { type: "keyword" },
+            language: { type: "keyword" },
             priority: { type: "byte" },
             reward: { type: "long" },
             spam: { type: "boolean" },
@@ -203,6 +206,7 @@ export class TaskSearchService implements OnModuleInit {
     name?: string;
     statuses?: TaskStatus[];
     priorities?: TaskPriority[];
+    languages?: Language[];
     projectIds?: string[];
     roleIds?: string[];
     ownerIds?: (string | null)[];
@@ -259,6 +263,7 @@ export class TaskSearchService implements OnModuleInit {
             ],
             filter: [
               ...(!!q.statuses ? [{ terms: { status: q.statuses } }] : []),
+              ...(!!q.languages ? [{ terms: { language: q.languages } }] : []),
               ...(!!q.priorities
                 ? [
                     {
@@ -395,6 +400,11 @@ export class TaskSearchService implements OnModuleInit {
         !!project.name.match(/(demo|test)/i) ||
         !!organization.name.match(/(demo|test)/i) ||
         moment(task.createdAt).diff(moment(project.createdAt)) < ms.hours(2),
+      language: [task.name, project.name, organization.name].some((s) =>
+        s.match(/[\u4e00-\u9fa5]/g)
+      )
+        ? Language.CHINESE
+        : Language.ENGLISH,
     };
   }
 

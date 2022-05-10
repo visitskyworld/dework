@@ -1,3 +1,4 @@
+import { Language } from "@dewo/api/models/enums/Language";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { Project } from "@dewo/api/models/Project";
 import { Task, TaskPriority, TaskStatus } from "@dewo/api/models/Task";
@@ -151,6 +152,33 @@ describe("TaskSearchService", () => {
       }
       expect(res.tasks).toContainEqual(
         expect.objectContaining({ id: notSpammyTask.id })
+      );
+    });
+
+    it("should return chinese tasks", async () => {
+      const project = await fixtures.createProject();
+      const englishTask = await fixtures.createTask({ projectId: project.id });
+      const chineseTask = await fixtures.createTask({
+        projectId: project.id,
+        name: "5.2-5 Ro业周",
+      });
+
+      await service.index([englishTask, chineseTask], true);
+
+      const res = await service.search({
+        projectIds: [project.id],
+        languages: [Language.CHINESE],
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+      });
+
+      expect(res.tasks).toContainEqual(
+        expect.objectContaining({ id: chineseTask.id })
+      );
+      expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: englishTask.id })
       );
     });
 

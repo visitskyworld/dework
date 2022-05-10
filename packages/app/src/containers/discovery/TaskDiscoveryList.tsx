@@ -1,4 +1,5 @@
 import {
+  Language,
   SearchTasksInput,
   Task,
   TaskGatingType,
@@ -29,18 +30,21 @@ import { useToggle } from "@dewo/app/util/hooks";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { useTaskViewLayoutData } from "../task/views/hooks";
+import { LanguageInput } from "./LanguageInput";
 
 interface FilterValues {
   includeOpenBounties: boolean;
   includeApplicationTasks: boolean;
   includeTasksWithoutReward: boolean;
   skillIds: string[];
+  languages: Language[];
   sortBy: "createdAt" | "reward";
 }
 
 const defaultFilterValues: FilterValues = {
   sortBy: "createdAt",
   skillIds: [],
+  languages: [],
   includeOpenBounties: true,
   includeApplicationTasks: true,
   includeTasksWithoutReward: false,
@@ -83,11 +87,12 @@ export const TaskDiscoveryList: FC = () => {
             direction: TaskViewSortByDirection.DESC,
           },
           skillIds: !!values.skillIds.length ? values.skillIds : undefined,
+          languages: !!values.languages.length ? values.languages : undefined,
           assigneeIds: [null],
           parentTaskId: null,
         },
       ],
-      [values.skillIds]
+      [values.skillIds, values.languages]
     ),
     {
       withOrganization: true,
@@ -188,6 +193,11 @@ export const TaskDiscoveryList: FC = () => {
                   </Typography.Paragraph>
                   <Form.Item name="skillIds">
                     <SkillCloudInput />
+                  </Form.Item>
+                </FormSection>
+                <FormSection label="Languages">
+                  <Form.Item name="languages">
+                    <LanguageInput />
                   </Form.Item>
                 </FormSection>
               </Form>

@@ -1,3 +1,4 @@
+import { Language } from "@dewo/api/models/enums/Language";
 import { TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import { TaskViewSortBy } from "@dewo/api/models/TaskView";
 import { Field, InputType } from "@nestjs/graphql";
@@ -12,6 +13,9 @@ export class SearchTasksInput {
 
   @Field({ nullable: true })
   public name?: string;
+
+  @Field(() => [Language], { nullable: true })
+  public languages?: Language[];
 
   @Field(() => [TaskStatus], { nullable: true })
   public statuses?: TaskStatus[];
