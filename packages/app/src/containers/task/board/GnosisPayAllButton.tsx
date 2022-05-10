@@ -22,7 +22,11 @@ import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useProject, useProjectPaymentMethods } from "../../project/hooks";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useERC20Contract, useSwitchChain } from "@dewo/app/util/ethereum";
+import {
+  useERC1155Contract,
+  useERC20Contract,
+  useSwitchChain,
+} from "@dewo/app/util/ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { formatTaskReward } from "../hooks";
 import { Constants } from "@dewo/app/util/constants";
@@ -84,6 +88,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
   const createTaskPayments = useCreateTaskPayments();
   const switchChain = useSwitchChain();
   const loadERC20Contract = useERC20Contract();
+  const loadERC1155Contract = useERC1155Contract();
   const submit = useCallback(async () => {
     const { BigNumber } = await import("ethers");
     try {
@@ -137,6 +142,27 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
             };
           }
 
+          if (
+            reward.token.type === PaymentTokenType.ERC1155 &&
+            !!reward.token.address
+          ) {
+            const contract = await loadERC1155Contract(
+              reward.token.address,
+              network
+            );
+            return {
+              to: reward.token.address,
+              value: "0",
+              data: contract.interface.encodeFunctionData("safeTransferFrom", [
+                gnosisPaymentMethod!.address,
+                toAddress,
+                reward.token.identifier,
+                amount.toString(),
+                "0x",
+              ]),
+            };
+          }
+
           return {
             to: toAddress,
             value: amount.toString(),
@@ -171,6 +197,7 @@ export const GnosisPayAllButton: FC<Props> = ({ projectId, taskIds }) => {
     createTaskPayments,
     switchChain,
     loadERC20Contract,
+    loadERC1155Contract,
     gnosisPaymentMethod,
     selectedTaskIds,
     tasks,
