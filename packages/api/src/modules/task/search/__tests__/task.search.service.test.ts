@@ -162,8 +162,12 @@ describe("TaskSearchService", () => {
         projectId: project.id,
         name: "5.2-5 Ro业周",
       });
+      const japaneseTask = await fixtures.createTask({
+        projectId: project.id,
+        name: "初心者の学びに繋がる動画作成１",
+      });
 
-      await service.index([englishTask, chineseTask], true);
+      await service.index([englishTask, chineseTask, japaneseTask], true);
 
       const res = await service.search({
         projectIds: [project.id],
@@ -179,6 +183,9 @@ describe("TaskSearchService", () => {
       );
       expect(res.tasks).not.toContainEqual(
         expect.objectContaining({ id: englishTask.id })
+      );
+      expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: japaneseTask.id })
       );
     });
 

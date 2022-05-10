@@ -378,6 +378,10 @@ export class TaskSearchService implements OnModuleInit {
   ): Promise<IndexedTask> {
     const project = await task.project;
     const organization = await project.organization;
+
+    const demoOrTestRegex = /(demo|test)/i;
+    const chineseRegex = /[\u4e00-\u9fa5]/g;
+    const japaneseRegex = /[ぁ-ん]/g;
     return {
       ..._.pick(task, ["id", "name", "status", "sortKey", "projectId"]),
       priority: TaskPriorityNumber[task.priority],
@@ -396,12 +400,12 @@ export class TaskSearchService implements OnModuleInit {
       public: isPublic,
       reward: undefined,
       spam:
-        !!task.name.match(/(demo|test)/i) ||
-        !!project.name.match(/(demo|test)/i) ||
-        !!organization.name.match(/(demo|test)/i) ||
+        [task.name, project.name, organization.name].some((s) =>
+          demoOrTestRegex.test(s)
+        ) ||
         moment(task.createdAt).diff(moment(project.createdAt)) < ms.hours(2),
-      language: [task.name, project.name, organization.name].some((s) =>
-        s.match(/[\u4e00-\u9fa5]/g)
+      language: [task.name, project.name, organization.name].some(
+        (s) => chineseRegex.test(s) && !japaneseRegex.test(s)
       )
         ? Language.CHINESE
         : Language.ENGLISH,
