@@ -185,65 +185,71 @@ export class GithubIntegrationService {
     ) {
       return;
     }
-    const projInt = await this.integrationService.findProjectIntegration(
-      task.projectId,
-      ProjectIntegrationType.GITHUB
-    );
-    if (!projInt) return;
-    if (
-      !projInt.config.features.includes(
-        GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS
-      )
-    ) {
-      return;
-    }
-
-    const orgInt = (await projInt.organizationIntegration) as
-      | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
-      | undefined;
-    if (!orgInt) return;
+    const integrations = await this.integrationService
+      .findProjectIntegrations(task.projectId, ProjectIntegrationType.GITHUB)
+      .then((is) =>
+        is.filter((i) =>
+          i.config.features.includes(
+            GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS
+          )
+        )
+      );
 
     this.logger.log(
-      `Creating issue on Github for task: ${JSON.stringify({
+      `Found integrations to create GH issues for: ${JSON.stringify({
         taskId: task.id,
+        integrationIds: integrations.map((i) => i.id),
       })}`
     );
 
-    const existingIssue = await task.githubIssue;
-    if (!!existingIssue) {
-      this.logger.warn(
-        "Aborting creation of Github issue for task: issue already exists"
+    for (const integration of integrations) {
+      const orgInt = (await integration.organizationIntegration) as
+        | OrganizationIntegration<OrganizationIntegrationType.GITHUB>
+        | undefined;
+      if (!orgInt) return;
+
+      this.logger.log(
+        `Creating issue on Github for task: ${JSON.stringify({
+          taskId: task.id,
+        })}`
       );
-      return;
+
+      const existingIssue = await task.githubIssue;
+      if (!!existingIssue) {
+        this.logger.warn(
+          "Aborting creation of Github issue for task: issue already exists"
+        );
+        return;
+      }
+
+      const client = this.githubService.createClient(
+        orgInt.config.installationId
+      );
+      const res = await client.issues.create({
+        owner: integration.config.organization,
+        repo: integration.config.repo,
+        title: task.name,
+        body: [
+          task.description,
+          `[Read more about this task and rewards on Dework.xyz](${await this.permalink.get(
+            task
+          )})`,
+        ]
+          .filter((s): s is string => !!s)
+          .join("\n\n"),
+      });
+
+      const githubIssue = await this.githubService.createIssue({
+        externalId: res.data.id,
+        number: res.data.number,
+        taskId: task.id,
+        link: res.data.html_url,
+      });
+
+      this.logger.log(
+        `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
+      );
     }
-
-    const client = this.githubService.createClient(
-      orgInt.config.installationId
-    );
-    const res = await client.issues.create({
-      owner: projInt.config.organization,
-      repo: projInt.config.repo,
-      title: task.name,
-      body: [
-        task.description,
-        `[Read more about this task and rewards on Dework.xyz](${await this.permalink.get(
-          task
-        )})`,
-      ]
-        .filter((s): s is string => !!s)
-        .join("\n\n"),
-    });
-
-    const githubIssue = await this.githubService.createIssue({
-      externalId: res.data.id,
-      number: res.data.number,
-      taskId: task.id,
-      link: res.data.html_url,
-    });
-
-    this.logger.log(
-      `Created GithubIssue for task: ${JSON.stringify(githubIssue)}`
-    );
   }
 
   public async createTasksFromGithubIssues(
