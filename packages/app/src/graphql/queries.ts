@@ -197,14 +197,11 @@ export const popularOrganizations = gql`
   query GetPopularOrganizationsQuery {
     organizations: getPopularOrganizations {
       ...Organization
-      users {
-        ...User
-      }
+      userCount
     }
   }
 
   ${Fragments.organization}
-  ${Fragments.user}
 `;
 
 export const organizationTokens = gql`

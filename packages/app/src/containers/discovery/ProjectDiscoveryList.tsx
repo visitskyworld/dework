@@ -9,15 +9,14 @@ import React, {
 import * as Queries from "@dewo/app/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { GetPopularOrganizationsQuery } from "@dewo/app/graphql/types";
-import { Avatar, Row, Spin, Table, Typography, Input } from "antd";
+import { Spin, Table, Typography, Input, Tag } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
-import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import _ from "lodash";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, UsergroupAddOutlined } from "@ant-design/icons";
 import styles from "./ProjectDiscoveryList.module.less";
 
 type OrganizationRow = GetPopularOrganizationsQuery["organizations"][number];
@@ -31,7 +30,7 @@ function usePopularOrganizations():
   );
   return useMemo(() => {
     if (!data) return undefined;
-    return _.sortBy(data?.organizations, (o) => o.users.length).reverse();
+    return _.sortBy(data?.organizations, (o) => -o.userCount);
   }, [data]);
 }
 
@@ -100,7 +99,7 @@ export const ProjectDiscoveryList: FC = () => {
               },
               {
                 key: "name",
-                render: (_: unknown, organization) => (
+                render: (__: unknown, organization) => (
                   <>
                     <Typography.Title
                       level={5}
@@ -119,13 +118,12 @@ export const ProjectDiscoveryList: FC = () => {
                       </Typography.Paragraph>
                     )}
                     {!screens.sm && (
-                      <Row style={{ marginTop: 8, marginBottom: 8 }}>
-                        <Avatar.Group maxCount={5} size="small">
-                          {organization.users.map((u) => (
-                            <UserAvatar key={u.id} user={u} linkToProfile />
-                          ))}
-                        </Avatar.Group>
-                      </Row>
+                      <Tag
+                        icon={<UsergroupAddOutlined />}
+                        style={{ marginTop: 8, marginBottom: 8 }}
+                      >
+                        {organization.userCount} members
+                      </Tag>
                     )}
                   </>
                 ),
@@ -135,13 +133,11 @@ export const ProjectDiscoveryList: FC = () => {
                     {
                       key: "contributors",
 
-                      width: 120,
-                      render: (_: unknown, organization: OrganizationRow) => (
-                        <Avatar.Group maxCount={5} size="small">
-                          {organization.users.map((u) => (
-                            <UserAvatar key={u.id} user={u} linkToProfile />
-                          ))}
-                        </Avatar.Group>
+                      width: 136,
+                      render: (__: unknown, organization: OrganizationRow) => (
+                        <Tag icon={<UsergroupAddOutlined />}>
+                          {organization.userCount} members
+                        </Tag>
                       ),
                     },
                   ]

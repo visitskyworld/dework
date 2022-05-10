@@ -6686,14 +6686,6 @@ export interface GetFeaturedOrganizationsQueryVariables {
 // GraphQL query operation: GetPopularOrganizationsQuery
 // ====================================================
 
-export interface GetPopularOrganizationsQuery_organizations_users {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
 export interface GetPopularOrganizationsQuery_organizations {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -6702,7 +6694,7 @@ export interface GetPopularOrganizationsQuery_organizations {
   slug: string;
   tagline: string | null;
   permalink: string;
-  users: GetPopularOrganizationsQuery_organizations_users[];
+  userCount: number;
 }
 
 export interface GetPopularOrganizationsQuery {

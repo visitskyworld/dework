@@ -74,7 +74,6 @@ export class OrganizationResolver {
     @Parent() organization: Organization,
     @Info() info: GraphQLResolveInfo
   ): Promise<User[]> {
-    if (!!organization.users) return organization.users;
     const fields = Object.keys(GraphQLFields(info as any));
     return this.organizationService.getUsers(organization.id, {
       joinUserRoles: fields.includes("roles"),
@@ -87,7 +86,6 @@ export class OrganizationResolver {
     @Parent() organization: Organization,
     @Info() info: GraphQLResolveInfo
   ): Promise<User[]> {
-    if (!!organization.users) return organization.users;
     const fields = Object.keys(GraphQLFields(info as any));
     return this.organizationService.getUsers(organization.id, {
       permission: RulePermission.MANAGE_ORGANIZATION,

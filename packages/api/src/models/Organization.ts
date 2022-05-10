@@ -1,5 +1,5 @@
 import { PaymentToken } from "./PaymentToken";
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import {
   Column,
   DeleteDateColumn,
@@ -16,7 +16,6 @@ import { EntityDetail } from "./EntityDetail";
 import { ProjectSection } from "./ProjectSection";
 import { Role } from "./rbac/Role";
 import { TaskView } from "./TaskView";
-import { User } from "./User";
 
 @Entity()
 @ObjectType()
@@ -74,9 +73,6 @@ export class Organization extends Audit {
   @Field(() => [Role])
   public roles!: Promise<Role[]>;
 
-  @Field(() => [User])
-  public users?: User[];
-
   @Column({ default: false })
   @Field()
   public featured!: boolean;
@@ -92,4 +88,7 @@ export class Organization extends Audit {
   @DeleteDateColumn()
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Field(() => Int)
+  public userCount?: number;
 }

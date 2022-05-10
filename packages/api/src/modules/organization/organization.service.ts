@@ -16,7 +16,6 @@ import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { TaskViewService } from "../task/taskView/taskView.service";
-import _ from "lodash";
 
 @Injectable()
 export class OrganizationService {
@@ -221,8 +220,9 @@ export class OrganizationService {
   }
 
   public async findPopular(): Promise<Organization[]> {
-    const organizations = await this.organizationRepo
+    const { raw, entities } = await this.organizationRepo
       .createQueryBuilder("organization")
+      .addSelect("COUNT(DISTINCT user.id)", "userCount")
       .innerJoin("organization.roles", "role", "role.fallback IS TRUE")
       .innerJoin("role.users", "user")
       .where("organization.deletedAt IS NULL")
@@ -232,35 +232,15 @@ export class OrganizationService {
       .groupBy("organization.id")
       .having("COUNT(DISTINCT user.id) >= 7")
       .orderBy("COUNT(DISTINCT user.id)", "DESC")
-      .getMany();
+      .getRawAndEntities();
 
-    if (!organizations.length) return [];
-
-    const organizationById = _.keyBy(organizations, "id");
-
-    const users = await this.userRepo
-      .createQueryBuilder("user")
-      .innerJoinAndSelect("user.roles", "role")
-      .where("role.organizationId IN (:...organizationIds)", {
-        organizationIds: organizations.map((o) => o.id),
-      })
-      .andWhere("role.fallback IS TRUE")
-      .getMany();
-
-    for (const user of users) {
-      const allRoles = await user.roles;
-      const followRoles = allRoles.filter((r) => r.fallback);
-
-      for (const followRole of followRoles) {
-        const organization = organizationById[followRole.organizationId];
-        if (!!organization) {
-          if (!organization.users) organization.users = [];
-          organization.users.push(user);
-        }
-      }
-    }
-
-    return organizations;
+    entities.forEach(
+      (entity) =>
+        (entity.userCount = raw.find(
+          (o) => o.organization_id === entity.id
+        )?.userCount)
+    );
+    return entities;
   }
 
   public findProjectTokenGates(
