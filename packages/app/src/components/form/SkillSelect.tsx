@@ -12,9 +12,11 @@ export const SkillSelect: FC<SelectProps> = (props) => {
       mode="multiple"
       loading={!skills}
       optionFilterProp="label"
-      tagRender={(props) => (
-        <SkillTag {...props} skill={skillById[props.value as string]} />
-      )}
+      tagRender={(props) => {
+        const skill = skillById[props.value as string];
+        if (!skill) return <></>;
+        return <SkillTag {...props} skill={skill} />;
+      }}
       {...props}
     >
       {skills?.map((skill) => (
