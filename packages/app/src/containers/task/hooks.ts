@@ -312,7 +312,8 @@ export function useUpdateTaskFromFormValues(
         ? toTaskReward(values.reward)
         : values.reward;
       if (!!reward || !_.isEmpty(values)) {
-        const dueDate = values.dueDate?.toISOString();
+        const dueDate =
+          values.dueDate === null ? null : values.dueDate?.toISOString();
         await updateTask({ id: task!.id, ...values, reward, dueDate }, task!);
       }
 
