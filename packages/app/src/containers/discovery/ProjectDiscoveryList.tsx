@@ -26,7 +26,8 @@ function usePopularOrganizations():
   | GetPopularOrganizationsQuery["organizations"]
   | undefined {
   const { data } = useQuery<GetPopularOrganizationsQuery>(
-    Queries.popularOrganizations
+    Queries.popularOrganizations,
+    { ssr: false }
   );
   return useMemo(() => {
     if (!data) return undefined;
