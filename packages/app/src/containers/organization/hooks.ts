@@ -41,6 +41,8 @@ import {
   GetOrganizationTokensQueryVariables,
   GetOrganizationUsersQuery,
   GetOrganizationUsersQueryVariables,
+  GetOrganizationUsersWithRolesQuery,
+  GetOrganizationUsersWithRolesQueryVariables,
   GithubRepo,
   Organization,
   OrganizationDetails,
@@ -64,6 +66,7 @@ import {
   UpdateProjectSectionMutationVariables,
   DeleteOrganizationMutation,
   DeleteOrganizationMutationVariables,
+  User,
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
@@ -258,13 +261,34 @@ export function useOrganizationBySlug(organizationSlug: string | undefined): {
 }
 
 export function useOrganizationUsers(organizationId: string | undefined): {
-  users: UserWithRoles[] | undefined;
+  users: User[] | undefined;
+  admins: User[] | undefined;
   refetch(): Promise<unknown>;
 } {
   const { data, refetch } = useQuery<
     GetOrganizationUsersQuery,
     GetOrganizationUsersQueryVariables
   >(Queries.organizationUsers, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return {
+    users: data?.organization?.users,
+    admins: data?.organization?.admins,
+    refetch,
+  };
+}
+
+export function useOrganizationUsersWithRoles(
+  organizationId: string | undefined
+): {
+  users: UserWithRoles[] | undefined;
+  refetch(): Promise<unknown>;
+} {
+  const { data, refetch } = useQuery<
+    GetOrganizationUsersWithRolesQuery,
+    GetOrganizationUsersWithRolesQueryVariables
+  >(Queries.organizationUsersWithRoles, {
     variables: { organizationId: organizationId! },
     skip: !organizationId || isSSR,
   });

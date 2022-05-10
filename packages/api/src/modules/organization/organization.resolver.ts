@@ -33,6 +33,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { GraphQLResolveInfo } from "graphql";
 import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
 import { TaskView } from "@dewo/api/models/TaskView";
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -73,8 +74,23 @@ export class OrganizationResolver {
     @Parent() organization: Organization,
     @Info() info: GraphQLResolveInfo
   ): Promise<User[]> {
+    if (!!organization.users) return organization.users;
     const fields = Object.keys(GraphQLFields(info as any));
     return this.organizationService.getUsers(organization.id, {
+      joinUserRoles: fields.includes("roles"),
+      joinUserThreepids: fields.includes("threepids"),
+    });
+  }
+
+  @ResolveField(() => [User])
+  public async admins(
+    @Parent() organization: Organization,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<User[]> {
+    if (!!organization.users) return organization.users;
+    const fields = Object.keys(GraphQLFields(info as any));
+    return this.organizationService.getUsers(organization.id, {
+      permission: RulePermission.MANAGE_ORGANIZATION,
       joinUserRoles: fields.includes("roles"),
       joinUserThreepids: fields.includes("threepids"),
     });

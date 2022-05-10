@@ -141,6 +141,22 @@ export const organizationUsers = gql`
     organization: getOrganization(id: $organizationId) {
       id
       users {
+        ...User
+      }
+      admins {
+        ...User
+      }
+    }
+  }
+
+  ${Fragments.user}
+`;
+
+export const organizationUsersWithRoles = gql`
+  query GetOrganizationUsersWithRolesQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      id
+      users {
         ...UserWithRoles
       }
     }

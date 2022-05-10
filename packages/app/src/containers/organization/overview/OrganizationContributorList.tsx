@@ -2,7 +2,7 @@ import React, { FC, useMemo } from "react";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
 import _ from "lodash";
-import { useOrganizationUsers } from "../hooks";
+import { useOrganizationUsersWithRoles } from "../hooks";
 import { Table, Space, Row, Typography, Button } from "antd";
 import { Role, UserWithRoles } from "@dewo/app/graphql/types";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
@@ -65,7 +65,7 @@ const OrganizationContributorExports: FC<ExportProps> = ({
 };
 
 export const OrganizationContributorList: FC<Props> = ({ organizationId }) => {
-  const { users } = useOrganizationUsers(organizationId);
+  const { users } = useOrganizationUsersWithRoles(organizationId);
   const navigateToProfile = useNavigateToProfile();
   const canUpdateOrganization = usePermission("update", "Organization");
   const sortedUsers = useMemo(() => {

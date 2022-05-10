@@ -19,7 +19,7 @@ import {
 } from "@dewo/app/containers/rbac/hooks";
 import { useUpdateProject } from "@dewo/app/containers/project/hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useOrganizationUsers } from "../../hooks";
+import { useOrganizationUsersWithRoles } from "../../hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { eatClick } from "@dewo/app/util/eatClick";
 import _ from "lodash";
@@ -45,7 +45,7 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
     [project.id, updateProject]
   );
 
-  const { users } = useOrganizationUsers(project.organizationId);
+  const { users } = useOrganizationUsersWithRoles(project.organizationId);
   const roles = useOrganizationRoles(project.organizationId);
   const projectUsers = useMemo(() => {
     const rolesWithAccess = new Set(

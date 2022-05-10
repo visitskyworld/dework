@@ -16,6 +16,7 @@ import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { TaskViewService } from "../task/taskView/taskView.service";
+import _ from "lodash";
 
 @Injectable()
 export class OrganizationService {
@@ -128,15 +129,27 @@ export class OrganizationService {
   public getUsers(
     organizationId: string,
     {
+      permission,
       joinUserRoles = false,
       joinUserThreepids = false,
-    }: { joinUserRoles?: boolean; joinUserThreepids?: boolean } = {}
+    }: {
+      permission?: RulePermission;
+      joinUserRoles?: boolean;
+      joinUserThreepids?: boolean;
+    } = {}
   ): Promise<User[]> {
     let qb = this.userRepo
       .createQueryBuilder("user")
-      .innerJoin("user.roles", "orgRoles")
-      .where("orgRoles.organizationId = :organizationId", { organizationId })
-      .andWhere("orgRoles.fallback IS TRUE");
+      .innerJoin("user.roles", "orgRole")
+      .where("orgRole.organizationId = :organizationId", { organizationId });
+
+    if (!!permission) {
+      qb = qb
+        .innerJoin("orgRole.rules", "rule")
+        .andWhere("rule.permission = :permission", { permission });
+    } else {
+      qb = qb.andWhere("orgRole.fallback IS TRUE");
+    }
 
     if (joinUserRoles) {
       qb = qb.innerJoinAndSelect("user.roles", "role");
@@ -207,8 +220,8 @@ export class OrganizationService {
       .getMany();
   }
 
-  public findPopular(): Promise<Organization[]> {
-    return this.organizationRepo
+  public async findPopular(): Promise<Organization[]> {
+    const organizations = await this.organizationRepo
       .createQueryBuilder("organization")
       .innerJoin("organization.roles", "role", "role.fallback IS TRUE")
       .innerJoin("role.users", "user")
@@ -220,6 +233,34 @@ export class OrganizationService {
       .having("COUNT(DISTINCT user.id) >= 7")
       .orderBy("COUNT(DISTINCT user.id)", "DESC")
       .getMany();
+
+    if (!organizations.length) return [];
+
+    const organizationById = _.keyBy(organizations, "id");
+
+    const users = await this.userRepo
+      .createQueryBuilder("user")
+      .innerJoinAndSelect("user.roles", "role")
+      .where("role.organizationId IN (:...organizationIds)", {
+        organizationIds: organizations.map((o) => o.id),
+      })
+      .andWhere("role.fallback IS TRUE")
+      .getMany();
+
+    for (const user of users) {
+      const allRoles = await user.roles;
+      const followRoles = allRoles.filter((r) => r.fallback);
+
+      for (const followRole of followRoles) {
+        const organization = organizationById[followRole.organizationId];
+        if (!!organization) {
+          if (!organization.users) organization.users = [];
+          organization.users.push(user);
+        }
+      }
+    }
+
+    return organizations;
   }
 
   public findProjectTokenGates(

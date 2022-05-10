@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import {
   Avatar,
@@ -28,8 +28,6 @@ import _ from "lodash";
 import { OrganizationContributorList } from "./OrganizationContributorList";
 import { EntityDetailAvatar } from "../../../components/EntityDetailAvatar";
 import { Tab } from "@dewo/app/components/Tab";
-import { useOrganizationRoles } from "../../rbac/hooks";
-import { RulePermission } from "@dewo/app/graphql/types";
 import { MarkdownPreview } from "@dewo/app/components/markdownEditor/MarkdownPreview";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
 import { OrganizationTaskDiscoveryList } from "./taskDiscovery/OrganizationTaskDiscoveryList";
@@ -48,6 +46,22 @@ interface Props {
   tabBarStyle?: CSSProperties;
   tabPaneStyle?: CSSProperties;
 }
+
+const CombinedBoard: FC<{ organizationId: string }> = ({ organizationId }) => {
+  const tasks = useOrganizationTasks(
+    organizationId,
+    undefined,
+    "cache-and-network"
+  )?.tasks;
+
+  return (
+    <OrganizationTaskViewProvider organizationId={organizationId}>
+      <TaskViewTabs organizationId={organizationId}>
+        <TaskViewLayout tasks={tasks} />
+      </TaskViewTabs>
+    </OrganizationTaskViewProvider>
+  );
+};
 
 export const OrganizationTabs: FC<Props> = ({
   tabBarStyle,
@@ -70,32 +84,7 @@ export const OrganizationTabs: FC<Props> = ({
   );
 
   const screens = Grid.useBreakpoint();
-  const { users } = useOrganizationUsers(organizationId);
-  const roles = useOrganizationRoles(organizationId);
-
-  const adminRoleIds = useMemo(
-    () =>
-      roles
-        ?.filter((role) =>
-          role.rules.some(
-            (rule) =>
-              rule.permission === RulePermission.MANAGE_ORGANIZATION &&
-              !rule.inverted
-          )
-        )
-        .map((role) => role.id),
-    [roles]
-  );
-  const adminUsers = useMemo(
-    () =>
-      users?.filter((u) => u.roles.some((r) => adminRoleIds?.includes(r.id))),
-    [users, adminRoleIds]
-  );
-  const tasks = useOrganizationTasks(
-    organizationId,
-    undefined,
-    "cache-and-network"
-  )?.tasks;
+  const { users, admins } = useOrganizationUsers(organizationId);
 
   return (
     <Tabs
@@ -174,11 +163,11 @@ export const OrganizationTabs: FC<Props> = ({
             <Typography.Title level={5}>DAO admins</Typography.Title>
             <Row style={{ marginBottom: 16 }}>
               <Avatar.Group maxCount={3} size="large">
-                {!adminUsers &&
+                {!admins &&
                   _.range(3).map((i) => (
                     <Skeleton.Avatar size="large" key={i} />
                   ))}
-                {adminUsers?.map((user) => (
+                {admins?.map((user) => (
                   <UserAvatar key={user.id} user={user} linkToProfile />
                 ))}
               </Avatar.Group>
@@ -218,11 +207,7 @@ export const OrganizationTabs: FC<Props> = ({
         className="w-full"
         style={{ maxWidth: 330 * 4 + 16 * 3 + 24 * 2 }}
       >
-        <OrganizationTaskViewProvider organizationId={organizationId}>
-          <TaskViewTabs organizationId={organizationId}>
-            <TaskViewLayout tasks={tasks} />
-          </TaskViewTabs>
-        </OrganizationTaskViewProvider>
+        <CombinedBoard organizationId={organizationId} />
       </Tabs.TabPane>
       {canUpdateOrganization && (
         <Tabs.TabPane

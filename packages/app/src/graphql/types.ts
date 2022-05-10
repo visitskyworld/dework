@@ -6522,7 +6522,47 @@ export interface GetOrganizationBySlugQueryVariables {
 // GraphQL query operation: GetOrganizationUsersQuery
 // ====================================================
 
-export interface GetOrganizationUsersQuery_organization_users_roles {
+export interface GetOrganizationUsersQuery_organization_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetOrganizationUsersQuery_organization_admins {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetOrganizationUsersQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  users: GetOrganizationUsersQuery_organization_users[];
+  admins: GetOrganizationUsersQuery_organization_admins[];
+}
+
+export interface GetOrganizationUsersQuery {
+  organization: GetOrganizationUsersQuery_organization;
+}
+
+export interface GetOrganizationUsersQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationUsersWithRolesQuery
+// ====================================================
+
+export interface GetOrganizationUsersWithRolesQuery_organization_users_roles {
   __typename: "Role";
   id: Scalar.UUID;
   name: string;
@@ -6533,26 +6573,26 @@ export interface GetOrganizationUsersQuery_organization_users_roles {
   organizationId: string;
 }
 
-export interface GetOrganizationUsersQuery_organization_users {
+export interface GetOrganizationUsersWithRolesQuery_organization_users {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
-  roles: GetOrganizationUsersQuery_organization_users_roles[];
+  roles: GetOrganizationUsersWithRolesQuery_organization_users_roles[];
 }
 
-export interface GetOrganizationUsersQuery_organization {
+export interface GetOrganizationUsersWithRolesQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
-  users: GetOrganizationUsersQuery_organization_users[];
+  users: GetOrganizationUsersWithRolesQuery_organization_users[];
 }
 
-export interface GetOrganizationUsersQuery {
-  organization: GetOrganizationUsersQuery_organization;
+export interface GetOrganizationUsersWithRolesQuery {
+  organization: GetOrganizationUsersWithRolesQuery_organization;
 }
 
-export interface GetOrganizationUsersQueryVariables {
+export interface GetOrganizationUsersWithRolesQueryVariables {
   organizationId: Scalar.UUID;
 }
 
