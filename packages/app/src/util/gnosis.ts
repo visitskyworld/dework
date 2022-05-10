@@ -3,6 +3,7 @@ import { useRequestSigner, useSwitchChain } from "./ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { PaymentNetwork } from "../graphql/types";
 import { Signer } from "ethers";
+import SafeServiceClientType from "@gnosis.pm/safe-service-client";
 
 export function useRequestSafe() {
   const requestSigner = useRequestSigner();
@@ -106,7 +107,9 @@ export function useProposeTransaction(): (
       const { default: SafeServiceClient } = await import(
         "@gnosis.pm/safe-service-client"
       );
-      const safeService = new SafeServiceClient(safeServiceUrl);
+      const safeService: SafeServiceClientType = new SafeServiceClient(
+        safeServiceUrl
+      );
 
       await switchChain(network);
       const signer = await requestSigner();
