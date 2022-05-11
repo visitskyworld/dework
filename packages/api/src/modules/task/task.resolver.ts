@@ -150,7 +150,7 @@ export class TaskResolver {
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskInput },
-        service: TaskService,
+        _service: TaskService,
         projectService: ProjectService
       ) {
         const project = await projectService.findById(params.input.projectId);
