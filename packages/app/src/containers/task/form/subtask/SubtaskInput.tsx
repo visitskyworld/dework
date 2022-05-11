@@ -8,7 +8,7 @@ import {
   TaskStatus,
 } from "@dewo/app/graphql/types";
 import { useCreateTask, useUpdateTask } from "../../hooks";
-import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import _ from "lodash";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
@@ -36,8 +36,11 @@ export const SubtaskInput: FC<Props> = ({
 }) => {
   const { user } = useAuthContext();
   const createTask = useCreateTask();
-  const hasPermission = usePermissionFn();
-  const canCreateSubtask = !task || hasPermission("update", task, "subtasks");
+  const canCreateSubtask = usePermission("create", {
+    status: TaskStatus.TODO,
+    __typename: "Task",
+    __parentTask__: task,
+  });
   const updateTask = useUpdateTask();
 
   const adding = useToggle();
@@ -157,7 +160,7 @@ export const SubtaskInput: FC<Props> = ({
   );
 
   return (
-    <div>
+    <>
       {!!rows.length && <Divider style={{ marginBottom: 0 }}>Subtasks</Divider>}
       <DragDropContext onDragEnd={handleDragEnd}>
         <SubtaskTable
@@ -175,6 +178,6 @@ export const SubtaskInput: FC<Props> = ({
       {canCreateSubtask && (
         <NewSubtaskInput onSubmit={handleAddTask} disabled={adding.isOn} />
       )}
-    </div>
+    </>
   );
 };

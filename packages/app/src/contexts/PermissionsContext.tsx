@@ -41,7 +41,7 @@ type AbilitySubject =
   | Organization
   | AtLeast<Project, "__typename" | "organizationId">
   | AtLeast<Rule, "__typename" | "permission">
-  | AtLeast<Task, "__typename" | "status">
+  | (AtLeast<Task, "__typename" | "status"> & { __parentTask__?: Task })
   | AtLeast<TaskTag, "__typename" | "projectId">
   | AtLeast<TaskView, "__typename" | "projectId" | "organizationId" | "userId">
   | AtLeast<TaskReaction, "__typename" | "userId">
@@ -70,7 +70,7 @@ export const PermissionsProvider: FC = ({ children }) => {
   const organizationId = useCurrentOrganizationId();
   const { data } = useQuery<PermissionsQuery, PermissionsQueryVariables>(
     Queries.permissions,
-    { variables: { organizationId: organizationId } }
+    { variables: { organizationId } }
   );
   const permissions = data?.permissions;
   const ability = useMemo(

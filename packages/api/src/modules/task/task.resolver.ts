@@ -137,15 +137,23 @@ export class TaskResolver {
     RoleGuard({
       action: "create",
       subject: Task,
-      inject: [ProjectService],
-      getSubject: (params: { input: CreateTaskInput }) =>
-        Object.assign(new Task(), params.input),
+      inject: [TaskService, ProjectService],
+      async getSubject(
+        params: { input: CreateTaskInput },
+        service: TaskService
+      ) {
+        const parentTask = !!params.input.parentTaskId
+          ? await service.findById(params.input.parentTaskId)
+          : undefined;
+        return Object.assign(new Task(), params.input, { parentTask });
+      },
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskInput },
-        service
+        service: TaskService,
+        projectService: ProjectService
       ) {
-        const project = await service.findById(params.input.projectId);
+        const project = await projectService.findById(params.input.projectId);
         return project?.organizationId;
       },
     })
@@ -267,8 +275,14 @@ export class TaskResolver {
         }
         return fields;
       },
-      getSubject: (params: { input: UpdateTaskInput }, service: TaskService) =>
-        service.findById(params.input.id),
+      async getSubject(
+        params: { input: UpdateTaskInput },
+        service: TaskService
+      ) {
+        const task = await service.findById(params.input.id);
+        await task?.parentTask;
+        return task;
+      },
       async getOrganizationId(subject: Task) {
         const project = await subject.project;
         return project.organizationId;

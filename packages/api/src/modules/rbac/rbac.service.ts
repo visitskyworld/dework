@@ -337,6 +337,10 @@ export class RbacService {
       builder.can("submit", Task, {
         assignees: { $elemMatch: { id: userId } },
       });
+      builder.can(CRUD, Task, {
+        // @ts-expect-error
+        "__parentTask__.assignees": { $elemMatch: { id: userId } },
+      });
       // note that Task.submit also needs to be true
       builder.can(CRUD, TaskSubmission, { userId });
     }

@@ -83,7 +83,7 @@ export class GithubWebhookController {
   @PreventConcurrency()
   async githubWebhook(@Req() request: Request) {
     const event = request.body as Github.WebhookEvent;
-    this.log("Incoming Github webhook", event);
+    this.logger.debug(`Incoming Github webhook: ${JSON.stringify(event)}`);
 
     await this.githubSyncIncomingService.handleWebhook(event);
 
@@ -93,7 +93,7 @@ export class GithubWebhookController {
       !event.installation ||
       !event.repository
     ) {
-      this.log("No Github installation in event", {});
+      this.logger.debug("No Github installation in event");
       return;
     }
 
@@ -102,11 +102,17 @@ export class GithubWebhookController {
       event.repository.name
     );
     if (!integration) {
-      this.log("No integration found for Github installation", event);
+      this.logger.debug(
+        `No integration found for Github installation: ${JSON.stringify(event)}`
+      );
       return;
     }
 
-    this.log("Found project integration for Github installation", integration);
+    this.logger.debug(
+      `Found project integration for Github installation: ${JSON.stringify(
+        integration
+      )}`
+    );
     if ("issue" in event) {
       const project = await integration.project;
       await this.githubIntegrationService.updateIssue(event.issue, project);
@@ -144,9 +150,8 @@ export class GithubWebhookController {
 
       if (event.action === "closed") {
         if (!pr) {
-          this.log(
-            "Closed PR but no GithubPullRequest registered in Dework",
-            {}
+          this.logger.debug(
+            "Closed PR but no GithubPullRequest registered in Dework"
           );
           return;
         }
@@ -154,48 +159,65 @@ export class GithubWebhookController {
         const status = merged
           ? GithubPullRequestStatus.MERGED
           : GithubPullRequestStatus.CLOSED;
-        this.log("Closed PR", { merged, status, prId: pr.id });
+        this.logger.debug(
+          `Closed PR: ${JSON.stringify({ merged, status, prId: pr.id })}`
+        );
         await this.githubService.updatePullRequest({
           ...prData,
           id: pr.id,
           status,
         });
 
-        this.log("Updated PR's status", { title: pr.title, status });
+        this.logger.debug(
+          `Updated PR's status: ${JSON.stringify({ title: pr.title, status })}`
+        );
 
         if (merged) {
           await this.taskService.update({
             id: task.id,
             status: TaskStatus.DONE,
           });
-          this.log("Updated task status", {
-            taskNumber: task.number,
-            status: TaskStatus.DONE,
-          });
+          this.logger.debug(
+            `Updated task status: ${JSON.stringify({
+              taskNumber: task.number,
+              status: TaskStatus.DONE,
+            })}`
+          );
         }
       } else if (event.action === "submitted") {
         const wasSingleCommentAdded = event.review.body === null;
         if (!wasSingleCommentAdded) {
-          this.discordIntegrationService.postReviewSubmittal(
-            task.id,
-            event.review.html_url,
-            event.review?.state === "approved"
+          await this.discordIntegrationService
+            .postReviewSubmittal(
+              task.id,
+              event.review.html_url,
+              event.review?.state === "approved"
+            )
+            .catch(() => {});
+          this.logger.debug(
+            `A review was submitted in Github: ${JSON.stringify({
+              pullRequestTitle: prData.title,
+              taskId: task.id,
+            })}`
           );
-          this.log("A review was submitted in Github:", {
-            pullRequestTitle: prData.title,
-            taskId: task.id,
-          });
         }
       } else {
         if (pr) {
           await this.githubService.updatePullRequest({ ...prData, id: pr.id });
-          this.log("Updated PR", { title: pr.title, taskId: task.id });
+          this.logger.debug(
+            `Updated PR: ${JSON.stringify({
+              title: pr.title,
+              taskId: task.id,
+            })}`
+          );
         } else {
           await this.githubService.createPullRequest(prData);
-          this.log("Created a new PR", {
-            title: prData.title,
-            taskId: task.id,
-          });
+          this.logger.debug(
+            `Created a new PR: ${JSON.stringify({
+              title: prData.title,
+              taskId: task.id,
+            })}`
+          );
         }
 
         if (!draft) {
@@ -204,19 +226,23 @@ export class GithubWebhookController {
               id: task.id,
               status: TaskStatus.IN_REVIEW,
             });
-            this.log("Updated task status", {
-              taskNumber: task.number,
-              status: TaskStatus.IN_REVIEW,
-            });
+            this.logger.debug(
+              `Updated task status: ${JSON.stringify({
+                taskNumber: task.number,
+                status: TaskStatus.IN_REVIEW,
+              })}`
+            );
           } else if (event.action === "review_requested") {
             this.discordIntegrationService.postReviewRequest(
               task,
               event.pull_request.html_url
             );
-            this.log("Another review was requested from Github:", {
-              pullRequestTitle: prData.title,
-              taskId: task.id,
-            });
+            this.logger.debug(
+              `Another review was requested from Github: ${JSON.stringify({
+                pullRequestTitle: prData.title,
+                taskId: task.id,
+              })}`
+            );
           }
         }
       }
@@ -237,9 +263,5 @@ export class GithubWebhookController {
       }
     } catch {}
     return this.configService.get("APP_URL") as string;
-  }
-
-  private log(description: string, body: any): void {
-    this.logger.debug(`${description}: ${JSON.stringify(body)}`);
   }
 }

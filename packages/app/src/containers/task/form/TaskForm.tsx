@@ -258,11 +258,9 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           </Form.Item>
 
-          {(canChange("subtasks") || !!task?.subtasks.length) && (
-            <Form.Item name="subtasks" style={{ marginBottom: 16 }}>
-              <SubtaskInput projectId={projectId} task={task} />
-            </Form.Item>
-          )}
+          <Form.Item name="subtasks" style={{ marginBottom: 0 }}>
+            <SubtaskInput projectId={projectId} task={task} />
+          </Form.Item>
 
           {mode === "create" && canSubmit && (
             <>

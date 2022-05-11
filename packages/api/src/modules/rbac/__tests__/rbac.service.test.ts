@@ -1,5 +1,6 @@
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { Organization } from "@dewo/api/models/Organization";
+import { Task } from "@dewo/api/models/Task";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
@@ -94,6 +95,27 @@ describe("RbacService", () => {
       expect(accessSpecificProject.can("read", project1)).toBe(false);
       expect(accessSpecificProject.can("read", project2)).toBe(true);
       expect(accessSpecificProject.can("update", project2)).toBe(true);
+    });
+
+    describe("assignee", () => {
+      it("should allow assignee creating subtasks", async () => {
+        const project = await fixtures.createProject({
+          organizationId: organization.id,
+        });
+
+        const user = await fixtures.createUser();
+        const task = await fixtures.createTask({
+          projectId: project.id,
+          assignees: [user],
+        });
+        const access = await service.abilityForUser(user.id, organization.id);
+        expect(
+          access.can(
+            "create",
+            Object.assign(new Task(), { __parentTask__: task })
+          )
+        ).toBe(true);
+      });
     });
 
     it("should use roles attached to specific user correctly", async () => {
