@@ -40,6 +40,8 @@ import {
   CreateOrganizationIntegrationInput,
   CreateOrganizationIntegrationMutation,
   CreateOrganizationIntegrationMutationVariables,
+  UpdateOrganizationRolesDiscordMutation,
+  UpdateOrganizationRolesDiscordMutationVariables,
 } from "@dewo/app/graphql/types";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Mutations from "@dewo/app/graphql/mutations";
@@ -124,6 +126,25 @@ export function useConnectToGithubUrlFn(): (
       return `${Constants.GITHUB_APP_URL}?state=${encodeURIComponent(state)}`;
     },
     [user?.id]
+  );
+}
+
+export function useUpdateOrganizationDiscordRoles(): (
+  organizationId: string
+) => Promise<void> {
+  const [mutation] = useMutation<
+    UpdateOrganizationRolesDiscordMutation,
+    UpdateOrganizationRolesDiscordMutationVariables
+  >(Mutations.updateOrganizationDiscordRoles);
+
+  return useCallback(
+    async (organizationId) => {
+      const res = await mutation({
+        variables: { organizationId },
+      });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
   );
 }
 

@@ -8,7 +8,7 @@ import {
   RulePermission,
 } from "@dewo/app/graphql/types";
 import { useRunningCallback } from "@dewo/app/util/hooks";
-import { Button, Form, message, Row, Select, Tooltip, Typography } from "antd";
+import { Button, Form, message, Row, Tooltip, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
@@ -20,8 +20,8 @@ import { useUserRoles } from "../user/hooks";
 import { useCreateRole, useCreateRule, useDeleteRule } from "./hooks";
 import { ConnectOrganizationToDiscordButton } from "../integrations/discord/ConnectOrganizationToDiscordButton";
 import { getRule, hasRule } from "./util";
-import { RoleTag } from "@dewo/app/components/RoleTag";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { RoleSelect } from "@dewo/app/components/form/RoleSelect";
 
 interface FormValues {
   roleIds: string[];
@@ -70,7 +70,6 @@ export const RBACPermissionForm: FC<Props> = ({
     projectId,
   });
 
-  const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
   const hasDiscordIntegration = !!useOrganizationIntegrations(
     organizationId,
     OrganizationIntegrationType.DISCORD
@@ -212,25 +211,12 @@ export const RBACPermissionForm: FC<Props> = ({
           </Form.Item>
         ) : (
           <Form.Item label="Roles" name="roleIds">
-            <Select
-              mode="multiple"
+            <RoleSelect
+              roles={organizationRoles}
+              organizationId={organizationId}
               placeholder="Select Discord Roles..."
-              showSearch
               disabled={!hasPermission}
-              optionFilterProp="label"
-              loading={!organizationRoles}
-              tagRender={(props) =>
-                !!roleById[props.value] && (
-                  <RoleTag {...props} role={roleById[props.value]} />
-                )
-              }
-            >
-              {organizationRoles?.map((role) => (
-                <Select.Option key={role.id} value={role.id} label={role.name}>
-                  <RoleTag role={role} />
-                </Select.Option>
-              ))}
-            </Select>
+            />
           </Form.Item>
         ))}
       {(hasPermission || !!values.userIds.length) && (

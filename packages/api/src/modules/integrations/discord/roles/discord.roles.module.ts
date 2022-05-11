@@ -2,8 +2,10 @@ import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegratio
 import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { IntegrationModule } from "../../integration.module";
 import { DiscordModule } from "../discord.module";
 import { DiscordRolesPoller } from "./discord.roles.poller";
+import { DiscordRolesResolver } from "./discord.roles.resolver";
 import { DiscordRolesService } from "./discord.roles.service";
 
 @Module({
@@ -11,8 +13,9 @@ import { DiscordRolesService } from "./discord.roles.service";
     TypeOrmModule.forFeature([OrganizationIntegration]),
     RbacModule,
     DiscordModule,
+    IntegrationModule,
   ],
-  providers: [DiscordRolesService],
+  providers: [DiscordRolesService, DiscordRolesResolver],
   controllers: [DiscordRolesPoller],
   exports: [DiscordRolesService],
 })

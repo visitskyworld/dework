@@ -4887,6 +4887,50 @@ export interface AddUserToDiscordGuildMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateOrganizationRolesDiscordMutation
+// ====================================================
+
+export interface UpdateOrganizationRolesDiscordMutation_organization_roles_rules {
+  __typename: "Rule";
+  id: Scalar.UUID;
+  permission: RulePermission;
+  inverted: boolean;
+  taskId: string | null;
+  projectId: string | null;
+}
+
+export interface UpdateOrganizationRolesDiscordMutation_organization_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+  rules: UpdateOrganizationRolesDiscordMutation_organization_roles_rules[];
+}
+
+export interface UpdateOrganizationRolesDiscordMutation_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  roles: UpdateOrganizationRolesDiscordMutation_organization_roles[];
+}
+
+export interface UpdateOrganizationRolesDiscordMutation {
+  organization: UpdateOrganizationRolesDiscordMutation_organization;
+}
+
+export interface UpdateOrganizationRolesDiscordMutationVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: AddRoleMutation
 // ====================================================
 

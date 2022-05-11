@@ -1,4 +1,4 @@
-import { RoleTag } from "@dewo/app/components/RoleTag";
+import { RoleSelect } from "@dewo/app/components/form/RoleSelect";
 import { ConnectOrganizationToDiscordButton } from "@dewo/app/containers/integrations/discord/ConnectOrganizationToDiscordButton";
 import { useOrganizationIntegrations } from "@dewo/app/containers/organization/hooks";
 import { useProject } from "@dewo/app/containers/project/hooks";
@@ -8,8 +8,7 @@ import {
   OrganizationIntegrationType,
   RulePermission,
 } from "@dewo/app/graphql/types";
-import { Form, Select } from "antd";
-import _ from "lodash";
+import { Form } from "antd";
 import React, { FC, useMemo } from "react";
 
 interface Props {
@@ -32,7 +31,6 @@ export const TaskRoleSelectField: FC<Props> = ({
 
   const { project } = useProject(projectId);
   const roles = useOrganizationRoles(project?.organizationId);
-  const roleById = useMemo(() => _.keyBy(roles, (r) => r.id), [roles]);
   const organizationRoles = useMemo(
     () => roles?.filter((role) => !role.userId && !role.fallback),
     [roles]
@@ -60,29 +58,12 @@ export const TaskRoleSelectField: FC<Props> = ({
       name="roleIds"
       rules={[{ type: "array", min: 1, message: "Select at least one role" }]}
     >
-      <Select
-        mode="multiple"
+      <RoleSelect
+        roles={organizationRoles}
+        organizationId={project.organizationId}
         placeholder="Select roles..."
-        optionFilterProp="label"
-        loading={!organizationRoles}
         disabled={disabled || !canManageRoles}
-        tagRender={(props) =>
-          !!roleById[props.value] && (
-            <RoleTag {...props} role={roleById[props.value]} />
-          )
-        }
-      >
-        {organizationRoles?.map((role) => (
-          <Select.Option
-            key={role.id}
-            value={role.id}
-            label={role.name}
-            style={{ fontWeight: "unset" }}
-          >
-            <RoleTag role={role} />
-          </Select.Option>
-        ))}
-      </Select>
+      />
     </Form.Item>
   );
 };
