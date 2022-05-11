@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { useUploadFile } from "@dewo/app/containers/fileUploads/hooks";
-import { MarkdownEditorButtons } from "../markdownEditor/MarkdownEditorButtons";
+import { MarkdownEditorButtons } from "./MarkdownEditorButtons";
 import { useRunning, useToggle } from "@dewo/app/util/hooks";
 import { message, Row, Typography } from "antd";
 import router from "next/router";
-import { FigmaEmbed, isFigmaUrl } from "../markdownEditor/FigmaEmbed";
+import { FigmaEmbed, isFigmaUrl } from "./FigmaEmbed";
 import DefaultTooltip from "rich-markdown-editor/dist/components/Tooltip";
 import { keydownHandler, useDropHandler } from "./utils";
 import { isLocalURL } from "next/dist/shared/lib/router/router";
@@ -28,7 +28,6 @@ interface RichMarkdownEditorProps {
   placeholder?: string;
   buttons?: FC<{
     disabled: boolean;
-    hidden: boolean;
     onSave: (e: React.SyntheticEvent) => void;
     onCancel: (e: React.SyntheticEvent) => void;
   }>;
@@ -107,7 +106,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
 
   const dropHandler = useDropHandler();
 
-  const Editor = (
+  const editor = (
     <RichMarkdownComponent
       key={resetKey}
       tooltip={DefaultTooltip}
@@ -144,42 +143,35 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
   );
 
   if (!editable) {
-    return Editor;
+    return editor;
   }
 
   const showSave = isEditing.isOn && savedValue !== value;
-
   return (
     <div
       onClick={isEditing.toggleOn}
       className={className}
       style={{ paddingLeft: 4 }}
     >
-      {Editor}
-      <Row
-        style={{
-          marginTop: 8,
-        }}
-        align="middle"
-      >
+      {editor}
+      <Row style={{ marginTop: 8 }} align="middle">
         <Typography.Text
           type="secondary"
           italic
-          className="text-secondary"
           style={{
             flex: 1,
+            opacity: 0.4,
             textAlign: "left",
-            visibility: showSave ? "visible" : "hidden",
+            visibility: isEditing.isOn ? "visible" : "hidden",
           }}
         >
           Markdown & any file drag-and-drop supported
         </Typography.Text>
-        {Buttons && (
+        {showSave && !!Buttons && (
           <Buttons
             onSave={handleSave}
             onCancel={handleCancel}
             disabled={isUploading}
-            hidden={!showSave}
           />
         )}
       </Row>

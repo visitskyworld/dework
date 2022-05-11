@@ -27,7 +27,6 @@
     "@stacks/connect-react": "^13.0.0",
     "@stacks/network": "^3.0.0",
     "@uiw/react-markdown-preview": "^3.4.5",
-    "@uiw/react-md-editor": "3.9.0",
     "@walletconnect/client": "^1.7.7",
     "@walletconnect/qrcode-modal": "^1.7.7",
     "amplitude-js": "^8.18.1",
