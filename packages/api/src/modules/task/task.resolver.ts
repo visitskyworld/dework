@@ -527,12 +527,15 @@ export class UserTasksResolver {
   public async tasks(
     @Context("user") requestingUser: User | undefined,
     @Parent() user: User,
-    @Args("filter", { nullable: true }) filter: TaskFilterInput
+    @Args("filter", { nullable: true }) filter: TaskFilterInput,
+    @Info() info: GraphQLResolveInfo
   ): Promise<Task[]> {
+    const fields = GraphQLFields(info as any);
     return this.taskService.findWithRelations({
       ...filter,
       userId: user.id,
       requestingUserId: requestingUser?.id,
+      joinProjectOrganization: !!fields.project?.organization,
     });
   }
 }
