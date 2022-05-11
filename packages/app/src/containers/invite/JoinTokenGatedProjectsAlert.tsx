@@ -49,6 +49,8 @@ export const JoinTokenGatedProjectsAlert: FC<Props> = ({ organizationId }) => {
           const project = await joinProjectWithToken(projectId);
           message.success(`Joined ${project.name} using ${token.symbol}`);
         }
+      } catch (error) {
+        message.error("No projects to join using tokens in your wallet");
       } finally {
         await refetch();
         modalVisible.toggleOff();
