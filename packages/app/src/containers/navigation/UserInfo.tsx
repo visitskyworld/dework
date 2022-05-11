@@ -11,6 +11,7 @@ import {
 } from "@dewo/app/util/hooks";
 import { UserSettings } from "../user/UserSettings";
 import { ThreepidSource } from "@dewo/app/graphql/types";
+import { shortenedAddress } from "../payment/hooks";
 
 export const UserWalletAddress: FC<{ onShowSettings: () => void }> = ({
   onShowSettings,
@@ -30,10 +31,7 @@ export const UserWalletAddress: FC<{ onShowSettings: () => void }> = ({
       <Typography.Text
         onClick={() => copy(ethWalletAddress.threepid)}
         type="secondary"
-        children={`${ethWalletAddress.threepid.slice(
-          0,
-          6
-        )}…${ethWalletAddress.threepid.slice(-4)}`}
+        children={shortenedAddress(ethWalletAddress.threepid)}
       />
     );
   }

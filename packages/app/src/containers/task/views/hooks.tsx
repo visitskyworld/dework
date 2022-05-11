@@ -40,7 +40,7 @@ import {
 } from "./util";
 import _ from "lodash";
 import { TaskSectionData } from "../board/util";
-import { GnosisPayAllButton } from "../board/GnosisPayAllButton";
+import { BatchPayButton } from "../../payment/gnosis/BatchPayButton";
 import { useProject, useProjectDetails } from "../../project/hooks";
 import { useOrganizationRoles } from "../../rbac/hooks";
 import { useRouter } from "next/router";
@@ -268,7 +268,7 @@ export function useTaskViewGroups(
                   title: "Needs payment",
                   tasks: unpaid,
                   button: !!projectId && (
-                    <GnosisPayAllButton
+                    <BatchPayButton
                       taskIds={unpaid.map((t) => t.id)}
                       projectId={projectId}
                     />
