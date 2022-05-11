@@ -1,12 +1,4 @@
-import {
-  Button,
-  Dropdown,
-  Layout,
-  Menu,
-  PageHeader,
-  Spin,
-  Typography,
-} from "antd";
+import { Button, Dropdown, Layout, Menu, Spin, Typography } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { useProjectTasks } from "../hooks";
 import * as Icons from "@ant-design/icons";
@@ -18,6 +10,7 @@ import _ from "lodash";
 import { SuggestionsList } from "./SuggestionsList";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { LoginButton } from "../../auth/buttons/LoginButton";
+import { Header } from "../../navigation/header/Header";
 
 const UPVOTE_REACTION = ":arrow_up_small:";
 
@@ -93,7 +86,8 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
   }
   return (
     <div className="w-full max-w-md mx-auto">
-      <PageHeader
+      <Header
+        breadcrumb={<></>}
         title={
           <Dropdown
             trigger={["click"]}
@@ -129,7 +123,7 @@ export const CommunitySuggestions: FC<Props> = ({ projectId }) => {
             </LoginButton>
           ))
         }
-      ></PageHeader>
+      />
       <Layout.Content>
         <SuggestionsList taskRows={taskRows} />
       </Layout.Content>

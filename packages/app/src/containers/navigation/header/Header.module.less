@@ -1,21 +1,22 @@
 @import "~@dewo/app/styles/theme.less";
 
 .header {
-  background: @body-background-secondary;
+  // :global {
+  //   .ant-page-header-heading {
+  //     justify-content: flex-start;
+  //   }
+  //   .ant-page-header-heading-left {
+  //     flex-wrap: wrap;
+  //     flex: unset;
+  //   }
+  // }
+}
 
-  padding-bottom: 0px;
-  @media (min-width: @screen-sm) {
-    padding-left: 32px;
-    padding-right: 32px;
-  }
-
-  :global {
-    .ant-page-header-heading {
-      justify-content: flex-start;
-    }
-    .ant-page-header-heading-left {
-      flex-wrap: wrap;
-      flex: unset;
-    }
+.mobileMenuButton {
+  display: none;
+  @media (max-width: @screen-sm) {
+    display: flex;
+    align-items: center;
+    padding-right: 16px;
   }
 }

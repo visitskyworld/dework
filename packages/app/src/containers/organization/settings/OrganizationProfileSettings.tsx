@@ -150,7 +150,7 @@ export const OrganizationProfileSettings: FC<
       <Divider style={{ marginTop: 0 }} />
 
       <Row gutter={[20, 16]} style={{ flexDirection: "row-reverse" }}>
-        <Col xs={48} md={6} style={{ width: "100%" }}>
+        <Col xs={48} lg={6} style={{ width: "100%" }}>
           <FormSection
             label="Profile Image"
             style={{ display: "inline-block", padding: 0 }}
@@ -179,7 +179,7 @@ export const OrganizationProfileSettings: FC<
           </FormSection>
         </Col>
 
-        <Col xs={48} md={18} flex={1}>
+        <Col xs={48} lg={18} flex={1}>
           <Form.Item
             label="Name"
             name="name"

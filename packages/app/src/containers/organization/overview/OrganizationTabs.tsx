@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback } from "react";
+import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import {
   Avatar,
@@ -34,17 +34,17 @@ import styles from "./OrganizationTabs.module.less";
 import { TopContributorList } from "./TopContributorList";
 import { TopReviewerList } from "./TopReviewerList";
 import { OrganizationPublicInviteButton } from "../../invite/OrganizationPublicInviteButton";
+import { OrganizationHeaderSummary } from "./OrganizationHeaderSummary";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { OrganizationTaskViewProvider } from "../../task/views/TaskViewContext";
 import { TaskViewTabs } from "../../task/views/TaskViewTabs";
 import { TaskViewLayout } from "../../task/views/TaskViewLayout";
+import { Header } from "../../navigation/header/Header";
 
 interface Props {
   organizationId: string;
   currentTab: string;
   settingsTab?: string;
-  tabBarStyle?: CSSProperties;
-  tabPaneStyle?: CSSProperties;
 }
 
 const CombinedBoard: FC<{ organizationId: string }> = ({ organizationId }) => {
@@ -64,8 +64,6 @@ const CombinedBoard: FC<{ organizationId: string }> = ({ organizationId }) => {
 };
 
 export const OrganizationTabs: FC<Props> = ({
-  tabBarStyle,
-  tabPaneStyle,
   organizationId,
   currentTab,
   settingsTab,
@@ -88,7 +86,6 @@ export const OrganizationTabs: FC<Props> = ({
 
   return (
     <Tabs
-      tabBarStyle={tabBarStyle}
       className={styles.tabs}
       activeKey={currentTab}
       onTabClick={navigateToTab}
@@ -96,12 +93,19 @@ export const OrganizationTabs: FC<Props> = ({
       <Tabs.TabPane
         tab={<Tab icon={<Icons.HomeOutlined />} children="Overview" />}
         key="overview"
-        style={tabPaneStyle}
       >
+        <Header />
+        <Row
+          style={{ paddingBottom: 8 }}
+          className="dewo-layout-padding-vertical"
+        >
+          <OrganizationHeaderSummary organizationId={organizationId} />
+        </Row>
+        <Divider />
         <Row
           gutter={[screens.xs ? 0 : 48, 24]}
           style={{ marginTop: 20 }}
-          className="max-w-xxl w-full"
+          className="max-w-xxl w-full dewo-layout-padding-vertical"
         >
           <Col
             xs={24}
@@ -119,6 +123,7 @@ export const OrganizationTabs: FC<Props> = ({
               <RichMarkdownEditor
                 initialValue={organization?.description || "No description..."}
                 editable={false}
+                mode="create"
               />
             </div>
 
@@ -189,9 +194,9 @@ export const OrganizationTabs: FC<Props> = ({
       <Tabs.TabPane
         tab={<Tab icon={<Icons.TeamOutlined />} children="Contributors" />}
         key="contributors"
-        style={tabPaneStyle}
       >
-        <Row gutter={[16, 24]} style={{ marginTop: 20 }}>
+        <Header title="Contributors" />
+        <Row gutter={[16, 24]} className="dewo-layout-padding-vertical">
           <Col className="gutter-row" sm={24} md={24} lg={12}>
             <TopContributorList organizationId={organizationId} />
           </Col>
@@ -207,17 +212,22 @@ export const OrganizationTabs: FC<Props> = ({
         tab={<Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />}
         key="board"
         className="w-full"
-        style={{ maxWidth: 330 * 4 + 16 * 3 + 24 * 2 }}
+        style={{ height: "100%" }}
       >
+        <Header
+          className="bg-body-secondary"
+          title="Combined Board"
+          style={{ paddingBottom: 0 }}
+        />
         <CombinedBoard organizationId={organizationId} />
       </Tabs.TabPane>
       {canUpdateOrganization && (
         <Tabs.TabPane
           tab={<Tab icon={<Icons.SettingOutlined />} children="Settings" />}
           key="settings"
-          style={tabPaneStyle}
         >
-          <div className="max-w-lg w-full">
+          <Header title="Organization Settings" />
+          <div className="max-w-lg w-full dewo-layout-padding-vertical">
             <OrganizationSettings
               organizationId={organizationId}
               currentTab={settingsTab ?? "profile"}

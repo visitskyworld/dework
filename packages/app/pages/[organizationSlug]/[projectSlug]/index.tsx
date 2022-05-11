@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
-import { Col, Layout, Tabs } from "antd";
+import { Layout, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
@@ -92,12 +92,12 @@ const Page: NextPage = () => {
                       tab={
                         <Tab
                           icon={<Icons.SettingOutlined />}
-                          children="Settings"
+                          children="Project Settings"
                         />
                       }
-                      style={{ padding: 12 }}
                       key="settings"
-                      className="max-w-lg mx-auto w-full"
+                      className="max-w-lg w-full dewo-layout-padding-vertical"
+                      style={{ paddingTop: 24 }}
                     >
                       <ProjectSettings project={details} />
                     </Tabs.TabPane>
@@ -123,13 +123,10 @@ const Page: NextPage = () => {
                       />
                     }
                     key="about"
-                    style={{ padding: "24px 12px" }}
+                    className="mx-auto max-w-sm w-full dewo-layout-padding-vertical"
+                    style={{ paddingTop: 24 }}
                   >
-                    {!!details && (
-                      <Col className="mx-auto max-w-sm w-full">
-                        <ProjectAbout project={details} />
-                      </Col>
-                    )}
+                    {!!details && <ProjectAbout project={details} />}
                   </Tabs.TabPane>,
                 ].filter((t): t is ReactElement => !!t)}
               >

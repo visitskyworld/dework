@@ -50,12 +50,6 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
     <>
       <Typography.Title level={4}>Open Tasks</Typography.Title>
       <Skeleton loading={!mounted}>
-        <Typography.Paragraph
-          type="secondary"
-          className="ant-typography-caption"
-        >
-          Click on skills to show tasks for
-        </Typography.Paragraph>
         <Row gutter={[4, 8]} style={{ marginBottom: 16 }}>
           {skills?.map((skill) => {
             const selected = skillIds.includes(skill.id);

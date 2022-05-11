@@ -4,12 +4,7 @@ import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
-import { PageHeaderBreadcrumbs } from "../../navigation/PageHeaderBreadcrumbs";
-import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import {
-  useOrganization,
-  useOrganizationIntegrations,
-} from "../../organization/hooks";
+import { useOrganizationIntegrations } from "../../organization/hooks";
 import { OrganizationIntegrationType } from "@dewo/app/graphql/types";
 import { useIsProjectPrivate } from "../../rbac/hooks";
 import { DebugMenu } from "@dewo/app/components/DebugMenu";
@@ -37,7 +32,6 @@ const MANAGE_CHANNELS = BigInt(0x10),
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project, organizationId);
-  const organization = useOrganization(organizationId);
   const canEdit = usePermission("update", project);
   const canEditOrg = usePermission("update", "Organization");
 
@@ -64,15 +58,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
         discordPermissions & MANAGE_THREADS &&
         discordPermissions & MANAGE_ROLES));
 
-  const routes = useMemo<Route[] | undefined>(() => {
-    if (!organization || !project) return undefined;
-    return [
-      { path: "../..", breadcrumbName: "Home" },
-      { path: organization.slug, breadcrumbName: organization.name },
-      { path: project.slug, breadcrumbName: project.name },
-    ];
-  }, [organization, project]);
-
   const editName = useToggle();
   const [projectName, setProjectName] = useState("");
   const updateProject = useUpdateProject();
@@ -97,11 +82,13 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
   }, [projectName, project?.name, editName, submitProjectName]);
   return (
     <Header
+      className="bg-body-secondary"
+      style={{ paddingBottom: 0 }}
       title={
         !!project ? (
           !editName.isOn ? (
             <Typography.Title
-              level={3}
+              level={4}
               style={{ margin: 0 }}
               onClick={canEdit ? editName.toggleOn : undefined}
             >
@@ -168,7 +155,6 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
           </Space>
         )
       }
-      breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
     />
   );
 };

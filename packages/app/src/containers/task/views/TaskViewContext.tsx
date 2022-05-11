@@ -119,8 +119,7 @@ export const ProjectTaskViewProvider: FC<{
   );
   const tags = useProjectTaskTags(projectId);
 
-  if (!projectId || !views) return null;
-
+  if (!projectId || !views) return <>{children}</>;
   return (
     <TaskViewProvider
       redirect={() => router.push(project?.permalink ?? "/")}

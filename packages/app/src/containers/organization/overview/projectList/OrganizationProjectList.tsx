@@ -1,17 +1,17 @@
 import { Col, Row, Skeleton, Space, Typography } from "antd";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
-import { OrganizationDetails, ProjectSection } from "@dewo/app/graphql/types";
+import { ProjectSection } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import _ from "lodash";
 import { ProjectListRow } from "./ProjectListRow";
 import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import { ProjectListEmpty } from "./ProjectListEmpty";
-import { useOrganizationDetails } from "../../hooks";
+import { useOrganizationDetails, useOrganizationSections } from "../../hooks";
 import { DiscordRoleGateAlert } from "@dewo/app/containers/invite/DiscordRoleGateAlert";
 import { isSSR } from "@dewo/app/util/isSSR";
+import _ from "lodash";
 
 interface Props {
   organizationId: string;
@@ -31,32 +31,12 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     [organization?.projects]
   );
 
-  const sections = useMemo(
-    () => [defaultProjectSection, ...(organization?.projectSections ?? [])],
-    [organization?.projectSections]
-  );
-
-  const projectsBySectionId = useMemo(
-    () =>
-      projects.reduce((acc, p) => {
-        const sectionId = p.sectionId ?? defaultProjectSection.id;
-        return { ...acc, [sectionId]: [...(acc[sectionId] ?? []), p] };
-      }, {} as Record<string, OrganizationDetails["projects"]>) ?? {},
-    [projects]
-  );
-
   const canCreateProject = usePermission("create", {
     __typename: "Project",
     organizationId,
   });
-  const canCreateProjectSection = usePermission("create", "ProjectSection");
-  const shouldRenderSection = useCallback(
-    (section: ProjectSection) =>
-      section.id === defaultProjectSection.id ||
-      !!projectsBySectionId[section.id]?.length ||
-      canCreateProjectSection,
-    [projectsBySectionId, canCreateProjectSection]
-  );
+
+  const sections = useOrganizationSections(organizationId);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -69,7 +49,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         {!projects.length ? (
           <ProjectListEmpty organizationId={organizationId} />
         ) : (
-          sections.filter(shouldRenderSection).map((section) => (
+          sections.map((section) => (
             <div key={section.id}>
               <Row align="middle" style={{ marginBottom: 8 }}>
                 <Typography.Title level={4} style={{ margin: 0 }}>
@@ -95,14 +75,14 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                 )}
               </Row>
               <Row gutter={[8, 8]}>
-                {projectsBySectionId[section.id]?.map((project) => (
-                  <Col key={project.id} xs={24} sm={12} xl={8} xxl={6}>
+                {section.projects.map((project) => (
+                  <Col key={project.id} xs={24} sm={12} xl={8} xxl={8}>
                     <ProjectListRow project={project} sections={sections} />
                   </Col>
                 ))}
               </Row>
 
-              {!projectsBySectionId[section.id]?.length && (
+              {!section.projects.length && (
                 <Typography.Text type="secondary">
                   This section is empty
                 </Typography.Text>

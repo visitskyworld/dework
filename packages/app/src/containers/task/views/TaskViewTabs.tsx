@@ -55,7 +55,9 @@ export const TaskViewTabs: FC<Props> = ({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  if (!views || !mounted) return null;
+  if (!views || !mounted) {
+    return <div style={{ height: 48 }} className="bg-body-secondary" />;
+  }
 
   const styleToMakeExtraTabsRightAligned = (
     <style

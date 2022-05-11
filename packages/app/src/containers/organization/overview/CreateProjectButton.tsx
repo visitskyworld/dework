@@ -12,12 +12,14 @@ import { useOrganization, useOrganizationIntegrations } from "../hooks";
 
 interface Props extends ButtonProps {
   organizationId: string;
+  sectionId?: string;
   mode?: "import" | "all";
 }
 
 export const CreateProjectButton: FC<Props> = ({
   organizationId,
   mode = "all",
+  sectionId,
   ...buttonProps
 }) => {
   const router = useRouter();
@@ -59,6 +61,12 @@ export const CreateProjectButton: FC<Props> = ({
   }, [router, hasGithubIntegration, organization, createConnectToGithubUrl]);
 
   if (!organization) return null;
+
+  const url =
+    sectionId && sectionId !== "default"
+      ? `${organization.permalink}/create?sectionId=${sectionId}`
+      : `${organization.permalink}/create`;
+
   return (
     <Dropdown
       trigger={["click"]}
@@ -66,7 +74,7 @@ export const CreateProjectButton: FC<Props> = ({
       overlay={
         <Menu>
           {mode === "all" && (
-            <Link href={`${organization.permalink}/create`}>
+            <Link href={url}>
               <a>
                 <Menu.Item>
                   <Space>

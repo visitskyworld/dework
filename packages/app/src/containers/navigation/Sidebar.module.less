@@ -1,8 +1,18 @@
 @import "~@dewo/app/styles/theme.less";
 
+.home {
+  background: linear-gradient(180deg, #6f57ff 0%, #9a6aff 100%);
+}
+
 .sidebar {
-  border-right: 1px solid @divider-color;
-  background-color: @body-background-secondary;
+  border-right: 2px solid @body-background;
+  background-color: hsl(230, 14%, 8%);
+
+  @media (max-width: @screen-sm) {
+    position: absolute;
+    inset: 0px;
+    z-index: 10;
+  }
 
   .item {
     padding: 0;
@@ -11,7 +21,7 @@
     display: grid;
     place-items: center;
     border-radius: @border-radius-base;
-  
+
     transition: background 0.3s ease-in-out;
     position: relative;
     &:hover {
@@ -21,7 +31,7 @@
         opacity: 1;
       }
     }
-  
+
     &::before {
       content: "";
       width: @border-radius-base;
@@ -34,7 +44,7 @@
       left: 0;
       transition: all 0.3s ease-in-out;
     }
-  
+
     &.active {
       &::before {
         background-color: @text-color;
@@ -42,7 +52,7 @@
         opacity: 1;
       }
     }
-  
+
     :global(.ant-avatar) {
       display: grid;
       place-items: center;
@@ -50,3 +60,19 @@
   }
 }
 
+.orgnav {
+  background-color: hsl(230, 14%, 11%);
+  width: 225px;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+
+  > * {
+    transition: opacity 0.3s ease-in-out;
+  }
+  .minimized {
+    pointer-events: none;
+    opacity: 0;
+  }
+}

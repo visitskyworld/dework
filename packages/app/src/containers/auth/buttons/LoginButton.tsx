@@ -8,7 +8,6 @@ interface Props extends ButtonProps {
 }
 
 export const LoginButton: FC<Props> = ({
-  className,
   onAuthedWithWallet,
   onClick,
   ...props

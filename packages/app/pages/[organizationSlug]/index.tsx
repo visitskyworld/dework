@@ -1,12 +1,9 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { NextPage } from "next";
-import { Grid, Layout, PageHeader, Row } from "antd";
+import { Layout } from "antd";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useRouter } from "next/router";
-import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
 import { useOrganizationBySlug } from "@dewo/app/containers/organization/hooks";
-import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { OrganizationHeaderSummary } from "@dewo/app/containers/organization/overview/OrganizationHeaderSummary";
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
 import { Project } from "@dewo/app/graphql/types";
 import { ProjectCreateModal } from "@dewo/app/containers/project/create/ProjectCreateModal";
@@ -27,29 +24,6 @@ const Page: NextPage = () => {
   const { organizationSlug } = router.query as { organizationSlug: string };
   const { organization } = useOrganizationBySlug(organizationSlug);
   const organizationId = organization?.id;
-
-  const breakpoint = Grid.useBreakpoint();
-  const inset = useMemo(() => {
-    if (breakpoint.xxl) return 72;
-    if (breakpoint.sm) return 16;
-    return 8;
-  }, [breakpoint]);
-
-  const routes = useMemo(
-    () =>
-      !!organization && [
-        {
-          path: "..",
-          breadcrumbName: "Home",
-        },
-        {
-          path: new URL(organization.permalink).pathname,
-          breadcrumbName: organization.name,
-        },
-      ],
-    [organization]
-  ) as Route[];
-
   const navigateToProject = useCallback(
     (project: Project) => router.push(project.permalink),
     [router]
@@ -63,38 +37,24 @@ const Page: NextPage = () => {
   return (
     <Layout>
       {!isEmbedded && <Sidebar />}
-      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        {!isEmbedded && (
-          <PageHeader
-            breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
-            className="bg-body-secondary"
-          />
-        )}
-        {!isEmbedded && (
-          <Row
-            style={{ paddingLeft: inset, paddingRight: inset }}
-            className="bg-body-secondary"
-          >
-            <OrganizationHeaderSummary organizationId={organizationId} />
-          </Row>
-        )}
-        <Layout.Content style={{ flex: 1 }}>
-          {!!organizationId &&
-            (isEmbedded ? (
-              <OrganizationTaskBoard organizationId={organizationId} />
-            ) : (
-              <OrganizationTabs
-                tabBarStyle={{
-                  paddingLeft: inset,
-                  paddingRight: inset,
-                }}
-                tabPaneStyle={{ padding: `12px ${inset}px` }}
-                organizationId={organizationId}
-                currentTab={currentTab}
-                settingsTab={settingsTab}
-              />
-            ))}
-        </Layout.Content>
+      <Layout.Content
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+          flex: 1,
+        }}
+      >
+        {!!organizationId &&
+          (isEmbedded ? (
+            <OrganizationTaskBoard organizationId={organizationId} />
+          ) : (
+            <OrganizationTabs
+              organizationId={organizationId}
+              currentTab={currentTab}
+              settingsTab={settingsTab}
+            />
+          ))}
       </Layout.Content>
 
       {!!organizationId && (

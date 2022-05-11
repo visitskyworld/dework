@@ -4,7 +4,7 @@ import { useOrganizationTasks } from "../hooks";
 import { User, TaskStatus } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
-import { Table, Space, Typography, Button, Row, Col } from "antd";
+import { Table, Space, Typography, Button, Row } from "antd";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { DateRangePicker } from "@dewo/app/components/DateRangePicker";
@@ -80,15 +80,11 @@ export const TopReviewerList: FC<Props> = ({ organizationId }) => {
   }, [organization]);
   return (
     <Space direction="vertical" className="w-full">
-      <Row>
-        <Col>
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            Top Reviewers
-          </Typography.Title>
-        </Col>
-        <Col flex={1}>
-          <DateRangePicker onSetRange={setRange} />
-        </Col>
+      <Row align="middle">
+        <Typography.Title level={5} style={{ margin: 0 }}>
+          Top Reviewers
+        </Typography.Title>
+        <DateRangePicker onSetRange={setRange} />
       </Row>
       <Table<Reviewer>
         scroll={{ x: 240 }}

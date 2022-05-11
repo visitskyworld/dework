@@ -4,7 +4,7 @@ import { useOrganizationTasks } from "../hooks";
 import { TaskReward, TaskStatus, User } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
-import { Table, Space, Typography, Button, Row, Col } from "antd";
+import { Table, Space, Typography, Button, Row } from "antd";
 import { useNavigateToProfile } from "@dewo/app/util/navigation";
 import { calculateTaskRewardAsUSD } from "../../task/hooks";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
@@ -84,15 +84,11 @@ export const TopContributorList: FC<Props> = ({ organizationId }) => {
   }, [organization]);
   return (
     <Space direction="vertical" className="w-full">
-      <Row>
-        <Col>
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            Top Contributors
-          </Typography.Title>
-        </Col>
-        <Col flex={1}>
-          <DateRangePicker onSetRange={setRange} />
-        </Col>
+      <Row align="middle">
+        <Typography.Title level={5} style={{ margin: 0 }}>
+          Top Contributors
+        </Typography.Title>
+        <DateRangePicker onSetRange={setRange} />
       </Row>
       <Table<Contributor>
         scroll={{ x: 240 }}

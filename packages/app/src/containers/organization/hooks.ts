@@ -4,6 +4,7 @@ import {
   useQuery,
   WatchQueryFetchPolicy,
 } from "@apollo/client";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import * as Mutations from "@dewo/app/graphql/mutations";
 import * as Queries from "@dewo/app/graphql/queries";
 import {
@@ -70,6 +71,7 @@ import {
   UserWithRoles,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
+import _ from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 
@@ -424,4 +426,42 @@ export function useRemoveTokenFromOrganization() {
     },
     [mutation]
   );
+}
+
+const defaultProjectSection: ProjectSection = {
+  id: "default",
+  name: "Projects",
+  sortKey: "1",
+  __typename: "ProjectSection",
+};
+export function useOrganizationSections(organizationId: string | undefined) {
+  const { organization } = useOrganizationDetails(organizationId);
+  const projects = useMemo(
+    () => _.sortBy(organization?.projects, (p) => p.sortKey),
+    [organization?.projects]
+  );
+  const projectsBySectionId = useMemo(
+    () => _.groupBy(projects, (p) => p.sectionId ?? defaultProjectSection.id),
+    [projects]
+  );
+  const canCreateProjectSection = usePermission("create", "ProjectSection");
+  const shouldRenderSection = useCallback(
+    (section: ProjectSection) =>
+      section.id === defaultProjectSection.id ||
+      !!projectsBySectionId[section.id]?.length ||
+      canCreateProjectSection,
+    [projectsBySectionId, canCreateProjectSection]
+  );
+  const sections = useMemo(
+    () =>
+      [defaultProjectSection, ...(organization?.projectSections ?? [])].filter(
+        shouldRenderSection
+      ),
+    [organization?.projectSections, shouldRenderSection]
+  );
+
+  return sections.map((section) => ({
+    ...section,
+    projects: projectsBySectionId[section.id] ?? [],
+  }));
 }

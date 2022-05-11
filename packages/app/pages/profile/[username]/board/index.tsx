@@ -1,10 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
 import { useRouter } from "next/router";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
-import { Route } from "antd/lib/breadcrumb/Breadcrumb";
-import { PageHeaderBreadcrumbs } from "@dewo/app/containers/navigation/PageHeaderBreadcrumbs";
 import {
   useUserByUsername,
   useUserTasks,
@@ -18,35 +16,13 @@ const Page: NextPage = () => {
   const username = useRouter().query.username as string;
   const user = useUserByUsername(username);
 
-  const routes = useMemo(
-    () =>
-      !!username && [
-        {
-          path: "../",
-          breadcrumbName: "Home",
-        },
-        {
-          path: user ? new URL(user.permalink).pathname : "",
-          breadcrumbName: user?.username ?? "Profile",
-        },
-        {
-          path: "board",
-          breadcrumbName: "Task Board",
-        },
-      ],
-    [username, user]
-  ) as Route[];
-
   const tasks = useUserTasks(user?.id);
 
   return (
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <Header
-          title="My Task Board"
-          breadcrumb={<PageHeaderBreadcrumbs routes={routes} />}
-        />
+        <Header title="My Task Board" className="bg-body-secondary" />
 
         <UserTaskViewProvider userId={user?.id}>
           <TaskViewTabs userId={user?.id}>
