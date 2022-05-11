@@ -13,9 +13,9 @@ interface Props extends ButtonProps {
 
 export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
   const { user } = useAuthContext();
-  const hasClaimedTask = useMemo(
+  const hasApplied = useMemo(
     () => !!user && task.applications.some((ta) => ta.userId === user.id),
-    [user, task.applications]
+    [task.applications, user]
   );
 
   const navigateToTaskApplication = useNavigateToTaskApplicationFn();
@@ -44,33 +44,35 @@ export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {
   }
   return (
     <>
-      {hasClaimedTask ? (
-        <Tooltip
-          placement="bottom"
-          title={
-            <Space
-              direction="vertical"
-              size="small"
-              style={{ alignItems: "center", maxWidth: 120 }}
-            >
-              <Typography.Text style={{ textAlign: "center" }}>
-                You've applied to claim this task
-              </Typography.Text>
-              <Button
+      {hasApplied ? (
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Tooltip
+            placement="bottom"
+            title={
+              <Space
+                direction="vertical"
                 size="small"
-                name="Unclaim task"
-                onClick={handleUnclaimTask}
-                icon={<Icons.UnlockOutlined />}
+                style={{ alignItems: "center", maxWidth: 120 }}
               >
-                Unclaim
-              </Button>
-            </Space>
-          }
-        >
-          <Button {...buttonProps} disabled icon={<Icons.LockOutlined />}>
-            Requested
-          </Button>
-        </Tooltip>
+                <Typography.Text style={{ textAlign: "center" }}>
+                  You've applied to claim this task
+                </Typography.Text>
+                <Button
+                  size="small"
+                  name="Unclaim task"
+                  onClick={handleUnclaimTask}
+                  icon={<Icons.UnlockOutlined />}
+                >
+                  Unclaim
+                </Button>
+              </Space>
+            }
+          >
+            <Button {...buttonProps} disabled icon={<Icons.LockOutlined />}>
+              Requested
+            </Button>
+          </Tooltip>
+        </Space>
       ) : (
         <Button
           {...buttonProps}

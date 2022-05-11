@@ -1,3 +1,4 @@
+import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import {
@@ -102,7 +103,7 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
                             tooltip={{ visible: false }}
                           />
                         }
-                        title={application.user.username}
+                        title={<>{application.user.username}</>}
                         description={
                           startDate.format("DD/MM/YYYY") +
                           " - " +
@@ -117,6 +118,11 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
                   <Typography.Text style={{ wordBreak: "break-word" }}>
                     {application.message}
                   </Typography.Text>
+                  {!!application.discordThreadUrl && (
+                    <OpenDiscordButton href={application.discordThreadUrl}>
+                      Discuss application
+                    </OpenDiscordButton>
+                  )}
                 </Space>
               </List.Item>
             );

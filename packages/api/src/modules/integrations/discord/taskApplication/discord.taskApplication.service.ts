@@ -136,9 +136,9 @@ export class DiscordTaskApplicationService {
       })}`
     );
     await thread.send({
-      content: `<@${applicantDiscordId}> just applied! Here is a private thread ${
+      content: `<@${applicantDiscordId}> just applied! Here is a private thread${
         !!ownersDiscordIds.length
-          ? `with ${ownersDiscordIds
+          ? ` with ${ownersDiscordIds
               .map((id) => `<@${id}>`)
               .join(", ")} (task reviewer)`
           : ""

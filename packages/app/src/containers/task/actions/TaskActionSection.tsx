@@ -1,8 +1,8 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
-import { Divider, Row, Typography } from "antd";
-import React, { FC, ReactElement } from "react";
+import { Divider, Row, Space, Typography } from "antd";
+import React, { FC, ReactElement, useMemo } from "react";
 import { PayButton } from "../board/PayButton";
 import { useShouldShowInlinePayButton } from "../board/util";
 import { ApplyToTaskButton } from "./apply/ApplyToTaskButton";
@@ -14,6 +14,8 @@ import { ClaimableIcon } from "@dewo/app/components/icons/task/Claimable";
 import { ApplicationIcon } from "@dewo/app/components/icons/task/Application";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
+import { useTask } from "../hooks";
+import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
 
 interface Props {
   task: Task;
@@ -66,6 +68,11 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
   const canAssignTask = usePermission("update", task, "assigneeIds");
   const canSubmit = usePermission("submit", task);
   const shouldShowInlinePayButton = useShouldShowInlinePayButton(task);
+  const taskDetails = useTask(task.id)?.task;
+  const myApplication = useMemo(
+    () => user && taskDetails?.applications.find((ta) => ta.userId === user.id),
+    [user, taskDetails?.applications]
+  );
 
   const content = (() => {
     if (shouldShowInlinePayButton) {
@@ -144,12 +151,24 @@ export const TaskActionSection: FC<Props> = ({ task }) => {
             canAssignTask ? (
               <ClaimTaskButton size="large" type="primary" block task={task} />
             ) : (
-              <ApplyToTaskButton
-                size="large"
-                type="primary"
-                block
-                task={task}
-              />
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <ApplyToTaskButton
+                  size="large"
+                  type="primary"
+                  block
+                  task={task}
+                />
+
+                {myApplication?.discordThreadUrl && (
+                  <OpenDiscordButton
+                    block
+                    type="primary"
+                    href={myApplication.discordThreadUrl}
+                  >
+                    Discuss with reviewer
+                  </OpenDiscordButton>
+                )}
+              </Space>
             )
           }
         />
