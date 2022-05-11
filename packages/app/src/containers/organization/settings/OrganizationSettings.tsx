@@ -8,6 +8,7 @@ import { OrganizationRBAC } from "../../rbac/organization/OrganizationRBAC";
 import { OrganizationProfileSettings } from "./OrganizationProfileSettings";
 import { OrganizationIntegrations } from "./OrganizationIntegrations";
 import { OrganizationSettingsManage } from "./OrganizationSettingsManage";
+import _ from "lodash";
 
 interface Props {
   organizationId: string;
