@@ -120,32 +120,35 @@ export const TaskList: FC<Props> = ({
 
   return (
     <AutoSizer>
-      {({ height, width }) => (
-        <List
-          height={height}
-          width={width}
-          rowCount={rows.length}
-          rowHeight={cache.rowHeight}
-          style={style}
-          className={className}
-          deferredMeasurementCache={cache}
-          ref={(ref) => {
-            // @ts-expect-error
-            list.current = ref;
-          }}
-          rowRenderer={({ index, style, parent, columnIndex, key }) => (
-            <CellMeasurer
-              cache={cache}
-              columnIndex={columnIndex}
-              key={key}
-              parent={parent}
-              rowIndex={index}
-            >
-              <div style={style}>{rows[index].render()}</div>
-            </CellMeasurer>
-          )}
-        />
-      )}
+      {({ height, width }) =>
+        !!width &&
+        !!height && (
+          <List
+            height={height}
+            width={width}
+            rowCount={rows.length}
+            rowHeight={cache.rowHeight}
+            style={style}
+            className={className}
+            deferredMeasurementCache={cache}
+            ref={(ref) => {
+              // @ts-expect-error
+              list.current = ref;
+            }}
+            rowRenderer={({ index, style, parent, columnIndex, key }) => (
+              <CellMeasurer
+                cache={cache}
+                columnIndex={columnIndex}
+                key={key}
+                parent={parent}
+                rowIndex={index}
+              >
+                <div style={style}>{rows[index].render()}</div>
+              </CellMeasurer>
+            )}
+          />
+        )
+      }
     </AutoSizer>
   );
 };

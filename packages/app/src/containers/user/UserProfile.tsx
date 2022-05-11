@@ -11,6 +11,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskCard } from "../task/card/TaskCard";
 import { calculateTaskRewardAsUSD } from "../task/hooks";
 import { UserOrganizationCard } from "./UserOrganizationCard";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
 interface Props {
   userId: string;
@@ -52,6 +53,8 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const screen = useBreakpoint();
+  if (_.isEmpty(screen)) return null;
   if (!user) return null;
   return (
     <div className="mx-auto max-w-lg" style={{ marginTop: 40 }}>

@@ -22,6 +22,7 @@ export const OrganizationSettings: FC<Props> = ({
 }) => {
   const canDeleteOrganization = usePermission("delete", "Organization");
   const screens = useBreakpoint();
+  if (_.isEmpty(screens)) return null;
   return (
     <Tabs
       type="card"

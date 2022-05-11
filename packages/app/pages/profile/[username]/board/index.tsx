@@ -22,8 +22,11 @@ const Page: NextPage = () => {
     <Layout>
       <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <Header title="My Task Board" className="bg-body-secondary" />
-
+        <Header
+          title="My Task Board"
+          className="bg-body-secondary"
+          style={{ paddingBottom: 0 }}
+        />
         <UserTaskViewProvider userId={user?.id}>
           <TaskViewTabs userId={user?.id}>
             <TaskViewLayout tasks={tasks} />
