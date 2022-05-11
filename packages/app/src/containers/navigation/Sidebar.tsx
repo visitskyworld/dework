@@ -100,7 +100,7 @@ export const Sidebar: FC = () => {
   const router = useRouter();
   useEffect(() => {
     const fn = () => {
-      if (isDesktop) setToggle(true);
+      if (isDesktop) setToggle(false);
     };
     router.events.on("routeChangeComplete", fn);
     return () => {
