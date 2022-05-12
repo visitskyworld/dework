@@ -275,33 +275,6 @@ export class DiscordIntegrationService {
         event instanceof TaskCreatedEvent ||
         (event instanceof TaskUpdatedEvent &&
           task.status !== event.prevTask.status);
-      const isPostDoneMessageIntegration = integration.config.features.every(
-        (f: DiscordProjectIntegrationFeature) =>
-          [
-            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
-            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD,
-            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
-          ].includes(f)
-      );
-
-      if (
-        statusChanged &&
-        isPostDoneMessageIntegration &&
-        task.status === TaskStatus.DONE
-      ) {
-        const threepids = await this.findTaskUserThreepids(task);
-        await mainChannel.send({
-          embeds: [
-            {
-              title: task.name,
-              description: `Task is now done! ${threepids
-                .map((t) => `<@${t.threepid}>`)
-                .join(" ")}`,
-              url: await this.permalink.get(task),
-            },
-          ],
-        });
-      }
 
       if (!channelToPostTo) {
         this.logger.warn(

@@ -137,32 +137,36 @@ export const CreateDiscordIntegrationFeatureForm = ({
           </a>
           .
         </Typography.Paragraph>
-        <SelectDiscordChannelFormItem
-          guildId={guildId}
-          organizationId={organizationId}
-          channels={channels}
-          missingPermissions={missingPermissions}
-          feature={feature}
-          initialValue={existingIntegration?.config.channelId ?? undefined}
-          disabled={!!existingIntegration}
-          onRefetchChannels={onRefetchChannels}
-        />
-        <Button
-          loading={disconnecting}
-          hidden={!existingIntegration}
-          onClick={handleDisconnect}
-        >
-          Disconnect
-        </Button>
-        <Button
-          type="primary"
-          htmlType="submit"
-          loading={submitting}
-          hidden={!!existingIntegration}
-          disabled={!values.discordChannelId}
-        >
-          Connect
-        </Button>
+        {!!existingIntegration ? (
+          <Button
+            loading={disconnecting}
+            hidden={!existingIntegration}
+            onClick={handleDisconnect}
+          >
+            Disconnect
+          </Button>
+        ) : (
+          <>
+            <SelectDiscordChannelFormItem
+              guildId={guildId}
+              organizationId={organizationId}
+              channels={channels}
+              missingPermissions={missingPermissions}
+              feature={feature}
+              disabled={!!existingIntegration}
+              onRefetchChannels={onRefetchChannels}
+            />
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
+              hidden={!!existingIntegration}
+              disabled={!values.discordChannelId}
+            >
+              Connect
+            </Button>
+          </>
+        )}
       </Form>
     </CreateIntegrationFeatureCard>
   );

@@ -23,7 +23,6 @@ interface Props {
   channels?: DiscordIntegrationChannel[];
   missingPermissions: DiscordPermission[];
   feature?: DiscordProjectIntegrationFeature;
-  initialValue?: string;
   hidden?: boolean;
   disabled?: boolean;
   onRefetchChannels(): Promise<void>;
@@ -35,14 +34,12 @@ export const SelectDiscordChannelFormItem = ({
   feature,
   channels,
   missingPermissions,
-  initialValue,
   hidden,
   disabled,
   onRefetchChannels,
 }: Props) => (
   <Form.Item
     name="discordChannelId"
-    initialValue={initialValue}
     label="Post In"
     hidden={hidden}
     rules={[

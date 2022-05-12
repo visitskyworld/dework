@@ -33,6 +33,7 @@ export const CreateIntegrationFeatureCard = ({
         {headerTitle}
       </Space>
     }
+    style={{ overflow: "hidden" }}
     className={classNames({
       [styles.connected]: isConnected,
       [styles.expanded]: expanded.isOn,
