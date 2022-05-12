@@ -17,7 +17,7 @@ import { deworkSocialLinks } from "@dewo/app/util/constants";
 import { FormSection } from "@dewo/app/components/FormSection";
 import { ImportExistingGithubIssuesCheckbox } from "./ImportExistingGithubIssuesCheckbox";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
-import { CreateTasksFromIssuesCheckbox } from "./CreateTasksFromIssuesCheckbox";
+import { CreateIssuesFromTasksCheckbox } from "./CreateIssuesFromTasksCheckbox";
 import { useProject } from "../../project/hooks";
 
 const getGithubIntegrationTypeTitle: Partial<
@@ -25,8 +25,8 @@ const getGithubIntegrationTypeTitle: Partial<
 > = {
   [GithubProjectIntegrationFeature.SHOW_BRANCHES]:
     "Link pull requests to tasks",
-  [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]:
-    "Sync Dework tasks and Github issues",
+  [GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES]:
+    "Create Dework tasks from Github issues",
 };
 
 export interface CreateGithubIntegrationPayload {
@@ -40,11 +40,14 @@ const getFeatures = (values: FormValues): GithubProjectIntegrationFeature[] => {
     return [
       GithubProjectIntegrationFeature.SHOW_BRANCHES,
       GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-      values.options?.importNewIssues &&
-        GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
-    ].filter((f): f is GithubProjectIntegrationFeature => !!f);
+    ];
   }
-  return [values.feature];
+
+  return [
+    values.feature,
+    values.options?.postTasksToGithub &&
+      GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS,
+  ].filter((f): f is GithubProjectIntegrationFeature => !!f);
 };
 
 export interface FormValues {
@@ -52,7 +55,7 @@ export interface FormValues {
   repoIds: string[];
   options?: {
     importExistingIssues?: boolean;
-    importNewIssues?: boolean;
+    postTasksToGithub?: boolean;
   };
 }
 
@@ -178,9 +181,19 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
             />
           </FormSection>
           <HeadlessCollapse expanded={!!values.repoIds?.length}>
-            <CreateTasksFromIssuesCheckbox />
-            <ImportExistingGithubIssuesCheckbox />
-            <Button type="primary" htmlType="submit" loading={submitting}>
+            {values.feature ===
+              GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES && (
+              <>
+                <ImportExistingGithubIssuesCheckbox />
+                <CreateIssuesFromTasksCheckbox />
+              </>
+            )}
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
+              style={{ marginTop: 16 }}
+            >
               Connect Github
             </Button>
           </HeadlessCollapse>

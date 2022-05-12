@@ -2,17 +2,16 @@ import React, { FC } from "react";
 import { Form, Checkbox } from "antd";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
-export const ImportExistingGithubIssuesCheckbox: FC = () => (
+export const CreateIssuesFromTasksCheckbox: FC = () => (
   <Form.Item
-    name={["options", "importExistingIssues"]}
+    name={["options", "postTasksToGithub"]}
     valuePropName="checked"
-    initialValue={true}
     style={{ margin: 0 }}
   >
     <Checkbox>
-      Import existing Github Issues to Dework
+      Create Github issues from new Dework tasks
       <QuestionmarkTooltip
-        title="Easily move all your Github issues into Dework. New issues will be added and updated automatically."
+        title="When a new Dework task is created, a Github issue will automatically be created and linked to the Dework task."
         marginLeft={8}
       />
     </Checkbox>

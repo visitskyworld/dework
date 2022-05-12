@@ -65,7 +65,7 @@ export const ProjectSettingsGithubIntegration: FC<Props> = ({ projectId }) => {
         )}
         {[
           GithubProjectIntegrationFeature.SHOW_BRANCHES,
-          GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS,
+          GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
         ]?.map((feature) => (
           <CreateGithubIntegrationFeatureForm
             key={feature}
