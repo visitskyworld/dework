@@ -12835,6 +12835,7 @@ export interface SearchTasksInput {
   projectIds?: (Scalar.UUID | null)[] | null;
   parentTaskId?: Scalar.UUID | null;
   organizationId?: Scalar.UUID | null;
+  featured?: boolean | null;
   sortBy: TaskViewSortByInput;
 }
 

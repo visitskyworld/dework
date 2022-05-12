@@ -53,6 +53,9 @@ export class SearchTasksInput {
   @Field(() => GraphQLUUID, { nullable: true })
   public organizationId?: null;
 
+  @Field({ nullable: true })
+  public featured?: boolean;
+
   @Field()
   public sortBy!: TaskViewSortBy;
 }

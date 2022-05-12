@@ -414,5 +414,42 @@ describe("TaskSearchService", () => {
         tasks.slice(10, 15).map((t) => t.id)
       );
     });
+
+    it("should query featured correctly", async () => {
+      const project = await fixtures.createProject();
+      const tasks = await Bluebird.mapSeries(_.range(15), (i) =>
+        fixtures.createTask({
+          projectId: project.id,
+          reward: {},
+          featured: i % 3 === 0,
+        })
+      );
+      await service.index(tasks, true);
+
+      const res1 = await service.search({
+        size: 10,
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+        featured: false,
+        projectIds: [project.id],
+      });
+
+      const res2 = await service.search({
+        size: 10,
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+        featured: true,
+        projectIds: [project.id],
+      });
+
+      expect(res1.total).toBe(10);
+      expect(res2.total).toBe(5);
+      expect(res1.tasks.every((t) => t.featured === false)).toBeTruthy();
+      expect(res2.tasks.every((t) => t.featured === true)).toBeTruthy();
+    });
   });
 });

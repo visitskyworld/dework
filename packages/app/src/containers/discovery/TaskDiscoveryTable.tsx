@@ -25,14 +25,15 @@ import { TaskViewLayoutData } from "../task/views/hooks";
 
 interface Props {
   data: TaskViewLayoutData;
+  pageSize?: number;
 }
 
-export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
+export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
   const navigateToTask = useNavigateToTaskFn();
   const screens = useBreakpoint();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
-    pageSize: 10,
+    pageSize,
   });
   const rows = useMemo(
     () =>
@@ -57,7 +58,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
   return (
     <Table
       dataSource={rows}
-      pagination={{ hideOnSinglePage: true }}
+      pagination={{ hideOnSinglePage: true, ...pagination }}
       size="small"
       showHeader={false}
       tableLayout="fixed"
@@ -108,7 +109,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
                   {moment(task.createdAt).calendar()})
                 </Typography.Paragraph>
                 <TaskTagsRow task={task} />
-                {!screens.sm && !!task.reward && (
+                {!screens.lg && !!task.reward && (
                   <>
                     <Typography.Paragraph
                       style={{
@@ -129,7 +130,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
                     )}
                   </>
                 )}
-                {!screens.sm && (
+                {!screens.lg && (
                   <div onClick={stopPropagation}>
                     {task.gating === TaskGatingType.OPEN_SUBMISSION ? (
                       <CreateSubmissionButton
@@ -152,14 +153,14 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
               />
             ),
         },
-        ...(screens.sm
+        ...(screens.lg
           ? [
               {
                 title: "Reward",
                 dataIndex: "reward",
                 width: 120,
                 render: (reward: TaskReward | undefined) =>
-                  screens.sm &&
+                  screens.lg &&
                   !!reward && (
                     <>
                       <Typography.Paragraph
@@ -192,7 +193,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data }) => {
                 width: 150,
                 render: (_: unknown, task: TaskWithOrganization | undefined) =>
                   !!task &&
-                  screens.sm && (
+                  screens.lg && (
                     <div onClick={stopPropagation}>
                       {task.gating === TaskGatingType.OPEN_SUBMISSION ? (
                         <CreateSubmissionButton

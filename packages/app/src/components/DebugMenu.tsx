@@ -1,14 +1,8 @@
 import { Button, Dropdown, Menu, Typography } from "antd";
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { useAuthContext } from "../contexts/AuthContext";
-import { useUserRoles } from "../containers/user/hooks";
+import { useIsDev } from "../containers/user/hooks";
 import { useCopyToClipboardAndShowToast } from "../util/hooks";
-import { Constants } from "../util/constants";
-import { isSSR } from "../util/isSSR";
-
-// Team Dework role ID
-const DEBUG_ROLE = Constants.DEV_ROLE_ID;
 
 interface Props {
   projectId?: string;
@@ -16,16 +10,7 @@ interface Props {
 }
 export const DebugMenu: FC<Props> = ({ projectId, organizationId }) => {
   const copy = useCopyToClipboardAndShowToast();
-
-  const { user } = useAuthContext();
-  const userRoles = useUserRoles(isSSR ? undefined : user?.id);
-  const isDev = useMemo(
-    () =>
-      global?.localStorage?.getItem("DEWO_DEV") ||
-      userRoles?.roles.some((role) => role.id === DEBUG_ROLE),
-    [userRoles]
-  );
-
+  const isDev = useIsDev();
   if (!isDev) return null;
   return (
     <Dropdown

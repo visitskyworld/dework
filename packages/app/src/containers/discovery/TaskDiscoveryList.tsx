@@ -76,12 +76,25 @@ export const TaskDiscoveryList: FC = () => {
     []
   );
 
-  const [data] = useTaskViewLayoutData(
+  const [data, featured] = useTaskViewLayoutData(
     useMemo<SearchTasksInput[]>(
       () => [
         {
           statuses: [TaskStatus.TODO],
           hasReward: true,
+          featured: false,
+          sortBy: {
+            field: TaskViewSortByField.createdAt,
+            direction: TaskViewSortByDirection.DESC,
+          },
+          skillIds: !!values.skillIds.length ? values.skillIds : undefined,
+          languages: !!values.languages.length ? values.languages : undefined,
+          assigneeIds: [null],
+          parentTaskId: null,
+        },
+        {
+          statuses: [TaskStatus.TODO],
+          featured: true,
           sortBy: {
             field: TaskViewSortByField.createdAt,
             direction: TaskViewSortByDirection.DESC,
@@ -107,18 +120,18 @@ export const TaskDiscoveryList: FC = () => {
   const filters = useToggle(true);
   return (
     <>
-      <Typography.Title level={3} style={{ textAlign: "center", margin: 0 }}>
-        🔥 Explore Bounties {!!data.total && `(${data.total})`}
-        <QuestionmarkTooltip
-          marginLeft={8}
-          title="Only tasks in public boards and with a bounty reward show up here!"
-        />
-      </Typography.Title>
       <div className="mx-auto max-w-lg w-full">
+        <Typography.Title style={{ textAlign: "center" }} level={3}>
+          Explore Bounties
+          <QuestionmarkTooltip
+            marginLeft={8}
+            title="Only tasks in public boards and with a bounty reward show up here!"
+          />
+        </Typography.Title>
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 0 }}
               className="bg-body-secondary"
               size="small"
               title="Filter bounties"
@@ -204,6 +217,27 @@ export const TaskDiscoveryList: FC = () => {
             </Card>
           </Col>
           <Col sm={24} md={16}>
+            {!!featured.tasks?.length && (
+              <>
+                <Typography.Title
+                  style={{ textTransform: "uppercase", margin: 0 }}
+                  level={5}
+                >
+                  🔥 <span className="text-primary">Featured</span>
+                </Typography.Title>
+                <TaskDiscoveryTable
+                  pageSize={5}
+                  key={"featured-" + JSON.stringify(values)}
+                  data={featured}
+                />
+              </>
+            )}
+            <Typography.Title
+              style={{ textTransform: "uppercase", margin: 0 }}
+              level={5}
+            >
+              All Bounties
+            </Typography.Title>
             {!!data.tasks ? (
               <TaskDiscoveryTable key={JSON.stringify(values)} data={data} />
             ) : (

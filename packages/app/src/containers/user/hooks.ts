@@ -26,7 +26,7 @@ import {
   UserTaskViewsQueryVariables,
   TaskView,
 } from "@dewo/app/graphql/types";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useListenToTasks } from "../task/hooks";
 import {
   SetUserDetailInput,
@@ -35,6 +35,22 @@ import {
   SetUserDetailMutation_organization,
 } from "../../graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
+import { Constants } from "@dewo/app/util/constants";
+import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+
+// Team Dework role ID
+const DEBUG_ROLE = Constants.DEV_ROLE_ID;
+export function useIsDev() {
+  const { user } = useAuthContext();
+  const userRoles = useUserRoles(isSSR ? undefined : user?.id);
+  const isDev = useMemo(
+    () =>
+      global?.localStorage?.getItem("DEWO_DEV") ||
+      userRoles?.roles.some((role) => role.id === DEBUG_ROLE),
+    [userRoles]
+  );
+  return isDev;
+}
 
 export function useUpdateUser(): (input: UpdateUserInput) => Promise<User> {
   const [mutation] = useMutation<

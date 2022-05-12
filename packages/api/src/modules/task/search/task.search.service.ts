@@ -2,7 +2,6 @@ import { Task, TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import { TaskViewSortBy } from "@dewo/api/models/TaskView";
 import { Bulk } from "@elastic/elasticsearch/api/requestParams";
 import { SearchResponse } from "@elastic/elasticsearch/api/types";
-import * as ms from "milliseconds";
 import {
   BadRequestException,
   HttpStatus,
@@ -16,6 +15,7 @@ import _ from "lodash";
 import moment from "moment";
 import { Repository } from "typeorm";
 import { RbacService } from "../../rbac/rbac.service";
+import * as ms from "milliseconds";
 import { Language } from "@dewo/api/models/enums/Language";
 
 const TaskPriorityNumber: Record<TaskPriority, number> = {
@@ -42,6 +42,7 @@ interface IndexedTask {
   spam: boolean;
   public: boolean;
   reward: number | undefined;
+  featured: boolean;
 
   tagIds: string[];
   skillIds: string[];
@@ -134,6 +135,7 @@ export class TaskSearchService implements OnModuleInit {
             parentTaskId: { type: "keyword" },
             projectId: { type: "keyword" },
             organizationId: { type: "keyword" },
+            featured: { type: "boolean" },
           },
         },
       },
@@ -218,6 +220,7 @@ export class TaskSearchService implements OnModuleInit {
     hasReward?: boolean;
     spam?: boolean;
     public?: boolean;
+    featured?: boolean;
 
     size?: number;
     sortBy: TaskViewSortBy;
@@ -309,6 +312,9 @@ export class TaskSearchService implements OnModuleInit {
                 ? [{ match: { hasReward: q.hasReward } }]
                 : []),
               ...(q.spam !== undefined ? [{ match: { spam: q.spam } }] : []),
+              ...(q.featured !== undefined
+                ? [{ match: { featured: q.featured } }]
+                : []),
               ...(q.public !== undefined
                 ? [{ match: { public: q.public } }]
                 : []),
@@ -397,6 +403,7 @@ export class TaskSearchService implements OnModuleInit {
       assigneeIds: task.assignees.map((u) => u.id),
       ownerIds: task.owners.map((u) => u.id),
       applicantIds: (await task.applications).map((a) => a.userId),
+      featured: task.featured,
       public: isPublic,
       reward: undefined,
       spam:

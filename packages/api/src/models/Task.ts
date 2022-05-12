@@ -187,6 +187,10 @@ export class Task extends Audit {
   @Field({ nullable: true })
   public rewardId?: string;
 
+  @Column({ default: false })
+  @Field()
+  public featured!: boolean;
+
   @JoinColumn()
   @OneToOne(() => TaskReview, { nullable: true, cascade: true })
   @Field(() => TaskReview, { nullable: true })
