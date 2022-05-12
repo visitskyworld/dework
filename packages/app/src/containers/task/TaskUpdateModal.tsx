@@ -93,26 +93,32 @@ export const TaskUpdateModalListener: FC = () => {
   const taskId = router.query.taskId as string | undefined;
   const applyToTaskId = router.query.applyToTaskId as string | undefined;
 
-  const closeModal = useCallback(
-    () =>
-      router.push({
-        pathname: router.pathname,
-        query: _.omit(router.query, ["taskId", "applyToTaskId"]),
-      }),
-    [router]
-  );
+  const closeTaskModal = useCallback(() => {
+    return router.push({
+      pathname: router.pathname,
+      query: _.omit(router.query, ["taskId", "applyToTaskId"]),
+    });
+  }, [router]);
+
+  const closeApplyTaskModal = useCallback(() => {
+    return router.push({
+      pathname: router.pathname,
+      query: _.omit(router.query, ["applyToTaskId"]),
+    });
+  }, [router]);
+
   return (
     <>
       <TaskUpdateModal
         taskId={taskId!}
         visible={!!taskId}
-        onCancel={closeModal}
+        onCancel={closeTaskModal}
       />
       <TaskApplyModal
         taskId={applyToTaskId}
         visible={!!applyToTaskId}
-        onCancel={closeModal}
-        onDone={closeModal}
+        onCancel={closeApplyTaskModal}
+        onDone={closeApplyTaskModal}
       />
     </>
   );
