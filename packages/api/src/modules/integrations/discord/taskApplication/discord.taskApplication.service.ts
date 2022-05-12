@@ -172,6 +172,52 @@ export class DiscordTaskApplicationService {
     return `https://discord.com/channels/${thread.guildId}/${thread.id}`;
   }
 
+  public async deleteTaskApplicationThread(
+    application: TaskApplication,
+    task: Task
+  ) {
+    if (!application.discordThreadUrl) return;
+
+    this.logger.log(
+      `Deleting task application thread: ${JSON.stringify({ application })}`
+    );
+    const match = application.discordThreadUrl.match(
+      /https:\/\/discord\.com\/channels\/([0-9]+)\/([0-9]+)/
+    );
+    if (!match) {
+      this.logger.warn(
+        `Could not parse guildId and threadId from threadUrl: ${application.discordThreadUrl}`
+      );
+      return;
+    }
+
+    const project = await task.project;
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        project.organizationId,
+        OrganizationIntegrationType.DISCORD
+      );
+
+    if (!integration) {
+      this.logger.warn(
+        `Could not find org integration for task application: ${JSON.stringify({
+          application,
+          organizationId: project.organizationId,
+        })}`
+      );
+      return;
+    }
+
+    const [, _guildId, threadId] = match;
+    const guild = await this.discord
+      .getClient(integration)
+      .guilds.fetch({ guild: integration.config.guildId, force: true });
+
+    const channel = await this.getOrCreatePrivateChannel(guild, integration);
+    const thread = await channel.threads.fetch(threadId);
+    await thread?.setArchived(true);
+  }
+
   private async getOrCreatePrivateChannel(
     guild: Discord.Guild,
     integration: OrganizationIntegration<OrganizationIntegrationType.DISCORD>
