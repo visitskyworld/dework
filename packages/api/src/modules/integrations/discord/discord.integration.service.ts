@@ -162,6 +162,8 @@ export class DiscordIntegrationService {
   ) {
     const task = (await this.taskService.findById(event.task.id)) as Task;
     if (!!task.parentTaskId) return;
+    if (event instanceof TaskCreatedEvent && task.status === TaskStatus.DONE)
+      return false;
     const organizationIntegration =
       (await integration.organizationIntegration) as OrganizationIntegration<OrganizationIntegrationType.DISCORD>;
     if (!organizationIntegration) return;
