@@ -13,7 +13,10 @@ import {
   CreatePaymentTokenMutationVariables,
   CreateTaskPaymentsMutation,
   CreateTaskPaymentsMutationVariables,
+  GetOrganizationIntegrationsQueryVariables,
+  GetOrganizationPaymentMethodsQuery,
   GetPaymentNetworksQuery,
+  GetProjectIntegrationsQueryVariables,
   GetProjectPaymentMethodsQuery,
   GetProjectPaymentMethodsQueryVariables,
   Payment,
@@ -32,11 +35,15 @@ import {
 } from "@dewo/app/graphql/types";
 import { useCreateEthereumTransaction } from "@dewo/app/util/ethereum";
 import { useCreateSolanaTransaction } from "@dewo/app/util/solana";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useCreateStacksTransaction } from "@dewo/app/util/hiro";
 import { Modal } from "antd";
 import { SelectPaymentMethodModalContent } from "./SelectPaymentMethodModalContent";
 import { Constants } from "@dewo/app/util/constants";
+import {
+  organizationPaymentMethods,
+  projectPaymentMethods,
+} from "@dewo/app/graphql/queries/payment";
 
 export const shortenedAddress = (address: string) =>
   `${address.slice(0, 6)}…${address.slice(-4)}`;
@@ -146,7 +153,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
   const [loadProjectPaymentMethods] = useLazyQuery<
     GetProjectPaymentMethodsQuery,
     GetProjectPaymentMethodsQueryVariables
-  >(Queries.projectPaymentMethods, { ssr: false });
+  >(projectPaymentMethods, { ssr: false });
   const [registerTaskPayment] = useMutation<
     CreateTaskPaymentsMutation,
     CreateTaskPaymentsMutationVariables
@@ -348,5 +355,34 @@ export function useClearPaymentReward() {
       return res.data?.tasks;
     },
     [mutation]
+  );
+}
+
+export function useProjectPaymentMethods(
+  projectId: string | undefined
+): PaymentMethod[] | undefined {
+  const { data } = useQuery<
+    GetProjectPaymentMethodsQuery,
+    GetProjectIntegrationsQueryVariables
+  >(projectPaymentMethods, {
+    variables: { projectId: projectId! },
+    skip: !projectId,
+  });
+  return data?.project.paymentMethods;
+}
+
+export function useOrganizationPaymentMethods(
+  organizationId: string | undefined
+): PaymentMethod[] | undefined {
+  const { data } = useQuery<
+    GetOrganizationPaymentMethodsQuery,
+    GetOrganizationIntegrationsQueryVariables
+  >(organizationPaymentMethods, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return useMemo(
+    () => data?.organization.projects.map((p) => p.paymentMethods).flat(),
+    [data?.organization.projects]
   );
 }

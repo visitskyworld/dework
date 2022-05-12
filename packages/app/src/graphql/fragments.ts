@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { network, payment, token } from "./fragments/payment";
 import { skill } from "./fragments/skill";
 import { taskView } from "./fragments/task";
 
@@ -70,17 +71,6 @@ export const userWithRoles = gql`
   ${role}
 `;
 
-export const paymentNetwork = gql`
-  fragment PaymentNetwork on PaymentNetwork {
-    id
-    slug
-    name
-    type
-    config
-    sortKey
-  }
-`;
-
 export const auditLogEvent = gql`
   fragment AuditLogEvent on AuditLogEvent {
     id
@@ -93,51 +83,6 @@ export const auditLogEvent = gql`
   }
 
   ${user}
-`;
-
-export const paymentToken = gql`
-  fragment PaymentToken on PaymentToken {
-    id
-    exp
-    type
-    name
-    symbol
-    address
-    identifier
-    usdPrice
-    networkId
-    visibility
-  }
-`;
-
-export const paymentMethod = gql`
-  fragment PaymentMethod on PaymentMethod {
-    id
-    type
-    address
-    network {
-      ...PaymentNetwork
-    }
-  }
-
-  ${paymentNetwork}
-`;
-
-export const payment = gql`
-  fragment Payment on Payment {
-    id
-    status
-    data
-    paymentMethod {
-      ...PaymentMethod
-    }
-    network {
-      ...PaymentNetwork
-    }
-  }
-
-  ${paymentMethod}
-  ${paymentNetwork}
 `;
 
 export const organization = gql`
@@ -161,8 +106,8 @@ export const organizationWithTokens = gql`
       }
     }
   }
-  ${paymentToken}
-  ${paymentNetwork}
+  ${token}
+  ${network}
 `;
 
 export const organizationTag = gql`
@@ -235,8 +180,8 @@ export const projectTokenGate = gql`
     }
   }
 
-  ${paymentToken}
-  ${paymentNetwork}
+  ${token}
+  ${network}
 `;
 
 export const invite = gql`
@@ -318,7 +263,7 @@ export const taskReward = gql`
   }
 
   ${payment}
-  ${paymentToken}
+  ${token}
 `;
 
 export const taskReview = gql`

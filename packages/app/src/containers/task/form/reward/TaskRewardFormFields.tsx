@@ -11,11 +11,9 @@ import {
   Typography,
 } from "antd";
 import * as Icons from "@ant-design/icons";
-import { useProject, useProjectPaymentMethods } from "../../../project/hooks";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 
-import { AddTokenModal } from "../../../payment/token/AddTokenModal";
 import { useOrganizationTokens } from "@dewo/app/containers/organization/hooks";
 
 import { TaskRewardFormValues } from "../types";
@@ -24,6 +22,9 @@ import { AddProjectPaymentMethodModal } from "@dewo/app/containers/payment/proje
 import { paymentMethodTypeToString } from "@dewo/app/containers/payment/util";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { OnboardingAlert } from "@dewo/app/components/OnboardingAlert";
+import { useProject } from "@dewo/app/containers/project/hooks";
+import { useProjectPaymentMethods } from "@dewo/app/containers/payment/hooks";
+import { AddTokenModal } from "@dewo/app/containers/payment/token/AddTokenModal";
 
 export async function validator(
   _rule: unknown, // RuleObject,

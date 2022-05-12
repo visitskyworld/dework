@@ -10,6 +10,7 @@ import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useRunning } from "@dewo/app/util/hooks";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { Button, notification, Row, Select, Table, Tag } from "antd";
+import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { formatTaskReward } from "../../task/hooks";
 import { shortenedAddress } from "../hooks";
@@ -23,18 +24,12 @@ import {
 } from "./hooks";
 
 interface Props {
-  projectId: string;
   tasks: TaskToPay[];
   paymentMethods?: PaymentMethod[];
   onDone(): void;
 }
 
-export const BatchPayTable: FC<Props> = ({
-  projectId,
-  tasks,
-  paymentMethods,
-  onDone,
-}) => {
+export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>(() =>
     tasks.filter(canPayTaskAssignee).map((t) => t.id)
   );
@@ -44,6 +39,11 @@ export const BatchPayTable: FC<Props> = ({
   const selectedPaymentMethod = useMemo(
     () => paymentMethods?.find((pm) => pm.id === selectedPaymentMethodId),
     [paymentMethods, selectedPaymentMethodId]
+  );
+
+  const projectIdToCreateNewPaymentMethodIn = useMemo(
+    () => tasks[0]?.projectId,
+    [tasks]
   );
 
   const proposeTransaction = useProposeTransaction();
@@ -160,7 +160,7 @@ export const BatchPayTable: FC<Props> = ({
                   value={selectedPaymentMethodId}
                   onChange={setSelectedPaymentMethodId}
                 >
-                  {paymentMethods?.map((pm) => (
+                  {_.uniqBy(paymentMethods, (pm) => pm.address).map((pm) => (
                     <Select.Option key={pm.id} value={pm.id}>
                       {shortenedAddress(pm.address)}
                     </Select.Option>
@@ -180,7 +180,7 @@ export const BatchPayTable: FC<Props> = ({
               <AddProjectPaymentMethodButton
                 size="small"
                 type="primary"
-                projectId={projectId}
+                projectId={projectIdToCreateNewPaymentMethodIn}
               >
                 Setup payment
               </AddProjectPaymentMethodButton>

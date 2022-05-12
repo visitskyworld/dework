@@ -9,7 +9,8 @@ import {
 } from "@dewo/app/graphql/types";
 import { inject } from "between";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { useProject, useProjectPaymentMethods } from "../../project/hooks";
+import { useProject } from "../../project/hooks";
+import { useProjectPaymentMethods } from "../../payment/hooks";
 
 const Between = inject("0123456789");
 

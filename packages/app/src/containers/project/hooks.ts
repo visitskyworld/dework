@@ -43,9 +43,7 @@ import {
   UpdateTaskSectionMutationVariables,
   DeleteTaskSectionMutation,
   DeleteTaskSectionMutationVariables,
-  GetProjectPaymentMethodsQuery,
   TaskSection,
-  PaymentMethod,
   GetProjectDetailsQuery,
   GetProjectDetailsQueryVariables,
   TaskGatingDefaultInput,
@@ -206,19 +204,6 @@ export function useProjectIntegrations(
     skip: !projectId,
   });
   return data?.project.integrations;
-}
-
-export function useProjectPaymentMethods(
-  projectId: string | undefined
-): PaymentMethod[] | undefined {
-  const { data } = useQuery<
-    GetProjectPaymentMethodsQuery,
-    GetProjectIntegrationsQueryVariables
-  >(Queries.projectPaymentMethods, {
-    variables: { projectId: projectId! },
-    skip: !projectId,
-  });
-  return data?.project.paymentMethods;
 }
 
 export function useProjectTasks(

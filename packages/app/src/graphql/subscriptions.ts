@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import * as Fragments from "./fragments";
+import { payment } from "./fragments/payment";
 
 export const taskCreated = gql`
   subscription TaskCreatedSubscription {
@@ -28,7 +29,7 @@ export const paymentUpdated = gql`
     }
   }
 
-  ${Fragments.payment}
+  ${payment}
 `;
 
 export const taskRewardUpdated = gql`

@@ -1,9 +1,11 @@
 import { Divider, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
-import { useUpdatePaymentMethod } from "../../payment/hooks";
+import {
+  useProjectPaymentMethods,
+  useUpdatePaymentMethod,
+} from "../../payment/hooks";
 import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
-import { useProjectPaymentMethods } from "../hooks";
 
 interface Props {
   projectId: string;

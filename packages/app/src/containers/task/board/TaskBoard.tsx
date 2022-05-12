@@ -17,6 +17,10 @@ import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import { useTaskViewGroups } from "../views/hooks";
 import { SkeletonTaskBoard } from "./SkeletonTaskBoard";
 import { useTaskViewContext } from "../views/TaskViewContext";
+import {
+  useOrganizationPaymentMethods,
+  useProjectPaymentMethods,
+} from "../../payment/hooks";
 
 interface Props {
   tasks: Task[];
@@ -29,9 +33,19 @@ const columnWidth = 330;
 export const TaskBoard: FC<Props> = ({ tasks, empty }) => {
   const { user } = useAuthContext();
   const hasPermission = usePermissionFn();
-  const projectId = useTaskViewContext().currentView?.projectId ?? undefined;
+  const { currentView } = useTaskViewContext();
 
-  const taskViewGroups = useTaskViewGroups(tasks, projectId);
+  const projectPMs = useProjectPaymentMethods(
+    currentView?.projectId ?? undefined
+  );
+  const organizationPMs = useOrganizationPaymentMethods(
+    currentView?.organizationId ?? undefined
+  );
+  const taskViewGroups = useTaskViewGroups(
+    tasks,
+    currentView?.projectId ?? undefined,
+    organizationPMs ?? projectPMs
+  );
 
   const [currentDraggableId, setCurrentDraggableId] = useState<string>();
   const currentlyDraggingTask = useMemo(
@@ -136,7 +150,7 @@ export const TaskBoard: FC<Props> = ({ tasks, empty }) => {
                 status={group.value as TaskStatus}
                 width={columnWidth}
                 sections={group.sections}
-                projectId={projectId}
+                projectId={currentView?.projectId ?? undefined}
                 currentlyDraggingTask={currentlyDraggingTask}
                 empty={empty?.[group.value as TaskStatus]}
               />

@@ -10,17 +10,16 @@ import {
 import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Divider, Modal, Spin } from "antd";
 import React, { FC, Fragment, useMemo } from "react";
-import { useProjectPaymentMethods } from "../../project/hooks";
 import { usePaymentNetworks } from "../hooks";
 import { BatchPayTable } from "./BatchPayTable";
 import { TaskToPay } from "./hooks";
 
 interface Props {
-  projectId: string;
   taskIds: string[];
+  paymentMethods: PaymentMethod[];
 }
 
-export const BatchPayButton: FC<Props> = ({ projectId, taskIds }) => {
+export const BatchPayButton: FC<Props> = ({ taskIds, paymentMethods }) => {
   const modal = useToggle();
 
   const tasks = useQuery<GetTasksToPayQuery, GetTasksToPayQueryVariables>(
@@ -33,11 +32,10 @@ export const BatchPayButton: FC<Props> = ({ projectId, taskIds }) => {
     [tasks]
   );
 
-  const paymentMethods = useProjectPaymentMethods(projectId);
   const paymentMethodsByNetworkId = useMemo<Record<string, PaymentMethod[]>>(
     () =>
       _.groupBy(
-        paymentMethods?.filter(
+        paymentMethods.filter(
           (pm) => pm.type === PaymentMethodType.GNOSIS_SAFE
         ),
         (pm) => pm.network.id
@@ -53,7 +51,7 @@ export const BatchPayButton: FC<Props> = ({ projectId, taskIds }) => {
 
   const shouldShow = useMemo(
     () =>
-      !!paymentMethods?.some((pm) => pm.type === PaymentMethodType.GNOSIS_SAFE),
+      !!paymentMethods.some((pm) => pm.type === PaymentMethodType.GNOSIS_SAFE),
     [paymentMethods]
   );
 
@@ -74,7 +72,6 @@ export const BatchPayButton: FC<Props> = ({ projectId, taskIds }) => {
             <Fragment key={network.id}>
               <Divider style={{ marginTop: 40 }}>{network.name}</Divider>
               <BatchPayTable
-                projectId={projectId}
                 tasks={tasksByNetworkId[network.id]}
                 paymentMethods={paymentMethodsByNetworkId[network.id]}
                 onDone={modal.toggleOff}

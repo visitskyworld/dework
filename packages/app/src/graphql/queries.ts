@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import * as Fragments from "./fragments";
+import { network, token } from "./fragments/payment";
 import * as TaskFragments from "./fragments/task";
 
 export const me = gql`
@@ -435,19 +436,6 @@ export const projectIntegrations = gql`
   ${Fragments.projectIntegration}
 `;
 
-export const projectPaymentMethods = gql`
-  query GetProjectPaymentMethodsQuery($projectId: UUID!) {
-    project: getProject(id: $projectId) {
-      id
-      paymentMethods {
-        ...PaymentMethod
-      }
-    }
-  }
-
-  ${Fragments.paymentMethod}
-`;
-
 export const invite = gql`
   query GetInviteQuery($inviteId: UUID!) {
     invite: getInvite(id: $inviteId) {
@@ -468,8 +456,8 @@ export const paymentNetworks = gql`
     }
   }
 
-  ${Fragments.paymentNetwork}
-  ${Fragments.paymentToken}
+  ${network}
+  ${token}
 `;
 
 export const organizationGithubRepos = gql`

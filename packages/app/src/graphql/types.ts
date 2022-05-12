@@ -8681,47 +8681,6 @@ export interface GetProjectIntegrationsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetProjectPaymentMethodsQuery
-// ====================================================
-
-export interface GetProjectPaymentMethodsQuery_project_paymentMethods_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface GetProjectPaymentMethodsQuery_project_paymentMethods {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  network: GetProjectPaymentMethodsQuery_project_paymentMethods_network;
-}
-
-export interface GetProjectPaymentMethodsQuery_project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  paymentMethods: GetProjectPaymentMethodsQuery_project_paymentMethods[];
-}
-
-export interface GetProjectPaymentMethodsQuery {
-  project: GetProjectPaymentMethodsQuery_project;
-}
-
-export interface GetProjectPaymentMethodsQueryVariables {
-  projectId: Scalar.UUID;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: GetInviteQuery
 // ====================================================
 
@@ -8980,6 +8939,94 @@ export interface GetDiscordGuildRolesQuery {
 }
 
 export interface GetDiscordGuildRolesQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectPaymentMethodsQuery
+// ====================================================
+
+export interface GetProjectPaymentMethodsQuery_project_paymentMethods_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetProjectPaymentMethodsQuery_project_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: GetProjectPaymentMethodsQuery_project_paymentMethods_network;
+}
+
+export interface GetProjectPaymentMethodsQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  paymentMethods: GetProjectPaymentMethodsQuery_project_paymentMethods[];
+}
+
+export interface GetProjectPaymentMethodsQuery {
+  project: GetProjectPaymentMethodsQuery_project;
+}
+
+export interface GetProjectPaymentMethodsQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationPaymentMethodsQuery
+// ====================================================
+
+export interface GetOrganizationPaymentMethodsQuery_organization_projects_paymentMethods_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetOrganizationPaymentMethodsQuery_organization_projects_paymentMethods {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: GetOrganizationPaymentMethodsQuery_organization_projects_paymentMethods_network;
+}
+
+export interface GetOrganizationPaymentMethodsQuery_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  paymentMethods: GetOrganizationPaymentMethodsQuery_organization_projects_paymentMethods[];
+}
+
+export interface GetOrganizationPaymentMethodsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  projects: GetOrganizationPaymentMethodsQuery_organization_projects[];
+}
+
+export interface GetOrganizationPaymentMethodsQuery {
+  organization: GetOrganizationPaymentMethodsQuery_organization;
+}
+
+export interface GetOrganizationPaymentMethodsQueryVariables {
   organizationId: Scalar.UUID;
 }
 
@@ -10276,25 +10323,6 @@ export interface UserWithRoles {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: PaymentNetwork
-// ====================================================
-
-export interface PaymentNetwork {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: AuditLogEvent
 // ====================================================
 
@@ -10313,102 +10341,6 @@ export interface AuditLogEvent {
   user: AuditLogEvent_user | null;
   sessionId: Scalar.UUID | null;
   diff: Scalar.JSONObject[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: PaymentToken
-// ====================================================
-
-export interface PaymentToken {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: PaymentMethod
-// ====================================================
-
-export interface PaymentMethod_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface PaymentMethod {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  network: PaymentMethod_network;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: Payment
-// ====================================================
-
-export interface Payment_paymentMethod_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface Payment_paymentMethod {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  network: Payment_paymentMethod_network;
-}
-
-export interface Payment_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface Payment {
-  __typename: "Payment";
-  id: Scalar.UUID;
-  status: PaymentStatus;
-  data: Scalar.JSONObject | null;
-  paymentMethod: Payment_paymentMethod;
-  network: Payment_network;
 }
 
 /* tslint:disable */
@@ -12349,6 +12281,121 @@ export interface OrganizationDetails {
   details: OrganizationDetails_details[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
   taskViews: OrganizationDetails_taskViews[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PaymentNetwork
+// ====================================================
+
+export interface PaymentNetwork {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PaymentToken
+// ====================================================
+
+export interface PaymentToken {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PaymentMethod
+// ====================================================
+
+export interface PaymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface PaymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: PaymentMethod_network;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Payment
+// ====================================================
+
+export interface Payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface Payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: Payment_paymentMethod_network;
+}
+
+export interface Payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface Payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: Payment_paymentMethod;
+  network: Payment_network;
 }
 
 /* tslint:disable */

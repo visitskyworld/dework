@@ -21,6 +21,7 @@ import {
   TaskWithOrganization,
   GetPaginatedTasksQuery,
   GetPaginatedTasksQueryVariables,
+  PaymentMethod,
 } from "@dewo/app/graphql/types";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -101,7 +102,8 @@ interface TaskViewGroup {
 
 export function useTaskViewGroups(
   tasks: Task[],
-  projectId?: string
+  projectId?: string,
+  paymentMethods?: PaymentMethod[]
 ): TaskViewGroup[] {
   const { currentView, searchQuery } = useTaskViewContext();
   const router = useRouter();
@@ -267,10 +269,10 @@ export function useTaskViewGroups(
                   id: "needs-payment",
                   title: "Needs payment",
                   tasks: unpaid,
-                  button: !!projectId && (
+                  button: !!paymentMethods?.length && (
                     <BatchPayButton
                       taskIds={unpaid.map((t) => t.id)}
-                      projectId={projectId}
+                      paymentMethods={paymentMethods}
                     />
                   ),
                 },
@@ -356,7 +358,7 @@ export function useTaskViewGroups(
       isOnPersonalBoard,
       currentView?.type,
       customSortingSections,
-      projectId,
+      paymentMethods,
     ]
   );
 }
