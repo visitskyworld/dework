@@ -1093,9 +1093,10 @@ export class DiscordIntegrationService {
           : 1440
       )
       .catch(() => {});
-    const thread = await channel.threads.create({
-      name: task.name.length > 100 ? `${task.name.slice(0, 97)}...` : task.name,
-    });
+    const suffix = ` (${task.number})`;
+    const name =
+      _.truncate(task.name, { length: 100 - suffix.length }) + suffix;
+    const thread = await channel.threads.create({ name });
 
     await this.discordChannelRepo.save({
       taskId: task.id,
