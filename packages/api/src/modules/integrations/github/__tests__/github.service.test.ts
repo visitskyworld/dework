@@ -1,6 +1,7 @@
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
+import { IntegrationService } from "../../integration.service";
 import { GithubService } from "../github.service";
 
 describe("GithubService", () => {
@@ -66,11 +67,12 @@ describe("GithubService", () => {
     });
 
     it("should not return task if project integration is deleted", async () => {
-      const { project, github } =
-        await fixtures.createProjectWithGithubIntegration(
-          {},
-          { deletedAt: new Date() }
-        );
+      const { project, integration, github } =
+        await fixtures.createProjectWithGithubIntegration();
+      await app.get(IntegrationService).updateProjectIntegration({
+        id: integration.id,
+        deletedAt: new Date(),
+      });
 
       const task = await fixtures.createTask({ projectId: project.id });
       const found = await githubService.findTask({

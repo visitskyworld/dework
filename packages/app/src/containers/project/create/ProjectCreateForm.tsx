@@ -12,20 +12,16 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import {
   useOrganizationDetails,
   useOrganizationDiscordChannels,
-  useOrganizationGithubRepos,
   useOrganizationIntegrations,
 } from "../../organization/hooks";
 import {
   DiscordProjectIntegrationFeature,
-  GithubProjectIntegrationFeature,
   useCreateDiscordProjectIntegration,
-  useCreateGithubProjectIntegration,
 } from "../../integrations/hooks";
 import {
   DiscordIntegrationFormFields,
   FormValues as DiscordFormFields,
 } from "../../integrations/discord/CreateDiscordIntegrationForm";
-import { FormValues as GithubFormFields } from "../../integrations/github/CreateGithubIntegrationForm";
 import _ from "lodash";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
 import { useToggle } from "@dewo/app/util/hooks";
@@ -39,8 +35,7 @@ import { MoreSectionCollapse } from "@dewo/app/components/MoreSectionCollapse";
 
 export interface FormValues
   extends CreateProjectInput,
-    Partial<DiscordFormFields>,
-    Partial<GithubFormFields> {
+    Partial<DiscordFormFields> {
   private: boolean;
 }
 
@@ -72,21 +67,12 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
 
   const createProject = useCreateProject();
   const createDiscordIntegration = useCreateDiscordProjectIntegration();
-  const createGithubIntegration = useCreateGithubProjectIntegration();
 
-  const hasGithubIntegration = !!useOrganizationIntegrations(
-    organizationId,
-    OrganizationIntegrationType.GITHUB
-  )?.length;
   const hasDiscordIntegration = !!useOrganizationIntegrations(
     organizationId,
     OrganizationIntegrationType.DISCORD
   )?.length;
 
-  const githubRepos = useOrganizationGithubRepos(
-    organizationId,
-    !hasGithubIntegration
-  );
   const discordChannels = useOrganizationDiscordChannels(
     { organizationId },
     !hasDiscordIntegration
@@ -112,26 +98,6 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
           organizationId: values.organizationId,
           options: { showCommunitySuggestions: true },
         });
-
-        const repos = githubRepos?.filter((r) =>
-          values.githubRepoIds?.includes(r.id)
-        );
-        if (!!repos?.length) {
-          for (const repo of repos) {
-            await createGithubIntegration({
-              repo,
-              projectId: project.id,
-              importIssues: !!values.githubImportIssues,
-              features: [
-                GithubProjectIntegrationFeature.SHOW_BRANCHES,
-                GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-                ...(values.githubFeatureCreateIssuesFromTasks
-                  ? [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]
-                  : []),
-              ],
-            });
-          }
-        }
 
         const channel = discordChannels.value?.find(
           (c) => c.id === values.discordChannelId
@@ -185,9 +151,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
     [
       createProject,
       createDiscordIntegration,
-      createGithubIntegration,
       onCreated,
-      githubRepos,
       discordChannels.value,
       discordThreads.value,
       createRole,

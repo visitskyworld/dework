@@ -401,7 +401,7 @@ export class Fixtures {
 
   public async createProjectWithGithubIntegration(
     partialProject: Partial<Project> = {},
-    partialProjectIntegration: Partial<ProjectIntegration> = {},
+    features: GithubProjectIntegrationFeature[] = [],
     github: {
       installationId: number;
       organization: string;
@@ -413,6 +413,7 @@ export class Fixtures {
     }
   ): Promise<{
     project: Project;
+    integration: ProjectIntegration;
     github: {
       installationId: number;
       organization: string;
@@ -425,22 +426,17 @@ export class Fixtures {
       type: OrganizationIntegrationType.GITHUB,
       config: { installationId: github.installationId },
     })) as OrganizationIntegration<OrganizationIntegrationType.GITHUB>;
-    await this.createProjectIntegration({
+    const integration = await this.createProjectIntegration({
       projectId: project.id,
       type: ProjectIntegrationType.GITHUB,
       organizationIntegrationId: organizationIntegration.id,
       config: {
-        organization: github.organization,
+        features,
         repo: github.repo,
-        features: [
-          GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS,
-          GithubProjectIntegrationFeature.SHOW_BRANCHES,
-          GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-        ],
+        organization: github.organization,
       },
-      ...partialProjectIntegration,
     });
-    return { project, github };
+    return { project, integration, github };
   }
 
   async createProjectWithDiscordIntegration(

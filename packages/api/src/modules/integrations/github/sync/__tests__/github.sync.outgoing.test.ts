@@ -1,4 +1,5 @@
 import { Project } from "@dewo/api/models/Project";
+import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
@@ -33,7 +34,10 @@ describe("GithubSyncOutgoingService", () => {
 
     ({ project } = await fixtures.createProjectWithGithubIntegration(
       {},
-      {},
+      [
+        GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
+        GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS,
+      ],
       { installationId, organization: githubOrganization, repo: githubRepo }
     ));
 

@@ -30,7 +30,8 @@ export const SelectGihubRepoFormItem = ({
         </Typography.Paragraph>
       )}
       <Form.Item
-        name="githubRepoIds"
+        name="repoIds"
+        style={{ marginBottom: 0 }}
         rules={[{ required: true, message: "Please select a Github repo" }]}
       >
         <Select

@@ -17,6 +17,7 @@ export enum GithubProjectIntegrationFeature {
   SHOW_BRANCHES = "SHOW_BRANCHES",
   SHOW_PULL_REQUESTS = "SHOW_PULL_REQUESTS",
   CREATE_ISSUES_FROM_TASKS = "CREATE_ISSUES_FROM_TASKS",
+  CREATE_TASKS_FROM_ISSUES = "CREATE_TASKS_FROM_ISSUES",
 }
 
 export enum DiscordProjectIntegrationFeature {

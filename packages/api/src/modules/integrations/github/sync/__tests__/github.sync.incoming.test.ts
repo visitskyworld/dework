@@ -11,6 +11,7 @@ import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
 import { GithubService } from "../../github.service";
+import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 
 const installationId = 21818562;
 
@@ -71,7 +72,10 @@ describe("GithubSyncIncomingService", () => {
 
     ({ project } = await fixtures.createProjectWithGithubIntegration(
       {},
-      {},
+      [
+        GithubProjectIntegrationFeature.SHOW_BRANCHES,
+        GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+      ],
       {
         installationId,
         organization: githubOrganization.login!,

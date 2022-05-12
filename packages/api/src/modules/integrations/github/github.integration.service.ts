@@ -81,16 +81,22 @@ export class GithubIntegrationService {
     project: Project,
     taskOverride: Partial<Task> = {}
   ) {
+    const integrations = await this.integrationService.findProjectIntegrations(
+      project.id,
+      ProjectIntegrationType.GITHUB
+    );
+    const shouldImport = integrations.some((i) =>
+      i.config.features.includes(
+        GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES
+      )
+    );
+
     this.logger.log(
       `Processing Github issue: ${JSON.stringify({
         issueId: issue.id,
         projectId: project.id,
+        shouldImport,
       })}`
-    );
-
-    const tags = await this.getOrCreateTaskTags(
-      [...(issue.labels ?? []), this.githubIssueLabel],
-      project
     );
 
     const existingIssue = await this.githubService.findIssue(
@@ -126,6 +132,10 @@ export class GithubIntegrationService {
         (t) => t.source !== TaskTagSource.GITHUB
       );
 
+      const tags = await this.getOrCreateTaskTags(
+        [...(issue.labels ?? []), this.githubIssueLabel],
+        project
+      );
       const task = await this.taskService.update({
         id: existingIssue.taskId,
         name: issue.title,
@@ -136,7 +146,7 @@ export class GithubIntegrationService {
       });
 
       this.logger.log(`Updated task: ${JSON.stringify(task)}`);
-    } else {
+    } else if (shouldImport) {
       this.logger.log(
         `Creating task from GH issue: ${JSON.stringify({
           issue,
@@ -147,6 +157,10 @@ export class GithubIntegrationService {
         issue.state === "closed" ? TaskStatus.DONE : TaskStatus.TODO;
 
       const taskNumber = await this.taskService.getNextTaskNumber(project.id);
+      const tags = await this.getOrCreateTaskTags(
+        [...(issue.labels ?? []), this.githubIssueLabel],
+        project
+      );
       const task = await this.connection.transaction(async (manager) => {
         const task = await manager.save(Task, {
           name: issue.title,
@@ -352,6 +366,7 @@ export class GithubIntegrationService {
         features: [
           GithubProjectIntegrationFeature.SHOW_BRANCHES,
           GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+          GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
         ],
       };
       await this.integrationService.createProjectIntegration({

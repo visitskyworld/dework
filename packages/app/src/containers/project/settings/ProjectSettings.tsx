@@ -74,7 +74,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
         key="github"
         style={tabStyle}
       >
-        <ProjectSettingsGithubIntegration project={project} />
+        <ProjectSettingsGithubIntegration projectId={project.id} />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={<Tab icon={<Icons.LockOutlined />} children="Permissions" />}

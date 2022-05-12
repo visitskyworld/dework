@@ -2,16 +2,11 @@ import React, { FC } from "react";
 import { Form, Checkbox } from "antd";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
-type Props = {
-  hidden: boolean;
-};
-
-export const ImportGithubIssuesFormItem: FC<Props> = ({ hidden }) => (
+export const ImportExistingGithubIssuesCheckbox: FC = () => (
   <Form.Item
-    name="githubImportIssues"
+    name={["options", "importExistingIssues"]}
     valuePropName="checked"
-    hidden={hidden}
-    style={{ margin: 0 }}
+    initialValue={true}
   >
     <Checkbox>
       Import existing Github Issues to Dework

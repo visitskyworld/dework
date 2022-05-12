@@ -14,7 +14,11 @@ import { OrganizationIntegrationType } from "@dewo/api/models/OrganizationIntegr
 import { GithubIntegrationService } from "../github.integration.service";
 import { DiscordIntegrationService } from "../../discord/discord.integration.service";
 import { TaskStatus } from "@dewo/api/models/Task";
-import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
+import {
+  GithubProjectIntegrationFeature,
+  ProjectIntegration,
+  ProjectIntegrationType,
+} from "@dewo/api/models/ProjectIntegration";
 import * as qs from "query-string";
 import { GithubSyncIncomingService } from "../sync/github.sync.incoming";
 
@@ -87,24 +91,27 @@ export class GithubWebhookController {
 
     await this.githubSyncIncomingService.handleWebhook(event);
 
-    if (
-      !("installation" in event) ||
-      !("repository" in event) ||
-      !event.installation ||
-      !event.repository
-    ) {
-      this.logger.debug("No Github installation in event");
+    if (!("repository" in event) || !event.repository) {
+      this.logger.debug("No Github repository in event");
       return;
     }
 
-    const [integration] = await this.githubService.findIntegrations(
+    const integrations = await this.githubService.findIntegrations(
       event.repository.owner.login,
       event.repository.name
     );
-    if (!integration) {
-      this.logger.debug(
-        `No integration found for Github installation: ${JSON.stringify(event)}`
-      );
+
+    for (const integration of integrations) {
+      await this.handleWebhookEventForIntegration(event, integration);
+    }
+  }
+
+  private async handleWebhookEventForIntegration(
+    event: Github.WebhookEvent,
+    integration: ProjectIntegration<ProjectIntegrationType.GITHUB>
+  ) {
+    if (!("installation" in event) || !event.installation) {
+      this.logger.debug("No Github installation in event");
       return;
     }
 

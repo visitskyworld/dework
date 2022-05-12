@@ -6,6 +6,7 @@ import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
 import { GithubRequests } from "@dewo/api/testing/requests/github.requests";
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 
 // https://github.com/organizations/deworkxyz-testing/settings/installations/21818562
 const githubRepo = "unit-tests";
@@ -69,7 +70,7 @@ describe("GithubResolver", () => {
         const { user, organization } = await fixtures.createUserOrgProject();
         const { project } = await fixtures.createProjectWithGithubIntegration(
           { organizationId: organization.id },
-          {},
+          [GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES],
           {
             installationId,
             repo: githubRepo,

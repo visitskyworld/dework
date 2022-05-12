@@ -1,5 +1,5 @@
 import { GithubRepo } from "@dewo/app/graphql/types";
-import { useRunningCallback, useToggle } from "@dewo/app/util/hooks";
+import { useRunning, useToggle } from "@dewo/app/util/hooks";
 import { Alert, Button, Form, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
@@ -8,24 +8,25 @@ import { useOrganizationGithubRepos } from "../../organization/hooks";
 import { CreateIntegrationFeatureCard } from "../CreateIntegrationFeatureCard";
 import {
   GithubProjectIntegrationFeature,
+  useCreateGithubProjectIntegration,
   useUpdateProjectIntegration,
 } from "../hooks";
 import { ProjectIntegration } from "../../../graphql/types";
 import { SelectGihubRepoFormItem } from "./SelectGithubRepoFormItem";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
 import { FormSection } from "@dewo/app/components/FormSection";
-import { ImportGithubIssuesFormItem } from "./ImportGithubIssuesFormItem";
+import { ImportExistingGithubIssuesCheckbox } from "./ImportExistingGithubIssuesCheckbox";
+import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
+import { CreateTasksFromIssuesCheckbox } from "./CreateTasksFromIssuesCheckbox";
+import { useProject } from "../../project/hooks";
 
-const getGithubIntegrationTypeTitle: Record<
-  GithubProjectIntegrationFeature,
-  string
+const getGithubIntegrationTypeTitle: Partial<
+  Record<GithubProjectIntegrationFeature, string>
 > = {
   [GithubProjectIntegrationFeature.SHOW_BRANCHES]:
     "Link pull requests to tasks",
-  [GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS]:
-    "Link pull requests to tasks",
   [GithubProjectIntegrationFeature.CREATE_ISSUES_FROM_TASKS]:
-    "Create issues from tasks",
+    "Sync Dework tasks and Github issues",
 };
 
 export interface CreateGithubIntegrationPayload {
@@ -34,43 +35,46 @@ export interface CreateGithubIntegrationPayload {
   importIssues: boolean;
 }
 
-const getFeatures = (
-  feature: GithubProjectIntegrationFeature
-): GithubProjectIntegrationFeature[] => {
-  if (feature === GithubProjectIntegrationFeature.SHOW_BRANCHES) {
+const getFeatures = (values: FormValues): GithubProjectIntegrationFeature[] => {
+  if (values.feature === GithubProjectIntegrationFeature.SHOW_BRANCHES) {
     return [
       GithubProjectIntegrationFeature.SHOW_BRANCHES,
       GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
-    ];
+      values.options?.importNewIssues &&
+        GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
+    ].filter((f): f is GithubProjectIntegrationFeature => !!f);
   }
-  return [feature];
+  return [values.feature];
 };
 
 export interface FormValues {
-  githubRepoIds: string[];
-  githubImportIssues?: boolean;
-  githubFeatureCreateIssuesFromTasks?: boolean;
+  feature: GithubProjectIntegrationFeature;
+  repoIds: string[];
+  options?: {
+    importExistingIssues?: boolean;
+    importNewIssues?: boolean;
+  };
 }
 
 interface Props {
   feature: GithubProjectIntegrationFeature;
   existingIntegrations: ProjectIntegration[] | undefined;
-  organizationId: string;
+  projectId: string;
   disabled?: boolean;
-  onSubmit(values: CreateGithubIntegrationPayload): Promise<void>;
 }
 
 export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
   feature,
   existingIntegrations,
-  organizationId,
+  projectId,
   disabled = false,
-  onSubmit,
 }) => {
   const [form] = useForm<FormValues>();
   const [values, setValues] = useState<Partial<FormValues>>({});
   const expanded = useToggle(false);
-  const githubRepos = useOrganizationGithubRepos(organizationId);
+
+  const { project } = useProject(projectId);
+  const githubRepos = useOrganizationGithubRepos(project?.organizationId);
 
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: Partial<FormValues>) => {
@@ -80,35 +84,31 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
   );
   const updateIntegration = useUpdateProjectIntegration();
   const handleDelete = useCallback(
-    async (id: string) => {
-      await updateIntegration({
-        id,
-        deletedAt: new Date().toISOString(),
-      });
-    },
+    (id: string) =>
+      updateIntegration({ id, deletedAt: new Date().toISOString() }),
     [updateIntegration]
   );
-  const [handleSubmit, submitting] = useRunningCallback(
-    async (values: FormValues) => {
-      if (!githubRepos) return;
-      const repos = githubRepos.filter((r) =>
-        values.githubRepoIds?.includes(r.id)
-      );
 
-      try {
-        for (const repo of repos) {
-          await onSubmit({
-            repo,
-            importIssues: !!values.githubImportIssues,
-            features: getFeatures(feature),
-          });
-        }
-      } finally {
-        form.resetFields();
+  const createIntegration = useCreateGithubProjectIntegration();
+  const submit = useCallback(
+    async (values: FormValues) => {
+      const repos = githubRepos?.filter((r) => values.repoIds?.includes(r.id));
+      if (!repos) return;
+
+      for (const repo of repos) {
+        await createIntegration({
+          repo,
+          projectId,
+          importIssues: !!values.options?.importExistingIssues,
+          features: getFeatures(values),
+        });
       }
+      form.resetFields();
+      setValues({});
     },
-    [form, githubRepos, feature, onSubmit]
+    [form, githubRepos, projectId, createIntegration]
   );
+  const [handleSubmit, submitting] = useRunning(submit);
 
   const connectedCopy =
     `Connected to ${existingIntegrations?.length} ` +
@@ -130,6 +130,7 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
         onValuesChange={handleChange}
         onFinish={handleSubmit}
       >
+        <Form.Item name="feature" hidden initialValue={feature} />
         <Space direction="vertical">
           <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
             Learn more about this integration{" "}
@@ -167,23 +168,22 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
               </Space>
             </FormSection>
           )}
-          <FormSection label="Connect a repo">
+          <FormSection
+            label="Connect one or more repos"
+            style={{ marginBottom: 0 }}
+          >
             <SelectGihubRepoFormItem
-              organizationId={organizationId}
+              organizationId={project?.organizationId!}
               repos={githubRepos}
             />
-            <ImportGithubIssuesFormItem
-              hidden={!values.githubRepoIds?.length}
-            />
           </FormSection>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={submitting}
-            hidden={!values.githubRepoIds?.length}
-          >
-            Connect Github
-          </Button>
+          <HeadlessCollapse expanded={!!values.repoIds?.length}>
+            <CreateTasksFromIssuesCheckbox />
+            <ImportExistingGithubIssuesCheckbox />
+            <Button type="primary" htmlType="submit" loading={submitting}>
+              Connect Github
+            </Button>
+          </HeadlessCollapse>
         </Space>
       </Form>
     </CreateIntegrationFeatureCard>

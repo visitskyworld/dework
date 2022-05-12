@@ -10,6 +10,7 @@ import { TaskStatus } from "@dewo/api/models/Task";
 import { GithubPullRequestStatus } from "@dewo/api/models/GithubPullRequest";
 import * as Github from "@octokit/webhooks-types";
 import { TaskTagSource } from "@dewo/api/models/TaskTag";
+import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegration";
 
 describe("GithubController", () => {
   let app: INestApplication;
@@ -33,7 +34,9 @@ describe("GithubController", () => {
   describe("webhook", () => {
     it("should update a task's status to DONE when its PR is merged", async () => {
       const { project, github } =
-        await fixtures.createProjectWithGithubIntegration();
+        await fixtures.createProjectWithGithubIntegration({}, [
+          GithubProjectIntegrationFeature.SHOW_PULL_REQUESTS,
+        ]);
       const task = await fixtures.createTask({
         projectId: project.id,
         status: TaskStatus.IN_REVIEW,
@@ -114,9 +117,17 @@ describe("GithubController", () => {
     });
 
     describe("issue created", () => {
-      it("should save task with reference to Github issue", async () => {
-        const { project, github } =
-          await fixtures.createProjectWithGithubIntegration();
+      it("should save task with reference to Github issue if feature is enabled", async () => {
+        const withFeature = await fixtures.createProjectWithGithubIntegration(
+          {},
+          [GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES]
+        );
+        const withoutFeature =
+          await fixtures.createProjectWithGithubIntegration(
+            {},
+            [],
+            withFeature.github
+          );
 
         const url = faker.internet.url();
         const name = faker.lorem.sentence();
@@ -137,16 +148,20 @@ describe("GithubController", () => {
               body: description,
               labels: [limeGithubLabel],
             },
-            installation: { id: github.installationId },
+            installation: { id: withFeature.github.installationId },
             repository: {
-              name: github.repo,
-              owner: { login: github.organization },
+              name: withFeature.github.repo,
+              owner: { login: withFeature.github.organization },
             },
           },
         });
 
-        const tasks = await project.tasks;
-        const task = await fixtures.getTask(tasks[0].id);
+        const tasksWithoutFeature = await withoutFeature.project.tasks;
+        const tasksWithFeature = await withFeature.project.tasks;
+        expect(tasksWithoutFeature).toHaveLength(0);
+        expect(tasksWithFeature).toHaveLength(1);
+
+        const task = await fixtures.getTask(tasksWithFeature[0].id);
         expect(task).toBeDefined();
         expect(task!.name).toEqual(name);
         expect(task!.status).toEqual(TaskStatus.TODO);
@@ -178,7 +193,9 @@ describe("GithubController", () => {
 
       it("should not create multiple tasks if called in parallel", async () => {
         const { project, github } =
-          await fixtures.createProjectWithGithubIntegration();
+          await fixtures.createProjectWithGithubIntegration({}, [
+            GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
+          ]);
 
         const body: DeepPartial<Github.IssuesOpenedEvent> = {
           action: "opened",

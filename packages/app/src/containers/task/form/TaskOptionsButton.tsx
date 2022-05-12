@@ -68,10 +68,11 @@ export const TaskOptionsButton: FC<Props> = ({ task }) => {
   const canDelete = usePermission("delete", task);
   const deleteTask = useDeleteTask();
   const router = useRouter();
+  const closeTaskDetails = useCloseTaskDetails();
   const handleDeleteTask = useCallback(async () => {
     await deleteTask(task.id);
-    await router.push(task.project.permalink);
-  }, [deleteTask, task, router]);
+    closeTaskDetails();
+  }, [deleteTask, task, closeTaskDetails]);
 
   const copiedToClipboard = useCallback(
     () => message.success({ content: "Copied to clipboard" }),
