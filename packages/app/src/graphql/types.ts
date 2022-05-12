@@ -6506,6 +6506,156 @@ export interface GetOrganizationDetailsQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationTaskViewsQuery
+// ====================================================
+
+export interface GetOrganizationTaskViewsQuery_organization_projects_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  taskCount: number;
+  doneTaskCount: number;
+  openBountyTaskCount: number;
+  taskTags: GetOrganizationTaskViewsQuery_organization_projects_taskTags[];
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_projectSections {
+  __typename: "ProjectSection";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_tags {
+  __typename: "OrganizationTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_details {
+  __typename: "EntityDetail";
+  id: Scalar.UUID;
+  type: EntityDetailType;
+  value: string;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_projectTokenGates_token_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_projectTokenGates_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  network: GetOrganizationTaskViewsQuery_organization_projectTokenGates_token_network;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_projectTokenGates {
+  __typename: "ProjectTokenGate";
+  id: Scalar.UUID;
+  role: ProjectRole;
+  projectId: string;
+  token: GetOrganizationTaskViewsQuery_organization_projectTokenGates_token;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: (Scalar.UUID | null)[] | null;
+  applicantIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
+  skillIds: Scalar.UUID[] | null;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: Scalar.UUID | null;
+  organizationId: Scalar.UUID | null;
+  userId: Scalar.UUID | null;
+  filters: GetOrganizationTaskViewsQuery_organization_taskViews_filters[];
+  sortBys: GetOrganizationTaskViewsQuery_organization_taskViews_sortBys[];
+}
+
+export interface GetOrganizationTaskViewsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+  description: string | null;
+  projects: GetOrganizationTaskViewsQuery_organization_projects[];
+  projectSections: GetOrganizationTaskViewsQuery_organization_projectSections[];
+  tags: GetOrganizationTaskViewsQuery_organization_tags[];
+  details: GetOrganizationTaskViewsQuery_organization_details[];
+  projectTokenGates: GetOrganizationTaskViewsQuery_organization_projectTokenGates[];
+  taskViews: GetOrganizationTaskViewsQuery_organization_taskViews[];
+}
+
+export interface GetOrganizationTaskViewsQuery {
+  organization: GetOrganizationTaskViewsQuery_organization;
+}
+
+export interface GetOrganizationTaskViewsQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetOrganizationIntegrationsQuery
 // ====================================================
 

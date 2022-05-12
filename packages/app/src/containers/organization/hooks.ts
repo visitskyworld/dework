@@ -44,6 +44,8 @@ import {
   GetOrganizationUsersQueryVariables,
   GetOrganizationUsersWithRolesQuery,
   GetOrganizationUsersWithRolesQueryVariables,
+  GetOrganizationTaskViewsQuery,
+  GetOrganizationTaskViewsQueryVariables,
   GithubRepo,
   Organization,
   OrganizationDetails,
@@ -227,6 +229,19 @@ export function useOrganizationDetails(organizationId: string | undefined): {
     skip: !organizationId,
   });
   return { organization: data?.organization ?? undefined, refetch };
+}
+
+export function useOrganizationTaskViews(organizationId: string | undefined): {
+  organization: GetOrganizationTaskViewsQuery["organization"] | undefined;
+} {
+  const { data } = useQuery<
+    GetOrganizationTaskViewsQuery,
+    GetOrganizationTaskViewsQueryVariables
+  >(Queries.organizationTaskViews, {
+    variables: { organizationId: organizationId! },
+    skip: !organizationId,
+  });
+  return { organization: data?.organization ?? undefined };
 }
 
 export function useOrganizationIntegrations(

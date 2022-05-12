@@ -114,6 +114,23 @@ export const organizationDetails = gql`
   ${Fragments.organizationDetails}
 `;
 
+export const organizationTaskViews = gql`
+  query GetOrganizationTaskViewsQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      ...OrganizationDetails
+      projects {
+        id
+        taskTags {
+          ...TaskTag
+        }
+      }
+    }
+  }
+
+  ${Fragments.organizationDetails}
+  ${Fragments.taskTag}
+`;
+
 export const organizationIntegrations = gql`
   query GetOrganizationIntegrationsQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {

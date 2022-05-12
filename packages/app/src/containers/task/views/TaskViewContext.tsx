@@ -18,7 +18,7 @@ import React, {
   useState,
 } from "react";
 import {
-  useOrganizationDetails,
+  useOrganizationTaskViews,
   useOrganizationUsers,
 } from "../../organization/hooks";
 
@@ -86,10 +86,14 @@ export const OrganizationTaskViewProvider: FC<{
   organizationId?: string;
 }> = ({ organizationId, children }) => {
   const router = useRouter();
-  const { organization } = useOrganizationDetails(organizationId);
-
+  const { organization } = useOrganizationTaskViews(organizationId);
   const roles = useOrganizationRoles(organizationId);
   const { users: filterableMembers } = useOrganizationUsers(organizationId);
+
+  const tags = useMemo(
+    () => organization?.projects.map((project) => project.taskTags).flat(),
+    [organization?.projects]
+  );
 
   if (!organizationId || !organization?.taskViews) return null;
 
@@ -100,6 +104,7 @@ export const OrganizationTaskViewProvider: FC<{
       lastViewIdKey={buildKey(organizationId)}
       children={children}
       filterableMembers={filterableMembers}
+      tags={tags}
       roles={roles}
     />
   );
