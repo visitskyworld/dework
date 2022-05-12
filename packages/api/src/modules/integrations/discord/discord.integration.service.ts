@@ -738,12 +738,14 @@ export class DiscordIntegrationService {
       },
     ].filter(({ value }) => !!value);
 
+    const descriptionWithoutBackslashesForNewlines =
+      task.description?.replace(/\\/g, "") ?? "";
     await this.postTaskCard(
       channel,
       task,
-      `${topData.map((d) => `**${d.name}**: ${d.value}`).join("\n")}\n\n${
-        task.description
-      }`,
+      `${topData
+        .map((d) => `**${d.name}**: ${d.value}`)
+        .join("\n")}\n\n${descriptionWithoutBackslashesForNewlines}`,
       undefined,
       {
         author: { name: project.name, url: await this.permalink.get(project) },
