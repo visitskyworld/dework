@@ -34,6 +34,7 @@ type GithubPullRequestPayload = Pick<
 >;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignore
 function PreventConcurrency(): MethodDecorator {
   let promise = Promise.resolve();
   return function (
