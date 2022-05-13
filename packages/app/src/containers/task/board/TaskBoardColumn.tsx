@@ -84,7 +84,7 @@ export const TaskBoardColumn: FC<Props> = ({
                 />
               ),
           },
-          ...section.tasks.map((task) => ({
+          ...(!collapsed[section.id] ? section.tasks : []).map((task) => ({
             id: JSON.stringify(task),
             draggableId: task.id,
             isDragDisabled: !hasPermission("update", task, `status[${status}]`),
