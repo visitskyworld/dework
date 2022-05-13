@@ -38,12 +38,6 @@ export const TaskTagsRow: FC<Props> = ({
   options = defaultOptions,
   style,
 }) => {
-  const attachmentCount = useMemo(
-    () =>
-      task.description?.match(/!?\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/gm)
-        ?.length ?? 0,
-    [task.description]
-  );
   const doneSubtasks = useMemo(
     () => task.subtasks.filter((t) => t.status === TaskStatus.DONE),
     [task.subtasks]
@@ -70,12 +64,6 @@ export const TaskTagsRow: FC<Props> = ({
           <Icons.CalendarOutlined />
         )}
         <span>{moment(task.dueDate).format("D MMM")}</span>
-      </Tag>
-    ),
-    !!attachmentCount && (
-      <Tag key="attachmentCount">
-        <Icons.LinkOutlined />
-        <span>{attachmentCount}</span>
       </Tag>
     ),
     !!task.storyPoints && (
