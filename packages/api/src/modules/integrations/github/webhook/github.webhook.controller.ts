@@ -33,6 +33,7 @@ type GithubPullRequestPayload = Pick<
   | "externalId"
 >;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PreventConcurrency(): MethodDecorator {
   let promise = Promise.resolve();
   return function (
@@ -84,7 +85,7 @@ export class GithubWebhookController {
   }
 
   @Post("webhook")
-  @PreventConcurrency()
+  // @PreventConcurrency()
   async githubWebhook(@Req() request: Request) {
     const event = request.body as Github.WebhookEvent;
     this.logger.debug(`Incoming Github webhook: ${JSON.stringify(event)}`);

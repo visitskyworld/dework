@@ -191,7 +191,8 @@ describe("GithubController", () => {
         expect(githubIssue!.number).toEqual(issueNumber);
       });
 
-      it("should not create multiple tasks if called in parallel", async () => {
+      // Disabled because we removed @PreventConcurrency on /github/webhook
+      xit("should not create multiple tasks if called in parallel", async () => {
         const { project, github } =
           await fixtures.createProjectWithGithubIntegration({}, [
             GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES,
