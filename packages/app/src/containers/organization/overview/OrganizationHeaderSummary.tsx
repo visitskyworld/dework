@@ -86,7 +86,7 @@ export const OrganizationHeaderSummary: FC<Props> = ({ organizationId }) => {
                         size="small"
                         name="Setup DAO permissions from overview header"
                       >
-                        Setup perissions
+                        Setup permissions
                       </Button>
                     </a>
                   </Link>
