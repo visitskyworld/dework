@@ -19,6 +19,9 @@ import {
   UserDetails,
   DeleteThreepidMutation,
   DeleteThreepidMutationVariables,
+  OrganizationIntegrationType,
+  DeleteOrganizationIntegrationMutation,
+  DeleteOrganizationIntegrationMutationVariables,
 } from "@dewo/app/graphql/types";
 import {
   usePersonalSign,
@@ -32,6 +35,7 @@ import { useRequestAddresses } from "@dewo/app/util/hiro";
 import * as solana from "@dewo/app/util/solana";
 import { useWalletConnector } from "@dewo/app/util/walletconnect";
 import { deleteThreepid } from "@dewo/app/graphql/mutations/threepid";
+import { deleteOrganizationIntegration } from "@dewo/app/graphql/mutations/integration";
 
 export function useAuthWithThreepid(): (
   threepidId: string
@@ -251,6 +255,31 @@ export function useDeleteThreepid(): (id: string) => Promise<void> {
   return useCallback(
     async (id) => {
       const res = await mutation({ variables: { id } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+    },
+    [mutation]
+  );
+}
+
+export function useDeleteOrganizationIntegration(): (
+  type: OrganizationIntegrationType,
+  organizationId: string
+) => Promise<void> {
+  const [mutation] = useMutation<
+    DeleteOrganizationIntegrationMutation,
+    DeleteOrganizationIntegrationMutationVariables
+  >(deleteOrganizationIntegration);
+
+  return useCallback(
+    async (type, organizationId) => {
+      const res = await mutation({
+        variables: {
+          input: {
+            type,
+            organizationId,
+          },
+        },
+      });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
     },
     [mutation]

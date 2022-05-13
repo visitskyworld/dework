@@ -145,6 +145,17 @@ export const organizationIntegration = gql`
   }
 `;
 
+export const organizationWithIntegrations = gql`
+  fragment OrganizationWithIntegrations on Organization {
+    id
+    integrations {
+      ...OrganizationIntegration
+    }
+  }
+
+  ${organizationIntegration}
+`;
+
 export const projectIntegration = gql`
   fragment ProjectIntegration on ProjectIntegration {
     id

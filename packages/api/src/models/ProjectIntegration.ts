@@ -86,7 +86,7 @@ export class ProjectIntegration<
   public creatorId!: string;
 
   @JoinColumn()
-  @ManyToOne(() => OrganizationIntegration)
+  @ManyToOne(() => OrganizationIntegration, { onDelete: "CASCADE" })
   @Field(() => OrganizationIntegration, { nullable: true })
   public organizationIntegration?: Promise<OrganizationIntegration>;
   @Column({ type: "uuid", nullable: true })

@@ -5266,6 +5266,36 @@ export interface SetTaskGatingDefaultVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: DeleteOrganizationIntegrationMutation
+// ====================================================
+
+export interface DeleteOrganizationIntegrationMutation_deleteOrganizationIntegration_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject | null;
+}
+
+export interface DeleteOrganizationIntegrationMutation_deleteOrganizationIntegration {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  integrations: DeleteOrganizationIntegrationMutation_deleteOrganizationIntegration_integrations[];
+}
+
+export interface DeleteOrganizationIntegrationMutation {
+  deleteOrganizationIntegration: DeleteOrganizationIntegrationMutation_deleteOrganizationIntegration;
+}
+
+export interface DeleteOrganizationIntegrationMutationVariables {
+  input: DeleteOrganizationIntegrationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: SetUserSkillsMutation
 // ====================================================
 
@@ -10625,6 +10655,28 @@ export interface OrganizationIntegration {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: OrganizationWithIntegrations
+// ====================================================
+
+export interface OrganizationWithIntegrations_integrations {
+  __typename: "OrganizationIntegration";
+  id: Scalar.UUID;
+  type: OrganizationIntegrationType;
+  config: Scalar.JSONObject | null;
+}
+
+export interface OrganizationWithIntegrations {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  integrations: OrganizationWithIntegrations_integrations[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: ProjectIntegration
 // ====================================================
 
@@ -12989,6 +13041,11 @@ export interface CreateTaskViewInput {
   groupBy?: TaskViewGroupBy | null;
   filters: TaskViewFilterInput[];
   sortBys: TaskViewSortByInput[];
+}
+
+export interface DeleteOrganizationIntegrationInput {
+  type: OrganizationIntegrationType;
+  organizationId: Scalar.UUID;
 }
 
 export interface DeleteTaskApplicationInput {

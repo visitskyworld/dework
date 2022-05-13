@@ -11,6 +11,7 @@ import { Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
+import { DeleteOrganizationIntegrationInput } from "./dto/DeleteOrganizationIntegrationInput";
 import {
   ProjectIntegrationCreatedEvent,
   ProjectIntegrationUpdatedEvent,
@@ -58,6 +59,17 @@ export class IntegrationService {
     return this.organizationIntegrationRepo.findOne(
       orgIntegration.identifiers[0]?.id
     ) as Promise<OrganizationIntegration>;
+  }
+
+  public async deleteOrganizationIntegration(
+    input: DeleteOrganizationIntegrationInput
+  ) {
+    const { organizationId, type } = input;
+
+    await this.organizationIntegrationRepo.delete({
+      organizationId,
+      type,
+    });
   }
 
   public async findOrganizationIntegration<

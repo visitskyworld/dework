@@ -1,5 +1,5 @@
-import { Args, Context, Mutation } from "@nestjs/graphql";
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { Project } from "@dewo/api/models/Project";
 import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
@@ -12,10 +12,16 @@ import { ProjectService } from "../project/project.service";
 import { Organization } from "@dewo/api/models/Organization";
 import { CreateOrganizationIntegrationInput } from "./dto/CreateOrganizationIntegrationInput";
 import { OrganizationIntegration } from "@dewo/api/models/OrganizationIntegration";
+import { DeleteOrganizationIntegrationInput } from "./dto/DeleteOrganizationIntegrationInput";
+import { OrganizationService } from "../organization/organization.service";
 
 @Injectable()
+@Resolver(() => Organization)
 export class IntegrationResolver {
-  constructor(private readonly service: IntegrationService) {}
+  constructor(
+    private readonly service: IntegrationService,
+    private readonly organizationService: OrganizationService
+  ) {}
 
   @Mutation(() => OrganizationIntegration)
   @UseGuards(
@@ -37,6 +43,32 @@ export class IntegrationResolver {
       ...input,
       creatorId: user.id,
     });
+  }
+
+  @Mutation(() => Organization)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "delete",
+      subject: Organization,
+      getOrganizationId: (
+        _,
+        params: { input: DeleteOrganizationIntegrationInput }
+      ) => params.input.organizationId,
+    })
+  )
+  public async deleteOrganizationIntegration(
+    @Args("input") input: DeleteOrganizationIntegrationInput
+  ): Promise<Organization> {
+    await this.service.deleteOrganizationIntegration(input);
+
+    const organization = await this.organizationService.findById(
+      input.organizationId
+    );
+
+    if (!organization) throw new NotFoundException();
+
+    return organization;
   }
 
   @Mutation(() => ProjectIntegration)

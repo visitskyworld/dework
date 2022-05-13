@@ -6,12 +6,14 @@ import { ProjectIntegration } from "@dewo/api/models/ProjectIntegration";
 import { IntegrationService } from "./integration.service";
 import { IntegrationResolver } from "./integration.resolver";
 import { RbacModule } from "../rbac/rbac.module";
+import { OrganizationModule } from "../organization/organization.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([OrganizationIntegration, ProjectIntegration]),
     CqrsModule,
     RbacModule,
+    OrganizationModule,
   ],
   providers: [IntegrationService, IntegrationResolver],
   exports: [IntegrationService],
