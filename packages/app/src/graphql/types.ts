@@ -7656,8 +7656,18 @@ export interface GetProjectTasksQuery_project {
   tasks: GetProjectTasksQuery_project_tasks[];
 }
 
+export interface GetProjectTasksExportQuery_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  tasks: GetTasksToExport_tasks[];
+}
+
 export interface GetProjectTasksQuery {
   project: GetProjectTasksQuery_project;
+}
+
+export interface GetProjectTasksExportQuery {
+  project: GetProjectTasksExportQuery_project;
 }
 
 export interface GetProjectTasksQueryVariables {
@@ -8840,10 +8850,39 @@ export interface GetTasksToPayQuery_tasks {
   project: GetTasksToPayQuery_tasks_project;
 }
 
+export interface GetTasksToExport_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  subtasks: GetTasksToPayQuery_tasks_subtasks[];
+  tags: GetTasksToPayQuery_tasks_tags[];
+  assignees: GetTasksToPayQuery_tasks_assignees[];
+  creator: GetTaskQuery_task_creator | null;
+  reward: GetTasksToPayQuery_tasks_reward | null;
+}
+
 export interface GetTasksToPayQuery {
   tasks: GetTasksToPayQuery_tasks[];
 }
-
+export interface TasksExportCSV {
+  name: string;
+  tags: string[];
+  storyPoints: number | null;
+  status: TaskStatus;
+  assignees: string[];
+  address: (string | undefined)[];
+  reward: string;
+  dueDate: string;
+  token: string;
+  activities: string;
+}
 export interface GetTasksToPayQueryVariables {
   input: GetTasksInput;
 }

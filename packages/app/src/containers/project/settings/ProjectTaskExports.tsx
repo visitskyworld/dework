@@ -1,19 +1,29 @@
 import { FormSection } from "@dewo/app/components/FormSection";
 import { Button } from "antd";
-import React, { FC, useMemo } from "react";
-import { useProjectTasks } from "../hooks";
+import React, { FC, useCallback, useMemo, useRef } from "react";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
 import { formatTaskReward } from "../../task/hooks";
 import moment from "moment";
-import { TaskDetails } from "@dewo/app/graphql/types";
+import {
+  GetProjectTasksExportQuery,
+  GetProjectTasksQueryVariables,
+  ThreepidSource,
+} from "@dewo/app/graphql/types";
+import { useLazyQuery } from "@apollo/client";
+import * as Queries from "@dewo/app/graphql/queries";
+import { useRunning } from "@dewo/app/util/hooks";
 interface Props {
   projectId: string;
   projectName: string;
 }
-export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
-  const tasks = useProjectTasks(projectId, "cache-and-network");
 
+export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
+  const csvRef = useRef<any>();
+  const [loadProjectTasksExports, { data }] = useLazyQuery<
+    GetProjectTasksExportQuery,
+    GetProjectTasksQueryVariables
+  >(Queries.projectTasksExport, { ssr: false });
   const headers = useMemo(
     () => [
       { label: "Name", key: "name" },
@@ -21,6 +31,7 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
       { label: "Story Points", key: "storyPoints" },
       { label: "Status", key: "status" },
       { label: "Assignees", key: "assignees" },
+      { label: "Wallet Address", key: "address" },
       { label: "Reward", key: "reward" },
       { label: "Payment Type", key: "token" },
       { label: "Due Date", key: "dueDate" },
@@ -28,38 +39,59 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
     ],
     []
   );
+
   const csvData = useMemo(
     () =>
-      tasks?.map((task) => ({
+      data?.project.tasks.map((task) => ({
         name: task.name,
         tags: task.tags.map((tag) => tag.label),
         storyPoints: task.storyPoints,
         status: task.status,
         assignees: task.assignees.map((assignee) => assignee.username),
+        address: task.assignees?.map(
+          (t) =>
+            t.threepids.find((t) => t.source === ThreepidSource.metamask)
+              ?.address
+        ),
         reward: !!task.reward ? formatTaskReward(task.reward) : "",
         dueDate: task.dueDate ? moment(task.dueDate).format("LLL") : "",
         token: !!task.reward ? task.reward.token?.name : "",
-        activities: `${
-          (task as TaskDetails).creator?.username ?? "Someone"
-        } created on ${moment(task.createdAt).format("lll")}${
+        activities: `${task.creator?.username ?? "Someone"} created on ${moment(
+          task.createdAt
+        ).format("lll")}${
           !!task.doneAt
             ? `, Task completed on ${moment(task.doneAt).format("lll")}`
             : ""
         }`,
-      })) || [],
-    [tasks]
+      })),
+    [data?.project.tasks]
   );
+
+  const [handleExport, exporting] = useRunning(
+    useCallback(async () => {
+      await loadProjectTasksExports({ variables: { projectId: projectId! } });
+      csvRef.current?.link?.click();
+    }, [loadProjectTasksExports, projectId])
+  );
+
   return (
     <FormSection label="Export Tasks">
-      <CSVLink
-        filename={`${projectName}-tasks-list.csv`}
-        data={csvData}
-        headers={headers}
+      <Button
+        loading={exporting}
+        icon={<ExportOutlined />}
+        onClick={handleExport}
+        name="Export tasks as CSV"
       >
-        <Button icon={<ExportOutlined />} name="Export tasks as CSV">
-          Export CSV
-        </Button>
-      </CSVLink>
+        Export CSV
+      </Button>
+      {!!csvData && (
+        <CSVLink
+          ref={csvRef}
+          filename={`${projectName}-tasks-list.csv`}
+          data={csvData}
+          headers={headers}
+        />
+      )}
     </FormSection>
   );
 };
