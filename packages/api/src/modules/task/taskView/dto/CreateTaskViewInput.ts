@@ -1,6 +1,7 @@
 import {
   TaskViewFilter,
   TaskViewGroupBy,
+  TaskViewField,
   TaskViewSortBy,
   TaskViewType,
 } from "@dewo/api/models/TaskView";
@@ -32,4 +33,7 @@ export class CreateTaskViewInput {
 
   @Field(() => [TaskViewSortBy])
   public sortBys!: TaskViewSortBy[];
+
+  @Field(() => [TaskViewField], { nullable: true })
+  public fields?: TaskViewField[];
 }

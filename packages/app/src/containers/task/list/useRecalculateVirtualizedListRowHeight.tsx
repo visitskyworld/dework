@@ -2,6 +2,7 @@ import { MutableRefObject, ReactNode, useEffect, useMemo } from "react";
 import { List, CellMeasurerCache } from "react-virtualized";
 import { usePrevious } from "@dewo/app/util/hooks";
 import _ from "lodash";
+import { useTaskViewFields } from "../views/hooks";
 
 export interface VirtualizedListRow {
   id: string;
@@ -41,4 +42,14 @@ export function useRecalculateVirtualizedListRowHeight(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ids, cache, list]);
+
+  const fields = useTaskViewFields();
+
+  const deps = [fields];
+  const prevDeps = deps.map(usePrevious);
+  const reset = !deps.every((dep, index) => prevDeps[index] === dep);
+  if (reset) {
+    cache.clearAll();
+    list.current?.recomputeRowHeights();
+  }
 }

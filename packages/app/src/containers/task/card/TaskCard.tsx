@@ -1,13 +1,13 @@
-import React, { CSSProperties, FC } from "react";
+import React, { CSSProperties, FC, useMemo } from "react";
 import {
   Task,
-  TaskStatus,
+  TaskViewField,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import { Card, Typography, Row, Rate, Avatar } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { TaskReactionPicker } from "../board/TaskReactionPicker";
-import { TagOptions, TaskTagsRow } from "../board/TaskTagsRow";
+import { TaskTagsRow } from "../board/TaskTagsRow";
 import {
   TaskActionButton,
   useTaskActionButton,
@@ -16,27 +16,29 @@ import { TaskGatingIcon } from "./TaskGatingIcon";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
+import { useTaskViewFields } from "../views/hooks";
+import { NumberOutlined } from "@ant-design/icons";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
-  tags?: TagOptions;
   style?: CSSProperties;
   showReview?: boolean;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({
-  task,
-  tags,
-  style,
-  showReview,
-}) => {
+export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchProps = usePrefetchTaskDetailsOnHover(task.id);
 
-  const shouldRenderReward = !!task.reward;
-  const shouldRenderReactions =
-    !!task.reactions.length || task.status === TaskStatus.COMMUNITY_SUGGESTIONS;
-  const shouldRenderTaskActionButton = !!useTaskActionButton(task);
+  const fields = useTaskViewFields();
+  const taskTagsRowFields = useMemo(
+    () => new Set(Array.from(fields).filter((v) => v !== TaskViewField.reward)),
+    [fields]
+  );
+
+  const shouldRenderReward = !!task.reward && fields.has(TaskViewField.reward);
+  const shouldRenderReactions = !!task.reactions.length;
+  const shouldRenderTaskActionButton =
+    !!useTaskActionButton(task) && fields.has(TaskViewField.button);
   return (
     <Card
       size="small"
@@ -74,6 +76,16 @@ export const TaskCard: FC<TaskCardProps> = ({
       onClick={navigateToTask}
       {...prefetchProps}
     >
+      {fields.has(TaskViewField.number) && (
+        <Typography.Paragraph
+          type="secondary"
+          style={{ marginBottom: 2 }}
+          className="ant-typography-caption"
+        >
+          <NumberOutlined style={{ opacity: 0.3 }} />
+          {task.number}
+        </Typography.Paragraph>
+      )}
       <Row style={{ rowGap: 8 }}>
         <Typography.Text
           className="font-semibold"
@@ -81,21 +93,26 @@ export const TaskCard: FC<TaskCardProps> = ({
         >
           {task.name}
         </Typography.Text>
-        {!!task.assignees.length ? (
-          <Avatar.Group
-            style={{ alignSelf: "flex-start" }}
-            maxCount={task.assignees.length === 3 ? 3 : 2}
-            size={20}
-          >
-            {task.assignees.map((user) => (
-              <UserAvatar key={user.id} user={user} linkToProfile />
-            ))}
-          </Avatar.Group>
-        ) : (
-          <TaskGatingIcon task={task} />
-        )}
+        {!!task.assignees.length
+          ? fields.has(TaskViewField.assignees) && (
+              <Avatar.Group
+                style={{ alignSelf: "flex-start" }}
+                maxCount={task.assignees.length === 3 ? 3 : 2}
+                size={20}
+              >
+                {task.assignees.map((user) => (
+                  <UserAvatar key={user.id} user={user} linkToProfile />
+                ))}
+              </Avatar.Group>
+            )
+          : fields.has(TaskViewField.gating) && <TaskGatingIcon task={task} />}
       </Row>
-      <TaskTagsRow task={task} style={{ marginTop: 8 }} options={tags} />
+      <TaskTagsRow
+        task={task}
+        style={{ marginTop: 8 }}
+        skills="emoji"
+        fields={taskTagsRowFields}
+      />
       {showReview && (
         <>
           <Row style={{ marginBottom: 4 }}>

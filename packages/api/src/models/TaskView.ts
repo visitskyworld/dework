@@ -35,6 +35,20 @@ export enum TaskViewGroupBy {
   status = "status",
 }
 
+export enum TaskViewField {
+  status = "status",
+  gating = "gating",
+  number = "number",
+  name = "name",
+  priority = "priority",
+  dueDate = "dueDate",
+  skills = "skills",
+  tags = "tags",
+  reward = "reward",
+  assignees = "assignees",
+  button = "button",
+}
+
 export enum TaskViewFilterType {
   TAGS = "TAGS",
   STATUSES = "STATUSES",
@@ -50,6 +64,7 @@ registerEnumType(TaskViewType, { name: "TaskViewType" });
 registerEnumType(TaskViewSortByField, { name: "TaskViewSortByField" });
 registerEnumType(TaskViewSortByDirection, { name: "TaskViewSortByDirection" });
 registerEnumType(TaskViewGroupBy, { name: "TaskViewGroupBy" });
+registerEnumType(TaskViewField, { name: "TaskViewField" });
 registerEnumType(TaskViewFilterType, { name: "TaskViewFilterType" });
 
 @InputType("TaskViewFilterInput")
@@ -134,6 +149,22 @@ export class TaskView extends Audit {
   })
   @Field(() => [TaskViewSortBy])
   public sortBys!: TaskViewSortBy[];
+
+  @Column("json", {
+    default: [
+      TaskViewField.status,
+      TaskViewField.gating,
+      TaskViewField.name,
+      TaskViewField.priority,
+      TaskViewField.dueDate,
+      TaskViewField.skills,
+      TaskViewField.tags,
+      TaskViewField.assignees,
+      TaskViewField.button,
+    ],
+  })
+  @Field(() => [TaskViewField])
+  public fields!: TaskViewField[];
 
   @JoinColumn()
   @ManyToOne(() => Project)

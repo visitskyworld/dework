@@ -54,17 +54,9 @@ export const TaskTable: FC<Props> = ({
           (task) => () =>
             !!task ? (
               screen.lg ? (
-                <TaskListItem
-                  key={task.id}
-                  task={task}
-                  tags={{ skills: true }}
-                />
+                <TaskListItem key={task.id} task={task} />
               ) : (
-                <TaskCard
-                  task={task}
-                  style={{ marginBottom: 8 }}
-                  tags={{ skills: true }}
-                />
+                <TaskCard task={task} style={{ marginBottom: 8 }} />
               )
             ) : (
               <SkeletonTaskListItem />

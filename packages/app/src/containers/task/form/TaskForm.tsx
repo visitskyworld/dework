@@ -59,6 +59,7 @@ import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { TaskGithubIssueButton } from "./TaskGithubIssueButton";
 import { SkillSelect } from "@dewo/app/components/form/SkillSelect";
 import { TaskFormCreateButton } from "./TaskFormCreateButton";
+import { NumberOutlined } from "@ant-design/icons";
 
 interface TaskFormProps {
   mode: "create" | "update";
@@ -206,7 +207,8 @@ export const TaskForm: FC<TaskFormProps> = ({
                 </Breadcrumb.Item>
               )}
               <Breadcrumb.Item className="text-secondary">
-                #{task.number}
+                <NumberOutlined style={{ opacity: 0.3 }} />
+                {task.number}
               </Breadcrumb.Item>
             </Breadcrumb>
           )}

@@ -32,6 +32,7 @@ export const taskView = gql`
     projectId
     organizationId
     userId
+    fields
     filters {
       ...TaskViewFilter
     }

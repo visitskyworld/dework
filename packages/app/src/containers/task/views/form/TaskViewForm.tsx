@@ -14,6 +14,7 @@ import { TaskViewFormSortByList } from "./TaskViewFormSortByList";
 import { TaskViewTypeRadioGroup } from "./TaskViewTypeRadioGroup";
 import { Divider, Form, List } from "antd";
 import { DebouncedInput } from "../../../../components/DebouncedInput";
+import { TaskViewFormFieldList } from "./TaskViewFormFieldList";
 
 export type FormValues = CreateTaskViewInput | UpdateTaskViewInput;
 
@@ -90,6 +91,7 @@ export const TaskViewForm: FC<Props> = ({
 
       <TaskViewFormFilterList form={form} />
       <TaskViewFormSortByList form={form} />
+      <TaskViewFormFieldList />
       {footer}
     </Form>
   );

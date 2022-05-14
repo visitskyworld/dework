@@ -92,7 +92,6 @@ export const TaskBoardColumn: FC<Props> = ({
               !collapsed[section.id] && (
                 <TaskCard
                   task={task}
-                  tags={{ skills: "emoji", tags: true, properties: true }}
                   style={{ marginLeft: 8, marginRight: 8, marginBottom: 8 }}
                 />
               ),

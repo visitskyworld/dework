@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { eatClick, stopPropagation } from "../util/eatClick";
 
-interface DropdownSelectOption {
+export interface DropdownSelectOption {
   value: string;
   label: ReactNode;
   disabled?: boolean;

@@ -3,6 +3,7 @@ import {
   Task,
   TaskPriority,
   TaskStatus,
+  TaskViewField,
   TaskWithOrganization,
 } from "@dewo/app/graphql/types";
 import { Row, Tag, Typography } from "antd";
@@ -15,27 +16,19 @@ import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { SkillTag } from "@dewo/app/components/SkillTag";
 
-export interface TagOptions {
-  properties?: boolean;
-  reward?: boolean;
-  tags?: boolean;
-  skills?: "emoji" | true;
-}
-
-const defaultOptions: TagOptions = {
-  tags: true,
-  skills: true,
-};
-
 interface Props {
   task: Task | TaskWithOrganization;
-  options?: TagOptions;
+  fields?: Set<TaskViewField>;
+  skills?: "default" | "emoji";
   style?: CSSProperties;
 }
 
+const defaultFields = new Set([TaskViewField.tags, TaskViewField.skills]);
+
 export const TaskTagsRow: FC<Props> = ({
   task,
-  options = defaultOptions,
+  fields = defaultFields,
+  skills,
   style,
 }) => {
   const doneSubtasks = useMemo(
@@ -44,7 +37,7 @@ export const TaskTagsRow: FC<Props> = ({
   );
 
   const standardTags = [
-    task.priority !== TaskPriority.NONE && (
+    fields.has(TaskViewField.priority) && task.priority !== TaskPriority.NONE && (
       <Tag
         key="priority"
         title={PRIORITY_LABEL[task.priority]}
@@ -53,7 +46,7 @@ export const TaskTagsRow: FC<Props> = ({
         <TaskPriorityIcon priority={task.priority} size={13} />
       </Tag>
     ),
-    !!task.dueDate && (
+    fields.has(TaskViewField.dueDate) && !!task.dueDate && (
       <Tag key="dueDate">
         {task.status !== TaskStatus.DONE &&
         moment().endOf("day").isAfter(task.dueDate) ? (
@@ -98,17 +91,13 @@ export const TaskTagsRow: FC<Props> = ({
   ];
 
   const tagComponentsToRender = [
-    ...(options.properties ? standardTags : []),
-    ...(options.skills
+    standardTags,
+    ...(fields.has(TaskViewField.skills)
       ? task.skills.map((skill) => (
-          <SkillTag
-            key={skill.id}
-            mode={options.skills === "emoji" ? "emoji" : undefined}
-            skill={skill}
-          />
+          <SkillTag key={skill.id} mode={skills} skill={skill} />
         ))
       : []),
-    ...(options.tags
+    ...(fields.has(TaskViewField.tags)
       ? task.tags
           .filter((tag) => !tag.deletedAt)
           .map((tag) => (
@@ -117,7 +106,7 @@ export const TaskTagsRow: FC<Props> = ({
             </Tag>
           ))
       : []),
-    ...(options.reward && !!task.reward
+    ...(fields.has(TaskViewField.reward) && !!task.reward
       ? [<TaskRewardTag key="reward" reward={task.reward} />]
       : []),
   ].filter((c) => !!c);

@@ -90,6 +90,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: AuthWithThreepidMutation_authWithThreepid_user_taskViews_filters[];
   sortBys: AuthWithThreepidMutation_authWithThreepid_user_taskViews_sortBys[];
 }
@@ -282,6 +283,7 @@ export interface UpdateUserMutation_user_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateUserMutation_user_taskViews_filters[];
   sortBys: UpdateUserMutation_user_taskViews_sortBys[];
 }
@@ -516,6 +518,7 @@ export interface UpdateOrganizationMutation_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateOrganizationMutation_organization_taskViews_filters[];
   sortBys: UpdateOrganizationMutation_organization_taskViews_sortBys[];
 }
@@ -760,6 +763,7 @@ export interface CreateProjectMutation_project_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateProjectMutation_project_organization_taskViews_filters[];
   sortBys: CreateProjectMutation_project_organization_taskViews_sortBys[];
 }
@@ -820,6 +824,7 @@ export interface CreateProjectMutation_project_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateProjectMutation_project_taskViews_filters[];
   sortBys: CreateProjectMutation_project_taskViews_sortBys[];
 }
@@ -947,6 +952,7 @@ export interface UpdateProjectMutation_project_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateProjectMutation_project_taskViews_filters[];
   sortBys: UpdateProjectMutation_project_taskViews_sortBys[];
 }
@@ -4557,6 +4563,7 @@ export interface CreateProjectsFromNotionMutation_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateProjectsFromNotionMutation_organization_taskViews_filters[];
   sortBys: CreateProjectsFromNotionMutation_organization_taskViews_sortBys[];
 }
@@ -4696,6 +4703,7 @@ export interface CreateProjectsFromTrelloMutation_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateProjectsFromTrelloMutation_organization_taskViews_filters[];
   sortBys: CreateProjectsFromTrelloMutation_organization_taskViews_sortBys[];
 }
@@ -4835,6 +4843,7 @@ export interface CreateProjectsFromGithubMutation_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateProjectsFromGithubMutation_organization_taskViews_filters[];
   sortBys: CreateProjectsFromGithubMutation_organization_taskViews_sortBys[];
 }
@@ -5378,6 +5387,7 @@ export interface CreateTaskViewMutation_taskView_project_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateTaskViewMutation_taskView_project_taskViews_filters[];
   sortBys: CreateTaskViewMutation_taskView_project_taskViews_sortBys[];
 }
@@ -5418,6 +5428,7 @@ export interface CreateTaskViewMutation_taskView_user_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateTaskViewMutation_taskView_user_taskViews_filters[];
   sortBys: CreateTaskViewMutation_taskView_user_taskViews_sortBys[];
 }
@@ -5458,6 +5469,7 @@ export interface CreateTaskViewMutation_taskView_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateTaskViewMutation_taskView_organization_taskViews_filters[];
   sortBys: CreateTaskViewMutation_taskView_organization_taskViews_sortBys[];
 }
@@ -5479,6 +5491,7 @@ export interface CreateTaskViewMutation_taskView {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: CreateTaskViewMutation_taskView_filters[];
   sortBys: CreateTaskViewMutation_taskView_sortBys[];
   project: CreateTaskViewMutation_taskView_project | null;
@@ -5552,6 +5565,7 @@ export interface UpdateTaskViewMutation_taskView_project_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateTaskViewMutation_taskView_project_taskViews_filters[];
   sortBys: UpdateTaskViewMutation_taskView_project_taskViews_sortBys[];
 }
@@ -5592,6 +5606,7 @@ export interface UpdateTaskViewMutation_taskView_user_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateTaskViewMutation_taskView_user_taskViews_filters[];
   sortBys: UpdateTaskViewMutation_taskView_user_taskViews_sortBys[];
 }
@@ -5632,6 +5647,7 @@ export interface UpdateTaskViewMutation_taskView_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateTaskViewMutation_taskView_organization_taskViews_filters[];
   sortBys: UpdateTaskViewMutation_taskView_organization_taskViews_sortBys[];
 }
@@ -5653,6 +5669,7 @@ export interface UpdateTaskViewMutation_taskView {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UpdateTaskViewMutation_taskView_filters[];
   sortBys: UpdateTaskViewMutation_taskView_sortBys[];
   project: UpdateTaskViewMutation_taskView_project | null;
@@ -5760,6 +5777,7 @@ export interface DeleteThreepidMutation_deleteThreepid_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: DeleteThreepidMutation_deleteThreepid_taskViews_filters[];
   sortBys: DeleteThreepidMutation_deleteThreepid_taskViews_sortBys[];
 }
@@ -5880,6 +5898,7 @@ export interface MeQuery_me_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: MeQuery_me_taskViews_filters[];
   sortBys: MeQuery_me_taskViews_sortBys[];
 }
@@ -6299,6 +6318,7 @@ export interface UserTaskViewsQuery_user_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UserTaskViewsQuery_user_taskViews_filters[];
   sortBys: UserTaskViewsQuery_user_taskViews_sortBys[];
 }
@@ -6501,6 +6521,7 @@ export interface GetOrganizationDetailsQuery_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: GetOrganizationDetailsQuery_organization_taskViews_filters[];
   sortBys: GetOrganizationDetailsQuery_organization_taskViews_sortBys[];
 }
@@ -6651,6 +6672,7 @@ export interface GetOrganizationTaskViewsQuery_organization_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: GetOrganizationTaskViewsQuery_organization_taskViews_filters[];
   sortBys: GetOrganizationTaskViewsQuery_organization_taskViews_sortBys[];
 }
@@ -7383,6 +7405,7 @@ export interface GetProjectDetailsQuery_project_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: GetProjectDetailsQuery_project_taskViews_filters[];
   sortBys: GetProjectDetailsQuery_project_taskViews_sortBys[];
 }
@@ -10932,6 +10955,7 @@ export interface ProjectDetails_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: ProjectDetails_taskViews_filters[];
   sortBys: ProjectDetails_taskViews_sortBys[];
 }
@@ -12334,6 +12358,7 @@ export interface UserDetails_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: UserDetails_taskViews_filters[];
   sortBys: UserDetails_taskViews_sortBys[];
 }
@@ -12464,6 +12489,7 @@ export interface OrganizationDetails_taskViews {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: OrganizationDetails_taskViews_filters[];
   sortBys: OrganizationDetails_taskViews_sortBys[];
 }
@@ -12692,6 +12718,7 @@ export interface TaskView {
   projectId: Scalar.UUID | null;
   organizationId: Scalar.UUID | null;
   userId: Scalar.UUID | null;
+  fields: TaskViewField[];
   filters: TaskView_filters[];
   sortBys: TaskView_sortBys[];
 }
@@ -12820,6 +12847,20 @@ export enum TaskStatus {
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
   TODO = "TODO",
+}
+
+export enum TaskViewField {
+  assignees = "assignees",
+  button = "button",
+  dueDate = "dueDate",
+  gating = "gating",
+  name = "name",
+  number = "number",
+  priority = "priority",
+  reward = "reward",
+  skills = "skills",
+  status = "status",
+  tags = "tags",
 }
 
 export enum TaskViewFilterType {
@@ -13041,6 +13082,7 @@ export interface CreateTaskViewInput {
   groupBy?: TaskViewGroupBy | null;
   filters: TaskViewFilterInput[];
   sortBys: TaskViewSortByInput[];
+  fields?: TaskViewField[] | null;
 }
 
 export interface DeleteOrganizationIntegrationInput {
@@ -13242,6 +13284,7 @@ export interface UpdateTaskViewInput {
   groupBy?: TaskViewGroupBy | null;
   filters?: TaskViewFilterInput[] | null;
   sortBys?: TaskViewSortByInput[] | null;
+  fields?: TaskViewField[] | null;
   deletedAt?: Scalar.DateTime | null;
 }
 
