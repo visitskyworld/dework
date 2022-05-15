@@ -90,7 +90,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
         },
         {
           key: "overview",
-          render: (_: unknown, task: TaskWithOrganization | undefined) =>
+          render: (__: unknown, task: TaskWithOrganization | undefined) =>
             !!task ? (
               <>
                 <Typography.Paragraph
@@ -108,7 +108,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                   Created by {task.project.organization.name} (
                   {moment(task.createdAt).calendar()})
                 </Typography.Paragraph>
-                <TaskTagsRow task={task} />
+                <TaskTagsRow task={_.omit(task, ["project"])} />
                 {!screens.lg && !!task.reward && (
                   <>
                     <Typography.Paragraph
