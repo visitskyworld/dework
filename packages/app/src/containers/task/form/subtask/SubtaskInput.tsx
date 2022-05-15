@@ -38,6 +38,7 @@ export const SubtaskInput: FC<Props> = ({
   const createTask = useCreateTask();
   const canCreateSubtask = usePermission("create", {
     status: TaskStatus.TODO,
+    projectId,
     __typename: "Task",
     __parentTask__: task,
   });
