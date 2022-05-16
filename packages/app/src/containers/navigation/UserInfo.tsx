@@ -60,11 +60,11 @@ export const UserInfo: FC = () => {
         <Col>
           <UserAvatar user={user} linkToProfile />
         </Col>
-        <Col flex={1}>
+        <Col style={{ flex: 1, overflow: "hidden" }}>
           <Row>
             <Link href={user?.permalink ?? ""}>
-              <a href={user?.permalink}>
-                <Typography.Text className="font-semibold">
+              <a href={user?.permalink} style={{ width: "100%" }}>
+                <Typography.Text ellipsis className="font-semibold">
                   {user.username}
                 </Typography.Text>
               </a>
