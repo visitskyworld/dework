@@ -121,13 +121,18 @@ export const TaskDiscoveryList: FC = () => {
   return (
     <>
       <div className="mx-auto max-w-lg w-full">
-        <Typography.Title style={{ textAlign: "center" }} level={3}>
-          Explore Bounties
-          <QuestionmarkTooltip
-            marginLeft={8}
-            title="Only tasks in public boards and with a bounty reward show up here!"
-          />
-        </Typography.Title>
+        <Row gutter={16} justify="center">
+          <Col md={8}></Col>
+          <Col md={16}>
+            <Typography.Title level={3}>
+              Explore Bounties
+              <QuestionmarkTooltip
+                marginLeft={8}
+                title="Only tasks in public boards and with a bounty reward show up here!"
+              />
+            </Typography.Title>
+          </Col>
+        </Row>
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card
