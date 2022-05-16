@@ -159,6 +159,7 @@ export class TaskView extends Audit {
       TaskViewField.dueDate,
       TaskViewField.skills,
       TaskViewField.tags,
+      TaskViewField.reward,
       TaskViewField.assignees,
       TaskViewField.button,
     ],
