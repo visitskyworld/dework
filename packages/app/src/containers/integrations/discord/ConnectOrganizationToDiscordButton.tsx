@@ -27,7 +27,7 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
       href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?${qs.stringify({
         organizationId,
         userId: user?.id,
-        redirect: router.asPath,
+        redirect: `${router.asPath}/settings/discord`,
         ...(guildId ? { guildId } : {}),
       })}`}
     >
