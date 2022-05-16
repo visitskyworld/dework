@@ -39,7 +39,7 @@ export const RichMarkdownEditor: FC<RichMarkdownEditorProps> = ({
   onSave,
   mode = "create",
   editable,
-  placeholder = "Write your description here",
+  placeholder = 'Write your description here. Type "/" to insert.',
   buttons: Buttons = mode === "update" ? MarkdownEditorButtons : undefined,
   bordered,
 }) => {
