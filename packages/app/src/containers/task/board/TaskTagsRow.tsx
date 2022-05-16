@@ -15,6 +15,9 @@ import { PRIORITY_LABEL } from "./util";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { SkillTag } from "@dewo/app/components/SkillTag";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
+import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
+import { useUpdateTask } from "../hooks";
 
 interface Props {
   task: Task | TaskWithOrganization;
@@ -36,15 +39,37 @@ export const TaskTagsRow: FC<Props> = ({
     [task.subtasks]
   );
 
+  const canChangePriority = usePermission("update", task, "priority");
+  const updateTask = useUpdateTask();
+
   const standardTags = [
-    fields.has(TaskViewField.priority) && task.priority !== TaskPriority.NONE && (
-      <Tag
-        key="priority"
-        title={PRIORITY_LABEL[task.priority]}
-        style={{ height: 20 }}
+    fields.has(TaskViewField.priority) && (
+      <DropdownSelect
+        mode="default"
+        disabled={!canChangePriority}
+        onChange={(priority: TaskPriority) =>
+          updateTask({ id: task.id, priority }, task)
+        }
+        options={(Object.keys(PRIORITY_LABEL) as TaskPriority[]).map(
+          (priority) => ({
+            value: priority,
+            label: (
+              <Row align="middle" style={{ columnGap: 8 }}>
+                <TaskPriorityIcon priority={priority} size={13} />
+                {PRIORITY_LABEL[priority]}
+              </Row>
+            ),
+          })
+        )}
       >
-        <TaskPriorityIcon priority={task.priority} size={13} />
-      </Tag>
+        <Tag
+          key="priority"
+          title={PRIORITY_LABEL[task.priority]}
+          style={{ height: 20 }}
+        >
+          <TaskPriorityIcon priority={task.priority} size={13} />
+        </Tag>
+      </DropdownSelect>
     ),
     fields.has(TaskViewField.dueDate) && !!task.dueDate && (
       <Tag key="dueDate">
