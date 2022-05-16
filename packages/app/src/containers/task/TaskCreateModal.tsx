@@ -12,7 +12,7 @@ import { useProject } from "../project/hooks";
 import moment from "moment";
 
 const buildKey = (initialValues: Partial<TaskFormValues>) =>
-  `TaskCreateModal.storedValues(${JSON.stringify(
+  `TaskCreateModal.v2.storedValues(${JSON.stringify(
     initialValues,
     Object.keys(initialValues).sort()
   )})`;
