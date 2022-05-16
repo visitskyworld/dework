@@ -6,12 +6,12 @@ import { Task, TaskViewField } from "@dewo/app/graphql/types";
 import { TaskGatingIcon } from "../card/TaskGatingIcon";
 import { TaskTagsRow } from "../board/TaskTagsRow";
 import { TaskActionButton } from "../actions/TaskActionButton";
-import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import styles from "./TaskListItem.module.less";
 import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnHover";
 import { NumberOutlined } from "@ant-design/icons";
 import { useTaskViewFields } from "../views/hooks";
+import { TaskStatusDropdown } from "../../../components/form/TaskStatusDropdown";
 
 interface Props {
   task: Task;
@@ -30,9 +30,7 @@ export const TaskListItem: FC<Props> = ({ task }) => {
       {...prefetchTaskDetailsOnHover}
     >
       <Row align="middle" style={{ columnGap: 16 }}>
-        {fields.has(TaskViewField.status) && (
-          <TaskStatusIcon status={task.status} />
-        )}
+        {fields.has(TaskViewField.status) && <TaskStatusDropdown task={task} />}
         {fields.has(TaskViewField.gating) && <TaskGatingIcon task={task} />}
         {fields.has(TaskViewField.number) && (
           <Typography.Text

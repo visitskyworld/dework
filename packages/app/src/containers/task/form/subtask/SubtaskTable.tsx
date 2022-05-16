@@ -10,7 +10,7 @@ import {
   TaskTag,
   User,
 } from "@dewo/app/graphql/types";
-import { Avatar, DatePicker, Row, Table, Tooltip, Typography } from "antd";
+import { Avatar, DatePicker, Row, Table, Typography } from "antd";
 import React, {
   CSSProperties,
   FC,
@@ -26,17 +26,16 @@ import { AvatarSize } from "antd/lib/avatar/SizeContext";
 import moment from "moment";
 import { isSSR } from "@dewo/app/util/isSSR";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import {
   formatTaskReward,
   useTaskFormUserOptions,
   useUpdateTask,
 } from "../../hooks";
-import { STATUS_LABEL } from "../../board/util";
 import { NewSubtaskInput } from "./NewSubtaskInput";
 import { TaskTagsRow } from "../../board/TaskTagsRow";
 import { TaskActionButton } from "../../actions/TaskActionButton";
 import { SubtaskOptionButton } from "./SubtaskOptionButton";
+import { TaskStatusDropdown } from "@dewo/app/components/form/TaskStatusDropdown";
 
 export interface SubtaskTableRowData {
   key: string;
@@ -220,32 +219,13 @@ export const SubtaskTable: FC<Props> = ({
           key: "status",
           dataIndex: "status",
           width: 1,
-          render: (currentStatus: TaskStatus, row) => (
-            <DropdownSelect
-              value={currentStatus}
-              mode="default"
-              disabled={!canChange(row.task, "status")}
-              onChange={(status) => handleChange({ status }, row)}
-              options={statuses.map((status) => ({
-                value: status,
-                label: (
-                  <Row style={{ gap: 8 }}>
-                    <TaskStatusIcon status={status} />
-                    {STATUS_LABEL[status]}
-                  </Row>
-                ),
-              }))}
-              children={
-                <Tooltip title={STATUS_LABEL[currentStatus]} placement="left">
-                  <div
-                    style={{ display: "grid", placeItems: "center", width: 24 }}
-                  >
-                    <TaskStatusIcon status={currentStatus} />
-                  </div>
-                </Tooltip>
-              }
-            />
-          ),
+          render: (currentStatus: TaskStatus, row) =>
+            !!row.task && (
+              <TaskStatusDropdown
+                task={row.task}
+                onChange={(status) => handleChange({ status }, row)}
+              />
+            ),
           defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
           sorter: (a, b) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
