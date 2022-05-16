@@ -390,7 +390,10 @@ export function useTaskViewLayoutItems() {
               skillIds: filter(TaskViewFilterType.SKILLS)?.skillIds,
               name: searchQuery,
               applicantIds: filter(TaskViewFilterType.APPLICANTS)?.applicantIds,
-              parentTaskId: null,
+              parentTaskId:
+                filter(TaskViewFilterType.SUBTASKS)?.subtasks === true
+                  ? undefined
+                  : null,
               sortBy: {
                 field:
                   currentView.sortBys[0]?.field ??

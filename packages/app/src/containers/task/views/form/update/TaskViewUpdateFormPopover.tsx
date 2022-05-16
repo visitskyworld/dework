@@ -8,7 +8,7 @@ import {
 import { eatClick } from "@dewo/app/util/eatClick";
 import { TaskViewUpdateFormFooter } from "./TaskViewUpdateFormFooter";
 import { useUpdateTaskView } from "../../hooks";
-import { TaskViewForm } from "../TaskViewForm";
+import { FormValues, TaskViewForm } from "../TaskViewForm";
 import { useTaskViewContext } from "../../TaskViewContext";
 import { ControlIcon } from "@dewo/app/components/icons/Control";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -43,7 +43,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view }) => {
     [view.id, updateTaskView]
   );
 
-  const initialValues = useMemo(
+  const initialValues = useMemo<Partial<FormValues>>(
     () => ({
       ...view,
       filters: view.filters.map(({ __typename, ...f }) => f),

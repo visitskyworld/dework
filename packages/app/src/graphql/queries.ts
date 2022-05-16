@@ -339,11 +339,14 @@ export const projectTasks = gql`
 `;
 
 export const projectTasksExport = gql`
-  query GetProjectTasksQuery($projectId: UUID!) {
+  query GetProjectTasksExportQuery($projectId: UUID!) {
     project: getProject(id: $projectId) {
       id
       tasks {
         ...Task
+        creator {
+          ...User
+        }
         assignees {
           ...User
           threepids {
@@ -356,6 +359,7 @@ export const projectTasksExport = gql`
   }
 
   ${Fragments.task}
+  ${Fragments.user}
 `;
 
 export const projectTaskTags = gql`

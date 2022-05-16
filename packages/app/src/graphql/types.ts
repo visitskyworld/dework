@@ -71,6 +71,7 @@ export interface AuthWithThreepidMutation_authWithThreepid_user_taskViews_filter
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface AuthWithThreepidMutation_authWithThreepid_user_taskViews_sortBys {
@@ -264,6 +265,7 @@ export interface UpdateUserMutation_user_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateUserMutation_user_taskViews_sortBys {
@@ -499,6 +501,7 @@ export interface UpdateOrganizationMutation_organization_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateOrganizationMutation_organization_taskViews_sortBys {
@@ -744,6 +747,7 @@ export interface CreateProjectMutation_project_organization_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateProjectMutation_project_organization_taskViews_sortBys {
@@ -805,6 +809,7 @@ export interface CreateProjectMutation_project_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateProjectMutation_project_taskViews_sortBys {
@@ -933,6 +938,7 @@ export interface UpdateProjectMutation_project_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateProjectMutation_project_taskViews_sortBys {
@@ -4544,6 +4550,7 @@ export interface CreateProjectsFromNotionMutation_organization_taskViews_filters
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_taskViews_sortBys {
@@ -4684,6 +4691,7 @@ export interface CreateProjectsFromTrelloMutation_organization_taskViews_filters
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_taskViews_sortBys {
@@ -4824,6 +4832,7 @@ export interface CreateProjectsFromGithubMutation_organization_taskViews_filters
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_taskViews_sortBys {
@@ -5349,6 +5358,7 @@ export interface CreateTaskViewMutation_taskView_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateTaskViewMutation_taskView_sortBys {
@@ -5368,6 +5378,7 @@ export interface CreateTaskViewMutation_taskView_project_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateTaskViewMutation_taskView_project_taskViews_sortBys {
@@ -5409,6 +5420,7 @@ export interface CreateTaskViewMutation_taskView_user_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateTaskViewMutation_taskView_user_taskViews_sortBys {
@@ -5450,6 +5462,7 @@ export interface CreateTaskViewMutation_taskView_organization_taskViews_filters 
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface CreateTaskViewMutation_taskView_organization_taskViews_sortBys {
@@ -5527,6 +5540,7 @@ export interface UpdateTaskViewMutation_taskView_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_sortBys {
@@ -5546,6 +5560,7 @@ export interface UpdateTaskViewMutation_taskView_project_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_project_taskViews_sortBys {
@@ -5587,6 +5602,7 @@ export interface UpdateTaskViewMutation_taskView_user_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_user_taskViews_sortBys {
@@ -5628,6 +5644,7 @@ export interface UpdateTaskViewMutation_taskView_organization_taskViews_filters 
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UpdateTaskViewMutation_taskView_organization_taskViews_sortBys {
@@ -5758,6 +5775,7 @@ export interface DeleteThreepidMutation_deleteThreepid_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface DeleteThreepidMutation_deleteThreepid_taskViews_sortBys {
@@ -5879,6 +5897,7 @@ export interface MeQuery_me_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface MeQuery_me_taskViews_sortBys {
@@ -6299,6 +6318,7 @@ export interface UserTaskViewsQuery_user_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UserTaskViewsQuery_user_taskViews_sortBys {
@@ -6502,6 +6522,7 @@ export interface GetOrganizationDetailsQuery_organization_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface GetOrganizationDetailsQuery_organization_taskViews_sortBys {
@@ -6653,6 +6674,7 @@ export interface GetOrganizationTaskViewsQuery_organization_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface GetOrganizationTaskViewsQuery_organization_taskViews_sortBys {
@@ -7386,6 +7408,7 @@ export interface GetProjectDetailsQuery_project_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface GetProjectDetailsQuery_project_taskViews_sortBys {
@@ -7656,21 +7679,208 @@ export interface GetProjectTasksQuery_project {
   tasks: GetProjectTasksQuery_project_tasks[];
 }
 
+export interface GetProjectTasksQuery {
+  project: GetProjectTasksQuery_project;
+}
+
+export interface GetProjectTasksQueryVariables {
+  projectId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetProjectTasksExportQuery
+// ====================================================
+
+export interface GetProjectTasksExportQuery_project_tasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_assignees_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  address: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  threepids: GetProjectTasksExportQuery_project_tasks_assignees_threepids[];
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: GetProjectTasksExportQuery_project_tasks_reward_payment_paymentMethod_network;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: GetProjectTasksExportQuery_project_tasks_reward_payment_paymentMethod;
+  network: GetProjectTasksExportQuery_project_tasks_reward_payment_network;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  trigger: TaskRewardTrigger;
+  peggedToUsd: boolean;
+  token: GetProjectTasksExportQuery_project_tasks_reward_token;
+  payment: GetProjectTasksExportQuery_project_tasks_reward_payment | null;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  userId: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  userId: string;
+  content: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetProjectTasksExportQuery_project_tasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  sortKey: string;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  subtasks: GetProjectTasksExportQuery_project_tasks_subtasks[];
+  tags: GetProjectTasksExportQuery_project_tasks_tags[];
+  skills: GetProjectTasksExportQuery_project_tasks_skills[];
+  assignees: GetProjectTasksExportQuery_project_tasks_assignees[];
+  owners: GetProjectTasksExportQuery_project_tasks_owners[];
+  reward: GetProjectTasksExportQuery_project_tasks_reward | null;
+  applications: GetProjectTasksExportQuery_project_tasks_applications[];
+  submissions: GetProjectTasksExportQuery_project_tasks_submissions[];
+  review: GetProjectTasksExportQuery_project_tasks_review | null;
+  reactions: GetProjectTasksExportQuery_project_tasks_reactions[];
+  creator: GetProjectTasksExportQuery_project_tasks_creator | null;
+}
+
 export interface GetProjectTasksExportQuery_project {
   __typename: "Project";
   id: Scalar.UUID;
-  tasks: GetTasksToExport_tasks[];
-}
-
-export interface GetProjectTasksQuery {
-  project: GetProjectTasksQuery_project;
+  tasks: GetProjectTasksExportQuery_project_tasks[];
 }
 
 export interface GetProjectTasksExportQuery {
   project: GetProjectTasksExportQuery_project;
 }
 
-export interface GetProjectTasksQueryVariables {
+export interface GetProjectTasksExportQueryVariables {
   projectId: Scalar.UUID;
 }
 
@@ -8850,39 +9060,10 @@ export interface GetTasksToPayQuery_tasks {
   project: GetTasksToPayQuery_tasks_project;
 }
 
-export interface GetTasksToExport_tasks {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
-  description: string | null;
-  status: TaskStatus;
-  priority: TaskPriority;
-  storyPoints: number | null;
-  dueDate: Scalar.DateTime | null;
-  createdAt: Scalar.DateTime;
-  doneAt: Scalar.DateTime | null;
-  subtasks: GetTasksToPayQuery_tasks_subtasks[];
-  tags: GetTasksToPayQuery_tasks_tags[];
-  assignees: GetTasksToPayQuery_tasks_assignees[];
-  creator: GetTaskQuery_task_creator | null;
-  reward: GetTasksToPayQuery_tasks_reward | null;
-}
-
 export interface GetTasksToPayQuery {
   tasks: GetTasksToPayQuery_tasks[];
 }
-export interface TasksExportCSV {
-  name: string;
-  tags: string[];
-  storyPoints: number | null;
-  status: TaskStatus;
-  assignees: string[];
-  address: (string | undefined)[];
-  reward: string;
-  dueDate: string;
-  token: string;
-  activities: string;
-}
+
 export interface GetTasksToPayQueryVariables {
   input: GetTasksInput;
 }
@@ -10975,6 +11156,7 @@ export interface ProjectDetails_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface ProjectDetails_taskViews_sortBys {
@@ -12378,6 +12560,7 @@ export interface UserDetails_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface UserDetails_taskViews_sortBys {
@@ -12509,6 +12692,7 @@ export interface OrganizationDetails_taskViews_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface OrganizationDetails_taskViews_sortBys {
@@ -12701,6 +12885,7 @@ export interface TaskViewFilter {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 /* tslint:disable */
@@ -12738,6 +12923,7 @@ export interface TaskView_filters {
   statuses: TaskStatus[] | null;
   priorities: TaskPriority[] | null;
   skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
 }
 
 export interface TaskView_sortBys {
@@ -12910,6 +13096,7 @@ export enum TaskViewFilterType {
   ROLES = "ROLES",
   SKILLS = "SKILLS",
   STATUSES = "STATUSES",
+  SUBTASKS = "SUBTASKS",
   TAGS = "TAGS",
 }
 
@@ -13206,6 +13393,7 @@ export interface TaskReactionInput {
 
 export interface TaskViewFilterInput {
   type: TaskViewFilterType;
+  subtasks?: boolean | null;
   tagIds?: Scalar.UUID[] | null;
   assigneeIds?: (Scalar.UUID | null)[] | null;
   ownerIds?: Scalar.UUID[] | null;

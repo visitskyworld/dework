@@ -6,8 +6,9 @@ import {
   UpdateTaskViewInput,
   TaskViewGroupBy,
   TaskViewType,
+  TaskViewFilterType,
 } from "@dewo/app/graphql/types";
-import { useRunningCallback } from "@dewo/app/util/hooks";
+import { useRunning } from "@dewo/app/util/hooks";
 import styles from "./TaskViewForm.module.less";
 import { TaskViewFormFilterList } from "./TaskViewFormFilterList";
 import { TaskViewFormSortByList } from "./TaskViewFormSortByList";
@@ -15,14 +16,21 @@ import { TaskViewTypeRadioGroup } from "./TaskViewTypeRadioGroup";
 import { Divider, Form, List } from "antd";
 import { DebouncedInput } from "../../../../components/DebouncedInput";
 import { TaskViewFormFieldList } from "./TaskViewFormFieldList";
+import { stopPropagation } from "@dewo/app/util/eatClick";
+import { IncludeSubtasksRow } from "./IncludeSubtasksRow";
+import _ from "lodash";
 
-export type FormValues = CreateTaskViewInput | UpdateTaskViewInput;
+type OutputValue = CreateTaskViewInput | UpdateTaskViewInput;
+
+export type FormValues = OutputValue & {
+  includeSubtasks: boolean;
+};
 
 interface Props {
   initialValues?: Partial<FormValues>;
   renderFooter(info: { submitting: boolean }): ReactNode;
-  onSubmit(values: FormValues): void;
-  onChange?(values: FormValues): void;
+  onSubmit(values: OutputValue): Promise<void>;
+  onChange?(values: OutputValue): void;
   canCreate: boolean;
 }
 
@@ -32,20 +40,37 @@ const defaultInitialValues: Omit<FormValues, "projectId"> = {
   filters: [],
   sortBys: [],
   groupBy: TaskViewGroupBy.status,
+  includeSubtasks: false,
 };
 
+const toOutputValue = (values: FormValues): OutputValue => ({
+  ...(_.omit(values, "includeSubtasks") as OutputValue),
+  filters: [
+    ...(values.filters ?? []).filter(
+      (f) => f.type !== TaskViewFilterType.SUBTASKS
+    ),
+    { type: TaskViewFilterType.SUBTASKS, subtasks: values.includeSubtasks },
+  ],
+});
+
 export const TaskViewForm: FC<Props> = ({
-  initialValues = defaultInitialValues,
+  initialValues: initialValuesOverride = defaultInitialValues,
   renderFooter,
   onSubmit,
   onChange,
   canCreate,
 }) => {
   const handleChange = useCallback(
-    (_changed: Partial<FormValues>, values: FormValues) => onChange?.(values),
+    (_changed: Partial<FormValues>, values: FormValues) =>
+      onChange?.(toOutputValue(values)),
     [onChange]
   );
-  const [handleSubmit, submitting] = useRunningCallback(onSubmit, [onSubmit]);
+  const [handleSubmit, submitting] = useRunning(
+    useCallback(
+      (values: FormValues) => onSubmit(toOutputValue(values)),
+      [onSubmit]
+    )
+  );
 
   const [form] = useForm<FormValues>();
   const footer = useMemo(
@@ -53,14 +78,22 @@ export const TaskViewForm: FC<Props> = ({
     [renderFooter, submitting]
   );
 
+  const initialValues = useMemo(
+    () => ({
+      ...defaultInitialValues,
+      ...initialValuesOverride,
+      includeSubtasks: !!initialValuesOverride.filters?.find(
+        (f) => f.type === TaskViewFilterType.SUBTASKS
+      )?.subtasks,
+    }),
+    [initialValuesOverride]
+  );
+
   return (
     <Form
       layout="vertical"
       form={form}
-      initialValues={useMemo(
-        () => ({ ...defaultInitialValues, ...initialValues }),
-        [initialValues]
-      )}
+      initialValues={initialValues}
       className={styles.form}
       style={{ width: 320 }}
       onFinish={handleSubmit}
@@ -80,7 +113,7 @@ export const TaskViewForm: FC<Props> = ({
           placeholder="View name"
           autoComplete="off"
           // https://github.com/ant-design/ant-design/issues/15610#issuecomment-475951448
-          onKeyDown={(e) => e.stopPropagation()}
+          onKeyDown={stopPropagation}
         />
       </Form.Item>
 
@@ -92,6 +125,8 @@ export const TaskViewForm: FC<Props> = ({
       <TaskViewFormFilterList form={form} />
       <TaskViewFormSortByList form={form} />
       <TaskViewFormFieldList />
+      {(form.getFieldValue("type") ?? initialValues.type) ===
+        TaskViewType.LIST && <IncludeSubtasksRow />}
       {footer}
     </Form>
   );

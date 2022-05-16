@@ -58,6 +58,7 @@ export enum TaskViewFilterType {
   ROLES = "ROLES",
   PRIORITIES = "PRIORITIES",
   SKILLS = "SKILLS",
+  SUBTASKS = "SUBTASKS",
 }
 
 registerEnumType(TaskViewType, { name: "TaskViewType" });
@@ -72,6 +73,9 @@ registerEnumType(TaskViewFilterType, { name: "TaskViewFilterType" });
 export class TaskViewFilter {
   @Field(() => TaskViewFilterType)
   public type!: TaskViewFilterType;
+
+  @Field(() => Boolean, { nullable: true })
+  public subtasks?: boolean;
 
   @Field(() => [GraphQLUUID], { nullable: true })
   public tagIds?: string[];

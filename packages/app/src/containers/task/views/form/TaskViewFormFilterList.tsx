@@ -45,6 +45,7 @@ export const TaskViewFormFilterList: FC<Props> = ({ form }) => (
                     TaskViewFilterType.ROLES,
                     TaskViewFilterType.SKILLS,
                   ]
+                    .filter((t): t is TaskViewFilterType => !!t)
                     .filter(
                       (type) =>
                         !form

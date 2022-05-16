@@ -11,6 +11,7 @@ const taskViewFilter = gql`
     statuses
     priorities
     skillIds
+    subtasks
   }
 `;
 
