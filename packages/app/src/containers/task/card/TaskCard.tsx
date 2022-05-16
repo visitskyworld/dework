@@ -18,6 +18,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
 import { useTaskViewFields } from "../views/hooks";
 import { NumberOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
@@ -109,10 +110,15 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
       </Row>
       <TaskTagsRow
         task={task}
-        style={{ marginTop: 8 }}
+        style={{ marginTop: 4 }}
         skills="emoji"
         fields={taskTagsRowFields}
       />
+      {fields.has(TaskViewField.createdAt) && (
+        <Typography.Text type="secondary" className="ant-typography-caption">
+          {moment(task.createdAt).fromNow()}
+        </Typography.Text>
+      )}
       {showReview && (
         <>
           <Row style={{ marginBottom: 4 }}>

@@ -496,8 +496,8 @@ export function useTaskViewFields() {
           TaskViewField.name,
           TaskViewField.skills,
           TaskViewField.reward,
-          TaskViewField.button,
           TaskViewField.assignees,
+          TaskViewField.createdAt,
         ]
       ),
     [currentView?.fields]

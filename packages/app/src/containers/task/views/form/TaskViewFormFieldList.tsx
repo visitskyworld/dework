@@ -16,6 +16,7 @@ const options = [
   { value: TaskViewField.tags, label: "Tags" },
   { value: TaskViewField.reward, label: "Reward" },
   { value: TaskViewField.assignees, label: "Assignees" },
+  { value: TaskViewField.createdAt, label: "Created At" },
   { value: TaskViewField.button, label: "CTA" },
 ];
 

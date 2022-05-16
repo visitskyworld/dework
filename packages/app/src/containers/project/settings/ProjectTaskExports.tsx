@@ -7,7 +7,7 @@ import { formatTaskReward } from "../../task/hooks";
 import moment from "moment";
 import {
   GetProjectTasksExportQuery,
-  GetProjectTasksQueryVariables,
+  GetProjectTasksExportQueryVariables,
   ThreepidSource,
 } from "@dewo/app/graphql/types";
 import { useLazyQuery } from "@apollo/client";
@@ -22,7 +22,7 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
   const csvRef = useRef<any>();
   const [loadProjectTasksExports, { data }] = useLazyQuery<
     GetProjectTasksExportQuery,
-    GetProjectTasksQueryVariables
+    GetProjectTasksExportQueryVariables
   >(Queries.projectTasksExport, { ssr: false });
   const headers = useMemo(
     () => [

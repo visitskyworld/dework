@@ -13077,6 +13077,7 @@ export enum TaskStatus {
 export enum TaskViewField {
   assignees = "assignees",
   button = "button",
+  createdAt = "createdAt",
   dueDate = "dueDate",
   gating = "gating",
   name = "name",

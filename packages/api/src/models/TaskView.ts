@@ -42,6 +42,7 @@ export enum TaskViewField {
   name = "name",
   priority = "priority",
   dueDate = "dueDate",
+  createdAt = "createdAt",
   skills = "skills",
   tags = "tags",
   reward = "reward",

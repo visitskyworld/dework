@@ -12,6 +12,7 @@ import styles from "./TaskListItem.module.less";
 import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnHover";
 import { NumberOutlined } from "@ant-design/icons";
 import { useTaskViewFields } from "../views/hooks";
+import moment from "moment";
 
 interface Props {
   task: Task;
@@ -74,6 +75,16 @@ export const TaskListItem: FC<Props> = ({ task }) => {
               )}
             </Avatar.Group>
           </Row>
+        )}
+
+        {fields.has(TaskViewField.createdAt) && (
+          <Typography.Text
+            type="secondary"
+            className="ant-typography-caption"
+            style={{ width: 80 }}
+          >
+            {moment(task.createdAt).fromNow()}
+          </Typography.Text>
         )}
 
         {fields.has(TaskViewField.button) && (
