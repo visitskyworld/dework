@@ -126,10 +126,6 @@ export const TaskDiscoveryList: FC = () => {
           <Col md={16}>
             <Typography.Title level={3}>
               Explore Bounties
-              <QuestionmarkTooltip
-                marginLeft={8}
-                title="Only tasks in public boards and with a bounty reward show up here!"
-              />
             </Typography.Title>
           </Col>
         </Row>
@@ -229,9 +225,28 @@ export const TaskDiscoveryList: FC = () => {
                   level={5}
                 >
                   🔥 <span className="text-primary">Featured</span>
+                  <QuestionmarkTooltip
+                    marginLeft={8}
+                    title={
+                      <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                        High-quality bounties are marked as 'featured', which
+                        means that they:{"\n"}
+                        <ol>
+                          <li>
+                            Have a bounty in a token listed on Coinmarketcap, so
+                            that the dollar-value can be known
+                          </li>
+                          <li>Have a clear description</li>
+                          <li>
+                            The project is connected to Discord, so you easily
+                            can talk with the applicant
+                          </li>
+                        </ol>
+                      </Typography.Text>
+                    }
+                  />
                 </Typography.Title>
                 <TaskDiscoveryTable
-                  pageSize={5}
                   key={"featured-" + JSON.stringify(values)}
                   data={featured}
                 />
