@@ -22,10 +22,7 @@ const labels: Record<TaskGatingType, string> = {
 };
 
 const icons: Record<TaskGatingType, ReactNode> = {
-  [TaskGatingType.ASSIGNEES]: (
-    // <LockIcon style={{ width: 16 }} />
-    <Icons.UserAddOutlined />
-  ),
+  [TaskGatingType.ASSIGNEES]: <Icons.UserAddOutlined />,
   [TaskGatingType.APPLICATION]: <ApplicationIcon style={{ width: 16 }} />,
   [TaskGatingType.OPEN_SUBMISSION]: <ContestIcon style={{ width: 16 }} />,
   [TaskGatingType.ROLES]: <ClaimableIcon style={{ width: 16 }} />,
@@ -45,6 +42,7 @@ interface Props {
   task: Task | undefined;
   values: Partial<TaskFormValues> | undefined;
   disabled: boolean;
+  hidden: boolean;
   projectId: string;
 }
 
@@ -54,6 +52,7 @@ export const TaskGatingFields: FC<Props> = ({
   values,
   projectId,
   disabled,
+  hidden,
 }) => {
   const canManageRoles = usePermission("create", {
     __typename: "Rule",
@@ -74,6 +73,7 @@ export const TaskGatingFields: FC<Props> = ({
     return true;
   }, [values?.gating, values?.roleIds]);
 
+  if (hidden) return null;
   return (
     <FormSection
       style={{ marginBottom: 0 }}

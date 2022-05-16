@@ -6,13 +6,13 @@ const key = "TaskFormCreateButton.v1.ContinueWithoutSkills";
 
 interface Props {
   loading: boolean;
-  hasSkills: boolean;
+  showSkillsPrompt: boolean;
   onSubmit(): void;
 }
 
 export const TaskFormCreateButton: FC<Props> = ({
   loading,
-  hasSkills,
+  showSkillsPrompt,
   onSubmit,
 }) => {
   const button = (
@@ -32,7 +32,7 @@ export const TaskFormCreateButton: FC<Props> = ({
   }, [onSubmit]);
 
   const skip = useMemo(() => isSSR || !!localStorage.getItem(key), []);
-  if (hasSkills || skip) return button;
+  if (!showSkillsPrompt || skip) return button;
   return (
     <Popconfirm
       title="Adding skills to the task will make it more likely to find contributors. Are you sure you don't want to add skills?"

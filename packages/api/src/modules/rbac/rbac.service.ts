@@ -293,11 +293,21 @@ export class RbacService {
             ...(rule.projectId ? { projectId: rule.projectId } : undefined),
           });
 
-          fn("create", Task, {
-            ...task,
-            status: TaskStatus.COMMUNITY_SUGGESTIONS,
-            ownerIds: { $size: 0 },
-          });
+          fn(
+            "create",
+            Task,
+            [
+              "name",
+              "description",
+              "status",
+              `status[${TaskStatus.COMMUNITY_SUGGESTIONS}]`,
+            ],
+            {
+              ...task,
+              status: TaskStatus.COMMUNITY_SUGGESTIONS,
+              ownerIds: { $size: 0 },
+            }
+          );
           fn(CRUD, TaskReaction, {
             userId,
             ...(!!rule.projectId

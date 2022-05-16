@@ -4,6 +4,7 @@ import {
   TaskDetails,
   TaskPriority,
   TaskGatingType,
+  Task,
 } from "@dewo/app/graphql/types";
 import {
   Form,
@@ -59,6 +60,7 @@ import { TaskStatusIcon } from "@dewo/app/components/icons/task/TaskStatus";
 import { TaskGithubIssueButton } from "./TaskGithubIssueButton";
 import { SkillSelect } from "@dewo/app/components/form/SkillSelect";
 import { TaskFormCreateButton } from "./TaskFormCreateButton";
+import { AtLeast } from "@dewo/app/types/general";
 import { NumberOutlined } from "@ant-design/icons";
 
 interface TaskFormProps {
@@ -95,8 +97,18 @@ export const TaskForm: FC<TaskFormProps> = ({
   const hasPermission = usePermissionFn();
   const canChange = useCallback(
     (field: keyof TaskFormValues | `status[${TaskStatus}]`) =>
-      hasPermission(mode, task ?? "Task", field),
-    [hasPermission, mode, task]
+      hasPermission(
+        mode,
+        task ??
+          ({
+            __typename: "Task",
+            projectId,
+            status: values.status,
+            ownerIds: values.ownerIds ?? [],
+          } as AtLeast<Task, "__typename" | "status">),
+        field
+      ),
+    [hasPermission, mode, task, projectId, values.status, values.ownerIds]
   );
   const navigateToTask = useNavigateToTaskFn();
 
@@ -269,7 +281,9 @@ export const TaskForm: FC<TaskFormProps> = ({
               <div style={{ flex: 1 }} />
               <TaskFormCreateButton
                 loading={loading}
-                hasSkills={!!values.skillIds?.length}
+                showSkillsPrompt={
+                  !values.skillIds?.length && !!canChange("skillIds")
+                }
                 onSubmit={form.submit}
               />
             </>
@@ -340,10 +354,12 @@ export const TaskForm: FC<TaskFormProps> = ({
             values={values}
             projectId={projectId}
             disabled={!canChange("ownerIds")}
+            hidden={!canChange("ownerIds") && !values?.gating}
           />
 
           <Form.Item
             name="skillIds"
+            hidden={!canChange("skillIds") && !values.skillIds?.length}
             label={
               <>
                 Skills
@@ -362,16 +378,18 @@ export const TaskForm: FC<TaskFormProps> = ({
           >
             <SkillSelect
               disabled={!canChange("skillIds")}
-              placeholder={
-                !canChange("skillIds")
-                  ? "No skills..."
-                  : "What skills are needed to do this task?"
-              }
+              placeholder="What skills are needed to do this task?"
               allowClear
             />
           </Form.Item>
 
-          <Form.Item name="priority" label="Priority">
+          <Form.Item
+            name="priority"
+            label="Priority"
+            hidden={
+              !canChange("priority") && values.priority !== TaskPriority.NONE
+            }
+          >
             <Select
               placeholder="Select a priority"
               disabled={!canChange("priority")}
@@ -391,16 +409,22 @@ export const TaskForm: FC<TaskFormProps> = ({
             </Select>
           </Form.Item>
 
-          <TaskTagSelectField
-            name="tagIds"
-            label="Tags"
-            disabled={!canChange("tagIds")}
-            allowCreate={canCreateTag}
-            projectId={projectId}
-            tags={tags}
-          />
+          {(canChange("tagIds") || !!values.tagIds?.length) && (
+            <TaskTagSelectField
+              name="tagIds"
+              label="Tags"
+              disabled={!canChange("tagIds")}
+              allowCreate={canCreateTag}
+              projectId={projectId}
+              tags={tags}
+            />
+          )}
 
-          <Form.Item name="ownerIds" label="Reviewers">
+          <Form.Item
+            name="ownerIds"
+            label="Reviewers"
+            hidden={!canChange("ownerIds") && !values.ownerIds?.length}
+          >
             <UserSelect
               placeholder="No task reviewer..."
               disabled={!canChange("ownerIds")}
@@ -417,21 +441,22 @@ export const TaskForm: FC<TaskFormProps> = ({
             />
           )}
 
-          {!canChange("dueDate") && !!values.dueDate && (
-            <Form.Item name="dueDate" label="Due Date">
-              <DatePicker format="LL" disabled style={{ width: "100%" }} />
-            </Form.Item>
-          )}
+          <Form.Item
+            name="dueDate"
+            label="Due Date"
+            hidden={canChange("dueDate") || !values.dueDate}
+          >
+            <DatePicker format="LL" disabled style={{ width: "100%" }} />
+          </Form.Item>
 
-          {!canChange("storyPoints") && !!values.storyPoints && (
-            <Form.Item
-              name="storyPoints"
-              label="Task Points"
-              tooltip="Can be used very flexibly, e.g for time accounting and more."
-            >
-              <StoryPointsInput disabled />
-            </Form.Item>
-          )}
+          <Form.Item
+            name="storyPoints"
+            label="Task Points"
+            tooltip="Can be used very flexibly, e.g for time accounting and more."
+            hidden={canChange("storyPoints") || !values.storyPoints}
+          >
+            <StoryPointsInput disabled />
+          </Form.Item>
 
           {(canChange("dueDate") || canChange("storyPoints")) && (
             <MoreSectionCollapse label="More" toggle={moreSection}>
