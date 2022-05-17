@@ -43,6 +43,7 @@ interface IndexedTask {
   public: boolean;
   reward: number | undefined;
   featured: boolean;
+  votes: number;
 
   tagIds: string[];
   skillIds: string[];
@@ -384,6 +385,7 @@ export class TaskSearchService implements OnModuleInit {
   ): Promise<IndexedTask> {
     const project = await task.project;
     const organization = await project.organization;
+    const reactions = await task.reactions;
 
     const demoOrTestRegex = /(demo|test)/i;
     const chineseRegex = /[\u4e00-\u9fa5]/g;
@@ -406,6 +408,7 @@ export class TaskSearchService implements OnModuleInit {
       featured: task.featured,
       public: isPublic,
       reward: undefined,
+      votes: reactions.filter((r) => r.reaction === ":arrow_up_small:").length,
       spam:
         [task.name, project.name, organization.name].some((s) =>
           demoOrTestRegex.test(s)

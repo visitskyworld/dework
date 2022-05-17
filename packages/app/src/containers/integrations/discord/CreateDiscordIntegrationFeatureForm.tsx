@@ -29,6 +29,8 @@ const DiscordProjectIntegrationFeatureTitle: Partial<
     "Create a thread when a task is assigned to someone",
   [DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE]:
     "Post a status board with all open tasks",
+  [DiscordProjectIntegrationFeature.POST_COMMUNITY_SUGGESTIONS_STATUS_BOARD_MESSAGE]:
+    "Post a status board with all community suggestions",
   [DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL]:
     "Send a message when a task is created",
   [DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL]:

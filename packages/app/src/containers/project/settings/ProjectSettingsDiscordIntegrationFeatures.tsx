@@ -52,17 +52,13 @@ export const ProjectSettingsDiscordIntegrationFeatures: FC<Props> = ({
   const copy = "Connect one or more integration types to your Discord server";
 
   return (
-    <>
+    <Space size="middle" direction="vertical" style={{ width: "100%" }}>
       {!!hasDiscordOrganizationIntegration ? (
         <Typography.Paragraph type="secondary">{copy}</Typography.Paragraph>
       ) : (
         <Card
           className="dewo-card-highlighted"
-          bodyStyle={{
-            display: "flex",
-            alignItems: "center",
-            padding: 12,
-          }}
+          bodyStyle={{ display: "flex", alignItems: "center", padding: 12 }}
         >
           <ConnectOrganizationToDiscordButton
             organizationId={organizationId}
@@ -76,32 +72,29 @@ export const ProjectSettingsDiscordIntegrationFeatures: FC<Props> = ({
           </Typography.Paragraph>
         </Card>
       )}
-
-      <Space size="middle" direction="vertical" style={{ width: "100%" }}>
-        {[
-          DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
-          DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL,
-          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
-          // DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_CHANNEL,
-        ].map((feature) => (
-          <CreateDiscordIntegrationFeatureForm
-            key={feature}
-            feature={feature}
-            organizationId={organizationId}
-            channels={channels}
-            disabled={!hasDiscordOrganizationIntegration}
-            recommended={
-              feature ===
-              DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
-            }
-            existingIntegration={discordProjectIntegrations?.find((i) =>
-              i.config.features.includes(feature)
-            )}
-            onRefetchChannels={onRefetchChannels}
-            onSubmit={handleSubmit}
-          />
-        ))}
-      </Space>
-    </>
+      {[
+        DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
+        DiscordProjectIntegrationFeature.POST_NEW_TASKS_TO_CHANNEL,
+        DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
+        DiscordProjectIntegrationFeature.POST_COMMUNITY_SUGGESTIONS_STATUS_BOARD_MESSAGE,
+      ].map((feature) => (
+        <CreateDiscordIntegrationFeatureForm
+          key={feature}
+          feature={feature}
+          organizationId={organizationId}
+          channels={channels}
+          disabled={!hasDiscordOrganizationIntegration}
+          recommended={
+            feature ===
+            DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
+          }
+          existingIntegration={discordProjectIntegrations?.find((i) =>
+            i.config.features.includes(feature)
+          )}
+          onRefetchChannels={onRefetchChannels}
+          onSubmit={handleSubmit}
+        />
+      ))}
+    </Space>
   );
 };

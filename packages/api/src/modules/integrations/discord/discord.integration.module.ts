@@ -27,6 +27,7 @@ import { RbacModule } from "@dewo/api/modules/rbac/rbac.module";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DiscordIntegrationPoller } from "./discord.integration.poller";
 import { Task } from "@dewo/api/models/Task";
+import { TaskSearchModule } from "../../task/search/task.search.module";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { Task } from "@dewo/api/models/Task";
       Task,
     ]),
     TaskModule,
+    TaskSearchModule,
     RbacModule,
     ThreepidModule,
     PermalinkModule,

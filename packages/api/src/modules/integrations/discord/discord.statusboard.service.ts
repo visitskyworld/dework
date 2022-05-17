@@ -17,22 +17,90 @@ import {
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
 import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+import { TaskSearchService } from "../../task/search/task.search.service";
+import {
+  TaskViewSortByDirection,
+  TaskViewSortByField,
+} from "@dewo/api/models/TaskView";
 
 @Injectable()
 export class DiscordStatusboardService {
   private logger = new Logger(this.constructor.name);
+  private taskLimit = 25;
 
   constructor(
     private readonly discord: DiscordService,
     private readonly permalink: PermalinkService,
     private readonly taskService: TaskService,
+    private readonly taskSearchService: TaskSearchService,
     private readonly integrationService: IntegrationService
   ) {}
 
-  private async postStatusboardMessage(
+  private async postOpenTasksStatusBoardMessage(
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
+    const query = {
+      projectIds: [integration.projectId],
+      statuses: [TaskStatus.TODO],
+      assigneeIds: [null],
+      hasReward: true,
+      size: this.taskLimit,
+      sortBy: {
+        field: TaskViewSortByField.priority,
+        direction: TaskViewSortByDirection.DESC,
+      },
+    };
+    const { tasks } = await this.taskSearchService.search(query);
+
+    if (tasks.length !== this.taskLimit) {
+      const { tasks: tasksWithoutReward } = await this.taskSearchService.search(
+        {
+          ...query,
+          hasReward: false,
+          size: this.taskLimit - tasks.length,
+        }
+      );
+
+      tasks.push(...tasksWithoutReward);
+    }
+
     const project = await integration.project;
+    const name = `${project.name} Task Board`;
+    await this.postStatusboardMessage(name, tasks, integration);
+  }
+
+  private async postCommunitySuggestionsStatusBoardMessage(
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
+  ) {
+    const { tasks } = await this.taskSearchService.search({
+      projectIds: [integration.projectId],
+      statuses: [TaskStatus.COMMUNITY_SUGGESTIONS],
+      size: this.taskLimit,
+      sortBy: {
+        field: TaskViewSortByField.votes,
+        direction: TaskViewSortByDirection.DESC,
+      },
+    });
+
+    const project = await integration.project;
+    const name = `${project.name} Community Suggestions`;
+    await this.postStatusboardMessage(name, tasks, integration);
+  }
+
+  private async postStatusboardMessage(
+    name: string,
+    tasks: Task[],
+    integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
+  ) {
+    this.logger.debug(
+      `Posting status board: ${JSON.stringify({
+        name,
+        numTasks: tasks.length,
+        projectId: integration.projectId,
+        integrationId: integration.id,
+      })}`
+    );
+
     const organizationIntegration =
       (await integration.organizationIntegration) as
         | OrganizationIntegration<OrganizationIntegrationType.DISCORD>
@@ -50,31 +118,6 @@ export class DiscordStatusboardService {
       return;
     }
 
-    const discordFieldLimit = 25;
-    let tasks = (
-      await this.taskService.findWithRelations({
-        projectIds: [integration.projectId],
-        statuses: [TaskStatus.TODO],
-        userId: null,
-        rewardNotNull: true,
-        limit: discordFieldLimit,
-      })
-    ).sort((a, b) => b.tags.length - a.tags.length);
-    // Backfill with tasks without reward
-    if (tasks.length < discordFieldLimit) {
-      const tasksWithoutReward = (
-        await this.taskService.findWithRelations({
-          projectIds: [integration.projectId],
-          statuses: [TaskStatus.TODO],
-          userId: null,
-          limit: discordFieldLimit,
-        })
-      )
-        .filter((t) => !t.rewardId)
-        .splice(0, discordFieldLimit - tasks.length)
-        .sort((a, b) => b.tags.length - a.tags.length);
-      tasks = [...tasks, ...tasksWithoutReward];
-    }
     if (tasks.length === 0) return;
     // Chunk tasks into rows of three, with a space in the middle for grid-like effect in Discord
     const numberOfRows = Math.ceil(tasks.length / 2);
@@ -97,12 +140,8 @@ export class DiscordStatusboardService {
       })
     );
     const messageContent = {
-      content: `**${project.name} Task Board**`,
-      embeds: [
-        {
-          fields: await Promise.all(tasksWithSpaces),
-        },
-      ],
+      content: `**${name}**`,
+      embeds: [{ fields: await Promise.all(tasksWithSpaces) }],
     };
 
     try {
@@ -140,6 +179,12 @@ export class DiscordStatusboardService {
       ? `💰 Reward: ${await this.taskService.formatTaskReward(task.reward)}`
       : undefined;
 
+    const reactions = await task.reactions;
+    const numUpvotes = reactions.filter(
+      (r) => r.reaction === ":arrow_up_small:"
+    ).length;
+    const upvotesString = !!numUpvotes ? `🔼 ${numUpvotes} votes` : undefined;
+
     const tags: string[] = [];
     let tagString = undefined;
     const tagsCharLimit = 20;
@@ -155,6 +200,7 @@ export class DiscordStatusboardService {
     return {
       name: nameString,
       value: [
+        upvotesString,
         tagString,
         rewardString,
         `**${Discord.Formatters.hyperlink(
@@ -170,17 +216,14 @@ export class DiscordStatusboardService {
   }
 
   private async getProjectIntegrations(
-    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent
+    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent,
+    feature: DiscordProjectIntegrationFeature
   ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>[]> {
     if (event instanceof ProjectIntegrationCreatedEvent) {
       if (event.projectIntegration.type === ProjectIntegrationType.DISCORD) {
         const discordIntegration =
           event.projectIntegration as ProjectIntegration<ProjectIntegrationType.DISCORD>;
-        if (
-          discordIntegration.config.features.includes(
-            DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
-          )
-        ) {
+        if (discordIntegration.config.features.includes(feature)) {
           return [discordIntegration];
         }
       }
@@ -197,9 +240,7 @@ export class DiscordStatusboardService {
         );
 
       return integrations.filter((integration) =>
-        integration.config.features.includes(
-          DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
-        )
+        integration.config.features.includes(feature)
       );
     }
 
@@ -216,12 +257,37 @@ export class DiscordStatusboardService {
       })}`
     );
 
-    const integrations = await this.getProjectIntegrations(event);
-    this.logger.debug(
-      `Found status board integrations: ${JSON.stringify(integrations)}`
-    );
-    for (const integration of integrations) {
-      await this.postStatusboardMessage(integration);
+    if (
+      event instanceof TaskCreatedEvent ||
+      event instanceof TaskUpdatedEvent
+    ) {
+      await this.taskSearchService.refresh();
+    }
+
+    for (const feature of [
+      DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE,
+      DiscordProjectIntegrationFeature.POST_COMMUNITY_SUGGESTIONS_STATUS_BOARD_MESSAGE,
+    ]) {
+      const integrations = await this.getProjectIntegrations(event, feature);
+      this.logger.debug(
+        `Found status board integrations: ${JSON.stringify({
+          feature,
+          integrations,
+        })}`
+      );
+
+      for (const integration of integrations) {
+        if (
+          feature === DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
+        ) {
+          this.postOpenTasksStatusBoardMessage(integration);
+        } else if (
+          feature ===
+          DiscordProjectIntegrationFeature.POST_COMMUNITY_SUGGESTIONS_STATUS_BOARD_MESSAGE
+        ) {
+          await this.postCommunitySuggestionsStatusBoardMessage(integration);
+        }
+      }
     }
   }
 }

@@ -168,6 +168,9 @@ export class TaskService {
     const existing = await this.taskReactionRepo.findOne({ ...input, userId });
     if (!!existing) return;
     await this.taskReactionRepo.save({ ...input, userId });
+
+    const task = await this.taskRepo.findOne(input.taskId);
+    this.eventBus.publish(new TaskUpdatedEvent(task!, task!, userId));
   }
 
   public async deleteReaction(
@@ -175,6 +178,8 @@ export class TaskService {
     userId: string
   ): Promise<void> {
     await this.taskReactionRepo.delete({ ...input, userId });
+    const task = await this.taskRepo.findOne(input.taskId);
+    this.eventBus.publish(new TaskUpdatedEvent(task!, task!, userId));
   }
 
   public async findById(id: string): Promise<Task | undefined> {
