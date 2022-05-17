@@ -36,6 +36,7 @@ export const TaskViewTagSelect: FC<Props> = ({
       <Select
         mode="multiple"
         value={selectedTagIds}
+        open
         placeholder="Select tags..."
         optionFilterProp="label"
         optionLabelProp="label" // don't put children inside tagRender
@@ -60,7 +61,14 @@ export const TaskViewTagSelect: FC<Props> = ({
               <Tag color={tag.color}>{tag.label}</Tag>
               <Typography.Text
                 className="text-secondary ant-typography-caption"
-                style={{ textTransform: "uppercase", marginRight: 8 }}
+                ellipsis
+                style={{
+                  flex: 1,
+                  maxWidth: 100,
+                  textTransform: "uppercase",
+                  marginRight: 8,
+                  textAlign: "right",
+                }}
               >
                 {projectById[tag.projectId]?.name}
               </Typography.Text>
