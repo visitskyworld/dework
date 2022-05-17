@@ -12,8 +12,9 @@ import { Form, Row, Select, Space } from "antd";
 import _ from "lodash";
 import React, { FC, useMemo } from "react";
 import { PRIORITY_LABEL, STATUS_LABEL } from "../../board/util";
-import { TaskTagSelectField } from "../../form/TaskTagSelectField";
+import { TaskViewTagSelect } from "./TaskViewTagSelect";
 import { useTaskViewContext } from "../TaskViewContext";
+import { Rule } from "antd/lib/form";
 
 interface Props {
   name: string | number;
@@ -21,23 +22,28 @@ interface Props {
   onClear(): void;
 }
 
+const atLeastOneRule = (subjectName: string): Rule[] => [
+  {
+    type: "array",
+    min: 1,
+    message: `Select at least one ${subjectName}`,
+  },
+];
+
 const TagFilter: FC<Props> = ({ name, onClear }) => {
-  const { tags } = useTaskViewContext();
+  const { tags, currentView } = useTaskViewContext();
   return (
-    <TaskTagSelectField
-      style={{ flex: 1 }}
+    <Form.Item
       name={[name, "tagIds"]}
-      tags={tags}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one tag",
-        },
-      ]}
-      allowClear
-      onClear={onClear}
-    />
+      style={{ flex: 1 }}
+      rules={atLeastOneRule("tag")}
+    >
+      <TaskViewTagSelect
+        tags={tags}
+        organizationId={currentView?.organizationId ?? undefined}
+        onClear={onClear}
+      />
+    </Form.Item>
   );
 };
 
@@ -47,13 +53,7 @@ const AssigneeFilter: FC<Props> = ({ name, onClear }) => {
     <Form.Item
       name={[name, "assigneeIds"]}
       style={{ flex: 1 }}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one assignee",
-        },
-      ]}
+      rules={atLeastOneRule("assignee")}
     >
       <UserSelect
         mode="multiple"
@@ -72,13 +72,7 @@ const OwnerFilter: FC<Props> = ({ name, onClear }) => {
     <Form.Item
       name={[name, "ownerIds"]}
       style={{ flex: 1 }}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one reviewer",
-        },
-      ]}
+      rules={atLeastOneRule("reviewer")}
     >
       <UserSelect
         mode="multiple"
@@ -96,13 +90,7 @@ const StatusFilter: FC<Props> = ({ name, onClear }) => {
     <Form.Item
       name={[name, "statuses"]}
       style={{ flex: 1 }}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one status",
-        },
-      ]}
+      rules={atLeastOneRule("status")}
     >
       <Select
         placeholder="Select task statuses..."
@@ -136,13 +124,7 @@ const PriorityFilter: FC<Props> = ({ name, onClear }) => {
     <Form.Item
       name={[name, "priorities"]}
       style={{ flex: 1 }}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one priority",
-        },
-      ]}
+      rules={atLeastOneRule("priority")}
     >
       <Select
         placeholder="Select task priorities..."
@@ -181,13 +163,7 @@ const RoleFilter: FC<Props> = ({ name, onClear }) => {
     <Form.Item
       name={[name, "roleIds"]}
       style={{ flex: 1 }}
-      rules={[
-        {
-          type: "array",
-          min: 1,
-          message: "Select at least one role",
-        },
-      ]}
+      rules={atLeastOneRule("role")}
     >
       <Select
         mode="multiple"
@@ -221,13 +197,7 @@ const SkillFilter: FC<Props> = ({ name, onClear }) => (
   <Form.Item
     name={[name, "skillIds"]}
     style={{ flex: 1 }}
-    rules={[
-      {
-        type: "array",
-        min: 1,
-        message: "Select at least one skill",
-      },
-    ]}
+    rules={atLeastOneRule("skill")}
   >
     <SkillSelect placeholder="Select skills..." allowClear onClear={onClear} />
   </Form.Item>

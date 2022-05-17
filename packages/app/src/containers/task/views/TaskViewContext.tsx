@@ -91,7 +91,11 @@ export const OrganizationTaskViewProvider: FC<{
   const { users: filterableMembers } = useOrganizationUsers(organizationId);
 
   const tags = useMemo(
-    () => organization?.projects.map((project) => project.taskTags).flat(),
+    () =>
+      _.sortBy(
+        organization?.projects.map((project) => project.taskTags).flat(),
+        (taskTag) => taskTag.label.toLowerCase()
+      ),
     [organization?.projects]
   );
 
