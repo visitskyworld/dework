@@ -9,16 +9,17 @@ import { TaskViewFormFilterRow } from "./TaskViewFormFilterRow";
 import { FormValues } from "./TaskViewForm";
 import { FilterIcon } from "@dewo/app/components/icons/Filter";
 
-const taskViewFilterTypeToString: Record<TaskViewFilterType, string> = {
-  [TaskViewFilterType.STATUSES]: "Status",
-  [TaskViewFilterType.TAGS]: "Tags",
-  [TaskViewFilterType.ASSIGNEES]: "Assignees",
-  [TaskViewFilterType.PRIORITIES]: "Priority",
-  [TaskViewFilterType.OWNERS]: "Reviewer",
-  [TaskViewFilterType.ROLES]: "Roles",
-  [TaskViewFilterType.SKILLS]: "Skills",
-  [TaskViewFilterType.APPLICANTS]: "Applicants",
-};
+const taskViewFilterTypeToString: Partial<Record<TaskViewFilterType, string>> =
+  {
+    [TaskViewFilterType.STATUSES]: "Status",
+    [TaskViewFilterType.TAGS]: "Tags",
+    [TaskViewFilterType.ASSIGNEES]: "Assignees",
+    [TaskViewFilterType.PRIORITIES]: "Priority",
+    [TaskViewFilterType.OWNERS]: "Reviewer",
+    [TaskViewFilterType.ROLES]: "Roles",
+    [TaskViewFilterType.SKILLS]: "Skills",
+    [TaskViewFilterType.APPLICANTS]: "Applicants",
+  };
 
 interface Props {
   form: FormInstance<FormValues>;
