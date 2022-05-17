@@ -86,7 +86,6 @@ export class ProjectResolver {
 
   @ResolveField(() => [TaskView])
   public async taskViews(@Parent() project: Project): Promise<TaskView[]> {
-    // TODO(fant): query and filter by deletedAt directly
     const views = await project.taskViews;
     return views.filter((s) => !s.deletedAt);
   }

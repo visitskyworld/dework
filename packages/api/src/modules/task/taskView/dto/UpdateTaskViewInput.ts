@@ -32,5 +32,8 @@ export class UpdateTaskViewInput {
   public fields?: TaskViewField[];
 
   @Field({ nullable: true })
+  public sortKey?: string;
+
+  @Field({ nullable: true })
   public deletedAt?: Date;
 }

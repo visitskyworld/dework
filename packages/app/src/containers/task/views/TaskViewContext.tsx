@@ -239,7 +239,15 @@ const TaskViewProvider: FC<{
   return (
     <TaskViewContext.Provider
       value={{
-        views,
+        views: useMemo(
+          () =>
+            _.sortBy(
+              views,
+              (t) => localViewChanges[t.id]?.sortKey ?? t.sortKey,
+              "asc"
+            ),
+          [localViewChanges, views]
+        ),
         currentView: viewWithLocalChanges ?? view,
         hasLocalChanges,
         onChangeViewLocally,

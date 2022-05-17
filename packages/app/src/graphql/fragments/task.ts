@@ -34,6 +34,7 @@ export const taskView = gql`
     organizationId
     userId
     fields
+    sortKey
     filters {
       ...TaskViewFilter
     }

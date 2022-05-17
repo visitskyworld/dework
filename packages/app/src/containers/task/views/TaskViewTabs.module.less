@@ -29,6 +29,9 @@
       .ant-tabs-nav-operations {
         display: none;
       }
+      .ant-tabs-nav-list {
+        padding-left: 16px;
+      }
     }
 
     .ant-tabs-tabpane {
@@ -47,4 +50,20 @@
     padding-left: 20px + 4px;
     padding-right: 20px + 4px;
   }
+}
+
+.draggableTab {
+  // https://stackoverflow.com/a/67075990/6912118
+  [data-rbd-draggable-id] {
+    left: auto !important;
+    top: auto !important;
+  }
+  .draggableTabContent {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+
+.hideUnderline :global(.ant-tabs-ink-bar) {
+  opacity: 0;
 }

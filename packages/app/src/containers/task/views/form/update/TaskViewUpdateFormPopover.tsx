@@ -96,6 +96,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view }) => {
       <Button
         type="primary"
         size="small"
+        style={{ width: 22, height: 22 }}
         icon={<ControlIcon style={{ margin: 0 }} />}
         onClick={eatClick}
       />

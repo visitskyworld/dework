@@ -11,6 +11,15 @@ import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { TaskViewCreateFormPopover } from "./form/create/TaskViewCreateFormPopover";
 import { AtLeast } from "@dewo/app/types/general";
 import { TaskViewToolbar } from "./TaskViewToolbar";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { useUpdateTaskView } from "./hooks";
+import { getSortKeyBetween } from "../board/util";
+import classNames from "classnames";
 
 interface Props {
   projectId?: string;
@@ -20,6 +29,29 @@ interface Props {
   extraTabs?: React.ReactElement[];
 }
 
+const renderDraggableTab = (node: JSX.Element) => (
+  <div key={node.key} className={styles.draggableTab}>
+    <Draggable
+      isDragDisabled={!node.key!.toString().startsWith("view:")}
+      draggableId={node.key!.toString()}
+      // hack to get the index of the tab
+      // https://stackoverflow.com/questions/27187311/reactjs-how-can-i-get-the-owner-of-a-component
+      index={(node as any)._owner.index}
+    >
+      {(provided) => (
+        <div
+          className={styles.draggableTabContent}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          {node}
+        </div>
+      )}
+    </Draggable>
+  </div>
+);
+
 export const TaskViewTabs: FC<Props> = ({
   projectId,
   organizationId,
@@ -28,11 +60,20 @@ export const TaskViewTabs: FC<Props> = ({
   extraTabs,
   children,
 }) => {
-  const { currentView, hasLocalChanges, views } = useTaskViewContext();
+  const { currentView, hasLocalChanges, views, onChangeViewLocally } =
+    useTaskViewContext();
   const { project } = useProject(projectId);
   const router = useRouter();
+  const updateTaskView = useUpdateTaskView();
 
   const canCreate = usePermission("create", {
+    __typename: "TaskView",
+    organizationId,
+    projectId,
+    userId,
+  } as AtLeast<TaskView, "__typename" | "projectId" | "organizationId" | "userId">);
+
+  const canUpdate = usePermission("update", {
     __typename: "TaskView",
     organizationId,
     projectId,
@@ -55,6 +96,26 @@ export const TaskViewTabs: FC<Props> = ({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const onDragEnd = useCallback(
+    async (result: DropResult) => {
+      if (!result.destination) return;
+      const { source, destination } = result;
+      const destIndex = Math.min(destination.index, views.length - 1);
+
+      const indexExcludingItself =
+        source.index < destIndex ? destIndex + 1 : destIndex;
+
+      const viewAbove = views[indexExcludingItself - 1];
+      const viewBelow = views[indexExcludingItself];
+      const sortKey = getSortKeyBetween(viewAbove, viewBelow, (t) => t.sortKey);
+
+      const viewId = views[source.index].id;
+      onChangeViewLocally(viewId, { id: viewId, sortKey });
+      await updateTaskView({ id: viewId, sortKey });
+    },
+    [onChangeViewLocally, updateTaskView, views]
+  );
+
   if (!views || !mounted) {
     return <div style={{ height: 48 }} className="bg-body-secondary" />;
   }
@@ -74,53 +135,76 @@ export const TaskViewTabs: FC<Props> = ({
 
   return (
     <>
-      {styleToMakeExtraTabsRightAligned}
-      <Tabs
-        activeKey={
-          activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
-        }
-        destroyInactiveTabPane
-        className={styles.tabs}
-        onTabClick={navigateToTab}
-      >
-        {views.map((view) => (
-          <Tabs.TabPane
-            tab={
-              <>
-                {view.id === currentView?.id ? (
-                  <TaskViewUpdateFormPopover view={view} />
-                ) : view.type === TaskViewType.BOARD ? (
-                  <Icons.ProjectOutlined />
-                ) : (
-                  <Icons.UnorderedListOutlined />
-                )}
-                {view.id === currentView?.id && <div style={{ width: 8 }} />}
-                {hasLocalChanges(view.id) ? <i>{view.name}</i> : view.name}
-              </>
-            }
-            key={`view:${view.id}`}
-            closable={false}
-          >
-            <TaskViewToolbar />
-            <Divider style={{ margin: 0 }} />
-            {children}
-          </Tabs.TabPane>
-        ))}
-        {canCreate && (
-          <Tabs.TabPane
-            key="add"
-            tab={
-              <TaskViewCreateFormPopover
-                projectId={projectId}
-                userId={userId}
-                organizationId={organizationId}
-              />
-            }
-          />
-        )}
-        <div />
-        {extraTabs}
-      </Tabs>
+      <DragDropContext onDragEnd={onDragEnd}>
+        {styleToMakeExtraTabsRightAligned}
+        <Tabs
+          activeKey={
+            activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
+          }
+          destroyInactiveTabPane
+          className={styles.tabs}
+          onTabClick={navigateToTab}
+          renderTabBar={
+            !!canUpdate
+              ? (props, DefaultTabBar) => (
+                  <Droppable droppableId="tab-bar" direction="horizontal">
+                    {(provided, snapshot) => (
+                      <div
+                        className={classNames({
+                          [styles.hideUnderline]: snapshot.isDraggingOver,
+                        })}
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        <DefaultTabBar {...props}>
+                          {renderDraggableTab}
+                        </DefaultTabBar>
+                      </div>
+                    )}
+                  </Droppable>
+                )
+              : undefined
+          }
+        >
+          {views.map((view) => (
+            <Tabs.TabPane
+              tab={
+                <>
+                  {view.id === currentView?.id ? (
+                    <TaskViewUpdateFormPopover view={view} />
+                  ) : view.type === TaskViewType.BOARD ? (
+                    <Icons.ProjectOutlined />
+                  ) : (
+                    <Icons.UnorderedListOutlined />
+                  )}
+                  {view.id === currentView?.id && <div style={{ width: 8 }} />}
+                  {hasLocalChanges(view.id) ? <i>{view.name}</i> : view.name}
+                </>
+              }
+              key={`view:${view.id}`}
+              closable={false}
+            >
+              <TaskViewToolbar />
+              <Divider style={{ margin: 0 }} />
+              {children}
+            </Tabs.TabPane>
+          ))}
+          {canCreate && (
+            <Tabs.TabPane
+              key="add"
+              tab={
+                <TaskViewCreateFormPopover
+                  projectId={projectId}
+                  userId={userId}
+                  organizationId={organizationId}
+                />
+              }
+            />
+          )}
+          <div />
+          {extraTabs}
+        </Tabs>
+      </DragDropContext>
     </>
   );
 };
