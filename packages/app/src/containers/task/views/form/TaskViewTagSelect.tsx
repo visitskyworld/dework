@@ -36,7 +36,6 @@ export const TaskViewTagSelect: FC<Props> = ({
       <Select
         mode="multiple"
         value={selectedTagIds}
-        open
         placeholder="Select tags..."
         optionFilterProp="label"
         optionLabelProp="label" // don't put children inside tagRender
