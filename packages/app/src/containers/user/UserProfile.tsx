@@ -57,9 +57,12 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   if (_.isEmpty(screen)) return null;
   if (!user) return null;
   return (
-    <div className="mx-auto max-w-lg" style={{ marginTop: 40 }}>
+    <div
+      className="mx-auto max-w-lg"
+      style={{ marginTop: 40, marginBottom: 40 }}
+    >
       <Row gutter={[16, 16]} style={{ margin: 0 }}>
-        <Col xs={24} md={8}>
+        <Col xs={24} lg={8}>
           <Card className="bg-body-secondary">
             <UserProfileForm userId={userId} />
             <Typography.Text
@@ -96,7 +99,7 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             )}
           </Card>
         </Col>
-        <Col xs={24} md={16}>
+        <Col xs={24} lg={16}>
           <Card
             style={{ background: "hsl(240, 14%, 13%)" }}
             size="small"

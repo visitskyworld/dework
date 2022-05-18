@@ -2,7 +2,6 @@ import React from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
 import { useRouter } from "next/router";
-import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import {
   useUserByUsername,
   useUserTasks,
@@ -20,7 +19,6 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      <Sidebar />
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <Header
           title="My Task Board"

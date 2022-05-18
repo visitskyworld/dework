@@ -53,7 +53,7 @@ export const OrganizationOverview: FC<Props> = ({ organizationId }) => {
       >
         <Col
           xs={24}
-          md={18}
+          lg={18}
           className={!screens.xs ? "dewo-divider-right" : undefined}
         >
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
@@ -61,7 +61,7 @@ export const OrganizationOverview: FC<Props> = ({ organizationId }) => {
             <OrganizationTaskDiscoveryList organizationId={organizationId} />
           </Space>
         </Col>
-        <Col xs={24} md={6}>
+        <Col xs={24} lg={6}>
           <Typography.Title level={5}>About</Typography.Title>
           <div style={{ opacity: 0.7 }}>
             <RichMarkdownEditor

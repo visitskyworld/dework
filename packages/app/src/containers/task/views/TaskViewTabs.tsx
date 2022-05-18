@@ -1,6 +1,6 @@
 import { Divider, Tabs } from "antd";
 import { useRouter } from "next/router";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject } from "../../project/hooks";
 import { useTaskViewContext } from "./TaskViewContext";
@@ -19,6 +19,7 @@ import {
 } from "react-beautiful-dnd";
 import { useUpdateTaskView } from "./hooks";
 import { getSortKeyBetween } from "../board/util";
+import { Tab } from "@dewo/app/components/Tab";
 
 interface Props {
   projectId?: string;
@@ -134,7 +135,46 @@ export const TaskViewTabs: FC<Props> = ({
     [onChangeViewLocally, updateTaskView, views]
   );
 
-  if (!views || !mounted) {
+  const viewTabs = useMemo(() => {
+    if (!views?.length)
+      return (
+        <Tabs.TabPane
+          tab={<Tab icon={<Icons.ProjectOutlined />}>Board</Tab>}
+          disabled
+          closable={false}
+        >
+          <TaskViewToolbar />
+          <Divider style={{ margin: 0 }} />
+          {children}
+        </Tabs.TabPane>
+      );
+
+    return views.map((view) => (
+      <Tabs.TabPane
+        tab={
+          <>
+            {view.id === currentView?.id ? (
+              <TaskViewUpdateFormPopover view={view} />
+            ) : view.type === TaskViewType.BOARD ? (
+              <Icons.ProjectOutlined />
+            ) : (
+              <Icons.UnorderedListOutlined />
+            )}
+            {view.id === currentView?.id && <div style={{ width: 8 }} />}
+            {hasLocalChanges(view.id) ? <i>{view.name}</i> : view.name}
+          </>
+        }
+        key={`view:${view.id}`}
+        closable={false}
+      >
+        <TaskViewToolbar />
+        <Divider style={{ margin: 0 }} />
+        {children}
+      </Tabs.TabPane>
+    ));
+  }, [currentView, views, hasLocalChanges, children]);
+
+  if (!mounted) {
     return <div style={{ height: 48 }} className="bg-body-secondary" />;
   }
 
@@ -178,29 +218,7 @@ export const TaskViewTabs: FC<Props> = ({
               : undefined
           }
         >
-          {views.map((view) => (
-            <Tabs.TabPane
-              tab={
-                <>
-                  {view.id === currentView?.id ? (
-                    <TaskViewUpdateFormPopover view={view} />
-                  ) : view.type === TaskViewType.BOARD ? (
-                    <Icons.ProjectOutlined />
-                  ) : (
-                    <Icons.UnorderedListOutlined />
-                  )}
-                  {view.id === currentView?.id && <div style={{ width: 8 }} />}
-                  {hasLocalChanges(view.id) ? <i>{view.name}</i> : view.name}
-                </>
-              }
-              key={`view:${view.id}`}
-              closable={false}
-            >
-              <TaskViewToolbar />
-              <Divider style={{ margin: 0 }} />
-              {children}
-            </Tabs.TabPane>
-          ))}
+          {viewTabs}
           {canCreate && (
             <Tabs.TabPane
               key="add"

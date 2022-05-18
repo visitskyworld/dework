@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
-import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { useRouter } from "next/router";
 import { useOrganizationBySlug } from "@dewo/app/containers/organization/hooks";
 import { OrganizationTabs } from "@dewo/app/containers/organization/overview/OrganizationTabs";
@@ -36,7 +35,6 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      {!isEmbedded && <Sidebar />}
       <Layout.Content
         style={{
           display: "flex",

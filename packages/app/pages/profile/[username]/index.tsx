@@ -2,7 +2,6 @@ import React from "react";
 import { NextPage } from "next";
 import { Layout } from "antd";
 import { useRouter } from "next/router";
-import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { UserProfile } from "@dewo/app/containers/user/UserProfile";
 import { useUserByUsername } from "@dewo/app/containers/user/hooks";
 import { UserSeo } from "@dewo/app/containers/seo/UserSeo";
@@ -15,7 +14,6 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      <Sidebar />
       <Layout.Content style={{ overflowY: "auto" }}>
         <Header />
         {!!user && <UserProfile key={username} userId={user?.id} />}

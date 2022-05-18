@@ -35,6 +35,8 @@ import { isSSR } from "@dewo/app/util/isSSR";
 import { PromptModal } from "@dewo/app/containers/prompts/PromptModal";
 import { AmplitudeProvider } from "@dewo/app/util/analytics/AmplitudeContext";
 import { useAnalyticsListeners } from "@dewo/app/util/analytics/useAnalyticsListeners";
+import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
+import { Layout } from "antd";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -143,9 +145,12 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
           >
             <PermissionsProvider>
               <SidebarProvider>
-                <Redirector />
+                <Layout>
+                  <Sidebar />
+                  <Component {...pageProps} />
+                </Layout>
                 <Hooks />
-                <Component {...pageProps} />
+                <Redirector />
                 <InviteMessageToast />
                 <FloatingFooterButtons />
                 <TaskUpdateModalListener />

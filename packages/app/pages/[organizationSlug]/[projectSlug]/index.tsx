@@ -3,7 +3,6 @@ import * as Icons from "@ant-design/icons";
 import { NextPage } from "next";
 import { Layout, Tabs } from "antd";
 import { useRouter } from "next/router";
-import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
 import {
   useProjectBySlug,
@@ -70,7 +69,6 @@ const Page: NextPage = () => {
 
   return (
     <Layout>
-      {!isEmbedded && <Sidebar />}
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         {!isEmbedded && (
           <ProjectHeader

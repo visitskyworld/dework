@@ -33,7 +33,7 @@ export const ProjectSettings: FC<Props> = ({ project }) => {
     [project, router]
   );
 
-  const isDesktop = screens.sm;
+  const isDesktop = screens.md;
   const tabStyle = { paddingLeft: isDesktop ? 24 : 0, maxWidth: 700 };
   return (
     <Tabs

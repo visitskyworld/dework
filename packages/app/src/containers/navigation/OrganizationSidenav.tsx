@@ -53,7 +53,7 @@ const Sections: FC<{
     return sections.map(
       (section) =>
         section.projects.length > 0 && (
-          <Row>
+          <Row key={section.id}>
             <Row className="w-full" align="middle">
               <Button
                 type="text"

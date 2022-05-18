@@ -27,7 +27,7 @@ export const OrganizationSettings: FC<Props> = ({
   return (
     <Tabs
       type="card"
-      tabPosition={screens.sm ? "left" : "top"}
+      tabPosition={screens.md ? "left" : "top"}
       className="dewo-settings-tabs"
       activeKey={currentTab}
       onTabClick={onTabClick}
@@ -35,7 +35,7 @@ export const OrganizationSettings: FC<Props> = ({
         <Card
           size="small"
           title="Settings"
-          style={{ marginBottom: screens.sm ? 0 : 24 }}
+          style={{ marginBottom: screens.md ? 0 : 24 }}
           bodyStyle={{ padding: 0 }}
         >
           <TabBar {...props} tabPosition="left" />
