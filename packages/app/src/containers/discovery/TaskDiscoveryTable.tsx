@@ -105,8 +105,8 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                   style={{ marginBottom: 8 }}
                   className="ant-typography-caption"
                 >
-                  Created by {task.project.organization.name} (
-                  {moment(task.createdAt).calendar()})
+                  {moment(task.createdAt).fromNow()} by{" "}
+                  {task.project.organization.name}
                 </Typography.Paragraph>
                 <TaskTagsRow task={_.omit(task, ["project"])} />
                 {!screens.lg && !!task.reward && (

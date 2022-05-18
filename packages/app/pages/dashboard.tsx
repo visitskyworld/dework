@@ -6,9 +6,14 @@ import { RecommendedTasksList } from "@dewo/app/containers/dashboard/Recommended
 
 const Page: NextPage = () => (
   <Layout>
-    <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
+    <Layout.Content style={{ overflowY: "auto", paddingBottom: 80 }}>
       <Header />
-      <RecommendedTasksList />
+      <div
+        className="mx-auto max-w-md w-full"
+        style={{ paddingLeft: 12, paddingRight: 12 }}
+      >
+        <RecommendedTasksList />
+      </div>
     </Layout.Content>
   </Layout>
 );

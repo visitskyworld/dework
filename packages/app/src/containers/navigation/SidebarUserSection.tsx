@@ -28,7 +28,7 @@ export const SidebarUserSection: FC = () => {
           exact
           disabled={!user}
         >
-          Dashboard
+          Task Feed
         </BlockButton>
         <BlockButton
           icon={<Icons.ProjectOutlined />}

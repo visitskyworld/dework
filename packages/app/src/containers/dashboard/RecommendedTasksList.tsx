@@ -61,7 +61,7 @@ export const RecommendedTasksList: FC = () => {
 
   if (!mounted) return null;
   return (
-    <div className="mx-auto max-w-md w-full">
+    <>
       <Typography.Title level={3}>Open Tasks</Typography.Title>
       <Typography.Paragraph type="secondary">
         Recent tasks from the DAOs you follow, based on your skills
@@ -131,6 +131,6 @@ export const RecommendedTasksList: FC = () => {
       >
         <UserSettings />
       </Modal>
-    </div>
+    </>
   );
 };
