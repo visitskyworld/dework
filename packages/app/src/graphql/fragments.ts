@@ -268,13 +268,21 @@ export const taskReward = gql`
     token {
       ...PaymentToken
     }
-    payment {
-      ...Payment
+    payments {
+      id
+      amount
+      user {
+        ...User
+      }
+      payment {
+        ...Payment
+      }
     }
   }
 
   ${payment}
   ${token}
+  ${user}
 `;
 
 export const taskReview = gql`
@@ -525,8 +533,13 @@ export const taskDetails = gql`
     }
     reward {
       ...TaskReward
-      payment {
-        ...Payment
+      payments {
+        user {
+          ...User
+        }
+        payment {
+          ...Payment
+        }
       }
     }
     auditLog {

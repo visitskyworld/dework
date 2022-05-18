@@ -25,6 +25,7 @@ import {
   PaymentToken,
   Task,
   TaskReward,
+  TaskRewardPaymentInput,
   ThreepidSource,
   UpdatePaymentMethodInput,
   UpdatePaymentMethodMutation,
@@ -239,6 +240,13 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         );
       }
 
+      const payment: TaskRewardPaymentInput = {
+        amount: amount.toString(),
+        rewardId: reward.id,
+        tokenId: reward.token.id,
+        userId: user.id,
+      };
+
       switch (from.type) {
         case PaymentMethodType.METAMASK: {
           const txHash = await createEthereumTransaction(
@@ -252,7 +260,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           await registerTaskPayment({
             variables: {
               input: {
-                taskRewardIds: [reward.id],
+                payments: [payment],
                 networkId: reward.token.networkId,
                 paymentMethodId: from.id,
                 data: { txHash },
@@ -272,7 +280,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           await registerTaskPayment({
             variables: {
               input: {
-                taskRewardIds: [reward.id],
+                payments: [payment],
                 networkId: reward.token.networkId,
                 paymentMethodId: from.id,
                 data: { signature },
@@ -292,7 +300,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           await registerTaskPayment({
             variables: {
               input: {
-                taskRewardIds: [reward.id],
+                payments: [payment],
                 networkId: reward.token.networkId,
                 paymentMethodId: from.id,
                 data: { txId },
@@ -344,13 +352,7 @@ export function useClearPaymentReward() {
   >(Mutations.clearTaskPayments);
   return useCallback(
     async (paymentId: string) => {
-      const res = await mutation({
-        variables: {
-          input: {
-            paymentId,
-          },
-        },
-      });
+      const res = await mutation({ variables: { paymentId } });
       if (!res.data) throw new Error(JSON.stringify(res.errors));
       return res.data?.tasks;
     },

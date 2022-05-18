@@ -27,9 +27,9 @@ import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
 import { Rule } from "@dewo/api/models/rbac/Rule";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
-import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { PaymentCreatedEvent } from "../payment/payment.events";
 import moment from "moment";
+import { TaskRewardPayment } from "@dewo/api/models/TaskRewardPayment";
 
 @Injectable()
 export class TaskService {
@@ -41,8 +41,8 @@ export class TaskService {
     private readonly taskRepo: Repository<Task>,
     @InjectRepository(TaskReaction)
     private readonly taskReactionRepo: Repository<TaskReaction>,
-    @InjectRepository(TaskReward)
-    private readonly taskRewardRepo: Repository<TaskReward>,
+    @InjectRepository(TaskRewardPayment)
+    private readonly taskRewardPaymentRepo: Repository<TaskRewardPayment>,
     private readonly paymentService: PaymentService,
     private readonly projectService: ProjectService,
     @InjectRepository(TaskSubmission)
@@ -133,32 +133,27 @@ export class TaskService {
       input.data
     );
 
-    const rewards = await this.taskRewardRepo.findByIds(input.taskRewardIds);
-    await this.taskRewardRepo.save(
-      rewards.map((r) => ({ ...r, payment: undefined, paymentId: payment.id }))
+    await this.taskRewardPaymentRepo.save(
+      input.payments.map((p) => ({ ...p, paymentId: payment.id }))
     );
+    const rewardIds = input.payments.map((p) => p.rewardId);
+    const tasks = await this.findWithRelations({ rewardIds });
 
-    const tasks = await this.findWithRelations({
-      rewardIds: input.taskRewardIds,
-    });
-
-    tasks.map((t) =>
-      this.eventBus.publish(new PaymentCreatedEvent(payment, t))
+    this.eventBus.publishAll(
+      tasks.map((t) => new PaymentCreatedEvent(payment, t))
     );
 
     return tasks;
   }
 
-  public async clearPayments(input: ClearTaskPaymentsInput): Promise<Task[]> {
-    const update = await this.taskRewardRepo.find({
-      paymentId: input.paymentId,
+  public async clearPayments(paymentId: string): Promise<Task[]> {
+    const payments = await this.taskRewardPaymentRepo.find({ paymentId });
+    if (!payments.length) return [];
+
+    await this.taskRewardPaymentRepo.delete({ paymentId });
+    return this.findWithRelations({
+      rewardIds: payments.map((r) => r.rewardId),
     });
-
-    await this.taskRewardRepo.save(
-      update.map((r) => ({ ...r, payment: null }))
-    );
-
-    return this.findWithRelations({ rewardIds: update.map((r) => r.id) });
   }
 
   public async createReaction(
@@ -223,7 +218,9 @@ export class TaskService {
       .leftJoinAndSelect("task.tags", "tag")
       .leftJoinAndSelect("task.skills", "skill")
       .leftJoinAndSelect("task.reward", "reward")
-      .leftJoinAndSelect("reward.payment", "payment")
+      .leftJoinAndSelect("reward.payments", "rewardPayment")
+      .leftJoinAndSelect("rewardPayment.payment", "payment")
+      .leftJoinAndSelect("rewardPayment.user", "user")
       .leftJoinAndSelect("reward.token", "token")
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("task.reactions", "reaction")

@@ -80,7 +80,9 @@ import { getRule, hasRule } from "../rbac/util";
 import { Constants } from "@dewo/app/util/constants";
 import { toTaskReward } from "./form/util";
 
-export const formatTaskReward = (reward: TaskReward) => {
+export const formatTaskReward = (
+  reward: Pick<TaskReward, "peggedToUsd" | "amount" | "token">
+) => {
   if (reward.peggedToUsd) {
     return [
       "$" +

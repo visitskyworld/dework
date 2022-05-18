@@ -1,9 +1,9 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import GraphQLUUID from "graphql-type-uuid";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { Payment } from "./Payment";
 import { PaymentToken } from "./PaymentToken";
+import { TaskRewardPayment } from "./TaskRewardPayment";
 
 export enum TaskRewardTrigger {
   CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
@@ -35,11 +35,11 @@ export class TaskReward extends Audit {
   @Field(() => TaskRewardTrigger)
   public trigger!: TaskRewardTrigger;
 
-  @JoinColumn()
-  @ManyToOne(() => Payment, { nullable: true, eager: true, cascade: true })
+  @OneToMany(() => TaskRewardPayment, (x: TaskRewardPayment) => x.reward)
+  @Field(() => [TaskRewardPayment])
+  public payments!: Promise<TaskRewardPayment[]>;
+
+  // TODO(fant): remove once TaskRewardPayment transition has been made
   @Field(() => Payment, { nullable: true })
   public payment?: Payment | null;
-  @Column({ type: "uuid", nullable: true })
-  @Field(() => GraphQLUUID, { nullable: true })
-  public paymentId?: string | null;
 }

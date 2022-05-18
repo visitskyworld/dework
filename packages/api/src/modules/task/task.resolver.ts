@@ -42,7 +42,6 @@ import { RbacService } from "../rbac/rbac.service";
 import { OrganizationService } from "../organization/organization.service";
 import { AuditLogEvent } from "@dewo/api/models/AuditLogEvent";
 import { AuditLogService } from "../auditLog/auditLog.service";
-import { ClearTaskPaymentsInput } from "./dto/ClearTaskPaymentsInput";
 import { GraphQLResolveInfo } from "graphql";
 import GraphQLFields from "graphql-fields";
 import { Skill } from "@dewo/api/models/Skill";
@@ -350,16 +349,16 @@ export class TaskResolver {
   public async createTaskPayments(
     @Args("input") input: CreateTaskPaymentsInput
   ): Promise<Task[]> {
-    if (!input.taskRewardIds.length) return [];
+    if (!input.payments.length) return [];
     return this.taskService.createPayments(input);
   }
 
   @Mutation(() => [Task])
   @UseGuards(AuthGuard)
   public async clearTaskPayments(
-    @Args("input") input: ClearTaskPaymentsInput
+    @Args("paymentId", { type: () => GraphQLUUID }) paymentId: string
   ): Promise<Task[]> {
-    return this.taskService.clearPayments(input);
+    return this.taskService.clearPayments(paymentId);
   }
 
   @Mutation(() => Task)

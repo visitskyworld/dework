@@ -8,6 +8,7 @@ import { TaskRewardFormFields, validator } from "./TaskRewardFormFields";
 import { TaskRewardFormValues } from "../types";
 import { PaymentRow } from "@dewo/app/containers/payment/PaymentRow";
 import { formatTaskRewardAsUSD } from "../../hooks";
+import _ from "lodash";
 
 interface Props {
   projectId: string;
@@ -17,7 +18,7 @@ interface Props {
 
 export function useCanUpdateTaskReward(task: Task | undefined): boolean {
   const canCreateReward = usePermission("create", "TaskReward");
-  return !!canCreateReward && !task?.reward?.payment;
+  return !!canCreateReward && !task?.reward?.payments.length;
 }
 
 export const TaskRewardSection: FC<Props> = ({ projectId, task, value }) => {
@@ -41,7 +42,7 @@ export const TaskRewardSection: FC<Props> = ({ projectId, task, value }) => {
         <Space direction="vertical" size={4}>
           <Row>
             <TaskRewardTag reward={task.reward} />
-            {!task.reward.payment &&
+            {!task.reward.payments.length &&
               !task.reward.peggedToUsd &&
               !!task.reward.token.usdPrice && (
                 <Typography.Text
@@ -52,9 +53,9 @@ export const TaskRewardSection: FC<Props> = ({ projectId, task, value }) => {
                 </Typography.Text>
               )}
           </Row>
-          {!!task.reward.payment && (
-            <PaymentRow payment={task.reward.payment} />
-          )}
+          {_.uniqBy(task.reward.payments, (p) => p.payment.id).map((p) => (
+            <PaymentRow key={p.id} payment={p.payment} />
+          ))}
         </Space>
       </FormSection>
     );

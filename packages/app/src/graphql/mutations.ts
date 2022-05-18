@@ -588,8 +588,8 @@ export const createTaskPayments = gql`
 `;
 
 export const clearTaskPayments = gql`
-  mutation ClearTaskPaymentsMutation($input: ClearTaskPaymentsInput!) {
-    tasks: clearTaskPayments(input: $input) {
+  mutation ClearTaskPaymentsMutation($paymentId: UUID!) {
+    tasks: clearTaskPayments(paymentId: $paymentId) {
       ...TaskDetails
     }
   }

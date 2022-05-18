@@ -243,13 +243,15 @@ export function useTaskViewGroups(
 
           tasks.forEach((task) => {
             if (
-              !!task.assignees.length &&
               !!task.reward &&
-              !task.reward.payment
+              !!task.assignees.length &&
+              !task.reward?.payments.length
             ) {
               unpaid.push(task);
             } else if (
-              task.reward?.payment?.status === PaymentStatus.PROCESSING
+              task.reward?.payments.some(
+                (p) => p.payment.status === PaymentStatus.PROCESSING
+              )
             ) {
               processing.push(task);
             } else {

@@ -104,7 +104,8 @@ export class DiscordIntegrationPaymentConfirmedEventHandler extends EventHandler
     const tasks = await this.taskRepo
       .createQueryBuilder("task")
       .innerJoin("task.reward", "reward")
-      .innerJoin("reward.payment", "payment")
+      .innerJoin("reward.payments", "rewardPayment")
+      .innerJoin("rewardPayment.payment", "payment")
       .where("payment.id = :id", { id: event.payment.id })
       .getMany();
     if (!tasks.length) return;

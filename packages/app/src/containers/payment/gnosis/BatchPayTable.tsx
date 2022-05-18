@@ -2,25 +2,29 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   PaymentMethod,
+  PaymentToken,
+  PaymentTokenType,
   TaskReward,
+  TaskRewardPaymentInput,
   ThreepidSource,
+  User,
 } from "@dewo/app/graphql/types";
+import { Constants } from "@dewo/app/util/constants";
 import { useSwitchChain } from "@dewo/app/util/ethereum";
 import { useProposeTransaction } from "@dewo/app/util/gnosis";
 import { useRunning } from "@dewo/app/util/hooks";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { Button, notification, Row, Select, Table, Tag } from "antd";
+import { BigNumber } from "ethers";
 import _ from "lodash";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { formatTaskReward } from "../../task/hooks";
 import { shortenedAddress } from "../hooks";
 import { AddProjectPaymentMethodButton } from "../project/AddProjectPaymentMethodButton";
 import {
-  canPayTaskAssignee,
   TaskToPay,
   useCreateTaskPayments,
   usePrepareGnosisTransaction,
-  userToPay,
 } from "./hooks";
 
 interface Props {
@@ -29,9 +33,81 @@ interface Props {
   onDone(): void;
 }
 
+interface Row {
+  id: string;
+  task: TaskToPay;
+  reward: TaskReward;
+  user: User;
+  address: string | undefined;
+  amount: string;
+  token: PaymentToken;
+}
+
 export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
-  const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>(() =>
-    tasks.filter(canPayTaskAssignee).map((t) => t.id)
+  const rows = useMemo<Row[]>(
+    () =>
+      tasks
+        .map((task) => {
+          const reward = task.reward;
+          if (!reward) return [];
+          const usdPriceAccuracy = Math.pow(
+            10,
+            Constants.NUM_DECIMALS_IN_USD_PEG
+          );
+          const amount = reward.peggedToUsd
+            ? BigNumber.from(reward.amount)
+                .mul(BigNumber.from(10).pow(reward.token.exp))
+                .mul(BigNumber.from(usdPriceAccuracy))
+                .div(
+                  BigNumber.from(
+                    Math.round(reward.token.usdPrice! * usdPriceAccuracy)
+                  )
+                )
+                .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
+            : BigNumber.from(reward.amount);
+
+          if (
+            [PaymentTokenType.ERC721, PaymentTokenType.ERC1155].includes(
+              reward.token.type
+            )
+          ) {
+            const canSplitNftsEqually = amount.mod(task.assignees.length).eq(0);
+            if (!canSplitNftsEqually) {
+              const user = task.assignees[0];
+              return [
+                {
+                  id: [task.id, user.id].join("/"),
+                  task,
+                  reward,
+                  user,
+                  address: user.threepids.find(
+                    (t) => t.source === ThreepidSource.metamask
+                  )?.address,
+                  token: reward.token,
+                  amount: reward.amount,
+                },
+              ];
+            }
+          }
+
+          return task.assignees.map((user) => ({
+            id: [task.id, user.id].join("/"),
+            task,
+            reward,
+            user,
+            address: user.threepids.find(
+              (t) => t.source === ThreepidSource.metamask
+            )?.address,
+            token: reward.token,
+            amount: amount.div(task.assignees.length).toString(),
+          }));
+        })
+        .flat(),
+    [tasks]
+  );
+
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>(() =>
+    rows.filter((r) => !!r.address).map((r) => r.id)
   );
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<
     string | undefined
@@ -59,19 +135,27 @@ export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
       const network = selectedPaymentMethod!.network;
       await switchChain(network);
 
-      const tasksToPay = tasks.filter((t) => selectedTaskIds.includes(t.id));
+      const rowsToPay = rows.filter(
+        (r) => selectedRowIds.includes(r.id) && !!r.address
+      );
+
+      const payments: TaskRewardPaymentInput[] = rowsToPay.map((row) => ({
+        rewardId: row.reward.id,
+        userId: row.user.id,
+        amount: row.amount,
+        tokenId: row.token.id,
+      }));
       const transactions = await Promise.all(
-        tasksToPay.map(async (task): Promise<MetaTransactionData> => {
-          const toAddress = userToPay(task).threepids.find(
-            (t) => t.source === ThreepidSource.metamask
-          )!.address;
-          return prepareGnosisTransaction(
-            task.reward!,
-            selectedPaymentMethod.address,
-            toAddress,
-            network
-          );
-        })
+        rowsToPay.map(
+          async (row): Promise<MetaTransactionData> =>
+            prepareGnosisTransaction(
+              row.amount,
+              row.token,
+              selectedPaymentMethod.address,
+              row.address!,
+              network
+            )
+        )
       );
 
       const safeTxHash = await proposeTransaction(
@@ -81,7 +165,7 @@ export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
       );
 
       await createTaskPayments({
-        taskRewardIds: tasksToPay.map((t) => t.reward!.id),
+        payments,
         networkId: network.id,
         paymentMethodId: selectedPaymentMethod.id,
         data: { safeTxHash },
@@ -99,42 +183,42 @@ export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
     switchChain,
     prepareGnosisTransaction,
     onDone,
-    selectedTaskIds,
+    selectedRowIds,
     selectedPaymentMethod,
-    tasks,
+    rows,
   ]);
   const [handleSubmit, submitting] = useRunning(submit);
 
   return (
     <>
-      <Table<TaskToPay>
-        dataSource={tasks}
+      <Table<Row>
+        dataSource={rows}
         size="small"
         rowKey="id"
         pagination={{ hideOnSinglePage: true }}
         rowSelection={{
-          selectedRowKeys: selectedTaskIds,
-          onChange: (taskIds) => setSelectedTaskIds(taskIds as string[]),
-          getCheckboxProps: (task: TaskToPay) => ({
-            disabled: !canPayTaskAssignee(task),
-          }),
+          selectedRowKeys: selectedRowIds,
+          onChange: (ids) => setSelectedRowIds(ids as string[]),
+          getCheckboxProps: (row) => ({ disabled: !row.address }),
         }}
         columns={[
           {
             key: "avatar",
             width: 1,
-            render: (_, task: TaskToPay) => (
-              <UserAvatar user={userToPay(task)} />
-            ),
+            render: (_, row) => <UserAvatar user={row.user} />,
           },
-          { title: "Task", dataIndex: "name" },
+          { title: "Task", dataIndex: ["task", "name"] },
           {
             title: "Payment",
-            dataIndex: "reward",
+            key: "reward",
             width: 120,
-            render: (reward: TaskReward, task: TaskToPay) =>
-              canPayTaskAssignee(task) ? (
-                formatTaskReward(reward)
+            render: (_, row) =>
+              !!row.address ? (
+                formatTaskReward({
+                  token: row.token,
+                  amount: row.amount,
+                  peggedToUsd: false,
+                })
               ) : (
                 <Tag color="red">
                   Contributor needs to add their payment address
@@ -170,7 +254,7 @@ export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
                   type="primary"
                   size="small"
                   loading={submitting}
-                  disabled={!selectedTaskIds.length || !selectedPaymentMethodId}
+                  disabled={!selectedRowIds.length || !selectedPaymentMethodId}
                   onClick={handleSubmit}
                 >
                   Create Transaction

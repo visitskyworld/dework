@@ -42,12 +42,12 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   const canSubmit = usePermission("submit", task);
   const canUpdate = usePermission("update", "TaskReward");
 
-  const shouldShowClearButton =
-    canUpdate && task.reward?.payment?.status === PaymentStatus.FAILED;
-
-  if (shouldShowClearButton && task.reward?.payment) {
+  const failedPayment = task.reward?.payments.find(
+    (p) => p.payment.status === PaymentStatus.FAILED
+  )?.payment;
+  if (canUpdate && !!failedPayment) {
     return (
-      <ClearTaskRewardPaymentButton payment={task.reward.payment}>
+      <ClearTaskRewardPaymentButton payment={failedPayment}>
         Clear
       </ClearTaskRewardPaymentButton>
     );

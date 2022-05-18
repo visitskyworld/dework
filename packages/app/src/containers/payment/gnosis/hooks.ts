@@ -6,25 +6,18 @@ import {
   CreateTaskPaymentsMutationVariables,
   GetTasksToPayQuery,
   PaymentNetwork,
+  PaymentToken,
   PaymentTokenType,
-  TaskReward,
-  ThreepidSource,
 } from "@dewo/app/graphql/types";
-import { Constants } from "@dewo/app/util/constants";
 import { useERC1155Contract, useERC20Contract } from "@dewo/app/util/ethereum";
 import { MetaTransactionData } from "@gnosis.pm/safe-core-sdk-types";
 import { useCallback } from "react";
 
 export type TaskToPay = GetTasksToPayQuery["tasks"][number];
 
-export const userToPay = (task: TaskToPay) => task.assignees[0];
-export const canPayTaskAssignee = (task: TaskToPay) => {
-  const user = userToPay(task);
-  return user.threepids.some((t) => t.source === ThreepidSource.metamask);
-};
-
 export function usePrepareGnosisTransaction(): (
-  reward: TaskReward,
+  amount: string,
+  token: PaymentToken,
   fromAddress: string,
   toAddress: string,
   network: PaymentNetwork
@@ -32,31 +25,13 @@ export function usePrepareGnosisTransaction(): (
   const loadERC20Contract = useERC20Contract();
   const loadERC1155Contract = useERC1155Contract();
   return useCallback(
-    async (reward, fromAddress, toAddress, network) => {
-      const { BigNumber } = await import("ethers");
-
-      const usdPriceAccuracy = Math.pow(10, Constants.NUM_DECIMALS_IN_USD_PEG);
-      const amount = reward.peggedToUsd
-        ? BigNumber.from(reward.amount)
-            .mul(BigNumber.from(10).pow(reward.token.exp))
-            .mul(BigNumber.from(usdPriceAccuracy))
-            .div(
-              BigNumber.from(
-                Math.round(reward.token.usdPrice! * usdPriceAccuracy)
-              )
-            )
-            .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
-        : BigNumber.from(reward.amount);
-
-      if (
-        reward.token.type === PaymentTokenType.ERC20 &&
-        !!reward.token.address
-      ) {
-        const contract = await loadERC20Contract(reward.token.address, network);
+    async (amount, token, fromAddress, toAddress, network) => {
+      if (token.type === PaymentTokenType.ERC20 && !!token.address) {
+        const contract = await loadERC20Contract(token.address, network);
         // https://ethereum.stackexchange.com/a/116793/89347
         // https://github.com/ethers-io/ethers.js/issues/478#issuecomment-495814010
         return {
-          to: reward.token.address,
+          to: token.address,
           value: "0",
           data: contract.interface.encodeFunctionData("transfer", [
             toAddress,
@@ -65,21 +40,15 @@ export function usePrepareGnosisTransaction(): (
         };
       }
 
-      if (
-        reward.token.type === PaymentTokenType.ERC1155 &&
-        !!reward.token.address
-      ) {
-        const contract = await loadERC1155Contract(
-          reward.token.address,
-          network
-        );
+      if (token.type === PaymentTokenType.ERC1155 && !!token.address) {
+        const contract = await loadERC1155Contract(token.address, network);
         return {
-          to: reward.token.address,
+          to: token.address,
           value: "0",
           data: contract.interface.encodeFunctionData("safeTransferFrom", [
             fromAddress,
             toAddress,
-            reward.token.identifier,
+            token.identifier,
             amount.toString(),
             "0x",
           ]),
@@ -89,7 +58,7 @@ export function usePrepareGnosisTransaction(): (
       return {
         to: toAddress,
         value: amount.toString(),
-        data: `0x${reward.id.replace(/-/g, "")}`,
+        data: "0x",
       };
     },
     [loadERC20Contract, loadERC1155Contract]

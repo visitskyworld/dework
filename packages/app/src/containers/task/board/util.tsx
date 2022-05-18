@@ -71,7 +71,7 @@ export function useShouldShowInlinePayButton(task: Task): boolean {
     task.status === TaskStatus.DONE &&
     !!task.assignees.length &&
     !!task.reward &&
-    !task.reward.payment &&
+    !task.reward.payments.length &&
     !!canManageProject &&
     !isGnosisSafeConnected
   );
