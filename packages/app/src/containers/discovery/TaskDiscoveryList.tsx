@@ -124,9 +124,7 @@ export const TaskDiscoveryList: FC = () => {
         <Row gutter={16} justify="center">
           <Col md={8}></Col>
           <Col md={16}>
-            <Typography.Title level={3}>
-              Explore Bounties
-            </Typography.Title>
+            <Typography.Title level={3}>Explore Bounties</Typography.Title>
           </Col>
         </Row>
         <Row gutter={16}>

@@ -1,4 +1,4 @@
-import { Divider, Tabs } from "antd";
+import { Tabs } from "antd";
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
@@ -27,14 +27,17 @@ interface Props {
   userId?: string;
   activeKey?: string;
   extraTabs?: React.ReactElement[];
+  hiddenTabs?: React.ReactElement[];
 }
 
+const emptyArray: [] = [];
 export const TaskViewTabs: FC<Props> = ({
   projectId,
   organizationId,
   userId,
   activeKey,
-  extraTabs,
+  extraTabs = emptyArray,
+  hiddenTabs = emptyArray,
   children,
 }) => {
   const { currentView, hasLocalChanges, views, onChangeViewLocally } =
@@ -136,18 +139,17 @@ export const TaskViewTabs: FC<Props> = ({
   );
 
   const viewTabs = useMemo(() => {
-    if (!views?.length)
+    if (!views?.length) {
       return (
         <Tabs.TabPane
           tab={<Tab icon={<Icons.ProjectOutlined />}>Board</Tab>}
           disabled
           closable={false}
         >
-          <TaskViewToolbar />
-          <Divider style={{ margin: 0 }} />
           {children}
         </Tabs.TabPane>
       );
+    }
 
     return views.map((view) => (
       <Tabs.TabPane
@@ -167,8 +169,6 @@ export const TaskViewTabs: FC<Props> = ({
         key={`view:${view.id}`}
         closable={false}
       >
-        <TaskViewToolbar />
-        <Divider style={{ margin: 0 }} />
         {children}
       </Tabs.TabPane>
     ));
@@ -178,63 +178,50 @@ export const TaskViewTabs: FC<Props> = ({
     return <div style={{ height: 48 }} className="bg-body-secondary" />;
   }
 
-  const styleToMakeExtraTabsRightAligned = (
-    <style
-      children={`
-        .${styles.tabs} .ant-tabs-tab:nth-child(${
-        views.length + (canCreate ? 2 : 1)
-      }) {
-          flex: 1;
-          cursor: unset;
-        }
-      `}
-    />
-  );
-
   return (
-    <>
-      <DragDropContext onDragEnd={onDragEnd}>
-        {styleToMakeExtraTabsRightAligned}
-        <Tabs
-          activeKey={
-            activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
-          }
-          destroyInactiveTabPane
-          className={styles.tabs}
-          onTabClick={navigateToTab}
-          renderTabBar={
-            !!canUpdate
-              ? (props, DefaultTabBar) => (
-                  <Droppable droppableId="tab-bar" direction="horizontal">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <DefaultTabBar {...props}>
-                          {renderDraggableTab(provided.placeholder)}
-                        </DefaultTabBar>
-                      </div>
-                    )}
-                  </Droppable>
-                )
-              : undefined
-          }
-        >
-          {viewTabs}
-          {canCreate && (
-            <Tabs.TabPane
-              key="add"
-              tab={
-                <TaskViewCreateFormPopover
-                  projectId={projectId}
-                  userId={userId}
-                  organizationId={organizationId}
-                />
-              }
-            />
-          )}
-          <div />
-          {extraTabs}
-        </Tabs>
-      </DragDropContext>
-    </>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Tabs
+        activeKey={
+          activeKey ?? (!!currentView ? `view:${currentView.id}` : undefined)
+        }
+        destroyInactiveTabPane
+        className={styles.tabs}
+        onTabClick={navigateToTab}
+        tabBarExtraContent={
+          !!currentView && <TaskViewToolbar className="hide-sm" />
+        }
+        renderTabBar={
+          !!canUpdate
+            ? (props, DefaultTabBar) => (
+                <Droppable droppableId="tab-bar" direction="horizontal">
+                  {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                      <DefaultTabBar {...props}>
+                        {renderDraggableTab(provided.placeholder)}
+                      </DefaultTabBar>
+                    </div>
+                  )}
+                </Droppable>
+              )
+            : undefined
+        }
+      >
+        {viewTabs}
+        {extraTabs}
+        {canCreate && (
+          <Tabs.TabPane
+            key="add"
+            tab={
+              <TaskViewCreateFormPopover
+                projectId={projectId}
+                userId={userId}
+                organizationId={organizationId}
+              />
+            }
+          />
+        )}
+        {hiddenTabs}
+      </Tabs>
+    </DragDropContext>
   );
 };

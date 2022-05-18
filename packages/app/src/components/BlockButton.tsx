@@ -41,11 +41,15 @@ export const BlockButton: FC<BlockButtonProps> = ({
 
   const btn = (
     <Button
-      className={classNames([styles.blockbutton, isActive && styles.active])}
       block
       type="text"
       icon={icon}
       {...btnProps}
+      className={classNames([
+        styles.blockbutton,
+        isActive && styles.active,
+        btnProps.className,
+      ])}
     >
       {children}
     </Button>

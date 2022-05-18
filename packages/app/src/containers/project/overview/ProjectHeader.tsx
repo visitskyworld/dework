@@ -1,4 +1,12 @@
-import { Input, Skeleton, Space, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  Input,
+  Menu,
+  Skeleton,
+  Space,
+  Typography,
+} from "antd";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { useProject, useUpdateProject } from "../hooks";
@@ -14,6 +22,11 @@ import { CoordinapeIcon } from "@dewo/app/components/icons/Coordinape";
 import { ConnectUsingDiscordRolesButton } from "../../auth/buttons/ConnectUsingDiscordRolesButton";
 import { ConnectOrganizationToDiscordButton } from "../../integrations/discord/ConnectOrganizationToDiscordButton";
 import { Header } from "../../navigation/header/Header";
+import Link from "next/link";
+import { useProjectSettingsTabs } from "../settings/ProjectSettings";
+import { BlockButton } from "@dewo/app/components/BlockButton";
+import styles from "./ProjectHeader.module.less";
+import classNames from "classnames";
 
 interface Props {
   projectId?: string;
@@ -80,42 +93,109 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
     }
     editName.toggleOff();
   }, [projectName, project?.name, editName, submitProjectName]);
+
+  const settingsTabs = useProjectSettingsTabs(project);
+
   return (
     <Header
-      className="bg-body-secondary"
+      className={classNames(styles.projectHeader, "bg-body-secondary")}
       style={{ paddingBottom: 0 }}
       title={
         !!project ? (
-          !editName.isOn ? (
-            <Typography.Title
-              level={4}
-              style={{ margin: 0 }}
-              onClick={canEdit ? editName.toggleOn : undefined}
-            >
-              {isPrivate && (
-                <Typography.Text type="secondary">
-                  <Icons.LockOutlined />
-                  {"  "}
-                </Typography.Text>
-              )}
-              {project.name}
-            </Typography.Title>
-          ) : (
-            <Input
-              disabled={!canEdit}
-              autoFocus={true}
-              className="ant-input dewo-field dewo-field-display ant-typography-h3"
-              placeholder="Enter a project name..."
-              onBlur={onBlurProjectName}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  submitProjectName();
+          <Space wrap>
+            {!editName.isOn ? (
+              <Typography.Title
+                level={4}
+                style={{ margin: 0 }}
+                onClick={canEdit ? editName.toggleOn : undefined}
+              >
+                {isPrivate && (
+                  <Typography.Text type="secondary">
+                    <Icons.LockOutlined />
+                    {"  "}
+                  </Typography.Text>
+                )}
+                {project.name}
+              </Typography.Title>
+            ) : (
+              <Input
+                disabled={!canEdit}
+                autoFocus={true}
+                className="ant-input dewo-field dewo-field-display ant-typography-h3"
+                placeholder="Enter a project name..."
+                onBlur={onBlurProjectName}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    submitProjectName();
+                  }
+                }}
+                onChange={handleChange}
+                value={projectName}
+              />
+            )}
+            {!!canEdit && (
+              <Dropdown
+                trigger={["click"]}
+                overlay={
+                  <Menu>
+                    {settingsTabs.map((settingsTab) => (
+                      <Menu.Item key={settingsTab.key} icon={settingsTab.icon}>
+                        <Link
+                          href={`${project.permalink}/settings/${settingsTab.key}`}
+                        >
+                          {settingsTab.title}
+                        </Link>
+                      </Menu.Item>
+                    ))}
+                  </Menu>
                 }
-              }}
-              onChange={handleChange}
-              value={projectName}
-            />
-          )
+              >
+                <Button
+                  type="text"
+                  className="text-secondary"
+                  icon={<Icons.SettingOutlined />}
+                  style={{ paddingLeft: 8, paddingRight: 8 }}
+                >
+                  <Icons.DownOutlined />
+                </Button>
+              </Dropdown>
+            )}
+            {!!project && organizationId && (
+              <Space wrap>
+                <DebugMenu
+                  projectId={project.id}
+                  organizationId={organizationId}
+                />
+                <ProjectInviteButton projectId={project.id} />
+                {canEditOrg && !discordIntegration && (
+                  <ConnectOrganizationToDiscordButton
+                    name="Connect organization to Discord from Project Header"
+                    organizationId={project.organizationId}
+                  >
+                    Connect to Discord
+                  </ConnectOrganizationToDiscordButton>
+                )}
+                {canEditOrg && !!discordIntegration && !hasCorrectPermissions && (
+                  <ConnectOrganizationToDiscordButton
+                    name="Update Discord permissions from Project Header"
+                    organizationId={project.organizationId}
+                  >
+                    Update Discord Permissions
+                  </ConnectOrganizationToDiscordButton>
+                )}
+                <ConnectUsingDiscordRolesButton
+                  projectId={projectId}
+                  organizationId={organizationId}
+                  name="Connect user with Discord from Project Header"
+                  children="Connect with Discord"
+                />
+                <CoordinapeMetamaskConnectButton
+                  icon={<CoordinapeIcon />}
+                  organizationId={organizationId}
+                />
+              </Space>
+            )}
+          </Space>
         ) : (
           <Skeleton.Button active style={{ width: 200 }} />
         )
@@ -123,35 +203,37 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
       extra={
         !!project &&
         organizationId && (
-          <Space align="center" style={{ height: "100%" }}>
-            <DebugMenu projectId={project.id} organizationId={organizationId} />
-            <ProjectInviteButton projectId={project.id} />
-            {canEditOrg && !discordIntegration && (
-              <ConnectOrganizationToDiscordButton
-                name="Connect organization to Discord from Project Header"
-                organizationId={project.organizationId}
+          <Space
+            align="center"
+            style={{ height: "100%", justifyContent: "end" }}
+          >
+            <BlockButton
+              href={`${project.permalink}/about`}
+              type="text"
+              icon={<Icons.InfoCircleOutlined />}
+            >
+              About
+            </BlockButton>
+            {!!canEdit && (
+              <BlockButton
+                className={styles.extraButtons}
+                href={`${project.permalink}/settings/discord`}
+                type="text"
+                icon={<Icons.ShareAltOutlined />}
               >
-                Connect to Discord
-              </ConnectOrganizationToDiscordButton>
+                Integrations
+              </BlockButton>
             )}
-            {canEditOrg && !!discordIntegration && !hasCorrectPermissions && (
-              <ConnectOrganizationToDiscordButton
-                name="Update Discord permissions from Project Header"
-                organizationId={project.organizationId}
+            {!!canEdit && (
+              <BlockButton
+                className={styles.extraButtons}
+                href={`${project.permalink}/settings/access`}
+                type="text"
+                icon={<Icons.SafetyOutlined />}
               >
-                Update Discord Permissions
-              </ConnectOrganizationToDiscordButton>
+                Access & Permissions
+              </BlockButton>
             )}
-            <ConnectUsingDiscordRolesButton
-              projectId={projectId}
-              organizationId={organizationId}
-              name="Connect user with Discord from Project Header"
-              children="Connect with Discord"
-            />
-            <CoordinapeMetamaskConnectButton
-              icon={<CoordinapeIcon />}
-              organizationId={organizationId}
-            />
           </Space>
         )
       }

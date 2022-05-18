@@ -11,8 +11,13 @@ import { Button, InputRef, Row } from "antd";
 import styles from "./TaskViewTabs.module.less";
 import { DebouncedInput } from "@dewo/app/components/DebouncedInput";
 import { useTaskViewContext } from "./TaskViewContext";
+import classNames from "classnames";
 
-export const TaskViewToolbar: FC = () => {
+interface Props {
+  className?: string;
+}
+
+export const TaskViewToolbar: FC<Props> = ({ className }) => {
   const { searchQuery, onSearchQueryChange } = useTaskViewContext();
   const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (e) => onSearchQueryChange(e.target.value),
@@ -41,7 +46,7 @@ export const TaskViewToolbar: FC = () => {
   }, []);
 
   return (
-    <Row align="middle" className={styles.toolbar}>
+    <Row align="middle" className={classNames(className, styles.toolbar)}>
       <Button
         size="small"
         icon={<SortIcon />}
@@ -64,7 +69,11 @@ export const TaskViewToolbar: FC = () => {
         ref={input}
         value={searchQuery}
         placeholder="Search tasks..."
-        style={{ flex: 1, maxWidth: 200 }}
+        style={{
+          flex: 1,
+          maxWidth: 200,
+          minWidth: 120,
+        }}
         onChange={handleChange}
       />
     </Row>

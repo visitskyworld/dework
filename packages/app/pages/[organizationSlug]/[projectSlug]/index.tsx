@@ -85,26 +85,11 @@ const Page: NextPage = () => {
                 projectId={projectId}
                 activeKey={currentTab}
                 extraTabs={[
-                  !!details && canEditProject && (
-                    <Tabs.TabPane
-                      tab={
-                        <Tab
-                          icon={<Icons.SettingOutlined />}
-                          children="Project Settings"
-                        />
-                      }
-                      key="settings"
-                      className="max-w-lg w-full dewo-layout-padding-vertical"
-                      style={{ paddingTop: 24 }}
-                    >
-                      <ProjectSettings project={details} />
-                    </Tabs.TabPane>
-                  ),
                   !!project && !!details?.options?.showCommunitySuggestions && (
                     <Tabs.TabPane
                       tab={
                         <Tab
-                          icon={<Icons.UsergroupAddOutlined />}
+                          icon={<Icons.UnorderedListOutlined />}
                           children="Community Suggestions"
                         />
                       }
@@ -113,16 +98,22 @@ const Page: NextPage = () => {
                       <CommunitySuggestions projectId={project.id} />
                     </Tabs.TabPane>
                   ),
+                ].filter((t): t is ReactElement => !!t)}
+                hiddenTabs={[
+                  !!details && canEditProject && (
+                    <Tabs.TabPane
+                      key="settings"
+                      className="max-w-lg w-full dewo-layout-padding-vertical"
+                      style={{ paddingTop: 24 }}
+                    >
+                      <ProjectSettings project={details} />
+                    </Tabs.TabPane>
+                  ),
                   <Tabs.TabPane
-                    tab={
-                      <Tab
-                        icon={<Icons.InfoCircleOutlined />}
-                        children="About"
-                      />
-                    }
                     key="about"
-                    className="mx-auto max-w-sm w-full dewo-layout-padding-vertical"
                     style={{ paddingTop: 24 }}
+                    tabKey="about"
+                    className="hidden-tab"
                   >
                     {!!details && <ProjectAbout project={details} />}
                   </Tabs.TabPane>,

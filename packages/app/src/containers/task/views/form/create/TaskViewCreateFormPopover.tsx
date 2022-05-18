@@ -6,6 +6,7 @@ import { useCreateTaskView } from "../../hooks";
 import { TaskViewForm } from "../TaskViewForm";
 import { useRouter } from "next/router";
 import { useTaskViewContext } from "../../TaskViewContext";
+import { Tab } from "@dewo/app/components/Tab";
 
 interface Props {
   projectId?: string;
@@ -55,8 +56,9 @@ export const TaskViewCreateFormPopover: FC<Props> = ({
       }
     >
       <div>
-        <Icons.PlusOutlined />
-        <Typography.Text className="text-secondary">Add view</Typography.Text>
+        <Tab icon={<Icons.PlusOutlined />}>
+          <Typography.Text className="text-secondary">Add view</Typography.Text>
+        </Tab>
       </div>
     </Popover>
   );
