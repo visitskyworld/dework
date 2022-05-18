@@ -55,6 +55,13 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
   [TaskStatus.DONE]: "Done",
 };
 
+const emojiByStatus: Partial<Record<TaskStatus, string>> = {
+  [TaskStatus.TODO]: "🔘",
+  [TaskStatus.IN_PROGRESS]: "⏳",
+  [TaskStatus.IN_REVIEW]: "🔹",
+  [TaskStatus.DONE]: "✅",
+};
+
 export enum DiscordGuildMembershipState {
   MEMBER = "MEMBER",
   HAS_SCOPE = "HAS_SCOPE",
@@ -332,6 +339,10 @@ export class DiscordIntegrationService {
 
       if (channelToPostTo.isThread()) {
         await this.addTaskUsersToDiscordThread(task, channelToPostTo, guild);
+
+        if (statusChanged && event instanceof TaskUpdatedEvent) {
+          await this.renameDiscordThread(channelToPostTo, task);
+        }
       }
 
       // write about task applicant updates (should that be done elsewhere maybe?)
@@ -1093,9 +1104,8 @@ export class DiscordIntegrationService {
           : 1440
       )
       .catch(() => {});
-    const suffix = ` (${task.number})`;
-    const name =
-      _.truncate(task.name, { length: 100 - suffix.length }) + suffix;
+
+    const name = this.getThreadName(task);
     const thread = await channel.threads.create({ name });
 
     await this.discordChannelRepo.save({
@@ -1189,6 +1199,24 @@ export class DiscordIntegrationService {
           DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK,
         ].includes(f)
       )
+    );
+  }
+
+  private async renameDiscordThread(thread: Discord.ThreadChannel, task: Task) {
+    const name = this.getThreadName(task);
+    await this.discordChannelRepo.update({ channelId: thread.id }, { name });
+    await thread.setName(name);
+  }
+
+  private getThreadName(task: Task): string {
+    const emoji = emojiByStatus[task.status];
+    const prefix = !!emoji ? `${emoji} ` : "";
+    const suffix = ` (${task.number})`;
+
+    return (
+      prefix +
+      _.truncate(task.name, { length: 100 - suffix.length - prefix.length }) +
+      suffix
     );
   }
 }
