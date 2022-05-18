@@ -50,8 +50,8 @@ export class SearchTasksInput {
   @Field(() => GraphQLUUID, { nullable: true })
   public parentTaskId?: null;
 
-  @Field(() => GraphQLUUID, { nullable: true })
-  public organizationId?: null;
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public organizationIds?: string[];
 
   @Field({ nullable: true })
   public featured?: boolean;

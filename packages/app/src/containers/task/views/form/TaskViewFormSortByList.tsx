@@ -25,6 +25,7 @@ const sortByFieldToString: Record<TaskViewSortByField, string> = {
   [TaskViewSortByField.sortKey]: "Custom (drag-n-drop)",
   [TaskViewSortByField.reward]: "Bounty",
   [TaskViewSortByField.priority]: "Priority",
+  [TaskViewSortByField.votes]: "Votes",
 };
 
 interface Props {

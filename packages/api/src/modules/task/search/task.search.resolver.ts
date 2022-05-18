@@ -21,13 +21,16 @@ export class TaskSearchResolver {
     cursor: string | undefined
   ): Promise<TaskSearchResponse> {
     let projectIds = filter.projectIds;
-    if (!!filter.organizationId) {
-      const projects = await this.organizationService.getProjects(
-        filter.organizationId,
-        user?.id
+
+    if (!!filter.organizationIds && filter.organizationIds.length > 0) {
+      const projectsByOrg = await Promise.all(
+        filter.organizationIds.map((orgId) =>
+          this.organizationService.getProjects(orgId, user?.id)
+        )
       );
+
       if (!projectIds) projectIds = [];
-      projectIds.push(...projects.map((p) => p.id));
+      projectIds.push(...projectsByOrg.flat().map((p) => p.id));
     }
 
     const isQueryingOnLandingPage = !projectIds && !filter.applicantIds;

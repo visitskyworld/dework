@@ -13640,6 +13640,7 @@ export enum TaskViewSortByField {
   priority = "priority",
   reward = "reward",
   sortKey = "sortKey",
+  votes = "votes",
 }
 
 export enum TaskViewType {
@@ -13876,7 +13877,7 @@ export interface SearchTasksInput {
   applicantIds?: Scalar.UUID[] | null;
   projectIds?: (Scalar.UUID | null)[] | null;
   parentTaskId?: Scalar.UUID | null;
-  organizationId?: Scalar.UUID | null;
+  organizationIds?: Scalar.UUID[] | null;
   featured?: boolean | null;
   sortBy: TaskViewSortByInput;
 }

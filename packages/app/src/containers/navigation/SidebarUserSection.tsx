@@ -19,8 +19,16 @@ export const SidebarUserSection: FC = () => {
         icon={user && <UserAvatar user={user} />}
       />
       <Space direction="vertical" className="pl-2 pr-2 w-full" size={2}>
-        <BlockButton icon={<Icons.AppstoreOutlined />} href="/" exact>
+        <BlockButton icon={<Icons.SearchOutlined />} href="/" exact>
           Discover
+        </BlockButton>
+        <BlockButton
+          icon={<Icons.AppstoreOutlined />}
+          href="/dashboard"
+          exact
+          disabled={!user}
+        >
+          Dashboard
         </BlockButton>
         <BlockButton
           icon={<Icons.ProjectOutlined />}

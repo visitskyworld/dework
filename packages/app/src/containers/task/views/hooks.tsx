@@ -379,7 +379,9 @@ export function useTaskViewLayoutItems() {
             value: status,
             type: TaskViewGroupBy.status,
             query: {
-              organizationId: currentView.organizationId,
+              organizationIds: !!currentView.organizationId
+                ? [currentView.organizationId]
+                : undefined,
               projectIds: !!currentView.projectId
                 ? [currentView.projectId]
                 : undefined,
