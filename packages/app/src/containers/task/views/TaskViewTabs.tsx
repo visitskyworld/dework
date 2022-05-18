@@ -19,7 +19,6 @@ import {
 } from "react-beautiful-dnd";
 import { useUpdateTaskView } from "./hooks";
 import { getSortKeyBetween } from "../board/util";
-import classNames from "classnames";
 
 interface Props {
   projectId?: string;
@@ -28,29 +27,6 @@ interface Props {
   activeKey?: string;
   extraTabs?: React.ReactElement[];
 }
-
-const renderDraggableTab = (node: JSX.Element) => (
-  <div key={node.key} className={styles.draggableTab}>
-    <Draggable
-      isDragDisabled={!node.key!.toString().startsWith("view:")}
-      draggableId={node.key!.toString()}
-      // hack to get the index of the tab
-      // https://stackoverflow.com/questions/27187311/reactjs-how-can-i-get-the-owner-of-a-component
-      index={(node as any)._owner.index}
-    >
-      {(provided) => (
-        <div
-          className={styles.draggableTabContent}
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          {node}
-        </div>
-      )}
-    </Draggable>
-  </div>
-);
 
 export const TaskViewTabs: FC<Props> = ({
   projectId,
@@ -96,10 +72,52 @@ export const TaskViewTabs: FC<Props> = ({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const renderDraggableTab = useCallback(
+    (placeholder?: JSX.Element | null) => (node: JSX.Element) => {
+      const key = node.key?.toString() ?? "";
+      const id = key.replace("view:", "");
+
+      if (!key.startsWith("view:")) {
+        return (
+          <div key={node.key} className={styles.tab}>
+            <div className={styles.tabContent}>{node}</div>
+          </div>
+        );
+      }
+
+      const idx = views.findIndex((v) => v.id === id);
+      const isLast = idx === views.length - 1;
+
+      return (
+        <>
+          <div key={node.key} className={styles.tab}>
+            <Draggable draggableId={key} index={idx}>
+              {(provided) => (
+                <div
+                  className={styles.tabContent}
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  {node}
+                </div>
+              )}
+            </Draggable>
+          </div>
+          {
+            !!isLast && placeholder // Append the placeholder after all draggables
+          }
+        </>
+      );
+    },
+    [views]
+  );
+
   const onDragEnd = useCallback(
     async (result: DropResult) => {
-      if (!result.destination) return;
       const { source, destination } = result;
+      if (!destination) return;
+
       const destIndex = Math.min(destination.index, views.length - 1);
 
       const indexExcludingItself =
@@ -148,16 +166,10 @@ export const TaskViewTabs: FC<Props> = ({
             !!canUpdate
               ? (props, DefaultTabBar) => (
                   <Droppable droppableId="tab-bar" direction="horizontal">
-                    {(provided, snapshot) => (
-                      <div
-                        className={classNames({
-                          [styles.hideUnderline]: snapshot.isDraggingOver,
-                        })}
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <DefaultTabBar {...props}>
-                          {renderDraggableTab}
+                          {renderDraggableTab(provided.placeholder)}
                         </DefaultTabBar>
                       </div>
                     )}
