@@ -45,6 +45,7 @@ export const TaskTagsRow: FC<Props> = ({
   const standardTags = [
     fields.has(TaskViewField.priority) && (
       <DropdownSelect
+        key="priority"
         mode="default"
         disabled={!canChangePriority}
         onChange={(priority: TaskPriority) =>
@@ -62,11 +63,7 @@ export const TaskTagsRow: FC<Props> = ({
           })
         )}
       >
-        <Tag
-          key="priority"
-          title={PRIORITY_LABEL[task.priority]}
-          style={{ height: 20 }}
-        >
+        <Tag title={PRIORITY_LABEL[task.priority]} style={{ height: 20 }}>
           <TaskPriorityIcon priority={task.priority} size={13} />
         </Tag>
       </DropdownSelect>

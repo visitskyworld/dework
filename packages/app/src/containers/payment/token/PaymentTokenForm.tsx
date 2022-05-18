@@ -45,7 +45,6 @@ export const PaymentTokenForm: FC<FormProps> = ({
   onDone,
 }) => {
   const [form] = useForm<FormValues>();
-
   const [values, setValues] = useState<Partial<FormValues>>({});
 
   const networks = usePaymentNetworks();

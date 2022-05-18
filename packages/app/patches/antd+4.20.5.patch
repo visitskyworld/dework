@@ -21,10 +21,10 @@ index cdb67c8..2451d52 100644
  }
  
 diff --git a/node_modules/antd/lib/button/style/mixin.less b/node_modules/antd/lib/button/style/mixin.less
-index 96efadc..f8820e5 100644
+index 084ecaa..63a0a78 100644
 --- a/node_modules/antd/lib/button/style/mixin.less
 +++ b/node_modules/antd/lib/button/style/mixin.less
-@@ -302,7 +302,7 @@
+@@ -280,7 +280,7 @@
    &:focus,
    &:active {
      text-decoration: none;

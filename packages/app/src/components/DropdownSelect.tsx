@@ -85,13 +85,13 @@ export function DropdownSelect<T extends string | string[]>({
       overlay={
         <Menu onClick={(e) => stopPropagation(e.domEvent)} style={menuStyle}>
           {showSearch && (
-            <Menu.Item>
+            <Menu.Item key="search">
               <Input
                 autoFocus
                 value={filter}
                 onChange={(e) => setFilter(e.currentTarget.value)}
                 onClick={stopPropagation}
-                placeholder="Search username..."
+                placeholder="Search..."
               />
             </Menu.Item>
           )}
