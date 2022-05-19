@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from "react";
 import {
   OrganizationIntegrationType,
+  ProjectDetails,
   ProjectIntegrationType,
 } from "@dewo/app/graphql/types";
 import { Card, Divider, Space, Typography } from "antd";
@@ -8,20 +9,19 @@ import { GithubProjectIntegrationFeature } from "../../integrations/hooks";
 import { useOrganizationIntegrations } from "../../organization/hooks";
 import { ConnectOrganizationToGithubButton } from "../../integrations/github/ConnectOrganizationToGithubButton";
 import { CreateGithubIntegrationFeatureForm } from "../../integrations/github/CreateGithubIntegrationFeatureForm";
-import { useProject, useProjectIntegrations } from "../hooks";
+import { useProjectIntegrations } from "../hooks";
 
 interface Props {
-  projectId: string;
+  project: ProjectDetails;
 }
 
-export const ProjectSettingsGithubIntegration: FC<Props> = ({ projectId }) => {
-  const organizationId = useProject(projectId).project?.organizationId!;
+export const ProjectSettingsGithubIntegration: FC<Props> = ({ project }) => {
   const hasGithubOrganizationIntegration = !!useOrganizationIntegrations(
-    organizationId,
+    project.organizationId,
     OrganizationIntegrationType.GITHUB
   )?.length;
 
-  const allProjectIntegrations = useProjectIntegrations(projectId);
+  const allProjectIntegrations = useProjectIntegrations(project.id);
   const githubProjectIntegrations = useMemo(
     () =>
       allProjectIntegrations?.filter(
@@ -51,7 +51,7 @@ export const ProjectSettingsGithubIntegration: FC<Props> = ({ projectId }) => {
             }}
           >
             <ConnectOrganizationToGithubButton
-              organizationId={organizationId}
+              organizationId={project.organizationId}
               type="primary"
               icon={null}
               style={{ marginTop: 0 }}
@@ -70,7 +70,7 @@ export const ProjectSettingsGithubIntegration: FC<Props> = ({ projectId }) => {
           <CreateGithubIntegrationFeatureForm
             key={feature}
             feature={feature}
-            projectId={projectId}
+            projectId={project.id}
             existingIntegrations={githubProjectIntegrations?.filter((i) =>
               i.config.features.includes(feature)
             )}

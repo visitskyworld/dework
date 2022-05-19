@@ -1,3 +1,4 @@
+import { ProjectDetails } from "@dewo/app/graphql/types";
 import { Divider, Space, Typography } from "antd";
 import React, { FC, useCallback } from "react";
 import {
@@ -8,11 +9,11 @@ import { PaymentMethodSummary } from "../../payment/PaymentMethodSummary";
 import { AddProjectPaymentMethodButton } from "../../payment/project/AddProjectPaymentMethodButton";
 
 interface Props {
-  projectId: string;
+  project: ProjectDetails;
 }
 
-export const ProjectSettingsPaymentMethod: FC<Props> = ({ projectId }) => {
-  const paymentMethods = useProjectPaymentMethods(projectId);
+export const ProjectSettingsPaymentMethod: FC<Props> = ({ project }) => {
+  const paymentMethods = useProjectPaymentMethods(project.id);
   const updatePaymentMethod = useUpdatePaymentMethod();
   const removePaymentMethod = useCallback(
     (pm) =>
@@ -40,7 +41,7 @@ export const ProjectSettingsPaymentMethod: FC<Props> = ({ projectId }) => {
         ))}
         <AddProjectPaymentMethodButton
           key={paymentMethods?.length}
-          projectId={projectId}
+          projectId={project.id}
           children="Add Payment Method"
         />
       </Space>
