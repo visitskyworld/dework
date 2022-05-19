@@ -24,7 +24,7 @@ export const SidebarUserSection: FC = () => {
         </BlockButton>
         <BlockButton
           icon={<Icons.AppstoreOutlined />}
-          href="/dashboard"
+          href="/task-feed"
           exact
           disabled={!user}
         >
