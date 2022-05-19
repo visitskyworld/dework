@@ -51,6 +51,7 @@ export const TaskViewFormSortByList: FC<Props> = ({ form }) => {
                         TaskViewSortByField.priority,
                         TaskViewSortByField.dueDate,
                         TaskViewSortByField.createdAt,
+                        TaskViewSortByField.reward,
                       ].map((field) => (
                         <Menu.Item
                           key={field}
@@ -86,6 +87,7 @@ export const TaskViewFormSortByList: FC<Props> = ({ form }) => {
                     TaskViewSortByField.priority,
                     TaskViewSortByField.dueDate,
                     TaskViewSortByField.createdAt,
+                    TaskViewSortByField.reward,
                   ].map((type) => (
                     <Select.Option
                       key={type}

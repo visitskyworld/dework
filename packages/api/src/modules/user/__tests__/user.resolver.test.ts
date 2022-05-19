@@ -289,7 +289,7 @@ describe("UserResolver", () => {
 
           expect(res.body.data?.authWithThreepid.user.prompts).toContainEqual(
             expect.objectContaining({
-              type: "Onboarding.v1.ConnectWallet",
+              type: "Onboarding.v2.ConnectWallet",
             })
           );
         });

@@ -31,7 +31,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
         {
           statuses: [TaskStatus.TODO],
           sortBy: {
-            field: TaskViewSortByField.createdAt,
+            field: TaskViewSortByField.reward,
             direction: TaskViewSortByDirection.DESC,
           },
           assigneeIds: [null],

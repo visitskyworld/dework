@@ -43,6 +43,8 @@ export class IndexTasksService {
         .leftJoinAndSelect("task.tags", "tag")
         .leftJoinAndSelect("task.applications", "application")
         .leftJoinAndSelect("task.skills", "skill")
+        .leftJoinAndSelect("task.reward", "reward")
+        .leftJoinAndSelect("reward.token", "token")
         .innerJoinAndSelect("task.project", "project")
         .innerJoinAndSelect("project.organization", "organization")
         .where("task.id IN (:...ids)", { ids: batch.map((b) => b.id) })

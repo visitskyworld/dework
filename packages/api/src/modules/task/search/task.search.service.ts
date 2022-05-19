@@ -17,6 +17,7 @@ import { Repository } from "typeorm";
 import { RbacService } from "../../rbac/rbac.service";
 import * as ms from "milliseconds";
 import { Language } from "@dewo/api/models/enums/Language";
+import { formatFixed } from "@ethersproject/bignumber";
 
 const TaskPriorityNumber: Record<TaskPriority, number> = {
   [TaskPriority.NONE]: 0,
@@ -38,7 +39,6 @@ interface IndexedTask {
   dueDate: string | undefined;
   projectId: string;
   parentTaskId: string | undefined;
-  hasReward: boolean;
   spam: boolean;
   public: boolean;
   reward: number | undefined;
@@ -53,6 +53,8 @@ interface IndexedTask {
   ownerIds: string[];
   applicantIds: string[];
 }
+
+const toId = (x: { id: string }) => x.id;
 
 @Injectable()
 export class TaskSearchService implements OnModuleInit {
@@ -119,10 +121,9 @@ export class TaskSearchService implements OnModuleInit {
             status: { type: "keyword" },
             language: { type: "keyword" },
             priority: { type: "byte" },
-            reward: { type: "long" },
+            reward: { type: "float" },
             spam: { type: "boolean" },
             public: { type: "boolean" },
-            hasReward: { type: "boolean" },
             sortKey: { type: "text", fielddata: true },
             createdAt: { type: "date" },
             doneAt: { type: "date" },
@@ -253,8 +254,16 @@ export class TaskSearchService implements OnModuleInit {
         track_total_hits: 1000,
         query: {
           bool: {
-            must: !!q.name ? [{ match: { name: { query: q.name } } }] : [],
+            must: [
+              ...(!!q.name ? [{ match: { name: { query: q.name } } }] : []),
+              ...(q.hasReward === true
+                ? [{ exists: { field: "reward" } }]
+                : []),
+            ],
             must_not: [
+              ...(q.hasReward === false
+                ? [{ exists: { field: "reward" } }]
+                : []),
               ...(q.ownerIds?.includes(null)
                 ? [{ exists: { field: "ownerIds" } }]
                 : []),
@@ -309,9 +318,6 @@ export class TaskSearchService implements OnModuleInit {
                 "roleIds",
                 q.roleIds?.filter((id) => !!id)
               ),
-              ...(q.hasReward !== undefined
-                ? [{ match: { hasReward: q.hasReward } }]
-                : []),
               ...(q.spam !== undefined ? [{ match: { spam: q.spam } }] : []),
               ...(q.featured !== undefined
                 ? [{ match: { featured: q.featured } }]
@@ -379,14 +385,42 @@ export class TaskSearchService implements OnModuleInit {
     };
   }
 
+  private async toDocumentReward(task: Task): Promise<number | undefined> {
+    const reward = await task.reward;
+    if (!reward) return undefined;
+
+    const numDecimalsInUsdPeg = 6;
+
+    if (reward.peggedToUsd) {
+      return Number(formatFixed(reward.amount, numDecimalsInUsdPeg));
+    }
+
+    const token = await reward.token;
+    if (!!token.usdPrice) {
+      return Number(formatFixed(reward.amount, token.exp)) * token.usdPrice;
+    }
+
+    const reallyLowUsdPricePerUnpeggedToken = Math.pow(10, -6);
+    return (
+      Number(formatFixed(reward.amount, token.exp)) *
+      reallyLowUsdPricePerUnpeggedToken
+    );
+  }
+
   private async toDocument(
     task: Task,
     isPublic: boolean,
     roleIds: string[]
   ): Promise<IndexedTask> {
-    const project = await task.project;
+    const [project, reactions, skills, applications, reward] =
+      await Promise.all([
+        task.project,
+        task.reactions,
+        task.skills,
+        task.applications,
+        this.toDocumentReward(task),
+      ]);
     const organization = await project.organization;
-    const reactions = await task.reactions;
 
     const demoOrTestRegex = /(demo|test)/i;
     const chineseRegex = /[\u4e00-\u9fa5]/g;
@@ -398,17 +432,16 @@ export class TaskSearchService implements OnModuleInit {
       doneAt: task.doneAt?.toISOString(),
       dueDate: task.doneAt?.toISOString(),
       parentTaskId: task.parentTaskId,
-      hasReward: !!task.rewardId,
       organizationId: organization.id,
-      tagIds: task.tags.map((t) => t.id),
-      skillIds: (await task.skills).map((s) => s.id),
+      tagIds: task.tags.map(toId),
+      skillIds: skills.map(toId),
       roleIds,
-      assigneeIds: task.assignees.map((u) => u.id),
-      ownerIds: task.owners.map((u) => u.id),
-      applicantIds: (await task.applications).map((a) => a.userId),
+      assigneeIds: task.assignees.map(toId),
+      ownerIds: task.owners.map(toId),
+      applicantIds: applications.map((a) => a.userId),
       featured: task.featured,
       public: isPublic,
-      reward: undefined,
+      reward,
       votes: reactions.filter((r) => r.reaction === ":arrow_up_small:").length,
       spam:
         [task.name, project.name, organization.name].some((s) =>

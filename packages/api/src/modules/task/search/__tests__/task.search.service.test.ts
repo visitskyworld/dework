@@ -292,11 +292,16 @@ describe("TaskSearchService", () => {
       beforeEach(async () => {
         project = await fixtures.createProject();
 
+        const tokenWithUsdPrice = await fixtures.createPaymentToken({
+          usdPrice: 1,
+        });
+
         task1 = await fixtures.createTask({
           sortKey: "02",
           priority: TaskPriority.HIGH,
           doneAt: moment("2020-01-01").toDate(),
           projectId: project.id,
+          reward: { tokenId: tokenWithUsdPrice.id, amount: "1" },
         });
         task2 = await fixtures.createTask({
           sortKey: "1",
@@ -309,12 +314,13 @@ describe("TaskSearchService", () => {
           priority: TaskPriority.URGENT,
           doneAt: moment("2021-01-01").toDate(),
           projectId: project.id,
+          reward: { amount: "2" },
         });
 
         await service.index([task1, task2, task3], true);
       });
 
-      it("should sort by sortKey", async () => {
+      it("sortKey", async () => {
         const res = await service.search({
           size: 3,
           sortBy: {
@@ -330,7 +336,7 @@ describe("TaskSearchService", () => {
         ]);
       });
 
-      it("should sort by createdAt", async () => {
+      it("createdAt", async () => {
         const res = await service.search({
           size: 3,
           sortBy: {
@@ -346,7 +352,7 @@ describe("TaskSearchService", () => {
         ]);
       });
 
-      it("should sort by doneAt", async () => {
+      it("doneAt", async () => {
         const res = await service.search({
           size: 3,
           sortBy: {
@@ -362,7 +368,7 @@ describe("TaskSearchService", () => {
         ]);
       });
 
-      it("should sort by priority", async () => {
+      it("priority", async () => {
         const res = await service.search({
           size: 3,
           sortBy: {
@@ -375,6 +381,22 @@ describe("TaskSearchService", () => {
           task2.id,
           task1.id,
           task3.id,
+        ]);
+      });
+
+      it("reward", async () => {
+        const res = await service.search({
+          size: 3,
+          sortBy: {
+            field: TaskViewSortByField.reward,
+            direction: TaskViewSortByDirection.DESC,
+          },
+          projectIds: [project.id],
+        });
+        expect(res.tasks.map((t) => t.id)).toEqual([
+          task1.id,
+          task3.id,
+          task2.id,
         ]);
       });
     });

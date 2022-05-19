@@ -70,8 +70,8 @@ export class ProjectService {
       ],
       sortBys: [
         {
-          direction: TaskViewSortByDirection.ASC,
-          field: TaskViewSortByField.priority,
+          direction: TaskViewSortByDirection.DESC,
+          field: TaskViewSortByField.reward,
         },
       ],
     });

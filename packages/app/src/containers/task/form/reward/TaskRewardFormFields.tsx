@@ -120,6 +120,8 @@ export const TaskRewardFormFields: FC<Props> = ({
             placeholder="Select a token"
             value={value?.token?.id}
             allowClear
+            showSearch
+            optionFilterProp="label"
             dropdownRender={(menu) => (
               <>
                 {menu}
@@ -140,7 +142,11 @@ export const TaskRewardFormFields: FC<Props> = ({
             onClear={handleClear}
           >
             {tokens.map((token) => (
-              <Select.Option key={token.id} value={token.id} label={token.name}>
+              <Select.Option
+                key={token.id}
+                value={token.id}
+                label={`${token.symbol} (${token.network.name})`}
+              >
                 {`${token.symbol} (${token.network.name})`}
               </Select.Option>
             ))}

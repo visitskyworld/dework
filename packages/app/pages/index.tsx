@@ -7,7 +7,7 @@ import { Header } from "@dewo/app/containers/navigation/header/Header";
 const Page: NextPage = () => {
   return (
     <Layout>
-      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
+      <Layout.Content style={{ overflowY: "auto" }}>
         <Header />
         <LandingPage />
       </Layout.Content>

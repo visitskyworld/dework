@@ -85,8 +85,8 @@ export class TaskViewService {
       ],
       sortBys: [
         {
-          direction: TaskViewSortByDirection.ASC,
-          field: TaskViewSortByField.priority,
+          direction: TaskViewSortByDirection.DESC,
+          field: TaskViewSortByField.reward,
         },
       ],
     });

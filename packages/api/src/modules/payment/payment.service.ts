@@ -158,7 +158,7 @@ export class PaymentService {
       exp: 0,
       ...partial,
       address,
-      usdPrice,
+      usdPrice: usdPrice ?? partial.usdPrice,
     });
     return this.paymentTokenRepo.findOne(created.id) as Promise<PaymentToken>;
   }
