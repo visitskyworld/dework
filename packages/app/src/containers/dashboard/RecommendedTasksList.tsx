@@ -35,8 +35,8 @@ export const RecommendedTasksList: FC = () => {
     [user]
   );
 
-  const searchTasksInputs = useMemo<SearchTasksInput[]>(
-    () => [
+  const searchTasksInputs = useMemo(
+    (): SearchTasksInput[] => [
       {
         statuses: [TaskStatus.TODO],
         sortBy: {

@@ -26,8 +26,8 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
   const skills = useSkills();
 
   const [data] = useTaskViewLayoutData(
-    useMemo<SearchTasksInput[]>(
-      () => [
+    useMemo(
+      (): SearchTasksInput[] => [
         {
           statuses: [TaskStatus.TODO],
           sortBy: {
@@ -37,7 +37,7 @@ export const OrganizationTaskDiscoveryList: FC<Props> = ({
           assigneeIds: [null],
           parentTaskId: null,
           skillIds: !!skillIds.length ? skillIds : undefined,
-          organizationId,
+          organizationIds: [organizationId],
         },
       ],
       [organizationId, skillIds]

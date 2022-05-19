@@ -77,8 +77,8 @@ export const TaskDiscoveryList: FC = () => {
   );
 
   const [data, featured] = useTaskViewLayoutData(
-    useMemo<SearchTasksInput[]>(
-      () => [
+    useMemo(
+      (): SearchTasksInput[] => [
         {
           statuses: [TaskStatus.TODO],
           hasReward: true,
