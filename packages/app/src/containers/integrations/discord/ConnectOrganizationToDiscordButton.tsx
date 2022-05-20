@@ -11,6 +11,7 @@ interface Props extends ButtonProps {
   organizationId: string;
   style?: React.CSSProperties;
   guildId?: string;
+  redirect?: string;
 }
 
 export const ConnectOrganizationToDiscordButton: FC<Props> = ({
@@ -18,6 +19,7 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
   children = "Connect to Discord",
   icon = <DiscordIcon />,
   guildId,
+  redirect,
   ...buttonProps
 }) => {
   const { user } = useAuthContext();
@@ -27,7 +29,7 @@ export const ConnectOrganizationToDiscordButton: FC<Props> = ({
       href={`${Constants.GRAPHQL_API_URL}/auth/discord-bot?${qs.stringify({
         organizationId,
         userId: user?.id,
-        redirect: `${router.asPath}/settings/discord`,
+        redirect: redirect ?? router.asPath,
         ...(guildId ? { guildId } : {}),
       })}`}
     >

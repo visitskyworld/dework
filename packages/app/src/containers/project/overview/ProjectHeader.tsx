@@ -27,6 +27,7 @@ import { useProjectSettingsTabs } from "../settings/ProjectSettings";
 import { BlockButton } from "@dewo/app/components/BlockButton";
 import styles from "./ProjectHeader.module.less";
 import classNames from "classnames";
+import { useRouter } from "next/router";
 
 interface Props {
   projectId?: string;
@@ -43,10 +44,12 @@ const MANAGE_CHANNELS = BigInt(0x10),
   ADMINISTRATOR = BigInt(0x8);
 
 export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
+  const router = useRouter();
   const { project } = useProject(projectId);
   const isPrivate = useIsProjectPrivate(project, organizationId);
   const canEdit = usePermission("update", project);
   const canEditOrg = usePermission("update", "Organization");
+  const redirect = `${router.asPath}/settings/discord`;
 
   const integrations = useOrganizationIntegrations(organizationId);
   const discordIntegration = useMemo(
@@ -171,6 +174,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
                   <ConnectOrganizationToDiscordButton
                     name="Connect organization to Discord from Project Header"
                     organizationId={project.organizationId}
+                    redirect={redirect}
                   >
                     Connect to Discord
                   </ConnectOrganizationToDiscordButton>
@@ -179,6 +183,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
                   <ConnectOrganizationToDiscordButton
                     name="Update Discord permissions from Project Header"
                     organizationId={project.organizationId}
+                    redirect={redirect}
                   >
                     Update Discord Permissions
                   </ConnectOrganizationToDiscordButton>
