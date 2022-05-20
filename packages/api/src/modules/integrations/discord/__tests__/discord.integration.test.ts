@@ -11,6 +11,7 @@ import { TaskService } from "@dewo/api/modules/task/task.service";
 import { DeepPartial } from "typeorm";
 import {
   TaskCreatedEvent,
+  TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "@dewo/api/modules/task/task.events";
 
@@ -79,6 +80,15 @@ describe("DiscordIntegration", () => {
   ): Promise<Task> {
     const updated = await taskService.update({ id: task.id, ...partial });
     await discordIntegrationService.handle(new TaskUpdatedEvent(updated, task));
+    return taskService.findById(task.id) as Promise<Task>;
+  }
+
+  async function deleteTask(task: Task): Promise<Task> {
+    const updated = await taskService.update({
+      id: task.id,
+      deletedAt: new Date().toISOString(),
+    });
+    await discordIntegrationService.handle(new TaskDeletedEvent(updated, task));
     return taskService.findById(task.id) as Promise<Task>;
   }
 
@@ -326,6 +336,26 @@ describe("DiscordIntegration", () => {
           expect.objectContaining({ userId: assigneeWithoutDiscord.id })
         );
       });
+    });
+  });
+
+  describe("delete task", () => {
+    it("should archive Discord channel", async () => {
+      const { project } = await fixtures.createProjectWithDiscordIntegration(
+        discordGuildId,
+        discordChannelId
+      );
+      const task = await createTask({ projectId: project.id });
+      await deleteTask(task);
+
+      const discordChannel = await task.discordChannel;
+      const guild = await discord.guilds.fetch(discordGuildId);
+      const parentChannel = await guild.channels.fetch(discordChannelId);
+      const channel = await (
+        parentChannel as Discord.TextChannel
+      ).threads.fetch(discordChannel!.channelId);
+
+      expect(channel?.archived).toBe(true);
     });
   });
 });

@@ -19,6 +19,15 @@ export class TaskUpdatedEvent {
   ) {}
 }
 
+export class TaskDeletedEvent {
+  constructor(
+    public readonly task: Task,
+    public readonly prevTask: Task,
+    public readonly userId?: string,
+    public readonly sessionId?: string
+  ) {}
+}
+
 export class TaskApplicationCreatedEvent {
   constructor(
     public readonly task: Task,

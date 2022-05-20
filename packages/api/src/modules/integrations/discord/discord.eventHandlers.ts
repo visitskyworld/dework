@@ -11,6 +11,7 @@ import {
 import {
   TaskApplicationCreatedEvent,
   TaskCreatedEvent,
+  TaskDeletedEvent,
   TaskSubmissionCreatedEvent,
   TaskUpdatedEvent,
 } from "../../task/task.events";
@@ -48,6 +49,22 @@ export class DiscordIntegrationTaskUpdatedEventHandler extends EventHandler<Task
   }
 
   async process(event: TaskUpdatedEvent) {
+    await this.integration.handle(event);
+    await this.statusBoardService.handle(event);
+  }
+}
+
+@Injectable()
+@EventsHandler(TaskDeletedEvent)
+export class DiscordIntegrationTaskDeletedEventHandler extends EventHandler<TaskDeletedEvent> {
+  constructor(
+    private readonly integration: DiscordIntegrationService,
+    private readonly statusBoardService: DiscordStatusboardService
+  ) {
+    super();
+  }
+
+  async process(event: TaskDeletedEvent) {
     await this.integration.handle(event);
     await this.statusBoardService.handle(event);
   }

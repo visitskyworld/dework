@@ -25,6 +25,7 @@ import { PermalinkService } from "../../permalink/permalink.service";
 import {
   TaskApplicationCreatedEvent,
   TaskCreatedEvent,
+  TaskDeletedEvent,
   TaskSubmissionCreatedEvent,
   TaskUpdatedEvent,
 } from "../../task/task.events";
@@ -140,6 +141,7 @@ export class DiscordIntegrationService {
     event:
       | TaskUpdatedEvent
       | TaskCreatedEvent
+      | TaskDeletedEvent
       | TaskApplicationCreatedEvent
       | TaskSubmissionCreatedEvent
   ) {
@@ -163,11 +165,12 @@ export class DiscordIntegrationService {
     event:
       | TaskUpdatedEvent
       | TaskCreatedEvent
+      | TaskDeletedEvent
       | TaskApplicationCreatedEvent
       | TaskSubmissionCreatedEvent,
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
-    const task = (await this.taskService.findById(event.task.id)) as Task;
+    const task = event.task;
     if (!!task.parentTaskId) return;
     if (event instanceof TaskCreatedEvent && task.status === TaskStatus.DONE)
       return false;
@@ -335,6 +338,10 @@ export class DiscordIntegrationService {
           event.application,
           channelToPostTo
         );
+      }
+
+      if (event instanceof TaskDeletedEvent) {
+        await this.postTaskDeleted(channelToPostTo, task);
       }
 
       if (channelToPostTo.isThread()) {
@@ -594,6 +601,13 @@ export class DiscordIntegrationService {
 
   private async postDone(channel: Discord.TextBasedChannel, task: Task) {
     await this.postTaskCard(channel, task, "✅ Task completed!");
+    if (channel.isThread()) {
+      await channel.setArchived(true);
+    }
+  }
+
+  private async postTaskDeleted(channel: Discord.TextBasedChannel, task: Task) {
+    await this.postTaskCard(channel, task, "❌ Task deleted!");
     if (channel.isThread()) {
       await channel.setArchived(true);
     }

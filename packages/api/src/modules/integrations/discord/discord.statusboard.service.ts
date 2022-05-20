@@ -16,7 +16,11 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
 } from "@dewo/api/models/OrganizationIntegration";
-import { TaskCreatedEvent, TaskUpdatedEvent } from "../../task/task.events";
+import {
+  TaskCreatedEvent,
+  TaskDeletedEvent,
+  TaskUpdatedEvent,
+} from "../../task/task.events";
 import { TaskSearchService } from "../../task/search/task.search.service";
 import {
   TaskViewSortByDirection,
@@ -248,7 +252,11 @@ export class DiscordStatusboardService {
   }
 
   async handle(
-    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent
+    event:
+      | ProjectIntegrationCreatedEvent
+      | TaskCreatedEvent
+      | TaskUpdatedEvent
+      | TaskDeletedEvent
   ) {
     this.logger.log(
       `Handle event: ${JSON.stringify({
@@ -259,7 +267,8 @@ export class DiscordStatusboardService {
 
     if (
       event instanceof TaskCreatedEvent ||
-      event instanceof TaskUpdatedEvent
+      event instanceof TaskUpdatedEvent ||
+      event instanceof TaskDeletedEvent
     ) {
       await this.taskSearchService.refresh();
     }

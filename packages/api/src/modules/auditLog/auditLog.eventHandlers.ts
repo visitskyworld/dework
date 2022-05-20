@@ -1,7 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { EventsHandler } from "@nestjs/cqrs";
 import { EventHandler } from "../app/eventHandler";
-import { TaskCreatedEvent, TaskUpdatedEvent } from "../task/task.events";
+import {
+  TaskCreatedEvent,
+  TaskDeletedEvent,
+  TaskUpdatedEvent,
+} from "../task/task.events";
 
 import { AuditLogService } from "./auditLog.service";
 
@@ -25,6 +29,18 @@ export class AuditLogTaskUpdatedEventHandler extends EventHandler<TaskUpdatedEve
   }
 
   async process(event: TaskUpdatedEvent) {
+    await this.service.log(event.prevTask, event.task, event.userId);
+  }
+}
+
+@Injectable()
+@EventsHandler(TaskDeletedEvent)
+export class AuditLogTaskDeletedEventHandler extends EventHandler<TaskDeletedEvent> {
+  constructor(private readonly service: AuditLogService) {
+    super();
+  }
+
+  async process(event: TaskDeletedEvent) {
     await this.service.log(event.prevTask, event.task, event.userId);
   }
 }

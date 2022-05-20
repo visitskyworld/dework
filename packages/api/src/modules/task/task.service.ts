@@ -14,6 +14,7 @@ import {
 import { EventBus } from "@nestjs/cqrs";
 import {
   TaskCreatedEvent,
+  TaskDeletedEvent,
   TaskSubmissionCreatedEvent,
   TaskUpdatedEvent,
 } from "./task.events";
@@ -84,7 +85,11 @@ export class TaskService {
     });
 
     const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
-    this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask, userId));
+    if (!oldTask.deletedAt && updated.deletedAt) {
+      this.eventBus.publish(new TaskDeletedEvent(refetched, oldTask, userId));
+    } else {
+      this.eventBus.publish(new TaskUpdatedEvent(refetched, oldTask, userId));
+    }
     return refetched;
   }
 

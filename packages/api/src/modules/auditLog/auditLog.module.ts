@@ -4,6 +4,7 @@ import { AuditLogEvent } from "@dewo/api/models/AuditLogEvent";
 import { AuditLogService } from "./auditLog.service";
 import {
   AuditLogTaskCreatedEventHandler,
+  AuditLogTaskDeletedEventHandler,
   AuditLogTaskUpdatedEventHandler,
 } from "./auditLog.eventHandlers";
 
@@ -13,6 +14,7 @@ import {
     AuditLogService,
     AuditLogTaskCreatedEventHandler,
     AuditLogTaskUpdatedEventHandler,
+    AuditLogTaskDeletedEventHandler,
   ],
   exports: [AuditLogService],
 })
