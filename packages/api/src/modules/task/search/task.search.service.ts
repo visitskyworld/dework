@@ -249,6 +249,7 @@ export class TaskSearchService implements OnModuleInit {
         sort: [
           ...(!!q.name ? [{ _score: "desc" }] : []),
           { [q.sortBy.field]: q.sortBy.direction.toLowerCase() },
+          { createdAt: "desc" },
         ],
         search_after: !!q.cursor ? this.fromCursor(q.cursor) : undefined,
         track_total_hits: 1000,

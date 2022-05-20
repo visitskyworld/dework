@@ -392,7 +392,7 @@ export function useTaskViewLayoutItems() {
               tagIds: filter(TaskViewFilterType.TAGS)?.tagIds,
               roleIds: filter(TaskViewFilterType.ROLES)?.roleIds,
               skillIds: filter(TaskViewFilterType.SKILLS)?.skillIds,
-              name: searchQuery,
+              name: !!searchQuery ? searchQuery : undefined,
               applicantIds: filter(TaskViewFilterType.APPLICANTS)?.applicantIds,
               parentTaskId:
                 filter(TaskViewFilterType.SUBTASKS)?.subtasks === true

@@ -131,6 +131,14 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
   const apolloClient = useApolloClient();
   return useCallback(
     (task: Task) => {
+      const hackyDurationForElasticsearchToIndexTask = 1000;
+      setTimeout(() => {
+        apolloClient.cache.evict({
+          id: "ROOT_QUERY",
+          fieldName: "getPaginatedTasks",
+        });
+      }, hackyDurationForElasticsearchToIndexTask);
+
       const isDoneAssignedAndHasReward =
         !!task.assignees.length &&
         !!task.reward &&
