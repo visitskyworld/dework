@@ -123,6 +123,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
   return (
     <>
       <List.Item
+        key={submission.id}
         actions={[
           !submission.approver && (
             <Space size={4} direction="vertical" style={{ marginLeft: 8 }}>
