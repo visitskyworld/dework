@@ -9,6 +9,7 @@ import {
   TaskApplicationCreatedEvent,
   TaskApplicationDeletedEvent,
   TaskCreatedEvent,
+  TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "../../task/task.events";
 import { TaskSearchService } from "./task.search.service";
@@ -33,6 +34,18 @@ export class TaskSearchUpdatedEventHandler extends EventHandler<TaskUpdatedEvent
   }
 
   async process(event: TaskUpdatedEvent) {
+    await this.service.index([event.task]);
+  }
+}
+
+@Injectable()
+@EventsHandler(TaskDeletedEvent)
+export class TaskSearchDeletedEventHandler extends EventHandler<TaskDeletedEvent> {
+  constructor(private readonly service: TaskSearchService) {
+    super();
+  }
+
+  async process(event: TaskDeletedEvent) {
     await this.service.index([event.task]);
   }
 }

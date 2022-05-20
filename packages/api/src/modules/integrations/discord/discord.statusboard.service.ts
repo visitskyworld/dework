@@ -289,7 +289,7 @@ export class DiscordStatusboardService {
         if (
           feature === DiscordProjectIntegrationFeature.POST_STATUS_BOARD_MESSAGE
         ) {
-          this.postOpenTasksStatusBoardMessage(integration);
+          await this.postOpenTasksStatusBoardMessage(integration);
         } else if (
           feature ===
           DiscordProjectIntegrationFeature.POST_COMMUNITY_SUGGESTIONS_STATUS_BOARD_MESSAGE
