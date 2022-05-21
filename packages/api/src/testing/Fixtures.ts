@@ -61,6 +61,9 @@ import { RbacModule } from "../modules/rbac/rbac.module";
 import { RulePermission } from "../models/enums/RulePermission";
 import { TaskApplicationModule } from "../modules/task/taskApplication/taskApplication.module";
 import { TaskApplicationService } from "../modules/task/taskApplication/taskApplication.service";
+import { NotificationModule } from "../modules/notification/notification.module";
+import { NotificationService } from "../modules/notification/notification.service";
+import { Notification } from "../models/Notification";
 
 @Injectable()
 export class Fixtures {
@@ -75,7 +78,8 @@ export class Fixtures {
     private readonly threepidService: ThreepidService,
     private readonly inviteService: InviteService,
     private readonly paymentService: PaymentService,
-    private readonly rbacService: RbacService
+    private readonly rbacService: RbacService,
+    private readonly notificationService: NotificationService
   ) {}
 
   public async createThreepid(
@@ -372,6 +376,16 @@ export class Fixtures {
     });
   }
 
+  public async createNotification(
+    partial: AtLeast<Notification, "userId">
+  ): Promise<Notification> {
+    return this.notificationService.send({
+      message: faker.lorem.paragraph(),
+      taskId: await this.createTask().then((t) => t.id),
+      ...partial,
+    });
+  }
+
   public async createUserOrgProject(
     partial: {
       user?: Partial<User>;
@@ -530,6 +544,7 @@ export class Fixtures {
     InviteModule,
     PaymentModule,
     RbacModule,
+    NotificationModule,
   ],
   providers: [Fixtures],
   exports: [Fixtures],

@@ -10,9 +10,12 @@ import {
 } from "@dewo/api/models/ProjectIntegration";
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
+import {
+  TaskCreatedEvent,
+  TaskUpdatedEvent,
+} from "@dewo/api/modules/task/task.events";
 import { Injectable, Logger } from "@nestjs/common";
 import { Octokit } from "@octokit/rest";
-import _ from "lodash";
 import { IntegrationService } from "../../integration.service";
 import { GithubService } from "../github.service";
 
@@ -25,9 +28,9 @@ export class GithubSyncOutgoingService {
     private readonly integrationService: IntegrationService
   ) {}
 
-  public async handle(task: Task, prevTask: Task | undefined) {
+  public async handle(event: TaskCreatedEvent | TaskUpdatedEvent) {
     const integration = await this.integrationService.findProjectIntegration(
-      task.projectId,
+      event.task.projectId,
       ProjectIntegrationType.GITHUB
     );
     const orgInt = (await integration?.organizationIntegration) as
@@ -36,51 +39,44 @@ export class GithubSyncOutgoingService {
     if (!integration || !orgInt) return;
     const client = this.github.createClient(orgInt.config.installationId);
 
-    const changed = _.reduce<Task, string[]>(
-      task,
-      (result, value, key) =>
-        _.isEqual(value, prevTask?.[key as keyof Task])
-          ? result
-          : result.concat(key),
-      []
-    );
-    this.logger.log(
-      `Changed fields: ${JSON.stringify({
-        fields: changed,
-        values: _.pick(task, changed),
-      })}`
-    );
+    this.logger.log(`Handle event: ${JSON.stringify(event)}`);
 
-    if (changed.includes("assignees")) {
-      const issue = await task.githubIssue;
+    if (event.diff.has("assignees")) {
+      const issue = await event.task.githubIssue;
       if (!!issue) {
         await this.assigneesChanged(
           issue,
           integration,
-          task.assignees,
-          prevTask?.assignees ?? [],
+          event.task.assignees,
+          event.prevTask?.assignees ?? [],
           client
         );
       }
     }
 
-    if (changed.includes("owners")) {
-      const pullRequests = await task.githubPullRequests;
+    if (event.diff.has("owners")) {
+      const pullRequests = await event.task.githubPullRequests;
       for (const pullRequest of pullRequests) {
         await this.ownersChanged(
           pullRequest,
           integration,
-          task.owners,
-          prevTask?.owners ?? [],
+          event.task.owners,
+          event.prevTask?.owners ?? [],
           client
         );
       }
     }
 
-    if (changed.includes("status")) {
-      const issue = await task.githubIssue;
+    if (event.diff.has("status")) {
+      const issue = await event.task.githubIssue;
       if (!!issue) {
-        await this.statusChanged(issue, integration, client, task, prevTask);
+        await this.statusChanged(
+          issue,
+          integration,
+          client,
+          event.task,
+          event.prevTask
+        );
       }
     }
   }

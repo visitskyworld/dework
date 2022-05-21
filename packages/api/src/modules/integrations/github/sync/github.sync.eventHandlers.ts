@@ -15,7 +15,7 @@ export class GithubSyncTaskCreatedEventHandler extends EventHandler<TaskCreatedE
   }
 
   async process(event: TaskCreatedEvent) {
-    await this.service.handle(event.task, undefined);
+    await this.service.handle(event);
   }
 }
 
@@ -27,6 +27,6 @@ export class GithubSyncTaskUpdatedEventHandler extends EventHandler<TaskUpdatedE
   }
 
   async process(event: TaskUpdatedEvent) {
-    await this.service.handle(event.task, event.prevTask);
+    await this.service.handle(event);
   }
 }

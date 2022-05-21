@@ -5515,6 +5515,100 @@ export interface DeleteOrganizationIntegrationMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: ArchiveNotificationMutation
+// ====================================================
+
+export interface ArchiveNotificationMutation_archiveNotification_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface ArchiveNotificationMutation_archiveNotification_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  organization: ArchiveNotificationMutation_archiveNotification_task_project_organization;
+}
+
+export interface ArchiveNotificationMutation_archiveNotification_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+  project: ArchiveNotificationMutation_archiveNotification_task_project;
+}
+
+export interface ArchiveNotificationMutation_archiveNotification_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  notificationUnreadCount: number;
+}
+
+export interface ArchiveNotificationMutation_archiveNotification {
+  __typename: "Notification";
+  id: Scalar.UUID;
+  message: string;
+  archivedAt: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  task: ArchiveNotificationMutation_archiveNotification_task;
+  user: ArchiveNotificationMutation_archiveNotification_user;
+}
+
+export interface ArchiveNotificationMutation {
+  archiveNotification: ArchiveNotificationMutation_archiveNotification;
+}
+
+export interface ArchiveNotificationMutationVariables {
+  id: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: MarkNotificationsReadMutation
+// ====================================================
+
+export interface MarkNotificationsReadMutation_markNotificationsRead_notificationReadMarker {
+  __typename: "NotificationReadMarker";
+  readAt: Scalar.DateTime;
+}
+
+export interface MarkNotificationsReadMutation_markNotificationsRead {
+  __typename: "User";
+  id: Scalar.UUID;
+  notificationUnreadCount: number;
+  notificationReadMarker: MarkNotificationsReadMutation_markNotificationsRead_notificationReadMarker | null;
+}
+
+export interface MarkNotificationsReadMutation {
+  markNotificationsRead: MarkNotificationsReadMutation_markNotificationsRead;
+}
+
+export interface MarkNotificationsReadMutationVariables {
+  readAt: Scalar.DateTime;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: SetUserSkillsMutation
 // ====================================================
 
@@ -9730,6 +9824,92 @@ export interface GetDiscordGuildRolesQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: MyNotificationsQuery
+// ====================================================
+
+export interface MyNotificationsQuery_me_notificationReadMarker {
+  __typename: "NotificationReadMarker";
+  readAt: Scalar.DateTime;
+}
+
+export interface MyNotificationsQuery_me_notifications_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface MyNotificationsQuery_me_notifications_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  organization: MyNotificationsQuery_me_notifications_task_project_organization;
+}
+
+export interface MyNotificationsQuery_me_notifications_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+  project: MyNotificationsQuery_me_notifications_task_project;
+}
+
+export interface MyNotificationsQuery_me_notifications {
+  __typename: "Notification";
+  id: Scalar.UUID;
+  message: string;
+  archivedAt: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  task: MyNotificationsQuery_me_notifications_task;
+}
+
+export interface MyNotificationsQuery_me {
+  __typename: "User";
+  id: Scalar.UUID;
+  notificationUnreadCount: number;
+  notificationReadMarker: MyNotificationsQuery_me_notificationReadMarker | null;
+  notifications: MyNotificationsQuery_me_notifications[];
+}
+
+export interface MyNotificationsQuery {
+  me: MyNotificationsQuery_me;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: MyNotificationUnreadCountQuery
+// ====================================================
+
+export interface MyNotificationUnreadCountQuery_me {
+  __typename: "User";
+  id: Scalar.UUID;
+  notificationUnreadCount: number;
+}
+
+export interface MyNotificationUnreadCountQuery {
+  me: MyNotificationUnreadCountQuery_me;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetProjectPaymentMethodsQuery
 // ====================================================
 
@@ -13254,6 +13434,56 @@ export interface OrganizationDetails {
   details: OrganizationDetails_details[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
   taskViews: OrganizationDetails_taskViews[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Notification
+// ====================================================
+
+export interface Notification_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface Notification_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  sectionId: string | null;
+  sortKey: string;
+  organization: Notification_task_project_organization;
+}
+
+export interface Notification_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+  project: Notification_task_project;
+}
+
+export interface Notification {
+  __typename: "Notification";
+  id: Scalar.UUID;
+  message: string;
+  archivedAt: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  task: Notification_task;
 }
 
 /* tslint:disable */

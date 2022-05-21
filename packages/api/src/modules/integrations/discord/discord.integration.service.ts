@@ -192,22 +192,6 @@ export class DiscordIntegrationService {
           projConfig: integration.config,
         })}`
       );
-      if (event instanceof TaskUpdatedEvent) {
-        const changed = _.reduce<Task, string[]>(
-          task,
-          (result, value, key) =>
-            _.isEqual(value, event.prevTask[key as keyof Task])
-              ? result
-              : result.concat(key),
-          []
-        );
-        this.logger.log(
-          `Changed fields: ${JSON.stringify({
-            fields: changed,
-            values: _.pick(task, changed),
-          })}`
-        );
-      }
 
       const shouldCreateChannelIfNotExists = await (async () => {
         if (event instanceof TaskApplicationCreatedEvent) return true;

@@ -1,7 +1,12 @@
 @import "~@dewo/app/styles/theme.less";
 
 .container {
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent;
+  transition: background 0.3s ease-in-out;
+
+  &.backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 
 .box {

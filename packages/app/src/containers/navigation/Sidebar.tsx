@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { SidebarOrganizationAvatar } from "./SidebarOrganizationAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
-import { Avatar, Button, Col, Divider, Layout, Tooltip } from "antd";
+import { Avatar, Badge, Button, Col, Divider, Layout, Tooltip } from "antd";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
@@ -13,12 +13,14 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { LoginButton } from "../auth/buttons/LoginButton";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { useNotificationUnreadCount } from "../notification/hooks";
 import { useIsEmbedded } from "@dewo/app/util/navigation";
 
 const OrganizationsStack: FC = () => {
   const { user } = useAuthContext();
   const router = useRouter();
   const isProfileSetup = !!user?.bio || !!user?.details.length;
+  const unreadCount = useNotificationUnreadCount();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -43,6 +45,7 @@ const OrganizationsStack: FC = () => {
         )}
       >
         <Avatar className={styles.home} icon={<Icons.HomeFilled />} size={48} />
+        <Badge count={unreadCount} className={styles.redBadge} />
       </SidebarNavLink>
 
       {user && !isProfileSetup && (

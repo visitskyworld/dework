@@ -220,7 +220,11 @@ export class DiscordStatusboardService {
   }
 
   private async getProjectIntegrations(
-    event: ProjectIntegrationCreatedEvent | TaskCreatedEvent | TaskUpdatedEvent,
+    event:
+      | ProjectIntegrationCreatedEvent
+      | TaskCreatedEvent
+      | TaskUpdatedEvent
+      | TaskDeletedEvent,
     feature: DiscordProjectIntegrationFeature
   ): Promise<ProjectIntegration<ProjectIntegrationType.DISCORD>[]> {
     if (event instanceof ProjectIntegrationCreatedEvent) {
@@ -235,7 +239,8 @@ export class DiscordStatusboardService {
 
     if (
       event instanceof TaskCreatedEvent ||
-      event instanceof TaskUpdatedEvent
+      event instanceof TaskUpdatedEvent ||
+      event instanceof TaskDeletedEvent
     ) {
       const integrations =
         await this.integrationService.findProjectIntegrations(

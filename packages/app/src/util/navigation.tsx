@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { User } from "../graphql/types";
 
 export function useNavigateToProfile(): (user: User) => void {
@@ -16,9 +16,9 @@ export function useNavigateToUserTaskBoard(): (user: User) => void {
   );
 }
 
-export function useNavigateToTask(taskId: string): () => void {
+export function useNavigateToTask(taskId: string): MouseEventHandler<unknown> {
   const fn = useNavigateToTaskFn();
-  return useCallback(() => fn(taskId), [fn, taskId]);
+  return useCallback((e) => fn(taskId, e.metaKey), [fn, taskId]);
 }
 
 export function useNavigateToTaskFn(): (

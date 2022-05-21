@@ -1,6 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Length } from "class-validator";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Threepid } from "./Threepid";
 import { EntityDetail } from "./EntityDetail";
@@ -9,7 +16,9 @@ import { UserRole } from "./rbac/UserRole";
 import { TaskGatingDefault } from "./TaskGatingDefault";
 import { UserPrompt } from "./UserPrompt";
 import { TaskView } from "./TaskView";
+import { Notification } from "./Notification";
 import { Skill } from "./Skill";
+import { NotificationReadMarker } from "./NotificationReadMarker";
 
 @Entity()
 @ObjectType()
@@ -30,6 +39,10 @@ export class User extends Audit {
   @OneToMany(() => Threepid, (t: Threepid) => t.user)
   @Field(() => [Threepid])
   public threepids!: Promise<Threepid[]>;
+
+  @OneToMany(() => Notification, (x: Notification) => x.user)
+  @Field(() => [Notification])
+  public notifications!: Promise<Notification[]>;
 
   @OneToMany(() => EntityDetail, (t: EntityDetail) => t.user)
   @Field(() => [EntityDetail])
@@ -64,4 +77,8 @@ export class User extends Audit {
   @OneToMany(() => UserRole, (x) => x.user)
   @Field(() => [UserRole])
   public userRoles!: Promise<UserRole[]>;
+
+  @OneToOne(() => NotificationReadMarker, (x) => x.user, { nullable: true })
+  @Field(() => NotificationReadMarker, { nullable: true })
+  public notificationReadMarker?: Promise<NotificationReadMarker>;
 }

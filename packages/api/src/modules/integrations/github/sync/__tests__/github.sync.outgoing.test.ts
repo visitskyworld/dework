@@ -3,6 +3,7 @@ import { GithubProjectIntegrationFeature } from "@dewo/api/models/ProjectIntegra
 import { Task, TaskStatus } from "@dewo/api/models/Task";
 import { ThreepidSource } from "@dewo/api/models/Threepid";
 import { User } from "@dewo/api/models/User";
+import { TaskUpdatedEvent } from "@dewo/api/modules/task/task.events";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { INestApplication } from "@nestjs/common";
@@ -62,7 +63,7 @@ describe("GithubSyncOutgoingService", () => {
   async function req(current: Partial<Task>, prev: Partial<Task>) {
     const taskBefore = await fixtures.updateTask({ id: task.id, ...prev });
     const taskAfter = await fixtures.updateTask({ id: task.id, ...current });
-    await service.handle(taskAfter!, taskBefore);
+    await service.handle(new TaskUpdatedEvent(taskAfter!, taskBefore!));
   }
 
   async function getIssue() {
