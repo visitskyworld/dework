@@ -6,9 +6,9 @@ import * as Icons from "@ant-design/icons";
 import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
 import classNames from "classnames";
 import styles from "./Sidebar.module.less";
-import { OrganizationSidenav } from "./OrganizationSidenav";
-import { SidebarUserSection } from "./SidebarUserSection";
-import { UserInfo } from "./UserInfo";
+import { OrganizationMenu } from "./menus/OrganizationMenu";
+import { UserMenu } from "./menus/UserMenu";
+import { MenuFooter } from "./MenuFooter";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 
 export const NavigationList: FC = () => {
@@ -38,16 +38,16 @@ export const NavigationList: FC = () => {
       >
         <Col flex={1} style={{ overflowY: "auto" }}>
           {orgSlug ? (
-            <OrganizationSidenav organizationId={organizationId} />
+            <OrganizationMenu organizationId={organizationId} />
           ) : (
-            <SidebarUserSection />
+            <UserMenu />
           )}
         </Col>
 
         {!!user && (
           <>
             <Divider style={{ margin: 0 }} />
-            <UserInfo />
+            <MenuFooter />
           </>
         )}
       </div>

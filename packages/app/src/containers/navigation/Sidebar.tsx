@@ -41,7 +41,9 @@ const OrganizationsStack: FC = () => {
         exact
         className={classNames(
           styles.item,
-          router.pathname.startsWith("/profile") && styles.active
+          ["/profile", "/task-feed", "/notifications"].some((p) =>
+            router.pathname.startsWith(p)
+          ) && styles.active
         )}
       >
         <Avatar className={styles.home} icon={<Icons.HomeFilled />} size={48} />

@@ -42,7 +42,7 @@ export const UserWalletAddress: FC<{ onShowSettings: () => void }> = ({
   );
 };
 
-export const UserInfo: FC = () => {
+export const MenuFooter: FC = () => {
   const { user, logout } = useAuthContext();
   const userSettings = useToggle();
 

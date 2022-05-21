@@ -66,10 +66,17 @@ export function useIsProjectPrivate(
   project: Project | undefined,
   organizationId: string | undefined
 ): boolean {
+  const fn = useIsProjectPrivateFn(organizationId);
+  return useMemo(() => !!project && fn(project), [fn, project]);
+}
+
+export function useIsProjectPrivateFn(
+  organizationId: string | undefined
+): (project: Project) => boolean {
   const { ability } = useDefaultAbility(organizationId);
-  return useMemo(
-    () => !!project && !!ability && !ability.can("read", project),
-    [ability, project]
+  return useCallback(
+    (project) => !!ability && !ability.can("read", project),
+    [ability]
   );
 }
 

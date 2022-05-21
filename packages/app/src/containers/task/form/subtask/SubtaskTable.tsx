@@ -278,7 +278,6 @@ export const SubtaskTable: FC<Props> = ({
           width: !!tags ? undefined : 1,
           render: (_, row) => !!row.task && <TaskTagsRow task={row.task} />,
         },
-        { title: "Points", dataIndex: ["task", "storyPoints"], width: 1 },
         {
           title: "Reward",
           dataIndex: ["task", "reward"],
