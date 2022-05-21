@@ -1,5 +1,5 @@
 import { Task, TaskPriority, TaskStatus } from "@dewo/api/models/Task";
-import { TaskViewSortBy } from "@dewo/api/models/TaskView";
+import { TaskViewSortBy, TaskViewSortByField } from "@dewo/api/models/TaskView";
 import { Bulk } from "@elastic/elasticsearch/api/requestParams";
 import { SearchResponse } from "@elastic/elasticsearch/api/types";
 import {
@@ -239,6 +239,13 @@ export class TaskSearchService implements OnModuleInit {
       throw new BadRequestException(`Size must be less than ${this.maxSize}`);
     }
 
+    const sort = [
+      ...(!!q.name ? [{ _score: "desc" }] : []),
+      { [q.sortBy.field]: q.sortBy.direction.toLowerCase() },
+      ...(q.sortBy.field !== TaskViewSortByField.createdAt
+        ? [{ createdAt: "desc" }]
+        : []),
+    ];
     const startedAt = Date.now();
     const response = await this.elasticsearch.search<
       SearchResponse<IndexedTask>
@@ -246,11 +253,7 @@ export class TaskSearchService implements OnModuleInit {
       index: this.indexName,
       body: {
         size,
-        sort: [
-          ...(!!q.name ? [{ _score: "desc" }] : []),
-          { [q.sortBy.field]: q.sortBy.direction.toLowerCase() },
-          { createdAt: "desc" },
-        ],
+        sort,
         search_after: !!q.cursor ? this.fromCursor(q.cursor) : undefined,
         track_total_hits: 1000,
         query: {
@@ -338,7 +341,7 @@ export class TaskSearchService implements OnModuleInit {
 
     const cursor =
       results.length === size
-        ? this.toCursor([_.last(results)![q.sortBy.field]])
+        ? this.toCursor(_.last(response.body.hits.hits)!.sort)
         : undefined;
     const total =
       typeof response.body.hits.total === "number"
