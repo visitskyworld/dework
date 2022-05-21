@@ -2,7 +2,7 @@ import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { Divider, Image, Empty, Spin, Typography } from "antd";
 import _ from "lodash";
 import moment from "moment";
-import React, { FC, useEffect, useMemo } from "react";
+import React, { FC, Fragment, useEffect, useMemo } from "react";
 import { useMarkNotificationsRead, useNotifications } from "./hooks";
 import { NotificationListItem } from "./NotificationListItem";
 import InboxZeroGraphic from "@dewo/app/assets/inbox-zero.svg";
@@ -53,7 +53,7 @@ export const NotificationList: FC = () => {
       <Typography.Title style={{ textAlign: "center" }}>Inbox</Typography.Title>
       {!!notifications ? (
         _.map(notificationsByDate, (notificationsByDate, date) => (
-          <>
+          <Fragment key={date}>
             <Divider plain style={{ marginTop: 40 }}>
               {formatDate(date)}
             </Divider>
@@ -65,7 +65,7 @@ export const NotificationList: FC = () => {
                 />
               </HeadlessCollapse>
             ))}
-          </>
+          </Fragment>
         ))
       ) : (
         <div style={{ display: "grid", placeItems: "center" }}>

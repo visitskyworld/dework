@@ -1,3 +1,25 @@
+diff --git a/node_modules/antd/lib/breadcrumb/style/index-pure.less b/node_modules/antd/lib/breadcrumb/style/index-pure.less
+index 79dee8a..ce7e75d 100644
+--- a/node_modules/antd/lib/breadcrumb/style/index-pure.less
++++ b/node_modules/antd/lib/breadcrumb/style/index-pure.less
+@@ -30,7 +30,7 @@
+     }
+   }
+ 
+-  li:last-child {
++  ol li:last-child {
+     color: @breadcrumb-last-item-color;
+ 
+     a {
+@@ -38,7 +38,7 @@
+     }
+   }
+ 
+-  li:last-child &-separator {
++  ol li:last-child &-separator {
+     display: none;
+   }
+ 
 diff --git a/node_modules/antd/lib/button/style/index-pure.less b/node_modules/antd/lib/button/style/index-pure.less
 index cdb67c8..2451d52 100644
 --- a/node_modules/antd/lib/button/style/index-pure.less
