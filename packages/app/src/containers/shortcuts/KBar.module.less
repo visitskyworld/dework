@@ -1,0 +1,50 @@
+@import "~@dewo/app/styles/theme.less";
+
+.container {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.box {
+  width: 100%;
+  max-width: 400px;
+  background: @component-background;
+  border-radius: @border-radius-base * 2;
+  overflow: hidden;
+
+  [role="listbox"] {
+    margin-bottom: 8px;
+  }
+}
+
+.sectionHeader {
+  padding: 0px 16px;
+  color: @text-color-secondary;
+  height: 30px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.input {
+  padding: 16px 16px;
+}
+
+.result {
+  margin: 0 8px;
+  padding: 4px 8px;
+  border-radius: @border-radius-base;
+  column-gap: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+
+  &.active {
+    background: @component-background-highlighted;
+  }
+
+  .icon {
+    width: 24px;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    color: @text-color-secondary;
+  }
+}

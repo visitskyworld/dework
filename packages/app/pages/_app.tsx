@@ -37,6 +37,7 @@ import { AmplitudeProvider } from "@dewo/app/util/analytics/AmplitudeContext";
 import { useAnalyticsListeners } from "@dewo/app/util/analytics/useAnalyticsListeners";
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { Layout } from "antd";
+import { KBar } from "@dewo/app/containers/shortcuts/KBar";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -144,19 +145,21 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
             }
           >
             <PermissionsProvider>
-              <SidebarProvider>
-                <Layout>
-                  <Sidebar />
-                  <Component {...pageProps} />
-                </Layout>
-                <Hooks />
-                <Redirector />
-                <InviteMessageToast />
-                <FloatingFooterButtons />
-                <TaskUpdateModalListener />
-                <ServerErrorModal onErrorRef={onErrorRef} />
-                <PromptModal />
-              </SidebarProvider>
+              <KBar>
+                <SidebarProvider>
+                  <Layout>
+                    <Sidebar />
+                    <Component {...pageProps} />
+                  </Layout>
+                  <Hooks />
+                  <Redirector />
+                  <InviteMessageToast />
+                  <FloatingFooterButtons />
+                  <TaskUpdateModalListener />
+                  <ServerErrorModal onErrorRef={onErrorRef} />
+                  <PromptModal />
+                </SidebarProvider>
+              </KBar>
             </PermissionsProvider>
           </AuthProvider>
         </AmplitudeProvider>
