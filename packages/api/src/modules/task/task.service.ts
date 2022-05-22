@@ -55,6 +55,7 @@ export class TaskService {
   ): Promise<Task> {
     const created = await this.taskRepo.save({
       sortKey: Date.now().toString(),
+      doneAt: partial.status === TaskStatus.DONE ? new Date() : null,
       ...partial,
       number: await this.getNextTaskNumber(partial.projectId),
     });

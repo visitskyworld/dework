@@ -73,7 +73,7 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
           },
           {
             label: "Combined Board",
-            icon: <Icons.TeamOutlined />,
+            icon: <Icons.ProjectOutlined />,
             key: [basePath, "board"].join("/"),
           },
           canUpdateOrganization

@@ -253,6 +253,45 @@ describe("TaskSearchService", () => {
       );
     });
 
+    it("should filter doneAt correctly", async () => {
+      const projectId = (await fixtures.createProject()).id;
+      const todo = await fixtures.createTask({
+        status: TaskStatus.TODO,
+        projectId,
+      });
+      const [before, done, after] = await Promise.all(
+        [moment("2020-01-01"), moment("2020-01-03"), moment("2020-01-05")].map(
+          (doneAt) =>
+            fixtures.createTask({ doneAt, status: TaskStatus.DONE, projectId })
+        )
+      );
+      await service.index([todo, before, done, after], true);
+
+      const res = await service.search({
+        projectIds: [projectId],
+        doneAt: {
+          gte: moment("2020-01-02").toDate(),
+          lt: moment("2020-01-04").toDate(),
+        },
+        sortBy: {
+          field: TaskViewSortByField.sortKey,
+          direction: TaskViewSortByDirection.ASC,
+        },
+      });
+      expect(res.tasks).toContainEqual(
+        expect.objectContaining({ id: done.id })
+      );
+      expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: todo.id })
+      );
+      expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: before.id })
+      );
+      expect(res.tasks).not.toContainEqual(
+        expect.objectContaining({ id: after.id })
+      );
+    });
+
     it("should return tasks matching name", async () => {
       const project = await fixtures.createProject();
       const task1 = await fixtures.createTask({

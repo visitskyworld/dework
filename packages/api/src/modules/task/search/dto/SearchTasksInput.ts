@@ -5,12 +5,22 @@ import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class SearchTasksInput {
-  // @Field({ nullable: true })
-  // public doneAtAfter?: Date;
-  // @Field({ nullable: true })
-  // public doneAtBefore?: Date;
+export class DateRangeFilter {
+  @Field({ nullable: true })
+  public lt?: Date;
 
+  @Field({ nullable: true })
+  public lte?: Date;
+
+  @Field({ nullable: true })
+  public gt?: Date;
+
+  @Field({ nullable: true })
+  public gte?: Date;
+}
+
+@InputType()
+export class SearchTasksInput {
   @Field({ nullable: true })
   public name?: string;
 
@@ -58,4 +68,7 @@ export class SearchTasksInput {
 
   @Field()
   public sortBy!: TaskViewSortBy;
+
+  @Field(() => DateRangeFilter, { nullable: true })
+  public doneAt?: DateRangeFilter;
 }

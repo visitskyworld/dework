@@ -18,6 +18,7 @@ import { RbacService } from "../../rbac/rbac.service";
 import * as ms from "milliseconds";
 import { Language } from "@dewo/api/models/enums/Language";
 import { formatFixed } from "@ethersproject/bignumber";
+import { DateRangeFilter } from "./dto/SearchTasksInput";
 
 const TaskPriorityNumber: Record<TaskPriority, number> = {
   [TaskPriority.NONE]: 0,
@@ -223,7 +224,7 @@ export class TaskSearchService implements OnModuleInit {
     spam?: boolean;
     public?: boolean;
     featured?: boolean;
-
+    doneAt?: DateRangeFilter;
     size?: number;
     sortBy: TaskViewSortBy;
     cursor?: string;
@@ -279,6 +280,11 @@ export class TaskSearchService implements OnModuleInit {
                 : []),
             ],
             filter: [
+              ...(Object.keys(q.doneAt ?? {}) as (keyof DateRangeFilter)[]).map(
+                (op) => ({
+                  range: { doneAt: { [op]: q.doneAt![op] } },
+                })
+              ),
               ...(!!q.statuses ? [{ terms: { status: q.statuses } }] : []),
               ...(!!q.languages ? [{ terms: { language: q.languages } }] : []),
               ...(!!q.priorities
