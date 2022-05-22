@@ -36,6 +36,7 @@ import { ReputationModule } from "../reputation/reputation.module";
 import { TaskSearchModule } from "../task/search/task.search.module";
 import { SkillModule } from "../skill/skill.module";
 import { NotificationModule } from "../notification/notification.module";
+import { WorkspaceModule } from "../workspace/workspace.module";
 
 export const AppBootstrapModuleImports: ModuleMetadata["imports"] = [
   ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
@@ -83,6 +84,7 @@ export const AppModuleImports: ModuleMetadata["imports"] = [
   ReputationModule,
   SkillModule,
   NotificationModule,
+  WorkspaceModule,
 ];
 
 @Module({

@@ -2,9 +2,9 @@ import { useToggle } from "@dewo/app/util/hooks";
 import { Button, Dropdown, Menu } from "antd";
 import React, { FC } from "react";
 import * as Icons from "@ant-design/icons";
-import { CreateTaskSectionModal } from "../../organization/overview/CreateSectionModal";
 import { TaskStatus } from "@dewo/app/graphql/types";
 import { ReorderTaskSectionsModal } from "./ReorderTaskSectionsModal";
+import { CreateTaskSectionModal } from "./CreateTaskSectionModal";
 
 interface Props {
   projectId: string;
@@ -15,7 +15,7 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
   projectId,
   status,
 }) => {
-  const createSectionModal = useToggle();
+  const createWorkspaceModal = useToggle();
   const manageSectionsModal = useToggle();
   return (
     <>
@@ -26,7 +26,7 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
           <Menu>
             <Menu.Item
               icon={<Icons.PlusOutlined />}
-              onClick={createSectionModal.toggleOn}
+              onClick={createWorkspaceModal.toggleOn}
             >
               Create section
             </Menu.Item>
@@ -44,8 +44,8 @@ export const TaskBoardColumnOptionButton: FC<Props> = ({
       <CreateTaskSectionModal
         projectId={projectId}
         status={status}
-        visible={createSectionModal.isOn}
-        onClose={createSectionModal.toggleOff}
+        visible={createWorkspaceModal.isOn}
+        onClose={createWorkspaceModal.toggleOff}
       />
       <ReorderTaskSectionsModal
         visible={manageSectionsModal.isOn}

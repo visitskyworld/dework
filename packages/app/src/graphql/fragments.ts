@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 import { network, payment, token } from "./fragments/payment";
 import { skill } from "./fragments/skill";
 import { taskView } from "./fragments/task";
+import { workspace } from "./fragments/workspace";
 
 export const entityDetail = gql`
   fragment EntityDetail on EntityDetail {
@@ -119,14 +120,6 @@ export const organizationTag = gql`
   }
 `;
 
-export const projectSection = gql`
-  fragment ProjectSection on ProjectSection {
-    id
-    name
-    sortKey
-  }
-`;
-
 export const taskSection = gql`
   fragment TaskSection on TaskSection {
     id
@@ -173,7 +166,7 @@ export const project = gql`
     deletedAt
     organizationId
     permalink
-    sectionId
+    workspaceId
     sortKey
   }
 `;
@@ -643,8 +636,8 @@ export const organizationDetails = gql`
       doneTaskCount: taskCount(status: DONE)
       openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
     }
-    projectSections {
-      ...ProjectSection
+    workspaces {
+      ...Workspace
     }
     tags {
       ...OrganizationTag
@@ -662,7 +655,7 @@ export const organizationDetails = gql`
 
   ${organization}
   ${project}
-  ${projectSection}
+  ${workspace}
   ${organizationTag}
   ${entityDetail}
   ${projectTokenGate}

@@ -1,11 +1,17 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
 
 @Entity({ orderBy: { sortKey: "ASC" } })
 @ObjectType()
-export class ProjectSection extends Audit {
+export class Workspace extends Audit {
   @Column()
   @Field()
   public name!: string;
@@ -22,7 +28,11 @@ export class ProjectSection extends Audit {
   @Field()
   public organizationId!: string;
 
-  @Column({ nullable: true })
+  @Column({ unique: true })
+  @Field()
+  public slug!: string;
+
+  @DeleteDateColumn()
   @Field({ nullable: true })
   public deletedAt?: Date;
 }

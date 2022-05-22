@@ -11,7 +11,7 @@ import {
 } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
-import { OrganizationDetails, ProjectSection } from "@dewo/app/graphql/types";
+import { OrganizationDetails, Workspace } from "@dewo/app/graphql/types";
 import Link from "next/link";
 import {
   useIsProjectPrivate,
@@ -27,19 +27,19 @@ import styles from "./ProjectListRow.module.less";
 
 interface Props {
   project: OrganizationDetails["projects"][number];
-  sections: ProjectSection[];
+  workspaces: Workspace[];
 }
 
-export const ProjectListRow: FC<Props> = ({ project, sections }) => {
+export const ProjectListRow: FC<Props> = ({ project, workspaces }) => {
   const isPrivate = useIsProjectPrivate(project, project.organizationId);
-  const canChangeSection = usePermission("update", project, "sectionId");
+  const canChangeSection = usePermission("update", project, "workspaceId");
   const updateProject = useUpdateProject();
   const handleMoveSection = useCallback(
-    async (section: ProjectSection) => {
+    async (workspace: Workspace) => {
       await updateProject({
         id: project.id,
         sortKey: Date.now().toString(),
-        sectionId: section.id === "default" ? null : section.id,
+        workspaceId: workspace.id === "default" ? null : workspace.id,
       });
     },
     [project.id, updateProject]
@@ -105,16 +105,16 @@ export const ProjectListRow: FC<Props> = ({ project, sections }) => {
               trigger={["click"]}
               overlay={
                 <Menu>
-                  <Menu.SubMenu title="Change Section">
-                    {sections.map((section) => (
+                  <Menu.SubMenu title="Change Workspace">
+                    {workspaces.map((workspace) => (
                       <Menu.Item
-                        key={section.id}
+                        key={workspace.id}
                         onClick={(e) => {
                           eatClick(e.domEvent);
-                          handleMoveSection(section);
+                          handleMoveSection(workspace);
                         }}
                       >
-                        {section.name}
+                        {workspace.name}
                       </Menu.Item>
                     ))}
                   </Menu.SubMenu>

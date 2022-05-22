@@ -13,7 +13,7 @@ import { Project } from "./Project";
 import { OrganizationIntegration } from "./OrganizationIntegration";
 import { OrganizationTag } from "./OrganizationTag";
 import { EntityDetail } from "./EntityDetail";
-import { ProjectSection } from "./ProjectSection";
+import { Workspace } from "./Workspace";
 import { Role } from "./rbac/Role";
 import { TaskView } from "./TaskView";
 
@@ -54,9 +54,9 @@ export class Organization extends Audit {
   @Field(() => [Project])
   public projects!: Promise<Project[]>;
 
-  @OneToMany(() => ProjectSection, (p: ProjectSection) => p.organization)
-  @Field(() => [ProjectSection])
-  public projectSections!: Promise<ProjectSection[]>;
+  @OneToMany(() => Workspace, (x: Workspace) => x.organization)
+  @Field(() => [Workspace])
+  public workspaces!: Promise<Workspace[]>;
 
   @OneToMany(() => EntityDetail, (d: EntityDetail) => d.organization)
   @Field(() => [EntityDetail])

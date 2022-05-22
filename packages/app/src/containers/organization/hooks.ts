@@ -16,9 +16,6 @@ import {
   CreateOrganizationTagInput,
   CreateOrganizationTagMutation,
   CreateOrganizationTagMutationVariables,
-  CreateProjectSectionInput,
-  CreateProjectSectionMutation,
-  CreateProjectSectionMutationVariables,
   DiscordIntegrationChannel,
   GetOrganizationBySlugQuery,
   GetOrganizationBySlugQueryVariables,
@@ -52,7 +49,6 @@ import {
   OrganizationIntegration,
   OrganizationIntegrationType,
   OrganizationTag,
-  ProjectSection,
   RemoveTokenFromOrganizationMutation,
   RemoveTokenFromOrganizationMutationVariables,
   SetOrganizationDetailInput,
@@ -64,13 +60,11 @@ import {
   UpdateOrganizationInput,
   UpdateOrganizationMutation,
   UpdateOrganizationMutationVariables,
-  UpdateProjectSectionInput,
-  UpdateProjectSectionMutation,
-  UpdateProjectSectionMutationVariables,
   DeleteOrganizationMutation,
   DeleteOrganizationMutationVariables,
   User,
   UserWithRoles,
+  Workspace,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import _ from "lodash";
@@ -167,40 +161,6 @@ export function useCreateOrganizationTag(): (
       return res.data.organizationTag;
     },
     [createOrganizationTag]
-  );
-}
-
-export function useCreateProjectSection(): (
-  input: CreateProjectSectionInput
-) => Promise<ProjectSection> {
-  const [mutation] = useMutation<
-    CreateProjectSectionMutation,
-    CreateProjectSectionMutationVariables
-  >(Mutations.createProjectSection);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data.section;
-    },
-    [mutation]
-  );
-}
-
-export function useUpdateProjectSection(): (
-  input: UpdateProjectSectionInput
-) => Promise<ProjectSection> {
-  const [mutation] = useMutation<
-    UpdateProjectSectionMutation,
-    UpdateProjectSectionMutationVariables
-  >(Mutations.updateProjectSection);
-  return useCallback(
-    async (input) => {
-      const res = await mutation({ variables: { input } });
-      if (!res.data) throw new Error(JSON.stringify(res.errors));
-      return res.data.section;
-    },
-    [mutation]
   );
 }
 
@@ -443,40 +403,51 @@ export function useRemoveTokenFromOrganization() {
   );
 }
 
-const defaultProjectSection: ProjectSection = {
+const defaultWorkspace: Workspace = {
   id: "default",
   name: "Projects",
   sortKey: "1",
-  __typename: "ProjectSection",
+  __typename: "Workspace",
 };
-export function useOrganizationSections(organizationId: string | undefined) {
+
+export function useOrganizationWorkspaces(
+  organizationId: string | undefined
+): (Workspace & {
+  projects: OrganizationDetails["projects"];
+  default: boolean;
+})[] {
   const { organization } = useOrganizationDetails(organizationId);
   const projects = useMemo(
     () => _.sortBy(organization?.projects, (p) => p.sortKey),
     [organization?.projects]
   );
-  const projectsBySectionId = useMemo(
-    () => _.groupBy(projects, (p) => p.sectionId ?? defaultProjectSection.id),
+  const projectsByWorkspaceId = useMemo(
+    () => _.groupBy(projects, (p) => p.workspaceId ?? defaultWorkspace.id),
     [projects]
   );
-  const canCreateProjectSection = usePermission("create", "ProjectSection");
-  const shouldRenderSection = useCallback(
-    (section: ProjectSection) =>
-      section.id === defaultProjectSection.id ||
-      !!projectsBySectionId[section.id]?.length ||
-      canCreateProjectSection,
-    [projectsBySectionId, canCreateProjectSection]
+  const canCreateWorkspace = usePermission("create", "Workspace");
+  const shouldRenderWorkspace = useCallback(
+    (workspace: Workspace) =>
+      workspace.id === defaultWorkspace.id ||
+      !!projectsByWorkspaceId[workspace.id]?.length ||
+      canCreateWorkspace,
+    [projectsByWorkspaceId, canCreateWorkspace]
   );
-  const sections = useMemo(
+  const workspaces = useMemo(
     () =>
-      [defaultProjectSection, ...(organization?.projectSections ?? [])].filter(
-        shouldRenderSection
+      [defaultWorkspace, ...(organization?.workspaces ?? [])].filter(
+        shouldRenderWorkspace
       ),
-    [organization?.projectSections, shouldRenderSection]
+    [organization?.workspaces, shouldRenderWorkspace]
   );
 
-  return sections.map((section) => ({
-    ...section,
-    projects: projectsBySectionId[section.id] ?? [],
-  }));
+  return useMemo(
+    () =>
+      workspaces.map((workspace) => ({
+        ...workspace,
+        default: workspace.id === defaultWorkspace.id,
+        projects: projectsByWorkspaceId[workspace.id] ?? [],
+      })),
+    [workspaces, projectsByWorkspaceId]
+  );
 }

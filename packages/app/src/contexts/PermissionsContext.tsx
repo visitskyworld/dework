@@ -31,7 +31,7 @@ import { useTask } from "../containers/task/hooks";
 type AbilityAction = "create" | "read" | "update" | "delete" | "submit"; //  | "claimTask";
 type AbilitySubject =
   | "Task"
-  | "ProjectSection"
+  | "Workspace"
   | "Organization"
   | "TaskApplication"
   | "TaskReward"

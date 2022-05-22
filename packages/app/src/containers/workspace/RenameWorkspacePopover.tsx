@@ -1,27 +1,27 @@
-import { ProjectSection } from "@dewo/app/graphql/types";
+import { Workspace } from "@dewo/app/graphql/types";
 import { useRunning } from "@dewo/app/util/hooks";
 import { Button, Input, Popover, Row, Space } from "antd";
 import React, { FC, useCallback, useState } from "react";
-import { useUpdateProjectSection } from "../hooks";
+import { useUpdateWorkspace } from "./hooks";
 
-export const RenameSectionPopover: FC<{
+export const RenameWorkspacePopover: FC<{
   visible: boolean;
   onClose: () => void;
   organizationId: string;
-  section: ProjectSection;
-}> = ({ visible, onClose, section, organizationId }) => {
-  const [newSectionName, setNewSectionName] = useState(section.name);
-  const updateSection = useUpdateProjectSection();
+  workspace: Workspace;
+}> = ({ visible, onClose, workspace, organizationId }) => {
+  const [name, setName] = useState(workspace.name);
+  const update = useUpdateWorkspace();
 
   const [handleUpdate, updating] = useRunning(
     useCallback(async () => {
-      await updateSection({
-        id: section.id,
+      await update({
+        name,
         organizationId,
-        name: newSectionName,
+        id: workspace.id,
       });
       onClose();
-    }, [newSectionName, onClose, organizationId, section.id, updateSection])
+    }, [name, onClose, organizationId, workspace.id, update])
   );
 
   return (
@@ -32,10 +32,10 @@ export const RenameSectionPopover: FC<{
       content={
         <Space direction="vertical" style={{ padding: 8 }}>
           <Input
-            value={newSectionName}
-            onChange={(e) => setNewSectionName(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             autoFocus
-            placeholder="Change section name"
+            placeholder="Change workspace name"
             onPressEnter={handleUpdate}
           />
           <Row style={{ gap: 8 }}>

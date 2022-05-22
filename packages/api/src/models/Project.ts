@@ -7,7 +7,7 @@ import { ProjectIntegration } from "./ProjectIntegration";
 import { Task } from "./Task";
 import { TaskTag } from "./TaskTag";
 import { ProjectTokenGate } from "./ProjectTokenGate";
-import { ProjectSection } from "./ProjectSection";
+import { Workspace } from "./Workspace";
 import { TaskSection } from "./TaskSection";
 import { TaskView } from "./TaskView";
 
@@ -40,12 +40,12 @@ export class Project extends Audit {
   public organizationId!: string;
 
   @JoinColumn()
-  @ManyToOne(() => ProjectSection)
-  @Field(() => ProjectSection)
-  public section!: Promise<ProjectSection>;
+  @ManyToOne(() => Workspace)
+  @Field(() => Workspace)
+  public workspace!: Promise<Workspace>;
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
-  public sectionId?: string;
+  public workspaceId?: string;
 
   @Column({ unique: true })
   @Field()

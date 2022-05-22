@@ -430,15 +430,15 @@ export interface UpdateOrganizationMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface UpdateOrganizationMutation_organization_projectSections {
-  __typename: "ProjectSection";
+export interface UpdateOrganizationMutation_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -539,7 +539,7 @@ export interface UpdateOrganizationMutation_organization {
   permalink: string;
   description: string | null;
   projects: UpdateOrganizationMutation_organization_projects[];
-  projectSections: UpdateOrganizationMutation_organization_projectSections[];
+  workspaces: UpdateOrganizationMutation_organization_workspaces[];
   tags: UpdateOrganizationMutation_organization_tags[];
   details: UpdateOrganizationMutation_organization_details[];
   projectTokenGates: UpdateOrganizationMutation_organization_projectTokenGates[];
@@ -677,15 +677,15 @@ export interface CreateProjectMutation_project_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface CreateProjectMutation_project_organization_projectSections {
-  __typename: "ProjectSection";
+export interface CreateProjectMutation_project_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -786,7 +786,7 @@ export interface CreateProjectMutation_project_organization {
   permalink: string;
   description: string | null;
   projects: CreateProjectMutation_project_organization_projects[];
-  projectSections: CreateProjectMutation_project_organization_projectSections[];
+  workspaces: CreateProjectMutation_project_organization_workspaces[];
   tags: CreateProjectMutation_project_organization_tags[];
   details: CreateProjectMutation_project_organization_details[];
   projectTokenGates: CreateProjectMutation_project_organization_projectTokenGates[];
@@ -848,7 +848,7 @@ export interface CreateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   options: CreateProjectMutation_project_options | null;
   tokenGates: CreateProjectMutation_project_tokenGates[];
@@ -978,7 +978,7 @@ export interface UpdateProjectMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   options: UpdateProjectMutation_project_options | null;
   tokenGates: UpdateProjectMutation_project_tokenGates[];
@@ -993,82 +993,6 @@ export interface UpdateProjectMutation {
 
 export interface UpdateProjectMutationVariables {
   input: UpdateProjectInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: CreateProjectSectionMutation
-// ====================================================
-
-export interface CreateProjectSectionMutation_section_organization_projectSections {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-}
-
-export interface CreateProjectSectionMutation_section_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  projectSections: CreateProjectSectionMutation_section_organization_projectSections[];
-}
-
-export interface CreateProjectSectionMutation_section {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-  organization: CreateProjectSectionMutation_section_organization;
-}
-
-export interface CreateProjectSectionMutation {
-  section: CreateProjectSectionMutation_section;
-}
-
-export interface CreateProjectSectionMutationVariables {
-  input: CreateProjectSectionInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: UpdateProjectSectionMutation
-// ====================================================
-
-export interface UpdateProjectSectionMutation_section_organization_projectSections {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-}
-
-export interface UpdateProjectSectionMutation_section_organization {
-  __typename: "Organization";
-  id: Scalar.UUID;
-  projectSections: UpdateProjectSectionMutation_section_organization_projectSections[];
-}
-
-export interface UpdateProjectSectionMutation_section {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-  organization: UpdateProjectSectionMutation_section_organization;
-}
-
-export interface UpdateProjectSectionMutation {
-  section: UpdateProjectSectionMutation_section;
-}
-
-export interface UpdateProjectSectionMutationVariables {
-  input: UpdateProjectSectionInput;
 }
 
 /* tslint:disable */
@@ -3066,7 +2990,7 @@ export interface JoinProjectWithTokenMutation_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
 }
 
@@ -3689,7 +3613,7 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: CreateTaskPaymentsMutation_tasks_project_organization;
 }
@@ -4224,7 +4148,7 @@ export interface ClearTaskPaymentsMutation_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: ClearTaskPaymentsMutation_tasks_project_organization;
 }
@@ -4675,15 +4599,15 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface CreateProjectsFromNotionMutation_organization_projectSections {
-  __typename: "ProjectSection";
+export interface CreateProjectsFromNotionMutation_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -4784,7 +4708,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   permalink: string;
   description: string | null;
   projects: CreateProjectsFromNotionMutation_organization_projects[];
-  projectSections: CreateProjectsFromNotionMutation_organization_projectSections[];
+  workspaces: CreateProjectsFromNotionMutation_organization_workspaces[];
   tags: CreateProjectsFromNotionMutation_organization_tags[];
   details: CreateProjectsFromNotionMutation_organization_details[];
   projectTokenGates: CreateProjectsFromNotionMutation_organization_projectTokenGates[];
@@ -4817,15 +4741,15 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface CreateProjectsFromTrelloMutation_organization_projectSections {
-  __typename: "ProjectSection";
+export interface CreateProjectsFromTrelloMutation_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -4926,7 +4850,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   permalink: string;
   description: string | null;
   projects: CreateProjectsFromTrelloMutation_organization_projects[];
-  projectSections: CreateProjectsFromTrelloMutation_organization_projectSections[];
+  workspaces: CreateProjectsFromTrelloMutation_organization_workspaces[];
   tags: CreateProjectsFromTrelloMutation_organization_tags[];
   details: CreateProjectsFromTrelloMutation_organization_details[];
   projectTokenGates: CreateProjectsFromTrelloMutation_organization_projectTokenGates[];
@@ -4959,15 +4883,15 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface CreateProjectsFromGithubMutation_organization_projectSections {
-  __typename: "ProjectSection";
+export interface CreateProjectsFromGithubMutation_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -5068,7 +4992,7 @@ export interface CreateProjectsFromGithubMutation_organization {
   permalink: string;
   description: string | null;
   projects: CreateProjectsFromGithubMutation_organization_projects[];
-  projectSections: CreateProjectsFromGithubMutation_organization_projectSections[];
+  workspaces: CreateProjectsFromGithubMutation_organization_workspaces[];
   tags: CreateProjectsFromGithubMutation_organization_tags[];
   details: CreateProjectsFromGithubMutation_organization_details[];
   projectTokenGates: CreateProjectsFromGithubMutation_organization_projectTokenGates[];
@@ -5537,7 +5461,7 @@ export interface ArchiveNotificationMutation_archiveNotification_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: ArchiveNotificationMutation_archiveNotification_task_project_organization;
 }
@@ -5583,16 +5507,10 @@ export interface ArchiveNotificationMutationVariables {
 // GraphQL mutation operation: MarkNotificationsReadMutation
 // ====================================================
 
-export interface MarkNotificationsReadMutation_markNotificationsRead_notificationReadMarker {
-  __typename: "NotificationReadMarker";
-  readAt: Scalar.DateTime;
-}
-
 export interface MarkNotificationsReadMutation_markNotificationsRead {
   __typename: "User";
   id: Scalar.UUID;
   notificationUnreadCount: number;
-  notificationReadMarker: MarkNotificationsReadMutation_markNotificationsRead_notificationReadMarker | null;
 }
 
 export interface MarkNotificationsReadMutation {
@@ -6134,6 +6052,82 @@ export interface DeleteThreepidMutationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateWorkspaceMutation
+// ====================================================
+
+export interface CreateWorkspaceMutation_workspace_organization_workspaces {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface CreateWorkspaceMutation_workspace_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  workspaces: CreateWorkspaceMutation_workspace_organization_workspaces[];
+}
+
+export interface CreateWorkspaceMutation_workspace {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+  organization: CreateWorkspaceMutation_workspace_organization;
+}
+
+export interface CreateWorkspaceMutation {
+  workspace: CreateWorkspaceMutation_workspace;
+}
+
+export interface CreateWorkspaceMutationVariables {
+  input: CreateWorkspaceInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateWorkspaceMutation
+// ====================================================
+
+export interface UpdateWorkspaceMutation_workspace_organization_workspaces {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+}
+
+export interface UpdateWorkspaceMutation_workspace_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  workspaces: UpdateWorkspaceMutation_workspace_organization_workspaces[];
+}
+
+export interface UpdateWorkspaceMutation_workspace {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
+  organization: UpdateWorkspaceMutation_workspace_organization;
+}
+
+export interface UpdateWorkspaceMutation {
+  workspace: UpdateWorkspaceMutation_workspace;
+}
+
+export interface UpdateWorkspaceMutationVariables {
+  input: UpdateWorkspaceInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MeQuery
 // ====================================================
 
@@ -6569,7 +6563,7 @@ export interface UserTasksQuery_user_tasks_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: UserTasksQuery_user_tasks_project_organization;
 }
@@ -6771,15 +6765,15 @@ export interface GetOrganizationDetailsQuery_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface GetOrganizationDetailsQuery_organization_projectSections {
-  __typename: "ProjectSection";
+export interface GetOrganizationDetailsQuery_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -6880,7 +6874,7 @@ export interface GetOrganizationDetailsQuery_organization {
   permalink: string;
   description: string | null;
   projects: GetOrganizationDetailsQuery_organization_projects[];
-  projectSections: GetOrganizationDetailsQuery_organization_projectSections[];
+  workspaces: GetOrganizationDetailsQuery_organization_workspaces[];
   tags: GetOrganizationDetailsQuery_organization_tags[];
   details: GetOrganizationDetailsQuery_organization_details[];
   projectTokenGates: GetOrganizationDetailsQuery_organization_projectTokenGates[];
@@ -6923,7 +6917,7 @@ export interface GetOrganizationTaskViewsQuery_organization_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
@@ -6931,8 +6925,8 @@ export interface GetOrganizationTaskViewsQuery_organization_projects {
   taskTags: GetOrganizationTaskViewsQuery_organization_projects_taskTags[];
 }
 
-export interface GetOrganizationTaskViewsQuery_organization_projectSections {
-  __typename: "ProjectSection";
+export interface GetOrganizationTaskViewsQuery_organization_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -7033,7 +7027,7 @@ export interface GetOrganizationTaskViewsQuery_organization {
   permalink: string;
   description: string | null;
   projects: GetOrganizationTaskViewsQuery_organization_projects[];
-  projectSections: GetOrganizationTaskViewsQuery_organization_projectSections[];
+  workspaces: GetOrganizationTaskViewsQuery_organization_workspaces[];
   tags: GetOrganizationTaskViewsQuery_organization_tags[];
   details: GetOrganizationTaskViewsQuery_organization_details[];
   projectTokenGates: GetOrganizationTaskViewsQuery_organization_projectTokenGates[];
@@ -7658,7 +7652,7 @@ export interface GetProjectQuery_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
 }
 
@@ -7783,7 +7777,7 @@ export interface GetProjectDetailsQuery_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   options: GetProjectDetailsQuery_project_options | null;
   tokenGates: GetProjectDetailsQuery_project_tokenGates[];
@@ -7818,7 +7812,7 @@ export interface GetProjectBySlugQuery_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
 }
 
@@ -8673,7 +8667,7 @@ export interface GetTaskQuery_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: GetTaskQuery_task_project_organization;
   taskTags: GetTaskQuery_task_project_taskTags[];
@@ -9246,7 +9240,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project 
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project_organization;
 }
@@ -9620,7 +9614,7 @@ export interface GetInviteQuery_invite_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
 }
@@ -9851,7 +9845,7 @@ export interface MyNotificationsQuery_me_notifications_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: MyNotificationsQuery_me_notifications_task_project_organization;
 }
@@ -10385,7 +10379,7 @@ export interface TaskCreatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: TaskCreatedSubscription_task_project_organization;
 }
@@ -10916,7 +10910,7 @@ export interface TaskUpdatedSubscription_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: TaskUpdatedSubscription_task_project_organization;
 }
@@ -11467,22 +11461,6 @@ export interface OrganizationTag {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: ProjectSection
-// ====================================================
-
-export interface ProjectSection {
-  __typename: "ProjectSection";
-  id: Scalar.UUID;
-  name: string;
-  sortKey: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: TaskSection
 // ====================================================
 
@@ -11567,7 +11545,7 @@ export interface Project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
 }
 
@@ -11682,7 +11660,7 @@ export interface Invite_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   tokenGates: Invite_project_tokenGates[];
 }
@@ -11810,7 +11788,7 @@ export interface ProjectDetails {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   options: ProjectDetails_options | null;
   tokenGates: ProjectDetails_tokenGates[];
@@ -12483,7 +12461,7 @@ export interface TaskWithOrganization_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: TaskWithOrganization_project_organization;
 }
@@ -12948,7 +12926,7 @@ export interface TaskDetails_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: TaskDetails_project_organization;
 }
@@ -13320,15 +13298,15 @@ export interface OrganizationDetails_projects {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   taskCount: number;
   doneTaskCount: number;
   openBountyTaskCount: number;
 }
 
-export interface OrganizationDetails_projectSections {
-  __typename: "ProjectSection";
+export interface OrganizationDetails_workspaces {
+  __typename: "Workspace";
   id: Scalar.UUID;
   name: string;
   sortKey: string;
@@ -13429,7 +13407,7 @@ export interface OrganizationDetails {
   permalink: string;
   description: string | null;
   projects: OrganizationDetails_projects[];
-  projectSections: OrganizationDetails_projectSections[];
+  workspaces: OrganizationDetails_workspaces[];
   tags: OrganizationDetails_tags[];
   details: OrganizationDetails_details[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
@@ -13464,7 +13442,7 @@ export interface Notification_task_project {
   deletedAt: Scalar.DateTime | null;
   organizationId: string;
   permalink: string;
-  sectionId: string | null;
+  workspaceId: string | null;
   sortKey: string;
   organization: Notification_task_project_organization;
 }
@@ -13699,6 +13677,22 @@ export interface TaskView {
   sortKey: string;
   filters: TaskView_filters[];
   sortBys: TaskView_sortBys[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Workspace
+// ====================================================
+
+export interface Workspace {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  sortKey: string;
 }
 
 /* tslint:disable */
@@ -13953,7 +13947,7 @@ export interface CreatePhantomThreepidInput {
 export interface CreateProjectInput {
   name: string;
   organizationId: Scalar.UUID;
-  sectionId?: Scalar.UUID | null;
+  workspaceId?: Scalar.UUID | null;
   options?: ProjectOptionsInput | null;
 }
 
@@ -13962,11 +13956,6 @@ export interface CreateProjectIntegrationInput {
   config: Scalar.JSONObject;
   projectId: Scalar.UUID;
   organizationIntegrationId?: Scalar.UUID | null;
-}
-
-export interface CreateProjectSectionInput {
-  name: string;
-  organizationId: Scalar.UUID;
 }
 
 export interface CreateProjectsFromGithubInput {
@@ -14060,6 +14049,11 @@ export interface CreateTaskViewInput {
   filters: TaskViewFilterInput[];
   sortBys: TaskViewSortByInput[];
   fields?: TaskViewField[] | null;
+}
+
+export interface CreateWorkspaceInput {
+  name: string;
+  organizationId: Scalar.UUID;
 }
 
 export interface DeleteOrganizationIntegrationInput {
@@ -14185,7 +14179,7 @@ export interface UpdateProjectInput {
   id: Scalar.UUID;
   name?: string | null;
   description?: string | null;
-  sectionId?: Scalar.UUID | null;
+  workspaceId?: Scalar.UUID | null;
   options?: ProjectOptionsInput | null;
   deletedAt?: Scalar.DateTime | null;
   sortKey?: string | null;
@@ -14193,14 +14187,6 @@ export interface UpdateProjectInput {
 
 export interface UpdateProjectIntegrationInput {
   id: Scalar.UUID;
-  deletedAt?: Scalar.DateTime | null;
-}
-
-export interface UpdateProjectSectionInput {
-  id: Scalar.UUID;
-  organizationId: Scalar.UUID;
-  name?: string | null;
-  sortKey?: string | null;
   deletedAt?: Scalar.DateTime | null;
 }
 
@@ -14289,6 +14275,14 @@ export interface UpdateUserRoleInput {
   userId: Scalar.UUID;
   roleId: Scalar.UUID;
   hidden?: boolean | null;
+}
+
+export interface UpdateWorkspaceInput {
+  id: Scalar.UUID;
+  organizationId: Scalar.UUID;
+  name?: string | null;
+  sortKey?: string | null;
+  deletedAt?: Scalar.DateTime | null;
 }
 
 //==============================================================

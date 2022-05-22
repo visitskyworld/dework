@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Col, Menu, Row, Skeleton, Space } from "antd";
 import {
   useOrganizationDetails,
-  useOrganizationSections,
+  useOrganizationWorkspaces,
 } from "../../organization/hooks";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -32,7 +32,7 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
   organizationId,
 }) => {
   const { organization } = useOrganizationDetails(organizationId);
-  const sections = useOrganizationSections(organizationId);
+  const workspaces = useOrganizationWorkspaces(organizationId);
   const isProjectPrivate = useIsProjectPrivateFn(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
 
@@ -83,12 +83,12 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
                 key: [basePath, "settings"].join("/"),
               }
             : null,
-          ...sections.map(
-            (section): ItemType => ({
+          ...workspaces.map(
+            (workspace): ItemType => ({
               type: "group",
               label: (
                 <Row align="middle" justify="space-between">
-                  {section.name}
+                  {workspace.name}
                   {!!canCreateProject && (
                     <CreateProjectButton
                       organizationId={organization.id}
@@ -96,12 +96,12 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
                       size="small"
                       className="text-secondary"
                       icon={<Icons.PlusOutlined />}
-                      sectionId={section.id}
+                      workspaceId={workspace.id}
                     />
                   )}
                 </Row>
               ),
-              children: section.projects.map((project) => ({
+              children: workspace.projects.map((project) => ({
                 icon: isProjectPrivate(project) ? (
                   <Icons.LockOutlined />
                 ) : undefined,

@@ -16,7 +16,7 @@ import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
 import { AtLeast } from "@dewo/api/types/general";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
-import { ProjectSection } from "@dewo/api/models/ProjectSection";
+import { Workspace } from "@dewo/api/models/Workspace";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
@@ -41,7 +41,7 @@ export type Action =
 export type Subject = InferSubjects<
   | typeof Organization
   | typeof Project
-  | typeof ProjectSection
+  | typeof Workspace
   | typeof Task
   | typeof TaskReward
   | typeof TaskTag
@@ -242,9 +242,9 @@ export class RbacService {
       switch (rule.permission) {
         case RulePermission.MANAGE_ORGANIZATION:
           fn(["update", "delete"], Organization, organization);
-          fn(CRUD, ProjectSection);
+          fn(CRUD, Workspace);
           fn(CRUD, TaskView, { organizationId });
-          fn("update", Project, ["sectionId", "sortKey"], project);
+          fn("update", Project, ["workspaceId", "sortKey"], project);
           const roleConditions: Partial<Role> | undefined = { organizationId };
           fn(CRUD, Role, roleConditions);
           fn(CRUD, Rule);

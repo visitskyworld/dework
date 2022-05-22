@@ -14,7 +14,7 @@ export class UpdateProjectInput {
   public description?: string;
 
   @Field(() => GraphQLUUID, { nullable: true })
-  public sectionId?: string;
+  public workspaceId?: string;
 
   @Field(() => ProjectOptions, { nullable: true })
   public options?: ProjectOptions;

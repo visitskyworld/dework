@@ -25,7 +25,6 @@ import { SetOrganizationDetailInput } from "./dto/SetOrganizationDetailInput";
 import { Project } from "@dewo/api/models/Project";
 import { PermalinkService } from "../permalink/permalink.service";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
-import { ProjectSection } from "@dewo/api/models/ProjectSection";
 import { RoleGuard } from "../rbac/rbac.guard";
 import { Repository } from "typeorm";
 import { Role } from "@dewo/api/models/rbac/Role";
@@ -59,14 +58,6 @@ export class OrganizationResolver {
     @Parent() organization: Organization
   ): Promise<string> {
     return this.permalinkService.get(organization, origin);
-  }
-
-  @ResolveField(() => [ProjectSection])
-  public async projectSections(
-    @Parent() organization: Organization
-  ): Promise<ProjectSection[]> {
-    const sections = await organization.projectSections;
-    return sections.filter((s) => !s.deletedAt);
   }
 
   @ResolveField(() => [User])

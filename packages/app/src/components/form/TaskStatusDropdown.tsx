@@ -28,7 +28,7 @@ export const TaskStatusDropdown: FC<Props> = ({ task, onChange }) => {
       options={statuses.map((status) => ({
         value: status,
         label: (
-          <Row style={{ gap: 8 }}>
+          <Row align="middle" style={{ gap: 8 }}>
             <TaskStatusIcon status={status} />
             {STATUS_LABEL[status]}
           </Row>

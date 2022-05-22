@@ -3,20 +3,21 @@ import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { useToggle } from "@dewo/app/util/hooks";
-import { CreateProjectSectionModal } from "../CreateSectionModal";
-import { ProjectSection } from "@dewo/app/graphql/types";
-import { useOrganizationDetails, useUpdateProjectSection } from "../../hooks";
+import { CreateWorkspaceModal } from "../../../workspace/CreateWorkspaceModal";
+import { Workspace } from "@dewo/app/graphql/types";
+import { useOrganizationDetails } from "../../hooks";
 import { useRouter } from "next/router";
-import { RenameSectionPopover } from "../RenameSectionPopover";
+import { RenameWorkspacePopover } from "../../../workspace/RenameWorkspacePopover";
+import { useUpdateWorkspace } from "@dewo/app/containers/workspace/hooks";
 
 interface Props {
-  section: ProjectSection;
+  workspace: Workspace;
   isDefault: boolean;
   organizationId: string;
 }
 
-export const ProjectSectionOptionsButton: FC<Props> = ({
-  section,
+export const WorkspaceOptionsButton: FC<Props> = ({
+  workspace,
   isDefault,
   organizationId,
 }) => {
@@ -25,22 +26,22 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
     __typename: "Project",
     organizationId,
   });
-  const canCreate = usePermission("create", "ProjectSection");
-  const canUpdate = usePermission("update", "ProjectSection");
+  const canCreate = usePermission("create", "Workspace");
+  const canUpdate = usePermission("update", "Workspace");
 
-  const createSectionModal = useToggle();
+  const createModal = useToggle();
 
   const router = useRouter();
-  const updateSection = useUpdateProjectSection();
+  const updateSection = useUpdateWorkspace();
   const handleDeleteSection = useCallback(async () => {
     await updateSection({
-      id: section.id,
+      id: workspace.id,
       organizationId,
       deletedAt: new Date().toISOString(),
     });
-  }, [updateSection, section.id, organizationId]);
+  }, [updateSection, workspace.id, organizationId]);
 
-  const renameSectionPopover = useToggle();
+  const renameWorkspace = useToggle();
 
   if (!canCreate && !canUpdate) return null;
   return (
@@ -53,9 +54,9 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
             {canCreate && (
               <Menu.Item
                 icon={<Icons.PlusOutlined />}
-                onClick={createSectionModal.toggleOn}
+                onClick={createModal.toggleOn}
               >
-                Create section
+                Create workspace
               </Menu.Item>
             )}
             {canCreateProject && (
@@ -64,20 +65,20 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
                 onClick={() =>
                   router.push(
                     `${organization?.permalink}/create${
-                      isDefault ? "" : `?sectionId=${section.id}`
+                      isDefault ? "" : `?workspaceId=${workspace.id}`
                     }`
                   )
                 }
               >
-                Create project in section
+                Create project in workspace
               </Menu.Item>
             )}
             {canUpdate && !isDefault && (
               <Menu.Item
                 icon={<Icons.EditOutlined />}
-                onClick={renameSectionPopover.toggleOn}
+                onClick={renameWorkspace.toggleOn}
               >
-                Rename this section
+                Rename this workspace
               </Menu.Item>
             )}
             {canUpdate && !isDefault && (
@@ -86,7 +87,7 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
                 icon={<Icons.DeleteOutlined />}
                 onClick={handleDeleteSection}
               >
-                Remove this section
+                Remove this workspace
               </Menu.Item>
             )}
           </Menu>
@@ -95,17 +96,17 @@ export const ProjectSectionOptionsButton: FC<Props> = ({
         <Button type="text" icon={<Icons.MoreOutlined />} />
       </Dropdown>
 
-      <RenameSectionPopover
-        visible={renameSectionPopover.isOn}
-        onClose={renameSectionPopover.toggleOff}
+      <RenameWorkspacePopover
+        visible={renameWorkspace.isOn}
+        onClose={renameWorkspace.toggleOff}
         organizationId={organizationId}
-        section={section}
+        workspace={workspace}
       />
 
-      <CreateProjectSectionModal
+      <CreateWorkspaceModal
         organizationId={organizationId}
-        visible={createSectionModal.isOn}
-        onClose={createSectionModal.toggleOff}
+        visible={createModal.isOn}
+        onClose={createModal.toggleOff}
       />
     </>
   );

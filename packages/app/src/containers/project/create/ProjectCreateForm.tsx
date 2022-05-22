@@ -41,7 +41,7 @@ export interface FormValues
 
 const formValueFieldsToRememberThroughOauthFlow: (keyof FormValues)[] = [
   "name",
-  "sectionId",
+  "workspaceId",
   "private",
 ];
 
@@ -94,7 +94,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
         setLoading(true);
         const project = await createProject({
           name: values.name,
-          sectionId: values.sectionId,
+          workspaceId: values.workspaceId,
           organizationId: values.organizationId,
           options: { showCommunitySuggestions: true },
         });
@@ -229,7 +229,7 @@ export const ProjectCreateForm: FC<ProjectCreateFormProps> = ({
             </FormSection>
           )}
         </MoreSectionCollapse>
-        <Form.Item name="sectionId" hidden />
+        <Form.Item name="workspaceId" hidden />
         <Form.Item name="organizationId" hidden rules={[{ required: true }]} />
         <Button
           type="primary"

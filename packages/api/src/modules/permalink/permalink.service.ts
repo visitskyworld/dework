@@ -8,6 +8,7 @@ import { User } from "@dewo/api/models/User";
 import { TaskNFT } from "@dewo/api/models/TaskNFT";
 import { Invite } from "@dewo/api/models/Invite";
 import { TaskView } from "@dewo/api/models/TaskView";
+import { Workspace } from "@dewo/api/models/Workspace";
 
 @Injectable()
 export class PermalinkService {
@@ -28,7 +29,15 @@ export class PermalinkService {
   }
 
   async get(
-    object: Task | TaskView | TaskNFT | Project | Organization | User | Invite,
+    object:
+      | Task
+      | TaskView
+      | TaskNFT
+      | Project
+      | Workspace
+      | Organization
+      | User
+      | Invite,
     appUrl = this.config.get("APP_URL")
   ): Promise<string> {
     if (object instanceof Invite) {
@@ -52,6 +61,10 @@ export class PermalinkService {
     if (object instanceof Project) {
       const o = await object.organization;
       return `${await this.get(o, appUrl)}/${object.slug}`;
+    }
+    if (object instanceof Workspace) {
+      const o = await object.organization;
+      return `${await this.get(o, appUrl)}/workspace/${object.slug}`;
     }
     if (object instanceof Organization) {
       return `${appUrl}/${object.slug}`;

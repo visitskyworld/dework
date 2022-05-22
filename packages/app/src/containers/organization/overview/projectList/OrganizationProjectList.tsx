@@ -2,27 +2,19 @@ import { Col, Row, Skeleton, Space, Typography } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import * as Icons from "@ant-design/icons";
 import { JoinTokenGatedProjectsAlert } from "../../../invite/JoinTokenGatedProjectsAlert";
-import { ProjectSection } from "@dewo/app/graphql/types";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { ProjectListRow } from "./ProjectListRow";
-import { ProjectSectionOptionsButton } from "./ProjectSectionOptionsButton";
 import { CreateProjectButton } from "../CreateProjectButton";
 import { ProjectListEmpty } from "./ProjectListEmpty";
-import { useOrganizationDetails, useOrganizationSections } from "../../hooks";
+import { useOrganizationDetails, useOrganizationWorkspaces } from "../../hooks";
 import { DiscordRoleGateAlert } from "@dewo/app/containers/invite/DiscordRoleGateAlert";
 import { isSSR } from "@dewo/app/util/isSSR";
 import _ from "lodash";
+import { WorkspaceOptionsButton } from "./WorkspaceOptionsButton";
 
 interface Props {
   organizationId: string;
 }
-
-const defaultProjectSection: ProjectSection = {
-  id: "default",
-  name: "Projects",
-  sortKey: "1",
-  __typename: "ProjectSection",
-};
 
 export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganizationDetails(organizationId);
@@ -36,7 +28,7 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
     organizationId,
   });
 
-  const sections = useOrganizationSections(organizationId);
+  const workspaces = useOrganizationWorkspaces(organizationId);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -49,18 +41,18 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
         {!projects.length ? (
           <ProjectListEmpty organizationId={organizationId} />
         ) : (
-          sections.map((section) => (
-            <div key={section.id}>
+          workspaces.map((workspace) => (
+            <div key={workspace.id}>
               <Row align="middle" style={{ marginBottom: 8 }}>
                 <Typography.Title level={4} style={{ margin: 0 }}>
-                  {section.name}
+                  {workspace.name}
                 </Typography.Title>
-                <ProjectSectionOptionsButton
-                  section={section}
-                  isDefault={section.id === defaultProjectSection.id}
+                <WorkspaceOptionsButton
+                  workspace={workspace}
+                  isDefault={workspace.default}
                   organizationId={organizationId}
                 />
-                {canCreateProject && section.id === defaultProjectSection.id && (
+                {canCreateProject && workspace.default && (
                   <>
                     <div style={{ flex: 1 }} />
                     <CreateProjectButton
@@ -75,16 +67,16 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                 )}
               </Row>
               <Row gutter={[8, 8]}>
-                {section.projects.map((project) => (
+                {workspace.projects.map((project) => (
                   <Col key={project.id} xs={24} sm={12} xl={8} xxl={8}>
-                    <ProjectListRow project={project} sections={sections} />
+                    <ProjectListRow project={project} workspaces={workspaces} />
                   </Col>
                 ))}
               </Row>
 
-              {!section.projects.length && (
+              {!workspace.projects.length && (
                 <Typography.Text type="secondary">
-                  This section is empty
+                  This workspace is empty
                 </Typography.Text>
               )}
             </div>

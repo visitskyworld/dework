@@ -12,14 +12,14 @@ import { useOrganization, useOrganizationIntegrations } from "../hooks";
 
 interface Props extends ButtonProps {
   organizationId: string;
-  sectionId?: string;
+  workspaceId?: string;
   mode?: "import" | "all";
 }
 
 export const CreateProjectButton: FC<Props> = ({
   organizationId,
   mode = "all",
-  sectionId,
+  workspaceId,
   ...buttonProps
 }) => {
   const router = useRouter();
@@ -63,8 +63,8 @@ export const CreateProjectButton: FC<Props> = ({
   if (!organization) return null;
 
   const url =
-    sectionId && sectionId !== "default"
-      ? `${organization.permalink}/create?sectionId=${sectionId}`
+    !!workspaceId && workspaceId !== "default"
+      ? `${organization.permalink}/create?workspaceId=${workspaceId}`
       : `${organization.permalink}/create`;
 
   return (

@@ -28,9 +28,6 @@ import { PermalinkService } from "../permalink/permalink.service";
 import { ProjectRole } from "@dewo/api/models/enums/ProjectRole";
 import { ProjectTokenGate } from "@dewo/api/models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "./dto/ProjectTokenGateInput";
-import { ProjectSection } from "@dewo/api/models/ProjectSection";
-import { CreateProjectSectionInput } from "./dto/CreateProjectSectionInput";
-import { UpdateProjectSectionInput } from "./dto/UpdateProjectSectionInput";
 import { UpdateTaskTagInput } from "./dto/UpdateTaskTagInput";
 import { TaskSection } from "@dewo/api/models/TaskSection";
 import { RoleGuard } from "../rbac/rbac.guard";
@@ -136,44 +133,6 @@ export class ProjectResolver {
     @Args("input") input: UpdateProjectInput
   ): Promise<Project> {
     return this.projectService.update(input);
-  }
-
-  @Mutation(() => ProjectSection)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "create",
-      subject: ProjectSection,
-      inject: [ProjectService],
-      getOrganizationId: (
-        _subject,
-        params: { input: CreateProjectSectionInput }
-      ) => params.input.organizationId,
-    })
-  )
-  public async createProjectSection(
-    @Args("input") input: CreateProjectSectionInput
-  ): Promise<ProjectSection> {
-    return this.projectService.createSection(input);
-  }
-
-  @Mutation(() => ProjectSection)
-  @UseGuards(
-    AuthGuard,
-    RoleGuard({
-      action: "update",
-      subject: ProjectSection,
-      inject: [ProjectService],
-      getOrganizationId: (
-        _subject,
-        params: { input: UpdateProjectSectionInput }
-      ) => params.input.organizationId,
-    })
-  )
-  public async updateProjectSection(
-    @Args("input") input: UpdateProjectSectionInput
-  ): Promise<ProjectSection> {
-    return this.projectService.updateSection(input);
   }
 
   @Mutation(() => TaskSection)

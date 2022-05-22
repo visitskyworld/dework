@@ -11,7 +11,7 @@ export class CreateProjectInput {
   public organizationId!: string;
 
   @Field(() => GraphQLUUID, { nullable: true })
-  public sectionId?: string;
+  public workspaceId?: string;
 
   @Field(() => ProjectOptions, { nullable: true })
   public options?: ProjectOptions;

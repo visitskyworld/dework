@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
 @InputType()
-export class CreateProjectSectionInput {
+export class CreateWorkspaceInput {
   @Field()
   public name!: string;
 
