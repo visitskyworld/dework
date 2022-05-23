@@ -23,11 +23,14 @@ import {
   AppstoreOutlined,
   BellOutlined,
   ProjectOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import styles from "./KBar.module.less";
 import classNames from "classnames";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useIsDev } from "../user/hooks";
+import { useProjectBySlug, useProjectDetails } from "../project/hooks";
+import { TaskViewType } from "@dewo/app/graphql/types";
 
 function useKBarActions() {
   const { user } = useAuthContext();
@@ -37,6 +40,26 @@ function useKBarActions() {
   const { organization } = useOrganizationBySlug(organizationSlug);
   const projects = useOrganizationDetails(organization?.id).organization
     ?.projects;
+
+  const projectSlug = router.query.projectSlug as string | undefined;
+  const projectId = useProjectBySlug(projectSlug).project?.id;
+  const { project } = useProjectDetails(projectId);
+
+  useRegisterActions(
+    project?.taskViews.map((view) => ({
+      id: view.id,
+      name: view.name,
+      section: "Views",
+      icon:
+        view.type === TaskViewType.LIST ? (
+          <UnorderedListOutlined />
+        ) : (
+          <ProjectOutlined />
+        ),
+      perform: () => router.push(view.permalink),
+    })) ?? [],
+    [project?.taskViews]
+  );
 
   useRegisterActions(
     projects?.map((p) => ({
