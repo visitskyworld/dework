@@ -106,7 +106,7 @@ export class GithubIntegrationService {
 
     const description = [
       issue.body,
-      `Originally created from Github issue: ${issue.html_url}`,
+      `Originally created from Github issue: <${issue.html_url}>`,
     ]
       .filter((s) => !!s)
       .join("\n\n");

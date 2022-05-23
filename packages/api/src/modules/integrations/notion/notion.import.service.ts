@@ -173,7 +173,7 @@ export class NotionImportService {
             tags: taskTags,
             description: [
               markdown,
-              `Originally created from Notion task: ${page.url}`,
+              `Originally created from Notion task: <${page.url}>`,
             ]
               .join("\n\n")
               .trim(),

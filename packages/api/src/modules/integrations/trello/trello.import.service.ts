@@ -149,7 +149,7 @@ export class TrelloImportService {
           dueDate: card.due,
           description: [
             card.desc,
-            `Originally created from Trello card: ${card.shortUrl}`,
+            `Originally created from Trello card: <${card.shortUrl}>`,
           ]
             .join("\n\n")
             .trim(),
