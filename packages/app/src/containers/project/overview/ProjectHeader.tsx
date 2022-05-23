@@ -225,6 +225,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
                 href={`${project.permalink}/settings/discord`}
                 type="text"
                 icon={<Icons.ShareAltOutlined />}
+                name="Project Header: integrations"
               >
                 Integrations
               </BlockButton>
@@ -235,6 +236,7 @@ export const ProjectHeader: FC<Props> = ({ projectId, organizationId }) => {
                 href={`${project.permalink}/settings/access`}
                 type="text"
                 icon={<Icons.SafetyOutlined />}
+                name="Project Header: access"
               >
                 Access & Permissions
               </BlockButton>
