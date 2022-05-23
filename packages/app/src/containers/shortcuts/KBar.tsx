@@ -1,6 +1,5 @@
-import React, { FC, ReactElement, useEffect, useMemo, useState } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import {
-  Action,
   KBarAnimator,
   KBarPortal,
   KBarPositioner,
@@ -9,6 +8,7 @@ import {
   KBarSearch,
   useKBar,
   useMatches,
+  useRegisterActions,
   VisualState,
 } from "kbar";
 import { useRouter } from "next/router";
@@ -28,6 +28,78 @@ import styles from "./KBar.module.less";
 import classNames from "classnames";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useIsDev } from "../user/hooks";
+
+function useKBarActions() {
+  const { user } = useAuthContext();
+  const isDev = useIsDev();
+  const router = useRouter();
+  const organizationSlug = router.query.organizationSlug as string | undefined;
+  const { organization } = useOrganizationBySlug(organizationSlug);
+  const projects = useOrganizationDetails(organization?.id).organization
+    ?.projects;
+
+  useRegisterActions(
+    projects?.map((p) => ({
+      id: p.id,
+      name: p.name,
+      section: "Projects",
+      icon: <ProjectOutlined />,
+      perform: () => router.push(p.permalink),
+    })) ?? [],
+    [projects]
+  );
+
+  useRegisterActions(
+    !!user
+      ? [
+          {
+            id: "task-feed",
+            name: "Task Feed",
+            section: "For me",
+            icon: <AppstoreOutlined />,
+            perform: () => router.push("/task-feed"),
+          },
+          ...(isDev
+            ? [
+                {
+                  id: "notifications",
+                  name: "Inbox",
+                  section: "For me",
+                  icon: <BellOutlined />,
+                  perform: () => router.push("/notifications"),
+                },
+              ]
+            : []),
+          {
+            id: "board",
+            name: "My Task Board",
+            section: "For me",
+            icon: <ProjectOutlined />,
+            perform: () => router.push(`${user.permalink}/board`),
+          },
+          {
+            id: "profile",
+            name: "Profile",
+            section: "For me",
+            icon: <UserAvatar user={user} size="small" />,
+            perform: () => router.push(user.permalink),
+          },
+        ]
+      : [],
+    [!!user, isDev]
+  );
+
+  useRegisterActions(
+    user?.organizations.map((o) => ({
+      id: o.id,
+      name: o.name,
+      section: "Organizations",
+      icon: <OrganizationAvatar organization={o} size="small" />,
+      perform: () => router.push(o.permalink),
+    })) ?? [],
+    [user?.organizations]
+  );
+}
 
 const Results: FC = () => {
   const { results } = useMatches();
@@ -59,6 +131,7 @@ const Results: FC = () => {
 };
 
 const Content: FC = () => {
+  useKBarActions();
   const { visualState } = useKBar((state) => ({
     visualState: state.visualState,
   }));
@@ -97,86 +170,8 @@ const Content: FC = () => {
 };
 
 export const KBar: FC<{ children: ReactElement }> = ({ children }) => {
-  const router = useRouter();
-  const { user } = useAuthContext();
-  const isDev = useIsDev();
-
-  const organizationSlug = router.query.organizationSlug as string | undefined;
-  const { organization } = useOrganizationBySlug(organizationSlug);
-  const projects = useOrganizationDetails(organization?.id).organization
-    ?.projects;
-
-  const actions = useMemo(() => {
-    const actions: Action[] = [];
-
-    if (!!projects) {
-      actions.push(
-        ...projects.map((p) => ({
-          id: p.id,
-          name: p.name,
-          section: "Projects",
-          icon: <ProjectOutlined />,
-          perform: () => router.push(p.permalink),
-        }))
-      );
-    }
-
-    if (!!user) {
-      actions.push(
-        {
-          id: "task-feed",
-          name: "Task Feed",
-          section: "For me",
-          icon: <AppstoreOutlined />,
-          perform: () => router.push("/task-feed"),
-        },
-        ...(isDev
-          ? [
-              {
-                id: "notifications",
-                name: "Inbox",
-                section: "For me",
-                icon: <BellOutlined />,
-                perform: () => router.push("/notifications"),
-              },
-            ]
-          : []),
-        {
-          id: "board",
-          name: "My Task Board",
-          section: "For me",
-          icon: <ProjectOutlined />,
-          perform: () => router.push(`${user.permalink}/board`),
-        },
-        {
-          id: "profile",
-          name: "Profile",
-          section: "For me",
-          icon: <UserAvatar user={user} size="small" />,
-          perform: () => router.push(user.permalink),
-        }
-      );
-
-      actions.push(
-        ...user.organizations.map((o) => ({
-          id: o.id,
-          name: o.name,
-          section: "Organizations",
-          icon: <OrganizationAvatar organization={o} size="small" />,
-          perform: () => router.push(o.permalink),
-        }))
-      );
-    }
-
-    return actions;
-  }, [user, isDev, router, projects]);
-
-  if (!user) return children;
   return (
-    <KBarProvider
-      actions={actions}
-      options={{ animations: { enterMs: 300, exitMs: 300 } }}
-    >
+    <KBarProvider options={{ animations: { enterMs: 300, exitMs: 300 } }}>
       <Content />
       {children}
     </KBarProvider>

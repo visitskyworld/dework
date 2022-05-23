@@ -31,8 +31,8 @@ export class TaskReward extends Audit {
   @Field()
   public tokenId!: string;
 
-  @Column({ enum: TaskRewardTrigger })
-  @Field(() => TaskRewardTrigger)
+  @Column({ enum: TaskRewardTrigger, nullable: true })
+  @Field(() => TaskRewardTrigger, { nullable: true })
   public trigger!: TaskRewardTrigger;
 
   @OneToMany(() => TaskRewardPayment, (x: TaskRewardPayment) => x.reward)
