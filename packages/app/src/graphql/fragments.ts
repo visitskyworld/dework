@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { network, payment, token } from "./fragments/payment";
 import { skill } from "./fragments/skill";
-import { taskView } from "./fragments/task";
+import { subtask, taskView } from "./fragments/task";
 import { workspace } from "./fragments/workspace";
 
 export const entityDetail = gql`
@@ -407,9 +407,7 @@ export const task = gql`
     number
     gating
     subtasks {
-      id
-      name
-      status
+      ...Subtask
     }
     tags {
       ...TaskTag
@@ -447,6 +445,7 @@ export const task = gql`
   ${skill}
   ${taskReward}
   ${user}
+  ${subtask}
   ${taskReview}
   ${taskReaction}
 `;

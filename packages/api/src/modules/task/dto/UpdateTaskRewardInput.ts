@@ -10,8 +10,8 @@ export class UpdateTaskRewardInput {
   @Field(() => GraphQLUUID)
   public tokenId!: string;
 
-  @Field(() => TaskRewardTrigger)
-  public trigger!: TaskRewardTrigger;
+  @Field(() => TaskRewardTrigger, { nullable: true })
+  public trigger?: TaskRewardTrigger;
 
   @Field(() => Boolean, { nullable: true })
   public peggedToUsd?: boolean;

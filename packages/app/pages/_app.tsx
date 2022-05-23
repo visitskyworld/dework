@@ -11,7 +11,7 @@ import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
 import { PermissionsProvider } from "@dewo/app/contexts/PermissionsContext";
 import { InviteMessageToast } from "@dewo/app/containers/invite/InviteMessageToast";
-import { SidebarProvider } from "@dewo/app/contexts/sidebarContext";
+import { SidebarProvider } from "@dewo/app/contexts/SidebarContext";
 import { useRouter } from "next/router";
 import { TaskUpdateModalListener } from "@dewo/app/containers/task/TaskUpdateModal";
 import absoluteUrl from "next-absolute-url";
@@ -38,6 +38,7 @@ import { useAnalyticsListeners } from "@dewo/app/util/analytics/useAnalyticsList
 import { Sidebar } from "@dewo/app/containers/navigation/Sidebar";
 import { Layout } from "antd";
 import { KBar } from "@dewo/app/containers/shortcuts/KBar";
+import { SubtasksExpandedProvider } from "@dewo/app/contexts/SubtasksExpandedContext";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -147,17 +148,19 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
             <PermissionsProvider>
               <KBar>
                 <SidebarProvider>
-                  <Layout>
-                    <Sidebar />
-                    <Component {...pageProps} />
-                  </Layout>
-                  <Hooks />
-                  <Redirector />
-                  <InviteMessageToast />
-                  <FloatingFooterButtons />
-                  <TaskUpdateModalListener />
-                  <ServerErrorModal onErrorRef={onErrorRef} />
-                  <PromptModal />
+                  <SubtasksExpandedProvider>
+                    <Layout>
+                      <Sidebar />
+                      <Component {...pageProps} />
+                    </Layout>
+                    <Hooks />
+                    <Redirector />
+                    <InviteMessageToast />
+                    <FloatingFooterButtons />
+                    <TaskUpdateModalListener />
+                    <ServerErrorModal onErrorRef={onErrorRef} />
+                    <PromptModal />
+                  </SubtasksExpandedProvider>
                 </SidebarProvider>
               </KBar>
             </PermissionsProvider>

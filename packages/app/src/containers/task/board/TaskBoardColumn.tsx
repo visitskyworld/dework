@@ -63,15 +63,14 @@ export const TaskBoardColumn: FC<Props> = ({
     []
   );
 
-  const rows = useMemo<
-    (VirtualizedListRow & { draggableId: string; isDragDisabled: boolean })[]
-  >(
+  const recalculateRowHeight = useRef<(id: string) => void>();
+
+  const rows = useMemo<(VirtualizedListRow & { isDragDisabled: boolean })[]>(
     () =>
       sections
         .map((section) => [
           {
-            id: [status, section.id].join(":"),
-            draggableId: [status, section.id].join(":"),
+            key: [status, section.id].join(":"),
             isDragDisabled: true,
             render: () =>
               sections.length > 1 && (
@@ -85,14 +84,17 @@ export const TaskBoardColumn: FC<Props> = ({
               ),
           },
           ...(!collapsed[section.id] ? section.tasks : []).map((task) => ({
-            id: JSON.stringify(task),
-            draggableId: task.id,
+            id: task.id,
+            key: JSON.stringify(task),
             isDragDisabled: !hasPermission("update", task, `status[${status}]`),
             render: () =>
               !collapsed[section.id] && (
                 <TaskCard
                   task={task}
                   style={{ marginLeft: 8, marginRight: 8, marginBottom: 8 }}
+                  recalculateRowHeight={() =>
+                    recalculateRowHeight.current?.(task.id)
+                  }
                 />
               ),
           })),
@@ -101,7 +103,8 @@ export const TaskBoardColumn: FC<Props> = ({
     [sections, collapsed, toggleCollapsed, hasPermission, status]
   );
 
-  useRecalculateVirtualizedListRowHeight(cache, list, rows);
+  const fns = useRecalculateVirtualizedListRowHeight(cache, list, rows);
+  recalculateRowHeight.current = fns.recalculateRowHeight;
 
   return (
     <Card
@@ -188,8 +191,8 @@ export const TaskBoardColumn: FC<Props> = ({
                     rowIndex={index}
                   >
                     <Draggable
-                      key={rows[index].draggableId}
-                      draggableId={rows[index].draggableId}
+                      key={rows[index].key}
+                      draggableId={rows[index].id ?? rows[index].key}
                       index={index}
                       isDragDisabled={rows[index]?.isDragDisabled}
                     >

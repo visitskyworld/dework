@@ -3,7 +3,7 @@ import { Button, Col, Divider, Row } from "antd";
 import { useOrganizationBySlug } from "../organization/hooks";
 import { useRouter } from "next/router";
 import * as Icons from "@ant-design/icons";
-import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
+import { useSidebarContext } from "@dewo/app/contexts/SidebarContext";
 import classNames from "classnames";
 import styles from "./Sidebar.module.less";
 import { OrganizationMenu } from "./menus/OrganizationMenu";

@@ -4,7 +4,7 @@ import React, { FC, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { Task, TaskStatus, TaskViewField } from "@dewo/app/graphql/types";
 import { TaskGatingIcon } from "../card/TaskGatingIcon";
-import { TaskTagsRow } from "../board/TaskTagsRow";
+import { TaskTagsRow } from "../card/TaskTagsRow";
 import { TaskActionButton } from "../actions/TaskActionButton";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import styles from "./TaskListItem.module.less";
@@ -14,12 +14,15 @@ import { useTaskViewFields } from "../views/hooks";
 import { TaskStatusDropdown } from "../../../components/form/TaskStatusDropdown";
 import moment from "moment";
 import { useUpdateTask } from "../hooks";
+import { SubtaskList } from "./SubtaskList";
+import { useSubtasksExpanded } from "@dewo/app/contexts/SubtasksExpandedContext";
 
 interface Props {
   task: Task;
+  recalculateRowHeight?: () => void;
 }
 
-export const TaskListItem: FC<Props> = ({ task }) => {
+export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
   const fields = useTaskViewFields();
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchTaskDetailsOnHover = usePrefetchTaskDetailsOnHover(task.id);
@@ -29,6 +32,13 @@ export const TaskListItem: FC<Props> = ({ task }) => {
     (status: TaskStatus) => updateTask({ id: task.id, status }, task),
     [updateTask, task]
   );
+
+  const subtasks = useSubtasksExpanded(task.id);
+  const toggleSubtasks = subtasks.toggle;
+  const handleToggleSubtasks = useCallback(() => {
+    toggleSubtasks();
+    recalculateRowHeight?.();
+  }, [toggleSubtasks, recalculateRowHeight]);
 
   return (
     <Card
@@ -67,6 +77,8 @@ export const TaskListItem: FC<Props> = ({ task }) => {
           task={task}
           fields={fields}
           style={{ flex: 1, justifyContent: "flex-end" }}
+          expanded={subtasks.expanded}
+          onToggleSubtasks={handleToggleSubtasks}
         />
 
         {fields.has(TaskViewField.assignees) && (
@@ -101,6 +113,14 @@ export const TaskListItem: FC<Props> = ({ task }) => {
           </Row>
         )}
       </Row>
+
+      {!!task.subtasks.length && subtasks.expanded && (
+        <SubtaskList
+          subtasks={task.subtasks}
+          style={{ marginTop: 8 }}
+          showBranches
+        />
+      )}
     </Card>
   );
 };

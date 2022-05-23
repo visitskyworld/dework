@@ -39,7 +39,7 @@ export const toTaskRewardFormValues = (
     ),
     networkId: reward.token.networkId,
     token: reward.token,
-    trigger: reward.trigger,
+    trigger: reward.trigger ?? undefined,
     peggedToUsd: reward.peggedToUsd,
   };
 };

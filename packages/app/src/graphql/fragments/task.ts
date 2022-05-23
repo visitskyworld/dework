@@ -46,3 +46,11 @@ export const taskView = gql`
   ${taskViewFilter}
   ${taskViewFilterSortBy}
 `;
+
+export const subtask = gql`
+  fragment Subtask on Task {
+    id
+    name
+    status
+  }
+`;

@@ -5,7 +5,7 @@ import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Avatar, Badge, Button, Col, Divider, Layout, Tooltip } from "antd";
 import { CreateOrganizationButton } from "./CreateOrganizationButton";
 import { SidebarNavLink } from "./SidebarNavLink";
-import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
+import { useSidebarContext } from "@dewo/app/contexts/SidebarContext";
 import Link from "next/link";
 import styles from "./Sidebar.module.less";
 import { NavigationList } from "./NavigationList";

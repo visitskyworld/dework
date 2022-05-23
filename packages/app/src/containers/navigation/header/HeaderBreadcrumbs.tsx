@@ -4,7 +4,7 @@ import { Row, Breadcrumb, Button } from "antd";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import { LoginButton } from "../../auth/buttons/LoginButton";
-import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
+import { useSidebarContext } from "@dewo/app/contexts/SidebarContext";
 import styles from "./Header.module.less";
 import { MenuOutlined } from "@ant-design/icons";
 

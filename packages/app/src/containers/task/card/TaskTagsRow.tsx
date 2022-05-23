@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC } from "react";
 import {
   Task,
   TaskPriority,
@@ -11,19 +11,23 @@ import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
 import moment from "moment";
-import { PRIORITY_LABEL } from "./util";
+import { PRIORITY_LABEL } from "../board/util";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { SkillTag } from "@dewo/app/components/SkillTag";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
 import { useUpdateTask } from "../hooks";
+import { SubtaskTagButton } from "./SubtaskTagButton";
 
 interface Props {
   task: Task | TaskWithOrganization;
   fields?: Set<TaskViewField>;
   skills?: "default" | "emoji";
   style?: CSSProperties;
+  expanded?: boolean;
+  onToggleSubtasks?(): void;
 }
 
 const defaultFields = new Set([TaskViewField.tags, TaskViewField.skills]);
@@ -33,12 +37,9 @@ export const TaskTagsRow: FC<Props> = ({
   fields = defaultFields,
   skills,
   style,
+  expanded,
+  onToggleSubtasks,
 }) => {
-  const doneSubtasks = useMemo(
-    () => task.subtasks.filter((t) => t.status === TaskStatus.DONE),
-    [task.subtasks]
-  );
-
   const canChangePriority = usePermission("update", task, "priority");
   const updateTask = useUpdateTask();
 
@@ -88,16 +89,12 @@ export const TaskTagsRow: FC<Props> = ({
       </Tag>
     ),
     !!task.subtasks.length && (
-      <Tag key="subtasks">
-        {doneSubtasks.length === task.subtasks.length ? (
-          <Icons.CheckCircleFilled style={{ color: Colors.green.primary }} />
-        ) : (
-          <Icons.CheckCircleOutlined />
-        )}
-        <span>
-          {doneSubtasks.length}/{task.subtasks.length}
-        </span>
-      </Tag>
+      <SubtaskTagButton
+        key="subtasks"
+        subtasks={task.subtasks}
+        expanded={expanded}
+        onToggle={onToggleSubtasks}
+      />
     ),
     "project" in task && (
       <Tag key="project" style={{ paddingLeft: 0 }}>
@@ -135,7 +132,10 @@ export const TaskTagsRow: FC<Props> = ({
 
   if (!tagComponentsToRender.length) return null;
   return (
-    <Row style={{ ...style, marginLeft: 0, marginRight: 0, rowGap: 4 }}>
+    <Row
+      style={{ ...style, marginLeft: 0, marginRight: 0, rowGap: 4 }}
+      onClick={stopPropagation}
+    >
       {tagComponentsToRender}
     </Row>
   );

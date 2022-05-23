@@ -15,7 +15,7 @@ import Link from "next/link";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { ApplyToTaskButton } from "../task/actions/apply/ApplyToTaskButton";
 import { CreateSubmissionButton } from "../task/actions/submit/CreateSubmissionButton";
-import { TaskTagsRow } from "../task/board/TaskTagsRow";
+import { TaskTagsRow } from "../task/card/TaskTagsRow";
 import {
   calculateTaskRewardAsUSD,
   formatTaskReward,

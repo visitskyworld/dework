@@ -7,13 +7,13 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { TaskListItem } from "../../task/list/TaskListItem";
 import { TaskCard } from "../card/TaskCard";
 import classNames from "classnames";
 import styles from "./TaskList.module.less";
 import _ from "lodash";
 import { SkeletonTaskListItem } from "./SkeletonTaskListItem";
 import { TaskViewLayoutData } from "../views/hooks";
+import { TaskListItem } from "./TaskListItem";
 
 interface Props {
   data: TaskViewLayoutData;

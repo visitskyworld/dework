@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from "react";
 import { Button, Col, Row, Typography } from "antd";
 import Link from "next/link";
 import * as Icons from "@ant-design/icons";
-import { useSidebarContext } from "@dewo/app/contexts/sidebarContext";
+import { useSidebarContext } from "@dewo/app/contexts/SidebarContext";
 
 export const MenuHeader: FC<{
   href: string;

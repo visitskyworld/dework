@@ -11,7 +11,7 @@ export interface TaskRewardFormValues {
   amount: number;
   networkId: string;
   token: PaymentToken;
-  trigger: TaskRewardTrigger;
+  trigger?: TaskRewardTrigger;
   peggedToUsd: boolean;
 }
 

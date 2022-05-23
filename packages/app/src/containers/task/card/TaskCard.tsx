@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useMemo } from "react";
 import {
   Task,
   TaskViewField,
@@ -7,7 +7,7 @@ import {
 import { Card, Typography, Row, Rate, Avatar } from "antd";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { TaskReactionPicker } from "../board/TaskReactionPicker";
-import { TaskTagsRow } from "../board/TaskTagsRow";
+import { TaskTagsRow } from "./TaskTagsRow";
 import {
   TaskActionButton,
   useTaskActionButton,
@@ -19,16 +19,31 @@ import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
 import { useTaskViewFields } from "../views/hooks";
 import { NumberOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { SubtaskList } from "../list/SubtaskList";
+import { useSubtasksExpanded } from "@dewo/app/contexts/SubtasksExpandedContext";
 
 interface TaskCardProps {
   task: Task | TaskWithOrganization;
   style?: CSSProperties;
   showReview?: boolean;
+  recalculateRowHeight?: () => void;
 }
 
-export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
+export const TaskCard: FC<TaskCardProps> = ({
+  task,
+  style,
+  showReview,
+  recalculateRowHeight,
+}) => {
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchProps = usePrefetchTaskDetailsOnHover(task.id);
+
+  const subtasks = useSubtasksExpanded(task.id);
+  const toggleSubtasks = subtasks.toggle;
+  const handleToggleSubtasks = useCallback(() => {
+    toggleSubtasks();
+    recalculateRowHeight?.();
+  }, [toggleSubtasks, recalculateRowHeight]);
 
   const fields = useTaskViewFields();
   const taskTagsRowFields = useMemo(
@@ -40,6 +55,7 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
   const shouldRenderReactions = !!task.reactions.length;
   const shouldRenderTaskActionButton =
     !!useTaskActionButton(task) && fields.has(TaskViewField.button);
+
   return (
     <Card
       size="small"
@@ -113,6 +129,8 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
         style={{ marginTop: 4 }}
         skills="emoji"
         fields={taskTagsRowFields}
+        expanded={subtasks.expanded}
+        onToggleSubtasks={handleToggleSubtasks}
       />
       {fields.has(TaskViewField.createdAt) && (
         <Typography.Text type="secondary" className="ant-typography-caption">
@@ -134,6 +152,9 @@ export const TaskCard: FC<TaskCardProps> = ({ task, style, showReview }) => {
             <Typography.Text>{task.review?.message}</Typography.Text>
           </Row>
         </>
+      )}
+      {subtasks.expanded && !!task.subtasks.length && (
+        <SubtaskList subtasks={task.subtasks} style={{ marginTop: 16 }} />
       )}
     </Card>
   );

@@ -7,7 +7,7 @@ import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Avatar, Button, Card, Col, Row, Tooltip, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { TaskBoardColumnEmpty } from "../../task/board/TaskBoardColumnEmtpy";
-import { TaskTagsRow } from "../../task/board/TaskTagsRow";
+import { TaskTagsRow } from "../../task/card/TaskTagsRow";
 import { useCreateTaskReaction, useDeleteTaskReaction } from "../../task/hooks";
 import { TaskRow } from "./CommunitySuggestions";
 import * as Icons from "@ant-design/icons";

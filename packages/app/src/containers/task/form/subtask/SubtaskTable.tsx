@@ -32,7 +32,7 @@ import {
   useUpdateTask,
 } from "../../hooks";
 import { NewSubtaskInput } from "./NewSubtaskInput";
-import { TaskTagsRow } from "../../board/TaskTagsRow";
+import { TaskTagsRow } from "../../card/TaskTagsRow";
 import { TaskActionButton } from "../../actions/TaskActionButton";
 import { SubtaskOptionButton } from "./SubtaskOptionButton";
 import { TaskStatusDropdown } from "@dewo/app/components/form/TaskStatusDropdown";

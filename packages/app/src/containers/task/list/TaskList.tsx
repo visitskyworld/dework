@@ -1,7 +1,6 @@
 import { Button, Grid, Row, Skeleton } from "antd";
 import React, { CSSProperties, FC, useMemo, useRef, useState } from "react";
 import { TaskStatus } from "@dewo/app/graphql/types";
-import { TaskListItem } from "../../task/list/TaskListItem";
 import {
   TaskViewGroupHeader,
   TaskViewGroupHeaderExtra,
@@ -13,12 +12,13 @@ import {
   CellMeasurer,
   CellMeasurerCache,
 } from "react-virtualized";
-import { TaskCard } from "../card/TaskCard";
 import { useTaskViewContext } from "../views/TaskViewContext";
 import {
   useRecalculateVirtualizedListRowHeight,
   VirtualizedListRow,
 } from "./useRecalculateVirtualizedListRowHeight";
+import { TaskCard } from "../card/TaskCard";
+import { TaskListItem } from "./TaskListItem";
 
 interface Props {
   showHeaders?: boolean;
@@ -43,6 +43,8 @@ export const TaskList: FC<Props> = ({
     []
   );
 
+  const recalculateRowHeight = useRef<(id: string) => void>();
+
   const screen = Grid.useBreakpoint();
   const rows = useMemo<VirtualizedListRow[]>(
     () =>
@@ -51,7 +53,7 @@ export const TaskList: FC<Props> = ({
           const status = items[index].value as TaskStatus;
           return [
             {
-              id: `header:${status}`,
+              key: `header:${status}`,
               hidden: !showHeaders,
               render: () => (
                 <Row style={{ padding: 12 }}>
@@ -74,16 +76,29 @@ export const TaskList: FC<Props> = ({
             },
             ...(d.tasks ?? []).map((task) => ({
               id: task.id,
+              key: JSON.stringify(task),
               hidden: !!collapsed[status],
               render: () =>
-                screen.sm ? (
-                  <TaskListItem key={task.id} task={task} />
+                screen.lg ? (
+                  <TaskListItem
+                    key={task.id}
+                    task={task}
+                    recalculateRowHeight={() =>
+                      recalculateRowHeight.current?.(task.id)
+                    }
+                  />
                 ) : (
-                  <TaskCard task={task} style={{ marginBottom: 8 }} />
+                  <TaskCard
+                    task={task}
+                    style={{ marginBottom: 8 }}
+                    recalculateRowHeight={() =>
+                      recalculateRowHeight.current?.(task.id)
+                    }
+                  />
                 ),
             })),
             {
-              id: `load-more:${status}`,
+              key: `load-more:${status}`,
               hidden: !!collapsed[status] || !d.hasMore || !d.tasks,
               render: () => (
                 <Button block type="text" onClick={d.fetchMore}>
@@ -92,7 +107,7 @@ export const TaskList: FC<Props> = ({
               ),
             },
             {
-              id: `loading:${status}`,
+              key: `loading:${status}`,
               hidden: !d.loading,
               render: () => <Skeleton />,
             },
@@ -100,10 +115,11 @@ export const TaskList: FC<Props> = ({
         })
         .flat()
         .filter((r) => !r.hidden),
-    [data, collapsed, items, projectId, showHeaders, screen.sm]
+    [data, collapsed, items, projectId, showHeaders, screen.lg]
   );
 
-  useRecalculateVirtualizedListRowHeight(cache, list, rows);
+  const fns = useRecalculateVirtualizedListRowHeight(cache, list, rows);
+  recalculateRowHeight.current = fns.recalculateRowHeight;
 
   return (
     <AutoSizer>

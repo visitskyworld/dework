@@ -8,7 +8,7 @@ import {
   TaskViewType,
   TaskViewFilterType,
 } from "@dewo/app/graphql/types";
-import { useRunning } from "@dewo/app/util/hooks";
+import { useRerender, useRunning } from "@dewo/app/util/hooks";
 import styles from "./TaskViewForm.module.less";
 import { TaskViewFormFilterList } from "./TaskViewFormFilterList";
 import { TaskViewFormSortByList } from "./TaskViewFormSortByList";
@@ -60,10 +60,13 @@ export const TaskViewForm: FC<Props> = ({
   onChange,
   canCreate,
 }) => {
+  const rerender = useRerender();
   const handleChange = useCallback(
-    (_changed: Partial<FormValues>, values: FormValues) =>
-      onChange?.(toOutputValue(values)),
-    [onChange]
+    (_changed: Partial<FormValues>, values: FormValues) => {
+      rerender();
+      onChange?.(toOutputValue(values));
+    },
+    [onChange, rerender]
   );
   const [handleSubmit, submitting] = useRunning(
     useCallback(
