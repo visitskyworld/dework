@@ -11,11 +11,12 @@ import styles from "./TaskListItem.module.less";
 import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnHover";
 import { NumberOutlined } from "@ant-design/icons";
 import { useTaskViewFields } from "../views/hooks";
-import { TaskStatusDropdown } from "../../../components/form/TaskStatusDropdown";
 import moment from "moment";
 import { useUpdateTask } from "../hooks";
+import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { SubtaskList } from "./SubtaskList";
 import { useSubtasksExpanded } from "@dewo/app/contexts/SubtasksExpandedContext";
+import { TaskStatusDropdown } from "@dewo/app/components/form/TaskStatusDropdown";
 
 interface Props {
   task: Task;
@@ -32,6 +33,7 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
     (status: TaskStatus) => updateTask({ id: task.id, status }, task),
     [updateTask, task]
   );
+  const canChange = usePermission("update", task, "status");
 
   const subtasks = useSubtasksExpanded(task.id);
   const toggleSubtasks = subtasks.toggle;
@@ -50,7 +52,11 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
     >
       <Row align="middle" style={{ columnGap: 16 }}>
         {fields.has(TaskViewField.status) && (
-          <TaskStatusDropdown task={task} onChange={updateStatus} />
+          <TaskStatusDropdown
+            status={task.status}
+            disabled={!canChange}
+            onChange={updateStatus}
+          />
         )}
         {fields.has(TaskViewField.gating) && <TaskGatingIcon task={task} />}
         {fields.has(TaskViewField.number) && (

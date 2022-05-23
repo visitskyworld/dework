@@ -219,13 +219,13 @@ export const SubtaskTable: FC<Props> = ({
           key: "status",
           dataIndex: "status",
           width: 1,
-          render: (_currentStatus: TaskStatus, row) =>
-            !!row.task && (
-              <TaskStatusDropdown
-                task={row.task}
-                onChange={(status) => handleChange({ status }, row)}
-              />
-            ),
+          render: (status: TaskStatus, row) => (
+            <TaskStatusDropdown
+              status={status}
+              disabled={!canChange(row.task, "status")}
+              onChange={(status) => handleChange({ status }, row)}
+            />
+          ),
           defaultSortOrder: defaultSortByStatus ? "ascend" : undefined,
           sorter: (a, b) =>
             statuses.indexOf(a.status) - statuses.indexOf(b.status),
