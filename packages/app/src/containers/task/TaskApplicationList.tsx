@@ -83,7 +83,7 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
                           })
                         }
                       >
-                        Remove
+                        Reject
                       </Button>
                     )}
                   </Space>,

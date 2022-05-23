@@ -147,7 +147,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
                 className="text-secondary"
                 onClick={() => handleDelete(submission)}
               >
-                Remove
+                Reject
               </Button>
             </Space>
           ),
