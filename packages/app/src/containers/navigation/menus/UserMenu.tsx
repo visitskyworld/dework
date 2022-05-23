@@ -64,6 +64,11 @@ export const UserMenu: FC = () => {
           {
             label: "My Task Board",
             icon: <Icons.ProjectOutlined />,
+            key: `${new URL(user.permalink).pathname}/board`,
+          },
+          {
+            label: "Profile",
+            icon: <Icons.UserOutlined />,
             key: new URL(user.permalink).pathname,
           },
         ]}
