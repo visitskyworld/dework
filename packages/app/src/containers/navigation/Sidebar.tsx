@@ -113,7 +113,8 @@ export const Sidebar: FC = () => {
   }, [isDesktop, router.events, toggleOn]);
 
   if (isEmbedded) return null;
-  if (!user && router.route === "/") return null;
+  if (!user && ["/", "/bounties", "/recommended"].includes(router.route))
+    return null;
   if (router.route.startsWith("/apps/") || router.route.startsWith("/auth/")) {
     return null;
   }

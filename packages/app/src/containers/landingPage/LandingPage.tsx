@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { PageHeader, Tabs, Typography } from "antd";
 import { TaskUpdateModalListener } from "../task/TaskUpdateModal";
 import { ProjectDiscoveryList } from "../discovery/ProjectDiscoveryList";
@@ -8,17 +8,32 @@ import { RecommendedDAOsList } from "../discovery/RecommendedDAOsList";
 import { ThreepidSource } from "@dewo/app/graphql/types";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { ThreepidAuthButton } from "../auth/buttons/ThreepidAuthButton";
+import { useRouter } from "next/router";
 
-export const LandingPage: FC = () => {
+interface Props {
+  currentTab?: string;
+}
+export const LandingPage: FC<Props> = ({ currentTab = "projects" }) => {
   const { user } = useAuthContext();
   const isConnectedToDiscord = useMemo(
     () => !!user?.threepids.some((t) => t.source === ThreepidSource.discord),
     [user]
   );
+  const router = useRouter();
+  const navigateToTab = useCallback(
+    (tab: string) => router.push(tab === "projects" ? "/" : `/${tab}`),
+    [router]
+  );
+
   return (
     <>
       <PageHeader />
-      <Tabs centered className={styles.tabs}>
+      <Tabs
+        centered
+        className={styles.tabs}
+        onTabClick={navigateToTab}
+        activeKey={currentTab}
+      >
         <Tabs.TabPane tab="🌍 Popular DAOs" key="projects">
           <ProjectDiscoveryList />
         </Tabs.TabPane>
