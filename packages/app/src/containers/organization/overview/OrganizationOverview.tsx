@@ -105,7 +105,7 @@ export const OrganizationOverview: FC<Props> = ({ organizationId }) => {
               ))}
             </Avatar.Group>
           </Row>
-          <OrganizationPublicInviteButton />
+          <OrganizationPublicInviteButton organizationId={organizationId} />
 
           <Divider />
 
