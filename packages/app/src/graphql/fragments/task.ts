@@ -52,5 +52,6 @@ export const subtask = gql`
     id
     name
     status
+    sortKey
   }
 `;

@@ -460,6 +460,16 @@ export function useTaskViewLayoutData(
     observables.forEach((o) => o.subscribe(forceUpdate));
   }, [observables, forceUpdate]);
 
+  useEffect(() => {
+    observables.forEach((o) => {
+      const res = o.getCurrentResult();
+      if (!!res.data) {
+        o.refetch();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return useMemo(
     () =>
       observables.map((obs) => {
@@ -472,7 +482,7 @@ export function useTaskViewLayoutData(
           cursor: res.data?.paginated.cursor ?? undefined,
           total: res.data?.paginated.total ?? undefined,
           hasMore: !res.data || !!res.data.paginated.cursor,
-          loading: res.loading || fetchingMore[obs.queryId],
+          loading: (res.loading && !res.data) || fetchingMore[obs.queryId],
           fetchMore: async () => {
             if (!!res.data?.paginated.cursor) {
               setFetchingMore((prev) => ({ ...prev, [obs.queryId]: true }));
