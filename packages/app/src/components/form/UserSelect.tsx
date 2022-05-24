@@ -1,5 +1,5 @@
 import { User } from "@dewo/app/graphql/types";
-import { Avatar, Select, Typography } from "antd";
+import { Avatar, Select, SelectProps, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import { UserSelectOption } from "./UserSelectOption";
@@ -15,6 +15,7 @@ interface Props {
   showUnassigned?: boolean;
   onChange?(value: string[]): void;
   onClear?(): void;
+  dropdownRender?: SelectProps["dropdownRender"];
 }
 
 export const UserSelect: FC<Props> = ({
@@ -27,6 +28,7 @@ export const UserSelect: FC<Props> = ({
   showUnassigned,
   onChange,
   onClear,
+  dropdownRender,
 }) => {
   const unassigned = (
     <>
@@ -48,6 +50,7 @@ export const UserSelect: FC<Props> = ({
       value={value}
       onChange={onChange}
       onClear={onClear}
+      dropdownRender={dropdownRender}
       tagRender={(props) => {
         if (props.value === null) return unassigned;
         const user = users?.find((u) => u.id === props.value);

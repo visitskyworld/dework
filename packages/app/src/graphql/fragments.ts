@@ -204,6 +204,11 @@ export const invite = gql`
         ...ProjectTokenGate
       }
     }
+    task {
+      id
+      name
+      permalink
+    }
     permission
   }
 

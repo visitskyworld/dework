@@ -5,6 +5,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { RbacModule } from "../rbac/rbac.module";
+import { TaskModule } from "../task/task.module";
 import { InviteResolver } from "./invite.resolver";
 import { InviteService } from "./invite.service";
 
@@ -13,6 +14,7 @@ import { InviteService } from "./invite.service";
     TypeOrmModule.forFeature([User, Invite, Project]),
     PermalinkModule,
     RbacModule,
+    TaskModule,
   ],
   providers: [InviteResolver, InviteService],
   exports: [InviteService],

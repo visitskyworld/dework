@@ -25,7 +25,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     if (data?.invite) {
-      const { organization, project, id } = data.invite;
+      const { organization, project, task, id } = data.invite;
+      if (!!task) {
+        return {
+          redirect: {
+            destination: `${task.permalink}&inviteId=${id}`,
+            permanent: false,
+          },
+        };
+      }
       if (!!project) {
         return {
           redirect: {

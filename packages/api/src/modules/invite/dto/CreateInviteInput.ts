@@ -10,6 +10,9 @@ export class CreateInviteInput {
   @Field(() => GraphQLUUID, { nullable: true })
   public projectId?: string;
 
+  @Field(() => GraphQLUUID, { nullable: true })
+  public taskId?: string;
+
   @Field(() => RulePermission)
   public permission!: RulePermission;
 }

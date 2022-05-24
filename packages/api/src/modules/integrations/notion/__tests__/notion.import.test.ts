@@ -129,7 +129,7 @@ function helloWorld() {
               status: TaskStatus.IN_PROGRESS,
               tags: [],
               description: expect.stringContaining(
-                "Originally created from Notion task: https://www.notion.so/Card-2-c5c27d253e334bc1818fedbd32fceb2f"
+                "Originally created from Notion task: <https://www.notion.so/Card-2-c5c27d253e334bc1818fedbd32fceb2f>"
               ),
             }),
             expect.objectContaining({
@@ -137,7 +137,7 @@ function helloWorld() {
               status: TaskStatus.TODO,
               tags: [],
               description: expect.stringContaining(
-                "Originally created from Notion task: https://www.notion.so/Card-3-45d0d3713e994e2b89fef1e51cb836a5"
+                "Originally created from Notion task: <https://www.notion.so/Card-3-45d0d3713e994e2b89fef1e51cb836a5>"
               ),
             }),
             expect.objectContaining({
@@ -145,7 +145,7 @@ function helloWorld() {
               status: TaskStatus.TODO,
               tags: [],
               description: expect.stringContaining(
-                "Originally created from Notion task: https://www.notion.so/Card-4-3657a35a859a4d43aa5ec90bf3d86a89"
+                "Originally created from Notion task: <https://www.notion.so/Card-4-3657a35a859a4d43aa5ec90bf3d86a89>"
               ),
             }),
           ]),

@@ -9619,6 +9619,13 @@ export interface GetInviteQuery_invite_project {
   tokenGates: GetInviteQuery_invite_project_tokenGates[];
 }
 
+export interface GetInviteQuery_invite_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
 export interface GetInviteQuery_invite {
   __typename: "Invite";
   id: Scalar.UUID;
@@ -9626,6 +9633,7 @@ export interface GetInviteQuery_invite {
   inviter: GetInviteQuery_invite_inviter;
   organization: GetInviteQuery_invite_organization | null;
   project: GetInviteQuery_invite_project | null;
+  task: GetInviteQuery_invite_task | null;
   permission: RulePermission;
 }
 
@@ -11665,6 +11673,13 @@ export interface Invite_project {
   tokenGates: Invite_project_tokenGates[];
 }
 
+export interface Invite_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
 export interface Invite {
   __typename: "Invite";
   id: Scalar.UUID;
@@ -11672,6 +11687,7 @@ export interface Invite {
   inviter: Invite_inviter;
   organization: Invite_organization | null;
   project: Invite_project | null;
+  task: Invite_task | null;
   permission: RulePermission;
 }
 
@@ -13911,6 +13927,7 @@ export interface CreateHiroThreepidInput {
 export interface CreateInviteInput {
   organizationId?: Scalar.UUID | null;
   projectId?: Scalar.UUID | null;
+  taskId?: Scalar.UUID | null;
   permission: RulePermission;
 }
 

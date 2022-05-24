@@ -218,6 +218,37 @@ describe("InviteResolver", () => {
           expect(ability.can("create", TaskReaction)).toBe(true);
         });
       });
+
+      describe("task", () => {
+        it("should assign user to task when accepting invite", async () => {
+          const { user: inviter, project } =
+            await fixtures.createUserOrgProject();
+          const invited = await fixtures.createUser();
+          const task = await fixtures.createTask({ projectId: project.id });
+
+          const invite = await fixtures.createInvite(
+            { taskId: task.id, permission: RulePermission.VIEW_PROJECTS },
+            inviter
+          );
+
+          const response = await client.request({
+            app,
+            auth: fixtures.createAuthToken(invited),
+            body: InviteRequests.accept(invite.id),
+          });
+
+          expect(response.status).toEqual(HttpStatus.OK);
+          const fetchedInvite = response.body.data?.invite;
+          expect(fetchedInvite.task.project.organization.users).toContainEqual(
+            expect.objectContaining({ id: invited.id })
+          );
+
+          const updatedTask = await fixtures.getTask(task.id);
+          expect(updatedTask?.assignees).toContainEqual(
+            expect.objectContaining({ id: invited.id })
+          );
+        });
+      });
     });
   });
 });

@@ -30,20 +30,31 @@ export class InviteRequests {
           invite: acceptInvite(id: $inviteId) {
             id
             organization {
-              id
-              users {
-                id
-              }
+              ...Organization
             }
             project {
+              ...Project
+            }
+            task {
               id
-              organization {
-                id
-                users {
-                  id
-                }
+              project {
+                ...Project
               }
             }
+          }
+        }
+
+        fragment Organization on Organization {
+          id
+          users {
+            id
+          }
+        }
+
+        fragment Project on Project {
+          id
+          organization {
+            ...Organization
           }
         }
       `,

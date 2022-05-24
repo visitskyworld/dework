@@ -89,6 +89,16 @@ export const InviteMessageToast: FC = () => {
       );
     }
 
+    if (!!invite.task) {
+      return (
+        <InviteMessage
+          inviter={inviter}
+          permission="claim"
+          to={invite.task.name}
+        />
+      );
+    }
+
     return `${inviter} has invited you to Dework`;
   }, [invite]);
 

@@ -16,8 +16,9 @@ import { Invite } from "@dewo/api/models/Invite";
 import { ProjectService } from "../project/project.service";
 import { PermalinkService } from "../permalink/permalink.service";
 import { RoleGuard } from "../rbac/rbac.guard";
-import { Role } from "@dewo/api/models/rbac/Role";
 import { CreateInviteInput } from "./dto/CreateInviteInput";
+import { TaskService } from "../task/task.service";
+import { Rule } from "@dewo/api/models/rbac/Rule";
 
 @Resolver(() => Invite)
 @Injectable()
@@ -40,25 +41,40 @@ export class InviteResolver {
     AuthGuard,
     RoleGuard({
       action: "create",
-      subject: Role,
-      inject: [ProjectService],
+      subject: Rule,
+      inject: [ProjectService, TaskService],
+      getSubject: (params: { input: CreateInviteInput }) =>
+        Object.assign(new Rule(), params.input),
       getOrganizationId: async (
-        _subject,
+        subject,
         params: { input: CreateInviteInput },
-        service
+        projectService: ProjectService,
+        taskService: TaskService
       ) => {
+        if (
+          !params.input.taskId &&
+          !params.input.projectId &&
+          !params.input.organizationId
+        ) {
+          throw new Error(
+            'Invite must have either "organizationId", "projectId" or "taskId"'
+          );
+        }
+
         if (!!params.input.organizationId) {
           return params.input.organizationId;
         }
 
         if (!!params.input.projectId) {
-          const project = await service.findById(params.input.projectId);
+          const project = await projectService.findById(params.input.projectId);
           return project?.organizationId;
         }
 
-        throw new Error(
-          'Invite must have either "organizationId" or "projectId"'
-        );
+        if (!!params.input.taskId) {
+          const task = await taskService.findById(params.input.taskId);
+          const project = await task?.project;
+          return project?.organizationId;
+        }
       },
     })
   )

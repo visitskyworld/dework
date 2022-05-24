@@ -5,13 +5,15 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { RbacService } from "../rbac/rbac.service";
+import { TaskService } from "../task/task.service";
 
 @Injectable()
 export class InviteService {
   constructor(
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
-    private readonly rbacService: RbacService
+    private readonly rbacService: RbacService,
+    private readonly taskService: TaskService
   ) {}
 
   public async create(
@@ -37,8 +39,12 @@ export class InviteService {
 
     const permissions = this.getRulesByInvitePermission(invite.permission);
     if (!!permissions) {
+      const [task, project] = await Promise.all([invite.task, invite.project]);
       const organizationId =
-        invite.organizationId ?? (await invite.project)?.organizationId;
+        invite.organizationId ??
+        project?.organizationId ??
+        (await task?.project)?.organizationId;
+      const projectId = project?.id ?? task?.projectId;
       if (!organizationId) throw new NotFoundException();
 
       const fallbackRole = await this.rbacService.getFallbackRole(
@@ -60,14 +66,18 @@ export class InviteService {
         );
       }
 
-      if (!!invite.projectId) {
+      if (!!projectId) {
         await this.rbacService.createRules(
           permissions.map((permission) => ({
             roleId: role.id,
             permission,
-            projectId: invite.projectId,
+            projectId,
           }))
         );
+      }
+
+      if (!!invite.taskId) {
+        await this.taskService.update({ id: invite.taskId, assignees: [user] });
       }
     }
 

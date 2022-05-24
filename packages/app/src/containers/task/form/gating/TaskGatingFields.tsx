@@ -1,5 +1,5 @@
-import { Checkbox, Form, Row, Select, Tag } from "antd";
-import React, { FC, ReactNode, useMemo } from "react";
+import { Button, Checkbox, Form, Row, Select, Tag } from "antd";
+import React, { FC, ReactNode, useCallback, useMemo } from "react";
 import * as Icons from "@ant-design/icons";
 import { TaskRoleSelectField } from "./TaskRoleSelectField";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -13,6 +13,11 @@ import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { ApplicationIcon } from "@dewo/app/components/icons/task/Application";
 import { ContestIcon } from "@dewo/app/components/icons/task/Contest";
 import { ClaimableIcon } from "@dewo/app/components/icons/task/Claimable";
+import {
+  useCopyToClipboardAndShowToast,
+  useRunning,
+} from "@dewo/app/util/hooks";
+import { useCreateInvite } from "@dewo/app/containers/invite/hooks";
 
 const labels: Record<TaskGatingType, string> = {
   [TaskGatingType.ASSIGNEES]: "Assign someone",
@@ -65,6 +70,20 @@ export const TaskGatingFields: FC<Props> = ({
   const assigneeOptions = useTaskFormUserOptions(
     projectId,
     useMemo(() => task?.assignees ?? [], [task?.assignees])
+  );
+
+  const copyToClipboardAndShowToast =
+    useCopyToClipboardAndShowToast("Invite link copied");
+  const createInvite = useCreateInvite();
+  const [inviteToTask, inviting] = useRunning(
+    useCallback(async () => {
+      if (!task) return;
+      const inviteLink = await createInvite({
+        taskId: task.id,
+        permission: RulePermission.VIEW_PROJECTS,
+      });
+      copyToClipboardAndShowToast(inviteLink);
+    }, [createInvite, copyToClipboardAndShowToast, task])
   );
 
   const shouldShowDefault = useMemo(() => {
@@ -147,6 +166,23 @@ export const TaskGatingFields: FC<Props> = ({
             disabled={!canChangeAssignees}
             mode="multiple"
             users={assigneeOptions}
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                {!!task && (
+                  <Button
+                    block
+                    type="text"
+                    style={{ textAlign: "left", marginTop: 4 }}
+                    className="text-secondary"
+                    loading={inviting}
+                    icon={<Icons.LinkOutlined />}
+                    children="Invite contributor by link"
+                    onClick={inviteToTask}
+                  />
+                )}
+              </>
+            )}
           />
         </Form.Item>
       )}
