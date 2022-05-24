@@ -46,7 +46,7 @@ export class InviteResolver {
       getSubject: (params: { input: CreateInviteInput }) =>
         Object.assign(new Rule(), params.input),
       getOrganizationId: async (
-        subject,
+        _subject,
         params: { input: CreateInviteInput },
         projectService: ProjectService,
         taskService: TaskService
