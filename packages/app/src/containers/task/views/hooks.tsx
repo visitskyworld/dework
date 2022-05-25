@@ -460,15 +460,15 @@ export function useTaskViewLayoutData(
     observables.forEach((o) => o.subscribe(forceUpdate));
   }, [observables, forceUpdate]);
 
-  useEffect(() => {
-    observables.forEach((o) => {
-      const res = o.getCurrentResult();
-      if (!!res.data) {
-        o.refetch();
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   observables.forEach((o) => {
+  //     const res = o.getCurrentResult();
+  //     if (!!res.data) {
+  //       o.refetch();
+  //     }
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return useMemo(
     () =>
