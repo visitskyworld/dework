@@ -1,6 +1,8 @@
 import gql from "graphql-tag";
 import * as Fragments from "./fragments";
 import { network, paymentMethod, token } from "./fragments/payment";
+import { project } from "./fragments/project";
+import { user } from "./fragments/user";
 
 export const authWithThreepid = gql`
   mutation AuthWithThreepidMutation($threepidId: UUID!) {
@@ -377,7 +379,7 @@ export const setUserDetail = gql`
     }
   }
 
-  ${Fragments.user}
+  ${user}
   ${Fragments.entityDetail}
 `;
 
@@ -456,7 +458,7 @@ export const acceptInvite = gql`
     }
   }
 
-  ${Fragments.user}
+  ${user}
 `;
 
 export const joinProjectWithToken = gql`
@@ -466,7 +468,7 @@ export const joinProjectWithToken = gql`
     }
   }
 
-  ${Fragments.project}
+  ${project}
 `;
 
 export const createPaymentMethod = gql`

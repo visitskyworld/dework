@@ -16,6 +16,7 @@ import { EntityDetail } from "./EntityDetail";
 import { Workspace } from "./Workspace";
 import { Role } from "./rbac/Role";
 import { TaskView } from "./TaskView";
+import { FundingSession } from "./funding/FundingSession";
 
 @Entity()
 @ObjectType()
@@ -57,6 +58,10 @@ export class Organization extends Audit {
   @OneToMany(() => Workspace, (x: Workspace) => x.organization)
   @Field(() => [Workspace])
   public workspaces!: Promise<Workspace[]>;
+
+  @OneToMany(() => FundingSession, (x: FundingSession) => x.organization)
+  @Field(() => [FundingSession])
+  public fundingSessions!: Promise<FundingSession[]>;
 
   @OneToMany(() => EntityDetail, (d: EntityDetail) => d.organization)
   @Field(() => [EntityDetail])

@@ -529,6 +529,32 @@ export interface UpdateOrganizationMutation_organization_taskViews {
   sortBys: UpdateOrganizationMutation_organization_taskViews_sortBys[];
 }
 
+export interface UpdateOrganizationMutation_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface UpdateOrganizationMutation_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: UpdateOrganizationMutation_organization_fundingSessions_token;
+}
+
 export interface UpdateOrganizationMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -544,6 +570,7 @@ export interface UpdateOrganizationMutation_organization {
   details: UpdateOrganizationMutation_organization_details[];
   projectTokenGates: UpdateOrganizationMutation_organization_projectTokenGates[];
   taskViews: UpdateOrganizationMutation_organization_taskViews[];
+  fundingSessions: UpdateOrganizationMutation_organization_fundingSessions[];
 }
 
 export interface UpdateOrganizationMutation {
@@ -776,6 +803,32 @@ export interface CreateProjectMutation_project_organization_taskViews {
   sortBys: CreateProjectMutation_project_organization_taskViews_sortBys[];
 }
 
+export interface CreateProjectMutation_project_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectMutation_project_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateProjectMutation_project_organization_fundingSessions_token;
+}
+
 export interface CreateProjectMutation_project_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -791,6 +844,7 @@ export interface CreateProjectMutation_project_organization {
   details: CreateProjectMutation_project_organization_details[];
   projectTokenGates: CreateProjectMutation_project_organization_projectTokenGates[];
   taskViews: CreateProjectMutation_project_organization_taskViews[];
+  fundingSessions: CreateProjectMutation_project_organization_fundingSessions[];
 }
 
 export interface CreateProjectMutation_project_taskSections {
@@ -1111,6 +1165,7 @@ export interface CreateTaskMutation_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTaskMutation_task_tags {
@@ -1217,8 +1272,8 @@ export interface CreateTaskMutation_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskMutation_task_reward_token;
   payments: CreateTaskMutation_task_reward_payments[];
 }
@@ -1255,6 +1310,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_tags {
@@ -1361,8 +1417,8 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskMutation_task_parentTask_subtasks_reward_token;
   payments: CreateTaskMutation_task_parentTask_subtasks_reward_payments[];
 }
@@ -1483,6 +1539,7 @@ export interface UpdateTaskMutation_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface UpdateTaskMutation_task_tags {
@@ -1589,8 +1646,8 @@ export interface UpdateTaskMutation_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: UpdateTaskMutation_task_reward_token;
   payments: UpdateTaskMutation_task_reward_payments[];
 }
@@ -1682,6 +1739,7 @@ export interface CreateTaskApplicationMutation_application_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_tags {
@@ -1788,8 +1846,8 @@ export interface CreateTaskApplicationMutation_application_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskApplicationMutation_application_task_reward_token;
   payments: CreateTaskApplicationMutation_application_task_reward_payments[];
 }
@@ -1886,6 +1944,7 @@ export interface DeleteTaskApplicationMutation_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface DeleteTaskApplicationMutation_task_tags {
@@ -1992,8 +2051,8 @@ export interface DeleteTaskApplicationMutation_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: DeleteTaskApplicationMutation_task_reward_token;
   payments: DeleteTaskApplicationMutation_task_reward_payments[];
 }
@@ -2077,6 +2136,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
@@ -2183,8 +2243,8 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token;
   payments: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments[];
 }
@@ -2274,6 +2334,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
@@ -2380,8 +2441,8 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token;
   payments: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments[];
 }
@@ -3254,6 +3315,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_tags {
@@ -3360,8 +3422,8 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskPaymentsMutation_tasks_subtasks_reward_token;
   payments: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments[];
 }
@@ -3398,9 +3460,9 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -3527,8 +3589,8 @@ export interface CreateTaskPaymentsMutation_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTaskPaymentsMutation_tasks_reward_token;
   payments: CreateTaskPaymentsMutation_tasks_reward_payments[];
 }
@@ -3789,6 +3851,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_subtasks_tags {
@@ -3895,8 +3958,8 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: ClearTaskPaymentsMutation_tasks_subtasks_reward_token;
   payments: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments[];
 }
@@ -3933,9 +3996,9 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -4062,8 +4125,8 @@ export interface ClearTaskPaymentsMutation_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: ClearTaskPaymentsMutation_tasks_reward_token;
   payments: ClearTaskPaymentsMutation_tasks_reward_payments[];
 }
@@ -4363,6 +4426,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_tags {
@@ -4469,8 +4533,8 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: CreateTasksFromGithubIssuesMutation_project_tasks_reward_token;
   payments: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments[];
 }
@@ -4698,6 +4762,32 @@ export interface CreateProjectsFromNotionMutation_organization_taskViews {
   sortBys: CreateProjectsFromNotionMutation_organization_taskViews_sortBys[];
 }
 
+export interface CreateProjectsFromNotionMutation_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromNotionMutation_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateProjectsFromNotionMutation_organization_fundingSessions_token;
+}
+
 export interface CreateProjectsFromNotionMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4713,6 +4803,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   details: CreateProjectsFromNotionMutation_organization_details[];
   projectTokenGates: CreateProjectsFromNotionMutation_organization_projectTokenGates[];
   taskViews: CreateProjectsFromNotionMutation_organization_taskViews[];
+  fundingSessions: CreateProjectsFromNotionMutation_organization_fundingSessions[];
 }
 
 export interface CreateProjectsFromNotionMutation {
@@ -4840,6 +4931,32 @@ export interface CreateProjectsFromTrelloMutation_organization_taskViews {
   sortBys: CreateProjectsFromTrelloMutation_organization_taskViews_sortBys[];
 }
 
+export interface CreateProjectsFromTrelloMutation_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromTrelloMutation_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateProjectsFromTrelloMutation_organization_fundingSessions_token;
+}
+
 export interface CreateProjectsFromTrelloMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4855,6 +4972,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   details: CreateProjectsFromTrelloMutation_organization_details[];
   projectTokenGates: CreateProjectsFromTrelloMutation_organization_projectTokenGates[];
   taskViews: CreateProjectsFromTrelloMutation_organization_taskViews[];
+  fundingSessions: CreateProjectsFromTrelloMutation_organization_fundingSessions[];
 }
 
 export interface CreateProjectsFromTrelloMutation {
@@ -4982,6 +5100,32 @@ export interface CreateProjectsFromGithubMutation_organization_taskViews {
   sortBys: CreateProjectsFromGithubMutation_organization_taskViews_sortBys[];
 }
 
+export interface CreateProjectsFromGithubMutation_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateProjectsFromGithubMutation_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateProjectsFromGithubMutation_organization_fundingSessions_token;
+}
+
 export interface CreateProjectsFromGithubMutation_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -4997,6 +5141,7 @@ export interface CreateProjectsFromGithubMutation_organization {
   details: CreateProjectsFromGithubMutation_organization_details[];
   projectTokenGates: CreateProjectsFromGithubMutation_organization_projectTokenGates[];
   taskViews: CreateProjectsFromGithubMutation_organization_taskViews[];
+  fundingSessions: CreateProjectsFromGithubMutation_organization_fundingSessions[];
 }
 
 export interface CreateProjectsFromGithubMutation {
@@ -5040,6 +5185,7 @@ export interface UpdateOrganizationRolesDiscordMutation_organization_roles_rules
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface UpdateOrganizationRolesDiscordMutation_organization_roles {
@@ -5160,6 +5306,7 @@ export interface CreateRoleMutation_role_rules {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface CreateRoleMutation_role {
@@ -5296,6 +5443,7 @@ export interface CreateRuleMutation_rule_role_rules {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface CreateRuleMutation_rule_role {
@@ -5317,6 +5465,7 @@ export interface CreateRuleMutation_rule {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
   role: CreateRuleMutation_rule_role;
 }
 
@@ -5344,6 +5493,7 @@ export interface DeleteRuleMutation_role_rules {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface DeleteRuleMutation_role {
@@ -5401,6 +5551,315 @@ export interface SetTaskGatingDefault {
 
 export interface SetTaskGatingDefaultVariables {
   input: TaskGatingDefaultInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateFundingSessionMutation
+// ====================================================
+
+export interface CreateFundingSessionMutation_session_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateFundingSessionMutation_session_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateFundingSessionMutation_session_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateFundingSessionMutation_session_organization_fundingSessions_token;
+}
+
+export interface CreateFundingSessionMutation_session_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  fundingSessions: CreateFundingSessionMutation_session_organization_fundingSessions[];
+}
+
+export interface CreateFundingSessionMutation_session {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CreateFundingSessionMutation_session_token;
+  organization: CreateFundingSessionMutation_session_organization;
+}
+
+export interface CreateFundingSessionMutation {
+  session: CreateFundingSessionMutation_session;
+}
+
+export interface CreateFundingSessionMutationVariables {
+  input: CreateFundingSessionInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: SetFundingVoteMutation
+// ====================================================
+
+export interface SetFundingVoteMutation_vote_session_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface SetFundingVoteMutation_vote_session_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_voters {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface SetFundingVoteMutation_vote_session_rewards_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_rewards_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  parentTask: SetFundingVoteMutation_vote_session_rewards_task_parentTask | null;
+}
+
+export interface SetFundingVoteMutation_vote_session_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  token: SetFundingVoteMutation_vote_session_rewards_token;
+  task: SetFundingVoteMutation_vote_session_rewards_task;
+}
+
+export interface SetFundingVoteMutation_vote_session {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: SetFundingVoteMutation_vote_session_token;
+  votes: SetFundingVoteMutation_vote_session_votes[];
+  voters: SetFundingVoteMutation_vote_session_voters[];
+  projects: SetFundingVoteMutation_vote_session_projects[];
+  rewards: SetFundingVoteMutation_vote_session_rewards[];
+}
+
+export interface SetFundingVoteMutation_vote {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+  session: SetFundingVoteMutation_vote_session;
+}
+
+export interface SetFundingVoteMutation {
+  vote: SetFundingVoteMutation_vote;
+}
+
+export interface SetFundingVoteMutationVariables {
+  input: FundingVoteInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CloseFundingSessionMutation
+// ====================================================
+
+export interface CloseFundingSessionMutation_session_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CloseFundingSessionMutation_session_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface CloseFundingSessionMutation_session_voters {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CloseFundingSessionMutation_session_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+}
+
+export interface CloseFundingSessionMutation_session_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CloseFundingSessionMutation_session_rewards_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
+export interface CloseFundingSessionMutation_session_rewards_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  parentTask: CloseFundingSessionMutation_session_rewards_task_parentTask | null;
+}
+
+export interface CloseFundingSessionMutation_session_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  token: CloseFundingSessionMutation_session_rewards_token;
+  task: CloseFundingSessionMutation_session_rewards_task;
+}
+
+export interface CloseFundingSessionMutation_session {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: CloseFundingSessionMutation_session_token;
+  votes: CloseFundingSessionMutation_session_votes[];
+  voters: CloseFundingSessionMutation_session_voters[];
+  projects: CloseFundingSessionMutation_session_projects[];
+  rewards: CloseFundingSessionMutation_session_rewards[];
+}
+
+export interface CloseFundingSessionMutation {
+  session: CloseFundingSessionMutation_session;
+}
+
+export interface CloseFundingSessionMutationVariables {
+  id: Scalar.UUID;
 }
 
 /* tslint:disable */
@@ -6405,6 +6864,7 @@ export interface UserTasksQuery_user_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface UserTasksQuery_user_tasks_tags {
@@ -6511,8 +6971,8 @@ export interface UserTasksQuery_user_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: UserTasksQuery_user_tasks_reward_token;
   payments: UserTasksQuery_user_tasks_reward_payments[];
 }
@@ -6864,6 +7324,32 @@ export interface GetOrganizationDetailsQuery_organization_taskViews {
   sortBys: GetOrganizationDetailsQuery_organization_taskViews_sortBys[];
 }
 
+export interface GetOrganizationDetailsQuery_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetOrganizationDetailsQuery_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: GetOrganizationDetailsQuery_organization_fundingSessions_token;
+}
+
 export interface GetOrganizationDetailsQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -6879,6 +7365,7 @@ export interface GetOrganizationDetailsQuery_organization {
   details: GetOrganizationDetailsQuery_organization_details[];
   projectTokenGates: GetOrganizationDetailsQuery_organization_projectTokenGates[];
   taskViews: GetOrganizationDetailsQuery_organization_taskViews[];
+  fundingSessions: GetOrganizationDetailsQuery_organization_fundingSessions[];
 }
 
 export interface GetOrganizationDetailsQuery {
@@ -7017,6 +7504,32 @@ export interface GetOrganizationTaskViewsQuery_organization_taskViews {
   sortBys: GetOrganizationTaskViewsQuery_organization_taskViews_sortBys[];
 }
 
+export interface GetOrganizationTaskViewsQuery_organization_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetOrganizationTaskViewsQuery_organization_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: GetOrganizationTaskViewsQuery_organization_fundingSessions_token;
+}
+
 export interface GetOrganizationTaskViewsQuery_organization {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -7032,6 +7545,7 @@ export interface GetOrganizationTaskViewsQuery_organization {
   details: GetOrganizationTaskViewsQuery_organization_details[];
   projectTokenGates: GetOrganizationTaskViewsQuery_organization_projectTokenGates[];
   taskViews: GetOrganizationTaskViewsQuery_organization_taskViews[];
+  fundingSessions: GetOrganizationTaskViewsQuery_organization_fundingSessions[];
 }
 
 export interface GetOrganizationTaskViewsQuery {
@@ -7198,6 +7712,7 @@ export interface GetOrganizationRolesQuery_organization_roles_rules {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface GetOrganizationRolesQuery_organization_roles {
@@ -7412,6 +7927,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_tags {
@@ -7518,8 +8034,8 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetOrganizationTasksQuery_organization_tasks_reward_token;
   payments: GetOrganizationTasksQuery_organization_tasks_reward_payments[];
 }
@@ -7855,6 +8371,7 @@ export interface GetProjectTasksQuery_project_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetProjectTasksQuery_project_tasks_tags {
@@ -7961,8 +8478,8 @@ export interface GetProjectTasksQuery_project_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetProjectTasksQuery_project_tasks_reward_token;
   payments: GetProjectTasksQuery_project_tasks_reward_payments[];
 }
@@ -8052,6 +8569,7 @@ export interface GetProjectTasksExportQuery_project_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetProjectTasksExportQuery_project_tasks_tags {
@@ -8165,8 +8683,8 @@ export interface GetProjectTasksExportQuery_project_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetProjectTasksExportQuery_project_tasks_reward_token;
   payments: GetProjectTasksExportQuery_project_tasks_reward_payments[];
 }
@@ -8298,6 +8816,7 @@ export interface GetTaskQuery_task_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetTaskQuery_task_subtasks_tags {
@@ -8404,8 +8923,8 @@ export interface GetTaskQuery_task_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetTaskQuery_task_subtasks_reward_token;
   payments: GetTaskQuery_task_subtasks_reward_payments[];
 }
@@ -8442,9 +8961,9 @@ export interface GetTaskQuery_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -8571,8 +9090,8 @@ export interface GetTaskQuery_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetTaskQuery_task_reward_token;
   payments: GetTaskQuery_task_reward_payments[];
 }
@@ -8883,6 +9402,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetPaginatedTasksQuery_paginated_tasks_tags {
@@ -8989,8 +9509,8 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetPaginatedTasksQuery_paginated_tasks_reward_token;
   payments: GetPaginatedTasksQuery_paginated_tasks_reward_payments[];
 }
@@ -9082,6 +9602,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_subtasks
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_tags {
@@ -9188,8 +9709,8 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_token;
   payments: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments[];
 }
@@ -9306,6 +9827,7 @@ export interface GetTasksToPayQuery_tasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface GetTasksToPayQuery_tasks_tags {
@@ -9419,8 +9941,8 @@ export interface GetTasksToPayQuery_tasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: GetTasksToPayQuery_tasks_reward_token;
   payments: GetTasksToPayQuery_tasks_reward_payments[];
 }
@@ -9826,6 +10348,118 @@ export interface GetDiscordGuildRolesQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetFundingSessionQuery
+// ====================================================
+
+export interface GetFundingSessionQuery_session_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetFundingSessionQuery_session_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface GetFundingSessionQuery_session_voters {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface GetFundingSessionQuery_session_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+}
+
+export interface GetFundingSessionQuery_session_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface GetFundingSessionQuery_session_rewards_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
+export interface GetFundingSessionQuery_session_rewards_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  parentTask: GetFundingSessionQuery_session_rewards_task_parentTask | null;
+}
+
+export interface GetFundingSessionQuery_session_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  token: GetFundingSessionQuery_session_rewards_token;
+  task: GetFundingSessionQuery_session_rewards_task;
+}
+
+export interface GetFundingSessionQuery_session {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: GetFundingSessionQuery_session_token;
+  votes: GetFundingSessionQuery_session_votes[];
+  voters: GetFundingSessionQuery_session_voters[];
+  projects: GetFundingSessionQuery_session_projects[];
+  rewards: GetFundingSessionQuery_session_rewards[];
+}
+
+export interface GetFundingSessionQuery {
+  session: GetFundingSessionQuery_session;
+}
+
+export interface GetFundingSessionQueryVariables {
+  id: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: MyNotificationsQuery
 // ====================================================
 
@@ -10028,6 +10662,7 @@ export interface TaskCreatedSubscription_task_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_tags {
@@ -10134,8 +10769,8 @@ export interface TaskCreatedSubscription_task_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskCreatedSubscription_task_subtasks_reward_token;
   payments: TaskCreatedSubscription_task_subtasks_reward_payments[];
 }
@@ -10172,9 +10807,9 @@ export interface TaskCreatedSubscription_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -10301,8 +10936,8 @@ export interface TaskCreatedSubscription_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskCreatedSubscription_task_reward_token;
   payments: TaskCreatedSubscription_task_reward_payments[];
 }
@@ -10559,6 +11194,7 @@ export interface TaskUpdatedSubscription_task_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_tags {
@@ -10665,8 +11301,8 @@ export interface TaskUpdatedSubscription_task_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskUpdatedSubscription_task_subtasks_reward_token;
   payments: TaskUpdatedSubscription_task_subtasks_reward_payments[];
 }
@@ -10703,9 +11339,9 @@ export interface TaskUpdatedSubscription_task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -10832,8 +11468,8 @@ export interface TaskUpdatedSubscription_task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskUpdatedSubscription_task_reward_token;
   payments: TaskUpdatedSubscription_task_reward_payments[];
 }
@@ -11206,8 +11842,8 @@ export interface TaskRewardUpdatedSubscription_taskReward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskRewardUpdatedSubscription_taskReward_token;
   payments: TaskRewardUpdatedSubscription_taskReward_payments[];
 }
@@ -11248,6 +11884,7 @@ export interface Rule {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 /* tslint:disable */
@@ -11301,6 +11938,7 @@ export interface RoleWithRules_rules {
   inverted: boolean;
   taskId: string | null;
   projectId: string | null;
+  fundingSessionId: string | null;
 }
 
 export interface RoleWithRules {
@@ -11313,23 +11951,6 @@ export interface RoleWithRules {
   userId: string | null;
   organizationId: string;
   rules: RoleWithRules_rules[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: User
-// ====================================================
-
-export interface User {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
 }
 
 /* tslint:disable */
@@ -11533,28 +12154,6 @@ export interface ProjectIntegration {
   id: Scalar.UUID;
   type: string;
   config: Scalar.JSONObject;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: Project
-// ====================================================
-
-export interface Project {
-  __typename: "Project";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  description: string | null;
-  deletedAt: Scalar.DateTime | null;
-  organizationId: string;
-  permalink: string;
-  workspaceId: string | null;
-  sortKey: string;
 }
 
 /* tslint:disable */
@@ -11912,8 +12511,8 @@ export interface TaskReward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskReward_token;
   payments: TaskReward_payments[];
 }
@@ -12136,6 +12735,7 @@ export interface Task_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface Task_tags {
@@ -12242,8 +12842,8 @@ export interface Task_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: Task_reward_token;
   payments: Task_reward_payments[];
 }
@@ -12319,6 +12919,7 @@ export interface TaskWithOrganization_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface TaskWithOrganization_tags {
@@ -12425,8 +13026,8 @@ export interface TaskWithOrganization_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskWithOrganization_reward_token;
   payments: TaskWithOrganization_reward_payments[];
 }
@@ -12583,6 +13184,7 @@ export interface TaskDetails_subtasks_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
 }
 
 export interface TaskDetails_subtasks_tags {
@@ -12689,8 +13291,8 @@ export interface TaskDetails_subtasks_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskDetails_subtasks_reward_token;
   payments: TaskDetails_subtasks_reward_payments[];
 }
@@ -12727,9 +13329,9 @@ export interface TaskDetails_subtasks {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
   description: string | null;
   priority: TaskPriority;
-  sortKey: string;
   storyPoints: number | null;
   dueDate: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
@@ -12856,8 +13458,8 @@ export interface TaskDetails_reward {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
-  trigger: TaskRewardTrigger | null;
   peggedToUsd: boolean;
+  fundingSessionId: string | null;
   token: TaskDetails_reward_token;
   payments: TaskDetails_reward_payments[];
 }
@@ -13413,6 +14015,32 @@ export interface OrganizationDetails_taskViews {
   sortBys: OrganizationDetails_taskViews_sortBys[];
 }
 
+export interface OrganizationDetails_fundingSessions_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface OrganizationDetails_fundingSessions {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: OrganizationDetails_fundingSessions_token;
+}
+
 export interface OrganizationDetails {
   __typename: "Organization";
   id: Scalar.UUID;
@@ -13428,6 +14056,163 @@ export interface OrganizationDetails {
   details: OrganizationDetails_details[];
   projectTokenGates: OrganizationDetails_projectTokenGates[];
   taskViews: OrganizationDetails_taskViews[];
+  fundingSessions: OrganizationDetails_fundingSessions[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: FundingVote
+// ====================================================
+
+export interface FundingVote {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: FundingSession
+// ====================================================
+
+export interface FundingSession_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface FundingSession {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: FundingSession_token;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: FundingSessionDetails
+// ====================================================
+
+export interface FundingSessionDetails_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface FundingSessionDetails_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface FundingSessionDetails_voters {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface FundingSessionDetails_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+}
+
+export interface FundingSessionDetails_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface FundingSessionDetails_rewards_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  permalink: string;
+}
+
+export interface FundingSessionDetails_rewards_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  parentTask: FundingSessionDetails_rewards_task_parentTask | null;
+}
+
+export interface FundingSessionDetails_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  token: FundingSessionDetails_rewards_token;
+  task: FundingSessionDetails_rewards_task;
+}
+
+export interface FundingSessionDetails {
+  __typename: "FundingSession";
+  id: Scalar.UUID;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  closedAt: Scalar.DateTime | null;
+  amount: string;
+  permalink: string;
+  organizationId: string;
+  token: FundingSessionDetails_token;
+  votes: FundingSessionDetails_votes[];
+  voters: FundingSessionDetails_voters[];
+  projects: FundingSessionDetails_projects[];
+  rewards: FundingSessionDetails_rewards[];
 }
 
 /* tslint:disable */
@@ -13601,6 +14386,28 @@ export interface Payment {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Project
+// ====================================================
+
+export interface Project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Skill
 // ====================================================
 
@@ -13709,6 +14516,24 @@ export interface Subtask {
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
+  sortKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: User
+// ====================================================
+
+export interface User {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
 }
 
 /* tslint:disable */
@@ -13818,6 +14643,7 @@ export enum RoleSource {
 }
 
 export enum RulePermission {
+  MANAGE_FUNDING = "MANAGE_FUNDING",
   MANAGE_ORGANIZATION = "MANAGE_ORGANIZATION",
   MANAGE_PROJECTS = "MANAGE_PROJECTS",
   MANAGE_TASKS = "MANAGE_TASKS",
@@ -13837,11 +14663,6 @@ export enum TaskPriority {
   MEDIUM = "MEDIUM",
   NONE = "NONE",
   URGENT = "URGENT",
-}
-
-export enum TaskRewardTrigger {
-  CORE_TEAM_APPROVAL = "CORE_TEAM_APPROVAL",
-  PULL_REQUEST_MERGED = "PULL_REQUEST_MERGED",
 }
 
 export enum TaskStatus {
@@ -13917,6 +14738,15 @@ export enum ThreepidSource {
 export interface CreateFileUploadUrlInput {
   fileName: string;
   contentType: string;
+}
+
+export interface CreateFundingSessionInput {
+  organizationId: Scalar.UUID;
+  amount: string;
+  tokenId: Scalar.UUID;
+  projectIds: Scalar.UUID[];
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
 }
 
 export interface CreateHiroThreepidInput {
@@ -14021,6 +14851,7 @@ export interface CreateRuleInput {
   roleId: Scalar.UUID;
   taskId?: Scalar.UUID | null;
   projectId?: Scalar.UUID | null;
+  fundingSessionId?: Scalar.UUID | null;
 }
 
 export interface CreateTaskApplicationInput {
@@ -14104,6 +14935,12 @@ export interface DeleteOrganizationIntegrationInput {
 export interface DeleteTaskApplicationInput {
   taskId: Scalar.UUID;
   userId: Scalar.UUID;
+}
+
+export interface FundingVoteInput {
+  sessionId: Scalar.UUID;
+  taskId: Scalar.UUID;
+  weight: number;
 }
 
 export interface GetTasksInput {
@@ -14261,7 +15098,6 @@ export interface UpdateTaskReviewInput {
 export interface UpdateTaskRewardInput {
   amount: string;
   tokenId: Scalar.UUID;
-  trigger?: TaskRewardTrigger | null;
   peggedToUsd?: boolean | null;
 }
 

@@ -71,6 +71,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
         onCancel={onCancel}
         footer={null}
         width={1000}
+        destroyOnClose
       >
         {!!task && <TaskOptionsButton task={task} />}
         <TaskUpdateModalContent key={taskId} taskId={taskId} />

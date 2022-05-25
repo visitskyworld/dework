@@ -9,6 +9,7 @@ import { TaskNFT } from "@dewo/api/models/TaskNFT";
 import { Invite } from "@dewo/api/models/Invite";
 import { TaskView } from "@dewo/api/models/TaskView";
 import { Workspace } from "@dewo/api/models/Workspace";
+import { FundingSession } from "@dewo/api/models/funding/FundingSession";
 
 @Injectable()
 export class PermalinkService {
@@ -35,6 +36,7 @@ export class PermalinkService {
       | TaskNFT
       | Project
       | Workspace
+      | FundingSession
       | Organization
       | User
       | Invite,
@@ -65,6 +67,10 @@ export class PermalinkService {
     if (object instanceof Workspace) {
       const o = await object.organization;
       return `${await this.get(o, appUrl)}/workspace/${object.slug}`;
+    }
+    if (object instanceof FundingSession) {
+      const o = await object.organization;
+      return `${await this.get(o, appUrl)}/funding/${object.id}`;
     }
     if (object instanceof Organization) {
       return `${appUrl}/${object.slug}`;

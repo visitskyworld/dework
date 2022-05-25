@@ -2,6 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "../Audit";
 import { RulePermission } from "../enums/RulePermission";
+import { FundingSession } from "../funding/FundingSession";
 import { Project } from "../Project";
 import { Task } from "../Task";
 import { Role } from "./Role";
@@ -41,4 +42,12 @@ export class Rule extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public projectId?: string;
+
+  @JoinColumn()
+  @ManyToOne(() => FundingSession, { nullable: true })
+  @Field(() => FundingSession, { nullable: true })
+  public fundingSession?: Promise<FundingSession>;
+  @Column({ type: "uuid", nullable: true })
+  @Field({ nullable: true })
+  public fundingSessionId?: string;
 }

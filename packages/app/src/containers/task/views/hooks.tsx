@@ -419,6 +419,7 @@ export interface TaskViewLayoutData {
   tasks?: (Task | TaskWithOrganization)[];
   cursor?: string;
   total?: number;
+  filter: SearchTasksInput;
   hasMore: boolean;
   loading: boolean;
   fetchMore(): void;
@@ -479,6 +480,7 @@ export function useTaskViewLayoutData(
         if (!!options.sort) tasks = tasks?.sort(options.sort);
         return {
           tasks,
+          filter: obs.variables?.filter!,
           cursor: res.data?.paginated.cursor ?? undefined,
           total: res.data?.paginated.total ?? undefined,
           hasMore: !res.data || !!res.data.paginated.cursor,
@@ -496,7 +498,7 @@ export function useTaskViewLayoutData(
         };
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [observables, forceUpdater, fetchingMore, options.filter]
+    [observables, forceUpdater, fetchingMore, options.filter, options.sort]
   );
 }
 

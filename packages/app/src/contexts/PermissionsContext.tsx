@@ -37,6 +37,7 @@ type AbilitySubject =
   | "TaskReward"
   | "Role"
   | "Project"
+  | "FundingSession"
   | Project
   | Organization
   | AtLeast<Project, "__typename" | "organizationId">

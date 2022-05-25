@@ -79,9 +79,10 @@ import {
 import { getRule, hasRule } from "../rbac/util";
 import { Constants } from "@dewo/app/util/constants";
 import { toTaskReward } from "./form/util";
+import { AtLeast } from "@dewo/app/types/general";
 
 export const formatTaskReward = (
-  reward: Pick<TaskReward, "peggedToUsd" | "amount" | "token">
+  reward: AtLeast<TaskReward, "amount" | "token">
 ) => {
   if (reward.peggedToUsd) {
     return [
@@ -231,6 +232,7 @@ export function useCreateTaskFromFormValues(): (
       const task = await createTask({
         ...values,
         projectId,
+        name: values.name?.trim(),
         dueDate: values.dueDate?.toISOString(),
         reward: !!reward ? toTaskReward(reward) : undefined,
       });
@@ -256,7 +258,7 @@ export function useCreateTaskFromFormValues(): (
       for (const subtask of subtasks ?? []) {
         await createTask({
           parentTaskId: task.id,
-          name: subtask.name,
+          name: subtask.name?.trim(),
           description: subtask.description,
           ownerIds: !!user ? [user.id] : [],
           assigneeIds: subtask.assigneeIds,
@@ -324,7 +326,16 @@ export function useUpdateTaskFromFormValues(
       if (!!reward || !_.isEmpty(values)) {
         const dueDate =
           values.dueDate === null ? null : values.dueDate?.toISOString();
-        await updateTask({ id: task!.id, ...values, reward, dueDate }, task!);
+        await updateTask(
+          {
+            id: task!.id,
+            ...values,
+            name: values.name?.trim(),
+            reward,
+            dueDate,
+          },
+          task!
+        );
       }
 
       if (!!roleIds) {
@@ -627,7 +638,7 @@ export function useUpdateTaskRoles(): (
       const taskId = task.id;
       const organizationId = await apolloClient
         .query<GetProjectQuery, GetProjectQueryVariables>({
-          query: Queries.project,
+          query: Queries.getProject,
           fetchPolicy: "cache-first",
           variables: { projectId: task.projectId },
         })

@@ -1,8 +1,11 @@
 import gql from "graphql-tag";
+import { fundingSession } from "./fragments/funding";
 import { network, payment, token } from "./fragments/payment";
 import { skill } from "./fragments/skill";
+import { user } from "./fragments/user";
 import { subtask, taskView } from "./fragments/task";
 import { workspace } from "./fragments/workspace";
+import { project } from "./fragments/project";
 
 export const entityDetail = gql`
   fragment EntityDetail on EntityDetail {
@@ -19,6 +22,7 @@ export const rule = gql`
     inverted
     taskId
     projectId
+    fundingSessionId
   }
 `;
 
@@ -50,15 +54,6 @@ export const roleWithRules = gql`
   }
   ${role}
   ${rule}
-`;
-
-export const user = gql`
-  fragment User on User {
-    id
-    username
-    imageUrl
-    permalink
-  }
 `;
 
 export const userWithRoles = gql`
@@ -157,20 +152,6 @@ export const projectIntegration = gql`
   }
 `;
 
-export const project = gql`
-  fragment Project on Project {
-    id
-    slug
-    name
-    description
-    deletedAt
-    organizationId
-    permalink
-    workspaceId
-    sortKey
-  }
-`;
-
 export const projectTokenGate = gql`
   fragment ProjectTokenGate on ProjectTokenGate {
     id
@@ -261,8 +242,8 @@ export const taskReward = gql`
   fragment TaskReward on TaskReward {
     id
     amount
-    trigger
     peggedToUsd
+    fundingSessionId
     token {
       ...PaymentToken
     }
@@ -655,6 +636,9 @@ export const organizationDetails = gql`
     taskViews {
       ...TaskView
     }
+    fundingSessions {
+      ...FundingSession
+    }
   }
 
   ${organization}
@@ -664,4 +648,5 @@ export const organizationDetails = gql`
   ${entityDetail}
   ${projectTokenGate}
   ${taskView}
+  ${fundingSession}
 `;

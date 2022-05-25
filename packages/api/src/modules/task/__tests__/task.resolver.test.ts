@@ -1,7 +1,6 @@
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { TaskGatingType } from "@dewo/api/models/enums/TaskGatingType";
 import { TaskStatus } from "@dewo/api/models/Task";
-import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
@@ -58,7 +57,6 @@ describe("TaskResolver", () => {
         const reward: UpdateTaskRewardInput = {
           amount: "100000",
           tokenId: token.id,
-          trigger: TaskRewardTrigger.PULL_REQUEST_MERGED,
         };
 
         const response = await client.request({
@@ -82,7 +80,6 @@ describe("TaskResolver", () => {
         expect(task.reward).toBeDefined();
         expect(task.reward.amount).toEqual(reward.amount);
         expect(task.reward.token.id).toEqual(reward.tokenId);
-        expect(task.reward.trigger).toEqual(reward.trigger);
         expect(task.creator).not.toEqual(null);
         expect(task.creator.id).toEqual(user.id);
       });

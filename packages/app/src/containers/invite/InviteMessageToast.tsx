@@ -20,6 +20,7 @@ const permissionToVerb: Record<RulePermission, string> = {
   [RulePermission.MANAGE_TASKS]: "contribute to",
   [RulePermission.MANAGE_PROJECTS]: "manage",
   [RulePermission.MANAGE_ORGANIZATION]: "manage",
+  [RulePermission.MANAGE_FUNDING]: "manage",
 };
 
 export const InviteMessageToast: FC = () => {

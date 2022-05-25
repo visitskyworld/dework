@@ -63,7 +63,6 @@ export class TaskRequests {
           name
           type
         }
-        trigger
         payment {
           id
           status

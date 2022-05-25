@@ -30,6 +30,8 @@ import { TaskView } from "@dewo/api/models/TaskView";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { EventBus } from "@nestjs/cqrs";
 import { RuleCreatedEvent, RuleDeletedEvent } from "./rbac.events";
+import { FundingSession } from "@dewo/api/models/funding/FundingSession";
+import { FundingVote } from "@dewo/api/models/funding/FundingVote";
 
 export type Action =
   | "create"
@@ -53,6 +55,8 @@ export type Subject = InferSubjects<
   | typeof Role
   | typeof Rule
   | typeof UserRole
+  | typeof FundingSession
+  | typeof FundingVote
   | typeof OrganizationToken
 >;
 
@@ -150,6 +154,7 @@ export class RbacService {
       partial.roleId === rule.roleId &&
       partial.permission === rule.permission &&
       !!partial.inverted === rule.inverted &&
+      partial.fundingSessionId === (rule.fundingSessionId ?? undefined) &&
       partial.projectId === (rule.projectId ?? undefined) &&
       partial.taskId === (rule.taskId ?? undefined);
 
@@ -282,6 +287,18 @@ export class RbacService {
             });
           }
 
+          break;
+        case RulePermission.MANAGE_FUNDING:
+          fn(CRUD, FundingSession, {
+            ...(!!rule.fundingSessionId ? { id: rule.fundingSessionId } : {}),
+            organizationId,
+          });
+          // if (!!userId) {
+          //   fn(CRUD, FundingVote, {
+          //     sessionId: rule.fundingSessionId,
+          //     userId,
+          //   });
+          // }
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);

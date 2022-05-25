@@ -3,9 +3,10 @@ import { Tag, Tooltip } from "antd";
 import * as Icons from "@ant-design/icons";
 import React, { FC } from "react";
 import { formatTaskReward } from "./hooks";
+import { AtLeast } from "@dewo/app/types/general";
 
 interface Props {
-  reward: TaskReward;
+  reward: AtLeast<TaskReward, "amount" | "token">;
 }
 
 export const TaskRewardTag: FC<Props> = ({ reward }) => (

@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { SkeletonTaskBoard } from "../board/SkeletonTaskBoard";
 import { TaskBoard } from "../board/TaskBoard";
 import { TaskBoardColumnEmptyProps } from "../board/TaskBoardColumnEmtpy";
-import { TaskList } from "../list/TaskList";
+import { TaskListFromView } from "../list/TaskList";
 import { useTaskViewContext } from "./TaskViewContext";
 import styles from "./TaskViewLayout.module.less";
 
@@ -20,7 +20,7 @@ export const TaskViewLayout: FC<{
 
   return (
     <div style={{ width: "100%", height: "100%", overflowX: "hidden" }}>
-      <TaskList className={styles.list} />
+      <TaskListFromView className={styles.list} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
-import { organization, project } from "../fragments";
+import { organization } from "../fragments";
+import { project } from "./project";
 
 export const notification = gql`
   fragment Notification on Notification {

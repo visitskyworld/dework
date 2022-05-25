@@ -7,6 +7,7 @@ import { RBACPermissionForm } from "../RBACPermissionForm";
 import styles from "../CardRBAC.module.less";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
 import { useCreateInvite } from "../../invite/hooks";
+import { useIsDev } from "../../user/hooks";
 
 interface Props {
   organizationId: string;
@@ -14,6 +15,7 @@ interface Props {
 
 export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
   const roles = useOrganizationRoles(organizationId);
+  const isDev = useIsDev();
 
   const copyToClipboardAndShowToast =
     useCopyToClipboardAndShowToast("Invite link copied");
@@ -80,6 +82,34 @@ export const OrganizationRBAC: FC<Props> = ({ organizationId }) => {
         />
       </Card>
       <Divider />
+
+      {isDev && (
+        <>
+          <Typography.Title level={5}>
+            Manage Funding
+            <Tooltip
+              title={
+                <Typography.Text style={{ whiteSpace: "pre-line" }}>
+                  Vote in funding sessions
+                </Typography.Text>
+              }
+            >
+              <Icons.QuestionCircleOutlined style={{ marginLeft: 8 }} />
+            </Tooltip>
+          </Typography.Title>
+          <Card className={`bg-body-secondary ${styles.card}`}>
+            <RBACPermissionForm
+              permission={RulePermission.MANAGE_FUNDING}
+              roles={roles}
+              organizationId={organizationId}
+              onInviteUser={() =>
+                inviteToOrganization(RulePermission.MANAGE_FUNDING)
+              }
+            />
+          </Card>
+          <Divider />
+        </>
+      )}
 
       <Typography.Title level={5}>
         Create Tasks

@@ -12,14 +12,13 @@ import { TaskFormValues, TaskRewardFormValues } from "./types";
 export const toTaskReward = (
   reward: TaskRewardFormValues | undefined
 ): UpdateTaskRewardInput | null => {
-  if (!reward?.amount || !reward?.token || !reward?.trigger) return null;
+  if (!reward?.amount || !reward?.token) return null;
   return {
     amount: parseFixed(
       String(reward.amount),
       reward.peggedToUsd ? Constants.NUM_DECIMALS_IN_USD_PEG : reward.token.exp
     ).toString(),
     tokenId: reward.token.id,
-    trigger: reward.trigger,
     peggedToUsd: reward.peggedToUsd,
   };
 };
@@ -39,7 +38,6 @@ export const toTaskRewardFormValues = (
     ),
     networkId: reward.token.networkId,
     token: reward.token,
-    trigger: reward.trigger ?? undefined,
     peggedToUsd: reward.peggedToUsd,
   };
 };

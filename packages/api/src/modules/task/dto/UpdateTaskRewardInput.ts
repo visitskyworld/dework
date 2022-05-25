@@ -1,4 +1,3 @@
-import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -9,9 +8,6 @@ export class UpdateTaskRewardInput {
 
   @Field(() => GraphQLUUID)
   public tokenId!: string;
-
-  @Field(() => TaskRewardTrigger, { nullable: true })
-  public trigger?: TaskRewardTrigger;
 
   @Field(() => Boolean, { nullable: true })
   public peggedToUsd?: boolean;

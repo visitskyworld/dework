@@ -2,7 +2,6 @@ import {
   PaymentToken,
   TaskGatingType,
   TaskPriority,
-  TaskRewardTrigger,
   TaskStatus,
 } from "@dewo/app/graphql/types";
 import { SubtaskTableRowData } from "./subtask/SubtaskTable";
@@ -11,7 +10,6 @@ export interface TaskRewardFormValues {
   amount: number;
   networkId: string;
   token: PaymentToken;
-  trigger?: TaskRewardTrigger;
   peggedToUsd: boolean;
 }
 

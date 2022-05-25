@@ -38,7 +38,6 @@ import {
   ProjectIntegration,
   ProjectIntegrationType,
 } from "../models/ProjectIntegration";
-import { TaskRewardTrigger } from "../models/TaskReward";
 import { PaymentNetwork, PaymentNetworkType } from "../models/PaymentNetwork";
 import { PaymentToken, PaymentTokenType } from "../models/PaymentToken";
 import { Payment, PaymentData } from "../models/Payment";
@@ -64,6 +63,9 @@ import { TaskApplicationService } from "../modules/task/taskApplication/taskAppl
 import { NotificationModule } from "../modules/notification/notification.module";
 import { NotificationService } from "../modules/notification/notification.service";
 import { Notification } from "../models/Notification";
+import { FundingModule } from "../modules/funding/funding.module";
+import { FundingService } from "../modules/funding/funding.service";
+import { FundingSession } from "../models/funding/FundingSession";
 
 @Injectable()
 export class Fixtures {
@@ -79,7 +81,8 @@ export class Fixtures {
     private readonly inviteService: InviteService,
     private readonly paymentService: PaymentService,
     private readonly rbacService: RbacService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly fundingService: FundingService
   ) {}
 
   public async createThreepid(
@@ -177,7 +180,6 @@ export class Fixtures {
               .number({ min: 1 * 10e18, max: 100 * 10e18 })
               .toString(),
             tokenId: await this.createPaymentToken().then((t) => t.id),
-            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
             ...partial.reward,
           }
         : undefined,
@@ -529,6 +531,23 @@ export class Fixtures {
   address(): string {
     return ethers.Wallet.createRandom().address;
   }
+
+  async createFundingSession(
+    partial: Partial<FundingSession> = {}
+  ): Promise<FundingSession> {
+    const organizationId =
+      partial.organizationId ?? (await this.createOrganization()).id;
+    const project = await this.createProject({ organizationId });
+    return this.fundingService.createSession({
+      organizationId,
+      projectIds: [project.id],
+      tokenId: (await this.createPaymentToken()).id,
+      startDate: faker.date.past(),
+      endDate: faker.date.soon(7),
+      amount: faker.datatype.number().toString(),
+      ...partial,
+    });
+  }
 }
 
 @Module({
@@ -545,6 +564,7 @@ export class Fixtures {
     PaymentModule,
     RbacModule,
     NotificationModule,
+    FundingModule,
   ],
   providers: [Fixtures],
   exports: [Fixtures],

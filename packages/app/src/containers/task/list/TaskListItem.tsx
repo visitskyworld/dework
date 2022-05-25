@@ -1,6 +1,6 @@
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { Avatar, Card, Row, Typography } from "antd";
-import React, { FC, useCallback } from "react";
+import React, { FC, ReactNode, useCallback } from "react";
 import * as Icons from "@ant-design/icons";
 import { Task, TaskStatus, TaskViewField } from "@dewo/app/graphql/types";
 import { TaskGatingIcon } from "../card/TaskGatingIcon";
@@ -20,10 +20,15 @@ import { TaskStatusDropdown } from "@dewo/app/components/form/TaskStatusDropdown
 
 interface Props {
   task: Task;
+  extra?: ReactNode;
   recalculateRowHeight?: () => void;
 }
 
-export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
+export const TaskListItem: FC<Props> = ({
+  task,
+  extra,
+  recalculateRowHeight,
+}) => {
   const fields = useTaskViewFields();
   const navigateToTask = useNavigateToTask(task.id);
   const prefetchTaskDetailsOnHover = usePrefetchTaskDetailsOnHover(task.id);
@@ -69,7 +74,6 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
             {task.number}
           </Typography.Text>
         )}
-
         {fields.has(TaskViewField.name) && (
           <Typography.Text
             className="font-semibold"
@@ -86,7 +90,6 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
           expanded={subtasks.expanded}
           onToggleSubtasks={handleToggleSubtasks}
         />
-
         {fields.has(TaskViewField.assignees) && (
           <Row justify="end" style={{ width: 44 }}>
             <Avatar.Group
@@ -102,7 +105,6 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
             </Avatar.Group>
           </Row>
         )}
-
         {fields.has(TaskViewField.createdAt) && (
           <Typography.Text
             type="secondary"
@@ -112,12 +114,12 @@ export const TaskListItem: FC<Props> = ({ task, recalculateRowHeight }) => {
             {moment(task.createdAt).fromNow()}
           </Typography.Text>
         )}
-
         {fields.has(TaskViewField.button) && (
           <Row justify="center" style={{ minWidth: 140 }}>
             <TaskActionButton task={task} />
           </Row>
         )}
+        {extra}
       </Row>
 
       {!!task.subtasks.length && subtasks.expanded && (

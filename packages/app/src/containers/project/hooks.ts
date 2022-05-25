@@ -146,7 +146,7 @@ export function useProject(projectId: string | undefined): {
   error: ApolloError | undefined;
 } {
   const { data, error } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
-    Queries.project,
+    Queries.getProject,
     { variables: { projectId: projectId! }, skip: !projectId }
   );
   return { project: data?.project ?? undefined, error };

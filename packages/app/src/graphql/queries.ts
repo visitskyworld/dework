@@ -1,7 +1,9 @@
 import gql from "graphql-tag";
 import * as Fragments from "./fragments";
 import { network, token } from "./fragments/payment";
+import { project } from "./fragments/project";
 import * as TaskFragments from "./fragments/task";
+import { user } from "./fragments/user";
 
 export const me = gql`
   query MeQuery {
@@ -167,7 +169,7 @@ export const organizationUsers = gql`
     }
   }
 
-  ${Fragments.user}
+  ${user}
 `;
 
 export const organizationUsersWithRoles = gql`
@@ -208,7 +210,7 @@ export const featuredOrganizations = gql`
   }
 
   ${Fragments.organization}
-  ${Fragments.user}
+  ${user}
 `;
 
 export const popularOrganizations = gql`
@@ -289,14 +291,14 @@ export const organizationTaskTags = gql`
   ${Fragments.taskTag}
 `;
 
-export const project = gql`
+export const getProject = gql`
   query GetProjectQuery($projectId: UUID!) {
     project: getProject(id: $projectId) {
       ...Project
     }
   }
 
-  ${Fragments.project}
+  ${project}
 `;
 
 export const projectDetails = gql`
@@ -316,7 +318,7 @@ export const projectBySlug = gql`
     }
   }
 
-  ${Fragments.project}
+  ${project}
 `;
 
 export const projectIdBySlug = gql`
@@ -359,7 +361,7 @@ export const projectTasksExport = gql`
   }
 
   ${Fragments.task}
-  ${Fragments.user}
+  ${user}
 `;
 
 export const projectTaskTags = gql`
@@ -406,7 +408,7 @@ export const taskReactionUsers = gql`
   }
 
   ${Fragments.taskReaction}
-  ${Fragments.user}
+  ${user}
 `;
 
 export const paginatedTasks = gql`
@@ -461,7 +463,7 @@ export const tasksToPay = gql`
   }
 
   ${Fragments.task}
-  ${Fragments.user}
+  ${user}
 `;
 
 export const projectIntegrations = gql`

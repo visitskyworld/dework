@@ -18,4 +18,7 @@ export class CreateRuleInput {
 
   @Field(() => GraphQLUUID, { nullable: true })
   public projectId?: string;
+
+  @Field(() => GraphQLUUID, { nullable: true })
+  public fundingSessionId?: string;
 }

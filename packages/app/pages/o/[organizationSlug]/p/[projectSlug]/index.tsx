@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { data } = await apolloClient.query<
       GetProjectQuery,
       GetProjectQueryVariables
-    >({ query: Queries.project, variables: { projectId: uuid } });
+    >({ query: Queries.getProject, variables: { projectId: uuid } });
 
     if (data?.project) {
       return {

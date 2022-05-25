@@ -4,8 +4,7 @@ import React, { FC } from "react";
 import styles from "./Header.module.less";
 import { HeaderBreadcrumbs } from "./HeaderBreadcrumbs";
 
-interface Props extends PageHeaderProps {}
-export const Header: FC<Props> = ({ ...props }) => {
+export const Header: FC<PageHeaderProps> = (props) => {
   return (
     <PageHeader
       breadcrumb={<HeaderBreadcrumbs />}

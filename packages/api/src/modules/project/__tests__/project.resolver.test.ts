@@ -1,6 +1,5 @@
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { TaskStatus } from "@dewo/api/models/Task";
-import { TaskRewardTrigger } from "@dewo/api/models/TaskReward";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
 import { getTestApp } from "@dewo/api/testing/getTestApp";
 import { GraphQLTestClient } from "@dewo/api/testing/GraphQLTestClient";
@@ -143,9 +142,7 @@ describe("ProjectResolver", () => {
           parentTaskId: task.id,
           status: TaskStatus.DONE,
           assignees: [user],
-          reward: {
-            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-          },
+          reward: {},
         });
 
         const response = await client.request({
@@ -175,9 +172,7 @@ describe("ProjectResolver", () => {
         await fixtures.createTask({
           projectId: project.id,
           status: TaskStatus.TODO,
-          reward: {
-            trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
-          },
+          reward: {},
         });
         await fixtures.createTask({
           projectId: project.id,

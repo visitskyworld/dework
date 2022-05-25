@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Col, Menu, Row, Skeleton, Space } from "antd";
+import { Col, Menu, Row, Skeleton, Space, Tag } from "antd";
 import {
   useOrganizationDetails,
   useOrganizationWorkspaces,
@@ -13,6 +13,8 @@ import styles from "./Menu.module.less";
 import { useRouter } from "next/router";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
 import { useIsProjectPrivateFn } from "../../rbac/hooks";
+import { CreateFundingSessionButton } from "../../funding/create/CreateFundingSessionButton";
+import moment from "moment";
 
 const NavSkeleton = () => {
   return (
@@ -35,6 +37,7 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
   const workspaces = useOrganizationWorkspaces(organizationId);
   const isProjectPrivate = useIsProjectPrivateFn(organizationId);
   const canUpdateOrganization = usePermission("update", "Organization");
+  const canCreateFundingSession = usePermission("create", "FundingSession");
 
   const router = useRouter();
 
@@ -42,6 +45,9 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
     __typename: "Project",
     organizationId: organizationId!,
   });
+
+  const showFunding =
+    !!organization?.fundingSessions.length || canCreateFundingSession;
 
   if (!organization) return <NavSkeleton />;
   const basePath = new URL(organization.permalink).pathname;
@@ -110,6 +116,43 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
               })),
             })
           ),
+          showFunding ? { type: "divider" } : null,
+          showFunding
+            ? {
+                label: (
+                  <Row align="middle" justify="space-between">
+                    Tipping
+                    {canCreateFundingSession && (
+                      <CreateFundingSessionButton
+                        type="text"
+                        size="small"
+                        className="text-secondary"
+                        icon={<Icons.PlusOutlined />}
+                        organizationId={organization?.id}
+                      />
+                    )}
+                  </Row>
+                ),
+                type: "group",
+                children: (organization.fundingSessions ?? []).map(
+                  (session) => ({
+                    label: (
+                      <Row align="middle" justify="space-between">
+                        {[session.startDate, session.endDate]
+                          .map((d) => moment(d).format("MMM D"))
+                          .join(" - ")}
+                        {!!session.closedAt ? (
+                          <Tag color="blue">Closed</Tag>
+                        ) : (
+                          <Tag color="green">Open</Tag>
+                        )}
+                      </Row>
+                    ),
+                    key: session.permalink,
+                  })
+                ),
+              }
+            : null,
         ]}
       />
     </>

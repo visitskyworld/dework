@@ -16,6 +16,7 @@ import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { UserRole } from "@dewo/api/models/rbac/UserRole";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
 import { TaskViewService } from "../task/taskView/taskView.service";
+import { FundingSession } from "@dewo/api/models/funding/FundingSession";
 
 @Injectable()
 export class OrganizationService {
@@ -185,6 +186,18 @@ export class OrganizationService {
       organizationId
     );
     return projects.filter((project) => ability.can("read", project));
+  }
+
+  public async getFundingSessions(
+    organization: Organization,
+    userId: string | undefined
+  ): Promise<FundingSession[]> {
+    const sessions = await organization.fundingSessions;
+    const ability = await this.rbacService.abilityForUser(
+      userId,
+      organization.id
+    );
+    return sessions.filter((session) => ability.can("read", session));
   }
 
   public async findByUser(

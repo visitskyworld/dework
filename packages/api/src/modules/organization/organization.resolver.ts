@@ -33,6 +33,7 @@ import { GraphQLResolveInfo } from "graphql";
 import { OrganizationToken } from "@dewo/api/models/OrganizationToken";
 import { TaskView } from "@dewo/api/models/TaskView";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
+import { FundingSession } from "@dewo/api/models/funding/FundingSession";
 
 @Resolver(() => Organization)
 @Injectable()
@@ -102,6 +103,14 @@ export class OrganizationResolver {
     @Parent() organization: Organization
   ): Promise<Project[]> {
     return this.organizationService.getProjects(organization.id, user?.id);
+  }
+
+  @ResolveField(() => [FundingSession])
+  public async fundingSessions(
+    @Context("user") user: User | undefined,
+    @Parent() organization: Organization
+  ): Promise<FundingSession[]> {
+    return this.organizationService.getFundingSessions(organization, user?.id);
   }
 
   @ResolveField(() => [ProjectTokenGate])

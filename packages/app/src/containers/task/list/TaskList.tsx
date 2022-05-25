@@ -1,11 +1,23 @@
 import { Button, Grid, Row, Skeleton } from "antd";
-import React, { CSSProperties, FC, useMemo, useRef, useState } from "react";
-import { TaskStatus } from "@dewo/app/graphql/types";
+import React, {
+  CSSProperties,
+  FC,
+  ReactNode,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Task, TaskStatus } from "@dewo/app/graphql/types";
+import { TaskListItem } from "../../task/list/TaskListItem";
 import {
   TaskViewGroupHeader,
   TaskViewGroupHeaderExtra,
 } from "../../task/board/TaskViewGroupHeader";
-import { useTaskViewLayoutData, useTaskViewLayoutItems } from "../views/hooks";
+import {
+  TaskViewLayoutData,
+  useTaskViewLayoutData,
+  useTaskViewLayoutItems,
+} from "../views/hooks";
 import {
   List,
   AutoSizer,
@@ -18,23 +30,31 @@ import {
   VirtualizedListRow,
 } from "./useRecalculateVirtualizedListRowHeight";
 import { TaskCard } from "../card/TaskCard";
-import { TaskListItem } from "./TaskListItem";
 
 interface Props {
   showHeaders?: boolean;
   style?: CSSProperties;
   className?: string;
+  data: TaskViewLayoutData[];
+  renderTaskExtra?(task: Task): ReactNode;
 }
+
+export const TaskListFromView: FC<Omit<Props, "data">> = (props) => {
+  const items = useTaskViewLayoutItems();
+  const queries = useMemo(() => items.map((i) => i.query), [items]);
+  const data = useTaskViewLayoutData(queries);
+
+  return <TaskList {...props} data={data} />;
+};
 
 export const TaskList: FC<Props> = ({
   showHeaders = true,
   style,
   className,
+  data,
+  renderTaskExtra,
 }) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-  const items = useTaskViewLayoutItems();
-  const queries = useMemo(() => items.map((i) => i.query), [items]);
-  const data = useTaskViewLayoutData(queries);
   const projectId = useTaskViewContext().currentView?.projectId ?? undefined;
 
   const list = useRef<List>(null);
@@ -49,8 +69,8 @@ export const TaskList: FC<Props> = ({
   const rows = useMemo<VirtualizedListRow[]>(
     () =>
       data
-        .map((d, index) => {
-          const status = items[index].value as TaskStatus;
+        .map((d) => {
+          const status = d.filter.statuses?.[0] as TaskStatus;
           return [
             {
               key: `header:${status}`,
@@ -83,6 +103,7 @@ export const TaskList: FC<Props> = ({
                   <TaskListItem
                     key={task.id}
                     task={task}
+                    extra={renderTaskExtra?.(task)}
                     recalculateRowHeight={() =>
                       recalculateRowHeight.current?.(task.id)
                     }
@@ -115,7 +136,7 @@ export const TaskList: FC<Props> = ({
         })
         .flat()
         .filter((r) => !r.hidden),
-    [data, collapsed, items, projectId, showHeaders, screen.lg]
+    [data, collapsed, projectId, showHeaders, renderTaskExtra, screen.lg]
   );
 
   const fns = useRecalculateVirtualizedListRowHeight(cache, list, rows);

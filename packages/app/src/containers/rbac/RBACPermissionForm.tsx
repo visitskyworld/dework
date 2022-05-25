@@ -30,6 +30,7 @@ interface FormValues {
 
 interface Props {
   projectId?: string;
+  fundingSessionId?: string;
   organizationId: string;
   roles: RoleWithRules[];
   permission: RulePermission;
@@ -57,6 +58,7 @@ function useSubmitEnabled(
 
 export const RBACPermissionForm: FC<Props> = ({
   projectId,
+  fundingSessionId,
   organizationId,
   roles,
   permission,
@@ -68,6 +70,7 @@ export const RBACPermissionForm: FC<Props> = ({
     __typename: "Rule",
     permission,
     projectId,
+    fundingSessionId,
   });
 
   const hasDiscordIntegration = !!useOrganizationIntegrations(
@@ -89,14 +92,21 @@ export const RBACPermissionForm: FC<Props> = ({
   const initialValues = useMemo(
     () => ({
       roleIds: roles
-        .filter((r) => hasRule(r, permission, { projectId }) && !r.userId)
+        .filter(
+          (r) =>
+            hasRule(r, permission, { projectId, fundingSessionId }) && !r.userId
+        )
         .map((r) => r.id),
       userIds: roles
-        .filter((r) => hasRule(r, permission, { projectId }) && !!r.userId)
+        .filter(
+          (r) =>
+            hasRule(r, permission, { projectId, fundingSessionId }) &&
+            !!r.userId
+        )
         .map((r) => r.userId!)
         .filter((userId, index, array) => array.indexOf(userId) === index),
     }),
-    [roles, permission, projectId]
+    [roles, permission, projectId, fundingSessionId]
   );
   const [values, setValues] = useState<FormValues>(initialValues);
   const handleChange = useCallback(
@@ -111,18 +121,18 @@ export const RBACPermissionForm: FC<Props> = ({
     async (values: FormValues) => {
       const removedOrganizationRoles = organizationRoles?.filter(
         (role) =>
-          hasRule(role, permission, { projectId }) &&
+          hasRule(role, permission, { projectId, fundingSessionId }) &&
           !values.roleIds.includes(role.id)
       );
       const addedOrganizationRoles = organizationRoles?.filter(
         (role) =>
-          !hasRule(role, permission, { projectId }) &&
+          !hasRule(role, permission, { projectId, fundingSessionId }) &&
           values.roleIds.includes(role.id)
       );
 
       const removedUserRoles = userRoles?.filter(
         (role) =>
-          hasRule(role, permission, { projectId }) &&
+          hasRule(role, permission, { projectId, fundingSessionId }) &&
           !values.userIds.includes(role.userId!)
       );
 
@@ -141,7 +151,7 @@ export const RBACPermissionForm: FC<Props> = ({
 
       const addedUserRoles = selectedUserRoles.filter(
         (role) =>
-          !hasRule(role, permission, { projectId }) &&
+          !hasRule(role, permission, { projectId, fundingSessionId }) &&
           values.userIds.includes(role.userId!)
       );
 
@@ -149,11 +159,16 @@ export const RBACPermissionForm: FC<Props> = ({
       const addedRoles = [...addedOrganizationRoles, ...addedUserRoles];
 
       for (const role of addedRoles) {
-        await createRule({ permission, projectId, roleId: role.id });
+        await createRule({
+          permission,
+          projectId,
+          fundingSessionId,
+          roleId: role.id,
+        });
       }
 
       for (const role of removedRoles) {
-        const rule = getRule(role, permission, { projectId });
+        const rule = getRule(role, permission, { projectId, fundingSessionId });
         await deleteRule(rule!.id);
       }
 

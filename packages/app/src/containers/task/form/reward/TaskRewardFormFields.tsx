@@ -1,16 +1,6 @@
 import React, { FC, useCallback } from "react";
-import { PaymentToken, TaskRewardTrigger } from "@dewo/app/graphql/types";
-import {
-  Button,
-  ConfigProvider,
-  Empty,
-  InputNumber,
-  Row,
-  Select,
-  Space,
-  Typography,
-} from "antd";
-import * as Icons from "@ant-design/icons";
+import { PaymentToken } from "@dewo/app/graphql/types";
+import { Button, InputNumber, Row, Select, Space, Typography } from "antd";
 import _ from "lodash";
 import { useToggle } from "@dewo/app/util/hooks";
 
@@ -24,7 +14,7 @@ import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { OnboardingAlert } from "@dewo/app/components/OnboardingAlert";
 import { useProject } from "@dewo/app/containers/project/hooks";
 import { useProjectPaymentMethods } from "@dewo/app/containers/payment/hooks";
-import { AddTokenModal } from "@dewo/app/containers/payment/token/AddTokenModal";
+import { TokenSelect } from "@dewo/app/containers/payment/token/TokenSelect";
 
 export async function validator(
   _rule: unknown, // RuleObject,
@@ -51,7 +41,6 @@ export const TaskRewardFormFields: FC<Props> = ({
   onChange,
 }) => {
   const { project } = useProject(projectId);
-  const addCustomToken = useToggle();
   const addPaymentMethod = useToggle();
 
   const tokens = useOrganizationTokens(project?.organizationId);
@@ -66,7 +55,6 @@ export const TaskRewardFormFields: FC<Props> = ({
     (token?: PaymentToken) =>
       onChange?.({
         ...value,
-        trigger: TaskRewardTrigger.CORE_TEAM_APPROVAL,
         token,
         networkId: token?.networkId,
         peggedToUsd: value?.peggedToUsd && !!token?.usdPrice,
@@ -89,69 +77,19 @@ export const TaskRewardFormFields: FC<Props> = ({
     onChange?.({});
   }, [onChange]);
 
-  const handleCustomTokenModalClosed = useCallback(
-    (token?: PaymentToken) => {
-      addCustomToken.toggleOff();
-      if (!!token) handleChangeToken(token);
-    },
-    [addCustomToken, handleChangeToken]
-  );
-
   return (
     <>
       <Space direction="vertical" style={{ width: "100%" }}>
-        <ConfigProvider
-          renderEmpty={() => (
-            <Empty
-              imageStyle={{ display: "none" }}
-              description="To add a bounty, you need to add tokens to pay with"
-            >
-              <Button
-                type="primary"
-                size="small"
-                children="Add token"
-                onClick={addCustomToken.toggleOn}
-              />
-            </Empty>
-          )}
-        >
-          <Select
+        {!!project && (
+          <TokenSelect
             id={`${id}_tokenId`}
-            placeholder="Select a token"
             value={value?.token?.id}
             allowClear
-            showSearch
-            optionFilterProp="label"
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                {!!tokens.length && (
-                  <Button
-                    block
-                    type="text"
-                    style={{ textAlign: "left", marginTop: 4 }}
-                    className="text-secondary"
-                    icon={<Icons.PlusCircleOutlined />}
-                    children="Add token"
-                    onClick={addCustomToken.toggleOn}
-                  />
-                )}
-              </>
-            )}
             onChange={handleChangeTokenId}
             onClear={handleClear}
-          >
-            {tokens.map((token) => (
-              <Select.Option
-                key={token.id}
-                value={token.id}
-                label={`${token.symbol} (${token.network.name})`}
-              >
-                {`${token.symbol} (${token.network.name})`}
-              </Select.Option>
-            ))}
-          </Select>
-        </ConfigProvider>
+            organizationId={project.organizationId}
+          />
+        )}
         {!!value?.token && (
           <InputNumber
             min={0}
@@ -213,13 +151,6 @@ export const TaskRewardFormFields: FC<Props> = ({
           )}
         </HeadlessCollapse>
       </Space>
-      {!!project?.organizationId && (
-        <AddTokenModal
-          organizationId={project.organizationId}
-          visible={addCustomToken.isOn}
-          onClose={handleCustomTokenModalClosed}
-        />
-      )}
       <AddProjectPaymentMethodModal
         projectId={projectId}
         visible={addPaymentMethod.isOn}

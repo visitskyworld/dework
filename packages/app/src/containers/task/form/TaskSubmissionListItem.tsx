@@ -79,7 +79,6 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
         ownerIds: task.owners.map((owner) => owner.id),
         reward: task.reward && {
           amount: task.reward.amount,
-          trigger: task.reward.trigger,
           peggedToUsd: task.reward.peggedToUsd,
           tokenId: task.reward.token.id,
         },
