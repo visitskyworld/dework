@@ -28,11 +28,12 @@ export function useToggle(defaultIsOn: boolean = false): UseToggleHook {
   );
 }
 
-export function useRunning<P extends any[], R extends Promise<any>>(
+export function useRunning<R, P extends any[]>(
   callback: (...args: P) => R
-) {
+): [(...args: P) => R, boolean] {
   const [isRunning, setIsRunning] = useState(false);
-  return [
+
+  const handleRun = useCallback(
     (...args: P): R => {
       const response = callback(...args);
       if (response instanceof Promise) {
@@ -41,8 +42,10 @@ export function useRunning<P extends any[], R extends Promise<any>>(
       }
       return response;
     },
-    isRunning,
-  ] as const;
+    [callback]
+  );
+
+  return [handleRun, isRunning];
 }
 
 export function useRunningCallback<T extends (...args: any[]) => any>(
@@ -100,4 +103,15 @@ export function useMounted() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   return mounted;
+}
+
+export function useLocalState<T extends string>(name: string, defaultValue: T) {
+  const [value, setValue] = useState<T>(() => {
+    const savedValue = localStorage.getItem(name) as T;
+    return savedValue ?? defaultValue;
+  });
+  useEffect(() => {
+    localStorage.setItem(name, value);
+  }, [name, value]);
+  return [value, setValue] as const;
 }
