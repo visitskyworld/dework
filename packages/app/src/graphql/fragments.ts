@@ -615,6 +615,7 @@ export const organizationDetails = gql`
     ...Organization
     tagline
     description
+    mintTaskNFTs
     projects {
       ...Project
       taskCount

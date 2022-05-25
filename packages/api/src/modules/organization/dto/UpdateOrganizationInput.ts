@@ -20,4 +20,7 @@ export class UpdateOrganizationInput {
 
   @Field({ nullable: true })
   public imageUrl?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  public mintTaskNFTs?: boolean;
 }

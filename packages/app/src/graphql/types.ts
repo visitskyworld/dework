@@ -564,6 +564,7 @@ export interface UpdateOrganizationMutation_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: UpdateOrganizationMutation_organization_projects[];
   workspaces: UpdateOrganizationMutation_organization_workspaces[];
   tags: UpdateOrganizationMutation_organization_tags[];
@@ -838,6 +839,7 @@ export interface CreateProjectMutation_project_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: CreateProjectMutation_project_organization_projects[];
   workspaces: CreateProjectMutation_project_organization_workspaces[];
   tags: CreateProjectMutation_project_organization_tags[];
@@ -4797,6 +4799,7 @@ export interface CreateProjectsFromNotionMutation_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: CreateProjectsFromNotionMutation_organization_projects[];
   workspaces: CreateProjectsFromNotionMutation_organization_workspaces[];
   tags: CreateProjectsFromNotionMutation_organization_tags[];
@@ -4966,6 +4969,7 @@ export interface CreateProjectsFromTrelloMutation_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: CreateProjectsFromTrelloMutation_organization_projects[];
   workspaces: CreateProjectsFromTrelloMutation_organization_workspaces[];
   tags: CreateProjectsFromTrelloMutation_organization_tags[];
@@ -5135,6 +5139,7 @@ export interface CreateProjectsFromGithubMutation_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: CreateProjectsFromGithubMutation_organization_projects[];
   workspaces: CreateProjectsFromGithubMutation_organization_workspaces[];
   tags: CreateProjectsFromGithubMutation_organization_tags[];
@@ -7359,6 +7364,7 @@ export interface GetOrganizationDetailsQuery_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: GetOrganizationDetailsQuery_organization_projects[];
   workspaces: GetOrganizationDetailsQuery_organization_workspaces[];
   tags: GetOrganizationDetailsQuery_organization_tags[];
@@ -7539,6 +7545,7 @@ export interface GetOrganizationTaskViewsQuery_organization {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: GetOrganizationTaskViewsQuery_organization_projects[];
   workspaces: GetOrganizationTaskViewsQuery_organization_workspaces[];
   tags: GetOrganizationTaskViewsQuery_organization_tags[];
@@ -14067,6 +14074,7 @@ export interface OrganizationDetails {
   tagline: string | null;
   permalink: string;
   description: string | null;
+  mintTaskNFTs: boolean;
   projects: OrganizationDetails_projects[];
   workspaces: OrganizationDetails_workspaces[];
   tags: OrganizationDetails_tags[];
@@ -15085,6 +15093,7 @@ export interface UpdateOrganizationInput {
   description?: string | null;
   tagIds?: Scalar.UUID[] | null;
   imageUrl?: string | null;
+  mintTaskNFTs?: boolean | null;
 }
 
 export interface UpdatePaymentMethodInput {
