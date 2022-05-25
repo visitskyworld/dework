@@ -22,7 +22,6 @@ import {
   GetPaginatedTasksQuery,
   GetPaginatedTasksQueryVariables,
   PaymentMethod,
-  TaskViewField,
 } from "@dewo/app/graphql/types";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -499,23 +498,5 @@ export function useTaskViewLayoutData(
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [observables, forceUpdater, fetchingMore, options.filter, options.sort]
-  );
-}
-
-export function useTaskViewFields() {
-  const { currentView } = useTaskViewContext();
-  return useMemo(
-    () =>
-      new Set(
-        currentView?.fields ?? [
-          TaskViewField.gating,
-          TaskViewField.name,
-          TaskViewField.skills,
-          TaskViewField.reward,
-          TaskViewField.assignees,
-          TaskViewField.createdAt,
-        ]
-      ),
-    [currentView?.fields]
   );
 }

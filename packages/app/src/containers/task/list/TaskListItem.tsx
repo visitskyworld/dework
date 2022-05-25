@@ -10,7 +10,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import styles from "./TaskListItem.module.less";
 import { usePrefetchTaskDetailsOnHover } from "../card/usePrefetchTaskDetailsOnHover";
 import { NumberOutlined } from "@ant-design/icons";
-import { useTaskViewFields } from "../views/hooks";
+import { useTaskViewFields } from "../views/TaskViewFieldsContext";
 import moment from "moment";
 import { useUpdateTask } from "../hooks";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -112,6 +112,15 @@ export const TaskListItem: FC<Props> = ({
             style={{ width: 80 }}
           >
             {moment(task.createdAt).fromNow()}
+          </Typography.Text>
+        )}
+        {fields.has(TaskViewField.doneAt) && !!task.doneAt && (
+          <Typography.Text
+            type="secondary"
+            className="ant-typography-caption"
+            style={{ width: 80 }}
+          >
+            {moment(task.doneAt).fromNow()}
           </Typography.Text>
         )}
         {fields.has(TaskViewField.button) && (

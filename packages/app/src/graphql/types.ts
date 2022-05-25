@@ -14695,6 +14695,7 @@ export enum TaskViewField {
   assignees = "assignees",
   button = "button",
   createdAt = "createdAt",
+  doneAt = "doneAt",
   dueDate = "dueDate",
   gating = "gating",
   name = "name",

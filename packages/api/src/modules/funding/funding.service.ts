@@ -172,6 +172,7 @@ export class FundingService {
           doneAt: { gte: session.startDate, lt: session.endDate },
           statuses: [TaskStatus.DONE],
           projectIds: projects.map((p) => p.id),
+          cursor,
         },
         {
           field: TaskViewSortByField.createdAt,

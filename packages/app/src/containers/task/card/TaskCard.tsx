@@ -16,7 +16,7 @@ import { TaskGatingIcon } from "./TaskGatingIcon";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePrefetchTaskDetailsOnHover } from "./usePrefetchTaskDetailsOnHover";
-import { useTaskViewFields } from "../views/hooks";
+import { useTaskViewFields } from "../views/TaskViewFieldsContext";
 import { NumberOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { SubtaskList } from "../list/SubtaskList";
@@ -135,6 +135,11 @@ export const TaskCard: FC<TaskCardProps> = ({
       {fields.has(TaskViewField.createdAt) && (
         <Typography.Text type="secondary" className="ant-typography-caption">
           {moment(task.createdAt).fromNow()}
+        </Typography.Text>
+      )}
+      {fields.has(TaskViewField.doneAt) && !!task.doneAt && (
+        <Typography.Text type="secondary" className="ant-typography-caption">
+          {moment(task.doneAt).fromNow()}
         </Typography.Text>
       )}
       {showReview && (

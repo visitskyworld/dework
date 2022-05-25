@@ -25,6 +25,7 @@ import {
 import { useProjectDetails, useProjectTaskTags } from "../../project/hooks";
 import { useOrganizationRoles } from "../../rbac/hooks";
 import { useUser, useUserTaskViews } from "../../user/hooks";
+import { TaskViewFieldsProvider } from "./TaskViewFieldsContext";
 
 const buildKey = (projectId: string) =>
   `TaskViewProvider.lastViewId.${projectId}`;
@@ -235,6 +236,7 @@ const TaskViewProvider: FC<{
     [views, localViewChanges]
   );
 
+  const currentView = viewWithLocalChanges ?? view;
   return (
     <TaskViewContext.Provider
       value={{
@@ -247,7 +249,7 @@ const TaskViewProvider: FC<{
             ),
           [localViewChanges, views]
         ),
-        currentView: viewWithLocalChanges ?? view,
+        currentView,
         hasLocalChanges,
         onChangeViewLocally,
         onResetLocalChanges,
@@ -260,7 +262,9 @@ const TaskViewProvider: FC<{
         onSearchQueryChange,
       }}
     >
-      {useMemo(() => children, [children])}
+      <TaskViewFieldsProvider fields={currentView?.fields}>
+        {useMemo(() => children, [children])}
+      </TaskViewFieldsProvider>
     </TaskViewContext.Provider>
   );
 };

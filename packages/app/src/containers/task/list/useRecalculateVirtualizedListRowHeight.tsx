@@ -2,7 +2,7 @@ import { MutableRefObject, ReactNode, useCallback, useMemo } from "react";
 import { List, CellMeasurerCache } from "react-virtualized";
 import { usePrevious } from "@dewo/app/util/hooks";
 import _ from "lodash";
-import { useTaskViewFields } from "../views/hooks";
+import { useTaskViewFields } from "../views/TaskViewFieldsContext";
 
 export interface VirtualizedListRow {
   id?: string;

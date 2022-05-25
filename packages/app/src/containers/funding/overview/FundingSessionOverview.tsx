@@ -6,6 +6,7 @@ import {
   SearchTasksInput,
   Task,
   TaskStatus,
+  TaskViewField,
   TaskViewSortByDirection,
   TaskViewSortByField,
 } from "@dewo/app/graphql/types";
@@ -33,6 +34,7 @@ import { RBACPermissionForm } from "../../rbac/RBACPermissionForm";
 import { TaskList } from "../../task/list/TaskList";
 import { TaskRewardTag } from "../../task/TaskRewardTag";
 import { useTaskViewLayoutData } from "../../task/views/hooks";
+import { TaskViewFieldsProvider } from "../../task/views/TaskViewFieldsContext";
 import {
   useCloseFundingSession,
   useFundingSession,
@@ -50,8 +52,15 @@ interface VoteType {
 }
 
 const voteTypes: VoteType[] = [
-  { emoji: "🙂", weight: 1, tooltip: "Met expectations" },
-  { emoji: "😄", weight: 3, tooltip: "Exceeded expectations" },
+  // { emoji: "🙂", weight: 1, tooltip: "Met expectations" },
+  { emoji: "😄", weight: 1, tooltip: "Exceeded expectations" },
+  { emoji: "🤯", weight: 3, tooltip: "Exceptional work" },
+];
+
+const fields: TaskViewField[] = [
+  TaskViewField.name,
+  TaskViewField.assignees,
+  TaskViewField.doneAt,
 ];
 
 export const FundingSessionOverview: FC<Props> = ({ id }) => {
@@ -112,7 +121,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           {voteTypes.map((voteType, index) => (
             <Tooltip key={index} title={voteType.tooltip}>
               <Button
-                type={currentWeight === voteType.weight ? "primary" : "text"}
+                type={currentWeight === voteType.weight ? "primary" : "default"}
                 children={voteType.emoji}
                 shape="circle"
                 disabled={closed}
@@ -246,12 +255,14 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                   </Collapse.Panel>
                 )}
                 <Collapse.Panel header="Completed Tasks" key="tasks">
-                  <div style={{ height: 500 }}>
-                    <TaskList
-                      showHeaders={false}
-                      data={data}
-                      renderTaskExtra={!!user ? renderTaskExtra : undefined}
-                    />
+                  <div style={{ minHeight: 500, height: "70vh" }}>
+                    <TaskViewFieldsProvider fields={fields}>
+                      <TaskList
+                        showHeaders={false}
+                        data={data}
+                        renderTaskExtra={!!user ? renderTaskExtra : undefined}
+                      />
+                    </TaskViewFieldsProvider>
                   </div>
                 </Collapse.Panel>
               </Collapse>
