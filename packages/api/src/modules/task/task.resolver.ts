@@ -65,11 +65,6 @@ export class TaskResolver {
     // return _.sortBy(task.tags, (t) => t.createdAt);
   }
 
-  @ResolveField(() => [TaskReaction])
-  public async reactions(@Parent() task: Task): Promise<TaskReaction[]> {
-    return [];
-  }
-
   @ResolveField(() => [User])
   public async assignees(@Parent() task: Task): Promise<User[]> {
     if (!!task.assignees) return task.assignees;

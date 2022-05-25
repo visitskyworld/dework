@@ -474,6 +474,7 @@ export class TaskSearchService implements OnModuleInit {
       reward,
       votes: reactions.filter((r) => r.reaction === ":arrow_up_small:").length,
       spam:
+        task.spam ||
         [task.name, project.name, organization.name].some((s) =>
           demoOrTestRegex.test(s)
         ) ||

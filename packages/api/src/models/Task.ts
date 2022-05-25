@@ -215,6 +215,9 @@ export class Task extends Audit {
   @Field(() => TaskGatingType)
   public gating!: TaskGatingType;
 
+  @Column({ default: false })
+  public spam!: boolean;
+
   @Field()
   public slug!: string;
 
