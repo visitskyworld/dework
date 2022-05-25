@@ -39,10 +39,11 @@ export const ServerErrorModal: FC<Props> = ({ onErrorRef }) => {
           ? error.networkError.statusCode
           : undefined;
       const is5XX = !!statusCode && 500 <= statusCode && statusCode < 599;
+      const is400 = statusCode === 400;
       // const failedToFetch =
       //   !!error.networkError?.message.includes("Failed to fetch");
       // setVisible(is5XX || failedToFetch);
-      setVisible(is5XX);
+      setVisible(is5XX || is400);
     };
   }, [onErrorRef]);
 
