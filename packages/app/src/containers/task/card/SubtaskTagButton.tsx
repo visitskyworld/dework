@@ -6,7 +6,8 @@ import {
 import { Subtask, TaskStatus } from "@dewo/app/graphql/types";
 import { Progress, Tag } from "antd";
 import * as Colors from "@ant-design/colors";
-import React, { FC, useMemo } from "react";
+import React, { FC, MouseEventHandler, useCallback, useMemo } from "react";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 
 interface Props {
   subtasks: Subtask[];
@@ -24,8 +25,15 @@ export const SubtaskTagButton: FC<Props> = ({
     () => subtasks.filter((t) => t.status === TaskStatus.DONE),
     [subtasks]
   );
+  const handleClick = useCallback<MouseEventHandler<HTMLSpanElement>>(
+    (e) => {
+      stopPropagation(e);
+      onToggle?.();
+    },
+    [onToggle]
+  );
   return (
-    <Tag key="subtasks" onClick={onToggle} style={{ cursor: "pointer" }}>
+    <Tag onClick={handleClick} style={{ cursor: "pointer" }}>
       {doneSubtasks.length === subtasks.length ? (
         <CheckCircleFilled style={{ color: Colors.green.primary }} />
       ) : (

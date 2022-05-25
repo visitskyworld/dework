@@ -15,7 +15,6 @@ import { PRIORITY_LABEL } from "../board/util";
 import { TaskPriorityIcon } from "@dewo/app/components/icons/task/TaskPriority";
 import { TaskRewardTag } from "../TaskRewardTag";
 import { SkillTag } from "@dewo/app/components/SkillTag";
-import { stopPropagation } from "@dewo/app/util/eatClick";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import { DropdownSelect } from "@dewo/app/components/DropdownSelect";
 import { useUpdateTask } from "../hooks";
@@ -132,10 +131,7 @@ export const TaskTagsRow: FC<Props> = ({
 
   if (!tagComponentsToRender.length) return null;
   return (
-    <Row
-      style={{ ...style, marginLeft: 0, marginRight: 0, rowGap: 4 }}
-      onClick={stopPropagation}
-    >
+    <Row style={{ ...style, marginLeft: 0, marginRight: 0, rowGap: 4 }}>
       {tagComponentsToRender}
     </Row>
   );
