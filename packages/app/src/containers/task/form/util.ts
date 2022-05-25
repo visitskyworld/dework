@@ -7,6 +7,7 @@ import {
 import { Constants } from "@dewo/app/util/constants";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import moment from "moment";
+import { SubtaskTableRowData } from "./subtask/SubtaskTable";
 import { TaskFormValues, TaskRewardFormValues } from "./types";
 
 export const toTaskReward = (
@@ -60,4 +61,14 @@ export const toTaskFormValues = (
   reward: toTaskRewardFormValues(task.reward ?? undefined),
   gating: task.gating,
   roleIds: roles.map((r) => r.id),
+  subtasks: task.subtasks.map(
+    (subtask): SubtaskTableRowData => ({
+      key: subtask.id,
+      name: subtask.name,
+      description: subtask.description ?? undefined,
+      assigneeIds: subtask.assignees.map((a) => a.id) ?? [],
+      dueDate: subtask.dueDate ?? null,
+      status: subtask.status,
+    })
+  ),
 });
