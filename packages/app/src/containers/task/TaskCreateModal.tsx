@@ -1,6 +1,6 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task } from "@dewo/app/graphql/types";
+import { Task, TaskViewFilterType } from "@dewo/app/graphql/types";
 import { Button, message, Modal, Typography } from "antd";
 import React, { FC, useMemo, useCallback } from "react";
 import { useCreateTaskFromFormValues } from "./hooks";
@@ -10,6 +10,7 @@ import { TaskFormValues } from "./form/types";
 import { useRouter } from "next/router";
 import { useProject } from "../project/hooks";
 import moment from "moment";
+import { useTaskViewContext } from "./views/TaskViewContext";
 import { LocalStorage } from "@dewo/app/util/LocalStorage";
 
 const buildKey = (initialValues: Partial<TaskFormValues>) =>
@@ -34,6 +35,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   onDone,
 }) => {
   const { user } = useAuthContext();
+  const { currentView } = useTaskViewContext();
 
   const storedValuesKey = useMemo(
     () => buildKey(initialValues),
@@ -65,21 +67,52 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     status: initialValues.status,
     owners: !!user ? [user] : [],
   });
+
+  const taskGatingDefault = useMemo(
+    () => user?.taskGatingDefaults.find((d) => d.projectId === projectId),
+    [projectId, user?.taskGatingDefaults]
+  );
+
+  const viewValues = useMemo(() => {
+    const filter = (type: TaskViewFilterType) =>
+      currentView?.filters.find((filter) => filter.type === type);
+
+    const priority = filter(TaskViewFilterType.PRIORITIES)?.priorities?.[0];
+    const tagIds = filter(TaskViewFilterType.TAGS)?.tagIds;
+    const assigneeIds = filter(
+      TaskViewFilterType.ASSIGNEES
+    )?.assigneeIds?.filter((id): id is string => !!id);
+    const roleIds =
+      filter(TaskViewFilterType.ROLES)?.roleIds ??
+      taskGatingDefault?.roles.map((r) => r.id);
+    const skillIds = filter(TaskViewFilterType.SKILLS)?.skillIds;
+    const ownerIds = (() => {
+      if (!canCreateTaskOwner) return [];
+      const ids = filter(TaskViewFilterType.OWNERS)?.ownerIds;
+      if (!!ids) return ids;
+      if (!!user) return [user.id];
+      return [];
+    })();
+
+    return { tagIds, priority, assigneeIds, roleIds, ownerIds, skillIds };
+  }, [
+    currentView?.filters,
+    taskGatingDefault?.roles,
+    canCreateTaskOwner,
+    user,
+  ]);
+
   const extendedInitialValues = useMemo<Partial<TaskFormValues>>(() => {
-    const taskGatingDefault = user?.taskGatingDefaults.find(
-      (d) => d.projectId === projectId
-    );
     return {
-      ownerIds: canCreateTaskOwner && !!user ? [user.id] : [],
       gating: taskGatingDefault?.type,
-      roleIds: taskGatingDefault?.roles.map((r) => r.id),
       ...storedValues,
       dueDate: !!storedValues?.dueDate
         ? moment(storedValues.dueDate)
         : undefined,
       ...initialValues,
+      ...viewValues,
     };
-  }, [initialValues, storedValues, projectId, canCreateTaskOwner, user]);
+  }, [taskGatingDefault?.type, storedValues, initialValues, viewValues]);
 
   const createTask = useCreateTaskFromFormValues();
   const { project } = useProject(projectId);

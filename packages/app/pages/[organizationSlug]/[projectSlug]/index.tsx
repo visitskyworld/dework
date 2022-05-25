@@ -132,13 +132,15 @@ const Page: NextPage = () => {
       />
       {!!details && <ProjectSeo project={details} />}
       {!!project && (
-        <TaskCreateModal
-          projectId={project.id}
-          initialValues={createFormInitialValues}
-          visible={router.route.endsWith("/create")}
-          onDone={() => router.push(project.permalink)}
-          onCancel={() => router.push(project.permalink)}
-        />
+        <ProjectTaskViewProvider projectId={projectId}>
+          <TaskCreateModal
+            projectId={project.id}
+            initialValues={createFormInitialValues}
+            visible={router.route.endsWith("/create")}
+            onDone={() => router.push(project.permalink)}
+            onCancel={() => router.push(project.permalink)}
+          />
+        </ProjectTaskViewProvider>
       )}
     </Layout>
   );
