@@ -139,6 +139,7 @@ export const TaskForm: FC<TaskFormProps> = ({
 
   const handleChange = useCallback(
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
+      changed.skillIds = changed.skillIds?.slice(0, 2);
       const shouldResetRoles =
         changed.gating && changed.gating !== TaskGatingType.ROLES;
 
@@ -360,6 +361,9 @@ export const TaskForm: FC<TaskFormProps> = ({
           <Form.Item
             name="skillIds"
             hidden={!canChange("skillIds") && !values.skillIds?.length}
+            rules={[
+              { type: "array", max: 2, message: "Select at most 2 skills" },
+            ]}
             label={
               <>
                 Skills
