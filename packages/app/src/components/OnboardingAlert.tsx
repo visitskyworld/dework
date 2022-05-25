@@ -1,7 +1,7 @@
 import { Alert, AlertProps } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useAmplitude } from "../util/analytics/AmplitudeContext";
-import { isSSR } from "../util/isSSR";
+import { LocalStorage } from "../util/LocalStorage";
 
 interface Props extends AlertProps {
   name: string;
@@ -13,12 +13,12 @@ export const OnboardingAlert: FC<Props> = ({
   ...alertProps
 }) => {
   const key = `OnboardingAlert.v1.${name}`;
-  const hidden = useMemo(() => isSSR || !!localStorage.getItem(key), [key]);
+  const hidden = useMemo(() => LocalStorage.getItem(key), [key]);
 
   const { logEvent } = useAmplitude();
   const handleClose = useCallback(() => {
     logEvent("Close onboarding alert", { name });
-    localStorage.setItem(key, String(true));
+    LocalStorage.setItem(key, String(true));
   }, [key, logEvent, name]);
 
   if (hidden) return null;

@@ -37,6 +37,7 @@ import {
 import { isSSR } from "@dewo/app/util/isSSR";
 import { Constants } from "@dewo/app/util/constants";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
+import { LocalStorage } from "@dewo/app/util/LocalStorage";
 
 // Team Dework role ID
 const DEBUG_ROLE = Constants.DEV_ROLE_ID;
@@ -45,7 +46,7 @@ export function useIsDev() {
   const userRoles = useUserRoles(isSSR ? undefined : user?.id);
   const isDev = useMemo(
     () =>
-      global?.localStorage?.getItem("DEWO_DEV") ||
+      !!LocalStorage.getItem("DEWO_DEV") ||
       userRoles?.roles.some((role) => role.id === DEBUG_ROLE),
     [userRoles]
   );

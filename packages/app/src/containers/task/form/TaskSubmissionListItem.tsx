@@ -9,6 +9,7 @@ import {
   TaskSubmission,
 } from "@dewo/app/graphql/types";
 import { useRunning, useToggle } from "@dewo/app/util/hooks";
+import { LocalStorage } from "@dewo/app/util/LocalStorage";
 import { Button, List, Modal, Space, Tooltip, Typography } from "antd";
 import moment from "moment";
 import React, { FC, useCallback, useMemo, useState } from "react";
@@ -115,9 +116,9 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
   const shouldApproveMultiple = useMemo(() => {
     const key = `Task.${task.id}.approveMultiple`;
     if (_shouldApproveMultiple) {
-      localStorage.setItem(key, "true");
+      LocalStorage.setItem(key, "true");
     }
-    return localStorage.getItem(key) === "true";
+    return LocalStorage.getItem(key) === "true";
   }, [task.id, _shouldApproveMultiple]);
 
   return (

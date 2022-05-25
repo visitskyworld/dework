@@ -1,4 +1,4 @@
-import { isSSR } from "@dewo/app/util/isSSR";
+import { LocalStorage } from "@dewo/app/util/LocalStorage";
 import { Button, Popconfirm } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 
@@ -27,11 +27,11 @@ export const TaskFormCreateButton: FC<Props> = ({
   );
 
   const dontShowAgain = useCallback(() => {
-    localStorage.setItem(key, String(true));
+    LocalStorage.setItem(key, String(true));
     onSubmit();
   }, [onSubmit]);
 
-  const skip = useMemo(() => isSSR || !!localStorage.getItem(key), []);
+  const skip = useMemo(() => !!LocalStorage.getItem(key), []);
   if (!showSkillsPrompt || skip) return button;
   return (
     <Popconfirm

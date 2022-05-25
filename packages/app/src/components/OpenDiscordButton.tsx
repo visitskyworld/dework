@@ -3,6 +3,7 @@ import { Button, ButtonProps, Checkbox, Dropdown, Menu } from "antd";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { useRunning } from "../util/hooks";
 import { isSSR } from "../util/isSSR";
+import { LocalStorage } from "../util/LocalStorage";
 
 const defaultLauncherKey = "OpenDiscordButton.defaultLauncher";
 enum DiscordLauncher {
@@ -19,7 +20,7 @@ export const OpenDiscordButton: FC<Props> = ({ href, ...buttonProps }) => {
   const [handleClick, loading] = useRunning(
     useCallback(
       async (launcher: DiscordLauncher) => {
-        if (saveAsDefault) localStorage.setItem(defaultLauncherKey, launcher);
+        if (saveAsDefault) LocalStorage.setItem(defaultLauncherKey, launcher);
 
         const link = typeof href === "string" ? href : await href();
         if (launcher === DiscordLauncher.app) {
@@ -36,7 +37,7 @@ export const OpenDiscordButton: FC<Props> = ({ href, ...buttonProps }) => {
     () =>
       isSSR
         ? undefined
-        : (localStorage.getItem(defaultLauncherKey) as
+        : (LocalStorage.getItem(defaultLauncherKey) as
             | DiscordLauncher
             | undefined),
     []

@@ -5,7 +5,7 @@ import {
   UpdateTaskViewInput,
   User,
 } from "@dewo/app/graphql/types";
-import { isSSR } from "@dewo/app/util/isSSR";
+import { LocalStorage } from "@dewo/app/util/LocalStorage";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import React, {
@@ -177,14 +177,13 @@ const TaskViewProvider: FC<{
   };
 
   const view = useMemo(() => {
-    if (isSSR) return undefined;
     if (!!tab) return undefined;
     if (!!viewSlug) {
       const view = views?.find((v) => v.slug === viewSlug);
       if (!!view) return view;
     }
 
-    const lastViewId = localStorage.getItem(lastViewIdKey);
+    const lastViewId = LocalStorage.getItem(lastViewIdKey);
     const lastView = views?.find((v) => v.id === lastViewId);
     if (!!lastView) return lastView;
     return views?.[0];
@@ -198,9 +197,9 @@ const TaskViewProvider: FC<{
   }, [view, views?.length, tab]);
 
   useEffect(() => {
-    const lastViewId = localStorage.getItem(lastViewIdKey) ?? undefined;
+    const lastViewId = LocalStorage.getItem(lastViewIdKey) ?? undefined;
     if (!!view && view.id !== lastViewId) {
-      localStorage.setItem(lastViewIdKey, view.id);
+      LocalStorage.setItem(lastViewIdKey, view.id);
     }
   }, [view, lastViewIdKey]);
 

@@ -10,6 +10,7 @@ import { TaskFormValues } from "./form/types";
 import { useRouter } from "next/router";
 import { useProject } from "../project/hooks";
 import moment from "moment";
+import { LocalStorage } from "@dewo/app/util/LocalStorage";
 
 const buildKey = (initialValues: Partial<TaskFormValues>) =>
   `TaskCreateModal.v2.storedValues(${JSON.stringify(
@@ -40,7 +41,7 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
   );
   const storedValues = useMemo(() => {
     try {
-      const storedValuesString = localStorage.getItem(storedValuesKey);
+      const storedValuesString = LocalStorage.getItem(storedValuesKey);
       if (!storedValuesString) return undefined;
       return JSON.parse(storedValuesString);
     } catch {
@@ -49,12 +50,12 @@ export const TaskCreateModal: FC<TaskCreateModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedValuesKey, visible]);
   const clearStoredValues = useCallback(
-    () => localStorage.removeItem(storedValuesKey),
+    () => LocalStorage.removeItem(storedValuesKey),
     [storedValuesKey]
   );
   const setStoredValues = useCallback(
     (values: Partial<TaskFormValues>) =>
-      localStorage.setItem(storedValuesKey, JSON.stringify(values)),
+      LocalStorage.setItem(storedValuesKey, JSON.stringify(values)),
     [storedValuesKey]
   );
 
