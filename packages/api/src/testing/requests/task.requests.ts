@@ -63,12 +63,6 @@ export class TaskRequests {
           name
           type
         }
-        payment {
-          id
-          status
-          paymentMethodId
-          data
-        }
       }
       applications {
         ...TaskApplication

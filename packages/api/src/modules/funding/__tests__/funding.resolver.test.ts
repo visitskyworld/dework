@@ -1,3 +1,4 @@
+import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { TaskStatus } from "@dewo/api/models/Task";
 import { User } from "@dewo/api/models/User";
 import { Fixtures } from "@dewo/api/testing/Fixtures";
@@ -24,10 +25,13 @@ describe("FundingResolver", () => {
 
   describe("Mutations", () => {
     describe("createFundingSession", () => {
-      it("should succeed to create for user w MANAGE_ORGANIZATION", async () => {
+      it("should succeed to create for user w MANAGE_FUNDING", async () => {
         const token = await fixtures.createPaymentToken();
         const { user, project, organization } =
           await fixtures.createUserOrgProject();
+        await fixtures.grantPermissions(user.id, organization.id, [
+          { permission: RulePermission.MANAGE_FUNDING },
+        ]);
         const input: CreateFundingSessionInput = {
           organizationId: organization.id,
           projectIds: [project.id],
@@ -157,6 +161,9 @@ describe("FundingResolver", () => {
         const amount = 1_000_000;
 
         const { user, organization } = await fixtures.createUserOrgProject();
+        await fixtures.grantPermissions(user.id, organization.id, [
+          { permission: RulePermission.MANAGE_FUNDING },
+        ]);
         const userWith1Review = await fixtures.createUser();
         const userWith2Reviews = await fixtures.createUser();
         const task1Assignee = await fixtures.createUser();
