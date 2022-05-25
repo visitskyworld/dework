@@ -167,18 +167,17 @@ export class FundingService {
     const tasks: Task[] = [];
     let cursor: string | undefined;
     do {
-      const page = await this.taskSearchService.search({
-        doneAt: {
-          gte: session.startDate,
-          lt: session.endDate,
+      const page = await this.taskSearchService.search(
+        {
+          doneAt: { gte: session.startDate, lt: session.endDate },
+          statuses: [TaskStatus.DONE],
+          projectIds: projects.map((p) => p.id),
         },
-        statuses: [TaskStatus.DONE],
-        projectIds: projects.map((p) => p.id),
-        sortBy: {
+        {
           field: TaskViewSortByField.createdAt,
           direction: TaskViewSortByDirection.ASC,
-        },
-      });
+        }
+      );
 
       tasks.push(...page.tasks);
       cursor = page.cursor;

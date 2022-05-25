@@ -425,6 +425,12 @@ export const paginatedTasks = gql`
   ${Fragments.task}
 `;
 
+export const countTasks = gql`
+  query GetTaskCountQuery($filter: CountTasksInput!) {
+    count: getTaskCount(filter: $filter)
+  }
+`;
+
 export const paginatedTasksWithOrganization = gql`
   query GetPaginatedTasksWithOrganizationQuery(
     $filter: SearchTasksInput!

@@ -1,15 +1,25 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { Button, Card, Col, Row, Space, Spin, Tag, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Space,
+  Spin,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
 import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { useUser, useUserRoles, useUserTasks } from "./hooks";
-import { TaskStatus } from "@dewo/app/graphql/types";
+import { CountTasksInput, TaskStatus } from "@dewo/app/graphql/types";
 import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { TaskCard } from "../task/card/TaskCard";
-import { calculateTaskRewardAsUSD } from "../task/hooks";
+import { calculateTaskRewardAsUSD, useTaskCount } from "../task/hooks";
 import { UserOrganizationCard } from "./UserOrganizationCard";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 
@@ -21,6 +31,21 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
   const isMe = useAuthContext().user?.id === userId;
   const tasks = useUserTasks(userId);
+
+  const baseFilter = useMemo(
+    (): CountTasksInput => ({
+      statuses: [TaskStatus.DONE],
+      assigneeIds: [userId],
+    }),
+    [userId]
+  );
+  const publicCount = useTaskCount(
+    useMemo(() => ({ ...baseFilter, public: true }), [baseFilter])
+  );
+  const privateCount = useTaskCount(
+    useMemo(() => ({ ...baseFilter, public: false }), [baseFilter])
+  );
+
   const completedTasks = useMemo(
     () => tasks?.filter((t) => t.status === TaskStatus.DONE),
     [tasks]
@@ -100,11 +125,35 @@ export const UserProfile: FC<Props> = ({ userId }) => {
           </Card>
         </Col>
         <Col xs={24} lg={16}>
-          <Card
-            style={{ background: "hsl(240, 14%, 13%)" }}
-            size="small"
-            title="Completed tasks"
-          >
+          <Card style={{ background: "hsl(240, 14%, 13%)" }} size="small">
+            <Row style={{ marginTop: 8, marginBottom: 8, columnGap: 4 }}>
+              <Typography.Text strong>Completed tasks</Typography.Text>
+              {!!publicCount && (
+                <Tooltip title="Completed tasks in public projects">
+                  <Tag
+                    color="purple"
+                    style={{ marginLeft: 4, fontWeight: 600 }}
+                  >
+                    {[
+                      "🌎",
+                      publicCount,
+                      publicCount === 1 ? "Task" : "Tasks",
+                    ].join(" ")}
+                  </Tag>
+                </Tooltip>
+              )}
+              {!!privateCount && (
+                <Tooltip title="Completed tasks in private projects">
+                  <Tag color="yellow" style={{ fontWeight: 600 }}>
+                    {[
+                      "🔒",
+                      privateCount,
+                      privateCount === 1 ? "Task" : "Tasks",
+                    ].join(" ")}
+                  </Tag>
+                </Tooltip>
+              )}
+            </Row>
             {!mounted || !completedTasks ? (
               <div style={{ display: "grid", padding: 16 }}>
                 <Spin />

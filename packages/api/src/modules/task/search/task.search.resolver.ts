@@ -1,9 +1,9 @@
-import { Args, Query, Context } from "@nestjs/graphql";
-import { Injectable } from "@nestjs/common";
+import { Args, Query, Context, Int } from "@nestjs/graphql";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { TaskSearchService } from "./task.search.service";
 import { TaskSearchResponse } from "./dto/TaskSearchResponse";
-import { SearchTasksInput } from "./dto/SearchTasksInput";
+import { CountTasksInput, SearchTasksInput } from "./dto/SearchTasksInput";
 import { OrganizationService } from "../../organization/organization.service";
 
 @Injectable()
@@ -34,13 +34,39 @@ export class TaskSearchResolver {
     }
 
     const isQueryingOnLandingPage = !projectIds && !filter.applicantIds;
+    if (filter.public === false && !isQueryingOnLandingPage) {
+      throw new ForbiddenException();
+    }
 
     // TODO(fant): if projectId is set, make sure user has access to it
-    return this.service.search({
-      ...filter,
-      cursor,
-      projectIds,
-      ...(isQueryingOnLandingPage ? { public: true, spam: false } : {}),
-    });
+    return this.service.search(
+      {
+        ...filter,
+        cursor,
+        projectIds,
+        ...(isQueryingOnLandingPage ? { public: true, spam: false } : {}),
+      },
+      filter.sortBy
+    );
+  }
+
+  @Query(() => Int)
+  public async getTaskCount(
+    @Args("filter") filter: CountTasksInput
+  ): Promise<number> {
+    let projectIds = filter.projectIds;
+
+    if (!!filter.organizationIds && filter.organizationIds.length > 0) {
+      const projectsByOrg = await Promise.all(
+        filter.organizationIds.map((orgId) =>
+          this.organizationService.getProjects(orgId, undefined)
+        )
+      );
+
+      if (!projectIds) projectIds = [];
+      projectIds.push(...projectsByOrg.flat().map((p) => p.id));
+    }
+
+    return this.service.count(filter);
   }
 }

@@ -20,7 +20,10 @@ export class DateRangeFilter {
 }
 
 @InputType()
-export class SearchTasksInput {
+export class CountTasksInput {
+  @Field({ nullable: true })
+  public public?: boolean;
+
   @Field({ nullable: true })
   public name?: string;
 
@@ -66,9 +69,12 @@ export class SearchTasksInput {
   @Field({ nullable: true })
   public featured?: boolean;
 
-  @Field()
-  public sortBy!: TaskViewSortBy;
-
   @Field(() => DateRangeFilter, { nullable: true })
   public doneAt?: DateRangeFilter;
+}
+
+@InputType()
+export class SearchTasksInput extends CountTasksInput {
+  @Field()
+  public sortBy!: TaskViewSortBy;
 }

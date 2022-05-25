@@ -1,7 +1,12 @@
 import { Task, TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import { TaskViewSortBy, TaskViewSortByField } from "@dewo/api/models/TaskView";
 import { Bulk } from "@elastic/elasticsearch/api/requestParams";
-import { SearchResponse } from "@elastic/elasticsearch/api/types";
+import {
+  CountResponse,
+  QueryContainer,
+  SearchResponse,
+  Sort,
+} from "@elastic/elasticsearch/api/types";
 import {
   BadRequestException,
   HttpStatus,
@@ -19,6 +24,28 @@ import * as ms from "milliseconds";
 import { Language } from "@dewo/api/models/enums/Language";
 import { formatFixed } from "@ethersproject/bignumber";
 import { DateRangeFilter } from "./dto/SearchTasksInput";
+
+export interface SearchQuery {
+  name?: string;
+  statuses?: TaskStatus[];
+  priorities?: TaskPriority[];
+  languages?: Language[];
+  projectIds?: string[];
+  roleIds?: string[];
+  ownerIds?: (string | null)[];
+  assigneeIds?: (string | null)[];
+  applicantIds?: string[];
+  parentTaskId?: null;
+  tagIds?: string[];
+  skillIds?: string[];
+  hasReward?: boolean;
+  spam?: boolean;
+  public?: boolean;
+  featured?: boolean;
+  doneAt?: DateRangeFilter;
+  size?: number;
+  cursor?: string;
+}
 
 const TaskPriorityNumber: Record<TaskPriority, number> = {
   [TaskPriority.NONE]: 0,
@@ -207,46 +234,37 @@ export class TaskSearchService implements OnModuleInit {
     await this.elasticsearch.indices.refresh({ index: this.indexName });
   }
 
-  public async search(q: {
-    name?: string;
-    statuses?: TaskStatus[];
-    priorities?: TaskPriority[];
-    languages?: Language[];
-    projectIds?: string[];
-    roleIds?: string[];
-    ownerIds?: (string | null)[];
-    assigneeIds?: (string | null)[];
-    applicantIds?: string[];
-    parentTaskId?: null;
-    tagIds?: string[];
-    skillIds?: string[];
-    hasReward?: boolean;
-    spam?: boolean;
-    public?: boolean;
-    featured?: boolean;
-    doneAt?: DateRangeFilter;
-    size?: number;
-    sortBy: TaskViewSortBy;
-    cursor?: string;
-  }): Promise<{
+  public async count(query: SearchQuery): Promise<number> {
+    const response = await this.elasticsearch.count<CountResponse>({
+      index: this.indexName,
+      body: { query: this.createSearchParams(query) },
+    });
+
+    return response.body.count;
+  }
+
+  public async search(
+    query: SearchQuery,
+    sortBy: TaskViewSortBy
+  ): Promise<{
     tasks: Task[];
     cursor?: string;
     total: number;
   }> {
-    const size = q.size ?? this.maxSize;
-    this.logger.debug(`Searching tasks: ${JSON.stringify({ query: q, size })}`);
+    const size = query.size ?? this.maxSize;
+    this.logger.debug(`Searching tasks: ${JSON.stringify({ query, size })}`);
 
     if (size > this.maxSize) {
       throw new BadRequestException(`Size must be less than ${this.maxSize}`);
     }
 
-    const sort = [
-      ...(!!q.name ? [{ _score: "desc" }] : []),
-      { [q.sortBy.field]: q.sortBy.direction.toLowerCase() },
-      ...(q.sortBy.field !== TaskViewSortByField.createdAt
-        ? [{ createdAt: "desc" }]
-        : []),
-    ];
+    const sort: Sort[] = [];
+    if (!!query.name) sort.push({ _score: "desc" });
+    sort.push({ [sortBy.field]: sortBy.direction.toLowerCase() });
+    if (sortBy.field !== TaskViewSortByField.createdAt) {
+      sort.push({ createdAt: "desc" });
+    }
+
     const startedAt = Date.now();
     const response = await this.elasticsearch.search<
       SearchResponse<IndexedTask>
@@ -255,89 +273,11 @@ export class TaskSearchService implements OnModuleInit {
       body: {
         size,
         sort,
-        search_after: !!q.cursor ? this.fromCursor(q.cursor) : undefined,
+        search_after: !!query.cursor
+          ? this.fromCursor(query.cursor)
+          : undefined,
         track_total_hits: 1000,
-        query: {
-          bool: {
-            must: [
-              ...(!!q.name ? [{ match: { name: { query: q.name } } }] : []),
-              ...(q.hasReward === true
-                ? [{ exists: { field: "reward" } }]
-                : []),
-            ],
-            must_not: [
-              ...(q.hasReward === false
-                ? [{ exists: { field: "reward" } }]
-                : []),
-              ...(q.ownerIds?.includes(null)
-                ? [{ exists: { field: "ownerIds" } }]
-                : []),
-              ...(q.assigneeIds?.includes(null)
-                ? [{ exists: { field: "assigneeIds" } }]
-                : []),
-              ...(q.parentTaskId === null
-                ? [{ exists: { field: "parentTaskId" } }]
-                : []),
-            ],
-            filter: [
-              ...(Object.keys(q.doneAt ?? {}) as (keyof DateRangeFilter)[]).map(
-                (op) => ({
-                  range: { doneAt: { [op]: q.doneAt![op] } },
-                })
-              ),
-              ...(!!q.statuses ? [{ terms: { status: q.statuses } }] : []),
-              ...(!!q.languages ? [{ terms: { language: q.languages } }] : []),
-              ...(!!q.priorities
-                ? [
-                    {
-                      terms: {
-                        priority: q.priorities.map(
-                          (p) => TaskPriorityNumber[p]
-                        ),
-                      },
-                    },
-                  ]
-                : []),
-              ...(!!q.projectIds
-                ? [{ terms: { projectId: q.projectIds } }]
-                : []),
-
-              !!q.ownerIds?.filter((id) => !!id).length &&
-                this.toTermSetFilter(
-                  "ownerIds",
-                  q.ownerIds?.filter((id) => !!id)
-                ),
-              !!q.assigneeIds?.filter((id) => !!id).length &&
-                this.toTermSetFilter(
-                  "assigneeIds",
-                  q.assigneeIds?.filter((id) => !!id)
-                ),
-              this.toTermSetFilter(
-                "tagIds",
-                q.tagIds?.filter((id) => !!id)
-              ),
-              this.toTermSetFilter(
-                "applicantIds",
-                q.applicantIds?.filter((id) => !!id)
-              ),
-              this.toTermSetFilter(
-                "skillIds",
-                q.skillIds?.filter((id) => !!id)
-              ),
-              this.toTermSetFilter(
-                "roleIds",
-                q.roleIds?.filter((id) => !!id)
-              ),
-              ...(q.spam !== undefined ? [{ match: { spam: q.spam } }] : []),
-              ...(q.featured !== undefined
-                ? [{ match: { featured: q.featured } }]
-                : []),
-              ...(q.public !== undefined
-                ? [{ match: { public: q.public } }]
-                : []),
-            ].filter((f) => !!f),
-          },
-        },
+        query: this.createSearchParams(query),
       },
     });
 
@@ -356,7 +296,7 @@ export class TaskSearchService implements OnModuleInit {
 
     this.logger.debug(
       `Found tasks: ${JSON.stringify({
-        query: q,
+        query,
         total,
         cursor,
         count: response.body.hits.hits.length,
@@ -393,6 +333,86 @@ export class TaskSearchService implements OnModuleInit {
           _.sortBy(tasks, (t) => results.findIndex((r) => r.id === t.id))
         ),
     };
+  }
+
+  private createSearchParams(q: SearchQuery): QueryContainer {
+    const must: QueryContainer[] = [];
+    if (!!q.name) must.push({ match: { name: { query: q.name } } });
+    if (q.hasReward === true) must.push({ exists: { field: "reward" } });
+
+    const must_not: QueryContainer[] = [];
+    if (q.hasReward === false) {
+      must_not.push({ exists: { field: "reward" } });
+    }
+    if (q.ownerIds?.includes(null)) {
+      must_not.push({ exists: { field: "ownerIds" } });
+    }
+    if (q.assigneeIds?.includes(null)) {
+      must_not.push({ exists: { field: "assigneeIds" } });
+    }
+    if (q.parentTaskId === null) {
+      must_not.push({ exists: { field: "parentTaskId" } });
+    }
+
+    const filter: QueryContainer[] = [];
+    (Object.keys(q.doneAt ?? {}) as (keyof DateRangeFilter)[]).forEach((op) =>
+      filter.push({ range: { doneAt: { [op]: q.doneAt![op] } } })
+    );
+    if (!!q.statuses) {
+      filter.push({ terms: { status: q.statuses } });
+    }
+    if (!!q.languages) {
+      filter.push({ terms: { language: q.languages } });
+    }
+    if (!!q.priorities) {
+      filter.push({
+        terms: {
+          priority: q.priorities.map((p) => TaskPriorityNumber[p]),
+        },
+      });
+    }
+    if (!!q.projectIds) {
+      filter.push({ terms: { projectId: q.projectIds } });
+    }
+    if (!!q.ownerIds?.filter((id) => !!id).length) {
+      filter.push(
+        this.toTermSetFilter(
+          "ownerIds",
+          q.ownerIds?.filter((id) => !!id)
+        )
+      );
+    }
+    if (!!q.assigneeIds?.filter((id) => !!id).length) {
+      filter.push(
+        this.toTermSetFilter(
+          "assigneeIds",
+          q.assigneeIds?.filter((id) => !!id)
+        )
+      );
+    }
+    if (!!q.tagIds) {
+      filter.push(this.toTermSetFilter("tagIds", q.tagIds));
+    }
+    if (!!q.applicantIds) {
+      filter.push(this.toTermSetFilter("applicantIds", q.applicantIds));
+    }
+    if (!!q.skillIds) {
+      filter.push(this.toTermSetFilter("skillIds", q.skillIds));
+    }
+    if (!!q.roleIds) {
+      filter.push(this.toTermSetFilter("roleIds", q.roleIds));
+    }
+    if (q.spam !== undefined) {
+      filter.push({ match: { spam: q.spam } });
+    }
+    if (q.featured !== undefined) {
+      filter.push({ match: { featured: q.featured } });
+    }
+    if (q.public !== undefined) {
+      filter.push({ match: { public: q.public } });
+    }
+
+    return { bool: { must, must_not, filter } };
   }
 
   private async toDocumentReward(task: Task): Promise<number | undefined> {
@@ -466,8 +486,7 @@ export class TaskSearchService implements OnModuleInit {
     };
   }
 
-  private toTermSetFilter(name: string, value: unknown[] | undefined) {
-    if (!value) return undefined;
+  private toTermSetFilter(name: string, value: unknown[]) {
     return {
       terms_set: {
         [name]: { terms: value, minimum_should_match_script: { source: "1" } },

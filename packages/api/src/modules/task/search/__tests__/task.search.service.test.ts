@@ -3,6 +3,7 @@ import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import { Project } from "@dewo/api/models/Project";
 import { Task, TaskPriority, TaskStatus } from "@dewo/api/models/Task";
 import {
+  TaskViewSortBy,
   TaskViewSortByDirection,
   TaskViewSortByField,
 } from "@dewo/api/models/TaskView";
@@ -12,8 +13,7 @@ import { INestApplication } from "@nestjs/common";
 import Bluebird from "bluebird";
 import _ from "lodash";
 import moment from "moment";
-import { SearchTasksInput } from "../dto/SearchTasksInput";
-import { TaskSearchService } from "../task.search.service";
+import { SearchQuery, TaskSearchService } from "../task.search.service";
 
 describe("TaskSearchService", () => {
   let app: INestApplication;
@@ -27,6 +27,11 @@ describe("TaskSearchService", () => {
   });
 
   afterAll(() => app.close());
+
+  const defaultSortBy: TaskViewSortBy = {
+    field: TaskViewSortByField.sortKey,
+    direction: TaskViewSortByDirection.ASC,
+  };
 
   describe("search", () => {
     it("should return matching task", async () => {
@@ -70,17 +75,16 @@ describe("TaskSearchService", () => {
 
       await service.index([...matchingTasks, ...notMatchingTasks], true);
 
-      const res = await service.search({
-        size: 10,
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
+      const res = await service.search(
+        {
+          size: 10,
+          statuses: [TaskStatus.TODO],
+          priorities: [TaskPriority.HIGH, TaskPriority.URGENT],
+          assigneeIds: [user.id],
+          hasReward: false,
         },
-        statuses: [TaskStatus.TODO],
-        priorities: [TaskPriority.HIGH, TaskPriority.URGENT],
-        assigneeIds: [user.id],
-        hasReward: false,
-      });
+        defaultSortBy
+      );
 
       for (const task of matchingTasks) {
         expect(res.tasks).toContainEqual(
@@ -107,14 +111,10 @@ describe("TaskSearchService", () => {
       });
       await service.index([assignedTask, unassignedTask], true);
 
-      const res = await service.search({
-        projectIds: [project.id],
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        assigneeIds: [null],
-      });
+      const res = await service.search(
+        { projectIds: [project.id], assigneeIds: [null] },
+        defaultSortBy
+      );
 
       expect(res.tasks).toContainEqual(
         expect.objectContaining({ id: unassignedTask.id })
@@ -136,14 +136,10 @@ describe("TaskSearchService", () => {
       });
       await service.index([...spammyTasks, notSpammyTask], true);
 
-      const res = await service.search({
-        projectIds: [project.id],
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        spam: false,
-      });
+      const res = await service.search(
+        { projectIds: [project.id], spam: false },
+        defaultSortBy
+      );
 
       for (const task of spammyTasks) {
         expect(res.tasks).not.toContainEqual(
@@ -169,14 +165,10 @@ describe("TaskSearchService", () => {
 
       await service.index([englishTask, chineseTask, japaneseTask], true);
 
-      const res = await service.search({
-        projectIds: [project.id],
-        languages: [Language.CHINESE],
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-      });
+      const res = await service.search(
+        { projectIds: [project.id], languages: [Language.CHINESE] },
+        defaultSortBy
+      );
 
       expect(res.tasks).toContainEqual(
         expect.objectContaining({ id: chineseTask.id })
@@ -207,14 +199,10 @@ describe("TaskSearchService", () => {
       const task = await fixtures.createTask({ projectId: privateProject.id });
       await service.index([task], true);
 
-      const res = await service.search({
-        projectIds: [privateProject.id],
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        public: true,
-      });
+      const res = await service.search(
+        { projectIds: [privateProject.id], public: true },
+        defaultSortBy
+      );
 
       expect(res.tasks).not.toContainEqual(
         expect.objectContaining({ id: task.id })
@@ -227,15 +215,11 @@ describe("TaskSearchService", () => {
       const task = await fixtures.createTask();
       await service.index([task], true);
 
-      const filter: SearchTasksInput = {
+      const query: SearchQuery = {
         projectIds: [task.projectId],
         roleIds: [role.id],
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
       };
-      const res1 = await service.search(filter);
+      const res1 = await service.search(query, defaultSortBy);
       expect(res1.tasks).not.toContainEqual(
         expect.objectContaining({ id: task.id })
       );
@@ -247,7 +231,7 @@ describe("TaskSearchService", () => {
       });
       await service.index([task], true);
 
-      const res2 = await service.search(filter);
+      const res2 = await service.search(query, defaultSortBy);
       expect(res2.tasks).toContainEqual(
         expect.objectContaining({ id: task.id })
       );
@@ -267,17 +251,16 @@ describe("TaskSearchService", () => {
       );
       await service.index([todo, before, done, after], true);
 
-      const res = await service.search({
-        projectIds: [projectId],
-        doneAt: {
-          gte: moment("2020-01-02").toDate(),
-          lt: moment("2020-01-04").toDate(),
+      const res = await service.search(
+        {
+          projectIds: [projectId],
+          doneAt: {
+            gte: moment("2020-01-02").toDate(),
+            lt: moment("2020-01-04").toDate(),
+          },
         },
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-      });
+        defaultSortBy
+      );
       expect(res.tasks).toContainEqual(
         expect.objectContaining({ id: done.id })
       );
@@ -308,14 +291,10 @@ describe("TaskSearchService", () => {
       });
       await service.index([task1, task2, task3], true);
 
-      const res = await service.search({
-        projectIds: [project.id],
-        name: "work is cool",
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-      });
+      const res = await service.search(
+        { projectIds: [project.id], name: "work is cool" },
+        defaultSortBy
+      );
 
       expect(res.tasks[0].id).toEqual(task2.id);
       expect(res.tasks[1].id).toEqual(task1.id);
@@ -360,14 +339,13 @@ describe("TaskSearchService", () => {
       });
 
       it("sortKey", async () => {
-        const res = await service.search({
-          size: 3,
-          sortBy: {
+        const res = await service.search(
+          { size: 3, projectIds: [project.id] },
+          {
             field: TaskViewSortByField.sortKey,
             direction: TaskViewSortByDirection.DESC,
-          },
-          projectIds: [project.id],
-        });
+          }
+        );
         expect(res.tasks.map((t) => t.id)).toEqual([
           task2.id,
           task3.id,
@@ -376,14 +354,13 @@ describe("TaskSearchService", () => {
       });
 
       it("createdAt", async () => {
-        const res = await service.search({
-          size: 3,
-          sortBy: {
+        const res = await service.search(
+          { size: 3, projectIds: [project.id] },
+          {
             field: TaskViewSortByField.createdAt,
             direction: TaskViewSortByDirection.ASC,
-          },
-          projectIds: [project.id],
-        });
+          }
+        );
         expect(res.tasks.map((t) => t.id)).toEqual([
           task1.id,
           task2.id,
@@ -392,14 +369,13 @@ describe("TaskSearchService", () => {
       });
 
       it("doneAt", async () => {
-        const res = await service.search({
-          size: 3,
-          sortBy: {
+        const res = await service.search(
+          { size: 3, projectIds: [project.id] },
+          {
             field: TaskViewSortByField.doneAt,
             direction: TaskViewSortByDirection.DESC,
-          },
-          projectIds: [project.id],
-        });
+          }
+        );
         expect(res.tasks.map((t) => t.id)).toEqual([
           task2.id,
           task3.id,
@@ -408,14 +384,13 @@ describe("TaskSearchService", () => {
       });
 
       it("priority", async () => {
-        const res = await service.search({
-          size: 3,
-          sortBy: {
+        const res = await service.search(
+          { size: 3, projectIds: [project.id] },
+          {
             field: TaskViewSortByField.priority,
             direction: TaskViewSortByDirection.ASC,
-          },
-          projectIds: [project.id],
-        });
+          }
+        );
         expect(res.tasks.map((t) => t.id)).toEqual([
           task2.id,
           task1.id,
@@ -424,14 +399,13 @@ describe("TaskSearchService", () => {
       });
 
       it("reward", async () => {
-        const res = await service.search({
-          size: 3,
-          sortBy: {
+        const res = await service.search(
+          { size: 3, projectIds: [project.id] },
+          {
             field: TaskViewSortByField.reward,
             direction: TaskViewSortByDirection.DESC,
-          },
-          projectIds: [project.id],
-        });
+          }
+        );
         expect(res.tasks.map((t) => t.id)).toEqual([
           task1.id,
           task3.id,
@@ -447,24 +421,15 @@ describe("TaskSearchService", () => {
       );
       await service.index(tasks, true);
 
-      const res1 = await service.search({
-        size: 10,
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        projectIds: [project.id],
-      });
+      const res1 = await service.search(
+        { size: 10, projectIds: [project.id] },
+        defaultSortBy
+      );
 
-      const res2 = await service.search({
-        size: 10,
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        projectIds: [project.id],
-        cursor: res1.cursor,
-      });
+      const res2 = await service.search(
+        { size: 10, projectIds: [project.id], cursor: res1.cursor },
+        defaultSortBy
+      );
 
       expect(res1.cursor).toBeDefined();
       expect(res1.tasks.map((t) => t.id)).toEqual(
@@ -487,25 +452,15 @@ describe("TaskSearchService", () => {
       );
       await service.index(tasks, true);
 
-      const res1 = await service.search({
-        size: 10,
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        featured: false,
-        projectIds: [project.id],
-      });
+      const res1 = await service.search(
+        { size: 10, featured: false, projectIds: [project.id] },
+        defaultSortBy
+      );
 
-      const res2 = await service.search({
-        size: 10,
-        sortBy: {
-          field: TaskViewSortByField.sortKey,
-          direction: TaskViewSortByDirection.ASC,
-        },
-        featured: true,
-        projectIds: [project.id],
-      });
+      const res2 = await service.search(
+        { size: 10, featured: true, projectIds: [project.id] },
+        defaultSortBy
+      );
 
       expect(res1.total).toBe(10);
       expect(res2.total).toBe(5);

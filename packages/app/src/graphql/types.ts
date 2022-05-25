@@ -9594,6 +9594,23 @@ export interface GetPaginatedTasksQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetTaskCountQuery
+// ====================================================
+
+export interface GetTaskCountQuery {
+  count: number;
+}
+
+export interface GetTaskCountQueryVariables {
+  filter: CountTasksInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetPaginatedTasksWithOrganizationQuery
 // ====================================================
 
@@ -14735,6 +14752,26 @@ export enum ThreepidSource {
   trello = "trello",
 }
 
+export interface CountTasksInput {
+  public?: boolean | null;
+  name?: string | null;
+  languages?: Language[] | null;
+  statuses?: TaskStatus[] | null;
+  priorities?: TaskPriority[] | null;
+  hasReward?: boolean | null;
+  skillIds?: Scalar.UUID[] | null;
+  roleIds?: Scalar.UUID[] | null;
+  assigneeIds?: (Scalar.UUID | null)[] | null;
+  ownerIds?: (Scalar.UUID | null)[] | null;
+  tagIds?: Scalar.UUID[] | null;
+  applicantIds?: Scalar.UUID[] | null;
+  projectIds?: (Scalar.UUID | null)[] | null;
+  parentTaskId?: Scalar.UUID | null;
+  organizationIds?: Scalar.UUID[] | null;
+  featured?: boolean | null;
+  doneAt?: DateRangeFilter | null;
+}
+
 export interface CreateFileUploadUrlInput {
   fileName: string;
   contentType: string;
@@ -14965,6 +15002,7 @@ export interface ProjectTokenGateInput {
 }
 
 export interface SearchTasksInput {
+  public?: boolean | null;
   name?: string | null;
   languages?: Language[] | null;
   statuses?: TaskStatus[] | null;
@@ -14980,8 +15018,8 @@ export interface SearchTasksInput {
   parentTaskId?: Scalar.UUID | null;
   organizationIds?: Scalar.UUID[] | null;
   featured?: boolean | null;
-  sortBy: TaskViewSortByInput;
   doneAt?: DateRangeFilter | null;
+  sortBy: TaskViewSortByInput;
 }
 
 export interface SetOrganizationDetailInput {

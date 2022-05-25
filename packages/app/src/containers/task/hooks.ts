@@ -63,6 +63,9 @@ import {
   RulePermission,
   RoleWithRules,
   TaskGatingType,
+  GetTaskCountQuery,
+  GetTaskCountQueryVariables,
+  CountTasksInput,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -567,6 +570,14 @@ export function useTask(
   const task = data?.task ?? undefined;
   if (!task || task.id !== taskId) return { task: undefined, error, refetch };
   return { task, error, refetch };
+}
+
+export function useTaskCount(filter: CountTasksInput): number | undefined {
+  const { data } = useQuery<GetTaskCountQuery, GetTaskCountQueryVariables>(
+    Queries.countTasks,
+    { variables: { filter } }
+  );
+  return data?.count;
 }
 
 export function useLazyTaskReactionUsers(taskId: string) {

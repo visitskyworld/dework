@@ -49,20 +49,17 @@ export class DiscordStatusboardService {
       assigneeIds: [null],
       hasReward: true,
       size: this.taskLimit,
-      sortBy: {
-        field: TaskViewSortByField.priority,
-        direction: TaskViewSortByDirection.DESC,
-      },
     };
-    const { tasks } = await this.taskSearchService.search(query);
+    const sortBy = {
+      field: TaskViewSortByField.priority,
+      direction: TaskViewSortByDirection.DESC,
+    };
+    const { tasks } = await this.taskSearchService.search(query, sortBy);
 
     if (tasks.length !== this.taskLimit) {
       const { tasks: tasksWithoutReward } = await this.taskSearchService.search(
-        {
-          ...query,
-          hasReward: false,
-          size: this.taskLimit - tasks.length,
-        }
+        { ...query, hasReward: false, size: this.taskLimit - tasks.length },
+        sortBy
       );
 
       tasks.push(...tasksWithoutReward);
@@ -76,15 +73,17 @@ export class DiscordStatusboardService {
   private async postCommunitySuggestionsStatusBoardMessage(
     integration: ProjectIntegration<ProjectIntegrationType.DISCORD>
   ) {
-    const { tasks } = await this.taskSearchService.search({
-      projectIds: [integration.projectId],
-      statuses: [TaskStatus.COMMUNITY_SUGGESTIONS],
-      size: this.taskLimit,
-      sortBy: {
+    const { tasks } = await this.taskSearchService.search(
+      {
+        projectIds: [integration.projectId],
+        statuses: [TaskStatus.COMMUNITY_SUGGESTIONS],
+        size: this.taskLimit,
+      },
+      {
         field: TaskViewSortByField.votes,
         direction: TaskViewSortByDirection.DESC,
-      },
-    });
+      }
+    );
 
     const project = await integration.project;
     const name = `${project.name} Community Suggestions`;
