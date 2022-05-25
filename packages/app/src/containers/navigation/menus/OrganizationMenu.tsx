@@ -62,7 +62,9 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
       <Menu
         inlineCollapsed
         className={styles.menu}
-        activeKey={router.asPath === basePath ? overviewKey : router.asPath}
+        selectedKeys={[
+          router.asPath === basePath ? overviewKey : router.asPath,
+        ]}
         onSelect={({ key }) =>
           key === overviewKey ? router.push(basePath) : router.push(key)
         }
