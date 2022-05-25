@@ -15,6 +15,7 @@ import {
   OneToOne,
   OneToMany,
   AfterLoad,
+  RelationCount,
 } from "typeorm";
 import slugify from "slugify";
 import { Audit } from "./Audit";
@@ -129,9 +130,17 @@ export class Task extends Audit {
   @Field(() => [TaskApplication])
   public applications!: Promise<TaskApplication[]>;
 
+  @RelationCount((t: Task) => t.applications)
+  @Field(() => Int)
+  public applicationCount!: number;
+
   @OneToMany(() => TaskSubmission, (x: TaskSubmission) => x.task)
   @Field(() => [TaskSubmission])
   public submissions!: Promise<TaskSubmission[]>;
+
+  @RelationCount((t: Task) => t.submissions)
+  @Field(() => Int)
+  public submissionCount!: number;
 
   @OneToMany(() => TaskReaction, (r: TaskReaction) => r.task)
   @Field(() => [TaskReaction])

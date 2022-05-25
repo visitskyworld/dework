@@ -6,14 +6,13 @@ import {
 } from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
-import { Skeleton, Table, Typography } from "antd";
+import { Button, Skeleton, Table, Typography } from "antd";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { SortOrder, TablePaginationConfig } from "antd/lib/table/interface";
 import _ from "lodash";
 import moment from "moment";
 import Link from "next/link";
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { ApplyToTaskButton } from "../task/actions/apply/ApplyToTaskButton";
 import { CreateSubmissionButton } from "../task/actions/submit/CreateSubmissionButton";
 import { TaskTagsRow } from "../task/card/TaskTagsRow";
 import {
@@ -139,7 +138,12 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                         type="text"
                       />
                     ) : (
-                      <ApplyToTaskButton task={task} size="small" type="text" />
+                      <Button
+                        size="small"
+                        type="text"
+                        children="I'm interested"
+                        onClick={() => navigateToTask(task.id)}
+                      />
                     )}
                   </div>
                 )}
@@ -202,10 +206,11 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                           type="text"
                         />
                       ) : (
-                        <ApplyToTaskButton
-                          task={task}
+                        <Button
                           size="small"
                           type="text"
+                          children="I'm interested"
+                          onClick={() => navigateToTask(task.id)}
                         />
                       )}
                     </div>

@@ -107,11 +107,10 @@ export class OrganizationResolver {
 
   @ResolveField(() => [FundingSession])
   public async fundingSessions(
-    @Context("user") _user: User | undefined,
-    @Parent() _organization: Organization
+    @Context("user") user: User | undefined,
+    @Parent() organization: Organization
   ): Promise<FundingSession[]> {
-    return [];
-    // return this.organizationService.getFundingSessions(organization, user?.id);
+    return this.organizationService.getFundingSessions(organization, user?.id);
   }
 
   @ResolveField(() => [ProjectTokenGate])

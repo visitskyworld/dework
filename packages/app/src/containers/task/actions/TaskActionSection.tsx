@@ -1,6 +1,10 @@
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { Task, TaskGatingType, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  TaskDetails,
+  TaskGatingType,
+  TaskStatus,
+} from "@dewo/app/graphql/types";
 import { Divider, Row, Space, Typography } from "antd";
 import React, { FC, ReactElement, useMemo } from "react";
 import { PayButton } from "../board/PayButton";
@@ -18,7 +22,7 @@ import { useTask } from "../hooks";
 import { OpenDiscordButton } from "@dewo/app/components/OpenDiscordButton";
 
 interface Props {
-  task: Task;
+  task: TaskDetails;
 }
 
 const TaskActionSectionContent: FC<{

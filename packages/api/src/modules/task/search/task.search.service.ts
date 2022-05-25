@@ -305,34 +305,33 @@ export class TaskSearchService implements OnModuleInit {
     );
 
     if (!results.length) return { tasks: [], total: 0 };
-    return {
-      cursor,
-      total,
-      tasks: await this.repo
-        .createQueryBuilder("task")
-        .leftJoinAndSelect("task.assignees", "assignee")
-        .leftJoinAndSelect("task.owners", "owner")
-        .leftJoinAndSelect("task.tags", "tag")
-        .leftJoinAndSelect("task.skills", "skill")
-        .leftJoinAndSelect("task.reward", "reward")
-        .leftJoinAndSelect("reward.payments", "rewardPayment")
-        .leftJoinAndSelect("rewardPayment.payment", "payment")
-        .leftJoinAndSelect("reward.token", "token")
-        .leftJoinAndSelect("task.review", "review")
-        .leftJoinAndSelect("task.reactions", "reaction")
-        .leftJoinAndSelect("task.subtasks", "subtask")
-        .leftJoinAndSelect("task.applications", "application")
-        .leftJoinAndSelect("task.submissions", "submission")
-        .innerJoinAndSelect("task.project", "project")
-        .innerJoinAndSelect("project.organization", "organization")
-        .where("task.id IN (:...ids)", { ids: results.map((r) => r.id) })
-        .getMany()
-        .then((tasks) =>
-          // TODO(fant): move this into the SQL query
-          // https://stackoverflow.com/a/35456954/12338002
-          _.sortBy(tasks, (t) => results.findIndex((r) => r.id === t.id))
-        ),
-    };
+    const tasks = await this.repo
+      .createQueryBuilder("task")
+      .leftJoinAndSelect("task.assignees", "assignee")
+      .leftJoinAndSelect("task.owners", "owner")
+      .leftJoinAndSelect("task.tags", "tag")
+      .leftJoinAndSelect("task.skills", "skill")
+      .leftJoinAndSelect("task.reward", "reward")
+      .leftJoinAndSelect("reward.payments", "rewardPayment")
+      .leftJoinAndSelect("rewardPayment.payment", "payment")
+      .leftJoinAndSelect("reward.token", "token")
+      .leftJoinAndSelect("task.review", "review")
+      .leftJoinAndSelect("task.reactions", "reaction")
+      .leftJoinAndSelect("task.subtasks", "subtask")
+      .innerJoinAndSelect("task.project", "project")
+      .innerJoinAndSelect("project.organization", "organization")
+      // Create separate SQL queries for the counts
+      // https://github.com/typeorm/typeorm/issues/1961
+      .loadRelationCountAndMap("task.applicationCount", "task.applications")
+      .loadRelationCountAndMap("task.submissionCount", "task.submissions")
+      .where("task.id IN (:...ids)", { ids: results.map((r) => r.id) })
+      .getMany()
+      .then((tasks) =>
+        // TODO(fant): move this into the SQL query
+        // https://stackoverflow.com/a/35456954/12338002
+        _.sortBy(tasks, (t) => results.findIndex((r) => r.id === t.id))
+      );
+    return { cursor, total, tasks };
   }
 
   private createSearchParams(q: SearchQuery): QueryContainer {

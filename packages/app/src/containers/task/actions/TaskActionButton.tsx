@@ -10,7 +10,6 @@ import { Button } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigateToTask } from "@dewo/app/util/navigation";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { ApplyToTaskButton } from "../actions/apply/ApplyToTaskButton";
 import { useUpdateTask } from "../hooks";
 import { PayButton } from "../board/PayButton";
 import { useShouldShowInlinePayButton } from "../board/util";
@@ -78,7 +77,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
       task.status
     ) &&
     canManage &&
-    !!task.submissions.length
+    !!task.submissionCount
   ) {
     return (
       <Button
@@ -87,9 +86,9 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
         icon={<Icons.EditOutlined />}
         onClick={navigateToTask}
       >
-        {task.submissions.length === 1
+        {task.submissionCount === 1
           ? "1 Submission"
-          : `${task.submissions.length} Submissions`}
+          : `${task.submissionCount} Submissions`}
       </Button>
     );
   }
@@ -97,7 +96,7 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   if (
     task.status === TaskStatus.TODO &&
     canAssignTask &&
-    !!task.applications.length
+    !!task.applicationCount
   ) {
     return (
       <Button
@@ -106,9 +105,9 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
         icon={<Icons.LockOutlined />}
         onClick={navigateToTask}
       >
-        {task.applications.length === 1
+        {task.applicationCount === 1
           ? "1 Applicant"
-          : `${task.applications.length} Applicants`}
+          : `${task.applicationCount} Applicants`}
       </Button>
     );
   }
@@ -145,7 +144,14 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
     canApply &&
     !task.assignees.length
   ) {
-    return <ApplyToTaskButton task={task} size="small" type="text" />;
+    return (
+      <Button
+        size="small"
+        type="text"
+        onClick={navigateToTask}
+        children="I'm interested"
+      />
+    );
   }
 }
 

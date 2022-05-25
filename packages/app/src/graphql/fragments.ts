@@ -392,6 +392,8 @@ export const task = gql`
     sectionId
     number
     gating
+    submissionCount
+    applicationCount
     subtasks {
       ...Subtask
     }
@@ -409,15 +411,6 @@ export const task = gql`
     }
     reward {
       ...TaskReward
-    }
-    applications {
-      id
-      userId
-    }
-    submissions {
-      id
-      userId
-      content
     }
     review {
       ...TaskReview

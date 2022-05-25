@@ -231,9 +231,11 @@ export class TaskService {
       .leftJoinAndSelect("task.review", "review")
       .leftJoinAndSelect("task.reactions", "reaction")
       .leftJoinAndSelect("task.subtasks", "subtask")
-      .leftJoinAndSelect("task.applications", "application")
-      .leftJoinAndSelect("task.submissions", "submission")
       .innerJoinAndSelect("task.project", "project")
+      // Create separate SQL queries for the counts
+      // https://github.com/typeorm/typeorm/issues/1961
+      .loadRelationCountAndMap("task.applicationCount", "task.applications")
+      .loadRelationCountAndMap("task.submissionCount", "task.submissions")
       .where("1 = 1");
 
     if (joinProjectOrganization) {
@@ -273,18 +275,19 @@ export class TaskService {
     if (!!userId) {
       // TODO(fant): this will filter out other task assignees, which is a bug
       query = query.andWhere(
-        new Brackets((qb) =>
-          qb
-            .where("assignee.id = :userId", { userId })
-            .orWhere("owner.id = :userId", { userId })
-            .orWhere("submission.userId = :userId", { userId })
-            .orWhere(
-              new Brackets((qb) =>
-                qb
-                  .where("application.userId = :userId", { userId })
-                  .andWhere("task.status = :todo", { todo: TaskStatus.TODO })
-              )
-            )
+        new Brackets(
+          (qb) =>
+            qb
+              .where("assignee.id = :userId", { userId })
+              .orWhere("owner.id = :userId", { userId })
+          // .orWhere("submission.userId = :userId", { userId })
+          // .orWhere(
+          //   new Brackets((qb) =>
+          //     qb
+          //       .where("application.userId = :userId", { userId })
+          //       .andWhere("task.status = :todo", { todo: TaskStatus.TODO })
+          //   )
+          // )
         )
       );
     } else if (userId === null) {

@@ -5,10 +5,10 @@ import * as Icons from "@ant-design/icons";
 import { useNavigateToTaskApplicationFn } from "@dewo/app/util/navigation";
 import { LoginButton } from "@dewo/app/containers/auth/buttons/LoginButton";
 import { useDeleteTaskApplication } from "../../hooks";
-import { Task } from "@dewo/app/graphql/types";
+import { TaskDetails } from "@dewo/app/graphql/types";
 
 interface Props extends ButtonProps {
-  task: Task;
+  task: TaskDetails;
 }
 
 export const ApplyToTaskButton: FC<Props> = ({ task, ...buttonProps }) => {

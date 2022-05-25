@@ -13,6 +13,7 @@ import { INestApplication } from "@nestjs/common";
 import Bluebird from "bluebird";
 import _ from "lodash";
 import moment from "moment";
+import faker from "faker";
 import { SearchQuery, TaskSearchService } from "../task.search.service";
 
 describe("TaskSearchService", () => {
@@ -466,6 +467,46 @@ describe("TaskSearchService", () => {
       expect(res2.total).toBe(5);
       expect(res1.tasks.every((t) => t.featured === false)).toBeTruthy();
       expect(res2.tasks.every((t) => t.featured === true)).toBeTruthy();
+    });
+
+    describe("aggregation", () => {
+      it("should return correct applicationCount", async () => {
+        const project = await fixtures.createProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+        const count = faker.datatype.number({ min: 1, max: 5 });
+        await Promise.all(
+          _.range(count).map(() =>
+            fixtures.createTaskApplication({ taskId: task.id })
+          )
+        );
+
+        await service.index([task], true);
+        const res = await service.search(
+          { projectIds: [project.id] },
+          defaultSortBy
+        );
+        expect(res.tasks[0].id).toEqual(task.id);
+        expect(res.tasks[0].applicationCount).toEqual(count);
+      });
+
+      it("should return correct submissionCount", async () => {
+        const project = await fixtures.createProject();
+        const task = await fixtures.createTask({ projectId: project.id });
+        const count = faker.datatype.number({ min: 1, max: 5 });
+        await Promise.all(
+          _.range(count).map(() =>
+            fixtures.createTaskSubmission({ taskId: task.id })
+          )
+        );
+
+        await service.index([task], true);
+        const res = await service.search(
+          { projectIds: [project.id] },
+          defaultSortBy
+        );
+        expect(res.tasks[0].id).toEqual(task.id);
+        expect(res.tasks[0].submissionCount).toEqual(count);
+      });
     });
   });
 });
