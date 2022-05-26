@@ -49,6 +49,7 @@ export class DiscordStatusboardService {
       assigneeIds: [null],
       hasReward: true,
       size: this.taskLimit,
+      parentTaskId: null,
     };
     const sortBy = {
       field: TaskViewSortByField.priority,
@@ -58,7 +59,12 @@ export class DiscordStatusboardService {
 
     if (tasks.length !== this.taskLimit) {
       const { tasks: tasksWithoutReward } = await this.taskSearchService.search(
-        { ...query, hasReward: false, size: this.taskLimit - tasks.length },
+        {
+          ...query,
+          hasReward: false,
+          size: this.taskLimit - tasks.length,
+          parentTaskId: null,
+        },
         sortBy
       );
 
