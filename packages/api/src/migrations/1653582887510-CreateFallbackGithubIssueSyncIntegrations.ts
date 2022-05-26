@@ -41,5 +41,5 @@ export class CreateFallbackGithubIssueSyncIntegrations1653582887510
     `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {}
 }
