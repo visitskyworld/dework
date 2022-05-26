@@ -5563,12 +5563,27 @@ export interface SetFundingVoteMutation_vote_session_votes {
   userId: string;
 }
 
-export interface SetFundingVoteMutation_vote_session_voters {
+export interface SetFundingVoteMutation_vote_session_voters_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_voters_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+export interface SetFundingVoteMutation_vote_session_voters {
+  __typename: "FundingSessionVoter";
+  weight: number;
+  votes: SetFundingVoteMutation_vote_session_voters_votes[];
+  user: SetFundingVoteMutation_vote_session_voters_user;
 }
 
 export interface SetFundingVoteMutation_vote_session_projects {
@@ -5684,12 +5699,27 @@ export interface CloseFundingSessionMutation_session_votes {
   userId: string;
 }
 
-export interface CloseFundingSessionMutation_session_voters {
+export interface CloseFundingSessionMutation_session_voters_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface CloseFundingSessionMutation_session_voters_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+export interface CloseFundingSessionMutation_session_voters {
+  __typename: "FundingSessionVoter";
+  weight: number;
+  votes: CloseFundingSessionMutation_session_voters_votes[];
+  user: CloseFundingSessionMutation_session_voters_user;
 }
 
 export interface CloseFundingSessionMutation_session_projects {
@@ -10506,12 +10536,27 @@ export interface GetFundingSessionQuery_session_votes {
   userId: string;
 }
 
-export interface GetFundingSessionQuery_session_voters {
+export interface GetFundingSessionQuery_session_voters_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface GetFundingSessionQuery_session_voters_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+export interface GetFundingSessionQuery_session_voters {
+  __typename: "FundingSessionVoter";
+  weight: number;
+  votes: GetFundingSessionQuery_session_voters_votes[];
+  user: GetFundingSessionQuery_session_voters_user;
 }
 
 export interface GetFundingSessionQuery_session_projects {
@@ -14295,12 +14340,27 @@ export interface FundingSessionDetails_votes {
   userId: string;
 }
 
-export interface FundingSessionDetails_voters {
+export interface FundingSessionDetails_voters_votes {
+  __typename: "FundingVote";
+  id: Scalar.UUID;
+  taskId: string;
+  weight: number;
+  userId: string;
+}
+
+export interface FundingSessionDetails_voters_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+export interface FundingSessionDetails_voters {
+  __typename: "FundingSessionVoter";
+  weight: number;
+  votes: FundingSessionDetails_voters_votes[];
+  user: FundingSessionDetails_voters_user;
 }
 
 export interface FundingSessionDetails_projects {

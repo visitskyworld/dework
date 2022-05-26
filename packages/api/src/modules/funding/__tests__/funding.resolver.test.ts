@@ -166,8 +166,10 @@ describe("FundingResolver", () => {
         ]);
         const userWith1Review = await fixtures.createUser();
         const userWith2Reviews = await fixtures.createUser();
+        const userWith3Reviews = await fixtures.createUser();
         const task1Assignee = await fixtures.createUser();
         const task2Assignee = await fixtures.createUser();
+        const totalVotes = 1 + 2 + 3;
 
         const session = await fixtures.createFundingSession({
           organizationId: organization.id,
@@ -191,17 +193,18 @@ describe("FundingResolver", () => {
           status: TaskStatus.DONE,
           projectId: project.id,
           assignees: [task1Assignee],
-          owners: [userWith1Review, userWith2Reviews],
+          owners: [userWith1Review, userWith2Reviews, userWith3Reviews],
         });
         const task2 = await fixtures.createTask({
           status: TaskStatus.DONE,
           projectId: project.id,
           assignees: [task2Assignee],
-          owners: [userWith2Reviews],
+          owners: [userWith2Reviews, userWith3Reviews],
         });
         const task3 = await fixtures.createTask({
           status: TaskStatus.DONE,
           projectId: project.id,
+          owners: [userWith3Reviews],
         });
         await app.get(TaskSearchService).index([task1, task2, task3], true);
 
@@ -218,10 +221,10 @@ describe("FundingResolver", () => {
         });
 
         const task1Amount = Math.round(
-          amount * ((1 / 1) * (1 / 3) + (3 / 4) * (2 / 3))
+          amount * ((1 / 1) * (1 / totalVotes) + (3 / 4) * (2 / totalVotes))
         );
         const task2Amount = Math.round(
-          amount * ((0 / 1) * (1 / 3) + (1 / 4) * (2 / 3))
+          amount * ((0 / 1) * (1 / totalVotes) + (1 / 4) * (2 / totalVotes))
         );
 
         expect(res.body.data.session.closedAt).not.toBe(null);

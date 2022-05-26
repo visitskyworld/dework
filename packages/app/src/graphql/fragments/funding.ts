@@ -36,7 +36,13 @@ export const fundingSessionDetails = gql`
       ...FundingVote
     }
     voters {
-      ...User
+      weight
+      votes {
+        ...FundingVote
+      }
+      user {
+        ...User
+      }
     }
     projects {
       ...Project

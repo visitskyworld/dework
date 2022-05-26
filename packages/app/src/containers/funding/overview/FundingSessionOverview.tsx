@@ -1,3 +1,4 @@
+import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -138,6 +139,15 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
     [myVotes, id, setFundingVote, closed]
   );
 
+  const usersWhoVoted = useMemo(
+    () => session?.voters.filter((v) => !!v.votes.length).map((v) => v.user),
+    [session?.voters]
+  );
+  const usersWhoHaveNotVoted = useMemo(
+    () => session?.voters.filter((v) => !v.votes.length).map((v) => v.user),
+    [session?.voters]
+  );
+
   return (
     <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
       <Header
@@ -177,7 +187,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                 <Collapse.Panel header="Details" key="details">
                   <Space direction="vertical">
                     <Row style={{ columnGap: 8 }}>
-                      <Typography.Text type="secondary" style={{ width: 60 }}>
+                      <Typography.Text type="secondary" style={{ width: 80 }}>
                         Date:
                       </Typography.Text>
                       {[session.startDate, session.endDate]
@@ -209,31 +219,45 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                   </Space>
                 </Collapse.Panel>
                 <Collapse.Panel header="Voters" key="voters">
-                  {!!session.voters.length ? (
-                    <Avatar.Group size="large">
-                      {session.voters.map((user) => (
-                        <UserAvatar key={user.id} user={user} linkToProfile />
-                      ))}
-                    </Avatar.Group>
-                  ) : (
-                    <Typography.Text type="secondary">
-                      No voters yet
-                    </Typography.Text>
+                  {!!usersWhoVoted?.length && (
+                    <FormSection
+                      label={
+                        <Typography.Text type="secondary">
+                          Voted
+                        </Typography.Text>
+                      }
+                    >
+                      <Avatar.Group size="small">
+                        {usersWhoVoted.map((u) => (
+                          <UserAvatar key={u.id} user={u} linkToProfile />
+                        ))}
+                      </Avatar.Group>
+                    </FormSection>
                   )}
-
+                  {!!usersWhoHaveNotVoted?.length && (
+                    <FormSection
+                      label={
+                        <Typography.Text type="secondary">
+                          Waiting for voters
+                        </Typography.Text>
+                      }
+                    >
+                      <Avatar.Group size="small">
+                        {usersWhoHaveNotVoted.map((u) => (
+                          <UserAvatar key={u.id} user={u} linkToProfile />
+                        ))}
+                      </Avatar.Group>
+                    </FormSection>
+                  )}
+                </Collapse.Panel>
+                <Collapse.Panel header="Who can vote?" key="access">
                   {!!roles && (
-                    <>
-                      <Divider />
-                      <Typography.Title level={5}>
-                        Who can vote?
-                      </Typography.Title>
-                      <RBACPermissionForm
-                        organizationId={session.organizationId}
-                        fundingSessionId={session.id}
-                        permission={RulePermission.MANAGE_FUNDING}
-                        roles={roles}
-                      />
-                    </>
+                    <RBACPermissionForm
+                      organizationId={session.organizationId}
+                      fundingSessionId={session.id}
+                      permission={RulePermission.MANAGE_FUNDING}
+                      roles={roles}
+                    />
                   )}
                 </Collapse.Panel>
                 {!!session.rewards.length && (

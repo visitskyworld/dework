@@ -16,6 +16,7 @@ import { AuthGuard } from "../auth/guards/auth.guard";
 import { PermalinkService } from "../permalink/permalink.service";
 import { RoleGuard } from "../rbac/rbac.guard";
 import { CreateFundingSessionInput } from "./dto/CreateFundingSessionInput";
+import { FundingSessionVoter } from "./dto/FundingSessionVoter";
 import { FundingVoteInput } from "./dto/FundingVoteInput";
 import { FundingService } from "./funding.service";
 
@@ -27,8 +28,10 @@ export class FundingResolver {
     private readonly permalinkService: PermalinkService
   ) {}
 
-  @ResolveField(() => [User])
-  public async voters(@Parent() session: FundingSession): Promise<User[]> {
+  @ResolveField(() => [FundingSessionVoter])
+  public async voters(
+    @Parent() session: FundingSession
+  ): Promise<FundingSessionVoter[]> {
     return this.service.getVoters(session.id);
   }
 
@@ -106,6 +109,6 @@ export class FundingResolver {
   public async closeFundingSession(
     @Args("id", { type: () => GraphQLUUID }) id: string
   ) {
-    return this.service.completeSession(id);
+    return this.service.closeSession(id);
   }
 }

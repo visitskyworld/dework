@@ -12,7 +12,6 @@ import _ from "lodash";
 import { Repository } from "typeorm";
 import { PermalinkService } from "../permalink/permalink.service";
 import { BigNumber } from "ethers";
-import { User } from "@dewo/api/models/User";
 import { TaskSearchService } from "../task/search/task.search.service";
 import {
   TaskViewSortByDirection,
@@ -20,6 +19,7 @@ import {
 } from "@dewo/api/models/TaskView";
 import { TaskService } from "../task/task.service";
 import { CreateFundingSessionInput } from "./dto/CreateFundingSessionInput";
+import { FundingSessionVoter } from "./dto/FundingSessionVoter";
 
 @Injectable()
 export class FundingService {
@@ -74,22 +74,20 @@ export class FundingService {
     );
   }
 
-  public async completeSession(id: string): Promise<FundingSession> {
+  public async closeSession(id: string): Promise<FundingSession> {
     const session = await this.sessionRepo.findOneOrFail(id);
     if (!!session.closedAt) {
       throw new ForbiddenException("Funding session is closed");
     }
 
     const tasks = await this.getSessionTasks(session);
-    const ownerCountByUserId = tasks.reduce<Record<string, number>>(
-      (acc, task) => {
-        task.owners.forEach((owner) => {
-          acc[owner.id] = (acc[owner.id] || 0) + 1;
-        });
-        return acc;
-      },
-      {}
-    );
+    const userWeightById = tasks.reduce<Record<string, number>>((acc, task) => {
+      task.owners.forEach((owner) => {
+        acc[owner.id] = (acc[owner.id] || 0) + 1;
+      });
+      return acc;
+    }, {});
+    const totalUserWeight = _.sum(Object.values(userWeightById));
 
     const votes = (await session.votes).filter((v) =>
       tasks.some((t) => t.id === v.taskId)
@@ -99,31 +97,32 @@ export class FundingService {
       {}
     );
 
-    const scoreByTaskId = votes.reduce<Record<string, number>>(
-      (acc, v) => ({
-        ...acc,
-        [v.taskId]:
-          (acc[v.taskId] || 0) +
-          (v.weight / totalVoteWeightByUserId[v.userId]) *
-            (ownerCountByUserId[v.userId] ?? 0),
-      }),
+    const shareOfRewardByTaskId = votes.reduce<Record<string, number>>(
+      (acc, v) => {
+        const shareOfUser = v.weight / totalVoteWeightByUserId[v.userId];
+        const userShareOfTotal =
+          (userWeightById[v.userId] ?? 0) / totalUserWeight;
+        return {
+          ...acc,
+          [v.taskId]: (acc[v.taskId] || 0) + shareOfUser / userShareOfTotal,
+        };
+      },
       {}
     );
-    const totalScore = _.sum(Object.values(scoreByTaskId));
 
     this.logger.log(
       `Completing funding session: ${JSON.stringify({
         session,
-        ownerCountByUserId,
+        userWeightById,
         totalVoteWeightByUserId,
-        scoreByTaskId,
-        totalScore,
+        shareOfRewardByTaskId,
+        totalUserWeight,
       })}`
     );
 
     for (const task of tasks) {
-      const shareOfReward = (scoreByTaskId[task.id] ?? 0) / totalScore;
-      if (shareOfReward === 0) continue;
+      const shareOfReward = shareOfRewardByTaskId[task.id];
+      if (!shareOfReward) continue;
 
       const precision = 1_000_000;
       const amount = BigNumber.from(session.amount)
@@ -188,13 +187,37 @@ export class FundingService {
     return tasks;
   }
 
-  public async getVoters(sessionId: string): Promise<User[]> {
+  public async getVoters(sessionId: string): Promise<FundingSessionVoter[]> {
+    const session = await this.sessionRepo.findOneOrFail(sessionId);
+    const tasks = await this.getSessionTasks(session);
+
+    const users = _.uniqBy(tasks.map((t) => t.owners).flat(), (u) => u.id);
+    const reviewedTasksById = tasks.reduce<Record<string, number>>(
+      (acc, task) => {
+        task.owners.forEach((owner) => {
+          acc[owner.id] = (acc[owner.id] || 0) + 1;
+        });
+        return acc;
+      },
+      {}
+    );
+    if (_.isEmpty(reviewedTasksById)) return [];
+    const totalReviews = _.sum(Object.values(reviewedTasksById));
+
     const votes = await this.voteRepo
       .createQueryBuilder("vote")
       .innerJoinAndSelect("vote.user", "user")
       .where("vote.sessionId = :sessionId", { sessionId })
+      .andWhere("vote.weight > 0")
       .getMany();
-    const users = await Promise.all(votes.map((v) => v.user));
-    return _.uniqBy(users, (u) => u.id);
+    const votesByUserId = _.groupBy(votes, (v) => v.userId);
+    return _.sortBy(
+      users.map((user) => ({
+        user,
+        votes: votesByUserId[user.id] ?? [],
+        weight: (reviewedTasksById[user.id] ?? 0) / totalReviews,
+      })),
+      (u) => -u.weight
+    );
   }
 }
