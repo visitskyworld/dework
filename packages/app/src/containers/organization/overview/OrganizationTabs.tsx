@@ -18,6 +18,7 @@ import { TaskViewTabs } from "../../task/views/TaskViewTabs";
 import { TaskViewLayout } from "../../task/views/TaskViewLayout";
 import { Header } from "../../navigation/header/Header";
 import { OrganizationOverview } from "./OrganizationOverview";
+import { useMounted } from "@dewo/app/util/hooks";
 
 interface Props {
   organizationId: string;
@@ -59,6 +60,8 @@ export const OrganizationTabs: FC<Props> = ({
     [organization, router]
   );
 
+  const mounted = useMounted();
+
   return (
     <Tabs
       className={styles.tabs}
@@ -76,17 +79,19 @@ export const OrganizationTabs: FC<Props> = ({
         key="contributors"
       >
         <Header title="Contributors" />
-        <Row gutter={[16, 24]} className="dewo-layout-padding-vertical">
-          <Col className="gutter-row" sm={24} md={24} lg={12}>
-            <TopContributorList organizationId={organizationId} />
-          </Col>
-          <Col className="gutter-row" sm={24} md={24} lg={12}>
-            <TopReviewerList organizationId={organizationId} />
-          </Col>
-          <Col lg={24}>
-            <OrganizationContributorList organizationId={organizationId} />
-          </Col>
-        </Row>
+        {!!mounted && (
+          <Row gutter={[16, 24]} className="dewo-layout-padding-vertical">
+            <Col className="gutter-row" sm={24} md={24} lg={12}>
+              <TopContributorList organizationId={organizationId} />
+            </Col>
+            <Col className="gutter-row" sm={24} md={24} lg={12}>
+              <TopReviewerList organizationId={organizationId} />
+            </Col>
+            <Col lg={24}>
+              <OrganizationContributorList organizationId={organizationId} />
+            </Col>
+          </Row>
+        )}
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={<Tab icon={<Icons.ProjectOutlined />} children="Combined Board" />}
