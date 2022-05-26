@@ -1104,7 +1104,10 @@ export class DiscordIntegrationService {
       .catch(() => {});
 
     const name = this.getThreadName(task);
-    const thread = await channel.threads.create({ name });
+    const thread = await channel.threads.create({
+      name,
+      autoArchiveDuration: "MAX",
+    });
 
     await this.discordChannelRepo.save({
       taskId: task.id,
