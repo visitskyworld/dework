@@ -241,6 +241,7 @@ export class ProjectService {
     const matchingSlugs = await this.projectRepo
       .find({
         where: { slug: Raw((alias) => `${alias} ~ '^${slug}(-\\d+)?$'`) },
+        withDeleted: true,
       })
       .then((projects) => projects.map((p) => p.slug));
 

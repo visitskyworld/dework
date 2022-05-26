@@ -59,6 +59,7 @@ export class WorkspaceService {
     const matchingSlugs = await this.repo
       .find({
         where: { slug: Raw((alias) => `${alias} ~ '^${slug}(-\\d+)?$'`) },
+        withDeleted: true,
       })
       .then((workspaces) => workspaces.map((w) => w.slug));
 
