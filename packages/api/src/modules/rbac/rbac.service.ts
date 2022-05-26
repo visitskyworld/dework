@@ -290,16 +290,18 @@ export class RbacService {
 
           break;
         case RulePermission.MANAGE_FUNDING:
-          fn(CRUD, FundingSession, {
-            ...(!!rule.fundingSessionId ? { id: rule.fundingSessionId } : {}),
-            organizationId,
-          });
-          // if (!!userId) {
-          //   fn(CRUD, FundingVote, {
-          //     sessionId: rule.fundingSessionId,
-          //     userId,
-          //   });
-          // }
+          if (!!rule.fundingSessionId) {
+            fn("read", FundingSession, {
+              id: rule.fundingSessionId,
+              organizationId,
+            });
+          } else {
+            fn(CRUD, FundingSession, {
+              ...(!!rule.fundingSessionId ? { id: rule.fundingSessionId } : {}),
+              organizationId,
+            });
+          }
+          fn(CRUD, FundingVote, { sessionId: rule.fundingSessionId, userId });
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);

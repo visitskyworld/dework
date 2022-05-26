@@ -68,7 +68,22 @@ export class FundingResolver {
   }
 
   @Mutation(() => FundingVote)
-  @UseGuards(AuthGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleGuard({
+      action: "create",
+      subject: FundingVote,
+      inject: [FundingService],
+      getSubject: async (params: { input: FundingVoteInput; user: User }) =>
+        Object.assign(new FundingVote(), params.input, {
+          userId: params.user.id,
+        }),
+      getOrganizationId: async (_subject, params, service) => {
+        const session = await service.findById(params.input.sessionId);
+        return session?.organizationId;
+      },
+    })
+  )
   public async setFundingVote(
     @Args("input") input: FundingVoteInput,
     @Context("user") user: User
