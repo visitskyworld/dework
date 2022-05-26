@@ -255,13 +255,7 @@ export class GithubWebhookController {
           }
         }
       }
-
-      await this.triggerTaskUpdatedSubscription(task.id);
     }
-  }
-
-  private async triggerTaskUpdatedSubscription(taskId: string) {
-    await this.taskService.update({ id: taskId });
   }
 
   private getAppUrl(stateString: unknown): string {

@@ -3,10 +3,13 @@ import { IEventHandler } from "@nestjs/cqrs";
 
 // EventHandler wrapper to prevent app from crashing if event handler fails
 // https://github.com/nestjs/cqrs/issues/409
-export abstract class EventHandler<T> implements IEventHandler<T> {
+export abstract class EventHandler<T extends object>
+  implements IEventHandler<T>
+{
   protected logger = new Logger(this.constructor.name);
 
   async handle(event: T) {
+    this.logger.debug(`Handling event: ${event.constructor.name}`);
     if (process.env.NODE_ENV === "test") return;
 
     try {
