@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Menu, Row, Tag } from "antd";
+import { Menu, Row, Tag, Typography } from "antd";
 import {
   useOrganizationDetails,
   useOrganizationWorkspaces,
@@ -85,7 +85,13 @@ export const OrganizationMenu: FC<Props> = ({ organizationId }) => {
               type: "group",
               label: (
                 <Row align="middle" justify="space-between">
-                  {workspace.name}
+                  <Typography.Text
+                    type="secondary"
+                    className="hover:cursor-pointer"
+                    onClick={() => router.push(workspace.permalink)}
+                  >
+                    {workspace.name}
+                  </Typography.Text>
                   {!!canCreateProject && (
                     <div onClick={stopPropagation}>
                       <CreateProjectButton
