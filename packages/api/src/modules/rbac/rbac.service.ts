@@ -383,6 +383,7 @@ export class RbacService {
       builder.can(CRUD, TaskReward);
       builder.can(CRUD, Role);
       builder.can(CRUD, Rule);
+      builder.can(CRUD, FundingSession);
     }
 
     return builder.build({
