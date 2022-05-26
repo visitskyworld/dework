@@ -123,7 +123,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           {voteTypes.map((voteType, index) => (
             <Tooltip key={index} title={voteType.tooltip}>
               <Button
-                type={currentWeight === voteType.weight ? "primary" : "ghost"}
+                type={currentWeight === voteType.weight ? "primary" : "default"}
                 children={voteType.emoji}
                 shape="circle"
                 disabled={closed}
@@ -146,7 +146,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           canClose &&
           !!session &&
           !closed && (
-            <Button type="primary" loading={closing} onClick={handleClose}>
+            <Button loading={closing} onClick={handleClose}>
               Close Tipping Session
             </Button>
           )

@@ -173,6 +173,7 @@ export class FundingService {
           statuses: [TaskStatus.DONE],
           projectIds: projects.map((p) => p.id),
           cursor,
+          parentTaskId: null,
         },
         {
           field: TaskViewSortByField.createdAt,
