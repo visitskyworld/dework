@@ -149,7 +149,7 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
               <KBar>
                 <SidebarProvider>
                   <SubtasksExpandedProvider>
-                    <Layout>
+                    <Layout hasSider>
                       <Sidebar />
                       <Component {...pageProps} />
                     </Layout>
