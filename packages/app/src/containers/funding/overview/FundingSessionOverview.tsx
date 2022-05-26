@@ -19,6 +19,7 @@ import {
   Collapse,
   Divider,
   Layout,
+  message,
   Row,
   Skeleton,
   Space,
@@ -107,13 +108,14 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
   const renderTaskExtra = useCallback(
     (task: Task): ReactNode => {
       const currentWeight = myVotes?.find((v) => v.taskId === task.id)?.weight;
-      const vote = (weight: number) => (e: any) => {
+      const vote = (weight: number) => async (e: any) => {
         stopPropagation(e);
-        setFundingVote({
+        await setFundingVote({
           taskId: task.id,
           sessionId: id,
           weight: weight === currentWeight ? 0 : weight,
         });
+        message.success("Your vote has been saved");
       };
       return (
         <>
@@ -121,7 +123,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           {voteTypes.map((voteType, index) => (
             <Tooltip key={index} title={voteType.tooltip}>
               <Button
-                type={currentWeight === voteType.weight ? "primary" : "default"}
+                type={currentWeight === voteType.weight ? "primary" : "ghost"}
                 children={voteType.emoji}
                 shape="circle"
                 disabled={closed}
@@ -255,6 +257,12 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                   </Collapse.Panel>
                 )}
                 <Collapse.Panel header="Completed Tasks" key="tasks">
+                  <Typography.Paragraph
+                    type="secondary"
+                    style={{ marginBottom: 0 }}
+                  >
+                    Vote on tasks by selecting emojis to the right of each task.
+                  </Typography.Paragraph>
                   <div style={{ minHeight: 500, height: "70vh" }}>
                     <TaskViewFieldsProvider fields={fields}>
                       <TaskList
