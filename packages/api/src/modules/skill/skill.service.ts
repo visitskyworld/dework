@@ -3,6 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 import { Skill } from "@dewo/api/models/Skill";
 import { User } from "@dewo/api/models/User";
+import { AtLeast } from "@dewo/api/types/general";
+import { SkillStatistic } from "./dto/SkillStatistic";
+import _ from "lodash";
 
 @Injectable()
 export class SkillService {
@@ -12,6 +15,13 @@ export class SkillService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>
   ) {}
+
+  create(partial: AtLeast<Skill, "name" | "emoji">): Promise<Skill> {
+    return this.repo.save({
+      ...partial,
+      sortKey: Date.now().toString(),
+    });
+  }
 
   findTopLevelSkills(): Promise<Skill[]> {
     return this.repo.find({ parentId: IsNull() });
@@ -45,5 +55,23 @@ export class SkillService {
     ]);
 
     return this.userRepo.findOneOrFail(userId);
+  }
+
+  async getSkillStatistics(workspaceId: string): Promise<SkillStatistic[]> {
+    const { entities, raw } = await this.repo
+      .createQueryBuilder("skill")
+      .addSelect("COUNT(DISTINCT task.id)", "count")
+      .innerJoin("skill.tasks", "task")
+      .innerJoin("task.project", "project")
+      .innerJoin("project.workspace", "workspace")
+      .where("workspace.id = :workspaceId", { workspaceId })
+      .groupBy("skill.id")
+      .getRawAndEntities();
+
+    const stats = entities.map((skill) => ({
+      skill,
+      count: Number(raw.find((raw) => raw.skill_id === skill.id).count),
+    }));
+    return _.sortBy(stats, (s) => -s.count);
   }
 }

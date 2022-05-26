@@ -52,7 +52,6 @@ import { ProjectTokenGate } from "../models/ProjectTokenGate";
 import { ProjectTokenGateInput } from "../modules/project/dto/ProjectTokenGateInput";
 import { TaskSubmission } from "../models/TaskSubmission";
 import { TaskApplication } from "../models/TaskApplication";
-
 import { RbacService } from "../modules/rbac/rbac.service";
 import { Role } from "../models/rbac/Role";
 import { Rule } from "../models/rbac/Rule";
@@ -66,6 +65,12 @@ import { Notification } from "../models/Notification";
 import { FundingModule } from "../modules/funding/funding.module";
 import { FundingService } from "../modules/funding/funding.service";
 import { FundingSession } from "../models/funding/FundingSession";
+import { WorkspaceService } from "../modules/workspace/workspace.service";
+import { Workspace } from "../models/Workspace";
+import { SkillService } from "../modules/skill/skill.service";
+import { WorkspaceModule } from "../modules/workspace/workspace.module";
+import { SkillModule } from "../modules/skill/skill.module";
+import { Skill } from "../models/Skill";
 
 @Injectable()
 export class Fixtures {
@@ -82,7 +87,9 @@ export class Fixtures {
     private readonly paymentService: PaymentService,
     private readonly rbacService: RbacService,
     private readonly notificationService: NotificationService,
-    private readonly fundingService: FundingService
+    private readonly fundingService: FundingService,
+    private readonly workspaceService: WorkspaceService,
+    private readonly skillService: SkillService
   ) {}
 
   public async createThreepid(
@@ -138,6 +145,17 @@ export class Fixtures {
       name: faker.company.companyName(),
       organizationId: organization.id,
       ...partialProject,
+    });
+  }
+
+  public async createWorkspace(
+    partial: Partial<Workspace> = {}
+  ): Promise<Workspace> {
+    const organization = await this.createOrganization();
+    return this.workspaceService.create({
+      name: faker.company.companyName(),
+      organizationId: organization.id,
+      ...partial,
     });
   }
 
@@ -548,6 +566,14 @@ export class Fixtures {
       ...partial,
     });
   }
+
+  async createSkill(partial: Partial<Skill> = {}): Promise<Skill> {
+    return this.skillService.create({
+      name: faker.commerce.department(),
+      emoji: "🔥",
+      ...partial,
+    });
+  }
 }
 
 @Module({
@@ -565,6 +591,8 @@ export class Fixtures {
     RbacModule,
     NotificationModule,
     FundingModule,
+    WorkspaceModule,
+    SkillModule,
   ],
   providers: [Fixtures],
   exports: [Fixtures],
