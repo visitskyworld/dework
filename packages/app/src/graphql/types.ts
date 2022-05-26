@@ -7570,6 +7570,56 @@ export interface GetOrganizationUsersWithRolesQueryVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetOrganizationContributorsQuery
+// ====================================================
+
+export interface GetOrganizationContributorsQuery_organization_users_roles {
+  __typename: "Role";
+  id: Scalar.UUID;
+  name: string;
+  color: string;
+  source: RoleSource | null;
+  fallback: boolean;
+  userId: string | null;
+  organizationId: string;
+}
+
+export interface GetOrganizationContributorsQuery_organization_users_threepids {
+  __typename: "Threepid";
+  source: ThreepidSource;
+  address: string;
+}
+
+export interface GetOrganizationContributorsQuery_organization_users {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+  roles: GetOrganizationContributorsQuery_organization_users_roles[];
+  threepids: GetOrganizationContributorsQuery_organization_users_threepids[];
+}
+
+export interface GetOrganizationContributorsQuery_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  users: GetOrganizationContributorsQuery_organization_users[];
+}
+
+export interface GetOrganizationContributorsQuery {
+  organization: GetOrganizationContributorsQuery_organization;
+}
+
+export interface GetOrganizationContributorsQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetOrganizationRolesQuery
 // ====================================================
 

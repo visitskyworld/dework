@@ -185,6 +185,23 @@ export const organizationUsersWithRoles = gql`
   ${Fragments.userWithRoles}
 `;
 
+export const organizationContributors = gql`
+  query GetOrganizationContributorsQuery($organizationId: UUID!) {
+    organization: getOrganization(id: $organizationId) {
+      id
+      users {
+        ...UserWithRoles
+        threepids {
+          source
+          address: threepid
+        }
+      }
+    }
+  }
+
+  ${Fragments.userWithRoles}
+`;
+
 export const organizationRoles = gql`
   query GetOrganizationRolesQuery($organizationId: UUID!) {
     organization: getOrganization(id: $organizationId) {
