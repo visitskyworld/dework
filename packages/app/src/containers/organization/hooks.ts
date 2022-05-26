@@ -403,19 +403,25 @@ export function useRemoveTokenFromOrganization() {
   );
 }
 
-const defaultWorkspace: Workspace = {
-  id: "default",
-  name: "Projects",
-  sortKey: "1",
-  __typename: "Workspace",
-};
-
 export function useOrganizationWorkspaces(
   organizationId: string | undefined
 ): (Workspace & {
   projects: OrganizationDetails["projects"];
   default: boolean;
 })[] {
+  const defaultWorkspace = useMemo<Workspace>(
+    () => ({
+      id: "default",
+      name: "Projects",
+      sortKey: "1",
+      slug: "",
+      permalink: "",
+      organizationId: organizationId!,
+      __typename: "Workspace",
+    }),
+    [organizationId]
+  );
+
   const { organization } = useOrganizationDetails(organizationId);
   const projects = useMemo(
     () => _.sortBy(organization?.projects, (p) => p.sortKey),
@@ -423,7 +429,7 @@ export function useOrganizationWorkspaces(
   );
   const projectsByWorkspaceId = useMemo(
     () => _.groupBy(projects, (p) => p.workspaceId ?? defaultWorkspace.id),
-    [projects]
+    [projects, defaultWorkspace.id]
   );
   const canCreateWorkspace = usePermission("create", "Workspace");
   const shouldRenderWorkspace = useCallback(
@@ -431,14 +437,14 @@ export function useOrganizationWorkspaces(
       workspace.id === defaultWorkspace.id ||
       !!projectsByWorkspaceId[workspace.id]?.length ||
       canCreateWorkspace,
-    [projectsByWorkspaceId, canCreateWorkspace]
+    [projectsByWorkspaceId, defaultWorkspace.id, canCreateWorkspace]
   );
   const workspaces = useMemo(
     () =>
       [defaultWorkspace, ...(organization?.workspaces ?? [])].filter(
         shouldRenderWorkspace
       ),
-    [organization?.workspaces, shouldRenderWorkspace]
+    [organization?.workspaces, defaultWorkspace, shouldRenderWorkspace]
   );
 
   return useMemo(
@@ -448,6 +454,6 @@ export function useOrganizationWorkspaces(
         default: workspace.id === defaultWorkspace.id,
         projects: projectsByWorkspaceId[workspace.id] ?? [],
       })),
-    [workspaces, projectsByWorkspaceId]
+    [workspaces, projectsByWorkspaceId, defaultWorkspace.id]
   );
 }

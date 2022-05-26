@@ -3,10 +3,11 @@ import {
   Context,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { Workspace } from "@dewo/api/models/Workspace";
 import { UpdateWorkspaceInput } from "../workspace/dto/UpdateWorkspaceInput";
@@ -29,6 +30,15 @@ export class WorkspaceResolver {
     @Parent() workspace: Workspace
   ): Promise<string> {
     return this.permalinkService.get(workspace, origin);
+  }
+
+  @Query(() => Workspace)
+  public async getWorkspaceBySlug(
+    @Args("slug") slug: string
+  ): Promise<Workspace> {
+    const workspace = await this.service.findBySlug(slug);
+    if (!workspace) throw new NotFoundException();
+    return workspace;
   }
 
   @Mutation(() => Workspace)

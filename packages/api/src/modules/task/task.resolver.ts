@@ -45,6 +45,7 @@ import { AuditLogService } from "../auditLog/auditLog.service";
 import { GraphQLResolveInfo } from "graphql";
 import GraphQLFields from "graphql-fields";
 import { Skill } from "@dewo/api/models/Skill";
+import { Workspace } from "@dewo/api/models/Workspace";
 
 @Injectable()
 @Resolver(() => Task)
@@ -480,6 +481,33 @@ export class OrganizationTasksResolver {
     return this.taskService.findWithRelations({
       ...filter,
       projectIds: projects.map((p) => p.id),
+    });
+  }
+}
+
+@Injectable()
+@Resolver(() => Workspace)
+export class WorkspaceTasksResolver {
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly organizationService: OrganizationService
+  ) {}
+
+  @ResolveField(() => [Task])
+  public async tasks(
+    @Context("user") user: User | undefined,
+    @Parent() workspace: Workspace,
+    @Args("filter", { nullable: true }) filter: TaskFilterInput
+  ): Promise<Task[]> {
+    const projects = await this.organizationService.getProjects(
+      workspace.organizationId,
+      user?.id
+    );
+    return this.taskService.findWithRelations({
+      ...filter,
+      projectIds: projects
+        .filter((p) => p.workspaceId === workspace.id)
+        .map((p) => p.id),
     });
   }
 }

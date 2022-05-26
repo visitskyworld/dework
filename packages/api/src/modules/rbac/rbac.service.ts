@@ -249,6 +249,7 @@ export class RbacService {
           fn(["update", "delete"], Organization, organization);
           fn(CRUD, Workspace);
           fn(CRUD, TaskView, { organizationId });
+          fn(CRUD, TaskView, { workspaceId: { $exists: true } });
           fn("update", Project, ["workspaceId", "sortKey"], project);
           const roleConditions: Partial<Role> | undefined = { organizationId };
           fn(CRUD, Role, roleConditions);

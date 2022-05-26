@@ -5,9 +5,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Audit } from "./Audit";
 import { Organization } from "./Organization";
+import { Project } from "./Project";
+import { TaskView } from "./TaskView";
 
 @Entity({ orderBy: { sortKey: "ASC" } })
 @ObjectType()
@@ -35,4 +38,12 @@ export class Workspace extends Audit {
   @DeleteDateColumn()
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @OneToMany(() => TaskView, (x: TaskView) => x.workspace)
+  @Field(() => [TaskView])
+  public taskViews!: Promise<TaskView[]>;
+
+  @OneToMany(() => Project, (x: Project) => x.workspace)
+  @Field(() => [Project])
+  public projects!: Promise<Project[]>;
 }

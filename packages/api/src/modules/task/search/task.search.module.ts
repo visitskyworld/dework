@@ -17,6 +17,7 @@ import {
 import { TaskSearchResolver } from "./task.search.resolver";
 import { OrganizationModule } from "../../organization/organization.module";
 import { RbacModule } from "../../rbac/rbac.module";
+import { WorkspaceModule } from "../../workspace/workspace.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RbacModule } from "../../rbac/rbac.module";
       inject: [ConfigService],
     }),
     OrganizationModule,
+    WorkspaceModule,
     RbacModule,
   ],
   providers: [

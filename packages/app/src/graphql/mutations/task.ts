@@ -51,6 +51,12 @@ export const updateTaskView = gql`
           ...TaskView
         }
       }
+      workspace {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
     }
   }
 

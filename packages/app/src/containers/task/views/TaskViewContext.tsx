@@ -4,6 +4,7 @@ import {
   TaskView,
   UpdateTaskViewInput,
   User,
+  WorkspaceDetails,
 } from "@dewo/app/graphql/types";
 import { LocalStorage } from "@dewo/app/util/LocalStorage";
 import _ from "lodash";
@@ -70,7 +71,6 @@ export const UserTaskViewProvider: FC<{
   const filterableMembers = useMemo(() => (user ? [user] : []), [user]);
 
   if (!userId || !views) return null;
-
   return (
     <TaskViewProvider
       redirect={() => router.push(user?.permalink ?? "/")}
@@ -79,6 +79,37 @@ export const UserTaskViewProvider: FC<{
       children={children}
       filterableMembers={filterableMembers}
       saveButtonText="Save"
+    />
+  );
+};
+
+export const WorkspaceTaskViewProvider: FC<{
+  workspace: WorkspaceDetails;
+}> = ({ workspace, children }) => {
+  const router = useRouter();
+  const roles = useOrganizationRoles(workspace.organizationId);
+  const { users: filterableMembers } = useOrganizationUsers(
+    workspace.organizationId
+  );
+
+  const tags = useMemo(
+    () =>
+      _.sortBy(
+        workspace?.projects.map((project) => project.taskTags).flat(),
+        (taskTag) => taskTag.label.toLowerCase()
+      ),
+    [workspace?.projects]
+  );
+
+  return (
+    <TaskViewProvider
+      redirect={() => router.push(workspace?.permalink ?? "/")}
+      views={workspace.taskViews}
+      lastViewIdKey={buildKey(workspace.id)}
+      children={children}
+      filterableMembers={filterableMembers}
+      tags={tags}
+      roles={roles}
     />
   );
 };

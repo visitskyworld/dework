@@ -103,8 +103,9 @@ export const TaskViewForm: FC<Props> = ({
       onValuesChange={handleChange}
     >
       <Form.Item name="id" hidden />
-      <Form.Item name="projectId" hidden />
       <Form.Item name="userId" hidden />
+      <Form.Item name="projectId" hidden />
+      <Form.Item name="workspaceId" hidden />
       <Form.Item name="organizationId" hidden />
 
       <Form.Item

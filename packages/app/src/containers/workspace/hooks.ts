@@ -1,8 +1,10 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   createWorkspace,
   updateWorkspace,
 } from "@dewo/app/graphql/mutations/workspace";
+import { workspaceTasks } from "@dewo/app/graphql/queries";
+import { getWorkspaceDetails } from "@dewo/app/graphql/queries/workspace";
 import {
   CreateWorkspaceInput,
   CreateWorkspaceMutation,
@@ -11,8 +13,40 @@ import {
   UpdateWorkspaceInput,
   UpdateWorkspaceMutation,
   UpdateWorkspaceMutationVariables,
+  WorkspaceDetails,
+  GetWorkspaceDetailsQuery,
+  GetWorkspaceDetailsQueryVariables,
+  Task,
+  GetWorkspaceTasksQuery,
+  GetWorkspaceTasksQueryVariables,
 } from "@dewo/app/graphql/types";
 import { useCallback } from "react";
+
+export function useWorkspaceDetails(
+  slug: string | undefined
+): WorkspaceDetails | undefined {
+  const { data } = useQuery<
+    GetWorkspaceDetailsQuery,
+    GetWorkspaceDetailsQueryVariables
+  >(getWorkspaceDetails, {
+    variables: { slug: slug! },
+    skip: !slug,
+  });
+  return data?.workspace;
+}
+
+export function useWorkspaceTasks(
+  slug: string | undefined
+): Task[] | undefined {
+  const { data } = useQuery<
+    GetWorkspaceTasksQuery,
+    GetWorkspaceTasksQueryVariables
+  >(workspaceTasks, {
+    variables: { slug: slug! },
+    skip: !slug,
+  });
+  return data?.workspace.tasks;
+}
 
 export function useCreateWorkspace(): (
   input: CreateWorkspaceInput

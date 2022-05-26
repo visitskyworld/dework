@@ -1,16 +1,22 @@
+import { Project } from "@dewo/api/models/Project";
+import { TaskViewType } from "@dewo/api/models/TaskView";
 import { Workspace } from "@dewo/api/models/Workspace";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
 import { Raw, Repository } from "typeorm";
+import { RbacService } from "../rbac/rbac.service";
+import { TaskViewService } from "../task/taskView/taskView.service";
 
 @Injectable()
 export class WorkspaceService {
   constructor(
     @InjectRepository(Workspace)
-    private readonly repo: Repository<Workspace>
+    private readonly repo: Repository<Workspace>,
+    private readonly rbacService: RbacService,
+    private readonly taskViewService: TaskViewService
   ) {}
 
   public async create(
@@ -20,6 +26,12 @@ export class WorkspaceService {
       ...partial,
       sortKey: Date.now().toString(),
       slug: await this.generateSlug(partial.name),
+    });
+    await this.taskViewService.create({
+      name: "Board",
+      workspaceId: created.id,
+      filters: [],
+      type: TaskViewType.BOARD,
     });
     return this.repo.findOneOrFail(created.id);
   }
@@ -32,6 +44,14 @@ export class WorkspaceService {
     Object.assign(workspace, partial);
     await this.repo.save(workspace);
     return workspace;
+  }
+
+  public async findById(id: string): Promise<Workspace | undefined> {
+    return this.repo.findOne(id);
+  }
+
+  public async findBySlug(slug: string): Promise<Workspace | undefined> {
+    return this.repo.findOne({ slug });
   }
 
   public async generateSlug(name: string): Promise<string> {
@@ -49,5 +69,20 @@ export class WorkspaceService {
       if (!set.has(candidate)) return candidate;
     }
     throw new Error("Could not generate slug");
+  }
+
+  public async getProjects(
+    workspaceId: string,
+    userId: string | undefined
+  ): Promise<Project[]> {
+    const workspace = await this.findById(workspaceId);
+    if (!workspace) throw new NotFoundException();
+    const projects = await workspace?.projects;
+
+    const ability = await this.rbacService.abilityForUser(
+      userId,
+      workspace.organizationId
+    );
+    return projects.filter((project) => ability.can("read", project));
   }
 }

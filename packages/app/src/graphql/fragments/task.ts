@@ -31,6 +31,7 @@ export const taskView = gql`
     groupBy
     permalink
     projectId
+    workspaceId
     organizationId
     userId
     fields
@@ -53,5 +54,16 @@ export const subtask = gql`
     name
     status
     sortKey
+  }
+`;
+
+export const taskTag = gql`
+  fragment TaskTag on TaskTag {
+    id
+    label
+    color
+    createdAt
+    deletedAt
+    projectId
   }
 `;

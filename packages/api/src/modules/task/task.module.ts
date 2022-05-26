@@ -10,6 +10,7 @@ import {
   ProjectTasksResolver,
   TaskResolver,
   UserTasksResolver,
+  WorkspaceTasksResolver,
 } from "./task.resolver";
 import { TaskService } from "./task.service";
 import { PermalinkModule } from "../permalink/permalink.module";
@@ -44,6 +45,7 @@ import { TaskRewardPayment } from "@dewo/api/models/TaskRewardPayment";
   providers: [
     TaskResolver,
     OrganizationTasksResolver,
+    WorkspaceTasksResolver,
     ProjectTasksResolver,
     UserTasksResolver,
     TaskService,

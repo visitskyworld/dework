@@ -11,6 +11,7 @@ import { Organization } from "./Organization";
 import { Project } from "./Project";
 import { TaskPriority, TaskStatus } from "./Task";
 import { User } from "./User";
+import { Workspace } from "./Workspace";
 
 export enum TaskViewType {
   LIST = "LIST",
@@ -181,6 +182,14 @@ export class TaskView extends Audit {
   @Column({ type: "uuid", nullable: true })
   @Field(() => GraphQLUUID, { nullable: true })
   public projectId?: string;
+
+  @JoinColumn()
+  @ManyToOne(() => Workspace)
+  @Field(() => Workspace, { nullable: true })
+  public workspace?: Promise<Workspace>;
+  @Column({ type: "uuid", nullable: true })
+  @Field(() => GraphQLUUID, { nullable: true })
+  public workspaceId?: string;
 
   @JoinColumn()
   @ManyToOne(() => Organization)

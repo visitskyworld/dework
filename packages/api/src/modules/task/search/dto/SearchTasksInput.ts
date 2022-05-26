@@ -66,6 +66,9 @@ export class CountTasksInput {
   @Field(() => [GraphQLUUID], { nullable: true })
   public organizationIds?: string[];
 
+  @Field(() => [GraphQLUUID], { nullable: true })
+  public workspaceIds?: string[];
+
   @Field({ nullable: true })
   public featured?: boolean;
 

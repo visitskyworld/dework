@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Col, Menu, Row, Skeleton, Space, Tag } from "antd";
+import { Menu, Row, Tag } from "antd";
 import {
   useOrganizationDetails,
   useOrganizationWorkspaces,
@@ -13,26 +13,16 @@ import styles from "./Menu.module.less";
 import { useRouter } from "next/router";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
 import { useIsProjectPrivateFn } from "../../rbac/hooks";
+import { MenuSkeleton } from "./MenuSkeleton";
+import { stopPropagation } from "@dewo/app/util/eatClick";
 import { CreateFundingSessionButton } from "../../funding/create/CreateFundingSessionButton";
 import moment from "moment";
 
-const NavSkeleton = () => {
-  return (
-    <>
-      <Space direction="horizontal" className="w-full" style={{ padding: 16 }}>
-        <Skeleton.Avatar active />
-        <Col flex={1}>
-          <Skeleton.Button active style={{ width: 130, minWidth: 0 }} />
-        </Col>
-      </Space>
-      <Skeleton active style={{ paddingRight: 16, paddingLeft: 16 }} />
-    </>
-  );
-};
+interface Props {
+  organizationId: string;
+}
 
-export const OrganizationMenu: FC<{ organizationId?: string }> = ({
-  organizationId,
-}) => {
+export const OrganizationMenu: FC<Props> = ({ organizationId }) => {
   const { organization } = useOrganizationDetails(organizationId);
   const workspaces = useOrganizationWorkspaces(organizationId);
   const isProjectPrivate = useIsProjectPrivateFn(organizationId);
@@ -46,10 +36,9 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
     organizationId: organizationId!,
   });
 
+  if (!organization) return <MenuSkeleton />;
   const showFunding =
     !!organization?.fundingSessions.length || canCreateFundingSession;
-
-  if (!organization) return <NavSkeleton />;
   const basePath = new URL(organization.permalink).pathname;
   const overviewKey = "overview";
   return (
@@ -60,7 +49,7 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
         title={organization.name}
       />
       <Menu
-        inlineCollapsed
+        mode="inline"
         className={styles.menu}
         selectedKeys={[
           router.asPath === basePath ? overviewKey : router.asPath,
@@ -98,14 +87,16 @@ export const OrganizationMenu: FC<{ organizationId?: string }> = ({
                 <Row align="middle" justify="space-between">
                   {workspace.name}
                   {!!canCreateProject && (
-                    <CreateProjectButton
-                      organizationId={organization.id}
-                      type="text"
-                      size="small"
-                      className="text-secondary"
-                      icon={<Icons.PlusOutlined />}
-                      workspaceId={workspace.id}
-                    />
+                    <div onClick={stopPropagation}>
+                      <CreateProjectButton
+                        organizationId={organization.id}
+                        type="text"
+                        size="small"
+                        className="text-secondary"
+                        icon={<Icons.PlusOutlined />}
+                        workspaceId={workspace.id}
+                      />
+                    </div>
                   )}
                 </Row>
               ),

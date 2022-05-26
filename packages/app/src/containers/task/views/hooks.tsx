@@ -381,6 +381,9 @@ export function useTaskViewLayoutItems() {
               organizationIds: !!currentView.organizationId
                 ? [currentView.organizationId]
                 : undefined,
+              workspaceIds: !!currentView.workspaceId
+                ? [currentView.workspaceId]
+                : undefined,
               projectIds: !!currentView.projectId
                 ? [currentView.projectId]
                 : undefined,

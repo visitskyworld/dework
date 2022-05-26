@@ -9,14 +9,16 @@ import { useTaskViewContext } from "../../TaskViewContext";
 import { Tab } from "@dewo/app/components/Tab";
 
 interface Props {
-  projectId?: string;
   userId?: string;
+  projectId?: string;
+  workspaceId?: string;
   organizationId?: string;
 }
 
 export const TaskViewCreateFormPopover: FC<Props> = ({
-  projectId,
   userId,
+  projectId,
+  workspaceId,
   organizationId,
 }) => {
   const { views } = useTaskViewContext();
@@ -39,7 +41,7 @@ export const TaskViewCreateFormPopover: FC<Props> = ({
       content={
         <TaskViewForm
           canCreate={true}
-          initialValues={{ projectId, userId, organizationId }}
+          initialValues={{ userId, projectId, workspaceId, organizationId }}
           onSubmit={handleSubmit}
           renderFooter={({ submitting }) => (
             <Button

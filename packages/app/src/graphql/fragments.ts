@@ -1,11 +1,11 @@
 import gql from "graphql-tag";
 import { fundingSession } from "./fragments/funding";
 import { network, payment, token } from "./fragments/payment";
-import { skill } from "./fragments/skill";
-import { user } from "./fragments/user";
-import { subtask, taskView } from "./fragments/task";
-import { workspace } from "./fragments/workspace";
 import { project } from "./fragments/project";
+import { skill } from "./fragments/skill";
+import { subtask, taskTag, taskView } from "./fragments/task";
+import { user } from "./fragments/user";
+import { workspace } from "./fragments/workspace";
 
 export const entityDetail = gql`
   fragment EntityDetail on EntityDetail {
@@ -225,17 +225,6 @@ export const projectDetails = gql`
   ${organization}
   ${taskSection}
   ${taskView}
-`;
-
-export const taskTag = gql`
-  fragment TaskTag on TaskTag {
-    id
-    label
-    color
-    createdAt
-    deletedAt
-    projectId
-  }
 `;
 
 export const taskReward = gql`

@@ -58,6 +58,7 @@ export const TaskViewUpdateFormPopover: FC<Props> = ({ view }) => {
         _.omit(values, [
           "userId",
           "projectId",
+          "workspaceId",
           "organizationId",
         ]) as UpdateTaskViewInput
       );

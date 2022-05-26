@@ -17,7 +17,7 @@ export class PermalinkService {
   private logger = new Logger(this.constructor.name);
 
   private async getBoard(
-    object: User | Project | Organization,
+    object: User | Project | Workspace | Organization,
     appUrl: string
   ) {
     if (object instanceof User) {
@@ -54,8 +54,9 @@ export class PermalinkService {
     }
     if (object instanceof TaskView) {
       const p =
-        (await object.project) ??
         (await object.user) ??
+        (await object.project) ??
+        (await object.workspace) ??
         (await object.organization);
 
       if (p) return `${await this.getBoard(p, appUrl)}/view/${object.slug}`;

@@ -1,12 +1,13 @@
 @import "~@dewo/app/styles/theme.less";
 
-.menu:global(.ant-menu-vertical) {
+.menu:global(.ant-menu-inline) {
   :global {
-    .ant-menu-item, .ant-menu-item-group-list .ant-menu-item {
+    .ant-menu-item, .ant-menu-item-group-list .ant-menu-item, .ant-menu-submenu-title {
       height: 32px;
       line-height: 32px;
-      padding: 0 8px;
-      margin: 0 16px 2px 16px;
+      width: unset;
+      padding: 0 2px 0 8px !important; /* antd's Menu w mode="inline" adds paddingLeft: 24 */
+      margin: 0 8px 2px 8px;
       font-weight: 500;
       border-radius: @border-radius-base;
 
@@ -16,14 +17,48 @@
         color: unset;
         background-color: @component-background;
       }
+
+      &:after {
+        display: none;
+      }
     }
 
+    .ant-menu-sub.ant-menu-inline {
+      background: unset;
+      margin-left: 22px;
+      padding-left: 1px;
+      border-left: 1px solid @border-color-base;
+    }
+
+    // .ant-menu-submenu-title, .ant-menu-item-group-title {
     .ant-menu-item-group-title {
-      padding: 16px 16px 0 24px;
+      color: @text-color-secondary;
+      padding: 0 8px 0 16px !important; /* antd's Menu w mode="inline" adds paddingLeft: 24 */
+      margin: 24px 0 0 0;
       text-transform: uppercase;
       letter-spacing: 1px;
       font-size: 11px;
       font-weight: 600;
+
+      &:active {
+        background: unset;
+      }
+
+    }
+
+    .ant-menu-submenu-selected {
+      color: unset;
+    }
+    
+    .ant-menu-submenu-title {
+      &:active {
+        background: unset;
+      }
+
+      .ant-menu-submenu-arrow {
+        color: @text-color-secondary;
+        right: 32px;
+      }
     }
 
     .ant-menu-item-icon {

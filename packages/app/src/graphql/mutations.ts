@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 import * as Fragments from "./fragments";
 import { network, paymentMethod, token } from "./fragments/payment";
 import { project } from "./fragments/project";
+import { taskTag } from "./fragments/task";
 import { user } from "./fragments/user";
 
 export const authWithThreepid = gql`
@@ -314,7 +315,7 @@ export const createTaskTag = gql`
     }
   }
 
-  ${Fragments.taskTag}
+  ${taskTag}
 `;
 
 export const updateTaskTag = gql`
@@ -330,7 +331,7 @@ export const updateTaskTag = gql`
     }
   }
 
-  ${Fragments.taskTag}
+  ${taskTag}
 `;
 
 export const createProjectIntegration = gql`

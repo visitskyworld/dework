@@ -22,6 +22,7 @@ import { getSortKeyBetween } from "../board/util";
 import { Tab } from "@dewo/app/components/Tab";
 
 interface Props {
+  workspaceId?: string;
   projectId?: string;
   organizationId?: string;
   userId?: string;
@@ -32,6 +33,7 @@ interface Props {
 
 const emptyArray: [] = [];
 export const TaskViewTabs: FC<Props> = ({
+  workspaceId,
   projectId,
   organizationId,
   userId,
@@ -49,16 +51,18 @@ export const TaskViewTabs: FC<Props> = ({
   const canCreate = usePermission("create", {
     __typename: "TaskView",
     organizationId,
+    workspaceId,
     projectId,
     userId,
-  } as AtLeast<TaskView, "__typename" | "projectId" | "organizationId" | "userId">);
+  } as AtLeast<TaskView, "__typename" | "projectId" | "workspaceId" | "organizationId" | "userId">);
 
   const canUpdate = usePermission("update", {
     __typename: "TaskView",
     organizationId,
+    workspaceId,
     projectId,
     userId,
-  } as AtLeast<TaskView, "__typename" | "projectId" | "organizationId" | "userId">);
+  } as AtLeast<TaskView, "__typename" | "projectId" | "workspaceId" | "organizationId" | "userId">);
 
   const navigateToTab = useCallback(
     (tabKey: string) => {
@@ -213,8 +217,9 @@ export const TaskViewTabs: FC<Props> = ({
             key="add"
             tab={
               <TaskViewCreateFormPopover
-                projectId={projectId}
                 userId={userId}
+                projectId={projectId}
+                workspaceId={workspaceId}
                 organizationId={organizationId}
               />
             }

@@ -26,7 +26,7 @@ export const UserMenu: FC = () => {
         icon={user && <UserAvatar user={user} />}
       />
       <Menu
-        inlineCollapsed
+        mode="inline"
         className={styles.menu}
         activeKey={router.asPath === "/" ? mainRoute : router.asPath}
         onSelect={({ key }) =>

@@ -5,12 +5,14 @@ import { TaskSearchService } from "./task.search.service";
 import { TaskSearchResponse } from "./dto/TaskSearchResponse";
 import { CountTasksInput, SearchTasksInput } from "./dto/SearchTasksInput";
 import { OrganizationService } from "../../organization/organization.service";
+import { WorkspaceService } from "../../workspace/workspace.service";
 
 @Injectable()
 export class TaskSearchResolver {
   constructor(
     private readonly service: TaskSearchService,
-    private readonly organizationService: OrganizationService
+    private readonly organizationService: OrganizationService,
+    private readonly workspaceService: WorkspaceService
   ) {}
 
   @Query(() => TaskSearchResponse)
@@ -22,15 +24,26 @@ export class TaskSearchResolver {
   ): Promise<TaskSearchResponse> {
     let projectIds = filter.projectIds;
 
-    if (!!filter.organizationIds && filter.organizationIds.length > 0) {
-      const projectsByOrg = await Promise.all(
-        filter.organizationIds.map((orgId) =>
-          this.organizationService.getProjects(orgId, user?.id)
+    if (!!filter.organizationIds?.length) {
+      const projects = await Promise.all(
+        filter.organizationIds.map((id) =>
+          this.organizationService.getProjects(id, user?.id)
         )
       );
 
       if (!projectIds) projectIds = [];
-      projectIds.push(...projectsByOrg.flat().map((p) => p.id));
+      projectIds.push(...projects.flat().map((p) => p.id));
+    }
+
+    if (!!filter.workspaceIds?.length) {
+      const projects = await Promise.all(
+        filter.workspaceIds.map((id) =>
+          this.workspaceService.getProjects(id, user?.id)
+        )
+      );
+
+      if (!projectIds) projectIds = [];
+      projectIds.push(...projects.flat().map((p) => p.id));
     }
 
     const isQueryingOnLandingPage = !projectIds && !filter.applicantIds;

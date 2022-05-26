@@ -14,6 +14,9 @@ export class CreateTaskViewInput {
   public projectId?: string;
 
   @Field(() => GraphQLUUID, { nullable: true })
+  public workspaceId?: string;
+
+  @Field(() => GraphQLUUID, { nullable: true })
   public userId?: string;
 
   @Field(() => GraphQLUUID, { nullable: true })

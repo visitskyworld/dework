@@ -3,6 +3,7 @@ import * as Fragments from "./fragments";
 import { network, token } from "./fragments/payment";
 import { project } from "./fragments/project";
 import * as TaskFragments from "./fragments/task";
+import { taskTag } from "./fragments/task";
 import { user } from "./fragments/user";
 
 export const me = gql`
@@ -130,7 +131,7 @@ export const organizationTaskViews = gql`
   }
 
   ${Fragments.organizationDetails}
-  ${Fragments.taskTag}
+  ${taskTag}
 `;
 
 export const organizationIntegrations = gql`
@@ -305,7 +306,20 @@ export const organizationTaskTags = gql`
     }
   }
 
-  ${Fragments.taskTag}
+  ${taskTag}
+`;
+
+export const workspaceTasks = gql`
+  query GetWorkspaceTasksQuery($slug: String!, $filter: TaskFilterInput) {
+    workspace: getWorkspaceBySlug(slug: $slug) {
+      id
+      tasks(filter: $filter) {
+        ...Task
+      }
+    }
+  }
+
+  ${Fragments.task}
 `;
 
 export const getProject = gql`
@@ -391,7 +405,7 @@ export const projectTaskTags = gql`
     }
   }
 
-  ${Fragments.taskTag}
+  ${taskTag}
 `;
 
 export const task = gql`
@@ -408,7 +422,7 @@ export const task = gql`
   }
 
   ${Fragments.taskDetails}
-  ${Fragments.taskTag}
+  ${taskTag}
 `;
 
 export const taskReactionUsers = gql`

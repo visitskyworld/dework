@@ -198,7 +198,7 @@ export const TaskForm: FC<TaskFormProps> = ({
                       size={16}
                       tooltip={{ visible: false }}
                       organization={task.project.organization}
-                      style={{ marginRight: 8 }}
+                      style={{ marginRight: 4 }}
                     />
                     <span>{task.project.organization.name}</span>
                   </Breadcrumb.Item>

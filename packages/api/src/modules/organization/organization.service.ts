@@ -172,6 +172,7 @@ export class OrganizationService {
       .getMany();
   }
 
+  // Similar to WorkspaceService.getProjects
   public async getProjects(
     organizationId: string,
     userId: string | undefined

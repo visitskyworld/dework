@@ -15,6 +15,7 @@ import { CreateTaskViewInput } from "./dto/CreateTaskViewInput";
 import { TaskViewService } from "./taskView.service";
 import { PermalinkService } from "../../permalink/permalink.service";
 import { UpdateTaskViewInput } from "./dto/UpdateTaskViewInput";
+import { WorkspaceService } from "../../workspace/workspace.service";
 
 @Injectable()
 @Resolver(() => TaskView)
@@ -38,19 +39,26 @@ export class TaskViewResolver {
     RoleGuard({
       action: "create",
       subject: TaskView,
-      inject: [ProjectService],
+      inject: [ProjectService, WorkspaceService],
       getSubject: (params: { input: CreateTaskViewInput }) =>
         Object.assign(new TaskView(), params.input),
       async getOrganizationId(
         _subject,
         params: { input: CreateTaskViewInput },
-        service
+        projectService: ProjectService,
+        workspaceService: WorkspaceService
       ) {
         if (params.input.organizationId) return params.input.organizationId;
-        const project = params.input.projectId
-          ? await service.findById(params.input.projectId)
-          : undefined;
-        return project?.organizationId;
+        if (!!params.input.projectId) {
+          const project = await projectService.findById(params.input.projectId);
+          return project?.organizationId;
+        }
+        if (!!params.input.workspaceId) {
+          const workspace = await workspaceService.findById(
+            params.input.workspaceId
+          );
+          return workspace?.organizationId;
+        }
       },
     })
   )
@@ -72,9 +80,15 @@ export class TaskViewResolver {
         service: TaskViewService
       ) => service.findById(params.input.id),
       async getOrganizationId(subject) {
-        if (subject.organizationId) return subject.organizationId;
-        const project = await subject.project;
-        return project?.organizationId;
+        if (!!subject.organizationId) return subject.organizationId;
+        if (!!subject.projectId) {
+          const project = await subject.project;
+          return project?.organizationId;
+        }
+        if (!!subject.workspaceId) {
+          const workspace = await subject.workspace;
+          return workspace?.organizationId;
+        }
       },
     })
   )
