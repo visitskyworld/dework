@@ -277,6 +277,14 @@ export class DiscordIntegrationService {
         return;
       }
 
+      if (channelToPostTo.isThread()) {
+        await this.addTaskUsersToDiscordThread(task, channelToPostTo, guild);
+
+        if (statusChanged && event instanceof TaskUpdatedEvent) {
+          await this.renameDiscordThread(channelToPostTo, task);
+        }
+      }
+
       if (wasChannelToPostToJustCreated) {
         await this.postDefaultInitialMessage(task, channelToPostTo);
       } else if (statusChanged && task.status === TaskStatus.IN_REVIEW) {
@@ -326,14 +334,6 @@ export class DiscordIntegrationService {
 
       if (event instanceof TaskDeletedEvent) {
         await this.postTaskDeleted(channelToPostTo, task);
-      }
-
-      if (channelToPostTo.isThread()) {
-        await this.addTaskUsersToDiscordThread(task, channelToPostTo, guild);
-
-        if (statusChanged && event instanceof TaskUpdatedEvent) {
-          await this.renameDiscordThread(channelToPostTo, task);
-        }
       }
 
       // write about task applicant updates (should that be done elsewhere maybe?)
