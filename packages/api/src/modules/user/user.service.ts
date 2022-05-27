@@ -192,21 +192,24 @@ export class UserService {
   }
 
   public async generateUsername(
-    threepidUsername: string,
+    username: string,
     id?: string
   ): Promise<string> {
+    const postgresEscapedUsername = username.replace(/'/g, "''");
     const usersMatchingUsername = await this.userRepo.find({
       where: {
         ...(id ? { id: Not(id) } : {}),
-        username: Raw((alias) => `${alias} ~ '^${threepidUsername}(\\d+)?$'`),
+        username: Raw(
+          (alias) => `${alias} ~ '^${postgresEscapedUsername}(\\d+)?$'`
+        ),
       },
     });
 
-    if (!usersMatchingUsername.length) return threepidUsername;
+    if (!usersMatchingUsername.length) return username;
     const matchingUsernames = usersMatchingUsername.map((u) => u.username);
     const set = new Set(matchingUsernames);
     for (let i = 1; i < matchingUsernames.length + 1; i++) {
-      const candidate = `${threepidUsername}${i}`;
+      const candidate = `${username}${i}`;
       if (!set.has(candidate)) return candidate;
     }
 
