@@ -5,14 +5,12 @@ import * as Icons from "@ant-design/icons";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { MenuHeader } from "./MenuHeader";
 import { useNotificationUnreadCount } from "../../notification/hooks";
-import { useIsDev } from "../../user/hooks";
 import { useRouter } from "next/router";
 import styles from "./Menu.module.less";
 
 export const UserMenu: FC = () => {
   const { user } = useAuthContext();
   const unreadCount = useNotificationUnreadCount();
-  const isDev = useIsDev();
   const router = useRouter();
 
   const mainRoute = "/discover";
@@ -43,24 +41,20 @@ export const UserMenu: FC = () => {
             icon: <Icons.AppstoreOutlined />,
             key: "/task-feed",
           },
-          ...(isDev
-            ? [
-                {
-                  label: (
-                    <>
-                      Inbox
-                      <Badge
-                        count={unreadCount}
-                        style={{ marginLeft: 8 }}
-                        className={styles.redBadge}
-                      />
-                    </>
-                  ),
-                  icon: <Icons.BellOutlined />,
-                  key: "/notifications",
-                },
-              ]
-            : []),
+          {
+            label: (
+              <>
+                Inbox
+                <Badge
+                  count={unreadCount}
+                  style={{ marginLeft: 8 }}
+                  className={styles.redBadge}
+                />
+              </>
+            ),
+            icon: <Icons.BellOutlined />,
+            key: "/notifications",
+          },
           {
             label: "My Task Board",
             icon: <Icons.ProjectOutlined />,

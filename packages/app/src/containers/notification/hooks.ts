@@ -19,7 +19,6 @@ import {
 } from "@dewo/app/graphql/types";
 import moment from "moment";
 import { useCallback, useEffect, useMemo } from "react";
-import { useIsDev } from "../user/hooks";
 
 export function useNotifications(): {
   loading: boolean;
@@ -53,8 +52,6 @@ export function useNotificationUnreadCount(): number | undefined {
     notificationUnreadCount,
     { skip }
   );
-  const isDev = useIsDev();
-  if (!isDev) return 0;
   return data?.me.notificationUnreadCount;
 }
 

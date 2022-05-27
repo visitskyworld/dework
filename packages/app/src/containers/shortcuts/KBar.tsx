@@ -28,13 +28,11 @@ import {
 import styles from "./KBar.module.less";
 import classNames from "classnames";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { useIsDev } from "../user/hooks";
 import { useProjectBySlug, useProjectDetails } from "../project/hooks";
 import { TaskViewType } from "@dewo/app/graphql/types";
 
 function useKBarActions() {
   const { user } = useAuthContext();
-  const isDev = useIsDev();
   const router = useRouter();
   const organizationSlug = router.query.organizationSlug as string | undefined;
   const { organization } = useOrganizationBySlug(organizationSlug);
@@ -82,17 +80,13 @@ function useKBarActions() {
             icon: <AppstoreOutlined />,
             perform: () => router.push("/task-feed"),
           },
-          ...(isDev
-            ? [
-                {
-                  id: "notifications",
-                  name: "Inbox",
-                  section: "For me",
-                  icon: <BellOutlined />,
-                  perform: () => router.push("/notifications"),
-                },
-              ]
-            : []),
+          {
+            id: "notifications",
+            name: "Inbox",
+            section: "For me",
+            icon: <BellOutlined />,
+            perform: () => router.push("/notifications"),
+          },
           {
             id: "board",
             name: "My Task Board",
@@ -109,7 +103,7 @@ function useKBarActions() {
           },
         ]
       : [],
-    [!!user, isDev]
+    [!!user]
   );
 
   useRegisterActions(
