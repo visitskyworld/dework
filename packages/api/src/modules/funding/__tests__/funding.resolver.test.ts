@@ -83,13 +83,18 @@ describe("FundingResolver", () => {
     });
 
     describe("setFundingVote", () => {
-      it("should allow anyone to cast vote", async () => {
+      it("should allow task owners to cast vote", async () => {
         const user = await fixtures.createUser();
         const session = await fixtures.createFundingSession();
+        await fixtures.grantPermissions(user.id, session.organizationId, [
+          { permission: RulePermission.MANAGE_FUNDING },
+        ]);
+
         const project = (await session.projects)[0];
         const task = await fixtures.createTask({
           status: TaskStatus.DONE,
           projectId: project.id,
+          owners: [user],
         });
         await app.get(TaskSearchService).index([task], true);
 
@@ -112,7 +117,7 @@ describe("FundingResolver", () => {
         expect(vote.session.votes).toHaveLength(1);
         expect(vote.session.votes[0].id).toEqual(vote.id);
         expect(vote.session.voters).toHaveLength(1);
-        expect(vote.session.voters[0].id).toEqual(user.id);
+        expect(vote.session.voters[0].user.id).toEqual(user.id);
       });
 
       it("should not allow voting on completed funding session", async () => {
@@ -120,6 +125,9 @@ describe("FundingResolver", () => {
         const session = await fixtures.createFundingSession({
           closedAt: new Date(),
         });
+        await fixtures.grantPermissions(user.id, session.organizationId, [
+          { permission: RulePermission.MANAGE_FUNDING },
+        ]);
         const project = (await session.projects)[0];
         const task = await fixtures.createTask({ projectId: project.id });
         await app.get(TaskSearchService).index([task], true);
@@ -152,7 +160,7 @@ describe("FundingResolver", () => {
             weight: faker.datatype.number(),
           }),
         });
-        client.expectGqlError(res, HttpStatus.BAD_REQUEST);
+        client.expectGqlError(res, HttpStatus.FORBIDDEN);
       });
     });
 
@@ -161,15 +169,21 @@ describe("FundingResolver", () => {
         const amount = 1_000_000;
 
         const { user, organization } = await fixtures.createUserOrgProject();
-        await fixtures.grantPermissions(user.id, organization.id, [
-          { permission: RulePermission.MANAGE_FUNDING },
-        ]);
         const userWith1Review = await fixtures.createUser();
         const userWith2Reviews = await fixtures.createUser();
         const userWith3Reviews = await fixtures.createUser();
         const task1Assignee = await fixtures.createUser();
         const task2Assignee = await fixtures.createUser();
         const totalVotes = 1 + 2 + 3;
+
+        await Promise.all(
+          [user, userWith1Review, userWith2Reviews, userWith3Reviews].map(
+            (user) =>
+              fixtures.grantPermissions(user.id, organization.id, [
+                { permission: RulePermission.MANAGE_FUNDING },
+              ])
+          )
+        );
 
         const session = await fixtures.createFundingSession({
           organizationId: organization.id,

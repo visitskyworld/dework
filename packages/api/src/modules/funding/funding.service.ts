@@ -104,7 +104,7 @@ export class FundingService {
           (userWeightById[v.userId] ?? 0) / totalUserWeight;
         return {
           ...acc,
-          [v.taskId]: (acc[v.taskId] || 0) + shareOfUser / userShareOfTotal,
+          [v.taskId]: (acc[v.taskId] || 0) + shareOfUser * userShareOfTotal,
         };
       },
       {}

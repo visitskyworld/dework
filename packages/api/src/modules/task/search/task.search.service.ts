@@ -320,10 +320,6 @@ export class TaskSearchService implements OnModuleInit {
       .leftJoinAndSelect("task.subtasks", "subtask")
       .innerJoinAndSelect("task.project", "project")
       .innerJoinAndSelect("project.organization", "organization")
-      // Create separate SQL queries for the counts
-      // https://github.com/typeorm/typeorm/issues/1961
-      .loadRelationCountAndMap("task.applicationCount", "task.applications")
-      .loadRelationCountAndMap("task.submissionCount", "task.submissions")
       .where("task.id IN (:...ids)", { ids: results.map((r) => r.id) })
       .getMany()
       .then((tasks) =>

@@ -48,7 +48,9 @@ export class FundingRequests {
                 id
               }
               voters {
-                id
+                user {
+                  id
+                }
               }
             }
           }

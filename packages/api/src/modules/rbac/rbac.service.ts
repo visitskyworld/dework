@@ -301,7 +301,12 @@ export class RbacService {
               organizationId,
             });
           }
-          fn(CRUD, FundingVote, { sessionId: rule.fundingSessionId, userId });
+          fn(CRUD, FundingVote, {
+            userId,
+            ...(!!rule.fundingSessionId
+              ? { sessionId: rule.fundingSessionId }
+              : {}),
+          });
           break;
         case RulePermission.VIEW_PROJECTS:
           fn("read", Project, project);

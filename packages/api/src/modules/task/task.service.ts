@@ -118,9 +118,7 @@ export class TaskService {
     });
     if (!existing) throw new NotFoundException();
     await this.taskSubmissionRepo.save({ ...existing, ...input });
-    return this.taskSubmissionRepo.findOne({
-      id: existing.id,
-    }) as Promise<TaskSubmission>;
+    return this.taskSubmissionRepo.findOneOrFail({ id: existing.id });
   }
 
   public async createPayments(input: CreateTaskPaymentsInput): Promise<Task[]> {
@@ -232,10 +230,6 @@ export class TaskService {
       .leftJoinAndSelect("task.reactions", "reaction")
       .leftJoinAndSelect("task.subtasks", "subtask")
       .innerJoinAndSelect("task.project", "project")
-      // Create separate SQL queries for the counts
-      // https://github.com/typeorm/typeorm/issues/1961
-      .loadRelationCountAndMap("task.applicationCount", "task.applications")
-      .loadRelationCountAndMap("task.submissionCount", "task.submissions")
       .where("1 = 1");
 
     if (joinProjectOrganization) {

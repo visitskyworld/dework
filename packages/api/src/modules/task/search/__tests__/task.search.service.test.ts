@@ -498,6 +498,11 @@ describe("TaskSearchService", () => {
             fixtures.createTaskSubmission({ taskId: task.id })
           )
         );
+        // don't count deleted submissions
+        await fixtures.createTaskSubmission({
+          taskId: task.id,
+          deletedAt: new Date(),
+        });
 
         await service.index([task], true);
         const res = await service.search(

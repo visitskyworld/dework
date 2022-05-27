@@ -138,7 +138,9 @@ export class Task extends Audit {
   @Field(() => [TaskSubmission])
   public submissions!: Promise<TaskSubmission[]>;
 
-  @RelationCount((t: Task) => t.submissions)
+  @RelationCount((t: Task) => t.submissions, "submission", (qb) =>
+    qb.andWhere("submission.deletedAt IS NULL")
+  )
   @Field(() => Int)
   public submissionCount!: number;
 
