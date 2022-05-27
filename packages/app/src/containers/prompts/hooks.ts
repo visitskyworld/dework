@@ -13,6 +13,7 @@ export enum UserPromptStep {
   OnboardingSkills = "skills",
   OnboardingDone = "done",
   TaskConnectWalletToReceiveReward = "task-reward-wallet",
+  ProductUpdate220527 = "product-update-220527",
 }
 
 const UserPromptStepMapping: Record<
@@ -64,6 +65,7 @@ const UserPromptStepMapping: Record<
   "Skills.v1.ChooseSkills": () => {
     return [UserPromptStep.OnboardingSkills];
   },
+  "ProductUpdate.220527": () => [UserPromptStep.ProductUpdate220527],
 };
 
 export function usePrompt(): {

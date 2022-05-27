@@ -19,8 +19,8 @@ export class IndexTasksService {
   ) {}
 
   public async run() {
-    await this.taskSearch.deleteIndex().catch(() => {});
-    await this.taskSearch.createIndex();
+    // await this.taskSearch.deleteIndex().catch(() => {});
+    // await this.taskSearch.createIndex();
 
     let offset = 0;
     const batchSize = 500;

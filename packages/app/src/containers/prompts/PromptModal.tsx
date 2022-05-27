@@ -10,6 +10,7 @@ import { OnboardingDone } from "./onboarding/OnboardingDone";
 import { OnboardingProfile } from "./onboarding/OnboardingProfile";
 import { ConnectWalletToReceiveTaskReward } from "./task/ConnectWalletToReceiveTaskReward";
 import { OnboardingSkills } from "./onboarding/OnboardingSkills";
+import { ProductUpdate220527 } from "./announcements/ProductUpdate220527";
 
 const StepComponentMapping: Record<
   UserPromptStep,
@@ -22,6 +23,7 @@ const StepComponentMapping: Record<
   [UserPromptStep.OnboardingDone]: OnboardingDone,
   [UserPromptStep.TaskConnectWalletToReceiveReward]:
     ConnectWalletToReceiveTaskReward,
+  [UserPromptStep.ProductUpdate220527]: ProductUpdate220527,
 };
 
 export const PromptModal: FC = () => {
