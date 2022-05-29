@@ -213,15 +213,12 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
             )
             .div(BigNumber.from(10).pow(Constants.NUM_DECIMALS_IN_USD_PEG))
         : BigNumber.from(reward.amount);
-      const [paymentMethods, userAddress] = await Promise.all([
+      const [paymentMethods, threepids] = await Promise.all([
         loadProjectPaymentMethods({
           variables: { projectId: task.projectId },
         }).then((res) => res.data?.project.paymentMethods),
         loadUserAddress({ variables: { id: user.id } }).then(
-          (res) =>
-            res.data?.user.threepids?.find(
-              (t) => t.source === ThreepidSource.phantom
-            )?.address
+          (res) => res.data?.user.threepids
         ),
       ]);
 
@@ -234,12 +231,6 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         matchingSenderPaymentMethods
       );
 
-      if (!userAddress) {
-        throw new NoUserPaymentMethodError(
-          `${user.username} has no payment method on ${from.network.name}`
-        );
-      }
-
       const payment: TaskRewardPaymentInput = {
         amount: amount.toString(),
         rewardId: reward.id,
@@ -249,6 +240,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
       switch (from.type) {
         case PaymentMethodType.METAMASK: {
+          const userAddress = threepids?.find(
+            (t) => t.source === ThreepidSource.metamask
+          )?.address;
+          if (!userAddress) {
+            throw new NoUserPaymentMethodError(
+              `${user.username} has no payment method on ${from.network.name}`
+            );
+          }
+
           const txHash = await createEthereumTransaction(
             from.address,
             userAddress,
@@ -270,6 +270,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.PHANTOM: {
+          const userAddress = threepids?.find(
+            (t) => t.source === ThreepidSource.phantom
+          )?.address;
+          if (!userAddress) {
+            throw new NoUserPaymentMethodError(
+              `${user.username} has no payment method on ${from.network.name}`
+            );
+          }
+
           const signature = await createSolanaTransaction(
             from.address,
             userAddress,
@@ -290,6 +299,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
           break;
         }
         case PaymentMethodType.HIRO: {
+          const userAddress = threepids?.find(
+            (t) => t.source === ThreepidSource.hiro
+          )?.address;
+          if (!userAddress) {
+            throw new NoUserPaymentMethodError(
+              `${user.username} has no payment method on ${from.network.name}`
+            );
+          }
+
           const txId = await createStacksTransaction(
             from.address,
             userAddress,
