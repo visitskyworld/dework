@@ -50,6 +50,7 @@ export const CreateFundingSessionForm: FC<Props> = ({
     <Form<FormValues>
       layout="vertical"
       requiredMark={false}
+      initialValues={{ projectIds: projects?.map((p) => p.id) }}
       onFinish={handleSubmit}
     >
       <Form.Item
@@ -61,6 +62,7 @@ export const CreateFundingSessionForm: FC<Props> = ({
       </Form.Item>
       <Form.Item
         name="projectIds"
+        label="Projects in the Reward session"
         rules={[
           { type: "array", min: 1, message: "Select at least one project" },
         ]}
@@ -85,6 +87,7 @@ export const CreateFundingSessionForm: FC<Props> = ({
       </Form.Item>
       <Form.Item
         name="tokenId"
+        label="Session Budget size"
         rules={[{ required: true, message: "Please select a token" }]}
       >
         <TokenSelect organizationId={organizationId} />

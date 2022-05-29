@@ -1,4 +1,5 @@
 import { FormSection } from "@dewo/app/components/FormSection";
+import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
@@ -55,8 +56,8 @@ interface VoteType {
 
 const voteTypes: VoteType[] = [
   // { emoji: "🙂", weight: 1, tooltip: "Met expectations" },
-  { emoji: "😄", weight: 1, tooltip: "Exceeded expectations" },
-  { emoji: "🤯", weight: 3, tooltip: "Exceptional work" },
+  { emoji: "😄", weight: 1, tooltip: "Beat expectations" },
+  { emoji: "😍", weight: 3, tooltip: "Outstanding work" },
 ];
 
 const fields: TaskViewField[] = [
@@ -157,7 +158,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           !!session &&
           !closed && (
             <Button loading={closing} onClick={handleClose}>
-              Close Tipping Session
+              Complete Reward Session
             </Button>
           )
         }
@@ -179,8 +180,8 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
               <Collapse
                 defaultActiveKey={
                   closed
-                    ? ["details", "voters", "tips"]
-                    : ["details", "voters", "tasks"]
+                    ? ["details", "rewarders", "tips"]
+                    : ["details", "rewarders", "tasks"]
                 }
                 bordered={false}
               >
@@ -218,12 +219,23 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                     </Row>
                   </Space>
                 </Collapse.Panel>
-                <Collapse.Panel header="Voters" key="voters">
+                <Collapse.Panel
+                  header={
+                    <>
+                      <Typography.Text>Rewarders</Typography.Text>
+                      <QuestionmarkTooltip
+                        marginLeft={8}
+                        title="Rewarders' weighting power are proportional to how many tasks they've reviewed during the given reward session. The reward budget is distributed based on the rewarder's votes."
+                      />
+                    </>
+                  }
+                  key="rewarders"
+                >
                   {!!usersWhoVoted?.length && (
                     <FormSection
                       label={
                         <Typography.Text type="secondary">
-                          Voted
+                          Rewarders
                         </Typography.Text>
                       }
                     >
@@ -238,7 +250,7 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                     <FormSection
                       label={
                         <Typography.Text type="secondary">
-                          Waiting for voters
+                          Waiting for rewarders
                         </Typography.Text>
                       }
                     >
@@ -250,7 +262,18 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
                     </FormSection>
                   )}
                 </Collapse.Panel>
-                <Collapse.Panel header="Who can vote?" key="access">
+                <Collapse.Panel
+                  header={
+                    <>
+                      <Typography.Text>Who can reward?</Typography.Text>
+                      <QuestionmarkTooltip
+                        marginLeft={8}
+                        title="If someone has a specific Discord role but hasn't reviewed any tasks during the tipping session, their weighting power is zero."
+                      />
+                    </>
+                  }
+                  key="access"
+                >
                   {!!roles && (
                     <RBACPermissionForm
                       organizationId={session.organizationId}

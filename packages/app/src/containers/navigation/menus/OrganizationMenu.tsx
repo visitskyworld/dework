@@ -120,7 +120,7 @@ export const OrganizationMenu: FC<Props> = ({ organizationId }) => {
             ? {
                 label: (
                   <Row align="middle" justify="space-between">
-                    Tipping
+                    Rewarding
                     {canCreateFundingSession && (
                       <CreateFundingSessionButton
                         type="text"
