@@ -220,7 +220,7 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
         loadUserAddress({ variables: { id: user.id } }).then(
           (res) =>
             res.data?.user.threepids?.find(
-              (t) => t.source === ThreepidSource.metamask
+              (t) => t.source === ThreepidSource.phantom
             )?.address
         ),
       ]);
