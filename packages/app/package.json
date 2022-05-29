@@ -11,7 +11,7 @@
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
-    "@apollo/client": "^3.5.5",
+    "@apollo/client": "^3.6.5",
     "@apollo/react-ssr": "^4.0.0",
     "@casl/ability": "^5.4.3",
     "@casl/react": "^2.3.0",
