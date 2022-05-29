@@ -36,12 +36,8 @@ export const getProjectTaskStatuses = (
 ) => {
   const keys = Object.keys(STATUS_LABEL) as TaskStatus[];
   if (!projectDetails) return keys;
-  const { showBacklogColumn, showCommunitySuggestions } =
-    projectDetails.options ?? {};
+  const { showCommunitySuggestions } = projectDetails.options ?? {};
   const statuses = keys.filter((status) => {
-    if (status === TaskStatus.BACKLOG) {
-      return showBacklogColumn;
-    }
     if (status === TaskStatus.COMMUNITY_SUGGESTIONS) {
       return showCommunitySuggestions;
     }

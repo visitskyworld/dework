@@ -15,8 +15,6 @@ import { TaskView } from "./TaskView";
 @InputType("ProjectOptionsInput")
 export class ProjectOptions {
   @Field({ nullable: true })
-  public showBacklogColumn?: boolean;
-  @Field({ nullable: true })
   public showCommunitySuggestions?: boolean;
 }
 

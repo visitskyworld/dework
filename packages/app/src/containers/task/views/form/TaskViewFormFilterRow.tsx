@@ -85,7 +85,6 @@ const OwnerFilter: FC<Props> = ({ name, onClear }) => {
 };
 
 const StatusFilter: FC<Props> = ({ name, onClear }) => {
-  const { showBacklog } = useTaskViewContext();
   return (
     <Form.Item
       name={[name, "statuses"]}
@@ -99,7 +98,7 @@ const StatusFilter: FC<Props> = ({ name, onClear }) => {
         onClear={onClear}
       >
         {[
-          showBacklog && TaskStatus.BACKLOG,
+          TaskStatus.BACKLOG,
           TaskStatus.TODO,
           TaskStatus.IN_PROGRESS,
           TaskStatus.IN_REVIEW,

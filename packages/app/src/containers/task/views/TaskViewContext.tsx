@@ -40,7 +40,6 @@ interface TaskViewValue {
   saveButtonText: string;
   filterableMembers: User[];
   tags: TaskTag[];
-  showBacklog: boolean;
   roles: Role[];
   searchQuery: string;
   onSearchQueryChange(query: string): void;
@@ -55,7 +54,6 @@ const TaskViewContext = createContext<TaskViewValue>({
   saveButtonText: "Save for everyone",
   filterableMembers: [],
   tags: [],
-  showBacklog: true,
   roles: [],
   searchQuery: "",
   onSearchQueryChange: () => {},
@@ -152,7 +150,6 @@ export const ProjectTaskViewProvider: FC<{
   const router = useRouter();
   const { project } = useProjectDetails(projectId);
   const views = project?.taskViews;
-  const showBacklog = project?.options?.showBacklogColumn;
   const roles = useOrganizationRoles(project?.organizationId);
 
   const { users: filterableMembers } = useOrganizationUsers(
@@ -169,7 +166,6 @@ export const ProjectTaskViewProvider: FC<{
       children={children}
       filterableMembers={filterableMembers}
       tags={tags}
-      showBacklog={showBacklog ?? true}
       roles={roles}
     />
   );
@@ -184,7 +180,6 @@ const TaskViewProvider: FC<{
   saveButtonText?: string;
   filterableMembers?: User[];
   tags?: TaskTag[];
-  showBacklog?: boolean;
   roles?: Role[];
 }> = ({
   redirect,
@@ -194,7 +189,6 @@ const TaskViewProvider: FC<{
   saveButtonText = "Save for everyone",
   filterableMembers = emptyArray,
   tags = emptyArray,
-  showBacklog = true,
   roles = emptyArray,
 }) => {
   const [localViewChanges, setLocalViewChanges] = useState<
@@ -287,7 +281,6 @@ const TaskViewProvider: FC<{
         saveButtonText,
         filterableMembers,
         tags,
-        showBacklog,
         roles,
         searchQuery,
         onSearchQueryChange,

@@ -201,11 +201,11 @@ export function useTaskViewGroups(
               TaskStatus.IN_REVIEW,
               TaskStatus.IN_PROGRESS,
               TaskStatus.TODO,
-              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.BACKLOG,
               TaskStatus.DONE,
             ]
           : [
-              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.BACKLOG,
               TaskStatus.TODO,
               TaskStatus.IN_PROGRESS,
               TaskStatus.IN_REVIEW,
@@ -215,17 +215,12 @@ export function useTaskViewGroups(
       return statuses
         .filter((s): s is TaskStatus => !!s)
         .filter(
-          (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
+          (s) => !statusFilter?.statuses || statusFilter?.statuses?.includes(s)
         );
     }
 
     return [];
-  }, [
-    groupBy,
-    currentView?.type,
-    details?.options?.showBacklogColumn,
-    findFilter,
-  ]);
+  }, [groupBy, currentView?.type, findFilter]);
 
   return useMemo<TaskViewGroup[]>(
     () =>
@@ -341,9 +336,6 @@ export interface TaskViewLayoutItem {
 
 export function useTaskViewLayoutItems() {
   const { currentView, searchQuery } = useTaskViewContext();
-  const details = useProjectDetails(
-    currentView?.projectId ?? undefined
-  ).project;
   return useMemo<TaskViewLayoutItem[]>(() => {
     if (!currentView) return [];
     if (currentView.groupBy === TaskViewGroupBy.status) {
@@ -357,11 +349,11 @@ export function useTaskViewLayoutItems() {
               TaskStatus.IN_REVIEW,
               TaskStatus.IN_PROGRESS,
               TaskStatus.TODO,
-              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.BACKLOG,
               TaskStatus.DONE,
             ]
           : [
-              details?.options?.showBacklogColumn && TaskStatus.BACKLOG,
+              TaskStatus.BACKLOG,
               TaskStatus.TODO,
               TaskStatus.IN_PROGRESS,
               TaskStatus.IN_REVIEW,
@@ -371,7 +363,7 @@ export function useTaskViewLayoutItems() {
       return statuses
         .filter((s): s is TaskStatus => !!s)
         .filter(
-          (s) => !statusFilter?.statuses || statusFilter.statuses?.includes(s)
+          (s) => !statusFilter?.statuses || statusFilter?.statuses?.includes(s)
         )
         .map(
           (status): TaskViewLayoutItem => ({
@@ -414,7 +406,7 @@ export function useTaskViewLayoutItems() {
     }
 
     return [];
-  }, [currentView, details?.options?.showBacklogColumn, searchQuery]);
+  }, [currentView, searchQuery]);
 }
 
 export interface TaskViewLayoutData {

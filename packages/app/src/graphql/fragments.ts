@@ -203,7 +203,6 @@ export const projectDetails = gql`
   fragment ProjectDetails on Project {
     ...Project
     options {
-      showBacklogColumn
       showCommunitySuggestions
     }
     tokenGates {

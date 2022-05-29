@@ -4,7 +4,6 @@ import { Typography, Divider, Space, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import React, { ChangeEvent, FC, useCallback, useMemo, useState } from "react";
 import { useUpdateProject } from "../hooks";
-import { ProjectSettingsBacklog } from "./ProjectSettingsBacklog";
 import { ProjectSettingsContributorSuggestions } from "./ProjectSettingsContributorSuggestions";
 import { ProjectTaskExports } from "./ProjectTaskExports";
 
@@ -63,7 +62,6 @@ export const ProjectSettingsGeneral: FC<Props> = ({ project }) => {
           />
         </FormSection>
         <ProjectSettingsContributorSuggestions />
-        <ProjectSettingsBacklog />
         <ProjectTaskExports projectId={project.id} projectName={project.name} />
       </Space>
     </Form>

@@ -665,7 +665,6 @@ export interface CreateOrganizationTagMutationVariables {
 
 export interface CreateProjectMutation_project_options {
   __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
   showCommunitySuggestions: boolean | null;
 }
 
@@ -943,7 +942,6 @@ export interface CreateProjectMutationVariables {
 
 export interface UpdateProjectMutation_project_options {
   __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
   showCommunitySuggestions: boolean | null;
 }
 
@@ -8412,7 +8410,6 @@ export interface GetProjectQueryVariables {
 
 export interface GetProjectDetailsQuery_project_options {
   __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
   showCommunitySuggestions: boolean | null;
 }
 
@@ -12548,7 +12545,6 @@ export interface Invite {
 
 export interface ProjectDetails_options {
   __typename: "ProjectOptions";
-  showBacklogColumn: boolean | null;
   showCommunitySuggestions: boolean | null;
 }
 
@@ -15296,7 +15292,6 @@ export interface GetTasksInput {
 }
 
 export interface ProjectOptionsInput {
-  showBacklogColumn?: boolean | null;
   showCommunitySuggestions?: boolean | null;
 }
 

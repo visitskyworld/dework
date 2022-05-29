@@ -72,7 +72,17 @@ export class TaskViewService {
     await this.create({
       name: "Board",
       organizationId: organization.id,
-      filters: [],
+      filters: [
+        {
+          type: TaskViewFilterType.STATUSES,
+          statuses: [
+            TaskStatus.TODO,
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.IN_REVIEW,
+            TaskStatus.DONE,
+          ],
+        },
+      ],
       type: TaskViewType.BOARD,
     });
     await this.create({

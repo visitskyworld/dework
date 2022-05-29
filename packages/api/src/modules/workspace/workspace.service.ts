@@ -1,5 +1,6 @@
 import { Project } from "@dewo/api/models/Project";
-import { TaskViewType } from "@dewo/api/models/TaskView";
+import { TaskStatus } from "@dewo/api/models/Task";
+import { TaskViewFilterType, TaskViewType } from "@dewo/api/models/TaskView";
 import { Workspace } from "@dewo/api/models/Workspace";
 import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { slugBlacklist } from "@dewo/api/utils/slugBlacklist";
@@ -30,7 +31,17 @@ export class WorkspaceService {
     await this.taskViewService.create({
       name: "Board",
       workspaceId: created.id,
-      filters: [],
+      filters: [
+        {
+          type: TaskViewFilterType.STATUSES,
+          statuses: [
+            TaskStatus.TODO,
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.IN_REVIEW,
+            TaskStatus.DONE,
+          ],
+        },
+      ],
       type: TaskViewType.BOARD,
     });
     return this.repo.findOneOrFail(created.id);
