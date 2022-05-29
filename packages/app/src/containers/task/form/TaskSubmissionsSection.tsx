@@ -66,12 +66,12 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     canManageSubmissions &&
       !task.submissions.length &&
       task.gating === TaskGatingType.OPEN_SUBMISSION && (
-        <Typography.Paragraph type="secondary">
+        <Typography.Paragraph key="empty" type="secondary">
           No submissions to review
         </Typography.Paragraph>
       ),
     canManageSubmissions && !!task.submissions.length && (
-      <FormSection label="All Submissions">
+      <FormSection key="all" label="All Submissions">
         <Card size="small" className="dewo-card-highlighted">
           <List
             dataSource={task.submissions}
@@ -83,7 +83,7 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
       </FormSection>
     ),
     !!currentSubmission && (
-      <FormSection label="Your Submission">
+      <FormSection key="your" label="Your Submission">
         <RichMarkdownEditor
           initialValue={currentSubmission?.content}
           editable

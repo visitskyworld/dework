@@ -157,35 +157,36 @@ export const TaskGatingFields: FC<Props> = ({
           ))}
         </Select>
       </Form.Item>
-      {values?.gating === TaskGatingType.ASSIGNEES && (
-        <Form.Item name="assigneeIds">
-          <UserSelect
-            placeholder={
-              canChangeAssignees ? "Select assignee..." : "No task assignee..."
-            }
-            disabled={!canChangeAssignees}
-            mode="multiple"
-            users={assigneeOptions}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                {!!task && (
-                  <Button
-                    block
-                    type="text"
-                    style={{ textAlign: "left", marginTop: 4 }}
-                    className="text-secondary"
-                    loading={inviting}
-                    icon={<Icons.LinkOutlined />}
-                    children="Invite contributor by link"
-                    onClick={inviteToTask}
-                  />
-                )}
-              </>
-            )}
-          />
-        </Form.Item>
-      )}
+      <Form.Item
+        name="assigneeIds"
+        hidden={values?.gating !== TaskGatingType.ASSIGNEES}
+      >
+        <UserSelect
+          placeholder={
+            canChangeAssignees ? "Select assignee..." : "No task assignee..."
+          }
+          disabled={!canChangeAssignees}
+          mode="multiple"
+          users={assigneeOptions}
+          dropdownRender={(menu) => (
+            <>
+              {menu}
+              {!!task && (
+                <Button
+                  block
+                  type="text"
+                  style={{ textAlign: "left", marginTop: 4 }}
+                  className="text-secondary"
+                  loading={inviting}
+                  icon={<Icons.LinkOutlined />}
+                  children="Invite contributor by link"
+                  onClick={inviteToTask}
+                />
+              )}
+            </>
+          )}
+        />
+      </Form.Item>
       {values?.gating === TaskGatingType.ROLES && (
         <TaskRoleSelectField
           roleIds={values.roleIds}

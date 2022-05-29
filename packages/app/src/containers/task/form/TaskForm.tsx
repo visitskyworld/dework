@@ -141,20 +141,28 @@ export const TaskForm: FC<TaskFormProps> = ({
     (changed: Partial<TaskFormValues>, values: Partial<TaskFormValues>) => {
       changed.skillIds = changed.skillIds?.slice(0, 2);
       const shouldResetRoles =
-        changed.gating && changed.gating !== TaskGatingType.ROLES;
+        !!changed.gating && changed.gating !== TaskGatingType.ROLES;
+      const shouldResetAssignees =
+        !!changed.gating &&
+        changed.gating !== TaskGatingType.ASSIGNEES &&
+        !!values.assigneeIds?.length;
 
-      const newValues: Partial<TaskFormValues> = shouldResetRoles
-        ? { ...values, roleIds: [] }
-        : values;
+      const newValues: Partial<TaskFormValues> = {
+        ...values,
+        ...(shouldResetRoles && { roleIds: [] }),
+        ...(shouldResetAssignees && { assigneeIds: [] }),
+      };
+      const newChanged: Partial<TaskFormValues> = {
+        ...changed,
+        ...(shouldResetRoles && { roleIds: [] }),
+        ...(shouldResetAssignees && { assigneeIds: [] }),
+      };
 
       form.setFieldsValue(newValues);
       setValues(newValues);
       onChange?.(newValues);
 
       if (mode === "update") {
-        const newChanged: Partial<TaskFormValues> = shouldResetRoles
-          ? { ...changed, roleIds: [] }
-          : changed;
         debouncedSubmit(newChanged as TaskFormValues);
       }
     },
