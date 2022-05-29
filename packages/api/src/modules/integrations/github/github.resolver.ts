@@ -11,6 +11,7 @@ import { Organization } from "@dewo/api/models/Organization";
 import { CreateProjectsFromGithubInput } from "./dto/CreateProjectsFromGithubInput";
 import { OrganizationService } from "../../organization/organization.service";
 import { RoleGuard } from "../../rbac/rbac.guard";
+import { GithubLabel } from "./dto/GithubLabel";
 
 @Injectable()
 export class GithubResolver {
@@ -21,11 +22,24 @@ export class GithubResolver {
   ) {}
 
   // TODO(fant): do we want to make sure the requesting user is an org admin?
-  @Query(() => [GithubRepo], { nullable: true })
+  @Query(() => [GithubRepo])
   public async getGithubRepos(
     @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
   ): Promise<GithubRepo[]> {
     return this.githubIntegrationService.getOrganizationRepos(organizationId);
+  }
+
+  @Query(() => [GithubLabel])
+  public async getGithubLabels(
+    @Args("repo") repo: string,
+    @Args("organization") organization: string,
+    @Args("organizationId", { type: () => GraphQLUUID }) organizationId: string
+  ): Promise<GithubLabel[]> {
+    return this.githubIntegrationService.getRepoLabels(
+      repo,
+      organization,
+      organizationId
+    );
   }
 
   @Mutation(() => Project)

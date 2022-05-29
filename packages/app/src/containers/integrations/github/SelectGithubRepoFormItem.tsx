@@ -37,7 +37,7 @@ export const SelectGihubRepoFormItem = ({
         <Select
           mode="multiple"
           loading={!repos}
-          placeholder="Select Github Repo"
+          placeholder="Select Github Repo..."
           allowClear
           showSearch
           optionFilterProp="label"

@@ -38,6 +38,36 @@ export class GithubRequests {
     };
   }
 
+  public static getLabels(
+    repo: string,
+    organization: string,
+    organizationId: string
+  ): GraphQLTestClientRequestBody<{
+    repo: string;
+    organization: string;
+    organizationId: string;
+  }> {
+    return {
+      query: `
+        query GetGithubLabels(
+          $repo: String!
+          $organization: String!
+          $organizationId: UUID!
+        ) {
+          labels: getGithubLabels(
+            repo: $repo
+            organization: $organization
+            organizationId: $organizationId
+          ) {
+            id
+            name
+          }
+        }
+      `,
+      variables: { repo, organization, organizationId },
+    };
+  }
+
   public static createTasksFromGithubIssues(
     projectId: string
   ): GraphQLTestClientRequestBody<{ projectId: string }> {

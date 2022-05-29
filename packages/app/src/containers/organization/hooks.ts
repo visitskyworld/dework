@@ -65,6 +65,8 @@ import {
   User,
   UserWithRoles,
   Workspace,
+  GetOrganizationGithubRepoLabelsQuery,
+  GetOrganizationGithubRepoLabelsQueryVariables,
 } from "@dewo/app/graphql/types";
 import { isSSR } from "@dewo/app/util/isSSR";
 import _ from "lodash";
@@ -338,6 +340,23 @@ export function useOrganizationGithubRepos(
     skip: skip && !!organizationId,
   });
   return data?.repos ?? undefined;
+}
+
+export function useOrganizationGithubRepoLabels(
+  repo: GithubRepo,
+  organizationId: string
+) {
+  const { data } = useQuery<
+    GetOrganizationGithubRepoLabelsQuery,
+    GetOrganizationGithubRepoLabelsQueryVariables
+  >(Queries.organizationGithubRepoLabels, {
+    variables: {
+      repo: repo.name,
+      organization: repo.organization,
+      organizationId,
+    },
+  });
+  return data?.labels ?? undefined;
 }
 
 export function useOrganizationDiscordChannels(

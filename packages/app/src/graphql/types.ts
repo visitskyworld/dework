@@ -10383,10 +10383,35 @@ export interface GetOrganizationGithubReposQuery_repos {
 }
 
 export interface GetOrganizationGithubReposQuery {
-  repos: GetOrganizationGithubReposQuery_repos[] | null;
+  repos: GetOrganizationGithubReposQuery_repos[];
 }
 
 export interface GetOrganizationGithubReposQueryVariables {
+  organizationId: Scalar.UUID;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationGithubRepoLabelsQuery
+// ====================================================
+
+export interface GetOrganizationGithubRepoLabelsQuery_labels {
+  __typename: "GithubLabel";
+  id: string;
+  name: string;
+}
+
+export interface GetOrganizationGithubRepoLabelsQuery {
+  labels: GetOrganizationGithubRepoLabelsQuery_labels[];
+}
+
+export interface GetOrganizationGithubRepoLabelsQueryVariables {
+  repo: string;
+  organization: string;
   organizationId: Scalar.UUID;
 }
 
@@ -15161,6 +15186,7 @@ export interface CreateProjectIntegrationInput {
 export interface CreateProjectsFromGithubInput {
   organizationId: Scalar.UUID;
   repoIds: string[];
+  labelIds?: string[] | null;
 }
 
 export interface CreateProjectsFromNotionInput {

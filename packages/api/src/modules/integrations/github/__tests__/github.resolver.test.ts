@@ -62,6 +62,32 @@ describe("GithubResolver", () => {
         );
       });
     });
+
+    describe("getGithubLabels", () => {
+      it("should fetch correct labels", async () => {
+        const organization = await fixtures.createOrganization();
+        await fixtures.createOrganizationIntegration({
+          organizationId: organization.id,
+          type: OrganizationIntegrationType.GITHUB,
+          config: { installationId },
+        });
+
+        const response = await client.request({
+          app,
+          body: GithubRequests.getLabels(
+            githubRepo,
+            githubOrganization,
+            organization.id
+          ),
+        });
+
+        const labels = response.body.data?.labels;
+        expect(labels).toContainEqual(expect.objectContaining({ name: "bug" }));
+        expect(labels).toContainEqual(
+          expect.objectContaining({ name: "invalid" })
+        );
+      });
+    });
   });
 
   describe("Mutations", () => {
@@ -120,6 +146,33 @@ describe("GithubResolver", () => {
         const openTag = openTask.tags.find((t: any) => t.label === label);
         const closedTag = closedTask.tags.find((t: any) => t.label === label);
         expect(openTag.id).toEqual(closedTag.id);
+      });
+
+      it("should only import issues matching specified tags", async () => {
+        const { user, organization } = await fixtures.createUserOrgProject();
+        const { project } = await fixtures.createProjectWithGithubIntegration(
+          { organizationId: organization.id },
+          [GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES],
+          {
+            installationId,
+            repo: githubRepo,
+            organization: githubOrganization,
+            labelIds: ["LA_kwDOGmxdh87bxZ8_"], // "bug" label
+          }
+        );
+
+        const response = await client.request({
+          app,
+          auth: fixtures.createAuthToken(user),
+          body: GithubRequests.createTasksFromGithubIssues(project.id),
+        });
+        const tasks = response.body.data?.project.tasks;
+        expect(tasks).toContainEqual(
+          expect.objectContaining({ name: "First issue" })
+        );
+        expect(tasks).not.toContainEqual(
+          expect.objectContaining({ name: "Closed issue" })
+        );
       });
     });
 

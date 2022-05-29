@@ -3,7 +3,7 @@ import { useRunning, useToggle } from "@dewo/app/util/hooks";
 import { Alert, Button, Form, Space, Typography } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import { useOrganizationGithubRepos } from "../../organization/hooks";
 import { CreateIntegrationFeatureCard } from "../CreateIntegrationFeatureCard";
 import {
@@ -19,6 +19,8 @@ import { ImportExistingGithubIssuesCheckbox } from "./ImportExistingGithubIssues
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { CreateIssuesFromTasksCheckbox } from "./CreateIssuesFromTasksCheckbox";
 import { useProject } from "../../project/hooks";
+import { SelectGithubLabelsFormItem } from "./SelectGithubLabelsFormItem";
+import _ from "lodash";
 
 const getGithubIntegrationTypeTitle: Partial<
   Record<GithubProjectIntegrationFeature, string>
@@ -53,6 +55,7 @@ const getFeatures = (values: FormValues): GithubProjectIntegrationFeature[] => {
 export interface FormValues {
   feature: GithubProjectIntegrationFeature;
   repoIds: string[];
+  labelIds: string[];
   options?: {
     importExistingIssues?: boolean;
     postTasksToGithub?: boolean;
@@ -78,6 +81,10 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
 
   const { project } = useProject(projectId);
   const githubRepos = useOrganizationGithubRepos(project?.organizationId);
+  const githubRepoById = useMemo(
+    () => _.keyBy(githubRepos, (r) => r.id),
+    [githubRepos]
+  );
 
   const handleChange = useCallback(
     (_changed: Partial<FormValues>, values: Partial<FormValues>) => {
@@ -102,6 +109,7 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
         await createIntegration({
           repo,
           projectId,
+          labelIds: values.labelIds,
           importIssues: !!values.options?.importExistingIssues,
           features: getFeatures(values),
         });
@@ -149,32 +157,35 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
           {!!existingIntegrations?.length && (
             <FormSection label={connectedCopy}>
               <Space direction="vertical">
-                {existingIntegrations.map((integration) => (
-                  <Alert
-                    key={integration.id}
-                    type="info"
-                    message={
-                      <Typography.Text>
-                        Connected to{" "}
-                        <Typography.Text className="font-semibold">
-                          {integration.config.organization}/
-                          {integration.config.repo}
+                {existingIntegrations.map((integration) => {
+                  const { repo, organization, labelIds } = integration.config;
+                  return (
+                    <Alert
+                      key={integration.id}
+                      type="info"
+                      message={
+                        <Typography.Text>
+                          Connected to{" "}
+                          <Typography.Text className="font-semibold">
+                            {organization}/{repo}
+                          </Typography.Text>
+                          {!!labelIds &&
+                            (labelIds.length === 1
+                              ? " (1 label)"
+                              : ` (${labelIds.length}labels)`)}
                         </Typography.Text>
-                      </Typography.Text>
-                    }
-                    icon={<Icons.CheckCircleFilled />}
-                    showIcon
-                    closable={!!integration.id}
-                    onClose={() => handleDelete(integration.id)}
-                  />
-                ))}
+                      }
+                      icon={<Icons.CheckCircleFilled />}
+                      showIcon
+                      closable={!!integration.id}
+                      onClose={() => handleDelete(integration.id)}
+                    />
+                  );
+                })}
               </Space>
             </FormSection>
           )}
-          <FormSection
-            label="Connect one or more repos"
-            style={{ marginBottom: 0 }}
-          >
+          <FormSection label="Connect one or more repos">
             <SelectGihubRepoFormItem
               organizationId={project?.organizationId!}
               repos={githubRepos}
@@ -184,6 +195,17 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
             {values.feature ===
               GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES && (
               <>
+                {/* TODO(fant): support filtering labels for multiple repos */}
+                {values.repoIds?.length === 1 &&
+                  values.repoIds
+                    ?.filter((id) => !!githubRepoById[id])
+                    .map((id) => (
+                      <SelectGithubLabelsFormItem
+                        key={id}
+                        repo={githubRepoById[id]}
+                        organizationId={project?.organizationId!}
+                      />
+                    ))}
                 <ImportExistingGithubIssuesCheckbox />
                 <CreateIssuesFromTasksCheckbox />
               </>

@@ -203,6 +203,7 @@ function useCreateTasksFromGithubIssues(): (
 export function useCreateGithubProjectIntegration(): (input: {
   projectId: string;
   repo: GithubRepo;
+  labelIds?: string[];
   importIssues: boolean;
   features: GithubProjectIntegrationFeature[];
 }) => Promise<ProjectIntegration> {
@@ -218,6 +219,7 @@ export function useCreateGithubProjectIntegration(): (input: {
           repo: input.repo.name,
           organization: input.repo.organization,
           features: input.features,
+          labelIds: input.labelIds,
         },
       });
 

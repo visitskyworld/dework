@@ -26,6 +26,8 @@ import { InjectConnection } from "@nestjs/typeorm";
 import { RbacService } from "../../rbac/rbac.service";
 import { RulePermission } from "@dewo/api/models/enums/RulePermission";
 import Bluebird from "bluebird";
+import { GithubLabel } from "./dto/GithubLabel";
+import _ from "lodash";
 
 @Injectable()
 export class GithubIntegrationService {
@@ -85,10 +87,15 @@ export class GithubIntegrationService {
       project.id,
       ProjectIntegrationType.GITHUB
     );
-    const shouldImport = integrations.some((i) =>
-      i.config.features.includes(
-        GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES
-      )
+    const shouldImport = integrations.some(
+      (i) =>
+        i.config.features.includes(
+          GithubProjectIntegrationFeature.CREATE_TASKS_FROM_ISSUES
+        ) &&
+        (!i.config.labelIds?.length ||
+          i.config.labelIds.some(
+            (id) => !!issue.labels?.some((l) => l.node_id === id)
+          ))
     );
 
     this.logger.log(
@@ -454,6 +461,35 @@ export class GithubIntegrationService {
       name: repo.name,
       organization: repo.owner.login,
       integrationId: integration.id,
+    }));
+  }
+
+  public async getRepoLabels(
+    repo: string,
+    organization: string,
+    organizationId: string
+  ): Promise<GithubLabel[]> {
+    const integration =
+      await this.integrationService.findOrganizationIntegration(
+        organizationId,
+        OrganizationIntegrationType.GITHUB
+      );
+    if (!integration) {
+      throw new NotFoundException("Organization integration not found");
+    }
+
+    const issues = await this.getGithubIssues(
+      organization,
+      repo,
+      integration.config.installationId
+    );
+    const labels = issues
+      .map((issue) => issue.labels)
+      .flat()
+      .filter((l): l is Github.Label => typeof l !== "string");
+    return _.uniqBy(labels, (l) => l.id).map((l) => ({
+      id: l.node_id,
+      name: l.name,
     }));
   }
 

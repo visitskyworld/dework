@@ -440,6 +440,7 @@ export class Fixtures {
       installationId: number;
       organization: string;
       repo: string;
+      labelIds?: string[];
     } = {
       installationId: Date.now(),
       organization: faker.internet.userName(),
@@ -468,6 +469,7 @@ export class Fixtures {
         features,
         repo: github.repo,
         organization: github.organization,
+        labelIds: github.labelIds,
       },
     });
     return { project, integration, github };

@@ -46,6 +46,7 @@ export interface GithubProjectIntegrationConfig {
   organization: string;
   repo: string;
   features: GithubProjectIntegrationFeature[];
+  labelIds?: string[];
 }
 
 export interface ProjectIntegrationConfigMap

@@ -8,4 +8,7 @@ export class CreateProjectsFromGithubInput {
 
   @Field(() => [String])
   public repoIds!: string[];
+
+  @Field(() => [String], { nullable: true })
+  public labelIds?: string[];
 }

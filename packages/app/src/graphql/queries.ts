@@ -550,6 +550,23 @@ export const organizationGithubRepos = gql`
   ${Fragments.githubRepo}
 `;
 
+export const organizationGithubRepoLabels = gql`
+  query GetOrganizationGithubRepoLabelsQuery(
+    $repo: String!
+    $organization: String!
+    $organizationId: UUID!
+  ) {
+    labels: getGithubLabels(
+      repo: $repo
+      organization: $organization
+      organizationId: $organizationId
+    ) {
+      id
+      name
+    }
+  }
+`;
+
 export const organizationDiscordChannels = gql`
   query GetOrganizationDiscordChannelsQuery(
     $organizationId: UUID!
