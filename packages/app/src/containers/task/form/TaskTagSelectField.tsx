@@ -84,7 +84,6 @@ const TaskTagSelectFieldComponent: FC<ComponentProps> = ({
 
       try {
         setLoading(true);
-        onChange?.(labels);
         const tagPs = newTagLabels.map((label) =>
           createTag({
             label,
