@@ -11,6 +11,7 @@ import { DiscordRoleGateAlert } from "@dewo/app/containers/invite/DiscordRoleGat
 import { isSSR } from "@dewo/app/util/isSSR";
 import _ from "lodash";
 import { WorkspaceOptionsButton } from "./WorkspaceOptionsButton";
+import { CreateWorkSpaceButton } from "@dewo/app/containers/workspace/CreateWorkSpaceButton";
 
 interface Props {
   organizationId: string;
@@ -55,6 +56,15 @@ export const OrganizationProjectList: FC<Props> = ({ organizationId }) => {
                 {canCreateProject && workspace.default && (
                   <>
                     <div style={{ flex: 1 }} />
+                    <CreateWorkSpaceButton
+                      organizationId={organizationId}
+                      type="default"
+                      size="small"
+                      icon={<Icons.PlusOutlined />}
+                      style={{ marginRight: 8 }}
+                    >
+                      Create Workspace
+                    </CreateWorkSpaceButton>
                     <CreateProjectButton
                       organizationId={organizationId}
                       type="primary"
