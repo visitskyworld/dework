@@ -223,7 +223,7 @@ const Page: FC = () => {
                   strong
                   className="text-primary hover:cursor-pointer"
                   style={{ marginLeft: 8 }}
-                  onClick={logout}
+                  onClick={() => logout()}
                 >
                   Not you?
                 </Typography.Text>

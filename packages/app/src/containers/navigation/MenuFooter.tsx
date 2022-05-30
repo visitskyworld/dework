@@ -86,7 +86,10 @@ export const MenuFooter: FC = () => {
                 >
                   Settings
                 </Menu.Item>
-                <Menu.Item icon={<Icons.LogoutOutlined />} onClick={logout}>
+                <Menu.Item
+                  icon={<Icons.LogoutOutlined />}
+                  onClick={() => logout()}
+                >
                   Log out
                 </Menu.Item>
               </Menu>
