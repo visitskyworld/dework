@@ -14,6 +14,9 @@ import { TaskView } from "./TaskView";
 @ObjectType()
 @InputType("ProjectOptionsInput")
 export class ProjectOptions {
+  // TODO(fant): remove after transition (started 220530)
+  @Field({ nullable: true })
+  public showBacklogColumn?: boolean;
   @Field({ nullable: true })
   public showCommunitySuggestions?: boolean;
 }
