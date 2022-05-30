@@ -53,6 +53,18 @@ export function createApolloLink(
   }
 }
 
+function lookupIdBySlug(
+  cache: InMemoryCache,
+  typename: string,
+  slug: string
+): string | undefined {
+  // @ts-expect-error
+  const data: Record<string, any> = cache.data.data;
+  const keys = Object.keys(data).filter((k) => k.startsWith(`${typename}:`));
+  const key = keys.find((key) => data[key]?.slug === slug);
+  return !!key ? data[key]?.id : undefined;
+}
+
 export const createApolloClient = (
   ctx: NextPageContext | GetServerSidePropsContext,
   initialState = {}
@@ -68,9 +80,17 @@ export const createApolloClient = (
               read: (_, { args, toReference }) =>
                 toReference({ __typename: "Organization", id: args?.id }),
             },
+            getOrganizationIdBySlug: {
+              read: (cached, { cache, args }) =>
+                cached ?? lookupIdBySlug(cache, "Organization", args?.slug),
+            },
             getProject: {
               read: (_, { args, toReference }) =>
                 toReference({ __typename: "Project", id: args?.id }),
+            },
+            getProjectIdBySlug: {
+              read: (cached, { cache, args }) =>
+                cached ?? lookupIdBySlug(cache, "Project", args?.slug),
             },
             getTask: {
               read: (_, { args, toReference }) =>
@@ -98,7 +118,7 @@ export const createApolloClient = (
     }).restore(initialState),
     // https://github.com/apollographql/react-apollo/issues/3358#issuecomment-521928891
     credentials: "same-origin",
-    defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
+    defaultOptions: { watchQuery: { fetchPolicy: "cache-first" } },
   });
 };
 

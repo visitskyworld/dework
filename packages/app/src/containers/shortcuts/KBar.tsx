@@ -28,7 +28,7 @@ import {
 import styles from "./KBar.module.less";
 import classNames from "classnames";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
-import { useProjectBySlug, useProjectDetails } from "../project/hooks";
+import { useProjectDetails, useProjectIdBySlug } from "../project/hooks";
 import { TaskViewType } from "@dewo/app/graphql/types";
 
 function useKBarActions() {
@@ -40,7 +40,7 @@ function useKBarActions() {
     ?.projects;
 
   const projectSlug = router.query.projectSlug as string | undefined;
-  const projectId = useProjectBySlug(projectSlug).project?.id;
+  const projectId = useProjectIdBySlug(projectSlug);
   const { project } = useProjectDetails(projectId);
 
   useRegisterActions(

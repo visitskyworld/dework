@@ -5,7 +5,7 @@ import { Layout, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { ProjectHeader } from "@dewo/app/containers/project/overview/ProjectHeader";
 import {
-  useProjectBySlug,
+  useProject,
   useProjectDetails,
   useProjectIdBySlug,
   useProjectTasks,
@@ -38,8 +38,8 @@ const Page: NextPage = () => {
     viewSlug?: string;
   };
   const { organization } = useOrganizationBySlug(organizationSlug);
-  const { project, error } = useProjectBySlug(projectSlug);
   const projectId = useProjectIdBySlug(projectSlug); // resolves even if has no access
+  const { project, error } = useProject(projectId);
   const canEditProject = usePermission("update", project);
   const details = useProjectDetails(project?.id).project;
   const organizationId = organization?.id;

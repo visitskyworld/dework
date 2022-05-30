@@ -19,8 +19,6 @@ import {
   CreateTaskSectionMutationVariables,
   DeleteProjectTokenGateMutation,
   DeleteProjectTokenGateMutationVariables,
-  GetProjectBySlugQuery,
-  GetProjectBySlugQueryVariables,
   GetProjectIntegrationsQuery,
   GetProjectIntegrationsQueryVariables,
   GetProjectQuery,
@@ -162,20 +160,6 @@ export function useProjectDetails(projectId: string | undefined): {
   >(Queries.projectDetails, {
     variables: { projectId: projectId! },
     skip: !projectId,
-  });
-  return { project: data?.project ?? undefined, error };
-}
-
-export function useProjectBySlug(projectSlug: string | undefined): {
-  project: Project | undefined;
-  error: ApolloError | undefined;
-} {
-  const { data, error } = useQuery<
-    GetProjectBySlugQuery,
-    GetProjectBySlugQueryVariables
-  >(Queries.projectBySlug, {
-    variables: { projectSlug: projectSlug! },
-    skip: !projectSlug,
   });
   return { project: data?.project ?? undefined, error };
 }
