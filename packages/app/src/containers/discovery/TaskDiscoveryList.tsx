@@ -31,6 +31,7 @@ import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
 import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 import { useTaskViewLayoutData } from "../task/views/hooks";
 import { LanguageInput } from "./LanguageInput";
+import _ from "lodash";
 
 interface FilterValues {
   includeOpenBounties: boolean;
@@ -54,8 +55,8 @@ const sortBy: Record<FilterValues["sortBy"], CompareFn<Task>> = {
   createdAt: (a, b) =>
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   reward: (a, b) =>
-    (calculateTaskRewardAsUSD(b.reward ?? undefined) ?? 0) -
-    (calculateTaskRewardAsUSD(a.reward ?? undefined) ?? 0),
+    _.sum(a.rewards.map(calculateTaskRewardAsUSD)) -
+    _.sum(b.rewards.map(calculateTaskRewardAsUSD)),
 };
 
 const filterFn: Record<string, (filter: FilterValues) => (t: Task) => boolean> =

@@ -120,7 +120,7 @@ export class DiscordIntegrationPaymentConfirmedEventHandler extends EventHandler
   async process(event: PaymentConfirmedEvent) {
     const tasks = await this.taskRepo
       .createQueryBuilder("task")
-      .innerJoin("task.reward", "reward")
+      .innerJoin("task.rewards", "reward")
       .innerJoin("reward.payments", "rewardPayment")
       .innerJoin("rewardPayment.payment", "payment")
       .where("payment.id = :id", { id: event.payment.id })

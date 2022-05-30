@@ -60,7 +60,10 @@ describe("GithubSyncOutgoingService", () => {
 
   afterAll(() => app.close());
 
-  async function req(current: Partial<Task>, prev: Partial<Task>) {
+  async function req(
+    current: Partial<Omit<Task, "rewards">>,
+    prev: Partial<Omit<Task, "rewards">>
+  ) {
     const taskBefore = await fixtures.updateTask({ id: task.id, ...prev });
     const taskAfter = await fixtures.updateTask({ id: task.id, ...current });
     await service.handle(new TaskUpdatedEvent(taskAfter!, taskBefore!));

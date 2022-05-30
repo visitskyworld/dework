@@ -33,7 +33,6 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
       { label: "Assignees", key: "assignees" },
       { label: "Wallet Address", key: "address" },
       { label: "Reward", key: "reward" },
-      { label: "Payment Type", key: "token" },
       { label: "Due Date", key: "dueDate" },
       { label: "Activities", key: "activities" },
     ],
@@ -53,9 +52,8 @@ export const ProjectTaskExports: FC<Props> = ({ projectId, projectName }) => {
             t.threepids.find((t) => t.source === ThreepidSource.metamask)
               ?.address
         ),
-        reward: !!task.reward ? formatTaskReward(task.reward) : "",
+        reward: task.rewards.map(formatTaskReward).join(", "),
         dueDate: task.dueDate ? moment(task.dueDate).format("LLL") : "",
-        token: !!task.reward ? task.reward.token?.name : "",
         activities: `${task.creator?.username ?? "Someone"} created on ${moment(
           task.createdAt
         ).format("lll")}${

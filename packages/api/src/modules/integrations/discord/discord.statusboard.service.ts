@@ -184,8 +184,11 @@ export class DiscordStatusboardService {
     addVerticalSpace: boolean
   ): Promise<Discord.EmbedField> {
     const nameString = `**${_.truncate(task.name, { length: 60 })}**`;
-    const rewardString = task.reward
-      ? `💰 Reward: ${await this.taskService.formatTaskReward(task.reward)}`
+    const rewardStrings = await Promise.all(
+      (await task.rewards).map((r) => this.taskService.formatTaskReward(r))
+    );
+    const rewardString = !!rewardStrings.length
+      ? `💰 Reward: ${rewardStrings.join(", ")}`
       : undefined;
 
     const reactions = await task.reactions;

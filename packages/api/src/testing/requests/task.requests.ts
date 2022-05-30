@@ -55,7 +55,7 @@ export class TaskRequests {
         channelId
         guildId
       }
-      reward {
+      rewards {
         id
         amount
         token {

@@ -124,8 +124,8 @@ export const TaskTagsRow: FC<Props> = ({
             </Tag>
           ))
       : []),
-    ...(fields.has(TaskViewField.reward) && !!task.reward
-      ? [<TaskRewardTag key="reward" reward={task.reward} />]
+    ...(fields.has(TaskViewField.reward)
+      ? task.rewards.map((r) => <TaskRewardTag key={r.id} reward={r} />)
       : []),
   ].filter((c) => !!c);
 

@@ -1,12 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Audit } from "./Audit";
 import { FundingSession } from "./funding/FundingSession";
 import { PaymentToken } from "./PaymentToken";
@@ -44,7 +37,11 @@ export class TaskReward extends Audit {
   @Field({ nullable: true })
   public fundingSessionId?: string;
 
-  @OneToOne(() => Task, (x: Task) => x.reward)
+  @JoinColumn()
+  @ManyToOne(() => Task, { onDelete: "CASCADE" })
   @Field(() => Task)
   public task!: Promise<Task>;
+  @Column({ type: "uuid" })
+  @Field()
+  public taskId?: string;
 }

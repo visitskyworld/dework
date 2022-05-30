@@ -30,7 +30,6 @@ import { Invite } from "../models/Invite";
 import { PaymentModule } from "../modules/payment/payment.module";
 import { PaymentService } from "../modules/payment/payment.service";
 import { PaymentMethod, PaymentMethodType } from "../models/PaymentMethod";
-import { DeepPartial } from "typeorm";
 import { AtLeast, DeepAtLeast } from "../types/general";
 import {
   DiscordProjectIntegrationFeature,
@@ -71,6 +70,8 @@ import { SkillService } from "../modules/skill/skill.service";
 import { WorkspaceModule } from "../modules/workspace/workspace.module";
 import { SkillModule } from "../modules/skill/skill.module";
 import { Skill } from "../models/Skill";
+import { TaskReward } from "../models/TaskReward";
+import { DeepPartial } from "typeorm";
 
 @Injectable()
 export class Fixtures {
@@ -184,23 +185,26 @@ export class Fixtures {
     return integration as OrganizationIntegration<T>;
   }
 
-  public async createTask(partial: DeepPartial<Task> = {}): Promise<Task> {
+  public async createTask(
+    partial: DeepPartial<Omit<Task, "rewards">> & {
+      rewards?: Partial<TaskReward>[];
+    } = {}
+  ): Promise<Task> {
     const defaultProjectId = await this.createProject().then((p) => p.id);
+    const token = await this.createPaymentToken();
     return this.taskService.create({
       name: faker.company.companyName(),
       projectId: defaultProjectId,
       status: TaskStatus.TODO,
       sortKey: String(Date.now()),
       ...partial,
-      reward: !!partial.reward
-        ? {
-            amount: faker.datatype
-              .number({ min: 1 * 10e18, max: 100 * 10e18 })
-              .toString(),
-            tokenId: await this.createPaymentToken().then((t) => t.id),
-            ...partial.reward,
-          }
-        : undefined,
+      rewards: partial.rewards?.map((reward) => ({
+        amount: faker.datatype
+          .number({ min: 1 * 10e18, max: 100 * 10e18 })
+          .toString(),
+        tokenId: token.id,
+        ...reward,
+      })),
     });
   }
 
@@ -223,7 +227,9 @@ export class Fixtures {
   }
 
   public async updateTask(
-    partial: DeepAtLeast<Task, "id">
+    partial: DeepAtLeast<Omit<Task, "rewards">, "id"> & {
+      rewards?: AtLeast<TaskReward, "amount" | "tokenId">[];
+    }
   ): Promise<Task | undefined> {
     return this.taskService.update(partial);
   }

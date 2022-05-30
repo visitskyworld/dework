@@ -47,9 +47,9 @@ export const BatchPayTable: FC<Props> = ({ tasks, paymentMethods, onDone }) => {
   const rows = useMemo<Row[]>(
     () =>
       tasks
-        .map((task) => {
-          const reward = task.reward;
-          if (!reward) return [];
+        .map((task) => task.rewards.map((reward) => ({ task, reward })))
+        .flat()
+        .map(({ task, reward }) => {
           const usdPriceAccuracy = Math.pow(
             10,
             Constants.NUM_DECIMALS_IN_USD_PEG

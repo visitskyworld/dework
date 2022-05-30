@@ -22,7 +22,7 @@ export class SeedDataService {
         });
         await this.fixtures.createTask({
           projectId: project.id,
-          reward: { amount: "1" },
+          rewards: [{ amount: "1" }],
         });
       },
       { concurrency: 20 }

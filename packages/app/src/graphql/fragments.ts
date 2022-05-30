@@ -401,7 +401,7 @@ export const task = gql`
     owners {
       ...User
     }
-    reward {
+    rewards {
       ...TaskReward
     }
     review {
@@ -494,7 +494,7 @@ export const taskDetails = gql`
     nfts {
       ...TaskNFT
     }
-    reward {
+    rewards {
       ...TaskReward
       payments {
         user {
@@ -603,9 +603,6 @@ export const organizationDetails = gql`
     mintTaskNFTs
     projects {
       ...Project
-      taskCount
-      doneTaskCount: taskCount(status: DONE)
-      openBountyTaskCount: taskCount(status: TODO, rewardNotNull: true)
     }
     workspaces {
       ...Workspace

@@ -25,7 +25,7 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
   const updateTask = useUpdateTask();
   const handleMoveTask = useCallback(
     async (project: Project) => {
-      await updateTask({ id: task.id, projectId: project.id });
+      await updateTask({ id: task.id, projectId: project.id, tagIds: [] });
       await closeTaskDetails();
       message.success({
         content: (

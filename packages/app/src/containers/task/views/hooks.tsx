@@ -22,6 +22,7 @@ import {
   GetPaginatedTasksQuery,
   GetPaginatedTasksQueryVariables,
   PaymentMethod,
+  TaskReward,
 } from "@dewo/app/graphql/types";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -235,18 +236,20 @@ export function useTaskViewGroups(
           const processing: Task[] = [];
           const paid: Task[] = [];
 
+          const isUnpaid = (reward: TaskReward) => !reward.payments.length;
+          const isProcessing = (reward: TaskReward) =>
+            reward.payments.some(
+              (p) => p.payment.status === PaymentStatus.PROCESSING
+            );
+
           tasks.forEach((task) => {
             if (
-              !!task.reward &&
+              !!task.rewards.length &&
               !!task.assignees.length &&
-              !task.reward?.payments.length
+              task.rewards.some(isUnpaid)
             ) {
               unpaid.push(task);
-            } else if (
-              task.reward?.payments.some(
-                (p) => p.payment.status === PaymentStatus.PROCESSING
-              )
-            ) {
+            } else if (task.rewards.some(isProcessing)) {
               processing.push(task);
             } else {
               paid.push(task);

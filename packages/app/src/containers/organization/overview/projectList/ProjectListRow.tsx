@@ -89,13 +89,6 @@ export const ProjectListRow: FC<Props> = ({ project, workspaces }) => {
                 <UserAvatar key={user.id} user={user} />
               ))}
             </Avatar.Group>
-            {!!project.openBountyTaskCount && (
-              <Tag color={"purple"} style={{ margin: 0, fontWeight: 600 }}>
-                {project.openBountyTaskCount === 1
-                  ? "1 open bounty"
-                  : `${project.openBountyTaskCount} open bounties`}
-              </Tag>
-            )}
           </Row>
 
           {canChangeSection && (

@@ -236,7 +236,9 @@ export class DiscordIntegrationService {
         const dueDateString = !!task.dueDate
           ? moment(task.dueDate).format("dddd MMM Do")
           : undefined;
-        const reward = task.reward;
+        const rewardStrings = await Promise.all(
+          (await task.rewards).map((r) => this.taskService.formatTaskReward(r))
+        );
         const hasAssignees = task.assignees.length;
         const url = await this.permalink.get(task);
         const discordRoleIdsToTag = await this.getDiscordRoleIdsForTask(task);
@@ -250,8 +252,8 @@ export class DiscordIntegrationService {
             description: [
               "_New task created!_",
               !!storyPoints ? `- ${storyPoints} task points` : undefined,
-              !!reward
-                ? `- Reward: ${await this.taskService.formatTaskReward(reward)}`
+              !!rewardStrings.length
+                ? `- Reward: ${rewardStrings.join(", ")}`
                 : undefined,
               !!dueDateString ? `- Due: ${dueDateString}` : undefined,
               "---",
@@ -294,7 +296,7 @@ export class DiscordIntegrationService {
           integration.config.features.includes(
             DiscordProjectIntegrationFeature.POST_TASK_UPDATES_TO_THREAD_PER_TASK
           ) &&
-          !task.reward
+          !(await task.rewards).length
         ) {
           await this.postDone(channelToPostTo, task);
         }
@@ -676,15 +678,18 @@ export class DiscordIntegrationService {
     task: Task,
     channel: Discord.TextBasedChannel
   ) {
-    const project = await task.project,
-      subtasks = await Promise.all(
-        (
-          await task.subtasks
-        ).map(async (s) => ({
-          name: s.name,
-          url: await this.permalink.get(s),
-        }))
-      );
+    const [project, subtasks, rewards] = await Promise.all([
+      task.project,
+      task.subtasks.then((subtasks) =>
+        Promise.all(
+          subtasks.map(async (s) => ({
+            name: s.name,
+            url: await this.permalink.get(s),
+          }))
+        )
+      ),
+      task.rewards,
+    ]);
 
     const topData = [
       { name: "Status", value: STATUS_LABEL[task.status] },
@@ -698,8 +703,11 @@ export class DiscordIntegrationService {
       },
       {
         name: "Reward",
-        value:
-          task.reward && (await this.taskService.formatTaskReward(task.reward)),
+        value: (
+          await Promise.all(
+            rewards.map((r) => this.taskService.formatTaskReward(r))
+          )
+        ).join(", "),
       },
       {
         name: "Assignee",

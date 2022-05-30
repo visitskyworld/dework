@@ -3,14 +3,7 @@ import { AtLeast, DeepAtLeast } from "@dewo/api/types/general";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { formatFixed } from "@ethersproject/bignumber";
-import {
-  FindConditions,
-  IsNull,
-  Not,
-  Repository,
-  OrderByCondition,
-  Brackets,
-} from "typeorm";
+import { IsNull, Repository, OrderByCondition, Brackets } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
 import {
   TaskCreatedEvent,
@@ -40,6 +33,8 @@ export class TaskService {
     private readonly eventBus: EventBus,
     @InjectRepository(Task)
     private readonly taskRepo: Repository<Task>,
+    @InjectRepository(TaskReward)
+    private readonly taskRewardRepo: Repository<TaskReward>,
     @InjectRepository(TaskReaction)
     private readonly taskReactionRepo: Repository<TaskReaction>,
     @InjectRepository(TaskRewardPayment)
@@ -50,22 +45,37 @@ export class TaskService {
     private readonly taskSubmissionRepo: Repository<TaskSubmission>
   ) {}
 
-  public async create(
-    partial: DeepAtLeast<Task, "projectId" | "name" | "status">
-  ): Promise<Task> {
+  public async create({
+    rewards,
+    ...partial
+  }: DeepAtLeast<Omit<Task, "rewards">, "projectId" | "name" | "status"> & {
+    rewards?: AtLeast<TaskReward, "amount" | "tokenId">[];
+  }): Promise<Task> {
     const created = await this.taskRepo.save({
       sortKey: Date.now().toString(),
       doneAt: partial.status === TaskStatus.DONE ? new Date() : null,
       ...partial,
       number: await this.getNextTaskNumber(partial.projectId),
     });
+
+    if (!!rewards?.length) {
+      await this.taskRewardRepo.save(
+        rewards.map((r) => ({ ...r, taskId: created.id }))
+      );
+    }
+
     const refetched = (await this.taskRepo.findOne(created.id)) as Task;
     this.eventBus.publish(new TaskCreatedEvent(refetched, created.creatorId));
     return refetched;
   }
 
   public async update(
-    partial: DeepAtLeast<Task, "id">,
+    {
+      rewards,
+      ...partial
+    }: DeepAtLeast<Omit<Task, "rewards">, "id"> & {
+      rewards?: AtLeast<TaskReward, "amount" | "tokenId">[];
+    },
     userId?: string
   ): Promise<Task> {
     const oldTask = await this.taskRepo.findOne({ id: partial.id });
@@ -84,6 +94,13 @@ export class TaskService {
         }
       })(),
     });
+
+    if (!!rewards) {
+      await this.taskRewardRepo.delete({ taskId: partial.id });
+      await this.taskRewardRepo.save(
+        rewards.map((r) => ({ ...r, taskId: partial.id }))
+      );
+    }
 
     const refetched = (await this.taskRepo.findOne(updated.id)) as Task;
     if (!oldTask.deletedAt && updated.deletedAt) {
@@ -225,7 +242,7 @@ export class TaskService {
       .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")
       .leftJoinAndSelect("task.skills", "skill")
-      .leftJoinAndSelect("task.reward", "reward")
+      .leftJoinAndSelect("task.rewards", "reward")
       .leftJoinAndSelect("reward.payments", "rewardPayment")
       .leftJoinAndSelect("rewardPayment.payment", "payment")
       .leftJoinAndSelect("rewardPayment.user", "user")
@@ -245,7 +262,7 @@ export class TaskService {
     }
 
     if (!!rewardIds) {
-      query = query.andWhere("task.rewardId IN (:...rewardIds)", { rewardIds });
+      query = query.andWhere("reward.id IN (:...rewardIds)", { rewardIds });
     }
 
     if (!!statuses) {
@@ -267,7 +284,7 @@ export class TaskService {
     }
 
     if (rewardNotNull) {
-      query = query.andWhere("task.rewardId IS NOT NULL");
+      query = query.andWhere("reward.id IS NOT NULL");
     }
 
     if (!!userId) {
@@ -300,7 +317,7 @@ export class TaskService {
             qb.where("task.parentTaskId IS NULL").orWhere(
               new Brackets((qb) => {
                 qb.where("task.status = :done", { done: TaskStatus.DONE })
-                  .andWhere("task.rewardId IS NOT NULL")
+                  .andWhere("reward.id IS NOT NULL")
                   .andWhere("assignee.id IS NOT NULL");
               })
             );
@@ -347,20 +364,6 @@ export class TaskService {
       })
       .andWhere("task.deletedAt IS NULL")
       .getMany();
-  }
-
-  public async count(query: {
-    projectId: string;
-    status?: TaskStatus;
-    rewardNotNull?: boolean;
-  }): Promise<number> {
-    const findCondition: FindConditions<Task> = {
-      projectId: query.projectId,
-      deletedAt: IsNull(),
-    };
-    if (!!query.status) findCondition.status = query.status;
-    if (!!query.rewardNotNull) findCondition.rewardId = Not(IsNull());
-    return this.taskRepo.count(findCondition);
   }
 
   public async getNextTaskNumber(projectId: string): Promise<number> {

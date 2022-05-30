@@ -77,10 +77,11 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
         storyPoints: task.storyPoints,
         tagIds: task.tags.map((tag) => tag.id),
         ownerIds: task.owners.map((owner) => owner.id),
-        reward: task.reward && {
-          amount: task.reward.amount,
-          peggedToUsd: task.reward.peggedToUsd,
-          tokenId: task.reward.token.id,
+        // TODO(fant): support multiple rewards
+        reward: !!task.rewards[0] && {
+          amount: task.rewards[0].amount,
+          peggedToUsd: task.rewards[0].peggedToUsd,
+          tokenId: task.rewards[0].token.id,
         },
       });
     },

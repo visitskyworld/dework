@@ -70,7 +70,7 @@ describe("TaskSearchService", () => {
           status: TaskStatus.TODO,
           priority: TaskPriority.HIGH,
           assignees: [user],
-          reward: {},
+          rewards: [{}],
         }),
       ]);
 
@@ -320,7 +320,7 @@ describe("TaskSearchService", () => {
           priority: TaskPriority.HIGH,
           doneAt: moment("2020-01-01").toDate(),
           projectId: project.id,
-          reward: { tokenId: tokenWithUsdPrice.id, amount: "1" },
+          rewards: [{ tokenId: tokenWithUsdPrice.id, amount: "1" }],
         });
         task2 = await fixtures.createTask({
           sortKey: "1",
@@ -333,7 +333,7 @@ describe("TaskSearchService", () => {
           priority: TaskPriority.URGENT,
           doneAt: moment("2021-01-01").toDate(),
           projectId: project.id,
-          reward: { amount: "2" },
+          rewards: [{ amount: "2" }],
         });
 
         await service.index([task1, task2, task3], true);
@@ -447,7 +447,7 @@ describe("TaskSearchService", () => {
       const tasks = await Bluebird.mapSeries(_.range(15), (i) =>
         fixtures.createTask({
           projectId: project.id,
-          reward: {},
+          rewards: [{}],
           featured: i % 3 === 0,
         })
       );

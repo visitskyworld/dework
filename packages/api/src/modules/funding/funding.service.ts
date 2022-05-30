@@ -139,11 +139,9 @@ export class FundingService {
           session
         )})`,
         assignees: task.assignees,
-        reward: {
-          amount,
-          tokenId: session.tokenId,
-          fundingSessionId: session.id,
-        },
+        rewards: [
+          { amount, tokenId: session.tokenId, fundingSessionId: session.id },
+        ],
       });
 
       this.logger.debug(

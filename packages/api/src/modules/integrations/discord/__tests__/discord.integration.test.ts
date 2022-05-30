@@ -65,7 +65,9 @@ describe("DiscordIntegration", () => {
     return channel.permissionsFor(discordUserId);
   }
 
-  async function createTask(partial: DeepPartial<Task>): Promise<Task> {
+  async function createTask(
+    partial: DeepPartial<Omit<Task, "rewards">>
+  ): Promise<Task> {
     const task = await fixtures.createTask({
       status: TaskStatus.IN_PROGRESS,
       ...partial,
@@ -76,7 +78,7 @@ describe("DiscordIntegration", () => {
 
   async function updateTask(
     task: Task,
-    partial: DeepPartial<Task>
+    partial: DeepPartial<Omit<Task, "rewards">>
   ): Promise<Task> {
     const updated = await taskService.update({ id: task.id, ...partial });
     await discordIntegrationService.handle(new TaskUpdatedEvent(updated, task));

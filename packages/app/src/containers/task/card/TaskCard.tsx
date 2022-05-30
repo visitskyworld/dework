@@ -51,7 +51,8 @@ export const TaskCard: FC<TaskCardProps> = ({
     [fields]
   );
 
-  const shouldRenderReward = !!task.reward && fields.has(TaskViewField.reward);
+  const shouldRenderReward =
+    !!task.rewards.length && fields.has(TaskViewField.reward);
   const shouldRenderReactions = !!task.reactions.length;
   const shouldRenderTaskActionButton =
     !!useTaskActionButton(task) && fields.has(TaskViewField.button);
@@ -77,7 +78,10 @@ export const TaskCard: FC<TaskCardProps> = ({
                   flexWrap: "nowrap",
                 }}
               >
-                {shouldRenderReward && <TaskRewardTag reward={task.reward!} />}
+                {shouldRenderReward &&
+                  task.rewards.map((r) => (
+                    <TaskRewardTag key={r.id} reward={r} />
+                  ))}
                 {/* make reactions/button right-aligned */}
                 {!shouldRenderReactions && <div />}
                 {shouldRenderReactions && (

@@ -108,7 +108,7 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                   {task.project.organization.name}
                 </Typography.Paragraph>
                 <TaskTagsRow task={_.omit(task, ["project"])} />
-                {!screens.lg && !!task.reward && (
+                {!screens.lg && !!task.rewards.length && (
                   <>
                     <Typography.Paragraph
                       style={{
@@ -117,16 +117,23 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                         marginTop: 8,
                       }}
                     >
-                      {formatTaskReward(task.reward)}
+                      {task.rewards.map(formatTaskReward).join(", ")}
                     </Typography.Paragraph>
-                    {!!task.reward.token.usdPrice && !task.reward.peggedToUsd && (
-                      <Typography.Paragraph
-                        type="secondary"
-                        className="ant-typography-caption"
-                      >
-                        {formatTaskRewardAsUSD(task.reward)}
-                      </Typography.Paragraph>
-                    )}
+                    {(() => {
+                      const rewardsAsUsd = task.rewards
+                        .map(formatTaskRewardAsUSD)
+                        .filter((s): s is string => !!s)
+                        .join(" + ");
+                      if (!rewardsAsUsd) return null;
+                      return (
+                        <Typography.Paragraph
+                          type="secondary"
+                          className="ant-typography-caption"
+                        >
+                          {rewardsAsUsd}
+                        </Typography.Paragraph>
+                      );
+                    })()}
                   </>
                 )}
                 {!screens.lg && (
@@ -188,8 +195,8 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                     </>
                   ),
                 sorter: (a: TaskWithOrganization, b: TaskWithOrganization) =>
-                  (calculateTaskRewardAsUSD(a.reward ?? undefined) ?? 0) -
-                  (calculateTaskRewardAsUSD(b.reward ?? undefined) ?? 0),
+                  _.sum(a.rewards.map(calculateTaskRewardAsUSD)) -
+                  _.sum(b.rewards.map(calculateTaskRewardAsUSD)),
                 sortDirections: ["descend"] as SortOrder[],
               },
               {

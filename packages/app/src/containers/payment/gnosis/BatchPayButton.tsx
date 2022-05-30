@@ -28,7 +28,16 @@ export const BatchPayButton: FC<Props> = ({ taskIds, paymentMethods }) => {
   ).data?.tasks;
 
   const tasksByNetworkId = useMemo<Record<string, TaskToPay[]>>(
-    () => _.groupBy(tasks, (task) => task.reward?.token.networkId),
+    () =>
+      (tasks ?? []).reduce<Record<string, TaskToPay[]>>((acc, task) => {
+        for (const reward of task.rewards) {
+          const networkId = reward.token.networkId;
+          if (networkId) {
+            acc[networkId] = [...(acc[networkId] || []), task];
+          }
+        }
+        return acc;
+      }, {}),
     [tasks]
   );
 

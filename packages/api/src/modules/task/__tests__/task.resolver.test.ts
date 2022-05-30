@@ -77,9 +77,9 @@ describe("TaskResolver", () => {
         expect(task.name).toEqual(name);
         expect(task.description).toEqual(description);
         expect(task.project.id).toEqual(project.id);
-        expect(task.reward).toBeDefined();
-        expect(task.reward.amount).toEqual(reward.amount);
-        expect(task.reward.token.id).toEqual(reward.tokenId);
+        expect(task.rewards).toHaveLength(1);
+        expect(task.rewards[0].amount).toEqual(reward.amount);
+        expect(task.rewards[0].token.id).toEqual(reward.tokenId);
         expect(task.creator).not.toEqual(null);
         expect(task.creator.id).toEqual(user.id);
       });

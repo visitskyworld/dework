@@ -190,13 +190,13 @@ export class Task extends Audit {
   @Field({ nullable: true })
   public sectionId?: string;
 
-  @JoinColumn()
-  @OneToOne(() => TaskReward, { nullable: true, eager: true, cascade: true })
+  // TODO(fant): remove after Task.reward => Task.rewards migration (220530)
   @Field(() => TaskReward, { nullable: true })
   public reward?: TaskReward;
-  @Column({ type: "uuid", nullable: true })
-  @Field({ nullable: true })
-  public rewardId?: string;
+
+  @OneToMany(() => TaskReward, (x: TaskReward) => x.task)
+  @Field(() => [TaskReward])
+  public rewards!: Promise<TaskReward[]>;
 
   @Column({ default: false })
   @Field()

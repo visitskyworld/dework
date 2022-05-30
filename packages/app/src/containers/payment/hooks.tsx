@@ -192,14 +192,15 @@ export function usePayTaskReward(): (task: Task, user: User) => Promise<void> {
 
   return useCallback(
     async (task: Task, user: User) => {
-      const { BigNumber } = await import("ethers");
-      const reward = task.reward;
+      // TODO(fant): add multi reward support
+      const reward = task.rewards[0];
       if (!reward) throw new Error("Task has no reward, so cannot pay");
       if (reward.peggedToUsd && !reward.token.usdPrice) {
         throw new Error(
           `This task reward is pegged to USD, but we currently don't know ${reward.token.symbol}'s USD value. Write to us on Discord and we will set this up for your token.`
         );
       }
+      const { BigNumber } = await import("ethers");
 
       const usdPriceAccuracy = 1_000_000;
       const amount = reward.peggedToUsd

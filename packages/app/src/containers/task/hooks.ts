@@ -145,7 +145,7 @@ export function useAddTaskToApolloCache(): (task: Task) => void {
 
       const isDoneAssignedAndHasReward =
         !!task.assignees.length &&
-        !!task.reward &&
+        !!task.rewards.length &&
         task.status === TaskStatus.DONE;
       if (!task.parentTaskId || isDoneAssignedAndHasReward) {
         try {

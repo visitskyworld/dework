@@ -38,12 +38,12 @@ describe("ReputationController", () => {
         status: TaskStatus.DONE,
         assignees: [user],
         storyPoints: 123,
-        reward: {},
         doneAt: new Date(),
         tags: [tag],
         projectId: project.id,
+        rewards: [{}],
       });
-      const doneReward = (await doneTask.reward)!;
+      const doneReward = (await doneTask.rewards)[0];
 
       const todoTask = await fixtures.createTask({
         assignees: [user],
@@ -59,15 +59,17 @@ describe("ReputationController", () => {
           date: doneTask.doneAt?.toISOString(),
           points: doneTask.storyPoints,
           tags: [{ label: tag.label }],
-          reward: expect.objectContaining({
-            amount: doneReward.amount,
-            token: expect.objectContaining({
-              address: (await doneReward.token).address,
-              network: expect.objectContaining({
-                slug: (await (await doneReward.token).network).slug,
+          rewards: expect.arrayContaining([
+            expect.objectContaining({
+              amount: doneReward.amount,
+              token: expect.objectContaining({
+                address: (await doneReward.token).address,
+                network: expect.objectContaining({
+                  slug: (await (await doneReward.token).network).slug,
+                }),
               }),
             }),
-          }),
+          ]),
           project: expect.objectContaining({
             name: project.name,
             organization: expect.objectContaining({ name: organization.name }),

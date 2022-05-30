@@ -34,8 +34,8 @@ describe("NotificationService", () => {
   afterAll(() => app.close());
 
   async function updateTask(
-    prev: Partial<Task>,
-    next: Partial<Task>,
+    prev: Partial<Omit<Task, "rewards">>,
+    next: Partial<Omit<Task, "rewards">>,
     user?: User
   ) {
     const prevTask = await fixtures.createTask(prev);
@@ -46,13 +46,18 @@ describe("NotificationService", () => {
     return { task: task!, user };
   }
 
-  async function createTask(partialTask: Partial<Task>, user?: User) {
+  async function createTask(
+    partialTask: Partial<Omit<Task, "rewards">>,
+    user?: User
+  ) {
     const task = await fixtures.createTask(partialTask);
     await service.processTaskCreatedEvent(new TaskCreatedEvent(task, user?.id));
     return { task, user };
   }
 
-  async function createTaskApplication(partialTask: Partial<Task>) {
+  async function createTaskApplication(
+    partialTask: Partial<Omit<Task, "rewards">>
+  ) {
     const task = await fixtures.createTask(partialTask);
     const application = await fixtures.createTaskApplication();
     await service.processTaskApplicationCreatedEvent(
@@ -61,7 +66,9 @@ describe("NotificationService", () => {
     return { task, application };
   }
 
-  async function rejectTaskApplication(partialTask: Partial<Task>) {
+  async function rejectTaskApplication(
+    partialTask: Partial<Omit<Task, "rewards">>
+  ) {
     const task = await fixtures.createTask(partialTask);
     const application = await fixtures.createTaskApplication();
     await service.processTaskApplicationDeletedEvent(
@@ -70,7 +77,9 @@ describe("NotificationService", () => {
     return { task, application };
   }
 
-  async function createTaskSubmission(partialTask: Partial<Task>) {
+  async function createTaskSubmission(
+    partialTask: Partial<Omit<Task, "rewards">>
+  ) {
     const task = await fixtures.createTask(partialTask);
     const submission = await fixtures.createTaskSubmission();
     await service.processTaskSubmissionCreatedEvent(
@@ -93,7 +102,7 @@ describe("NotificationService", () => {
   async function createPayment(
     user: User,
     network: PaymentNetwork,
-    partialTask?: Partial<Task>
+    partialTask?: Partial<Omit<Task, "rewards">>
   ) {
     const task = await fixtures.createTask(partialTask);
     const payment = await fixtures.createPayment({ networkId: network.id });
@@ -105,7 +114,7 @@ describe("NotificationService", () => {
 
   async function createConfirmedPayment(
     network: PaymentNetwork,
-    partialTask?: Partial<Task>
+    partialTask?: Partial<Omit<Task, "rewards">>
   ) {
     const task = await fixtures.createTask(partialTask);
     const payment = await fixtures.createPayment({ networkId: network.id });

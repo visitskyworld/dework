@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useCallback } from "react";
+import React, { FC, ReactElement, useCallback, useMemo } from "react";
 import {
   PaymentStatus,
   Task,
@@ -41,9 +41,15 @@ export function useTaskActionButton(task: Task): ReactElement | undefined {
   const canSubmit = usePermission("submit", task);
   const canUpdate = usePermission("update", "TaskReward");
 
-  const failedPayment = task.reward?.payments.find(
-    (p) => p.payment.status === PaymentStatus.FAILED
-  )?.payment;
+  const failedPayment = useMemo(
+    () =>
+      task.rewards
+        .map((r) => r.payments)
+        .flat()
+        .find((p) => p.payment.status === PaymentStatus.FAILED)?.payment,
+    [task.rewards]
+  );
+
   if (canUpdate && !!failedPayment) {
     return (
       <ClearTaskRewardPaymentButton payment={failedPayment}>

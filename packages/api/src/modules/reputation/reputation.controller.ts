@@ -62,7 +62,7 @@ export class ReputationController {
                   tags {
                     label
                   }
-                  reward {
+                  rewards {
                     amount
                     token {
                       address

@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from "react";
 import { useOrganizationTasks } from "../hooks";
 
-import { TaskReward, TaskStatus, User } from "@dewo/app/graphql/types";
+import { TaskStatus, User } from "@dewo/app/graphql/types";
 import { CSVLink } from "react-csv";
 import { ExportOutlined } from "@ant-design/icons";
 import { Table, Space, Typography, Button, Row } from "antd";
@@ -68,15 +68,15 @@ export const TopContributorList: FC<Props> = ({ organizationId }) => {
         if (!users[assignee.id]) {
           users[assignee.id] = {
             ...assignee,
-            tasksDone: 1,
-            taskPoints: task.storyPoints || 0,
-            earned: calculateTaskRewardAsUSD(task.reward as TaskReward) || 0,
+            tasksDone: 0,
+            taskPoints: 0,
+            earned: 0,
           };
-        } else {
-          users[assignee.id].tasksDone++;
-          users[assignee.id].taskPoints += task.storyPoints || 0;
-          users[assignee.id].earned +=
-            calculateTaskRewardAsUSD(task.reward as TaskReward) || 0;
+        }
+        users[assignee.id].tasksDone++;
+        users[assignee.id].taskPoints += task.storyPoints || 0;
+        for (const reward of task.rewards) {
+          users[assignee.id].earned += calculateTaskRewardAsUSD(reward) || 0;
         }
       });
     });

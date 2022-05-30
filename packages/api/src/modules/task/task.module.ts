@@ -22,11 +22,13 @@ import { ProjectModule } from "../project/project.module";
 import { AuditLogModule } from "../auditLog/auditLog.module";
 import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { TaskRewardPayment } from "@dewo/api/models/TaskRewardPayment";
+import { TaskReward } from "@dewo/api/models/TaskReward";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Task,
+      TaskReward,
       TaskRewardPayment,
       TaskSubmission,
       TaskReaction,

@@ -43,7 +43,7 @@ export class IndexTasksService {
         .leftJoinAndSelect("task.tags", "tag")
         .leftJoinAndSelect("task.applications", "application")
         .leftJoinAndSelect("task.skills", "skill")
-        .leftJoinAndSelect("task.reward", "reward")
+        .leftJoinAndSelect("task.rewards", "reward")
         .leftJoinAndSelect("task.reactions", "reactions")
         .leftJoinAndSelect("reward.token", "token")
         .innerJoinAndSelect("task.project", "project")

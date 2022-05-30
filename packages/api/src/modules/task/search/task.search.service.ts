@@ -312,7 +312,7 @@ export class TaskSearchService implements OnModuleInit {
       .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")
       .leftJoinAndSelect("task.skills", "skill")
-      .leftJoinAndSelect("task.reward", "reward")
+      .leftJoinAndSelect("task.rewards", "reward")
       .leftJoinAndSelect("reward.payments", "rewardPayment")
       .leftJoinAndSelect("rewardPayment.payment", "payment")
       .leftJoinAndSelect("reward.token", "token")
@@ -412,7 +412,7 @@ export class TaskSearchService implements OnModuleInit {
   }
 
   private async toDocumentReward(task: Task): Promise<number | undefined> {
-    const reward = await task.reward;
+    const [reward] = await task.rewards;
     if (!reward) return undefined;
 
     const numDecimalsInUsdPeg = 6;

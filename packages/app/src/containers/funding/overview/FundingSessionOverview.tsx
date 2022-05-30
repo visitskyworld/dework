@@ -93,7 +93,12 @@ export const FundingSessionOverview: FC<Props> = ({ id }) => {
           : [],
       [session]
     ),
-    { filter: useCallback((t: Task) => !t.reward?.fundingSessionId, []) }
+    {
+      filter: useCallback(
+        (t: Task) => !t.rewards.some((r) => !!r.fundingSessionId),
+        []
+      ),
+    }
   );
 
   const closeSession = useCloseFundingSession();

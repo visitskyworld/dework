@@ -78,7 +78,7 @@ export const CreateSubmissionForm: FC<Props> = ({ taskId, onDone }) => {
     );
   }
 
-  if (!!task.reward && !hasConnectedWallet) {
+  if (!!task.rewards.length && !hasConnectedWallet) {
     return (
       <Space direction="vertical" style={{ width: "100%" }}>
         <Typography.Title

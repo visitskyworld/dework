@@ -52,11 +52,13 @@ export const UserProfile: FC<Props> = ({ userId }) => {
   );
   const amountEarned = useMemo(
     () =>
-      _.sumBy(completedTasks, (t) =>
-        t.assignees.some((a) => a.id === userId) && !!t.reward?.payments.length
-          ? _.round(calculateTaskRewardAsUSD(t?.reward) ?? 0)
-          : 0
-      ),
+      (completedTasks || [])
+        .filter((task) => task.assignees.some((u) => u.id === userId))
+        .map((task) => task.rewards)
+        .flat()
+        .filter((reward) => !!reward.payments.length)
+        .map((reward) => calculateTaskRewardAsUSD(reward) ?? 0)
+        .reduce((acc, cur) => acc + cur, 0),
     [completedTasks, userId]
   );
 

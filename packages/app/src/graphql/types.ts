@@ -434,9 +434,6 @@ export interface UpdateOrganizationMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface UpdateOrganizationMutation_organization_workspaces {
@@ -715,9 +712,6 @@ export interface CreateProjectMutation_project_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface CreateProjectMutation_project_organization_workspaces {
@@ -1225,7 +1219,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_owners {
   permalink: string;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1240,7 +1234,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_user {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1248,7 +1242,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_use
   permalink: string;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1258,15 +1252,15 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_pay
   sortKey: string;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_paymentMethod {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_network {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1276,31 +1270,31 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_pay
   sortKey: string;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_paymentMethod;
-  network: CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment_network;
+  paymentMethod: CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_paymentMethod;
+  network: CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment_network;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskMutation_task_parentTask_subtasks_reward_payments_user;
-  payment: CreateTaskMutation_task_parentTask_subtasks_reward_payments_payment;
+  user: CreateTaskMutation_task_parentTask_subtasks_rewards_payments_user;
+  payment: CreateTaskMutation_task_parentTask_subtasks_rewards_payments_payment;
 }
 
-export interface CreateTaskMutation_task_parentTask_subtasks_reward {
+export interface CreateTaskMutation_task_parentTask_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskMutation_task_parentTask_subtasks_reward_token;
-  payments: CreateTaskMutation_task_parentTask_subtasks_reward_payments[];
+  token: CreateTaskMutation_task_parentTask_subtasks_rewards_token;
+  payments: CreateTaskMutation_task_parentTask_subtasks_rewards_payments[];
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_review {
@@ -1343,7 +1337,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   skills: CreateTaskMutation_task_parentTask_subtasks_skills[];
   assignees: CreateTaskMutation_task_parentTask_subtasks_assignees[];
   owners: CreateTaskMutation_task_parentTask_subtasks_owners[];
-  reward: CreateTaskMutation_task_parentTask_subtasks_reward | null;
+  rewards: CreateTaskMutation_task_parentTask_subtasks_rewards[];
   review: CreateTaskMutation_task_parentTask_subtasks_review | null;
   reactions: CreateTaskMutation_task_parentTask_subtasks_reactions[];
 }
@@ -1396,7 +1390,7 @@ export interface CreateTaskMutation_task_owners {
   permalink: string;
 }
 
-export interface CreateTaskMutation_task_reward_token {
+export interface CreateTaskMutation_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1411,7 +1405,7 @@ export interface CreateTaskMutation_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface CreateTaskMutation_task_reward_payments_user {
+export interface CreateTaskMutation_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1419,7 +1413,7 @@ export interface CreateTaskMutation_task_reward_payments_user {
   permalink: string;
 }
 
-export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskMutation_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1429,15 +1423,15 @@ export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod_n
   sortKey: string;
 }
 
-export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod {
+export interface CreateTaskMutation_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskMutation_task_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskMutation_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskMutation_task_reward_payments_payment_network {
+export interface CreateTaskMutation_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1447,31 +1441,31 @@ export interface CreateTaskMutation_task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface CreateTaskMutation_task_reward_payments_payment {
+export interface CreateTaskMutation_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskMutation_task_reward_payments_payment_paymentMethod;
-  network: CreateTaskMutation_task_reward_payments_payment_network;
+  paymentMethod: CreateTaskMutation_task_rewards_payments_payment_paymentMethod;
+  network: CreateTaskMutation_task_rewards_payments_payment_network;
 }
 
-export interface CreateTaskMutation_task_reward_payments {
+export interface CreateTaskMutation_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskMutation_task_reward_payments_user;
-  payment: CreateTaskMutation_task_reward_payments_payment;
+  user: CreateTaskMutation_task_rewards_payments_user;
+  payment: CreateTaskMutation_task_rewards_payments_payment;
 }
 
-export interface CreateTaskMutation_task_reward {
+export interface CreateTaskMutation_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskMutation_task_reward_token;
-  payments: CreateTaskMutation_task_reward_payments[];
+  token: CreateTaskMutation_task_rewards_token;
+  payments: CreateTaskMutation_task_rewards_payments[];
 }
 
 export interface CreateTaskMutation_task_review {
@@ -1514,7 +1508,7 @@ export interface CreateTaskMutation_task {
   skills: CreateTaskMutation_task_skills[];
   assignees: CreateTaskMutation_task_assignees[];
   owners: CreateTaskMutation_task_owners[];
-  reward: CreateTaskMutation_task_reward | null;
+  rewards: CreateTaskMutation_task_rewards[];
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
 }
@@ -1583,7 +1577,7 @@ export interface UpdateTaskMutation_task_owners {
   permalink: string;
 }
 
-export interface UpdateTaskMutation_task_reward_token {
+export interface UpdateTaskMutation_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1598,7 +1592,7 @@ export interface UpdateTaskMutation_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface UpdateTaskMutation_task_reward_payments_user {
+export interface UpdateTaskMutation_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1606,7 +1600,7 @@ export interface UpdateTaskMutation_task_reward_payments_user {
   permalink: string;
 }
 
-export interface UpdateTaskMutation_task_reward_payments_payment_paymentMethod_network {
+export interface UpdateTaskMutation_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1616,15 +1610,15 @@ export interface UpdateTaskMutation_task_reward_payments_payment_paymentMethod_n
   sortKey: string;
 }
 
-export interface UpdateTaskMutation_task_reward_payments_payment_paymentMethod {
+export interface UpdateTaskMutation_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: UpdateTaskMutation_task_reward_payments_payment_paymentMethod_network;
+  network: UpdateTaskMutation_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface UpdateTaskMutation_task_reward_payments_payment_network {
+export interface UpdateTaskMutation_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1634,31 +1628,31 @@ export interface UpdateTaskMutation_task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface UpdateTaskMutation_task_reward_payments_payment {
+export interface UpdateTaskMutation_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: UpdateTaskMutation_task_reward_payments_payment_paymentMethod;
-  network: UpdateTaskMutation_task_reward_payments_payment_network;
+  paymentMethod: UpdateTaskMutation_task_rewards_payments_payment_paymentMethod;
+  network: UpdateTaskMutation_task_rewards_payments_payment_network;
 }
 
-export interface UpdateTaskMutation_task_reward_payments {
+export interface UpdateTaskMutation_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: UpdateTaskMutation_task_reward_payments_user;
-  payment: UpdateTaskMutation_task_reward_payments_payment;
+  user: UpdateTaskMutation_task_rewards_payments_user;
+  payment: UpdateTaskMutation_task_rewards_payments_payment;
 }
 
-export interface UpdateTaskMutation_task_reward {
+export interface UpdateTaskMutation_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: UpdateTaskMutation_task_reward_token;
-  payments: UpdateTaskMutation_task_reward_payments[];
+  token: UpdateTaskMutation_task_rewards_token;
+  payments: UpdateTaskMutation_task_rewards_payments[];
 }
 
 export interface UpdateTaskMutation_task_review {
@@ -1701,7 +1695,7 @@ export interface UpdateTaskMutation_task {
   skills: UpdateTaskMutation_task_skills[];
   assignees: UpdateTaskMutation_task_assignees[];
   owners: UpdateTaskMutation_task_owners[];
-  reward: UpdateTaskMutation_task_reward | null;
+  rewards: UpdateTaskMutation_task_rewards[];
   review: UpdateTaskMutation_task_review | null;
   reactions: UpdateTaskMutation_task_reactions[];
 }
@@ -1737,12 +1731,174 @@ export interface CreateTaskApplicationMutation_application_task_parentTask {
   name: string;
 }
 
+export interface CreateTaskApplicationMutation_application_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment_network;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_user;
+  payment: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments_payment;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: CreateTaskApplicationMutation_application_task_subtasks_rewards_token;
+  payments: CreateTaskApplicationMutation_application_task_subtasks_rewards_payments[];
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface CreateTaskApplicationMutation_application_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
   sortKey: string;
+  description: string | null;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: CreateTaskApplicationMutation_application_task_subtasks_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: CreateTaskApplicationMutation_application_task_subtasks_subtasks[];
+  tags: CreateTaskApplicationMutation_application_task_subtasks_tags[];
+  skills: CreateTaskApplicationMutation_application_task_subtasks_skills[];
+  assignees: CreateTaskApplicationMutation_application_task_subtasks_assignees[];
+  owners: CreateTaskApplicationMutation_application_task_subtasks_owners[];
+  rewards: CreateTaskApplicationMutation_application_task_subtasks_rewards[];
+  review: CreateTaskApplicationMutation_application_task_subtasks_review | null;
+  reactions: CreateTaskApplicationMutation_application_task_subtasks_reactions[];
 }
 
 export interface CreateTaskApplicationMutation_application_task_tags {
@@ -1778,7 +1934,7 @@ export interface CreateTaskApplicationMutation_application_task_owners {
   permalink: string;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_token {
+export interface CreateTaskApplicationMutation_application_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1793,7 +1949,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments_user {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -1801,7 +1957,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_payments_
   permalink: string;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1811,15 +1967,15 @@ export interface CreateTaskApplicationMutation_application_task_reward_payments_
   sortKey: string;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments_payment_paymentMethod {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskApplicationMutation_application_task_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskApplicationMutation_application_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments_payment_network {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -1829,31 +1985,31 @@ export interface CreateTaskApplicationMutation_application_task_reward_payments_
   sortKey: string;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments_payment {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskApplicationMutation_application_task_reward_payments_payment_paymentMethod;
-  network: CreateTaskApplicationMutation_application_task_reward_payments_payment_network;
+  paymentMethod: CreateTaskApplicationMutation_application_task_rewards_payments_payment_paymentMethod;
+  network: CreateTaskApplicationMutation_application_task_rewards_payments_payment_network;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward_payments {
+export interface CreateTaskApplicationMutation_application_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskApplicationMutation_application_task_reward_payments_user;
-  payment: CreateTaskApplicationMutation_application_task_reward_payments_payment;
+  user: CreateTaskApplicationMutation_application_task_rewards_payments_user;
+  payment: CreateTaskApplicationMutation_application_task_rewards_payments_payment;
 }
 
-export interface CreateTaskApplicationMutation_application_task_reward {
+export interface CreateTaskApplicationMutation_application_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskApplicationMutation_application_task_reward_token;
-  payments: CreateTaskApplicationMutation_application_task_reward_payments[];
+  token: CreateTaskApplicationMutation_application_task_rewards_token;
+  payments: CreateTaskApplicationMutation_application_task_rewards_payments[];
 }
 
 export interface CreateTaskApplicationMutation_application_task_review {
@@ -1868,6 +2024,180 @@ export interface CreateTaskApplicationMutation_application_task_reactions {
   id: Scalar.UUID;
   userId: string;
   reaction: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  organization: CreateTaskApplicationMutation_application_task_project_organization;
+}
+
+export interface CreateTaskApplicationMutation_application_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatus;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface CreateTaskApplicationMutation_application_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repo: string;
+  organization: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  user: CreateTaskApplicationMutation_application_task_applications_user;
+}
+
+export interface CreateTaskApplicationMutation_application_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskApplicationMutation_application_task_submissions_user;
+  approver: CreateTaskApplicationMutation_application_task_submissions_approver | null;
+}
+
+export interface CreateTaskApplicationMutation_application_task_nfts_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: CreateTaskApplicationMutation_application_task_nfts_payment_paymentMethod_network;
+}
+
+export interface CreateTaskApplicationMutation_application_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskApplicationMutation_application_task_nfts_payment_paymentMethod;
+  network: CreateTaskApplicationMutation_application_task_nfts_payment_network;
+}
+
+export interface CreateTaskApplicationMutation_application_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: CreateTaskApplicationMutation_application_task_nfts_payment;
+}
+
+export interface CreateTaskApplicationMutation_application_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: CreateTaskApplicationMutation_application_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
 }
 
 export interface CreateTaskApplicationMutation_application_task {
@@ -1896,9 +2226,20 @@ export interface CreateTaskApplicationMutation_application_task {
   skills: CreateTaskApplicationMutation_application_task_skills[];
   assignees: CreateTaskApplicationMutation_application_task_assignees[];
   owners: CreateTaskApplicationMutation_application_task_owners[];
-  reward: CreateTaskApplicationMutation_application_task_reward | null;
+  rewards: CreateTaskApplicationMutation_application_task_rewards[];
   review: CreateTaskApplicationMutation_application_task_review | null;
   reactions: CreateTaskApplicationMutation_application_task_reactions[];
+  gitBranchName: string;
+  permalink: string;
+  project: CreateTaskApplicationMutation_application_task_project;
+  creator: CreateTaskApplicationMutation_application_task_creator | null;
+  githubPullRequests: CreateTaskApplicationMutation_application_task_githubPullRequests[];
+  githubBranches: CreateTaskApplicationMutation_application_task_githubBranches[];
+  githubIssue: CreateTaskApplicationMutation_application_task_githubIssue | null;
+  applications: CreateTaskApplicationMutation_application_task_applications[];
+  submissions: CreateTaskApplicationMutation_application_task_submissions[];
+  nfts: CreateTaskApplicationMutation_application_task_nfts[];
+  auditLog: CreateTaskApplicationMutation_application_task_auditLog[];
 }
 
 export interface CreateTaskApplicationMutation_application {
@@ -1937,12 +2278,174 @@ export interface DeleteTaskApplicationMutation_task_parentTask {
   name: string;
 }
 
+export interface DeleteTaskApplicationMutation_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment_network;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: DeleteTaskApplicationMutation_task_subtasks_rewards_payments_user;
+  payment: DeleteTaskApplicationMutation_task_subtasks_rewards_payments_payment;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: DeleteTaskApplicationMutation_task_subtasks_rewards_token;
+  payments: DeleteTaskApplicationMutation_task_subtasks_rewards_payments[];
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface DeleteTaskApplicationMutation_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
   sortKey: string;
+  description: string | null;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: DeleteTaskApplicationMutation_task_subtasks_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: DeleteTaskApplicationMutation_task_subtasks_subtasks[];
+  tags: DeleteTaskApplicationMutation_task_subtasks_tags[];
+  skills: DeleteTaskApplicationMutation_task_subtasks_skills[];
+  assignees: DeleteTaskApplicationMutation_task_subtasks_assignees[];
+  owners: DeleteTaskApplicationMutation_task_subtasks_owners[];
+  rewards: DeleteTaskApplicationMutation_task_subtasks_rewards[];
+  review: DeleteTaskApplicationMutation_task_subtasks_review | null;
+  reactions: DeleteTaskApplicationMutation_task_subtasks_reactions[];
 }
 
 export interface DeleteTaskApplicationMutation_task_tags {
@@ -1978,7 +2481,7 @@ export interface DeleteTaskApplicationMutation_task_owners {
   permalink: string;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_token {
+export interface DeleteTaskApplicationMutation_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -1993,7 +2496,7 @@ export interface DeleteTaskApplicationMutation_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments_user {
+export interface DeleteTaskApplicationMutation_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -2001,7 +2504,7 @@ export interface DeleteTaskApplicationMutation_task_reward_payments_user {
   permalink: string;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments_payment_paymentMethod_network {
+export interface DeleteTaskApplicationMutation_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2011,15 +2514,15 @@ export interface DeleteTaskApplicationMutation_task_reward_payments_payment_paym
   sortKey: string;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments_payment_paymentMethod {
+export interface DeleteTaskApplicationMutation_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: DeleteTaskApplicationMutation_task_reward_payments_payment_paymentMethod_network;
+  network: DeleteTaskApplicationMutation_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments_payment_network {
+export interface DeleteTaskApplicationMutation_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2029,31 +2532,31 @@ export interface DeleteTaskApplicationMutation_task_reward_payments_payment_netw
   sortKey: string;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments_payment {
+export interface DeleteTaskApplicationMutation_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: DeleteTaskApplicationMutation_task_reward_payments_payment_paymentMethod;
-  network: DeleteTaskApplicationMutation_task_reward_payments_payment_network;
+  paymentMethod: DeleteTaskApplicationMutation_task_rewards_payments_payment_paymentMethod;
+  network: DeleteTaskApplicationMutation_task_rewards_payments_payment_network;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward_payments {
+export interface DeleteTaskApplicationMutation_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: DeleteTaskApplicationMutation_task_reward_payments_user;
-  payment: DeleteTaskApplicationMutation_task_reward_payments_payment;
+  user: DeleteTaskApplicationMutation_task_rewards_payments_user;
+  payment: DeleteTaskApplicationMutation_task_rewards_payments_payment;
 }
 
-export interface DeleteTaskApplicationMutation_task_reward {
+export interface DeleteTaskApplicationMutation_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: DeleteTaskApplicationMutation_task_reward_token;
-  payments: DeleteTaskApplicationMutation_task_reward_payments[];
+  token: DeleteTaskApplicationMutation_task_rewards_token;
+  payments: DeleteTaskApplicationMutation_task_rewards_payments[];
 }
 
 export interface DeleteTaskApplicationMutation_task_review {
@@ -2068,6 +2571,180 @@ export interface DeleteTaskApplicationMutation_task_reactions {
   id: Scalar.UUID;
   userId: string;
   reaction: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  organization: DeleteTaskApplicationMutation_task_project_organization;
+}
+
+export interface DeleteTaskApplicationMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatus;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface DeleteTaskApplicationMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repo: string;
+  organization: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  user: DeleteTaskApplicationMutation_task_applications_user;
+}
+
+export interface DeleteTaskApplicationMutation_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: DeleteTaskApplicationMutation_task_submissions_user;
+  approver: DeleteTaskApplicationMutation_task_submissions_approver | null;
+}
+
+export interface DeleteTaskApplicationMutation_task_nfts_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: DeleteTaskApplicationMutation_task_nfts_payment_paymentMethod_network;
+}
+
+export interface DeleteTaskApplicationMutation_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: DeleteTaskApplicationMutation_task_nfts_payment_paymentMethod;
+  network: DeleteTaskApplicationMutation_task_nfts_payment_network;
+}
+
+export interface DeleteTaskApplicationMutation_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: DeleteTaskApplicationMutation_task_nfts_payment;
+}
+
+export interface DeleteTaskApplicationMutation_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface DeleteTaskApplicationMutation_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: DeleteTaskApplicationMutation_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
 }
 
 export interface DeleteTaskApplicationMutation_task {
@@ -2096,9 +2773,20 @@ export interface DeleteTaskApplicationMutation_task {
   skills: DeleteTaskApplicationMutation_task_skills[];
   assignees: DeleteTaskApplicationMutation_task_assignees[];
   owners: DeleteTaskApplicationMutation_task_owners[];
-  reward: DeleteTaskApplicationMutation_task_reward | null;
+  rewards: DeleteTaskApplicationMutation_task_rewards[];
   review: DeleteTaskApplicationMutation_task_review | null;
   reactions: DeleteTaskApplicationMutation_task_reactions[];
+  gitBranchName: string;
+  permalink: string;
+  project: DeleteTaskApplicationMutation_task_project;
+  creator: DeleteTaskApplicationMutation_task_creator | null;
+  githubPullRequests: DeleteTaskApplicationMutation_task_githubPullRequests[];
+  githubBranches: DeleteTaskApplicationMutation_task_githubBranches[];
+  githubIssue: DeleteTaskApplicationMutation_task_githubIssue | null;
+  applications: DeleteTaskApplicationMutation_task_applications[];
+  submissions: DeleteTaskApplicationMutation_task_submissions[];
+  nfts: DeleteTaskApplicationMutation_task_nfts[];
+  auditLog: DeleteTaskApplicationMutation_task_auditLog[];
 }
 
 export interface DeleteTaskApplicationMutation {
@@ -2124,12 +2812,174 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_parentTa
   name: string;
 }
 
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment_network;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_user;
+  payment: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments_payment;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_token;
+  payments: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards_payments[];
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
   sortKey: string;
+  description: string | null;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_subtasks[];
+  tags: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_tags[];
+  skills: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_skills[];
+  assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_assignees[];
+  owners: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_owners[];
+  rewards: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_rewards[];
+  review: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_review | null;
+  reactions: CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks_reactions[];
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_tags {
@@ -2165,7 +3015,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_owners {
   permalink: string;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -2180,7 +3030,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_t
   imageUrl: string | null;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_user {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -2188,7 +3038,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_p
   permalink: string;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2198,15 +3048,15 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_p
   sortKey: string;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_paymentMethod {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_network {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2216,31 +3066,31 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_p
   sortKey: string;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_paymentMethod;
-  network: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment_network;
+  paymentMethod: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_paymentMethod;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment_network;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_user;
-  payment: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_payment;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_user;
+  payment: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments_payment;
 }
 
-export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward {
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_token;
-  payments: CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments[];
+  token: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_token;
+  payments: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards_payments[];
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_review {
@@ -2255,6 +3105,180 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reaction
   id: Scalar.UUID;
   userId: string;
   reaction: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  organization: CreateTaskSubmissionMutation_createTaskSubmission_task_project_organization;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatus;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repo: string;
+  organization: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_user;
+  approver: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver | null;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_paymentMethod_network;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_paymentMethod;
+  network: CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment_network;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: CreateTaskSubmissionMutation_createTaskSubmission_task_nfts_payment;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: CreateTaskSubmissionMutation_createTaskSubmission_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
@@ -2283,9 +3307,20 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   skills: CreateTaskSubmissionMutation_createTaskSubmission_task_skills[];
   assignees: CreateTaskSubmissionMutation_createTaskSubmission_task_assignees[];
   owners: CreateTaskSubmissionMutation_createTaskSubmission_task_owners[];
-  reward: CreateTaskSubmissionMutation_createTaskSubmission_task_reward | null;
+  rewards: CreateTaskSubmissionMutation_createTaskSubmission_task_rewards[];
   review: CreateTaskSubmissionMutation_createTaskSubmission_task_review | null;
   reactions: CreateTaskSubmissionMutation_createTaskSubmission_task_reactions[];
+  gitBranchName: string;
+  permalink: string;
+  project: CreateTaskSubmissionMutation_createTaskSubmission_task_project;
+  creator: CreateTaskSubmissionMutation_createTaskSubmission_task_creator | null;
+  githubPullRequests: CreateTaskSubmissionMutation_createTaskSubmission_task_githubPullRequests[];
+  githubBranches: CreateTaskSubmissionMutation_createTaskSubmission_task_githubBranches[];
+  githubIssue: CreateTaskSubmissionMutation_createTaskSubmission_task_githubIssue | null;
+  applications: CreateTaskSubmissionMutation_createTaskSubmission_task_applications[];
+  submissions: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions[];
+  nfts: CreateTaskSubmissionMutation_createTaskSubmission_task_nfts[];
+  auditLog: CreateTaskSubmissionMutation_createTaskSubmission_task_auditLog[];
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission {
@@ -2317,12 +3352,174 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_parentTa
   name: string;
 }
 
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment_network;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_user;
+  payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments_payment;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_token;
+  payments: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards_payments[];
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
   status: TaskStatus;
   sortKey: string;
+  description: string | null;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_subtasks[];
+  tags: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_tags[];
+  skills: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_skills[];
+  assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_assignees[];
+  owners: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_owners[];
+  rewards: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_rewards[];
+  review: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_review | null;
+  reactions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks_reactions[];
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_tags {
@@ -2358,7 +3555,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_owners {
   permalink: string;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -2373,7 +3570,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_t
   imageUrl: string | null;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_user {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -2381,7 +3578,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_p
   permalink: string;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_paymentMethod_network {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2391,15 +3588,15 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_p
   sortKey: string;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_paymentMethod {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_paymentMethod_network;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_network {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -2409,31 +3606,31 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_p
   sortKey: string;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_paymentMethod;
-  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment_network;
+  paymentMethod: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_paymentMethod;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment_network;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_user;
-  payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_payment;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_user;
+  payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments_payment;
 }
 
-export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward {
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_token;
-  payments: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments[];
+  token: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_token;
+  payments: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards_payments[];
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_review {
@@ -2448,6 +3645,180 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reaction
   id: Scalar.UUID;
   userId: string;
   reaction: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  organization: UpdateTaskSubmissionMutation_updateTaskSubmission_task_project_organization;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatus;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repo: string;
+  organization: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_user;
+  approver: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver | null;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_paymentMethod_network;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_paymentMethod;
+  network: UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment_network;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts_payment;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
@@ -2476,9 +3847,20 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   skills: UpdateTaskSubmissionMutation_updateTaskSubmission_task_skills[];
   assignees: UpdateTaskSubmissionMutation_updateTaskSubmission_task_assignees[];
   owners: UpdateTaskSubmissionMutation_updateTaskSubmission_task_owners[];
-  reward: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward | null;
+  rewards: UpdateTaskSubmissionMutation_updateTaskSubmission_task_rewards[];
   review: UpdateTaskSubmissionMutation_updateTaskSubmission_task_review | null;
   reactions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_reactions[];
+  gitBranchName: string;
+  permalink: string;
+  project: UpdateTaskSubmissionMutation_updateTaskSubmission_task_project;
+  creator: UpdateTaskSubmissionMutation_updateTaskSubmission_task_creator | null;
+  githubPullRequests: UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubPullRequests[];
+  githubBranches: UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubBranches[];
+  githubIssue: UpdateTaskSubmissionMutation_updateTaskSubmission_task_githubIssue | null;
+  applications: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications[];
+  submissions: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions[];
+  nfts: UpdateTaskSubmissionMutation_updateTaskSubmission_task_nfts[];
+  auditLog: UpdateTaskSubmissionMutation_updateTaskSubmission_task_auditLog[];
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission {
@@ -3344,7 +4726,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_owners {
   permalink: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -3359,7 +4741,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_user {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -3367,7 +4749,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_user 
   permalink: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3377,15 +4759,15 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payme
   sortKey: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_network {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3395,31 +4777,31 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payme
   sortKey: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod;
-  network: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_network;
+  paymentMethod: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod;
+  network: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_network;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_user;
-  payment: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_payment;
+  user: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_user;
+  payment: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_subtasks_reward {
+export interface CreateTaskPaymentsMutation_tasks_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskPaymentsMutation_tasks_subtasks_reward_token;
-  payments: CreateTaskPaymentsMutation_tasks_subtasks_reward_payments[];
+  token: CreateTaskPaymentsMutation_tasks_subtasks_rewards_token;
+  payments: CreateTaskPaymentsMutation_tasks_subtasks_rewards_payments[];
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_review {
@@ -3462,7 +4844,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   skills: CreateTaskPaymentsMutation_tasks_subtasks_skills[];
   assignees: CreateTaskPaymentsMutation_tasks_subtasks_assignees[];
   owners: CreateTaskPaymentsMutation_tasks_subtasks_owners[];
-  reward: CreateTaskPaymentsMutation_tasks_subtasks_reward | null;
+  rewards: CreateTaskPaymentsMutation_tasks_subtasks_rewards[];
   review: CreateTaskPaymentsMutation_tasks_subtasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_subtasks_reactions[];
 }
@@ -3500,7 +4882,7 @@ export interface CreateTaskPaymentsMutation_tasks_owners {
   permalink: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_token {
+export interface CreateTaskPaymentsMutation_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -3515,7 +4897,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments_user {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -3523,7 +4905,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod_network {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3533,15 +4915,15 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment_paymen
   sortKey: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod_network;
+  network: CreateTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment_network {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3551,31 +4933,31 @@ export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment_networ
   sortKey: string;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments_payment {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod;
-  network: CreateTaskPaymentsMutation_tasks_reward_payments_payment_network;
+  paymentMethod: CreateTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod;
+  network: CreateTaskPaymentsMutation_tasks_rewards_payments_payment_network;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward_payments {
+export interface CreateTaskPaymentsMutation_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTaskPaymentsMutation_tasks_reward_payments_user;
-  payment: CreateTaskPaymentsMutation_tasks_reward_payments_payment;
+  user: CreateTaskPaymentsMutation_tasks_rewards_payments_user;
+  payment: CreateTaskPaymentsMutation_tasks_rewards_payments_payment;
 }
 
-export interface CreateTaskPaymentsMutation_tasks_reward {
+export interface CreateTaskPaymentsMutation_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTaskPaymentsMutation_tasks_reward_token;
-  payments: CreateTaskPaymentsMutation_tasks_reward_payments[];
+  token: CreateTaskPaymentsMutation_tasks_rewards_token;
+  payments: CreateTaskPaymentsMutation_tasks_rewards_payments[];
 }
 
 export interface CreateTaskPaymentsMutation_tasks_review {
@@ -3792,7 +5174,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   skills: CreateTaskPaymentsMutation_tasks_skills[];
   assignees: CreateTaskPaymentsMutation_tasks_assignees[];
   owners: CreateTaskPaymentsMutation_tasks_owners[];
-  reward: CreateTaskPaymentsMutation_tasks_reward | null;
+  rewards: CreateTaskPaymentsMutation_tasks_rewards[];
   review: CreateTaskPaymentsMutation_tasks_review | null;
   reactions: CreateTaskPaymentsMutation_tasks_reactions[];
   gitBranchName: string;
@@ -3878,7 +5260,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_owners {
   permalink: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_token {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -3893,7 +5275,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_user {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -3901,7 +5283,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_user {
   permalink: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod_network {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3911,15 +5293,15 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_paymen
   sortKey: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod_network;
+  network: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_network {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -3929,31 +5311,31 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_paymen
   sortKey: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_paymentMethod;
-  network: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment_network;
+  paymentMethod: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_paymentMethod;
+  network: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment_network;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_user;
-  payment: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_payment;
+  user: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_user;
+  payment: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments_payment;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_subtasks_reward {
+export interface ClearTaskPaymentsMutation_tasks_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: ClearTaskPaymentsMutation_tasks_subtasks_reward_token;
-  payments: ClearTaskPaymentsMutation_tasks_subtasks_reward_payments[];
+  token: ClearTaskPaymentsMutation_tasks_subtasks_rewards_token;
+  payments: ClearTaskPaymentsMutation_tasks_subtasks_rewards_payments[];
 }
 
 export interface ClearTaskPaymentsMutation_tasks_subtasks_review {
@@ -3996,7 +5378,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks {
   skills: ClearTaskPaymentsMutation_tasks_subtasks_skills[];
   assignees: ClearTaskPaymentsMutation_tasks_subtasks_assignees[];
   owners: ClearTaskPaymentsMutation_tasks_subtasks_owners[];
-  reward: ClearTaskPaymentsMutation_tasks_subtasks_reward | null;
+  rewards: ClearTaskPaymentsMutation_tasks_subtasks_rewards[];
   review: ClearTaskPaymentsMutation_tasks_subtasks_review | null;
   reactions: ClearTaskPaymentsMutation_tasks_subtasks_reactions[];
 }
@@ -4034,7 +5416,7 @@ export interface ClearTaskPaymentsMutation_tasks_owners {
   permalink: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_token {
+export interface ClearTaskPaymentsMutation_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -4049,7 +5431,7 @@ export interface ClearTaskPaymentsMutation_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments_user {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -4057,7 +5439,7 @@ export interface ClearTaskPaymentsMutation_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod_network {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -4067,15 +5449,15 @@ export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment_payment
   sortKey: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: ClearTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod_network;
+  network: ClearTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment_network {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -4085,31 +5467,31 @@ export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment_network
   sortKey: string;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments_payment {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: ClearTaskPaymentsMutation_tasks_reward_payments_payment_paymentMethod;
-  network: ClearTaskPaymentsMutation_tasks_reward_payments_payment_network;
+  paymentMethod: ClearTaskPaymentsMutation_tasks_rewards_payments_payment_paymentMethod;
+  network: ClearTaskPaymentsMutation_tasks_rewards_payments_payment_network;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward_payments {
+export interface ClearTaskPaymentsMutation_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: ClearTaskPaymentsMutation_tasks_reward_payments_user;
-  payment: ClearTaskPaymentsMutation_tasks_reward_payments_payment;
+  user: ClearTaskPaymentsMutation_tasks_rewards_payments_user;
+  payment: ClearTaskPaymentsMutation_tasks_rewards_payments_payment;
 }
 
-export interface ClearTaskPaymentsMutation_tasks_reward {
+export interface ClearTaskPaymentsMutation_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: ClearTaskPaymentsMutation_tasks_reward_token;
-  payments: ClearTaskPaymentsMutation_tasks_reward_payments[];
+  token: ClearTaskPaymentsMutation_tasks_rewards_token;
+  payments: ClearTaskPaymentsMutation_tasks_rewards_payments[];
 }
 
 export interface ClearTaskPaymentsMutation_tasks_review {
@@ -4326,7 +5708,7 @@ export interface ClearTaskPaymentsMutation_tasks {
   skills: ClearTaskPaymentsMutation_tasks_skills[];
   assignees: ClearTaskPaymentsMutation_tasks_assignees[];
   owners: ClearTaskPaymentsMutation_tasks_owners[];
-  reward: ClearTaskPaymentsMutation_tasks_reward | null;
+  rewards: ClearTaskPaymentsMutation_tasks_rewards[];
   review: ClearTaskPaymentsMutation_tasks_review | null;
   reactions: ClearTaskPaymentsMutation_tasks_reactions[];
   gitBranchName: string;
@@ -4445,7 +5827,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_owners {
   permalink: string;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -4460,7 +5842,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token 
   imageUrl: string | null;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_user {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -4468,7 +5850,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_paymen
   permalink: string;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_paymentMethod_network {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -4478,15 +5860,15 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_paymen
   sortKey: string;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_paymentMethod {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_paymentMethod_network;
+  network: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_network {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -4496,31 +5878,31 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_paymen
   sortKey: string;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_paymentMethod;
-  network: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment_network;
+  paymentMethod: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_paymentMethod;
+  network: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment_network;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_user;
-  payment: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_payment;
+  user: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_user;
+  payment: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments_payment;
 }
 
-export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward {
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: CreateTasksFromGithubIssuesMutation_project_tasks_reward_token;
-  payments: CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments[];
+  token: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_token;
+  payments: CreateTasksFromGithubIssuesMutation_project_tasks_rewards_payments[];
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_review {
@@ -4563,7 +5945,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   skills: CreateTasksFromGithubIssuesMutation_project_tasks_skills[];
   assignees: CreateTasksFromGithubIssuesMutation_project_tasks_assignees[];
   owners: CreateTasksFromGithubIssuesMutation_project_tasks_owners[];
-  reward: CreateTasksFromGithubIssuesMutation_project_tasks_reward | null;
+  rewards: CreateTasksFromGithubIssuesMutation_project_tasks_rewards[];
   review: CreateTasksFromGithubIssuesMutation_project_tasks_review | null;
   reactions: CreateTasksFromGithubIssuesMutation_project_tasks_reactions[];
 }
@@ -4637,9 +6019,6 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_workspaces {
@@ -4813,9 +6192,6 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_workspaces {
@@ -4989,9 +6365,6 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_workspaces {
@@ -5976,7 +7349,7 @@ export interface ArchiveNotificationMutation_archiveNotification {
   message: string;
   archivedAt: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
-  task: ArchiveNotificationMutation_archiveNotification_task;
+  task: ArchiveNotificationMutation_archiveNotification_task | null;
   user: ArchiveNotificationMutation_archiveNotification_user;
 }
 
@@ -7004,7 +8377,7 @@ export interface UserTasksQuery_user_tasks_owners {
   permalink: string;
 }
 
-export interface UserTasksQuery_user_tasks_reward_token {
+export interface UserTasksQuery_user_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -7019,7 +8392,7 @@ export interface UserTasksQuery_user_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments_user {
+export interface UserTasksQuery_user_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -7027,7 +8400,7 @@ export interface UserTasksQuery_user_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments_payment_paymentMethod_network {
+export interface UserTasksQuery_user_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -7037,15 +8410,15 @@ export interface UserTasksQuery_user_tasks_reward_payments_payment_paymentMethod
   sortKey: string;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments_payment_paymentMethod {
+export interface UserTasksQuery_user_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: UserTasksQuery_user_tasks_reward_payments_payment_paymentMethod_network;
+  network: UserTasksQuery_user_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments_payment_network {
+export interface UserTasksQuery_user_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -7055,31 +8428,31 @@ export interface UserTasksQuery_user_tasks_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments_payment {
+export interface UserTasksQuery_user_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: UserTasksQuery_user_tasks_reward_payments_payment_paymentMethod;
-  network: UserTasksQuery_user_tasks_reward_payments_payment_network;
+  paymentMethod: UserTasksQuery_user_tasks_rewards_payments_payment_paymentMethod;
+  network: UserTasksQuery_user_tasks_rewards_payments_payment_network;
 }
 
-export interface UserTasksQuery_user_tasks_reward_payments {
+export interface UserTasksQuery_user_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: UserTasksQuery_user_tasks_reward_payments_user;
-  payment: UserTasksQuery_user_tasks_reward_payments_payment;
+  user: UserTasksQuery_user_tasks_rewards_payments_user;
+  payment: UserTasksQuery_user_tasks_rewards_payments_payment;
 }
 
-export interface UserTasksQuery_user_tasks_reward {
+export interface UserTasksQuery_user_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: UserTasksQuery_user_tasks_reward_token;
-  payments: UserTasksQuery_user_tasks_reward_payments[];
+  token: UserTasksQuery_user_tasks_rewards_token;
+  payments: UserTasksQuery_user_tasks_rewards_payments[];
 }
 
 export interface UserTasksQuery_user_tasks_review {
@@ -7146,7 +8519,7 @@ export interface UserTasksQuery_user_tasks {
   skills: UserTasksQuery_user_tasks_skills[];
   assignees: UserTasksQuery_user_tasks_assignees[];
   owners: UserTasksQuery_user_tasks_owners[];
-  reward: UserTasksQuery_user_tasks_reward | null;
+  rewards: UserTasksQuery_user_tasks_rewards[];
   review: UserTasksQuery_user_tasks_review | null;
   reactions: UserTasksQuery_user_tasks_reactions[];
   project: UserTasksQuery_user_tasks_project;
@@ -7321,9 +8694,6 @@ export interface GetOrganizationDetailsQuery_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface GetOrganizationDetailsQuery_organization_workspaces {
@@ -7507,9 +8877,6 @@ export interface GetOrganizationTaskViewsQuery_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
   taskTags: GetOrganizationTaskViewsQuery_organization_projects_taskTags[];
 }
 
@@ -8128,7 +9495,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_owners {
   permalink: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -8143,7 +9510,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_user {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8151,7 +9518,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_us
   permalink: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8161,15 +9528,15 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_pa
   sortKey: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_paymentMethod {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_network {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8179,31 +9546,31 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_pa
   sortKey: string;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_payment {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_paymentMethod;
-  network: GetOrganizationTasksQuery_organization_tasks_reward_payments_payment_network;
+  paymentMethod: GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_paymentMethod;
+  network: GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment_network;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward_payments {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetOrganizationTasksQuery_organization_tasks_reward_payments_user;
-  payment: GetOrganizationTasksQuery_organization_tasks_reward_payments_payment;
+  user: GetOrganizationTasksQuery_organization_tasks_rewards_payments_user;
+  payment: GetOrganizationTasksQuery_organization_tasks_rewards_payments_payment;
 }
 
-export interface GetOrganizationTasksQuery_organization_tasks_reward {
+export interface GetOrganizationTasksQuery_organization_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetOrganizationTasksQuery_organization_tasks_reward_token;
-  payments: GetOrganizationTasksQuery_organization_tasks_reward_payments[];
+  token: GetOrganizationTasksQuery_organization_tasks_rewards_token;
+  payments: GetOrganizationTasksQuery_organization_tasks_rewards_payments[];
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_review {
@@ -8246,7 +9613,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   skills: GetOrganizationTasksQuery_organization_tasks_skills[];
   assignees: GetOrganizationTasksQuery_organization_tasks_assignees[];
   owners: GetOrganizationTasksQuery_organization_tasks_owners[];
-  reward: GetOrganizationTasksQuery_organization_tasks_reward | null;
+  rewards: GetOrganizationTasksQuery_organization_tasks_rewards[];
   review: GetOrganizationTasksQuery_organization_tasks_review | null;
   reactions: GetOrganizationTasksQuery_organization_tasks_reactions[];
 }
@@ -8360,7 +9727,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_owners {
   permalink: string;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_token {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -8375,7 +9742,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_user {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8383,7 +9750,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8393,15 +9760,15 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_
   sortKey: string;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_paymentMethod {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_network {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8411,31 +9778,31 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_
   sortKey: string;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_paymentMethod;
-  network: GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment_network;
+  paymentMethod: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_paymentMethod;
+  network: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment_network;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetWorkspaceTasksQuery_workspace_tasks_reward_payments_user;
-  payment: GetWorkspaceTasksQuery_workspace_tasks_reward_payments_payment;
+  user: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_user;
+  payment: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments_payment;
 }
 
-export interface GetWorkspaceTasksQuery_workspace_tasks_reward {
+export interface GetWorkspaceTasksQuery_workspace_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetWorkspaceTasksQuery_workspace_tasks_reward_token;
-  payments: GetWorkspaceTasksQuery_workspace_tasks_reward_payments[];
+  token: GetWorkspaceTasksQuery_workspace_tasks_rewards_token;
+  payments: GetWorkspaceTasksQuery_workspace_tasks_rewards_payments[];
 }
 
 export interface GetWorkspaceTasksQuery_workspace_tasks_review {
@@ -8478,7 +9845,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks {
   skills: GetWorkspaceTasksQuery_workspace_tasks_skills[];
   assignees: GetWorkspaceTasksQuery_workspace_tasks_assignees[];
   owners: GetWorkspaceTasksQuery_workspace_tasks_owners[];
-  reward: GetWorkspaceTasksQuery_workspace_tasks_reward | null;
+  rewards: GetWorkspaceTasksQuery_workspace_tasks_rewards[];
   review: GetWorkspaceTasksQuery_workspace_tasks_review | null;
   reactions: GetWorkspaceTasksQuery_workspace_tasks_reactions[];
 }
@@ -8762,7 +10129,7 @@ export interface GetProjectTasksQuery_project_tasks_owners {
   permalink: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_token {
+export interface GetProjectTasksQuery_project_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -8777,7 +10144,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments_user {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8785,7 +10152,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8795,15 +10162,15 @@ export interface GetProjectTasksQuery_project_tasks_reward_payments_payment_paym
   sortKey: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments_payment_paymentMethod {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetProjectTasksQuery_project_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetProjectTasksQuery_project_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments_payment_network {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8813,31 +10180,31 @@ export interface GetProjectTasksQuery_project_tasks_reward_payments_payment_netw
   sortKey: string;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments_payment {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetProjectTasksQuery_project_tasks_reward_payments_payment_paymentMethod;
-  network: GetProjectTasksQuery_project_tasks_reward_payments_payment_network;
+  paymentMethod: GetProjectTasksQuery_project_tasks_rewards_payments_payment_paymentMethod;
+  network: GetProjectTasksQuery_project_tasks_rewards_payments_payment_network;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward_payments {
+export interface GetProjectTasksQuery_project_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetProjectTasksQuery_project_tasks_reward_payments_user;
-  payment: GetProjectTasksQuery_project_tasks_reward_payments_payment;
+  user: GetProjectTasksQuery_project_tasks_rewards_payments_user;
+  payment: GetProjectTasksQuery_project_tasks_rewards_payments_payment;
 }
 
-export interface GetProjectTasksQuery_project_tasks_reward {
+export interface GetProjectTasksQuery_project_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetProjectTasksQuery_project_tasks_reward_token;
-  payments: GetProjectTasksQuery_project_tasks_reward_payments[];
+  token: GetProjectTasksQuery_project_tasks_rewards_token;
+  payments: GetProjectTasksQuery_project_tasks_rewards_payments[];
 }
 
 export interface GetProjectTasksQuery_project_tasks_review {
@@ -8880,7 +10247,7 @@ export interface GetProjectTasksQuery_project_tasks {
   skills: GetProjectTasksQuery_project_tasks_skills[];
   assignees: GetProjectTasksQuery_project_tasks_assignees[];
   owners: GetProjectTasksQuery_project_tasks_owners[];
-  reward: GetProjectTasksQuery_project_tasks_reward | null;
+  rewards: GetProjectTasksQuery_project_tasks_rewards[];
   review: GetProjectTasksQuery_project_tasks_review | null;
   reactions: GetProjectTasksQuery_project_tasks_reactions[];
 }
@@ -8962,7 +10329,7 @@ export interface GetProjectTasksExportQuery_project_tasks_owners {
   permalink: string;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_token {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -8977,7 +10344,7 @@ export interface GetProjectTasksExportQuery_project_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments_user {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -8985,7 +10352,7 @@ export interface GetProjectTasksExportQuery_project_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -8995,15 +10362,15 @@ export interface GetProjectTasksExportQuery_project_tasks_reward_payments_paymen
   sortKey: string;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments_payment_paymentMethod {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetProjectTasksExportQuery_project_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments_payment_network {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9013,31 +10380,31 @@ export interface GetProjectTasksExportQuery_project_tasks_reward_payments_paymen
   sortKey: string;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments_payment {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetProjectTasksExportQuery_project_tasks_reward_payments_payment_paymentMethod;
-  network: GetProjectTasksExportQuery_project_tasks_reward_payments_payment_network;
+  paymentMethod: GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_paymentMethod;
+  network: GetProjectTasksExportQuery_project_tasks_rewards_payments_payment_network;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward_payments {
+export interface GetProjectTasksExportQuery_project_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetProjectTasksExportQuery_project_tasks_reward_payments_user;
-  payment: GetProjectTasksExportQuery_project_tasks_reward_payments_payment;
+  user: GetProjectTasksExportQuery_project_tasks_rewards_payments_user;
+  payment: GetProjectTasksExportQuery_project_tasks_rewards_payments_payment;
 }
 
-export interface GetProjectTasksExportQuery_project_tasks_reward {
+export interface GetProjectTasksExportQuery_project_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetProjectTasksExportQuery_project_tasks_reward_token;
-  payments: GetProjectTasksExportQuery_project_tasks_reward_payments[];
+  token: GetProjectTasksExportQuery_project_tasks_rewards_token;
+  payments: GetProjectTasksExportQuery_project_tasks_rewards_payments[];
 }
 
 export interface GetProjectTasksExportQuery_project_tasks_review {
@@ -9088,7 +10455,7 @@ export interface GetProjectTasksExportQuery_project_tasks {
   skills: GetProjectTasksExportQuery_project_tasks_skills[];
   assignees: GetProjectTasksExportQuery_project_tasks_assignees[];
   owners: GetProjectTasksExportQuery_project_tasks_owners[];
-  reward: GetProjectTasksExportQuery_project_tasks_reward | null;
+  rewards: GetProjectTasksExportQuery_project_tasks_rewards[];
   review: GetProjectTasksExportQuery_project_tasks_review | null;
   reactions: GetProjectTasksExportQuery_project_tasks_reactions[];
   creator: GetProjectTasksExportQuery_project_tasks_creator | null;
@@ -9203,7 +10570,7 @@ export interface GetTaskQuery_task_subtasks_owners {
   permalink: string;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_token {
+export interface GetTaskQuery_task_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -9218,7 +10585,7 @@ export interface GetTaskQuery_task_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments_user {
+export interface GetTaskQuery_task_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -9226,7 +10593,7 @@ export interface GetTaskQuery_task_subtasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments_payment_paymentMethod_network {
+export interface GetTaskQuery_task_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9236,15 +10603,15 @@ export interface GetTaskQuery_task_subtasks_reward_payments_payment_paymentMetho
   sortKey: string;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments_payment_paymentMethod {
+export interface GetTaskQuery_task_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetTaskQuery_task_subtasks_reward_payments_payment_paymentMethod_network;
+  network: GetTaskQuery_task_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments_payment_network {
+export interface GetTaskQuery_task_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9254,31 +10621,31 @@ export interface GetTaskQuery_task_subtasks_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments_payment {
+export interface GetTaskQuery_task_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetTaskQuery_task_subtasks_reward_payments_payment_paymentMethod;
-  network: GetTaskQuery_task_subtasks_reward_payments_payment_network;
+  paymentMethod: GetTaskQuery_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: GetTaskQuery_task_subtasks_rewards_payments_payment_network;
 }
 
-export interface GetTaskQuery_task_subtasks_reward_payments {
+export interface GetTaskQuery_task_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetTaskQuery_task_subtasks_reward_payments_user;
-  payment: GetTaskQuery_task_subtasks_reward_payments_payment;
+  user: GetTaskQuery_task_subtasks_rewards_payments_user;
+  payment: GetTaskQuery_task_subtasks_rewards_payments_payment;
 }
 
-export interface GetTaskQuery_task_subtasks_reward {
+export interface GetTaskQuery_task_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetTaskQuery_task_subtasks_reward_token;
-  payments: GetTaskQuery_task_subtasks_reward_payments[];
+  token: GetTaskQuery_task_subtasks_rewards_token;
+  payments: GetTaskQuery_task_subtasks_rewards_payments[];
 }
 
 export interface GetTaskQuery_task_subtasks_review {
@@ -9321,7 +10688,7 @@ export interface GetTaskQuery_task_subtasks {
   skills: GetTaskQuery_task_subtasks_skills[];
   assignees: GetTaskQuery_task_subtasks_assignees[];
   owners: GetTaskQuery_task_subtasks_owners[];
-  reward: GetTaskQuery_task_subtasks_reward | null;
+  rewards: GetTaskQuery_task_subtasks_rewards[];
   review: GetTaskQuery_task_subtasks_review | null;
   reactions: GetTaskQuery_task_subtasks_reactions[];
 }
@@ -9359,7 +10726,7 @@ export interface GetTaskQuery_task_owners {
   permalink: string;
 }
 
-export interface GetTaskQuery_task_reward_token {
+export interface GetTaskQuery_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -9374,7 +10741,7 @@ export interface GetTaskQuery_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetTaskQuery_task_reward_payments_user {
+export interface GetTaskQuery_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -9382,7 +10749,7 @@ export interface GetTaskQuery_task_reward_payments_user {
   permalink: string;
 }
 
-export interface GetTaskQuery_task_reward_payments_payment_paymentMethod_network {
+export interface GetTaskQuery_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9392,15 +10759,15 @@ export interface GetTaskQuery_task_reward_payments_payment_paymentMethod_network
   sortKey: string;
 }
 
-export interface GetTaskQuery_task_reward_payments_payment_paymentMethod {
+export interface GetTaskQuery_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetTaskQuery_task_reward_payments_payment_paymentMethod_network;
+  network: GetTaskQuery_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetTaskQuery_task_reward_payments_payment_network {
+export interface GetTaskQuery_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9410,31 +10777,31 @@ export interface GetTaskQuery_task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface GetTaskQuery_task_reward_payments_payment {
+export interface GetTaskQuery_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetTaskQuery_task_reward_payments_payment_paymentMethod;
-  network: GetTaskQuery_task_reward_payments_payment_network;
+  paymentMethod: GetTaskQuery_task_rewards_payments_payment_paymentMethod;
+  network: GetTaskQuery_task_rewards_payments_payment_network;
 }
 
-export interface GetTaskQuery_task_reward_payments {
+export interface GetTaskQuery_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetTaskQuery_task_reward_payments_user;
-  payment: GetTaskQuery_task_reward_payments_payment;
+  user: GetTaskQuery_task_rewards_payments_user;
+  payment: GetTaskQuery_task_rewards_payments_payment;
 }
 
-export interface GetTaskQuery_task_reward {
+export interface GetTaskQuery_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetTaskQuery_task_reward_token;
-  payments: GetTaskQuery_task_reward_payments[];
+  token: GetTaskQuery_task_rewards_token;
+  payments: GetTaskQuery_task_rewards_payments[];
 }
 
 export interface GetTaskQuery_task_review {
@@ -9662,7 +11029,7 @@ export interface GetTaskQuery_task {
   skills: GetTaskQuery_task_skills[];
   assignees: GetTaskQuery_task_assignees[];
   owners: GetTaskQuery_task_owners[];
-  reward: GetTaskQuery_task_reward | null;
+  rewards: GetTaskQuery_task_rewards[];
   review: GetTaskQuery_task_review | null;
   reactions: GetTaskQuery_task_reactions[];
   gitBranchName: string;
@@ -9781,7 +11148,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks_owners {
   permalink: string;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_token {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -9796,7 +11163,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_user {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -9804,7 +11171,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9814,15 +11181,15 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_
   sortKey: string;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_paymentMethod {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_network {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -9832,31 +11199,31 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_
   sortKey: string;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_paymentMethod;
-  network: GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment_network;
+  paymentMethod: GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_paymentMethod;
+  network: GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment_network;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetPaginatedTasksQuery_paginated_tasks_reward_payments_user;
-  payment: GetPaginatedTasksQuery_paginated_tasks_reward_payments_payment;
+  user: GetPaginatedTasksQuery_paginated_tasks_rewards_payments_user;
+  payment: GetPaginatedTasksQuery_paginated_tasks_rewards_payments_payment;
 }
 
-export interface GetPaginatedTasksQuery_paginated_tasks_reward {
+export interface GetPaginatedTasksQuery_paginated_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetPaginatedTasksQuery_paginated_tasks_reward_token;
-  payments: GetPaginatedTasksQuery_paginated_tasks_reward_payments[];
+  token: GetPaginatedTasksQuery_paginated_tasks_rewards_token;
+  payments: GetPaginatedTasksQuery_paginated_tasks_rewards_payments[];
 }
 
 export interface GetPaginatedTasksQuery_paginated_tasks_review {
@@ -9899,7 +11266,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks {
   skills: GetPaginatedTasksQuery_paginated_tasks_skills[];
   assignees: GetPaginatedTasksQuery_paginated_tasks_assignees[];
   owners: GetPaginatedTasksQuery_paginated_tasks_owners[];
-  reward: GetPaginatedTasksQuery_paginated_tasks_reward | null;
+  rewards: GetPaginatedTasksQuery_paginated_tasks_rewards[];
   review: GetPaginatedTasksQuery_paginated_tasks_review | null;
   reactions: GetPaginatedTasksQuery_paginated_tasks_reactions[];
 }
@@ -9993,7 +11360,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_owners {
   permalink: string;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_token {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -10008,7 +11375,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_t
   imageUrl: string | null;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_user {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -10016,7 +11383,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_p
   permalink: string;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -10026,15 +11393,15 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_p
   sortKey: string;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_paymentMethod {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_network {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -10044,31 +11411,31 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_p
   sortKey: string;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_paymentMethod;
-  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment_network;
+  paymentMethod: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_paymentMethod;
+  network: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment_network;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_user;
-  payment: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_payment;
+  user: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_user;
+  payment: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments_payment;
 }
 
-export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward {
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_token;
-  payments: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments[];
+  token: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_token;
+  payments: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards_payments[];
 }
 
 export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_review {
@@ -10135,7 +11502,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks {
   skills: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_skills[];
   assignees: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_assignees[];
   owners: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_owners[];
-  reward: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward | null;
+  rewards: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_rewards[];
   review: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_review | null;
   reactions: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reactions[];
   project: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_project;
@@ -10220,7 +11587,7 @@ export interface GetTasksToPayQuery_tasks_owners {
   permalink: string;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_token {
+export interface GetTasksToPayQuery_tasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -10235,7 +11602,7 @@ export interface GetTasksToPayQuery_tasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments_user {
+export interface GetTasksToPayQuery_tasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -10243,7 +11610,7 @@ export interface GetTasksToPayQuery_tasks_reward_payments_user {
   permalink: string;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments_payment_paymentMethod_network {
+export interface GetTasksToPayQuery_tasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -10253,15 +11620,15 @@ export interface GetTasksToPayQuery_tasks_reward_payments_payment_paymentMethod_
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments_payment_paymentMethod {
+export interface GetTasksToPayQuery_tasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: GetTasksToPayQuery_tasks_reward_payments_payment_paymentMethod_network;
+  network: GetTasksToPayQuery_tasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments_payment_network {
+export interface GetTasksToPayQuery_tasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -10271,31 +11638,31 @@ export interface GetTasksToPayQuery_tasks_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments_payment {
+export interface GetTasksToPayQuery_tasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: GetTasksToPayQuery_tasks_reward_payments_payment_paymentMethod;
-  network: GetTasksToPayQuery_tasks_reward_payments_payment_network;
+  paymentMethod: GetTasksToPayQuery_tasks_rewards_payments_payment_paymentMethod;
+  network: GetTasksToPayQuery_tasks_rewards_payments_payment_network;
 }
 
-export interface GetTasksToPayQuery_tasks_reward_payments {
+export interface GetTasksToPayQuery_tasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: GetTasksToPayQuery_tasks_reward_payments_user;
-  payment: GetTasksToPayQuery_tasks_reward_payments_payment;
+  user: GetTasksToPayQuery_tasks_rewards_payments_user;
+  payment: GetTasksToPayQuery_tasks_rewards_payments_payment;
 }
 
-export interface GetTasksToPayQuery_tasks_reward {
+export interface GetTasksToPayQuery_tasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: GetTasksToPayQuery_tasks_reward_token;
-  payments: GetTasksToPayQuery_tasks_reward_payments[];
+  token: GetTasksToPayQuery_tasks_rewards_token;
+  payments: GetTasksToPayQuery_tasks_rewards_payments[];
 }
 
 export interface GetTasksToPayQuery_tasks_review {
@@ -10362,7 +11729,7 @@ export interface GetTasksToPayQuery_tasks {
   skills: GetTasksToPayQuery_tasks_skills[];
   assignees: GetTasksToPayQuery_tasks_assignees[];
   owners: GetTasksToPayQuery_tasks_owners[];
-  reward: GetTasksToPayQuery_tasks_reward | null;
+  rewards: GetTasksToPayQuery_tasks_rewards[];
   review: GetTasksToPayQuery_tasks_review | null;
   reactions: GetTasksToPayQuery_tasks_reactions[];
   project: GetTasksToPayQuery_tasks_project;
@@ -10889,7 +12256,7 @@ export interface MyNotificationsQuery_me_notifications {
   message: string;
   archivedAt: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
-  task: MyNotificationsQuery_me_notifications_task;
+  task: MyNotificationsQuery_me_notifications_task | null;
 }
 
 export interface MyNotificationsQuery_me {
@@ -11184,7 +12551,7 @@ export interface TaskCreatedSubscription_task_subtasks_owners {
   permalink: string;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_token {
+export interface TaskCreatedSubscription_task_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -11199,7 +12566,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments_user {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -11207,7 +12574,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment_paymentMethod_network {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11217,15 +12584,15 @@ export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment_p
   sortKey: string;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment_paymentMethod {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskCreatedSubscription_task_subtasks_reward_payments_payment_paymentMethod_network;
+  network: TaskCreatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment_network {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11235,31 +12602,31 @@ export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment_n
   sortKey: string;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments_payment {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskCreatedSubscription_task_subtasks_reward_payments_payment_paymentMethod;
-  network: TaskCreatedSubscription_task_subtasks_reward_payments_payment_network;
+  paymentMethod: TaskCreatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: TaskCreatedSubscription_task_subtasks_rewards_payments_payment_network;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward_payments {
+export interface TaskCreatedSubscription_task_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskCreatedSubscription_task_subtasks_reward_payments_user;
-  payment: TaskCreatedSubscription_task_subtasks_reward_payments_payment;
+  user: TaskCreatedSubscription_task_subtasks_rewards_payments_user;
+  payment: TaskCreatedSubscription_task_subtasks_rewards_payments_payment;
 }
 
-export interface TaskCreatedSubscription_task_subtasks_reward {
+export interface TaskCreatedSubscription_task_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskCreatedSubscription_task_subtasks_reward_token;
-  payments: TaskCreatedSubscription_task_subtasks_reward_payments[];
+  token: TaskCreatedSubscription_task_subtasks_rewards_token;
+  payments: TaskCreatedSubscription_task_subtasks_rewards_payments[];
 }
 
 export interface TaskCreatedSubscription_task_subtasks_review {
@@ -11302,7 +12669,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   skills: TaskCreatedSubscription_task_subtasks_skills[];
   assignees: TaskCreatedSubscription_task_subtasks_assignees[];
   owners: TaskCreatedSubscription_task_subtasks_owners[];
-  reward: TaskCreatedSubscription_task_subtasks_reward | null;
+  rewards: TaskCreatedSubscription_task_subtasks_rewards[];
   review: TaskCreatedSubscription_task_subtasks_review | null;
   reactions: TaskCreatedSubscription_task_subtasks_reactions[];
 }
@@ -11340,7 +12707,7 @@ export interface TaskCreatedSubscription_task_owners {
   permalink: string;
 }
 
-export interface TaskCreatedSubscription_task_reward_token {
+export interface TaskCreatedSubscription_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -11355,7 +12722,7 @@ export interface TaskCreatedSubscription_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments_user {
+export interface TaskCreatedSubscription_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -11363,7 +12730,7 @@ export interface TaskCreatedSubscription_task_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments_payment_paymentMethod_network {
+export interface TaskCreatedSubscription_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11373,15 +12740,15 @@ export interface TaskCreatedSubscription_task_reward_payments_payment_paymentMet
   sortKey: string;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments_payment_paymentMethod {
+export interface TaskCreatedSubscription_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskCreatedSubscription_task_reward_payments_payment_paymentMethod_network;
+  network: TaskCreatedSubscription_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments_payment_network {
+export interface TaskCreatedSubscription_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11391,31 +12758,31 @@ export interface TaskCreatedSubscription_task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments_payment {
+export interface TaskCreatedSubscription_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskCreatedSubscription_task_reward_payments_payment_paymentMethod;
-  network: TaskCreatedSubscription_task_reward_payments_payment_network;
+  paymentMethod: TaskCreatedSubscription_task_rewards_payments_payment_paymentMethod;
+  network: TaskCreatedSubscription_task_rewards_payments_payment_network;
 }
 
-export interface TaskCreatedSubscription_task_reward_payments {
+export interface TaskCreatedSubscription_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskCreatedSubscription_task_reward_payments_user;
-  payment: TaskCreatedSubscription_task_reward_payments_payment;
+  user: TaskCreatedSubscription_task_rewards_payments_user;
+  payment: TaskCreatedSubscription_task_rewards_payments_payment;
 }
 
-export interface TaskCreatedSubscription_task_reward {
+export interface TaskCreatedSubscription_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskCreatedSubscription_task_reward_token;
-  payments: TaskCreatedSubscription_task_reward_payments[];
+  token: TaskCreatedSubscription_task_rewards_token;
+  payments: TaskCreatedSubscription_task_rewards_payments[];
 }
 
 export interface TaskCreatedSubscription_task_review {
@@ -11632,7 +12999,7 @@ export interface TaskCreatedSubscription_task {
   skills: TaskCreatedSubscription_task_skills[];
   assignees: TaskCreatedSubscription_task_assignees[];
   owners: TaskCreatedSubscription_task_owners[];
-  reward: TaskCreatedSubscription_task_reward | null;
+  rewards: TaskCreatedSubscription_task_rewards[];
   review: TaskCreatedSubscription_task_review | null;
   reactions: TaskCreatedSubscription_task_reactions[];
   gitBranchName: string;
@@ -11714,7 +13081,7 @@ export interface TaskUpdatedSubscription_task_subtasks_owners {
   permalink: string;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_token {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -11729,7 +13096,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments_user {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -11737,7 +13104,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment_paymentMethod_network {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11747,15 +13114,15 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment_p
   sortKey: string;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment_paymentMethod {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskUpdatedSubscription_task_subtasks_reward_payments_payment_paymentMethod_network;
+  network: TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment_network {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11765,31 +13132,31 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment_n
   sortKey: string;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments_payment {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskUpdatedSubscription_task_subtasks_reward_payments_payment_paymentMethod;
-  network: TaskUpdatedSubscription_task_subtasks_reward_payments_payment_network;
+  paymentMethod: TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: TaskUpdatedSubscription_task_subtasks_rewards_payments_payment_network;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward_payments {
+export interface TaskUpdatedSubscription_task_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskUpdatedSubscription_task_subtasks_reward_payments_user;
-  payment: TaskUpdatedSubscription_task_subtasks_reward_payments_payment;
+  user: TaskUpdatedSubscription_task_subtasks_rewards_payments_user;
+  payment: TaskUpdatedSubscription_task_subtasks_rewards_payments_payment;
 }
 
-export interface TaskUpdatedSubscription_task_subtasks_reward {
+export interface TaskUpdatedSubscription_task_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskUpdatedSubscription_task_subtasks_reward_token;
-  payments: TaskUpdatedSubscription_task_subtasks_reward_payments[];
+  token: TaskUpdatedSubscription_task_subtasks_rewards_token;
+  payments: TaskUpdatedSubscription_task_subtasks_rewards_payments[];
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_review {
@@ -11832,7 +13199,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   skills: TaskUpdatedSubscription_task_subtasks_skills[];
   assignees: TaskUpdatedSubscription_task_subtasks_assignees[];
   owners: TaskUpdatedSubscription_task_subtasks_owners[];
-  reward: TaskUpdatedSubscription_task_subtasks_reward | null;
+  rewards: TaskUpdatedSubscription_task_subtasks_rewards[];
   review: TaskUpdatedSubscription_task_subtasks_review | null;
   reactions: TaskUpdatedSubscription_task_subtasks_reactions[];
 }
@@ -11870,7 +13237,7 @@ export interface TaskUpdatedSubscription_task_owners {
   permalink: string;
 }
 
-export interface TaskUpdatedSubscription_task_reward_token {
+export interface TaskUpdatedSubscription_task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -11885,7 +13252,7 @@ export interface TaskUpdatedSubscription_task_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments_user {
+export interface TaskUpdatedSubscription_task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -11893,7 +13260,7 @@ export interface TaskUpdatedSubscription_task_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments_payment_paymentMethod_network {
+export interface TaskUpdatedSubscription_task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11903,15 +13270,15 @@ export interface TaskUpdatedSubscription_task_reward_payments_payment_paymentMet
   sortKey: string;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments_payment_paymentMethod {
+export interface TaskUpdatedSubscription_task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskUpdatedSubscription_task_reward_payments_payment_paymentMethod_network;
+  network: TaskUpdatedSubscription_task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments_payment_network {
+export interface TaskUpdatedSubscription_task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -11921,31 +13288,31 @@ export interface TaskUpdatedSubscription_task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments_payment {
+export interface TaskUpdatedSubscription_task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskUpdatedSubscription_task_reward_payments_payment_paymentMethod;
-  network: TaskUpdatedSubscription_task_reward_payments_payment_network;
+  paymentMethod: TaskUpdatedSubscription_task_rewards_payments_payment_paymentMethod;
+  network: TaskUpdatedSubscription_task_rewards_payments_payment_network;
 }
 
-export interface TaskUpdatedSubscription_task_reward_payments {
+export interface TaskUpdatedSubscription_task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskUpdatedSubscription_task_reward_payments_user;
-  payment: TaskUpdatedSubscription_task_reward_payments_payment;
+  user: TaskUpdatedSubscription_task_rewards_payments_user;
+  payment: TaskUpdatedSubscription_task_rewards_payments_payment;
 }
 
-export interface TaskUpdatedSubscription_task_reward {
+export interface TaskUpdatedSubscription_task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskUpdatedSubscription_task_reward_token;
-  payments: TaskUpdatedSubscription_task_reward_payments[];
+  token: TaskUpdatedSubscription_task_rewards_token;
+  payments: TaskUpdatedSubscription_task_rewards_payments[];
 }
 
 export interface TaskUpdatedSubscription_task_review {
@@ -12162,7 +13529,7 @@ export interface TaskUpdatedSubscription_task {
   skills: TaskUpdatedSubscription_task_skills[];
   assignees: TaskUpdatedSubscription_task_assignees[];
   owners: TaskUpdatedSubscription_task_owners[];
-  reward: TaskUpdatedSubscription_task_reward | null;
+  rewards: TaskUpdatedSubscription_task_rewards[];
   review: TaskUpdatedSubscription_task_review | null;
   reactions: TaskUpdatedSubscription_task_reactions[];
   gitBranchName: string;
@@ -13234,7 +14601,7 @@ export interface Task_owners {
   permalink: string;
 }
 
-export interface Task_reward_token {
+export interface Task_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -13249,7 +14616,7 @@ export interface Task_reward_token {
   imageUrl: string | null;
 }
 
-export interface Task_reward_payments_user {
+export interface Task_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -13257,7 +14624,7 @@ export interface Task_reward_payments_user {
   permalink: string;
 }
 
-export interface Task_reward_payments_payment_paymentMethod_network {
+export interface Task_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13267,15 +14634,15 @@ export interface Task_reward_payments_payment_paymentMethod_network {
   sortKey: string;
 }
 
-export interface Task_reward_payments_payment_paymentMethod {
+export interface Task_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: Task_reward_payments_payment_paymentMethod_network;
+  network: Task_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface Task_reward_payments_payment_network {
+export interface Task_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13285,31 +14652,31 @@ export interface Task_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface Task_reward_payments_payment {
+export interface Task_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: Task_reward_payments_payment_paymentMethod;
-  network: Task_reward_payments_payment_network;
+  paymentMethod: Task_rewards_payments_payment_paymentMethod;
+  network: Task_rewards_payments_payment_network;
 }
 
-export interface Task_reward_payments {
+export interface Task_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: Task_reward_payments_user;
-  payment: Task_reward_payments_payment;
+  user: Task_rewards_payments_user;
+  payment: Task_rewards_payments_payment;
 }
 
-export interface Task_reward {
+export interface Task_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: Task_reward_token;
-  payments: Task_reward_payments[];
+  token: Task_rewards_token;
+  payments: Task_rewards_payments[];
 }
 
 export interface Task_review {
@@ -13352,7 +14719,7 @@ export interface Task {
   skills: Task_skills[];
   assignees: Task_assignees[];
   owners: Task_owners[];
-  reward: Task_reward | null;
+  rewards: Task_rewards[];
   review: Task_review | null;
   reactions: Task_reactions[];
 }
@@ -13413,7 +14780,7 @@ export interface TaskWithOrganization_owners {
   permalink: string;
 }
 
-export interface TaskWithOrganization_reward_token {
+export interface TaskWithOrganization_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -13428,7 +14795,7 @@ export interface TaskWithOrganization_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskWithOrganization_reward_payments_user {
+export interface TaskWithOrganization_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -13436,7 +14803,7 @@ export interface TaskWithOrganization_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskWithOrganization_reward_payments_payment_paymentMethod_network {
+export interface TaskWithOrganization_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13446,15 +14813,15 @@ export interface TaskWithOrganization_reward_payments_payment_paymentMethod_netw
   sortKey: string;
 }
 
-export interface TaskWithOrganization_reward_payments_payment_paymentMethod {
+export interface TaskWithOrganization_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskWithOrganization_reward_payments_payment_paymentMethod_network;
+  network: TaskWithOrganization_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskWithOrganization_reward_payments_payment_network {
+export interface TaskWithOrganization_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13464,31 +14831,31 @@ export interface TaskWithOrganization_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface TaskWithOrganization_reward_payments_payment {
+export interface TaskWithOrganization_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskWithOrganization_reward_payments_payment_paymentMethod;
-  network: TaskWithOrganization_reward_payments_payment_network;
+  paymentMethod: TaskWithOrganization_rewards_payments_payment_paymentMethod;
+  network: TaskWithOrganization_rewards_payments_payment_network;
 }
 
-export interface TaskWithOrganization_reward_payments {
+export interface TaskWithOrganization_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskWithOrganization_reward_payments_user;
-  payment: TaskWithOrganization_reward_payments_payment;
+  user: TaskWithOrganization_rewards_payments_user;
+  payment: TaskWithOrganization_rewards_payments_payment;
 }
 
-export interface TaskWithOrganization_reward {
+export interface TaskWithOrganization_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskWithOrganization_reward_token;
-  payments: TaskWithOrganization_reward_payments[];
+  token: TaskWithOrganization_rewards_token;
+  payments: TaskWithOrganization_rewards_payments[];
 }
 
 export interface TaskWithOrganization_review {
@@ -13555,7 +14922,7 @@ export interface TaskWithOrganization {
   skills: TaskWithOrganization_skills[];
   assignees: TaskWithOrganization_assignees[];
   owners: TaskWithOrganization_owners[];
-  reward: TaskWithOrganization_reward | null;
+  rewards: TaskWithOrganization_rewards[];
   review: TaskWithOrganization_review | null;
   reactions: TaskWithOrganization_reactions[];
   project: TaskWithOrganization_project;
@@ -13679,7 +15046,7 @@ export interface TaskDetails_subtasks_owners {
   permalink: string;
 }
 
-export interface TaskDetails_subtasks_reward_token {
+export interface TaskDetails_subtasks_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -13694,7 +15061,7 @@ export interface TaskDetails_subtasks_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskDetails_subtasks_reward_payments_user {
+export interface TaskDetails_subtasks_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -13702,7 +15069,7 @@ export interface TaskDetails_subtasks_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskDetails_subtasks_reward_payments_payment_paymentMethod_network {
+export interface TaskDetails_subtasks_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13712,15 +15079,15 @@ export interface TaskDetails_subtasks_reward_payments_payment_paymentMethod_netw
   sortKey: string;
 }
 
-export interface TaskDetails_subtasks_reward_payments_payment_paymentMethod {
+export interface TaskDetails_subtasks_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskDetails_subtasks_reward_payments_payment_paymentMethod_network;
+  network: TaskDetails_subtasks_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskDetails_subtasks_reward_payments_payment_network {
+export interface TaskDetails_subtasks_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13730,31 +15097,31 @@ export interface TaskDetails_subtasks_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface TaskDetails_subtasks_reward_payments_payment {
+export interface TaskDetails_subtasks_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskDetails_subtasks_reward_payments_payment_paymentMethod;
-  network: TaskDetails_subtasks_reward_payments_payment_network;
+  paymentMethod: TaskDetails_subtasks_rewards_payments_payment_paymentMethod;
+  network: TaskDetails_subtasks_rewards_payments_payment_network;
 }
 
-export interface TaskDetails_subtasks_reward_payments {
+export interface TaskDetails_subtasks_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskDetails_subtasks_reward_payments_user;
-  payment: TaskDetails_subtasks_reward_payments_payment;
+  user: TaskDetails_subtasks_rewards_payments_user;
+  payment: TaskDetails_subtasks_rewards_payments_payment;
 }
 
-export interface TaskDetails_subtasks_reward {
+export interface TaskDetails_subtasks_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskDetails_subtasks_reward_token;
-  payments: TaskDetails_subtasks_reward_payments[];
+  token: TaskDetails_subtasks_rewards_token;
+  payments: TaskDetails_subtasks_rewards_payments[];
 }
 
 export interface TaskDetails_subtasks_review {
@@ -13797,7 +15164,7 @@ export interface TaskDetails_subtasks {
   skills: TaskDetails_subtasks_skills[];
   assignees: TaskDetails_subtasks_assignees[];
   owners: TaskDetails_subtasks_owners[];
-  reward: TaskDetails_subtasks_reward | null;
+  rewards: TaskDetails_subtasks_rewards[];
   review: TaskDetails_subtasks_review | null;
   reactions: TaskDetails_subtasks_reactions[];
 }
@@ -13835,7 +15202,7 @@ export interface TaskDetails_owners {
   permalink: string;
 }
 
-export interface TaskDetails_reward_token {
+export interface TaskDetails_rewards_token {
   __typename: "PaymentToken";
   id: Scalar.UUID;
   exp: number;
@@ -13850,7 +15217,7 @@ export interface TaskDetails_reward_token {
   imageUrl: string | null;
 }
 
-export interface TaskDetails_reward_payments_user {
+export interface TaskDetails_rewards_payments_user {
   __typename: "User";
   id: Scalar.UUID;
   username: string;
@@ -13858,7 +15225,7 @@ export interface TaskDetails_reward_payments_user {
   permalink: string;
 }
 
-export interface TaskDetails_reward_payments_payment_paymentMethod_network {
+export interface TaskDetails_rewards_payments_payment_paymentMethod_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13868,15 +15235,15 @@ export interface TaskDetails_reward_payments_payment_paymentMethod_network {
   sortKey: string;
 }
 
-export interface TaskDetails_reward_payments_payment_paymentMethod {
+export interface TaskDetails_rewards_payments_payment_paymentMethod {
   __typename: "PaymentMethod";
   id: Scalar.UUID;
   type: PaymentMethodType;
   address: string;
-  network: TaskDetails_reward_payments_payment_paymentMethod_network;
+  network: TaskDetails_rewards_payments_payment_paymentMethod_network;
 }
 
-export interface TaskDetails_reward_payments_payment_network {
+export interface TaskDetails_rewards_payments_payment_network {
   __typename: "PaymentNetwork";
   id: Scalar.UUID;
   slug: string;
@@ -13886,31 +15253,31 @@ export interface TaskDetails_reward_payments_payment_network {
   sortKey: string;
 }
 
-export interface TaskDetails_reward_payments_payment {
+export interface TaskDetails_rewards_payments_payment {
   __typename: "Payment";
   id: Scalar.UUID;
   status: PaymentStatus;
   data: Scalar.JSONObject | null;
-  paymentMethod: TaskDetails_reward_payments_payment_paymentMethod;
-  network: TaskDetails_reward_payments_payment_network;
+  paymentMethod: TaskDetails_rewards_payments_payment_paymentMethod;
+  network: TaskDetails_rewards_payments_payment_network;
 }
 
-export interface TaskDetails_reward_payments {
+export interface TaskDetails_rewards_payments {
   __typename: "TaskRewardPayment";
   id: Scalar.UUID;
   amount: string;
-  user: TaskDetails_reward_payments_user;
-  payment: TaskDetails_reward_payments_payment;
+  user: TaskDetails_rewards_payments_user;
+  payment: TaskDetails_rewards_payments_payment;
 }
 
-export interface TaskDetails_reward {
+export interface TaskDetails_rewards {
   __typename: "TaskReward";
   id: Scalar.UUID;
   amount: string;
   peggedToUsd: boolean;
   fundingSessionId: string | null;
-  token: TaskDetails_reward_token;
-  payments: TaskDetails_reward_payments[];
+  token: TaskDetails_rewards_token;
+  payments: TaskDetails_rewards_payments[];
 }
 
 export interface TaskDetails_review {
@@ -14127,7 +15494,7 @@ export interface TaskDetails {
   skills: TaskDetails_skills[];
   assignees: TaskDetails_assignees[];
   owners: TaskDetails_owners[];
-  reward: TaskDetails_reward | null;
+  rewards: TaskDetails_rewards[];
   review: TaskDetails_review | null;
   reactions: TaskDetails_reactions[];
   gitBranchName: string;
@@ -14364,9 +15731,6 @@ export interface OrganizationDetails_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
-  taskCount: number;
-  doneTaskCount: number;
-  openBountyTaskCount: number;
 }
 
 export interface OrganizationDetails_workspaces {
@@ -14733,7 +16097,7 @@ export interface Notification {
   message: string;
   archivedAt: Scalar.DateTime | null;
   createdAt: Scalar.DateTime;
-  task: Notification_task;
+  task: Notification_task | null;
 }
 
 /* tslint:disable */
@@ -15556,6 +16920,7 @@ export interface GetTasksInput {
 }
 
 export interface ProjectOptionsInput {
+  showBacklogColumn?: boolean | null;
   showCommunitySuggestions?: boolean | null;
 }
 

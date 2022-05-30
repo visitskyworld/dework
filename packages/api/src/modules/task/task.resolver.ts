@@ -5,9 +5,9 @@ import {
   Query,
   ResolveField,
   Resolver,
-  Int,
   Context,
   Info,
+  Int,
 } from "@nestjs/graphql";
 import {
   ForbiddenException,
@@ -34,7 +34,6 @@ import { ProjectService } from "../project/project.service";
 import { TaskSubmission } from "@dewo/api/models/TaskSubmission";
 import { CreateTaskSubmissionInput } from "./dto/CreateTaskSubmissionInput";
 import { UpdateTaskSubmissionInput } from "./dto/UpdateTaskSubmissionInput";
-import { TaskReward } from "@dewo/api/models/TaskReward";
 import { RoleGuard } from "../rbac/rbac.guard";
 import _ from "lodash";
 import { TaskReaction } from "@dewo/api/models/TaskReaction";
@@ -96,15 +95,6 @@ export class TaskResolver {
   public async submissions(@Parent() task: Task): Promise<TaskSubmission[]> {
     const submissions = await task.submissions;
     return submissions.filter((s) => !s.deletedAt);
-  }
-
-  // needed?
-  @ResolveField(() => TaskReward, { nullable: true })
-  public async reward(@Parent() task: Task): Promise<TaskReward | undefined> {
-    if (!task.rewardId) return undefined;
-    if (!!task.reward) return task.reward;
-    const refetched = await this.taskService.findById(task.id);
-    return refetched!.reward;
   }
 
   @ResolveField(() => [Task], { nullable: true })
@@ -174,6 +164,7 @@ export class TaskResolver {
         ? (input.ownerIds.map((id) => ({ id })) as any)
         : [],
       creatorId: user.id,
+      rewards: !!input.reward ? [input.reward] : [],
       ...input,
     });
 
@@ -308,6 +299,7 @@ export class TaskResolver {
         owners: !!input.ownerIds
           ? (input.ownerIds.map((id) => ({ id })) as any)
           : undefined,
+        rewards: !!input.reward ? [input.reward] : undefined,
       },
       user.id
     );
@@ -529,20 +521,16 @@ export class ProjectTasksResolver {
     });
   }
 
+  // TODO(fant): remove after Task.reward => Task.rewards migration (220530)
   @ResolveField(() => Int)
   public async taskCount(
-    @Parent() project: Project,
+    @Parent() _project: Project,
     @Args("status", { type: () => TaskStatus, nullable: true })
-    status: TaskStatus | undefined,
+    _status: TaskStatus | undefined,
     @Args("rewardNotNull", { type: () => Boolean, nullable: true })
-    rewardNotNull: boolean | undefined
+    _rewardNotNull: boolean | undefined
   ): Promise<number> {
-    if (project.taskCount !== undefined) return project.taskCount;
-    return this.taskService.count({
-      projectId: project.id,
-      status,
-      rewardNotNull,
-    });
+    return 0;
   }
 }
 

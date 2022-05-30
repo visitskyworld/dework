@@ -81,7 +81,7 @@ export class GithubIntegrationService {
       | "assignees"
     >,
     project: Project,
-    taskOverride: Partial<Task> = {}
+    taskOverride: Partial<Omit<Task, "rewards">> = {}
   ) {
     const integrations = await this.integrationService.findProjectIntegrations(
       project.id,
