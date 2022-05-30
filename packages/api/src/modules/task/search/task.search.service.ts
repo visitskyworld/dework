@@ -307,6 +307,7 @@ export class TaskSearchService implements OnModuleInit {
     if (!results.length) return { tasks: [], total: 0 };
     const tasks = await this.repo
       .createQueryBuilder("task")
+      .leftJoinAndSelect("task.parentTask", "parentTask")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")

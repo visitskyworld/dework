@@ -377,6 +377,10 @@ export const task = gql`
     deletedAt
     projectId
     parentTaskId
+    parentTask {
+      id
+      name
+    }
     sectionId
     number
     gating

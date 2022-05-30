@@ -81,6 +81,14 @@ export const TaskListItem: FC<Props> = ({
             style={{ flex: 1, wordBreak: "break-word" }}
           >
             {task.name}
+            {!!task?.parentTask && (
+              <>
+                <Typography.Text type="secondary">
+                  {"\u2800»\u2800"}
+                  {task.parentTask.name}
+                </Typography.Text>
+              </>
+            )}
           </Typography.Text>
         )}
         <TaskTagsRow

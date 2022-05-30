@@ -217,6 +217,7 @@ export class TaskService {
     const filterOutSpam = !projectIds && !userId && !ids && !rewardIds;
     let query = this.taskRepo
       .createQueryBuilder("task")
+      .leftJoinAndSelect("task.parentTask", "parentTask")
       .leftJoinAndSelect("task.assignees", "assignee")
       .leftJoinAndSelect("task.owners", "owner")
       .leftJoinAndSelect("task.tags", "tag")

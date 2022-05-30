@@ -1172,136 +1172,10 @@ export interface DeleteTaskSectionMutationVariables {
 // GraphQL mutation operation: CreateTaskMutation
 // ====================================================
 
-export interface CreateTaskMutation_task_subtasks {
+export interface CreateTaskMutation_task_parentTask_subtasks_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
   name: string;
-  status: TaskStatus;
-  sortKey: string;
-}
-
-export interface CreateTaskMutation_task_tags {
-  __typename: "TaskTag";
-  id: Scalar.UUID;
-  label: string;
-  color: string;
-  createdAt: Scalar.DateTime;
-  deletedAt: Scalar.DateTime | null;
-  projectId: string;
-}
-
-export interface CreateTaskMutation_task_skills {
-  __typename: "Skill";
-  id: Scalar.UUID;
-  name: string;
-  emoji: string;
-}
-
-export interface CreateTaskMutation_task_assignees {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateTaskMutation_task_owners {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateTaskMutation_task_reward_token {
-  __typename: "PaymentToken";
-  id: Scalar.UUID;
-  exp: number;
-  type: PaymentTokenType;
-  name: string;
-  symbol: string;
-  address: string | null;
-  identifier: string | null;
-  usdPrice: number | null;
-  networkId: string;
-  visibility: PaymentTokenVisibility;
-}
-
-export interface CreateTaskMutation_task_reward_payments_user {
-  __typename: "User";
-  id: Scalar.UUID;
-  username: string;
-  imageUrl: string | null;
-  permalink: string;
-}
-
-export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod {
-  __typename: "PaymentMethod";
-  id: Scalar.UUID;
-  type: PaymentMethodType;
-  address: string;
-  network: CreateTaskMutation_task_reward_payments_payment_paymentMethod_network;
-}
-
-export interface CreateTaskMutation_task_reward_payments_payment_network {
-  __typename: "PaymentNetwork";
-  id: Scalar.UUID;
-  slug: string;
-  name: string;
-  type: PaymentNetworkType;
-  config: Scalar.JSONObject;
-  sortKey: string;
-}
-
-export interface CreateTaskMutation_task_reward_payments_payment {
-  __typename: "Payment";
-  id: Scalar.UUID;
-  status: PaymentStatus;
-  data: Scalar.JSONObject | null;
-  paymentMethod: CreateTaskMutation_task_reward_payments_payment_paymentMethod;
-  network: CreateTaskMutation_task_reward_payments_payment_network;
-}
-
-export interface CreateTaskMutation_task_reward_payments {
-  __typename: "TaskRewardPayment";
-  id: Scalar.UUID;
-  amount: string;
-  user: CreateTaskMutation_task_reward_payments_user;
-  payment: CreateTaskMutation_task_reward_payments_payment;
-}
-
-export interface CreateTaskMutation_task_reward {
-  __typename: "TaskReward";
-  id: Scalar.UUID;
-  amount: string;
-  peggedToUsd: boolean;
-  fundingSessionId: string | null;
-  token: CreateTaskMutation_task_reward_token;
-  payments: CreateTaskMutation_task_reward_payments[];
-}
-
-export interface CreateTaskMutation_task_review {
-  __typename: "TaskReview";
-  id: Scalar.UUID;
-  message: string | null;
-  rating: number | null;
-}
-
-export interface CreateTaskMutation_task_reactions {
-  __typename: "TaskReaction";
-  id: Scalar.UUID;
-  userId: string;
-  reaction: string;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_subtasks {
@@ -1451,6 +1325,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskMutation_task_parentTask_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -1469,7 +1344,140 @@ export interface CreateTaskMutation_task_parentTask_subtasks {
 export interface CreateTaskMutation_task_parentTask {
   __typename: "Task";
   id: Scalar.UUID;
+  name: string;
   subtasks: CreateTaskMutation_task_parentTask_subtasks[];
+}
+
+export interface CreateTaskMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface CreateTaskMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface CreateTaskMutation_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface CreateTaskMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskMutation_task_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskMutation_task_reward_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+}
+
+export interface CreateTaskMutation_task_reward_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskMutation_task_reward_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: CreateTaskMutation_task_reward_payments_payment_paymentMethod_network;
+}
+
+export interface CreateTaskMutation_task_reward_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface CreateTaskMutation_task_reward_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: CreateTaskMutation_task_reward_payments_payment_paymentMethod;
+  network: CreateTaskMutation_task_reward_payments_payment_network;
+}
+
+export interface CreateTaskMutation_task_reward_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: CreateTaskMutation_task_reward_payments_user;
+  payment: CreateTaskMutation_task_reward_payments_payment;
+}
+
+export interface CreateTaskMutation_task_reward {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: CreateTaskMutation_task_reward_token;
+  payments: CreateTaskMutation_task_reward_payments[];
+}
+
+export interface CreateTaskMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface CreateTaskMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
 }
 
 export interface CreateTaskMutation_task {
@@ -1487,6 +1495,7 @@ export interface CreateTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskMutation_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -1500,7 +1509,6 @@ export interface CreateTaskMutation_task {
   reward: CreateTaskMutation_task_reward | null;
   review: CreateTaskMutation_task_review | null;
   reactions: CreateTaskMutation_task_reactions[];
-  parentTask: CreateTaskMutation_task_parentTask | null;
 }
 
 export interface CreateTaskMutation {
@@ -1519,6 +1527,12 @@ export interface CreateTaskMutationVariables {
 // ====================================================
 // GraphQL mutation operation: UpdateTaskMutation
 // ====================================================
+
+export interface UpdateTaskMutation_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface UpdateTaskMutation_task_subtasks {
   __typename: "Task";
@@ -1667,6 +1681,7 @@ export interface UpdateTaskMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: UpdateTaskMutation_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -1705,6 +1720,12 @@ export interface CreateTaskApplicationMutation_application_user {
   username: string;
   imageUrl: string | null;
   permalink: string;
+}
+
+export interface CreateTaskApplicationMutation_application_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
 }
 
 export interface CreateTaskApplicationMutation_application_task_subtasks {
@@ -1854,6 +1875,7 @@ export interface CreateTaskApplicationMutation_application_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskApplicationMutation_application_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -1898,6 +1920,12 @@ export interface CreateTaskApplicationMutationVariables {
 // ====================================================
 // GraphQL mutation operation: DeleteTaskApplicationMutation
 // ====================================================
+
+export interface DeleteTaskApplicationMutation_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface DeleteTaskApplicationMutation_task_subtasks {
   __typename: "Task";
@@ -2046,6 +2074,7 @@ export interface DeleteTaskApplicationMutation_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: DeleteTaskApplicationMutation_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -2077,6 +2106,12 @@ export interface DeleteTaskApplicationMutationVariables {
 // ====================================================
 // GraphQL mutation operation: CreateTaskSubmissionMutation
 // ====================================================
+
+export interface CreateTaskSubmissionMutation_createTaskSubmission_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_subtasks {
   __typename: "Task";
@@ -2225,6 +2260,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskSubmissionMutation_createTaskSubmission_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -2262,6 +2298,12 @@ export interface CreateTaskSubmissionMutationVariables {
 // ====================================================
 // GraphQL mutation operation: UpdateTaskSubmissionMutation
 // ====================================================
+
+export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_subtasks {
   __typename: "Task";
@@ -2410,6 +2452,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: UpdateTaskSubmissionMutation_updateTaskSubmission_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -3231,6 +3274,18 @@ export interface CreateFileUploadMutationVariables {
 // GraphQL mutation operation: CreateTaskPaymentsMutation
 // ====================================================
 
+export interface CreateTaskPaymentsMutation_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface CreateTaskPaymentsMutation_tasks_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface CreateTaskPaymentsMutation_tasks_subtasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -3378,6 +3433,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskPaymentsMutation_tasks_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -3539,12 +3595,6 @@ export interface CreateTaskPaymentsMutation_tasks_project {
   workspaceId: string | null;
   sortKey: string;
   organization: CreateTaskPaymentsMutation_tasks_project_organization;
-}
-
-export interface CreateTaskPaymentsMutation_tasks_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_creator {
@@ -3712,6 +3762,7 @@ export interface CreateTaskPaymentsMutation_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -3728,7 +3779,6 @@ export interface CreateTaskPaymentsMutation_tasks {
   gitBranchName: string;
   permalink: string;
   project: CreateTaskPaymentsMutation_tasks_project;
-  parentTask: CreateTaskPaymentsMutation_tasks_parentTask | null;
   creator: CreateTaskPaymentsMutation_tasks_creator | null;
   githubPullRequests: CreateTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: CreateTaskPaymentsMutation_tasks_githubBranches[];
@@ -3755,6 +3805,18 @@ export interface CreateTaskPaymentsMutationVariables {
 // ====================================================
 // GraphQL mutation operation: ClearTaskPaymentsMutation
 // ====================================================
+
+export interface ClearTaskPaymentsMutation_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface ClearTaskPaymentsMutation_tasks_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface ClearTaskPaymentsMutation_tasks_subtasks_subtasks {
   __typename: "Task";
@@ -3903,6 +3965,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: ClearTaskPaymentsMutation_tasks_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -4064,12 +4127,6 @@ export interface ClearTaskPaymentsMutation_tasks_project {
   workspaceId: string | null;
   sortKey: string;
   organization: ClearTaskPaymentsMutation_tasks_project_organization;
-}
-
-export interface ClearTaskPaymentsMutation_tasks_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_creator {
@@ -4237,6 +4294,7 @@ export interface ClearTaskPaymentsMutation_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: ClearTaskPaymentsMutation_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -4253,7 +4311,6 @@ export interface ClearTaskPaymentsMutation_tasks {
   gitBranchName: string;
   permalink: string;
   project: ClearTaskPaymentsMutation_tasks_project;
-  parentTask: ClearTaskPaymentsMutation_tasks_parentTask | null;
   creator: ClearTaskPaymentsMutation_tasks_creator | null;
   githubPullRequests: ClearTaskPaymentsMutation_tasks_githubPullRequests[];
   githubBranches: ClearTaskPaymentsMutation_tasks_githubBranches[];
@@ -4319,6 +4376,12 @@ export interface CheckWalletConnectSessionMutationVariables {
 // ====================================================
 // GraphQL mutation operation: CreateTasksFromGithubIssuesMutation
 // ====================================================
+
+export interface CreateTasksFromGithubIssuesMutation_project_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_subtasks {
   __typename: "Task";
@@ -4467,6 +4530,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: CreateTasksFromGithubIssuesMutation_project_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -6857,6 +6921,12 @@ export interface UserRolesQueryVariables {
 // GraphQL query operation: UserTasksQuery
 // ====================================================
 
+export interface UserTasksQuery_user_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface UserTasksQuery_user_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -7028,6 +7098,7 @@ export interface UserTasksQuery_user_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: UserTasksQuery_user_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -7968,6 +8039,12 @@ export interface GetOrganizationTagsQueryVariables {
 // GraphQL query operation: GetOrganizationTasksQuery
 // ====================================================
 
+export interface GetOrganizationTasksQuery_organization_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface GetOrganizationTasksQuery_organization_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -8115,6 +8192,7 @@ export interface GetOrganizationTasksQuery_organization_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetOrganizationTasksQuery_organization_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -8191,6 +8269,12 @@ export interface GetOrganizationTaskTagsQueryVariables {
 // ====================================================
 // GraphQL query operation: GetWorkspaceTasksQuery
 // ====================================================
+
+export interface GetWorkspaceTasksQuery_workspace_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetWorkspaceTasksQuery_workspace_tasks_subtasks {
   __typename: "Task";
@@ -8339,6 +8423,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetWorkspaceTasksQuery_workspace_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -8585,6 +8670,12 @@ export interface GetProjectIdBySlugQueryVariables {
 // GraphQL query operation: GetProjectTasksQuery
 // ====================================================
 
+export interface GetProjectTasksQuery_project_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface GetProjectTasksQuery_project_tasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -8732,6 +8823,7 @@ export interface GetProjectTasksQuery_project_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetProjectTasksQuery_project_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -8769,6 +8861,12 @@ export interface GetProjectTasksQueryVariables {
 // ====================================================
 // GraphQL query operation: GetProjectTasksExportQuery
 // ====================================================
+
+export interface GetProjectTasksExportQuery_project_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetProjectTasksExportQuery_project_tasks_subtasks {
   __typename: "Task";
@@ -8932,6 +9030,7 @@ export interface GetProjectTasksExportQuery_project_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetProjectTasksExportQuery_project_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -9003,6 +9102,18 @@ export interface GetProjectTaskTagsQueryVariables {
 // ====================================================
 // GraphQL query operation: GetTaskQuery
 // ====================================================
+
+export interface GetTaskQuery_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface GetTaskQuery_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetTaskQuery_task_subtasks_subtasks {
   __typename: "Task";
@@ -9151,6 +9262,7 @@ export interface GetTaskQuery_task_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetTaskQuery_task_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -9325,12 +9437,6 @@ export interface GetTaskQuery_task_project {
   taskTags: GetTaskQuery_task_project_taskTags[];
 }
 
-export interface GetTaskQuery_task_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
-}
-
 export interface GetTaskQuery_task_creator {
   __typename: "User";
   id: Scalar.UUID;
@@ -9496,6 +9602,7 @@ export interface GetTaskQuery_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetTaskQuery_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -9512,7 +9619,6 @@ export interface GetTaskQuery_task {
   gitBranchName: string;
   permalink: string;
   project: GetTaskQuery_task_project;
-  parentTask: GetTaskQuery_task_parentTask | null;
   creator: GetTaskQuery_task_creator | null;
   githubPullRequests: GetTaskQuery_task_githubPullRequests[];
   githubBranches: GetTaskQuery_task_githubBranches[];
@@ -9578,6 +9684,12 @@ export interface GetTaskReactionUsersQueryVariables {
 // ====================================================
 // GraphQL query operation: GetPaginatedTasksQuery
 // ====================================================
+
+export interface GetPaginatedTasksQuery_paginated_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetPaginatedTasksQuery_paginated_tasks_subtasks {
   __typename: "Task";
@@ -9726,6 +9838,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetPaginatedTasksQuery_paginated_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -9782,6 +9895,12 @@ export interface GetTaskCountQueryVariables {
 // ====================================================
 // GraphQL query operation: GetPaginatedTasksWithOrganizationQuery
 // ====================================================
+
+export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_subtasks {
   __typename: "Task";
@@ -9954,6 +10073,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetPaginatedTasksWithOrganizationQuery_paginated_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -9994,6 +10114,12 @@ export interface GetPaginatedTasksWithOrganizationQueryVariables {
 // ====================================================
 // GraphQL query operation: GetTasksToPayQuery
 // ====================================================
+
+export interface GetTasksToPayQuery_tasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface GetTasksToPayQuery_tasks_subtasks {
   __typename: "Task";
@@ -10173,6 +10299,7 @@ export interface GetTasksToPayQuery_tasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: GetTasksToPayQuery_tasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -10948,6 +11075,18 @@ export interface GetWorkspaceDetailsQueryVariables {
 // GraphQL subscription operation: TaskCreatedSubscription
 // ====================================================
 
+export interface TaskCreatedSubscription_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface TaskCreatedSubscription_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface TaskCreatedSubscription_task_subtasks_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -11095,6 +11234,7 @@ export interface TaskCreatedSubscription_task_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskCreatedSubscription_task_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -11256,12 +11396,6 @@ export interface TaskCreatedSubscription_task_project {
   workspaceId: string | null;
   sortKey: string;
   organization: TaskCreatedSubscription_task_project_organization;
-}
-
-export interface TaskCreatedSubscription_task_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
 }
 
 export interface TaskCreatedSubscription_task_creator {
@@ -11429,6 +11563,7 @@ export interface TaskCreatedSubscription_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskCreatedSubscription_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -11445,7 +11580,6 @@ export interface TaskCreatedSubscription_task {
   gitBranchName: string;
   permalink: string;
   project: TaskCreatedSubscription_task_project;
-  parentTask: TaskCreatedSubscription_task_parentTask | null;
   creator: TaskCreatedSubscription_task_creator | null;
   githubPullRequests: TaskCreatedSubscription_task_githubPullRequests[];
   githubBranches: TaskCreatedSubscription_task_githubBranches[];
@@ -11468,6 +11602,18 @@ export interface TaskCreatedSubscription {
 // ====================================================
 // GraphQL subscription operation: TaskUpdatedSubscription
 // ====================================================
+
+export interface TaskUpdatedSubscription_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface TaskUpdatedSubscription_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface TaskUpdatedSubscription_task_subtasks_subtasks {
   __typename: "Task";
@@ -11616,6 +11762,7 @@ export interface TaskUpdatedSubscription_task_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskUpdatedSubscription_task_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -11777,12 +11924,6 @@ export interface TaskUpdatedSubscription_task_project {
   workspaceId: string | null;
   sortKey: string;
   organization: TaskUpdatedSubscription_task_project_organization;
-}
-
-export interface TaskUpdatedSubscription_task_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
 }
 
 export interface TaskUpdatedSubscription_task_creator {
@@ -11950,6 +12091,7 @@ export interface TaskUpdatedSubscription_task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskUpdatedSubscription_task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -11966,7 +12108,6 @@ export interface TaskUpdatedSubscription_task {
   gitBranchName: string;
   permalink: string;
   project: TaskUpdatedSubscription_task_project;
-  parentTask: TaskUpdatedSubscription_task_parentTask | null;
   creator: TaskUpdatedSubscription_task_creator | null;
   githubPullRequests: TaskUpdatedSubscription_task_githubPullRequests[];
   githubBranches: TaskUpdatedSubscription_task_githubBranches[];
@@ -12980,6 +13121,12 @@ export interface TaskReaction {
 // GraphQL fragment: Task
 // ====================================================
 
+export interface Task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
 export interface Task_subtasks {
   __typename: "Task";
   id: Scalar.UUID;
@@ -13127,6 +13274,7 @@ export interface Task {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: Task_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -13150,6 +13298,12 @@ export interface Task {
 // ====================================================
 // GraphQL fragment: TaskWithOrganization
 // ====================================================
+
+export interface TaskWithOrganization_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface TaskWithOrganization_subtasks {
   __typename: "Task";
@@ -13322,6 +13476,7 @@ export interface TaskWithOrganization {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskWithOrganization_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -13402,6 +13557,18 @@ export interface TaskNFT {
 // ====================================================
 // GraphQL fragment: TaskDetails
 // ====================================================
+
+export interface TaskDetails_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface TaskDetails_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
 
 export interface TaskDetails_subtasks_subtasks {
   __typename: "Task";
@@ -13550,6 +13717,7 @@ export interface TaskDetails_subtasks {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskDetails_subtasks_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -13711,12 +13879,6 @@ export interface TaskDetails_project {
   workspaceId: string | null;
   sortKey: string;
   organization: TaskDetails_project_organization;
-}
-
-export interface TaskDetails_parentTask {
-  __typename: "Task";
-  id: Scalar.UUID;
-  name: string;
 }
 
 export interface TaskDetails_creator {
@@ -13884,6 +14046,7 @@ export interface TaskDetails {
   deletedAt: Scalar.DateTime | null;
   projectId: string;
   parentTaskId: string | null;
+  parentTask: TaskDetails_parentTask | null;
   sectionId: string | null;
   number: number;
   gating: TaskGatingType;
@@ -13900,7 +14063,6 @@ export interface TaskDetails {
   gitBranchName: string;
   permalink: string;
   project: TaskDetails_project;
-  parentTask: TaskDetails_parentTask | null;
   creator: TaskDetails_creator | null;
   githubPullRequests: TaskDetails_githubPullRequests[];
   githubBranches: TaskDetails_githubBranches[];
