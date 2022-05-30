@@ -4,10 +4,26 @@ import * as Icons from "@ant-design/icons";
 import React, { FC, useMemo } from "react";
 import { useProjectIntegrations } from "../../project/hooks";
 import { useCopyToClipboardAndShowToast } from "@dewo/app/util/hooks";
+import { QuestionmarkTooltip } from "@dewo/app/components/QuestionmarkTooltip";
 
 interface Props {
   task: TaskDetails;
 }
+
+const MenuItem: FC<{ text: string; tooltip?: string }> = ({
+  text,
+  tooltip,
+}) => {
+  const copy = useCopyToClipboardAndShowToast();
+  return (
+    <Menu.Item onClick={() => copy(text)}>
+      <Typography.Text code copyable>
+        {text}
+      </Typography.Text>
+      {!!tooltip && <QuestionmarkTooltip title={tooltip} />}
+    </Menu.Item>
+  );
+};
 
 export const TaskGithubBranchButton: FC<Props> = ({ task }) => {
   const integrations = useProjectIntegrations(task.projectId);
@@ -16,23 +32,17 @@ export const TaskGithubBranchButton: FC<Props> = ({ task }) => {
     [integrations]
   );
 
-  const copy = useCopyToClipboardAndShowToast();
-
   if (!hasGithubIntegration) return null;
   return (
     <Dropdown
       trigger={["click"]}
       overlay={
         <Menu>
-          {[task.gitBranchName, `git checkout -b ${task.gitBranchName}`].map(
-            (string) => (
-              <Menu.Item key={string} onClick={() => copy(string)}>
-                <Typography.Text code copyable>
-                  {string}
-                </Typography.Text>
-              </Menu.Item>
-            )
-          )}
+          <MenuItem
+            text={task.gitBranchName}
+            tooltip={`This is a suggested branch name. The Github integration links git branches to Dework tasks using the "dw-${task.number}" identifier, so as long as your branch name contains that, it will get linked to this task.`}
+          />
+          <MenuItem text={`git checkout -b ${task.gitBranchName}`} />
         </Menu>
       }
     >

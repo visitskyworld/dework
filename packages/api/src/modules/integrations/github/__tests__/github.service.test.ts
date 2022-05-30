@@ -21,8 +21,8 @@ describe("GithubService", () => {
     it("should correctly parse task number", () => {
       const fn = githubService.parseTaskNumberFromBranchName;
       expect(fn("feat/dw-123/feature-name")).toBe(123);
-      expect(fn("feat/dw-123")).toBe(undefined);
-      expect(fn("dw-123/feature-name")).toBe(undefined);
+      expect(fn("feat/dw-123")).toBe(123);
+      expect(fn("dw-123/feature-name")).toBe(123);
       expect(fn("feat/dw-123-456/feature-name")).toBe(undefined);
       expect(fn("feat/dw-12e/feature-name")).toBe(undefined);
     });

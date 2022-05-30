@@ -99,9 +99,11 @@ describe("GithubSyncOutgoingService", () => {
       expect((await getIssue()).state).toEqual("open");
 
       await req({ status: TaskStatus.DONE }, { status: TaskStatus.TODO });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       expect((await getIssue()).state).toBe("closed");
 
       await req({ status: TaskStatus.TODO }, { status: TaskStatus.DONE });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       expect((await getIssue()).state).toBe("open");
     });
   });

@@ -108,7 +108,7 @@ export class GithubService {
   }
 
   public parseTaskNumberFromBranchName(branchName: string): number | undefined {
-    const taskNumber = branchName?.match(/\/dw-([0-9]+)\//)?.[1];
+    const taskNumber = branchName?.match(/(\/|^)dw-([0-9]+)(\/|$)/)?.[2];
     if (!taskNumber) return undefined;
     return Number(taskNumber);
   }
