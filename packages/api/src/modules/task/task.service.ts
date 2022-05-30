@@ -121,7 +121,10 @@ export class TaskService {
     return this.taskSubmissionRepo.findOneOrFail({ id: existing.id });
   }
 
-  public async createPayments(input: CreateTaskPaymentsInput): Promise<Task[]> {
+  public async createPayments(
+    input: CreateTaskPaymentsInput,
+    userId: string
+  ): Promise<Task[]> {
     const fromPaymentMethod = await this.paymentService.findPaymentMethodById(
       input.paymentMethodId
     );
@@ -144,7 +147,7 @@ export class TaskService {
     const tasks = await this.findWithRelations({ rewardIds });
 
     this.eventBus.publishAll(
-      tasks.map((t) => new PaymentCreatedEvent(payment, t))
+      tasks.map((t) => new PaymentCreatedEvent(payment, t, userId))
     );
 
     return tasks;

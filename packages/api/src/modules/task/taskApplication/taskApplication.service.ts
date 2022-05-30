@@ -48,12 +48,18 @@ export class TaskApplicationService {
     return refetched;
   }
 
-  public async delete(taskId: string, userId: string): Promise<Task> {
+  public async delete(
+    taskId: string,
+    userId: string,
+    operatorUserId: string
+  ): Promise<Task> {
     const application = await this.repo.findOne({ taskId, userId });
     const task = (await this.taskService.findById(taskId)) as Task;
     if (!!application) {
       await this.repo.delete({ taskId, userId });
-      this.eventBus.publish(new TaskApplicationDeletedEvent(task, application));
+      this.eventBus.publish(
+        new TaskApplicationDeletedEvent(task, application, operatorUserId)
+      );
     }
     return task;
   }

@@ -6,6 +6,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, Repository } from "typeorm";
 import { RbacService } from "../rbac/rbac.service";
 import { TaskService } from "../task/task.service";
+import { EventBus } from "@nestjs/cqrs";
+import { InviteAcceptedEvent } from "./invite.events";
 
 @Injectable()
 export class InviteService {
@@ -13,7 +15,8 @@ export class InviteService {
     @InjectRepository(Invite)
     private readonly inviteRepo: Repository<Invite>,
     private readonly rbacService: RbacService,
-    private readonly taskService: TaskService
+    private readonly taskService: TaskService,
+    private readonly eventBus: EventBus
   ) {}
 
   public async create(
@@ -79,6 +82,8 @@ export class InviteService {
       if (!!invite.taskId) {
         await this.taskService.update({ id: invite.taskId, assignees: [user] });
       }
+
+      this.eventBus.publish(new InviteAcceptedEvent(user, invite));
     }
 
     return invite;

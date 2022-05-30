@@ -21,11 +21,11 @@ export class Notification extends Audit {
 
   @JoinColumn()
   @ManyToOne(() => Task)
-  @Field(() => Task)
-  public task!: Promise<Task>;
-  @Column({ type: "uuid" })
+  @Field(() => Task, { nullable: true })
+  public task?: Promise<Task>;
+  @Column({ type: "uuid", nullable: true })
   @Field()
-  public taskId!: string;
+  public taskId?: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

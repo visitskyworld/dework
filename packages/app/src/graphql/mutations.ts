@@ -222,23 +222,23 @@ export const createTaskApplication = gql`
     application: createTaskApplication(input: $input) {
       ...TaskApplication
       task {
-        ...Task
+        ...TaskDetails
       }
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
   ${Fragments.taskApplication}
 `;
 
 export const deleteTaskApplication = gql`
   mutation DeleteTaskApplicationMutation($input: DeleteTaskApplicationInput!) {
     task: deleteTaskApplication(input: $input) {
-      ...Task
+      ...TaskDetails
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const createTaskSubmission = gql`
@@ -246,12 +246,12 @@ export const createTaskSubmission = gql`
     createTaskSubmission(input: $input) {
       id
       task {
-        ...Task
+        ...TaskDetails
       }
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const updateTaskSubmission = gql`
@@ -259,12 +259,12 @@ export const updateTaskSubmission = gql`
     updateTaskSubmission(input: $input) {
       id
       task {
-        ...Task
+        ...TaskDetails
       }
     }
   }
 
-  ${Fragments.task}
+  ${Fragments.taskDetails}
 `;
 
 export const deleteTask = gql`

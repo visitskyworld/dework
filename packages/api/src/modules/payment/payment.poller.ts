@@ -24,6 +24,7 @@ import * as request from "request-promise";
 import { Response } from "express";
 import { EventBus } from "@nestjs/cqrs";
 import { PaymentConfirmedEvent } from "./payment.events";
+import { TaskRewardPayment } from "@dewo/api/models/TaskRewardPayment";
 
 interface ConfirmPaymentResponse {
   confirmed: boolean;
@@ -56,6 +57,8 @@ export class PaymentPoller {
   };
 
   constructor(
+    @InjectRepository(TaskRewardPayment)
+    private readonly taskRewardPaymentRepo: Repository<TaskRewardPayment>,
     @InjectRepository(Payment)
     private readonly paymentRepo: Repository<Payment>,
     private readonly eventBus: EventBus
@@ -114,7 +117,12 @@ export class PaymentPoller {
             status: PaymentStatus.CONFIRMED,
             nextStatusCheckAt: null,
           });
-          this.eventBus.publish(new PaymentConfirmedEvent(saved));
+          const taskRewardPayment = await this.taskRewardPaymentRepo.findOne({
+            paymentId: payment.id,
+          });
+          const task = await taskRewardPayment?.reward.task;
+
+          this.eventBus.publish(new PaymentConfirmedEvent(saved, task));
         } else if (expired) {
           await this.paymentRepo.save({
             ...payment,

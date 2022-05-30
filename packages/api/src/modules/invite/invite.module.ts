@@ -2,6 +2,7 @@ import { Invite } from "@dewo/api/models/Invite";
 import { Project } from "@dewo/api/models/Project";
 import { User } from "@dewo/api/models/User";
 import { Module } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PermalinkModule } from "../permalink/permalink.module";
 import { RbacModule } from "../rbac/rbac.module";
@@ -15,6 +16,7 @@ import { InviteService } from "./invite.service";
     PermalinkModule,
     RbacModule,
     TaskModule,
+    CqrsModule,
   ],
   providers: [InviteResolver, InviteService],
   exports: [InviteService],

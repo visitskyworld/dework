@@ -2,6 +2,7 @@ import { Payment } from "@dewo/api/models/Payment";
 import { PaymentMethod } from "@dewo/api/models/PaymentMethod";
 import { PaymentNetwork } from "@dewo/api/models/PaymentNetwork";
 import { PaymentToken } from "@dewo/api/models/PaymentToken";
+import { TaskRewardPayment } from "@dewo/api/models/TaskRewardPayment";
 import { User } from "@dewo/api/models/User";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
@@ -19,6 +20,7 @@ import { TokenService } from "./token.service";
     TypeOrmModule.forFeature([
       User,
       Payment,
+      TaskRewardPayment,
       PaymentMethod,
       PaymentNetwork,
       PaymentToken,

@@ -53,7 +53,8 @@ export class TaskApplicationCreatedEvent {
 export class TaskApplicationDeletedEvent {
   constructor(
     public readonly task: Task,
-    public readonly application: TaskApplication
+    public readonly application: TaskApplication,
+    public readonly userId?: string
   ) {}
 }
 

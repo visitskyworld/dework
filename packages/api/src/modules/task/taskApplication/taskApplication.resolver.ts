@@ -1,4 +1,4 @@
-import { Args, Mutation } from "@nestjs/graphql";
+import { Args, Context, Mutation } from "@nestjs/graphql";
 import { Injectable, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { TaskService } from "../task.service";
@@ -8,6 +8,7 @@ import { TaskApplication } from "@dewo/api/models/TaskApplication";
 import { DeleteTaskApplicationInput } from "./dto/DeleteTaskApplicationInput";
 import { RoleGuard } from "../../rbac/rbac.guard";
 import { TaskApplicationService } from "./taskApplication.service";
+import { User } from "@dewo/api/models/User";
 
 @Injectable()
 export class TaskApplicationResolver {
@@ -76,8 +77,9 @@ export class TaskApplicationResolver {
     })
   )
   public async deleteTaskApplication(
+    @Context("user") user: User,
     @Args("input") input: DeleteTaskApplicationInput
   ): Promise<Task> {
-    return this.service.delete(input.taskId, input.userId);
+    return this.service.delete(input.taskId, input.userId, user.id);
   }
 }

@@ -348,10 +348,11 @@ export class TaskResolver {
   @Mutation(() => [Task])
   @UseGuards(AuthGuard)
   public async createTaskPayments(
+    @Context("user") user: User,
     @Args("input") input: CreateTaskPaymentsInput
   ): Promise<Task[]> {
     if (!input.payments.length) return [];
-    return this.taskService.createPayments(input);
+    return this.taskService.createPayments(input, user.id);
   }
 
   @Mutation(() => [Task])
