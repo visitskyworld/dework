@@ -56,7 +56,7 @@ export const TaskUpdateModal: FC<Props> = ({ taskId, visible, onCancel }) => {
     taskId,
     isSSR ? undefined : "cache-and-network"
   );
-  useWindowFocus(refetch);
+  useWindowFocus(!!taskId ? refetch : undefined);
 
   const forbiddenError = !!error?.graphQLErrors.some(
     (e) => e.extensions?.response?.statusCode === 403

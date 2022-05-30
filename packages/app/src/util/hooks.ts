@@ -92,8 +92,9 @@ export function usePrevious<T>(value: T): T | undefined {
   return ref.current;
 }
 
-export function useWindowFocus(callback: () => void) {
+export function useWindowFocus(callback?: () => void) {
   useEffect(() => {
+    if (!callback) return;
     window.addEventListener("focus", callback);
     return () => window.removeEventListener("focus", callback);
   }, [callback]);
