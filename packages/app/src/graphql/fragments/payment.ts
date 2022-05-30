@@ -23,6 +23,7 @@ export const token = gql`
     usdPrice
     networkId
     visibility
+    imageUrl
   }
 `;
 

@@ -30,14 +30,16 @@ export class FileUploadService {
   }
 
   // Upload a copy of the image at `fileUrl` to Google Cloud Storage
-  public async uploadFileFromUrl(fileUrl: string): Promise<string> {
+  public async uploadFileFromUrl(
+    fileUrl: string,
+    uploadFolder = `uploads/${uuid.v4()}`
+  ): Promise<string> {
     const req = request(fileUrl);
+    const name = fileUrl.split("/").pop()?.split("?")[0] ?? "file";
     return new Promise((resolve, reject) =>
       req
         .on("response", (response) => {
-          const file = this.bucket.file(
-            `uploads/${uuid.v4()}/${fileUrl.split("/").pop()}`
-          );
+          const file = this.bucket.file(`${uploadFolder}/${name}`);
           const fileStream = file.createWriteStream({
             contentType: response.headers["content-type"],
           });

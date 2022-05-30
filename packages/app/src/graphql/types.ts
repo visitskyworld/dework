@@ -486,6 +486,7 @@ export interface UpdateOrganizationMutation_organization_projectTokenGates_token
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: UpdateOrganizationMutation_organization_projectTokenGates_token_network;
 }
 
@@ -547,6 +548,7 @@ export interface UpdateOrganizationMutation_organization_fundingSessions_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface UpdateOrganizationMutation_organization_fundingSessions {
@@ -690,6 +692,7 @@ export interface CreateProjectMutation_project_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectMutation_project_tokenGates_token_network;
 }
 
@@ -764,6 +767,7 @@ export interface CreateProjectMutation_project_organization_projectTokenGates_to
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectMutation_project_organization_projectTokenGates_token_network;
 }
 
@@ -825,6 +829,7 @@ export interface CreateProjectMutation_project_organization_fundingSessions_toke
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateProjectMutation_project_organization_fundingSessions {
@@ -967,6 +972,7 @@ export interface UpdateProjectMutation_project_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: UpdateProjectMutation_project_tokenGates_token_network;
 }
 
@@ -1231,6 +1237,7 @@ export interface CreateTaskMutation_task_parentTask_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskMutation_task_parentTask_subtasks_reward_payments_user {
@@ -1401,6 +1408,7 @@ export interface CreateTaskMutation_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskMutation_task_reward_payments_user {
@@ -1587,6 +1595,7 @@ export interface UpdateTaskMutation_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface UpdateTaskMutation_task_reward_payments_user {
@@ -1781,6 +1790,7 @@ export interface CreateTaskApplicationMutation_application_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskApplicationMutation_application_task_reward_payments_user {
@@ -1980,6 +1990,7 @@ export interface DeleteTaskApplicationMutation_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface DeleteTaskApplicationMutation_task_reward_payments_user {
@@ -2166,6 +2177,7 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskSubmissionMutation_createTaskSubmission_task_reward_payments_user {
@@ -2358,6 +2370,7 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_reward_payments_user {
@@ -2828,6 +2841,7 @@ export interface CreateProjectTokenGateMutation_tokenGate_project_tokenGates_tok
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectTokenGateMutation_tokenGate_project_tokenGates_token_network;
 }
 
@@ -2890,6 +2904,7 @@ export interface DeleteProjectTokenGateMutation_tokenGate_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: DeleteProjectTokenGateMutation_tokenGate_tokenGates_token_network;
 }
 
@@ -3108,6 +3123,7 @@ export interface CreatePaymentTokenMutation_token_network_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreatePaymentTokenMutation_token_network {
@@ -3133,6 +3149,7 @@ export interface CreatePaymentTokenMutation_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreatePaymentTokenMutation_token_network;
 }
 
@@ -3339,6 +3356,7 @@ export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_subtasks_reward_payments_user {
@@ -3494,6 +3512,7 @@ export interface CreateTaskPaymentsMutation_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTaskPaymentsMutation_tasks_reward_payments_user {
@@ -3871,6 +3890,7 @@ export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_subtasks_reward_payments_user {
@@ -4026,6 +4046,7 @@ export interface ClearTaskPaymentsMutation_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface ClearTaskPaymentsMutation_tasks_reward_payments_user {
@@ -4436,6 +4457,7 @@ export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_token 
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateTasksFromGithubIssuesMutation_project_tasks_reward_payments_user {
@@ -4667,6 +4689,7 @@ export interface CreateProjectsFromNotionMutation_organization_projectTokenGates
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectsFromNotionMutation_organization_projectTokenGates_token_network;
 }
 
@@ -4728,6 +4751,7 @@ export interface CreateProjectsFromNotionMutation_organization_fundingSessions_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_fundingSessions {
@@ -4841,6 +4865,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projectTokenGates
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectsFromTrelloMutation_organization_projectTokenGates_token_network;
 }
 
@@ -4902,6 +4927,7 @@ export interface CreateProjectsFromTrelloMutation_organization_fundingSessions_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_fundingSessions {
@@ -5015,6 +5041,7 @@ export interface CreateProjectsFromGithubMutation_organization_projectTokenGates
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: CreateProjectsFromGithubMutation_organization_projectTokenGates_token_network;
 }
 
@@ -5076,6 +5103,7 @@ export interface CreateProjectsFromGithubMutation_organization_fundingSessions_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_fundingSessions {
@@ -5325,6 +5353,7 @@ export interface AddTokenToOrganizationMutation_organization_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: AddTokenToOrganizationMutation_organization_tokens_network;
 }
 
@@ -5374,6 +5403,7 @@ export interface RemoveTokenFromOrganizationMutation_organization_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: RemoveTokenFromOrganizationMutation_organization_tokens_network;
 }
 
@@ -5539,6 +5569,7 @@ export interface CreateFundingSessionMutation_session_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateFundingSessionMutation_session_organization_fundingSessions_token {
@@ -5553,6 +5584,7 @@ export interface CreateFundingSessionMutation_session_organization_fundingSessio
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CreateFundingSessionMutation_session_organization_fundingSessions {
@@ -5615,6 +5647,7 @@ export interface SetFundingVoteMutation_vote_session_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface SetFundingVoteMutation_vote_session_votes {
@@ -5673,6 +5706,7 @@ export interface SetFundingVoteMutation_vote_session_rewards_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface SetFundingVoteMutation_vote_session_rewards_task_parentTask {
@@ -5751,6 +5785,7 @@ export interface CloseFundingSessionMutation_session_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CloseFundingSessionMutation_session_votes {
@@ -5809,6 +5844,7 @@ export interface CloseFundingSessionMutation_session_rewards_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface CloseFundingSessionMutation_session_rewards_task_parentTask {
@@ -6980,6 +7016,7 @@ export interface UserTasksQuery_user_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface UserTasksQuery_user_tasks_reward_payments_user {
@@ -7336,6 +7373,7 @@ export interface GetOrganizationDetailsQuery_organization_projectTokenGates_toke
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: GetOrganizationDetailsQuery_organization_projectTokenGates_token_network;
 }
 
@@ -7397,6 +7435,7 @@ export interface GetOrganizationDetailsQuery_organization_fundingSessions_token 
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetOrganizationDetailsQuery_organization_fundingSessions {
@@ -7521,6 +7560,7 @@ export interface GetOrganizationTaskViewsQuery_organization_projectTokenGates_to
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: GetOrganizationTaskViewsQuery_organization_projectTokenGates_token_network;
 }
 
@@ -7582,6 +7622,7 @@ export interface GetOrganizationTaskViewsQuery_organization_fundingSessions_toke
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetOrganizationTaskViewsQuery_organization_fundingSessions {
@@ -7950,6 +7991,7 @@ export interface GetOrganizationTokensQuery_organization_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: GetOrganizationTokensQuery_organization_tokens_network;
 }
 
@@ -8098,6 +8140,7 @@ export interface GetOrganizationTasksQuery_organization_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetOrganizationTasksQuery_organization_tasks_reward_payments_user {
@@ -8329,6 +8372,7 @@ export interface GetWorkspaceTasksQuery_workspace_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetWorkspaceTasksQuery_workspace_tasks_reward_payments_user {
@@ -8520,6 +8564,7 @@ export interface GetProjectDetailsQuery_project_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: GetProjectDetailsQuery_project_tokenGates_token_network;
 }
 
@@ -8729,6 +8774,7 @@ export interface GetProjectTasksQuery_project_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetProjectTasksQuery_project_tasks_reward_payments_user {
@@ -8928,6 +8974,7 @@ export interface GetProjectTasksExportQuery_project_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetProjectTasksExportQuery_project_tasks_reward_payments_user {
@@ -9168,6 +9215,7 @@ export interface GetTaskQuery_task_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetTaskQuery_task_subtasks_reward_payments_user {
@@ -9323,6 +9371,7 @@ export interface GetTaskQuery_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetTaskQuery_task_reward_payments_user {
@@ -9744,6 +9793,7 @@ export interface GetPaginatedTasksQuery_paginated_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetPaginatedTasksQuery_paginated_tasks_reward_payments_user {
@@ -9955,6 +10005,7 @@ export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_t
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetPaginatedTasksWithOrganizationQuery_paginated_tasks_reward_payments_user {
@@ -10181,6 +10232,7 @@ export interface GetTasksToPayQuery_tasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetTasksToPayQuery_tasks_reward_payments_user {
@@ -10403,6 +10455,7 @@ export interface GetInviteQuery_invite_project_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: GetInviteQuery_invite_project_tokenGates_token_network;
 }
 
@@ -10475,6 +10528,7 @@ export interface GetPaymentNetworksQuery_networks_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetPaymentNetworksQuery_networks {
@@ -10675,6 +10729,7 @@ export interface GetFundingSessionQuery_session_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetFundingSessionQuery_session_votes {
@@ -10733,6 +10788,7 @@ export interface GetFundingSessionQuery_session_rewards_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface GetFundingSessionQuery_session_rewards_task_parentTask {
@@ -11140,6 +11196,7 @@ export interface TaskCreatedSubscription_task_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskCreatedSubscription_task_subtasks_reward_payments_user {
@@ -11295,6 +11352,7 @@ export interface TaskCreatedSubscription_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskCreatedSubscription_task_reward_payments_user {
@@ -11668,6 +11726,7 @@ export interface TaskUpdatedSubscription_task_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskUpdatedSubscription_task_subtasks_reward_payments_user {
@@ -11823,6 +11882,7 @@ export interface TaskUpdatedSubscription_task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskUpdatedSubscription_task_reward_payments_user {
@@ -12193,6 +12253,7 @@ export interface TaskRewardUpdatedSubscription_taskReward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskRewardUpdatedSubscription_taskReward_payments_user {
@@ -12468,6 +12529,7 @@ export interface OrganizationWithTokens_tokens {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: OrganizationWithTokens_tokens_network;
 }
 
@@ -12597,6 +12659,7 @@ export interface ProjectTokenGate_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: ProjectTokenGate_token_network;
 }
 
@@ -12657,6 +12720,7 @@ export interface Invite_project_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: Invite_project_tokenGates_token_network;
 }
 
@@ -12736,6 +12800,7 @@ export interface ProjectDetails_tokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: ProjectDetails_tokenGates_token_network;
 }
 
@@ -12843,6 +12908,7 @@ export interface TaskReward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskReward_payments_user {
@@ -13180,6 +13246,7 @@ export interface Task_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface Task_reward_payments_user {
@@ -13358,6 +13425,7 @@ export interface TaskWithOrganization_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskWithOrganization_reward_payments_user {
@@ -13623,6 +13691,7 @@ export interface TaskDetails_subtasks_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskDetails_subtasks_reward_payments_user {
@@ -13778,6 +13847,7 @@ export interface TaskDetails_reward_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface TaskDetails_reward_payments_user {
@@ -14346,6 +14416,7 @@ export interface OrganizationDetails_projectTokenGates_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
   network: OrganizationDetails_projectTokenGates_token_network;
 }
 
@@ -14407,6 +14478,7 @@ export interface OrganizationDetails_fundingSessions_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface OrganizationDetails_fundingSessions {
@@ -14478,6 +14550,7 @@ export interface FundingSession_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface FundingSession {
@@ -14513,6 +14586,7 @@ export interface FundingSessionDetails_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface FundingSessionDetails_votes {
@@ -14571,6 +14645,7 @@ export interface FundingSessionDetails_rewards_token {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 export interface FundingSessionDetails_rewards_task_parentTask {
@@ -14701,6 +14776,7 @@ export interface PaymentToken {
   usdPrice: number | null;
   networkId: string;
   visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
 }
 
 /* tslint:disable */

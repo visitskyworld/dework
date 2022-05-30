@@ -73,6 +73,10 @@ export class PaymentToken<
   @Field()
   public networkId!: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  public imageUrl?: string;
+
   @Column("float", { nullable: true })
   @Field(() => Float, { nullable: true })
   public usdPrice?: number;

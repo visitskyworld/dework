@@ -12,7 +12,7 @@ export enum PaymentNetworkType {
 
 registerEnumType(PaymentNetworkType, { name: "PaymentNetworkType" });
 
-interface EthereumConfig {
+export interface EthereumConfig {
   chainId: number;
   rpcUrl: string;
   explorerUrl: string;

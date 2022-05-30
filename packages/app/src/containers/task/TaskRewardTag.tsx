@@ -12,7 +12,17 @@ interface Props {
 export const TaskRewardTag: FC<Props> = ({ reward }) => (
   <Tooltip title={formatTaskReward(reward)}>
     <Tag style={{ backgroundColor: "white", color: "black", minWidth: 0 }}>
-      <Icons.DollarOutlined />
+      {reward.token.imageUrl ? (
+        <img
+          width={16}
+          height={16}
+          style={{ marginRight: 2 }}
+          alt={reward.token.symbol}
+          src={reward.token.imageUrl!}
+        />
+      ) : (
+        <Icons.DollarOutlined />
+      )}
       <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
         {formatTaskReward(reward)}
       </span>
