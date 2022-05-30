@@ -119,16 +119,21 @@ export const OnboardingProfile: FC<Props> = ({ onNext }) => {
         Continue
       </Button>
 
-      <Button
-        type="text"
-        size="small"
-        className="text-secondary"
-        style={{ alignSelf: "center" }}
-        name="Onboarding Profile: already have an account"
-        onClick={logout}
-      >
-        Already have an account?
-      </Button>
+      <Row style={{ alignSelf: "center" }}>
+        <Typography.Text style={{ marginTop: 1 }}>
+          Already have an account?
+        </Typography.Text>
+        <Button
+          type="text"
+          size="small"
+          className="text-secondary"
+          style={{ marginLeft: 8 }}
+          name="Onboarding Profile: already have an account"
+          onClick={() => logout("/auth")}
+        >
+          Sign in
+        </Button>
+      </Row>
     </Form>
   );
 };

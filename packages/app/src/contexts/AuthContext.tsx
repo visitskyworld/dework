@@ -9,10 +9,11 @@ import React, {
 } from "react";
 import { MeQuery, UserDetails } from "../graphql/types";
 import { clearAuthToken, setAuthToken } from "../util/authToken";
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import * as Queries from "@dewo/app/graphql/queries";
 import * as Sentry from "@sentry/nextjs";
 import { useAmplitude } from "../util/analytics/AmplitudeContext";
+import { useRouter } from "next/router";
 
 function useCurrentUser(skip: boolean = false): UserDetails | undefined {
   const { data } = useQuery<MeQuery>(Queries.me, { skip });
@@ -21,7 +22,7 @@ function useCurrentUser(skip: boolean = false): UserDetails | undefined {
 interface AuthContextValue {
   user: UserDetails | undefined;
   authenticated: boolean;
-  logout(): void;
+  logout(redirect?: string): void;
   onAuthenticated(authToken: string): void;
 }
 
@@ -54,11 +55,17 @@ export const AuthProvider: FC<{ initialAuthenticated: boolean }> = ({
     Sentry.setUser({ id: user.id });
   }, [user, amplitude]);
 
-  const logout = useCallback(() => {
-    clearAuthToken(undefined);
-    setAuthenticated(false);
-    window.location.href = "/";
-  }, []);
+  const router = useRouter();
+  const apolloClient = useApolloClient();
+  const logout = useCallback(
+    (redirect: string = "/") => {
+      clearAuthToken(undefined);
+      setAuthenticated(false);
+      apolloClient.reFetchObservableQueries();
+      router.push(redirect);
+    },
+    [router, apolloClient]
+  );
 
   const onAuthenticated = useCallback((authToken: string) => {
     setAuthToken(undefined, authToken);
