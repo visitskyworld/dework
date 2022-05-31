@@ -23,6 +23,12 @@ export const createTaskView = gql`
           ...TaskView
         }
       }
+      workspace {
+        id
+        taskViews {
+          ...TaskView
+        }
+      }
     }
   }
 
