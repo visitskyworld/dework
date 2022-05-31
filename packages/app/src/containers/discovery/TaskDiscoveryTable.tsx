@@ -1,9 +1,5 @@
 import { OrganizationAvatar } from "@dewo/app/components/OrganizationAvatar";
-import {
-  TaskGatingType,
-  TaskReward,
-  TaskWithOrganization,
-} from "@dewo/app/graphql/types";
+import { TaskGatingType, TaskWithOrganization } from "@dewo/app/graphql/types";
 import { stopPropagation } from "@dewo/app/util/eatClick";
 import { useNavigateToTaskFn } from "@dewo/app/util/navigation";
 import { Button, Skeleton, Table, Typography } from "antd";
@@ -170,9 +166,9 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                 title: "Reward",
                 dataIndex: "reward",
                 width: 120,
-                render: (reward: TaskReward | undefined) =>
+                render: (_: unknown, task: TaskWithOrganization | undefined) =>
                   screens.lg &&
-                  !!reward && (
+                  !!task?.rewards.length && (
                     <>
                       <Typography.Paragraph
                         style={{
@@ -181,17 +177,18 @@ export const TaskDiscoveryTable: FC<Props> = ({ data, pageSize = 10 }) => {
                           textAlign: "center",
                         }}
                       >
-                        {formatTaskReward(reward)}
+                        {task.rewards.map(formatTaskReward).join(", ")}
                       </Typography.Paragraph>
-                      {!!reward.token.usdPrice && !reward.peggedToUsd && (
-                        <Typography.Paragraph
-                          type="secondary"
-                          className="ant-typography-caption"
-                          style={{ textAlign: "center" }}
-                        >
-                          {formatTaskRewardAsUSD(reward)}
-                        </Typography.Paragraph>
-                      )}
+                      {!!task.rewards[0].token.usdPrice &&
+                        !task.rewards[0].peggedToUsd && (
+                          <Typography.Paragraph
+                            type="secondary"
+                            className="ant-typography-caption"
+                            style={{ textAlign: "center" }}
+                          >
+                            {formatTaskRewardAsUSD(task.rewards[0])}
+                          </Typography.Paragraph>
+                        )}
                     </>
                   ),
                 sorter: (a: TaskWithOrganization, b: TaskWithOrganization) =>

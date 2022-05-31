@@ -5,7 +5,6 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   Task,
   TaskGatingType,
-  TaskReward,
   TaskStatus,
   TaskTag,
   User,
@@ -280,11 +279,11 @@ export const SubtaskTable: FC<Props> = ({
         },
         {
           title: "Reward",
-          dataIndex: ["task", "reward"],
-          render: (reward: TaskReward | undefined) =>
-            !!reward && (
+          key: "reward",
+          render: (_, row) =>
+            !!!!row.task && (
               <Typography.Text style={{ whiteSpace: "nowrap" }}>
-                {formatTaskReward(reward)}
+                {row.task.rewards.map(formatTaskReward).join(", ")}
               </Typography.Text>
             ),
         },
