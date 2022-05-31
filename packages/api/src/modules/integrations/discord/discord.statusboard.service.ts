@@ -129,20 +129,26 @@ export class DiscordStatusboardService {
 
     if (tasks.length === 0) return;
     // Chunk tasks into rows of three, with a space in the middle for grid-like effect in Discord
-    const numberOfRows = Math.ceil(tasks.length / 2);
+    const numberOfRows = Math.ceil(tasks.length / 3);
     const tasksWithSpaces = _.flatten(
-      _.chunk(tasks, 2).map((row, rowIndex) => {
-        const isFullRow = !!row[1];
+      _.chunk(tasks, 3).map((row, rowIndex) => {
         const addVerticalSpace = rowIndex < numberOfRows - 1;
-        if (isFullRow) {
+        if (!!row[2]) {
           return [
             this.getTaskDiscordEmbedField(row[0], addVerticalSpace),
+            this.getTaskDiscordEmbedField(row[1], addVerticalSpace),
+            this.getTaskDiscordEmbedField(row[2], addVerticalSpace),
+          ];
+        }
+        if (!!row[1]) {
+          return [
+            this.getTaskDiscordEmbedField(row[0], addVerticalSpace),
+            this.getTaskDiscordEmbedField(row[1], addVerticalSpace),
             {
               name: "\u200b",
               value: "\u200b",
               inline: true,
             },
-            this.getTaskDiscordEmbedField(row[1], addVerticalSpace),
           ];
         }
         return this.getTaskDiscordEmbedField(row[0], false);
