@@ -15,6 +15,8 @@ import { RoleGuard } from "../rbac/rbac.guard";
 import { CreateWorkspaceInput } from "./dto/CreateWorkspaceInput";
 import { WorkspaceService } from "./workspace.service";
 import { PermalinkService } from "../permalink/permalink.service";
+import { TaskView } from "@dewo/api/models/TaskView";
+import { Organization } from "@dewo/api/models/Organization";
 
 @Resolver(() => Workspace)
 @Injectable()
@@ -30,6 +32,14 @@ export class WorkspaceResolver {
     @Parent() workspace: Workspace
   ): Promise<string> {
     return this.permalinkService.get(workspace, origin);
+  }
+
+  @ResolveField(() => [TaskView])
+  public async taskViews(
+    @Parent() workspace: Organization
+  ): Promise<TaskView[]> {
+    const views = await workspace.taskViews;
+    return views.filter((s) => !s.deletedAt);
   }
 
   @Query(() => Workspace)
