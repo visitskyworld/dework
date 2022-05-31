@@ -14,7 +14,11 @@ import _ from "lodash";
 import * as Icons from "@ant-design/icons";
 import * as Colors from "@ant-design/colors";
 import { useUser, useUserRoles, useUserTasks } from "./hooks";
-import { CountTasksInput, TaskStatus } from "@dewo/app/graphql/types";
+import {
+  CountTasksInput,
+  TaskStatus,
+  TaskViewField,
+} from "@dewo/app/graphql/types";
 import { UserProfileForm } from "./UserProfileForm";
 import { TaskBoardColumnEmpty } from "../task/board/TaskBoardColumnEmtpy";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
@@ -22,10 +26,19 @@ import { TaskCard } from "../task/card/TaskCard";
 import { calculateTaskRewardAsUSD, useTaskCount } from "../task/hooks";
 import { UserOrganizationCard } from "./UserOrganizationCard";
 import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
+import { TaskViewFieldsProvider } from "../task/views/TaskViewFieldsContext";
 
 interface Props {
   userId: string;
 }
+
+const fields: TaskViewField[] = [
+  TaskViewField.name,
+  TaskViewField.skills,
+  TaskViewField.reward,
+  TaskViewField.assignees,
+  TaskViewField.doneAt,
+];
 
 export const UserProfile: FC<Props> = ({ userId }) => {
   const user = useUser(userId);
@@ -177,16 +190,18 @@ export const UserProfile: FC<Props> = ({ userId }) => {
                 }
               />
             ) : (
-              <Space direction="vertical" style={{ width: "100%" }}>
-                {completedTasks?.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    style={{ cursor: "pointer" }}
-                    showReview
-                  />
-                ))}
-              </Space>
+              <TaskViewFieldsProvider fields={fields}>
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  {completedTasks?.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      style={{ cursor: "pointer" }}
+                      showReview
+                    />
+                  ))}
+                </Space>
+              </TaskViewFieldsProvider>
             )}
           </Card>
         </Col>
