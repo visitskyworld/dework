@@ -251,8 +251,7 @@ export class RbacService {
           fn(CRUD, TaskView, { organizationId });
           fn(CRUD, TaskView, { workspaceId: { $exists: true } });
           fn("update", Project, ["workspaceId", "sortKey"], project);
-          const roleConditions: Partial<Role> | undefined = { organizationId };
-          fn(CRUD, Role, roleConditions);
+          fn(CRUD, Role, { organizationId });
           fn(CRUD, Rule);
           fn(["create", "delete"], UserRole);
           break;
@@ -272,6 +271,7 @@ export class RbacService {
               : { __task__: { $exists: true } }),
             permission: RulePermission.MANAGE_TASKS,
           });
+          fn(CRUD, Role, { organizationId, userId: { $exists: true } });
           fn(CRUD, Rule, { projectId: rule.projectId ?? { $exists: true } });
           fn(CRUD, Task, task);
           break;
