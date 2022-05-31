@@ -603,6 +603,9 @@ export const organizationDetails = gql`
     mintTaskNFTs
     projects {
       ...Project
+      openBountyCount: taskCount(
+        filter: { statuses: [TODO], assigneeIds: [null], hasReward: true }
+      )
     }
     workspaces {
       ...Workspace

@@ -7,7 +7,6 @@ import {
   Resolver,
   Context,
   Info,
-  Int,
 } from "@nestjs/graphql";
 import {
   ForbiddenException,
@@ -18,7 +17,7 @@ import {
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { TaskService } from "./task.service";
 import { CreateTaskInput } from "./dto/CreateTaskInput";
-import { Task, TaskStatus } from "@dewo/api/models/Task";
+import { Task } from "@dewo/api/models/Task";
 import { UpdateTaskInput } from "./dto/UpdateTaskInput";
 import { TaskTag } from "@dewo/api/models/TaskTag";
 import GraphQLUUID from "graphql-type-uuid";
@@ -523,18 +522,6 @@ export class ProjectTasksResolver {
       ...filter,
       projectIds: [project.id],
     });
-  }
-
-  // TODO(fant): remove after Task.reward => Task.rewards migration (220530)
-  @ResolveField(() => Int)
-  public async taskCount(
-    @Parent() _project: Project,
-    @Args("status", { type: () => TaskStatus, nullable: true })
-    _status: TaskStatus | undefined,
-    @Args("rewardNotNull", { type: () => Boolean, nullable: true })
-    _rewardNotNull: boolean | undefined
-  ): Promise<number> {
-    return 0;
   }
 }
 

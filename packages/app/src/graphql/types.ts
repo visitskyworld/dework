@@ -434,6 +434,7 @@ export interface UpdateOrganizationMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface UpdateOrganizationMutation_organization_workspaces {
@@ -712,6 +713,7 @@ export interface CreateProjectMutation_project_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface CreateProjectMutation_project_organization_workspaces {
@@ -904,6 +906,80 @@ export interface CreateProjectMutation_project_taskViews {
   sortBys: CreateProjectMutation_project_taskViews_sortBys[];
 }
 
+export interface CreateProjectMutation_project_workspace_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: (Scalar.UUID | null)[] | null;
+  applicantIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
+  skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
+}
+
+export interface CreateProjectMutation_project_workspace_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface CreateProjectMutation_project_workspace_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: Scalar.UUID | null;
+  workspaceId: Scalar.UUID | null;
+  organizationId: Scalar.UUID | null;
+  userId: Scalar.UUID | null;
+  fields: TaskViewField[];
+  sortKey: string;
+  filters: CreateProjectMutation_project_workspace_taskViews_filters[];
+  sortBys: CreateProjectMutation_project_workspace_taskViews_sortBys[];
+}
+
+export interface CreateProjectMutation_project_workspace_projects_taskTags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface CreateProjectMutation_project_workspace_projects {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  taskTags: CreateProjectMutation_project_workspace_projects_taskTags[];
+}
+
+export interface CreateProjectMutation_project_workspace {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  sortKey: string;
+  permalink: string;
+  organizationId: string;
+  taskViews: CreateProjectMutation_project_workspace_taskViews[];
+  projects: CreateProjectMutation_project_workspace_projects[];
+}
+
 export interface CreateProjectMutation_project {
   __typename: "Project";
   id: Scalar.UUID;
@@ -920,6 +996,7 @@ export interface CreateProjectMutation_project {
   organization: CreateProjectMutation_project_organization;
   taskSections: CreateProjectMutation_project_taskSections[];
   taskViews: CreateProjectMutation_project_taskViews[];
+  workspace: CreateProjectMutation_project_workspace;
 }
 
 export interface CreateProjectMutation {
@@ -6019,6 +6096,7 @@ export interface CreateProjectsFromNotionMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface CreateProjectsFromNotionMutation_organization_workspaces {
@@ -6192,6 +6270,7 @@ export interface CreateProjectsFromTrelloMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface CreateProjectsFromTrelloMutation_organization_workspaces {
@@ -6365,6 +6444,7 @@ export interface CreateProjectsFromGithubMutation_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface CreateProjectsFromGithubMutation_organization_workspaces {
@@ -7575,6 +7655,50 @@ export interface CreateTaskViewMutation_taskView_organization {
   taskViews: CreateTaskViewMutation_taskView_organization_taskViews[];
 }
 
+export interface CreateTaskViewMutation_taskView_workspace_taskViews_filters {
+  __typename: "TaskViewFilter";
+  type: TaskViewFilterType;
+  tagIds: Scalar.UUID[] | null;
+  roleIds: Scalar.UUID[] | null;
+  ownerIds: Scalar.UUID[] | null;
+  assigneeIds: (Scalar.UUID | null)[] | null;
+  applicantIds: Scalar.UUID[] | null;
+  statuses: TaskStatus[] | null;
+  priorities: TaskPriority[] | null;
+  skillIds: Scalar.UUID[] | null;
+  subtasks: boolean | null;
+}
+
+export interface CreateTaskViewMutation_taskView_workspace_taskViews_sortBys {
+  __typename: "TaskViewSortBy";
+  field: TaskViewSortByField;
+  direction: TaskViewSortByDirection;
+}
+
+export interface CreateTaskViewMutation_taskView_workspace_taskViews {
+  __typename: "TaskView";
+  id: Scalar.UUID;
+  name: string;
+  slug: string;
+  type: TaskViewType;
+  groupBy: TaskViewGroupBy;
+  permalink: string;
+  projectId: Scalar.UUID | null;
+  workspaceId: Scalar.UUID | null;
+  organizationId: Scalar.UUID | null;
+  userId: Scalar.UUID | null;
+  fields: TaskViewField[];
+  sortKey: string;
+  filters: CreateTaskViewMutation_taskView_workspace_taskViews_filters[];
+  sortBys: CreateTaskViewMutation_taskView_workspace_taskViews_sortBys[];
+}
+
+export interface CreateTaskViewMutation_taskView_workspace {
+  __typename: "Workspace";
+  id: Scalar.UUID;
+  taskViews: CreateTaskViewMutation_taskView_workspace_taskViews[];
+}
+
 export interface CreateTaskViewMutation_taskView {
   __typename: "TaskView";
   id: Scalar.UUID;
@@ -7594,6 +7718,7 @@ export interface CreateTaskViewMutation_taskView {
   project: CreateTaskViewMutation_taskView_project | null;
   user: CreateTaskViewMutation_taskView_user | null;
   organization: CreateTaskViewMutation_taskView_organization | null;
+  workspace: CreateTaskViewMutation_taskView_workspace | null;
 }
 
 export interface CreateTaskViewMutation {
@@ -8694,6 +8819,7 @@ export interface GetOrganizationDetailsQuery_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface GetOrganizationDetailsQuery_organization_workspaces {
@@ -8877,6 +9003,7 @@ export interface GetOrganizationTaskViewsQuery_organization_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
   taskTags: GetOrganizationTaskViewsQuery_organization_projects_taskTags[];
 }
 
@@ -15731,6 +15858,7 @@ export interface OrganizationDetails_projects {
   permalink: string;
   workspaceId: string | null;
   sortKey: string;
+  openBountyCount: number;
 }
 
 export interface OrganizationDetails_workspaces {

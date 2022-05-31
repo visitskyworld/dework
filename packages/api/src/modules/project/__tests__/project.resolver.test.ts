@@ -162,41 +162,6 @@ describe("ProjectResolver", () => {
         );
       });
 
-      // it("should calculate taskCount", async () => {
-      //   const { user, project } = await fixtures.createUserOrgProject();
-
-      //   await fixtures.createTask({
-      //     projectId: project.id,
-      //     deletedAt: new Date(),
-      //   });
-      //   await fixtures.createTask({
-      //     projectId: project.id,
-      //     status: TaskStatus.TODO,
-      //     rewards: [{}],
-      //   });
-      //   await fixtures.createTask({
-      //     projectId: project.id,
-      //     status: TaskStatus.TODO,
-      //   });
-      //   await fixtures.createTask({
-      //     projectId: project.id,
-      //     status: TaskStatus.DONE,
-      //   });
-
-      //   const response = await client.request({
-      //     app,
-      //     auth: fixtures.createAuthToken(user),
-      //     body: ProjectRequests.get(project.id),
-      //   });
-
-      //   expect(response.status).toEqual(HttpStatus.OK);
-      //   const fetchedProject = response.body.data?.project;
-      //   expect(fetchedProject).toBeDefined();
-      //   expect(fetchedProject.taskCount).toEqual(3);
-      //   expect(fetchedProject.doneTaskCount).toEqual(1);
-      //   expect(fetchedProject.todoWithRewardTaskCount).toEqual(1);
-      // });
-
       it("should fail for private projects where caller is not contributor", async () => {
         const user = await fixtures.createUser();
         const project = await fixtures.createProject();

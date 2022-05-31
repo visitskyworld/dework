@@ -17,9 +17,6 @@ export class ProjectRequests {
         id
         type
       }
-      #taskCount
-      #doneTaskCount: taskCount(status: DONE)
-      #todoWithRewardTaskCount: taskCount(status: TODO, rewardNotNull: true)
       paymentMethods {
         id
       }

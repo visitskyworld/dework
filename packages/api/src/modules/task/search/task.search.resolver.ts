@@ -1,4 +1,12 @@
-import { Args, Query, Context, Int } from "@nestjs/graphql";
+import {
+  Args,
+  Query,
+  Context,
+  Int,
+  Resolver,
+  ResolveField,
+  Parent,
+} from "@nestjs/graphql";
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { User } from "@dewo/api/models/User";
 import { TaskSearchService } from "./task.search.service";
@@ -6,6 +14,7 @@ import { TaskSearchResponse } from "./dto/TaskSearchResponse";
 import { CountTasksInput, SearchTasksInput } from "./dto/SearchTasksInput";
 import { OrganizationService } from "../../organization/organization.service";
 import { WorkspaceService } from "../../workspace/workspace.service";
+import { Project } from "@dewo/api/models/Project";
 
 @Injectable()
 export class TaskSearchResolver {
@@ -81,5 +90,19 @@ export class TaskSearchResolver {
     }
 
     return this.service.count(filter);
+  }
+}
+
+@Resolver(() => Project)
+@Injectable()
+export class ProjectTaskCountResolver {
+  constructor(private readonly service: TaskSearchService) {}
+
+  @ResolveField(() => Int)
+  public async taskCount(
+    @Parent() project: Project,
+    @Args("filter") filter: CountTasksInput
+  ): Promise<number> {
+    return this.service.count({ ...filter, projectIds: [project.id] });
   }
 }

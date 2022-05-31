@@ -4,6 +4,7 @@ import { network, paymentMethod, token } from "./fragments/payment";
 import { project } from "./fragments/project";
 import { taskTag } from "./fragments/task";
 import { user } from "./fragments/user";
+import { workspaceDetails } from "./fragments/workspace";
 
 export const authWithThreepid = gql`
   mutation AuthWithThreepidMutation($threepidId: UUID!) {
@@ -132,11 +133,15 @@ export const createProject = gql`
       organization {
         ...OrganizationDetails
       }
+      workspace {
+        ...WorkspaceDetails
+      }
     }
   }
 
   ${Fragments.projectDetails}
   ${Fragments.organizationDetails}
+  ${workspaceDetails}
 `;
 
 export const updateProject = gql`

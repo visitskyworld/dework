@@ -17,6 +17,8 @@ import { WorkspaceService } from "./workspace.service";
 import { PermalinkService } from "../permalink/permalink.service";
 import { TaskView } from "@dewo/api/models/TaskView";
 import { Organization } from "@dewo/api/models/Organization";
+import { User } from "@dewo/api/models/User";
+import { Project } from "@dewo/api/models/Project";
 
 @Resolver(() => Workspace)
 @Injectable()
@@ -40,6 +42,14 @@ export class WorkspaceResolver {
   ): Promise<TaskView[]> {
     const views = await workspace.taskViews;
     return views.filter((s) => !s.deletedAt);
+  }
+
+  @ResolveField(() => [Project])
+  public async projects(
+    @Context("user") user: User | undefined,
+    @Parent() workspace: Workspace
+  ): Promise<Project[]> {
+    return this.service.getProjects(workspace.id, user?.id);
   }
 
   @Query(() => Workspace)

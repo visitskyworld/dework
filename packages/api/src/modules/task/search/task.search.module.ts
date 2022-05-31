@@ -14,7 +14,10 @@ import {
   TaskSearchRuleDeletedEventHandler,
   TaskSearchUpdatedEventHandler,
 } from "./task.search.eventHandlers";
-import { TaskSearchResolver } from "./task.search.resolver";
+import {
+  ProjectTaskCountResolver,
+  TaskSearchResolver,
+} from "./task.search.resolver";
 import { OrganizationModule } from "../../organization/organization.module";
 import { RbacModule } from "../../rbac/rbac.module";
 import { WorkspaceModule } from "../../workspace/workspace.module";
@@ -43,6 +46,7 @@ import { WorkspaceModule } from "../../workspace/workspace.module";
     TaskSearchRuleDeletedEventHandler,
     TaskSearchRuleCreatedEventHandler,
     TaskSearchResolver,
+    ProjectTaskCountResolver,
   ],
   exports: [TaskSearchService],
 })
