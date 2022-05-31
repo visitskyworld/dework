@@ -86,6 +86,7 @@ export class PriceService {
         .text()
         .replace("$", "")
         .replace(/,/g, "");
+      if (!valueString) continue;
       const value = Number(valueString);
 
       this.logger.debug(
