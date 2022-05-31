@@ -23,7 +23,7 @@ export const ProductSection: FC<Props> = () => {
   const loginModal = useToggle();
   const screens = useBreakpoint();
   return (
-    <Row className="max-w-xl mx-auto" style={{ width: "100%" }}>
+    <Row className="max-w-xl mx-auto w-full">
       <Col md={12} xs={24} style={{ padding: "96px 24px" }}>
         <Space direction="vertical" size="large">
           <Typography.Title level={1}>
