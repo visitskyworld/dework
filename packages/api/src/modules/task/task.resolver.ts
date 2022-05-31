@@ -299,7 +299,11 @@ export class TaskResolver {
         owners: !!input.ownerIds
           ? (input.ownerIds.map((id) => ({ id })) as any)
           : undefined,
-        rewards: !!input.reward ? [input.reward] : undefined,
+        rewards: !!input.reward
+          ? [input.reward]
+          : input.reward === null
+          ? []
+          : undefined,
       },
       user.id
     );
