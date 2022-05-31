@@ -95,6 +95,8 @@ export class WorkspaceService {
       userId,
       workspace.organizationId
     );
-    return projects.filter((project) => ability.can("read", project));
+    return projects
+      .filter((project) => !project.deletedAt)
+      .filter((project) => ability.can("read", project));
   }
 }
