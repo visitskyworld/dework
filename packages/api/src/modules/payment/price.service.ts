@@ -37,24 +37,27 @@ export class PriceService {
     });
 
     const addresses = tokens.map((t) => t.address!);
-    this.logger.debug(`Token addresses to check: ${JSON.stringify(addresses)}`);
+    this.logger.debug(`Token addresses to check: ${addresses.length}`);
 
-    const response = await this.coinGecko.simple.fetchTokenPrice({
-      contract_addresses: addresses,
-      vs_currencies: "usd",
-    });
+    const chunks = _.chunk(addresses, 100);
+    for (const chunk of chunks) {
+      const response = await this.coinGecko.simple.fetchTokenPrice({
+        contract_addresses: chunk,
+        vs_currencies: "usd",
+      });
 
-    this.logger.debug(`CoinGecko respose: ${JSON.stringify(response)}`);
+      this.logger.debug(`CoinGecko respose: ${JSON.stringify(response)}`);
 
-    const updates = tokens
-      .filter((token) => !!response.data[token.address!.toLowerCase()]?.usd)
-      .map(
-        (token): PaymentToken => ({
-          ...token,
-          usdPrice: response.data[token.address!.toLowerCase()]!.usd,
-        })
-      );
-    await this.tokenRepo.save(updates);
+      const updates = tokens
+        .filter((token) => !!response.data[token.address!.toLowerCase()]?.usd)
+        .map(
+          (token): PaymentToken => ({
+            ...token,
+            usdPrice: response.data[token.address!.toLowerCase()]!.usd,
+          })
+        );
+      await this.tokenRepo.save(updates);
+    }
   }
 
   public async pollCoinMarketCap(): Promise<void> {
