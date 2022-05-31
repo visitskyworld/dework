@@ -8,3 +8,23 @@
   border: 2px solid @border-color-base;
   border-radius: @border-radius-base * 3;
 }
+
+.slider1 {
+  animation: slider1 80s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes slider1 {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0%); }
+}
+
+.slider2 {
+  animation: slider2 60s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes slider2 {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0%); }
+}

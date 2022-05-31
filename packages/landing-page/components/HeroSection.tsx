@@ -36,7 +36,7 @@ export const HeroSection: FC = () => {
       </Layout.Content>
       <Layout.Content
         className="max-w-lg mx-auto w-full"
-        style={{ textAlign: "center", padding: 16 }}
+        style={{ textAlign: "center", padding: 16, marginBottom: 64 }}
       >
         <Image
           src="https://res.allmacwallpaper.com/get/Retina-MacBook-Air-13-inch-wallpapers/abstract-8k-2560x1600/23809-11.jpg"
