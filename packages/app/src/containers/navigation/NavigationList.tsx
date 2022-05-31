@@ -73,7 +73,7 @@ export const NavigationList: FC = () => {
       </Row>
       <div
         className={classNames(isOn ? styles.minimized : "", "flex", "h-full")}
-        style={{ minWidth: 225, flexDirection: "column" }}
+        style={{ width: 220, flexDirection: "column" }}
       >
         <Col flex={1} style={{ overflowY: "auto" }}>
           {content}
