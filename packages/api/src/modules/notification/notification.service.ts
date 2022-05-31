@@ -236,9 +236,9 @@ export class NotificationService {
   public async getNotifications(userId: string): Promise<Notification[]> {
     return this.repo
       .createQueryBuilder("notification")
-      .innerJoinAndSelect("notification.task", "task")
-      .innerJoinAndSelect("task.project", "project")
-      .innerJoinAndSelect("project.organization", "organization")
+      .leftJoinAndSelect("notification.task", "task")
+      .leftJoinAndSelect("task.project", "project")
+      .leftJoinAndSelect("project.organization", "organization")
       .where("notification.userId = :userId", { userId })
       .andWhere("notification.archivedAt IS NULL")
       .getMany();
