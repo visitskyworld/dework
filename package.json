@@ -2,7 +2,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "1.21.5",
+  "version": "1.21.6",
   "private": true,
   "engines": {
     "yarn": "1.22.x"
