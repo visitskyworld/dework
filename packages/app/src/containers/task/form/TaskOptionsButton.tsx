@@ -26,6 +26,9 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
   const handleMoveTask = useCallback(
     async (project: Project) => {
       await updateTask({ id: task.id, projectId: project.id, tagIds: [] });
+      await Promise.all(
+        task.subtasks.map(({ id }) => updateTask({ id, projectId: project.id }))
+      );
       await closeTaskDetails();
       message.success({
         content: (
@@ -40,7 +43,7 @@ const MoveTaskSubmenu: FC<Props> = ({ task }) => {
         ),
       });
     },
-    [updateTask, closeTaskDetails, router, task.id]
+    [updateTask, closeTaskDetails, router, task.id, task.subtasks]
   );
 
   if (!organization?.projects.length) return null;
