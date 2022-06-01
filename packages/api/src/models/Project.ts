@@ -41,9 +41,9 @@ export class Project extends Audit {
   public organizationId!: string;
 
   @JoinColumn()
-  @ManyToOne(() => Workspace)
-  @Field(() => Workspace)
-  public workspace!: Promise<Workspace>;
+  @ManyToOne(() => Workspace, { nullable: true })
+  @Field(() => Workspace, { nullable: true })
+  public workspace?: Promise<Workspace>;
   @Column({ type: "uuid", nullable: true })
   @Field({ nullable: true })
   public workspaceId?: string;
