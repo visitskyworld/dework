@@ -43,6 +43,15 @@ export class TaskViewService {
             type: TaskViewFilterType.ASSIGNEES,
             assigneeIds: [user.id],
           },
+          {
+            type: TaskViewFilterType.STATUSES,
+            statuses: [
+              TaskStatus.TODO,
+              TaskStatus.IN_PROGRESS,
+              TaskStatus.IN_REVIEW,
+              TaskStatus.DONE,
+            ],
+          },
         ],
         type: TaskViewType.BOARD,
         userId: user.id,
