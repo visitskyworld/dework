@@ -114,7 +114,9 @@ export const UserProfile: FC<Props> = ({ userId }) => {
             <Row gutter={[8, 8]} style={{ margin: 0 }}>
               <Tag style={{ backgroundColor: Colors.blue.primary }}>
                 <Icons.DollarCircleOutlined />
-                <Typography.Text>{`$${amountEarned} earned`}</Typography.Text>
+                <Typography.Text>{`$${amountEarned.toFixed(
+                  2
+                )} earned`}</Typography.Text>
               </Tag>
             </Row>
 
