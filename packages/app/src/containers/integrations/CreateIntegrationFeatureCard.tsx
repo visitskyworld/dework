@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
-import { Card, Button, Space } from "antd";
+import { Card, Button, Space, Tag, Divider } from "antd";
 import classNames from "classnames";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
-import { UseToggleHook } from "@dewo/app/util/hooks";
 import styles from "./IntegrationCard.module.less";
+import { UseToggleHook } from "@dewo/app/util/hooks";
 
 interface Props {
   headerTitle: string | undefined;
@@ -11,8 +11,10 @@ interface Props {
   isConnected: boolean;
   connectedButtonCopy: string;
   children: ReactNode;
+  collapsedContent?: ReactNode;
   expanded: UseToggleHook;
   disabled?: boolean;
+  onClick: () => void;
 }
 
 export const CreateIntegrationFeatureCard = ({
@@ -21,8 +23,10 @@ export const CreateIntegrationFeatureCard = ({
   isConnected,
   connectedButtonCopy,
   children,
+  collapsedContent,
   expanded,
   disabled,
+  onClick,
 }: Props) => (
   <Card
     hoverable={isConnected && !expanded.isOn}
@@ -31,34 +35,37 @@ export const CreateIntegrationFeatureCard = ({
       <Space style={{ maxWidth: "100%" }}>
         {headerIcon}
         {headerTitle}
+        {isConnected && <Tag color="purple">Enabled</Tag>}
       </Space>
     }
     style={{ overflow: "hidden" }}
     className={classNames({
-      [styles.connected]: isConnected,
-      [styles.expanded]: expanded.isOn,
       [styles.integrationcard]: true,
     })}
     extra={
       isConnected ? (
-        <Button className="dewo-simple-button" onClick={expanded.toggle}>
-          {connectedButtonCopy}
-        </Button>
+        <Button onClick={onClick}>{connectedButtonCopy}</Button>
       ) : expanded.isOn ? (
-        <Button type="text" onClick={expanded.toggleOff}>
-          Cancel
+        <Button type="text" disabled={disabled} onClick={onClick}>
+          {expanded.isOn ? "Cancel" : "Connect"}
         </Button>
       ) : (
         <Button
           type={disabled ? "default" : "primary"}
           disabled={disabled}
-          onClick={expanded.toggle}
+          onClick={onClick}
         >
-          Setup
+          Connect
         </Button>
       )
     }
   >
+    {(!!collapsedContent || expanded.isOn) && <Divider style={{ margin: 0 }} />}
+    {!!collapsedContent && (
+      <HeadlessCollapse expanded={!expanded.isOn}>
+        {collapsedContent}
+      </HeadlessCollapse>
+    )}
     <HeadlessCollapse expanded={expanded.isOn}>{children}</HeadlessCollapse>
   </Card>
 );

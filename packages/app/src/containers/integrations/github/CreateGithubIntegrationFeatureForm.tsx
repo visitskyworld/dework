@@ -19,6 +19,7 @@ import { ImportExistingGithubIssuesCheckbox } from "./ImportExistingGithubIssues
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import { CreateIssuesFromTasksCheckbox } from "./CreateIssuesFromTasksCheckbox";
 import { useProject } from "../../project/hooks";
+import * as Colors from "@ant-design/colors";
 import { SelectGithubLabelsFormItem } from "./SelectGithubLabelsFormItem";
 import _ from "lodash";
 
@@ -64,7 +65,7 @@ export interface FormValues {
 
 interface Props {
   feature: GithubProjectIntegrationFeature;
-  existingIntegrations: ProjectIntegration[] | undefined;
+  existingIntegrations: ProjectIntegration[];
   projectId: string;
   disabled?: boolean;
 }
@@ -77,7 +78,8 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
 }) => {
   const [form] = useForm<FormValues>();
   const [values, setValues] = useState<Partial<FormValues>>({});
-  const expanded = useToggle(false);
+  const hasIntegrations = !!existingIntegrations.length;
+  const expanded = useToggle(hasIntegrations);
 
   const { project } = useProject(projectId);
   const githubRepos = useOrganizationGithubRepos(project?.organizationId);
@@ -128,11 +130,33 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
   return (
     <CreateIntegrationFeatureCard
       headerTitle={getGithubIntegrationTypeTitle[feature]}
-      headerIcon={<Icons.GithubFilled />}
-      isConnected={!!existingIntegrations?.length}
+      headerIcon={
+        <Icons.GithubFilled
+          style={{
+            color: hasIntegrations ? Colors.purple[3] : undefined,
+          }}
+        />
+      }
+      isConnected={hasIntegrations}
       connectedButtonCopy={connectedCopy}
       expanded={expanded}
       disabled={disabled}
+      collapsedContent={
+        hasIntegrations && (
+          <Typography.Text className="font-semibold">
+            <Typography.Text type="secondary">Connected to</Typography.Text>
+            <Typography.Text style={{ marginLeft: 4 }}>
+              {`${existingIntegrations
+                ?.map(
+                  (integration) =>
+                    `${integration?.config.organization}/${integration?.config.repo}`
+                )
+                .join(", ")}`}
+            </Typography.Text>
+          </Typography.Text>
+        )
+      }
+      onClick={expanded.toggle}
     >
       <Form
         form={form}
@@ -154,7 +178,7 @@ export const CreateGithubIntegrationFeatureForm: FC<Props> = ({
             </a>
             .
           </Typography.Paragraph>
-          {!!existingIntegrations?.length && (
+          {hasIntegrations && (
             <FormSection label={connectedCopy}>
               <Space direction="vertical">
                 {existingIntegrations.map((integration) => {

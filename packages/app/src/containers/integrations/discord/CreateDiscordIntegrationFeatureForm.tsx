@@ -20,6 +20,7 @@ import { useOrganizationIntegrations } from "../../organization/hooks";
 import { CreateIntegrationFeatureCard } from "../CreateIntegrationFeatureCard";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 import { SelectDiscordChannelFormItem } from "./SelectDiscordChannelFormItem";
+import * as Colors from "@ant-design/colors";
 import { deworkSocialLinks } from "@dewo/app/util/constants";
 
 const DiscordProjectIntegrationFeatureTitle: Partial<
@@ -60,8 +61,8 @@ export const CreateDiscordIntegrationFeatureForm = ({
 }: Props) => {
   const [form] = useForm<FormValues>();
   const [values, setValues] = useState<Partial<FormValues>>({});
-
-  const expanded = useToggle(recommended && !disabled);
+  const isConnected = !!existingIntegration;
+  const expanded = useToggle(isConnected || (recommended && !disabled));
 
   const integrations = useOrganizationIntegrations(
     organizationId,
@@ -88,7 +89,7 @@ export const CreateDiscordIntegrationFeatureForm = ({
     setValues(values);
   }, []);
   const updateIntegration = useUpdateProjectIntegration();
-  const [handleDisconnect, disconnecting] = useRunningCallback(async () => {
+  const handleDisconnect = useCallback(async () => {
     try {
       await updateIntegration({
         id: existingIntegration?.id!,
@@ -96,8 +97,9 @@ export const CreateDiscordIntegrationFeatureForm = ({
       });
     } finally {
       form.resetFields();
+      expanded.toggleOff();
     }
-  }, [form, existingIntegration, updateIntegration]);
+  }, [form, existingIntegration, updateIntegration, expanded]);
   const [handleSubmit, submitting] = useRunningCallback(
     async (values: FormValues) => {
       const channel = channels?.find((c) => c.id === values.discordChannelId);
@@ -114,11 +116,14 @@ export const CreateDiscordIntegrationFeatureForm = ({
   return (
     <CreateIntegrationFeatureCard
       headerTitle={DiscordProjectIntegrationFeatureTitle[feature]}
-      headerIcon={<DiscordIcon />}
-      isConnected={!!existingIntegration}
-      connectedButtonCopy={`Connected to #${existingIntegration?.config.name}`}
-      disabled={disabled}
+      headerIcon={
+        <DiscordIcon style={{ color: isConnected && Colors.purple[3] }} />
+      }
+      isConnected={isConnected}
+      connectedButtonCopy={"Disconnect"}
       expanded={expanded}
+      disabled={disabled}
+      onClick={isConnected ? handleDisconnect : expanded.toggle}
     >
       <Form
         form={form}
@@ -127,42 +132,41 @@ export const CreateDiscordIntegrationFeatureForm = ({
         onValuesChange={handleChange}
         onFinish={handleSubmit}
       >
-        <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
-          {recommended && <Tag color="green">Recommended!</Tag>}
-          Learn more about this integration{" "}
-          <a
-            href={deworkSocialLinks.gitbook.connectingToDiscord}
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
-        </Typography.Paragraph>
-        {!!existingIntegration ? (
-          <Button
-            loading={disconnecting}
-            hidden={!existingIntegration}
-            onClick={handleDisconnect}
-          >
-            Disconnect
-          </Button>
+        {isConnected ? (
+          <Typography.Text className="font-semibold">
+            <Typography.Text type="secondary">Connected to</Typography.Text>
+            <Typography.Text style={{ marginLeft: 4 }}>
+              {`#${existingIntegration?.config.name}`}
+            </Typography.Text>
+          </Typography.Text>
         ) : (
           <>
+            <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
+              {recommended && <Tag color="green">Recommended!</Tag>}
+              Learn more about this integration{" "}
+              <a
+                href={deworkSocialLinks.gitbook.connectingToDiscord}
+                target="_blank"
+                rel="noreferrer"
+              >
+                here
+              </a>
+              .
+            </Typography.Paragraph>
             <SelectDiscordChannelFormItem
               guildId={guildId}
               organizationId={organizationId}
               channels={channels}
               missingPermissions={missingPermissions}
               feature={feature}
-              disabled={!!existingIntegration}
+              disabled={isConnected}
               onRefetchChannels={onRefetchChannels}
             />
             <Button
               type="primary"
               htmlType="submit"
               loading={submitting}
-              hidden={!!existingIntegration}
+              hidden={isConnected}
               disabled={!values.discordChannelId}
             >
               Connect
