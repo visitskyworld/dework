@@ -291,9 +291,9 @@ export const SubtaskTable: FC<Props> = ({
           key: "dueDate",
           title: "Due",
           dataIndex: "dueDate",
-          width: 82,
+          width: 72,
           render: (dueDate: string | undefined, row) => (
-            <div onClick={stopPropagation}>
+            <div onClick={stopPropagation} style={{ width: 72 }}>
               <DatePicker
                 bordered={false}
                 format="D MMM"
@@ -311,9 +311,9 @@ export const SubtaskTable: FC<Props> = ({
                     <Icons.ExclamationCircleFilled
                       style={{ color: Colors.red.primary, marginLeft: 4 }}
                     />
-                  ) : (
+                  ) : !dueDate ? (
                     <Icons.CalendarOutlined />
-                  )
+                  ) : null
                 }
               />
             </div>
