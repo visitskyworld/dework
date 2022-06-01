@@ -293,14 +293,14 @@ export const SubtaskTable: FC<Props> = ({
           dataIndex: "dueDate",
           width: 72,
           render: (dueDate: string | undefined, row) => (
-            <div onClick={stopPropagation} style={{ width: 72 }}>
+            <div onClick={stopPropagation}>
               <DatePicker
                 bordered={false}
                 format="D MMM"
                 value={!!dueDate ? moment(dueDate) : undefined}
                 placeholder=""
                 disabled={!canChange(row.task, "dueDate")}
-                style={{ padding: 0 }}
+                style={{ padding: 0, width: 72 }}
                 onChange={(dueDate) =>
                   handleChange({ dueDate: dueDate?.toISOString() ?? null }, row)
                 }
