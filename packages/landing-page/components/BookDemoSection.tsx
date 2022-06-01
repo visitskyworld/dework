@@ -1,11 +1,11 @@
-import { Button, Col, Row, Typography } from "antd";
+import { Layout, Button, Col, Row, Typography } from "antd";
 import React, { FC } from "react";
 import Link from "next/link";
 import { DiscordIcon } from "@dewo/app/components/icons/Discord";
 
 export const BookDemoSection: FC = () => {
   return (
-    <Row style={{ padding: "64px 24px" }}>
+    <Layout.Content style={{ padding: 16, marginTop: 64, marginBottom: 64 }}>
       <Col className="max-w-sm mx-auto" style={{ width: "100%" }}>
         <Typography.Title
           level={3}
@@ -34,6 +34,6 @@ export const BookDemoSection: FC = () => {
           </Col>
         </Row>
       </Col>
-    </Row>
+    </Layout.Content>
   );
 };

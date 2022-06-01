@@ -177,7 +177,7 @@ export class DiscordStatusboardService {
         Object.getOwnPropertyNames(error)
       );
       this.logger.error(
-        `Failed using existing message: ${JSON.stringify({
+        `Failed posting message message: ${JSON.stringify({
           errorString,
           integration,
         })}`

@@ -4,7 +4,6 @@ import { AppInitialProps, AppProps } from "next/app";
 import { AppContextType } from "next/dist/shared/lib/utils";
 import Head from "next/head";
 import "../../app/styles/globals.less";
-import { withApollo, WithApolloProps } from "next-with-apollo";
 import * as Sentry from "@sentry/nextjs";
 import {
   Constants,
@@ -12,16 +11,9 @@ import {
   siteTitle,
   siteURL,
 } from "@dewo/app/util/constants";
-import {
-  ApolloClient,
-  createHttpLink,
-  InMemoryCache,
-  ApolloProvider,
-} from "@apollo/client";
 import { NextComponentType } from "next";
 import { hotjar } from "react-hotjar";
 import { isSSR } from "@dewo/app/util/isSSR";
-import { FloatingFooterButtons } from "@dewo/app/containers/feedback/FloatingFooterButtons";
 
 if (!isSSR && Constants.ENVIRONMENT === "prod") {
   const { ID, version } = Constants.hotjarConfig;
@@ -34,11 +26,9 @@ Sentry.init({
   ignoreErrors: ["ResizeObserver loop limit exceeded"],
 });
 
-type Props = AppProps & WithApolloProps<any>;
-const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
+const App: NextComponentType<AppContextType, AppInitialProps, AppProps> = ({
   Component,
   pageProps,
-  apollo,
 }) => {
   const imageUrl =
     "https://dework-og-image-fant.vercel.app/Dework.png?fontSize=100px&heights=300&images=https%3A%2F%2Fapp.dework.xyz%2Flogo.png&md=1&subtitle=The%20task%20manager%20for%20DAOs%20and%20decentralized%20work&widths=300";
@@ -65,18 +55,8 @@ const App: NextComponentType<AppContextType, AppInitialProps, Props> = ({
         />
 
         <link rel="icon" href="/logo.svg" />
-        {/* <script defer>
-          {Constants.ENVIRONMENT === "prod" &&
-            `UST_CT = [];UST = { s: Date.now(), addTag: function(tag) { UST_CT.push(tag) } };UST.addEvent = UST.addTag;
-            var ust_min_js = document.createElement("script");
-            ust_min_js.src = 'https://analytics.dework.xyz/server/ust.min.js?v=4.2.0';
-            document.head.appendChild(ust_min_js);`}
-        </script> */}
       </Head>
-      <ApolloProvider client={apollo as any}>
-        <Component {...pageProps} />
-        <FloatingFooterButtons />
-      </ApolloProvider>
+      <Component {...pageProps} />
     </>
   );
 };
@@ -94,13 +74,4 @@ App.getInitialProps = async ({ Component, ctx }): Promise<AppInitialProps> => {
   };
 };
 
-export default withApollo(
-  ({ initialState }) =>
-    new ApolloClient({
-      link: createHttpLink({
-        uri: `${getConfig().publicRuntimeConfig.GRAPHQL_API_URL}/graphql`,
-      }),
-      cache: new InMemoryCache().restore(initialState || {}),
-      defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
-    })
-)(App as any);
+export default App;
