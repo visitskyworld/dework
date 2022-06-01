@@ -4,6 +4,8 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import {
   PaymentStatus,
+  TaskSubmissionStatus,
+  TaskApplicationStatus,
   TaskDetails,
   TaskStatus,
 } from "@dewo/app/graphql/types";
@@ -171,6 +173,42 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
         }))
     );
 
+    items.push(
+      ...task.applications
+        .filter((a) => hasPermission("read", a))
+        .filter(
+          (a) =>
+            a.status === TaskApplicationStatus.REJECTED ||
+            a.status === TaskApplicationStatus.ACCEPTED
+        )
+        .map((a) => ({
+          date: a.updatedAt,
+          avatar: <UserAvatar size="small" user={a.user} linkToProfile />,
+          text: `${a.user.username}'s application has been ${
+            a.status === TaskApplicationStatus.REJECTED
+              ? "rejected"
+              : "accepted"
+          }`,
+          details: (
+            <>
+              <Typography.Paragraph type="secondary" style={{ margin: 0 }}>
+                {moment(a.startDate).format("DD/MM/YYYY") +
+                  " - " +
+                  moment(a.endDate).format("DD/MM/YYYY") +
+                  " (" +
+                  moment
+                    .duration(moment(a.endDate).diff(moment(a.startDate)))
+                    .asDays() +
+                  " days)"}
+              </Typography.Paragraph>
+              <Typography.Paragraph style={{ margin: 0 }}>
+                {a.message}
+              </Typography.Paragraph>
+            </>
+          ),
+        }))
+    );
+
     if (showSubmissions) {
       items.push(
         ...task.submissions.map((submission) => ({
@@ -184,6 +222,33 @@ export const TaskActivityFeed: FC<Props> = ({ task }) => {
             />
           ),
         }))
+      );
+
+      items.push(
+        ...task.submissions
+          .filter(
+            (submission) =>
+              submission.updatedAt &&
+              (submission.status === TaskSubmissionStatus.ACCEPTED ||
+                submission.status === TaskSubmissionStatus.REJECTED)
+          )
+          .map((submission) => {
+            return {
+              date: submission.updatedAt,
+              avatar: <UserAvatar size="small" user={submission.user} />,
+              text: `${submission.user.username}'s submission has been ${
+                submission.status === TaskSubmissionStatus.ACCEPTED
+                  ? "accepted"
+                  : "rejected"
+              }`,
+              details: (
+                <RichMarkdownEditor
+                  initialValue={submission.content}
+                  editable={false}
+                />
+              ),
+            };
+          })
       );
     }
 

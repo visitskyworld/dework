@@ -326,8 +326,10 @@ export const taskApplication = gql`
     startDate
     endDate
     createdAt
+    updatedAt
     userId
     discordThreadUrl
+    status
     user {
       ...User
     }
@@ -341,8 +343,10 @@ export const taskSubmission = gql`
     id
     content
     createdAt
+    updatedAt
     taskId
     userId
+    status
     user {
       ...User
     }

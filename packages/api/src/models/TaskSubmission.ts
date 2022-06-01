@@ -1,8 +1,16 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Audit } from "./Audit";
 import { User } from "./User";
 import { Task } from "./Task";
+
+export enum TaskSubmissionStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+}
+
+registerEnumType(TaskSubmissionStatus, { name: "TaskSubmissionStatus" });
 
 @ObjectType()
 @Entity()
@@ -34,6 +42,14 @@ export class TaskSubmission extends Audit {
   @Column({ type: "uuid" })
   @Field()
   public taskId!: string;
+
+  @Column({
+    type: "enum",
+    enum: TaskSubmissionStatus,
+    default: TaskSubmissionStatus.PENDING,
+  })
+  @Field(() => TaskSubmissionStatus)
+  public status!: TaskSubmissionStatus;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

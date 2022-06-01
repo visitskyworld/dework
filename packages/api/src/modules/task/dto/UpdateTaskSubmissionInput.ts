@@ -1,3 +1,4 @@
+import { TaskSubmissionStatus } from "@dewo/api/models/TaskSubmission";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUUID from "graphql-type-uuid";
 
@@ -17,4 +18,7 @@ export class UpdateTaskSubmissionInput {
 
   @Field({ nullable: true })
   public deletedAt?: Date;
+
+  @Field(() => TaskSubmissionStatus, { nullable: true })
+  public status?: TaskSubmissionStatus;
 }

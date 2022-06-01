@@ -2181,8 +2181,10 @@ export interface CreateTaskApplicationMutation_application_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: CreateTaskApplicationMutation_application_task_applications_user;
 }
 
@@ -2207,8 +2209,10 @@ export interface CreateTaskApplicationMutation_application_task_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: CreateTaskApplicationMutation_application_task_submissions_user;
   approver: CreateTaskApplicationMutation_application_task_submissions_approver | null;
 }
@@ -2326,8 +2330,10 @@ export interface CreateTaskApplicationMutation_application {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: CreateTaskApplicationMutation_application_user;
   task: CreateTaskApplicationMutation_application_task;
 }
@@ -2728,8 +2734,10 @@ export interface DeleteTaskApplicationMutation_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: DeleteTaskApplicationMutation_task_applications_user;
 }
 
@@ -2754,8 +2762,10 @@ export interface DeleteTaskApplicationMutation_task_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: DeleteTaskApplicationMutation_task_submissions_user;
   approver: DeleteTaskApplicationMutation_task_submissions_approver | null;
 }
@@ -2872,6 +2882,544 @@ export interface DeleteTaskApplicationMutation {
 
 export interface DeleteTaskApplicationMutationVariables {
   input: DeleteTaskApplicationInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: AcceptTaskApplicationMutation
+// ====================================================
+
+export interface AcceptTaskApplicationMutation_task_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_parentTask {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_paymentMethod;
+  network: AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: AcceptTaskApplicationMutation_task_subtasks_rewards_payments_user;
+  payment: AcceptTaskApplicationMutation_task_subtasks_rewards_payments_payment;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: AcceptTaskApplicationMutation_task_subtasks_rewards_token;
+  payments: AcceptTaskApplicationMutation_task_subtasks_rewards_payments[];
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_subtasks {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  status: TaskStatus;
+  sortKey: string;
+  description: string | null;
+  priority: TaskPriority;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: AcceptTaskApplicationMutation_task_subtasks_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: AcceptTaskApplicationMutation_task_subtasks_subtasks[];
+  tags: AcceptTaskApplicationMutation_task_subtasks_tags[];
+  skills: AcceptTaskApplicationMutation_task_subtasks_skills[];
+  assignees: AcceptTaskApplicationMutation_task_subtasks_assignees[];
+  owners: AcceptTaskApplicationMutation_task_subtasks_owners[];
+  rewards: AcceptTaskApplicationMutation_task_subtasks_rewards[];
+  review: AcceptTaskApplicationMutation_task_subtasks_review | null;
+  reactions: AcceptTaskApplicationMutation_task_subtasks_reactions[];
+}
+
+export interface AcceptTaskApplicationMutation_task_tags {
+  __typename: "TaskTag";
+  id: Scalar.UUID;
+  label: string;
+  color: string;
+  createdAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_skills {
+  __typename: "Skill";
+  id: Scalar.UUID;
+  name: string;
+  emoji: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_assignees {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_owners {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_token {
+  __typename: "PaymentToken";
+  id: Scalar.UUID;
+  exp: number;
+  type: PaymentTokenType;
+  name: string;
+  symbol: string;
+  address: string | null;
+  identifier: string | null;
+  usdPrice: number | null;
+  networkId: string;
+  visibility: PaymentTokenVisibility;
+  imageUrl: string | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: AcceptTaskApplicationMutation_task_rewards_payments_payment_paymentMethod_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: AcceptTaskApplicationMutation_task_rewards_payments_payment_paymentMethod;
+  network: AcceptTaskApplicationMutation_task_rewards_payments_payment_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards_payments {
+  __typename: "TaskRewardPayment";
+  id: Scalar.UUID;
+  amount: string;
+  user: AcceptTaskApplicationMutation_task_rewards_payments_user;
+  payment: AcceptTaskApplicationMutation_task_rewards_payments_payment;
+}
+
+export interface AcceptTaskApplicationMutation_task_rewards {
+  __typename: "TaskReward";
+  id: Scalar.UUID;
+  amount: string;
+  peggedToUsd: boolean;
+  fundingSessionId: string | null;
+  token: AcceptTaskApplicationMutation_task_rewards_token;
+  payments: AcceptTaskApplicationMutation_task_rewards_payments[];
+}
+
+export interface AcceptTaskApplicationMutation_task_review {
+  __typename: "TaskReview";
+  id: Scalar.UUID;
+  message: string | null;
+  rating: number | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_reactions {
+  __typename: "TaskReaction";
+  id: Scalar.UUID;
+  userId: string;
+  reaction: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_project_organization {
+  __typename: "Organization";
+  id: Scalar.UUID;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  tagline: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_project {
+  __typename: "Project";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  description: string | null;
+  deletedAt: Scalar.DateTime | null;
+  organizationId: string;
+  permalink: string;
+  workspaceId: string | null;
+  sortKey: string;
+  organization: AcceptTaskApplicationMutation_task_project_organization;
+}
+
+export interface AcceptTaskApplicationMutation_task_creator {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_githubPullRequests {
+  __typename: "GithubPullRequest";
+  id: Scalar.UUID;
+  title: string;
+  link: string;
+  status: GithubPullRequestStatus;
+  number: number;
+  branchName: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+}
+
+export interface AcceptTaskApplicationMutation_task_githubBranches {
+  __typename: "GithubBranch";
+  id: Scalar.UUID;
+  name: string;
+  link: string;
+  repo: string;
+  organization: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  deletedAt: Scalar.DateTime | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_githubIssue {
+  __typename: "GithubIssue";
+  id: Scalar.UUID;
+  number: number;
+  link: string | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_applications_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_applications {
+  __typename: "TaskApplication";
+  id: Scalar.UUID;
+  message: string | null;
+  startDate: Scalar.DateTime;
+  endDate: Scalar.DateTime;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  userId: string;
+  discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
+  user: AcceptTaskApplicationMutation_task_applications_user;
+}
+
+export interface AcceptTaskApplicationMutation_task_submissions_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_submissions_approver {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_submissions {
+  __typename: "TaskSubmission";
+  id: Scalar.UUID;
+  content: string;
+  createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
+  taskId: string;
+  userId: string;
+  status: TaskSubmissionStatus;
+  user: AcceptTaskApplicationMutation_task_submissions_user;
+  approver: AcceptTaskApplicationMutation_task_submissions_approver | null;
+}
+
+export interface AcceptTaskApplicationMutation_task_nfts_payment_paymentMethod_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_nfts_payment_paymentMethod {
+  __typename: "PaymentMethod";
+  id: Scalar.UUID;
+  type: PaymentMethodType;
+  address: string;
+  network: AcceptTaskApplicationMutation_task_nfts_payment_paymentMethod_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_nfts_payment_network {
+  __typename: "PaymentNetwork";
+  id: Scalar.UUID;
+  slug: string;
+  name: string;
+  type: PaymentNetworkType;
+  config: Scalar.JSONObject;
+  sortKey: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_nfts_payment {
+  __typename: "Payment";
+  id: Scalar.UUID;
+  status: PaymentStatus;
+  data: Scalar.JSONObject | null;
+  paymentMethod: AcceptTaskApplicationMutation_task_nfts_payment_paymentMethod;
+  network: AcceptTaskApplicationMutation_task_nfts_payment_network;
+}
+
+export interface AcceptTaskApplicationMutation_task_nfts {
+  __typename: "TaskNFT";
+  id: Scalar.UUID;
+  tokenId: number;
+  createdAt: Scalar.DateTime;
+  contractAddress: string;
+  explorerUrl: string;
+  payment: AcceptTaskApplicationMutation_task_nfts_payment;
+}
+
+export interface AcceptTaskApplicationMutation_task_auditLog_user {
+  __typename: "User";
+  id: Scalar.UUID;
+  username: string;
+  imageUrl: string | null;
+  permalink: string;
+}
+
+export interface AcceptTaskApplicationMutation_task_auditLog {
+  __typename: "AuditLogEvent";
+  id: Scalar.UUID;
+  createdAt: Scalar.DateTime;
+  user: AcceptTaskApplicationMutation_task_auditLog_user | null;
+  sessionId: Scalar.UUID | null;
+  diff: Scalar.JSONObject[];
+}
+
+export interface AcceptTaskApplicationMutation_task {
+  __typename: "Task";
+  id: Scalar.UUID;
+  name: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  sortKey: string;
+  storyPoints: number | null;
+  dueDate: Scalar.DateTime | null;
+  createdAt: Scalar.DateTime;
+  doneAt: Scalar.DateTime | null;
+  deletedAt: Scalar.DateTime | null;
+  projectId: string;
+  parentTaskId: string | null;
+  parentTask: AcceptTaskApplicationMutation_task_parentTask | null;
+  sectionId: string | null;
+  number: number;
+  gating: TaskGatingType;
+  submissionCount: number;
+  applicationCount: number;
+  subtasks: AcceptTaskApplicationMutation_task_subtasks[];
+  tags: AcceptTaskApplicationMutation_task_tags[];
+  skills: AcceptTaskApplicationMutation_task_skills[];
+  assignees: AcceptTaskApplicationMutation_task_assignees[];
+  owners: AcceptTaskApplicationMutation_task_owners[];
+  rewards: AcceptTaskApplicationMutation_task_rewards[];
+  review: AcceptTaskApplicationMutation_task_review | null;
+  reactions: AcceptTaskApplicationMutation_task_reactions[];
+  gitBranchName: string;
+  permalink: string;
+  project: AcceptTaskApplicationMutation_task_project;
+  creator: AcceptTaskApplicationMutation_task_creator | null;
+  githubPullRequests: AcceptTaskApplicationMutation_task_githubPullRequests[];
+  githubBranches: AcceptTaskApplicationMutation_task_githubBranches[];
+  githubIssue: AcceptTaskApplicationMutation_task_githubIssue | null;
+  applications: AcceptTaskApplicationMutation_task_applications[];
+  submissions: AcceptTaskApplicationMutation_task_submissions[];
+  nfts: AcceptTaskApplicationMutation_task_nfts[];
+  auditLog: AcceptTaskApplicationMutation_task_auditLog[];
+}
+
+export interface AcceptTaskApplicationMutation {
+  task: AcceptTaskApplicationMutation_task;
+}
+
+export interface AcceptTaskApplicationMutationVariables {
+  input: AcceptTaskApplicationInput;
 }
 
 /* tslint:disable */
@@ -3262,8 +3810,10 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_applicat
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: CreateTaskSubmissionMutation_createTaskSubmission_task_applications_user;
 }
 
@@ -3288,8 +3838,10 @@ export interface CreateTaskSubmissionMutation_createTaskSubmission_task_submissi
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_user;
   approver: CreateTaskSubmissionMutation_createTaskSubmission_task_submissions_approver | null;
 }
@@ -3802,8 +4354,10 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_applicat
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_applications_user;
 }
 
@@ -3828,8 +4382,10 @@ export interface UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissi
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_user;
   approver: UpdateTaskSubmissionMutation_updateTaskSubmission_task_submissions_approver | null;
 }
@@ -5129,8 +5685,10 @@ export interface CreateTaskPaymentsMutation_tasks_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: CreateTaskPaymentsMutation_tasks_applications_user;
 }
 
@@ -5155,8 +5713,10 @@ export interface CreateTaskPaymentsMutation_tasks_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: CreateTaskPaymentsMutation_tasks_submissions_user;
   approver: CreateTaskPaymentsMutation_tasks_submissions_approver | null;
 }
@@ -5663,8 +6223,10 @@ export interface ClearTaskPaymentsMutation_tasks_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: ClearTaskPaymentsMutation_tasks_applications_user;
 }
 
@@ -5689,8 +6251,10 @@ export interface ClearTaskPaymentsMutation_tasks_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: ClearTaskPaymentsMutation_tasks_submissions_user;
   approver: ClearTaskPaymentsMutation_tasks_submissions_approver | null;
 }
@@ -11034,8 +11598,10 @@ export interface GetTaskQuery_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: GetTaskQuery_task_applications_user;
 }
 
@@ -11060,8 +11626,10 @@ export interface GetTaskQuery_task_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: GetTaskQuery_task_submissions_user;
   approver: GetTaskQuery_task_submissions_approver | null;
 }
@@ -13004,8 +13572,10 @@ export interface TaskCreatedSubscription_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: TaskCreatedSubscription_task_applications_user;
 }
 
@@ -13030,8 +13600,10 @@ export interface TaskCreatedSubscription_task_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: TaskCreatedSubscription_task_submissions_user;
   approver: TaskCreatedSubscription_task_submissions_approver | null;
 }
@@ -13534,8 +14106,10 @@ export interface TaskUpdatedSubscription_task_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: TaskUpdatedSubscription_task_applications_user;
 }
 
@@ -13560,8 +14134,10 @@ export interface TaskUpdatedSubscription_task_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: TaskUpdatedSubscription_task_submissions_user;
   approver: TaskUpdatedSubscription_task_submissions_approver | null;
 }
@@ -14615,8 +15191,10 @@ export interface TaskApplication {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: TaskApplication_user;
 }
 
@@ -14650,8 +15228,10 @@ export interface TaskSubmission {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: TaskSubmission_user;
   approver: TaskSubmission_approver | null;
 }
@@ -15499,8 +16079,10 @@ export interface TaskDetails_applications {
   startDate: Scalar.DateTime;
   endDate: Scalar.DateTime;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   userId: string;
   discordThreadUrl: string | null;
+  status: TaskApplicationStatus;
   user: TaskDetails_applications_user;
 }
 
@@ -15525,8 +16107,10 @@ export interface TaskDetails_submissions {
   id: Scalar.UUID;
   content: string;
   createdAt: Scalar.DateTime;
+  updatedAt: Scalar.DateTime;
   taskId: string;
   userId: string;
+  status: TaskSubmissionStatus;
   user: TaskDetails_submissions_user;
   approver: TaskDetails_submissions_approver | null;
 }
@@ -16720,6 +17304,18 @@ export enum RulePermission {
   VIEW_PROJECTS = "VIEW_PROJECTS",
 }
 
+export enum TaskSubmissionStatus {
+  ACCEPTED = "ACCEPTED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
+}
+
+export enum TaskApplicationStatus {
+  ACCEPTED = "ACCEPTED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
+}
+
 export enum TaskGatingType {
   APPLICATION = "APPLICATION",
   ASSIGNEES = "ASSIGNEES",
@@ -16804,6 +17400,11 @@ export enum ThreepidSource {
   notion = "notion",
   phantom = "phantom",
   trello = "trello",
+}
+
+export interface AcceptTaskApplicationInput {
+  taskId: Scalar.UUID;
+  userId: Scalar.UUID;
 }
 
 export interface CountTasksInput {
@@ -17212,6 +17813,7 @@ export interface UpdateTaskSubmissionInput {
   approverId?: Scalar.UUID | null;
   content?: string | null;
   deletedAt?: Scalar.DateTime | null;
+  status?: TaskSubmissionStatus | null;
 }
 
 export interface UpdateTaskTagInput {

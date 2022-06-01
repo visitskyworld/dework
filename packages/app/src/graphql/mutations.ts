@@ -246,6 +246,16 @@ export const deleteTaskApplication = gql`
   ${Fragments.taskDetails}
 `;
 
+export const acceptTaskApplication = gql`
+  mutation AcceptTaskApplicationMutation($input: AcceptTaskApplicationInput!) {
+    task: acceptTaskApplication(input: $input) {
+      ...TaskDetails
+    }
+  }
+
+  ${Fragments.taskDetails}
+`;
+
 export const createTaskSubmission = gql`
   mutation CreateTaskSubmissionMutation($input: CreateTaskSubmissionInput!) {
     createTaskSubmission(input: $input) {

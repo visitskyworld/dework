@@ -4,7 +4,10 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EventBus } from "@nestjs/cqrs";
-import { TaskApplication } from "@dewo/api/models/TaskApplication";
+import {
+  TaskApplication,
+  TaskApplicationStatus,
+} from "@dewo/api/models/TaskApplication";
 import { TaskService } from "../task.service";
 import {
   TaskApplicationCreatedEvent,
@@ -56,9 +59,24 @@ export class TaskApplicationService {
     const application = await this.repo.findOne({ taskId, userId });
     const task = (await this.taskService.findById(taskId)) as Task;
     if (!!application) {
-      await this.repo.delete({ taskId, userId });
+      await this.repo.update(
+        { id: application.id },
+        { status: TaskApplicationStatus.REJECTED }
+      );
       this.eventBus.publish(
         new TaskApplicationDeletedEvent(task, application, operatorUserId)
+      );
+    }
+    return task;
+  }
+
+  public async accept(taskId: string, userId: string): Promise<Task> {
+    const application = await this.repo.findOne({ taskId, userId });
+    const task = (await this.taskService.findById(taskId)) as Task;
+    if (!!application) {
+      await this.repo.update(
+        { id: application.id },
+        { status: TaskApplicationStatus.ACCEPTED }
       );
     }
     return task;

@@ -2,7 +2,11 @@ import { FormSection } from "@dewo/app/components/FormSection";
 import { RichMarkdownEditor } from "@dewo/app/components/richMarkdownEditor/RichMarkdownEditor";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
-import { TaskDetails, TaskGatingType } from "@dewo/app/graphql/types";
+import {
+  TaskSubmissionStatus,
+  TaskDetails,
+  TaskGatingType,
+} from "@dewo/app/graphql/types";
 import { Card, Divider, List, Typography } from "antd";
 import React, { FC, useCallback, useMemo } from "react";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
@@ -14,6 +18,13 @@ interface Props {
 
 export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
+  const submissions = useMemo(
+    () =>
+      task.submissions.filter(
+        (submission) => submission.status !== TaskSubmissionStatus.REJECTED
+      ),
+    [task.submissions]
+  );
   const currentSubmission = useMemo(
     () => task.submissions.find((s) => s.user.id === user?.id),
     [task.submissions, user?.id]
@@ -70,11 +81,11 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
           No submissions to review
         </Typography.Paragraph>
       ),
-    canManageSubmissions && !!task.submissions.length && (
+    canManageSubmissions && !!submissions.length && (
       <FormSection key="all" label="All Submissions">
         <Card size="small" className="dewo-card-highlighted">
           <List
-            dataSource={task.submissions}
+            dataSource={submissions}
             renderItem={(submission) => (
               <TaskSubmissionListItem task={task} submission={submission} />
             )}

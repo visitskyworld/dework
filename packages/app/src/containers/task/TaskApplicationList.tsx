@@ -3,14 +3,19 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { usePermissionFn } from "@dewo/app/contexts/PermissionsContext";
 import {
   TaskApplication,
+  TaskApplicationStatus,
   TaskDetails,
   TaskGatingType,
   TaskStatus,
 } from "@dewo/app/graphql/types";
 import { Button, Card, List, Typography, Space, Tooltip, Divider } from "antd";
 import moment from "moment";
-import React, { FC, useCallback, useState } from "react";
-import { useDeleteTaskApplication, useUpdateTask } from "./hooks";
+import React, { FC, useCallback, useMemo, useState } from "react";
+import {
+  useAcceptTaskApplication,
+  useDeleteTaskApplication,
+  useUpdateTask,
+} from "./hooks";
 
 interface Props {
   task: TaskDetails;
@@ -21,6 +26,7 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
 
   const hasPermission = usePermissionFn();
   const deleteApplication = useDeleteTaskApplication();
+  const acceptApplication = useAcceptTaskApplication();
 
   const updateTask = useUpdateTask();
   const handleAssign = useCallback(
@@ -37,11 +43,24 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
           },
           task
         );
+
+        await acceptApplication({
+          taskId: task.id,
+          userId: application.userId,
+        });
       } finally {
         setLoading(false);
       }
     },
-    [updateTask, task]
+    [updateTask, acceptApplication, task]
+  );
+
+  const applications = useMemo(
+    () =>
+      task.applications.filter(
+        (application) => application.status !== TaskApplicationStatus.REJECTED
+      ),
+    [task.applications]
   );
 
   return (
@@ -53,7 +72,7 @@ export const TaskApplicationList: FC<Props> = ({ task }) => {
         style={{ marginTop: 16, marginBottom: 24 }}
       >
         <List
-          dataSource={task?.applications}
+          dataSource={applications}
           renderItem={(application) => {
             const startDate = moment(application.startDate);
             const endDate = moment(application.endDate);

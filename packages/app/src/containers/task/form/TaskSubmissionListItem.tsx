@@ -3,6 +3,7 @@ import { UserAvatar } from "@dewo/app/components/UserAvatar";
 import { useAuthContext } from "@dewo/app/contexts/AuthContext";
 import { usePermission } from "@dewo/app/contexts/PermissionsContext";
 import {
+  TaskSubmissionStatus,
   Task,
   TaskGatingType,
   TaskStatus,
@@ -40,6 +41,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
         userId: submission.userId,
         taskId: submission.taskId,
         approverId: user?.id,
+        status: TaskSubmissionStatus.ACCEPTED,
       });
 
       await updateTask({
@@ -59,7 +61,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
         userId: submission.userId,
         taskId: submission.taskId,
         approverId: user?.id,
-        deletedAt: new Date().toISOString(),
+        status: TaskSubmissionStatus.ACCEPTED,
       });
 
       await addTask({
@@ -109,7 +111,7 @@ export const TaskSubmissionListItem: FC<Props> = ({ task, submission }) => {
       await updateSubmission({
         userId: submission.userId,
         taskId: submission.taskId,
-        deletedAt: new Date().toISOString(),
+        status: TaskSubmissionStatus.REJECTED,
       }),
     [updateSubmission]
   );

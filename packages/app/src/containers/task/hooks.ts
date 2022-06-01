@@ -66,6 +66,9 @@ import {
   GetTaskCountQuery,
   GetTaskCountQueryVariables,
   CountTasksInput,
+  AcceptTaskApplicationMutation,
+  AcceptTaskApplicationMutationVariables,
+  AcceptTaskApplicationInput,
 } from "@dewo/app/graphql/types";
 import _ from "lodash";
 import { useCallback, useMemo } from "react";
@@ -390,6 +393,23 @@ export function useDeleteTaskApplication(): (
     DeleteTaskApplicationMutation,
     DeleteTaskApplicationMutationVariables
   >(Mutations.deleteTaskApplication);
+  return useCallback(
+    async (input) => {
+      const res = await mutation({ variables: { input } });
+      if (!res.data) throw new Error(JSON.stringify(res.errors));
+      return res.data?.task;
+    },
+    [mutation]
+  );
+}
+
+export function useAcceptTaskApplication(): (
+  input: AcceptTaskApplicationInput
+) => Promise<Task> {
+  const [mutation] = useMutation<
+    AcceptTaskApplicationMutation,
+    AcceptTaskApplicationMutationVariables
+  >(Mutations.acceptTaskApplication);
   return useCallback(
     async (input) => {
       const res = await mutation({ variables: { input } });
