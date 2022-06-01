@@ -11,6 +11,7 @@ export const CreateIssuesFromTasksCheckbox: FC = () => (
     <Checkbox>
       Create Github issues from new Dework tasks
       <QuestionmarkTooltip
+        name="Create Github issues from new Dework tasks checkbox"
         title="When a new Dework task is created, a Github issue will automatically be created and linked to the Dework task."
         marginLeft={8}
       />

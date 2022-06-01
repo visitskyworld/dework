@@ -58,6 +58,7 @@ const TaskActionSectionContent: FC<{
       >
         {description}
         <QuestionmarkTooltip
+          name="What other contributors see might differ"
           marginLeft={8}
           title="What other contributors see might differ."
           readMoreUrl={deworkSocialLinks.gitbook.bountyTypesAndGating}

@@ -25,6 +25,7 @@ export const PaymentStatusTag: FC<Props> = ({ status, style }) => (
     {paymentStatusToString[status]}
     {status === PaymentStatus.PROCESSING && (
       <QuestionmarkTooltip
+        name="Payment processing"
         title="Transactions are checked every minute, so it might take a few minutes before it shows up as confirmed in Dework."
         marginLeft={4}
       />

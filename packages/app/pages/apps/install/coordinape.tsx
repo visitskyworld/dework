@@ -274,6 +274,7 @@ const Page: FC = () => {
                   <FormSection
                     label={
                       <QuestionmarkTooltip
+                        name="Grant access to private projects"
                         title="Tasks from private projects will be visible to everyone in your Coordinape circle. Circle members can read the task name, but cannot open the task details to read more."
                         marginLeft={8}
                       >

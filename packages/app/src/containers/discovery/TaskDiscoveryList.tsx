@@ -178,6 +178,7 @@ export const TaskDiscoveryList: FC = () => {
                     <Checkbox>
                       Multiple submissions tasks
                       <QuestionmarkTooltip
+                        name="Multiple submission task checkbox"
                         title="Open bounties are tasks with a fixed bounty that anyone can submit work for. Submit your work on Dework and talk with the task reviewer about payout."
                         marginLeft={8}
                       />
@@ -191,6 +192,7 @@ export const TaskDiscoveryList: FC = () => {
                     <Checkbox>
                       Tasks with an application process
                       <QuestionmarkTooltip
+                        name="Tasks with an application process checkbox"
                         title="Bigger tasks usually require a short application where you share with the DAO why you should be the one to do the task. Once an application has been approved, the task will be reserved to you and cannot be claimed by someone else."
                         marginLeft={8}
                       />
@@ -225,6 +227,7 @@ export const TaskDiscoveryList: FC = () => {
                 >
                   🔥 <span className="text-primary">Featured</span>
                   <QuestionmarkTooltip
+                    name="Featured open bounties"
                     marginLeft={8}
                     title={
                       <Typography.Text style={{ whiteSpace: "pre-line" }}>

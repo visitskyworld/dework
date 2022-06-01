@@ -12,6 +12,7 @@ export const ImportExistingGithubIssuesCheckbox: FC = () => (
     <Checkbox>
       Import existing Github Issues to Dework
       <QuestionmarkTooltip
+        name="Import existing Github Issues to Dework checkbox"
         title="Easily move all your Github issues into Dework. New issues will be added and updated automatically."
         marginLeft={8}
       />

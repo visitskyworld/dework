@@ -98,6 +98,7 @@ export const TaskGatingFields: FC<Props> = ({
       style={{ marginBottom: 0 }}
       label={
         <QuestionmarkTooltip
+          name="Assign Someone"
           title="Select a strategy to decide who is allowed to pick up this task."
           marginLeft={4}
           readMoreUrl={deworkSocialLinks.gitbook.bountyTypesAndGating}
@@ -139,7 +140,10 @@ export const TaskGatingFields: FC<Props> = ({
                 {icons[type]}
                 {labels[type]}
                 {!!descriptions[type] && (
-                  <QuestionmarkTooltip title={descriptions[type]} />
+                  <QuestionmarkTooltip
+                    name={`Who can work on this task? - ${descriptions[type]}`}
+                    title={descriptions[type]}
+                  />
                 )}
                 {type === TaskGatingType.ROLES && (
                   <Tag
@@ -207,6 +211,7 @@ export const TaskGatingFields: FC<Props> = ({
           <Checkbox>
             Use as default
             <QuestionmarkTooltip
+              name="Default task checkbox"
               marginLeft={8}
               title="If checked, this task gating will show as default when you create a task in this project. This default is only visible for you within this specific project."
             />
