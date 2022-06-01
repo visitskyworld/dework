@@ -8,7 +8,7 @@ import { useAmplitude } from "../util/analytics/AmplitudeContext";
 interface Props extends TooltipPropsWithTitle {
   marginLeft?: number;
   readMoreUrl?: string;
-  name: string;
+  name?: string;
 }
 
 export const QuestionmarkTooltip: FC<Props> = ({
@@ -21,7 +21,9 @@ export const QuestionmarkTooltip: FC<Props> = ({
 }) => {
   const { logEvent } = useAmplitude();
   const handleEventLogging = useCallback(() => {
-    logEvent(`Questionmark tooltip shown: ${name}`);
+    if (!!name) {
+      logEvent(`Questionmark tooltip shown: ${name}`);
+    }
   }, [logEvent, name]);
 
   return (

@@ -72,7 +72,7 @@ export const ProjectSettingsGithubIntegration: FC<Props> = ({ project }) => {
               key={feature}
               feature={feature}
               projectId={project.id}
-              existingIntegrations={githubProjectIntegrations?.filter((i) =>
+              existingIntegrations={githubProjectIntegrations!.filter((i) =>
                 i.config.features.includes(feature)
               )}
               disabled={!hasGithubOrganizationIntegration}

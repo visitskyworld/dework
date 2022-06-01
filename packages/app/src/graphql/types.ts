@@ -996,7 +996,7 @@ export interface CreateProjectMutation_project {
   organization: CreateProjectMutation_project_organization;
   taskSections: CreateProjectMutation_project_taskSections[];
   taskViews: CreateProjectMutation_project_taskViews[];
-  workspace: CreateProjectMutation_project_workspace;
+  workspace: CreateProjectMutation_project_workspace | null;
 }
 
 export interface CreateProjectMutation {
@@ -17304,12 +17304,6 @@ export enum RulePermission {
   VIEW_PROJECTS = "VIEW_PROJECTS",
 }
 
-export enum TaskSubmissionStatus {
-  ACCEPTED = "ACCEPTED",
-  PENDING = "PENDING",
-  REJECTED = "REJECTED",
-}
-
 export enum TaskApplicationStatus {
   ACCEPTED = "ACCEPTED",
   PENDING = "PENDING",
@@ -17338,6 +17332,12 @@ export enum TaskStatus {
   IN_PROGRESS = "IN_PROGRESS",
   IN_REVIEW = "IN_REVIEW",
   TODO = "TODO",
+}
+
+export enum TaskSubmissionStatus {
+  ACCEPTED = "ACCEPTED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
 }
 
 export enum TaskViewField {
