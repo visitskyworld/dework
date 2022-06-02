@@ -1,9 +1,11 @@
 import * as fs from "fs";
-import { guilds } from "./guilds";
+import * as path from "path";
+import { loadGuilds } from "./guilds";
 import { parse } from "json2csv";
 import _ from "lodash";
 
 async function run() {
+  const guilds = await loadGuilds();
   const messages: {
     guild: string;
     date: string;
@@ -12,7 +14,9 @@ async function run() {
     url: string;
   }[] = [];
 
-  const files = fs.readdirSync("output");
+  const content = "bounty";
+
+  const files = fs.readdirSync(path.join("output", content));
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
 
@@ -20,8 +24,10 @@ async function run() {
     const guild = guilds.find((g) => g.id === guildId)!;
     console.log(guildId, guild);
 
-    const json = JSON.parse(fs.readFileSync(`output/${file}`).toString());
-    for (const [message] of json.messages) {
+    const json = JSON.parse(
+      fs.readFileSync(path.join("output", content, file)).toString()
+    );
+    for (const [message] of json.messages ?? []) {
       messages.push({
         guild: guild.name,
         date: message.timestamp,
@@ -33,7 +39,7 @@ async function run() {
   }
 
   fs.writeFileSync(
-    "output/messages.csv",
+    path.join("output", content, "messages.csv"),
     parse(_.sortBy(messages, (m) => m.date).reverse(), {
       fields: Object.keys(messages[0]),
     })

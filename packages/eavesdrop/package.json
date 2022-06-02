@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "scrape": "ts-node-dev --no-notify --require dotenv/config src/scrape.ts dotenv_config_path=.env.local",
-    "format": "ts-node-dev --no-notify src/format.ts"
+    "format": "ts-node-dev --no-notify --require dotenv/config src/format.ts dotenv_config_path=.env.local"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.11",

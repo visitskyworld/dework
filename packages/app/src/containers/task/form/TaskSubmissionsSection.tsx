@@ -8,6 +8,7 @@ import {
   TaskGatingType,
 } from "@dewo/app/graphql/types";
 import { Card, Divider, List, Typography } from "antd";
+import _ from "lodash";
 import React, { FC, useCallback, useMemo } from "react";
 import { useCreateTaskSubmission, useUpdateTaskSubmission } from "../hooks";
 import { TaskSubmissionListItem } from "./TaskSubmissionListItem";
@@ -18,19 +19,12 @@ interface Props {
 
 export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
   const { user } = useAuthContext();
-  const submissions = useMemo(
-    () =>
-      task.submissions.filter(
-        (submission) => submission.status !== TaskSubmissionStatus.REJECTED
-      ),
-    [task.submissions]
-  );
   const currentSubmission = useMemo(
     () => task.submissions.find((s) => s.user.id === user?.id),
     [task.submissions, user?.id]
   );
-  const approvedSubmission = useMemo(
-    () => task.submissions.find((s) => !!s.approver),
+  const submissions = useMemo(
+    () => _.groupBy(task.submissions, (s) => s.status),
     [task.submissions]
   );
 
@@ -56,36 +50,16 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
     [user, task.id, currentSubmission, createSubmission, updateSubmission]
   );
 
-  if (!canSubmit && !approvedSubmission) return null;
-  if (!!approvedSubmission) {
-    return (
-      <div>
-        <Divider>Submissions</Divider>
-        <FormSection label="Approved Submission">
-          <Card size="small" className="dewo-card-highlighted">
-            <TaskSubmissionListItem
-              task={task}
-              submission={approvedSubmission}
-            />
-          </Card>
-        </FormSection>
-      </div>
-    );
+  if (!canSubmit && !submissions[TaskSubmissionStatus.ACCEPTED]?.length) {
+    return null;
   }
 
   const components = [
-    canManageSubmissions &&
-      !task.submissions.length &&
-      task.gating === TaskGatingType.OPEN_SUBMISSION && (
-        <Typography.Paragraph key="empty" type="secondary">
-          No submissions to review
-        </Typography.Paragraph>
-      ),
-    canManageSubmissions && !!submissions.length && (
-      <FormSection key="all" label="All Submissions">
+    submissions[TaskSubmissionStatus.ACCEPTED]?.length && (
+      <FormSection key="approved" label="Approved Submissions">
         <Card size="small" className="dewo-card-highlighted">
           <List
-            dataSource={submissions}
+            dataSource={submissions[TaskSubmissionStatus.ACCEPTED]}
             renderItem={(submission) => (
               <TaskSubmissionListItem task={task} submission={submission} />
             )}
@@ -93,6 +67,26 @@ export const TaskSubmissionsSection: FC<Props> = ({ task }) => {
         </Card>
       </FormSection>
     ),
+    canManageSubmissions &&
+      !task.submissions.length &&
+      task.gating === TaskGatingType.OPEN_SUBMISSION && (
+        <Typography.Paragraph key="empty" type="secondary">
+          No submissions to review
+        </Typography.Paragraph>
+      ),
+    canManageSubmissions &&
+      !!submissions[TaskSubmissionStatus.PENDING]?.length && (
+        <FormSection key="all" label="Pending Submissions">
+          <Card size="small" className="dewo-card-highlighted">
+            <List
+              dataSource={submissions[TaskSubmissionStatus.PENDING]}
+              renderItem={(submission) => (
+                <TaskSubmissionListItem task={task} submission={submission} />
+              )}
+            />
+          </Card>
+        </FormSection>
+      ),
     !!currentSubmission && (
       <FormSection key="your" label="Your Submission">
         <RichMarkdownEditor
