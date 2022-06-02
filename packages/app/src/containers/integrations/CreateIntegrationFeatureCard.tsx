@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { Card, Button, Space, Tag, Divider } from "antd";
-import classNames from "classnames";
 import { HeadlessCollapse } from "@dewo/app/components/HeadlessCollapse";
 import styles from "./IntegrationCard.module.less";
 import { UseToggleHook } from "@dewo/app/util/hooks";
@@ -39,9 +38,7 @@ export const CreateIntegrationFeatureCard = ({
       </Space>
     }
     style={{ overflow: "hidden" }}
-    className={classNames({
-      [styles.integrationcard]: true,
-    })}
+    className={styles.integrationcard}
     extra={
       isConnected ? (
         <Button onClick={onClick}>{connectedButtonCopy}</Button>
@@ -62,10 +59,12 @@ export const CreateIntegrationFeatureCard = ({
   >
     {(!!collapsedContent || expanded.isOn) && <Divider style={{ margin: 0 }} />}
     {!!collapsedContent && (
-      <HeadlessCollapse expanded={!expanded.isOn}>
+      <HeadlessCollapse expanded={!expanded.isOn} className={styles.collapse}>
         {collapsedContent}
       </HeadlessCollapse>
     )}
-    <HeadlessCollapse expanded={expanded.isOn}>{children}</HeadlessCollapse>
+    <HeadlessCollapse expanded={expanded.isOn} className={styles.collapse}>
+      {children}
+    </HeadlessCollapse>
   </Card>
 );
